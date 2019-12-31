@@ -1,4 +1,4 @@
-# privacy.sexy
+# privacy.sexy ![](https://github.com/undergroundwires/privacy.sexy/workflows/Build%20&%20deploy/badge.svg)
 
 Privacy & security generator tool for Windows.
 
