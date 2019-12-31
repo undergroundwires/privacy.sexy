@@ -1,4 +1,5 @@
-# privacy.sexy ![](https://github.com/undergroundwires/privacy.sexy/workflows/Build%20&%20deploy/badge.svg)
+# privacy.sexy
+![](https://github.com/undergroundwires/privacy.sexy/workflows/Build%20&%20deploy/badge.svg) ![](https://snyk.io/test/github/undergroundwires/privacy.sexy/badge.svg) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/goodparts/issues)  [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/undergroundwires/privacy.sexy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/undergroundwires/privacy.sexy/context:javascript) [![Maintainability](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/codeclimate/codeclimate/maintainability)
 
 Privacy & security generator tool for Windows.
 
