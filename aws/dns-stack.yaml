@@ -1,0 +1,61 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Creates hosted zone & sets up records for the CloudFront URL.
+
+Parameters:
+
+  RootDomainName:
+    Type: String
+    Default: privacy.sexy
+    Description: The root DNS name of the website e.g. privacy.sexy
+    AllowedPattern: (?!-)[a-zA-Z0-9-.]{1,63}(?<!-)
+    ConstraintDescription: Must be a valid root domain name
+  
+  CertificateStackName:
+    Type: String
+    Default: privacysexy-certificate-stack
+    Description: Name of the certificate stack.
+
+Resources:
+
+  DNSHostedZone:
+    Type: AWS::Route53::HostedZone
+    Properties:
+      Name: !Ref RootDomainName
+      HostedZoneConfig:
+        Comment: !Join ['', ['Hosted zone for ', !Ref RootDomainName]]
+      HostedZoneTags:
+        -
+          Key: Application
+          Value: privacy.sexy
+
+  CertificateValidationDNSRecords:
+    Type: AWS::Route53::RecordSetGroup
+    Properties: 
+      HostedZoneId: !Ref DNSHostedZone
+      RecordSets:
+        -
+          Name: 
+            Fn::ImportValue: !Join [':', [!Ref CertificateStackName, RootVerificationRecordName]]
+          Type: 'CNAME'
+          TTL: '60'
+          ResourceRecords:
+            - Fn::ImportValue: !Join [':', [!Ref CertificateStackName, RootVerificationRecordValue]]
+        -
+          Name: 
+            Fn::ImportValue: !Join [':', [!Ref CertificateStackName, WwwVerificationRecordName]]
+          Type: 'CNAME'
+          TTL: '60'
+          ResourceRecords:
+            - Fn::ImportValue: !Join [':', [!Ref CertificateStackName, WwwVerificationRecordValue]]
+
+Outputs:
+  
+  DNSHostedZoneNameServers:
+    Description: Name servers to update in domain registrar.
+    Value: !Join ['           ', !GetAtt DNSHostedZone.NameServers]
+ 
+  DNSHostedZoneId:
+    Description: The ID of the hosted zone that you want to create the record in.
+    Value: !Ref DNSHostedZone
+    Export:
+      Name: !Join [':', [ !Ref 'AWS::StackName', DNSHostedZoneId ]]

@@ -1,0 +1,1026 @@
+name: privacy.sexy
+version: 0.1.0
+actions:
+    -
+        category: Privacy cleanup
+        children:
+            - 
+                category: Clear application history
+                children:
+                    -
+                        name: Clear Listary indexes
+                        default: false
+                        code: del /f /s /q %appdata%\Listary\UserData > nul
+                    -
+                        name: Clear Java cache
+                        default: true
+                        code: rd /s /q "%APPDATA%\Sun\Java\Deployment\cache"
+                    -
+                        name: Clear Flash traces
+                        default: true
+                        code: rd /s /q "%APPDATA%\Macromedia\Flash Player"
+                    -
+                        name: Clear Steam dumps, logs and traces
+                        default: true
+                        code: |-
+                            del /f /q %ProgramFiles(x86)%\Steam\Dumps
+                            del /f /q %ProgramFiles(x86)%\Steam\Traces
+                            del /f /q %ProgramFiles(x86)%\Steam\appcache\*.log
+                    -
+                        name: Clear Visual Studio telemetry & feedback data
+                        default: true
+                        code: |-
+                            rmdir /s /q "%AppData%\vstelemetry" 2>nul
+                            rmdir /s /q "%LocalAppData%\Microsoft\VSApplicationInsights" 2>nul
+                            rmdir /s /q "%ProgramData%\Microsoft\VSApplicationInsights" 2>nul
+                            rmdir /s /q "%Temp%\Microsoft\VSApplicationInsights" 2>nul
+                            rmdir /s /q "%Temp%\VSFaultInfo" 2>nul
+                            rmdir /s /q "%Temp%\VSFeedbackPerfWatsonData" 2>nul
+                            rmdir /s /q "%Temp%\VSFeedbackVSRTCLogs" 2>nul
+                            rmdir /s /q "%Temp%\VSRemoteControl" 2>nul
+                            rmdir /s /q "%Temp%\VSTelem" 2>nul
+                            rmdir /s /q "%Temp%\VSTelem.Out" 2>nul
+                    -
+                        category: Clear most recently used lists (MRU)
+                        children:
+                            -
+                                name: Clear windows recent files
+                                default: true
+                                docs: https://www.tenforums.com/tutorials/3476-reset-clear-recent-items-frequent-places-windows-10-a.html
+                                code: |-
+                                    rd /s /q "%USERPROFILE%\Recent"
+                                    rd /s /q "%APPDATA%\Microsoft\Windows\Recent"
+                                    del /f /q %APPDATA%\Microsoft\Windows\Recent\AutomaticDestinations\*
+                                    del /f /q %APPDATA%\Microsoft\Windows\Recent\CustomDestinations\*
+                            -
+                                name: Clear regedit last key
+                                default: true
+                                code: |-
+                                    reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit" /va /f
+                                    reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Regedit" /va /f
+                            -
+                                name: Clear regedit favorites
+                                default: true
+                                code: |-
+                                    reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit\Favorites" /va /f
+                                    reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Regedit\Favorites" /va /f
+                            -
+                                name: Clear list of recent programs opened 
+                                default: true
+                                code: |-
+                                    reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRU" /va /f
+                                    reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRULegacy" /va /f
+                            -
+                                name: Clear Adobe Media Browser MRU
+                                default: true
+                                code: reg delete "HKEY_CURRENT_USER\Software\Adobe\MediaBrowser\MRU" /va /f
+                            -
+                                name: Clear MSPaint MRU
+                                default: true
+                                code: |-
+                                    reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Applets\Paint\Recent File List" /va /f
+                                    reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Paint\Recent File List" /va /f
+                            -
+                                name: Clear Wordpad MRU
+                                default: true
+                                code: reg delete "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Wordpad\Recent File List" /va /f
+                            -
+                                name: Clear Map Network Drive MRU MRU
+                                default: true
+                                code: |-
+                                    reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Map Network Drive MRU" /va /f
+                                    reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Map Network Drive MRU" /va /f
+                            -
+                                name: Clear Windows Search Assistant history
+                                default: true
+                                code: reg delete "HKEY_CURRENT_USER\Software\Microsoft\Search Assistant\ACMru" /va /f
+                            -
+                                name: Clear list of Recent Files Opened, by Filetype
+                                default: true
+                                code: |-
+                                    reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs" /va /f
+                                    reg delete "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs" /va /f
+                                    reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\OpenSaveMRU" /va /f
+                            -
+                                name: Clear windows media player recent files and urls
+                                default: true
+                                code: |-
+                                   reg delete "HKEY_CURRENT_USER\Software\Microsoft\MediaPlayer\Player\RecentFileList" /va /f
+                                   reg delete "HKEY_CURRENT_USER\Software\Microsoft\MediaPlayer\Player\RecentURLList" /va /f
+                                   reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MediaPlayer\Player\RecentFileList" /va /f
+                                   reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MediaPlayer\Player\RecentURLList" /va /f
+                            -
+                                name: Clear Most Recent Application's Use of DirectX 
+                                default: true
+                                code: |-
+                                   reg delete "HKEY_CURRENT_USER\Software\Microsoft\Direct3D\MostRecentApplication" /va /f
+                                   reg delete "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Direct3D\MostRecentApplication" /va /f
+                            -
+                                name: Clear Windows Run MRU & typedpaths
+                                default: true
+                                code: |-
+                                   reg delete "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU" /va /f
+                                   reg delete "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths" /va /f
+            - 
+                category: Clear browser history
+                children:
+                    -
+                        name: Clear Internet Explorer traces
+                        default: true
+                        code: |-
+                            del /f /q "%localappdata%\Microsoft\Windows\INetCache\IE\*"
+                            reg delete "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Internet Explorer\TypedURLs" /va /f
+                            reg delete "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Internet Explorer\TypedURLsTime" /va /f
+                            rd /s /q "%localappdata%\Microsoft\Internet Explorer"
+                            rd /s /q "%APPDATA%\Microsoft\Windows\Cookies"
+                            rd /s /q "%USERPROFILE%\Cookies"
+                            rd /s /q "%USERPROFILE%\Local Settings\Traces"
+                            rd /s /q "%localappdata%\Temporary Internet Files"
+                            rd /s /q "%localappdata%\Microsoft\Windows\Temporary Internet Files"
+                            rd /s /q "%localappdata%\Microsoft\Windows\INetCookies\PrivacIE"
+                            rd /s /q "%localappdata%\Microsoft\Feeds Cache"
+                            rd /s /q "%localappdata%\Microsoft\InternetExplorer\DOMStore"
+                    -
+                        name: Clear Google Chrome traces
+                        default: true
+                        code: |-
+                            del /f /q "%localappdata%\Google\Software Reporter Tool\*.log"
+                            rd /s /q "%USERPROFILE%\Local Settings\Application Data\Google\Chrome\User Data"
+                            rd /s /q "%localappdata%\Google\Chrome\User Data"
+                            rd /s /q "%localappdata%\Google\CrashReports\""
+                            rd /s /q "%localappdata%\Google\Chrome\User Data\Crashpad\reports\""
+                    -
+                        category: Clear Firefox traces
+                        children:
+                            -
+                                name: Clear browsing history and caches
+                                default: true
+                                code: |-
+                                    set ignoreFiles="content-prefs.sqlite" "permissions.sqlite" "favicons.sqlite"
+                                    for %%d in ("%APPDATA%\Mozilla\Firefox\Profiles\"
+                                                "%USERPROFILE%\Local Settings\Application Data\Mozilla\Firefox\Profiles\"
+                                            ) do (
+                                        IF EXIST %%d (
+                                            FOR /d %%p IN (%%d*) DO (
+                                                for /f "delims=" %%f in ('dir /b /s "%%p\*.sqlite" 2^>nul') do (
+                                                    set "continue="
+                                                    for %%i in (%ignoreFiles%) do ( 
+                                                        if %%i == "%%~nxf" (
+                                                            set continue=1
+                                                        )
+                                                    )
+                                                    if not defined continue (
+                                                        del /q /s /f %%f
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                            -
+                                name: Clear all user settings and data
+                                default: false
+                                enables: Clear browsing history and caches
+                                code: |-
+                                    rd "%localappdata%\Local\Mozilla\Firefox\Profiles"
+                                    rd /s /q "%APPDATA%\Mozilla\Firefox\Profiles"
+                    -
+                        name: Clear Opera traces
+                        default: true
+                        code: |-
+                            rd /s /q "%USERPROFILE%\AppData\Local\Opera\Opera"
+                            rd /s /q "%APPDATA%\Opera\Opera"
+                            rd /s /q "%USERPROFILE%\Local Settings\Application Data\Opera\Opera"
+                    -
+                        name: Clear Safari traces
+                        default: true
+                        code: |-
+                            rd /s /q "%USERPROFILE%\AppData\Local\Apple Computer\Safari\Traces"
+                            rd /s /q "%APPDATA%\Apple Computer\Safari"
+                            del /q /s /f "%USERPROFILE%\AppData\Local\Apple Computer\Safari\Cache.db"
+                            del /q /s /f "%USERPROFILE%\AppData\Local\Apple Computer\Safari\WebpageIcons.db"
+                            rd /s /q "%USERPROFILE%\Local Settings\Application Data\Apple Computer\Safari\Traces"
+                            del /q /s /f "%USERPROFILE%\Local Settings\Application Data\Apple Computer\Safari\Cache.db"
+                            del /q /s /f "%USERPROFILE%\Local Settings\Application Data\Safari\WebpageIcons.db"
+            - 
+                category: Clear windows logs & caches
+                children:
+                    -
+                        name: Clear thumbnail cache
+                        default: false
+                        code: del /f /s /q /a %LocalAppData%\Microsoft\Windows\Explorer\*.db
+                    -
+                        name: Clear Windows log files
+                        default: true
+                        code: |-
+                            del /f /q %SystemRoot%\Temp\CBS\*
+                            del /f /q %SystemRoot%\comsetup.log
+                            del /f /q %SystemRoot%\DtcInstall.log
+                            del /f /q %SystemRoot%\PFRO.log
+                            del /f /q %SystemRoot%\setupact.log
+                            del /f /q %SystemRoot%\setuperr.log
+                            del /f /q %SystemRoot%\Debug\PASSWD.LOG
+                            del /f /q %SystemRoot%\security\Traces\*.log
+                            del /f /q %SystemRoot%\security\Traces\*.old
+                            del /f /q %SystemRoot%\SoftwareDistribution\ReportingEvents.log
+                            del /f /q %SystemRoot%\Traces\CBS\*
+                            del /f /q %SystemRoot%\Traces\DISM\*
+                            del /f /q %SystemRoot%\Traces\NetSetup\*
+                            del /f /q %SystemRoot%\Traces\SIH\*
+                            del /f /q %SystemRoot%\Traces\waasmedic\*
+                            del /f /q %SystemRoot%\Traces\WindowsUpdate\*
+                            del /f /q %LOCALAPPDATA%\Microsoft\Windows\WebCache\*.log
+                            del /f /q /s %SystemRoot%\Microsoft.NET\Framework\*.log
+                            del /f /q %SystemRoot%\inf\setupapi.dev.log
+                            del /f /q %SystemRoot%\inf\setupapi.offline.log
+                            del /f /q %SystemRoot%\Panther\*
+                            del /f /q %localappdata%\Microsoft\CLR_v4.0\UsageTraces\*
+                            del /f /q %localappdata%\Microsoft\CLR_v4.0_32\UsageTraces\*
+                            del f /q %localappdata%\Microsoft\Windows\WebCache\*
+                            del /f /q %SystemRoot%\System32\catroot2\dberr.txt
+                            del /f /q %SystemRoot%\System32\LogFiles\WMI\*.etl
+                            del /f /q %SystemRoot%\System32\LogFiles\setupcln\*
+                            del /f /q %SystemRoot%\appcompat\Programs\Install\*
+                            del /f /q %SystemRoot%\SoftwareDistribution\DataStore\Traces\*.log
+                            del /f /q %SystemRoot%\Performance\WinSAT\winsat.log
+                            del /f /q %SystemRoot%\ServiceProfiles\LocalService\AppData\Local\Temp\*.log
+                            rd /s /q "%localappdata%\Microsoft\Windows\Traces"
+                    -
+                        name: Clear Windows temp files
+                        default: true
+                        code: |-
+                            del /f /q %localappdata%\Temp\*
+                            rd /s /q "%WINDIR%\Temp"
+                            rd /s /q "%TEMP%"
+                    -
+                        name: Clear main telemetry file
+                        default: true
+                        code: echo "" > %ProgramData%\Microsoft\Diagnosis\ETLTraces\AutoLogger\AutoLogger-Diagtrack-Listener.etl
+            -
+                name: Empty trash bin
+                code: rd /s %systemdrive%\$Recycle.bin
+    -
+        category: Disable OS data collection
+        children:
+            -
+                name: Disable ad customization with Advertising ID
+                default: true
+                code: |-
+                    reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 0 /f 
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" /v "DisabledByGroupPolicy" /t REG_DWORD /d 1 /f 
+            -
+                name: Disable online device metadata collection
+                default: true
+                code: |-
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 1 /f
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 1 /f
+            -
+                name: Opt out from Windows privacy consent
+                default: true
+                code: |-
+                    reg add "HKCU\SOFTWARE\Microsoft\Personalization\Settings" /v "AcceptedPrivacyPolicy" /t REG_DWORD /d 0 /f
+                    reg add "HKU\DefaultUser\Software\Microsoft\Personalization\Settings" /v "AcceptedPrivacyPolicy" /d "0" /t REG_DWORD /f
+            -
+                name: Disable windows telemetry & data collection
+                default: true
+                code: |-
+                    reg add "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v "AllowTelemetry" /d 0 /t REG_DWORD /f
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 0 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 0 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "LimitEnhancedDiagnosticDataWindowsAnalytics" /t REG_DWORD /d 0 /f
+                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 0 /f 
+                    reg add "HKLM\SYSTEM\ControlSet001\Services\DiagTrack" /v "Start" /t REG_DWORD /d 4 /f 
+                    reg add "HKLM\SYSTEM\ControlSet001\Services\dmwappushsvc" /v "Start" /t REG_DWORD /d 4 /f 
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\dmwappushservice" /v "Start" /t REG_DWORD /d 4 /f 
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\diagnosticshub.standardcollector.service" /v "Start" /t REG_DWORD /d 4 /ff
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "AITEnable" /t REG_DWORD /d 0 /f
+            -
+                name: Disable Windows feedback
+                default: true
+                code: |-
+                    reg add "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Siuf\Rules" /v "NumberOfSIUFInPeriod" /t REG_DWORD /d 0 /f 
+                    :: removing this value sets feedback frequency to never
+                    reg delete "HKEY_CURRENT_USER\SOFTWARE\Microsoft\Siuf\Rules" /v "PeriodInNanoSeconds" /f
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v "DoNotShowFeedbackNotifications" /t REG_DWORD /d 1 /f 
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "DoNotShowFeedbackNotifications" /t REG_DWORD /d 1 /f
+            -
+                name: Disable text and handwriting collection
+                default: true
+                code: |-
+                    reg add "HKEY_CURRENT_USER\Software\Policies\Microsoft\InputPersonalization" /v "RestrictImplicitInkCollection" /t REG_DWORD /d 1 /f
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\InputPersonalization" /v "RestrictImplicitInkCollection" /t REG_DWORD /d 1 /f
+                    reg add "HKEY_CURRENT_USER\Software\Policies\Microsoft\InputPersonalization" /v "RestrictImplicitTextCollection" /t REG_DWORD /d 1 /f
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\InputPersonalization" /v "RestrictImplicitTextCollection" /t REG_DWORD /d 1 /f
+                    reg add "HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\HandwritingErrorReports" /v "PreventHandwritingErrorReports" /t REG_DWORD /d 1 /f
+                    reg add "HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\HandwritingErrorReports" /v "PreventHandwritingErrorReports" /t REG_DWORD /d 1 /f
+                    reg add "HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\TabletPC" /v "PreventHandwritingDataSharing" /t REG_DWORD /d 1 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\TabletPC" /v "PreventHandwritingDataSharing" /t REG_DWORD /d 1 /f
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\InputPersonalization" /v "AllowInputPersonalization" /t REG_DWORD /d 0 /f
+                    reg add "HKCU\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" /v "HarvestContacts" /t REG_DWORD /d 0 /f
+            -
+                category: Deny app access to personal information
+                children:
+                    -
+                        name: Deny app access to location
+                        default: false
+                        code: reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessLocation" /t REG_DWORD /d 2 /f
+                    -
+                        name: Deny app access to motion data
+                        default: false
+                        code: reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMotion" /t REG_DWORD /d 2 /f
+                    -
+                        name: Deny app access to phone
+                        default: false
+                        code: reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessPhone" /t REG_DWORD /d 2 /f
+                    -
+                        name: Deny app access to trusted devices
+                        default: false
+                        code: reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessTrustedDevices" /t REG_DWORD /d 2 /f
+                    -
+                        name: Deny app sync with devices
+                        default: false
+                        code: reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsSyncWithDevices" /t REG_DWORD /d 2 /f
+                    -
+                        name: Deny app access to camera
+                        default: false
+                        code: |-
+                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam" /v "Value" /d "Deny" /t REG_SZ /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCamera" /t REG_DWORD /d 2 /f
+                    -
+                        name: Deny app access to microphone
+                        default: true
+                        code: |-
+                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\microphone" /v "Value" /d "Deny" /t REG_SZ /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMicrophone" /t REG_DWORD /d 2 /f
+                    -
+                        name: Deny app access to diagnostics info about your other apps
+                        default: true
+                        code: |-
+                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appDiagnostics" /v "Value" /d "Deny" /t REG_SZ /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsGetDiagnosticInfo" /t REG_DWORD /d 2 /f
+                    -
+                        name: Deny app access to your file system
+                        default: true
+                        code: |-
+                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\broadFileSystemAccess" /v "Value" /d "Deny" /t REG_SZ /f
+                    -
+                        name: Deny app access to your contacts
+                        default: true
+                        code: |-
+                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\contacts" /v "Value" /d "Deny" /t REG_SZ /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessContacts" /t REG_DWORD /d 2 /f
+                    -
+                        name: Deny app access to Notifications
+                        default: true
+                        code: |-
+                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userNotificationListener" /v "Value" /d "Deny" /t REG_SZ /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessNotifications" /t REG_DWORD /d 2 /f
+                    -
+                        name: Deny app access to Account Information
+                        default: true
+                        code: |-
+                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userAccountInformation" /v "Value" /d "Deny" /t REG_SZ /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessAccountInfo" /t REG_DWORD /d 2 /f
+                    -
+                        name: Deny app access to Calendar
+                        default: true
+                        code: |-
+                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appointments" /v "Value" /d "Deny" /t REG_SZ /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCalendar" /t REG_DWORD /d 2 /f
+                    -
+                        name: Deny app access to call history
+                        default: true
+                        code: |-
+                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\phoneCallHistory" /v "Value" /d "Deny" /t REG_SZ /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCallHistory" /t REG_DWORD /d 2 /f  
+                    -
+                        name: Deny app access to email
+                        default: true
+                        code: |-
+                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\email" /v "Value" /d "Deny" /t REG_SZ /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessEmail" /t REG_DWORD /d 2 /f
+                    -
+                        name: Deny app access to tasks
+                        default: true
+                        code: |-
+                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userDataTasks" /v "Value" /d "Deny" /t REG_SZ /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessTasks" /t REG_DWORD /d 2 /f
+                    -
+                        name: Deny app access to messaging
+                        default: true
+                        code: |-
+                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\chat" /v "Value" /d "Deny" /t REG_SZ /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMessaging" /t REG_DWORD /d 2 /f
+                    -
+                        name: Deny app access to radios
+                        default: true
+                        code: |-
+                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\radios" /v "Value" /d "Deny" /t REG_SZ /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessRadios" /t REG_DWORD /d 2 /f
+                    -
+                        name: Deny app access to videos
+                        default: true
+                        code: |-
+                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\videosLibrary" /v "Value" /d "Deny" /t REG_SZ /f
+                    -
+                        name: Deny app access to pictures
+                        default: true
+                        code: |-
+                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\picturesLibrary" /v "Value" /d "Deny" /t REG_SZ /f
+                    -
+                        name: Deny app access to documents
+                        default: true
+                        code: |-
+                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\documentsLibrary" /v "Value" /d "Deny" /t REG_SZ /f
+                    -
+                        name: Deny app access to bluetooth devices
+                        default: true
+                        code: |-
+                           reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\bluetoothSync" /v "Value" /d "Deny" /t REG_SZ /f
+            -
+                name: Deny location access
+                default: true
+                code: |-
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableLocation" /d "1" /t REG_DWORD /f
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableLocationScripting" /t REG_DWORD /d 1 /f
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableSensors" /t REG_DWORD /d 1 /f
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableWindowsLocationProvider" /t REG_DWORD /d 1 /f
+                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location" /v "Value" /d "Deny" /t REG_SZ /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration" /v "Status" /d "0" /t REG_DWORD /f
+            -
+                name: Deny sensor access
+                default: true
+                code: |-
+                    reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}" /v "SensorPermissionState" /d "0" /t REG_DWORD /f
+                    reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}" /v Value /t REG_SZ /d Deny /f
+                    reg add "HKU\Defaultuser\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}" /v Value /t REG_SZ /d Deny /f
+            -
+                category: Disable windows search data collection
+                children:
+                    -
+                        name: Disable cortana
+                        default: true
+                        code: |-
+                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d 0 /f 
+                            reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Experience\AllowCortana" /v "value" /t REG_DWORD /d 0 /f 
+                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CortanaEnabled" /t REG_DWORD /d 0 /f 
+                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CortanaEnabled" /t REG_DWORD /d 0 /f 
+                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CanCortanaBeEnabled" /t REG_DWORD /d 0 /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCloudSearch" /t REG_DWORD /d 0 /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d 0 /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortanaAboveLock" /t REG_DWORD /d 0 /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowSearchToUseLocation" /t REG_DWORD /d 0 /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "ConnectedSearchUseWeb" /t REG_DWORD /d 0 /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "DisableWebSearch" /t REG_DWORD /d 1 / 
+                    -
+                        name: Disable web search in search bar
+                        default: true
+                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v DisableWebSearch /t REG_DWORD /d 1 /f
+                    -
+                        name: Disable search web when searching pc
+                        default: true
+                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v ConnectedSearchUseWeb /t REG_DWORD /d 0 /f
+                    -
+                        name: Disable search indexing encrypted items / stores
+                        default: true
+                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v AllowIndexingEncryptedStoresOrItems /t REG_DWORD /d 0 /f
+                    -
+                        name: Disable location based info in searches
+                        default: true
+                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v AllowSearchToUseLocation /t REG_DWORD /d 0 /f
+                    -
+                        name: Disable language detection
+                        default: true
+                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v AlwaysUseAutoLangDetection /t REG_DWORD /d 0 /f
+                name: Turn Off Suggested Content in Settings app
+                default: true
+                docs: https://www.tenforums.com/tutorials/100541-turn-off-suggested-content-settings-app-windows-10-a.html
+                code: |-
+                    reg add HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager /v "SubscribedContent-338393Enabled" /d "0" /t REG_DWORD /f
+                    reg add HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager /v "SubscribedContent-353694Enabled" /d "0" /t REG_DWORD /f
+                    reg add HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager /v "SubscribedContent-353696Enabled" /d "0" /t REG_DWORD /f
+            -
+                name: Disable biometrics
+                default: true
+                code: |-
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Biometrics" /v "Enabled" /t REG_DWORD /d 0 /f 
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\WbioSrvc" /v "Start" /t REG_DWORD /d 4 /f 
+            -
+                name: Disable Wi-Fi sense
+                default: true
+                code: |-
+                    reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\WiFi\AllowWiFiHotSpotReporting" /v "value" /t REG_DWORD /d 0 /f 
+                    reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\WiFi\AllowAutoConnectToWiFiSenseHotspots" /v "value" /t REG_DWORD /d 0 /f 
+                    reg add "HKLM\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config" /v "AutoConnectAllowedOEM" /t REG_DWORD /d 0 /f 
+            -
+                name: Disable App Launch Tracking
+                docs: https://www.thewindowsclub.com/enable-or-disable-app-launch-tracking-in-windows-10
+                default: true
+                code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /d "0" /t REG_DWORD /f
+            -
+                name: Disable Inventory Collector
+                default: true
+                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisableInventory" /t REG_DWORD /d 1 /f 
+            -
+                name: Disable Auto Downloading Maps
+                default: true
+                code: |-
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Maps" /v "AllowUntriggeredNetworkTrafficOnSettingsPage" /t REG_DWORD /d 0 /f
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Maps" /v "AutoDownloadAndUpdateMapData" /t REG_DWORD /d 0 /f
+            -
+                name: Disable targeted tips
+                default: true
+                code: reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v "DisableSoftLanding" /t REG_DWORD /d 1 /f
+            -
+                name: Disable steps recorder
+                default: true
+                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisableUAR" /t REG_DWORD /d 1 /f
+            -
+                name: Disable game screen recording
+                default: true
+                code: |-
+                    reg add "HKCU\System\GameConfigStore" /v "GameDVR_Enabled" /t REG_DWORD /d 0 /f 
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR" /v "AllowGameDVR" /t REG_DWORD /d 0 /f
+            -
+                name: Disable Windows DRM internet access
+                docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.DigitalRights2::DisableOnline
+                default: true
+                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\WMDRM" /v "DisableOnline" /t REG_DWORD /d 1 /f
+            -
+                name: Disable feedback on write (sending typing info)
+                default: true
+                code: |-
+                    reg add "HKLM\SOFTWARE\Microsoft\Input\TIPC" /v "Enabled" /t REG_DWORD /d 0 /f
+                    reg add "HKCU\SOFTWARE\Microsoft\Input\TIPC" /v "Enabled" /t REG_DWORD /d 0 /f
+            - 
+                name: Disable Activity Feed
+                default: true
+                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableActivityFeed" /d "0" /t REG_DWORD /f
+            - 
+                name: Disable Windows Insider Program
+                default: true
+                code: |-
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" /v "AllowBuildPreview" /t REG_DWORD /d 0 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" /v "EnableConfigFlighting" /t REG_DWORD /d 0 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" /v "EnableExperimentation" /t REG_DWORD /d 0 /f
+            -
+                name: Disable the Windows Connect Now wizard
+                default: false
+                docs:
+                    - https://docs.microsoft.com/en-us/windows/win32/wcn/about-windows-connect-now
+                    - https://www.windows-security.org/f637a705712eb59f8cd410673c96472e/prohibit-access-of-the-windows-connect-now-wizards
+                code: reg add "HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\WCN\UI" /v "DisableWcnUi" /t REG_DWORD /d 1 /f
+            -
+                category: Disable cloud sync
+                children:
+                    -
+                        name: Disable all settings sync
+                        default: true
+                        enabler: all those bottom
+                        code: |-
+                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableSettingSync" /t REG_DWORD /d 2 /f
+                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableSettingSyncUserOverride" /t REG_DWORD /d 1 /f
+                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableSyncOnPaidNetwork" /t REG_DWORD /d 1 /f
+                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync" /v "SyncPolicy" /t REG_DWORD /d 5 /f
+                    -
+                        name: Disable Application Setting Sync
+                        default: true
+                        code: |-
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableApplicationSettingSync" /t REG_DWORD /d 2 /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableApplicationSettingSyncUserOverride" /t REG_DWORD /d 1 /f
+                    -
+                        name: Disable App Sync Setting Sync
+                        default: true
+                        code: |-
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableAppSyncSettingSync" /t REG_DWORD /d 2 /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableAppSyncSettingSyncUserOverride" /t REG_DWORD /d 1 /f
+                    -
+                        name: Disable Credentials Setting Sync
+                        default: true
+                        code: |-
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableCredentialsSettingSync" /t REG_DWORD /d 2 /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableCredentialsSettingSyncUserOverride" /t REG_DWORD /d 1 /f
+                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Credentials" /v "Enabled" /t REG_DWORD /d 0 /f
+                    -
+                        name: Disable Desktop Theme Setting Sync
+                        default: true
+                        code: |-
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableDesktopThemeSettingSync" /t REG_DWORD /d 2 /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableDesktopThemeSettingSyncUserOverride" /t REG_DWORD /d 1 /f
+                    -
+                        name: Disable Personalization Setting Sync
+                        default: true
+                        code: |-
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisablePersonalizationSettingSync" /t REG_DWORD /d 2 /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisablePersonalizationSettingSyncUserOverride" /t REG_DWORD /d 1 /f
+                    -
+                        name: Disable Start Layout Setting Sync
+                        default: true
+                        code: |-
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableStartLayoutSettingSync" /t REG_DWORD /d 2 /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableStartLayoutSettingSyncUserOverride" /t REG_DWORD /d 1 /f
+                    -
+                        name: Disable Web Browser Setting Sync
+                        default: true
+                        code: |-
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableWebBrowserSettingSync" /t REG_DWORD /d 2 /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableWebBrowserSettingSyncUserOverride" /t REG_DWORD /d 1 /f
+                    -
+                        name: Disable Windows Setting Sync
+                        default: true
+                        code: |-
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableWindowsSettingSync" /t REG_DWORD /d 2 /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableWindowsSettingSyncUserOverride" /t REG_DWORD /d 1 /f
+    -
+        category: Configure programs
+        children: 
+            -
+                category: Disable Visual Studio data collection
+                children:
+                    -
+                        category: Disable Experience Improvement Program (PerfWatson)
+                        children:
+                            -
+                                name: Disable SQM 64 bit OS key
+                                default: true
+                                code: |-
+                                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\VSCommon\14.0\SQM"  /v OptIn /t REG_DWORD /d 0 /f
+                                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\VSCommon\15.0\SQM"  /v OptIn /t REG_DWORD /d 0 /f
+                                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\VSCommon\16.0\SQM"  /v OptIn /t REG_DWORD /d 0 /f
+                            -
+                                name: Disable SQM 32 bit OS key
+                                default: true
+                                code: |-
+                                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VSCommon\14.0\SQM"  /v OptIn /t REG_DWORD /d 0 /f
+                                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VSCommon\15.0\SQM"  /v OptIn /t REG_DWORD /d 0 /f
+                                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VSCommon\16.0\SQM"  /v OptIn /t REG_DWORD /d 0 /f
+                            -
+                                name: Disable SQM group policy
+                                default: true
+                                code: reg add "HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\VisualStudio\SQM"  /v OptIn /t REG_DWORD /d 0 /f
+                    -
+                        name: Disable visual studio telemetry
+                        default: true
+                        code: reg add "HKEY_CURRENT_USER\Software\Microsoft\VisualStudio\Telemetry" /v TurnOffSwitch /t REG_DWORD /d 1 /f
+                    -
+                        name: Disable Visual Studio feedback
+                        default: true
+                        code: |-
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\VisualStudio\Feedback" /v DisableFeedbackDialog /t REG_DWORD /d 1 /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\VisualStudio\Feedback" /v DisableEmailInput /t REG_DWORD /d 1 /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\VisualStudio\Feedback" /v DisableScreenshotCapture /t REG_DWORD /d 1 /f 
+                    -
+                        name: Stop and disable Visual Studio Standard Collector Service
+                        default: true
+                        code: |-
+                            sc stop "VSStandardCollectorService150" 
+                            net stop VSStandardCollectorService150 2>nul
+                            sc config "VSStandardCollectorService150" start= disabled
+                    - 
+                        category: Configure Windows Defender
+                        children:
+                            -
+                                name: Disable Microsoft SpyNet (Windows Defender cloud export for analysis)
+                                default: true
+                                code: |-
+                                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Reporting" /v "DisableGenericRePorts" /t REG_DWORD /d 1 /f
+                                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "LocalSettingOverrideSpynetReporting" /t REG_DWORD /d 0 /f
+                                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SpynetReporting" /t REG_DWORD /d 0 /f
+                                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SubmitSamplesConsent" /t REG_DWORD /d 2 /f
+                            - 
+                                name: Disable sending infection information
+                                default: true
+                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\MRT" /v "DontReportInfectionInformation" /t REG_DWORD /d 1 /f
+            -
+                name: Disable NetCore Cli telemetry
+                default: true
+                code: setx DOTNET_CLI_TELEMETRY_OPTOUT 1
+            -
+                name: Disable Visual Studio Code telemetry
+                default: true
+                docs: https://code.visualstudio.com/docs/getstarted/telemetry
+                code: |- 
+                    mkdir %appdata%\Code\User
+                    del %appdata%\Code\User\settings.json
+                    echo { "telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false } > %appdata%\Code\User\settings.json
+            -
+                name: Disable Microsoft Office telemetry
+                default: true
+                docs: https://docs.microsoft.com/en-us/deployoffice/compat/manage-the-privacy-of-data-monitored-by-telemetry-in-office
+                code: |-
+                    reg add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\osm" /v "Enablelogging" /t REG_DWORD /d 0 /f 
+                    reg add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\osm" /v "EnableUpload" /t REG_DWORD /d 0 /f 
+            -
+                category: Configure browsers
+                children: 
+                    -
+                        category: Configure Edge
+                        children: 
+                            -
+                                name: Disable live tile data collection
+                                default: true
+                                code: reg add "HKEY_CURRENT_USER\Software\Policies\Microsoft\MicrosoftEdge\Main" /v "PreventLiveTileDataCollection" /t REG_DWORD /d 1 /f          
+                            -
+                                name: Disable MFU tracking
+                                default: true
+                                code: reg add "HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\EdgeUI" /v "DisableMFUTracking" /t REG_DWORD /d 1 /f
+                            -
+                                name: Disable recent apps
+                                default: true
+                                code: reg add "HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\EdgeUI" /v "DisableRecentApps" /t REG_DWORD /d 1 /f
+                            -
+                                name: Turn off backtracking
+                                default: true
+                                code: reg add "HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\EdgeUI" /v "TurnOffBackstack" /t REG_DWORD /d 1 /f
+                            -
+                                name: Disable Search Suggestions in Edge
+                                default: true
+                                code: reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\MicrosoftEdge\SearchScopes" /v "ShowSearchSuggestionsGlobal" /t REG_DWORD /d 0 /f
+                    -
+                        category: Configure Internet Explorer
+                        children: 
+                            -
+                                name: Disable Geolocation in Internet Explorer
+                                default: true
+                                code: reg add "HKEY_CURRENT_USER\Software\Policies\Microsoft\Internet Explorer\Geolocation" /v "PolicyDisableGeolocation" /t REG_DWORD /d 1 /f
+                            -
+                                name: Disable Internet Explorer InPrivate logging
+                                default: true
+                                code: |-
+                                    reg add "HKEY_CURRENT_USER\Software\Policies\Microsoft\Internet Explorer\Safety\PrivacIE" /v "DisableLogging" /t REG_DWORD /d 1 /f
+                                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Internet Explorer\Safety\PrivacIE" /v "DisableLogging" /t REG_DWORD /d 1 /f
+                            -
+                                name: Disable Internet Explorer CEIP
+                                default: true
+                                code: |-
+                                    reg add "HKEY_CURRENT_USER\Software\Policies\Microsoft\Internet Explorer\SQM" /v "DisableCustomerImprovementProgram" /t REG_DWORD /d 0 /f
+                                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Internet Explorer\SQM" /v "DisableCustomerImprovementProgram" /t REG_DWORD /d 0 /f
+                            -
+                                name: Disable calling legacy WCM policies
+                                default: true
+                                code: reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "CallLegacyWCMPolicies" /t REG_DWORD /d 0 /f
+                            -
+                                name: Disable SSLv3 fallback
+                                default: true
+                                code: reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "EnableSSL3Fallback" /t REG_DWORD /d 0 /f
+                            -
+                                name: Disable ignoring cert errors
+                                default: true
+                                code: reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "PreventIgnoreCertErrors" /t REG_DWORD /d 1 /f
+                    -
+                        category: Configure Google Chrome
+                        children: 
+                            -
+                                name: Disable Chrome Software Reporter Tool
+                                default: true
+                                code: |-
+                                    icacls "%localappdata%\Google\Chrome\User Data\SwReporter" /inheritance:r /deny "*S-1-1-0:(OI)(CI)(F)" "*S-1-5-7:(OI)(CI)(F)"
+                                    cacls "%localappdata%\Google\Chrome\User Data\SwReporter" /e /c /d %username%
+                                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome" /v "ChromeCleanupEnabled" /t REG_DWORD /d 0 /f
+                                    reg add "HKEY_CURRENT_USER\SOFTWARE\Policies\Google\Chrome" /v "ChromeCleanupEnabled" /t REG_DWORD /d 0 /f
+                                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome" /v "ChromeCleanupReportingEnabled" /t REG_DWORD /d 0 /f
+                                    reg add "HKEY_CURRENT_USER\SOFTWARE\Policies\Google\Chrome" /v "ChromeCleanupReportingEnabled" /t REG_DWORD /d 0 /f
+                                    reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun" /v "1" /t REG_SZ /d "software_reporter_tool.exe" /f
+                            -
+                                name: Disable Chrome metrics reporting
+                                default: true
+                                code: |-
+                                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Google\Chrome" /v "MetricsReportingEnabled" /t REG_DWORD /d 0 /f
+                                    reg add "HKEY_CURRENT_USER\SOFTWARE\Policies\Google\Chrome" /v "MetricsReportingEnabled" /t REG_DWORD /d 0 /f
+            -
+                name: Disable Google update service
+                default: true
+                code: |-
+                    sc config gupdate start= disabled
+                    sc config gupdatem start= disabled
+                    schtasks /Change /DISABLE /TN "GoogleUpdateTaskMachineCore"
+                    schtasks /Change /DISABLE /TN "GoogleUpdateTaskMachineUA"
+            -
+                name: Disable Adobe Acrobat update service
+                default: true
+                code: |-
+                    sc config AdobeARMservice start= disabled
+                    schtasks /Change /DISABLE /TN "Adobe Acrobat Update Task"
+            -
+                name: Disable Razer Game Scanner Service
+                default: true
+                code: |-
+                    sc stop "Razer Game Scanner Service"
+                    sc config "Razer Game Scanner Service" start= disabled
+            -
+                name: Disable Logitech Gaming Registry Service 
+                default: true
+                code: |-
+                    sc stop "LogiRegistryService"
+                    sc config "LogiRegistryService" start= disabled 
+            -
+                name: Disable Dropbox auto update service
+                default: true
+                code: |-
+                    sc config dbupdate start= disabled
+                    sc config dbupdatem start= disabled
+                    schtasks /Change /DISABLE /TN "DropboxUpdateTaskMachineCore"
+                    schtasks /Change /DISABLE /TN "DropboxUpdateTaskMachineUA" 
+            -
+                category: Disable Media Player data collection
+                children: 
+                    -
+                        name: Do not send Windows Media Player statistics
+                        default: true
+                        code: reg add "HKCU\SOFTWARE\Microsoft\MediaPlayer\Preferences" /v "UsageTracking" /t REG_DWORD /d 0 /f
+                    -
+                        name: Disable meta data retrieval
+                        default: true
+                        code: |-
+                            reg add "HKEY_CURRENT_USER\Software\Policies\Microsoft\WindowsMediaPlayer" /v "PreventCDDVDMetadataRetrieval" /t REG_DWORD /d 1 /f
+                            reg add "HKEY_CURRENT_USER\Software\Policies\Microsoft\WindowsMediaPlayer" /v "PreventMusicFileMetadataRetrieval" /t REG_DWORD /d 1 /f
+                            reg add "HKEY_CURRENT_USER\Software\Policies\Microsoft\WindowsMediaPlayer" /v "PreventRadioPresetsRetrieval" /t REG_DWORD /d 1 /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WMDRM" /v "DisableOnline" /t REG_DWORD /d 1 /f
+    -
+        category: Security improvements
+        children:         
+            -
+                category: Meltdown and Spectre protection
+                docs: https://support.microsoft.com/en-us/help/4072698/windows-server-speculative-execution-side-channel-vulnerabilities-prot
+                children:
+                    -
+                        name: Spectre variant 2 and meltdown (Intel)
+                        default: false
+                        code: |-
+                            reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v FeatureSettingsOverride /t REG_DWORD /d 0 /f
+                            reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v FeatureSettingsOverrideMask /t REG_DWORD /d 3 /f
+                    -
+                        name: Spectre variant 2 and meltdown (AMD)
+                        default: false
+                        code: |-
+                            reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v FeatureSettingsOverride /t REG_DWORD /d 64 /f
+                            reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v FeatureSettingsOverrideMask /t REG_DWORD /d 3 /f
+                    -
+                        name: Spectre variant 2 and meltdown (HyperV)
+                        default: false
+                        code: reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Virtualization" /v MinVmVersionForCpuBasedMitigations /t REG_SZ /d "1.0" /f
+            -
+                name: Disable administrative shares 
+                default: true
+                code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareWks" /t REG_DWORD /d 0 /f
+            - 
+                name: Force enable data execution prevention (DEP)
+                default: false
+                code: |-
+                    reg add "HKEY_LOCAL_MACHINE \ SOFTWARE \ Policies \ Microsoft \ Windows \ Explorer" /v "NoDataExecutionPrevention" /t REG_DWORD /d 0 /f
+                    reg add "HKEY_LOCAL_MACHINE \ SOFTWARE \ Policies \ Microsoft \ Windows \ System" /v "DisableHHDEP" /t REG_DWORD /d 0 /f
+            - 
+                name: Disable AutoPlay and AutoRun
+                default: false
+                docs:
+                    - https://en.wikipedia.org/wiki/AutoRun
+                    - https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63667
+                    - https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63671
+                    - https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63673
+                code: |-
+                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoDriveTypeAutoRun" /t REG_DWORD /d 255 /f 
+                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoAutorun" /t REG_DWORD /d 1 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoAutoplayfornonVolume" /t REG_DWORD /d 1 /f
+            - 
+                name: Disable remote Assistance
+                default: true
+                docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63651
+                code: |-
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v "fAllowToGetHelp" /t REG_DWORD /d 0 /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v "fAllowFullControl" /t REG_DWORD /d 0 /f
+            - 
+                name: Disable lock screen camera
+                default: true
+                docs: https://www.stigviewer.com/stig/windows_8_8.1/2014-06-27/finding/V-43237
+                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization" /v "NoLockScreenCamera" /t REG_DWORD /d 1 /f 
+            - 
+                name: Prevent the storage of the LAN Manager hash of passwords
+                default: true
+                docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63797
+                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v "NoLMHash" /t REG_DWORD /d 1 /f 
+            - 
+                name: Disable Windows Installer Always install with elevated privileges
+                default: true
+                docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63797
+                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer" /v "AlwaysInstallElevated" /t REG_DWORD /d 0 /f 
+            - 
+                name: Prevent WinRM from using Basic Authentication
+                default: true
+                docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63335
+                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client" /v "AllowBasic" /t REG_DWORD /d 0 /f 
+            - 
+                name: Restrict anonymous enumeration of shares
+                default: true
+                docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63749
+                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client" /v "AllowBasic" /t REG_DWORD /d 0 /f 
+            - 
+                name: Systems must be maintained at a supported (security) level
+                default: true
+                docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63349
+                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client" /v "AllowBasic" /t REG_DWORD /d 0 /f 
+            - 
+                name: Refuse less secure authentication
+                default: true
+                docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63801
+                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v "LmCompatibilityLevel" /t REG_DWORD /d 5 /f 
+            - 
+                name: Enable Structured Exception Handling Overwrite Protection (SEHOP)
+                default: true
+                docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-68849
+                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "DisableExceptionChainValidation" /t REG_DWORD /d 0 /f 
+            - 
+                name: Block Anonymous enumeration of SAM accounts
+                default: true
+                docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63745
+                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "DisableExceptionChainValidation" /t REG_DWORD /d 0 /f 
+            - 
+                name: Restrict anonymous access to Named Pipes and Shares
+                default: true
+                docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63759
+                code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanManServer\Parameters" /v "RestrictNullSessAccess" /t REG_DWORD /d 1 /f
+    -
+        category: Privacy over security
+        children:         
+            -
+                name: Disable Windows Defender 
+                default: false
+                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /t REG_DWORD /d 1 /f
+            -
+                name: Disable Smart Screen 
+                default: false
+                code: |-
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableSmartScreen" /t REG_DWORD /d 0 /f
+                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /v "SmartScreenEnabled" /t REG_SZ /d "Off" /f 
+                    reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer" /v "SmartScreenEnabled" /t REG_SZ /d "Off" /f 
+                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost" /v "EnableWebContentEvaluation" /t REG_DWORD /d 0 /f 
+                    reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost" /v "EnableWebContentEvaluation" /t REG_DWORD /d 0 /f 
+            -
+                name: Disable scheduled On Demand anti malware scanner (MRT)
+                default: false
+                code: reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\MRT" /v "DontOfferThroughWUAU" /t REG_DWORD /d 1 /f
+    -
+        category: UI for privacy
+        children:         
+            -
+                name: Disable lock screen app notifications
+                default: true
+                code: reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System" /v "DisableLockScreenAppNotifications" /t REG_DWORD /d 1 /f
+            -
+                name: Disable online content in explorer
+                default: true
+                code: |-
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "AllowOnlineTips" /t REG_DWORD /d 0 /f
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoInternetOpenWith" /t REG_DWORD /d 1 /f
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoOnlinePrintsWizard" /t REG_DWORD /d 1 /f
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoPublishingWizard" /t REG_DWORD /d 1 /f
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoWebServices" /t REG_DWORD /d 1 /f
+            -
+                name: Disable & auto-clear recent documents in explorer
+                default: true
+                code: |-
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoRecentDocsHistory" /t REG_DWORD /d 1 /f
+                    reg add "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "ClearRecentDocsOnExit" /t REG_DWORD /d 1 /f
+            -
+                name: Disable Live Tiles push notifications
+                default: true
+                code: reg add "HKCU\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\PushNotifications" /v "NoTileApplicationNotification" /t REG_DWORD /d 1 /f
+            -
+                name: Turn off "Look For An App In The Store" option
+                default: true
+                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoUseStoreOpenWith" /t REG_DWORD /d 1 /f
+            -
+                name: Do not show recently used files in Quick Access
+                default: true
+                docs: https://www.tenforums.com/tutorials/2713-add-remove-recent-files-quick-access-windows-10-a.html
+                code: |-
+                    if %PROCESSOR_ARCHITECTURE%==x86 ( REM is 32 bit?
+                        reg add "HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowRecent" /d 0 /t REG_DWORD /f
+                    ) else (
+                        reg delete HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5} /f
+                        reg delete HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5} /f
+                    )
+    -
+        category: Advanced settings
+        children:         
+            # -
+            #     name: Run script on start-up (EXPERIMENTAL)
+            #     default: false
+            #     code: |-
+            #         del /f /q %AppData%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat
+            #         copy "%~dpnx0" "%AppData%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup"
+            -
+                name: Change NTP (time) server to pool.ntp.org
+                default: false
+                code: |-
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\W32time\Parameters" /v "NtpServer" /t REG_SZ /d "pool.ntp.org, 0x8" /f
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\W32time\Parameters" /v "Type" /t REG_SZ /d "NTP" /f
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\W32time\TimeProviders\NtpClient" /v "CrossSiteSyncFlags" /t REG_DWORD /d 2 /f
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\W32time\TimeProviders\NtpClient" /v "EventLogFlags" /t REG_DWORD /d 0 /f
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\W32time\TimeProviders\NtpClient" /v "ResolvePeerBackoffMaxTimes" /t REG_DWORD /d 7 /f
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\W32time\TimeProviders\NtpClient" /v "ResolvePeerBackoffMinutes" /t REG_DWORD /d 15 /f
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\W32time\TimeProviders\NtpClient" /v "SpecialPollInterval" /t REG_DWORD /d 1024 /f
+            -
+                name: Apply settings for all future users (EXPERIMENTAL)
+                default: false
+                code: |-
+                    REG UNLOAD HKU\DefaultUser
+                    reg load HKU\DefaultUser %SystemDrive%\Users\Default\NTUSER.DAT

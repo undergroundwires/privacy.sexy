@@ -1,0 +1,138 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: |-
+  > Creates an S3 bucket configured for hosting a static webpage.
+  > Creates CloudFront distribution that has access to read the S3 bucket.
+
+Parameters:
+
+  RootDomainName:
+    Type: String
+    Default: privacy.sexy
+    Description: The root DNS name of the website e.g. privacy.sexy
+    AllowedPattern: (?!-)[a-zA-Z0-9-.]{1,63}(?<!-)
+    ConstraintDescription: Must be a valid root domain name
+
+  CertificateStackName:
+    Type: String
+    Default: privacysexy-certificate-stack
+    Description: Name of the certificate stack.
+
+  DnsStackName:
+    Type: String
+    Default: privacysexy-dns-stack
+    Description: Name of the certificate stack.
+
+  PriceClass:
+    Type: String
+    Description: The CloudFront distribution price class
+    Default: 'PriceClass_100'
+    AllowedValues:
+      - 'PriceClass_100'
+      - 'PriceClass_200'
+      - 'PriceClass_All'
+
+Resources:
+
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${AWS::StackName}-${RootDomainName} # Must have stack name for IAM to allow
+      WebsiteConfiguration:
+        IndexDocument: index.html
+      Tags:
+        -
+          Key: Application
+          Value: privacy.sexy    
+ 
+  S3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref S3Bucket
+      PolicyDocument: # Only used for CloudFront as it's the only way, otherwise use IAM roles in IAM stack.
+        Statement:
+          -
+            Sid: AllowCloudFrontRead
+            Action: s3:GetObject
+            Effect: Allow
+            Principal:
+                CanonicalUser: !GetAtt CloudFrontOriginAccessIdentity.S3CanonicalUserId
+            Resource: !Join ['', ['arn:aws:s3:::', !Ref S3Bucket, /*]]
+    
+  CloudFrontOriginAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: !Sub 'CloudFront OAI for ${S3Bucket}'
+    
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Comment: Cloudfront Distribution pointing to S3 bucket
+        Origins:
+          -
+            DomainName: !GetAtt S3Bucket.DomainName
+            Id: S3Origin
+            S3OriginConfig:
+                OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}"
+        Enabled: true
+        HttpVersion: 'http2'
+        DefaultRootObject: index.html
+        Aliases:
+          - !Ref RootDomainName
+          - !Sub 'www.${RootDomainName}'
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+          Compress: true
+          TargetOriginId: S3Origin
+          ForwardedValues:
+            QueryString: true
+            Cookies:
+              Forward: none
+          ViewerProtocolPolicy: redirect-to-https
+        PriceClass: !Ref PriceClass
+        ViewerCertificate:
+          AcmCertificateArn:
+            # Certificate must be validated before it can be used here
+            Fn::ImportValue: !Join [':', [!Ref CertificateStackName, CertificateArn]]
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1.1_2016
+      Tags:
+        -
+          Key: Application
+          Value: privacy.sexy
+
+  CloudFrontDNSRecords:
+    Type: AWS::Route53::RecordSetGroup
+    Properties: 
+      HostedZoneId:
+        Fn::ImportValue: !Join [':', [!Ref DnsStackName, DNSHostedZoneId]]
+      RecordSets:
+        -
+          Name: !Ref RootDomainName
+          Type: A         
+          AliasTarget: 
+            DNSName: !GetAtt CloudFrontDistribution.DomainName
+            EvaluateTargetHealth: false
+            HostedZoneId: Z2FDTNDATAQYW2 # Static CloudFront distribution zone https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-aliastarget.html#cfn-route53-aliastarget-hostedzoneid
+        -
+          Name: !Join ['', ['www.', !Ref RootDomainName]]
+          Type: A
+          AliasTarget: 
+            DNSName: !GetAtt CloudFrontDistribution.DomainName
+            EvaluateTargetHealth: false
+            HostedZoneId: Z2FDTNDATAQYW2 # Static CloudFront distribution zone https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-aliastarget.html#cfn-route53-aliastarget-hostedzoneid
+Outputs:
+
+  CloudFrontDistributionArn:  # Used by deployment script to be able to deploy to right S3 bucket
+    Description: Tthe Amazon Resource Name (ARN) of the CloudFront distribution.
+    Value: !Ref CloudFrontDistribution
+
+  S3BucketName: # Used by deployment script to be able to deploy to right S3 bucket
+    Description: Name of the S3 bucket.
+    Value: !Ref S3Bucket
+
+

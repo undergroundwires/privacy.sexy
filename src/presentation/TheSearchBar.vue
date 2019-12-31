@@ -1,0 +1,78 @@
+<template>
+    <div class="container">
+        <div class="search">
+            <input type="text" class="searchTerm" placeholder="Search for configurations"
+              @input="updateFilterAsync($event.target.value)" >
+            <div class="iconWrapper">
+                <font-awesome-icon :icon="['fas', 'search']" />
+            </div>
+        </div>
+    </div>
+</template>
+
+<script lang="ts">
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { StatefulVue } from './StatefulVue';
+
+@Component
+export default class TheSearchBar extends StatefulVue {
+
+
+  public async updateFilterAsync(filter: |string) {
+    const state = await this.getCurrentStateAsync();
+    if (!filter) {
+      state.filter.removeFilter();
+    } else {
+      state.filter.setFilter(filter);
+    }
+  }
+
+}
+</script>
+
+<style scoped lang="scss">
+@import "@/presentation/styles/colors.scss";
+@import "@/presentation/styles/fonts.scss";
+
+.container {
+    padding-top: 30px;
+    padding-right: 30%;
+    padding-left: 30%;
+    font: $default-font;
+}
+
+.search {
+  width: 100%;
+  position: relative;
+  display: flex;
+}
+
+.searchTerm {
+  width: 100%;
+  border: 1.5px solid $gray;
+  border-right: none;
+  height: 36px;
+  border-radius: 3px 0 0 3px;
+  padding-left:10px;
+  padding-right:10px;
+  outline: none;
+  color: $gray;
+}
+
+.searchTerm:focus{
+  color: $slate;
+}
+
+.iconWrapper {
+  width: 40px;
+  height: 36px;
+  border: 1px solid $gray;
+  background: $gray;
+  text-align: center;
+  color: $white;
+  border-radius: 0 5px 5px 0;
+  font-size: 20px;
+  padding:5px;
+}
+
+</style>

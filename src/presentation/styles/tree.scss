@@ -1,0 +1,35 @@
+// Overrides base styling for LiquorTree
+
+.tree-node > .tree-content > .tree-anchor > span {
+    color: $white !important;
+}
+
+.tree-node {
+    white-space: normal !important;
+}
+
+.tree-arrow.has-child {
+    &.rtl:after, &:after {
+        border-color: $white !important;
+    }
+}
+
+.tree-node.selected > .tree-content {
+    > .tree-anchor > span {
+        font-weight: bolder;
+    }
+}
+
+.tree-content:hover {
+    background: $dark-gray !important;
+}
+
+.tree-checkbox {
+    &.checked {
+        background: $accent !important;
+    }
+    &.indeterminate {
+        border-color: $gray !important;
+    }
+    background: $dark-slate !important;
+}

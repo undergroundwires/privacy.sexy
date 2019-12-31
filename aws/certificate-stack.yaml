@@ -1,0 +1,211 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Creates certificate for the root + www subdomain. !! It must be deployed in us-east-1 to be able to be used by CloudFront.
+
+Parameters:
+  
+  RootDomainName:
+    Type: String
+    Default: privacy.sexy
+    Description: The root DNS name of the website e.g. privacy.sexy
+    AllowedPattern: (?!-)[a-zA-Z0-9-.]{1,63}(?<!-)
+    ConstraintDescription: Must be a valid root domain name
+  
+  IamStackName:
+    Type: String
+    Default: privacysexy-iam-stack
+    Description: Name of the IAM stack.
+  
+Resources:
+
+  # The lambda workaround exists to be able to automate certificate deployment.
+  # Problem:
+  #   Normally AWS AWS::CertificateManager::Certificate waits until a certificate is validated
+  #   And there's no way to get validation DNS records from it to validate it.
+  # Solution:
+  #   Deploy a lambda that deploys the certificate (so we don't wait until certificate is validated)
+  #   Get DNS records to be used in validation & export it to be used later.
+  
+  AcmCertificateForHostedZone:
+    Type: Custom::VerifiableCertificate #A Can use AWS::CloudFormation::CustomResource or Custom::String
+    Properties:
+      ServiceToken: !GetAtt ResolveCertificateLambda.Arn
+      # Lambda gets the following data:
+      RootDomainName: !Ref RootDomainName # Lambda will create both for root and www.root
+      Tags:
+        -
+          Key: Name
+          Value: !Ref RootDomainName
+        -
+          Key: Application
+          Value: privacy.sexy
+
+  ResolveCertificateLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: Deploys certificate for root domain name + www and returns immediately arn + verification records.
+      Role:
+        Fn::ImportValue: !Join [':', [!Ref IamStackName, ResolveCertificateLambdaRoleArn]]
+      FunctionName: !Sub ${AWS::StackName}-cert-resolver-lambda # StackName- required for role to function
+      Handler: index.handler
+      Runtime: nodejs12.x
+      Timeout: 30
+      Tags: 
+        -
+          Key: Application
+          Value: privacy.sexy
+      Code:
+        # Inline script is not the best way. Some variables are named shortly to not exceed the limit 4096 but it's the cheapest way (no s3 file)
+        ZipFile: >
+          'use strict';
+          const aws = require('aws-sdk');
+          const acm = new aws.ACM();
+          const log = (t) => console.log(t);
+
+          exports.handler = async (event, context) => {
+            log(`Request recieved:\n${JSON.stringify(event)}`);
+            const userData = event.ResourceProperties;
+            const rootDomain = userData.RootDomainName;
+            let data = null;
+            try {
+              switch(event.RequestType) {
+                case 'Create':
+                  data = await handleCreateAsync(rootDomain, userData.Tags);
+                  break;
+                case 'Update':
+                  data = await handleUpdateAsync();
+                  break;
+                case 'Delete':
+                  data = await handleDeleteAsync(rootDomain);
+                  break;
+              }
+              await sendResponseAsync(event, context, 'SUCCESS', data);
+            } catch(error) {
+              await sendResponseAsync(event, context, 'ERROR', {
+                title: `Failed to ${event.RequestType}, see error`,
+                error: error
+              });
+            }
+          }
+
+          async function handleCreateAsync(rootDomain, tags) {
+            const { CertificateArn } = await acm.requestCertificate({
+              DomainName: rootDomain,
+              SubjectAlternativeNames: [`www.${rootDomain}`],
+              Tags: tags,
+              ValidationMethod: 'DNS',
+            }).promise();
+            log(`Cert requested:${CertificateArn}`);
+            const waitAsync = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+            const maxAttempts = 10;
+            let options = undefined;
+            for (let attempt = 0; attempt < maxAttempts && !options; attempt++) {
+              await waitAsync(2000);
+              const { Certificate } = await acm.describeCertificate({ CertificateArn }).promise();
+              if(Certificate.DomainValidationOptions.filter((o) => o.ResourceRecord).length === 2) {
+                options = Certificate.DomainValidationOptions;
+              }
+            }
+            if(!options) {
+              throw new Error(`No records after ${maxAttempts} attempts.`);
+            }
+            return getResponseData(options, CertificateArn, rootDomain);
+          }
+
+          async function handleDeleteAsync(rootDomain) {
+            const certs = await acm.listCertificates({}).promise();
+            const cert = certs.CertificateSummaryList.find((cert) => cert.DomainName === rootDomain);
+            if (cert) {
+              await acm.deleteCertificate({ CertificateArn: cert.CertificateArn }).promise();
+              log(`Deleted ${cert.CertificateArn}`);
+            } else {
+              log('Cannot find'); // Do not fail, delete can be called when e.g. CF fails before creating cert
+            }
+            return null;
+          }
+
+          async function handleUpdateAsync() {
+            throw new Error(`Not yet implemented update`);
+          }
+
+          function getResponseData(options, arn, rootDomain) {
+            const findRecord = (url) => options.find(option => option.DomainName === url).ResourceRecord;
+            const root = findRecord(rootDomain);
+            const www = findRecord(`www.${rootDomain}`);
+            const data = {
+                CertificateArn: arn,
+                RootVerificationRecordName: root.Name,
+                RootVerificationRecordValue: root.Value,
+                WwwVerificationRecordName: www.Name,
+                WwwVerificationRecordValue: www.Value,
+            };
+            return data;
+          }
+
+          /* cfn-response can't async / await :( */
+          async function sendResponseAsync(event, context, responseStatus, responseData, physicalResourceId) {
+            return new Promise((s, f) => {
+              var b = JSON.stringify({
+                        Status: responseStatus,
+                        Reason: `See the details in CloudWatch Log Stream: ${context.logStreamName}`,
+                        PhysicalResourceId: physicalResourceId || context.logStreamName,
+                        StackId: event.StackId,
+                        RequestId: event.RequestId,
+                        LogicalResourceId: event.LogicalResourceId,
+                        Data: responseData
+              });
+              log(`Response body:\n${b}`);
+              var u = require("url").parse(event.ResponseURL);
+              var r = require("https").request(
+                {
+                  hostname: u.hostname,
+                  port: 443,
+                  path: u.path,
+                  method: "PUT",
+                  headers: {
+                    "content-type": "",
+                    "content-length": b.length
+                  }
+                }, (p) => {
+                  log(`Status code: ${p.statusCode}`);
+                  log(`Status message: ${p.statusMessage}`);
+                  s(context.done());
+                });
+              r.on("error", (e) => {
+                log(`request failed: ${e}`);
+                f(context.done(e));
+              });
+              r.write(b);
+              r.end();
+            });
+          }
+
+Outputs:
+  CertificateArn:
+    Description: The Amazon Resource Name (ARN) of an AWS Certificate Manager (ACM) certificate.
+    Value: !GetAtt AcmCertificateForHostedZone.CertificateArn
+    Export:
+      Name: !Join [':', [ !Ref 'AWS::StackName', CertificateArn ]]
+
+  RootVerificationRecordName:
+    Description: Name for root domain CNAME verification record
+    Value: !GetAtt AcmCertificateForHostedZone.RootVerificationRecordName
+    Export:
+      Name: !Join [':', [ !Ref 'AWS::StackName', RootVerificationRecordName ]]
+
+  RootVerificationRecordValue:
+    Description: Value for root domain name CNAME verification record
+    Value: !GetAtt AcmCertificateForHostedZone.RootVerificationRecordValue
+    Export:
+      Name: !Join [':', [ !Ref 'AWS::StackName', RootVerificationRecordValue ]]
+
+  WwwVerificationRecordName:
+    Description: Name for www domain name CNAME verification record
+    Value: !GetAtt AcmCertificateForHostedZone.WwwVerificationRecordName
+    Export:
+      Name: !Join [':', [ !Ref 'AWS::StackName', WwwVerificationRecordName ]]
+
+  WwwVerificationRecordValue:
+    Description: Value for www domain name CNAME verification record
+    Value: !GetAtt AcmCertificateForHostedZone.WwwVerificationRecordValue
+    Export:
+      Name: !Join [':', [ !Ref 'AWS::StackName', WwwVerificationRecordValue ]]
