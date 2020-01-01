@@ -16,7 +16,7 @@ import { IApplicationCode } from './Code/IApplicationCode';
 export class ApplicationState implements IApplicationState {
     /** Get singleton application state */
     public static GetAsync(): Promise<IApplicationState> {
-       return ApplicationState.instance.getValueAsync();
+        return ApplicationState.instance.getValueAsync();
     }
 
     /** Application instance with all scripts. */
@@ -36,10 +36,10 @@ export class ApplicationState implements IApplicationState {
         private readonly app: Application,
         /** Initially selected scripts */
         public readonly defaultScripts: Script[]) {
-            this.selection = new UserSelection(app, defaultScripts);
-            this.code = new ApplicationCode(this.selection, app.version.toString());
-            this.filter = new UserFilter(app);
-        }
+        this.selection = new UserSelection(app, defaultScripts);
+        this.code = new ApplicationCode(this.selection, app.version.toString());
+        this.filter = new UserFilter(app);
+    }
 
     public getCategory(categoryId: number): ICategory | undefined {
         return this.app.findCategory(categoryId);

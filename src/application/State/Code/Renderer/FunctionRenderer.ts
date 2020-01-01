@@ -20,9 +20,9 @@ export class FunctionRenderer extends CodeRenderer {
     }
 
     private renderFunctionName(functionName: string) {
-        const autoFirstHypens = '-'.repeat(Math.floor((this.totalFunctionSeparatorChars - functionName.length) / 2));
-        const secondHypens = '-'.repeat(Math.ceil((this.totalFunctionSeparatorChars - functionName.length) / 2));
-        return `${this.renderComment()}${autoFirstHypens}${functionName}${secondHypens}`;
+        const firstHyphens = '-'.repeat(Math.floor((this.totalFunctionSeparatorChars - functionName.length) / 2));
+        const secondHyphens = '-'.repeat(Math.ceil((this.totalFunctionSeparatorChars - functionName.length) / 2));
+        return `${this.renderComment()}${firstHyphens}${functionName}${secondHyphens}`;
     }
 
     private renderFunctionEndComment(): string {

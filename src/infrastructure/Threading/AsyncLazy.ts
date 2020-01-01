@@ -6,7 +6,7 @@ export class AsyncLazy<T> {
     private isCreatingValue = false;
     private value: T | undefined;
 
-    constructor(private valueFactory: () => Promise<T>) { }
+    constructor(private valueFactory: () => Promise<T>) {}
 
     public setValueFactory(valueFactory: () => Promise<T>) {
         this.valueFactory = valueFactory;

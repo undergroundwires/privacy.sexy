@@ -11,8 +11,15 @@ import { faTimes, faFileDownload, faCopy, faSearch, faInfoCircle } from '@fortaw
 
 export class IconBootstrapper implements IVueBootstrapper {
     public bootstrap(vue: VueConstructor): void {
-        library.add(faGithub, faFolderOpen, faFolder,
-            faTimes, faFileDownload, faCopy, faSearch, faInfoCircle);
+        library.add(
+            faGithub,
+            faFolderOpen,
+            faFolder,
+            faTimes,
+            faFileDownload,
+            faCopy,
+            faSearch,
+            faInfoCircle);
         vue.component('font-awesome-icon', FontAwesomeIcon);
     }
 }

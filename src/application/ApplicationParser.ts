@@ -26,8 +26,9 @@ export class ApplicationParser {
             categories.push(category);
         }
         const app = new Application(name, version, categories);
-        return {application: app, selectedScripts};
+        return { application: app, selectedScripts };
     }
+
     private static categoryIdCounter = 0;
 
     private static parseCategory(category: YamlCategory, selectedScripts: Script[]): Category {
@@ -43,9 +44,12 @@ export class ApplicationParser {
             } else if (ApplicationParser.isScript(categoryOrScript)) {
                 const yamlScript = categoryOrScript as YamlScript;
                 const script = new Script(
-                    /* name */ yamlScript.name,
-                    /* code */ yamlScript.code,
-                    /* docs */ this.parseDocUrls(yamlScript));
+                    /* name */
+                    yamlScript.name,
+                    /* code */
+                    yamlScript.code,
+                    /* docs */
+                    this.parseDocUrls(yamlScript));
                 subScripts.push(script);
                 if (yamlScript.default === true) {
                     selectedScripts.push(script);
@@ -56,11 +60,16 @@ export class ApplicationParser {
             }
         }
         return new Category(
-            /*id*/ ApplicationParser.categoryIdCounter++,
-            /*name*/ category.category,
-            /*docs*/ this.parseDocUrls(category),
-            /*categories*/ subCategories,
-            /*scripts*/ subScripts,
+            /*id*/
+            ApplicationParser.categoryIdCounter++,
+            /*name*/
+            category.category,
+            /*docs*/
+            this.parseDocUrls(category),
+            /*categories*/
+            subCategories,
+            /*scripts*/
+            subScripts,
         );
     }
 
@@ -97,6 +106,7 @@ export class ApplicationParser {
     private static isScript(categoryOrScript: any): boolean {
         return categoryOrScript.code && categoryOrScript.code.length > 0;
     }
+
     private static isCategory(categoryOrScript: any): boolean {
         return categoryOrScript.category && categoryOrScript.category.length > 0;
     }

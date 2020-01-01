@@ -1,19 +1,18 @@
 <template>
-    <div id="app">
+  <div id="app">
       <div class="wrapper">
-          <TheHeader 
-            class="row"
-            github-url="https://github.com/undergroundwires/privacy.sexy"/>
+          <TheHeader class="row"
+                     github-url="https://github.com/undergroundwires/privacy.sexy" />
           <!-- <TheSearchBar> </TheSearchBar> -->
           <!-- <div style="display: flex; justify-content: space-between;"> -->
-            <!-- <TheGrouper></TheGrouper> -->
+          <!-- <TheGrouper></TheGrouper> -->
           <TheSelector class="row" />
           <!-- </div> -->
           <CardList />
-          <TheCodeArea class="row" theme="xcode"/>
+          <TheCodeArea class="row" theme="xcode" />
           <TheCodeButtons class="row" />
       </div>
-  </div>
+   </div>
 </template>
 
 <script lang="ts">

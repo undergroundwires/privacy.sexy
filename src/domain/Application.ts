@@ -9,6 +9,7 @@ export class Application implements IApplication {
             throw new Error('an application must consist of at least one category');
         }
     }
+
     /**
      * Checks all categories against duplicates, throws exception if it find any duplicates
      * @return {number} Total unique categories
@@ -17,6 +18,7 @@ export class Application implements IApplication {
     private static mustNotHaveDuplicatedCategories(categories: ReadonlyArray<ICategory>): number {
         return Application.ensureNoDuplicateEntities(categories, Application.visitAllCategoriesOnce);
     }
+
     /**
      * Checks all scripts against duplicates, throws exception if it find any scripts duplicates total scripts.
      * @return {number} Total unique scripts
@@ -24,6 +26,7 @@ export class Application implements IApplication {
     private static mustNotHaveDuplicatedScripts(categories: ReadonlyArray<ICategory>): number {
         return Application.ensureNoDuplicateEntities(categories, Application.visitAllScriptsOnce);
     }
+
     /**
      * Checks entities against duplicates using a visit function, throws exception if it find any duplicates.
      * @return {number} Result from the visit function
@@ -35,8 +38,8 @@ export class Application implements IApplication {
         const totalOccurencesById = new Map<TKey, number>();
         const totalVisited = visitFunction(categories,
             (entity) =>
-                totalOccurencesById.set(entity.id,
-                    (totalOccurencesById.get(entity.id) || 0) + 1));
+            totalOccurencesById.set(entity.id,
+                (totalOccurencesById.get(entity.id) || 0) + 1));
         const duplicatedIds = new Array<TKey>();
         totalOccurencesById.forEach((count, id) => {
             if (count > 1) {
@@ -50,34 +53,41 @@ export class Application implements IApplication {
         }
         return totalVisited;
     }
+
     // Runs handler on each category and returns sum of total visited categories
     private static visitAllCategoriesOnce(
-        categories: ReadonlyArray<ICategory>, handler: (category: ICategory) => any): number {
+        categories: ReadonlyArray<ICategory>,
+        handler: (category: ICategory) => any): number {
         let total = 0;
         for (const category of categories) {
             handler(category);
             total++;
             if (category.subCategories && category.subCategories.length > 0) {
                 total += Application.visitAllCategoriesOnce(
-                    category.subCategories as ReadonlyArray<ICategory>, handler);
+                    category.subCategories as ReadonlyArray<ICategory>,
+                    handler);
             }
         }
         return total;
     }
+
     // Runs handler on each script and returns sum of total visited scripts
     private static visitAllScriptsOnce(
-        categories: ReadonlyArray<ICategory>, handler: (script: IScript) => any): number {
+        categories: ReadonlyArray<ICategory>,
+        handler: (script: IScript) => any): number {
         let total = 0;
-        Application.visitAllCategoriesOnce(categories, (category) => {
-            if (category.scripts) {
-                for (const script of category.scripts) {
-                    handler(script);
-                    total++;
+        Application.visitAllCategoriesOnce(categories,
+            (category) => {
+                if (category.scripts) {
+                    for (const script of category.scripts) {
+                        handler(script);
+                        total++;
+                    }
                 }
-            }
-        });
+            });
         return total;
     }
+
     public readonly totalScripts: number;
     public readonly totalCategories: number;
 
@@ -92,27 +102,32 @@ export class Application implements IApplication {
 
     public findCategory(categoryId: number): ICategory | undefined {
         let result: ICategory | undefined;
-        Application.visitAllCategoriesOnce(this.categories, (category) => {
-            if (category.id === categoryId) {
-                result = category;
-            }
-        });
+        Application.visitAllCategoriesOnce(this.categories,
+            (category) => {
+                if (category.id === categoryId) {
+                    result = category;
+                }
+            });
         return result;
     }
+
     public findScript(scriptId: string): IScript | undefined {
         let result: IScript | undefined;
-        Application.visitAllScriptsOnce(this.categories, (script) => {
-            if (script.id === scriptId) {
-                result = script;
-            }
-        });
+        Application.visitAllScriptsOnce(this.categories,
+            (script) => {
+                if (script.id === scriptId) {
+                    result = script;
+                }
+            });
         return result;
     }
+
     public getAllScripts(): IScript[] {
         const result = new Array<IScript>();
-        Application.visitAllScriptsOnce(this.categories, (script) => {
-            result.push(script);
-        });
+        Application.visitAllScriptsOnce(this.categories,
+            (script) => {
+                result.push(script);
+            });
         return result;
     }
 }

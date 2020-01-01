@@ -1,4 +1,5 @@
 // Overrides base styling for LiquorTree
+@import "@/presentation/styles/colors.scss";
 
 .tree-node > .tree-content > .tree-anchor > span {
     color: $white !important;

@@ -18,4 +18,3 @@ export interface IApplicationState {
     readonly defaultScripts: ReadonlyArray<IScript>;
     getCategory(categoryId: number): ICategory | undefined;
 }
-

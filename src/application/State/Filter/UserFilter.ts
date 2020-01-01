@@ -16,8 +16,8 @@ export class UserFilter implements IUserFilter {
             throw new Error('Filter must be defined and not empty. Use removeFilter() to remove the filter');
         }
         const filteredScripts = this.application.getAllScripts().filter(
-            (script) => script.name.toLowerCase().includes(filter.toLowerCase())
-                    || script.code.toLowerCase().includes(filter.toLowerCase()));
+            (script) => script.name.toLowerCase().includes(filter.toLowerCase()) ||
+            script.code.toLowerCase().includes(filter.toLowerCase()));
 
         const matches: IFilterMatches = {
             scriptMatches: filteredScripts,
