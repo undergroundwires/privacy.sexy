@@ -6,7 +6,7 @@ import { IUserSelection } from './Selection/IUserSelection';
 import { AsyncLazy } from '../../infrastructure/Threading/AsyncLazy';
 import { Signal } from '../../infrastructure/Events/Signal';
 import { ICategory } from '../../domain/ICategory';
-import { ApplicationParser } from '../ApplicationParser';
+import { buildApplication } from '../Parser/ApplicationParser';
 import { IApplicationState } from './IApplicationState';
 import { Script } from '../../domain/Script';
 import { Application } from '../../domain/Application';
@@ -21,7 +21,7 @@ export class ApplicationState implements IApplicationState {
 
     /** Application instance with all scripts. */
     private static instance = new AsyncLazy<IApplicationState>(() => {
-        const app = ApplicationParser.buildApplication();
+        const app = buildApplication();
         const state = new ApplicationState(app.application, app.selectedScripts);
         return Promise.resolve(state);
     });
