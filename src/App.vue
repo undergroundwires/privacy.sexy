@@ -11,6 +11,7 @@
           <CardList />
           <TheCodeArea class="row" theme="xcode" />
           <TheCodeButtons class="row" />
+          <TheFooter />
       </div>
    </div>
 </template>
@@ -19,6 +20,7 @@
 import { Component, Vue, Prop  } from 'vue-property-decorator';
 import { ApplicationState, IApplicationState } from '@/application/State/ApplicationState';
 import TheHeader from './presentation/TheHeader.vue';
+import TheFooter from './presentation/TheFooter.vue';
 import TheCodeArea from './presentation/TheCodeArea.vue';
 import TheCodeButtons from './presentation/TheCodeButtons.vue';
 import TheSearchBar from './presentation/TheSearchBar.vue';
@@ -35,6 +37,7 @@ import CardList from './presentation/Scripts/Cards/CardList.vue';
     TheGrouper,
     CardList,
     TheSelector,
+    TheFooter,
   },
 })
 export default class App extends Vue {
