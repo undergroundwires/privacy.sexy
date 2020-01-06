@@ -28,7 +28,11 @@ export class Script extends BaseEntity<string> implements IScript {
         return true;
     }
 
-    constructor(public name: string, public code: string, public documentationUrls: ReadonlyArray<string>) {
+    constructor(
+        public name: string,
+        public code: string,
+        public documentationUrls: ReadonlyArray<string>,
+        public isRecommended: boolean) {
         super(name);
         if (code == null || code.length === 0) {
             throw new Error('Code is empty or null');

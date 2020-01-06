@@ -31,7 +31,7 @@ export default class CardList extends StatefulVue {
 
   public async mounted() {
     const state = await this.getCurrentStateAsync();
-    this.setCategories(state.categories);
+    this.setCategories(state.app.categories);
   }
 
   public onSelected(categoryId: number, isExpanded: boolean) {

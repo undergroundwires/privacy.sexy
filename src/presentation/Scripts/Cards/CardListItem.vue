@@ -55,7 +55,7 @@ export default class CardListItem extends StatefulVue {
 
   private async getCardTitleAsync(categoryId: number): Promise<string | undefined> {
       const state = await this.getCurrentStateAsync();
-      const category = state.getCategory(this.categoryId);
+      const category = state.app.findCategory(this.categoryId);
       return category ? category.name : undefined;
   }
 }

@@ -1,3 +1,4 @@
+import { IApplication } from './../../domain/IApplication';
 import { IUserFilter } from './Filter/IUserFilter';
 import { IUserSelection } from './Selection/IUserSelection';
 import { ISignal } from '@/infrastructure/Events/ISignal';
@@ -10,11 +11,6 @@ export interface IApplicationState {
     readonly code: IApplicationCode;
     readonly filter: IUserFilter;
     readonly stateChanged: ISignal<IApplicationState>;
-    readonly categories: ReadonlyArray<ICategory>;
-    readonly appName: string;
-    readonly appVersion: number;
-    readonly appTotalScripts: number;
     readonly selection: IUserSelection;
-    readonly defaultScripts: ReadonlyArray<IScript>;
-    getCategory(categoryId: number): ICategory | undefined;
+    readonly app: IApplication;
 }

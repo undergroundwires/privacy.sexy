@@ -11,7 +11,7 @@ describe('UserSelection', () => {
         // arrange
         const app = new ApplicationStub()
             .withCategory(new CategoryStub(1)
-                .withScripts('s1', 's2', 's3', 's4'));
+                .withScriptIds('s1', 's2', 's3', 's4'));
         const selectedScripts = [new ScriptStub('s1'), new ScriptStub('s2'), new ScriptStub('s3')];
         const sut = new UserSelection(app, selectedScripts);
 
@@ -26,7 +26,7 @@ describe('UserSelection', () => {
         // arrange
         const app = new ApplicationStub()
             .withCategory(new CategoryStub(1)
-            .withScripts('s1', 's2', 's3', 's4'));
+            .withScriptIds('s1', 's2', 's3', 's4'));
         const selectedScripts = [new ScriptStub('s1'), new ScriptStub('s2'), new ScriptStub('s3')];
         const sut = new UserSelection(app, selectedScripts);
         const expected = [new ScriptStub('s2'), new ScriptStub('s3'), new ScriptStub('s4')];

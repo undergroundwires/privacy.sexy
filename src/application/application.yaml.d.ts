@@ -9,7 +9,7 @@ declare module 'js-yaml-loader!*' {
     export interface YamlScript extends YamlDocumentable {
         name: string;
         code: string;
-        default: boolean;
+        recommend: boolean;
     }
 
     export interface YamlCategory extends YamlDocumentable {

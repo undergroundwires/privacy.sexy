@@ -3,24 +3,24 @@
         <div class="part">Select:</div>
         <div class="part">
             <SelectableOption
+                label="None"
+                :enabled="isNoneSelected"
+                @click="selectNoneAsync()">
+            </SelectableOption>
+        </div>
+        <div class="part"> | </div>
+        <div class="part">
+            <SelectableOption
                 label="Recommended"
                 :enabled="isRecommendedSelected"
                 @click="selectRecommendedAsync()" />
         </div>
         <div class="part"> | </div>
-        <div class="part">
+       <div class="part">
             <SelectableOption
             label="All"
             :enabled="isAllSelected"
             @click="selectAllAsync()" />
-        </div>
-        <div class="part"> | </div>
-        <div class="part">
-            <SelectableOption
-                label="None"
-                :enabled="isNoneSelected"
-                @click="selectNoneAsync()">
-            </SelectableOption>
         </div>
     </div>
 </template>
@@ -63,7 +63,7 @@ export default class TheSelector extends StatefulVue {
             return;
         }
         const state = await this.getCurrentStateAsync();
-        state.selection.selectOnly(state.defaultScripts);
+        state.selection.selectOnly(state.app.getRecommendedScripts());
     }
 
     public async selectNoneAsync(): Promise<void> {
@@ -76,8 +76,8 @@ export default class TheSelector extends StatefulVue {
 
     private updateSelections(state: IApplicationState) {
         this.isNoneSelected = state.selection.totalSelected === 0;
-        this.isAllSelected = state.selection.totalSelected === state.appTotalScripts;
-        this.isRecommendedSelected = this.areSame(state.defaultScripts, state.selection.selectedScripts);
+        this.isAllSelected = state.selection.totalSelected === state.app.totalScripts;
+        this.isRecommendedSelected = this.areSame(state.app.getRecommendedScripts(), state.selection.selectedScripts);
     }
 
     private areSame(scripts: ReadonlyArray<IScript>, other: ReadonlyArray<IScript>): boolean {

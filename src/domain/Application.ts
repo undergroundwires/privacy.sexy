@@ -21,7 +21,13 @@ export class Application implements IApplication {
         }
         this.flattened = flatten(categories);
         if (this.flattened.allCategories.length === 0) {
-            throw new Error('An application must consist of at least one category');
+            throw new Error('Application must consist of at least one category');
+        }
+        if (this.flattened.allScripts.length === 0) {
+            throw new Error('Application must consist of at least one script');
+        }
+        if (this.flattened.allScripts.filter((script) => script.isRecommended).length === 0) {
+            throw new Error('Application must consist of at least one recommended script');
         }
         ensureNoDuplicates(this.flattened.allCategories);
         ensureNoDuplicates(this.flattened.allScripts);
@@ -29,6 +35,10 @@ export class Application implements IApplication {
 
     public findCategory(categoryId: number): ICategory | undefined {
         return this.flattened.allCategories.find((category) => category.id === categoryId);
+    }
+
+    public getRecommendedScripts(): readonly IScript[] {
+        return this.flattened.allScripts.filter((script) => script.isRecommended);
     }
 
     public findScript(scriptId: string): IScript | undefined {

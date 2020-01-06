@@ -4,7 +4,7 @@ import { INode } from './../SelectableTree/INode';
 
 export class ScriptNodeParser {
     public static parseNodes(categoryId: number, state: IApplicationState): INode[] | undefined {
-        const category = state.getCategory(categoryId);
+        const category = state.app.findCategory(categoryId);
         if (!category) {
               throw new Error(`Category with id ${categoryId} does not exist`);
           }

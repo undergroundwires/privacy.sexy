@@ -5,58 +5,48 @@ import { parseDocUrls } from './DocumentationParser';
 
 let categoryIdCounter: number = 0;
 
-interface IParsingContext {
-    category: YamlCategory;
-    selectedScripts: Script[];
-}
 
 interface ICategoryChildren {
     subCategories: Category[];
     subScripts: Script[];
 }
 
-export function parseCategory(context: IParsingContext): Category {
-    if (!context.category.children || context.category.children.length <= 0) {
+export function parseCategory(category: YamlCategory): Category {
+    if (!category.children || category.children.length <= 0) {
         throw Error('Category has no children');
     }
     const children: ICategoryChildren = {
         subCategories: new Array<Category>(),
         subScripts: new Array<Script>(),
     };
-    for (const categoryOrScript of context.category.children) {
-        parseCategoryChild(categoryOrScript, children, context);
+    for (const categoryOrScript of category.children) {
+        parseCategoryChild(categoryOrScript, children, category);
     }
     return new Category(
         /*id*/ categoryIdCounter++,
-        /*name*/ context.category.category,
-        /*docs*/ parseDocUrls(context.category),
+        /*name*/ category.category,
+        /*docs*/ parseDocUrls(category),
         /*categories*/ children.subCategories,
         /*scripts*/ children.subScripts,
     );
 }
 
 function parseCategoryChild(
-    categoryOrScript: any, children: ICategoryChildren, parent: IParsingContext) {
+    categoryOrScript: any, children: ICategoryChildren, parent: YamlCategory) {
     if (isCategory(categoryOrScript)) {
-        const subCategory = parseCategory(
-            {
-                category: categoryOrScript as YamlCategory,
-                selectedScripts: parent.selectedScripts,
-            });
+        const subCategory = parseCategory(categoryOrScript as YamlCategory);
         children.subCategories.push(subCategory);
     } else if (isScript(categoryOrScript)) {
         const yamlScript = categoryOrScript as YamlScript;
         const script = new Script(
             /* name */  yamlScript.name,
             /* code */ yamlScript.code,
-            /* docs */ parseDocUrls(yamlScript));
+            /* docs */ parseDocUrls(yamlScript),
+            /* is recommended? */ yamlScript.recommend);
         children.subScripts.push(script);
-        if (yamlScript.default === true) {
-            parent.selectedScripts.push(script);
-        }
     } else {
         throw new Error(`Child element is neither a category or a script.
-                Parent: ${parent.category.category}, element: ${categoryOrScript}`);
+                Parent: ${parent.category}, element: ${categoryOrScript}`);
     }
 }
 
