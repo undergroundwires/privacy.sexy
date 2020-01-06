@@ -100,7 +100,7 @@ export default class TheSelector extends StatefulVue {
         display: flex;
         margin-right:5px;
     }
-    font:16px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-family: $normal-font;
 }
 
 </style>

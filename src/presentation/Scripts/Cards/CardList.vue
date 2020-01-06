@@ -57,6 +57,6 @@ export default class CardList extends StatefulVue {
   width: 100%;
   text-align: center;
   font-size: 3.5em;
-  font: $default-font;
+  font: $normal-font;
 }
 </style>

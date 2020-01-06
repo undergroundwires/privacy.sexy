@@ -38,7 +38,7 @@ export default class TheSearchBar extends StatefulVue {
     padding-top: 30px;
     padding-right: 30%;
     padding-left: 30%;
-    font: $default-font;
+    font: $normal-font;
 }
 
 .search {

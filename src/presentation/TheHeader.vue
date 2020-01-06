@@ -28,6 +28,7 @@ export default class TheHeader extends StatefulVue {
 
 <style scoped lang="scss">
 @import "@/presentation/styles/colors.scss";
+@import "@/presentation/styles/fonts.scss";
 #container {
   display: flex;
   align-items: center;
@@ -50,7 +51,7 @@ export default class TheHeader extends StatefulVue {
     margin: 0;
     font-size: 1.5em;
     color: $gray;
-    font-family: 'Yesteryear', cursive;
+    font-family: $artistic-font;
     font-weight: 500;
     line-height: 1.2;
   }
