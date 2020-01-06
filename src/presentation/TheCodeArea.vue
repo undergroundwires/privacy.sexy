@@ -7,7 +7,21 @@ import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 import { StatefulVue, IApplicationState } from './StatefulVue';
 import ace from 'ace-builds';
 import 'ace-builds/webpack-resolver';
+import { CodeBuilder } from '../application/State/Code/CodeBuilder';
 
+const NothingChosenCode =
+  new CodeBuilder()
+    .appendCommentLine('privacy.sexy — 🔐 Enforce privacy & security best-practices on Windows')
+    .appendCommentLineWithHyphensAround('🧐 Why privacy.sexy')
+    .appendCommentLine(' ✔️ Rich tweak pool to harden security & privacy of the OS and other softwares on it.')
+    .appendCommentLine(' ✔️ You don\'t need to run any compiled software on your system, just run the generated scripts.')
+    .appendCommentLine(' ✔️ Have full visibility into what the tweaks do as you enable them.')
+    .appendCommentLine(' ✔️ Free software, 100% transparency: both application & infrastructure code are open-sourced.')
+    .appendCommentLineWithHyphensAround('🤔 How to use')
+    .appendCommentLine(' 📙 Start by exploring different categories and choosing different tweaks.')
+    .appendCommentLine(' 📙 You can select "Recommended" on the top to select "safer" tweaks. Always double check!')
+    .appendCommentLine(' 📙 After you choose any tweak, you can download & copy to execute your script.')
+    .toString();
 
 @Component
 export default class TheCodeArea extends StatefulVue {
@@ -17,29 +31,29 @@ export default class TheCodeArea extends StatefulVue {
   @Prop() private theme!: string;
 
   public async mounted() {
-    this.editor = this.initializeEditor();
+    this.editor = initializeEditor(this.theme, this.editorId);
     const state = await this.getCurrentStateAsync();
     this.updateCode(state.code.current);
     state.code.changed.on((code) => this.updateCode(code));
   }
 
   private updateCode(code: string) {
-    this.editor.setValue(code || 'Something is bad 😢', 1);
-  }
-
-  private initializeEditor(): ace.Ace.Editor {
-    const lang = 'batchfile';
-    const theme = this.theme || 'github';
-    const editor = ace.edit(this.editorId);
-    editor.getSession().setMode(`ace/mode/${lang}`);
-    editor.setTheme(`ace/theme/${theme}`);
-    editor.setReadOnly(true);
-    editor.setAutoScrollEditorIntoView(true);
-    // this.editor.getSession().setUseWrapMode(true);
-    // this.editor.setOption("indentedSoftWrap", false);
-    return editor;
+    this.editor.setValue(code || NothingChosenCode, 1);
   }
 }
+
+function initializeEditor(theme: string, editorId: string): ace.Ace.Editor {
+  const lang = 'batchfile';
+  theme = theme || 'github';
+  const editor = ace.edit(editorId);
+  editor.getSession().setMode(`ace/mode/${lang}`);
+  editor.setTheme(`ace/theme/${theme}`);
+  editor.setReadOnly(true);
+  editor.setAutoScrollEditorIntoView(true);
+  editor.getSession().setUseWrapMode(true); // So code is readable on mobile
+  return editor;
+}
+
 </script>
 
 <style scoped lang="scss">

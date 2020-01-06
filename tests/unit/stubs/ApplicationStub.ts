@@ -1,6 +1,10 @@
 import { IApplication, ICategory, IScript } from '@/domain/IApplication';
 
 export class ApplicationStub implements IApplication {
+    public readonly totalScripts = 0;
+    public readonly totalCategories = 0;
+    public readonly name = 'StubApplication';
+    public readonly version = 1;
     public readonly categories = new Array<ICategory>();
 
     public withCategory(category: ICategory): IApplication {
@@ -10,11 +14,12 @@ export class ApplicationStub implements IApplication {
     public findCategory(categoryId: number): ICategory {
         throw new Error('Method not implemented.');
     }
-
+    public getRecommendedScripts(): readonly IScript[] {
+        throw new Error('Method not implemented.');
+    }
     public findScript(scriptId: string): IScript {
         throw new Error('Method not implemented.');
     }
-
     public getAllScripts(): ReadonlyArray<IScript> {
         throw new Error('Method not implemented.');
     }

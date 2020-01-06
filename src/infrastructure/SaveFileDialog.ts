@@ -10,7 +10,7 @@ export class SaveFileDialog {
             const blob = new Blob([file], { type: fileType });
             fileSaver.saveAs(blob, fileName);
         } catch (e) {
-            window.open('data:' + fileType + ',' + encodeURIComponent(file.toString()), '_blank', '');
+            window.open(`data:${fileType},${encodeURIComponent(file.toString())}`, '_blank', '');
         }
     }
 }

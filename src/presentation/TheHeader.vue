@@ -20,14 +20,15 @@ export default class TheHeader extends StatefulVue {
 
   public async mounted() {
     const state = await this.getCurrentStateAsync();
-    this.title = state.appName;
-    this.subtitle = `Privacy generator tool for Windows v${state.appVersion}`;
+    this.title = state.app.name;
+    this.subtitle = 'Enforce privacy & security on Windows';
   }
 }
 </script>
 
 <style scoped lang="scss">
 @import "@/presentation/styles/colors.scss";
+@import "@/presentation/styles/fonts.scss";
 #container {
   display: flex;
   align-items: center;
@@ -50,7 +51,7 @@ export default class TheHeader extends StatefulVue {
     margin: 0;
     font-size: 1.5em;
     color: $gray;
-    font-family: 'Yesteryear', cursive;
+    font-family: $artistic-font;
     font-weight: 500;
     line-height: 1.2;
   }

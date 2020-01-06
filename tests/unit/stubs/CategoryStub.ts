@@ -11,9 +11,15 @@ export class CategoryStub extends BaseEntity<number> implements ICategory  {
     constructor(id: number) {
         super(id);
     }
-    public withScripts(...scriptIds: string[]): CategoryStub {
+    public withScriptIds(...scriptIds: string[]): CategoryStub {
         for (const scriptId of scriptIds) {
             this.scripts.push(new ScriptStub(scriptId));
+        }
+        return this;
+    }
+    public withScripts(...scripts: IScript[]): CategoryStub {
+        for (const script of scripts) {
+            this.scripts.push(script);
         }
         return this;
     }

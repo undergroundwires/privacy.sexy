@@ -7,8 +7,8 @@ export class Category extends BaseEntity<number> implements ICategory {
         if (!category.name) {
             throw new Error('name is null or empty');
         }
-        if ((!category.subCategories || category.subCategories.length === 0)
-                && (!category.scripts || category.scripts.length === 0)) {
+        if ((!category.subCategories || category.subCategories.length === 0) &&
+            (!category.scripts || category.scripts.length === 0)) {
             throw new Error('A category must have at least one sub-category or scripts');
         }
     }

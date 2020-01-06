@@ -6,7 +6,7 @@ import { IUserSelection } from './Selection/IUserSelection';
 import { AsyncLazy } from '../../infrastructure/Threading/AsyncLazy';
 import { Signal } from '../../infrastructure/Events/Signal';
 import { ICategory } from '../../domain/ICategory';
-import { ApplicationParser } from '../ApplicationParser';
+import { parseApplication } from '../Parser/ApplicationParser';
 import { IApplicationState } from './IApplicationState';
 import { Script } from '../../domain/Script';
 import { Application } from '../../domain/Application';
@@ -16,13 +16,14 @@ import { IApplicationCode } from './Code/IApplicationCode';
 export class ApplicationState implements IApplicationState {
     /** Get singleton application state */
     public static GetAsync(): Promise<IApplicationState> {
-       return ApplicationState.instance.getValueAsync();
+        return ApplicationState.instance.getValueAsync();
     }
 
     /** Application instance with all scripts. */
     private static instance = new AsyncLazy<IApplicationState>(() => {
-        const app = ApplicationParser.buildApplication();
-        const state = new ApplicationState(app.application, app.selectedScripts);
+        const application = parseApplication();
+        const selectedScripts = new Array<Script>();
+        const state = new ApplicationState(application, selectedScripts);
         return Promise.resolve(state);
     });
 
@@ -33,32 +34,12 @@ export class ApplicationState implements IApplicationState {
 
     private constructor(
         /** Inner instance of the all scripts */
-        private readonly app: Application,
+        public readonly app: Application,
         /** Initially selected scripts */
         public readonly defaultScripts: Script[]) {
-            this.selection = new UserSelection(app, defaultScripts);
-            this.code = new ApplicationCode(this.selection, app.version.toString());
-            this.filter = new UserFilter(app);
-        }
-
-    public getCategory(categoryId: number): ICategory | undefined {
-        return this.app.findCategory(categoryId);
-    }
-
-    public get categories(): ReadonlyArray<ICategory> {
-        return this.app.categories;
-    }
-
-    public get appName(): string {
-        return this.app.name;
-    }
-
-    public get appVersion(): number {
-        return this.app.version;
-    }
-
-    public get appTotalScripts(): number {
-        return this.app.totalScripts;
+        this.selection = new UserSelection(app, defaultScripts);
+        this.code = new ApplicationCode(this.selection, app.version.toString());
+        this.filter = new UserFilter(app);
     }
 }
 

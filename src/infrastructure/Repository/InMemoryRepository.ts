@@ -3,6 +3,7 @@ import { IRepository } from './IRepository';
 
 export class InMemoryRepository<TKey, TEntity extends IEntity<TKey>> implements IRepository<TKey, TEntity> {
     private readonly items: TEntity[];
+
     constructor(items?: TEntity[]) {
         this.items = items || new Array<TEntity>();
     }

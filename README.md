@@ -1,17 +1,27 @@
 # privacy.sexy
-![](https://github.com/undergroundwires/privacy.sexy/workflows/Build%20&%20deploy/badge.svg) ![](https://snyk.io/test/github/undergroundwires/privacy.sexy/badge.svg) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/goodparts/issues)  [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/undergroundwires/privacy.sexy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/undergroundwires/privacy.sexy/context:javascript) [![Maintainability](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/codeclimate/codeclimate/maintainability)
 
-Privacy & security generator tool for Windows.
+![Build & deploy status](https://github.com/undergroundwires/privacy.sexy/workflows/Build%20&%20deploy/badge.svg)
+![Vulnerabilities](https://snyk.io/test/github/undergroundwires/privacy.sexy/badge.svg)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/undergroundwires/privacy.sexy/issues)
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/undergroundwires/privacy.sexy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/undergroundwires/privacy.sexy/context:javascript)
+[![Maintainability](https://api.codeclimate.com/v1/badges/3a70b7ef602e2264342c/maintainability)](https://codeclimate.com/github/undergroundwires/privacy.sexy/maintainability)
 
+Web tool to generate scripts for enforcing privacy & security best-practices such as stopping data collection of Windows and different softwares on it.
 > because privacy is sexy 🍑🍆
 
 [https://privacy.sexy](https://privacy.sexy)
 
-In this repo you find:
+## Why privacy.sexy
 
-- Application & infrastructure code of privacy.sexy, simply everything is code & open-sourced.
-- Fully automated CI/CD pipeline to AWS for provisioning serverless infrastructure using GitHub actions.
-- Vue.js application in conjunction with domain-driven design, event-driven architecture & data-driven programming.
+- You don't need to run any compiled software on your system, just run the generated scripts.
+- It's open source, both application & infrastructure is 100% transparent
+  - Fully automated C/CD pipeline to AWS for provisioning serverless infrastructure using GitHub actions.
+- Have full visibility into what the tweaks do as you enable them.
+- Easily extendable
+
+## Extend scripts
+
+Fork it & add more scripts in `src/application/application.yml` and send a pull request 👌
 
 ## Commands
 
@@ -25,10 +35,6 @@ In this repo you find:
 - Prepare for production: `npm run build`
 - Run tests: `npm run test:unit`
 - Lint and fix files: `npm run lint`
-
-## Extend scripts
-
-Fork it & add more scripts in `src/application/application.yml` and send a pull request 👌
 
 ## Architecture
 

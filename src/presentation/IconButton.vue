@@ -29,6 +29,7 @@ export default class IconButton extends StatefulVue {
 
 <style scoped lang="scss">
 @import "@/presentation/styles/colors.scss";
+@import "@/presentation/styles/fonts.scss";
 
 .button {
     display: flex;
@@ -63,7 +64,7 @@ export default class IconButton extends StatefulVue {
     }
     &__text {
         display: none;
-        font-family: 'Yesteryear', cursive;
+        font-family: $artistic-font;
         font-size: 1.5em;
         color: $gray;
         font-weight: 500;

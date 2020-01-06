@@ -31,7 +31,7 @@ export default class TheGrouper extends StatefulVue {
 
 .container {
     // text-align:left;
-    font:16px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font:$normal-font;
 
 }
 .enabled {

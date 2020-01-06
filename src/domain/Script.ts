@@ -9,36 +9,30 @@ export class Script extends BaseEntity<string> implements IScript {
     }
 
     private static ensureCodeHasUniqueLines(name: string, code: string): void {
-        const lines = code.split('\n');
+        const lines = code.split('\n')
+            .filter((line) => this.mayBeUniqueLine(line));
         if (lines.length === 0) {
             return;
         }
-        const checkForDuplicates = (line: string) => {
-            const trimmed = line.trim();
-            if (trimmed.length === 1 && trimmed === ')' || trimmed === '(') {
-                return false;
-            }
-            return true;
-        };
-        const duplicateLines = new Array<string>();
-        const uniqueLines = new Set<string>();
-        let validatedLineCount = 0;
-        for (const line of lines) {
-            if (!checkForDuplicates(line)) {
-                continue;
-            }
-            uniqueLines.add(line);
-            if (uniqueLines.size !== validatedLineCount + 1) {
-                duplicateLines.push(line);
-            }
-            validatedLineCount++;
-        }
+        const duplicateLines = lines.filter((e, i, a) => a.indexOf(e) !== i);
         if (duplicateLines.length !== 0) {
             throw Error(`Duplicates detected in script "${name}":\n ${duplicateLines.join('\n')}`);
         }
     }
 
-    constructor(public name: string, public code: string, public documentationUrls: ReadonlyArray<string>) {
+    private static mayBeUniqueLine(codeLine: string): boolean {
+        const trimmed = codeLine.trim();
+        if (trimmed === ')' || trimmed === '(') { // "(" and ")" are used often in batch code
+            return false;
+        }
+        return true;
+    }
+
+    constructor(
+        public name: string,
+        public code: string,
+        public documentationUrls: ReadonlyArray<string>,
+        public isRecommended: boolean) {
         super(name);
         if (code == null || code.length === 0) {
             throw new Error('Code is empty or null');

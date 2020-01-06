@@ -31,7 +31,7 @@ export default class CardList extends StatefulVue {
 
   public async mounted() {
     const state = await this.getCurrentStateAsync();
-    this.setCategories(state.categories);
+    this.setCategories(state.app.categories);
   }
 
   public onSelected(categoryId: number, isExpanded: boolean) {
@@ -57,6 +57,6 @@ export default class CardList extends StatefulVue {
   width: 100%;
   text-align: center;
   font-size: 3.5em;
-  font: $default-font;
+  font: $normal-font;
 }
 </style>
