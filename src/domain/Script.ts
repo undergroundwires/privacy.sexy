@@ -9,29 +9,18 @@ export class Script extends BaseEntity<string> implements IScript {
     }
 
     private static ensureCodeHasUniqueLines(name: string, code: string): void {
-        const lines = code.split('\n');
+        const lines = code.split('\n')
+            .map((line) => this.mayBeUniqueLine(line));
         if (lines.length === 0) {
             return;
         }
-        const duplicateLines = new Array<string>();
-        const uniqueLines = new Set<string>();
-        let validatedLineCount = 0;
-        for (const line of lines) {
-            if (!this.isUniqueLine(line)) {
-                continue;
-            }
-            uniqueLines.add(line);
-            if (uniqueLines.size !== validatedLineCount + 1) {
-                duplicateLines.push(line);
-            }
-            validatedLineCount++;
-        }
+        const duplicateLines = lines.filter((e, i, a) => a.indexOf(e) !== i);
         if (duplicateLines.length !== 0) {
             throw Error(`Duplicates detected in script "${name}":\n ${duplicateLines.join('\n')}`);
         }
     }
 
-    private static isUniqueLine(codeLine: string): boolean {
+    private static mayBeUniqueLine(codeLine: string): boolean {
         const trimmed = codeLine.trim();
         if (trimmed === ')' || trimmed === '(') { // "(" and ")" are used often in batch code
             return false;
