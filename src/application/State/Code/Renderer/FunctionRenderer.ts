@@ -11,15 +11,15 @@ export class FunctionRenderer extends CodeRenderer {
     }
 
     private renderFunctionStartComment(functionName: string): string {
-        if (functionName.length >= this.totalFunctionSeparatorChars) {
-            return this.renderComment(functionName);
-        }
-        return this.renderComment(this.trailingHyphens) + '\n' +
-            this.renderFunctionName(functionName) + '\n' +
-            this.renderComment(this.trailingHyphens);
+        return  this.renderComment(this.trailingHyphens) + '\n' +
+                this.renderFunctionName(functionName) + '\n' +
+                this.renderComment(this.trailingHyphens);
     }
 
     private renderFunctionName(functionName: string) {
+        if (functionName.length >= this.totalFunctionSeparatorChars) {
+            return this.renderComment(functionName);
+        }
         const firstHyphens = '-'.repeat(Math.floor((this.totalFunctionSeparatorChars - functionName.length) / 2));
         const secondHyphens = '-'.repeat(Math.ceil((this.totalFunctionSeparatorChars - functionName.length) / 2));
         return `${this.renderComment()}${firstHyphens}${functionName}${secondHyphens}`;
