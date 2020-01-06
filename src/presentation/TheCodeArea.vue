@@ -17,7 +17,7 @@ export default class TheCodeArea extends StatefulVue {
   @Prop() private theme!: string;
 
   public async mounted() {
-    this.editor = this.initializeEditor();
+    this.editor = initializeEditor(this.theme, this.editorId);
     const state = await this.getCurrentStateAsync();
     this.updateCode(state.code.current);
     state.code.changed.on((code) => this.updateCode(code));
@@ -26,20 +26,19 @@ export default class TheCodeArea extends StatefulVue {
   private updateCode(code: string) {
     this.editor.setValue(code || 'Something is bad 😢', 1);
   }
-
-  private initializeEditor(): ace.Ace.Editor {
-    const lang = 'batchfile';
-    const theme = this.theme || 'github';
-    const editor = ace.edit(this.editorId);
-    editor.getSession().setMode(`ace/mode/${lang}`);
-    editor.setTheme(`ace/theme/${theme}`);
-    editor.setReadOnly(true);
-    editor.setAutoScrollEditorIntoView(true);
-    // this.editor.getSession().setUseWrapMode(true);
-    // this.editor.setOption("indentedSoftWrap", false);
-    return editor;
-  }
 }
+
+function initializeEditor(theme: string, editorId: string): ace.Ace.Editor {
+  const lang = 'batchfile';
+  theme = theme || 'github';
+  const editor = ace.edit(editorId);
+  editor.getSession().setMode(`ace/mode/${lang}`);
+  editor.setTheme(`ace/theme/${theme}`);
+  editor.setReadOnly(true);
+  editor.setAutoScrollEditorIntoView(true);
+  return editor;
+}
+
 </script>
 
 <style scoped lang="scss">
