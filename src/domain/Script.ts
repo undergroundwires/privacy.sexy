@@ -10,7 +10,7 @@ export class Script extends BaseEntity<string> implements IScript {
 
     private static ensureCodeHasUniqueLines(name: string, code: string): void {
         const lines = code.split('\n')
-            .map((line) => this.mayBeUniqueLine(line));
+            .filter((line) => this.mayBeUniqueLine(line));
         if (lines.length === 0) {
             return;
         }
