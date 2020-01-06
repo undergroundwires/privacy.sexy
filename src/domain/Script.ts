@@ -13,18 +13,11 @@ export class Script extends BaseEntity<string> implements IScript {
         if (lines.length === 0) {
             return;
         }
-        const checkForDuplicates = (line: string) => {
-            const trimmed = line.trim();
-            if (trimmed.length === 1 && trimmed === ')' || trimmed === '(') {
-                return false;
-            }
-            return true;
-        };
         const duplicateLines = new Array<string>();
         const uniqueLines = new Set<string>();
         let validatedLineCount = 0;
         for (const line of lines) {
-            if (!checkForDuplicates(line)) {
+            if (!this.isUniqueLine(line)) {
                 continue;
             }
             uniqueLines.add(line);
@@ -36,6 +29,14 @@ export class Script extends BaseEntity<string> implements IScript {
         if (duplicateLines.length !== 0) {
             throw Error(`Duplicates detected in script "${name}":\n ${duplicateLines.join('\n')}`);
         }
+    }
+
+    private static isUniqueLine(codeLine: string): boolean {
+        const trimmed = codeLine.trim();
+        if (trimmed === ')' || trimmed === '(') { // "(" and ")" are used often in batch code
+            return false;
+        }
+        return true;
     }
 
     constructor(public name: string, public code: string, public documentationUrls: ReadonlyArray<string>) {
