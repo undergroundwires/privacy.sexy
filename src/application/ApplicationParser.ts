@@ -74,29 +74,22 @@ export class ApplicationParser {
     }
 
     private static parseDocUrls(documentable: YamlDocumentable): ReadonlyArray<string> {
-        if (!documentable.docs) {
+        const docs = documentable.docs;
+        if (!docs) {
             return [];
         }
-        const docs = documentable.docs;
         const result = new Array<string>();
-        const addDoc = (doc: string) => {
-            if (!doc) {
-                throw new Error('Documentiton url is null or empty');
-            }
-            if (doc.includes('\n')) {
-                throw new Error('Documentation url cannot be multi-lined.');
-            }
-            result.push(doc);
-        };
         if (docs instanceof Array) {
             for (const doc of docs) {
                 if (typeof doc !== 'string') {
                     throw new Error('Docs field (documentation url) must be an array of strings');
                 }
-                addDoc(doc as string);
+                this.validateUrl(doc);
+                result.push(doc);
             }
         } else if (typeof docs === 'string') {
-            addDoc(docs as string);
+            this.validateUrl(docs);
+            result.push(docs);
         } else {
             throw new Error('Docs field (documentation url) must a string or array of strings');
         }
@@ -109,5 +102,19 @@ export class ApplicationParser {
 
     private static isCategory(categoryOrScript: any): boolean {
         return categoryOrScript.category && categoryOrScript.category.length > 0;
+    }
+
+    private static validateUrl(docUrl: string): void {
+        if (!docUrl) {
+            throw new Error('Documentation url is null or empty');
+        }
+        if (docUrl.includes('\n')) {
+            throw new Error('Documentation url cannot be multi-lined.');
+        }
+        const res = docUrl.match(
+            /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+        if (res == null) {
+            throw new Error(`Invalid documentation url: ${docUrl}`);
+        }
     }
 }
