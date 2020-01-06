@@ -21,7 +21,7 @@ export default class TheHeader extends StatefulVue {
   public async mounted() {
     const state = await this.getCurrentStateAsync();
     this.title = state.app.name;
-    this.subtitle = `Privacy generator tool for Windows v${state.app.version}`;
+    this.subtitle = 'Enforce privacy & security on Windows';
   }
 }
 </script>
