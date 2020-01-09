@@ -4,11 +4,7 @@
           <TheHeader class="row"
                      github-url="https://github.com/undergroundwires/privacy.sexy" />
           <!-- <TheSearchBar> </TheSearchBar> -->
-          <!-- <div style="display: flex; justify-content: space-between;"> -->
-          <!-- <TheGrouper></TheGrouper> -->
-          <TheSelector class="row" />
-          <!-- </div> -->
-          <CardList />
+          <TheScripts class="row"/>
           <TheCodeArea class="row" theme="xcode" />
           <TheCodeButtons class="row" />
           <TheFooter />
@@ -24,9 +20,7 @@ import TheFooter from './presentation/TheFooter.vue';
 import TheCodeArea from './presentation/TheCodeArea.vue';
 import TheCodeButtons from './presentation/TheCodeButtons.vue';
 import TheSearchBar from './presentation/TheSearchBar.vue';
-import TheSelector from './presentation/Scripts/Selector/TheSelector.vue';
-import TheGrouper from './presentation/Scripts/TheGrouper.vue';
-import CardList from './presentation/Scripts/Cards/CardList.vue';
+import TheScripts from './presentation/Scripts/TheScripts.vue';
 
 @Component({
   components: {
@@ -34,9 +28,7 @@ import CardList from './presentation/Scripts/Cards/CardList.vue';
     TheCodeArea,
     TheCodeButtons,
     TheSearchBar,
-    TheGrouper,
-    CardList,
-    TheSelector,
+    TheScripts,
     TheFooter,
   },
 })

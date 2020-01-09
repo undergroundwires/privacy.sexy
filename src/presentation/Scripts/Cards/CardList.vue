@@ -50,9 +50,6 @@ export default class CardList extends StatefulVue {
   display: flex;
   flex-flow: row wrap;
   font-family: $main-font;
-  .card {
-
-  }
 }
 .error {
   width: 100%;

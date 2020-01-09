@@ -12,19 +12,19 @@
       </div>
       <div class="card__expander" v-on:click.stop>
           <font-awesome-icon :icon="['fas', 'times']"  class="close-button" v-on:click="onSelected(false)"/>
-          <CardListItemScripts :categoryId="categoryId"></CardListItemScripts>
+          <ScriptsTree :categoryId="categoryId"></ScriptsTree>
     </div>
     </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch, Emit } from 'vue-property-decorator';
-import CardListItemScripts from './CardListItemScripts.vue';
+import ScriptsTree from '@/presentation/Scripts/ScriptsTree/ScriptsTree.vue';
 import { StatefulVue } from '@/presentation/StatefulVue';
 
 @Component({
   components: {
-    CardListItemScripts,
+    ScriptsTree,
   },
 })
 export default class CardListItem extends StatefulVue {
@@ -123,10 +123,6 @@ export default class CardListItem extends StatefulVue {
     display: flex;
     justify-content: center;
     align-items: center;
-    
-    text-transform: uppercase;
-    color: $light-gray;
-    font-size: 1.5em;
     
     .close-button {
       font-size: 0.75em;
