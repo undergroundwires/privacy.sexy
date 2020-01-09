@@ -4,6 +4,13 @@
 
 ## [Unreleased]
 
+## [0.3.0] - 2020-01-09
+
+- Added support for grouping
+- Added some meta tags
+- Added "Disable NVIDIA telemetry" script
+- Added legacy browser compatibility for fonts & changed main font
+
 ## [0.2.0] - 2020-01-06
 
 - Fixed typo in generated code.
@@ -20,6 +27,7 @@
 
 ## All releases
 
-- [Unreleased] : https://github.com/undergroundwires/privacy.sexy/compare/v0.2.0...HEAD
+- [Unreleased] : https://github.com/undergroundwires/privacy.sexy/compare/v0.3.0...HEAD
+- [v0.3.0] : https://github.com/undergroundwires/privacy.sexy/compare/v0.2.0...v0.3.0
 - [v0.2.0] : https://github.com/undergroundwires/privacy.sexy/compare/v0.1.0...v0.2.0
 - [v0.1.0] : https://github.com/undergroundwires/privacy.sexy/releases/tag/v0.1.0
