@@ -1,12 +1,12 @@
 <template>
     <span id="container">
         <span v-if="nodes != null && nodes.length > 0">
-            <SelectableTree
-              :nodes="nodes"
-              :selectedNodeIds="selectedNodeIds"
-              :filterPredicate="filterPredicate"
-              :filterText="filterText"
-              v-on:nodeSelected="checkNodeAsync($event)">
+            <SelectableTree 
+                :nodes="nodes"
+                :selectedNodeIds="selectedNodeIds"
+                :filterPredicate="filterPredicate"
+                :filterText="filterText"
+                v-on:nodeSelected="checkNodeAsync($event)">
             </SelectableTree>
         </span>
         <span v-else>Nooo 😢</span>
@@ -19,9 +19,11 @@
   import { Category } from '@/domain/Category';
   import { IRepository } from '@/infrastructure/Repository/IRepository';
   import { IScript } from '@/domain/IScript';
+  import { ICategory } from '@/domain/ICategory';
+
   import { IApplicationState, IUserSelection } from '@/application/State/IApplicationState';
-  import { IFilterMatches } from '@/application/State/Filter/IFilterMatches';
-  import { parseAllCategories, parseSingleCategory } from './ScriptNodeParser';
+  import { IFilterResult } from '@/application/State/Filter/IFilterResult';
+  import { parseAllCategories, parseSingleCategory, getScriptNodeId, getCategoryNodeId } from './ScriptNodeParser';
   import SelectableTree, { FilterPredicate } from './SelectableTree/SelectableTree.vue';
   import { INode } from './SelectableTree/INode';
 
@@ -37,11 +39,11 @@
     public selectedNodeIds?: string[] = null;
     public filterText?: string = null;
 
-    private matches?: IFilterMatches;
+    private filtered?: IFilterResult;
 
     public async mounted() {
-      // React to state changes
       const state = await this.getCurrentStateAsync();
+      // React to state changes
       state.selection.changed.on(this.handleSelectionChanged);
       state.filter.filterRemoved.on(this.handleFilterRemoved);
       state.filter.filtered.on(this.handleFiltered);
@@ -72,7 +74,10 @@
     }
 
     public filterPredicate(node: INode): boolean {
-      return this.matches.scriptMatches.some((script: IScript) => script.id === node.id);
+      return this.filtered.scriptMatches.some(
+        (script: IScript) => node.id === getScriptNodeId(script))
+        || this.filtered.categoryMatches.some(
+          (category: ICategory) => node.id === getCategoryNodeId(category));
     }
 
     private handleSelectionChanged(selectedScripts: ReadonlyArray<IScript>) {
@@ -83,9 +88,9 @@
       this.filterText = '';
     }
 
-    private handleFiltered(matches: IFilterMatches) {
-      this.filterText = matches.query;
-      this.matches = matches;
+    private handleFiltered(result: IFilterResult) {
+      this.filterText = result.query;
+      this.filtered = result;
     }
   }
 

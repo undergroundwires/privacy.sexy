@@ -2,7 +2,7 @@
     <div id="container">
       <h1 class="child title" >{{ title }}</h1>
       <h2 class="child subtitle">{{ subtitle }}</h2>
-      <a :href="githubUrl" target="_blank" class="child github" >
+      <a :href="repositoryUrl" target="_blank" class="child github" >
           <font-awesome-icon :icon="['fab', 'github']" size="3x"  />
       </a>
     </div>
@@ -14,14 +14,15 @@ import { StatefulVue } from './StatefulVue';
 
 @Component
 export default class TheHeader extends StatefulVue {
-  private title: string = '';
-  private subtitle: string = '';
-  @Prop() private githubUrl!: string;
+  public title = '';
+  public subtitle = '';
+  public repositoryUrl = '';
 
   public async mounted() {
     const state = await this.getCurrentStateAsync();
     this.title = state.app.name;
     this.subtitle = 'Enforce privacy & security on Windows';
+    this.repositoryUrl = state.app.repositoryUrl;
   }
 }
 </script>

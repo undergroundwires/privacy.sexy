@@ -1,5 +1,6 @@
 name: privacy.sexy
 version: 0.3.0
+repositoryUrl: https://github.com/undergroundwires/privacy.sexy
 actions:
     -
         category: Privacy cleanup

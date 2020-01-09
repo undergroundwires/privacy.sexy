@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+- Added search
+- Some styling improvements
+
 ## [0.3.0] - 2020-01-09
 
 - Added support for grouping

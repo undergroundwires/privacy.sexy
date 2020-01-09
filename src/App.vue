@@ -1,9 +1,8 @@
 <template>
   <div id="app">
       <div class="wrapper">
-          <TheHeader class="row"
-                     github-url="https://github.com/undergroundwires/privacy.sexy" />
-          <!-- <TheSearchBar> </TheSearchBar> -->
+          <TheHeader class="row" />
+          <TheSearchBar class="row" />
           <TheScripts class="row"/>
           <TheCodeArea class="row" theme="xcode" />
           <TheCodeButtons class="row" />
@@ -15,20 +14,20 @@
 <script lang="ts">
 import { Component, Vue, Prop  } from 'vue-property-decorator';
 import { ApplicationState, IApplicationState } from '@/application/State/ApplicationState';
-import TheHeader from './presentation/TheHeader.vue';
-import TheFooter from './presentation/TheFooter.vue';
-import TheCodeArea from './presentation/TheCodeArea.vue';
-import TheCodeButtons from './presentation/TheCodeButtons.vue';
-import TheSearchBar from './presentation/TheSearchBar.vue';
-import TheScripts from './presentation/Scripts/TheScripts.vue';
+import TheHeader from '@/presentation/TheHeader.vue';
+import TheFooter from '@/presentation/TheFooter.vue';
+import TheCodeArea from '@/presentation/TheCodeArea.vue';
+import TheCodeButtons from '@/presentation/TheCodeButtons.vue';
+import TheSearchBar from '@/presentation/TheSearchBar.vue';
+import TheScripts from '@/presentation/Scripts/TheScripts.vue';
 
 @Component({
   components: {
     TheHeader,
     TheCodeArea,
     TheCodeButtons,
-    TheSearchBar,
     TheScripts,
+    TheSearchBar,
     TheFooter,
   },
 })

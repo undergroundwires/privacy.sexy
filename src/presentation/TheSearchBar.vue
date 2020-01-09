@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="search">
-            <input type="text" class="searchTerm" placeholder="Search for configurations"
+            <input type="text" class="searchTerm" placeholder="Search"
               @input="updateFilterAsync($event.target.value)" >
             <div class="iconWrapper">
                 <font-awesome-icon :icon="['fas', 'search']" />
@@ -16,8 +16,6 @@ import { StatefulVue } from './StatefulVue';
 
 @Component
 export default class TheSearchBar extends StatefulVue {
-
-
   public async updateFilterAsync(filter: |string) {
     const state = await this.getCurrentStateAsync();
     if (!filter) {
@@ -35,9 +33,6 @@ export default class TheSearchBar extends StatefulVue {
 @import "@/presentation/styles/fonts.scss";
 
 .container {
-    padding-top: 30px;
-    padding-right: 30%;
-    padding-left: 30%;
     font: $normal-font;
 }
 
@@ -49,6 +44,7 @@ export default class TheSearchBar extends StatefulVue {
 
 .searchTerm {
   width: 100%;
+  min-width: 60px;
   border: 1.5px solid $gray;
   border-right: none;
   height: 36px;

@@ -20,6 +20,13 @@ export function parseSingleCategory(categoryId: number, state: IApplicationState
   return tree;
 }
 
+export function getScriptNodeId(script: IScript): string {
+  return script.id;
+}
+export function getCategoryNodeId(category: ICategory): string {
+  return `${category.id}`;
+}
+
 function parseCategoryRecursively(
   parentCategory: ICategory,
   selection: IUserSelection): INode[] {
@@ -44,7 +51,7 @@ function parseCategoryRecursively(
 function convertCategoryToNode(
   category: ICategory, children: readonly INode[]): INode {
   return {
-    id: `${category.id}`,
+    id: getCategoryNodeId(category),
     text: category.name,
     selected: false,
     children,
@@ -54,7 +61,7 @@ function convertCategoryToNode(
 
 function convertScriptToNode(script: IScript, selection: IUserSelection): INode {
   return {
-    id: `${script.id}`,
+    id: getScriptNodeId(script),
     text: script.name,
     selected: selection.isSelected(script),
     children: undefined,

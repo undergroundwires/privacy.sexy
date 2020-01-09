@@ -4,12 +4,12 @@
         <span class="part">
             <span 
                 class="part"
-                v-bind:class="{ 'disabled': isGrouped, 'enabled': !isGrouped}"
-                @click="!isGrouped ? toggleGrouping() : undefined">Cards</span>
+                v-bind:class="{ 'disabled': cardsSelected, 'enabled': !cardsSelected}"
+                @click="groupByCard()">Cards</span>
             <span class="part">|</span>
             <span class="part"
-                v-bind:class="{ 'disabled': !isGrouped, 'enabled': isGrouped}"
-                @click="isGrouped ? toggleGrouping() : undefined">None</span>
+                v-bind:class="{ 'disabled': noneSelected, 'enabled': !noneSelected}"
+                @click="groupByNone()">None</span>
             </span>
     </div>
 </template>
@@ -22,12 +22,30 @@ import { Grouping } from './Grouping';
 
 @Component
 export default class TheGrouper extends StatefulVue {
-    public currentGrouping: Grouping;
-    public isGrouped = true;
+    public cardsSelected = false;
+    public noneSelected = false;
 
-    public toggleGrouping() {
-        this.currentGrouping = this.currentGrouping === Grouping.None ? Grouping.Cards : Grouping.None;
-        this.isGrouped = this.currentGrouping === Grouping.Cards;
+    private currentGrouping: Grouping;
+
+    public mounted() {
+        this.changeGrouping(Grouping.Cards);
+    }
+
+    public groupByCard() {
+        this.changeGrouping(Grouping.Cards);
+    }
+
+    public groupByNone() {
+        this.changeGrouping(Grouping.None);
+    }
+
+    private changeGrouping(newGrouping: Grouping) {
+        if (this.currentGrouping === newGrouping) {
+            return;
+        }
+        this.currentGrouping = newGrouping;
+        this.cardsSelected = newGrouping === Grouping.Cards;
+        this.noneSelected = newGrouping === Grouping.None;
         this.$emit('groupingChanged', this.currentGrouping);
     }
 }
