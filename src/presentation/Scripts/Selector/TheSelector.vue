@@ -1,26 +1,28 @@
 <template>
     <div class="container">
-        <div class="part">Select:</div>
+        <div class="part select">Select:</div>
         <div class="part">
-            <SelectableOption
-                label="None"
-                :enabled="isNoneSelected"
-                @click="selectNoneAsync()">
-            </SelectableOption>
-        </div>
-        <div class="part"> | </div>
-        <div class="part">
-            <SelectableOption
-                label="Recommended"
-                :enabled="isRecommendedSelected"
-                @click="selectRecommendedAsync()" />
-        </div>
-        <div class="part"> | </div>
-       <div class="part">
-            <SelectableOption
-            label="All"
-            :enabled="isAllSelected"
-            @click="selectAllAsync()" />
+            <div class="part">
+                <SelectableOption
+                    label="None"
+                    :enabled="isNoneSelected"
+                    @click="selectNoneAsync()">
+                </SelectableOption>
+            </div>
+            <div class="part"> | </div>
+            <div class="part">
+                <SelectableOption
+                    label="Recommended"
+                    :enabled="isRecommendedSelected"
+                    @click="selectRecommendedAsync()" />
+                </div>
+            <div class="part"> | </div>
+            <div class="part">
+                    <SelectableOption
+                    label="All"
+                    :enabled="isAllSelected"
+                    @click="selectAllAsync()" />
+            </div>
         </div>
     </div>
 </template>
@@ -94,8 +96,6 @@ export default class TheSelector extends StatefulVue {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    align-items:flex-start;
-
     .part {
         display: flex;
         margin-right:5px;

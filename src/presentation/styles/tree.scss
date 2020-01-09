@@ -1,8 +1,15 @@
 // Overrides base styling for LiquorTree
 @import "@/presentation/styles/colors.scss";
 
+.tree {
+    background-color: $slate;
+}
+
 .tree-node > .tree-content > .tree-anchor > span {
     color: $white !important;
+    text-transform: uppercase;
+    color: $light-gray;
+    font-size: 1.5em;
 }
 
 .tree-node {

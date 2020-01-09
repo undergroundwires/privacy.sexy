@@ -1,5 +1,5 @@
 <template>
-    <span>
+    <span id="container">
         <span v-if="nodes != null && nodes.length > 0">
             <SelectableTree
               :nodes="nodes"
@@ -21,17 +21,17 @@
   import { IScript } from '@/domain/IScript';
   import { IApplicationState, IUserSelection } from '@/application/State/IApplicationState';
   import { IFilterMatches } from '@/application/State/Filter/IFilterMatches';
-  import { ScriptNodeParser } from './ScriptNodeParser';
-  import SelectableTree, { FilterPredicate } from './../SelectableTree/SelectableTree.vue';
-  import { INode } from './../SelectableTree/INode';
+  import { parseAllCategories, parseSingleCategory } from './ScriptNodeParser';
+  import SelectableTree, { FilterPredicate } from './SelectableTree/SelectableTree.vue';
+  import { INode } from './SelectableTree/INode';
 
   @Component({
     components: {
       SelectableTree,
     },
   })
-  export default class CardListItemScripts extends StatefulVue {
-    @Prop() public categoryId!: number;
+  export default class ScriptsTree extends StatefulVue {
+    @Prop() public categoryId?: number;
 
     public nodes?: INode[] = null;
     public selectedNodeIds?: string[] = null;
@@ -42,15 +42,17 @@
     public async mounted() {
       // React to state changes
       const state = await this.getCurrentStateAsync();
-      this.reactToChanges(state);
+      state.selection.changed.on(this.handleSelectionChanged);
+      state.filter.filterRemoved.on(this.handleFilterRemoved);
+      state.filter.filtered.on(this.handleFiltered);
       // Update initial state
-      await this.updateNodesAsync(this.categoryId);
+      await this.initializeNodesAsync(this.categoryId);
     }
 
     public async checkNodeAsync(node: INode) {
         if (node.children != null && node.children.length > 0) {
             return; // only interested in script nodes
-          }
+        }
         const state = await this.getCurrentStateAsync();
         if (node.selected) {
             state.selection.addSelectedScript(node.id);
@@ -60,40 +62,43 @@
     }
 
     @Watch('categoryId')
-    public async updateNodesAsync(categoryId: |number) {
-        this.nodes = categoryId ?
-          await ScriptNodeParser.parseNodes(categoryId, await this.getCurrentStateAsync())
-            : undefined;
+    public async initializeNodesAsync(categoryId?: number) {
+      const state = await this.getCurrentStateAsync();
+      if (categoryId) {
+        this.nodes = parseSingleCategory(categoryId, state);
+      } else {
+        this.nodes = parseAllCategories(state);
+      }
     }
 
     public filterPredicate(node: INode): boolean {
       return this.matches.scriptMatches.some((script: IScript) => script.id === node.id);
     }
 
-    private reactToChanges(state: IApplicationState) {
-      // Update selection data
-      const updateNodeSelection = (node: INode, selectedScripts: ReadonlyArray<IScript>): INode => {
-          return {
-            id: node.id,
-            text: node.text,
-            selected: selectedScripts.some((script) => script.id === node.id),
-            children: node.children ? node.children.map((child) => updateNodeSelection(child, selectedScripts)) : [],
-            documentationUrls: node.documentationUrls,
-          };
-      };
-      state.selection.changed.on(
-        (selectedScripts: ReadonlyArray<IScript>) =>
-          this.nodes = this.nodes.map((node: INode) => updateNodeSelection(node, selectedScripts)),
-          );
-      // Update search / filter data
-      state.filter.filterRemoved.on(() =>
-        this.filterText = '');
-      state.filter.filtered.on((matches: IFilterMatches) => {
-        this.filterText = matches.query;
-        this.matches = matches;
-      });
+    private handleSelectionChanged(selectedScripts: ReadonlyArray<IScript>) {
+      this.nodes = this.nodes.map((node: INode) => updateNodeSelection(node, selectedScripts));
+    }
+
+    private handleFilterRemoved() {
+      this.filterText = '';
+    }
+
+    private handleFiltered(matches: IFilterMatches) {
+      this.filterText = matches.query;
+      this.matches = matches;
     }
   }
+
+  function updateNodeSelection(node: INode, selectedScripts: ReadonlyArray<IScript>): INode {
+    return {
+      id: node.id,
+      text: node.text,
+      selected: selectedScripts.some((script) => script.id === node.id),
+      children: node.children ? node.children.map((child) => updateNodeSelection(child, selectedScripts)) : [],
+      documentationUrls: node.documentationUrls,
+      };
+  }
+
 </script>
 
 <style scoped lang="scss">

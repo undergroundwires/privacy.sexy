@@ -1,6 +1,5 @@
 import { Category } from '../../domain/Category';
 import { Application } from '../../domain/Application';
-import { Script } from '@/domain/Script';
 import applicationFile from 'js-yaml-loader!./../application.yaml';
 import { parseCategory } from './CategoryParser';
 

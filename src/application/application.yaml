@@ -1,5 +1,5 @@
 name: privacy.sexy
-version: 0.2.0
+version: 0.3.0
 actions:
     -
         category: Privacy cleanup
@@ -694,6 +694,33 @@ actions:
                 name: Disable NetCore Cli telemetry
                 recommend: true
                 code: setx DOTNET_CLI_TELEMETRY_OPTOUT 1
+            -
+                name: Disable NVIDIA telemetry
+                recommend: true
+                code: |-
+                    :: Uninstall telemetry tasks
+                    rundll32 "%PROGRAMFILES%\NVIDIA Corporation\Installer2\InstallerCore\NVI2.DLL",UninstallPackage NvTelemetryContainer
+                    rundll32 "%PROGRAMFILES%\NVIDIA Corporation\Installer2\InstallerCore\NVI2.DLL",UninstallPackage NvTelemetry
+                    :: Delete residual  files
+                    cd %systemdrive%\System32\DriverStore\FileRepository\
+                    del /s NvTelemetry*.dll
+                    rmdir /s /q "%ProgramFiles(x86)%\NVIDIA Corporation\NvTelemetry" 2>nul
+                    rmdir /s /q "%ProgramFiles%\NVIDIA Corporation\NvTelemetry" 2>nul
+                    :: Opt out
+                    reg add "HKLM\SOFTWARE\NVIDIA Corporation\NvControlPanel2\Client" /v "OptInOrOutPreference" /t REG_DWORD /d 0 /f 
+                    reg add "HKLM\SOFTWARE\NVIDIA Corporation\Global\FTS" /v "EnableRID44231" /t REG_DWORD /d 0 /f 
+                    reg add "HKLM\SOFTWARE\NVIDIA Corporation\Global\FTS" /v "EnableRID64640" /t REG_DWORD /d 0 /f 
+                    reg add "HKLM\SOFTWARE\NVIDIA Corporation\Global\FTS" /v "EnableRID66610" /t REG_DWORD /d 0 /f 
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\Global\Startup" /v "SendTelemetryData" /t REG_DWORD /d 0 /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\services\NvTelemetryContainer" /v "Start" /t REG_DWORD /d 4 /f
+                    :: Disable telemetry services
+                    schtasks /change /TN NvTmMon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8} /disable
+                    schtasks /change /TN NvTmRep_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8} /disable
+                    schtasks /change /TN NvTmRepOnLogon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8} /disable
+                docs:
+                    - https://github.com/CHEF-KOCH/nVidia-modded-Inf
+                    - https://github.com/NateShoffner/Disable-Nvidia-Telemetry
+                    - https://forum.palemoon.org/viewtopic.php?f=4&t=15686&sid=3d7982d3b9e89c713547f1a581ea44a2&start=20
             -
                 name: Disable Visual Studio Code telemetry
                 recommend: true

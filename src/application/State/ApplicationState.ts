@@ -5,7 +5,6 @@ import { UserSelection } from './Selection/UserSelection';
 import { IUserSelection } from './Selection/IUserSelection';
 import { AsyncLazy } from '../../infrastructure/Threading/AsyncLazy';
 import { Signal } from '../../infrastructure/Events/Signal';
-import { ICategory } from '../../domain/ICategory';
 import { parseApplication } from '../Parser/ApplicationParser';
 import { IApplicationState } from './IApplicationState';
 import { Script } from '../../domain/Script';
