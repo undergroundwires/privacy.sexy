@@ -2,7 +2,6 @@ import { IApplication } from './../../domain/IApplication';
 import { IUserFilter } from './Filter/IUserFilter';
 import { IUserSelection } from './Selection/IUserSelection';
 import { ISignal } from '@/infrastructure/Events/ISignal';
-import { ICategory, IScript } from '@/domain/ICategory';
 import { IApplicationCode } from './Code/IApplicationCode';
 export { IUserSelection, IApplicationCode, IUserFilter };
 
