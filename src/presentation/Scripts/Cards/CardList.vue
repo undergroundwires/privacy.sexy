@@ -49,6 +49,7 @@ export default class CardList extends StatefulVue {
 .cards {
   display: flex;
   flex-flow: row wrap;
+  font-family: $main-font;
   .card {
 
   }
@@ -57,6 +58,6 @@ export default class CardList extends StatefulVue {
   width: 100%;
   text-align: center;
   font-size: 3.5em;
-  font: $normal-font;
+  font-family: $normal-font;
 }
 </style>

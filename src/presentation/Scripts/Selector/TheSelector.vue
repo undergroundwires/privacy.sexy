@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div class="part">Select:</div>
+        <div class="part select">Select:</div>
         <div class="part">
             <SelectableOption
                 label="None"
@@ -95,7 +95,6 @@ export default class TheSelector extends StatefulVue {
     flex-direction: row;
     flex-wrap: wrap;
     align-items:flex-start;
-
     .part {
         display: flex;
         margin-right:5px;

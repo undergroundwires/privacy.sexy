@@ -55,7 +55,7 @@ export default class App extends Vue {
 
 body {
   background: $light-gray;
-  font-family: $fancy-font;
+  font-family: $main-font;
   color: $slate;
 }
 

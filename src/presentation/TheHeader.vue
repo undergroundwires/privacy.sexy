@@ -43,8 +43,8 @@ export default class TheHeader extends StatefulVue {
     margin: 0;
     color: $black;
     text-transform: uppercase;
+    font-family: $main-font;
     font-size: 2.5em;
-    font-weight: 500;
     line-height: 1.1;
   }
   .subtitle {
