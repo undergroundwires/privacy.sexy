@@ -6,6 +6,7 @@
 
 - Added search
 - Some styling improvements
+- Better organization of scripts + more scripts
 
 ## [0.3.0] - 2020-01-09
 
