@@ -7,7 +7,7 @@
             <a :href="url"
                 :alt="url"
                 target="_blank" class="docs"
-                  v-tooltip.top-center="url"
+                v-tooltip.top-center="url"
                 v-on:click.stop>
                 <font-awesome-icon :icon="['fas', 'info-circle']" />
                 </a>

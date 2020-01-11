@@ -1,41 +1,46 @@
-import { IApplicationState, IUserSelection } from '@/application/State/IApplicationState';
+import { IApplication } from './../../../domain/IApplication';
 import { ICategory, IScript } from '@/domain/ICategory';
 import { INode } from './SelectableTree/INode';
 
-export function parseAllCategories(state: IApplicationState): INode[] | undefined {
+export function parseAllCategories(app: IApplication): INode[] | undefined {
   const nodes = new Array<INode>();
-  for (const category of state.app.categories) {
-    const children = parseCategoryRecursively(category, state.selection);
+  for (const category of app.categories) {
+    const children = parseCategoryRecursively(category);
     nodes.push(convertCategoryToNode(category, children));
   }
   return nodes;
 }
 
-export function parseSingleCategory(categoryId: number, state: IApplicationState): INode[] | undefined {
-  const category = state.app.findCategory(categoryId);
+export function parseSingleCategory(categoryId: number, app: IApplication): INode[] | undefined {
+  const category = app.findCategory(categoryId);
   if (!category) {
     throw new Error(`Category with id ${categoryId} does not exist`);
   }
-  const tree = parseCategoryRecursively(category, state.selection);
+  const tree = parseCategoryRecursively(category);
   return tree;
 }
 
+export function getScriptNodeId(script: IScript): string {
+  return script.id;
+}
+export function getCategoryNodeId(category: ICategory): string {
+  return `Category${category.id}`;
+}
+
 function parseCategoryRecursively(
-  parentCategory: ICategory,
-  selection: IUserSelection): INode[] {
+  parentCategory: ICategory): INode[] {
   if (!parentCategory) { throw new Error('parentCategory is undefined'); }
-  if (!selection) { throw new Error('selection is undefined'); }
 
   const nodes = new Array<INode>();
   if (parentCategory.subCategories && parentCategory.subCategories.length > 0) {
     for (const subCategory of parentCategory.subCategories) {
-      const subCategoryNodes = parseCategoryRecursively(subCategory, selection);
+      const subCategoryNodes = parseCategoryRecursively(subCategory);
       nodes.push(convertCategoryToNode(subCategory, subCategoryNodes));
     }
   }
   if (parentCategory.scripts && parentCategory.scripts.length > 0) {
     for (const script of parentCategory.scripts) {
-      nodes.push(convertScriptToNode(script, selection));
+      nodes.push(convertScriptToNode(script));
     }
   }
   return nodes;
@@ -44,19 +49,17 @@ function parseCategoryRecursively(
 function convertCategoryToNode(
   category: ICategory, children: readonly INode[]): INode {
   return {
-    id: `${category.id}`,
+    id: getCategoryNodeId(category),
     text: category.name,
-    selected: false,
     children,
     documentationUrls: category.documentationUrls,
   };
 }
 
-function convertScriptToNode(script: IScript, selection: IUserSelection): INode {
+function convertScriptToNode(script: IScript): INode {
   return {
-    id: `${script.id}`,
+    id: getScriptNodeId(script),
     text: script.name,
-    selected: selection.isSelected(script),
     children: undefined,
     documentationUrls: script.documentationUrls,
   };

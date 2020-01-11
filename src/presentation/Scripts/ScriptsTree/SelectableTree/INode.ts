@@ -3,5 +3,4 @@ export interface INode {
     readonly text: string;
     readonly documentationUrls: ReadonlyArray<string>;
     readonly children?: ReadonlyArray<INode>;
-    readonly selected: boolean;
 }

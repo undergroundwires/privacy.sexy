@@ -1,5 +1,6 @@
 name: privacy.sexy
-version: 0.3.0
+version: 0.4.0
+repositoryUrl: https://github.com/undergroundwires/privacy.sexy
 actions:
     -
         category: Privacy cleanup
@@ -256,17 +257,80 @@ actions:
                         recommend: true
                         code: echo "" > %ProgramData%\Microsoft\Diagnosis\ETLTraces\AutoLogger\AutoLogger-Diagtrack-Listener.etl
             -
+                name: Clear credentials from Windows Credential Manager
+                recommend: false
+                code: |-
+                    cmdkey.exe /list > "%TEMP%\List.txt"
+                    findstr.exe Target "%TEMP%\List.txt" > "%TEMP%\tokensonly.txt"
+                    FOR /F "tokens=1,2 delims= " %%G IN (%TEMP%\tokensonly.txt) DO cmdkey.exe /delete:%%H
+                    del "%TEMP%\List.txt" /s /f /q
+                    del "%TEMP%\tokensonly.txt" /s /f /q
+            -
                 name: Empty trash bin
+                recommend: false
                 code: rd /s %systemdrive%\$Recycle.bin
+
     -
         category: Disable OS data collection
         children:
             -
-                name: Disable ad customization with Advertising ID
-                recommend: true
-                code: |-
-                    reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 0 /f 
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" /v "DisabledByGroupPolicy" /t REG_DWORD /d 1 /f 
+                category: Disable Windows telemetry & data collection
+                children:
+                    -
+                        name: Disable Customer Experience Improvement (CEIP/SQM)
+                        recommend: true
+                        code: reg add "HKLM\Software\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d "0" /f
+                    -
+                        name: Disable Application Impact Telemetry (AIT)
+                        recommend: true
+                        code: reg add "HKLM\Software\Policies\Microsoft\Windows\AppCompat" /v "AITEnable" /t REG_DWORD /d "0" /f
+                    -
+                        name: Disable diagnostics telemetry
+                        recommend: true
+                        code: |-
+                            reg add "HKLM\SYSTEM\ControlSet001\Services\DiagTrack" /v "Start" /t REG_DWORD /d 4 /f 
+                            reg add "HKLM\SYSTEM\ControlSet001\Services\dmwappushsvc" /v "Start" /t REG_DWORD /d 4 /f 
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Services\dmwappushservice" /v "Start" /t REG_DWORD /d 4 /f 
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Services\diagnosticshub.standardcollector.service" /v "Start" /t REG_DWORD /d 4 /f
+                            sc config DiagTrack start=disabled
+                            sc config dmwappushservice start=disabled
+                            sc config diagnosticshub.standardcollector.service start=disabled
+                            sc config diagsvc start=disabled REM Disable Diagnostic Execution Service
+                    -
+                        name: Disable Customer Experience Improvement Program
+                        recommend: true
+                        code: |-
+                            schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator" /DISABLE
+                            schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask" /DISABLE
+                            schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" /DISABLE
+                    -
+                        name: Disabling Data Logging Services
+                        recommend: true
+                        code: |-
+                            schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator" /DISABLE
+                            schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask" /DISABLE
+                            schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" /DISABLE
+                    -
+                        name: Disable telemetry in data collection policy
+                        recommend: true
+                        code: |-
+                            reg add "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v "AllowTelemetry" /d 0 /t REG_DWORD /f
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 0 /f
+                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 0 /f
+                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "LimitEnhancedDiagnosticDataWindowsAnalytics" /t REG_DWORD /d 0 /f
+                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 0 /f 
+                    -
+                        name: Disable license telemetry
+                        recommend: true
+                        code: reg add "HKLM\Software\Policies\Microsoft\Windows NT\CurrentVersion\Software Protection Platform" /v "NoGenTicket" /t "REG_DWORD" /d "1" /f
+                    -
+                        name: Disable error reporting
+                        recommend: true
+                        code: |-
+                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /t REG_DWORD /d "1" /f
+                            reg add "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /t "REG_DWORD" /d "1" /f
+                            sc config WerSvc start=disabled
+                            sc config wercplsupport start=disabled
             -
                 name: Disable online device metadata collection
                 recommend: true
@@ -279,20 +343,6 @@ actions:
                 code: |-
                     reg add "HKCU\SOFTWARE\Microsoft\Personalization\Settings" /v "AcceptedPrivacyPolicy" /t REG_DWORD /d 0 /f
                     reg add "HKU\DefaultUser\Software\Microsoft\Personalization\Settings" /v "AcceptedPrivacyPolicy" /d "0" /t REG_DWORD /f
-            -
-                name: Disable windows telemetry & data collection
-                recommend: true
-                code: |-
-                    reg add "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v "AllowTelemetry" /d 0 /t REG_DWORD /f
-                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 0 /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 0 /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "LimitEnhancedDiagnosticDataWindowsAnalytics" /t REG_DWORD /d 0 /f
-                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 0 /f 
-                    reg add "HKLM\SYSTEM\ControlSet001\Services\DiagTrack" /v "Start" /t REG_DWORD /d 4 /f 
-                    reg add "HKLM\SYSTEM\ControlSet001\Services\dmwappushsvc" /v "Start" /t REG_DWORD /d 4 /f 
-                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\dmwappushservice" /v "Start" /t REG_DWORD /d 4 /f 
-                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\diagnosticshub.standardcollector.service" /v "Start" /t REG_DWORD /d 4 /ff
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "AITEnable" /t REG_DWORD /d 0 /f
             -
                 name: Disable Windows feedback
                 recommend: true
@@ -465,6 +515,7 @@ actions:
                             reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CortanaEnabled" /t REG_DWORD /d 0 /f 
                             reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CortanaEnabled" /t REG_DWORD /d 0 /f 
                             reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CanCortanaBeEnabled" /t REG_DWORD /d 0 /f
+                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v BingSearchEnabled /t REG_DWORD /d 0 /f
                             reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCloudSearch" /t REG_DWORD /d 0 /f
                             reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d 0 /f
                             reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortanaAboveLock" /t REG_DWORD /d 0 /f
@@ -491,18 +542,36 @@ actions:
                         name: Disable language detection
                         recommend: true
                         code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v AlwaysUseAutoLangDetection /t REG_DWORD /d 0 /f
-                name: Turn Off Suggested Content in Settings app
-                recommend: true
-                docs: https://www.tenforums.com/tutorials/100541-turn-off-suggested-content-settings-app-windows-10-a.html
-                code: |-
-                    reg add HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager /v "SubscribedContent-338393Enabled" /d "0" /t REG_DWORD /f
-                    reg add HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager /v "SubscribedContent-353694Enabled" /d "0" /t REG_DWORD /f
-                    reg add HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager /v "SubscribedContent-353696Enabled" /d "0" /t REG_DWORD /f
             -
+                category: Disable targeted ads & marketing
+                children: 
+                    -
+                        name: Disable ad customization with Advertising ID
+                        recommend: true
+                        code: |-
+                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 0 /f 
+                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" /v "DisabledByGroupPolicy" /t REG_DWORD /d 1 /f
+                    -
+                        name: Disable targeted tips
+                        recommend: true
+                        code: |-
+                            reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v "DisableSoftLanding" /t REG_DWORD /d 1 /f
+                            reg add "HKLM\Software\Policies\Microsoft\Windows\CloudContent" /v "DisableWindowsSpotlightFeatures" /t "REG_DWORD" /d "1" /f
+                            reg add "HKLM\Software\Policies\Microsoft\Windows\CloudContent" /v "DisableWindowsConsumerFeatures" /t "REG_DWORD" /d "1" /f
+                    - 
+                        name: Turn Off Suggested Content in Settings app
+                        recommend: true
+                        docs: https://www.tenforums.com/tutorials/100541-turn-off-suggested-content-settings-app-windows-10-a.html
+                        code: |-
+                            reg add HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager /v "SubscribedContent-338393Enabled" /d "0" /t REG_DWORD /f
+                            reg add HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager /v "SubscribedContent-353694Enabled" /d "0" /t REG_DWORD /f
+                            reg add HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager /v "SubscribedContent-353696Enabled" /d "0" /t REG_DWORD /f
+            -                
                 name: Disable biometrics
                 recommend: true
                 code: |-
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Biometrics" /v "Enabled" /t REG_DWORD /d 0 /f 
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Biometrics\Credential Provider" /v "Enabled" /t "REG_DWORD" /d "0" /f
                     reg add "HKLM\SYSTEM\CurrentControlSet\Services\WbioSrvc" /v "Start" /t REG_DWORD /d 4 /f 
             -
                 name: Disable Wi-Fi sense
@@ -526,10 +595,6 @@ actions:
                 code: |-
                     reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Maps" /v "AllowUntriggeredNetworkTrafficOnSettingsPage" /t REG_DWORD /d 0 /f
                     reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Maps" /v "AutoDownloadAndUpdateMapData" /t REG_DWORD /d 0 /f
-            -
-                name: Disable targeted tips
-                recommend: true
-                code: reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v "DisableSoftLanding" /t REG_DWORD /d 1 /f
             -
                 name: Disable steps recorder
                 recommend: true
@@ -562,6 +627,9 @@ actions:
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" /v "AllowBuildPreview" /t REG_DWORD /d 0 /f
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" /v "EnableConfigFlighting" /t REG_DWORD /d 0 /f
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" /v "EnableExperimentation" /t REG_DWORD /d 0 /f
+                    reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\System\AllowExperimentation" /v "value" /t "REG_DWORD" /d 0 /f
+                    reg add "HKLM\SOFTWARE\Microsoft\WindowsSelfHost\UI\Visibility" /v "HideInsiderPage" /t "REG_DWORD" /d "1" /f
+                    sc config wisvc start=disabled
             -
                 name: Disable the Windows Connect Now wizard
                 recommend: false
@@ -674,7 +742,7 @@ actions:
                         code: |-
                             sc stop "VSStandardCollectorService150" 
                             net stop VSStandardCollectorService150 2>nul
-                            sc config "VSStandardCollectorService150" start= disabled
+                            sc config "VSStandardCollectorService150" start=disabled
                     - 
                         category: Configure Windows Defender
                         children:
@@ -734,6 +802,8 @@ actions:
                 recommend: true
                 docs: https://docs.microsoft.com/en-us/deployoffice/compat/manage-the-privacy-of-data-monitored-by-telemetry-in-office
                 code: |-
+                    reg add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\osm" /v "Enablelogging" /t REG_DWORD /d 0 /f 
+                    reg add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\osm" /v "EnableUpload" /t REG_DWORD /d 0 /f 
                     reg add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\osm" /v "Enablelogging" /t REG_DWORD /d 0 /f 
                     reg add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\osm" /v "EnableUpload" /t REG_DWORD /d 0 /f 
             -
@@ -817,34 +887,37 @@ actions:
                 name: Disable Google update service
                 recommend: true
                 code: |-
-                    sc config gupdate start= disabled
-                    sc config gupdatem start= disabled
+                    sc config gupdate start=disabled
+                    sc config gupdatem start=disabled
                     schtasks /Change /DISABLE /TN "GoogleUpdateTaskMachineCore"
                     schtasks /Change /DISABLE /TN "GoogleUpdateTaskMachineUA"
             -
                 name: Disable Adobe Acrobat update service
                 recommend: true
                 code: |-
-                    sc config AdobeARMservice start= disabled
-                    schtasks /Change /DISABLE /TN "Adobe Acrobat Update Task"
+                    sc config AdobeARMservice start=disabled
+                    sc config adobeupdateservice start=disabled
+                    sc config adobeflashplayerupdatesvc start=disabled
+                    schtasks /change /tn "Adobe Acrobat Update Task" /disable
+                    schtasks /change /tn "Adobe Flash Player Updater" /disable
             -
                 name: Disable Razer Game Scanner Service
                 recommend: true
                 code: |-
                     sc stop "Razer Game Scanner Service"
-                    sc config "Razer Game Scanner Service" start= disabled
+                    sc config "Razer Game Scanner Service" start=disabled
             -
                 name: Disable Logitech Gaming Registry Service 
                 recommend: true
                 code: |-
                     sc stop "LogiRegistryService"
-                    sc config "LogiRegistryService" start= disabled 
+                    sc config "LogiRegistryService" start=disabled 
             -
                 name: Disable Dropbox auto update service
                 recommend: true
                 code: |-
-                    sc config dbupdate start= disabled
-                    sc config dbupdatem start= disabled
+                    sc config dbupdate start=disabled
+                    sc config dbupdatem start=disabled
                     schtasks /Change /DISABLE /TN "DropboxUpdateTaskMachineCore"
                     schtasks /Change /DISABLE /TN "DropboxUpdateTaskMachineUA" 
             -
@@ -862,6 +935,10 @@ actions:
                             reg add "HKEY_CURRENT_USER\Software\Policies\Microsoft\WindowsMediaPlayer" /v "PreventMusicFileMetadataRetrieval" /t REG_DWORD /d 1 /f
                             reg add "HKEY_CURRENT_USER\Software\Policies\Microsoft\WindowsMediaPlayer" /v "PreventRadioPresetsRetrieval" /t REG_DWORD /d 1 /f
                             reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WMDRM" /v "DisableOnline" /t REG_DWORD /d 1 /f
+                    -
+                        name: Disable dows Media Player Network Sharing Service
+                        recommend: true
+                        code: sc config WMPNetworkSvc start=disabled
     -
         category: Security improvements
         children:         
@@ -984,6 +1061,14 @@ actions:
                 name: Disable scheduled On Demand anti malware scanner (MRT)
                 recommend: false
                 code: reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\MRT" /v "DontOfferThroughWUAU" /t REG_DWORD /d 1 /f
+            -
+                name: Disable automatic updates
+                recommend: false
+                code: |-
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "NoAutoUpdate" /t "REG_DWORD" /d "0" /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "AUOptions" /t "REG_DWORD" /d "2" /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallDay" /t "REG_DWORD" /d "0" /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallTime" /t "REG_DWORD" /d "3" /f
     -
         category: UI for privacy
         children:         
@@ -1026,14 +1111,446 @@ actions:
                         reg delete HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5} /f
                     )
     -
+        category: Disable OS services
+        children:
+            -
+                name: Delivery Optimization (P2P Windows Updates)
+                recommend: true
+                code: sc config DoSvc start=disabled
+            -
+                name: Microsoft Windows Live ID Service
+                recommend: true
+                code: sc config wlidsvc start=demand
+            -
+                name: Program Compatibility Assistant Service
+                recommend: true
+                code: sc config PcaSvc start=disabled
+            -
+                name: Downloaded Maps Manager
+                recommend: true
+                code: sc config MapsBroker start=disabled
+            -
+                name: Microsoft Retail Demo experience
+                recommend: true
+                code: sc config RetailDemo start=disabled
+            -
+                name: Mail, contact, calendar & user data synchronization. 
+                recommend: false
+                code: |-
+                    sc config OneSyncSvc start=disabled
+                    sc config UnistoreSvc start=disabled
+            -
+                name: Contact data indexing
+                recommend: false
+                code: |-
+                    sc config PimIndexMaintenanceSvc start=disabled
+            -
+                name: App user data access
+                recommend: false
+                code: sc config UserDataSvc start=disabled
+            -
+                name: Text messaging
+                recommend: false
+                code: sc config MessagingService start=disabled
+    -
+        category: Uninstall apps
+        children:
+            -
+                category: Provisioned Windows apps
+                children:
+                    -
+                        name: Microsoft 3D Builder
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.3DBuilder | Remove-AppxPackage"
+                    -
+                        category: Bing
+                        children:
+                            -
+                                name: Bing Weather
+                                recommend: true
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.BingWeather | Remove-AppxPackage"
+                            -
+                                name: Bing Sports
+                                recommend: true
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.BingSports | Remove-AppxPackage"
+                            -
+                                name: Bing News
+                                recommend: true
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.BingNews | Remove-AppxPackage"
+                            -
+                                name: Bing Finance
+                                recommend: true
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.BingFinance | Remove-AppxPackage"
+                    -
+                        name: App Installer
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.DesktopAppInstaller | Remove-AppxPackage"
+                    -
+                        name: Get Help
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.GetHelp | Remove-AppxPackage"
+                    -
+                        name: Microsoft Tips
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.Getstarted | Remove-AppxPackage"
+                    -
+                        category: Extensions
+                        children:
+                            -
+                                name: HEIF Image Extensions
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.HEIFImageExtension | Remove-AppxPackage"
+                            -
+                                name: VP9 Video Extensions	
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.VP9VideoExtensions | Remove-AppxPackage"
+                            -
+                                name: Web Media Extensions	
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.WebMediaExtensions | Remove-AppxPackage"
+                            -
+                                name: Webp Image Extension	
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.WebpImageExtension | Remove-AppxPackage"
+                    -
+                        name: Microsoft Messaging
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.Messaging | Remove-AppxPackage"
+                    -
+                        category: Mixed Reality
+                        children:
+                            -
+                                name: Mixed Reality Portal
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.MixedReality.Portal | Remove-AppxPackage"
+                            -
+                                name: Mixed Reality Viewer
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.Microsoft3DViewer | Remove-AppxPackage"
+            
+                    -
+                        category: Microsoft Office
+                        children:
+                            -
+                                name: My Office
+                                recommend: true
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.MicrosoftOfficeHub | Remove-AppxPackage"
+                            -
+                                name: OneNote
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.Office.OneNote | Remove-AppxPackage"
+                            -
+                                name: Sway
+                                docs: https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.Office.Sway | Remove-AppxPackage"
+                    -
+                        name: Feedback Hub
+                        recommend: true
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsFeedbackHub | Remove-AppxPackage"
+                    -
+                        name: Windows Alarms & Clock
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsAlarms | Remove-AppxPackage"
+                    -
+                        name: Windows Camera
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsCamera | Remove-AppxPackage"
+                    -
+                        name: Paint 3D
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.MSPaint | Remove-AppxPackage"
+                    -
+                        name: Windows Maps
+                        recommend: true
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsMaps | Remove-AppxPackage"
+                    -
+                        name: Minecraft
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.MinecraftUWP | Remove-AppxPackage"
+                    -
+                        name: Microsoft Store
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsStore | Remove-AppxPackage"
+                    -
+                        name: Microsoft People
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.People | Remove-AppxPackage"
+                    -
+                        name: Microsoft Pay
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.Wallet | Remove-AppxPackage"
+                    -
+                        name: Store Purchase App
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.StorePurchaseApp | Remove-AppxPackage"
+                    -
+                        name: Snip & Sketch
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.ScreenSketch | Remove-AppxPackage"
+                    -
+                        name: Print3D
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.Print3D | Remove-AppxPackage"
+                    -
+                        name: Paid Wi-Fi & Cellular
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.OneConnect | Remove-AppxPackage"
+                    -
+                        name: Microsoft Solitaire Collection
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.MicrosoftSolitaireCollection | Remove-AppxPackage"
+                    -
+                        name: Microsoft Sticky Notes
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.MicrosoftStickyNotes | Remove-AppxPackage"
+                    -
+                        category: Xbox
+                        children:
+                            -
+                                name: Xbox
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.XboxApp | Remove-AppxPackage"
+                            -
+                                name: Xbox TCUI
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.Xbox.TCUI | Remove-AppxPackage"
+                            -
+                                name: Xbox Game Bar
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.XboxGameOverlay | Remove-AppxPackage"
+                            -
+                                name: Xbox Gaming Overlay
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.XboxGamingOverlay | Remove-AppxPackage"
+                            -
+                                name: Xbox Identity Provider
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.XboxIdentityProvider | Remove-AppxPackage"
+                            -
+                                name: Xbox Speech To Text Overlay
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.XboxSpeechToTextOverlay | Remove-AppxPackage"
+                    -
+                        name: Mail and Calendar
+                        code: PowerShell -Command "Get-AppxPackage microsoft.windowscommunicationsapps | Remove-AppxPackage"
+                    -
+                        category: Zune
+                        children:
+                            -
+                                name: Music
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.ZuneMusic | Remove-AppxPackage"
+                            -
+                                name: Video
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.ZuneVideo | Remove-AppxPackage"
+                    -
+                        name: Windows Calculator
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsCalculator | Remove-AppxPackage"
+                    -
+                        name: Microsoft Photos
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.Photos | Remove-AppxPackage"
+                    -
+                        name: Skype
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.SkypeApp | Remove-AppxPackage"
+                    -
+                        name: Windows Voice Recorder
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsSoundRecorder | Remove-AppxPackage"
+                    -
+                        category: Phone
+                        children:
+                            -
+                                name: Windows Phone
+                                code: |-
+                                    PowerShell -Command "Get-AppxPackage Microsoft.WindowsPhone | Remove-AppxPackage"
+                                    PowerShell -Command "Get-AppxPackage Microsoft.Windows.Phone | Remove-AppxPackage"
+                            -
+                                name: Comms Phone
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.CommsPhone | Remove-AppxPackage"
+                            -
+                                name: Your Phone
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.YourPhone | Remove-AppxPackage"
+            -
+                category: Installed Windows apps
+                children:
+                    -
+                        name: Microsoft Advertising
+                        recommend: true
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.Advertising.Xaml | Remove-AppxPackage"
+                    -
+                        name: Remote Desktop
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.RemoteDesktop | Remove-AppxPackage"
+                    -
+                        name: Network Speed Test
+                        recommend: true
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.NetworkSpeedTest | Remove-AppxPackage"
+                    -
+                        category: Third party
+                        children:
+                            -
+                                name: Shazam
+                                code: PowerShell -Command "Get-AppxPackage ShazamEntertainmentLtd.Shazam | Remove-AppxPackage"
+                            -
+                                name: Candy Crush Saga
+                                code: |-
+                                    PowerShell -Command "Get-AppxPackage king.com.CandyCrushSaga | Remove-AppxPackage"
+                                    PowerShell -Command "Get-AppxPackage king.com.CandyCrushSodaSaga | Remove-AppxPackage"
+                            -
+                                name: Flipboard
+                                code: PowerShell -Command "Get-AppxPackage Flipboard.Flipboard | Remove-AppxPackage"
+                            -
+                                name: Twitter
+                                code: PowerShell -Command "Get-AppxPackage 9E2F88E3.Twitter | Remove-AppxPackage"
+                            -
+                                name: iHeartRadio
+                                code: PowerShell -Command "Get-AppxPackage ClearChannelRadioDigital.iHeartRadio | Remove-AppxPackage"
+                            -
+                                name: Duolingo
+                                code: PowerShell -Command "Get-AppxPackage D5EA27B7.Duolingo-LearnLanguagesforFree | Remove-AppxPackage"
+                            -
+                                name: Photoshop Express
+                                code: PowerShell -Command "Get-AppxPackage AdobeSystemIncorporated.AdobePhotoshop | Remove-AppxPackage"
+                            -
+                                name: Pandora
+                                code: PowerShell -Command "Get-AppxPackage PandoraMediaInc.29680B314EFC2 | Remove-AppxPackage"
+                            -
+                                name: Eclipse Manager
+                                code: PowerShell -Command "Get-AppxPackage 46928bounde.EclipseManager | Remove-AppxPackage"
+                            -
+                                name: Code Writer
+                                code: PowerShell -Command "Get-AppxPackage ActiproSoftwareLLC.562882FEEB491 | Remove-AppxPackage"
+            -
+                category: System apps
+                children:
+                    -
+                        name: File Picker
+                        code: PowerShell -Command "Get-AppxPackage 1527c705-839a-4832-9118-54d4Bd6a0c89 | Remove-AppxPackage"
+                    -
+                        name: File Explorer
+                        code: PowerShell -Command "Get-AppxPackage c5e2524a-ea46-4f67-841f-6a9465d9d515 | Remove-AppxPackage"
+                    -
+                        name: App Resolver UX
+                        code: PowerShell -Command "Get-AppxPackage E2A4F912-2574-4A75-9BB0-0D023378592B | Remove-AppxPackage"
+                    -
+                        name: Add Suggested Folders To Library
+                        recommend: true
+                        code: |-
+                            PowerShell -Command "Get-AppxPackage F46D4000-FD22-4DB4-AC8E-4E1DDDE828FE | Remove-AppxPackage"
+                            PowerShell -Command "Get-AppxPackage InputApp | Remove-AppxPackage"
+                    -
+                        name: Microsoft.AAD.Broker.Plugin
+                        recommend: true
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.AAD.Broker.Plugin | Remove-AppxPackage"
+                    -
+                        name: Microsoft.AccountsControl
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.AccountsControl | Remove-AppxPackage"
+                    -
+                        name: Microsoft.AsyncTextService
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.AsyncTextService | Remove-AppxPackage"
+                    -
+                        category: Hello setup UI
+                        children:
+                            -
+                                name: Bio enrollment
+                                recommend: true
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.BioEnrollment | Remove-AppxPackage"
+                            -
+                                name: Cred Dialog Host
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.CredDialogHost | Remove-AppxPackage"
+                            -
+                                name: EC App
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.ECApp | Remove-AppxPackage"
+                            -
+                                name: Lock App
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.LockApp | Remove-AppxPackage"
+                    -
+                        category: Microsoft Edge
+                        children:
+                            -
+                                name: Microsoft Edge
+                                recommend: true
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.MicrosoftEdge | Remove-AppxPackage"
+                            -
+                                name: Microsoft Edge Dev Tools Client
+                                recommend: true
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.MicrosoftEdgeDevToolsClient | Remove-AppxPackage"
+                            -
+                                name: Microsoft PPI Projection
+                                recommend: true
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.PPIProjection | Remove-AppxPackage"
+                            -
+                                name: Win32 Web View Host
+                                recommend: true
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.Win32WebViewHost | Remove-AppxPackage"
+                            -
+                                name: ChxApp
+                                recommend: true
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.Apprep.ChxApp | Remove-AppxPackage"
+                            -
+                                name: Assigned Access Lock App
+                                recommend: true
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.AssignedAccessLockApp | Remove-AppxPackage"
+                            -
+                                name: Capture Picker
+                                recommend: true
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.CapturePicker | Remove-AppxPackage"
+                            -
+                                name: Cloud Experience Host
+                                recommend: true
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.CloudExperienceHost | Remove-AppxPackage"
+                            -
+                                name: Content Delivery Manager
+                                recommend: true
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.ContentDeliveryManager | Remove-AppxPackage"
+                    -
+                        category: Cortana
+                        children:
+                            -
+                                name: Cortana
+                                recommend: true
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.Cortana | Remove-AppxPackage"
+                            -
+                                name: Holographic First Run
+                                recommend: true
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.Holographic.FirstRun | Remove-AppxPackage"
+                            -
+                                name: OOBE Network Captive Port
+                                recommend: true
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.OOBENetworkCaptivePort | Remove-AppxPackage"
+                            -
+                                name: OOBE Network Connection Flow
+                                recommend: true
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.OOBENetworkConnectionFlow | Remove-AppxPackage"
+                            -
+                                name: Parental Controls
+                                recommend: true
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.ParentalControls | Remove-AppxPackage"
+                    -
+                        category: People Hub
+                        children:
+                            -
+                                name: People Experience Host
+                                recommend: true
+                                code: PowerShell -Command "Microsoft.Windows.PeopleExperienceHost | Remove-AppxPackage"
+                            -
+                                name: Pinning Confirmation Dialog
+                                recommend: true
+                                code: PowerShell -Command "Microsoft.Windows.PinningConfirmationDialog | Remove-AppxPackage"
+                            -
+                                name: Sec Health UI
+                                recommend: true
+                                code: PowerShell -Command "Microsoft.Windows.SecHealthUI | Remove-AppxPackage"
+                            -
+                                name: Secondary Tile Experience
+                                recommend: true
+                                code: PowerShell -Command "Microsoft.Windows.SecondaryTileExperience | Remove-AppxPackage"
+                            -
+                                name: Secure Assessment Browser
+                                recommend: true
+                                code: PowerShell -Command "Microsoft.Windows.SecureAssessmentBrowser | Remove-AppxPackage"
+                    -
+                        name: Start
+                        code: PowerShell -Command "Microsoft.Windows.ShellExperienceHost | Remove-AppxPackage"
+                    -
+                        category: Windows Feedback
+                        children:
+                            -
+                                name: Windows Feedback
+                                recommend: true
+                                code: PowerShell -Command "Microsoft.WindowsFeedback | Remove-AppxPackage"
+                            -
+                                name: Xbox Game Callable UI
+                                recommend: true
+                                code: PowerShell -Command "Microsoft.XboxGameCallableUI | Remove-AppxPackage"
+                            -
+                                name: CBS Preview
+                                recommend: true
+                                code: PowerShell -Command "Windows.CBSPreview | Remove-AppxPackage"
+                    -
+                        name: Contact Support
+                        code: PowerShell -Command "Windows.ContactSupport | Remove-AppxPackage"
+                    -
+                        name: Settings
+                        code: PowerShell -Command "Windows.immersivecontrolpanel | Remove-AppxPackage"
+                    -
+                        name: Windows Print 3D
+                        code: PowerShell -Command "Windows.Print3D | Remove-AppxPackage"
+                    -
+                        name: Print UI
+                        code: PowerShell -Command "Windows.PrintDialog | Remove-AppxPackage"
+            -
+                name: App Connector
+                code: PowerShell -Command "Get-AppxPackage Microsoft.Appconnector | Remove-AppxPackage"
+    -
         category: Advanced settings
-        children:         
-            # -
-            #     name: Run script on start-up (EXPERIMENTAL)
-            #     recommend: false
-            #     code: |-
-            #         del /f /q %AppData%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat
-            #         copy "%~dpnx0" "%AppData%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup"
+        children:   
             -
                 name: Change NTP (time) server to pool.ntp.org
                 recommend: false
@@ -1044,9 +1561,15 @@ actions:
                     reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\W32time\TimeProviders\NtpClient" /v "EventLogFlags" /t REG_DWORD /d 0 /f
                     reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\W32time\TimeProviders\NtpClient" /v "ResolvePeerBackoffMaxTimes" /t REG_DWORD /d 7 /f
                     reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\W32time\TimeProviders\NtpClient" /v "ResolvePeerBackoffMinutes" /t REG_DWORD /d 15 /f
-                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\W32time\TimeProviders\NtpClient" /v "SpecialPollInterval" /t REG_DWORD /d 1024 /f
+                    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\W32time\TimeProviders\NtpClient" /v "SpecialPollInterval" /t REG_DWORD /d 1024 /f      
             -
-                name: Apply settings for all future users (EXPERIMENTAL)
+                name: Run script on start-up [EXPERIMENTAL]
+                recommend: false
+                code: |-
+                    del /f /q %AppData%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat
+                    copy "%~dpnx0" "%AppData%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat"
+            -
+                name: Apply settings for all future users [EXPERIMENTAL]
                 recommend: false
                 code: |-
                     REG UNLOAD HKU\DefaultUser

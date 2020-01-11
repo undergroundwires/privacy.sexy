@@ -37,6 +37,18 @@ declare module 'liquor-tree' {
         children: ReadonlyArray<ILiquorTreeNewNode> | undefined;
         data: ICustomLiquorTreeData;
     }
+    
+    // https://amsik.github.io/liquor-tree/#Component-Options
+    export interface ILiquorTreeOptions {
+        multiple: boolean;
+        checkbox: boolean;
+        checkOnSelect: boolean;
+        autoCheckChildren: boolean;
+        parentSelect: boolean;
+        keyboardNavigation: boolean;
+        deletion: (node: ILiquorTreeExistingNode) => void;
+        filter: ILiquorTreeFilter;
+    }
 
     // https://github.com/amsik/liquor-tree/blob/master/src/lib/Node.js
     interface ILiquorTreeNodeState {
@@ -58,7 +70,7 @@ declare module 'liquor-tree' {
     // https://github.com/amsik/liquor-tree/blob/master/src/components/TreeRoot.vue
     interface ILiquorTreeFilter {
         emptyText: string;
-        matcher(query: string, node: ILiquorTreeNewNode): boolean;
+        matcher(query: string, node: ILiquorTreeExistingNode): boolean;
     }
 
     const LiquorTree: PluginObject<any> & VueClass<any>;

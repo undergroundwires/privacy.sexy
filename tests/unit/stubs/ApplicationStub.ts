@@ -4,6 +4,7 @@ export class ApplicationStub implements IApplication {
     public readonly totalScripts = 0;
     public readonly totalCategories = 0;
     public readonly name = 'StubApplication';
+    public readonly repositoryUrl = 'https://privacy.sexy';
     public readonly version = 1;
     public readonly categories = new Array<ICategory>();
 
@@ -21,6 +22,9 @@ export class ApplicationStub implements IApplication {
         throw new Error('Method not implemented.');
     }
     public getAllScripts(): ReadonlyArray<IScript> {
+        throw new Error('Method not implemented.');
+    }
+    public getAllCategories(): ReadonlyArray<ICategory> {
         throw new Error('Method not implemented.');
     }
 }
