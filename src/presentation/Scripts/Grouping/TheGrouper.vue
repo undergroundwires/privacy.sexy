@@ -20,15 +20,18 @@ import { StatefulVue } from '@/presentation/StatefulVue';
 import { IApplicationState } from '@/application/State/IApplicationState';
 import { Grouping } from './Grouping';
 
+const DefaultGrouping = Grouping.Cards;
+
 @Component
 export default class TheGrouper extends StatefulVue {
+
     public cardsSelected = false;
     public noneSelected = false;
 
     private currentGrouping: Grouping;
 
     public mounted() {
-        this.changeGrouping(Grouping.Cards);
+        this.changeGrouping(DefaultGrouping);
     }
 
     public groupByCard() {

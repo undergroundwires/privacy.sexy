@@ -2,7 +2,7 @@
     <span id="container">
         <span v-if="nodes != null && nodes.length > 0">
             <SelectableTree 
-                :nodes="nodes"
+                :initialNodes="nodes"
                 :selectedNodeIds="selectedNodeIds"
                 :filterPredicate="filterPredicate"
                 :filterText="filterText"
@@ -20,7 +20,6 @@
   import { IRepository } from '@/infrastructure/Repository/IRepository';
   import { IScript } from '@/domain/IScript';
   import { ICategory } from '@/domain/ICategory';
-
   import { IApplicationState, IUserSelection } from '@/application/State/IApplicationState';
   import { IFilterResult } from '@/application/State/Filter/IFilterResult';
   import { parseAllCategories, parseSingleCategory, getScriptNodeId, getCategoryNodeId } from './ScriptNodeParser';
@@ -35,8 +34,8 @@
   export default class ScriptsTree extends StatefulVue {
     @Prop() public categoryId?: number;
 
-    public nodes?: INode[] = null;
-    public selectedNodeIds?: string[] = null;
+    public nodes?: ReadonlyArray<INode> = null;
+    public selectedNodeIds?: ReadonlyArray<string> = [];
     public filterText?: string = null;
 
     private filtered?: IFilterResult;
@@ -56,7 +55,7 @@
             return; // only interested in script nodes
         }
         const state = await this.getCurrentStateAsync();
-        if (node.selected) {
+        if (!this.selectedNodeIds.some((id) => id === node.id)) {
             state.selection.addSelectedScript(node.id);
         } else {
             state.selection.removeSelectedScript(node.id);
@@ -67,10 +66,12 @@
     public async initializeNodesAsync(categoryId?: number) {
       const state = await this.getCurrentStateAsync();
       if (categoryId) {
-        this.nodes = parseSingleCategory(categoryId, state);
+        this.nodes = parseSingleCategory(categoryId, state.app);
       } else {
-        this.nodes = parseAllCategories(state);
+        this.nodes = parseAllCategories(state.app);
       }
+      this.selectedNodeIds = state.selection.selectedScripts
+        .map((script) => getScriptNodeId(script));
     }
 
     public filterPredicate(node: INode): boolean {
@@ -80,8 +81,9 @@
           (category: ICategory) => node.id === getCategoryNodeId(category));
     }
 
-    private handleSelectionChanged(selectedScripts: ReadonlyArray<IScript>) {
-      this.nodes = this.nodes.map((node: INode) => updateNodeSelection(node, selectedScripts));
+    private handleSelectionChanged(selectedScripts: ReadonlyArray<IScript>): void {
+      this.selectedNodeIds = selectedScripts
+          .map((node) => node.id);
     }
 
     private handleFilterRemoved() {
@@ -92,16 +94,6 @@
       this.filterText = result.query;
       this.filtered = result;
     }
-  }
-
-  function updateNodeSelection(node: INode, selectedScripts: ReadonlyArray<IScript>): INode {
-    return {
-      id: node.id,
-      text: node.text,
-      selected: selectedScripts.some((script) => script.id === node.id),
-      children: node.children ? node.children.map((child) => updateNodeSelection(child, selectedScripts)) : [],
-      documentationUrls: node.documentationUrls,
-      };
   }
 
 </script>
