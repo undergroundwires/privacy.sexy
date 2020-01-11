@@ -5,7 +5,8 @@
 ## Unreleased
 
 - Fixed search bug
-- Hiding grouping while searching 
+- Hiding grouping while searching
+- Showing search queries when searching
 
 ## [0.4.0] - 2020-01-11
 

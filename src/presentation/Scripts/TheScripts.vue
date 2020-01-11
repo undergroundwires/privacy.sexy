@@ -8,13 +8,15 @@
         </div>
         <div class="scripts">
             <div v-if="!isSearching || searchHasMatches">
-                    <CardList v-if="showCards" />
-                    <div v-else-if="showList" class="tree">
+                    <CardList v-if="this.showCards" />
+                    <div v-else-if="this.showList" class="tree">
+                        <div v-if="this.isSearching" class="search-query">
+                            Searching for "{{this.searchQuery | threeDotsTrim}}"</div>
                         <ScriptsTree />
                     </div>
                     </div>
                     <div v-else class="search-no-matches">
-                        Search has no matches 😞
+                        Sorry, no matches for "{{this.searchQuery | threeDotsTrim}}" 😞
                         Feel free to extend the scripts <a :href="repositoryUrl" target="_blank" class="child github" >here</a>.
             </div>
         </div>
@@ -41,11 +43,21 @@
         ScriptsTree,
         CardList,
     },
+    filters: {
+        threeDotsTrim(query: string) {
+            const threshold = 30;
+            if (query.length <= threshold - 3) {
+                return query;
+            }
+            return `${query.substr(0, threshold)}...`;
+        },
+    },
     })
     export default class TheScripts extends StatefulVue {
         public showCards = false;
         public showList = false;
         public repositoryUrl = '';
+        private searchQuery = '';
         private isSearching = false;
         private searchHasMatches = false;
 
@@ -59,6 +71,7 @@
                 this.updateGroups();
             });
             state.filter.filtered.on((result: IFilterResult) => {
+                this.searchQuery = result.query;
                 this.isSearching = true;
                 this.searchHasMatches = result.hasAnyMatches();
                 this.updateGroups();
@@ -97,8 +110,13 @@
     }
     .tree {
         padding-left: 3%;
-        margin-top: 15px; // Card margin
-        margin-bottom: 15px; // Card margin
+        padding-top: 15px;
+        padding-bottom: 15px;
+        .search-query {
+            display: flex;
+            justify-content: center;
+            color: $gray;
+        }
     }
 }
 .help-container {
