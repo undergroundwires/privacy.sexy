@@ -97,6 +97,7 @@
     .tree {
         padding-left: 3%;
         margin-top: 15px; // Card margin
+        margin-bottom: 15px; // Card margin
     }
 }
 .help-container {
