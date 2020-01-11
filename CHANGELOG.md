@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+- Fixed search text font being defaulted to Arial.
+
 ## [0.4.1] - 2020-01-11
 
 - Fixed & improved search

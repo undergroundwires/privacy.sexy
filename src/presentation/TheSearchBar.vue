@@ -1,13 +1,11 @@
 <template>
-    <div class="container">
-        <div class="search">
-            <input type="search" class="searchTerm" placeholder="Search"
-              @input="updateFilterAsync($event.target.value)" >
-            <div class="iconWrapper">
-                <font-awesome-icon :icon="['fas', 'search']" />
-            </div>
-        </div>
-    </div>
+  <div class="search">
+      <input type="search" class="searchTerm" placeholder="Search"
+        @input="updateFilterAsync($event.target.value)" >
+      <div class="iconWrapper">
+          <font-awesome-icon :icon="['fas', 'search']" />
+      </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -32,10 +30,6 @@ export default class TheSearchBar extends StatefulVue {
 @import "@/presentation/styles/colors.scss";
 @import "@/presentation/styles/fonts.scss";
 
-.container {
-    font: $normal-font;
-}
-
 .search {
   width: 100%;
   position: relative;
@@ -53,6 +47,8 @@ export default class TheSearchBar extends StatefulVue {
   padding-right:10px;
   outline: none;
   color: $gray;
+    font-family: $normal-font;
+    font-size:1em;
 }
 
 .searchTerm:focus{
