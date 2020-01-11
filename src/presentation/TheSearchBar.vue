@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="search">
-            <input type="text" class="searchTerm" placeholder="Search"
+            <input type="search" class="searchTerm" placeholder="Search"
               @input="updateFilterAsync($event.target.value)" >
             <div class="iconWrapper">
                 <font-awesome-icon :icon="['fas', 'search']" />

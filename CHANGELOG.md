@@ -4,7 +4,7 @@
 
 ## Unreleased
 
-- Fixed search bug
+- Fixed & improved search
 - Hiding grouping while searching
 - Showing search queries when searching
 
