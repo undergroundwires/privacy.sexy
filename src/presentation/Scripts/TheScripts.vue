@@ -3,7 +3,8 @@
         <div class="help-container">
             <TheSelector class="left" />
             <TheGrouper class="right"
-                v-on:groupingChanged="onGroupingChanged($event)" />
+                v-on:groupingChanged="onGroupingChanged($event)"
+                v-show="!this.isSearching" />
         </div>
         <div class="scripts">
             <div v-if="!isSearching || searchHasMatches">
