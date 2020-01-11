@@ -36,7 +36,7 @@ CLOUDFRONT_ARN=$(aws cloudformation describe-stacks \
             --output text \
             --profile $ROLE_PROFILE)
 if [ -z "$CLOUDFRONT_ARN" ]; then echo "Could not read CloudFront ARN"; exit 1; fi;
-echo :add-mask::$CLOUDFRONT_ARN
+echo ::add-mask::$CLOUDFRONT_ARN
 
 echo Syncing folder to S3
 aws cloudfront create-invalidation \
