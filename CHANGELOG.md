@@ -2,7 +2,9 @@
 
 - All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## Unreleased
+
+- Fixed search bug
 
 ## [0.4.0] - 2020-01-11
 

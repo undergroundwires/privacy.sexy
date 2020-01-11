@@ -38,7 +38,7 @@
         @Prop() public initialNodes?: ReadonlyArray<INode>;
 
         public initialLiquourTreeNodes?: ILiquorTreeNewNode[] = null;
-        public liquorTreeOptions = DefaultOptions;
+        public liquorTreeOptions = this.getDefaults();
         public convertExistingToNode = convertExistingToNode;
 
         public mounted() {
@@ -98,6 +98,27 @@
             }
             return (this.$refs.treeElement as any).tree;
         }
+
+        private getDefaults(): ILiquorTreeOptions {
+            return {
+                multiple: true,
+                checkbox: true,
+                checkOnSelect: true,
+                autoCheckChildren: true,
+                parentSelect: false,
+                keyboardNavigation: true,
+                deletion: (node) => !node.children || node.children.length === 0,
+                filter: {
+                    matcher: (query: string, node: ILiquorTreeExistingNode) => {
+                        if (!this.filterPredicate) {
+                            throw new Error('Cannot filter as predicate is null');
+                        }
+                        return this.filterPredicate(convertExistingToNode(node));
+                    },
+                    emptyText: '🕵️Hmm.. Can not see one 🧐',
+                },
+            };
+        }
     }
 
     function recurseDown(
@@ -132,25 +153,6 @@
         }
         return result;
     }
-
-    const DefaultOptions: ILiquorTreeOptions = {
-        multiple: true,
-        checkbox: true,
-        checkOnSelect: true,
-        autoCheckChildren: true,
-        parentSelect: false,
-        keyboardNavigation: true,
-        deletion: (node) => !node.children || node.children.length === 0,
-        filter: {
-            matcher: (query: string, node: ILiquorTreeExistingNode) => {
-                if (!this.filterPredicate) {
-                    throw new Error('Cannot filter as predicate is null');
-                }
-                return this.filterPredicate(convertExistingToNode(node));
-            },
-            emptyText: '🕵️Hmm.. Can not see one 🧐',
-        },
-    };
 </script>
 
 
