@@ -16,12 +16,13 @@ export class UserFilter implements IUserFilter {
         if (!filter) {
             throw new Error('Filter must be defined and not empty. Use removeFilter() to remove the filter');
         }
+        const filterLowercase = filter.toLocaleLowerCase();
         const filteredScripts = this.application.getAllScripts().filter(
             (script) =>
-            script.name.toLowerCase().includes(filter.toLowerCase()) ||
-            script.code.toLowerCase().includes(filter.toLowerCase()));
+            script.name.toLowerCase().includes(filterLowercase) ||
+            script.code.toLowerCase().includes(filterLowercase));
         const filteredCategories = this.application.getAllCategories().filter(
-            (script) => script.name.toLowerCase().includes(filter.toLowerCase()));
+            (script) => script.name.toLowerCase().includes(filterLowercase));
 
         const matches = new FilterResult(
             filteredScripts,
