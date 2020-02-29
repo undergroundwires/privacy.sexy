@@ -4,7 +4,12 @@
 
 ## Unreleased
 
+-
+
+## [0.4.2] - 2020-02-29
+
 - Fixed search text font being defaulted to Arial.
+- Shortened `HKEY` paths in scripts
 
 ## [0.4.1] - 2020-01-11
 
@@ -41,8 +46,9 @@
 
 ## All releases
 
-- [Unreleased] : https://github.com/undergroundwires/privacy.sexy/compare/v0.4.1...HEAD
-- [v0.4.0] : https://github.com/undergroundwires/privacy.sexy/compare/v0.4.0...v0.4.1
+- [Unreleased] : https://github.com/undergroundwires/privacy.sexy/compare/v0.4.2...HEAD
+- [v0.4.2] : https://github.com/undergroundwires/privacy.sexy/compare/v0.4.1...v0.4.2
+- [v0.4.1] : https://github.com/undergroundwires/privacy.sexy/compare/v0.4.0...v0.4.1
 - [v0.4.0] : https://github.com/undergroundwires/privacy.sexy/compare/v0.3.0...v0.4.0
 - [v0.3.0] : https://github.com/undergroundwires/privacy.sexy/compare/v0.2.0...v0.3.0
 - [v0.2.0] : https://github.com/undergroundwires/privacy.sexy/compare/v0.1.0...v0.2.0

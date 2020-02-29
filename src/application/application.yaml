@@ -1,5 +1,5 @@
 name: privacy.sexy
-version: 0.4.1
+version: 0.4.2
 repositoryUrl: https://github.com/undergroundwires/privacy.sexy
 actions:
     -
@@ -371,23 +371,23 @@ actions:
                 children:
                     -
                         name: Deny app access to location
-                        recommend: false
+                        recommend: true
                         code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessLocation" /t REG_DWORD /d 2 /f
                     -
                         name: Deny app access to motion data
-                        recommend: false
+                        recommend: true
                         code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMotion" /t REG_DWORD /d 2 /f
                     -
                         name: Deny app access to phone
-                        recommend: false
+                        recommend: true
                         code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessPhone" /t REG_DWORD /d 2 /f
                     -
                         name: Deny app access to trusted devices
-                        recommend: false
+                        recommend: true
                         code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessTrustedDevices" /t REG_DWORD /d 2 /f
                     -
                         name: Deny app sync with devices
-                        recommend: false
+                        recommend: true
                         code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsSyncWithDevices" /t REG_DWORD /d 2 /f
                     -
                         name: Deny app access to camera
@@ -397,10 +397,10 @@ actions:
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCamera" /t REG_DWORD /d 2 /f
                     -
                         name: Deny app access to microphone
-                        recommend: true
+                        recommend: false
                         code: |-
                             reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\microphone" /v "Value" /d "Deny" /t REG_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMicrophone" /t REG_DWORD /d 2 /f
+                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{2EEF81BE-33FA-4800-9670-1CD474972C3F}" /v "Value" /t REG_SZ /d "Deny" /f
                     -
                         name: Deny app access to diagnostics info about your other apps
                         recommend: true
@@ -589,6 +589,10 @@ actions:
                 name: Disable Inventory Collector
                 recommend: true
                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisableInventory" /t REG_DWORD /d 1 /f 
+            -
+                name: Disable Website Access of Language List
+                recommend: true
+                code: reg add "HKCU\Control Panel\International\User Profile" /v "HttpAcceptLanguageOptOut" /t REG_DWORD /d 1 /f 
             -
                 name: Disable Auto Downloading Maps
                 recommend: true
