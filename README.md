@@ -21,7 +21,7 @@ Web tool to generate scripts for enforcing privacy & security best-practices suc
 
 ## Extend scripts
 
-Fork it & add more scripts in `src/application/application.yml` and send a pull request 👌
+Fork it & add more scripts in [application.yaml](src/application/application.yaml) and send a pull request 👌
 
 ## Commands
 
