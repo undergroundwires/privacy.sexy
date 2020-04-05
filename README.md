@@ -11,7 +11,7 @@ Web tool to generate scripts for enforcing privacy & security best-practices suc
 
 [https://privacy.sexy](https://privacy.sexy)
 
-## Why privacy.sexy
+## Why
 
 - You don't need to run any compiled software on your system, just run the generated scripts.
 - It's open source, both application & infrastructure is 100% transparent
