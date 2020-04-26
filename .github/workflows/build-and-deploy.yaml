@@ -26,79 +26,105 @@ jobs:
 
   build-and-deploy:
     needs: increase-version
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       -
-        name: "Prepare: Checkout"
-        uses: actions/checkout@v1
+        name: "Infrastructure: Checkout"
+        uses: actions/checkout@v2
+        with:
+          path: aws
+          repository: undergroundwires/aws-static-site-with-cd
       -
-        name: "Prepare: Create AWS user profile"
+        name: "Infrastructure: Create AWS user profile & session name"
         run: >-
-          bash "aws/scripts/configure/create-user-profile.sh" \
+          bash "scripts/configure/create-user-profile.sh" \
             --profile user \
             --access-key-id ${{secrets.AWS_DEPLOYMENT_USER_ACCESS_KEY_ID}} \
             --secret-access-key ${{secrets.AWS_DEPLOYMENT_USER_SECRET_ACCESS_KEY}} \
-            --region us-east-1
+            --region us-east-1 \
+          && \
+            echo "::set-env name=SESSION_NAME::${{github.actor}}-${{github.event_name}}-$(echo ${{github.sha}} | cut -c1-8)"
+        working-directory: aws
       -
         name: "Infrastructure: Deploy IAM stack"
         run: >-
-          bash "aws/scripts/deploy/deploy-stack.sh" \
-            --template-file aws/iam-stack.yaml \
+          bash "scripts/deploy/deploy-stack.sh" \
+            --template-file stacks/iam-stack.yaml \
             --stack-name privacysexy-iam-stack \
-            --capabilities CAPABILITY_IAM  \
+            --capabilities CAPABILITY_IAM \
+            --parameter-overrides "WebStackName=privacysexy-web-stack DnsStackName=privacysexy-dns-stack \
+                                   CertificateStackName=privacysexy-cert-stack RootDomainName=privacy.sexy" \
             --region us-east-1 --role-arn ${{secrets.AWS_IAM_STACK_DEPLOYMENT_ROLE_ARN}} \
-            --profile user --session ${{github.actor}}-${{github.event_name}}-${{github.sha}}
-      -
-        name: "Infrastructure: Deploy certificate stack"
-        run: >-
-          bash "aws/scripts/deploy/deploy-stack.sh" \
-            --template-file aws/certificate-stack.yaml \
-            --stack-name privacysexy-certificate-stack \
-            --region us-east-1 \
-            --role-arn ${{secrets.AWS_CERTIFICATE_STACK_DEPLOYMENT_ROLE_ARN}} \
-            --profile user --session ${{github.actor}}-${{github.event_name}}-${{github.sha}}
+            --profile user --session ${{ env.SESSION_NAME }}
+        working-directory: aws
       -
         name: "Infrastructure: Deploy DNS stack"
         run: >-
-          bash "aws/scripts/deploy/deploy-stack.sh" \
-            --template-file aws/dns-stack.yaml \
+          bash "scripts/deploy/deploy-stack.sh" \
+            --template-file stacks/dns-stack.yaml \
             --stack-name privacysexy-dns-stack \
+            --parameter-overrides "RootDomainName=privacy.sexy" \
             --region us-east-1 \
             --role-arn ${{secrets.AWS_DNS_STACK_DEPLOYMENT_ROLE_ARN}} \
-            --profile user --session ${{github.actor}}-${{github.event_name}}-${{github.sha}}
+            --profile user --session ${{ env.SESSION_NAME }}
+        working-directory: aws
+      -
+        name: "Infrastructure: Deploy certificate stack"
+        run: >-
+          bash "scripts/deploy/deploy-stack.sh" \
+            --template-file stacks/certificate-stack.yaml \
+            --stack-name privacysexy-cert-stack \
+            --capabilities CAPABILITY_IAM \
+            --parameter-overrides "IamStackName=privacysexy-iam-stack RootDomainName=privacy.sexy DnsStackName=privacysexy-dns-stack" \
+            --region us-east-1 \
+            --role-arn ${{secrets.AWS_CERTIFICATE_STACK_DEPLOYMENT_ROLE_ARN}} \
+            --profile user --session ${{ env.SESSION_NAME }}
+        working-directory: aws
       -
         name: "Infrastructure: Deploy web stack"
         run: >-
-          bash "aws/scripts/deploy/deploy-stack.sh" \
-            --template-file aws/web-stack.yaml \
+          bash "scripts/deploy/deploy-stack.sh" \
+            --template-file stacks/web-stack.yaml \
             --stack-name privacysexy-web-stack \
+            --parameter-overrides "CertificateStackName=privacysexy-cert-stack DnsStackName=privacysexy-dns-stack \
+                                   RootDomainName=privacy.sexy UseDeepLinks=true" \
+            --capabilities CAPABILITY_IAM \
             --region us-east-1 \
             --role-arn ${{secrets.AWS_WEB_STACK_DEPLOYMENT_ROLE_ARN}} \
-            --profile user --session ${{github.actor}}-${{github.event_name}}-${{github.sha}}
+            --profile user --session ${{ env.SESSION_NAME }}
+        working-directory: aws
+      -
+        name: "App: Checkout"
+        uses: actions/checkout@v2
+        with:
+          path: site
       -
         name: "App: Setup node"
         uses: actions/setup-node@v1
         with:
-          node-version: '11.x'
+          node-version: '12.x'
       -
         name: "App: Install dependencies"
         run: npm install
+        working-directory: site
       -
         name: "App: Run tests"
         run: npm run test:unit
+        working-directory: site
       - 
         name: "App: Build"
         run: npm run build
+        working-directory: site
       -
         name: "App: Deploy to S3"
         run: >-
           bash "aws/scripts/deploy/deploy-to-s3.sh" \
-            --folder dist \
+            --folder site/dist \
             --web-stack-name privacysexy-web-stack --web-stack-s3-name-output-name S3BucketName \
             --storage-class ONEZONE_IA \
             --role-arn ${{secrets.AWS_S3_SITE_DEPLOYMENT_ROLE_ARN}} \
             --region us-east-1 \
-            --profile user --session ${{github.actor}}-${{github.event_name}}-${{github.sha}}
+            --profile user --session ${{ env.SESSION_NAME }}
       -
         name: "App: Invalidate CloudFront cache"
         run: >-
@@ -107,4 +133,4 @@ jobs:
             --web-stack-name privacysexy-web-stack --web-stack-cloudfront-arn-output-name CloudFrontDistributionArn \
             --role-arn ${{secrets.AWS_CLOUDFRONT_SITE_DEPLOYMENT_ROLE_ARN}} \
             --region us-east-1 \
-            --profile user --session ${{github.actor}}-${{github.event_name}}-${{github.sha}}
+            --profile user --session ${{ env.SESSION_NAME }}

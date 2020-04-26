@@ -56,64 +56,18 @@ Fork it & add more scripts in [application.yaml](src/application/application.yam
 
 ### AWS Infrastructure
 
-- The application runs in AWS 100% serverless and automatically provisioned using [CloudFormation files](/aws) and GitHub Actions.
-- Maximum security & automation and minimum AWS costs were the highest priorities of the design.
+[![AWS solution](docs/aws-solution.png)](https://github.com/undergroundwires/aws-static-site-with-cd)
 
-![AWS solution](docs/aws-solution.png)
+- It uses infrastructure from the following repository: [aws-static-site-with-cd](https://github.com/undergroundwires/aws-static-site-with-cd)
+  - Runs on AWS 100% serverless and automatically provisioned using [GitHub Actions](.github/workflows/).
+  - Maximum security & automation and minimum AWS costs are the highest priorities of the design.
 
 #### GitOps: CI/CD to AWS
 
 - Everything that's merged in the master goes directly to production.
-  - Deploy infrastructure ► Deploy web application ► Invalidate CloudFront Cache
-- See more at [build-and-deploy.yaml](.GitHub/workflows/build-and-deploy.yaml)
+- See more at [build-and-deploy.yaml](.github/workflows/build-and-deploy.yaml), and [run-tests.yaml](.github/workflows/run-tests.yaml)
 
-![CI/CD to AWS with GitHub Actions](docs/gitops.png)
-
-##### CloudFormation
-
-![CloudFormation design](docs/aws-cloudformation.png)
-
-- AWS infrastructure is defined as code with following files:
-  - `iam-stack`: Creates & updates the deployment user.
-    - Everything in IAM layer is fine-grained using least privileges principle.
-    - Each deployment step has its own temporary credentials with own permissions.
-  - `certificate-stack.yaml`
-    - It'll generate SSL certification for the root domain and www subdomain.
-    - ❗ It [must](https://aws.amazon.com/premiumsupport/knowledge-center/cloudfront-invalid-viewer-certificate/) be deployed in `us-east-1` to be able to be used by CloudFront by `web-stack`.
-    - It uses CustomResource and a lambda instead of native `AWS::CertificateManager::Certificate` because:
-      - Problem:
-        - AWS variant waits until a certificate is validated.
-        - There's no way to automate validation without workaround.
-      - Solution:
-        - Deploy a lambda that deploys the certificate (so we don't wait until certificate is validated)
-        - Get DNS records to be used in validation & export it to be used later.
-  - `web-stack.yaml`: It'll deploy S3 bucket and CloudFront in front of it.
-  - `dns-stack.yaml`: It'll deploy Route53 hosted zone
-    - Each time Route53 hosted zone is re-created it's required to update the DNS records in the domain registrar. See *Configure your domain registrar*.
-- I use cross stacks instead of single stack or nested stacks because:
-  - Easier to test & maintain & smaller files and different lifecycles for different areas.
-  - It allows to deploy web bucket in different region than others as other stacks are global (`us-east-1`) resources.
-
-##### Initial deployment
-
-- ❗ Prerequisite: A registered domain name for website.
-
-1. **Configure build agent (GitHub actions)**
-   - Deploy manually `iam-stack.yaml` with stack name `privacysexy-iam-stack` (to follow the convention)
-     - It'll give you deploy user. Go to console &  generate secret id + key (Security credentials => Create access key) for the user [IAM users](https://console.aws.amazon.com/iam/home#/users).
-       - 🚶 Deploy secrets:
-         - Add secret id & key in GitHub Secrets.
-           - `AWS_DEPLOYMENT_USER_ACCESS_KEY_ID`, `AWS_DEPLOYMENT_USER_SECRET_ACCESS_KEY`
-         - Add more secrets given from Outputs section of the CloudFormation stack.
-     - Run GitHub actions to deploy rest of the application.
-       - It'll run `certificate-stack.yaml` and then `iam-stack.yaml`.
-
-2. **Configure your domain registrar**
-   - ❗ **Web stack will fail** after DNS stack because you need to validate your domain.
-   - 🚶 Go to your domain registrar and change name servers to NS values
-     - `dns-stack.yaml` outputs those in CloudFormation stack.
-     - You can alternatively find those in [Route53](https://console.aws.amazon.com/route53/home#hosted-zones)
-   - When nameservers of your domain updated, the certification will get validated automatically, you can then delete the failed stack in CloudFormation & re-run the GitHub actions.
+[![CI/CD to AWS with GitHub Actions](docs/gitops.png)](.github/workflows/build-and-deploy.yaml)
 
 ## Thank you for the awesome projects 🍺
 
