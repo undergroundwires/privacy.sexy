@@ -19,6 +19,10 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
       - name: Install and Publish
         run: |
+          if ! [ -z "$(git describe --abbrev=0 --tags 2>/dev/null)" ]; then 
+            echo "Last commit is already tagged"
+            exit 0;
+          fi;
           npm version patch -m "🚀 upgraded to %s"
           git push --set-upstream origin master && git push --tags
         env:
