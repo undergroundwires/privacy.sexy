@@ -71,7 +71,7 @@ Fork it & add more scripts in [application.yaml](src/application/application.yam
 
 ## Thank you for the awesome projects 🍺
 
-- [Vue.js](https://vuejs.org/) the only big JavaScript framework that's not backed by companies that make money off your data.
+- [Vue.js](https://vuejs.org/) the privacy friendliest JavaScript framework
 - [liquor-tree](https://GitHub.com/amsik/liquor-tree) for the awesome & super extensible tree component.
 - [Ace](https://ace.c9.io/) for code box.
 - [FileSaver.js](https://GitHub.com/eligrey/FileSaver.js) for save file dialog.
