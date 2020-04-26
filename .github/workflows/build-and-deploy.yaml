@@ -6,7 +6,26 @@ on:
     - master
 
 jobs:
+  increase-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: Setup GIT
+        run: |
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git config user.name "$GITHUB_ACTOR"
+      - name: Install and Publish
+        run: |
+          npm version patch -m "🚀 upgraded to %s"
+          git push --set-upstream origin master && git push --tags
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
   build-and-deploy:
+    needs: increase-version
     runs-on: ubuntu-18.04
     steps:
       -

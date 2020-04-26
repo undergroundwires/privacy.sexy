@@ -67,7 +67,7 @@ Fork it & add more scripts in [application.yaml](src/application/application.yam
   - Deploy infrastructure ► Deploy web application ► Invalidate CloudFront Cache
 - See more at [build-and-deploy.yaml](.GitHub/workflows/build-and-deploy.yaml)
 
-![CI/CD to AWS with GitHub Actions](docs/ci-cd.png)
+![CI/CD to AWS with GitHub Actions](docs/gitops.png)
 
 ##### CloudFormation
 
