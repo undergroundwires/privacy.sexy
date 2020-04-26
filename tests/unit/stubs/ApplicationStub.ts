@@ -5,7 +5,7 @@ export class ApplicationStub implements IApplication {
     public readonly totalCategories = 0;
     public readonly name = 'StubApplication';
     public readonly repositoryUrl = 'https://privacy.sexy';
-    public readonly version = 1;
+    public readonly version = '0.1.0';
     public readonly categories = new Array<ICategory>();
 
     public withCategory(category: ICategory): IApplication {

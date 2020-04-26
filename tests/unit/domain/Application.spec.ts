@@ -11,7 +11,7 @@ describe('Application', () => {
             new ScriptStub('S3').withIsRecommended(true),
             new ScriptStub('S4').withIsRecommended(true),
         ];
-        const sut = new Application('name', 'repo', 2, [
+        const sut = new Application('name', 'repo', '0.1.0', [
             new CategoryStub(3).withScripts(expected[0], new ScriptStub('S1').withIsRecommended(false)),
             new CategoryStub(2).withScripts(expected[1], new ScriptStub('S2').withIsRecommended(false)),
         ]);
@@ -28,7 +28,7 @@ describe('Application', () => {
         const categories = [];
 
         // act
-        function construct() { return new Application('name', 'repo', 2, categories); }
+        function construct() { return new Application('name', 'repo', '0.1.0', categories); }
 
         // assert
         expect(construct).to.throw('Application must consist of at least one category');
@@ -41,7 +41,7 @@ describe('Application', () => {
         ];
 
         // act
-        function construct() { return new Application('name', 'repo',  2, categories); }
+        function construct() { return new Application('name', 'repo',  '0.1.0', categories); }
 
         // assert
         expect(construct).to.throw('Application must consist of at least one script');
@@ -54,7 +54,7 @@ describe('Application', () => {
         ];
 
         // act
-        function construct() { return new Application('name', 'repo', 2, categories); }
+        function construct() { return new Application('name', 'repo', '0.1.0', categories); }
 
         // assert
         expect(construct).to.throw('Application must consist of at least one recommended script');

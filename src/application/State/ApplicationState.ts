@@ -37,7 +37,7 @@ export class ApplicationState implements IApplicationState {
         /** Initially selected scripts */
         public readonly defaultScripts: Script[]) {
         this.selection = new UserSelection(app, defaultScripts);
-        this.code = new ApplicationCode(this.selection, app.version.toString());
+        this.code = new ApplicationCode(this.selection, app.version);
         this.filter = new UserFilter(app);
     }
 }

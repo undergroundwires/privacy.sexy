@@ -15,7 +15,7 @@ export function parseApplication(): Application {
     const app = new Application(
         applicationFile.name,
         applicationFile.repositoryUrl,
-        applicationFile.version,
+        process.env.VUE_APP_VERSION,
         categories);
     return app;
 }
