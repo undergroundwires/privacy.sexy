@@ -1,13 +1,9 @@
 name: Run tests
 
-on:
-  push:
-    branches:
-      - '*'
-      - '!master'
+on: [push, pull_request]
 
 jobs:
-  build-and-deploy:
+  run-tests:
     runs-on: ubuntu-latest
     steps:
       -
