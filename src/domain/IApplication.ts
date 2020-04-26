@@ -4,7 +4,7 @@ import { ICategory } from '@/domain/ICategory';
 export interface IApplication {
     readonly name: string;
     readonly repositoryUrl: string;
-    readonly version: number;
+    readonly version: string;
     readonly categories: ReadonlyArray<ICategory>;
     readonly totalScripts: number;
     readonly totalCategories: number;
