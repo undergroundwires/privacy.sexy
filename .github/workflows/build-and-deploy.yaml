@@ -12,8 +12,11 @@ jobs:
       - 
         name: Checkout
         uses: actions/checkout@v2
-      - name: Fetch tags
-        run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+        with:
+          fetch-depth: 0 # 0 means all history, required for tags
+      - 
+        name: Fetch tags
+        run: git fetch --all --tags
       - 
         name: Setup Node.js
         uses: actions/setup-node@v1
