@@ -6,7 +6,9 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "test:unit": "vue-cli-service test:unit"
+    "test:unit": "vue-cli-service test:unit",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.26",
@@ -21,7 +23,8 @@
     "v-tooltip": "^2.0.2",
     "vue": "^2.6.11",
     "vue-class-component": "^7.1.0",
-    "vue-property-decorator": "^8.3.0"
+    "vue-property-decorator": "^8.3.0",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "@types/chai": "^4.2.7",
@@ -38,5 +41,6 @@
     "js-yaml-loader": "^1.2.2",
     "typescript": "^3.7.4",
     "vue-template-compiler": "^2.6.11"
-  }
+  },
+  "snyk": true
 }
