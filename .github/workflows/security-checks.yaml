@@ -1,4 +1,4 @@
-name: Quality checks
+name: Security checks
 
 on:
   pull_request:
@@ -22,16 +22,3 @@ jobs:
       -
         name: NPM audit
         run: npm audit
-
-  nodejsscan:
-    runs-on: ubuntu-latest
-    steps:
-      - 
-        name: Checkout
-        uses: actions/checkout@v2
-      -
-        name: njsscan
-        id: njsscan
-        uses: ajinabraham/njsscan-action@v5
-        with:
-          args: '.'

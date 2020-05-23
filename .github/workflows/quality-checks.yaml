@@ -19,7 +19,7 @@ jobs:
           node-version: 14.x
       -
         name: Install dependencies
-        run: npm install --only=dev
+        run: npm ci
       -
         name: Lint vue
         run: npm run lint:vue
