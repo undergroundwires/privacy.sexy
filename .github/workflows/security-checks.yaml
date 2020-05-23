@@ -1,0 +1,37 @@
+name: Quality checks
+
+on:
+  pull_request:
+    branches:
+      - master
+  schedule:
+    - cron: '0 0 * * 0'
+
+jobs:
+  npm-audit:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      -
+        name: NPM audit
+        run: npm audit
+
+  nodejsscan:
+    runs-on: ubuntu-latest
+    steps:
+      - 
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: njsscan
+        id: njsscan
+        uses: ajinabraham/njsscan-action@v5
+        with:
+          args: '.'
