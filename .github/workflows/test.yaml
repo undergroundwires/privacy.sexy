@@ -19,7 +19,7 @@ jobs:
           node-version: '11.x'
       -
         name: Install dev dependencies
-        run: npm ci --only=dev
+        run: npm install --only=dev
       -
         name: Run tests
         run: npm run test:unit
