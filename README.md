@@ -67,16 +67,7 @@ Fork it & add more scripts in [application.yaml](src/application/application.yam
 
 #### GitOps: CI/CD to AWS
 
+- CI/CD is fully automated for this repo using different GIT events & GitHub actions.
 - Everything that's merged in the master goes directly to production.
 
 [![CI/CD to AWS with GitHub Actions](docs/gitops.png)](.github/workflows/)
-
-## Thank you for the awesome projects 🍺
-
-- [Vue.js](https://vuejs.org/) the privacy friendliest JavaScript framework
-- [liquor-tree](https://GitHub.com/amsik/liquor-tree) for the awesome & super extensible tree component.
-- [Ace](https://ace.c9.io/) for code box.
-- [FileSaver.js](https://GitHub.com/eligrey/FileSaver.js) for save file dialog.
-- [chai](https://GitHub.com/chaijs/chai) & [mocha](https://GitHub.com/mochajs/mocha) for making testing fun.
-- [js-yaml-loader](https://GitHub.com/wwilsman/js-yaml-loader) for ahead of time loading [application.yaml](src/application/application.yaml)
-- [v-tooltip](https://GitHub.com/Akryum/v-tooltip) takes seconds to have a tooltip, exactly what I needed.
