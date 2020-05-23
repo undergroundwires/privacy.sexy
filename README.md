@@ -50,7 +50,7 @@ Fork it & add more scripts in [application.yaml](src/application/application.yam
   - **Application Layer**
     - Keeps the application state
       - The [state](src/application/State/ApplicationState.ts) is a mutable singleton & event producer.
-    - The application is defined & controlled in a [single YAML file](`\application\application.yaml`) (see [Data-driven programming](https://en.wikipedia.org/wiki/Data-driven_programming))
+    - The application is defined & controlled in a [single YAML file](src/application/application.yaml) (see [Data-driven programming](https://en.wikipedia.org/wiki/Data-driven_programming))
 
 ![DDD + vue.js](docs/app-ddd.png)
 
@@ -76,5 +76,5 @@ Fork it & add more scripts in [application.yaml](src/application/application.yam
 - [Ace](https://ace.c9.io/) for code box.
 - [FileSaver.js](https://GitHub.com/eligrey/FileSaver.js) for save file dialog.
 - [chai](https://GitHub.com/chaijs/chai) & [mocha](https://GitHub.com/mochajs/mocha) for making testing fun.
-- [js-yaml-loader](https://GitHub.com/wwilsman/js-yaml-loader) for ahead of time loading `application.yml`
+- [js-yaml-loader](https://GitHub.com/wwilsman/js-yaml-loader) for ahead of time loading [application.yaml](src/application/application.yaml)
 - [v-tooltip](https://GitHub.com/Akryum/v-tooltip) takes seconds to have a tooltip, exactly what I needed.
