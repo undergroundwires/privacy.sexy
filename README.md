@@ -70,13 +70,12 @@ Fork it & add more scripts in [application.yaml](src/application/application.yam
 #### GitOps: CI/CD to AWS
 
 - Everything that's merged in the master goes directly to production.
-- See more at [build-and-deploy.yaml](.github/workflows/build-and-deploy.yaml), and [run-tests.yaml](.github/workflows/run-tests.yaml)
 
 [![CI/CD to AWS with GitHub Actions](docs/gitops.png)](.github/workflows/)
 
 ## Thank you for the awesome projects 🍺
 
-- [Vue.js](https://vuejs.org/) the privacy friendliest JavaScript framewo
+- [Vue.js](https://vuejs.org/) the privacy friendliest JavaScript framework
 - [liquor-tree](https://GitHub.com/amsik/liquor-tree) for the awesome & super extensible tree component.
 - [Ace](https://ace.c9.io/) for code box.
 - [FileSaver.js](https://GitHub.com/eligrey/FileSaver.js) for save file dialog.
