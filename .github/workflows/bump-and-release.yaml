@@ -1,0 +1,23 @@
+name: Bump & release
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - master
+  push: # Ensure a new release is created for each new tag
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  bump-version-and-release:
+    if: > # Push => Ensure only changes from master. PR => to not trigger when closing PR without merging
+      (github.event_name == 'push' && github.event.base_ref == 'refs/heads/master')
+      || github.event.pull_request.merged == true 
+    runs-on: ubuntu-latest
+    steps:
+      - 
+        uses: undergroundwires/bump-everywhere@master
+        with:
+          user: undergroundwires-bot
+          release-token: ${{secrets.BUMP_GITHUB_PAT}} # Does not trigger release pipeline if we use default token: https://github.community/t5/GitHub-Actions/Github-Action-trigger-on-release-not-working-if-releases-was/td-p/34559

@@ -1,0 +1,43 @@
+name: Quality checks
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      -
+        name: Install dependencies
+        run: npm install --only=dev
+      -
+        name: Lint TypeScript
+        run: npm run lint-ts
+      -
+        name: Lint yaml
+        run: npm run lint-yaml
+      -
+        name: Lint vue
+        run: npm run lint-vue
+      -
+        name: Lint SCSS
+        run: npm run lint-scss
+      -
+        name: 'Validate md: Relative URLs'
+        run: npm run lint-md-urls-relative
+      -
+        name: 'Validate md: Enforce standards'
+        run: npm run lint-md
+      -
+        name: 'Validate md: Ensure consistency'
+        run: npm run lint-md-consistency

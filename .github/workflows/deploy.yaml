@@ -1,9 +1,8 @@
 name: Build & deploy
 
 on:
-  push:
-    branches:
-    - master
+  release:
+    types: [created] # will be triggered when a NON-draft release is created and published.
 
 jobs:
   increase-version:
