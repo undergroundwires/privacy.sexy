@@ -21,23 +21,17 @@ jobs:
         name: Install dependencies
         run: npm install --only=dev
       -
-        name: Lint TypeScript
-        run: npm run lint-ts
+        name: Lint vue
+        run: npm run lint:vue
       -
         name: Lint yaml
-        run: npm run lint-yaml
-      -
-        name: Lint vue
-        run: npm run lint-vue
-      -
-        name: Lint SCSS
-        run: npm run lint-scss
+        run: npm run lint:yaml
       -
         name: 'Validate md: Relative URLs'
-        run: npm run lint-md-urls-relative
+        run: npm run lint:md:relative-urls
       -
         name: 'Validate md: Enforce standards'
-        run: npm run lint-md
+        run: npm run lint:md
       -
         name: 'Validate md: Ensure consistency'
-        run: npm run lint-md-consistency
+        run: npm run lint:md:consistency
