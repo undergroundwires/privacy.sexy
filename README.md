@@ -68,6 +68,7 @@ Fork it & add more scripts in [application.yaml](src/application/application.yam
 #### GitOps: CI/CD to AWS
 
 - CI/CD is fully automated for this repo using different GIT events & GitHub actions.
+  - Versioning, tagging, creation of `CHANGELOG.md` and releasing is automated using [bump-everywhere](https://github.com/undergroundwires/bump-everywhere) action
 - Everything that's merged in the master goes directly to production.
 
 [![CI/CD to AWS with GitHub Actions](docs/gitops.png)](.github/workflows/)
