@@ -1,5 +1,7 @@
 # privacy.sexy
 
+> Web tool to enforce privacy & security best-practices on Windows, because privacy is sexy 🍑🍆
+
 ![Vulnerabilities](https://snyk.io/test/github/undergroundwires/privacy.sexy/badge.svg)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/undergroundwires/privacy.sexy/issues)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/undergroundwires/privacy.sexy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/undergroundwires/privacy.sexy/context:javascript)
@@ -10,9 +12,6 @@
 [![Bump & release status](https://github.com/undergroundwires/privacy.sexy/workflows/Bump%20&&%20&release/badge.svg)](https://github.com/undergroundwires/privacy.sexy/actions)
 [![Deploy status](https://github.com/undergroundwires/privacy.sexy/workflows/Build%20&%20deploy/badge.svg)](https://github.com/undergroundwires/privacy.sexy/actions)
 [![Auto-versioned by bump-everywhere](https://github.com/undergroundwires/bump-everywhere/blob/master/badge.svg?raw=true)](https://github.com/undergroundwires/bump-everywhere)
-
-Web tool to generate scripts for enforcing privacy & security best-practices such as stopping data collection of Windows and different softwares on it.
-> because privacy is sexy 🍑🍆
 
 [https://privacy.sexy](https://privacy.sexy)
 
