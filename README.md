@@ -1,13 +1,16 @@
 # privacy.sexy
 
-![Build & deploy status](https://github.com/undergroundwires/privacy.sexy/workflows/Build%20&%20deploy/badge.svg)
-![Vulnerabilities](https://snyk.io/test/github/undergroundwires/privacy.sexy/badge.svg)
+> Web tool to enforce privacy & security best-practices on Windows, because privacy is sexy 🍑🍆
+
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/undergroundwires/privacy.sexy/issues)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/undergroundwires/privacy.sexy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/undergroundwires/privacy.sexy/context:javascript)
 [![Maintainability](https://api.codeclimate.com/v1/badges/3a70b7ef602e2264342c/maintainability)](https://codeclimate.com/github/undergroundwires/privacy.sexy/maintainability)
-
-Web tool to generate scripts for enforcing privacy & security best-practices such as stopping data collection of Windows and different softwares on it.
-> because privacy is sexy 🍑🍆
+[![Tests status](https://github.com/undergroundwires/privacy.sexy/workflows/Test/badge.svg)](https://github.com/undergroundwires/privacy.sexy/actions)
+[![Quality checks status](https://github.com/undergroundwires/privacy.sexy/workflows/Quality%20checks/badge.svg)](https://github.com/undergroundwires/privacy.sexy/actions)
+[![Security checks status](https://github.com/undergroundwires/privacy.sexy/workflows/Security%20checks/badge.svg)](https://github.com/undergroundwires/privacy.sexy/actions)
+[![Bump & release status](https://github.com/undergroundwires/privacy.sexy/workflows/Bump%20&%20release/badge.svg)](https://github.com/undergroundwires/privacy.sexy/actions)
+[![Deploy status](https://github.com/undergroundwires/privacy.sexy/workflows/Build%20&%20deploy/badge.svg)](https://github.com/undergroundwires/privacy.sexy/actions)
+[![Auto-versioned by bump-everywhere](https://github.com/undergroundwires/bump-everywhere/blob/master/badge.svg?raw=true)](https://github.com/undergroundwires/bump-everywhere)
 
 [https://privacy.sexy](https://privacy.sexy)
 
@@ -50,7 +53,7 @@ Fork it & add more scripts in [application.yaml](src/application/application.yam
   - **Application Layer**
     - Keeps the application state
       - The [state](src/application/State/ApplicationState.ts) is a mutable singleton & event producer.
-    - The application is defined & controlled in a [single YAML file](`\application\application.yaml`) (see [Data-driven programming](https://en.wikipedia.org/wiki/Data-driven_programming))
+    - The application is defined & controlled in a [single YAML file](src/application/application.yaml) (see [Data-driven programming](https://en.wikipedia.org/wiki/Data-driven_programming))
 
 ![DDD + vue.js](docs/app-ddd.png)
 
@@ -64,17 +67,8 @@ Fork it & add more scripts in [application.yaml](src/application/application.yam
 
 #### GitOps: CI/CD to AWS
 
+- CI/CD is fully automated for this repo using different GIT events & GitHub actions.
+  - Versioning, tagging, creation of `CHANGELOG.md` and releasing is automated using [bump-everywhere](https://github.com/undergroundwires/bump-everywhere) action
 - Everything that's merged in the master goes directly to production.
-- See more at [build-and-deploy.yaml](.github/workflows/build-and-deploy.yaml), and [run-tests.yaml](.github/workflows/run-tests.yaml)
 
-[![CI/CD to AWS with GitHub Actions](docs/gitops.png)](.github/workflows/build-and-deploy.yaml)
-
-## Thank you for the awesome projects 🍺
-
-- [Vue.js](https://vuejs.org/) the only big JavaScript framework that's not backed by companies that make money off your data.
-- [liquor-tree](https://GitHub.com/amsik/liquor-tree) for the awesome & super extensible tree component.
-- [Ace](https://ace.c9.io/) for code box.
-- [FileSaver.js](https://GitHub.com/eligrey/FileSaver.js) for save file dialog.
-- [chai](https://GitHub.com/chaijs/chai) & [mocha](https://GitHub.com/mochajs/mocha) for making testing fun.
-- [js-yaml-loader](https://GitHub.com/wwilsman/js-yaml-loader) for ahead of time loading `application.yml`
-- [v-tooltip](https://GitHub.com/Akryum/v-tooltip) takes seconds to have a tooltip, exactly what I needed.
+[![CI/CD to AWS with GitHub Actions](docs/gitops.png)](.github/workflows/)

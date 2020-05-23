@@ -37,7 +37,7 @@ declare module 'liquor-tree' {
         children: ReadonlyArray<ILiquorTreeNewNode> | undefined;
         data: ICustomLiquorTreeData;
     }
-    
+
     // https://amsik.github.io/liquor-tree/#Component-Options
     export interface ILiquorTreeOptions {
         multiple: boolean;

@@ -1,6 +1,9 @@
-name: Run tests
+name: Test
 
-on: [push, pull_request]
+on:
+  pull_request:
+    branches:
+      - master
 
 jobs:
   run-tests:
@@ -8,15 +11,15 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       -
         name: Setup node
         uses: actions/setup-node@v1
         with:
-          node-version: '11.x'
+          node-version: '14.x'
       -
         name: Install dependencies
-        run: npm install
+        run: npm ci
       -
         name: Run tests
         run: npm run test:unit
