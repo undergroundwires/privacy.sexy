@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint:vue": "vue-cli-service lint --no-fix",
-    "lint:yaml": "yamllint **/*.yaml",
+    "lint:yaml": "yamllint **/*.yaml --ignore=node_modules/**/*.yaml",
     "test:unit": "vue-cli-service test:unit",
     "lint:md": "markdownlint **/*.md --ignore node_modules",
     "lint:md:relative-urls": "remark . --frail --use remark-validate-links",
