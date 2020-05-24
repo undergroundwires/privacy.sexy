@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.4.4 (2020-05-24)
+
+* fixed close card button not being visible & cleanup | [commit](https://github.com/undergroundwires/privacy.sexy/commit/49249399fe89575ac26b26a2b063c50b29b2f554)
+* new footer with privacy policy | [commit](https://github.com/undergroundwires/privacy.sexy/commit/ff334704466a1d8e04660ac61da777681ebb93e5)
+* one command to lint everything "npm run lint" | [commit](https://github.com/undergroundwires/privacy.sexy/commit/690f34686f4d35f09e78e5870447b09d7dfaa91b)
+* new footer with privacy policy | [commit](https://github.com/undergroundwires/privacy.sexy/commit/fb40bc571becf4e97d782af7d0de311cab37cec2)
+* fix "group by" overflows on smaller screens | [commit](https://github.com/undergroundwires/privacy.sexy/commit/e07609779b605ce7c80f75f186e4bacff60e8861)
+* clicking outside of a card closes it | [commit](https://github.com/undergroundwires/privacy.sexy/commit/7b033f8d5b0e086c6076c1db3391144ae14ad296)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.4.3...0.4.4)
+
 ## 0.4.3 (2020-05-23)
 
 * removed redundant documentation | [commit](https://github.com/undergroundwires/privacy.sexy/commit/749a140eb8dba09cb67fec2f8dec937e66e3cff5)
