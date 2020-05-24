@@ -8,11 +8,15 @@
       <div class="card__inner">
         <span v-if="cardTitle && cardTitle.length > 0">{{cardTitle}}</span>
         <span v-else>Oh no 😢</span>
-        <font-awesome-icon :icon="['far', isExpanded ? 'folder-open' : 'folder']" class="expand-button"  />
+        <font-awesome-icon :icon="['far', isExpanded ? 'folder-open' : 'folder']" class="card__inner__expand-icon" />
       </div>
       <div class="card__expander" v-on:click.stop>
-          <font-awesome-icon :icon="['fas', 'times']"  class="close-button" v-on:click="onSelected(false)"/>
+        <div class="card__expander__content">
           <ScriptsTree :categoryId="categoryId"></ScriptsTree>
+        </div>
+        <div class="card__expander__close-button">
+          <font-awesome-icon :icon="['fas', 'times']"  v-on:click="onSelected(false)"/>
+        </div>
     </div>
     </div>
 </template>
@@ -63,73 +67,66 @@ export default class CardListItem extends StatefulVue {
 <style scoped lang="scss">
 @import "@/presentation/styles/colors.scss";
 
+$big-screen-width: 991px;
+$medium-screen-width: 767px;
+$small-screen-width: 380px;
+
 .card {
   margin: 15px; 
   width: calc((100% / 3) - 30px);
   transition: all 0.2s ease-in-out;
 
-  //media queries for stacking cards
-  @media screen and (max-width: 991px) {
-    width: calc((100% / 2) - 30px);
-  }
+  // Media queries for stacking cards
+  @media screen and (max-width: $big-screen-width) {  width: calc((100% / 2) - 30px); }
+  @media screen and (max-width: $medium-screen-width) {  width: 100%; }
+  @media screen and (max-width: $small-screen-width) {  width: 90%; }
 
-  @media screen and (max-width: 767px) {
-    width: 100%;
-  }
-  
-  @media screen and (max-width: 380px) {
-    width: 90%;
-  }
-
-  &:hover {
-    .card__inner {
-      background-color: $accent;
-      transform: scale(1.05);
-    }
-  }
-
-  &__inner {
-    width: 100%;
+  &__inner {  
     padding: 30px;
     position: relative;
     cursor: pointer;
-    
     background-color: $gray;
     color: $light-gray;
     font-size: 1.5em;
     text-transform: uppercase;
     text-align: center;
-
     transition: all 0.2s ease-in-out;
-    
+
+    &:hover {
+      background-color: $accent;
+      transform: scale(1.05);
+    }
     &:after {
       transition: all 0.3s ease-in-out;
     }
-    
-    .expand-button {
+  
+    &__expand-icon {
       width: 100%;
       margin-top: .25em;
     }
   }
 
-  //Expander
   &__expander {
     transition: all 0.2s ease-in-out;
-    background-color: $slate;
-    width: 100%;
     position: relative;
-    
+    background-color: $slate;
+    color: $light-gray;
     display: flex;
-    justify-content: center;
     align-items: center;
+
+    &__content {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      word-break: break-word;
+    }
     
-    .close-button {
-      font-size: 0.75em;
-      position: absolute;
-      top: 10px;
-      right: 10px;
+    &__close-button {
+      width: auto;
+      font-size: 1.5em;
+      align-self: flex-start;
+      margin-right:0.25em;
       cursor: pointer;
-      
       &:hover {
         opacity: 0.9;
       }
@@ -137,33 +134,27 @@ export default class CardListItem extends StatefulVue {
   }
 
   &.is-collapsed {
-    
     .card__inner {
       &:after {
         content: "";
         opacity: 0;
       }
     }
+
     .card__expander {
       max-height: 0;
       min-height: 0;
       overflow: hidden;
-      margin-top: 0;
       opacity: 0;
     }
   }
 
   &.is-expanded {
-
     .card__inner {
       background-color: $accent;
-      
       &:after{
         content: "";
-        opacity: 1;
         display: block;
-        height: 0;
-        width: 0;
         position: absolute;
         bottom: -30px;
         left: calc(50% - 15px);
@@ -171,14 +162,12 @@ export default class CardListItem extends StatefulVue {
         border-right: 15px solid transparent;
         border-bottom: 15px solid #333a45;
       }
-      
     }
 
     .card__expander {
       min-height: 200px;
       // max-height: 1000px;
       // overflow-y: auto;
-
       margin-top: 30px;
       opacity: 1;
     }
@@ -205,12 +194,7 @@ export default class CardListItem extends StatefulVue {
   }
 }
 
-
-//Expander Widths
-
-//when 3 cards in a row
-@media screen and (min-width: 992px) {
-
+@media screen and (min-width: $big-screen-width) { // when 3 cards in a row
   .card:nth-of-type(3n+2) .card__expander {
     margin-left: calc(-100% - 30px);
   }
@@ -223,12 +207,9 @@ export default class CardListItem extends StatefulVue {
   .card__expander {
     width: calc(300% + 60px);
   }
-
 }
 
-//when 2 cards in a row
-@media screen and (min-width: 768px) and (max-width: 991px) {
-
+@media screen and (min-width: $medium-screen-width) and (max-width: $big-screen-width) { // when 2 cards in a row
   .card:nth-of-type(2n+2) .card__expander {
     margin-left: calc(-100% - 30px);
   }
@@ -238,6 +219,5 @@ export default class CardListItem extends StatefulVue {
   .card__expander {
     width: calc(200% + 30px);
   }
-
 }
 </style>
