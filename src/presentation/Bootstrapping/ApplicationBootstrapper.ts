@@ -1,3 +1,4 @@
+import { VModalBootstrapper } from './Modules/VModalBootstrapper';
 import { TreeBootstrapper } from './Modules/TreeBootstrapper';
 import { IconBootstrapper } from './Modules/IconBootstrapper';
 import { VueConstructor, IVueBootstrapper } from './IVueBootstrapper';
@@ -19,6 +20,7 @@ export class ApplicationBootstrapper implements IVueBootstrapper {
             new TreeBootstrapper(),
             new VueBootstrapper(),
             new TooltipBootstrapper(),
+            new VModalBootstrapper(),
         ];
     }
 }

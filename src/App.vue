@@ -5,7 +5,7 @@
           <TheSearchBar class="row" />
           <TheScripts class="row"/>
           <TheCodeArea class="row" theme="xcode" />
-          <TheCodeButtons class="row" />
+          <TheCodeButtons class="row code-buttons" />
           <TheFooter />
       </div>
    </div>
@@ -66,6 +66,10 @@ body {
 
     .row {
       margin-bottom: 10px;
+    }
+
+    .code-buttons {
+      padding-bottom: 10px;
     }
   }
 }
