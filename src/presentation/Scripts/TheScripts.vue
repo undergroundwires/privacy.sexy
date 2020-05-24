@@ -1,8 +1,8 @@
 <template>
     <div>
         <div class="help-container">
-            <TheSelector class="left" />
-            <TheGrouper class="right"
+            <TheSelector />
+            <TheGrouper
                 v-on:groupingChanged="onGroupingChanged($event)"
                 v-show="!this.isSearching" />
         </div>
@@ -119,19 +119,10 @@
         }
     }
 }
+
 .help-container {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  .center {
-      justify-content: center;
-  }
-  .left {
-      justify-content: flex-start;
-  }
-  .right {
-      justify-content: flex-end;
-  }
+  flex-wrap: wrap;
 }
-
 </style>
