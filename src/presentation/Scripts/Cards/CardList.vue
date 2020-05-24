@@ -4,6 +4,7 @@
       <CardListItem
         class="card"
         v-for="categoryId of categoryIds"
+        :data-category="categoryId"
         v-bind:key="categoryId"
         :categoryId="categoryId"
         :activeCategoryId="activeCategoryId"
@@ -32,6 +33,9 @@ export default class CardList extends StatefulVue {
   public async mounted() {
     const state = await this.getCurrentStateAsync();
     this.setCategories(state.app.categories);
+    this.onOutsideOfActiveCardClicked(() => {
+      this.activeCategoryId = null;
+    });
   }
 
   public onSelected(categoryId: number, isExpanded: boolean) {
@@ -41,7 +45,21 @@ export default class CardList extends StatefulVue {
   private setCategories(categories: ReadonlyArray<ICategory>): void {
     this.categoryIds = categories.map((category) => category.id);
   }
+
+  private onOutsideOfActiveCardClicked(callback) {
+    const outsideClickListener = (event) => {
+      if (!this.activeCategoryId) {
+        return;
+      }
+      const element = document.querySelector(`[data-category="${this.activeCategoryId}"]`);
+      if (!element.contains(event.target)) {
+        callback();
+      }
+    };
+    document.addEventListener('click', outsideClickListener);
+  }
 }
+
 </script>
 
 <style scoped lang="scss">
