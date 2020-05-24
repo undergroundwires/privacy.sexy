@@ -5,9 +5,10 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "test:unit": "vue-cli-service test:unit",
+    "lint": "npm run lint:vue && npm run lint:yaml && npm run lint:md && npm run lint:md:relative-urls && npm run lint:md:consistency",
     "lint:vue": "vue-cli-service lint --no-fix",
     "lint:yaml": "yamllint **/*.yaml --ignore=node_modules/**/*.yaml",
-    "test:unit": "vue-cli-service test:unit",
     "lint:md": "markdownlint **/*.md --ignore node_modules",
     "lint:md:relative-urls": "remark . --frail --use remark-validate-links",
     "lint:md:consistency": "remark . --frail --use remark-preset-lint-consistent"
