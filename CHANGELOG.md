@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.4.5 (2020-06-13)
+
+* automated using bump-everywhere + more quality checks (#8) | [commit](https://github.com/undergroundwires/privacy.sexy/commit/a27ca65b9eb29f009553e047bfb52f4200c0bd17)
+* fixed close card button not being visible & cleanup | [commit](https://github.com/undergroundwires/privacy.sexy/commit/49249399fe89575ac26b26a2b063c50b29b2f554)
+* new footer with privacy policy | [commit](https://github.com/undergroundwires/privacy.sexy/commit/ff334704466a1d8e04660ac61da777681ebb93e5)
+* one command to lint everything "npm run lint" | [commit](https://github.com/undergroundwires/privacy.sexy/commit/690f34686f4d35f09e78e5870447b09d7dfaa91b)
+* new footer with privacy policy | [commit](https://github.com/undergroundwires/privacy.sexy/commit/fb40bc571becf4e97d782af7d0de311cab37cec2)
+* fix "group by" overflows on smaller screens | [commit](https://github.com/undergroundwires/privacy.sexy/commit/e07609779b605ce7c80f75f186e4bacff60e8861)
+* clicking outside of a card closes it | [commit](https://github.com/undergroundwires/privacy.sexy/commit/7b033f8d5b0e086c6076c1db3391144ae14ad296)
+* automated using bump-everywhere + more quality checks (#8) | [commit](https://github.com/undergroundwires/privacy.sexy/commit/4a91e8ccd8a707bc6bea34ee28cff7fa4f66ee2f)
+* fixed close card button not being visible & cleanup | [commit](https://github.com/undergroundwires/privacy.sexy/commit/0d2efe5b05aa965458b78b8fa43754ce2f4fe11b)
+* new footer with privacy policy | [commit](https://github.com/undergroundwires/privacy.sexy/commit/e2ab124fb799f56ada3570fdc911361cb803e889)
+* one command to lint everything "npm run lint" | [commit](https://github.com/undergroundwires/privacy.sexy/commit/bb98d20637cbf1d524ebb2973e308773006e3153)
+* fix "group by" overflows on smaller screens | [commit](https://github.com/undergroundwires/privacy.sexy/commit/c668a97950a1cb7c8bf2a7fd8a72d1101e65e8ce)
+* clicking outside of a card closes it | [commit](https://github.com/undergroundwires/privacy.sexy/commit/aab8f21a8d8dbed54798af581e6e1ad9e86a4be1)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.4.4...0.4.5)
+
 ## 0.4.4 (2020-05-24)
 
 * fixed close card button not being visible & cleanup | [commit](https://github.com/undergroundwires/privacy.sexy/commit/49249399fe89575ac26b26a2b063c50b29b2f554)
