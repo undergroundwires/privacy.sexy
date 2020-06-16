@@ -267,7 +267,7 @@ actions:
             -
                 name: Empty trash bin
                 recommend: false
-                code: rd /s %systemdrive%\$Recycle.bin
+                code: rd /s /q %systemdrive%\$Recycle.bin
 
     -
         category: Disable OS data collection
@@ -294,7 +294,7 @@ actions:
                             sc config DiagTrack start=disabled
                             sc config dmwappushservice start=disabled
                             sc config diagnosticshub.standardcollector.service start=disabled
-                            sc config diagsvc start=disabled REM Disable Diagnostic Execution Service
+                            sc config diagsvc start=disabled
                     -
                         name: Disable Customer Experience Improvement Program
                         recommend: true
@@ -520,7 +520,7 @@ actions:
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortanaAboveLock" /t REG_DWORD /d 0 /f
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowSearchToUseLocation" /t REG_DWORD /d 0 /f
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "ConnectedSearchUseWeb" /t REG_DWORD /d 0 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "DisableWebSearch" /t REG_DWORD /d 1 / 
+                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "DisableWebSearch" /t REG_DWORD /d 1 /f
                     -
                         name: Disable web search in search bar
                         recommend: true
@@ -973,8 +973,8 @@ actions:
                 name: Force enable data execution prevention (DEP)
                 recommend: false
                 code: |-
-                    reg add "HKLM \ SOFTWARE \ Policies \ Microsoft \ Windows \ Explorer" /v "NoDataExecutionPrevention" /t REG_DWORD /d 0 /f
-                    reg add "HKLM \ SOFTWARE \ Policies \ Microsoft \ Windows \ System" /v "DisableHHDEP" /t REG_DWORD /d 0 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoDataExecutionPrevention" /t REG_DWORD /d 0 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "DisableHHDEP" /t REG_DWORD /d 0 /f
             - 
                 name: Disable AutoPlay and AutoRun
                 recommend: false
