@@ -267,8 +267,11 @@ actions:
             -
                 name: Empty trash bin
                 recommend: false
-                code: rd /s /q %systemdrive%\$Recycle.bin
-
+                code: rd /s %systemdrive%\$Recycle.bin
+            -
+                name: Enable Reset Base in Dism Component Store
+                recommend: true
+                code: reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\SideBySide\Configuration" /v "DisableResetbase" /t "REG_DWORD" /d "0" /f
     -
         category: Disable OS data collection
         children:
@@ -341,7 +344,6 @@ actions:
                 recommend: true
                 code: |-
                     reg add "HKCU\SOFTWARE\Microsoft\Personalization\Settings" /v "AcceptedPrivacyPolicy" /t REG_DWORD /d 0 /f
-                    reg add "HKU\DefaultUser\Software\Microsoft\Personalization\Settings" /v "AcceptedPrivacyPolicy" /d "0" /t REG_DWORD /f
             -
                 name: Disable Windows feedback
                 recommend: true
@@ -501,7 +503,6 @@ actions:
                 code: |-
                     reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}" /v "SensorPermissionState" /d "0" /t REG_DWORD /f
                     reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}" /v Value /t REG_SZ /d Deny /f
-                    reg add "HKU\Defaultuser\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}" /v Value /t REG_SZ /d Deny /f
             -
                 category: Disable windows search data collection
                 children:
@@ -562,9 +563,9 @@ actions:
                         recommend: true
                         docs: https://www.tenforums.com/tutorials/100541-turn-off-suggested-content-settings-app-windows-10-a.html
                         code: |-
-                            reg add HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager /v "SubscribedContent-338393Enabled" /d "0" /t REG_DWORD /f
-                            reg add HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager /v "SubscribedContent-353694Enabled" /d "0" /t REG_DWORD /f
-                            reg add HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager /v "SubscribedContent-353696Enabled" /d "0" /t REG_DWORD /f
+                            reg add HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager /v "SubscribedContent-338393Enabled" /d "0" /t REG_DWORD /f
+                            reg add HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager /v "SubscribedContent-353694Enabled" /d "0" /t REG_DWORD /f
+                            reg add HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager /v "SubscribedContent-353696Enabled" /d "0" /t REG_DWORD /f
             -                
                 name: Disable biometrics
                 recommend: true
@@ -1108,7 +1109,7 @@ actions:
                 docs: https://www.tenforums.com/tutorials/2713-add-remove-recent-files-quick-access-windows-10-a.html
                 code: |-
                     if %PROCESSOR_ARCHITECTURE%==x86 ( REM is 32 bit?
-                        reg add "HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowRecent" /d 0 /t REG_DWORD /f
+                        reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowRecent" /d 0 /t REG_DWORD /f
                     ) else (
                         reg delete HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5} /f
                         reg delete HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5} /f
