@@ -235,7 +235,7 @@ actions:
                             del /f /q %SystemRoot%\Panther\*
                             del /f /q %localappdata%\Microsoft\CLR_v4.0\UsageTraces\*
                             del /f /q %localappdata%\Microsoft\CLR_v4.0_32\UsageTraces\*
-                            del f /q %localappdata%\Microsoft\Windows\WebCache\*
+                            del /f /q %localappdata%\Microsoft\Windows\WebCache\*
                             del /f /q %SystemRoot%\System32\catroot2\dberr.txt
                             del /f /q %SystemRoot%\System32\LogFiles\WMI\*.etl
                             del /f /q %SystemRoot%\System32\LogFiles\setupcln\*
@@ -276,7 +276,7 @@ actions:
         category: Disable OS data collection
         children:
             -
-                category: Disable Windows telemetry & data collection
+                category: Disable Windows telemetry and data collection
                 children:
                     -
                         name: Disable Customer Experience Improvement (CEIP/SQM)
@@ -545,7 +545,7 @@ actions:
                         recommend: true
                         code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v AlwaysUseAutoLangDetection /t REG_DWORD /d 0 /f
             -
-                category: Disable targeted ads & marketing
+                category: Disable targeted ads and marketing
                 children: 
                     -
                         name: Disable ad customization with Advertising ID
@@ -1092,7 +1092,7 @@ actions:
                     reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoPublishingWizard" /t REG_DWORD /d 1 /f
                     reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoWebServices" /t REG_DWORD /d 1 /f
             -
-                name: Disable & auto-clear recent documents in explorer
+                name: Disable and auto-clear recent documents in explorer
                 recommend: true
                 code: |-
                     reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoRecentDocsHistory" /t REG_DWORD /d 1 /f
@@ -1144,7 +1144,7 @@ actions:
                 recommend: true
                 code: sc config RetailDemo start=disabled
             -
-                name: Mail, contact, calendar & user data synchronization. 
+                name: Mail, contact, calendar and user data synchronization. 
                 recommend: false
                 code: |-
                     sc config OneSyncSvc start=disabled
@@ -1246,7 +1246,7 @@ actions:
                         recommend: true
                         code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsFeedbackHub | Remove-AppxPackage"
                     -
-                        name: Windows Alarms & Clock
+                        name: Windows Alarms and Clock
                         code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsAlarms | Remove-AppxPackage"
                     -
                         name: Windows Camera
@@ -1274,13 +1274,13 @@ actions:
                         name: Store Purchase App
                         code: PowerShell -Command "Get-AppxPackage Microsoft.StorePurchaseApp | Remove-AppxPackage"
                     -
-                        name: Snip & Sketch
+                        name: Snip and Sketch
                         code: PowerShell -Command "Get-AppxPackage Microsoft.ScreenSketch | Remove-AppxPackage"
                     -
                         name: Print3D
                         code: PowerShell -Command "Get-AppxPackage Microsoft.Print3D | Remove-AppxPackage"
                     -
-                        name: Paid Wi-Fi & Cellular
+                        name: Paid Wi-Fi and Cellular
                         code: PowerShell -Command "Get-AppxPackage Microsoft.OneConnect | Remove-AppxPackage"
                     -
                         name: Microsoft Solitaire Collection
