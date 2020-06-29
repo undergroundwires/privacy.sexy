@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.7 (2020-06-30)
+
+* removed HKU tweak as all HKU's are changed #10 | [commit](https://github.com/undergroundwires/privacy.sexy/commit/c937af8ee7da9aa95131e56abf7bf24800390fe6)
+* Fixed types + script in "Clear Windows log files" (#15) | [commit](https://github.com/undergroundwires/privacy.sexy/commit/461a4f122b342369db5cc08c5e30961c64e68cdd)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.4.6...0.4.7)
+
 ## 0.4.6 (2020-06-16)
 
 * Fixed Some More Issues (#12) | [commit](https://github.com/undergroundwires/privacy.sexy/commit/52d5713a99422cdf900aba819e49e998abac33cc)
