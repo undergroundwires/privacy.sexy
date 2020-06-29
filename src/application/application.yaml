@@ -1578,9 +1578,3 @@ actions:
                 code: |-
                     del /f /q %AppData%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat
                     copy "%~dpnx0" "%AppData%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat"
-            -
-                name: Apply settings for all future users [EXPERIMENTAL]
-                recommend: false
-                code: |-
-                    REG UNLOAD HKU\DefaultUser
-                    reg load HKU\DefaultUser %SystemDrive%\Users\Default\NTUSER.DAT
