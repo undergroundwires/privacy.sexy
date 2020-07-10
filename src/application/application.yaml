@@ -27,7 +27,7 @@ actions:
                             del /f /q %ProgramFiles(x86)%\Steam\Traces
                             del /f /q %ProgramFiles(x86)%\Steam\appcache\*.log
                     -
-                        name: Clear Visual Studio telemetry & feedback data
+                        name: Clear Visual Studio telemetry and feedback data
                         recommend: true
                         code: |-
                             rmdir /s /q "%AppData%\vstelemetry" 2>nul
