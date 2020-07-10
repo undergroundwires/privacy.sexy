@@ -1188,401 +1188,724 @@ actions:
                 recommend: false
                 code: sc stop "MessagingService" & sc config "MessagingService" start=disabled
     -
-        category: Uninstall apps
+        category: Remove bloatware
         children:
             -
-                category: Provisioned Windows apps
+                category: Uninstall Windows store apps
+                docs: https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10
                 children:
                     -
-                        name: Microsoft 3D Builder
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.3DBuilder | Remove-AppxPackage"
-                    -
-                        category: Bing
+                        category: Provisioned Windows apps
                         children:
                             -
-                                name: Bing Weather
+                                name: Microsoft 3D Builder
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.3DBuilder | Remove-AppxPackage"
+                                docs: https://www.microsoft.com/en-us/p/3d-builder/9wzdncrfj3t6
+                            -
+                                category: MSN
+                                children:
+                                    -
+                                        name: MSN Weather app
+                                        recommend: true
+                                        docs: https://www.microsoft.com/en-us/p/msn-weather/9wzdncrfj3q2
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.BingWeather | Remove-AppxPackage"
+                                    -
+                                        name: MSN Sports app
+                                        recommend: true
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.BingSports | Remove-AppxPackage"
+                                    -
+                                        name: MSN News app
+                                        recommend: true
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.BingNews | Remove-AppxPackage"
+                                    -
+                                        name: MSN Money app
+                                        recommend: true
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.BingFinance | Remove-AppxPackage"
+                            -
+                                name: App Installer app
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.DesktopAppInstaller | Remove-AppxPackage"
+                                docs: https://www.microsoft.com/en-us/p/app-installer/9nblggh4nns1?activetab=pivot:overviewtab
+                            -
+                                name: Get Help app
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.GetHelp | Remove-AppxPackage"
+                            -
+                                name: Microsoft Tips app
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.Getstarted | Remove-AppxPackage"
+                            -
+                                category: Extensions
+                                children:
+                                    -
+                                        name: HEIF Image Extensions app
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.HEIFImageExtension | Remove-AppxPackage"
+                                    -
+                                        name: VP9 Video Extensions app
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.VP9VideoExtensions | Remove-AppxPackage"
+                                    -
+                                        name: Web Media Extensions app
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.WebMediaExtensions | Remove-AppxPackage"
+                                    -
+                                        name: Webp Image Extension app
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.WebpImageExtension | Remove-AppxPackage"
+                            -
+                                name: Microsoft Messaging app
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.Messaging | Remove-AppxPackage"
+                            -
+                                category: Mixed Reality
+                                children:
+                                    -
+                                        name: Mixed Reality Portal app
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.MixedReality.Portal | Remove-AppxPackage"
+                                    -
+                                        name: Mixed Reality Viewer app
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Microsoft3DViewer | Remove-AppxPackage"
+                    
+                            -
+                                category: Microsoft Office
+                                children:
+                                    -
+                                        name: My Office app
+                                        recommend: true
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.MicrosoftOfficeHub | Remove-AppxPackage"
+                                        docs: https://www.microsoft.com/en-us/p/my-office-app/9n8vd0f315mh
+                                    -
+                                        name: OneNote app
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Office.OneNote | Remove-AppxPackage"
+                                        docs: https://www.microsoft.com/en-us/p/onenote-for-windows-10/9wzdncrfhvjl
+                                    -
+                                        name: Sway app
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Office.Sway | Remove-AppxPackage"
+                            -
+                                name: Feedback Hub app
                                 recommend: true
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.BingWeather | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsFeedbackHub | Remove-AppxPackage"
                             -
-                                name: Bing Sports
+                                name: Windows Alarms and Clock app
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsAlarms | Remove-AppxPackage"
+                            -
+                                name: Windows Camera app
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsCamera | Remove-AppxPackage"
+                            -
+                                name: Paint 3D app
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.MSPaint | Remove-AppxPackage"
+                            -
+                                name: Windows Maps app
                                 recommend: true
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.BingSports | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsMaps | Remove-AppxPackage"
                             -
-                                name: Bing News
+                                name: Minecraft app
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.MinecraftUWP | Remove-AppxPackage"
+                            -
+                                name: Microsoft Store app
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsStore | Remove-AppxPackage"
+                            -
+                                name: Microsoft People app
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.People | Remove-AppxPackage"
+                            -
+                                name: Microsoft Pay app
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.Wallet | Remove-AppxPackage"
+                            -
+                                name: Store Purchase app
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.StorePurchaseApp | Remove-AppxPackage"
+                            -
+                                name: Snip and Sketch app
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.ScreenSketch | Remove-AppxPackage"
+                            -
+                                name: Print3D app
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.Print3D | Remove-AppxPackage"
+                            -
+                                name: Paid Wi-Fi and Cellular app
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.OneConnect | Remove-AppxPackage"
+                            -
+                                name: Microsoft Solitaire Collection app
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.MicrosoftSolitaireCollection | Remove-AppxPackage"
+                            -
+                                name: Microsoft Sticky Notes app
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.MicrosoftStickyNotes | Remove-AppxPackage"
+                            -
+                                category: Xbox
+                                children:
+                                    -
+                                        name: Xbox app
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.XboxApp | Remove-AppxPackage"
+                                    -
+                                        name: Xbox TCUI app
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Xbox.TCUI | Remove-AppxPackage"
+                                    -
+                                        name: Xbox Game Bar app
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.XboxGameOverlay | Remove-AppxPackage"
+                                    -
+                                        name: Xbox Gaming Overlay app
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.XboxGamingOverlay | Remove-AppxPackage"
+                                    -
+                                        name: Xbox Identity Provider app
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.XboxIdentityProvider | Remove-AppxPackage"
+                                    -
+                                        name: Xbox Speech To Text Overlay app
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.XboxSpeechToTextOverlay | Remove-AppxPackage"
+                            -
+                                name: Mail and Calendar app
+                                code: PowerShell -Command "Get-AppxPackage microsoft.windowscommunicationsapps | Remove-AppxPackage"
+                            -
+                                category: Zune
+                                children:
+                                    -
+                                        name: Zune Music app
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.ZuneMusic | Remove-AppxPackage"
+                                    -
+                                        name: Zune Video app
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.ZuneVideo | Remove-AppxPackage"
+                            -
+                                name: Windows Calculator app
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsCalculator | Remove-AppxPackage"
+                            -
+                                name: Microsoft Photos app
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.Photos | Remove-AppxPackage"
+                            -
+                                name: Skype app
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.SkypeApp | Remove-AppxPackage"
+                            -
+                                name: Windows Voice Recorder app
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsSoundRecorder | Remove-AppxPackage"
+                            -
+                                category: Phone
+                                children:
+                                    -
+                                        name: Windows Phone app
+                                        code: |-
+                                            PowerShell -Command "Get-AppxPackage Microsoft.WindowsPhone | Remove-AppxPackage"
+                                            PowerShell -Command "Get-AppxPackage Microsoft.Windows.Phone | Remove-AppxPackage"
+                                    -
+                                        name: Comms Phone app
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.CommsPhone | Remove-AppxPackage"
+                                    -
+                                        name: Your Phone app
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.YourPhone | Remove-AppxPackage"
+                    -
+                        category: Installed Windows apps
+                        children:
+                            -
+                                name: Microsoft Advertising app
                                 recommend: true
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.BingNews | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.Advertising.Xaml | Remove-AppxPackage"
                             -
-                                name: Bing Finance
+                                name: Remote Desktop app
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.RemoteDesktop | Remove-AppxPackage"
+                            -
+                                name: Network Speed Test app
                                 recommend: true
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.BingFinance | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.NetworkSpeedTest | Remove-AppxPackage"
+                            -
+                                category: Third party
+                                children:
+                                    -
+                                        name: Shazam app
+                                        code: PowerShell -Command "Get-AppxPackage ShazamEntertainmentLtd.Shazam | Remove-AppxPackage"
+                                    -
+                                        name: Candy Crush Saga app
+                                        code: |-
+                                            PowerShell -Command "Get-AppxPackage king.com.CandyCrushSaga | Remove-AppxPackage"
+                                            PowerShell -Command "Get-AppxPackage king.com.CandyCrushSodaSaga | Remove-AppxPackage"
+                                    -
+                                        name: Flipboard app
+                                        code: PowerShell -Command "Get-AppxPackage Flipboard.Flipboard | Remove-AppxPackage"
+                                    -
+                                        name: Twitter app
+                                        code: PowerShell -Command "Get-AppxPackage 9E2F88E3.Twitter | Remove-AppxPackage"
+                                    -
+                                        name: iHeartRadio app
+                                        code: PowerShell -Command "Get-AppxPackage ClearChannelRadioDigital.iHeartRadio | Remove-AppxPackage"
+                                    -
+                                        name: Duolingo app
+                                        code: PowerShell -Command "Get-AppxPackage D5EA27B7.Duolingo-LearnLanguagesforFree | Remove-AppxPackage"
+                                    -
+                                        name: Photoshop Express app
+                                        code: PowerShell -Command "Get-AppxPackage AdobeSystemIncorporated.AdobePhotoshop | Remove-AppxPackage"
+                                    -
+                                        name: Pandora app
+                                        code: PowerShell -Command "Get-AppxPackage PandoraMediaInc.29680B314EFC2 | Remove-AppxPackage"
+                                    -
+                                        name: Eclipse Manager app
+                                        code: PowerShell -Command "Get-AppxPackage 46928bounde.EclipseManager | Remove-AppxPackage"
+                                    -
+                                        name: Code Writer app
+                                        code: PowerShell -Command "Get-AppxPackage ActiproSoftwareLLC.562882FEEB491 | Remove-AppxPackage"
                     -
-                        name: App Installer
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.DesktopAppInstaller | Remove-AppxPackage"
-                    -
-                        name: Get Help
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.GetHelp | Remove-AppxPackage"
-                    -
-                        name: Microsoft Tips
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.Getstarted | Remove-AppxPackage"
-                    -
-                        category: Extensions
+                        category: System apps
                         children:
                             -
-                                name: HEIF Image Extensions
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.HEIFImageExtension | Remove-AppxPackage"
+                                name: File Picker app
+                                code: PowerShell -Command "Get-AppxPackage 1527c705-839a-4832-9118-54d4Bd6a0c89 | Remove-AppxPackage"
                             -
-                                name: VP9 Video Extensions	
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.VP9VideoExtensions | Remove-AppxPackage"
+                                name: File Explorer app
+                                code: PowerShell -Command "Get-AppxPackage c5e2524a-ea46-4f67-841f-6a9465d9d515 | Remove-AppxPackage"
                             -
-                                name: Web Media Extensions	
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.WebMediaExtensions | Remove-AppxPackage"
+                                name: App Resolver UX app
+                                code: PowerShell -Command "Get-AppxPackage E2A4F912-2574-4A75-9BB0-0D023378592B | Remove-AppxPackage"
                             -
-                                name: Webp Image Extension	
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.WebpImageExtension | Remove-AppxPackage"
-                    -
-                        name: Microsoft Messaging
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.Messaging | Remove-AppxPackage"
-                    -
-                        category: Mixed Reality
-                        children:
-                            -
-                                name: Mixed Reality Portal
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.MixedReality.Portal | Remove-AppxPackage"
-                            -
-                                name: Mixed Reality Viewer
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.Microsoft3DViewer | Remove-AppxPackage"
-            
-                    -
-                        category: Microsoft Office
-                        children:
-                            -
-                                name: My Office
+                                name: Add Suggested Folders To Library app
                                 recommend: true
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.MicrosoftOfficeHub | Remove-AppxPackage"
-                            -
-                                name: OneNote
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.Office.OneNote | Remove-AppxPackage"
-                            -
-                                name: Sway
-                                docs: https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.Office.Sway | Remove-AppxPackage"
-                    -
-                        name: Feedback Hub
-                        recommend: true
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsFeedbackHub | Remove-AppxPackage"
-                    -
-                        name: Windows Alarms and Clock
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsAlarms | Remove-AppxPackage"
-                    -
-                        name: Windows Camera
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsCamera | Remove-AppxPackage"
-                    -
-                        name: Paint 3D
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.MSPaint | Remove-AppxPackage"
-                    -
-                        name: Windows Maps
-                        recommend: true
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsMaps | Remove-AppxPackage"
-                    -
-                        name: Minecraft
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.MinecraftUWP | Remove-AppxPackage"
-                    -
-                        name: Microsoft Store
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsStore | Remove-AppxPackage"
-                    -
-                        name: Microsoft People
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.People | Remove-AppxPackage"
-                    -
-                        name: Microsoft Pay
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.Wallet | Remove-AppxPackage"
-                    -
-                        name: Store Purchase App
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.StorePurchaseApp | Remove-AppxPackage"
-                    -
-                        name: Snip and Sketch
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.ScreenSketch | Remove-AppxPackage"
-                    -
-                        name: Print3D
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.Print3D | Remove-AppxPackage"
-                    -
-                        name: Paid Wi-Fi and Cellular
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.OneConnect | Remove-AppxPackage"
-                    -
-                        name: Microsoft Solitaire Collection
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.MicrosoftSolitaireCollection | Remove-AppxPackage"
-                    -
-                        name: Microsoft Sticky Notes
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.MicrosoftStickyNotes | Remove-AppxPackage"
-                    -
-                        category: Xbox
-                        children:
-                            -
-                                name: Xbox
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.XboxApp | Remove-AppxPackage"
-                            -
-                                name: Xbox TCUI
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.Xbox.TCUI | Remove-AppxPackage"
-                            -
-                                name: Xbox Game Bar
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.XboxGameOverlay | Remove-AppxPackage"
-                            -
-                                name: Xbox Gaming Overlay
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.XboxGamingOverlay | Remove-AppxPackage"
-                            -
-                                name: Xbox Identity Provider
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.XboxIdentityProvider | Remove-AppxPackage"
-                            -
-                                name: Xbox Speech To Text Overlay
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.XboxSpeechToTextOverlay | Remove-AppxPackage"
-                    -
-                        name: Mail and Calendar
-                        code: PowerShell -Command "Get-AppxPackage microsoft.windowscommunicationsapps | Remove-AppxPackage"
-                    -
-                        category: Zune
-                        children:
-                            -
-                                name: Music
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.ZuneMusic | Remove-AppxPackage"
-                            -
-                                name: Video
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.ZuneVideo | Remove-AppxPackage"
-                    -
-                        name: Windows Calculator
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsCalculator | Remove-AppxPackage"
-                    -
-                        name: Microsoft Photos
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.Photos | Remove-AppxPackage"
-                    -
-                        name: Skype
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.SkypeApp | Remove-AppxPackage"
-                    -
-                        name: Windows Voice Recorder
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsSoundRecorder | Remove-AppxPackage"
-                    -
-                        category: Phone
-                        children:
-                            -
-                                name: Windows Phone
                                 code: |-
-                                    PowerShell -Command "Get-AppxPackage Microsoft.WindowsPhone | Remove-AppxPackage"
-                                    PowerShell -Command "Get-AppxPackage Microsoft.Windows.Phone | Remove-AppxPackage"
+                                    PowerShell -Command "Get-AppxPackage F46D4000-FD22-4DB4-AC8E-4E1DDDE828FE | Remove-AppxPackage"
+                                    PowerShell -Command "Get-AppxPackage InputApp | Remove-AppxPackage"
                             -
-                                name: Comms Phone
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.CommsPhone | Remove-AppxPackage"
+                                name: Microsoft.AAD.Broker.Plugin app
+                                recommend: true
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.AAD.Broker.Plugin | Remove-AppxPackage"
                             -
-                                name: Your Phone
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.YourPhone | Remove-AppxPackage"
+                                name: Microsoft.AccountsControl app
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.AccountsControl | Remove-AppxPackage"
+                            -
+                                name: Microsoft.AsyncTextService app
+                                code: PowerShell -Command "Get-AppxPackage Microsoft.AsyncTextService | Remove-AppxPackage"
+                            -
+                                category: Hello setup UI
+                                children:
+                                    -
+                                        name: Bio enrollment app
+                                        recommend: true
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.BioEnrollment | Remove-AppxPackage"
+                                    -
+                                        name: Cred Dialog Host app
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.CredDialogHost | Remove-AppxPackage"
+                                    -
+                                        name: EC App
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.ECApp | Remove-AppxPackage"
+                                    -
+                                        name: Lock App
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.LockApp | Remove-AppxPackage"
+                            -
+                                category: Microsoft Edge
+                                children:
+                                    -
+                                        name: Microsoft Edge app
+                                        recommend: true
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.MicrosoftEdge | Remove-AppxPackage"
+                                    -
+                                        name: Microsoft Edge Dev Tools Client app
+                                        recommend: true
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.MicrosoftEdgeDevToolsClient | Remove-AppxPackage"
+                                    -
+                                        name: Microsoft PPI Projection app
+                                        recommend: true
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.PPIProjection | Remove-AppxPackage"
+                                    -
+                                        name: Win32 Web View Host app
+                                        recommend: true
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Win32WebViewHost | Remove-AppxPackage"
+                                    -
+                                        name: ChxApp app
+                                        recommend: true
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.Apprep.ChxApp | Remove-AppxPackage"
+                                    -
+                                        name: Assigned Access Lock App app
+                                        recommend: true
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.AssignedAccessLockApp | Remove-AppxPackage"
+                                    -
+                                        name: Capture Picker app
+                                        recommend: true
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.CapturePicker | Remove-AppxPackage"
+                                    -
+                                        name: Cloud Experience Host app
+                                        recommend: true
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.CloudExperienceHost | Remove-AppxPackage"
+                                    -
+                                        name: Content Delivery Manager app
+                                        recommend: true
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.ContentDeliveryManager | Remove-AppxPackage"
+                            -
+                                category: Cortana
+                                children:
+                                    -
+                                        name: Cortana app
+                                        recommend: true
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.Cortana | Remove-AppxPackage"
+                                    -
+                                        name: Holographic First Run app
+                                        recommend: true
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.Holographic.FirstRun | Remove-AppxPackage"
+                                    -
+                                        name: OOBE Network Captive Port app
+                                        recommend: true
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.OOBENetworkCaptivePort | Remove-AppxPackage"
+                                    -
+                                        name: OOBE Network Connection Flow app
+                                        recommend: true
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.OOBENetworkConnectionFlow | Remove-AppxPackage"
+                                    -
+                                        name: Parental Controls app
+                                        recommend: true
+                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.ParentalControls | Remove-AppxPackage"
+                            -
+                                category: People Hub
+                                children:
+                                    -
+                                        name: People Experience Host app
+                                        recommend: true
+                                        code: PowerShell -Command "Microsoft.Windows.PeopleExperienceHost | Remove-AppxPackage"
+                                    -
+                                        name: Pinning Confirmation Dialog app
+                                        recommend: true
+                                        code: PowerShell -Command "Microsoft.Windows.PinningConfirmationDialog | Remove-AppxPackage"
+                                    -
+                                        name: Sec Health UI app
+                                        recommend: true
+                                        code: PowerShell -Command "Microsoft.Windows.SecHealthUI | Remove-AppxPackage"
+                                    -
+                                        name: Secondary Tile Experience app
+                                        recommend: true
+                                        code: PowerShell -Command "Microsoft.Windows.SecondaryTileExperience | Remove-AppxPackage"
+                                    -
+                                        name: Secure Assessment Browser app
+                                        recommend: true
+                                        code: PowerShell -Command "Microsoft.Windows.SecureAssessmentBrowser | Remove-AppxPackage"
+                            -
+                                name: Start app
+                                code: PowerShell -Command "Microsoft.Windows.ShellExperienceHost | Remove-AppxPackage"
+                            -
+                                category: Windows Feedback
+                                children:
+                                    -
+                                        name: Windows Feedback app
+                                        recommend: true
+                                        code: PowerShell -Command "Microsoft.WindowsFeedback | Remove-AppxPackage"
+                                    -
+                                        name: Xbox Game Callable UI app
+                                        recommend: true
+                                        code: PowerShell -Command "Microsoft.XboxGameCallableUI | Remove-AppxPackage"
+                                    -
+                                        name: CBS Preview app
+                                        recommend: true
+                                        code: PowerShell -Command "Windows.CBSPreview | Remove-AppxPackage"
+                            -
+                                name: Contact Support app
+                                code: PowerShell -Command "Windows.ContactSupport | Remove-AppxPackage"
+                            -
+                                name: Settings app
+                                code: PowerShell -Command "Windows.immersivecontrolpanel | Remove-AppxPackage"
+                            -
+                                name: Windows Print 3D app
+                                code: PowerShell -Command "Windows.Print3D | Remove-AppxPackage"
+                            -
+                                name: Print UI app
+                                code: PowerShell -Command "Windows.PrintDialog | Remove-AppxPackage"
+                    -
+                        name: App Connector app
+                        code: PowerShell -Command "Get-AppxPackage Microsoft.Appconnector | Remove-AppxPackage"
+            - 
+              name: Remove OneDrive
+              code: |-
+                taskkill /F /IM OneDrive.exe
+                %SystemRoot%\System32\OneDriveSetup.exe /uninstall
+                %SystemRoot%\SysWOW64\OneDriveSetup.exe /uninstall
+                rd "%UserProfile%\OneDrive" /Q /S
+                rd "%LocalAppData%\Microsoft\OneDrive" /Q /S
+                rd "%ProgramData%\Microsoft OneDrive" /Q /S
+                rd "C:\OneDriveTemp" /Q /S
+                reg delete "HKEY_CLASSES_ROOT\CLSID{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f
+                reg delete "HKEY_CLASSES_ROOT\Wow6432Node\CLSID{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f
             -
-                category: Installed Windows apps
+                category: Disable built-in Windows features
                 children:
                     -
-                        name: Microsoft Advertising
-                        recommend: true
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.Advertising.Xaml | Remove-AppxPackage"
+                        name: Direct Play feature
+                        code: dism /Online /Disable-Feature /FeatureName:"DirectPlay" /NoRestart
+                        recommend: false
                     -
-                        name: Remote Desktop
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.RemoteDesktop | Remove-AppxPackage"
+                        name: Internet Explorer feature
+                        code:
+                            dism /Online /Disable-Feature /FeatureName:"Internet-Explorer-Optional-x64" /NoRestart
+                            dism /Online /Disable-Feature /FeatureName:"Internet-Explorer-Optional-x84" /NoRestart
+                            dism /Online /Disable-Feature /FeatureName:"Internet-Explorer-Optional-amd64" /NoRestart
+                        recommend: false
                     -
-                        name: Network Speed Test
-                        recommend: true
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.NetworkSpeedTest | Remove-AppxPackage"
+                        name: Legacy Components feature
+                        code: dism /Online /Disable-Feature /FeatureName:"LegacyComponents" /NoRestart
+                        recommend: false
                     -
-                        category: Third party
+                        category: Server features for developers & administrators
                         children:
                             -
-                                name: Shazam
-                                code: PowerShell -Command "Get-AppxPackage ShazamEntertainmentLtd.Shazam | Remove-AppxPackage"
+                                category: Hyper-V Virtualization
+                                children:
+                                    -
+                                        name: Hyper-V feature
+                                        code: dism /Online /Disable-Feature /FeatureName:"Microsoft-Hyper-V-All" /NoRestart
+                                        recommend: false
+                                    -
+                                        name: Hyper-V GUI Management Tools feature
+                                        code: dism /Online /Disable-Feature /FeatureName:"Microsoft-Hyper-V-Management-Clients" /NoRestart
+                                        recommend: false
+                                    -
+                                        name: Hyper-V Management Tools feature
+                                        code: dism /Online /Disable-Feature /FeatureName:"Microsoft-Hyper-V-Tools-All" /NoRestart
+                                        recommend: false
+                                    -
+                                        name: Hyper-V Module for Windows PowerShell feature
+                                        code: dism /Online /Disable-Feature /FeatureName:"Microsoft-Hyper-V-Management-PowerShell" /NoRestart
+                                        recommend: false
                             -
-                                name: Candy Crush Saga
-                                code: |-
-                                    PowerShell -Command "Get-AppxPackage king.com.CandyCrushSaga | Remove-AppxPackage"
-                                    PowerShell -Command "Get-AppxPackage king.com.CandyCrushSodaSaga | Remove-AppxPackage"
+                                name: Telnet Client feature
+                                code: dism /Online /Disable-Feature /FeatureName:"TelnetClient" /NoRestart
+                                docs: https://social.technet.microsoft.com/wiki/contents/articles/38433.windows-10-enabling-telnet-client.aspx
+                                recommend: false
                             -
-                                name: Flipboard
-                                code: PowerShell -Command "Get-AppxPackage Flipboard.Flipboard | Remove-AppxPackage"
+                                name: Net.TCP Port Sharing feature
+                                code: dism /Online /Disable-Feature /FeatureName:"WCF-TCP-PortSharing45" /NoRestart
+                                recommend: false
+                                docs: https://docs.microsoft.com/en-us/dotnet/framework/wcf/feature-details/net-tcp-port-sharing
                             -
-                                name: Twitter
-                                code: PowerShell -Command "Get-AppxPackage 9E2F88E3.Twitter | Remove-AppxPackage"
+                                name: SMB Direct feature
+                                code: dism /Online /Disable-Feature /FeatureName:"SmbDirect" /NoRestart
+                                recommend: false
+                                docs: https://docs.microsoft.com/en-us/windows-server/storage/file-server/smb-direct
                             -
-                                name: iHeartRadio
-                                code: PowerShell -Command "Get-AppxPackage ClearChannelRadioDigital.iHeartRadio | Remove-AppxPackage"
+                                name: TFTP Client feature
+                                code: dism /Online /Disable-Feature /FeatureName:"TFTP" /NoRestart
+                                recommend: false
+                    -
+                        category: Printing features
+                        children:
                             -
-                                name: Duolingo
-                                code: PowerShell -Command "Get-AppxPackage D5EA27B7.Duolingo-LearnLanguagesforFree | Remove-AppxPackage"
+                                category: Printer networking
+                                children:
+                                    -
+                                        name: Internet Printing Client v
+                                        code: dism /Online /Disable-Feature /FeatureName:"Printing-Foundation-InternetPrinting-Client" /NoRestart
+                                        recommend: false
+                                    -
+                                        name: LPD Print Service v
+                                        code: dism /Online /Disable-Feature /FeatureName:"Printing-Foundation-LPDPrintService" /NoRestart
+                                        recommend: false
+                                    -
+                                        name: LPR Port Monitor feature
+                                        code: dism /Online /Disable-Feature /FeatureName:"Printing-Foundation-LPRPortMonitor" /NoRestart
+                                        recommend: false
+                                    -
+                                        name: Microsoft Print to PDF feature
+                                        code: dism /Online /Disable-Feature /FeatureName:"Printing-PrintToPDFServices-Features" /NoRestart
+                                        recommend: false
                             -
-                                name: Photoshop Express
-                                code: PowerShell -Command "Get-AppxPackage AdobeSystemIncorporated.AdobePhotoshop | Remove-AppxPackage"
+                                name: Print and Document Services feature
+                                code: dism /Online /Disable-Feature /FeatureName:"Printing-Foundation-Features" /NoRestart
+                                recommend: false
                             -
-                                name: Pandora
-                                code: PowerShell -Command "Get-AppxPackage PandoraMediaInc.29680B314EFC2 | Remove-AppxPackage"
+                                name: Work Folders Client feature
+                                code: dism /Online /Disable-Feature /FeatureName:"WorkFolders-Client" /NoRestart
+                                recommend: false
+                                docs: https://docs.microsoft.com/en-us/windows-server/storage/work-folders/work-folders-overview
                             -
-                                name: Eclipse Manager
-                                code: PowerShell -Command "Get-AppxPackage 46928bounde.EclipseManager | Remove-AppxPackage"
-                            -
-                                name: Code Writer
-                                code: PowerShell -Command "Get-AppxPackage ActiproSoftwareLLC.562882FEEB491 | Remove-AppxPackage"
+                                category: XPS support
+                                children:
+                                -
+                                    name: XPS Services feature
+                                    code: dism /Online /Disable-Feature /FeatureName:"Printing-XPSServices-Features" /NoRestart
+                                    recommend: false
+                                -
+                                    name: XPS Viewer feature
+                                    code: dism /Online /Disable-Feature /FeatureName:"Xps-Foundation-Xps-Viewer" /NoRestart
+                                    recommend: false
+                    -
+                        name: Media Features feature
+                        code: dism /Online /Disable-Feature /FeatureName:"MediaPlayback" /NoRestart
+                        recommend: false
+                    -
+                        name: Scan Management feature
+                        code: dism /Online /Disable-Feature /FeatureName:"ScanManagementConsole" /NoRestart
+                        recommend: false
+                    -
+                        name: Windows Fax and Scan feature
+                        code: dism /Online /Disable-Feature /FeatureName:"FaxServicesClientPackage" /NoRestart
+                        recommend: false
+                    -
+                        name: Windows Media Player feature
+                        code: dism /Online /Disable-Feature /FeatureName:"WindowsMediaPlayer" /NoRestart
+                        recommend: false
+                    -
+                        name: Windows Search feature
+                        code: dism /Online /Disable-Feature /FeatureName:"SearchEngine-Client-Package" /NoRestart
+                        recommend: false
             -
-                category: System apps
+                category: Disable capabilities & features on demand
+                docs: https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/features-on-demand-non-language-fod#fods-that-are-not-preinstalled-but-may-need-to-be-preinstalled
                 children:
                     -
-                        name: File Picker
-                        code: PowerShell -Command "Get-AppxPackage 1527c705-839a-4832-9118-54d4Bd6a0c89 | Remove-AppxPackage"
-                    -
-                        name: File Explorer
-                        code: PowerShell -Command "Get-AppxPackage c5e2524a-ea46-4f67-841f-6a9465d9d515 | Remove-AppxPackage"
-                    -
-                        name: App Resolver UX
-                        code: PowerShell -Command "Get-AppxPackage E2A4F912-2574-4A75-9BB0-0D023378592B | Remove-AppxPackage"
-                    -
-                        name: Add Suggested Folders To Library
-                        recommend: true
-                        code: |-
-                            PowerShell -Command "Get-AppxPackage F46D4000-FD22-4DB4-AC8E-4E1DDDE828FE | Remove-AppxPackage"
-                            PowerShell -Command "Get-AppxPackage InputApp | Remove-AppxPackage"
-                    -
-                        name: Microsoft.AAD.Broker.Plugin
-                        recommend: true
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.AAD.Broker.Plugin | Remove-AppxPackage"
-                    -
-                        name: Microsoft.AccountsControl
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.AccountsControl | Remove-AppxPackage"
-                    -
-                        name: Microsoft.AsyncTextService
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.AsyncTextService | Remove-AppxPackage"
-                    -
-                        category: Hello setup UI
+                        category: Preinstalled
                         children:
                             -
-                                name: Bio enrollment
+                                name: DirectX Configuration Database capability
+                                code: dism /online /Remove-Capability /CapabilityName:"DirectX.Configuration.Database~~~~0.0.1.0" /NoRestart
+                            -
+                                name: Internet Explorer 11 capability
+                                code: dism /online /Remove-Capability /CapabilityName:"Browser.InternetExplorer~~~~0.0.11.0" /NoRestart
+                            -
+                                name: Math Recognizer capability
+                                code: dism /online /Remove-Capability /CapabilityName:"MathRecognizer~~~~0.0.1.0" /NoRestart
+                            -
+                                name: Notepad capability
+                                code: dism /online /Remove-Capability /CapabilityName:"Microsoft.Windows.Notepad~~~~0.0.1.0" /NoRestart
+                            -
+                                name: OneSync capability
+                                code: dism /online /Remove-Capability /CapabilityName:"OneCoreUAP.OneSync~~~~0.0.1.0" /NoRestart
                                 recommend: true
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.BioEnrollment | Remove-AppxPackage"
                             -
-                                name: Cred Dialog Host
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.CredDialogHost | Remove-AppxPackage"
+                                name: OpenSSH client capability
+                                code: dism /online /Remove-Capability /CapabilityName:"OpenSSH.Client~~~~0.0.1.0" /NoRestart
                             -
-                                name: EC App
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.ECApp | Remove-AppxPackage"
+                                name: Paint capability
+                                code: dism /online /Remove-Capability /CapabilityName:"Microsoft.Windows.MSPaint~~~~0.0.1.0" /NoRestart
                             -
-                                name: Lock App
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.LockApp | Remove-AppxPackage"
+                                name: PowerShell ISE capability
+                                code: dism /online /Remove-Capability /CapabilityName:"Microsoft.Windows.PowerShell.ISE~~~~0.0.1.0" /NoRestart
+                            -
+                                name: Print Management Console capability
+                                code: dism /online /Remove-Capability /CapabilityName:"Print.Management.Console~~~~0.0.1.0" /NoRestart
+                            -
+                                name: Quick Assist capability
+                                code: dism /online /Remove-Capability /CapabilityName:"App.Support.QuickAssist~~~~0.0.1.0" /NoRestart
+                            -
+                                name: Steps Recorder capability
+                                code: dism /online /Remove-Capability /CapabilityName:"App.StepsRecorder~~~~0.0.1.0" /NoRestart
+                            -
+                                name: Windows Fax and Scan capability
+                                code: dism /online /Remove-Capability /CapabilityName:"Print.Fax.Scan~~~~0.0.1.0" /NoRestart
+                            -
+                                name: WordPad capability
+                                code: dism /online /Remove-Capability /CapabilityName:"Microsoft.Windows.WordPad~~~~0.0.1.0" /NoRestart
                     -
-                        category: Microsoft Edge
+                        category: Not preinstalled
                         children:
                             -
-                                name: Microsoft Edge
-                                recommend: true
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.MicrosoftEdge | Remove-AppxPackage"
+                                name: .NET Framework capability
+                                code: dism /online /Remove-Capability /CapabilityName:"NetFX3~~~~" /NoRestart
                             -
-                                name: Microsoft Edge Dev Tools Client
-                                recommend: true
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.MicrosoftEdgeDevToolsClient | Remove-AppxPackage"
+                                name: Mixed Reality capability
+                                code: dism /online /Remove-Capability /CapabilityName:"Analog.Holographic.Desktop~~~~0.0.1.0" /NoRestart
                             -
-                                name: Microsoft PPI Projection
-                                recommend: true
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.PPIProjection | Remove-AppxPackage"
+                                name: Wireless Display capability
+                                code: dism /online /Remove-Capability /CapabilityName:"App.WirelessDisplay.Connect~~~~0.0.1.0" /NoRestart
                             -
-                                name: Win32 Web View Host
-                                recommend: true
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.Win32WebViewHost | Remove-AppxPackage"
+                                name: Accessibility - Braille Support capability
+                                code: dism /online /Remove-Capability /CapabilityName:"Accessibility.Braille~~~~0.0.1.0" /NoRestart
                             -
-                                name: ChxApp
-                                recommend: true
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.Apprep.ChxApp | Remove-AppxPackage"
+                                name: Developer Mode capability
+                                code: dism /online /Remove-Capability /CapabilityName:"Tools.DeveloperMode.Core~~~~0.0.1.0" /NoRestart
                             -
-                                name: Assigned Access Lock App
-                                recommend: true
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.AssignedAccessLockApp | Remove-AppxPackage"
+                                name: Graphics Tools capability
+                                code: dism /online /Remove-Capability /CapabilityName:"Tools.Graphics.DirectX~~~~0.0.1.0" /NoRestart
                             -
-                                name: Capture Picker
-                                recommend: true
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.CapturePicker | Remove-AppxPackage"
+                                name: IrDA capability
+                                code: dism /online /Remove-Capability /CapabilityName:"Network.Irda~~~~0.0.1.0" /NoRestart
                             -
-                                name: Cloud Experience Host
-                                recommend: true
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.CloudExperienceHost | Remove-AppxPackage"
+                                name: Microsoft WebDriver capability
+                                code: dism /online /Remove-Capability /CapabilityName:"Microsoft.WebDriver~~~~0.0.1.0" /NoRestart
                             -
-                                name: Content Delivery Manager
-                                recommend: true
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.ContentDeliveryManager | Remove-AppxPackage"
-                    -
-                        category: Cortana
-                        children:
+                                name: MSIX Packaging Tool Driver capability
+                                code: dism /online /Remove-Capability /CapabilityName:"Msix.PackagingTool.Driver~~~~0.0.1.0" /NoRestart
                             -
-                                name: Cortana
-                                recommend: true
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.Cortana | Remove-AppxPackage"
+                                category: Networking tools
+                                children:
+                                    -
+                                        name: RAS Connection Manager Administration Kit (CMAK) capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"/NoRestart RasCMAK.Client~~~~0.0.1.0"
+                                    -
+                                        name: RIP Listener capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"/NoRestart RIP.Listener~~~~0.0.1.0"
+                                    -
+                                        name: Simple Network Management Protocol (SNMP) capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"/NoRestart SNMP.Client~~~~0.0.1.0"
+                                    -
+                                        name: SNMP WMI Provider capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"/NoRestart WMI-SNMP-Provider.Client~~~~0.0.1.0"
                             -
-                                name: Holographic First Run
-                                recommend: true
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.Holographic.FirstRun | Remove-AppxPackage"
+                                name: OpenSSH Server capability
+                                code: dism /online /Remove-Capability /CapabilityName:"/NoRestart OpenSSH.Server~~~~0.0.1.0"
                             -
-                                name: OOBE Network Captive Port
-                                recommend: true
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.OOBENetworkCaptivePort | Remove-AppxPackage"
+                                category: Printing
+                                children:
+                                    -
+                                        name: Enterprise Cloud Print capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"/NoRestart Print.EnterpriseCloudPrint~~~~0.0.1.0"
+                                    -
+                                        name: Mopria Cloud Service capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"/NoRestart Print.MopriaCloudService~~~~0.0.1.0"
                             -
-                                name: OOBE Network Connection Flow
-                                recommend: true
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.OOBENetworkConnectionFlow | Remove-AppxPackage"
+                                category: Remote server administration tools (RSAT)
+                                children:
+                                    -
+                                        name: Active Directory Domain Services and Lightweight Directory Services Tools capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"/NoRestart Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0"
+                                    -
+                                        name: BitLocker Drive Encryption Administration Utilities capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"/NoRestart Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0"
+                                    -
+                                        name: Active Directory Certificate Services Tools v
+                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.CertificateServices.Tools~~~~0.0.1.0" /NoRestart 
+                                    -
+                                        name: DHCP Server Tools capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.DHCP.Tools~~~~0.0.1.0" /NoRestart
+                                    -
+                                        name: DNS Server Tools capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.Dns.Tools~~~~0.0.1.0" /NoRestart
+                                    -
+                                        name: Failover Clustering Tools capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0" /NoRestart
+                                    -
+                                        name: File Services Tools capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.FileServices.Tools~~~~0.0.1.0" /NoRestart
+                                    -
+                                        name: Group Policy Management Tools capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0" /NoRestart
+                                    -
+                                        name: IP Address Management (IPAM) Client capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.IPAM.Client.Tools~~~~0.0.1.0" /NoRestart
+                                    -
+                                        name: Data Center Bridging LLDP Tools capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.LLDP.Tools~~~~0.0.1.0" /NoRestart
+                                    -
+                                        name: Network Controller Management Tools capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.NetworkController.Tools~~~~0.0.1.0" /NoRestart
+                                    -
+                                        name: Network Load Balancing Tools capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.NetworkLoadBalancing.Tools~~~~0.0.1.0" /NoRestart
+                                    -
+                                        name: Remote Access Management Tools capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.RemoteAccess.Management.Tools~~~~0.0.1.0" /NoRestart
+                                    -
+                                        name: Server Manager v
+                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.ServerManager.Tools~~~~0.0.1.0" /NoRestart
+                                    -
+                                        name: Shielded VM Tools capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.Shielded.VM.Tools~~~~0.0.1.0" /NoRestart
+                                    -
+                                        name: Storage Replica Module for Windows PowerShell capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.StorageReplica.Tools~~~~0.0.1.0" /NoRestart
+                                    -
+                                        name: Volume Activation Tools capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.VolumeActivation.Tools~~~~0.0.1.0" /NoRestart
+                                    -
+                                        name: Windows Server Update Services Tools capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.WSUS.Tools~~~~0.0.1.0" /NoRestart
+                                    -
+                                        name: Storage Migration Service Management Tools capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.StorageMigrationService.Management.Tools~~~~0.0.1.0" /NoRestart
+                                    -
+                                        name: Systems Insights Module for Windows PowerShell capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.SystemInsights.Management.Tools~~~~0.0.1.0" /NoRestart
                             -
-                                name: Parental Controls
-                                recommend: true
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.ParentalControls | Remove-AppxPackage"
-                    -
-                        category: People Hub
-                        children:
+                                category: Storage
+                                children:
+                                    -
+                                        name: Windows Storage Management capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"Microsoft.Windows.StorageManagement~~~~0.0.1.0" /NoRestart
+                                    -
+                                        name: OneCore Storage Management capability
+                                        code: dism /online /Remove-Capability /CapabilityName:"Microsoft.OneCore.StorageManagement~~~~0.0.1.0" /NoRestart
                             -
-                                name: People Experience Host
-                                recommend: true
-                                code: PowerShell -Command "Microsoft.Windows.PeopleExperienceHost | Remove-AppxPackage"
+                                name: Windows Emergency Management Services and Serial Console capability
+                                code: dism /online /Remove-Capability /CapabilityName:"Windows.Desktop.EMS-SAC.Tools~~~~0.0.1.0" /NoRestart
                             -
-                                name: Pinning Confirmation Dialog
-                                recommend: true
-                                code: PowerShell -Command "Microsoft.Windows.PinningConfirmationDialog | Remove-AppxPackage"
-                            -
-                                name: Sec Health UI
-                                recommend: true
-                                code: PowerShell -Command "Microsoft.Windows.SecHealthUI | Remove-AppxPackage"
-                            -
-                                name: Secondary Tile Experience
-                                recommend: true
-                                code: PowerShell -Command "Microsoft.Windows.SecondaryTileExperience | Remove-AppxPackage"
-                            -
-                                name: Secure Assessment Browser
-                                recommend: true
-                                code: PowerShell -Command "Microsoft.Windows.SecureAssessmentBrowser | Remove-AppxPackage"
-                    -
-                        name: Start
-                        code: PowerShell -Command "Microsoft.Windows.ShellExperienceHost | Remove-AppxPackage"
-                    -
-                        category: Windows Feedback
-                        children:
-                            -
-                                name: Windows Feedback
-                                recommend: true
-                                code: PowerShell -Command "Microsoft.WindowsFeedback | Remove-AppxPackage"
-                            -
-                                name: Xbox Game Callable UI
-                                recommend: true
-                                code: PowerShell -Command "Microsoft.XboxGameCallableUI | Remove-AppxPackage"
-                            -
-                                name: CBS Preview
-                                recommend: true
-                                code: PowerShell -Command "Windows.CBSPreview | Remove-AppxPackage"
-                    -
-                        name: Contact Support
-                        code: PowerShell -Command "Windows.ContactSupport | Remove-AppxPackage"
-                    -
-                        name: Settings
-                        code: PowerShell -Command "Windows.immersivecontrolpanel | Remove-AppxPackage"
-                    -
-                        name: Windows Print 3D
-                        code: PowerShell -Command "Windows.Print3D | Remove-AppxPackage"
-                    -
-                        name: Print UI
-                        code: PowerShell -Command "Windows.PrintDialog | Remove-AppxPackage"
-            -
-                name: App Connector
-                code: PowerShell -Command "Get-AppxPackage Microsoft.Appconnector | Remove-AppxPackage"
+                                name: XPS Viewer capability
+                                code: dism /online /Remove-Capability /CapabilityName:"XPS.Viewer~~~~0.0.1.0" /NoRestart
     -
         category: Advanced settings
         children:   
