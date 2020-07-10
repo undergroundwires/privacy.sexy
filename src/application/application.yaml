@@ -294,10 +294,10 @@ actions:
                             reg add "HKLM\SYSTEM\ControlSet001\Services\dmwappushsvc" /v "Start" /t REG_DWORD /d 4 /f 
                             reg add "HKLM\SYSTEM\CurrentControlSet\Services\dmwappushservice" /v "Start" /t REG_DWORD /d 4 /f 
                             reg add "HKLM\SYSTEM\CurrentControlSet\Services\diagnosticshub.standardcollector.service" /v "Start" /t REG_DWORD /d 4 /f
-                            sc config DiagTrack start=disabled
-                            sc config dmwappushservice start=disabled
-                            sc config diagnosticshub.standardcollector.service start=disabled
-                            sc config diagsvc start=disabled
+                            sc stop "DiagTrack" & sc config "DiagTrack" start=disabled
+                            sc stop "dmwappushservice" & sc config "dmwappushservice" start=disabled
+                            sc stop "diagnosticshub.standardcollector.service" & sc config "diagnosticshub.standardcollector.service" start=disabled
+                            sc stop "diagsvc" & sc config "diagsvc" start=disabled
                     -
                         name: Disable Customer Experience Improvement Program
                         recommend: true
@@ -331,8 +331,8 @@ actions:
                         code: |-
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /t REG_DWORD /d "1" /f
                             reg add "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /t "REG_DWORD" /d "1" /f
-                            sc config WerSvc start=disabled
-                            sc config wercplsupport start=disabled
+                            sc stop "WerSvc" & sc config "WerSvc" start=disabled
+                            sc stop "wercplsupport" & sc config "wercplsupport" start=disabled
             -
                 name: Disable online device metadata collection
                 recommend: true
@@ -653,7 +653,7 @@ actions:
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" /v "EnableExperimentation" /t REG_DWORD /d 0 /f
                     reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\System\AllowExperimentation" /v "value" /t "REG_DWORD" /d 0 /f
                     reg add "HKLM\SOFTWARE\Microsoft\WindowsSelfHost\UI\Visibility" /v "HideInsiderPage" /t "REG_DWORD" /d "1" /f
-                    sc config wisvc start=disabled
+                    sc stop "wisvc" & sc config "wisvc" start=disabled
             -
                 name: Disable the Windows Connect Now wizard
                 recommend: false
@@ -920,37 +920,35 @@ actions:
                 name: Disable Google update service
                 recommend: true
                 code: |-
-                    sc config gupdate start=disabled
-                    sc config gupdatem start=disabled
+                    sc stop "gupdate" & sc config "gupdate" start=disabled
+                    sc stop "gupdatem" & sc config "gupdatem" start=disabled
                     schtasks /Change /DISABLE /TN "GoogleUpdateTaskMachineCore"
                     schtasks /Change /DISABLE /TN "GoogleUpdateTaskMachineUA"
             -
                 name: Disable Adobe Acrobat update service
                 recommend: true
                 code: |-
-                    sc config AdobeARMservice start=disabled
-                    sc config adobeupdateservice start=disabled
-                    sc config adobeflashplayerupdatesvc start=disabled
+                    sc stop "AdobeARMservice" & sc config AdobeARMservice start=disabled
+                    sc stop "adobeupdateservice" & sc config adobeupdateservice start=disabled
+                    sc stop "adobeflashplayerupdatesvc" & sc config adobeflashplayerupdatesvc start=disabled
                     schtasks /change /tn "Adobe Acrobat Update Task" /disable
                     schtasks /change /tn "Adobe Flash Player Updater" /disable
             -
                 name: Disable Razer Game Scanner Service
                 recommend: true
                 code: |-
-                    sc stop "Razer Game Scanner Service"
-                    sc config "Razer Game Scanner Service" start=disabled
+                    sc stop "Razer Game Scanner Service" & sc config "Razer Game Scanner Service" start=disabled
             -
                 name: Disable Logitech Gaming Registry Service 
                 recommend: true
                 code: |-
-                    sc stop "LogiRegistryService"
-                    sc config "LogiRegistryService" start=disabled 
+                    sc stop "LogiRegistryService" & sc config "LogiRegistryService" start=disabled 
             -
                 name: Disable Dropbox auto update service
                 recommend: true
                 code: |-
-                    sc config dbupdate start=disabled
-                    sc config dbupdatem start=disabled
+                    sc stop "dbupdate" & sc config "dbupdate" start=disabled
+                    sc stop "dbupdatem" & sc config "dbupdatem" start=disabled
                     schtasks /Change /DISABLE /TN "DropboxUpdateTaskMachineCore"
                     schtasks /Change /DISABLE /TN "DropboxUpdateTaskMachineUA" 
             -
@@ -971,7 +969,7 @@ actions:
                     -
                         name: Disable dows Media Player Network Sharing Service
                         recommend: true
-                        code: sc config WMPNetworkSvc start=disabled
+                        code: sc stop "WMPNetworkSvc" & sc config "WMPNetworkSvc" start=disabled
     -
         category: Security improvements
         children:         
@@ -1153,42 +1151,42 @@ actions:
             -
                 name: Delivery Optimization (P2P Windows Updates)
                 recommend: true
-                code: sc config DoSvc start=disabled
+                code: sc stop "DoSvc" & sc config "DoSvc" start=disabled
             -
                 name: Microsoft Windows Live ID Service
                 recommend: true
-                code: sc config wlidsvc start=demand
+                code: sc stop "wlidsvc" & sc config "wlidsvc" start=demand
             -
                 name: Program Compatibility Assistant Service
                 recommend: true
-                code: sc config PcaSvc start=disabled
+                code: sc stop "PcaSvc" & sc config "PcaSvc" start=disabled
             -
                 name: Downloaded Maps Manager
                 recommend: true
-                code: sc config MapsBroker start=disabled
+                code: sc stop "MapsBroker" & sc config "MapsBroker" start=disabled
             -
                 name: Microsoft Retail Demo experience
                 recommend: true
-                code: sc config RetailDemo start=disabled
+                code: sc stop "RetailDemo" & sc config "RetailDemo" start=disabled
             -
                 name: Mail, contact, calendar and user data synchronization. 
                 recommend: false
                 code: |-
-                    sc config OneSyncSvc start=disabled
-                    sc config UnistoreSvc start=disabled
+                    sc stop "OneSyncSvc" & sc config "OneSyncSvc" start=disabled
+                    sc stop "UnistoreSvc" & sc config "UnistoreSvc" start=disabled
             -
                 name: Contact data indexing
                 recommend: false
                 code: |-
-                    sc config PimIndexMaintenanceSvc start=disabled
+                    sc stop "PimIndexMaintenanceSvc" & sc config "PimIndexMaintenanceSvc" start=disabled
             -
                 name: App user data access
                 recommend: false
-                code: sc config UserDataSvc start=disabled
+                code: sc stop "UserDataSvc" & sc config "UserDataSvc" start=disabled
             -
                 name: Text messaging
                 recommend: false
-                code: sc config MessagingService start=disabled
+                code: sc stop "MessagingService" & sc config "MessagingService" start=disabled
     -
         category: Uninstall apps
         children:
