@@ -255,6 +255,11 @@ actions:
                         name: Clear main telemetry file
                         recommend: true
                         code: echo "" > %ProgramData%\Microsoft\Diagnosis\ETLTraces\AutoLogger\AutoLogger-Diagtrack-Listener.etl
+                    -
+                        name: Clear Event Logs in Event Viewer
+                        recommend: false
+                        docs: https://serverfault.com/questions/407838/do-windows-events-from-the-windows-event-log-have-sensitive-information
+                        code: for /f "tokens=*" %%G in ('wevtutil.exe el') DO (wevtutil.exe cl %1 "%%G")
             -
                 name: Clear credentials from Windows Credential Manager
                 recommend: false
@@ -272,6 +277,35 @@ actions:
                 name: Enable Reset Base in Dism Component Store
                 recommend: true
                 code: reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\SideBySide\Configuration" /v "DisableResetbase" /t "REG_DWORD" /d "0" /f
+            -
+                name: Clear Windows Product Key from Registry
+                recommend: false
+                code: slmgr /cpky
+                docs: https://winaero.com/blog/remove-windows-10-product-key-from-registry-and-protect-it-from-being-stolen/
+            -
+                name: Clear volume backups (shadow copies)
+                recommend: false
+                docs: 
+                    - https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/vssadmin-delete-shadows
+                    - https://www.fortinet.com/blog/threat-research/stomping-shadow-copies-a-second-look-into-deletion-methods
+                code: vssadmin delete shadows /all /quiet
+            - 
+                name: Remove Default Apps Associations
+                recommended: false
+                code:  dism /online /Remove-DefaultAppAssociations
+            -
+                name: Clear (Reset) Network Data Usage
+                recommended: false
+                docs: https://www.windowslifestyle.com/reset-data-usage-tool-reset-network-data-usage-windows-10/
+                code: |-
+                    SET was_running=0
+                    net stop DPS && was_running=1
+                    echo %was_running%
+                    del /F /S /Q /A "%windir%\System32\sru*"
+                    IF NOT %was_running% == 0 (
+                        net start DPS
+                    )
+
     -
         category: Disable OS data collection
         children:
@@ -1066,12 +1100,30 @@ actions:
                 name: Block Anonymous enumeration of SAM accounts
                 recommend: true
                 docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63745
-                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "DisableExceptionChainValidation" /t REG_DWORD /d 0 /f 
+                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "DisableExceptionChainValidation" /t REG_DWORD /d 0 /f
             - 
                 name: Restrict anonymous access to Named Pipes and Shares
                 recommend: true
                 docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63759
                 code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanManServer\Parameters" /v "RestrictNullSessAccess" /t REG_DWORD /d 1 /f
+            -
+                category: Disable unsafe features
+                children:
+                    -
+                        name: Disable unsafe SMBv1 protocol
+                        recommend: true
+                        docs: https://techcommunity.microsoft.com/t5/storage-at-microsoft/stop-using-smb1/ba-p/425858
+                        code: |-
+                            dism /online /Disable-Feature /FeatureName:"SMB1Protocol" /NoRestart
+                            dism /Online /Disable-Feature /FeatureName:"SMB1Protocol-Client" /NoRestart
+                            dism /Online /Disable-Feature /FeatureName:"SMB1Protocol-Server" /NoRestart
+                    -
+                        name: Disable PowerShell 2.0 against downgrade attacks
+                        recommend: true
+                        docs: https://www.stigviewer.com/stig/windows_10/2017-02-21/finding/V-70637
+                        code: |-
+                            dism /online /Disable-Feature /FeatureName:"MicrosoftWindowsPowerShellV2Root" /NoRestart
+                            dism /online /Disable-Feature /FeatureName:"MicrosoftWindowsPowerShellV2" /NoRestart
     -
         category: Privacy over security
         children:         
@@ -1100,6 +1152,7 @@ actions:
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "AUOptions" /t "REG_DWORD" /d "2" /f
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallDay" /t "REG_DWORD" /d "0" /f
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallTime" /t "REG_DWORD" /d "3" /f
+                    sc stop "UsoSvc" & sc config "UsoSvc" start=disabled
     -
         category: UI for privacy
         children:         
@@ -1145,6 +1198,56 @@ actions:
                 name: Disable Sync Provider Notifications
                 recommend: false
                 code: REG ADD "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowSyncProviderNotifications" /d 0 /t REG_DWORD /f
+            -
+                name: Turn hibernate off to disable sleep for quick start
+                recommend: false
+                code: powercfg -h off
+                docs: http://www.windows10windows7.com/w10/win10zs/100102504.html
+            -
+                category: Hide from This PC and Browse in dialog boxes
+                children:
+                    -
+                        name: 3D Objects
+                        code: |-
+                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
+                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
+                        recommend: false
+                    -
+                        name: Desktop
+                        code: |-
+                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
+                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
+                        recommend: false
+                    -
+                        name: Documents
+                        code: |-
+                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{f42ee2d3-909f-4907-8871-4c22fc0bf756}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
+                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{f42ee2d3-909f-4907-8871-4c22fc0bf756}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
+                        recommend: false
+                    -
+                        name: Downloads
+                        code: |-
+                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
+                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
+                        recommend: false
+                    -
+                        name: Movies
+                        code: |-
+                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{35286a68-3c57-41a1-bbb1-0eae73d76c95}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
+                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{35286a68-3c57-41a1-bbb1-0eae73d76c95}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
+                        recommend: false
+                    -
+                        name: Music
+                        code: |-
+                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{a0c69a99-21c8-4671-8703-7934162fcf1d}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
+                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{a0c69a99-21c8-4671-8703-7934162fcf1d}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
+                        recommend: false
+                    -
+                        name: Pictures 
+                        code: |-
+                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{0ddd015d-b06c-45d5-8c4c-f59713854639}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
+                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{0ddd015d-b06c-45d5-8c4c-f59713854639}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
+                        recommend: false               
     -
         category: Disable OS services
         children:
@@ -1174,6 +1277,7 @@ actions:
                 code: |-
                     sc stop "OneSyncSvc" & sc config "OneSyncSvc" start=disabled
                     sc stop "UnistoreSvc" & sc config "UnistoreSvc" start=disabled
+                    reg add HKLM\SYSTEM\CurrentControlSet\Services\OneSyncSvc /V Start /t REG_DWORD /d "0x4" /f
             -
                 name: Contact data indexing
                 recommend: false
@@ -1187,6 +1291,38 @@ actions:
                 name: Text messaging
                 recommend: false
                 code: sc stop "MessagingService" & sc config "MessagingService" start=disabled
+            -
+                name: Windows Push Notification Service
+                recommend: true
+                docs: https://en.wikipedia.org/wiki/Windows_Push_Notification_Service#Privacy_Issue
+                code: sc stop "WpnService" & sc config "WpnService" start=disabled
+            -
+                category: Disable Xbox services
+                children:
+                    -
+                        name: Xbox Live Auth Manager
+                        recommend: true
+                        code: sc stop "XblAuthManager" & sc config "XblAuthManager" start=disabled
+                    -
+                        name: Xbox Live Game Save
+                        recommend: true
+                        code: sc stop "XblGameSave" & sc config "XblGameSave" start=disabled
+                    -
+                        name: Xbox Live Networking Service
+                        recommend: true
+                        code: sc stop "XboxNetApiSvc" & sc config "XboxNetApiSvc" start=disabled
+            -
+                name: Windows Biometric Service
+                recommend: true
+                docs: https://en.wikipedia.org/wiki/Windows_Push_Notification_Service#Privacy_Issue
+                code: sc stop "WbioSrvc" & sc config "WbioSrvc" start=disabled
+            -
+                name: Volume Shadow Copy Service
+                recommend: true
+                docs: https://docs.microsoft.com/en-us/windows-server/storage/file-server/volume-shadow-copy-service
+                code: sc stop "VSS" & sc config "VSS" start=disabled
+
+                        
     -
         category: Remove bloatware
         children:
@@ -1919,7 +2055,16 @@ actions:
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\W32time\TimeProviders\NtpClient" /v "EventLogFlags" /t REG_DWORD /d 0 /f
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\W32time\TimeProviders\NtpClient" /v "ResolvePeerBackoffMaxTimes" /t REG_DWORD /d 7 /f
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\W32time\TimeProviders\NtpClient" /v "ResolvePeerBackoffMinutes" /t REG_DWORD /d 15 /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\W32time\TimeProviders\NtpClient" /v "SpecialPollInterval" /t REG_DWORD /d 1024 /f      
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\W32time\TimeProviders\NtpClient" /v "SpecialPollInterval" /t REG_DWORD /d 1024 /f
+            -
+                name: Disable Reserved Storage for updates
+                recommend: false
+                docs: https://techcommunity.microsoft.com/t5/storage-at-microsoft/windows-10-and-reserved-storage/ba-p/428327
+                code: |-
+                    dism /online /Set-ReservedStorageState /State:Disabled /NoRestart
+                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\ReserveManager" /v "MiscPolicyInfo" /t REG_DWORD /d "2" /f
+                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\ReserveManager" /v "ShippedWithReserves" /t REG_DWORD /d "0" /f
+                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\ReserveManager" /v "PassedPolicy" /t REG_DWORD /d "0" /f
             -
                 name: Run script on start-up [EXPERIMENTAL]
                 recommend: false
