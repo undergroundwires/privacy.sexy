@@ -383,6 +383,10 @@ actions:
                     reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 1 /f
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 1 /f
             -
+                name: Disable active prompting (pings to MSFT NCSI server)
+                recommend: false
+                code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet" /v "EnableActiveProbing" /t REG_DWORD /d "0" /f
+            -
                 name: Opt out from Windows privacy consent
                 recommend: true
                 code: |-
@@ -547,7 +551,6 @@ actions:
                         name: Deny app access to text/mms 
                         recommend: true
                         code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{992AFA70-6F47-4148-B3E9-3003349C1548}" /t REG_SZ /v "Value" /d DENY /f
-                           
             -
                 name: Deny location access
                 recommend: true
@@ -1143,7 +1146,11 @@ actions:
             -
                 name: Disable Windows Defender 
                 recommend: false
-                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /t REG_DWORD /d 1 /f
+                code: |
+                    netsh advfirewall set allprofiles state off
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /t REG_DWORD /d 1 /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\MpsSvc" /v "Start" /t REG_DWORD /d 4 /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\WinDefend" /v "Start" /t REG_DWORD /d 4 /f
             -
                 name: Disable Smart Screen 
                 recommend: false
