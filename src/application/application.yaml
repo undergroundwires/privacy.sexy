@@ -298,13 +298,22 @@ actions:
                 recommended: false
                 docs: https://www.windowslifestyle.com/reset-data-usage-tool-reset-network-data-usage-windows-10/
                 code: |-
-                    SET was_running=0
-                    net stop DPS && was_running=1
-                    echo %was_running%
-                    del /F /S /Q /A "%windir%\System32\sru*"
-                    IF NOT %was_running% == 0 (
-                        net start DPS
-                    )
+                    setlocal EnableDelayedExpansion 
+                        SET /A dps_service_running=0
+                        SC queryex "DPS"|Find "STATE"|Find /v "RUNNING">Nul||(
+                            SET /A dps_service_running=1
+                            net stop DPS
+                        )
+                        
+                        REM del /F /S /Q /A "%windir%\System32\sru*"
+                        
+                        IF !dps_service_running! == 1 (
+                            echo "Was running"
+                            net start DPS
+                        ) ELSE (
+                            echo "Was not running"
+                        )
+                    endlocal
 
     -
         category: Disable OS data collection
@@ -867,7 +876,11 @@ actions:
                     reg add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\osm" /v "Enablelogging" /t REG_DWORD /d 0 /f 
                     reg add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\osm" /v "EnableUpload" /t REG_DWORD /d 0 /f 
                     reg add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\osm" /v "Enablelogging" /t REG_DWORD /d 0 /f 
-                    reg add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\osm" /v "EnableUpload" /t REG_DWORD /d 0 /f 
+                    reg add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\osm" /v "EnableUpload" /t REG_DWORD /d 0 /f
+                    schtasks /change /TN "Microsoft\Office\Office ClickToRun Service Monitor" /DISABLE
+                    schtasks /change /TN "Microsoft\Office\OfficeTelemetryAgentFallBack2016" /DISABLE
+                    schtasks /change /TN "Microsoft\Office\OfficeTelemetryAgentLogOn2016" /DISABLE
+                    sc stop "ClickToRunSvc" & sc config "ClickToRunSvc" start= disabled
             -
                 category: Configure browsers
                 children: 
