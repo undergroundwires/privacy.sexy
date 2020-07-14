@@ -28,16 +28,16 @@ Fork it & add more scripts in [application.yaml](src/application/application.yam
 
 ## Commands
 
-- Setup and run
-  - For development:
-    - `npm install` to project setup.
-    - `npm run serve` to compile & hot-reload for development.
-  - Production (using Docker):
-    - Build `docker build -t undergroundwires/privacy.sexy .`
-    - Run `docker run -it -p 8080:8080 --rm --name privacy.sexy-1 undergroundwires/privacy.sexy`
-- Prepare for production: `npm run build`
-- Run tests: `npm run test:unit`
-- Lint and fix files: `npm run lint`
+- Project setup: `npm install`
+- Testing
+  - Run unit tests: `npm run test:unit`
+  - Lint: `npm run lint`
+- **Webpage**
+  - Development: `npm run serve` to compile & hot-reload for development.
+  - Production: `npm run build` to prepare files for distribution.
+  - Or run using Docker:
+    1. Build: `docker build -t undergroundwires/privacy.sexy:0.4.8 .`
+    2. Run: `docker run -it -p 8080:80 --rm --name privacy.sexy-0.4.8 undergroundwires/privacy.sexy:0.4.8`
 
 ## Architecture
 
