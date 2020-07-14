@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.4.9 (2020-07-14)
+
+* disable office telemetry Disassembler0/Win10-Initial-Setup-Script#288 | [commit](https://github.com/undergroundwires/privacy.sexy/commit/53cf595e1726ee3de79137fd566978fd512d218f)
+* updated to may 2020 update | [commit](https://github.com/undergroundwires/privacy.sexy/commit/909c44d72a4a602ee8f27d06b6ec706c1e432ce1)
+* simplified docker builds | [commit](https://github.com/undergroundwires/privacy.sexy/commit/f27a2871d74e5117fc029be82caef12246e10879)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.4.8...0.4.9)
+
+## 0.4.8 (2020-07-11)
+
+* added more scripts #16 (#17) | [commit](https://github.com/undergroundwires/privacy.sexy/commit/d8552c62ffea13ce62abce836c7dd4980eef6bb9)
+* stopping services before disabling #16 | [commit](https://github.com/undergroundwires/privacy.sexy/commit/628c16eb952495f5b3f6d794161b355f4b08b819)
+* can disable features, capabilities & remove onedrive #16 | [commit](https://github.com/undergroundwires/privacy.sexy/commit/30efbcc621eb83dd5a9c1e66b8f1f5350eb95006)
+* updated one more typo (#19) | [commit](https://github.com/undergroundwires/privacy.sexy/commit/d7a1325c0b7665ce712dc411965d00fc1d6fa384)
+* more tweaks #16 | [commit](https://github.com/undergroundwires/privacy.sexy/commit/2c4eb78c3f156cb0d033977cffbe7464697680f5)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.4.7...0.4.8)
+
 ## 0.4.7 (2020-06-30)
 
 * removed HKU tweak as all HKU's are changed #10 | [commit](https://github.com/undergroundwires/privacy.sexy/commit/c937af8ee7da9aa95131e56abf7bf24800390fe6)
