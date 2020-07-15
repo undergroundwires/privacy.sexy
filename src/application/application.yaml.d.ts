@@ -17,7 +17,7 @@ declare module 'js-yaml-loader!*' {
         category: string;
     }
 
-    interface ApplicationYaml {
+    export interface ApplicationYaml {
         name: string;
         repositoryUrl: string;
         actions: ReadonlyArray<YamlCategory>;

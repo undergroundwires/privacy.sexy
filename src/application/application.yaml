@@ -304,14 +304,9 @@ actions:
                             SET /A dps_service_running=1
                             net stop DPS
                         )
-                        
                         REM del /F /S /Q /A "%windir%\System32\sru*"
-                        
                         IF !dps_service_running! == 1 (
-                            echo "Was running"
                             net start DPS
-                        ) ELSE (
-                            echo "Was not running"
                         )
                     endlocal
 
@@ -1146,7 +1141,7 @@ actions:
             -
                 name: Disable Windows Defender 
                 recommend: false
-                code: |
+                code: |-
                     netsh advfirewall set allprofiles state off
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /t REG_DWORD /d 1 /f
                     reg add "HKLM\SYSTEM\CurrentControlSet\Services\MpsSvc" /v "Start" /t REG_DWORD /d 4 /f
