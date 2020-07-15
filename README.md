@@ -36,8 +36,8 @@ Fork it & add more scripts in [application.yaml](src/application/application.yam
   - Development: `npm run serve` to compile & hot-reload for development.
   - Production: `npm run build` to prepare files for distribution.
   - Or run using Docker:
-    1. Build: `docker build -t undergroundwires/privacy.sexy:0.4.9 .`
-    2. Run: `docker run -it -p 8080:80 --rm --name privacy.sexy-0.4.9 undergroundwires/privacy.sexy:0.4.9`
+    1. Build: `docker build -t undergroundwires/privacy.sexy:0.4.10 .`
+    2. Run: `docker run -it -p 8080:80 --rm --name privacy.sexy-0.4.10 undergroundwires/privacy.sexy:0.4.10`
 
 ## Architecture
 

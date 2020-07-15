@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.10 (2020-07-15)
+
+* fixed script validation errors | [commit](https://github.com/undergroundwires/privacy.sexy/commit/a34ae139d7fc1ba05b8ab9eb962da4ca0231ed5c)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.4.9...0.4.10)
+
 ## 0.4.9 (2020-07-14)
 
 * disable office telemetry Disassembler0/Win10-Initial-Setup-Script#288 | [commit](https://github.com/undergroundwires/privacy.sexy/commit/53cf595e1726ee3de79137fd566978fd512d218f)
