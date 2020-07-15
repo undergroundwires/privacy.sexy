@@ -1,3 +1,4 @@
+# Structure documented in "./application.yaml.d.ts" (as code)
 name: privacy.sexy
 repositoryUrl: https://github.com/undergroundwires/privacy.sexy
 actions:
@@ -304,7 +305,7 @@ actions:
                             SET /A dps_service_running=1
                             net stop DPS
                         )
-                        REM del /F /S /Q /A "%windir%\System32\sru*"
+                        del /F /S /Q /A "%windir%\System32\sru*"
                         IF !dps_service_running! == 1 (
                             net start DPS
                         )
@@ -320,10 +321,13 @@ actions:
                         name: Disable Customer Experience Improvement (CEIP/SQM)
                         recommend: true
                         code: reg add "HKLM\Software\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d "0" /f
+                        revertCode: reg add "HKLM\Software\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d "1" /f
+                        docs: https://docs.microsoft.com/en-us/windows/win32/devnotes/ceipenable
                     -
                         name: Disable Application Impact Telemetry (AIT)
                         recommend: true
                         code: reg add "HKLM\Software\Policies\Microsoft\Windows\AppCompat" /v "AITEnable" /t REG_DWORD /d "0" /f
+                        revertCode: reg add "HKLM\Software\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d "1" /f
                     -
                         name: Disable diagnostics telemetry
                         recommend: true
@@ -343,13 +347,10 @@ actions:
                             schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator" /DISABLE
                             schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask" /DISABLE
                             schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" /DISABLE
-                    -
-                        name: Disabling Data Logging Services
-                        recommend: true
-                        code: |-
-                            schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator" /DISABLE
-                            schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask" /DISABLE
-                            schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" /DISABLE
+                        revertCode: |-
+                            schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator" /ENABLE
+                            schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask" /ENABLE
+                            schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" /ENABLE
                     -
                         name: Disable telemetry in data collection policy
                         recommend: true
@@ -381,21 +382,21 @@ actions:
                 name: Disable active prompting (pings to MSFT NCSI server)
                 recommend: false
                 code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet" /v "EnableActiveProbing" /t REG_DWORD /d "0" /f
+                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet" /v "EnableActiveProbing" /t REG_DWORD /d "1" /f
             -
                 name: Opt out from Windows privacy consent
                 recommend: true
-                code: |-
-                    reg add "HKCU\SOFTWARE\Microsoft\Personalization\Settings" /v "AcceptedPrivacyPolicy" /t REG_DWORD /d 0 /f
+                code: reg add "HKCU\SOFTWARE\Microsoft\Personalization\Settings" /v "AcceptedPrivacyPolicy" /t REG_DWORD /d 0 /f
+                revertCode: reg add "HKCU\SOFTWARE\Microsoft\Personalization\Settings" /v "AcceptedPrivacyPolicy" /t REG_DWORD /d 1 /f
             -
                 name: Disable Windows feedback
                 recommend: true
+                docs: https://www.tenforums.com/tutorials/2441-change-feedback-frequency-windows-10-a.html
                 code: |-
                     reg add "HKCU\SOFTWARE\Microsoft\Siuf\Rules" /v "NumberOfSIUFInPeriod" /t REG_DWORD /d 0 /f 
-                    :: removing this value sets feedback frequency to never
                     reg delete "HKCU\SOFTWARE\Microsoft\Siuf\Rules" /v "PeriodInNanoSeconds" /f
                     reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v "DoNotShowFeedbackNotifications" /t REG_DWORD /d 1 /f 
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "DoNotShowFeedbackNotifications" /t REG_DWORD /d 1 /f
-                docs: https://www.tenforums.com/tutorials/2441-change-feedback-frequency-windows-10-a.html
             -
                 name: Disable text and handwriting collection
                 recommend: true
@@ -525,27 +526,28 @@ actions:
                     -
                         name: Deny app access to videos
                         recommend: true
-                        code: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\videosLibrary" /v "Value" /d "Deny" /t REG_SZ /f
+                        code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\videosLibrary" /v "Value" /d "Deny" /t REG_SZ /f
+                        revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\videosLibrary" /v "Value" /d "Allow" /t REG_SZ /f
                     -
                         name: Deny app access to pictures
                         recommend: true
-                        code: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\picturesLibrary" /v "Value" /d "Deny" /t REG_SZ /f
+                        code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\picturesLibrary" /v "Value" /d "Deny" /t REG_SZ /f
+                        revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\picturesLibrary" /v "Value" /d "Allow" /t REG_SZ /f
                     -
                         name: Deny app access to documents
                         recommend: true
-                        code: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\documentsLibrary" /v "Value" /d "Deny" /t REG_SZ /f
+                        code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\documentsLibrary" /v "Value" /d "Deny" /t REG_SZ /f
+                        revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\documentsLibrary" /v "Value" /d "Allow" /t REG_SZ /f
                     -
                         name: Deny app access to bluetooth devices
                         recommend: true
-                        code: |-
-                           reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\bluetoothSync" /v "Value" /d "Deny" /t REG_SZ /f
+                        code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\bluetoothSync" /v "Value" /d "Deny" /t REG_SZ /f
+                        revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\bluetoothSync" /v "Value" /d "Allow" /t REG_SZ /f
                     -
                         name: Deny app access to text/mms 
                         recommend: true
-                        code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{992AFA70-6F47-4148-B3E9-3003349C1548}" /t REG_SZ /v "Value" /d DENY /f
+                        code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{992AFA70-6F47-4148-B3E9-3003349C1548}" /t REG_SZ /v "Value" /d "Deny" /f
+                        revertCode: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{992AFA70-6F47-4148-B3E9-3003349C1548}" /t REG_SZ /v "Value" /d "Allow" /f
             -
                 name: Deny location access
                 recommend: true
@@ -645,15 +647,19 @@ actions:
                 name: Disable App Launch Tracking
                 docs: https://www.thewindowsclub.com/enable-or-disable-app-launch-tracking-in-windows-10
                 recommend: true
-                code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /d "0" /t REG_DWORD /f
+                code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /d 0 /t REG_DWORD /f
+                revertCode: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /d 1 /t REG_DWORD /f
             -
                 name: Disable Inventory Collector
                 recommend: true
-                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisableInventory" /t REG_DWORD /d 1 /f 
+                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisableInventory" /t REG_DWORD /d 1 /f
+                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisableInventory" /t REG_DWORD /d 0 /f
             -
                 name: Disable Website Access of Language List
                 recommend: true
+                docs: https://www.tenforums.com/tutorials/82980-turn-off-website-access-language-list-windows-10-a.html
                 code: reg add "HKCU\Control Panel\International\User Profile" /v "HttpAcceptLanguageOptOut" /t REG_DWORD /d 1 /f 
+                revertCode: reg add "HKCU\Control Panel\International\User Profile" /v "HttpAcceptLanguageOptOut" /t REG_DWORD /d 0 /f 
             -
                 name: Disable Auto Downloading Maps
                 recommend: true
@@ -878,7 +884,16 @@ actions:
                     schtasks /change /TN "Microsoft\Office\Office ClickToRun Service Monitor" /DISABLE
                     schtasks /change /TN "Microsoft\Office\OfficeTelemetryAgentFallBack2016" /DISABLE
                     schtasks /change /TN "Microsoft\Office\OfficeTelemetryAgentLogOn2016" /DISABLE
-                    sc stop "ClickToRunSvc" & sc config "ClickToRunSvc" start= disabled
+                    sc stop "ClickToRunSvc" & sc config "ClickToRunSvc" start=disabled
+                revertCode: |-
+                    reg add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\osm" /v "Enablelogging" /t REG_DWORD /d 1 /f 
+                    reg add "HKCU\SOFTWARE\Policies\Microsoft\Office\15.0\osm" /v "EnableUpload" /t REG_DWORD /d 1 /f 
+                    reg add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\osm" /v "Enablelogging" /t REG_DWORD /d 1 /f 
+                    reg add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\osm" /v "EnableUpload" /t REG_DWORD /d 1 /f
+                    schtasks /change /TN "Microsoft\Office\Office ClickToRun Service Monitor" /ENABLE
+                    schtasks /change /TN "Microsoft\Office\OfficeTelemetryAgentFallBack2016" /ENABLE
+                    schtasks /change /TN "Microsoft\Office\OfficeTelemetryAgentLogOn2016" /ENABLE
+                    sc config "ClickToRunSvc" start=auto
             -
                 category: Configure browsers
                 children: 
@@ -888,7 +903,7 @@ actions:
                             -
                                 name: Disable live tile data collection
                                 recommend: true
-                                code: reg add "HKCU\Software\Policies\Microsoft\MicrosoftEdge\Main" /v "PreventLiveTileDataCollection" /t REG_DWORD /d 1 /f          
+                                code: reg add "HKCU\Software\Policies\Microsoft\MicrosoftEdge\Main" /v "PreventLiveTileDataCollection" /t REG_DWORD /d 1 /f         
                             -
                                 name: Disable MFU tracking
                                 recommend: true
@@ -1042,6 +1057,7 @@ actions:
                 name: Disable administrative shares 
                 recommend: true
                 code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareWks" /t REG_DWORD /d 0 /f
+                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareWks" /t REG_DWORD /d 1 /f
             - 
                 name: Force enable data execution prevention (DEP)
                 recommend: false
@@ -1146,6 +1162,11 @@ actions:
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /t REG_DWORD /d 1 /f
                     reg add "HKLM\SYSTEM\CurrentControlSet\Services\MpsSvc" /v "Start" /t REG_DWORD /d 4 /f
                     reg add "HKLM\SYSTEM\CurrentControlSet\Services\WinDefend" /v "Start" /t REG_DWORD /d 4 /f
+                revertCode: |-
+                    netsh advfirewall set allprofiles state on
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /t REG_DWORD /d 0 /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\MpsSvc" /v "Start" /t REG_DWORD /d 2 /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\WinDefend" /v "Start" /t REG_DWORD /d 2 /f
             -
                 name: Disable Smart Screen 
                 recommend: false
@@ -1155,19 +1176,33 @@ actions:
                     reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer" /v "SmartScreenEnabled" /t REG_SZ /d "Off" /f 
                     reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost" /v "EnableWebContentEvaluation" /t REG_DWORD /d 0 /f 
                     reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost" /v "EnableWebContentEvaluation" /t REG_DWORD /d 0 /f 
+                revertCode: |-
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableSmartScreen" /t REG_DWORD /d 1 /f
+                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /v "SmartScreenEnabled" /t REG_SZ /d "Warn" /f 
+                    reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer" /v "SmartScreenEnabled" /t REG_SZ /d "Warn" /f 
+                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost" /v "EnableWebContentEvaluation" /t REG_DWORD /d 1 /f 
+                    reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost" /v "EnableWebContentEvaluation" /t REG_DWORD /d 1 /f
             -
                 name: Disable scheduled On Demand anti malware scanner (MRT)
                 recommend: false
                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\MRT" /v "DontOfferThroughWUAU" /t REG_DWORD /d 1 /f
+                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\MRT" /v "DontOfferThroughWUAU" /t REG_DWORD /d 0 /f
             -
                 name: Disable automatic updates
                 recommend: false
+                docs: https://docs.microsoft.com/fr-fr/security-updates/windowsupdateservices/18127152
                 code: |-
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "NoAutoUpdate" /t "REG_DWORD" /d "0" /f
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "AUOptions" /t "REG_DWORD" /d "2" /f
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallDay" /t "REG_DWORD" /d "0" /f
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallTime" /t "REG_DWORD" /d "3" /f
                     sc stop "UsoSvc" & sc config "UsoSvc" start=disabled
+                revertCode: |-
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "NoAutoUpdate" /t "REG_DWORD" /d "1" /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "AUOptions" /t "REG_DWORD" /d "3" /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallDay" /t "REG_DWORD" /d "0" /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallTime" /t "REG_DWORD" /d "0" /f
+                    sc config "UsoSvc" start=auto
     -
         category: UI for privacy
         children:         
@@ -1175,6 +1210,8 @@ actions:
                 name: Disable lock screen app notifications
                 recommend: true
                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "DisableLockScreenAppNotifications" /t REG_DWORD /d 1 /f
+                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "DisableLockScreenAppNotifications" /t REG_DWORD /d 0 /f
+                docs: https://www.stigviewer.com/stig/windows_server_2012_member_server/2014-01-07/finding/V-36687
             -
                 name: Disable online content in explorer
                 recommend: true
@@ -1336,8 +1373,7 @@ actions:
                 recommend: true
                 docs: https://docs.microsoft.com/en-us/windows-server/storage/file-server/volume-shadow-copy-service
                 code: sc stop "VSS" & sc config "VSS" start=disabled
-
-                        
+                revertCode: sc config vss start=auto
     -
         category: Remove bloatware
         children:
@@ -2074,12 +2110,19 @@ actions:
             -
                 name: Disable Reserved Storage for updates
                 recommend: false
-                docs: https://techcommunity.microsoft.com/t5/storage-at-microsoft/windows-10-and-reserved-storage/ba-p/428327
+                docs: 
+                    - https://techcommunity.microsoft.com/t5/storage-at-microsoft/windows-10-and-reserved-storage/ba-p/428327
+                    - https://www.tenforums.com/tutorials/124858-enable-disable-reserved-storage-windows-10-a.html
                 code: |-
                     dism /online /Set-ReservedStorageState /State:Disabled /NoRestart
                     reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\ReserveManager" /v "MiscPolicyInfo" /t REG_DWORD /d "2" /f
                     reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\ReserveManager" /v "ShippedWithReserves" /t REG_DWORD /d "0" /f
                     reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\ReserveManager" /v "PassedPolicy" /t REG_DWORD /d "0" /f
+                revertCode: |-
+                    DISM /Online /Set-ReservedStorageState /State:Enabled /NoRestart
+                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\ReserveManager" /v "MiscPolicyInfo" /t REG_DWORD /d "1" /f
+                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\ReserveManager" /v "ShippedWithReserves" /t REG_DWORD /d "1" /f
+                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\ReserveManager" /v "PassedPolicy" /t REG_DWORD /d "1" /f
             -
                 name: Run script on start-up [EXPERIMENTAL]
                 recommend: false

@@ -1,5 +1,5 @@
 import { IFilterResult } from './IFilterResult';
-import { IScript } from '@/domain/Script';
+import { IScript } from '@/domain/IScript';
 import { ICategory } from '@/domain/ICategory';
 
 export class FilterResult implements IFilterResult {

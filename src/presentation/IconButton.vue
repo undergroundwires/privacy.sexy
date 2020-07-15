@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
-import { StatefulVue, IApplicationState } from './StatefulVue';
+import { StatefulVue } from './StatefulVue';
 import { SaveFileDialog } from './../infrastructure/SaveFileDialog';
 import { Clipboard } from './../infrastructure/Clipboard';
 

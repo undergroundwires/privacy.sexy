@@ -5,9 +5,9 @@ export interface IApplication {
     readonly name: string;
     readonly repositoryUrl: string;
     readonly version: string;
-    readonly categories: ReadonlyArray<ICategory>;
     readonly totalScripts: number;
     readonly totalCategories: number;
+    readonly actions: ReadonlyArray<ICategory>;
 
     getRecommendedScripts(): ReadonlyArray<IScript>;
     findCategory(categoryId: number): ICategory | undefined;

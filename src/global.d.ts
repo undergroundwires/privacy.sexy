@@ -13,6 +13,7 @@ declare module 'liquor-tree' {
     }
     interface ICustomLiquorTreeData {
         documentationUrls: ReadonlyArray<string>;
+        isReversible: boolean;
     }
 
     /**

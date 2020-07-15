@@ -8,7 +8,7 @@
                   ref="treeElement"
                 >
                 <span class="tree-text" slot-scope="{ node }">
-                    <Node :data="convertExistingToNode(node)"/>
+                    <Node :data="convertExistingToNode(node)" />
                 </span>
             </tree>
         </span>
@@ -144,6 +144,7 @@
                 text: oldNode.data.text,
                 data: {
                     documentationUrls: oldNode.data.documentationUrls,
+                    isReversible: oldNode.data.isReversible,
                 },
                 children: oldNode.children == null ? [] :
                         updateCheckedState(oldNode.children, selectedNodeIds),
@@ -154,9 +155,3 @@
         return result;
     }
 </script>
-
-
-<style scoped lang="scss">
-@import "@/presentation/styles/colors.scss";
-
-</style>

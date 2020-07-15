@@ -4,6 +4,7 @@ export interface IRepository<TKey, TEntity extends IEntity<TKey>> {
     readonly length: number;
     getItems(predicate?: (entity: TEntity) => boolean): TEntity[];
     addItem(item: TEntity): void;
+    addOrUpdateItem(item: TEntity): void;
     removeItem(id: TKey): void;
-    exists(item: TEntity): boolean;
+    exists(id: TKey): boolean;
 }

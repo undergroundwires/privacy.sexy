@@ -32,7 +32,8 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { StatefulVue } from '@/presentation/StatefulVue';
 import SelectableOption from './SelectableOption.vue';
 import { IApplicationState } from '@/application/State/IApplicationState';
-import { IScript } from '@/domain/Script';
+import { IScript } from '@/domain/IScript';
+import { SelectedScript } from '../../../application/State/Selection/SelectedScript';
 
 @Component({
   components: {
@@ -79,12 +80,14 @@ export default class TheSelector extends StatefulVue {
     private updateSelections(state: IApplicationState) {
         this.isNoneSelected = state.selection.totalSelected === 0;
         this.isAllSelected = state.selection.totalSelected === state.app.totalScripts;
-        this.isRecommendedSelected = this.areSame(state.app.getRecommendedScripts(), state.selection.selectedScripts);
+        this.isRecommendedSelected = this.areAllRecommended(state.app.getRecommendedScripts(),
+            state.selection.selectedScripts);
     }
 
-    private areSame(scripts: ReadonlyArray<IScript>, other: ReadonlyArray<IScript>): boolean {
+    private areAllRecommended(scripts: ReadonlyArray<IScript>, other: ReadonlyArray<SelectedScript>): boolean {
+        other = other.filter((selected) => !(selected).revert);
         return (scripts.length === other.length) &&
-            scripts.every((script) => other.some((s) => s.id === script.id));
+            scripts.every((script) => other.some((selected) => selected.id === script.id));
     }
 }
 </script>

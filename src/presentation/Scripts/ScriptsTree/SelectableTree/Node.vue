@@ -1,17 +1,14 @@
 <template>
     <div id="node">
-        <div>{{ this.data.text }}</div>
-        <div
-          v-for="url of this.data.documentationUrls"
-          v-bind:key="url">
-            <a :href="url"
-                :alt="url"
-                target="_blank" class="docs"
-                v-tooltip.top-center="url"
-                v-on:click.stop>
-                <font-awesome-icon :icon="['fas', 'info-circle']" />
-                </a>
-        </div>
+        <div class="item text">{{ this.data.text }}</div>
+        <RevertToggle
+          class="item"
+          v-if="data.isReversible"
+          :scriptId="data.id" />
+        <DocumentationUrls
+          class="item"
+          v-if="data.documentationUrls && data.documentationUrls.length > 0"
+          :documentationUrls="this.data.documentationUrls" />
     </div>
 </template>
 
@@ -19,8 +16,15 @@
 <script lang="ts">
     import { Component, Prop, Vue } from 'vue-property-decorator';
     import { INode } from './INode';
+    import RevertToggle from './RevertToggle.vue';
+    import DocumentationUrls from './DocumentationUrls.vue';
     /** Wrapper for Liquor Tree, reveals only abstracted INode for communication */
-    @Component
+    @Component({
+        components: {
+          RevertToggle,
+          DocumentationUrls,
+        },
+    })
     export default class Node extends Vue {
         @Prop() public data: INode;
     }
@@ -30,17 +34,15 @@
 <style scoped lang="scss">
 @import "@/presentation/styles/colors.scss";
 #node {
-  display:flex;
-  flex-direction: row;
+    display:flex;
+    flex-direction: row;
     flex-wrap: wrap;
-  .docs {
-    color: $gray;
-    cursor: pointer;
-    margin-left:5px;
-    &:hover {
-        color: $slate;
+    .text {
+      display: flex;
+      align-items: center;
     }
-  }
+    .item:not(:first-child) {
+      margin-left: 5px;
+    }
 }
-
 </style>

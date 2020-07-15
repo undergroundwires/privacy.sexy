@@ -18,10 +18,20 @@ export class InMemoryRepository<TKey, TEntity extends IEntity<TKey>> implements 
 
     public addItem(item: TEntity): void {
         if (!item) {
-            throw new Error('Item is null');
+            throw new Error('item is null or undefined');
         }
-        if (this.exists(item)) {
+        if (this.exists(item.id)) {
             throw new Error(`Cannot add (id: ${item.id}) as it is already exists`);
+        }
+        this.items.push(item);
+    }
+
+    public addOrUpdateItem(item: TEntity): void {
+        if (!item) {
+            throw new Error('item is null or undefined');
+        }
+        if (this.exists(item.id)) {
+            this.removeItem(item.id);
         }
         this.items.push(item);
     }
@@ -34,8 +44,8 @@ export class InMemoryRepository<TKey, TEntity extends IEntity<TKey>> implements 
         this.items.splice(index, 1);
     }
 
-    public exists(entity: TEntity): boolean {
-        const index = this.items.findIndex((item) => item.id === entity.id);
+    public exists(id: TKey): boolean {
+        const index = this.items.findIndex((item) => item.id === id);
         return index !== -1;
     }
 }

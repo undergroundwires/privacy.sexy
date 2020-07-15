@@ -1,6 +1,9 @@
 import { YamlDocumentable } from 'js-yaml-loader!./application.yaml';
 
 export function parseDocUrls(documentable: YamlDocumentable): ReadonlyArray<string> {
+    if (!documentable) {
+        throw new Error('documentable is null or undefined');
+    }
     const docs = documentable.docs;
     if (!docs) {
         return [];

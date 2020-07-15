@@ -1,16 +1,19 @@
+import { SelectedScript } from '@/application/State/Selection/SelectedScript';
+import { IUserSelection } from '@/application/State/Selection/IUserSelection';
 import { UserScriptGenerator } from './UserScriptGenerator';
-import { IUserSelection } from './../Selection/IUserSelection';
 import { Signal } from '@/infrastructure/Events/Signal';
 import { IApplicationCode } from './IApplicationCode';
-import { IScript } from '@/domain/IScript';
+import { IUserScriptGenerator } from './IUserScriptGenerator';
 
 export class ApplicationCode implements IApplicationCode {
     public readonly changed = new Signal<string>();
     public current: string;
 
-    private readonly generator: UserScriptGenerator;
+    private readonly generator: IUserScriptGenerator = new UserScriptGenerator();
 
-    constructor(userSelection: IUserSelection, private readonly version: string) {
+    constructor(
+        userSelection: IUserSelection,
+        private readonly version: string) {
         if (!userSelection) { throw new Error('userSelection is null or undefined'); }
         if (!version) { throw new Error('version is null or undefined'); }
         this.generator = new UserScriptGenerator();
@@ -20,7 +23,7 @@ export class ApplicationCode implements IApplicationCode {
         });
     }
 
-    private setCode(scripts: ReadonlyArray<IScript>) {
+    private setCode(scripts: ReadonlyArray<SelectedScript>) {
         this.current = scripts.length === 0 ? '' : this.generator.buildCode(scripts, this.version);
         this.changed.notify(this.current);
     }

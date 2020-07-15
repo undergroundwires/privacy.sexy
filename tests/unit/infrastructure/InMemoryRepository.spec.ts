@@ -8,15 +8,15 @@ describe('InMemoryRepository', () => {
             [new NumericEntityStub(1), new NumericEntityStub(2), new NumericEntityStub(3)]);
 
         describe('item exists', () => {
-            const actual = sut.exists(new NumericEntityStub(1));
+            const actual = sut.exists(1);
             it('returns true', () => expect(actual).to.be.true);
         });
         describe('item does not exist', () => {
-            const actual = sut.exists(new NumericEntityStub(99));
+            const actual = sut.exists(99);
             it('returns false', () => expect(actual).to.be.false);
         });
     });
-    it('can get', () => {
+    it('getItems gets initial items', () => {
         // arrange
         const expected = [
             new NumericEntityStub(1), new NumericEntityStub(2), new NumericEntityStub(3), new NumericEntityStub(4)];
@@ -28,7 +28,7 @@ describe('InMemoryRepository', () => {
         // assert
         expect(actual).to.deep.equal(expected);
     });
-    it('can add', () => {
+    it('addItem adds', () => {
         // arrange
         const sut = new InMemoryRepository<number, NumericEntityStub>();
         const expected = {
@@ -47,7 +47,7 @@ describe('InMemoryRepository', () => {
         expect(actual.length).to.equal(expected.length);
         expect(actual.item).to.deep.equal(expected.item);
     });
-    it('can remove', () => {
+    it('removeItem removes', () => {
         // arrange
         const initialItems = [
             new NumericEntityStub(1), new NumericEntityStub(2), new NumericEntityStub(3), new NumericEntityStub(4)];
@@ -68,5 +68,31 @@ describe('InMemoryRepository', () => {
         // assert
         expect(actual.length).to.equal(expected.length);
         expect(actual.items).to.deep.equal(expected.items);
+    });
+    describe('addOrUpdateItem', () => {
+        it('adds when item does not exist', () => {
+            // arrange
+            const initialItems = [ new NumericEntityStub(1), new NumericEntityStub(2) ];
+            const newItem = new NumericEntityStub(3);
+            const expected = [ ...initialItems, newItem ];
+            const sut = new InMemoryRepository<number, NumericEntityStub>(initialItems);
+            // act
+            sut.addOrUpdateItem(newItem);
+            // assert
+            const actual = sut.getItems();
+            expect(actual).to.deep.equal(expected);
+        });
+        it('updates when item exists', () => {
+            // arrange
+            const initialItems = [ new NumericEntityStub(1).withCustomProperty('bca') ];
+            const updatedItem = new NumericEntityStub(1).withCustomProperty('abc');
+            const expected = [ updatedItem ];
+            const sut = new InMemoryRepository<number, NumericEntityStub>(initialItems);
+            // act
+            sut.addOrUpdateItem(updatedItem);
+            // assert
+            const actual = sut.getItems();
+            expect(actual).to.deep.equal(expected);
+        });
     });
 });

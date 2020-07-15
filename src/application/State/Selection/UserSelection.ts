@@ -1,13 +1,14 @@
+import { SelectedScript } from './SelectedScript';
 import { IApplication } from '@/domain/IApplication';
 import { IUserSelection } from './IUserSelection';
 import { InMemoryRepository } from '@/infrastructure/Repository/InMemoryRepository';
-import { IScript } from '@/domain/Script';
+import { IScript } from '@/domain/IScript';
 import { Signal } from '@/infrastructure/Events/Signal';
+import { IRepository } from '@/infrastructure/Repository/IRepository';
 
 export class UserSelection implements IUserSelection {
-    public readonly changed = new Signal<ReadonlyArray<IScript>>();
-
-    private readonly scripts = new InMemoryRepository<string, IScript>();
+    public readonly changed = new Signal<ReadonlyArray<SelectedScript>>();
+    private readonly scripts: IRepository<string, SelectedScript> = new InMemoryRepository<string, SelectedScript>();
 
     constructor(
         private readonly app: IApplication,
@@ -15,33 +16,40 @@ export class UserSelection implements IUserSelection {
         selectedScripts: ReadonlyArray<IScript>) {
         if (selectedScripts && selectedScripts.length > 0) {
             for (const script of selectedScripts) {
-                this.scripts.addItem(script);
+                const selected = new SelectedScript(script, false);
+                this.scripts.addItem(selected);
             }
         }
     }
 
-    /** Add a script to users application */
-    public addSelectedScript(scriptId: string): void {
+    public addSelectedScript(scriptId: string, revert: boolean): void {
         const script = this.app.findScript(scriptId);
         if (!script) {
             throw new Error(`Cannot add (id: ${scriptId}) as it is unknown`);
         }
-        this.scripts.addItem(script);
+        const selectedScript = new SelectedScript(script, revert);
+        this.scripts.addItem(selectedScript);
         this.changed.notify(this.scripts.getItems());
     }
 
-    /** Remove a script from users application */
+    public addOrUpdateSelectedScript(scriptId: string, revert: boolean): void {
+        const script = this.app.findScript(scriptId);
+        const selectedScript = new SelectedScript(script, revert);
+        this.scripts.addOrUpdateItem(selectedScript);
+        this.changed.notify(this.scripts.getItems());
+    }
+
     public removeSelectedScript(scriptId: string): void {
         this.scripts.removeItem(scriptId);
         this.changed.notify(this.scripts.getItems());
     }
 
     public isSelected(script: IScript): boolean {
-        return this.scripts.exists(script);
+        return this.scripts.exists(script.id);
     }
 
     /** Get users scripts based on his/her selections */
-    public get selectedScripts(): ReadonlyArray<IScript> {
+    public get selectedScripts(): ReadonlyArray<SelectedScript> {
         return this.scripts.getItems();
     }
 
@@ -51,8 +59,9 @@ export class UserSelection implements IUserSelection {
 
     public selectAll(): void {
         for (const script of this.app.getAllScripts()) {
-            if (!this.scripts.exists(script)) {
-                this.scripts.addItem(script);
+            if (!this.scripts.exists(script.id)) {
+                const selection = new SelectedScript(script, false);
+                this.scripts.addItem(selection);
             }
         }
         this.changed.notify(this.scripts.getItems());
@@ -78,9 +87,11 @@ export class UserSelection implements IUserSelection {
                 .forEach((scriptId) => this.scripts.removeItem(scriptId));
         }
         // Select from unselected scripts
-        scripts
-            .filter((script) => !this.scripts.exists(script))
-            .forEach((script) => this.scripts.addItem(script));
+        const unselectedScripts = scripts.filter((script) => !this.scripts.exists(script.id));
+        for (const toSelect of unselectedScripts) {
+            const selection = new SelectedScript(toSelect, false);
+            this.scripts.addItem(selection);
+        }
         this.changed.notify(this.scripts.getItems());
     }
 }

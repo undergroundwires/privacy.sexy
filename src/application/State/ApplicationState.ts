@@ -8,7 +8,7 @@ import { Signal } from '@/infrastructure/Events/Signal';
 import { parseApplication } from '../Parser/ApplicationParser';
 import { IApplicationState } from './IApplicationState';
 import { Script } from '@/domain/Script';
-import { Application } from '@/domain/Application';
+import { IApplication } from '@/domain/IApplication';
 import { IApplicationCode } from './Code/IApplicationCode';
 import applicationFile from 'js-yaml-loader!@/application/application.yaml';
 
@@ -34,7 +34,7 @@ export class ApplicationState implements IApplicationState {
 
     private constructor(
         /** Inner instance of the all scripts */
-        public readonly app: Application,
+        public readonly app: IApplication,
         /** Initially selected scripts */
         public readonly defaultScripts: Script[]) {
         this.selection = new UserSelection(app, defaultScripts);
@@ -42,5 +42,3 @@ export class ApplicationState implements IApplicationState {
         this.filter = new UserFilter(app);
     }
 }
-
-export { IApplicationState, IUserFilter };

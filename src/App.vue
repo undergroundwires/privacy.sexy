@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop  } from 'vue-property-decorator';
-import { ApplicationState, IApplicationState } from '@/application/State/ApplicationState';
+import { ApplicationState } from '@/application/State/ApplicationState';
 import TheHeader from '@/presentation/TheHeader.vue';
 import TheFooter from '@/presentation/TheFooter.vue';
 import TheCodeArea from '@/presentation/TheCodeArea.vue';

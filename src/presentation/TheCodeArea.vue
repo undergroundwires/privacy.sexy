@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
-import { StatefulVue, IApplicationState } from './StatefulVue';
+import { StatefulVue } from './StatefulVue';
 import ace from 'ace-builds';
 import 'ace-builds/webpack-resolver';
 import { CodeBuilder } from '../application/State/Code/CodeBuilder';

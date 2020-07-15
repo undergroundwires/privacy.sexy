@@ -1,6 +1,7 @@
+import { IScript } from '@/domain/IScript';
 import { FilterResult } from './FilterResult';
 import { IFilterResult } from './IFilterResult';
-import { Application } from '../../../domain/Application';
+import { IApplication } from '@/domain/IApplication';
 import { IUserFilter } from './IUserFilter';
 import { Signal } from '@/infrastructure/Events/Signal';
 
@@ -8,7 +9,7 @@ export class UserFilter implements IUserFilter {
     public readonly filtered = new Signal<IFilterResult>();
     public readonly filterRemoved = new Signal<void>();
 
-    constructor(private application: Application) {
+    constructor(private application: IApplication) {
 
     }
 
@@ -18,11 +19,9 @@ export class UserFilter implements IUserFilter {
         }
         const filterLowercase = filter.toLocaleLowerCase();
         const filteredScripts = this.application.getAllScripts().filter(
-            (script) =>
-            script.name.toLowerCase().includes(filterLowercase) ||
-            script.code.toLowerCase().includes(filterLowercase));
+            (script) => isScriptAMatch(script, filterLowercase));
         const filteredCategories = this.application.getAllCategories().filter(
-            (script) => script.name.toLowerCase().includes(filterLowercase));
+            (category) => category.name.toLowerCase().includes(filterLowercase));
 
         const matches = new FilterResult(
             filteredScripts,
@@ -36,4 +35,17 @@ export class UserFilter implements IUserFilter {
     public removeFilter(): void {
         this.filterRemoved.notify();
     }
+}
+
+function isScriptAMatch(script: IScript, filterLowercase: string) {
+    if (script.name.toLowerCase().includes(filterLowercase)) {
+        return true;
+    }
+    if (script.code.toLowerCase().includes(filterLowercase)) {
+        return true;
+    }
+    if (script.revertCode) {
+        return script.revertCode.toLowerCase().includes(filterLowercase);
+    }
+    return false;
 }

@@ -12,6 +12,7 @@ export function convertExistingToNode(liquorTreeNode: ILiquorTreeExistingNode): 
         children: (!liquorTreeNode.children || liquorTreeNode.children.length === 0)
          ? [] : liquorTreeNode.children.map((childNode) => convertExistingToNode(childNode)),
         documentationUrls: liquorTreeNode.data.documentationUrls,
+        isReversible : liquorTreeNode.data.isReversible,
     };
 }
 
@@ -27,6 +28,7 @@ export function toNewLiquorTreeNode(node: INode): ILiquorTreeNewNode {
          node.children.map((childNode) => toNewLiquorTreeNode(childNode)),
         data: {
             documentationUrls: node.documentationUrls,
+            isReversible: node.isReversible,
         },
     };
 }

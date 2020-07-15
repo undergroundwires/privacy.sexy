@@ -1,10 +1,10 @@
 import { YamlCategory, YamlScript } from 'js-yaml-loader!./application.yaml';
 import { Script } from '@/domain/Script';
-import { Category } from '../../domain/Category';
+import { Category } from '@/domain/Category';
 import { parseDocUrls } from './DocumentationParser';
+import { parseScript } from './ScriptParser';
 
 let categoryIdCounter: number = 0;
-
 
 interface ICategoryChildren {
     subCategories: Category[];
@@ -12,9 +12,7 @@ interface ICategoryChildren {
 }
 
 export function parseCategory(category: YamlCategory): Category {
-    if (!category.children || category.children.length <= 0) {
-        throw Error('Category has no children');
-    }
+    ensureValid(category);
     const children: ICategoryChildren = {
         subCategories: new Array<Category>(),
         subScripts: new Array<Script>(),
@@ -31,6 +29,18 @@ export function parseCategory(category: YamlCategory): Category {
     );
 }
 
+function ensureValid(category: YamlCategory) {
+    if (!category) {
+        throw Error('category is null or undefined');
+    }
+    if (!category.children || category.children.length === 0) {
+        throw Error('category has no children');
+    }
+    if (!category.category || category.category.length === 0) {
+        throw Error('category has no name');
+    }
+}
+
 function parseCategoryChild(
     categoryOrScript: any, children: ICategoryChildren, parent: YamlCategory) {
     if (isCategory(categoryOrScript)) {
@@ -38,18 +48,13 @@ function parseCategoryChild(
         children.subCategories.push(subCategory);
     } else if (isScript(categoryOrScript)) {
         const yamlScript = categoryOrScript as YamlScript;
-        const script = new Script(
-            /* name */  yamlScript.name,
-            /* code */ yamlScript.code,
-            /* docs */ parseDocUrls(yamlScript),
-            /* is recommended? */ yamlScript.recommend);
+        const script = parseScript(yamlScript);
         children.subScripts.push(script);
     } else {
         throw new Error(`Child element is neither a category or a script.
                 Parent: ${parent.category}, element: ${categoryOrScript}`);
     }
 }
-
 
 function isScript(categoryOrScript: any): boolean {
     return categoryOrScript.code && categoryOrScript.code.length > 0;

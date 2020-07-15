@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { StatefulVue, IApplicationState } from './StatefulVue';
+import { StatefulVue } from './StatefulVue';
 import { SaveFileDialog } from './../infrastructure/SaveFileDialog';
 import { Clipboard } from './../infrastructure/Clipboard';
 import IconButton from './IconButton.vue';

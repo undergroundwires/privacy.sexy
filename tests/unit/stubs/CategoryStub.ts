@@ -1,9 +1,9 @@
-import { ScriptStub } from './ScriptStub';
 import { BaseEntity } from '@/infrastructure/Entity/BaseEntity';
 import { ICategory, IScript } from '@/domain/ICategory';
+import { ScriptStub } from './ScriptStub';
 
 export class CategoryStub extends BaseEntity<number> implements ICategory  {
-    public readonly name = `category-with-id-${this.id}`;
+    public name = `category-with-id-${this.id}`;
     public readonly subCategories = new Array<ICategory>();
     public readonly scripts = new Array<IScript>();
     public readonly documentationUrls = new Array<string>();
@@ -13,14 +13,22 @@ export class CategoryStub extends BaseEntity<number> implements ICategory  {
     }
     public withScriptIds(...scriptIds: string[]): CategoryStub {
         for (const scriptId of scriptIds) {
-            this.scripts.push(new ScriptStub(scriptId));
+            this.withScript(new ScriptStub(scriptId));
         }
         return this;
     }
     public withScripts(...scripts: IScript[]): CategoryStub {
         for (const script of scripts) {
-            this.scripts.push(script);
+            this.withScript(script);
         }
+        return this;
+    }
+    public withScript(script: IScript): CategoryStub {
+        this.scripts.push(script);
+        return this;
+    }
+    public withName(categoryName: string) {
+        this.name = categoryName;
         return this;
     }
 }

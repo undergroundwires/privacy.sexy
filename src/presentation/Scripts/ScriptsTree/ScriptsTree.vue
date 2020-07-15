@@ -6,7 +6,9 @@
                 :selectedNodeIds="selectedNodeIds"
                 :filterPredicate="filterPredicate"
                 :filterText="filterText"
-                v-on:nodeSelected="checkNodeAsync($event)">
+                v-on:nodeSelected="toggleNodeSelectionAsync($event)"
+                v-on:nodeRevertToggled="handleNodeRevertToggleAsync($event)"
+                >
             </SelectableTree>
         </span>
         <span v-else>Nooo 😢</span>
@@ -25,6 +27,7 @@
   import { parseAllCategories, parseSingleCategory, getScriptNodeId, getCategoryNodeId } from './ScriptNodeParser';
   import SelectableTree, { FilterPredicate } from './SelectableTree/SelectableTree.vue';
   import { INode } from './SelectableTree/INode';
+  import { SelectedScript } from '@/application/State/Selection/SelectedScript';
 
   @Component({
     components: {
@@ -50,13 +53,13 @@
       await this.initializeNodesAsync(this.categoryId);
     }
 
-    public async checkNodeAsync(node: INode) {
+    public async toggleNodeSelectionAsync(node: INode) {
         if (node.children != null && node.children.length > 0) {
             return; // only interested in script nodes
         }
         const state = await this.getCurrentStateAsync();
         if (!this.selectedNodeIds.some((id) => id === node.id)) {
-            state.selection.addSelectedScript(node.id);
+            state.selection.addSelectedScript(node.id, false);
         } else {
             state.selection.removeSelectedScript(node.id);
         }
@@ -71,7 +74,7 @@
         this.nodes = parseAllCategories(state.app);
       }
       this.selectedNodeIds = state.selection.selectedScripts
-        .map((script) => getScriptNodeId(script));
+        .map((selected) => getScriptNodeId(selected.script));
     }
 
     public filterPredicate(node: INode): boolean {
@@ -81,7 +84,7 @@
           (category: ICategory) => node.id === getCategoryNodeId(category));
     }
 
-    private handleSelectionChanged(selectedScripts: ReadonlyArray<IScript>): void {
+    private handleSelectionChanged(selectedScripts: ReadonlyArray<SelectedScript>): void {
       this.selectedNodeIds = selectedScripts
           .map((node) => node.id);
     }

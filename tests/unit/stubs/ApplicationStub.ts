@@ -1,15 +1,15 @@
 import { IApplication, ICategory, IScript } from '@/domain/IApplication';
 
 export class ApplicationStub implements IApplication {
-    public readonly totalScripts = 0;
-    public readonly totalCategories = 0;
+    public totalScripts = 0;
+    public totalCategories = 0;
     public readonly name = 'StubApplication';
     public readonly repositoryUrl = 'https://privacy.sexy';
     public readonly version = '0.1.0';
-    public readonly categories = new Array<ICategory>();
+    public readonly actions = new Array<ICategory>();
 
-    public withCategory(category: ICategory): IApplication {
-        this.categories.push(category);
+    public withAction(category: ICategory): IApplication {
+        this.actions.push(category);
         return this;
     }
     public findCategory(categoryId: number): ICategory {
@@ -19,12 +19,51 @@ export class ApplicationStub implements IApplication {
         throw new Error('Method not implemented.');
     }
     public findScript(scriptId: string): IScript {
-        throw new Error('Method not implemented.');
+        return this.getAllScripts().find((script) => scriptId === script.id);
     }
     public getAllScripts(): ReadonlyArray<IScript> {
-        throw new Error('Method not implemented.');
+        const scripts = [];
+        for (const category of this.actions) {
+            const categoryScripts = getScriptsRecursively(category);
+            scripts.push(...categoryScripts);
+        }
+        return scripts;
     }
     public getAllCategories(): ReadonlyArray<ICategory> {
-        throw new Error('Method not implemented.');
+        const categories = [];
+        categories.push(...this.actions);
+        for (const category of this.actions) {
+            const subCategories = getSubCategoriesRecursively(category);
+            categories.push(...subCategories);
+        }
+        return categories;
     }
+}
+
+function getSubCategoriesRecursively(category: ICategory): ReadonlyArray<ICategory> {
+    const subCategories = [];
+    if (category.subCategories) {
+        for (const subCategory of category.subCategories) {
+            subCategories.push(subCategory);
+            subCategories.push(...getSubCategoriesRecursively(subCategory));
+        }
+    }
+    return subCategories;
+}
+
+
+function getScriptsRecursively(category: ICategory): ReadonlyArray<IScript> {
+    const categoryScripts = [];
+    if (category.scripts) {
+        for (const script of category.scripts) {
+            categoryScripts.push(script);
+        }
+    }
+    if (category.subCategories) {
+        for (const subCategory of category.subCategories) {
+            const subCategoryScripts = getScriptsRecursively(subCategory);
+            categoryScripts.push(...subCategoryScripts);
+        }
+    }
+    return categoryScripts;
 }

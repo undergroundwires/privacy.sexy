@@ -2,7 +2,7 @@
 
 > Web tool to enforce privacy & security best-practices on Windows, because privacy is sexy 🍑🍆
 
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/undergroundwires/privacy.sexy/issues)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](./CONTRIBUTING.md)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/undergroundwires/privacy.sexy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/undergroundwires/privacy.sexy/context:javascript)
 [![Maintainability](https://api.codeclimate.com/v1/badges/3a70b7ef602e2264342c/maintainability)](https://codeclimate.com/github/undergroundwires/privacy.sexy/maintainability)
 [![Tests status](https://github.com/undergroundwires/privacy.sexy/workflows/Test/badge.svg)](https://github.com/undergroundwires/privacy.sexy/actions)
@@ -16,15 +16,17 @@
 
 ## Why
 
-- You don't need to run any compiled software on your system, just run the generated scripts.
+- You don't need to run any compiled software that has access to your system, just run the generated scripts.
 - It's open source, both application & infrastructure is 100% transparent
   - Fully automated C/CD pipeline to AWS for provisioning serverless infrastructure using GitHub actions.
 - Have full visibility into what the tweaks do as you enable them.
+- Ability to revert applied scripts
 - Easily extendable
 
 ## Extend scripts
 
-Fork it & add more scripts in [application.yaml](src/application/application.yaml) and send a pull request 👌
+- Fork it & add more scripts in [application.yaml](src/application/application.yaml) and send a pull request 👌
+- 📖 More: [extend scripts | CONTRIBUTING.md](./CONTRIBUTING.md#extend-scripts)
 
 ## Commands
 

@@ -35,16 +35,20 @@ describe('Signal Tests', () => {
 
         beforeEach(() => {
             receivers = [
-            new ReceiverMock(), new ReceiverMock(),
-            new ReceiverMock(), new ReceiverMock()];
-            for (const receiver of receivers) {
+                new ReceiverMock(), new ReceiverMock(),
+                new ReceiverMock(), new ReceiverMock()];
+            function subscribeReceiver(receiver: ReceiverMock) {
                 signal.on((arg) => receiver.onReceive(arg));
-            }});
+            }
+            for (const receiver of receivers) {
+                subscribeReceiver(receiver);
+            }
+        });
 
 
         it('notify() should execute all callbacks', () => {
             signal.notify(5);
-            receivers.every((receiver) => {
+            receivers.forEach((receiver) => {
                 expect(receiver.onRecieveCalls).to.have.length(1);
             });
         });
@@ -52,7 +56,7 @@ describe('Signal Tests', () => {
         it('notify() should execute all callbacks with payload', () => {
             const expected = 5;
             signal.notify(expected);
-            receivers.every((receiver) => {
+            receivers.forEach((receiver) => {
                 expect(receiver.onRecieveCalls).to.deep.equal([expected]);
             });
         });

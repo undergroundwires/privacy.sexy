@@ -1,6 +1,6 @@
-import { ApplicationState, IApplicationState } from '../application/State/ApplicationState';
+import { ApplicationState } from '@/application/State/ApplicationState';
+import { IApplicationState } from '@/application/State/IApplicationState';
 import { Vue } from 'vue-property-decorator';
-export { IApplicationState };
 
 export abstract class StatefulVue extends Vue {
     public isLoading = true;

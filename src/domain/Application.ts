@@ -13,11 +13,11 @@ export class Application implements IApplication {
         public readonly name: string,
         public readonly repositoryUrl: string,
         public readonly version: string,
-        public readonly categories: ReadonlyArray<ICategory>) {
+        public readonly actions: ReadonlyArray<ICategory>) {
         if (!name) { throw Error('Application has no name'); }
         if (!repositoryUrl) { throw Error('Application has no repository url'); }
         if (!version) { throw Error('Version cannot be empty'); }
-        this.flattened = flatten(categories);
+        this.flattened = flatten(actions);
         if (this.flattened.allCategories.length === 0) {
             throw new Error('Application must consist of at least one category');
         }
