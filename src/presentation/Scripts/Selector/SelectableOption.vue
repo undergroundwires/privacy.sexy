@@ -1,14 +1,18 @@
 <template>
     <span
         v-bind:class="{ 'disabled': enabled, 'enabled': !enabled}"
+        v-non-collapsing
         @click="onClicked()">{{label}}</span>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
 import { StatefulVue } from '@/presentation/StatefulVue';
+import { NonCollapsing } from '@/presentation/Scripts/Cards/NonCollapsingDirective';
 
-@Component
+@Component({
+    directives: { NonCollapsing },
+})
 export default class SelectableOption extends StatefulVue {
   @Prop() public enabled: boolean;
   @Prop() public label: string;

@@ -1,6 +1,7 @@
 <template>
-  <div class="search">
-      <input type="search" class="searchTerm" :placeholder="searchPlaceHolder"
+  <div class="search" v-non-collapsing>
+      <input type="search" class="searchTerm"
+        :placeholder="searchPlaceHolder"
         @input="updateFilterAsync($event.target.value)" >
       <div class="iconWrapper">
           <font-awesome-icon :icon="['fas', 'search']" />
@@ -11,8 +12,12 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { StatefulVue } from './StatefulVue';
+import { NonCollapsing } from '@/presentation/Scripts/Cards/NonCollapsingDirective';
 
-@Component
+@Component( {
+    directives: { NonCollapsing },
+  },
+)
 export default class TheSearchBar extends StatefulVue {
   public searchPlaceHolder = 'Search';
 

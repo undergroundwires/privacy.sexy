@@ -20,6 +20,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import CardListItem from './CardListItem.vue';
 import { StatefulVue } from '@/presentation/StatefulVue';
 import { ICategory } from '@/domain/ICategory';
+import { hasDirective } from './NonCollapsingDirective';
 
 @Component({
   components: {
@@ -33,7 +34,10 @@ export default class CardList extends StatefulVue {
   public async mounted() {
     const state = await this.getCurrentStateAsync();
     this.setCategories(state.app.actions);
-    this.onOutsideOfActiveCardClicked(() => {
+    this.onOutsideOfActiveCardClicked((element) => {
+      if (hasDirective(element)) {
+        return;
+      }
       this.activeCategoryId = null;
     });
   }
@@ -46,14 +50,14 @@ export default class CardList extends StatefulVue {
     this.categoryIds = categories.map((category) => category.id);
   }
 
-  private onOutsideOfActiveCardClicked(callback) {
+  private onOutsideOfActiveCardClicked(callback: (clickedElement: Element) => void) {
     const outsideClickListener = (event) => {
       if (!this.activeCategoryId) {
         return;
       }
       const element = document.querySelector(`[data-category="${this.activeCategoryId}"]`);
       if (element && !element.contains(event.target)) {
-        callback();
+          callback(event.target);
       }
     };
     document.addEventListener('click', outsideClickListener);
