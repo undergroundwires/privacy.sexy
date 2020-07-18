@@ -4,20 +4,21 @@
           v-bind:class="{ 
                     'is-collapsed': !isExpanded,
                     'is-inactive': activeCategoryId && activeCategoryId != categoryId,
-                    'is-expanded': isExpanded}">
-      <div class="card__inner">
-        <span v-if="cardTitle && cardTitle.length > 0">{{cardTitle}}</span>
-        <span v-else>Oh no 😢</span>
-        <font-awesome-icon :icon="['far', isExpanded ? 'folder-open' : 'folder']" class="card__inner__expand-icon" />
+                    'is-expanded': isExpanded}"
+          ref="cardElement">
+        <div class="card__inner">
+          <span v-if="cardTitle && cardTitle.length > 0">{{cardTitle}}</span>
+          <span v-else>Oh no 😢</span>
+          <font-awesome-icon :icon="['far', isExpanded ? 'folder-open' : 'folder']" class="card__inner__expand-icon" />
+        </div>
+        <div class="card__expander" v-on:click.stop>
+          <div class="card__expander__content">
+            <ScriptsTree :categoryId="categoryId"></ScriptsTree>
+          </div>
+          <div class="card__expander__close-button">
+            <font-awesome-icon :icon="['fas', 'times']"  v-on:click="onSelected(false)"/>
+          </div>
       </div>
-      <div class="card__expander" v-on:click.stop>
-        <div class="card__expander__content">
-          <ScriptsTree :categoryId="categoryId"></ScriptsTree>
-        </div>
-        <div class="card__expander__close-button">
-          <font-awesome-icon :icon="['fas', 'times']"  v-on:click="onSelected(false)"/>
-        </div>
-    </div>
     </div>
 </template>
 
@@ -41,10 +42,17 @@ export default class CardListItem extends StatefulVue {
   public onSelected(isExpanded: boolean) {
     this.isExpanded = isExpanded;
   }
-
   @Watch('activeCategoryId')
   public async onActiveCategoryChanged(value: |number) {
     this.isExpanded = value === this.categoryId;
+  }
+  @Watch('isExpanded')
+  public async onExpansionChangedAsync(newValue: number, oldValue: number) {
+    if (!oldValue && newValue) {
+      await new Promise((r) => setTimeout(r, 400));
+      const focusElement = this.$refs.cardElement as HTMLElement;
+      (focusElement as HTMLElement).scrollIntoView({behavior: 'smooth'});
+    }
   }
 
   public async mounted() {
