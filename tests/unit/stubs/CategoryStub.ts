@@ -23,6 +23,16 @@ export class CategoryStub extends BaseEntity<number> implements ICategory  {
         }
         return this;
     }
+    public withCategories(...categories: ICategory[]): CategoryStub {
+        for (const category of categories) {
+            this.withCategory(category);
+        }
+        return this;
+    }
+    public withCategory(category: ICategory): CategoryStub {
+        this.subCategories.push(category);
+        return this;
+    }
     public withScript(script: IScript): CategoryStub {
         this.scripts.push(script);
         return this;

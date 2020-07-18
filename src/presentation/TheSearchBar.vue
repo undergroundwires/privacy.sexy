@@ -1,6 +1,6 @@
 <template>
   <div class="search">
-      <input type="search" class="searchTerm" placeholder="Search"
+      <input type="search" class="searchTerm" :placeholder="searchPlaceHolder"
         @input="updateFilterAsync($event.target.value)" >
       <div class="iconWrapper">
           <font-awesome-icon :icon="['fas', 'search']" />
@@ -14,6 +14,15 @@ import { StatefulVue } from './StatefulVue';
 
 @Component
 export default class TheSearchBar extends StatefulVue {
+  public searchPlaceHolder = 'Search';
+
+  public async mounted() {
+    const state = await this.getCurrentStateAsync();
+    const totalScripts = state.app.totalScripts;
+    const totalCategories = state.app.totalCategories;
+    this.searchPlaceHolder = `Search in ${totalScripts} scripts`;
+  }
+
   public async updateFilterAsync(filter: |string) {
     const state = await this.getCurrentStateAsync();
     if (!filter) {

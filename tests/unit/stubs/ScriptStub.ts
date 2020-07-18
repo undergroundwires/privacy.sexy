@@ -6,7 +6,7 @@ export class ScriptStub extends BaseEntity<string> implements IScript {
     public code = `REM code${this.id}`;
     public revertCode = `REM revertCode${this.id}`;
     public readonly documentationUrls = new Array<string>();
-    public isRecommended = false;
+    public isRecommended = true;
 
     constructor(public readonly id: string) {
         super(id);

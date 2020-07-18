@@ -59,4 +59,28 @@ describe('Application', () => {
         // assert
         expect(construct).to.throw('Application must consist of at least one recommended script');
     });
+    it('totalScripts counts right', () => {
+        // arrange
+        const categories = [
+            new CategoryStub(1).withScripts(new ScriptStub('S1').withIsRecommended(true)),
+            new CategoryStub(2).withScripts(new ScriptStub('S2'), new ScriptStub('S3')),
+            new CategoryStub(3).withCategories(new CategoryStub(4).withScripts(new ScriptStub('S4'))),
+        ];
+        // act
+        const application = new Application('name', 'repo', '0.1.0', categories);
+        // assert
+        expect(application.totalScripts).to.equal(4);
+    });
+    it('totalCategories counts right', () => {
+        // arrange
+        const categories = [
+            new CategoryStub(1).withScripts(new ScriptStub('S1').withIsRecommended(true)),
+            new CategoryStub(2).withScripts(new ScriptStub('S2'), new ScriptStub('S3')),
+            new CategoryStub(3).withCategories(new CategoryStub(4).withScripts(new ScriptStub('S4'))),
+        ];
+        // act
+        const application = new Application('name', 'repo', '0.1.0', categories);
+        // assert
+        expect(application.totalCategories).to.equal(4);
+    });
 });
