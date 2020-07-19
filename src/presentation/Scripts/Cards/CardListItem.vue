@@ -4,7 +4,8 @@
           v-bind:class="{ 
                     'is-collapsed': !isExpanded,
                     'is-inactive': activeCategoryId && activeCategoryId != categoryId,
-                    'is-expanded': isExpanded}"
+                    'is-expanded': isExpanded
+                    }"
           ref="cardElement">
         <div class="card__inner">
           <span v-if="cardTitle && cardTitle.length > 0">{{cardTitle}}</span>
@@ -79,26 +80,36 @@ $big-screen-width: 991px;
 $medium-screen-width: 767px;
 $small-screen-width: 380px;
 
+$card-padding: 30px;
+$card-margin: 15px;
+$card-line-break-width: 30px;
+$arrow-size: 15px;
+$expanded-margin-top: 30px;
+
 .card {
   margin: 15px; 
-  width: calc((100% / 3) - 30px);
+  width: calc((100% / 3) - #{$card-line-break-width});
   transition: all 0.2s ease-in-out;
-
   // Media queries for stacking cards
-  @media screen and (max-width: $big-screen-width) {  width: calc((100% / 2) - 30px); }
+  @media screen and (max-width: $big-screen-width) {  width: calc((100% / 2) - #{$card-line-break-width}); }
   @media screen and (max-width: $medium-screen-width) {  width: 100%; }
   @media screen and (max-width: $small-screen-width) {  width: 90%; }
 
   &__inner {  
-    padding: 30px;
+    padding: $card-padding;
     position: relative;
     cursor: pointer;
     background-color: $gray;
     color: $light-gray;
     font-size: 1.5em;
+    height: 100%;
     text-transform: uppercase;
     text-align: center;
     transition: all 0.2s ease-in-out;
+
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
 
     &:hover {
       background-color: $accent;
@@ -159,16 +170,17 @@ $small-screen-width: 380px;
 
   &.is-expanded {
     .card__inner {
+      height: auto;
       background-color: $accent;
-      &:after{
+      &:after { // arrow
         content: "";
         display: block;
         position: absolute;
-        bottom: -30px;
-        left: calc(50% - 15px);
-        border-left: 15px solid transparent;
-        border-right: 15px solid transparent;
-        border-bottom: 15px solid #333a45;
+        bottom: calc(-1 * #{$expanded-margin-top});
+        left: calc(50% - #{$arrow-size});
+        border-left: #{$arrow-size} solid transparent;
+        border-right: #{$arrow-size} solid transparent;
+        border-bottom: #{$arrow-size} solid #333a45;
       }
     }
 
@@ -176,7 +188,7 @@ $small-screen-width: 380px;
       min-height: 200px;
       // max-height: 1000px;
       // overflow-y: auto;
-      margin-top: 30px;
+      margin-top: $expanded-margin-top;
       opacity: 1;
     }
 
@@ -190,7 +202,9 @@ $small-screen-width: 380px;
   &.is-inactive {
     .card__inner {
       pointer-events: none;
+      height: auto;
       opacity: 0.5;
+      transform: scale(0.95);
     }
     
     &:hover {
@@ -204,28 +218,28 @@ $small-screen-width: 380px;
 
 @media screen and (min-width: $big-screen-width) { // when 3 cards in a row
   .card:nth-of-type(3n+2) .card__expander {
-    margin-left: calc(-100% - 30px);
+    margin-left: calc(-100% - #{$card-line-break-width});
   }
   .card:nth-of-type(3n+3) .card__expander {
-    margin-left: calc(-200% - 60px);
+    margin-left: calc(-200% - (#{$card-line-break-width} * 2));
   }
   .card:nth-of-type(3n+4) {
     clear: left;
   }
   .card__expander {
-    width: calc(300% + 60px);
+    width: calc(300% + (#{$card-line-break-width} * 2));
   }
 }
 
 @media screen and (min-width: $medium-screen-width) and (max-width: $big-screen-width) { // when 2 cards in a row
   .card:nth-of-type(2n+2) .card__expander {
-    margin-left: calc(-100% - 30px);
+    margin-left: calc(-100% - #{$card-line-break-width});
   }
   .card:nth-of-type(2n+3) {
     clear: left;
   }
   .card__expander {
-    width: calc(200% + 30px);
+    width: calc(200% + #{$card-line-break-width});
   }
 }
 </style>
