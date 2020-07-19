@@ -20,7 +20,6 @@
   6. Issue that pull request!
 - 🙏 DO
   - Document your changes in the pull request
-  - 💡 Check [developer notes](./docs/developer-notes.md) if you need help
 - ❗ DON'T
   - Do not update the versions, current version is only [set by the maintainer](./docs/gitops.png) and updated automatically by [bump-everywhere](https://github.com/undergroundwires/bump-everywhere)
 
@@ -28,9 +27,9 @@
 
 ### Extend scripts
 
-- Create a [pull request](./../CONTRIBUTING.md#Pull+Request+Process) for [application.yaml](./../src/application/application.yaml)
+- Create a [pull request](#Pull-Request-Process) for [application.yaml](./src/application/application.yaml)
 - 🙏 For any new script, try to add `revertCode` that'll revert the changes caused by the script.
-- See [typings](./../src/application/application.yaml.d.ts) for documentation as code.
+- See [typings](./src/application/application.yaml.d.ts) for documentation as code.
 
 ### Handle the state in presentation layer
 
