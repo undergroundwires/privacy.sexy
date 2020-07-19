@@ -1,8 +1,19 @@
 # Changelog
 
+## 0.5.0 (2020-07-19)
+
+* added ability to revert (#21) | [commit](https://github.com/undergroundwires/privacy.sexy/commit/9c063d59defa6297c64f50b49403e8bd10620de9)
+* search placeholder shows total scripts | [commit](https://github.com/undergroundwires/privacy.sexy/commit/1d5225de07186f853f4cf7aedd4998f5d00c107a)
+* do not collapse card when on "Search" and "Select" | [commit](https://github.com/undergroundwires/privacy.sexy/commit/dd7e1416b4df54bf71b719d4654db88769dc0994)
+* opening a card scrolls to its content div | [commit](https://github.com/undergroundwires/privacy.sexy/commit/31d2067f076c3159483baec49975617dddbd158d)
+* all cards in same line now have same height | [commit](https://github.com/undergroundwires/privacy.sexy/commit/a9f9e9044385d9aed3b5551fc6c6823e813fd1e5)
+* patched loadash vulnerability (#18) | [commit](https://github.com/undergroundwires/privacy.sexy/commit/92a7118d1c5013312772e075b9ee5a79c93710b8)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.4.10...0.5.0)
+
 ## 0.4.10 (2020-07-15)
 
-* fixed script validation errors | [commit](https://github.com/undergroundwires/privacy.sexy/commit/a34ae139d7fc1ba05b8ab9eb962da4ca0231ed5c)
+* fixed script errors & added tests | [commit](https://github.com/undergroundwires/privacy.sexy/commit/9e722ddfb3825fb29d6298025baaaa033120d017)
 
 [compare](https://github.com/undergroundwires/privacy.sexy/compare/0.4.9...0.4.10)
 

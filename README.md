@@ -38,8 +38,8 @@
   - Development: `npm run serve` to compile & hot-reload for development.
   - Production: `npm run build` to prepare files for distribution.
   - Or run using Docker:
-    1. Build: `docker build -t undergroundwires/privacy.sexy:0.4.10 .`
-    2. Run: `docker run -it -p 8080:80 --rm --name privacy.sexy-0.4.10 undergroundwires/privacy.sexy:0.4.10`
+    1. Build: `docker build -t undergroundwires/privacy.sexy:0.5.0 .`
+    2. Run: `docker run -it -p 8080:80 --rm --name privacy.sexy-0.5.0 undergroundwires/privacy.sexy:0.5.0`
 
 ## Architecture
 
