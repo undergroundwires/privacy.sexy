@@ -1,9 +1,7 @@
 name: Security checks
 
 on:
-  pull_request:
-    branches:
-      - master
+  push:
   schedule:
     - cron: '0 0 * * 0'
 
