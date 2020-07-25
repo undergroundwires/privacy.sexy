@@ -1,7 +1,7 @@
 import { Signal } from '@/infrastructure/Events/Signal';
 import { expect } from 'chai';
 
-describe('Signal Tests', () => {
+describe('Signal', () => {
     class ReceiverMock {
         public onRecieveCalls = new Array<number>();
         public onReceive(arg: number): void { this.onRecieveCalls.push(arg); }

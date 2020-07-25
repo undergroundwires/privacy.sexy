@@ -1,0 +1,32 @@
+name: Deploy desktop
+
+on:
+ release:
+   types: [created] # will be triggered when a NON-draft release is created and published.
+
+jobs:
+  publish-desktop-app:
+    name: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos, ubuntu, windows]
+    runs-on: ${{ matrix.os }}-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: master # otherwise it defaults to the version tag missing bump commit
+          fetch-depth: 0 # fetch all history
+      - name: Checkout to bump commit
+        run: git checkout "$(git rev-list "${{ github.event.release.tag_name }}"..master | tail -1)"
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run tests
+        run: npm run test:unit
+      - name: Publish desktop app
+        run: npm run electron:build -- -p always # https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/recipes.html#upload-release-to-github
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

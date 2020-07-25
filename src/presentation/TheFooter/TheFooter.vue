@@ -1,14 +1,24 @@
 <template>
-  <div class="footer">
-    <div class="item">
-      <a :href="releaseUrl" target="_blank">{{ version }}</a>
+  <div>
+    <div class="footer">
+      <div class="footer__section">
+        <div class="item">
+          <a :href="releaseUrl" target="_blank">{{ version }}</a>
+        </div>
+        <div class="item">
+          <a @click="$modal.show(modalName)">Privacy</a>
+        </div>
       </div>
-    <div class="item">
-      <a @click="$modal.show(modalName)">Privacy</a> <!-- href to #privacy to avoid scrolling to top -->
+      <div class="footer__section">
+        <span v-if="isDesktop">
+          Online version at <a href="https://privacy.sexy" target="_blank">https://privacy.sexy</a>
+        </span>
+        <DownloadUrlList v-else />
+      </div>
     </div>
     <modal :name="modalName" height="auto" :scrollable="true" :adaptive="true">
       <div class="modal">
-        <ThePrivacyPolicy class="modal__content"/>
+        <PrivacyPolicy class="modal__content"/>
         <div class="modal__close-button">
           <font-awesome-icon :icon="['fas', 'times']"  @click="$modal.hide(modalName)"/>
         </div>
@@ -19,18 +29,28 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { StatefulVue } from './StatefulVue';
-import ThePrivacyPolicy from './ThePrivacyPolicy.vue';
+import { StatefulVue } from '@/presentation/StatefulVue';
+import { Environment } from '@/application/Environment/Environment';
+import PrivacyPolicy from './PrivacyPolicy.vue';
+import DownloadUrlList from './DownloadUrlList.vue';
+import { OperatingSystem } from '@/application/Environment/OperatingSystem';
 
 @Component({
   components: {
-    ThePrivacyPolicy,
+    PrivacyPolicy, DownloadUrlList,
   },
 })
 export default class TheFooter extends StatefulVue {
-  private readonly modalName = 'privacy-policy';
-  private version: string = '';
-  private releaseUrl: string = '';
+  public readonly modalName = 'privacy-policy';
+  public readonly isDesktop: boolean;
+
+  public version: string = '';
+  public releaseUrl: string = '';
+
+  constructor() {
+    super();
+    this.isDesktop = Environment.CurrentEnvironment.isDesktop;
+  }
 
   public async mounted() {
     const state = await this.getCurrentStateAsync();
@@ -43,13 +63,26 @@ export default class TheFooter extends StatefulVue {
 <style scoped lang="scss">
 @import "@/presentation/styles/colors.scss";
 @import "@/presentation/styles/fonts.scss";
+
+$medium-screen-width: 767px;
+
+
 .footer {
+  display: flex;
+  justify-content: space-between;
+  @media screen and (max-width: $medium-screen-width) {  
+    flex-direction: column;
+    align-items: center;
+  }
+  flex-wrap: wrap;
+  &__section {
     display: flex;
     color: $dark-gray;
     font-size: 1rem;
     font-family: $normal-font;
-    align-self: center;
-    
+    &:not(:first-child) {
+      padding-top: 3px;
+    }
     a {
       color:inherit;
       text-decoration: underline;
@@ -63,6 +96,7 @@ export default class TheFooter extends StatefulVue {
       content: "|";
       padding: 0 5px;
     }
+  }
 }
 .modal {
     margin-bottom: 10px;

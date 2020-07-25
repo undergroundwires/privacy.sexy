@@ -2,3 +2,5 @@ node_modules
 /dist
 .vs
 .vscode
+#Electron-builder output
+/dist_electron
