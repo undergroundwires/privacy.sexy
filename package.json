@@ -1,18 +1,25 @@
 {
   "name": "privacy.sexy",
   "version": "0.5.0",
+  "author": "undergroundwires",
+  "description": "Enforce privacy & security best-practices on Windows, because privacy is sexy 🍑🍆",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "lint": "npm run lint:vue && npm run lint:yaml && npm run lint:md && npm run lint:md:relative-urls && npm run lint:md:consistency",
+    "electron:build": "vue-cli-service electron:build",
+    "electron:serve": "vue-cli-service electron:serve",
+    "lint:md": "markdownlint **/*.md --ignore node_modules",
+    "lint:md:consistency": "remark . --frail --use remark-preset-lint-consistent",
+    "lint:md:relative-urls": "remark . --frail --use remark-validate-links",
     "lint:vue": "vue-cli-service lint --no-fix",
     "lint:yaml": "yamllint **/*.yaml --ignore=node_modules/**/*.yaml",
-    "lint:md": "markdownlint **/*.md --ignore node_modules",
-    "lint:md:relative-urls": "remark . --frail --use remark-validate-links",
-    "lint:md:consistency": "remark . --frail --use remark-preset-lint-consistent"
+    "postinstall": "electron-builder install-app-deps",
+    "postuninstall": "electron-builder install-app-deps"
   },
+  "main": "background.js",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.26",
     "@fortawesome/free-brands-svg-icons": "^5.12.0",
@@ -34,11 +41,16 @@
     "@types/chai": "^4.2.7",
     "@types/file-saver": "^2.0.1",
     "@types/mocha": "^5.2.7",
+    "@types/node": "12.0.0",
     "@vue/cli-plugin-typescript": "^4.4.0",
     "@vue/cli-plugin-unit-mocha": "^4.1.1",
     "@vue/cli-service": "^4.1.1",
     "@vue/test-utils": "1.0.0-beta.30",
     "chai": "^4.2.0",
+    "electron": "^9.1.1",
+    "electron-devtools-installer": "^3.1.1",
+    "electron-log": "^4.2.2",
+    "electron-updater": "^4.3.4",
     "js-yaml-loader": "^1.2.2",
     "markdownlint-cli": "^0.23.1",
     "remark-cli": "^8.0.0",
@@ -48,6 +60,7 @@
     "sass": "^1.24.0",
     "sass-loader": "^8.0.0",
     "typescript": "^3.7.4",
+    "vue-cli-plugin-electron-builder": "^2.0.0-rc.4",
     "vue-template-compiler": "^2.6.11",
     "yaml-lint": "^1.2.4"
   }

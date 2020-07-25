@@ -1,6 +1,6 @@
 # privacy.sexy
 
-> Web tool to enforce privacy & security best-practices on Windows, because privacy is sexy 🍑🍆
+> Enforce privacy & security best-practices on Windows, because privacy is sexy 🍑🍆
 
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](./CONTRIBUTING.md)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/undergroundwires/privacy.sexy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/undergroundwires/privacy.sexy/context:javascript)
@@ -12,16 +12,21 @@
 [![Deploy status](https://github.com/undergroundwires/privacy.sexy/workflows/Build%20&%20deploy/badge.svg)](https://github.com/undergroundwires/privacy.sexy/actions)
 [![Auto-versioned by bump-everywhere](https://github.com/undergroundwires/bump-everywhere/blob/master/badge.svg?raw=true)](https://github.com/undergroundwires/bump-everywhere)
 
-[https://privacy.sexy](https://privacy.sexy)
+## Get started
+
+- Online version: [https://privacy.sexy](https://privacy.sexy)
+- Or download latest desktop version for [Windows](https://github.com/undergroundwires/privacy-sexy/releases/download/0.5.0/privacy.sexy-Setup-0.5.0.exe), [Linux](https://github.com/undergroundwires/privacy-sexy/releases/download/0.5.0/privacy.sexy-0.5.0.dmg), [macOS](https://github.com/undergroundwires/privacy-sexy/releases/download/0.5.0/privacy.sexy-0.5.0-mac.zip)
 
 ## Why
 
 - You don't need to run any compiled software that has access to your system, just run the generated scripts.
-- It's open source, both application & infrastructure is 100% transparent
-  - Fully automated C/CD pipeline to AWS for provisioning serverless infrastructure using GitHub actions.
 - Have full visibility into what the tweaks do as you enable them.
 - Ability to revert applied scripts
 - Easily extendable
+- Everything is open-sourced including both application and infrastructure
+  - Fully automated CI/CD pipeline using GitHub actions
+    - to AWS for provisioning serverless infrastructure
+    - for building and sharing the desktop applications
 
 ## Extend scripts
 
@@ -34,6 +39,9 @@
 - Testing
   - Run unit tests: `npm run test:unit`
   - Lint: `npm run lint`
+- **Desktop app**
+  - Development: `npm run electron:serve`
+  - Production: `npm run electron:build` to build an executable
 - **Webpage**
   - Development: `npm run serve` to compile & hot-reload for development.
   - Production: `npm run build` to prepare files for distribution.
@@ -50,7 +58,8 @@
 - Application uses highly decoupled models & services in different DDD layers.
   - **Domain layer** is where the application is modelled with validation logic.
   - **Presentation Layer**
-    - Consists of Vue.js components & UI stuff.
+    - Consists of Vue.js components and other UI-related code.
+    - Desktop application is created using [Electron](https://www.electronjs.org/).
     - Event driven as in components simply listens to events from the state and act accordingly.
   - **Application Layer**
     - Keeps the application state

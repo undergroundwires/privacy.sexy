@@ -5,30 +5,22 @@ on: push
 jobs:
   lint:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        lint-command:
+          - npm run lint:vue
+          - npm run lint:yaml
+          - npm run lint:md
+          - npm run lint:md:relative-urls
+          - npm run lint:md:consistency
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v2
-      -
-        name: Setup node
+      - name: Setup node
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
-      -
-        name: Install dependencies
+      - name: Install dependencies
         run: npm ci
-      -
-        name: Lint vue
-        run: npm run lint:vue
-      -
-        name: Lint yaml
-        run: npm run lint:yaml
-      -
-        name: 'Validate md: Relative URLs'
-        run: npm run lint:md:relative-urls
-      -
-        name: 'Validate md: Enforce standards'
-        run: npm run lint:md
-      -
-        name: 'Validate md: Ensure consistency'
-        run: npm run lint:md:consistency
+      - name: Lint
+        run: ${{ matrix.lint-command }}

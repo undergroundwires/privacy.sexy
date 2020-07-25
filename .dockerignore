@@ -1,0 +1,9 @@
+node_modules
+dist
+dist_electron
+.vs
+.vscode
+.github
+.git
+docs
+docker
