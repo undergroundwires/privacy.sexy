@@ -1,8 +1,8 @@
 $white: #fff;
 $light-gray: #eceef1;
-$gray: darken(#eceef1, 30%);
+$gray: darken($light-gray, 30%);
 $dark-gray: #616f86;
-$slate: darken(#eceef1, 70%);
+$slate: darken($light-gray, 70%);
 $dark-slate: #2f3133;
 $accent: #1abc9c;
 $black: #000

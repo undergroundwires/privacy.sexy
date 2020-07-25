@@ -75,10 +75,7 @@ export default class CardListItem extends StatefulVue {
 
 <style scoped lang="scss">
 @import "@/presentation/styles/colors.scss";
-
-$big-screen-width: 991px;
-$medium-screen-width: 767px;
-$small-screen-width: 380px;
+@import "@/presentation/styles/media.scss";
 
 $card-padding: 30px;
 $card-margin: 15px;
