@@ -2,18 +2,37 @@
   <div>
     <div class="footer">
       <div class="footer__section">
-        <div class="item">
-          <a :href="releaseUrl" target="_blank">{{ version }}</a>
-        </div>
-        <div class="item">
-          <a @click="$modal.show(modalName)">Privacy</a>
-        </div>
+        <span v-if="isDesktop" class="footer__section__item">
+          <font-awesome-icon class="icon" :icon="['fas', 'globe']"  />
+          <span>Online version at <a href="https://privacy.sexy" target="_blank">https://privacy.sexy</a></span>
+        </span>
+        <span v-else class="footer__section__item">
+          <DownloadUrlList />
+        </span>
       </div>
       <div class="footer__section">
-        <span v-if="isDesktop">
-          Online version at <a href="https://privacy.sexy" target="_blank">https://privacy.sexy</a>
-        </span>
-        <DownloadUrlList v-else />
+        <div class="footer__section__item">
+          <a :href="feedbackUrl" target="_blank">
+            <font-awesome-icon class="icon" :icon="['far', 'smile']"  />
+            <span>Feedback</span>
+          </a>
+        </div>
+        <div class="footer__section__item">
+          <a :href="repositoryUrl" target="_blank">
+            <font-awesome-icon class="icon" :icon="['fab', 'github']"  />
+            <span>Source Code</span>
+          </a>
+        </div>
+        <div class="footer__section__item">
+          <a :href="releaseUrl" target="_blank">
+            <font-awesome-icon class="icon" :icon="['fas', 'tag']"  />
+            <span>v{{ version }}</span>
+          </a>
+        </div>
+        <div class="footer__section__item">
+          <font-awesome-icon class="icon" :icon="['fas', 'user-secret']"  />
+          <a @click="$modal.show(modalName)">Privacy</a>
+        </div>
       </div>
     </div>
     <modal :name="modalName" height="auto" :scrollable="true" :adaptive="true">
@@ -45,7 +64,9 @@ export default class TheFooter extends StatefulVue {
   public readonly isDesktop: boolean;
 
   public version: string = '';
+  public repositoryUrl: string = '';
   public releaseUrl: string = '';
+  public feedbackUrl: string = '';
 
   constructor() {
     super();
@@ -54,8 +75,10 @@ export default class TheFooter extends StatefulVue {
 
   public async mounted() {
     const state = await this.getCurrentStateAsync();
-    this.version = `v${state.app.version}`;
+    this.version = state.app.version;
+    this.repositoryUrl = state.app.repositoryUrl;
     this.releaseUrl = `${state.app.repositoryUrl}/releases/tag/${state.app.version}`;
+    this.feedbackUrl = `${state.app.repositoryUrl}/issues`;
   }
 }
 </script>
@@ -63,26 +86,33 @@ export default class TheFooter extends StatefulVue {
 <style scoped lang="scss">
 @import "@/presentation/styles/colors.scss";
 @import "@/presentation/styles/fonts.scss";
+@import "@/presentation/styles/media.scss";
 
-$medium-screen-width: 767px;
-
+.icon {
+  margin-right: 0.5em;
+  text-decoration: none;
+}
 
 .footer {
   display: flex;
   justify-content: space-between;
-  @media screen and (max-width: $medium-screen-width) {  
+  @media (max-width: $big-screen-width) {  
     flex-direction: column;
     align-items: center;
   }
-  flex-wrap: wrap;
   &__section {
     display: flex;
+    @media (max-width: $big-screen-width) {  
+      justify-content: space-around;
+      width:100%;  
+      &:not(:first-child) {
+        margin-top: 0.7em;
+      }
+    }
+    flex-wrap: wrap;
     color: $dark-gray;
     font-size: 1rem;
     font-family: $normal-font;
-    &:not(:first-child) {
-      padding-top: 3px;
-    }
     a {
       color:inherit;
       text-decoration: underline;
@@ -91,10 +121,18 @@ $medium-screen-width: 767px;
         opacity: 0.8;
       }
     }
-
-    .item:not(:first-child)::before {
-      content: "|";
-      padding: 0 5px;
+    &__item:not(:first-child) {
+      &::before {
+        content: "|";
+        padding: 0 5px;
+      }
+      @media (max-width: $big-screen-width) {  
+        margin-top: 3px;
+        &::before {
+          content: "";
+          padding: 0;
+        }
+      }
     }
   }
 }
