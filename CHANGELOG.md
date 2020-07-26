@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.6.0 (2020-07-26)
+
+* fixed dead links in documentation | [commit](https://github.com/undergroundwires/privacy.sexy/commit/25ce236a7737decaf2eb9b8c29a4c4f34d43f770)
+* runs tests on each push on the repository | [commit](https://github.com/undergroundwires/privacy.sexy/commit/73c426844a0330718a9ab7de12b61ca05e853323)
+* code area now shows "how" before "why" | [commit](https://github.com/undergroundwires/privacy.sexy/commit/4ff4b52202b1c5dbfe2b80580bbe7d93132ab05c)
+* support for desktop versions #20 | [commit](https://github.com/undergroundwires/privacy.sexy/commit/5a27f9d86c96be88bb52aa69a84a7e057ac072be)
+* reworked on footer & removed github icon | [commit](https://github.com/undergroundwires/privacy.sexy/commit/8ab062454db1d8504fb2df4fbb39a7002bafeb09)
+* updated dependencies to latest | [commit](https://github.com/undergroundwires/privacy.sexy/commit/c335ab33ff612a19af1278bdcc88a14779e8bb91)
+* updated documentation | [commit](https://github.com/undergroundwires/privacy.sexy/commit/81dfbbef7a8786751fa7693010c80561c5ac6bce)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.5.0...0.6.0)
+
 ## 0.5.0 (2020-07-19)
 
 * added ability to revert (#21) | [commit](https://github.com/undergroundwires/privacy.sexy/commit/9c063d59defa6297c64f50b49403e8bd10620de9)
