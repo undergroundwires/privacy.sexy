@@ -65,9 +65,9 @@ function getOperatingSystemName(os: OperatingSystem): string {
 function getFileName(os: OperatingSystem, version: string): string {
     switch (os) {
         case OperatingSystem.Linux:
-            return `privacy.sexy-${version}.dmg`;
+            return `privacy.sexy-${version}.AppImage`;
         case OperatingSystem.macOS:
-            return `privacy.sexy-${version}-mac.zip`;
+            return `privacy.sexy-${version}.dmg`;
         case OperatingSystem.Windows:
             return `privacy.sexy-Setup-${version}.exe`;
         default:
