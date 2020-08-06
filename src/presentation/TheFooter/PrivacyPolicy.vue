@@ -6,7 +6,7 @@
       </div>
       <div v-if="isDesktop" class="line">
           <div class="line__emoji">🚫🌐</div>
-          <div>Everything is offline, except single request GitHub toto check for updates on application start.</div>
+          <div>Everything is offline, except single request GitHub to check for updates on application start.</div>
       </div>
       <div class="line">
           <div class="line__emoji">🚫👀</div>
