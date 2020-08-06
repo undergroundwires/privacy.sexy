@@ -379,7 +379,7 @@ actions:
                             sc config "wercplsupport" start=demand
             -
                 name: Disable online device metadata collection
-                recommend: true
+                recommend: false
                 docs:
                     - https://www.stigviewer.com/stig/windows_server_2012_member_server/2014-01-07/finding/V-21964
                     - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-deviceinstallation#deviceinstallation-preventdevicemetadatafromnetwork
@@ -712,13 +712,6 @@ actions:
                     reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\System\AllowExperimentation" /v "value" /t "REG_DWORD" /d 0 /f
                     reg add "HKLM\SOFTWARE\Microsoft\WindowsSelfHost\UI\Visibility" /v "HideInsiderPage" /t "REG_DWORD" /d "1" /f
                     sc stop "wisvc" & sc config "wisvc" start=disabled
-            -
-                name: Disable the Windows Connect Now wizard
-                recommend: false
-                docs:
-                    - https://docs.microsoft.com/en-us/windows/win32/wcn/about-windows-connect-now
-                    - https://www.windows-security.org/f637a705712eb59f8cd410673c96472e/prohibit-access-of-the-windows-connect-now-wizards
-                code: reg add "HKCU\Software\Policies\Microsoft\Windows\WCN\UI" /v "DisableWcnUi" /t REG_DWORD /d 1 /f
             -
                 category: Disable cloud sync
                 children:
@@ -1163,6 +1156,26 @@ actions:
                         code: |-
                             dism /online /Disable-Feature /FeatureName:"MicrosoftWindowsPowerShellV2Root" /NoRestart
                             dism /online /Disable-Feature /FeatureName:"MicrosoftWindowsPowerShellV2" /NoRestart
+            -
+                name: Disable the Windows Connect Now wizard
+                recommend: true
+                docs:
+                    - https://docs.microsoft.com/en-us/windows/win32/wcn/about-windows-connect-now
+                    - https://www.stigviewer.com/stig/windows_server_20122012_r2_domain_controller/2019-01-16/finding/V-15698
+                code: |-
+                    reg add "HKLM\Software\Policies\Microsoft\Windows\WCN\UI" /v "DisableWcnUi" /t REG_DWORD /d 1 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableFlashConfigRegistrar" /t REG_DWORD /d 0 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableInBand802DOT11Registrar" /t REG_DWORD /d 0 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableUPnPRegistrar" /t REG_DWORD /d 0 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableWPDRegistrar" /t REG_DWORD /d 0 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "EnableRegistrars" /t REG_DWORD /d 0 /f
+                revertCode: |-
+                    reg add "HKLM\Software\Policies\Microsoft\Windows\WCN\UI" /v "DisableWcnUi" /t REG_DWORD /d 0 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableFlashConfigRegistrar" /t REG_DWORD /d 1 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableInBand802DOT11Registrar" /t REG_DWORD /d 1 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableUPnPRegistrar" /t REG_DWORD /d 1 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableWPDRegistrar" /t REG_DWORD /d 1 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "EnableRegistrars" /t REG_DWORD /d 1 /f
     -
         category: Privacy over security
         children:         
