@@ -368,16 +368,27 @@ actions:
                         name: Disable error reporting
                         recommend: true
                         code: |-
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /t REG_DWORD /d "1" /f
+                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /f
                             reg add "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /t "REG_DWORD" /d "1" /f
                             sc stop "WerSvc" & sc config "WerSvc" start=disabled
                             sc stop "wercplsupport" & sc config "wercplsupport" start=disabled
+                        revertCode: |-
+                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /f
+                            reg delete "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /f
+                            sc config "WerSvc" start=demand
+                            sc config "wercplsupport" start=demand
             -
                 name: Disable online device metadata collection
                 recommend: true
+                docs:
+                    - https://www.stigviewer.com/stig/windows_server_2012_member_server/2014-01-07/finding/V-21964
+                    - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-deviceinstallation#deviceinstallation-preventdevicemetadatafromnetwork
                 code: |-
                     reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 1 /f
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 1 /f
+                revertCode: |-
+                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 0 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 0 /f
             -
                 name: Disable active prompting (pings to MSFT NCSI server)
                 recommend: false
@@ -834,9 +845,10 @@ actions:
                                 recommend: true
                                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\MRT" /v "DontReportInfectionInformation" /t REG_DWORD /d 1 /f
             -
-                name: Disable NetCore Cli telemetry
+                name: Disable NET Core CLI telemetry
                 recommend: true
                 code: setx DOTNET_CLI_TELEMETRY_OPTOUT 1
+                revertCode: setx DOTNET_CLI_TELEMETRY_OPTOUT 0
             -
                 name: Disable NVIDIA telemetry
                 recommend: true
@@ -1249,11 +1261,13 @@ actions:
             -
                 name: Disable Sync Provider Notifications
                 recommend: false
-                code: REG ADD "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowSyncProviderNotifications" /d 0 /t REG_DWORD /f
+                code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowSyncProviderNotifications" /d 0 /t REG_DWORD /f
+                revertCode: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowSyncProviderNotifications" /d 1 /t REG_DWORD /f
             -
                 name: Turn hibernate off to disable sleep for quick start
                 recommend: false
                 code: powercfg -h off
+                revertCode: powercfg -h on
                 docs: http://www.windows10windows7.com/w10/win10zs/100102504.html
             -
                 category: Hide from This PC and Browse in dialog boxes
@@ -1355,14 +1369,17 @@ actions:
                         name: Xbox Live Auth Manager
                         recommend: true
                         code: sc stop "XblAuthManager" & sc config "XblAuthManager" start=disabled
+                        revetCode: sc config "XblAuthManager" start=demand
                     -
                         name: Xbox Live Game Save
                         recommend: true
                         code: sc stop "XblGameSave" & sc config "XblGameSave" start=disabled
+                        revertCode: sc config "XblGameSave" start=demand
                     -
                         name: Xbox Live Networking Service
                         recommend: true
                         code: sc stop "XboxNetApiSvc" & sc config "XboxNetApiSvc" start=disabled
+                        revetCode: sc config "XboxNetApiSvc" start=demand
             -
                 name: Windows Biometric Service
                 recommend: true
