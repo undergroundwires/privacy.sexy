@@ -352,6 +352,26 @@ actions:
                             schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask" /ENABLE
                             schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" /ENABLE
                     -
+                        name: Disable Webcam Telemetry (devicecensus.exe)
+                        recommend: true
+                        docs: https://www.ghacks.net/2019/09/23/what-is-devicecensus-exe-on-windows-10-and-why-does-it-need-internet-connectivity/
+                        code: schtasks /change /TN "Microsoft\Windows\Device Information\Device" /DISABLE
+                        revertCode: schtasks /change /TN "Microsoft\Windows\Device Information\Device" /ENABLE
+                    -
+                        name: Disable Application Experience (Compatibility Telemetry)
+                        recommend: true
+                        code: |-
+                            schtasks /change /TN "Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" /DISABLE
+                            schtasks /change /TN "Microsoft\Windows\Application Experience\ProgramDataUpdater" /DISABLE
+                            schtasks /change /TN "Microsoft\Windows\Application Experience\StartupAppTask" /DISABLE
+                            schtasks /change /TN "Microsoft\Windows\Application Experience\AitAgent" /DISABLE
+                            reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\CompatTelRunner.exe" /v Debugger /t REG_SZ /d "%windir%\System32\taskkill.exe" /f
+                        revertCode: |-
+                            schtasks /change /TN "Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" /ENABLE
+                            schtasks /change /TN "Microsoft\Windows\Application Experience\ProgramDataUpdater" /ENABLE
+                            schtasks /change /TN "Microsoft\Windows\Application Experience\StartupAppTask" /ENABLE
+                            schtasks /change /TN "Microsoft\Windows\Application Experience\AitAgent" /ENABLE
+                    -
                         name: Disable telemetry in data collection policy
                         recommend: true
                         code: |-
@@ -389,6 +409,12 @@ actions:
                 revertCode: |-
                     reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 0 /f
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 0 /f
+            -
+                name: Disable cloud speech recognation
+                recommend: true
+                docs: https://www.tenforums.com/tutorials/101902-turn-off-online-speech-recognition-windows-10-a.html
+                code: reg add "HKCU\Software\Microsoft\Speech_OneCore\Settings\OnlineSpeechPrivacy" /v "HasAccepted" /t "REG_DWORD" /d 0 /f
+                revertCode: reg add "HKCU\Software\Microsoft\Speech_OneCore\Settings\OnlineSpeechPrivacy" /v "HasAccepted" /t "REG_DWORD" /d 1 /f
             -
                 name: Disable active prompting (pings to MSFT NCSI server)
                 recommend: false
