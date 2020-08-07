@@ -9,8 +9,7 @@ export function convertExistingToNode(liquorTreeNode: ILiquorTreeExistingNode): 
         id: liquorTreeNode.id,
         text: liquorTreeNode.data.text,
         // selected: liquorTreeNode.states && liquorTreeNode.states.checked,
-        children: (!liquorTreeNode.children || liquorTreeNode.children.length === 0)
-         ? [] : liquorTreeNode.children.map((childNode) => convertExistingToNode(childNode)),
+        children: convertChildren(liquorTreeNode.children, convertExistingToNode),
         documentationUrls: liquorTreeNode.data.documentationUrls,
         isReversible : liquorTreeNode.data.isReversible,
     };
@@ -24,11 +23,19 @@ export function toNewLiquorTreeNode(node: INode): ILiquorTreeNewNode {
         state: {
             checked: false,
         },
-        children: (!node.children || node.children.length === 0) ? [] :
-         node.children.map((childNode) => toNewLiquorTreeNode(childNode)),
+        children: convertChildren(node.children, toNewLiquorTreeNode),
         data: {
             documentationUrls: node.documentationUrls,
             isReversible: node.isReversible,
         },
     };
+}
+
+function convertChildren<TOldNode, TNewNode>(
+    oldChildren: readonly TOldNode[],
+    callback: (value: TOldNode) => TNewNode): TNewNode[] {
+    if (!oldChildren || oldChildren.length === 0) {
+        return [];
+    }
+    return oldChildren.map((childNode) => callback(childNode));
 }

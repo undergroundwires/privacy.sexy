@@ -1,6 +1,6 @@
 declare module 'js-yaml-loader!*' {
     export type CategoryOrScript = YamlCategory | YamlScript;
-    type DocumentationUrls = ReadonlyArray<string> | string;
+    export type DocumentationUrls = ReadonlyArray<string> | string;
 
     export interface YamlDocumentable {
         docs?: DocumentationUrls;

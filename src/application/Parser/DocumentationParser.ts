@@ -1,35 +1,44 @@
-import { YamlDocumentable } from 'js-yaml-loader!./application.yaml';
+import { YamlDocumentable, DocumentationUrls } from 'js-yaml-loader!./application.yaml';
 
 export function parseDocUrls(documentable: YamlDocumentable): ReadonlyArray<string> {
     if (!documentable) {
         throw new Error('documentable is null or undefined');
     }
     const docs = documentable.docs;
-    if (!docs) {
+    if (!docs || !docs.length) {
         return [];
     }
-    const result = new DocumentationUrls();
-    if (docs instanceof Array) {
-        for (const doc of docs) {
-            if (typeof doc !== 'string') {
-                throw new Error('Docs field (documentation url) must be an array of strings');
-            }
-            result.add(doc);
-        }
-    } else if (typeof docs === 'string') {
-        result.add(docs);
-    } else {
-        throw new Error('Docs field (documentation url) must a string or array of strings');
-    }
+    let result = new DocumentationUrlContainer();
+    result = addDocs(docs, result);
     return result.getAll();
 }
 
-class DocumentationUrls {
+function addDocs(docs: DocumentationUrls, urls: DocumentationUrlContainer): DocumentationUrlContainer {
+    if (docs instanceof Array) {
+        urls.addUrls(docs);
+    } else if (typeof docs === 'string') {
+        urls.addUrl(docs);
+    } else {
+        throw new Error('Docs field (documentation url) must a string or array of strings');
+    }
+    return urls;
+}
+
+class DocumentationUrlContainer {
     private readonly urls = new Array<string>();
 
-    public add(url: string) {
+    public addUrl(url: string) {
         validateUrl(url);
         this.urls.push(url);
+    }
+
+    public addUrls(urls: any[]) {
+        for (const url of urls) {
+            if (typeof url !== 'string') {
+                throw new Error('Docs field (documentation url) must be an array of strings');
+            }
+            this.addUrl(url);
+        }
     }
 
     public getAll(): ReadonlyArray<string> {

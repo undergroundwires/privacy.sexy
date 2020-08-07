@@ -18,15 +18,7 @@ export class Application implements IApplication {
         if (!repositoryUrl) { throw Error('Application has no repository url'); }
         if (!version) { throw Error('Version cannot be empty'); }
         this.flattened = flatten(actions);
-        if (this.flattened.allCategories.length === 0) {
-            throw new Error('Application must consist of at least one category');
-        }
-        if (this.flattened.allScripts.length === 0) {
-            throw new Error('Application must consist of at least one script');
-        }
-        if (this.flattened.allScripts.filter((script) => script.isRecommended).length === 0) {
-            throw new Error('Application must consist of at least one recommended script');
-        }
+        ensureValid(this.flattened);
         ensureNoDuplicates(this.flattened.allCategories);
         ensureNoDuplicates(this.flattened.allScripts);
     }
@@ -75,30 +67,50 @@ interface IFlattenedApplication {
     allScripts: IScript[];
 }
 
-function flattenRecursive(
+function ensureValid(application: IFlattenedApplication) {
+    if (!application.allCategories || application.allCategories.length === 0) {
+        throw new Error('Application must consist of at least one category');
+    }
+    if (!application.allScripts || application.allScripts.length === 0) {
+        throw new Error('Application must consist of at least one script');
+    }
+    if (application.allScripts.filter((script) => script.isRecommended).length === 0) {
+        throw new Error('Application must consist of at least one recommended script');
+    }
+}
+
+function flattenCategories(
     categories: ReadonlyArray<ICategory>,
-    flattened: IFlattenedApplication) {
+    flattened: IFlattenedApplication): IFlattenedApplication {
+    if (!categories || categories.length === 0) {
+        return flattened;
+    }
     for (const category of categories) {
         flattened.allCategories.push(category);
-        if (category.scripts) {
-            for (const script of category.scripts) {
-                flattened.allScripts.push(script);
-            }
-        }
-        if (category.subCategories && category.subCategories.length > 0) {
-            flattenRecursive(
-                category.subCategories as ReadonlyArray<ICategory>,
-                flattened);
-        }
+        flattened = flattenScripts(category.scripts, flattened);
+        flattened = flattenCategories(category.subCategories, flattened);
     }
+    return flattened;
+}
+
+function flattenScripts(
+    scripts: ReadonlyArray<IScript>,
+    flattened: IFlattenedApplication): IFlattenedApplication {
+    if (!scripts) {
+        return flattened;
+    }
+    for (const script of scripts) {
+        flattened.allScripts.push(script);
+    }
+    return flattened;
 }
 
 function flatten(
     categories: ReadonlyArray<ICategory>): IFlattenedApplication {
-    const flattened: IFlattenedApplication = {
+    let flattened: IFlattenedApplication = {
         allCategories: new Array<ICategory>(),
         allScripts: new Array<IScript>(),
     };
-    flattenRecursive(categories, flattened);
+    flattened = flattenCategories(categories, flattened);
     return flattened;
 }

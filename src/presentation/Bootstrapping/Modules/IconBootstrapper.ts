@@ -4,7 +4,7 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons';
 /** BRAND ICONS (PREFIX: fab) */
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 /** REGULAR ICONS (PREFIX: far) */
-import { faFolderOpen, faFolder, faComment, faSmile } from '@fortawesome/free-regular-svg-icons';
+import { faFolderOpen, faFolder, faSmile } from '@fortawesome/free-regular-svg-icons';
 /** SOLID ICONS (PREFIX: fas (default)) */
 import { faTimes, faFileDownload, faCopy, faSearch, faInfoCircle, faUserSecret, faDesktop, faTag, faGlobe } from '@fortawesome/free-solid-svg-icons';
 

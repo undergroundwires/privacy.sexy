@@ -8,19 +8,11 @@ export class DetectorBuilder {
     constructor(private readonly os: OperatingSystem) { }
 
     public mustInclude(str: string): DetectorBuilder {
-        if (!str) {
-            throw new Error('part to include is empty or undefined');
-        }
-        this.existingPartsInUserAgent.push(str);
-        return this;
+        return this.add(str, this.existingPartsInUserAgent);
     }
 
     public mustNotInclude(str: string): DetectorBuilder {
-        if (!str) {
-            throw new Error('part to not include is empty or undefined');
-        }
-        this.notExistingPartsInUserAgent.push(str);
-        return this;
+        return this.add(str, this.notExistingPartsInUserAgent);
     }
 
     public build(): IBrowserOsDetector {
@@ -28,22 +20,34 @@ export class DetectorBuilder {
             throw new Error('Must include at least a part');
         }
         return {
-            detect: (userAgent) => {
-                if (!userAgent) {
-                    throw new Error('User agent is null or undefined');
-                }
-                for (const exitingPart of this.existingPartsInUserAgent) {
-                    if (!userAgent.includes(exitingPart)) {
-                        return OperatingSystem.Unknown;
-                    }
-                }
-                for (const notExistingPart of this.notExistingPartsInUserAgent) {
-                    if (userAgent.includes(notExistingPart)) {
-                        return OperatingSystem.Unknown;
-                    }
-                }
-                return this.os;
-            },
+            detect: (agent) => this.detect(agent),
         };
+    }
+
+    private detect(userAgent: string): OperatingSystem {
+        if (!userAgent) {
+            throw new Error('User agent is null or undefined');
+        }
+        if (this.existingPartsInUserAgent.some((part) => !userAgent.includes(part))) {
+            return OperatingSystem.Unknown;
+        }
+        if (this.notExistingPartsInUserAgent.some((part) => userAgent.includes(part))) {
+            return OperatingSystem.Unknown;
+        }
+        return this.os;
+    }
+
+    private add(part: string, array: string[]): DetectorBuilder {
+        if (!part) {
+            throw new Error('part is empty or undefined');
+        }
+        if (this.existingPartsInUserAgent.includes(part)) {
+            throw new Error(`part ${part} is already included as existing part`);
+        }
+        if (this.notExistingPartsInUserAgent.includes(part)) {
+            throw new Error(`part ${part} is already included as not existing part`);
+        }
+        array.push(part);
+        return this;
     }
 }

@@ -30,19 +30,32 @@ export function getCategoryNodeId(category: ICategory): string {
 
 function parseCategoryRecursively(
   parentCategory: ICategory): INode[] {
-  if (!parentCategory) { throw new Error('parentCategory is undefined'); }
-
-  const nodes = new Array<INode>();
-  if (parentCategory.subCategories && parentCategory.subCategories.length > 0) {
-    for (const subCategory of parentCategory.subCategories) {
-      const subCategoryNodes = parseCategoryRecursively(subCategory);
-      nodes.push(convertCategoryToNode(subCategory, subCategoryNodes));
-    }
+  if (!parentCategory) {
+    throw new Error('parentCategory is undefined');
   }
-  if (parentCategory.scripts && parentCategory.scripts.length > 0) {
-    for (const script of parentCategory.scripts) {
-      nodes.push(convertScriptToNode(script));
-    }
+  let nodes = new Array<INode>();
+  nodes = addCategories(parentCategory.subCategories, nodes);
+  nodes = addScripts(parentCategory.scripts, nodes);
+  return nodes;
+}
+
+function addScripts(scripts: ReadonlyArray<IScript>, nodes: INode[]): INode[] {
+  if (!scripts || scripts.length === 0) {
+    return nodes;
+  }
+  for (const script of scripts) {
+    nodes.push(convertScriptToNode(script));
+  }
+  return nodes;
+}
+
+function addCategories(categories: ReadonlyArray<ICategory>, nodes: INode[]): INode[] {
+  if (!categories || categories.length === 0) {
+    return nodes;
+  }
+  for (const category of categories) {
+    const subCategoryNodes = parseCategoryRecursively(category);
+    nodes.push(convertCategoryToNode(category, subCategoryNodes));
   }
   return nodes;
 }
