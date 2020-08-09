@@ -1837,15 +1837,17 @@ actions:
             - 
               name: Remove OneDrive
               code: |-
-                taskkill /F /IM OneDrive.exe
+                taskkill /f /im OneDrive.exe
                 %SystemRoot%\System32\OneDriveSetup.exe /uninstall
                 %SystemRoot%\SysWOW64\OneDriveSetup.exe /uninstall
-                rd "%UserProfile%\OneDrive" /Q /S
-                rd "%LocalAppData%\Microsoft\OneDrive" /Q /S
-                rd "%ProgramData%\Microsoft OneDrive" /Q /S
-                rd "C:\OneDriveTemp" /Q /S
+                rd "%UserProfile%\OneDrive" /q /s
+                rd "%LocalAppData%\Microsoft\OneDrive" /q /s
+                rd "%ProgramData%\Microsoft OneDrive" /q /s
+                rd "C:\OneDriveTemp" /q /s
+                del "%USERPROFILE%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk" /s /f /q
                 reg delete "HKEY_CLASSES_ROOT\CLSID{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f
                 reg delete "HKEY_CLASSES_ROOT\Wow6432Node\CLSID{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f
+                reg add "HKEY_CLASSES_ROOT\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v System.IsPinnedToNameSpaceTree /d "0" /t REG_DWORD /f 
             -
                 category: Disable built-in Windows features
                 children:
