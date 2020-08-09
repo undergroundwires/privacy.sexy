@@ -6,9 +6,6 @@ module.exports = {
         electronBuilder: {
             // https://www.electron.build/configuration/configuration
             builderOptions: {
-                win: {
-                    icon: './public/favicon.ico'
-                },
                 publish: [{
                     // https://www.electron.build/configuration/publish#githuboptions
                     // https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/recipes.html#enable-publishing-to-github

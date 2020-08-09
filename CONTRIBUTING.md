@@ -21,7 +21,7 @@
 - 🙏 DO
   - Document your changes in the pull request
 - ❗ DON'T
-  - Do not update the versions, current version is only [set by the maintainer](./img/gitops.png) and updated automatically by [bump-everywhere](https://github.com/undergroundwires/bump-everywhere)
+  - Do not update the versions, current version is only [set by the maintainer](./img/architecture/gitops.png) and updated automatically by [bump-everywhere](https://github.com/undergroundwires/bump-everywhere)
 
 ## Guidelines
 

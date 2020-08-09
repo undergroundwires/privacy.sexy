@@ -35,12 +35,12 @@ function createWindow() {
     height: 955,
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
-      // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
+      // See https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration
       nodeIntegration: (process.env
           .ELECTRON_NODE_INTEGRATION as unknown) as boolean,
     },
-    // https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/recipes.html#icons
-    icon: path.join(__static, `favicon.ico`),
+    // https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/recipes.html#set-tray-icon
+    icon: path.join(__static, 'icon.png'),
   });
 
   win.setMenuBarVisibility(false);

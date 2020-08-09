@@ -68,11 +68,11 @@
       - The [state](src/application/State/ApplicationState.ts) is a mutable singleton & event producer.
     - The application is defined & controlled in a [single YAML file](src/application/application.yaml) (see [Data-driven programming](https://en.wikipedia.org/wiki/Data-driven_programming))
 
-![DDD + vue.js](img/app-ddd.png)
+![DDD + vue.js](img/architecture/app-ddd.png)
 
 ### AWS Infrastructure
 
-[![AWS solution](img/aws-solution.png)](https://github.com/undergroundwires/aws-static-site-with-cd)
+[![AWS solution](img/architecture/aws-solution.png)](https://github.com/undergroundwires/aws-static-site-with-cd)
 
 - It uses infrastructure from the following repository: [aws-static-site-with-cd](https://github.com/undergroundwires/aws-static-site-with-cd)
   - Runs on AWS 100% serverless and automatically provisioned using [GitHub Actions](.github/workflows/).
@@ -84,4 +84,4 @@
   - Versioning, tagging, creation of `CHANGELOG.md` and releasing is automated using [bump-everywhere](https://github.com/undergroundwires/bump-everywhere) action
 - Everything that's merged in the master goes directly to production.
 
-[![CI/CD to AWS with GitHub Actions](img/gitops.png)](.github/workflows/)
+[![CI/CD to AWS with GitHub Actions](img/architecture/gitops.png)](.github/workflows/)
