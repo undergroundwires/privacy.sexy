@@ -387,14 +387,39 @@ actions:
                     -
                         name: Disable error reporting
                         recommend: true
+                        docs:
+                            - https://docs.microsoft.com/en-us/windows/win32/wer/wer-settings
+                            - https://www.stigviewer.com/stig/windows_10/2016-06-24/finding/V-63493
                         code: |-
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /f
+                            :: Disable Windows Error Reporting (WER)
+                            reg add "HKLM\Software\Policies\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /t REG_DWORD /d "1" /f
                             reg add "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /t "REG_DWORD" /d "1" /f
+                            :: DefaultConsent / 1 - Always ask (default) / 2 - Parameters only / 3 - Parameters and safe data / 4 - All data
+                            reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting\Consent" /v "DefaultConsent" /t REG_DWORD /d "0" /f
+                            reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting\Consent" /v "DefaultOverrideBehavior" /t REG_DWORD /d "1" /f
+                            :: Disable WER sending second-level data
+                            reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting" /v "DontSendAdditionalData" /t REG_DWORD /d "1" /f
+                            :: Disable WER crash dialogs, popups
+                            reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting" /v "LoggingDisabled" /t REG_DWORD /d "1" /f
+                            schtasks /Change /TN "Microsoft\Windows\ErrorDetails\EnableErrorDetailsUpdate" /Disable
+                            schtasks /Change /TN "Microsoft\Windows\Windows Error Reporting\QueueReporting" /Disable
+                            :: Disable Windows Error Reporting Service
                             sc stop "WerSvc" & sc config "WerSvc" start=disabled
                             sc stop "wercplsupport" & sc config "wercplsupport" start=disabled
                         revertCode: |-
+                            :: Enable Windows Error Reporting (WER)
                             reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /f
                             reg delete "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /f
+                            :: DefaultConsent / 1 - Always ask (default) / 2 - Parameters only / 3 - Parameters and safe data / 4 - All data
+                            reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting\Consent" /v "DefaultConsent" /t REG_DWORD /d "1" /f
+                            reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting\Consent" /v "DefaultOverrideBehavior" /t REG_DWORD /d "0" /f
+                            :: Enable WER sending second-level data
+                            reg delete "HKLM\Software\Microsoft\Windows\Windows Error Reporting" /v "DontSendAdditionalData" /f
+                            :: Enable WER crash dialogs, popups
+                            reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting" /v "LoggingDisabled" /t REG_DWORD /d "0" /f
+                            schtasks /Change /TN "Microsoft\Windows\ErrorDetails\EnableErrorDetailsUpdate" /Enable
+                            schtasks /Change /TN "Microsoft\Windows\Windows Error Reporting\QueueReporting" /Enable
+                            :: Enable Windows Error Reporting Service
                             sc config "WerSvc" start=demand
                             sc config "wercplsupport" start=demand
             -
