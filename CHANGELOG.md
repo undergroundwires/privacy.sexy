@@ -1,14 +1,26 @@
 # Changelog
 
+## 0.6.1 (2020-08-09)
+
+* updated documentation | [commit](https://github.com/undergroundwires/privacy.sexy/commit/5963d2bac551083f9d16cce6b851abf0e8b88ce7)
+* fixed typo in footer | [commit](https://github.com/undergroundwires/privacy.sexy/commit/5c15a7a64aaf24578a32713dec491bf494216303)
+* more scripts can be reverted | [commit](https://github.com/undergroundwires/privacy.sexy/commit/831c014f977515454ee6dc664d77a8c434495501)
+* moved windows connect now to security & recommended | [commit](https://github.com/undergroundwires/privacy.sexy/commit/6049a2b834d8d17af741f8d8f8b07cd15153b001)
+* fixed mac / linux download links | [commit](https://github.com/undergroundwires/privacy.sexy/commit/4c8be45e287b5ea009d6f828f7f327f37850569e)
+* tweaks to disable webcam, speech and compatibility telemetry | [commit](https://github.com/undergroundwires/privacy.sexy/commit/a5dbe66fc175e39397f296ab2ff703e9b0ab4d7c)
+* refactorings | [commit](https://github.com/undergroundwires/privacy.sexy/commit/66d4d39d5bf3db305450514c6b6224654dafbfb2)
+* fixed removing onedrive does not clean start menu / quick access | [commit](https://github.com/undergroundwires/privacy.sexy/commit/1cc12195a3e9a11c590d3ed64d80299b50f74838)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.6.0...0.6.1)
+
 ## 0.6.0 (2020-07-26)
 
 * fixed dead links in documentation | [commit](https://github.com/undergroundwires/privacy.sexy/commit/25ce236a7737decaf2eb9b8c29a4c4f34d43f770)
 * runs tests on each push on the repository | [commit](https://github.com/undergroundwires/privacy.sexy/commit/73c426844a0330718a9ab7de12b61ca05e853323)
 * code area now shows "how" before "why" | [commit](https://github.com/undergroundwires/privacy.sexy/commit/4ff4b52202b1c5dbfe2b80580bbe7d93132ab05c)
-* support for desktop versions #20 | [commit](https://github.com/undergroundwires/privacy.sexy/commit/5a27f9d86c96be88bb52aa69a84a7e057ac072be)
-* reworked on footer & removed github icon | [commit](https://github.com/undergroundwires/privacy.sexy/commit/8ab062454db1d8504fb2df4fbb39a7002bafeb09)
-* updated dependencies to latest | [commit](https://github.com/undergroundwires/privacy.sexy/commit/c335ab33ff612a19af1278bdcc88a14779e8bb91)
-* updated documentation | [commit](https://github.com/undergroundwires/privacy.sexy/commit/81dfbbef7a8786751fa7693010c80561c5ac6bce)
+* support for desktop versions #20 | [commit](https://github.com/undergroundwires/privacy.sexy/commit/04b9b59e14766ccd251474ad3710baf1f682fd49)
+* reworked on footer & removed github icon | [commit](https://github.com/undergroundwires/privacy.sexy/commit/60a5a2aa4026d384bef9e6a203f1b7514a269c33)
+* updated dependencies to latest | [commit](https://github.com/undergroundwires/privacy.sexy/commit/45816a2bccb3d11a50e3f2bc19c0a6cc2587deaa)
 
 [compare](https://github.com/undergroundwires/privacy.sexy/compare/0.5.0...0.6.0)
 
