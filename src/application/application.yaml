@@ -122,6 +122,10 @@ actions:
                                 code: |-
                                    reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU" /va /f
                                    reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths" /va /f
+                    -
+                        name: Clear Dotnet CLI telemetry
+                        recommend: true
+                        code: rmdir /s /q "%USERPROFILE%\.dotnet\TelemetryStorageService" 2>nul
             - 
                 category: Clear browser history
                 children:
