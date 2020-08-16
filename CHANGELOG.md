@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.6.2 (2020-08-16)
+
+* 🐛 fixed disabling error reporting for november 2019 update | [commit](https://github.com/undergroundwires/privacy.sexy/commit/5967347b80976a519f6f4eb1972a62f3e600df2b)
+* 🐛 fixed blank screen and icons on mac | [commit](https://github.com/undergroundwires/privacy.sexy/commit/7fac0fe79f252e8f9dda4f6f83cd6fa4ba2b539f)
+* 🐛 fixed removing onedrive does not delete scheduled tasks | [commit](https://github.com/undergroundwires/privacy.sexy/commit/b6bfc2572740c0cd46d3bc0058fa767dd5fa862e)
+* ⚙️ enhanced tweak to disable for office telemetry | [commit](https://github.com/undergroundwires/privacy.sexy/commit/afc3bfb3b8896f332c9a196973ded3dce8fd21e4)
+* ✨ added script to clear dotnet telemery | [commit](https://github.com/undergroundwires/privacy.sexy/commit/1663bfeac7b6580b1335ca5fcf3587b69c080c72)
+* 🐛 fixed changing time server not working | [commit](https://github.com/undergroundwires/privacy.sexy/commit/c69998c7cb29ffcf40f0af03b73150736581da69)
+* 🔥 removed disabling ClickToRun as it breaks office | [commit](https://github.com/undergroundwires/privacy.sexy/commit/3d3380f27ebeea53f17f49974aaa89300ffaf2dd)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.6.1...0.6.2)
+
 ## 0.6.1 (2020-08-09)
 
 * updated documentation | [commit](https://github.com/undergroundwires/privacy.sexy/commit/5963d2bac551083f9d16cce6b851abf0e8b88ce7)
