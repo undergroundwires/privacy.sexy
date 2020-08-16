@@ -1006,15 +1006,15 @@ actions:
                             schtasks /change /TN "Microsoft\Office\OfficeTelemetryAgentFallBack2016" /ENABLE
                             schtasks /change /TN "Microsoft\Office\OfficeTelemetryAgentLogOn" /ENABLE
                             schtasks /change /TN "Microsoft\Office\OfficeTelemetryAgentLogOn2016" /ENABLE
-                    -
-                        name: Disable ClickToRun Service Monitor
-                        recommend: true
-                        code: |-
-                            schtasks /change /TN "Microsoft\Office\Office ClickToRun Service Monitor" /DISABLE
-                            sc stop "ClickToRunSvc" & sc config "ClickToRunSvc" start=disabled
-                        revertCode: |-
-                            schtasks /change /TN "Microsoft\Office\Office ClickToRun Service Monitor" /ENABLE
-                            sc config "ClickToRunSvc" start=auto
+                    # - (breaks office, see https://answers.microsoft.com/en-us/office/forum/office_2016-officeapps/office-2016-click-to-run-service-is-it-necessary/07f87963-7193-488a-9885-d6339105824b)
+                    #     name: Disable ClickToRun Service Monitor
+                    #     recommend: false
+                    #     code: |-
+                    #         schtasks /change /TN "Microsoft\Office\Office ClickToRun Service Monitor" /DISABLE
+                    #         sc stop "ClickToRunSvc" & sc config "ClickToRunSvc" start=disabled
+                    #     revertCode: |-
+                    #         schtasks /change /TN "Microsoft\Office\Office ClickToRun Service Monitor" /ENABLE
+                    #         sc config "ClickToRunSvc" start=auto
                     -
                         name: Disable Subscription Heartbeat
                         recommend: false
