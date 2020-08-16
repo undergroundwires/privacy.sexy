@@ -2253,18 +2253,33 @@ actions:
                                 code: dism /online /Remove-Capability /CapabilityName:"XPS.Viewer~~~~0.0.1.0" /NoRestart
     -
         category: Advanced settings
+        docs: https://www.pool.ntp.org/en/use.html
         children:   
             -
                 name: Change NTP (time) server to pool.ntp.org
                 recommend: false
                 code: |-
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\W32time\Parameters" /v "NtpServer" /t REG_SZ /d "pool.ntp.org, 0x8" /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\W32time\Parameters" /v "Type" /t REG_SZ /d "NTP" /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\W32time\TimeProviders\NtpClient" /v "CrossSiteSyncFlags" /t REG_DWORD /d 2 /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\W32time\TimeProviders\NtpClient" /v "EventLogFlags" /t REG_DWORD /d 0 /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\W32time\TimeProviders\NtpClient" /v "ResolvePeerBackoffMaxTimes" /t REG_DWORD /d 7 /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\W32time\TimeProviders\NtpClient" /v "ResolvePeerBackoffMinutes" /t REG_DWORD /d 15 /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\W32time\TimeProviders\NtpClient" /v "SpecialPollInterval" /t REG_DWORD /d 1024 /f
+                    :: Configure time source
+                    w32tm /config /syncfromflags:manual /manualpeerlist:"0.pool.ntp.org 1.pool.ntp.org 2.pool.ntp.org 3.pool.ntp.org"
+                    :: Restart time service if running
+                    SC queryex "w32time"|Find "STATE"|Find /v "RUNNING">Nul||(
+                        net stop w32time
+                        net start w32time
+                    )
+                    :: Sync now
+                    w32tm /config /update
+                    w32tm /resync
+                revertCode: |-
+                    :: Configure time source
+                    w32tm /config /syncfromflags:manual /manualpeerlist:"time.windows.com"
+                    :: Restart time service if running
+                    SC queryex "w32time"|Find "STATE"|Find /v "RUNNING">Nul||(
+                        net stop w32time
+                        net start w32time
+                    )
+                    :: Sync now
+                    w32tm /config /update
+                    w32tm /resync
             -
                 name: Disable Reserved Storage for updates
                 recommend: false
