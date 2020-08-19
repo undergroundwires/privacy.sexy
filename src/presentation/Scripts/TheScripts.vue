@@ -14,10 +14,10 @@
                             Searching for "{{this.searchQuery | threeDotsTrim}}"</div>
                         <ScriptsTree />
                     </div>
-                    </div>
-                    <div v-else class="search-no-matches">
-                        Sorry, no matches for "{{this.searchQuery | threeDotsTrim}}" 😞
-                        Feel free to extend the scripts <a :href="repositoryUrl" target="_blank" class="child github" >here</a>.
+            </div>
+            <div v-else class="search-no-matches">
+                <div>Sorry, no matches for "{{this.searchQuery | threeDotsTrim}}" 😞</div>
+                <div>Feel free to extend the scripts <a :href="repositoryUrl" target="_blank" class="child github" >here</a> ✨</div>
             </div>
         </div>
     </div>
@@ -96,6 +96,8 @@
 .scripts {
     margin-top:10px;
     .search-no-matches {
+        display:flex;
+        flex-direction: column;
         word-break:break-word;
         color: $white;
         text-transform: uppercase;
@@ -104,7 +106,7 @@
         background-color: $slate;
         padding:5%;
         text-align:center;
-        > a {
+        a {
             color: $gray;
         }
     }
