@@ -7,17 +7,30 @@
                 v-show="!this.isSearching" />
         </div>
         <div class="scripts">
-            <div v-if="!isSearching || searchHasMatches">
-                    <CardList v-if="this.showCards" />
-                    <div v-else-if="this.showList" class="tree">
-                        <div v-if="this.isSearching" class="search-query">
-                            Searching for "{{this.searchQuery | threeDotsTrim}}"</div>
-                        <ScriptsTree />
-                    </div>
+            <div v-if="!isSearching">
+                <CardList v-if="currentGrouping === Grouping.Cards"/>
+                <div class="tree" v-if="currentGrouping === Grouping.None">
+                    <ScriptsTree />
+                </div>
             </div>
-            <div v-else class="search-no-matches">
-                <div>Sorry, no matches for "{{this.searchQuery | threeDotsTrim}}" 😞</div>
-                <div>Feel free to extend the scripts <a :href="repositoryUrl" target="_blank" class="child github" >here</a> ✨</div>
+            <div v-else> <!-- Searching -->
+                <div class="search">
+                    <div class="search__query">
+                        <div>Searching for "{{this.searchQuery | threeDotsTrim}}"</div>
+                        <div class="search__query__close-button">
+                            <font-awesome-icon
+                                :icon="['fas', 'times']" 
+                                v-on:click="clearSearchQueryAsync()"/>
+                        </div>
+                    </div>
+                    <div v-if="!searchHasMatches" class="search-no-matches">
+                        <div>Sorry, no matches for "{{this.searchQuery | threeDotsTrim}}" 😞</div>
+                        <div>Feel free to extend the scripts <a :href="repositoryUrl" target="_blank" class="child github" >here</a> ✨</div>
+                    </div>
+                </div>
+                <div v-if="searchHasMatches" class="tree tree--searching">
+                    <ScriptsTree />
+                </div>
             </div>
         </div>
     </div>
@@ -54,38 +67,34 @@
     },
     })
     export default class TheScripts extends StatefulVue {
-        public showCards = false;
-        public showList = false;
         public repositoryUrl = '';
-        private searchQuery = '';
-        private isSearching = false;
-        private searchHasMatches = false;
+        public Grouping = Grouping; // Make it accessible from view
+        public currentGrouping = Grouping.Cards;
+        public searchQuery = '';
+        public isSearching = false;
+        public searchHasMatches = false;
 
-        private currentGrouping: Grouping;
 
         public async mounted() {
             const state = await this.getCurrentStateAsync();
             this.repositoryUrl = state.app.repositoryUrl;
             state.filter.filterRemoved.on(() => {
                 this.isSearching = false;
-                this.updateGroups();
             });
             state.filter.filtered.on((result: IFilterResult) => {
                 this.searchQuery = result.query;
                 this.isSearching = true;
                 this.searchHasMatches = result.hasAnyMatches();
-                this.updateGroups();
             });
+        }
+
+        public async clearSearchQueryAsync() {
+            const state = await this.getCurrentStateAsync();
+            state.filter.removeFilter();
         }
 
         public onGroupingChanged(group: Grouping) {
             this.currentGrouping = group;
-            this.updateGroups();
-        }
-
-        private updateGroups(): void {
-            this.showCards = !this.isSearching && this.currentGrouping === Grouping.Cards;
-            this.showList = this.isSearching || this.currentGrouping === Grouping.None;
         }
     }
 </script>
@@ -95,28 +104,49 @@
 @import "@/presentation/styles/fonts.scss";
 .scripts {
     margin-top:10px;
-    .search-no-matches {
-        display:flex;
-        flex-direction: column;
-        word-break:break-word;
-        color: $white;
-        text-transform: uppercase;
-        color: $light-gray;
-        font-size: 1.5em;
-        background-color: $slate;
-        padding:5%;
-        text-align:center;
-        a {
-            color: $gray;
-        }
-    }
     .tree {
         padding-left: 3%;
         padding-top: 15px;
         padding-bottom: 15px;
-        .search-query {
-            display: flex;
-            justify-content: center;
+        &--searching {
+            padding-top: 0px;
+        }
+    }
+}
+
+.search {
+    display: flex;
+    flex-direction: column;
+    background-color: $slate;
+    &__query {
+        display: flex;
+        justify-content: center;
+        flex-direction: row;
+        align-items: center;
+        margin-top: 1em;
+        color: $gray;
+        &__close-button {
+            cursor: pointer;
+            font-size: 1.25em;
+            margin-left: 0.25rem;
+            &:hover {
+                opacity: 0.9;
+            }
+        }
+    }
+    &-no-matches {
+        display:flex;
+        flex-direction: column;
+        word-break:break-word;
+        text-transform: uppercase;
+        color: $light-gray;
+        font-size: 1.5em;
+        padding:10px;
+        text-align:center;
+        > div {
+            padding-bottom:13px;
+        }
+        a {
             color: $gray;
         }
     }

@@ -2,7 +2,7 @@
   <div class="search" v-non-collapsing>
       <input type="search" class="searchTerm"
         :placeholder="searchPlaceHolder"
-        @input="updateFilterAsync($event.target.value)" >
+        v-model="searchQuery" >
       <div class="iconWrapper">
           <font-awesome-icon :icon="['fas', 'search']" />
       </div>
@@ -13,6 +13,7 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { StatefulVue } from './StatefulVue';
 import { NonCollapsing } from '@/presentation/Scripts/Cards/NonCollapsingDirective';
+import { IUserFilter } from '@/application/State/IApplicationState';
 
 @Component( {
     directives: { NonCollapsing },
@@ -20,14 +21,17 @@ import { NonCollapsing } from '@/presentation/Scripts/Cards/NonCollapsingDirecti
 )
 export default class TheSearchBar extends StatefulVue {
   public searchPlaceHolder = 'Search';
+  public searchQuery = '';
 
   public async mounted() {
     const state = await this.getCurrentStateAsync();
     const totalScripts = state.app.totalScripts;
     const totalCategories = state.app.totalCategories;
     this.searchPlaceHolder = `Search in ${totalScripts} scripts`;
+    this.beginReacting(state.filter);
   }
 
+  @Watch('searchQuery')
   public async updateFilterAsync(filter: |string) {
     const state = await this.getCurrentStateAsync();
     if (!filter) {
@@ -37,6 +41,10 @@ export default class TheSearchBar extends StatefulVue {
     }
   }
 
+  private beginReacting(filter: IUserFilter) {
+    filter.filtered.on((result) => this.searchQuery = result.query);
+    filter.filterRemoved.on(() => this.searchQuery = '');
+  }
 }
 </script>
 
