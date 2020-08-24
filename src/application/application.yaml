@@ -214,41 +214,129 @@ actions:
                         recommend: false
                         code: del /f /s /q /a %LocalAppData%\Microsoft\Windows\Explorer\*.db
                     -
-                        name: Clear Windows log files
-                        recommend: true
-                        code: |-
-                            del /f /q %SystemRoot%\Temp\CBS\*
-                            del /f /q %SystemRoot%\comsetup.log
-                            del /f /q %SystemRoot%\DtcInstall.log
-                            del /f /q %SystemRoot%\PFRO.log
-                            del /f /q %SystemRoot%\setupact.log
-                            del /f /q %SystemRoot%\setuperr.log
-                            del /f /q %SystemRoot%\Debug\PASSWD.LOG
-                            del /f /q %SystemRoot%\security\Traces\*.log
-                            del /f /q %SystemRoot%\security\Traces\*.old
-                            del /f /q %SystemRoot%\SoftwareDistribution\ReportingEvents.log
-                            del /f /q %SystemRoot%\Traces\CBS\*
-                            del /f /q %SystemRoot%\Traces\DISM\*
-                            del /f /q %SystemRoot%\Traces\NetSetup\*
-                            del /f /q %SystemRoot%\Traces\SIH\*
-                            del /f /q %SystemRoot%\Traces\waasmedic\*
-                            del /f /q %SystemRoot%\Traces\WindowsUpdate\*
-                            del /f /q %LOCALAPPDATA%\Microsoft\Windows\WebCache\*.log
-                            del /f /q /s %SystemRoot%\Microsoft.NET\Framework\*.log
-                            del /f /q %SystemRoot%\inf\setupapi.dev.log
-                            del /f /q %SystemRoot%\inf\setupapi.offline.log
-                            del /f /q %SystemRoot%\Panther\*
-                            del /f /q %localappdata%\Microsoft\CLR_v4.0\UsageTraces\*
-                            del /f /q %localappdata%\Microsoft\CLR_v4.0_32\UsageTraces\*
-                            del /f /q %localappdata%\Microsoft\Windows\WebCache\*
-                            del /f /q %SystemRoot%\System32\catroot2\dberr.txt
-                            del /f /q %SystemRoot%\System32\LogFiles\WMI\*.etl
-                            del /f /q %SystemRoot%\System32\LogFiles\setupcln\*
-                            del /f /q %SystemRoot%\appcompat\Programs\Install\*
-                            del /f /q %SystemRoot%\SoftwareDistribution\DataStore\Traces\*.log
-                            del /f /q %SystemRoot%\Performance\WinSAT\winsat.log
-                            del /f /q %SystemRoot%\ServiceProfiles\LocalService\AppData\Local\Temp\*.log
-                            rd /s /q "%localappdata%\Microsoft\Windows\Traces"
+                        category: Clear Windows log files
+                        children:
+                            -
+                                category: Clear Windows Update logs
+                                children:
+                                    -
+                                        name: Clear Windows update and SFC scan logs
+                                        docs: https://answers.microsoft.com/en-us/windows/forum/all/cwindowslogscbs/fe4e359a-bcb9-4988-954d-563ef83bac1c
+                                        recommend: true
+                                        code: del /f /q %SystemRoot%\Temp\CBS\*
+                                    -
+                                        name: Clear Windows Update Medic Service logs
+                                        recommend: true
+                                        docs: https://answers.microsoft.com/en-us/windows/forum/all/what-is-this-waasmedic-and-why-it-required-to/e5e55a95-d5bb-4bf4-a7ce-4783df371de4
+                                        code: |-
+                                            takeown /f %SystemRoot%\Logs\waasmedic /r /d y
+                                            icacls %SystemRoot%\Logs\waasmedic /grant administrators:F /t
+                                            rd /s /q %SystemRoot%\Logs\waasmedic
+                                    -
+                                        name: Clear Cryptographic Services Traces
+                                        recommend: true
+                                        docs: https://www.thewindowsclub.com/catroot-catroot2-folder-reset-windows
+                                        code: |-
+                                            %SystemRoot%\System32\catroot2\dberr.txt
+                                            %SystemRoot%\System32\catroot2.log
+                                            %SystemRoot%\System32\catroot2.jrs
+                                            %SystemRoot%\System32\catroot2.edb
+                                            %SystemRoot%\System32\catroot2.chk
+                                    -
+                                        name: Windows Update Events Logs
+                                        recommend: false
+                                        code: del /f /q "%SystemRoot%\Logs\SIH\*"
+                                    -
+                                        name: Windows Update Logs
+                                        recommend: false
+                                        code: del /f /q "%SystemRoot%\Traces\WindowsUpdate\*"
+                            -
+                                name: Clear Optional Component Manager and COM+ components logs
+                                recommend: true
+                                code: del /f /q %SystemRoot%\comsetup.log
+                            -
+                                name: Clear Distributed Transaction Coordinator logs
+                                recommend: true
+                                code: del /f /q %SystemRoot%\DtcInstall.log
+                            -
+                                name: Clear Pending File Rename Operations logs
+                                recommend: false
+                                code: del /f /q %SystemRoot%\PFRO.log
+                            -
+                                name: Clear Windows Deployment Upgrade Process Logs
+                                recommend: true
+                                code: |-
+                                    del /f /q %SystemRoot%\setupact.log
+                                    del /f /q %SystemRoot%\setuperr.log
+                            -
+                                name: Clear Windows Setup Logs
+                                recommend: true
+                                docs: https://support.microsoft.com/en-gb/help/927521/windows-vista-windows-7-windows-server-2008-r2-windows-8-1-and-windows
+                                code: |-
+                                    del /f /q %SystemRoot%\setupapi.log
+                                    del /f /q %SystemRoot%\Panther\*
+                                    del /f /q %SystemRoot%\inf\setupapi.app.log
+                                    del /f /q %SystemRoot%\inf\setupapi.dev.log
+                                    del /f /q %SystemRoot%\inf\setupapi.offline.log
+                            -
+                                name: Clear Windows System Assessment Tool logs
+                                recommend: true
+                                docs: https://docs.microsoft.com/en-us/windows/win32/winsat/windows-system-assessment-tool-portal
+                                code: del /f /q %SystemRoot%\Performance\WinSAT\winsat.log
+                            -
+                                name: Clear Password change events
+                                recommend: true
+                                code: del /f /q %SystemRoot%\debug\PASSWD.LOG
+                            -
+                                name: Clear user web cache database
+                                recommend: true
+                                docs: https://support.microsoft.com/en-gb/help/4056823/performance-issue-with-custom-default-user-profile
+                                code: del /f /q %localappdata%\Microsoft\Windows\WebCache\*.*
+                            -
+                                name: Clear system temp folder when noone is logged in
+                                recommend: true
+                                code: del /f /q %SystemRoot%\ServiceProfiles\LocalService\AppData\Local\Temp\*.*
+                            -
+                                name: Clear DISM (Deployment Image Servicing and Management) Logs
+                                recommend: true
+                                docs: https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/deployment-troubleshooting-and-log-files
+                                code: |-
+                                    del /f /q  %SystemRoot%\Logs\CBS\CBS.log
+                                    del /f /q  %SystemRoot%\Logs\DISM\DISM.log
+                            -
+                                name: Clear WUAgent (Windows Update History) logs
+                                recommend: false
+                                docs: https://social.technet.microsoft.com/Forums/ie/en-US/f5744a18-d4ca-4631-8324-878b9225251d/windowssoftwaredistribution-folder-cleanup-automation?forum=winserverwsus
+                                code: |-
+                                    setlocal EnableDelayedExpansion 
+                                        SET /A wuau_service_running=0
+                                        SC queryex "wuauserv"|Find "STATE"|Find /v "RUNNING">Nul||(
+                                            SET /A wuau_service_running=1
+                                            net stop wuauserv
+                                        )
+                                        del /q /s /f "%SystemRoot%\SoftwareDistribution"
+                                        IF !wuau_service_running! == 1 (
+                                            net start wuauserv
+                                        )
+                                    endlocal
+                            -
+                                name: Clear Server-initiated Healing Events Logs
+                                recommend: false
+                                code: del /f /q "%SystemRoot%\Logs\SIH\*"
+                            -
+                                name: Common Language Runtime Logs
+                                recommend: true
+                                code: |-
+                                    del /f /q "%LocalAppData%\Microsoft\CLR_v4.0\UsageTraces\*"
+                                    del /f /q "%LocalAppData%\Microsoft\CLR_v4.0_32\UsageTraces\*"
+                            -
+                                name: Network Setup Service Events Logs
+                                recommend: true
+                                code: del /f /q "%SystemRoot%\Logs\NetSetup\*"
+                            -
+                                name: Disk Cleanup tool (Cleanmgr.exe) Logs
+                                recommend: false
+                                code: del /f /q "%SystemRoot%\System32\LogFiles\setupcln\*"
                     -
                         name: Clear Windows temp files
                         recommend: true
@@ -264,7 +352,13 @@ actions:
                         name: Clear Event Logs in Event Viewer
                         recommend: false
                         docs: https://serverfault.com/questions/407838/do-windows-events-from-the-windows-event-log-have-sensitive-information
-                        code: for /f "tokens=*" %%G in ('wevtutil.exe el') DO (wevtutil.exe cl %1 "%%G")
+                        code: |-
+                            REM https://social.technet.microsoft.com/Forums/en-US/f6788f7d-7d04-41f1-a64e-3af9f700e4bd/failed-to-clear-log-microsoftwindowsliveidoperational-access-is-denied?forum=win10itprogeneral
+                            wevtutil sl Microsoft-Windows-LiveId/Operational /ca:O:BAG:SYD:(A;;0x1;;;SY)(A;;0x5;;;BA)(A;;0x1;;;LA)
+                            for /f "tokens=*" %%i in ('wevtutil.exe el') DO (
+                                echo Deleting event log: "%%i"
+                                wevtutil.exe cl %1 "%%i"
+                            )
             -
                 name: Clear credentials from Windows Credential Manager
                 recommend: false
