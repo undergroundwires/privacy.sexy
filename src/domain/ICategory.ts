@@ -7,6 +7,7 @@ export interface ICategory extends IEntity<number>, IDocumentable {
     readonly name: string;
     readonly subCategories?: ReadonlyArray<ICategory>;
     readonly scripts?: ReadonlyArray<IScript>;
+    getAllScriptsRecursively(): ReadonlyArray<IScript>;
 }
 
 export { IEntity } from '../infrastructure/Entity/IEntity';

@@ -1,6 +1,6 @@
 import { IApplication } from './../../../domain/IApplication';
 import { ICategory, IScript } from '@/domain/ICategory';
-import { INode } from './SelectableTree/INode';
+import { INode, NodeType } from './SelectableTree/Node/INode';
 
 export function parseAllCategories(app: IApplication): INode[] | undefined {
   const nodes = new Array<INode>();
@@ -23,9 +23,15 @@ export function parseSingleCategory(categoryId: number, app: IApplication): INod
 export function getScriptNodeId(script: IScript): string {
   return script.id;
 }
+export function getScriptId(nodeId: string): string {
+  return nodeId;
+}
+export function getCategoryId(nodeId: string): number {
+  return +nodeId;
+}
 
 export function getCategoryNodeId(category: ICategory): string {
-  return `Category${category.id}`;
+  return `${category.id}`;
 }
 
 function parseCategoryRecursively(
@@ -64,6 +70,7 @@ function convertCategoryToNode(
   category: ICategory, children: readonly INode[]): INode {
   return {
     id: getCategoryNodeId(category),
+    type: NodeType.Category,
     text: category.name,
     children,
     documentationUrls: category.documentationUrls,
@@ -74,6 +81,7 @@ function convertCategoryToNode(
 function convertScriptToNode(script: IScript): INode {
   return {
     id: getScriptNodeId(script),
+    type: NodeType.Script,
     text: script.name,
     children: undefined,
     documentationUrls: script.documentationUrls,

@@ -33,7 +33,7 @@ export default class TheCodeButtons extends StatefulVue {
     const state = await this.getCurrentStateAsync();
     this.hasCode = state.code.current && state.code.current.length > 0;
     state.code.changed.on((code) => {
-      this.hasCode = code && code.length > 0;
+      this.hasCode = code && code.code.length > 0;
     });
   }
 

@@ -4,8 +4,20 @@ const TotalFunctionSeparatorChars = 58;
 export class CodeBuilder {
     private readonly lines = new Array<string>();
 
+    // Returns current line starting from 0 (no lines), or 1 (have single line)
+    public get currentLine(): number {
+        return this.lines.length;
+    }
+
     public appendLine(code?: string): CodeBuilder {
-        this.lines.push(code);
+        if (!code) {
+            this.lines.push('');
+            return this;
+        }
+        const lines = code.match(/[^\r\n]+/g);
+        for (const line of lines) {
+            this.lines.push(line);
+        }
         return this;
     }
 

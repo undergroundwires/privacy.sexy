@@ -12,16 +12,25 @@ declare module 'liquor-tree' {
         setModel(nodes: ReadonlyArray<ILiquorTreeNewNode>): void;
     }
     interface ICustomLiquorTreeData {
+        type: number;
         documentationUrls: ReadonlyArray<string>;
         isReversible: boolean;
     }
+    // https://github.com/amsik/liquor-tree/blob/master/src/lib/Node.js
+    export interface ILiquorTreeNodeState {
+        checked: boolean;
+    }
 
+    export interface ILiquorTreeNode {
+        id: string;
+        data: ICustomLiquorTreeData;
+        children: ReadonlyArray<ILiquorTreeNode> | undefined;
+    }
     /**
      * Returned from Node tree view events.
      * See constructor in https://github.com/amsik/liquor-tree/blob/master/src/lib/Node.js
      */
-    export interface ILiquorTreeExistingNode {
-        id: string;
+    export interface ILiquorTreeExistingNode extends ILiquorTreeNode {
         data: ILiquorTreeNodeData;
         states: ILiquorTreeNodeState | undefined;
         children: ReadonlyArray<ILiquorTreeExistingNode> | undefined;
@@ -31,12 +40,10 @@ declare module 'liquor-tree' {
      * Sent to liquor tree to define of new nodes.
      * https://github.com/amsik/liquor-tree/blob/master/src/lib/Node.js
      */
-    export interface ILiquorTreeNewNode {
-        id: string;
+    export interface ILiquorTreeNewNode extends ILiquorTreeNode {
         text: string;
         state: ILiquorTreeNodeState | undefined;
         children: ReadonlyArray<ILiquorTreeNewNode> | undefined;
-        data: ICustomLiquorTreeData;
     }
 
     // https://amsik.github.io/liquor-tree/#Component-Options
@@ -47,13 +54,8 @@ declare module 'liquor-tree' {
         autoCheckChildren: boolean;
         parentSelect: boolean;
         keyboardNavigation: boolean;
-        deletion: (node: ILiquorTreeExistingNode) => void;
         filter: ILiquorTreeFilter;
-    }
-
-    // https://github.com/amsik/liquor-tree/blob/master/src/lib/Node.js
-    interface ILiquorTreeNodeState {
-        checked: boolean;
+        deletion(node: ILiquorTreeNode): boolean;
     }
 
     interface ILiquorTreeNodeData extends ICustomLiquorTreeData {
@@ -61,15 +63,7 @@ declare module 'liquor-tree' {
     }
 
     // https://github.com/amsik/liquor-tree/blob/master/src/components/TreeRoot.vue
-    interface ILiquorTreeOptions {
-        checkbox: boolean;
-        checkOnSelect: boolean;
-        filter: ILiquorTreeFilter;
-        deletion(node: ILiquorTreeNewNode): boolean;
-    }
-
-    // https://github.com/amsik/liquor-tree/blob/master/src/components/TreeRoot.vue
-    interface ILiquorTreeFilter {
+    export interface ILiquorTreeFilter {
         emptyText: string;
         matcher(query: string, node: ILiquorTreeExistingNode): boolean;
     }

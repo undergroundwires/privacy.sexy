@@ -24,10 +24,11 @@
   import { ICategory } from '@/domain/ICategory';
   import { IApplicationState, IUserSelection } from '@/application/State/IApplicationState';
   import { IFilterResult } from '@/application/State/Filter/IFilterResult';
-  import { parseAllCategories, parseSingleCategory, getScriptNodeId, getCategoryNodeId } from './ScriptNodeParser';
-  import SelectableTree, { FilterPredicate } from './SelectableTree/SelectableTree.vue';
-  import { INode } from './SelectableTree/INode';
+  import { parseAllCategories, parseSingleCategory, getScriptNodeId, getCategoryNodeId, getCategoryId, getScriptId } from './ScriptNodeParser';
+  import SelectableTree from './SelectableTree/SelectableTree.vue';
+  import { INode, NodeType } from './SelectableTree/Node/INode';
   import { SelectedScript } from '@/application/State/Selection/SelectedScript';
+  import { INodeSelectedEvent } from './SelectableTree/INodeSelectedEvent';
 
   @Component({
     components: {
@@ -53,15 +54,17 @@
       await this.initializeNodesAsync(this.categoryId);
     }
 
-    public async toggleNodeSelectionAsync(node: INode) {
-        if (node.children != null && node.children.length > 0) {
-            return; // only interested in script nodes
-        }
+    public async toggleNodeSelectionAsync(event: INodeSelectedEvent) {
         const state = await this.getCurrentStateAsync();
-        if (!this.selectedNodeIds.some((id) => id === node.id)) {
-            state.selection.addSelectedScript(node.id, false);
-        } else {
-            state.selection.removeSelectedScript(node.id);
+        switch (event.node.type) {
+          case NodeType.Category:
+            this.toggleCategoryNodeSelection(event, state);
+            break;
+          case NodeType.Script:
+            this.toggleScriptNodeSelection(event, state);
+            break;
+          default:
+            throw new Error(`Unknown node type: ${event.node.id}`);
         }
     }
 
@@ -96,6 +99,24 @@
     private handleFiltered(result: IFilterResult) {
       this.filterText = result.query;
       this.filtered = result;
+    }
+    private toggleCategoryNodeSelection(event: INodeSelectedEvent, state: IApplicationState): void {
+      const categoryId = getCategoryId(event.node.id);
+      if (event.isSelected) {
+        state.selection.addAllInCategory(categoryId);
+      } else {
+        state.selection.removeAllInCategory(categoryId);
+      }
+    }
+    private toggleScriptNodeSelection(event: INodeSelectedEvent, state: IApplicationState): void {
+      const scriptId = getScriptId(event.node.id);
+      const actualToggleState = state.selection.isSelected(scriptId);
+      const targetToggleState = event.isSelected;
+      if (targetToggleState && !actualToggleState) {
+        state.selection.addSelectedScript(scriptId, false);
+      } else if (!targetToggleState && actualToggleState) {
+        state.selection.removeSelectedScript(scriptId);
+      }
     }
   }
 
