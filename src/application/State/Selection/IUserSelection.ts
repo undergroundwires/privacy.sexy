@@ -6,11 +6,13 @@ export interface IUserSelection {
     readonly changed: ISignal<ReadonlyArray<SelectedScript>>;
     readonly selectedScripts: ReadonlyArray<SelectedScript>;
     readonly totalSelected: number;
+    removeAllInCategory(categoryId: number): void;
+    addAllInCategory(categoryId: number): void;
     addSelectedScript(scriptId: string, revert: boolean): void;
     addOrUpdateSelectedScript(scriptId: string, revert: boolean): void;
     removeSelectedScript(scriptId: string): void;
     selectOnly(scripts: ReadonlyArray<IScript>): void;
-    isSelected(script: IScript): boolean;
+    isSelected(scriptId: string): boolean;
     selectAll(): void;
     deselectAll(): void;
 }

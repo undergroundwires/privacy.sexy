@@ -1,5 +1,5 @@
 import { ILiquorTreeNewNode, ILiquorTreeExistingNode } from 'liquor-tree';
-import { INode } from './INode';
+import { INode } from './../Node/INode';
 
 // Functions to translate INode to LiqourTree models and vice versa for anti-corruption
 
@@ -7,6 +7,7 @@ export function convertExistingToNode(liquorTreeNode: ILiquorTreeExistingNode): 
     if (!liquorTreeNode) { throw new Error('liquorTreeNode is undefined'); }
     return {
         id: liquorTreeNode.id,
+        type: liquorTreeNode.data.type,
         text: liquorTreeNode.data.text,
         // selected: liquorTreeNode.states && liquorTreeNode.states.checked,
         children: convertChildren(liquorTreeNode.children, convertExistingToNode),
@@ -27,6 +28,7 @@ export function toNewLiquorTreeNode(node: INode): ILiquorTreeNewNode {
         data: {
             documentationUrls: node.documentationUrls,
             isReversible: node.isReversible,
+            type: node.type,
         },
     };
 }

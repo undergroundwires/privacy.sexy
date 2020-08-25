@@ -19,16 +19,19 @@
 <script lang="ts">
     import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator';
     import LiquorTree, { ILiquorTreeNewNode, ILiquorTreeExistingNode, ILiquorTree, ILiquorTreeOptions } from 'liquor-tree';
-    import Node from './Node.vue';
-    import { INode } from './INode';
-    import { convertExistingToNode, toNewLiquorTreeNode } from './NodeTranslator';
-    export type FilterPredicate = (node: INode) => boolean;
+    import Node from './Node/Node.vue';
+    import { INode, NodeType } from './Node/INode';
+    import { convertExistingToNode, toNewLiquorTreeNode } from './LiquorTree/NodeTranslator';
+    import { INodeSelectedEvent } from './/INodeSelectedEvent';
+    import { updateNodesCheckedState, getNewCheckedState } from './LiquorTree/NodeStateUpdater';
+    import { LiquorTreeOptions } from './LiquorTree/LiquorTreeOptions';
+    import { FilterPredicate, NodePredicateFilter } from './LiquorTree/NodePredicateFilter';
 
     /** Wrapper for Liquor Tree, reveals only abstracted INode for communication */
     @Component({
         components: {
-        LiquorTree,
-        Node,
+            LiquorTree,
+            Node,
         },
     })
     export default class SelectableTree extends Vue {
@@ -38,7 +41,7 @@
         @Prop() public initialNodes?: ReadonlyArray<INode>;
 
         public initialLiquourTreeNodes?: ILiquorTreeNewNode[] = null;
-        public liquorTreeOptions = this.getDefaults();
+        public liquorTreeOptions = new LiquorTreeOptions(new NodePredicateFilter((node) => this.filterPredicate(node)));
         public convertExistingToNode = convertExistingToNode;
 
         public mounted() {
@@ -46,7 +49,7 @@
                 const initialNodes = this.initialNodes.map((node) => toNewLiquorTreeNode(node));
                 if (this.selectedNodeIds) {
                     recurseDown(initialNodes,
-                        (node) => node.state.checked = this.selectedNodeIds.includes(node.id));
+                        (node) => node.state.checked = getNewCheckedState(node, this.selectedNodeIds));
                 }
                 this.initialLiquourTreeNodes = initialNodes;
             } else {
@@ -58,7 +61,11 @@
         }
 
         public nodeSelected(node: ILiquorTreeExistingNode) {
-            this.$emit('nodeSelected', convertExistingToNode(node));
+            const event: INodeSelectedEvent = {
+                node: convertExistingToNode(node),
+                isSelected: node.states.checked,
+            };
+            this.$emit('nodeSelected', event);
             return;
         }
 
@@ -73,11 +80,11 @@
         }
 
         @Watch('selectedNodeIds')
-        public setSelectedStatus(selectedNodeIds: ReadonlyArray<string>) {
+        public setSelectedStatusAsync(selectedNodeIds: ReadonlyArray<string>) {
             if (!selectedNodeIds) {
                 throw new Error('Selected nodes are undefined');
             }
-            const newNodes = updateCheckedState(this.getLiquorTreeApi().model, selectedNodeIds);
+            const newNodes = updateNodesCheckedState(this.getLiquorTreeApi().model, selectedNodeIds);
             this.getLiquorTreeApi().setModel(newNodes);
             /*  Alternative:
                     this.getLiquorTreeApi().recurseDown((node) => {
@@ -98,27 +105,6 @@
             }
             return (this.$refs.treeElement as any).tree;
         }
-
-        private getDefaults(): ILiquorTreeOptions {
-            return {
-                multiple: true,
-                checkbox: true,
-                checkOnSelect: true,
-                autoCheckChildren: true,
-                parentSelect: false,
-                keyboardNavigation: true,
-                deletion: (node) => !node.children || node.children.length === 0,
-                filter: {
-                    matcher: (query: string, node: ILiquorTreeExistingNode) => {
-                        if (!this.filterPredicate) {
-                            throw new Error('Cannot filter as predicate is null');
-                        }
-                        return this.filterPredicate(convertExistingToNode(node));
-                    },
-                    emptyText: '🕵️Hmm.. Can not see one 🧐',
-                },
-            };
-        }
     }
 
     function recurseDown(
@@ -130,28 +116,5 @@
                 recurseDown(node.children, handler);
             }
         }
-    }
-
-    function updateCheckedState(
-        oldNodes: ReadonlyArray<ILiquorTreeExistingNode>,
-        selectedNodeIds: ReadonlyArray<string>): ReadonlyArray<ILiquorTreeNewNode> {
-        const result = new Array<ILiquorTreeNewNode>();
-        for (const oldNode of oldNodes) {
-            const newState = oldNode.states;
-            newState.checked = selectedNodeIds.some((id) => id === oldNode.id);
-            const newNode: ILiquorTreeNewNode = {
-                id: oldNode.id,
-                text: oldNode.data.text,
-                data: {
-                    documentationUrls: oldNode.data.documentationUrls,
-                    isReversible: oldNode.data.isReversible,
-                },
-                children: oldNode.children == null ? [] :
-                        updateCheckedState(oldNode.children, selectedNodeIds),
-                state: newState,
-            };
-            result.push(newNode);
-        }
-        return result;
     }
 </script>

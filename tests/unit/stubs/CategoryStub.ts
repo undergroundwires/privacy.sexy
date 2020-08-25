@@ -11,6 +11,14 @@ export class CategoryStub extends BaseEntity<number> implements ICategory  {
     constructor(id: number) {
         super(id);
     }
+
+    public getAllScriptsRecursively(): readonly IScript[] {
+        return [
+            ...this.scripts,
+            ...this.subCategories.flatMap((c) => c.getAllScriptsRecursively()),
+        ];
+    }
+
     public withScriptIds(...scriptIds: string[]): CategoryStub {
         for (const scriptId of scriptIds) {
             this.withScript(new ScriptStub(scriptId));

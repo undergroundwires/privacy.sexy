@@ -13,10 +13,11 @@ export class ApplicationStub implements IApplication {
         return this;
     }
     public findCategory(categoryId: number): ICategory {
-        throw new Error('Method not implemented.');
+        return this.getAllCategories().find(
+            (category) => category.id === categoryId);
     }
     public getRecommendedScripts(): readonly IScript[] {
-        throw new Error('Method not implemented.');
+        throw new Error('Method not implemented: getRecommendedScripts');
     }
     public findScript(scriptId: string): IScript {
         return this.getAllScripts().find((script) => scriptId === script.id);

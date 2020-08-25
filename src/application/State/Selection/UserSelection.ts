@@ -8,18 +8,46 @@ import { IRepository } from '@/infrastructure/Repository/IRepository';
 
 export class UserSelection implements IUserSelection {
     public readonly changed = new Signal<ReadonlyArray<SelectedScript>>();
-    private readonly scripts: IRepository<string, SelectedScript> = new InMemoryRepository<string, SelectedScript>();
+    private readonly scripts: IRepository<string, SelectedScript>;
 
     constructor(
         private readonly app: IApplication,
         /** Initially selected scripts */
         selectedScripts: ReadonlyArray<IScript>) {
+        this.scripts =  new InMemoryRepository<string, SelectedScript>();
         if (selectedScripts && selectedScripts.length > 0) {
             for (const script of selectedScripts) {
                 const selected = new SelectedScript(script, false);
                 this.scripts.addItem(selected);
             }
         }
+    }
+
+    public removeAllInCategory(categoryId: number): void {
+        const category = this.app.findCategory(categoryId);
+        const scriptsToRemove = category.getAllScriptsRecursively()
+            .filter((script) => this.scripts.exists(script.id));
+        if (!scriptsToRemove.length) {
+            return;
+        }
+        for (const script of scriptsToRemove) {
+            this.scripts.removeItem(script.id);
+        }
+        this.changed.notify(this.scripts.getItems());
+    }
+
+    public addAllInCategory(categoryId: number): void {
+        const category = this.app.findCategory(categoryId);
+        const scriptsToAdd = category.getAllScriptsRecursively()
+            .filter((script) => !this.scripts.exists(script.id));
+        if (!scriptsToAdd.length) {
+            return;
+        }
+        for (const script of scriptsToAdd) {
+            const selectedScript = new SelectedScript(script, false);
+            this.scripts.addItem(selectedScript);
+        }
+        this.changed.notify(this.scripts.getItems());
     }
 
     public addSelectedScript(scriptId: string, revert: boolean): void {
@@ -44,8 +72,8 @@ export class UserSelection implements IUserSelection {
         this.changed.notify(this.scripts.getItems());
     }
 
-    public isSelected(script: IScript): boolean {
-        return this.scripts.exists(script.id);
+    public isSelected(scriptId: string): boolean {
+        return this.scripts.exists(scriptId);
     }
 
     /** Get users scripts based on his/her selections */
