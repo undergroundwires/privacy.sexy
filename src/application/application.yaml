@@ -2576,179 +2576,232 @@ actions:
                         children:
                             -
                                 name: DirectX Configuration Database capability
-                                code: dism /online /Remove-Capability /CapabilityName:"DirectX.Configuration.Database~~~~0.0.1.0" /NoRestart
+                                code: Powershell -Command "Get-WindowsCapability -Online -Name "DirectX.Configuration.Database*" | Remove-WindowsCapability -Online"
+                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "DirectX.Configuration.Database*" | Add-WindowsCapability -Online"
                             -
                                 name: Internet Explorer 11 capability
-                                code: dism /online /Remove-Capability /CapabilityName:"Browser.InternetExplorer~~~~0.0.11.0" /NoRestart
+                                code: Powershell -Command "Get-WindowsCapability -Online -Name "Browser.InternetExplorer*" | Remove-WindowsCapability -Online"
+                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Browser.InternetExplorer*" | Add-WindowsCapability -Online"
                             -
                                 name: Math Recognizer capability
-                                code: dism /online /Remove-Capability /CapabilityName:"MathRecognizer~~~~0.0.1.0" /NoRestart
+                                code: Powershell -Command "Get-WindowsCapability -Online -Name "MathRecognizer*" | Remove-WindowsCapability -Online"
+                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "MathRecognizer*" | Add-WindowsCapability -Online"
                             -
                                 name: Notepad capability
-                                code: dism /online /Remove-Capability /CapabilityName:"Microsoft.Windows.Notepad~~~~0.0.1.0" /NoRestart
+                                code: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.Windows.Notepad*" | Remove-WindowsCapability -Online"
+                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.Windows.Notepad*" | Add-WindowsCapability -Online"
                             -
                                 name: OneSync capability
-                                code: dism /online /Remove-Capability /CapabilityName:"OneCoreUAP.OneSync~~~~0.0.1.0" /NoRestart
                                 recommend: true
+                                code: Powershell -Command "Get-WindowsCapability -Online -Name "OneCoreUAP.OneSync*" | Remove-WindowsCapability -Online"
+                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "OneCoreUAP.OneSync*" | Add-WindowsCapability -Online"
                             -
                                 name: OpenSSH client capability
-                                code: dism /online /Remove-Capability /CapabilityName:"OpenSSH.Client~~~~0.0.1.0" /NoRestart
+                                code: Powershell -Command "Get-WindowsCapability -Online -Name "OpenSSH.Client*" | Remove-WindowsCapability -Online"
+                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "OpenSSH.Client*" | Add-WindowsCapability -Online"
                             -
                                 name: Paint capability
-                                code: dism /online /Remove-Capability /CapabilityName:"Microsoft.Windows.MSPaint~~~~0.0.1.0" /NoRestart
+                                code: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.Windows.MSPaint*" | Remove-WindowsCapability -Online"
+                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.Windows.MSPaint*" | Add-WindowsCapability -Online"
                             -
                                 name: PowerShell ISE capability
-                                code: dism /online /Remove-Capability /CapabilityName:"Microsoft.Windows.PowerShell.ISE~~~~0.0.1.0" /NoRestart
+                                code: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.Windows.PowerShell.ISE*" | Remove-WindowsCapability -Online"
+                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.Windows.PowerShell.ISE*" | Add-WindowsCapability -Online"
                             -
                                 name: Print Management Console capability
-                                code: dism /online /Remove-Capability /CapabilityName:"Print.Management.Console~~~~0.0.1.0" /NoRestart
+                                code: Powershell -Command "Get-WindowsCapability -Online -Name "Print.Management.Console*" | Remove-WindowsCapability -Online"
+                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Print.Management.Console*" | Add-WindowsCapability -Online"
                             -
                                 name: Quick Assist capability
-                                code: dism /online /Remove-Capability /CapabilityName:"App.Support.QuickAssist~~~~0.0.1.0" /NoRestart
+                                code: Powershell -Command "Get-WindowsCapability -Online -Name "App.Support.QuickAssist*" | Remove-WindowsCapability -Online"
+                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "App.Support.QuickAssist*" | Add-WindowsCapability -Online"
                             -
                                 name: Steps Recorder capability
-                                code: dism /online /Remove-Capability /CapabilityName:"App.StepsRecorder~~~~0.0.1.0" /NoRestart
+                                code: Powershell -Command "Get-WindowsCapability -Online -Name "App.StepsRecorder*" | Remove-WindowsCapability -Online"
+                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "App.StepsRecorder*" | Add-WindowsCapability -Online"
                             -
                                 name: Windows Fax and Scan capability
-                                code: dism /online /Remove-Capability /CapabilityName:"Print.Fax.Scan~~~~0.0.1.0" /NoRestart
+                                code: Powershell -Command "Get-WindowsCapability -Online -Name "Print.Fax.Scan*" | Remove-WindowsCapability -Online"
+                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Print.Fax.Scan*" | Add-WindowsCapability -Online"
                             -
                                 name: WordPad capability
-                                code: dism /online /Remove-Capability /CapabilityName:"Microsoft.Windows.WordPad~~~~0.0.1.0" /NoRestart
+                                code: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.Windows.WordPad*" | Remove-WindowsCapability -Online"
+                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.Windows.WordPad*" | Add-WindowsCapability -Online"
                     -
                         category: Not preinstalled
                         children:
                             -
                                 name: .NET Framework capability
-                                code: dism /online /Remove-Capability /CapabilityName:"NetFX3~~~~" /NoRestart
+                                code: Powershell -Command "Get-WindowsCapability -Online -Name "NetFX3*" | Remove-WindowsCapability -Online"
+                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "NetFX3*" | Add-WindowsCapability -Online"
                             -
                                 name: Mixed Reality capability
-                                code: dism /online /Remove-Capability /CapabilityName:"Analog.Holographic.Desktop~~~~0.0.1.0" /NoRestart
+                                code: Powershell -Command "Get-WindowsCapability -Online -Name "Analog.Holographic.Desktop*" | Remove-WindowsCapability -Online"
+                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Analog.Holographic.Desktop*" | Add-WindowsCapability -Online"
                             -
                                 name: Wireless Display capability
-                                code: dism /online /Remove-Capability /CapabilityName:"App.WirelessDisplay.Connect~~~~0.0.1.0" /NoRestart
+                                code: Powershell -Command "Get-WindowsCapability -Online -Name "App.WirelessDisplay.Connect*" | Remove-WindowsCapability -Online"
+                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "App.WirelessDisplay.Connect*" | Add-WindowsCapability -Online"
                             -
                                 name: Accessibility - Braille Support capability
-                                code: dism /online /Remove-Capability /CapabilityName:"Accessibility.Braille~~~~0.0.1.0" /NoRestart
+                                code: Powershell -Command "Get-WindowsCapability -Online -Name "Accessibility.Braille*" | Remove-WindowsCapability -Online"
+                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Accessibility.Braille*" | Add-WindowsCapability -Online"
                             -
                                 name: Developer Mode capability
-                                code: dism /online /Remove-Capability /CapabilityName:"Tools.DeveloperMode.Core~~~~0.0.1.0" /NoRestart
+                                code: Powershell -Command "Get-WindowsCapability -Online -Name "Tools.DeveloperMode.Core*" | Remove-WindowsCapability -Online"
+                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Tools.DeveloperMode.Core*" | Add-WindowsCapability -Online"
                             -
                                 name: Graphics Tools capability
-                                code: dism /online /Remove-Capability /CapabilityName:"Tools.Graphics.DirectX~~~~0.0.1.0" /NoRestart
+                                code: Powershell -Command "Get-WindowsCapability -Online -Name "Tools.Graphics.DirectX*" | Remove-WindowsCapability -Online"
+                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Tools.Graphics.DirectX*" | Add-WindowsCapability -Online"
                             -
                                 name: IrDA capability
-                                code: dism /online /Remove-Capability /CapabilityName:"Network.Irda~~~~0.0.1.0" /NoRestart
+                                code: Powershell -Command "Get-WindowsCapability -Online -Name "Network.Irda*" | Remove-WindowsCapability -Online"
+                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Network.Irda*" | Add-WindowsCapability -Online"
                             -
                                 name: Microsoft WebDriver capability
-                                code: dism /online /Remove-Capability /CapabilityName:"Microsoft.WebDriver~~~~0.0.1.0" /NoRestart
+                                code: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.WebDriver*" | Remove-WindowsCapability -Online"
+                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.WebDriver*" | Add-WindowsCapability -Online"
                             -
                                 name: MSIX Packaging Tool Driver capability
-                                code: dism /online /Remove-Capability /CapabilityName:"Msix.PackagingTool.Driver~~~~0.0.1.0" /NoRestart
+                                code: Powershell -Command "Get-WindowsCapability -Online -Name "Msix.PackagingTool.Driver*" | Remove-WindowsCapability -Online"
+                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Msix.PackagingTool.Driver*" | Add-WindowsCapability -Online"
                             -
                                 category: Networking tools
                                 children:
                                     -
                                         name: RAS Connection Manager Administration Kit (CMAK) capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"/NoRestart RasCMAK.Client~~~~0.0.1.0"
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "RasCMAK.Client*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "RasCMAK.Client*" | Add-WindowsCapability -Online"
                                     -
                                         name: RIP Listener capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"/NoRestart RIP.Listener~~~~0.0.1.0"
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "RIP.Listener*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "RIP.Listener*" | Add-WindowsCapability -Online"
                                     -
                                         name: Simple Network Management Protocol (SNMP) capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"/NoRestart SNMP.Client~~~~0.0.1.0"
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "SNMP.Client*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "SNMP.Client*" | Add-WindowsCapability -Online"
                                     -
                                         name: SNMP WMI Provider capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"/NoRestart WMI-SNMP-Provider.Client~~~~0.0.1.0"
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "WMI-SNMP-Provider.Client*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "WMI-SNMP-Provider.Client*" | Add-WindowsCapability -Online"
                             -
                                 name: OpenSSH Server capability
-                                code: dism /online /Remove-Capability /CapabilityName:"/NoRestart OpenSSH.Server~~~~0.0.1.0"
+                                code: Powershell -Command "Get-WindowsCapability -Online -Name "OpenSSH.Server*" | Remove-WindowsCapability -Online"
+                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "OpenSSH.Server*" | Add-WindowsCapability -Online"
                             -
                                 category: Printing
                                 children:
                                     -
                                         name: Enterprise Cloud Print capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"/NoRestart Print.EnterpriseCloudPrint~~~~0.0.1.0"
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "Print.EnterpriseCloudPrint*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Print.EnterpriseCloudPrint*" | Add-WindowsCapability -Online"
                                     -
                                         name: Mopria Cloud Service capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"/NoRestart Print.MopriaCloudService~~~~0.0.1.0"
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "Print.MopriaCloudService*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Print.MopriaCloudService*" | Add-WindowsCapability -Online"
                             -
                                 category: Remote server administration tools (RSAT)
                                 children:
                                     -
                                         name: Active Directory Domain Services and Lightweight Directory Services Tools capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"/NoRestart Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0"
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.ActiveDirectory.DS-LDS.Tools*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.ActiveDirectory.DS-LDS.Tools*" | Add-WindowsCapability -Online"
                                     -
                                         name: BitLocker Drive Encryption Administration Utilities capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"/NoRestart Rsat.BitLocker.Recovery.Tools~~~~0.0.1.0"
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.BitLocker.Recovery.Tools*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.BitLocker.Recovery.Tools*" | Add-WindowsCapability -Online"
                                     -
                                         name: Active Directory Certificate Services Tools v
-                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.CertificateServices.Tools~~~~0.0.1.0" /NoRestart 
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.CertificateServices.Tools*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.CertificateServices.Tools*" | Add-WindowsCapability -Online"
                                     -
                                         name: DHCP Server Tools capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.DHCP.Tools~~~~0.0.1.0" /NoRestart
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.DHCP.Tools*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.DHCP.Tools*" | Add-WindowsCapability -Online"
                                     -
                                         name: DNS Server Tools capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.Dns.Tools~~~~0.0.1.0" /NoRestart
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.Dns.Tools*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.Dns.Tools*" | Add-WindowsCapability -Online"
                                     -
                                         name: Failover Clustering Tools capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.FailoverCluster.Management.Tools~~~~0.0.1.0" /NoRestart
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.FailoverCluster.Management.Tools*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.FailoverCluster.Management.Tools*" | Add-WindowsCapability -Online"
                                     -
                                         name: File Services Tools capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.FileServices.Tools~~~~0.0.1.0" /NoRestart
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.FileServices.Tools*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.FileServices.Tools*" | Add-WindowsCapability -Online"
                                     -
                                         name: Group Policy Management Tools capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.GroupPolicy.Management.Tools~~~~0.0.1.0" /NoRestart
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.GroupPolicy.Management.Tools*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.GroupPolicy.Management.Tools*" | Add-WindowsCapability -Online"
                                     -
                                         name: IP Address Management (IPAM) Client capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.IPAM.Client.Tools~~~~0.0.1.0" /NoRestart
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.IPAM.Client.Tools*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.IPAM.Client.Tools*" | Add-WindowsCapability -Online"
                                     -
                                         name: Data Center Bridging LLDP Tools capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.LLDP.Tools~~~~0.0.1.0" /NoRestart
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.LLDP.Tools*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.LLDP.Tools*" | Add-WindowsCapability -Online"
                                     -
                                         name: Network Controller Management Tools capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.NetworkController.Tools~~~~0.0.1.0" /NoRestart
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.NetworkController.Tools*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.NetworkController.Tools*" | Add-WindowsCapability -Online"
                                     -
                                         name: Network Load Balancing Tools capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.NetworkLoadBalancing.Tools~~~~0.0.1.0" /NoRestart
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.NetworkLoadBalancing.Tools*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.NetworkLoadBalancing.Tools*" | Add-WindowsCapability -Online"
                                     -
                                         name: Remote Access Management Tools capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.RemoteAccess.Management.Tools~~~~0.0.1.0" /NoRestart
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.RemoteAccess.Management.Tools*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.RemoteAccess.Management.Tools*" | Add-WindowsCapability -Online"
                                     -
-                                        name: Server Manager v
-                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.ServerManager.Tools~~~~0.0.1.0" /NoRestart
+                                        name: Server Manager Tools
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.ServerManager.Tools*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.ServerManager.Tools*" | Add-WindowsCapability -Online"                                        
                                     -
                                         name: Shielded VM Tools capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.Shielded.VM.Tools~~~~0.0.1.0" /NoRestart
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.Shielded.VM.Tools*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.Shielded.VM.Tools*" | Add-WindowsCapability -Online" 
                                     -
                                         name: Storage Replica Module for Windows PowerShell capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.StorageReplica.Tools~~~~0.0.1.0" /NoRestart
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.StorageReplica.Tools*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.StorageReplica.Tools*" | Add-WindowsCapability -Online" 
                                     -
                                         name: Volume Activation Tools capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.VolumeActivation.Tools~~~~0.0.1.0" /NoRestart
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.VolumeActivation.Tools*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.VolumeActivation.Tools*" | Add-WindowsCapability -Online" 
                                     -
                                         name: Windows Server Update Services Tools capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.WSUS.Tools~~~~0.0.1.0" /NoRestart
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.WSUS.Tools*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.WSUS.Tools*" | Add-WindowsCapability -Online" 
                                     -
                                         name: Storage Migration Service Management Tools capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.StorageMigrationService.Management.Tools~~~~0.0.1.0" /NoRestart
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.StorageMigrationService.Management.Tools*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.StorageMigrationService.Management.Tools*" | Add-WindowsCapability -Online" 
                                     -
                                         name: Systems Insights Module for Windows PowerShell capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"Rsat.SystemInsights.Management.Tools~~~~0.0.1.0" /NoRestart
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.SystemInsights.Management.Tools*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Rsat.SystemInsights.Management.Tools*" | Add-WindowsCapability -Online" 
                             -
                                 category: Storage
                                 children:
                                     -
                                         name: Windows Storage Management capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"Microsoft.Windows.StorageManagement~~~~0.0.1.0" /NoRestart
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.Windows.StorageManagement*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.Windows.StorageManagement*" | Add-WindowsCapability -Online" 
                                     -
                                         name: OneCore Storage Management capability
-                                        code: dism /online /Remove-Capability /CapabilityName:"Microsoft.OneCore.StorageManagement~~~~0.0.1.0" /NoRestart
+                                        code: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.OneCore.StorageManagement*" | Remove-WindowsCapability -Online"
+                                        revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.OneCore.StorageManagement*" | Add-WindowsCapability -Online" 
                             -
                                 name: Windows Emergency Management Services and Serial Console capability
-                                code: dism /online /Remove-Capability /CapabilityName:"Windows.Desktop.EMS-SAC.Tools~~~~0.0.1.0" /NoRestart
+                                code: Powershell -Command "Get-WindowsCapability -Online -Name "Windows.Desktop.EMS-SAC.Tools*" | Remove-WindowsCapability -Online"
+                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Windows.Desktop.EMS-SAC.Tools*" | Add-WindowsCapability -Online" 
                             -
                                 name: XPS Viewer capability
-                                code: dism /online /Remove-Capability /CapabilityName:"XPS.Viewer~~~~0.0.1.0" /NoRestart
+                                code: Powershell -Command "Get-WindowsCapability -Online -Name "XPS.Viewer*" | Remove-WindowsCapability -Online"
+                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "XPS.Viewer*" | Add-WindowsCapability -Online"
     -
         category: Advanced settings
         children:   
