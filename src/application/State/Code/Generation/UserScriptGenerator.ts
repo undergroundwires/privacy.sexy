@@ -8,10 +8,12 @@ import { IUserScript } from './IUserScript';
 export const adminRightsScript = {
     name: 'Ensure admin privileges',
     code: 'fltmc >nul 2>&1 || (\n' +
-    '   echo This batch script requires administrator privileges. Right-click on\n' +
-    '   echo the script and select "Run as administrator".\n' +
-    '   pause\n' +
-    '   exit 1\n' +
+    '   echo Administrator privileges are required.\n' +
+    '   PowerShell Start -Verb RunAs \'%0\' 2> nul || (\n' +
+    '       echo Right-click on the script and select "Run as administrator".\n' +
+    '       pause & exit 1\n' +
+    '   )\n' +
+    '   exit 0\n' +
     ')',
 };
 
