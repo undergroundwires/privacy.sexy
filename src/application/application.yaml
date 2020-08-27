@@ -887,17 +887,44 @@ actions:
                         category: Configure Windows Defender
                         children:
                             -
-                                name: Disable Microsoft SpyNet (Windows Defender cloud export for analysis)
+                                name: Do not send Watson events 
                                 recommend: true
-                                code: |-
-                                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Reporting" /v "DisableGenericRePorts" /t REG_DWORD /d 1 /f
-                                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "LocalSettingOverrideSpynetReporting" /t REG_DWORD /d 0 /f
-                                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SpynetReporting" /t REG_DWORD /d 0 /f
-                                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SubmitSamplesConsent" /t REG_DWORD /d 2 /f
+                                docs: https://getadmx.com/?Category=SystemCenterEndpointProtection&Policy=Microsoft.Policies.Antimalware::reporting_disablegenericreports
+                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Reporting" /v "DisableGenericReports" /t REG_DWORD /d 1 /f
+                                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Reporting" /v "DisableGenericReports" /t REG_DWORD /d 0 /f
+                            -
+                                category: Disable Microsoft SpyNet (Windows Defender cloud export for analysis)
+                                children:
+                                    -
+                                        name: Disable local setting override for reporting to Microsoft MAPS
+                                        recommend: true
+                                        docs:
+                                            - https://www.stigviewer.com/stig/windows_defender_antivirus/2017-12-27/finding/V-75161
+                                            - https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Spynet_LocalSettingOverrideSpynetReporting
+                                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "LocalSettingOverrideSpynetReporting" /t REG_DWORD /d 0 /f
+                                        revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "LocalSettingOverrideSpynetReporting" /t REG_DWORD /d 1 /f
+                                    -
+                                        name: Turn off Windows Defender SpyNet reporting    
+                                        recommend: true
+                                        docs:
+                                            - https://www.stigviewer.com/stig/windows_7/2012-07-02/finding/V-15713
+                                            - https://getadmx.com/?Category=Windows_7_2008R2&Policy=Microsoft.Policies.WindowsDefender::SpyNetReporting
+                                            - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-defender#defender-allowcloudprotection
+                                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SpynetReporting" /t REG_DWORD /d 0 /f
+                                        revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SpynetReporting" /t REG_DWORD /d 1 /f
+                                    -    
+                                        name: Do not send file samples for further analysis
+                                        recommend: true
+                                        docc:
+                                            - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-defender#defender-submitsamplesconsent
+                                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SubmitSamplesConsent" /t REG_DWORD /d 2 /f
+                                        revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SubmitSamplesConsent" /t REG_DWORD /d 1 /f
                             - 
-                                name: Disable sending infection information
+                                name: Disable Malicious Software Reporting tool diagnostic data
                                 recommend: true
+                                docs: https://getadmx.com/?Category=Windows10_Telemetry&Policy=Microsoft.Policies.Win10Privacy::DontReportInfection
                                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\MRT" /v "DontReportInfectionInformation" /t REG_DWORD /d 1 /f
+                                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\MRT" /v "DontReportInfectionInformation" /t REG_DWORD /d 0 /f
             -
                 name: Disable NET Core CLI telemetry
                 recommend: true
@@ -943,7 +970,7 @@ actions:
                 docs: https://docs.microsoft.com/en-us/deployoffice/compat/manage-the-privacy-of-data-monitored-by-telemetry-in-office
                 children:
                     -
-                        name: Disable logging
+                        name: Disable Microsoft Office logging
                         recommend: true
                         code: |-
                             reg add "HKCU\SOFTWARE\Microsoft\Office\15.0\Outlook\Options\Mail" /v "EnableLogging" /t REG_DWORD /d 0 /f
@@ -1311,18 +1338,122 @@ actions:
         category: Privacy over security
         children:         
             -
-                name: Disable Windows Defender 
-                recommend: false
-                code: |-
-                    netsh advfirewall set allprofiles state off
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /t REG_DWORD /d 1 /f
-                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\MpsSvc" /v "Start" /t REG_DWORD /d 4 /f
-                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\WinDefend" /v "Start" /t REG_DWORD /d 4 /f
-                revertCode: |-
-                    netsh advfirewall set allprofiles state on
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /t REG_DWORD /d 0 /f
-                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\MpsSvc" /v "Start" /t REG_DWORD /d 2 /f
-                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\WinDefend" /v "Start" /t REG_DWORD /d 2 /f
+                category: Disable Windows Defender
+                children:
+                    -
+                        name: Turn off Windows Firewall
+                        code: netsh advfirewall set allprofiles state off
+                        revertCode: netsh advfirewall set allprofiles state on
+                    -
+                        name: Disable Microsoft Defender Antivirus
+                        docs: https://docs.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/security-malware-windows-defender-disableantispyware
+                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /t REG_DWORD /d 1 /f
+                        revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v "DisableAntiSpyware" /f
+                    -
+                        name: Disable the Potentially Unwanted Application (PUA) feature
+                        docs: https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75147
+                        code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\MpEngine" /v "MpEnablePus" /t REG_DWORD /d "0" /f
+                        revertCode: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\MpEngine" /v "MpEnablePus" /t REG_DWORD /d "1" /f
+                    -
+                        category: Disable Real-Time Protection
+                        children:
+                            -
+                                name: Disable behavior monitoring
+                                docs: https://www.stigviewer.com/stig/windows_defender_antivirus/2017-12-27/finding/V-75229
+                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableBehaviorMonitoring" /t REG_DWORD /d "1" /f
+                                revertCode: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableBehaviorMonitoring" /t REG_DWORD /d "0" /f
+                            -
+                                name: Disable scanning for all downloaded files and attachments
+                                docs: https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75225
+                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableIOAVProtection" /t REG_DWORD /d "1" /f
+                                revertCode: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableIOAVProtection" /t REG_DWORD /d "0" /f
+                            -
+                                name: Disable monitoring file and program activity
+                                docs: https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75223
+                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableOnAccessProtection" /t REG_DWORD /d "1" /f
+                                revertCode: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableOnAccessProtection" /t REG_DWORD /d "0" /f
+                            -
+                                name: Disable automatically taking action on all detected tasks
+                                docs:
+                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableRoutinelyTakingAction" /t REG_DWORD /d "1" /f
+                                revertCode: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableRoutinelyTakingAction" /t REG_DWORD /d "0" /f
+                            -
+                                name: Disable process scanning on real-time protection
+                                docs: https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75231
+                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableScanOnRealtimeEnable" /t REG_DWORD /d "1" /f
+                                revertCode: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableScanOnRealtimeEnable" /t REG_DWORD /d "0" /f
+                    -
+                        name: Turn off enhanced notifications
+                        docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsdefendersecuritycenter#windowsdefendersecuritycenter-disableenhancednotifications
+                        code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Reporting" /v "DisableEnhancedNotifications" /t REG_DWORD /d "1" /f
+                        revertCode: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Reporting" /v "DisableEnhancedNotifications" /t REG_DWORD /d "0" /f
+                    -
+                        name: Disable Windows Defender logging
+                        code: |-
+                            reg add "HKLM\System\CurrentControlSet\Control\WMI\Autologger\DefenderApiLogger" /v "Start" /t REG_DWORD /d "0" /f
+                            reg add "HKLM\System\CurrentControlSet\Control\WMI\Autologger\DefenderAuditLogger" /v "Start" /t REG_DWORD /d "0" /f
+                        revertCode: |-
+                            reg add "HKLM\System\CurrentControlSet\Control\WMI\Autologger\DefenderApiLogger" /v "Start" /t REG_DWORD /d "1" /f
+                            reg add "HKLM\System\CurrentControlSet\Control\WMI\Autologger\DefenderAuditLogger" /v "Start" /t REG_DWORD /d "1" /f
+                    -
+                        name: Turn off block at first sight
+                        docs: https://docs.microsoft.com/en-us/windows/security/threat-protection/microsoft-defender-antivirus/configure-block-at-first-sight-microsoft-defender-antivirus
+                        code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\SpyNet" /v "DisableBlockAtFirstSeen" /t REG_DWORD /d "1" /f
+                        revertCode:  reg add "HKLM\Software\Policies\Microsoft\Windows Defender\SpyNet" /v "DisableBlockAtFirstSeen" /t REG_DWORD /d "0" /f
+                    -
+                        category: Disable Windows Defender tasks
+                        children:
+                            -
+                                name: Disable Windows Defender ExploitGuard task
+                                code: schtasks /Change /TN "Microsoft\Windows\ExploitGuard\ExploitGuard MDM policy Refresh" /Disable
+                                revertCode: schtasks /Change /TN "Microsoft\Windows\ExploitGuard\ExploitGuard MDM policy Refresh" /Enable
+                            -
+                                name: Disable Windows Defender Cache Maintenance task
+                                code: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Cache Maintenance" /Disable
+                                revertCode: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Cache Maintenance" /Enable
+                            -
+                                name: Disable Windows Defender Cleanup task
+                                code: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Cleanup" /Disable
+                                revertCode: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Cleanup" /Enable
+                            -
+                                name: Disable Windows Defender Scheduled Scan task
+                                code: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Scheduled Scan" /Disable
+                                revertCode: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Scheduled Scan" /Enable
+                            -
+                                name: Disable Windows Defender Verification task
+                                code: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Verification" /Disable
+                                revertCode: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Verification" /Enable
+                    -
+                        category: Disable Windows Defender services
+                        children:
+                            -
+                                name: Disable Windows Defender Firewall service
+                                code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\MpsSvc" /v "Start" /t REG_DWORD /d "4" /f
+                                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\MpsSvc" /v "Start" /t REG_DWORD /d "2" /f
+                            -
+                                name: Disable Windows Defender Antivirus service
+                                code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WinDefend" /v "Start" /t REG_DWORD /d "4" /f
+                                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WinDefend" /v "Start" /t REG_DWORD /d "2" /f
+                            -
+                                name: Disable Microsoft Defender Antivirus Boot Driver service
+                                code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdBoot" /v "Start" /t REG_DWORD /d "4" /f
+                                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdBoot" /v "Start" /t REG_DWORD /d "2" /f
+                            -
+                                name: Disable Microsoft Defender Antivirus Mini-Filter Driver service
+                                code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdFilter" /v "Start" /t REG_DWORD /d "4" /f
+                                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdFilter" /v "Start" /t REG_DWORD /d "2" /f
+                            -
+                                name: Disable Microsoft Defender Antivirus Network Inspection System Driver service
+                                code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisDrv" /v "Start" /t REG_DWORD /d "4" /f
+                                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisDrv" /v "Start" /t REG_DWORD /d "2" /f
+                            -
+                                name: Disable Microsoft Defender Antivirus Network Inspection service
+                                code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisSvc" /v "Start" /t REG_DWORD /d "4" /f
+                                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisSvc" /v "Start" /t REG_DWORD /d "2" /f
+                            -
+                                name: Disable Windows Security service
+                                code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\SecurityHealthService" /v "Start" /t REG_DWORD /d "4" /f
+                                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\SecurityHealthService" /v "Start" /t REG_DWORD /d "2" /f
             -
                 name: Disable Smart Screen 
                 recommend: false
