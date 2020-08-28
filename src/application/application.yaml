@@ -2390,10 +2390,10 @@ actions:
                                 code: dism /online /Remove-Capability /CapabilityName:"XPS.Viewer~~~~0.0.1.0" /NoRestart
     -
         category: Advanced settings
-        docs: https://www.pool.ntp.org/en/use.html
         children:   
             -
                 name: Change NTP (time) server to pool.ntp.org
+                docs: https://www.pool.ntp.org/en/use.html
                 recommend: false
                 code: |-
                     :: Configure time source
