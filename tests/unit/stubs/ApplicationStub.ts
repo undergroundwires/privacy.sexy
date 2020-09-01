@@ -8,7 +8,7 @@ export class ApplicationStub implements IApplication {
     public readonly version = '0.1.0';
     public readonly actions = new Array<ICategory>();
 
-    public withAction(category: ICategory): IApplication {
+    public withAction(category: ICategory): ApplicationStub {
         this.actions.push(category);
         return this;
     }

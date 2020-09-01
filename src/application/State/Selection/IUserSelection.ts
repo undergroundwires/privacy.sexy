@@ -7,7 +7,7 @@ export interface IUserSelection {
     readonly selectedScripts: ReadonlyArray<SelectedScript>;
     readonly totalSelected: number;
     removeAllInCategory(categoryId: number): void;
-    addAllInCategory(categoryId: number): void;
+    addOrUpdateAllInCategory(categoryId: number, revert: boolean): void;
     addSelectedScript(scriptId: string, revert: boolean): void;
     addOrUpdateSelectedScript(scriptId: string, revert: boolean): void;
     removeSelectedScript(scriptId: string): void;

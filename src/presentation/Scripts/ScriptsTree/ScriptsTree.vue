@@ -7,7 +7,6 @@
                 :filterPredicate="filterPredicate"
                 :filterText="filterText"
                 v-on:nodeSelected="toggleNodeSelectionAsync($event)"
-                v-on:nodeRevertToggled="handleNodeRevertToggleAsync($event)"
                 >
             </SelectableTree>
         </span>
@@ -58,10 +57,10 @@
         const state = await this.getCurrentStateAsync();
         switch (event.node.type) {
           case NodeType.Category:
-            this.toggleCategoryNodeSelection(event, state);
+            toggleCategoryNodeSelection(event, state);
             break;
           case NodeType.Script:
-            this.toggleScriptNodeSelection(event, state);
+            toggleScriptNodeSelection(event, state);
             break;
           default:
             throw new Error(`Unknown node type: ${event.node.id}`);
@@ -100,26 +99,26 @@
       this.filterText = result.query;
       this.filtered = result;
     }
-    private toggleCategoryNodeSelection(event: INodeSelectedEvent, state: IApplicationState): void {
-      const categoryId = getCategoryId(event.node.id);
-      if (event.isSelected) {
-        state.selection.addAllInCategory(categoryId);
-      } else {
-        state.selection.removeAllInCategory(categoryId);
-      }
-    }
-    private toggleScriptNodeSelection(event: INodeSelectedEvent, state: IApplicationState): void {
-      const scriptId = getScriptId(event.node.id);
-      const actualToggleState = state.selection.isSelected(scriptId);
-      const targetToggleState = event.isSelected;
-      if (targetToggleState && !actualToggleState) {
-        state.selection.addSelectedScript(scriptId, false);
-      } else if (!targetToggleState && actualToggleState) {
-        state.selection.removeSelectedScript(scriptId);
-      }
-    }
   }
 
+  function toggleCategoryNodeSelection(event: INodeSelectedEvent, state: IApplicationState): void {
+    const categoryId = getCategoryId(event.node.id);
+    if (event.isSelected) {
+      state.selection.addOrUpdateAllInCategory(categoryId, false);
+    } else {
+      state.selection.removeAllInCategory(categoryId);
+    }
+  }
+  function toggleScriptNodeSelection(event: INodeSelectedEvent, state: IApplicationState): void {
+    const scriptId = getScriptId(event.node.id);
+    const actualToggleState = state.selection.isSelected(scriptId);
+    const targetToggleState = event.isSelected;
+    if (targetToggleState && !actualToggleState) {
+      state.selection.addSelectedScript(scriptId, false);
+    } else if (!targetToggleState && actualToggleState) {
+      state.selection.removeSelectedScript(scriptId);
+    }
+  }
 </script>
 
 <style scoped lang="scss">

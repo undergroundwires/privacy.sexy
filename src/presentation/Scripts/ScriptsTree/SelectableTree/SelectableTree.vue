@@ -7,7 +7,7 @@
                   v-on:node:unchecked="nodeSelected($event)"
                   ref="treeElement"
                 >
-                <span class="tree-text" slot-scope="{ node }">
+                <span class="tree-text" slot-scope="{ node }" >
                     <Node :data="convertExistingToNode(node)" />
                 </span>
             </tree>

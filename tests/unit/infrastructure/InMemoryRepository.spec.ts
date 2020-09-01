@@ -95,4 +95,26 @@ describe('InMemoryRepository', () => {
             expect(actual).to.deep.equal(expected);
         });
     });
+    describe('getById', () => {
+        it('gets entity if it exists', () => {
+            // arrange
+            const expected = new NumericEntityStub(1).withCustomProperty('bca');
+            const sut = new InMemoryRepository<number, NumericEntityStub>([
+                expected, new NumericEntityStub(2).withCustomProperty('bca'),
+                new NumericEntityStub(3).withCustomProperty('bca'), new NumericEntityStub(4).withCustomProperty('bca'),
+            ]);
+            // act
+            const actual = sut.getById(expected.id);
+            // assert
+            expect(actual).to.deep.equal(expected);
+        });
+        it('gets undefined if it does not exist', () => {
+            // arrange
+            const sut = new InMemoryRepository<number, NumericEntityStub>([]);
+            // act
+            const actual = sut.getById(31);
+            // assert
+            expect(actual).to.equal(undefined);
+        });
+    });
 });

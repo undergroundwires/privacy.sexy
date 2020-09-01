@@ -12,13 +12,11 @@ export class UserSelection implements IUserSelection {
 
     constructor(
         private readonly app: IApplication,
-        /** Initially selected scripts */
-        selectedScripts: ReadonlyArray<IScript>) {
+        selectedScripts: ReadonlyArray<SelectedScript>) {
         this.scripts =  new InMemoryRepository<string, SelectedScript>();
         if (selectedScripts && selectedScripts.length > 0) {
             for (const script of selectedScripts) {
-                const selected = new SelectedScript(script, false);
-                this.scripts.addItem(selected);
+                this.scripts.addItem(script);
             }
         }
     }
@@ -36,16 +34,19 @@ export class UserSelection implements IUserSelection {
         this.changed.notify(this.scripts.getItems());
     }
 
-    public addAllInCategory(categoryId: number): void {
+    public addOrUpdateAllInCategory(categoryId: number, revert: boolean = false): void {
         const category = this.app.findCategory(categoryId);
-        const scriptsToAdd = category.getAllScriptsRecursively()
-            .filter((script) => !this.scripts.exists(script.id));
-        if (!scriptsToAdd.length) {
+        const scriptsToAddOrUpdate = category.getAllScriptsRecursively()
+            .filter((script) =>
+                !this.scripts.exists(script.id)
+                    || this.scripts.getById(script.id).revert !== revert,
+            );
+        if (!scriptsToAddOrUpdate.length) {
             return;
         }
-        for (const script of scriptsToAdd) {
-            const selectedScript = new SelectedScript(script, false);
-            this.scripts.addItem(selectedScript);
+        for (const script of scriptsToAddOrUpdate) {
+            const selectedScript = new SelectedScript(script, revert);
+            this.scripts.addOrUpdateItem(selectedScript);
         }
         this.changed.notify(this.scripts.getItems());
     }

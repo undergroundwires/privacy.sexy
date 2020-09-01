@@ -1,4 +1,3 @@
-// Two ways of typing other libraries: https://stackoverflow.com/a/53070501
 
 declare module 'liquor-tree' {
     import { PluginObject } from 'vue';
@@ -10,6 +9,8 @@ declare module 'liquor-tree' {
         filter(query: string): void;
         clearFilter(): void;
         setModel(nodes: ReadonlyArray<ILiquorTreeNewNode>): void;
+        // getNodeById(id: string):  ILiquorTreeExistingNode;
+        // recurseDown(fn: (node: ILiquorTreeExistingNode) => void): void;
     }
     interface ICustomLiquorTreeData {
         type: number;
@@ -34,6 +35,7 @@ declare module 'liquor-tree' {
         data: ILiquorTreeNodeData;
         states: ILiquorTreeNodeState | undefined;
         children: ReadonlyArray<ILiquorTreeExistingNode> | undefined;
+        expand(): void;
     }
 
     /**

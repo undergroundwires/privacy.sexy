@@ -1,20 +1,47 @@
-import { ScriptStub } from './../../../stubs/ScriptStub';
+import 'mocha';
+import { expect } from 'chai';
+import { IScript } from '@/domain/IScript';
+import { SelectedScriptStub } from '../../../stubs/SelectedScriptStub';
+import { ScriptStub } from '../../../stubs/ScriptStub';
 import { SelectedScript } from '@/application/State/Selection/SelectedScript';
 import { CategoryStub } from '../../../stubs/CategoryStub';
 import { ApplicationStub } from '../../../stubs/ApplicationStub';
 import { UserSelection } from '@/application/State/Selection/UserSelection';
-import 'mocha';
-import { expect } from 'chai';
-import { IScript } from '@/domain/IScript';
 
 describe('UserSelection', () => {
+    describe('ctor', () => {
+        it('has nothing with no initial selection', () => {
+            // arrange
+            const app = new ApplicationStub().withAction(new CategoryStub(1).withScriptIds('s1'));
+            const selection = [];
+            // act
+            const sut = new UserSelection(app, selection);
+            // assert
+            expect(sut.selectedScripts).to.have.lengthOf(0);
+        });
+        it('has initial selection', () => {
+            // arrange
+            const firstScript = new ScriptStub('1');
+            const secondScript = new ScriptStub('2');
+            const app = new ApplicationStub().withAction(
+                new CategoryStub(1).withScript(firstScript).withScripts(secondScript));
+            const expected = [ new SelectedScript(firstScript, false), new SelectedScript(secondScript, true) ];
+            // act
+            const sut = new UserSelection(app, expected);
+            // assert
+            expect(sut.selectedScripts).to.deep.include(expected[0]);
+            expect(sut.selectedScripts).to.deep.include(expected[1]);
+        });
+    });
     it('deselectAll removes all items', () => {
         // arrange
         const events: Array<readonly SelectedScript[]>  = [];
         const app = new ApplicationStub()
             .withAction(new CategoryStub(1)
                 .withScriptIds('s1', 's2', 's3', 's4'));
-        const selectedScripts = [new ScriptStub('s1'), new ScriptStub('s2'), new ScriptStub('s3')];
+        const selectedScripts = [
+            new SelectedScriptStub('s1'), new SelectedScriptStub('s2'), new SelectedScriptStub('s3'),
+        ];
         const sut = new UserSelection(app, selectedScripts);
         sut.changed.on((newScripts) => events.push(newScripts));
         // act
@@ -30,15 +57,20 @@ describe('UserSelection', () => {
         const app = new ApplicationStub()
             .withAction(new CategoryStub(1)
                 .withScriptIds('s1', 's2', 's3', 's4'));
-        const selectedScripts = [new ScriptStub('s1'), new ScriptStub('s2'), new ScriptStub('s3')];
+        const selectedScripts = [
+            new SelectedScriptStub('s1'), new SelectedScriptStub('s2'), new SelectedScriptStub('s3'),
+        ];
         const sut = new UserSelection(app, selectedScripts);
         sut.changed.on((newScripts) => events.push(newScripts));
         const scripts = [new ScriptStub('s2'), new ScriptStub('s3'), new ScriptStub('s4')];
-        const expected = scripts.map((script) => new SelectedScript(script, false));
+        const expected = [ new SelectedScriptStub('s2'), new SelectedScriptStub('s3'),
+            new SelectedScript(scripts[2], false)];
         // act
         sut.selectOnly(scripts);
         // assert
-        expect(sut.selectedScripts).to.deep.equal(expected);
+        expect(sut.selectedScripts).to.have.deep.members(expected,
+            `Expected: ${JSON.stringify(sut.selectedScripts)}\n` +
+            `Actual: ${JSON.stringify(expected)}`);
         expect(events).to.have.lengthOf(1);
         expect(events[0]).to.deep.equal(expected);
     });
@@ -112,10 +144,10 @@ describe('UserSelection', () => {
         it('removes all when all exists', () => {
             // arrange
             const categoryId = 1;
-            const scripts = [new ScriptStub('s1'), new ScriptStub('s2')];
+            const scripts = [new SelectedScriptStub('s1'), new SelectedScriptStub('s2')];
             const app = new ApplicationStub()
                 .withAction(new CategoryStub(categoryId)
-                    .withScripts(...scripts));
+                    .withScripts(...scripts.map((script) => script.script)));
             const sut = new UserSelection(app, scripts);
             // act
             sut.removeAllInCategory(categoryId);
@@ -131,7 +163,7 @@ describe('UserSelection', () => {
             const app = new ApplicationStub()
                 .withAction(new CategoryStub(categoryId)
                     .withScripts(...existing, ...notExisting));
-            const sut = new UserSelection(app, existing);
+            const sut = new UserSelection(app, existing.map((script) => new SelectedScript(script, false)));
             // act
             sut.removeAllInCategory(categoryId);
             // assert
@@ -139,7 +171,7 @@ describe('UserSelection', () => {
             expect(sut.selectedScripts.length).to.equal(0);
         });
     });
-    describe('addAllInCategory', () => {
+    describe('addOrUpdateAllInCategory', () => {
         it('does nothing when all already exists', () => {
             // arrange
             const events: Array<readonly SelectedScript[]>  = [];
@@ -148,10 +180,10 @@ describe('UserSelection', () => {
             const app = new ApplicationStub()
                 .withAction(new CategoryStub(categoryId)
                     .withScripts(...scripts));
-            const sut = new UserSelection(app, scripts);
+            const sut = new UserSelection(app, scripts.map((script) => new SelectedScript(script, false)));
             sut.changed.on((s) => events.push(s));
             // act
-            sut.addAllInCategory(categoryId);
+            sut.addOrUpdateAllInCategory(categoryId);
             // assert
             expect(events).to.have.lengthOf(0);
             expect(sut.selectedScripts.map((script) => script.id))
@@ -166,12 +198,26 @@ describe('UserSelection', () => {
                     .withScripts(...expected));
             const sut = new UserSelection(app, []);
             // act
-            sut.addAllInCategory(categoryId);
+            sut.addOrUpdateAllInCategory(categoryId);
             // assert
             expect(sut.selectedScripts.map((script) => script.id))
                 .to.have.deep.members(expected.map((script) => script.id));
         });
-        it('adds not existing some exists', () => {
+        it('adds all with given revert status when nothing exists', () => {
+            // arrange
+            const categoryId = 1;
+            const expected = [new ScriptStub('s1'), new ScriptStub('s2')];
+            const app = new ApplicationStub()
+                .withAction(new CategoryStub(categoryId)
+                    .withScripts(...expected));
+            const sut = new UserSelection(app, []);
+            // act
+            sut.addOrUpdateAllInCategory(categoryId, true);
+            // assert
+            expect(sut.selectedScripts.every((script) => script.revert))
+                .to.equal(true);
+        });
+        it('changes revert status of all when some exists', () => {
             // arrange
             const categoryId = 1;
             const notExisting = [ new ScriptStub('notExisting1'), new ScriptStub('notExisting2') ];
@@ -180,12 +226,42 @@ describe('UserSelection', () => {
             const app = new ApplicationStub()
                 .withAction(new CategoryStub(categoryId)
                 .withScripts(...allScripts));
-            const sut = new UserSelection(app, existing);
+            const sut = new UserSelection(app, existing.map((script) => new SelectedScript(script, false)));
             // act
-            sut.addAllInCategory(categoryId);
+            sut.addOrUpdateAllInCategory(categoryId, true);
             // assert
-            expect(sut.selectedScripts.map((script) => script.id))
-                .to.have.deep.members(allScripts.map((script) => script.id));
+            expect(sut.selectedScripts.every((script) => script.revert))
+                .to.equal(true);
+        });
+        it('changes revert status of all when some exists', () => {
+            // arrange
+            const categoryId = 1;
+            const notExisting = [ new ScriptStub('notExisting1'), new ScriptStub('notExisting2') ];
+            const existing = [ new ScriptStub('existing1'), new ScriptStub('existing2') ];
+            const allScripts = [ ...existing, ...notExisting ];
+            const app = new ApplicationStub()
+                .withAction(new CategoryStub(categoryId)
+                .withScripts(...allScripts));
+            const sut = new UserSelection(app, existing.map((script) => new SelectedScript(script, false)));
+            // act
+            sut.addOrUpdateAllInCategory(categoryId, true);
+            // assert
+            expect(sut.selectedScripts.every((script) => script.revert))
+                .to.equal(true);
+        });
+        it('changes revert status of all when all already exists', () => {
+            // arrange
+            const categoryId = 1;
+            const scripts = [ new ScriptStub('existing1'), new ScriptStub('existing2') ];
+            const app = new ApplicationStub()
+                .withAction(new CategoryStub(categoryId)
+                .withScripts(...scripts));
+            const sut = new UserSelection(app, scripts.map((script) => new SelectedScript(script, false)));
+            // act
+            sut.addOrUpdateAllInCategory(categoryId, true);
+            // assert
+            expect(sut.selectedScripts.every((script) => script.revert))
+                .to.equal(true);
         });
     });
     describe('isSelected', () => {
@@ -196,7 +272,7 @@ describe('UserSelection', () => {
             const app = new ApplicationStub()
                 .withAction(new CategoryStub(1)
                 .withScripts(selectedScript, notSelectedScript));
-            const sut = new UserSelection(app, [ selectedScript ]);
+            const sut = new UserSelection(app, [ new SelectedScript(selectedScript, false) ]);
             // act
             const actual = sut.isSelected(notSelectedScript.id);
             // assert
@@ -209,7 +285,7 @@ describe('UserSelection', () => {
             const app = new ApplicationStub()
                 .withAction(new CategoryStub(1)
                 .withScripts(selectedScript, notSelectedScript));
-            const sut = new UserSelection(app, [ selectedScript ]);
+            const sut = new UserSelection(app, [ new SelectedScript(selectedScript, false) ]);
             // act
             const actual = sut.isSelected(selectedScript.id);
             // assert

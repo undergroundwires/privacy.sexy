@@ -4,7 +4,7 @@
         <RevertToggle
           class="item"
           v-if="data.isReversible"
-          :scriptId="data.id" />
+          :node="data" />
         <DocumentationUrls
           class="item"
           v-if="data.documentationUrls && data.documentationUrls.length > 0"

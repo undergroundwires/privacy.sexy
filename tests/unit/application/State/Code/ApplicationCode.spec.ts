@@ -26,7 +26,7 @@ describe('ApplicationCode', () => {
             // arrange
             const scripts = [new ScriptStub('first'), new ScriptStub('second')];
             const app = new ApplicationStub().withAction(new CategoryStub(1).withScripts(...scripts));
-            const selection = new UserSelection(app, scripts);
+            const selection = new UserSelection(app, scripts.map((script) => new SelectedScript(script, false)));
             const version = 'version-string';
             const sut = new ApplicationCode(selection, version);
             // act
@@ -42,7 +42,7 @@ describe('ApplicationCode', () => {
                 let signaled: ICodeChangedEvent;
                 const scripts = [new ScriptStub('first'), new ScriptStub('second')];
                 const app = new ApplicationStub().withAction(new CategoryStub(1).withScripts(...scripts));
-                const selection = new UserSelection(app, scripts);
+                const selection = new UserSelection(app, scripts.map((script) => new SelectedScript(script, false)));
                 const sut = new ApplicationCode(selection, 'version');
                 sut.changed.on((code) => signaled = code);
                 // act
@@ -56,7 +56,7 @@ describe('ApplicationCode', () => {
                 let signaled: ICodeChangedEvent;
                 const scripts = [new ScriptStub('first'), new ScriptStub('second')];
                 const app = new ApplicationStub().withAction(new CategoryStub(1).withScripts(...scripts));
-                const selection = new UserSelection(app, scripts);
+                const selection = new UserSelection(app, scripts.map((script) => new SelectedScript(script, false)));
                 const version = 'version-string';
                 const sut = new ApplicationCode(selection, version);
                 sut.changed.on((code) => signaled = code);
@@ -72,7 +72,7 @@ describe('ApplicationCode', () => {
             let signaled: ICodeChangedEvent;
             const scripts = [new ScriptStub('first'), new ScriptStub('second')];
             const app = new ApplicationStub().withAction(new CategoryStub(1).withScripts(...scripts));
-            const selection = new UserSelection(app, scripts);
+            const selection = new UserSelection(app, scripts.map((script) => new SelectedScript(script, false)));
             const expectedVersion = 'version-string';
             const scriptsToSelect = scripts.map((s) => new SelectedScript(s, false));
             const totalLines = 20;

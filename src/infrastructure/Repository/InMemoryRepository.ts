@@ -16,6 +16,14 @@ export class InMemoryRepository<TKey, TEntity extends IEntity<TKey>> implements 
         return predicate ? this.items.filter(predicate) : this.items;
     }
 
+    public getById(id: TKey): TEntity | undefined {
+        const items = this.getItems((entity) => entity.id === id);
+        if (!items.length) {
+            return undefined;
+        }
+        return items[0];
+    }
+
     public addItem(item: TEntity): void {
         if (!item) {
             throw new Error('item is null or undefined');

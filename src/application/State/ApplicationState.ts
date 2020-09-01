@@ -11,6 +11,7 @@ import { Script } from '@/domain/Script';
 import { IApplication } from '@/domain/IApplication';
 import { IApplicationCode } from './Code/IApplicationCode';
 import applicationFile from 'js-yaml-loader!@/application/application.yaml';
+import { SelectedScript } from '@/application/State/Selection/SelectedScript';
 
 /** Mutatable singleton application state that's the single source of truth throughout the application */
 export class ApplicationState implements IApplicationState {
@@ -37,7 +38,7 @@ export class ApplicationState implements IApplicationState {
         public readonly app: IApplication,
         /** Initially selected scripts */
         public readonly defaultScripts: Script[]) {
-        this.selection = new UserSelection(app, defaultScripts);
+        this.selection = new UserSelection(app, defaultScripts.map((script) => new SelectedScript(script, false)));
         this.code = new ApplicationCode(this.selection, app.version);
         this.filter = new UserFilter(app);
     }

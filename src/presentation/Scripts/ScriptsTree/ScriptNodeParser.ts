@@ -74,7 +74,7 @@ function convertCategoryToNode(
     text: category.name,
     children,
     documentationUrls: category.documentationUrls,
-    isReversible: false,
+    isReversible: children && children.every((child) => child.isReversible),
   };
 }
 
