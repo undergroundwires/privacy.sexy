@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component } from 'vue-property-decorator';
 import CardListItem from './CardListItem.vue';
 import { StatefulVue } from '@/presentation/StatefulVue';
 import { ICategory } from '@/domain/ICategory';

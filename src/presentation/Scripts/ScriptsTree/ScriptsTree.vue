@@ -15,13 +15,11 @@
 </template>
 
 <script lang="ts">
-  import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+  import { Component, Prop, Watch } from 'vue-property-decorator';
   import { StatefulVue } from '@/presentation/StatefulVue';
-  import { Category } from '@/domain/Category';
-  import { IRepository } from '@/infrastructure/Repository/IRepository';
   import { IScript } from '@/domain/IScript';
   import { ICategory } from '@/domain/ICategory';
-  import { IApplicationState, IUserSelection } from '@/application/State/IApplicationState';
+  import { IApplicationState } from '@/application/State/IApplicationState';
   import { IFilterResult } from '@/application/State/Filter/IFilterResult';
   import { parseAllCategories, parseSingleCategory, getScriptNodeId, getCategoryNodeId, getCategoryId, getScriptId } from './ScriptNodeParser';
   import SelectableTree from './SelectableTree/SelectableTree.vue';

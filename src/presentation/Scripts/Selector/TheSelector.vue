@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component } from 'vue-property-decorator';
 import { StatefulVue } from '@/presentation/StatefulVue';
 import SelectableOption from './SelectableOption.vue';
 import { IApplicationState } from '@/application/State/IApplicationState';

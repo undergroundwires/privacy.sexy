@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
+import { Component, Prop, Emit } from 'vue-property-decorator';
 import { StatefulVue } from '@/presentation/StatefulVue';
 import { NonCollapsing } from '@/presentation/Scripts/Cards/NonCollapsingDirective';
 

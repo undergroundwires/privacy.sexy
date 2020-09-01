@@ -8,10 +8,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
+import { Component, Prop, Emit } from 'vue-property-decorator';
 import { StatefulVue } from './StatefulVue';
-import { SaveFileDialog } from './../infrastructure/SaveFileDialog';
-import { Clipboard } from './../infrastructure/Clipboard';
 
 @Component
 export default class IconButton extends StatefulVue {

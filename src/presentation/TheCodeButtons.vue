@@ -14,12 +14,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component } from 'vue-property-decorator';
 import { StatefulVue } from './StatefulVue';
 import { SaveFileDialog } from './../infrastructure/SaveFileDialog';
 import { Clipboard } from './../infrastructure/Clipboard';
 import IconButton from './IconButton.vue';
-
 
 @Component({
   components: {

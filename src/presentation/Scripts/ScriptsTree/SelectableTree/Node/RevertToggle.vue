@@ -13,10 +13,10 @@
 
 
 <script lang="ts">
-    import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+    import { Component, Prop, Watch } from 'vue-property-decorator';
     import { IReverter } from './Reverter/IReverter';
     import { StatefulVue } from '@/presentation/StatefulVue';
-    import { INode, NodeType } from './INode';
+    import { INode } from './INode';
     import { SelectedScript } from '@/application/State/Selection/SelectedScript';
     import { IApplicationState } from '@/application/State/IApplicationState';
     import { getCategoryId, getScriptId } from './../../ScriptNodeParser';

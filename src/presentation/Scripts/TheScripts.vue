@@ -37,8 +37,7 @@
 </template>
 
 <script lang="ts">
-    import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
-    import { Category } from '@/domain/Category';
+    import { Component } from 'vue-property-decorator';
     import { StatefulVue } from '@/presentation/StatefulVue';
     import { Grouping } from './Grouping/Grouping';
     import { IFilterResult } from '@/application/State/Filter/IFilterResult';
@@ -46,7 +45,6 @@
     import TheSelector from '@/presentation/Scripts/Selector/TheSelector.vue';
     import ScriptsTree from '@/presentation/Scripts/ScriptsTree/ScriptsTree.vue';
     import CardList from '@/presentation/Scripts/Cards/CardList.vue';
-
 
     /** Shows content of single category or many categories */
     @Component({

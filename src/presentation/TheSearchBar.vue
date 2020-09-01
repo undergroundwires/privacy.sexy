@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Watch } from 'vue-property-decorator';
 import { StatefulVue } from './StatefulVue';
 import { NonCollapsing } from '@/presentation/Scripts/Cards/NonCollapsingDirective';
 import { IUserFilter } from '@/application/State/IApplicationState';
@@ -26,7 +26,6 @@ export default class TheSearchBar extends StatefulVue {
   public async mounted() {
     const state = await this.getCurrentStateAsync();
     const totalScripts = state.app.totalScripts;
-    const totalCategories = state.app.totalCategories;
     this.searchPlaceHolder = `Search in ${totalScripts} scripts`;
     this.beginReacting(state.filter);
   }
@@ -88,5 +87,4 @@ export default class TheSearchBar extends StatefulVue {
   font-size: 20px;
   padding:5px;
 }
-
 </style>

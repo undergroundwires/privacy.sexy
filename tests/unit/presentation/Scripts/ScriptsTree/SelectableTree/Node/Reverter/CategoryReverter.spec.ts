@@ -4,7 +4,6 @@ import { ScriptStub } from '../../../../../../stubs/ScriptStub';
 import { CategoryReverter } from '@/presentation/Scripts/ScriptsTree/SelectableTree/Node/Reverter/CategoryReverter';
 import { getCategoryNodeId } from '@/presentation/Scripts/ScriptsTree/ScriptNodeParser';
 import { CategoryStub } from '../../../../../../stubs/CategoryStub';
-import { Script } from '@/domain/Script';
 import { ApplicationStub } from '../../../../../../stubs/ApplicationStub';
 import { SelectedScript } from '@/application/State/Selection/SelectedScript';
 import { UserSelection } from '@/application/State/Selection/UserSelection';

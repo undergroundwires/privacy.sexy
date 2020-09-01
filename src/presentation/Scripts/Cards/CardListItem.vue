@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch, Emit } from 'vue-property-decorator';
+import { Component, Prop, Watch, Emit } from 'vue-property-decorator';
 import ScriptsTree from '@/presentation/Scripts/ScriptsTree/ScriptsTree.vue';
 import { StatefulVue } from '@/presentation/StatefulVue';
 

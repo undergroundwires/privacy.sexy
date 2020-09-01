@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
+import { Component, Prop } from 'vue-property-decorator';
 import { StatefulVue } from './StatefulVue';
 import ace from 'ace-builds';
 import 'ace-builds/webpack-resolver';

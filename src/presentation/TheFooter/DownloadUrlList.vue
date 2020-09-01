@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import { Environment } from '@/application/Environment/Environment';
 import { OperatingSystem } from '@/application/Environment/OperatingSystem';
 import DownloadUrlListItem from './DownloadUrlListItem.vue';

@@ -12,8 +12,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop  } from 'vue-property-decorator';
-import { ApplicationState } from '@/application/State/ApplicationState';
+import { Component, Vue } from 'vue-property-decorator';
 import TheHeader from '@/presentation/TheHeader.vue';
 import TheFooter from '@/presentation/TheFooter/TheFooter.vue';
 import TheCodeArea from '@/presentation/TheCodeArea.vue';

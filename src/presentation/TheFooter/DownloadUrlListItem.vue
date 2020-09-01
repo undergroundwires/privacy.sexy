@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Prop, Watch } from 'vue-property-decorator';
 import { StatefulVue } from '@/presentation/StatefulVue';
 import { Environment } from '@/application/Environment/Environment';
 import { OperatingSystem } from '@/application/Environment/OperatingSystem';

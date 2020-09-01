@@ -47,12 +47,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component } from 'vue-property-decorator';
 import { StatefulVue } from '@/presentation/StatefulVue';
 import { Environment } from '@/application/Environment/Environment';
 import PrivacyPolicy from './PrivacyPolicy.vue';
 import DownloadUrlList from './DownloadUrlList.vue';
-import { OperatingSystem } from '@/application/Environment/OperatingSystem';
 
 @Component({
   components: {

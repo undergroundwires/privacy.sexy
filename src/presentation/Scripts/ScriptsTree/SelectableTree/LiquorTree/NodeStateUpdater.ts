@@ -1,4 +1,4 @@
-import { ILiquorTreeExistingNode, ILiquorTreeNewNode, ILiquorTreeNodeState, ILiquorTreeNode } from 'liquor-tree';
+import { ILiquorTreeExistingNode, ILiquorTreeNewNode, ILiquorTreeNode } from 'liquor-tree';
 import { NodeType } from './../Node/INode';
 
 export function updateNodesCheckedState(

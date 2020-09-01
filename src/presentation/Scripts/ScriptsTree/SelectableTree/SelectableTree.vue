@@ -17,10 +17,10 @@
 </template>
 
 <script lang="ts">
-    import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator';
-    import LiquorTree, { ILiquorTreeNewNode, ILiquorTreeExistingNode, ILiquorTree, ILiquorTreeOptions } from 'liquor-tree';
+    import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+    import LiquorTree, { ILiquorTreeNewNode, ILiquorTreeExistingNode, ILiquorTree } from 'liquor-tree';
     import Node from './Node/Node.vue';
-    import { INode, NodeType } from './Node/INode';
+    import { INode } from './Node/INode';
     import { convertExistingToNode, toNewLiquorTreeNode } from './LiquorTree/NodeTranslator';
     import { INodeSelectedEvent } from './/INodeSelectedEvent';
     import { updateNodesCheckedState, getNewCheckedState } from './LiquorTree/NodeStateUpdater';
