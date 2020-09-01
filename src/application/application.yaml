@@ -2587,10 +2587,6 @@ actions:
                                 code: Powershell -Command "Get-WindowsCapability -Online -Name "MathRecognizer*" | Remove-WindowsCapability -Online"
                                 revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "MathRecognizer*" | Add-WindowsCapability -Online"
                             -
-                                name: Notepad capability
-                                code: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.Windows.Notepad*" | Remove-WindowsCapability -Online"
-                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.Windows.Notepad*" | Add-WindowsCapability -Online"
-                            -
                                 name: OneSync capability
                                 recommend: true
                                 code: Powershell -Command "Get-WindowsCapability -Online -Name "OneCoreUAP.OneSync*" | Remove-WindowsCapability -Online"
@@ -2599,10 +2595,6 @@ actions:
                                 name: OpenSSH client capability
                                 code: Powershell -Command "Get-WindowsCapability -Online -Name "OpenSSH.Client*" | Remove-WindowsCapability -Online"
                                 revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "OpenSSH.Client*" | Add-WindowsCapability -Online"
-                            -
-                                name: Paint capability
-                                code: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.Windows.MSPaint*" | Remove-WindowsCapability -Online"
-                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.Windows.MSPaint*" | Add-WindowsCapability -Online"
                             -
                                 name: PowerShell ISE capability
                                 code: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.Windows.PowerShell.ISE*" | Remove-WindowsCapability -Online"
@@ -2623,10 +2615,22 @@ actions:
                                 name: Windows Fax and Scan capability
                                 code: Powershell -Command "Get-WindowsCapability -Online -Name "Print.Fax.Scan*" | Remove-WindowsCapability -Online"
                                 revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Print.Fax.Scan*" | Add-WindowsCapability -Online"
-                            -
-                                name: WordPad capability
-                                code: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.Windows.WordPad*" | Remove-WindowsCapability -Online"
-                                revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.Windows.WordPad*" | Add-WindowsCapability -Online"
+                            # Following are excluded because:
+                            #   1. They are not widely considered as "bloatware" as the community
+                            #   2. Do not have known privacy issues
+                            #   3. Make Windows more functional when running all scripts
+                            # -
+                            #     name: WordPad capability
+                            #     code: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.Windows.WordPad*" | Remove-WindowsCapability -Online"
+                            #     revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.Windows.WordPad*" | Add-WindowsCapability -Online"
+                            # -
+                            #     name: Paint capability
+                            #     code: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.Windows.MSPaint*" | Remove-WindowsCapability -Online"
+                            #     revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.Windows.MSPaint*" | Add-WindowsCapability -Online"
+                            # -
+                            #     name: Notepad capability
+                            #     code: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.Windows.Notepad*" | Remove-WindowsCapability -Online"
+                            #     revertCode: Powershell -Command "Get-WindowsCapability -Online -Name "Microsoft.Windows.Notepad*" | Add-WindowsCapability -Online"
                     -
                         category: Not preinstalled
                         children:
