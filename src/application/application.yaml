@@ -1025,6 +1025,12 @@ actions:
                 code: setx DOTNET_CLI_TELEMETRY_OPTOUT 1
                 revertCode: setx DOTNET_CLI_TELEMETRY_OPTOUT 0
             -
+                name: Disable PowerShell 7+ telemetry
+                recommend: true
+                docs: https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_telemetry
+                code: setx POWERSHELL_TELEMETRY_OPTOUT 1
+                revertCode: setx POWERSHELL_TELEMETRY_OPTOUT 0
+            -
                 name: Disable NVIDIA telemetry
                 recommend: true
                 code: |-
