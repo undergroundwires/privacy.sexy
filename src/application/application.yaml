@@ -1166,28 +1166,43 @@ actions:
                             -
                                 name: Disable live tile data collection
                                 recommend: true
+                                docs: 
+                                    - https://docs.microsoft.com/en-us/microsoft-edge/deploy/group-policies/telemetry-management-gp
+                                    - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-browser#browser-preventlivetiledatacollection
                                 code: reg add "HKCU\Software\Policies\Microsoft\MicrosoftEdge\Main" /v "PreventLiveTileDataCollection" /t REG_DWORD /d 1 /f         
+                                revertCode: reg add "HKCU\Software\Policies\Microsoft\MicrosoftEdge\Main" /v "PreventLiveTileDataCollection" /t REG_DWORD /d 0 /f         
                             -
                                 name: Disable MFU tracking
                                 recommend: true
+                                docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.EdgeUI::DisableMFUTracking
                                 code: reg add "HKCU\Software\Policies\Microsoft\Windows\EdgeUI" /v "DisableMFUTracking" /t REG_DWORD /d 1 /f
+                                revertCode: reg add "HKCU\Software\Policies\Microsoft\Windows\EdgeUI" /v "DisableMFUTracking" /t REG_DWORD /d 0 /f
                             -
                                 name: Disable recent apps
                                 recommend: true
+                                docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.EdgeUI::DisableRecentApps
                                 code: reg add "HKCU\Software\Policies\Microsoft\Windows\EdgeUI" /v "DisableRecentApps" /t REG_DWORD /d 1 /f
+                                revertCode: reg add "HKCU\Software\Policies\Microsoft\Windows\EdgeUI" /v "DisableRecentApps" /t REG_DWORD /d 0/f
                             -
                                 name: Turn off backtracking
                                 recommend: true
+                                docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.EdgeUI::TurnOffBackstack
                                 code: reg add "HKCU\Software\Policies\Microsoft\Windows\EdgeUI" /v "TurnOffBackstack" /t REG_DWORD /d 1 /f
+                                revertCode: reg add "HKCU\Software\Policies\Microsoft\Windows\EdgeUI" /v "TurnOffBackstack" /t REG_DWORD /d 0 /f
                             -
                                 name: Disable Search Suggestions in Edge
+                                docs: 
+                                    - https://docs.microsoft.com/en-us/microsoft-edge/deploy/group-policies/address-bar-settings-gp
+                                    - https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.MicrosoftEdge::AllowSearchSuggestionsinAddressBar
                                 recommend: true
                                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\SearchScopes" /v "ShowSearchSuggestionsGlobal" /t REG_DWORD /d 0 /f
+                                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\SearchScopes" /v "ShowSearchSuggestionsGlobal" /t REG_DWORD /d 1 /f
                             -
                                 name: Disable Automatic Installation of Microsoft Edge Chromium
                                 recommend: false
-                                code: reg add HKLM\SOFTWARE\Microsoft\EdgeUpdate /v DoNotUpdateToEdgeWithChromium /t REG_DWORD /d 1 /f
-                                docs: https://www.tenforums.com/tutorials/146650-disable-installation-microsoft-edge-windows-update-windows-10-a.html
+                                docs: https://docs.microsoft.com/en-us/deployedge/microsoft-edge-blocker-toolkit
+                                code: reg add "HKLM\SOFTWARE\Microsoft\EdgeUpdate" /v "DoNotUpdateToEdgeWithChromium" /t REG_DWORD /d 1 /f
+                                revertCode: reg delete "HKLM\SOFTWARE\Microsoft\EdgeUpdate" /v "DoNotUpdateToEdgeWithChromium" /f
                     -
                         category: Configure Internet Explorer
                         children: 
@@ -1195,30 +1210,35 @@ actions:
                                 name: Disable Geolocation in Internet Explorer
                                 recommend: true
                                 code: reg add "HKCU\Software\Policies\Microsoft\Internet Explorer\Geolocation" /v "PolicyDisableGeolocation" /t REG_DWORD /d 1 /f
+                                revertCode: reg add "HKCU\Software\Policies\Microsoft\Internet Explorer\Geolocation" /v "PolicyDisableGeolocation" /t REG_DWORD /d 0 /f
                             -
                                 name: Disable Internet Explorer InPrivate logging
                                 recommend: true
-                                code: |-
-                                    reg add "HKCU\Software\Policies\Microsoft\Internet Explorer\Safety\PrivacIE" /v "DisableLogging" /t REG_DWORD /d 1 /f
-                                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Safety\PrivacIE" /v "DisableLogging" /t REG_DWORD /d 1 /f
+                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Safety\PrivacIE" /v "DisableLogging" /t REG_DWORD /d 1 /f
+                                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Safety\PrivacIE" /v "DisableLogging" /t REG_DWORD /d 0 /f
                             -
                                 name: Disable Internet Explorer CEIP
                                 recommend: true
-                                code: |-
-                                    reg add "HKCU\Software\Policies\Microsoft\Internet Explorer\SQM" /v "DisableCustomerImprovementProgram" /t REG_DWORD /d 0 /f
-                                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\SQM" /v "DisableCustomerImprovementProgram" /t REG_DWORD /d 0 /f
+                                docs: https://www.stigviewer.com/stig/internet_explorer_8/2014-07-03/finding/V-15492
+                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\SQM" /v "DisableCustomerImprovementProgram" /t REG_DWORD /d 0 /f
+                                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\SQM" /v "DisableCustomerImprovementProgram" /t REG_DWORD /d 1 /f
                             -
                                 name: Disable calling legacy WCM policies
                                 recommend: true
                                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "CallLegacyWCMPolicies" /t REG_DWORD /d 0 /f
+                                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "CallLegacyWCMPolicies" /t REG_DWORD /d 1 /f
                             -
                                 name: Disable SSLv3 fallback
                                 recommend: true
+                                docs: https://www.stigviewer.com/stig/microsoft_internet_explorer_11/2018-04-02/finding/V-64729
                                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "EnableSSL3Fallback" /t REG_DWORD /d 0 /f
+                                revertCode: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v EnableSSL3Fallback /t REG_DWORD /d 3 /f
                             -
                                 name: Disable ignoring cert errors
                                 recommend: true
+                                docs: https://www.stigviewer.com/stig/microsoft_internet_explorer_11/2017-03-01/finding/V-64717
                                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "PreventIgnoreCertErrors" /t REG_DWORD /d 1 /f
+                                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "PreventIgnoreCertErrors" /t REG_DWORD /d 0 /f
                     -
                         category: Configure Google Chrome
                         children: 
@@ -1228,11 +1248,28 @@ actions:
                                 code: |-
                                     icacls "%localappdata%\Google\Chrome\User Data\SwReporter" /inheritance:r /deny "*S-1-1-0:(OI)(CI)(F)" "*S-1-5-7:(OI)(CI)(F)"
                                     cacls "%localappdata%\Google\Chrome\User Data\SwReporter" /e /c /d %username%
-                                    reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v "ChromeCleanupEnabled" /t REG_DWORD /d 0 /f
-                                    reg add "HKCU\SOFTWARE\Policies\Google\Chrome" /v "ChromeCleanupEnabled" /t REG_DWORD /d 0 /f
-                                    reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v "ChromeCleanupReportingEnabled" /t REG_DWORD /d 0 /f
-                                    reg add "HKCU\SOFTWARE\Policies\Google\Chrome" /v "ChromeCleanupReportingEnabled" /t REG_DWORD /d 0 /f
+                                    reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "DisallowRun" /t REG_DWORD /d 1 /f
                                     reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun" /v "1" /t REG_SZ /d "software_reporter_tool.exe" /f
+                                revertCode: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun" /v "1" /f
+                            -
+                                category: Chrome cleanup
+                                children:
+                                    - 
+                                        name: Do not share share scanned software data to Google
+                                        recommend: true
+                                        docs: 
+                                            - https://www.chromium.org/administrators/policy-list-3#ChromeCleanupReportingEnabled
+                                            - https://www.stigviewer.com/stig/google_chrome_current_windows/2018-09-06/finding/V-81593
+                                        code: reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v "ChromeCleanupReportingEnabled" /t REG_DWORD /d 0 /f
+                                        revertCode: reg delete "HKLM\SOFTWARE\Policies\Google\Chrome" /v "ChromeCleanupReportingEnabled" /f
+                                    - 
+                                        name: Prevent Chrome from scanning the system for cleanup
+                                        recommend: true
+                                        docs: 
+                                            - https://www.chromium.org/administrators/policy-list-3#ChromeCleanupEnabled
+                                            - https://www.stigviewer.com/stig/google_chrome_current_windows/2018-09-06/finding/V-81591
+                                        code: reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v "ChromeCleanupEnabled" /t REG_DWORD /d 0 /f
+                                        revertCode: reg delete "HKLM\SOFTWARE\Policies\Google\Chrome" /v "ChromeCleanupEnabled" /f
                             -
                                 name: Disable Chrome metrics reporting
                                 recommend: true
@@ -1362,16 +1399,23 @@ actions:
                         code: |-
                             reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v FeatureSettingsOverride /t REG_DWORD /d 0 /f
                             reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v FeatureSettingsOverrideMask /t REG_DWORD /d 3 /f
+                        revertCode: |-
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v FeatureSettingsOverride /t REG_DWORD /d 3 /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v FeatureSettingsOverrideMask /t REG_DWORD /d 3 /f
                     -
                         name: Spectre variant 2 and meltdown (AMD)
                         recommend: false
                         code: |-
                             reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v FeatureSettingsOverride /t REG_DWORD /d 64 /f
                             reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v FeatureSettingsOverrideMask /t REG_DWORD /d 3 /f
+                        revertCode: |-
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v FeatureSettingsOverride /t REG_DWORD /d 3 /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v FeatureSettingsOverrideMask /t REG_DWORD /d 3 /f
                     -
                         name: Spectre variant 2 and meltdown (HyperV)
                         recommend: false
                         code: reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Virtualization" /v MinVmVersionForCpuBasedMitigations /t REG_SZ /d "1.0" /f
+                        revertCode: reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Virtualization" /v MinVmVersionForCpuBasedMitigations /f
             -
                 name: Disable administrative shares 
                 recommend: true
@@ -1383,6 +1427,9 @@ actions:
                 code: |-
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoDataExecutionPrevention" /t REG_DWORD /d 0 /f
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "DisableHHDEP" /t REG_DWORD /d 0 /f
+                revertCode: |-
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoDataExecutionPrevention" /t REG_DWORD /d 1 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "DisableHHDEP" /t REG_DWORD /d 1 /f
             - 
                 name: Disable AutoPlay and AutoRun
                 recommend: false
@@ -1392,9 +1439,14 @@ actions:
                     - https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63671
                     - https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63673
                 code: |-
+                    :: 255 (0xff) means all drives
                     reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoDriveTypeAutoRun" /t REG_DWORD /d 255 /f 
                     reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoAutorun" /t REG_DWORD /d 1 /f
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoAutoplayfornonVolume" /t REG_DWORD /d 1 /f
+                revertCode: |-
+                    reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoDriveTypeAutoRun" /f 
+                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoAutorun" /t REG_DWORD /d 2 /f
+                    reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoAutoplayfornonVolume" /f
             - 
                 name: Disable remote Assistance
                 recommend: true
@@ -1402,56 +1454,65 @@ actions:
                 code: |-
                     reg add "HKLM\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v "fAllowToGetHelp" /t REG_DWORD /d 0 /f
                     reg add "HKLM\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v "fAllowFullControl" /t REG_DWORD /d 0 /f
+                revertCode: |-
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v "fAllowToGetHelp" /t REG_DWORD /d 1 /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v "fAllowFullControl" /t REG_DWORD /d 1 /f
             - 
                 name: Disable lock screen camera
                 recommend: true
                 docs: https://www.stigviewer.com/stig/windows_8_8.1/2014-06-27/finding/V-43237
                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization" /v "NoLockScreenCamera" /t REG_DWORD /d 1 /f 
+                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows\Personalization" /v NoLockScreenCamera /f
             - 
                 name: Prevent the storage of the LAN Manager hash of passwords
                 recommend: true
                 docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63797
-                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v "NoLMHash" /t REG_DWORD /d 1 /f 
+                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v "NoLMHash" /t REG_DWORD /d 1 /f
+                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v "NoLMHash" /t REG_DWORD /d 10 /f
             - 
                 name: Disable Windows Installer Always install with elevated privileges
                 recommend: true
-                docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63797
+                docs: https://www.stigviewer.com/stig/windows_8/2013-07-03/finding/V-34974
                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer" /v "AlwaysInstallElevated" /t REG_DWORD /d 0 /f 
+                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer" /v "AlwaysInstallElevated" /t REG_DWORD /d 1 /f 
             - 
                 name: Prevent WinRM from using Basic Authentication
                 recommend: true
                 docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63335
-                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client" /v "AllowBasic" /t REG_DWORD /d 0 /f 
+                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client" /v "AllowBasic" /t REG_DWORD /d 0 /f
+                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client" /v "AllowBasic" /t REG_DWORD /d 1 /f 
             - 
                 name: Restrict anonymous enumeration of shares
                 recommend: true
                 docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63749
-                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client" /v "AllowBasic" /t REG_DWORD /d 0 /f 
-            - 
-                name: Systems must be maintained at a supported (security) level
-                recommend: true
-                docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63349
-                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client" /v "AllowBasic" /t REG_DWORD /d 0 /f 
+                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\LSA" /v "RestrictAnonymous" /t REG_DWORD /d 1 /f 
+                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Control\LSA" /v "RestrictAnonymous" /t REG_DWORD /d 0 /f
             - 
                 name: Refuse less secure authentication
                 recommend: true
-                docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63801
-                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v "LmCompatibilityLevel" /t REG_DWORD /d 5 /f 
+                docs:
+                    - https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63801
+                    - https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/network-security-lan-manager-authentication-level
+                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v "LmCompatibilityLevel" /t REG_DWORD /d 5 /f
+                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v "LmCompatibilityLevel" /t REG_DWORD /d 3 /f
             - 
                 name: Enable Structured Exception Handling Overwrite Protection (SEHOP)
                 recommend: true
                 docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-68849
                 code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "DisableExceptionChainValidation" /t REG_DWORD /d 0 /f 
+                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "DisableExceptionChainValidation" /t REG_DWORD /d 1 /f 
             - 
                 name: Block Anonymous enumeration of SAM accounts
                 recommend: true
                 docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63745
-                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "DisableExceptionChainValidation" /t REG_DWORD /d 0 /f
+                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "RestrictAnonymousSAM" /t REG_DWORD /d 1 /f
+                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "RestrictAnonymousSAM" /t REG_DWORD /d 0 /f
             - 
                 name: Restrict anonymous access to Named Pipes and Shares
                 recommend: true
                 docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63759
                 code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanManServer\Parameters" /v "RestrictNullSessAccess" /t REG_DWORD /d 1 /f
+                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanManServer\Parameters" /v "RestrictNullSessAccess" /t REG_DWORD /d 0 /f
             -
                 category: Disable unsafe features
                 children:
@@ -1463,6 +1524,10 @@ actions:
                             dism /online /Disable-Feature /FeatureName:"SMB1Protocol" /NoRestart
                             dism /Online /Disable-Feature /FeatureName:"SMB1Protocol-Client" /NoRestart
                             dism /Online /Disable-Feature /FeatureName:"SMB1Protocol-Server" /NoRestart
+                        revertCode: |-
+                            dism /online /Enable-Feature /FeatureName:"SMB1Protocol" /NoRestart
+                            dism /Online /Enable-Feature /FeatureName:"SMB1Protocol-Client" /NoRestart
+                            dism /Online /Enable-Feature /FeatureName:"SMB1Protocol-Server" /NoRestart
                     -
                         name: Disable PowerShell 2.0 against downgrade attacks
                         recommend: true
@@ -1470,6 +1535,9 @@ actions:
                         code: |-
                             dism /online /Disable-Feature /FeatureName:"MicrosoftWindowsPowerShellV2Root" /NoRestart
                             dism /online /Disable-Feature /FeatureName:"MicrosoftWindowsPowerShellV2" /NoRestart
+                        revertCode: |-
+                            dism /online /Enable-Feature /FeatureName:"MicrosoftWindowsPowerShellV2Root" /NoRestart
+                            dism /online /Enable-Feature /FeatureName:"MicrosoftWindowsPowerShellV2" /NoRestart
             -
                 name: Disable the Windows Connect Now wizard
                 recommend: true
@@ -1656,28 +1724,69 @@ actions:
                 revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "DisableLockScreenAppNotifications" /t REG_DWORD /d 0 /f
                 docs: https://www.stigviewer.com/stig/windows_server_2012_member_server/2014-01-07/finding/V-36687
             -
-                name: Disable online content in explorer
-                recommend: true
-                code: |-
-                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "AllowOnlineTips" /t REG_DWORD /d 0 /f
-                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoInternetOpenWith" /t REG_DWORD /d 1 /f
-                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoOnlinePrintsWizard" /t REG_DWORD /d 1 /f
-                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoPublishingWizard" /t REG_DWORD /d 1 /f
-                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoWebServices" /t REG_DWORD /d 1 /f
+                category: Disable online content in explorer
+                children:
+                    -
+                        name: Disable online tips
+                        recommend: true
+                        docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.ControlPanel::AllowOnlineTips
+                        code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "AllowOnlineTips" /t REG_DWORD /d 0 /f
+                        revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "AllowOnlineTips" /t REG_DWORD /d 1 /f
+                    -
+                        name: Turn off Internet File Association service
+                        recommend: true
+                        docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.InternetCommunicationManagement::ShellNoUseInternetOpenWith_2
+                        code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoInternetOpenWith" /t REG_DWORD /d 1 /f
+                        revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoInternetOpenWith" /t REG_DWORD /d 0 /f
+                    -
+                        name: Turn off the "Order Prints" picture task
+                        recommend: true
+                        docs:
+                            - https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.InternetCommunicationManagement::ShellRemoveOrderPrints_2
+                            - https://www.stigviewer.com/stig/microsoft_windows_server_2012_member_server/2013-07-25/finding/WN12-CC-000042
+                        code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoOnlinePrintsWizard" /t REG_DWORD /d 1 /f
+                        revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoOnlinePrintsWizard" /t REG_DWORD /d 0 /f
+                    -
+                        name: Disable the file and folder Publish to Web option
+                        recommend: true
+                        docs: https://www.stigviewer.com/stig/windows_server_2012_member_server/2014-01-07/finding/V-14255
+                        code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoPublishingWizard" /t REG_DWORD /d 1 /f
+                        revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoPublishingWizard" /t REG_DWORD /d 0 /f
+                    -
+                        name: Prevent downloading a list of providers for wizards
+                        recommend: true
+                        docs: https://www.stigviewer.com/stig/windows_10/2017-12-01/finding/V-63621
+                        code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoWebServices" /t REG_DWORD /d 1 /f
+                        revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoWebServices" /t REG_DWORD /d 0 /f
             -
-                name: Disable and auto-clear recent documents in explorer
-                recommend: true
-                code: |-
-                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoRecentDocsHistory" /t REG_DWORD /d 1 /f
-                    reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "ClearRecentDocsOnExit" /t REG_DWORD /d 1 /f
+                category: Recent documents
+                children:
+                    -
+                        name: Do not keep history of recently opened documents
+                        recommend: true
+                        docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.StartMenu::NoRecentDocsHistory
+                        code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoRecentDocsHistory" /t REG_DWORD /d 1 /f
+                        revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoRecentDocsHistory" /t REG_DWORD /d 0 /f
+                    -
+                        name: Clear history of recently opened documents on exit
+                        recommend: true
+                        docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.StartMenu::ClearRecentDocsOnExit
+                        code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "ClearRecentDocsOnExit" /t REG_DWORD /d 1 /f
+                        revertCode: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "ClearRecentDocsOnExit" /t REG_DWORD /d 01 /f
             -
                 name: Disable Live Tiles push notifications
                 recommend: true
+                docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.Notifications::NoTileNotification
                 code: reg add "HKCU\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\PushNotifications" /v "NoTileApplicationNotification" /t REG_DWORD /d 1 /f
+                revertCode: reg add "HKCU\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\PushNotifications" /v "NoTileApplicationNotification" /t REG_DWORD /d 0 /f
             -
                 name: Turn off "Look For An App In The Store" option
                 recommend: true
+                docs:
+                    - https://www.stigviewer.com/stig/microsoft_windows_server_2012_member_server/2013-07-25/finding/WN12-CC-000030
+                    - https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.InternetCommunicationManagement::ShellNoUseStoreOpenWith_1
                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoUseStoreOpenWith" /t REG_DWORD /d 1 /f
+                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoUseStoreOpenWith" /t REG_DWORD /d 0 /f
             -
                 name: Do not show recently used files in Quick Access
                 recommend: true
@@ -1686,8 +1795,15 @@ actions:
                     if %PROCESSOR_ARCHITECTURE%==x86 ( REM is 32 bit?
                         reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowRecent" /d 0 /t REG_DWORD /f
                     ) else (
-                        reg delete HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5} /f
-                        reg delete HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5} /f
+                        reg delete "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5}" /f
+                        reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5}" /f
+                    )
+                revertCode:
+                    if %PROCESSOR_ARCHITECTURE%==x86 ( REM is 32 bit?
+                        reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowRecent" /d 1 /t REG_DWORD /f
+                    ) else (
+                        reg add "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5}" /f
+                        reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5}" /f
                     )
             -
                 name: Disable Sync Provider Notifications
@@ -1696,55 +1812,76 @@ actions:
                 revertCode: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowSyncProviderNotifications" /d 1 /t REG_DWORD /f
             -
                 name: Turn hibernate off to disable sleep for quick start
+                docs: http://www.windows10windows7.com/w10/win10zs/100102504.html
                 recommend: false
                 code: powercfg -h off
                 revertCode: powercfg -h on
-                docs: http://www.windows10windows7.com/w10/win10zs/100102504.html
             -
                 category: Hide from This PC and Browse in dialog boxes
                 children:
                     -
                         name: 3D Objects
+                        recommend: false
                         code: |-
                             reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
                             reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
-                        recommend: false
+                        revertCode: |-
+                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
+                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
                     -
                         name: Desktop
+                        recommend: false
                         code: |-
                             reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
                             reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
-                        recommend: false
+                        revertCode: |-
+                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
+                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
                     -
                         name: Documents
+                        recommend: false
                         code: |-
                             reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{f42ee2d3-909f-4907-8871-4c22fc0bf756}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
                             reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{f42ee2d3-909f-4907-8871-4c22fc0bf756}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
-                        recommend: false
+                        revertCode: |-
+                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{f42ee2d3-909f-4907-8871-4c22fc0bf756}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
+                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{f42ee2d3-909f-4907-8871-4c22fc0bf756}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
                     -
                         name: Downloads
+                        recommend: false
                         code: |-
                             reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
                             reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
-                        recommend: false
+                        revertCode: |-
+                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
+                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
                     -
                         name: Movies
+                        recommend: false
                         code: |-
                             reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{35286a68-3c57-41a1-bbb1-0eae73d76c95}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
                             reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{35286a68-3c57-41a1-bbb1-0eae73d76c95}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
-                        recommend: false
+                        revertCode: |-
+                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{35286a68-3c57-41a1-bbb1-0eae73d76c95}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
+                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{35286a68-3c57-41a1-bbb1-0eae73d76c95}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
                     -
                         name: Music
+                        recommend: false
                         code: |-
                             reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{a0c69a99-21c8-4671-8703-7934162fcf1d}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
                             reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{a0c69a99-21c8-4671-8703-7934162fcf1d}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
-                        recommend: false
+                        revertCode: |-
+                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{a0c69a99-21c8-4671-8703-7934162fcf1d}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
+                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{a0c69a99-21c8-4671-8703-7934162fcf1d}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
                     -
                         name: Pictures 
+                        recommend: false               
                         code: |-
                             reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{0ddd015d-b06c-45d5-8c4c-f59713854639}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
                             reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{0ddd015d-b06c-45d5-8c4c-f59713854639}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
-                        recommend: false               
+                        revertCode: |-
+                            reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{0ddd015d-b06c-45d5-8c4c-f59713854639}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
+                            reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{0ddd015d-b06c-45d5-8c4c-f59713854639}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
     -
         category: Disable OS services
         children:
@@ -2663,3 +2800,4 @@ actions:
                 code: |-
                     del /f /q %AppData%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat
                     copy "%~dpnx0" "%AppData%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat"
+                revertCode: del /f /q %AppData%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat
