@@ -16,7 +16,7 @@
 <script lang="ts">
 import { Component } from 'vue-property-decorator';
 import { StatefulVue } from './StatefulVue';
-import { SaveFileDialog } from './../infrastructure/SaveFileDialog';
+import { SaveFileDialog, FileType } from './../infrastructure/SaveFileDialog';
 import { Clipboard } from './../infrastructure/Clipboard';
 import IconButton from './IconButton.vue';
 
@@ -43,7 +43,7 @@ export default class TheCodeButtons extends StatefulVue {
 
   public async saveCodeAsync() {
       const state = await this.getCurrentStateAsync();
-      SaveFileDialog.saveText(state.code.current, 'privacy-script.bat');
+      SaveFileDialog.saveFile(state.code.current, 'privacy-script.bat', FileType.BatchFile);
   }
 }
 </script>

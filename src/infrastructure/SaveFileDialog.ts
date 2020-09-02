@@ -1,9 +1,18 @@
 import fileSaver from 'file-saver';
 
+export enum FileType {
+    BatchFile,
+}
 export class SaveFileDialog {
-    public static saveText(text: string, fileName: string): void {
-        this.saveBlob(text, 'text/plain;charset=utf-8', fileName);
+    public static saveFile(text: string, fileName: string, type: FileType): void {
+        const mimeType = this.mimeTypes.get(type);
+        this.saveBlob(text, mimeType, fileName);
     }
+    private static readonly mimeTypes = new Map<FileType, string>([
+        // Some browsers (including firefox + IE) require right mime type
+        // otherwise they ignore extension and save the file as text.
+        [ FileType.BatchFile, 'application/bat' ], // https://en.wikipedia.org/wiki/Batch_file
+    ]);
 
     private static saveBlob(file: BlobPart, fileType: string, fileName: string): void {
         try {
