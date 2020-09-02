@@ -21,11 +21,11 @@
     import LiquorTree, { ILiquorTreeNewNode, ILiquorTreeExistingNode, ILiquorTree } from 'liquor-tree';
     import Node from './Node/Node.vue';
     import { INode } from './Node/INode';
-    import { convertExistingToNode, toNewLiquorTreeNode } from './LiquorTree/NodeTranslator';
+    import { convertExistingToNode, toNewLiquorTreeNode } from './LiquorTree/NodeWrapper/NodeTranslator';
     import { INodeSelectedEvent } from './/INodeSelectedEvent';
-    import { updateNodesCheckedState, getNewCheckedState } from './LiquorTree/NodeStateUpdater';
+    import { getNewCheckedState } from './LiquorTree/NodeWrapper/NodeStateUpdater';
     import { LiquorTreeOptions } from './LiquorTree/LiquorTreeOptions';
-    import { FilterPredicate, NodePredicateFilter } from './LiquorTree/NodePredicateFilter';
+    import { FilterPredicate, NodePredicateFilter } from './LiquorTree/NodeWrapper/NodePredicateFilter';
 
     /** Wrapper for Liquor Tree, reveals only abstracted INode for communication */
     @Component({
@@ -84,19 +84,9 @@
             if (!selectedNodeIds) {
                 throw new Error('Selected nodes are undefined');
             }
-            const newNodes = updateNodesCheckedState(this.getLiquorTreeApi().model, selectedNodeIds);
-            this.getLiquorTreeApi().setModel(newNodes);
-            /*  Alternative:
-                    this.getLiquorTreeApi().recurseDown((node) => {
-                                node.states.checked = selectedNodeIds.includes(node.id);
-                            });
-                Problem: Does not check their parent if all children are checked, because it does not
-                        trigger update on parent as we work with scripts not categories. */
-            /*  Alternative:
-                    this.getLiquorTreeApi().recurseDown((node) => {
-                            if(selectedNodeIds.includes(node.id)) { node.select(); } else { node.unselect(); }
-                    });
-                Problem: Emits nodeSelected() event again which will cause an infinite loop. */
+            this.getLiquorTreeApi().recurseDown((node) => {
+                node.states.checked = getNewCheckedState(node, selectedNodeIds);
+            });
         }
 
         private getLiquorTreeApi(): ILiquorTree {

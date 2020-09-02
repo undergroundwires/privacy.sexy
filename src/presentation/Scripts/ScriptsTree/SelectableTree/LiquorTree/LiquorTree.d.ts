@@ -10,9 +10,9 @@ declare module 'liquor-tree' {
         clearFilter(): void;
         setModel(nodes: ReadonlyArray<ILiquorTreeNewNode>): void;
         // getNodeById(id: string):  ILiquorTreeExistingNode;
-        // recurseDown(fn: (node: ILiquorTreeExistingNode) => void): void;
+        recurseDown(fn: (node: ILiquorTreeExistingNode) => void): void;
     }
-    interface ICustomLiquorTreeData {
+    export interface ICustomLiquorTreeData {
         type: number;
         documentationUrls: ReadonlyArray<string>;
         isReversible: boolean;
@@ -35,7 +35,7 @@ declare module 'liquor-tree' {
         data: ILiquorTreeNodeData;
         states: ILiquorTreeNodeState | undefined;
         children: ReadonlyArray<ILiquorTreeExistingNode> | undefined;
-        expand(): void;
+        // expand(): void;
     }
 
     /**
@@ -60,7 +60,7 @@ declare module 'liquor-tree' {
         deletion(node: ILiquorTreeNode): boolean;
     }
 
-    interface ILiquorTreeNodeData extends ICustomLiquorTreeData {
+    export interface ILiquorTreeNodeData extends ICustomLiquorTreeData {
         text: string;
     }
 

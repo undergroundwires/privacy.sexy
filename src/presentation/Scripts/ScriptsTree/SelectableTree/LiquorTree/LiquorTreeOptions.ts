@@ -1,15 +1,21 @@
-import { ILiquorTreeOptions, ILiquorTreeFilter, ILiquorTreeNode } from 'liquor-tree';
+import { ILiquorTreeOptions, ILiquorTreeFilter, ILiquorTreeNode, ILiquorTreeExistingNode } from 'liquor-tree';
 
 export class LiquorTreeOptions implements ILiquorTreeOptions {
-    public multiple = true;
-    public checkbox = true;
-    public checkOnSelect = true;
+    public readonly multiple = true;
+    public readonly checkbox = true;
+    public readonly checkOnSelect = true;
     /*  For checkbox mode only. Children will have the same checked state as their parent.
         This is false as it's handled manually to be able to batch select for performance + highlighting */
-    public autoCheckChildren = false;
-    public parentSelect = false;
-    public keyboardNavigation = true;
-    constructor(public filter: ILiquorTreeFilter) { }
+    public readonly autoCheckChildren = false;
+    public readonly parentSelect = false;
+    public readonly keyboardNavigation = true;
+    public readonly filter = { // Wrap this in an arrow function as setting filter directly does not work JS APIs
+        emptyText: this.liquorTreeFilter.emptyText,
+        matcher: (query: string, node: ILiquorTreeExistingNode) => {
+            return this.liquorTreeFilter.matcher(query, node);
+        },
+    };
+    constructor(private readonly liquorTreeFilter: ILiquorTreeFilter) { }
     public deletion(node: ILiquorTreeNode): boolean {
         return false; // no op
     }
