@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.7.0 (2020-09-02)
+
+* [search] better (multilined) message when there are no results | [commit](https://github.com/undergroundwires/privacy.sexy/commit/ec15af01dd020b364c2174fe562fd66227c2320c)
+* [search] added clear/close button | [commit](https://github.com/undergroundwires/privacy.sexy/commit/d6fa9a2a03c0ebe68b94f0b80cc52b4e200c9213)
+* move script generation to /generation | [commit](https://github.com/undergroundwires/privacy.sexy/commit/5df458739d076719e350ba194c4f3f772884fcdb)
+* add auto-highlighting of selected/updated code | [commit](https://github.com/undergroundwires/privacy.sexy/commit/b789250cb89e2130b08e1a927df8181cf945dfeb)
+* prompt admin priviliges automatically | [commit](https://github.com/undergroundwires/privacy.sexy/commit/f8ba5c46e4923d9c35f200f8a08aa6437f7c0ecc)
+* add removal of ghost (default0) telemetry user | [commit](https://github.com/undergroundwires/privacy.sexy/commit/c262681011f39b4412669b6cf233476f676ca550)
+* add more windows defender tweaks, categorization and reversibility | [commit](https://github.com/undergroundwires/privacy.sexy/commit/1a34c7374ba56bafa0209bbb55c81b233bb419ed)
+* fix NTP script documentation is on wrong place | [commit](https://github.com/undergroundwires/privacy.sexy/commit/3060ebf79cf242370433495cc3e1878b7581b202)
+* updated dependencies to latest and audit fixes (#25) | [commit](https://github.com/undergroundwires/privacy.sexy/commit/c628aa9aef8ab7c815661d3c1711e7fbc65c69a2)
+* categorize, fix and extend windows log files cleanup | [commit](https://github.com/undergroundwires/privacy.sexy/commit/594a14d6ca76cbd27a21877b8c373c1930589ca6)
+* add more OneDrive cleanup scripts and categorize them | [commit](https://github.com/undergroundwires/privacy.sexy/commit/978d7d08638dd161082f239ed088b12302f29458)
+* add disabling firefox telemetry | [commit](https://github.com/undergroundwires/privacy.sexy/commit/f8b8b4c97ab734d5ba7370894b694993924388da)
+* add disabling ccleaner telemetry | [commit](https://github.com/undergroundwires/privacy.sexy/commit/018b7e270f207aac926cb12f8069ebfcdce193ce)
+* Add disabling of PowerShell 7+ telemetry (#29) | [commit](https://github.com/undergroundwires/privacy.sexy/commit/456e40bedf9afcc846f9b13f1ea144cef6115cf6)
+* categorize, fix, make scripts reversible in "UI for privacy", "security improvements" and "configure browsers" | [commit](https://github.com/undergroundwires/privacy.sexy/commit/532915b95da9fecd6b981d91bf489359e4e53caa)
+* fix "Configure Defender" being in wrong category #28 | [commit](https://github.com/undergroundwires/privacy.sexy/commit/f709d6a566ed7846b677b383863deda9680a2a9c)
+* do not hardcode capability versions and make them reversible | [commit](https://github.com/undergroundwires/privacy.sexy/commit/2afef4ea3d0d3d09aa1fa1eedba8493680bd8f10)
+* exclude paint, wordpad and notepad from bloatware removal | [commit](https://github.com/undergroundwires/privacy.sexy/commit/d235dee95514a01745aef9479d07f88ffb4b40b8)
+* add reversibility on category level | [commit](https://github.com/undergroundwires/privacy.sexy/commit/f51e8859eeb32c944126d692cfe03a0320c8b568)
+* refactor unused imports & variables | [commit](https://github.com/undergroundwires/privacy.sexy/commit/a23d28f2cfa2d64d45460697cf5ee9d6b5920752)
+* fix search (got broken in b789250) with tests and refactorings | [commit](https://github.com/undergroundwires/privacy.sexy/commit/8bbe6ebf750f1a1cbab493fb99b5ea91f4e21609)
+* update the screenshot to show off highlighting | [commit](https://github.com/undergroundwires/privacy.sexy/commit/b4aacea2a3e0bbcf2d8a79ff67f51c0f19e888a6)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.6.2...0.7.0)
+
 ## 0.6.2 (2020-08-16)
 
 * 🐛 fixed disabling error reporting for november 2019 update | [commit](https://github.com/undergroundwires/privacy.sexy/commit/5967347b80976a519f6f4eb1972a62f3e600df2b)
