@@ -114,7 +114,7 @@ function initializeEditor(theme: string, editorId: string): ace.Ace.Editor {
     min-height: 200px;
     &__highlight {
       background-color:$accent;
-      opacity: 20%;
+      opacity: 0.2; // having procent fails in production (minified) build
       position:absolute;
     }
 }
