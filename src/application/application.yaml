@@ -956,25 +956,38 @@ actions:
                 children:
                     -
                         category: Disable Experience Improvement Program (PerfWatson)
+                        docs: 
+                            - https://docs.microsoft.com/en-us/visualstudio/ide/visual-studio-experience-improvement-program
+                            - https://devblogs.microsoft.com/visualstudio/how-we-use-your-perfwatson-data-to-identify-unresponsive-areas/
                         children:
                             -
-                                name: Disable SQM 64 bit OS key
+                                name: Disable SQM OS key
                                 recommend: true
                                 code: |-
-                                    reg add "HKLM\SOFTWARE\Wow6432Node\Microsoft\VSCommon\14.0\SQM"  /v OptIn /t REG_DWORD /d 0 /f
-                                    reg add "HKLM\SOFTWARE\Wow6432Node\Microsoft\VSCommon\15.0\SQM"  /v OptIn /t REG_DWORD /d 0 /f
-                                    reg add "HKLM\SOFTWARE\Wow6432Node\Microsoft\VSCommon\16.0\SQM"  /v OptIn /t REG_DWORD /d 0 /f
-                            -
-                                name: Disable SQM 32 bit OS key
-                                recommend: true
-                                code: |-
-                                    reg add "HKLM\SOFTWARE\Microsoft\VSCommon\14.0\SQM"  /v OptIn /t REG_DWORD /d 0 /f
-                                    reg add "HKLM\SOFTWARE\Microsoft\VSCommon\15.0\SQM"  /v OptIn /t REG_DWORD /d 0 /f
-                                    reg add "HKLM\SOFTWARE\Microsoft\VSCommon\16.0\SQM"  /v OptIn /t REG_DWORD /d 0 /f
+                                    if %PROCESSOR_ARCHITECTURE%==x86 ( REM is 32 bit?
+                                        reg add "HKLM\SOFTWARE\Microsoft\VSCommon\14.0\SQM" /v "OptIn" /t REG_DWORD /d 0 /f
+                                        reg add "HKLM\SOFTWARE\Microsoft\VSCommon\15.0\SQM" /v "OptIn" /t REG_DWORD /d 0 /f
+                                        reg add "HKLM\SOFTWARE\Microsoft\VSCommon\16.0\SQM" /v "OptIn" /t REG_DWORD /d 0 /f
+                                    ) else (
+                                        reg add "HKLM\SOFTWARE\Wow6432Node\Microsoft\VSCommon\14.0\SQM" /v "OptIn" /t REG_DWORD /d 0 /f
+                                        reg add "HKLM\SOFTWARE\Wow6432Node\Microsoft\VSCommon\15.0\SQM" /v "OptIn" /t REG_DWORD /d 0 /f
+                                        reg add "HKLM\SOFTWARE\Wow6432Node\Microsoft\VSCommon\16.0\SQM" /v "OptIn" /t REG_DWORD /d 0 /f
+                                    )
+                                revertCode:
+                                    if %PROCESSOR_ARCHITECTURE%==x86 ( REM is 32 bit?
+                                        reg add "HKLM\SOFTWARE\Microsoft\VSCommon\14.0\SQM" /v "OptIn" /t REG_DWORD /d 1 /f
+                                        reg add "HKLM\SOFTWARE\Microsoft\VSCommon\15.0\SQM" /v "OptIn" /t REG_DWORD /d 1 /f
+                                        reg add "HKLM\SOFTWARE\Microsoft\VSCommon\16.0\SQM" /v "OptIn" /t REG_DWORD /d 1 /f
+                                    ) else (
+                                        reg add "HKLM\SOFTWARE\Wow6432Node\Microsoft\VSCommon\14.0\SQM" /v "OptIn" /t REG_DWORD /d 1 /f
+                                        reg add "HKLM\SOFTWARE\Wow6432Node\Microsoft\VSCommon\15.0\SQM" /v "OptIn" /t REG_DWORD /d 1 /f
+                                        reg add "HKLM\SOFTWARE\Wow6432Node\Microsoft\VSCommon\16.0\SQM" /v "OptIn" /t REG_DWORD /d 1 /f
+                                    )
                             -
                                 name: Disable SQM group policy
                                 recommend: true
-                                code: reg add "HKLM\Software\Policies\Microsoft\VisualStudio\SQM"  /v OptIn /t REG_DWORD /d 0 /f
+                                code: reg add "HKLM\Software\Policies\Microsoft\VisualStudio\SQM" /v "OptIn" /t REG_DWORD /d 0 /f
+                                revertCode: reg add "HKLM\Software\Policies\Microsoft\VisualStudio\SQM" /v "OptIn" /t REG_DWORD /d 1 /f
                     -
                         name: Disable visual studio telemetry
                         recommend: true
@@ -1474,26 +1487,20 @@ actions:
                 docs: https://support.microsoft.com/en-us/help/4072698/windows-server-speculative-execution-side-channel-vulnerabilities-prot
                 children:
                     -
-                        name: Spectre variant 2 and meltdown (Intel)
-                        recommend: false
-                        code: |-
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v FeatureSettingsOverride /t REG_DWORD /d 0 /f
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v FeatureSettingsOverrideMask /t REG_DWORD /d 3 /f
-                        revertCode: |-
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v FeatureSettingsOverride /t REG_DWORD /d 3 /f
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v FeatureSettingsOverrideMask /t REG_DWORD /d 3 /f
-                    -
-                        name: Spectre variant 2 and meltdown (AMD)
-                        recommend: false
-                        code: |-
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v FeatureSettingsOverride /t REG_DWORD /d 64 /f
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v FeatureSettingsOverrideMask /t REG_DWORD /d 3 /f
-                        revertCode: |-
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v FeatureSettingsOverride /t REG_DWORD /d 3 /f
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v FeatureSettingsOverrideMask /t REG_DWORD /d 3 /f
+                        name: Spectre variant 2 and meltdown (own OS)
+                        code: 
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "FeatureSettingsOverrideMask" /t REG_DWORD /d 3 /f
+                            wmic cpu get name | findstr "Intel" >nul && (
+                                reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "FeatureSettingsOverride" /t REG_DWORD /d 0 /f
+                            )
+                            wmic cpu get name | findstr "AMD" >nul && (
+                                reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "FeatureSettingsOverride" /t REG_DWORD /d 64 /f
+                            )
+                        revertCode:
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "FeatureSettingsOverrideMask" /t REG_DWORD /d 3 /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "FeatureSettingsOverride" /t REG_DWORD /d 3 /f
                     -
                         name: Spectre variant 2 and meltdown (HyperV)
-                        recommend: false
                         code: reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Virtualization" /v MinVmVersionForCpuBasedMitigations /t REG_SZ /d "1.0" /f
                         revertCode: reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Virtualization" /v MinVmVersionForCpuBasedMitigations /f
             -
