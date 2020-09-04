@@ -18,8 +18,6 @@
     import { StatefulVue } from '@/presentation/StatefulVue';
     import { INode } from './INode';
     import { SelectedScript } from '@/application/State/Selection/SelectedScript';
-    import { IApplicationState } from '@/application/State/IApplicationState';
-    import { getCategoryId, getScriptId } from './../../ScriptNodeParser';
     import { getReverter } from './Reverter/ReverterFactory';
 
     @Component
