@@ -2,42 +2,40 @@
 @import "@/presentation/styles/colors.scss";
 
 .tree {
-    background-color: $slate;
-}
-
-.tree-node > .tree-content > .tree-anchor > span {
-    color: $white !important;
-    text-transform: uppercase;
-    color: $light-gray;
-    font-size: 1.5em;
-}
-
-.tree-node {
-    white-space: normal !important;
-}
-
-.tree-arrow.has-child {
-    &.rtl:after, &:after {
-        border-color: $white !important;
+    background: $slate;
+    &-node { 
+        white-space: normal !important;
+        > .tree-content {
+            > .tree-anchor > span {
+                color: $white;
+                text-transform: uppercase;
+                font-size: 1.5em;
+            }
+            &:hover {
+                background: $dark-gray !important;
+            }
+        }
+        &.selected { // When using keyboard navigation it higlights current item and its child items
+             background: $gray;
+            .tree-text {
+                color: $black !important;
+            }
+        }
     }
-}
-
-.tree-node.selected > .tree-content {
-    > .tree-anchor > span {
-        font-weight: bolder;
+    &-checkbox {
+        &.checked {
+            background: $accent !important;
+        }
+        &.indeterminate {
+            border-color: $gray !important;
+        }
+        background: $dark-slate !important;
     }
-}
-
-.tree-content:hover {
-    background: $dark-gray !important;
-}
-
-.tree-checkbox {
-    &.checked {
-        background: $accent !important;
+    &-arrow {
+        &.has-child {
+            &.rtl:after, &:after {
+                border-color: $white !important;
+            }
+        }
     }
-    &.indeterminate {
-        border-color: $gray !important;
-    }
-    background: $dark-slate !important;
 }
