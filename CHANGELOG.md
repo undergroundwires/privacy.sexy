@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.7.1 (2020-09-04)
+
+* fix some browsers (including firefox) downloading the script as a text file | [commit](https://github.com/undergroundwires/privacy.sexy/commit/8c17929151f9c4fa5f48564492bbf400ced95eea)
+* rename screenshot image file | [commit](https://github.com/undergroundwires/privacy.sexy/commit/b8682a852a14ed6cf49986695d9510b840ac9d3d)
+* fix new/changed script higlighting not working on production builds | [commit](https://github.com/undergroundwires/privacy.sexy/commit/8c38dd73d8c7b77d8d341c0389f4d7229f9b97fd)
+* refactor unused imports | [commit](https://github.com/undergroundwires/privacy.sexy/commit/6badfef9daace0c5de3fd33652a82bfe22261b11)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.7.0...0.7.1)
+
 ## 0.7.0 (2020-09-02)
 
 * [search] better (multilined) message when there are no results | [commit](https://github.com/undergroundwires/privacy.sexy/commit/ec15af01dd020b364c2174fe562fd66227c2320c)
