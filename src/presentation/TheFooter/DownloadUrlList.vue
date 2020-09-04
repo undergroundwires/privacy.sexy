@@ -17,7 +17,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { Environment } from '@/application/Environment/Environment';
-import { OperatingSystem } from '@/application/Environment/OperatingSystem';
+import { OperatingSystem } from '@/domain/OperatingSystem';
 import DownloadUrlListItem from './DownloadUrlListItem.vue';
 
 @Component({

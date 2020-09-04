@@ -1,4 +1,9 @@
-process.env.VUE_APP_VERSION = require('./package.json').version;
+const packageJson = require('./package.json');
+
+process.env.VUE_APP_VERSION         = packageJson.version;
+process.env.VUE_APP_NAME            = packageJson.name;
+process.env.VUE_APP_REPOSITORY_URL  = packageJson.repository.url;
+process.env.VUE_APP_HOMEPAGE_URL    = packageJson.homepage;
 
 module.exports = {
     pluginOptions: {

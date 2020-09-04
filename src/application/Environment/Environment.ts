@@ -1,7 +1,7 @@
 import { BrowserOsDetector } from './BrowserOs/BrowserOsDetector';
 import { IBrowserOsDetector } from './BrowserOs/IBrowserOsDetector';
 import { IEnvironment } from './IEnvironment';
-import { OperatingSystem } from './OperatingSystem';
+import { OperatingSystem } from '@/domain/OperatingSystem';
 
 interface IEnvironmentVariables {
     readonly window: Window & typeof globalThis;

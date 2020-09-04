@@ -4,7 +4,7 @@
       <div class="footer__section">
         <span v-if="isDesktop" class="footer__section__item">
           <font-awesome-icon class="icon" :icon="['fas', 'globe']"  />
-          <span>Online version at <a href="https://privacy.sexy" target="_blank">https://privacy.sexy</a></span>
+          <span>Online version at <a :href="homepageUrl" target="_blank">{{ homepageUrl }}</a></span>
         </span>
         <span v-else class="footer__section__item">
           <DownloadUrlList />
@@ -66,6 +66,7 @@ export default class TheFooter extends StatefulVue {
   public repositoryUrl: string = '';
   public releaseUrl: string = '';
   public feedbackUrl: string = '';
+  public homepageUrl: string = '';
 
   constructor() {
     super();
@@ -74,12 +75,15 @@ export default class TheFooter extends StatefulVue {
 
   public async mounted() {
     const state = await this.getCurrentStateAsync();
-    this.version = state.app.version;
-    this.repositoryUrl = state.app.repositoryUrl;
-    this.releaseUrl = `${state.app.repositoryUrl}/releases/tag/${state.app.version}`;
-    this.feedbackUrl = `${state.app.repositoryUrl}/issues`;
+    const info = state.app.info;
+    this.version = info.version;
+    this.homepageUrl = info.homepage;
+    this.repositoryUrl = info.repositoryWebUrl;
+    this.releaseUrl = info.releaseUrl;
+    this.feedbackUrl = info.feedbackUrl;
   }
 }
+
 </script>
 
 <style scoped lang="scss">

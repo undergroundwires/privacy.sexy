@@ -74,7 +74,7 @@
 
         public async mounted() {
             const state = await this.getCurrentStateAsync();
-            this.repositoryUrl = state.app.repositoryUrl;
+            this.repositoryUrl = state.app.info.repositoryWebUrl;
             state.filter.filterRemoved.on(() => {
                 this.isSearching = false;
             });

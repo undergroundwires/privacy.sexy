@@ -1,4 +1,4 @@
-import { OperatingSystem } from './OperatingSystem';
+import { OperatingSystem } from '@/domain/OperatingSystem';
 
 export interface IEnvironment {
     isDesktop: boolean;

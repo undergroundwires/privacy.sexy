@@ -5,8 +5,6 @@ import 'mocha';
 import { expect } from 'chai';
 import { parseCategory } from '@/application/Parser/CategoryParser';
 
-declare var process;
-
 describe('ApplicationParser', () => {
     describe('parseApplication', () => {
         it('can parse current application file', () => {
@@ -16,74 +14,64 @@ describe('ApplicationParser', () => {
             expect(() => parseApplication(undefined)).to.throw('application is null or undefined');
         });
         it('throws when undefined actions', () => {
-            const sut: ApplicationYaml = {
-                name: 'test',
-                repositoryUrl: 'https://privacy.sexy',
-                actions: undefined,
-            };
+            const sut: ApplicationYaml = { actions: undefined };
             expect(() => parseApplication(sut)).to.throw('application does not define any action');
         });
         it('throws when has no actions', () => {
-            const sut: ApplicationYaml = {
-                name: 'test',
-                repositoryUrl: 'https://privacy.sexy',
-                actions: [],
-            };
+            const sut: ApplicationYaml = { actions: [] };
             expect(() => parseApplication(sut)).to.throw('application does not define any action');
         });
-        it('returns expected name', () => {
-            // arrange
-            const expected = 'test-app-name';
-            const sut: ApplicationYaml = {
-                name: expected,
-                repositoryUrl: 'https://privacy.sexy',
-                actions: [ getTestCategory() ],
-            };
-            // act
-            const actual = parseApplication(sut).name;
-            // assert
-            expect(actual).to.be.equal(actual);
-        });
-        it('returns expected repository url', () => {
-            // arrange
-            const expected = 'https://privacy.sexy';
-            const sut: ApplicationYaml = {
-                name: 'name',
-                repositoryUrl: expected,
-                actions: [ getTestCategory() ],
-            };
-            // act
-            const actual = parseApplication(sut).repositoryUrl;
-            // assert
-            expect(actual).to.be.equal(actual);
-        });
-        it('returns expected repository version', () => {
-            // arrange
-            const expected = '1.0.0';
-            process = {
-                env: {
-                    VUE_APP_VERSION: expected,
-                },
-            };
-            const sut: ApplicationYaml = {
-                name: 'name',
-                repositoryUrl: 'https://privacy.sexy',
-                actions: [ getTestCategory() ],
-            };
-            // act
-            const actual = parseApplication(sut).version;
-            // assert
-            expect(actual).to.be.equal(actual);
+        describe('information', () => {
+            it('returns expected repository version', () => {
+                // arrange
+                const expected = 'expected-version';
+                const env = getProcessEnvironmentStub();
+                env.VUE_APP_VERSION = expected;
+                const sut: ApplicationYaml = { actions: [ getTestCategory() ] };
+                // act
+                const actual = parseApplication(sut, env).info.version;
+                // assert
+                expect(actual).to.be.equal(expected);
+            });
+            it('returns expected repository url', () => {
+                // arrange
+                const expected = 'https://expected-repository.url';
+                const env = getProcessEnvironmentStub();
+                env.VUE_APP_REPOSITORY_URL = expected;
+                const sut: ApplicationYaml = { actions: [ getTestCategory() ] };
+                // act
+                const actual = parseApplication(sut, env).info.repositoryUrl;
+                // assert
+                expect(actual).to.be.equal(expected);
+            });
+            it('returns expected name', () => {
+                // arrange
+                const expected = 'expected-app-name';
+                const env = getProcessEnvironmentStub();
+                env.VUE_APP_NAME = expected;
+                const sut: ApplicationYaml = { actions: [ getTestCategory() ] };
+                // act
+                const actual = parseApplication(sut, env).info.name;
+                // assert
+                expect(actual).to.be.equal(expected);
+            });
+            it('returns expected homepage url', () => {
+                // arrange
+                const expected = 'https://expected.sexy';
+                const env = getProcessEnvironmentStub();
+                env.VUE_APP_HOMEPAGE_URL = expected;
+                const sut: ApplicationYaml = { actions: [ getTestCategory() ] };
+                // act
+                const actual = parseApplication(sut, env).info.homepage;
+                // assert
+                expect(actual).to.be.equal(expected);
+            });
         });
         it('parses actions', () => {
             // arrange
             const actions = [ getTestCategory('test1'), getTestCategory('test2') ];
             const expected = [ parseCategory(actions[0]), parseCategory(actions[1]) ];
-            const sut: ApplicationYaml = {
-                name: 'name',
-                repositoryUrl: 'https://privacy.sexy',
-                actions,
-            };
+            const sut: ApplicationYaml = { actions };
             // act
             const actual = parseApplication(sut).actions;
             // assert
@@ -111,5 +99,14 @@ function getTestScript(scriptName: string): YamlScript {
         code: 'script code',
         revertCode: 'revert code',
         recommend: true,
+    };
+}
+
+function getProcessEnvironmentStub(): NodeJS.ProcessEnv {
+    return {
+        VUE_APP_VERSION: 'stub-version',
+        VUE_APP_NAME: 'stub-name',
+        VUE_APP_REPOSITORY_URL: 'stub-repository-url',
+        VUE_APP_HOMEPAGE_URL: 'stub-homepage-url',
     };
 }

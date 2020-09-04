@@ -1,5 +1,5 @@
 import { IBrowserOsDetector } from './IBrowserOsDetector';
-import { OperatingSystem } from '../OperatingSystem';
+import { OperatingSystem } from '@/domain/OperatingSystem';
 
 export class DetectorBuilder {
     private readonly existingPartsInUserAgent = new Array<string>();

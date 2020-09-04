@@ -12,7 +12,7 @@
 import { Component, Prop, Watch } from 'vue-property-decorator';
 import { StatefulVue } from '@/presentation/StatefulVue';
 import { Environment } from '@/application/Environment/Environment';
-import { OperatingSystem } from '@/application/Environment/OperatingSystem';
+import { OperatingSystem } from '@/domain/OperatingSystem';
 
 @Component
 export default class DownloadUrlListItem extends StatefulVue {
@@ -39,7 +39,7 @@ export default class DownloadUrlListItem extends StatefulVue {
 
   private async getDownloadUrlAsync(os: OperatingSystem): Promise<string> {
     const state = await this.getCurrentStateAsync();
-    return `${state.app.repositoryUrl}/releases/download/${state.app.version}/${getFileName(os, state.app.version)}`;
+    return state.app.info.getDownloadUrl(os);
   }
 }
 
@@ -62,18 +62,6 @@ function getOperatingSystemName(os: OperatingSystem): string {
     }
 }
 
-function getFileName(os: OperatingSystem, version: string): string {
-    switch (os) {
-        case OperatingSystem.Linux:
-            return `privacy.sexy-${version}.AppImage`;
-        case OperatingSystem.macOS:
-            return `privacy.sexy-${version}.dmg`;
-        case OperatingSystem.Windows:
-            return `privacy.sexy-Setup-${version}.exe`;
-        default:
-            throw new Error(`Unsupported os: ${OperatingSystem[os]}`);
-    }
-}
 </script>
 
 <style scoped lang="scss">

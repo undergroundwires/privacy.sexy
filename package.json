@@ -3,7 +3,12 @@
   "version": "0.7.5",
   "author": "undergroundwires",
   "description": "Enforce privacy & security best-practices on Windows, because privacy is sexy 🍑🍆",
+  "homepage": "https://privacy.sexy",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/undergroundwires/privacy.sexy.git"
+  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
