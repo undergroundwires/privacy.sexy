@@ -1,14 +1,37 @@
-import { ILiquorTreeNode } from 'liquor-tree';
+import { ILiquorTreeNode, ILiquorTreeNodeState } from 'liquor-tree';
 import { NodeType } from './../../Node/INode';
 
-export function getNewCheckedState(
-    oldNode: ILiquorTreeNode,
+export function getNewState(
+    node: ILiquorTreeNode,
+    selectedNodeIds: ReadonlyArray<string>): ILiquorTreeNodeState {
+    const checked = getNewCheckedState(node, selectedNodeIds);
+    const indeterminate = !checked && getNewIndeterminateState(node, selectedNodeIds);
+    return {
+        checked, indeterminate,
+    };
+}
+
+function getNewIndeterminateState(
+    node: ILiquorTreeNode,
     selectedNodeIds: ReadonlyArray<string>): boolean {
-    switch (oldNode.data.type) {
+    switch (node.data.type) {
         case NodeType.Script:
-            return selectedNodeIds.some((id) => id === oldNode.id);
+            return false;
         case NodeType.Category:
-            return parseAllSubScriptIds(oldNode).every((id) => selectedNodeIds.includes(id));
+            return parseAllSubScriptIds(node).some((id) => selectedNodeIds.includes(id));
+        default:
+            throw new Error('Unknown node type');
+    }
+}
+
+function getNewCheckedState(
+    node: ILiquorTreeNode,
+    selectedNodeIds: ReadonlyArray<string>): boolean {
+    switch (node.data.type) {
+        case NodeType.Script:
+            return selectedNodeIds.some((id) => id === node.id);
+        case NodeType.Category:
+            return parseAllSubScriptIds(node).every((id) => selectedNodeIds.includes(id));
         default:
             throw new Error('Unknown node type');
     }

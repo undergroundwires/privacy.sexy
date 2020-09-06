@@ -18,14 +18,15 @@
 
 <script lang="ts">
     import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-    import LiquorTree, { ILiquorTreeNewNode, ILiquorTreeExistingNode, ILiquorTree } from 'liquor-tree';
+    import LiquorTree from 'liquor-tree';
     import Node from './Node/Node.vue';
     import { INode } from './Node/INode';
     import { convertExistingToNode, toNewLiquorTreeNode } from './LiquorTree/NodeWrapper/NodeTranslator';
     import { INodeSelectedEvent } from './/INodeSelectedEvent';
-    import { getNewCheckedState } from './LiquorTree/NodeWrapper/NodeStateUpdater';
+    import { getNewState } from './LiquorTree/NodeWrapper/NodeStateUpdater';
     import { LiquorTreeOptions } from './LiquorTree/LiquorTreeOptions';
     import { FilterPredicate, NodePredicateFilter } from './LiquorTree/NodeWrapper/NodePredicateFilter';
+    import { ILiquorTreeNewNode, ILiquorTreeExistingNode, ILiquorTree, ILiquorTreeNode, ILiquorTreeNodeState } from 'liquor-tree';
 
     /** Wrapper for Liquor Tree, reveals only abstracted INode for communication */
     @Component({
@@ -49,7 +50,7 @@
                 const initialNodes = this.initialNodes.map((node) => toNewLiquorTreeNode(node));
                 if (this.selectedNodeIds) {
                     recurseDown(initialNodes,
-                        (node) => node.state.checked = getNewCheckedState(node, this.selectedNodeIds));
+                        (node) => node.state = updateState(node.state, node, this.selectedNodeIds));
                 }
                 this.initialLiquourTreeNodes = initialNodes;
             } else {
@@ -82,11 +83,11 @@
         @Watch('selectedNodeIds')
         public setSelectedStatusAsync(selectedNodeIds: ReadonlyArray<string>) {
             if (!selectedNodeIds) {
-                throw new Error('Selected nodes are undefined');
+                throw new Error('SelectedrecurseDown nodes are undefined');
             }
-            this.getLiquorTreeApi().recurseDown((node) => {
-                node.states.checked = getNewCheckedState(node, selectedNodeIds);
-            });
+            this.getLiquorTreeApi().recurseDown(
+                (node) => node.states = updateState(node.states, node, selectedNodeIds),
+            );
         }
 
         private getLiquorTreeApi(): ILiquorTree {
@@ -95,6 +96,13 @@
             }
             return (this.$refs.treeElement as any).tree;
         }
+    }
+
+    function updateState(
+        old: ILiquorTreeNodeState,
+        node: ILiquorTreeNode,
+        selectedNodeIds: ReadonlyArray<string>): ILiquorTreeNodeState {
+        return {...old, ...getNewState(node, selectedNodeIds)};
     }
 
     function recurseDown(

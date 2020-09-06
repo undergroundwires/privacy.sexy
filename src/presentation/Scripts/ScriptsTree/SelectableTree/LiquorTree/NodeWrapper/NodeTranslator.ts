@@ -23,6 +23,7 @@ export function toNewLiquorTreeNode(node: INode): ILiquorTreeNewNode {
         text: node.text,
         state: {
             checked: false,
+            indeterminate: false,
         },
         children: convertChildren(node.children, toNewLiquorTreeNode),
         data: {

@@ -20,6 +20,7 @@ declare module 'liquor-tree' {
     // https://github.com/amsik/liquor-tree/blob/master/src/lib/Node.js
     export interface ILiquorTreeNodeState {
         checked: boolean;
+        indeterminate: boolean;
     }
 
     export interface ILiquorTreeNode {

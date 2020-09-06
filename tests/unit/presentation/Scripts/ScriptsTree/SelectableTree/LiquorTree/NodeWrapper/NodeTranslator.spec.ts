@@ -108,6 +108,7 @@ function getNewNode(): ILiquorTreeNewNode {
     const base = getNode();
     const commonState = {
         checked: false,
+        indeterminate: false,
     };
     return {
         id: base.id,
