@@ -1514,7 +1514,7 @@ actions:
                     #         sc stop "ClickToRunSvc" & sc config "ClickToRunSvc" start=disabled
                     #     revertCode: |-
                     #         schtasks /change /TN "Microsoft\Office\Office ClickToRun Service Monitor" /ENABLE
-                    #         sc config "ClickToRunSvc" start=auto
+                    #         sc config "ClickToRunSvc" start=auto & sc start "ClickToRunSvc"
                     -
                         name: Disable Subscription Heartbeat
                         recommend: false
@@ -2250,47 +2250,56 @@ actions:
                 name: Delivery Optimization (P2P Windows Updates)
                 recommend: true
                 code: sc stop "DoSvc" & sc config "DoSvc" start=disabled
+                revertCode: sc config "DoSvc" start=auto & sc start "DoSvc"
             -
                 name: Microsoft Windows Live ID Service
                 recommend: true
                 code: sc stop "wlidsvc" & sc config "wlidsvc" start=demand
+                revertCode: sc config "wlidsvc" start=demand
             -
                 name: Program Compatibility Assistant Service
                 recommend: true
                 code: sc stop "PcaSvc" & sc config "PcaSvc" start=disabled
+                revertCode: sc config "PcaSvc" start=demand
             -
                 name: Downloaded Maps Manager
                 recommend: true
                 code: sc stop "MapsBroker" & sc config "MapsBroker" start=disabled
+                revertCode: sc config "MapsBroker" start=auto & sc start "MapsBroker"
             -
                 name: Microsoft Retail Demo experience
                 recommend: true
                 code: sc stop "RetailDemo" & sc config "RetailDemo" start=disabled
+                revertCode: sc config "RetailDemo" start=demand
             -
-                name: Mail, contact, calendar and user data synchronization. 
-                recommend: false
-                code: |-
-                    sc stop "OneSyncSvc" & sc config "OneSyncSvc" start=disabled
-                    sc stop "UnistoreSvc" & sc config "UnistoreSvc" start=disabled
-                    reg add HKLM\SYSTEM\CurrentControlSet\Services\OneSyncSvc /V Start /t REG_DWORD /d "0x4" /f
+                category: Mail, contact, calendar and user data synchronization
+                children:
+                    -
+                        name: User Data Storage (UnistoreSvc) Service
+                        code: sc stop "UnistoreSvc" & sc config "UnistoreSvc" start=disabled
+                        revertCode: sc config "UnistoreSvc" start=demand
+                    -
+                        name: Sync Host (OneSyncSvc) Service Service
+                        code: sc stop "OneSyncSvc" & sc config "OneSyncSvc" start=disabled
+                        code: sc config "OneSyncSvc" start=auto & sc start "OneSyncSvc"
             -
                 name: Contact data indexing
-                recommend: false
-                code: |-
-                    sc stop "PimIndexMaintenanceSvc" & sc config "PimIndexMaintenanceSvc" start=disabled
+                code: sc stop "PimIndexMaintenanceSvc" & sc config "PimIndexMaintenanceSvc" start=disabled
+                revertCode: sc config "PimIndexMaintenanceSvc" start=demand
             -
                 name: App user data access
-                recommend: false
                 code: sc stop "UserDataSvc" & sc config "UserDataSvc" start=disabled
+                revertCode: sc config "UserDataSvc" start=demand
             -
                 name: Text messaging
-                recommend: false
                 code: sc stop "MessagingService" & sc config "MessagingService" start=disabled
+                revertCode: sc config "MessagingService" start=demand
             -
                 name: Windows Push Notification Service
                 recommend: true
                 docs: https://en.wikipedia.org/wiki/Windows_Push_Notification_Service#Privacy_Issue
                 code: sc stop "WpnService" & sc config "WpnService" start=disabled
+                revertCode: sc config "WpnService" start=auto & sc start "WpnService"
             -
                 category: Disable Xbox services
                 children:
@@ -2314,7 +2323,7 @@ actions:
                 recommend: true
                 docs: https://docs.microsoft.com/en-us/windows-server/storage/file-server/volume-shadow-copy-service
                 code: sc stop "VSS" & sc config "VSS" start=disabled
-                revertCode: sc config "vss" start=auto
+                revertCode: sc config "VSS" start=demand
     -
         category: Remove bloatware
         children:
