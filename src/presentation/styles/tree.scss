@@ -25,6 +25,7 @@
     &-checkbox {
         &.checked {
             background: $accent !important;
+            border-color: $accent !important;
         }
         &.indeterminate {
             border-color: $gray !important;
