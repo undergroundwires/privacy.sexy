@@ -428,10 +428,10 @@ actions:
                 children:
                     -
                         name: Disable Customer Experience Improvement (CEIP/SQM)
+                        docs: https://docs.microsoft.com/en-us/windows/win32/devnotes/ceipenable
                         recommend: true
                         code: reg add "HKLM\Software\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d "0" /f
                         revertCode: reg add "HKLM\Software\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d "1" /f
-                        docs: https://docs.microsoft.com/en-us/windows/win32/devnotes/ceipenable
                     -
                         name: Disable Application Impact Telemetry (AIT)
                         recommend: true
@@ -462,8 +462,8 @@ actions:
                             schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" /ENABLE
                     -
                         name: Disable Webcam Telemetry (devicecensus.exe)
-                        recommend: true
                         docs: https://www.ghacks.net/2019/09/23/what-is-devicecensus-exe-on-windows-10-and-why-does-it-need-internet-connectivity/
+                        recommend: true
                         code: schtasks /change /TN "Microsoft\Windows\Device Information\Device" /DISABLE
                         revertCode: schtasks /change /TN "Microsoft\Windows\Device Information\Device" /ENABLE
                     -
@@ -474,12 +474,13 @@ actions:
                             schtasks /change /TN "Microsoft\Windows\Application Experience\ProgramDataUpdater" /DISABLE
                             schtasks /change /TN "Microsoft\Windows\Application Experience\StartupAppTask" /DISABLE
                             schtasks /change /TN "Microsoft\Windows\Application Experience\AitAgent" /DISABLE
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\CompatTelRunner.exe" /v Debugger /t REG_SZ /d "%windir%\System32\taskkill.exe" /f
+                            reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\CompatTelRunner.exe" /v "Debugger" /t REG_SZ /d "%windir%\System32\taskkill.exe" /f
                         revertCode: |-
                             schtasks /change /TN "Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" /ENABLE
                             schtasks /change /TN "Microsoft\Windows\Application Experience\ProgramDataUpdater" /ENABLE
                             schtasks /change /TN "Microsoft\Windows\Application Experience\StartupAppTask" /ENABLE
                             schtasks /change /TN "Microsoft\Windows\Application Experience\AitAgent" /ENABLE
+                            reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\CompatTelRunner.exe" /v "Debugger" /f
                     -
                         name: Disable telemetry in data collection policy
                         recommend: true
@@ -1148,17 +1149,40 @@ actions:
                 recommend: true
                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableActivityFeed" /d "0" /t REG_DWORD /f
             - 
-                name: Disable Windows Insider Program
-                recommend: true
-                code: |-
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" /v "AllowBuildPreview" /t REG_DWORD /d 0 /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" /v "EnableConfigFlighting" /t REG_DWORD /d 0 /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" /v "EnableExperimentation" /t REG_DWORD /d 0 /f
-                    reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\System\AllowExperimentation" /v "value" /t "REG_DWORD" /d 0 /f
-                    reg add "HKLM\SOFTWARE\Microsoft\WindowsSelfHost\UI\Visibility" /v "HideInsiderPage" /t "REG_DWORD" /d "1" /f
-                    sc stop "wisvc" & sc config "wisvc" start=disabled
+                category: Disable Windows Insider Program
+                children:
+                    -
+                        name: Disable Windows Insider Service
+                        docs: http://revertservice.com/10/wisvc/
+                        recommend: true
+                        code: sc stop "wisvc" & sc config "wisvc" start=disabled
+                        revertCode: sc config "wisvc" start=demand
+                    -
+                        name: Do not let Microsoft try features on this build
+                        docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.DataCollection::EnableExperimentation
+                        recommend: true
+                        code: |-
+                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" /v "EnableExperimentation" /t REG_DWORD /d 0 /f
+                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" /v "EnableConfigFlighting" /t REG_DWORD /d 0 /f
+                            reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\System\AllowExperimentation" /v "value" /t "REG_DWORD" /d 0 /f
+                        revertCode: |-
+                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" /v "EnableExperimentation" /f
+                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" /v "EnableConfigFlighting" /f
+                            reg delete "HKLM\SOFTWARE\Microsoft\PolicyManager\default\System\AllowExperimentation" /v "value" /f
+                    -
+                        name: Disable getting preview builds of Windows
+                        docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.AllowBuildPreview::AllowBuildPreview
+                        recommend: true
+                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" /v "AllowBuildPreview" /t REG_DWORD /d 0 /f
+                        revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" /v "AllowBuildPreview" /f
+                    -
+                        name: Remove "Windows Insider Program" from Settings 
+                        docs: https://www.askvg.com/windows-10-tip-remove-windows-insider-program-section-from-settings-page/
+                        code: reg add "HKLM\SOFTWARE\Microsoft\WindowsSelfHost\UI\Visibility" /v "HideInsiderPage" /t "REG_DWORD" /d "1" /f
+                        revertCode: reg delete "HKLM\SOFTWARE\Microsoft\WindowsSelfHost\UI\Visibility" /v "HideInsiderPage" /f
             -
                 category: Disable cloud sync
+                docs: https://support.microsoft.com/en-us/help/4026102/windows-10-about-sync-settings
                 children:
                     -
                         name: Disable all settings sync
@@ -1221,7 +1245,9 @@ actions:
                     -
                         name: Disable Language Setting Sync
                         recommend: true
-                        code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language" /t REG_DWORD /v Enabled /d 0 /f
+                        docs: https://www.tenforums.com/tutorials/4077-turn-off-sync-settings-microsoft-account-windows-10-a.html
+                        code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language" /t REG_DWORD /v "Enabled" /d 0 /f
+                        revertCode: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language" /t REG_DWORD /v "Enabled" /d 1 /f
     -
         category: Configure programs
         children: 
@@ -1265,21 +1291,24 @@ actions:
                     -
                         name: Disable visual studio telemetry
                         recommend: true
-                        code: reg add "HKCU\Software\Microsoft\VisualStudio\Telemetry" /v TurnOffSwitch /t REG_DWORD /d 1 /f
+                        code: reg add "HKCU\Software\Microsoft\VisualStudio\Telemetry" /v "TurnOffSwitch" /t REG_DWORD /d 1 /f
+                        revertCode: reg add "HKCU\Software\Microsoft\VisualStudio\Telemetry" /v "TurnOffSwitch" /t REG_DWORD /d 0 /f
                     -
                         name: Disable Visual Studio feedback
                         recommend: true
                         code: |-
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\VisualStudio\Feedback" /v DisableFeedbackDialog /t REG_DWORD /d 1 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\VisualStudio\Feedback" /v DisableEmailInput /t REG_DWORD /d 1 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\VisualStudio\Feedback" /v DisableScreenshotCapture /t REG_DWORD /d 1 /f 
+                            reg add "HKLM\SOFTWARE\Policies\Microsoft\VisualStudio\Feedback" /v "DisableFeedbackDialog" /t REG_DWORD /d 1 /f
+                            reg add "HKLM\SOFTWARE\Policies\Microsoft\VisualStudio\Feedback" /v "DisableEmailInput" /t REG_DWORD /d 1 /f
+                            reg add "HKLM\SOFTWARE\Policies\Microsoft\VisualStudio\Feedback" /v "DisableScreenshotCapture" /t REG_DWORD /d 1 /f
+                        revertCode: |-
+                            reg add "HKLM\SOFTWARE\Policies\Microsoft\VisualStudio\Feedback" /v "DisableFeedbackDialog" /t REG_DWORD /d 0 /f
+                            reg add "HKLM\SOFTWARE\Policies\Microsoft\VisualStudio\Feedback" /v "DisableEmailInput" /t REG_DWORD /d 0 /f
+                            reg add "HKLM\SOFTWARE\Policies\Microsoft\VisualStudio\Feedback" /v "DisableScreenshotCapture" /t REG_DWORD /d 0 /f
                     -
                         name: Stop and disable Visual Studio Standard Collector Service
                         recommend: true
-                        code: |-
-                            sc stop "VSStandardCollectorService150" 
-                            net stop VSStandardCollectorService150 2>nul
-                            sc config "VSStandardCollectorService150" start=disabled
+                        code: sc stop "VSStandardCollectorService150" & sc config "VSStandardCollectorService150" start=disabled
+                        revertCode: sc config "VSStandardCollectorService150" start=auto & sc start "VSStandardCollectorService150"
             - 
                 category: Configure Windows Defender
                 children:
@@ -1640,9 +1669,9 @@ actions:
                             -
                                 name: Disable Chrome metrics reporting
                                 recommend: true
-                                code: |-
-                                    reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v "MetricsReportingEnabled" /t REG_DWORD /d 0 /f
-                                    reg add "HKCU\SOFTWARE\Policies\Google\Chrome" /v "MetricsReportingEnabled" /t REG_DWORD /d 0 /f
+                                docs: https://www.stigviewer.com/stig/google_chrome_v23_windows/2013-01-11/finding/V-35780
+                                code: reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v "MetricsReportingEnabled" /t REG_DWORD /d 0 /f
+                                revertCode: reg delete "HKLM\SOFTWARE\Policies\Google\Chrome" /v "MetricsReportingEnabled" /f
                     -
                         category: Configure Mozilla Firefox telemetry
                         children:
@@ -1676,27 +1705,38 @@ actions:
                 code: |-
                     sc stop "gupdate" & sc config "gupdate" start=disabled
                     sc stop "gupdatem" & sc config "gupdatem" start=disabled
-                    schtasks /Change /DISABLE /TN "GoogleUpdateTaskMachineCore"
-                    schtasks /Change /DISABLE /TN "GoogleUpdateTaskMachineUA"
+                    schtasks /change /disable /tn "GoogleUpdateTaskMachineCore"
+                    schtasks /change /disable /tn "GoogleUpdateTaskMachineUA"
+                revertCode: |-
+                    sc config "gupdate" start=auto & sc start "gupdate"
+                    sc config "gupdatem" start=auto & sc start "gupdatem"
+                    schtasks /Change /enable /tn "GoogleUpdateTaskMachineCore"
+                    schtasks /change /enable /tn "GoogleUpdateTaskMachineUA"
             -
                 name: Disable Adobe Acrobat update service
                 recommend: true
                 code: |-
-                    sc stop "AdobeARMservice" & sc config AdobeARMservice start=disabled
-                    sc stop "adobeupdateservice" & sc config adobeupdateservice start=disabled
-                    sc stop "adobeflashplayerupdatesvc" & sc config adobeflashplayerupdatesvc start=disabled
+                    sc stop "AdobeARMservice" & sc config "AdobeARMservice" start=disabled
+                    sc stop "adobeupdateservice" & sc config "adobeupdateservice" start=disabled
+                    sc stop "adobeflashplayerupdatesvc" & sc config "adobeflashplayerupdatesvc" start=disabled
                     schtasks /change /tn "Adobe Acrobat Update Task" /disable
                     schtasks /change /tn "Adobe Flash Player Updater" /disable
+                revertCode: |-
+                    sc config "AdobeARMservice" start=auto & sc start "AdobeARMservice"
+                    sc config "adobeupdateservice" start=auto & sc start "adobeupdateservice"
+                    sc config "adobeflashplayerupdatesvc" start=auto & sc start "adobeflashplayerupdatesvc"
+                    schtasks /change /tn "Adobe Acrobat Update Task" /enable
+                    schtasks /change /tn "Adobe Flash Player Updater" /enable
             -
                 name: Disable Razer Game Scanner Service
                 recommend: true
-                code: |-
-                    sc stop "Razer Game Scanner Service" & sc config "Razer Game Scanner Service" start=disabled
+                code: sc stop "Razer Game Scanner Service" & sc config "Razer Game Scanner Service" start=disabled
+                revertCode: sc config "Razer Game Scanner Service" start=demand
             -
                 name: Disable Logitech Gaming Registry Service 
                 recommend: true
-                code: |-
-                    sc stop "LogiRegistryService" & sc config "LogiRegistryService" start=disabled 
+                code: sc stop "LogiRegistryService" & sc config "LogiRegistryService" start=disabled
+                revertCode: sc config "LogiRegistryService" start=auto & sc start "LogiRegistryService" 
             -
                 name: Disable Dropbox auto update service
                 recommend: true
@@ -1705,6 +1745,11 @@ actions:
                     sc stop "dbupdatem" & sc config "dbupdatem" start=disabled
                     schtasks /Change /DISABLE /TN "DropboxUpdateTaskMachineCore"
                     schtasks /Change /DISABLE /TN "DropboxUpdateTaskMachineUA" 
+                revertCode: |-
+                    sc config "dbupdate" start=auto & sc start "dbupdate"
+                    sc config "dbupdatem" start=auto & sc start "dbupdatem"
+                    schtasks /Change /ENABLE /TN "DropboxUpdateTaskMachineCore"
+                    schtasks /Change /ENABLE /TN "DropboxUpdateTaskMachineUA" 
             -
                 category: Disable Media Player data collection
                 children: 
@@ -2074,7 +2119,7 @@ actions:
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "AUOptions" /t "REG_DWORD" /d "3" /f
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallDay" /t "REG_DWORD" /d "0" /f
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallTime" /t "REG_DWORD" /d "0" /f
-                    sc config "UsoSvc" start=auto
+                    sc config "UsoSvc" start=auto & sc start "UsoSvc"
     -
         category: UI for privacy
         children:         
@@ -2281,7 +2326,7 @@ actions:
                     -
                         name: Sync Host (OneSyncSvc) Service Service
                         code: sc stop "OneSyncSvc" & sc config "OneSyncSvc" start=disabled
-                        code: sc config "OneSyncSvc" start=auto & sc start "OneSyncSvc"
+                        revertCode: sc config "OneSyncSvc" start=auto & sc start "OneSyncSvc"
             -
                 name: Contact data indexing
                 code: sc stop "PimIndexMaintenanceSvc" & sc config "PimIndexMaintenanceSvc" start=disabled
@@ -2307,7 +2352,7 @@ actions:
                         name: Xbox Live Auth Manager
                         recommend: true
                         code: sc stop "XblAuthManager" & sc config "XblAuthManager" start=disabled
-                        revetCode: sc config "XblAuthManager" start=demand
+                        revertCode: sc config "XblAuthManager" start=demand
                     -
                         name: Xbox Live Game Save
                         recommend: true
@@ -2317,7 +2362,7 @@ actions:
                         name: Xbox Live Networking Service
                         recommend: true
                         code: sc stop "XboxNetApiSvc" & sc config "XboxNetApiSvc" start=disabled
-                        revetCode: sc config "XboxNetApiSvc" start=demand
+                        revertCode: sc config "XboxNetApiSvc" start=demand
             -
                 name: Volume Shadow Copy Service
                 recommend: true
@@ -2932,9 +2977,9 @@ actions:
                             dism /Online /Disable-Feature /FeatureName:"Internet-Explorer-Optional-x84" /NoRestart
                             dism /Online /Disable-Feature /FeatureName:"Internet-Explorer-Optional-amd64" /NoRestart
                         revertCode: |-
-                            revertCode: dism /Online /Enable-Feature /FeatureName:"Internet-Explorer-Optional-x64" /NoRestart
-                            revertCode: dism /Online /Enable-Feature /FeatureName:"Internet-Explorer-Optional-x84" /NoRestart
-                            revertCode: dism /Online /Enable-Feature /FeatureName:"Internet-Explorer-Optional-amd64" /NoRestart
+                            dism /Online /Enable-Feature /FeatureName:"Internet-Explorer-Optional-x64" /NoRestart
+                            dism /Online /Enable-Feature /FeatureName:"Internet-Explorer-Optional-x84" /NoRestart
+                            dism /Online /Enable-Feature /FeatureName:"Internet-Explorer-Optional-amd64" /NoRestart
                         recommend: false
                     -
                         name: Legacy Components feature
