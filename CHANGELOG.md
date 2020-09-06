@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.7.2 (2020-09-06)
+
+* update onesync documentation and do not recommend it as it breaks other apps | [commit](https://github.com/undergroundwires/privacy.sexy/commit/f36d8bfc7848bb65ac0c641e318a689bf3816ccf)
+* add reversibility for biometric disabling and do not recommend it | [commit](https://github.com/undergroundwires/privacy.sexy/commit/db74531cd4139615c6d595959217d3651f099019)
+* fix bad highlighting of selected nodes when using keyboard navigation | [commit](https://github.com/undergroundwires/privacy.sexy/commit/255133af4dfae40171406648a3e2920f16d71cb3)
+* add reversibility to removing bloatware | [commit](https://github.com/undergroundwires/privacy.sexy/commit/c7b2a703128470a05f12c9c6e8002444def37ef8)
+* fix indeterminate state being lost | [commit](https://github.com/undergroundwires/privacy.sexy/commit/1f266c33535f72b69c65985bf2eff27cd2c5a104)
+* fix wording in default text in text area | [commit](https://github.com/undergroundwires/privacy.sexy/commit/ca63a0979ef55d07d09d9443e5cea9aa888870a5)
+* add best practice suggestion to come back | [commit](https://github.com/undergroundwires/privacy.sexy/commit/f4885b6f1c82752f2143934e336d6d1b1af03015)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.7.1...0.7.2)
+
 ## 0.7.1 (2020-09-04)
 
 * fix some browsers (including firefox) downloading the script as a text file | [commit](https://github.com/undergroundwires/privacy.sexy/commit/8c17929151f9c4fa5f48564492bbf400ced95eea)
