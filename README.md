@@ -16,6 +16,7 @@
 
 - Online version: [https://privacy.sexy](https://privacy.sexy)
   - or download latest desktop version for [Windows](https://github.com/undergroundwires/privacy.sexy/releases/download/0.7.1/privacy.sexy-Setup-0.7.1.exe), [Linux](https://github.com/undergroundwires/privacy.sexy/releases/download/0.7.1/privacy.sexy-0.7.1.AppImage), [macOS](https://github.com/undergroundwires/privacy.sexy/releases/download/0.7.1/privacy.sexy-0.7.1.dmg)
+- 💡 Come back regularly to apply latest version for stronger privacy and security.
 
 [![privacy.sexy application](img/screenshot.png)](https://privacy.sexy)
 

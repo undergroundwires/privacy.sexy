@@ -19,6 +19,7 @@ const NothingChosenCode =
     .appendCommentLine(' 📙 Start by exploring different categories and choosing different tweaks.')
     .appendCommentLine(' 📙 You can select "Recommended" on the top to select "safer" tweaks. Always double check!')
     .appendCommentLine(' 📙 After you choose any tweak, you can download or copy to execute your script.')
+    .appendCommentLine(' 📙 Come back regularly to apply latest version for stronger privacy and security.')
     .appendLine()
     .appendCommentLine('-- 🧐 Why privacy.sexy')
     .appendCommentLine(' ✔️ Rich tweak pool to harden security & privacy of the OS and other softwares on it.')
