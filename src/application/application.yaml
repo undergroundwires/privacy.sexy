@@ -414,7 +414,6 @@ actions:
                             net start DPS
                         )
                     endlocal
-
     -
         category: Disable OS data collection
         children:
@@ -1983,7 +1982,8 @@ actions:
                         children:
                             -
                                 name: Microsoft 3D Builder
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.3DBuilder | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.3DBuilder" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.3DBuilder").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                 docs: https://www.microsoft.com/en-us/p/3d-builder/9wzdncrfj3t6
                             -
                                 category: MSN
@@ -1992,389 +1992,494 @@ actions:
                                         name: MSN Weather app
                                         recommend: true
                                         docs: https://www.microsoft.com/en-us/p/msn-weather/9wzdncrfj3q2
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.BingWeather | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.BingWeather" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.BingWeather").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: MSN Sports app
                                         recommend: true
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.BingSports | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.BingSports" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.BingSports").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: MSN News app
                                         recommend: true
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.BingNews | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.BingNews" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.BingNews").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: MSN Money app
                                         recommend: true
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.BingFinance | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.BingFinance" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.BingFinance").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: App Installer app
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.DesktopAppInstaller | Remove-AppxPackage"
                                 docs: https://www.microsoft.com/en-us/p/app-installer/9nblggh4nns1?activetab=pivot:overviewtab
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.DesktopAppInstaller" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.DesktopAppInstaller").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Get Help app
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.GetHelp | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.GetHelp" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.GetHelp").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Microsoft Tips app
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.Getstarted | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.Getstarted" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Getstarted").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 category: Extensions
                                 children:
                                     -
                                         name: HEIF Image Extensions app
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.HEIFImageExtension | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.HEIFImageExtension" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.HEIFImageExtension").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: VP9 Video Extensions app
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.VP9VideoExtensions | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.VP9VideoExtensions" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.VP9VideoExtensions").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Web Media Extensions app
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.WebMediaExtensions | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.WebMediaExtensions" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WebMediaExtensions").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Webp Image Extension app
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.WebpImageExtension | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.WebpImageExtension" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WebpImageExtension").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Microsoft Messaging app
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.Messaging | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.Messaging" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Messaging").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 category: Mixed Reality
                                 children:
                                     -
                                         name: Mixed Reality Portal app
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.MixedReality.Portal | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.MixedReality.Portal" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.MixedReality.Portal").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Mixed Reality Viewer app
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Microsoft3DViewer | Remove-AppxPackage"
-                    
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Microsoft3DViewer" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Microsoft3DViewer").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 category: Microsoft Office
                                 children:
                                     -
                                         name: My Office app
                                         recommend: true
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.MicrosoftOfficeHub | Remove-AppxPackage"
                                         docs: https://www.microsoft.com/en-us/p/my-office-app/9n8vd0f315mh
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.MicrosoftOfficeHub" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.MicrosoftOfficeHub").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: OneNote app
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Office.OneNote | Remove-AppxPackage"
                                         docs: https://www.microsoft.com/en-us/p/onenote-for-windows-10/9wzdncrfhvjl
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Office.OneNote" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Office.OneNote").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Sway app
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Office.Sway | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Office.Sway" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Office.Sway").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Feedback Hub app
                                 recommend: true
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsFeedbackHub | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.WindowsFeedbackHub" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WindowsFeedbackHub").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Windows Alarms and Clock app
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsAlarms | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.WindowsAlarms" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WindowsAlarms").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Windows Camera app
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsCamera | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.WindowsCamera" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WindowsCamera").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Paint 3D app
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.MSPaint | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.MSPaint" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.MSPaint").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Windows Maps app
                                 recommend: true
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsMaps | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.WindowsMaps" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WindowsMaps").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Minecraft app
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.MinecraftUWP | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.MinecraftUWP" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.MinecraftUWP").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Microsoft Store app
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsStore | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.WindowsStore" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WindowsStore").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Microsoft People app
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.People | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.People" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.People").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Microsoft Pay app
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.Wallet | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.Wallet" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Wallet").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Store Purchase app
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.StorePurchaseApp | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.StorePurchaseApp" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.StorePurchaseApp").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Snip and Sketch app
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.ScreenSketch | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.ScreenSketch" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.ScreenSketch").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Print3D app
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.Print3D | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.Print3D" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Print3D").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Paid Wi-Fi and Cellular app
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.OneConnect | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.OneConnect" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.OneConnect").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Microsoft Solitaire Collection app
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.MicrosoftSolitaireCollection | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.MicrosoftSolitaireCollection" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.MicrosoftSolitaireCollection").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Microsoft Sticky Notes app
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.MicrosoftStickyNotes | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.MicrosoftStickyNotes" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.MicrosoftStickyNotes").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 category: Xbox
                                 children:
                                     -
                                         name: Xbox app
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.XboxApp | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.XboxApp" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.XboxApp").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Xbox TCUI app
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Xbox.TCUI | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Xbox.TCUI" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Xbox.TCUI").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Xbox Game Bar app
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.XboxGameOverlay | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.XboxGameOverlay" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.XboxGameOverlay").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Xbox Gaming Overlay app
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.XboxGamingOverlay | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.XboxGamingOverlay" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.XboxGamingOverlay").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Xbox Identity Provider app
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.XboxIdentityProvider | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.XboxIdentityProvider" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.XboxIdentityProvider").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Xbox Speech To Text Overlay app
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.XboxSpeechToTextOverlay | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.XboxSpeechToTextOverlay" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.XboxSpeechToTextOverlay").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Mail and Calendar app
-                                code: PowerShell -Command "Get-AppxPackage microsoft.windowscommunicationsapps | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "microsoft.windowscommunicationsapps" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "microsoft.windowscommunicationsapps").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 category: Zune
                                 children:
                                     -
                                         name: Zune Music app
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.ZuneMusic | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.ZuneMusic" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.ZuneMusic").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Zune Video app
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.ZuneVideo | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.ZuneVideo" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.ZuneVideo").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Windows Calculator app
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsCalculator | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.WindowsCalculator" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WindowsCalculator").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Microsoft Photos app
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.Photos | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.Photos" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.Photos").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Skype app
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.SkypeApp | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.SkypeApp" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.SkypeApp").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Windows Voice Recorder app
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.WindowsSoundRecorder | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.WindowsSoundRecorder" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WindowsSoundRecorder").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 category: Phone
                                 children:
                                     -
                                         name: Windows Phone app
                                         code: |-
-                                            PowerShell -Command "Get-AppxPackage Microsoft.WindowsPhone | Remove-AppxPackage"
-                                            PowerShell -Command "Get-AppxPackage Microsoft.Windows.Phone | Remove-AppxPackage"
+                                            PowerShell -Command "Get-AppxPackage "Microsoft.WindowsPhone" | Remove-AppxPackage"
+                                            PowerShell -Command "Get-AppxPackage "Microsoft.Windows.Phone" | Remove-AppxPackage"
+                                        revertCode: |-
+                                            PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WindowsPhone").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                            PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.Phone").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Comms Phone app
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.CommsPhone | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.CommsPhone" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.CommsPhone").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Your Phone app
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.YourPhone | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.YourPhone" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.YourPhone").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                     -
                         category: Installed Windows apps
                         children:
                             -
                                 name: Microsoft Advertising app
                                 recommend: true
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.Advertising.Xaml | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.Advertising.Xaml" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Advertising.Xaml").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Remote Desktop app
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.RemoteDesktop | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.RemoteDesktop" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.RemoteDesktop").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Network Speed Test app
                                 recommend: true
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.NetworkSpeedTest | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.NetworkSpeedTest" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.NetworkSpeedTest").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 category: Third party
                                 children:
                                     -
                                         name: Shazam app
-                                        code: PowerShell -Command "Get-AppxPackage ShazamEntertainmentLtd.Shazam | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "ShazamEntertainmentLtd.Shazam" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "ShazamEntertainmentLtd.Shazam").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Candy Crush Saga app
                                         code: |-
-                                            PowerShell -Command "Get-AppxPackage king.com.CandyCrushSaga | Remove-AppxPackage"
-                                            PowerShell -Command "Get-AppxPackage king.com.CandyCrushSodaSaga | Remove-AppxPackage"
+                                            PowerShell -Command "Get-AppxPackage "king.com.CandyCrushSaga" | Remove-AppxPackage"
+                                            PowerShell -Command "Get-AppxPackage "king.com.CandyCrushSodaSaga" | Remove-AppxPackage"
+                                        revertCode: |-
+                                            PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "king.com.CandyCrushSaga").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                            PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "king.com.CandyCrushSodaSaga").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Flipboard app
-                                        code: PowerShell -Command "Get-AppxPackage Flipboard.Flipboard | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Flipboard.Flipboard" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Flipboard.Flipboard").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Twitter app
-                                        code: PowerShell -Command "Get-AppxPackage 9E2F88E3.Twitter | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "9E2F88E3.Twitter" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "9E2F88E3.Twitter").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: iHeartRadio app
-                                        code: PowerShell -Command "Get-AppxPackage ClearChannelRadioDigital.iHeartRadio | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "ClearChannelRadioDigital.iHeartRadio" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "ClearChannelRadioDigital.iHeartRadio").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Duolingo app
-                                        code: PowerShell -Command "Get-AppxPackage D5EA27B7.Duolingo-LearnLanguagesforFree | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "D5EA27B7.Duolingo-LearnLanguagesforFree" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "D5EA27B7.Duolingo-LearnLanguagesforFree").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Photoshop Express app
-                                        code: PowerShell -Command "Get-AppxPackage AdobeSystemIncorporated.AdobePhotoshop | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "AdobeSystemIncorporated.AdobePhotoshop" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "AdobeSystemIncorporated.AdobePhotoshop").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Pandora app
-                                        code: PowerShell -Command "Get-AppxPackage PandoraMediaInc.29680B314EFC2 | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "PandoraMediaInc.29680B314EFC2" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "PandoraMediaInc.29680B314EFC2").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Eclipse Manager app
-                                        code: PowerShell -Command "Get-AppxPackage 46928bounde.EclipseManager | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "46928bounde.EclipseManager" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "46928bounde.EclipseManager").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Code Writer app
-                                        code: PowerShell -Command "Get-AppxPackage ActiproSoftwareLLC.562882FEEB491 | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "ActiproSoftwareLLC.562882FEEB491" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "ActiproSoftwareLLC.562882FEEB491").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                     -
                         category: System apps
                         children:
                             -
                                 name: File Picker app
-                                code: PowerShell -Command "Get-AppxPackage 1527c705-839a-4832-9118-54d4Bd6a0c89 | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "1527c705-839a-4832-9118-54d4Bd6a0c89" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "1527c705-839a-4832-9118-54d4Bd6a0c89").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: File Explorer app
-                                code: PowerShell -Command "Get-AppxPackage c5e2524a-ea46-4f67-841f-6a9465d9d515 | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "c5e2524a-ea46-4f67-841f-6a9465d9d515" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "c5e2524a-ea46-4f67-841f-6a9465d9d515").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: App Resolver UX app
-                                code: PowerShell -Command "Get-AppxPackage E2A4F912-2574-4A75-9BB0-0D023378592B | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "E2A4F912-2574-4A75-9BB0-0D023378592B" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "E2A4F912-2574-4A75-9BB0-0D023378592B").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Add Suggested Folders To Library app
                                 recommend: true
                                 code: |-
-                                    PowerShell -Command "Get-AppxPackage F46D4000-FD22-4DB4-AC8E-4E1DDDE828FE | Remove-AppxPackage"
-                                    PowerShell -Command "Get-AppxPackage InputApp | Remove-AppxPackage"
+                                    PowerShell -Command "Get-AppxPackage "F46D4000-FD22-4DB4-AC8E-4E1DDDE828FE" | Remove-AppxPackage"
+                                    PowerShell -Command "Get-AppxPackage "InputApp" | Remove-AppxPackage"
+                                revertCode: |-
+                                    PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "F46D4000-FD22-4DB4-AC8E-4E1DDDE828FE").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                    PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "InputApp").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
-                                name: Microsoft.AAD.Broker.Plugin app
+                                name: Microsoft AAD Broker Plugin app
                                 recommend: true
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.AAD.Broker.Plugin | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.AAD.Broker.Plugin" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.AAD.Broker.Plugin").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
-                                name: Microsoft.AccountsControl app
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.AccountsControl | Remove-AppxPackage"
+                                name: Microsoft Accounts Control app
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.AccountsControl" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.AccountsControl").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
-                                name: Microsoft.AsyncTextService app
-                                code: PowerShell -Command "Get-AppxPackage Microsoft.AsyncTextService | Remove-AppxPackage"
+                                name: Microsoft Async Text Service app
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.AsyncTextService" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.AsyncTextService").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 category: Hello setup UI
                                 children:
                                     -
                                         name: Bio enrollment app
                                         recommend: true
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.BioEnrollment | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.BioEnrollment" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.BioEnrollment").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Cred Dialog Host app
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.CredDialogHost | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.CredDialogHost" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.CredDialogHost").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: EC App
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.ECApp | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.ECApp" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.ECApp").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Lock App
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.LockApp | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.LockApp" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.LockApp").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 category: Microsoft Edge
                                 children:
                                     -
                                         name: Microsoft Edge app
                                         recommend: true
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.MicrosoftEdge | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.MicrosoftEdge" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.MicrosoftEdge").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Microsoft Edge Dev Tools Client app
                                         recommend: true
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.MicrosoftEdgeDevToolsClient | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.MicrosoftEdgeDevToolsClient" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.MicrosoftEdgeDevToolsClient").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Microsoft PPI Projection app
                                         recommend: true
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.PPIProjection | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.PPIProjection" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.PPIProjection").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Win32 Web View Host app
                                         recommend: true
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Win32WebViewHost | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Win32WebViewHost" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Win32WebViewHost").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: ChxApp app
                                         recommend: true
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.Apprep.ChxApp | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.Apprep.ChxApp" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.Apprep.ChxApp").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Assigned Access Lock App app
                                         recommend: true
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.AssignedAccessLockApp | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.AssignedAccessLockApp" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.AssignedAccessLockApp").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Capture Picker app
                                         recommend: true
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.CapturePicker | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.CapturePicker" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.CapturePicker").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Cloud Experience Host app
                                         recommend: true
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.CloudExperienceHost | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.CloudExperienceHost" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.CloudExperienceHost").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Content Delivery Manager app
                                         recommend: true
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.ContentDeliveryManager | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.ContentDeliveryManager" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.ContentDeliveryManager").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 category: Cortana
                                 children:
                                     -
                                         name: Cortana app
                                         recommend: true
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.Cortana | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.Cortana" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.Cortana").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Holographic First Run app
                                         recommend: true
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.Holographic.FirstRun | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.Holographic.FirstRun" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.Holographic.FirstRun").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: OOBE Network Captive Port app
                                         recommend: true
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.OOBENetworkCaptivePort | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.OOBENetworkCaptivePort" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.OOBENetworkCaptivePort").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: OOBE Network Connection Flow app
                                         recommend: true
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.OOBENetworkConnectionFlow | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.OOBENetworkConnectionFlow" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.OOBENetworkConnectionFlow").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Parental Controls app
                                         recommend: true
-                                        code: PowerShell -Command "Get-AppxPackage Microsoft.Windows.ParentalControls | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.ParentalControls" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.ParentalControls").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 category: People Hub
                                 children:
                                     -
                                         name: People Experience Host app
                                         recommend: true
-                                        code: PowerShell -Command "Microsoft.Windows.PeopleExperienceHost | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.PeopleExperienceHost" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.PeopleExperienceHost").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Pinning Confirmation Dialog app
                                         recommend: true
-                                        code: PowerShell -Command "Microsoft.Windows.PinningConfirmationDialog | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.PinningConfirmationDialog" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.PinningConfirmationDialog").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Sec Health UI app
                                         recommend: true
-                                        code: PowerShell -Command "Microsoft.Windows.SecHealthUI | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.SecHealthUI" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.SecHealthUI").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Secondary Tile Experience app
                                         recommend: true
-                                        code: PowerShell -Command "Microsoft.Windows.SecondaryTileExperience | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.SecondaryTileExperience" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.SecondaryTileExperience").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Secure Assessment Browser app
                                         recommend: true
-                                        code: PowerShell -Command "Microsoft.Windows.SecureAssessmentBrowser | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.SecureAssessmentBrowser" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.SecureAssessmentBrowser").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Start app
-                                code: PowerShell -Command "Microsoft.Windows.ShellExperienceHost | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.ShellExperienceHost" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.ShellExperienceHost").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 category: Windows Feedback
                                 children:
                                     -
                                         name: Windows Feedback app
                                         recommend: true
-                                        code: PowerShell -Command "Microsoft.WindowsFeedback | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.WindowsFeedback" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WindowsFeedback").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Xbox Game Callable UI app
                                         recommend: true
-                                        code: PowerShell -Command "Microsoft.XboxGameCallableUI | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.XboxGameCallableUI" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.XboxGameCallableUI").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: CBS Preview app
                                         recommend: true
-                                        code: PowerShell -Command "Windows.CBSPreview | Remove-AppxPackage"
+                                        code: PowerShell -Command "Get-AppxPackage "Windows.CBSPreview" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Windows.CBSPreview").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Contact Support app
-                                code: PowerShell -Command "Windows.ContactSupport | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Windows.ContactSupport" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Windows.ContactSupport").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Settings app
-                                code: PowerShell -Command "Windows.immersivecontrolpanel | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Windows.immersivecontrolpanel" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Windows.immersivecontrolpanel").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Windows Print 3D app
-                                code: PowerShell -Command "Windows.Print3D | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Windows.Print3D" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Windows.Print3D").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Print UI app
-                                code: PowerShell -Command "Windows.PrintDialog | Remove-AppxPackage"
+                                code: PowerShell -Command "Get-AppxPackage "Windows.PrintDialog" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Windows.PrintDialog").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                     -
                         name: App Connector app
-                        code: PowerShell -Command "Get-AppxPackage Microsoft.Appconnector | Remove-AppxPackage"
+                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Appconnector" | Remove-AppxPackage"
+                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Appconnector").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
             - 
               category: Remove OneDrive
               children:
@@ -2464,17 +2569,23 @@ actions:
                     -
                         name: Direct Play feature
                         code: dism /Online /Disable-Feature /FeatureName:"DirectPlay" /NoRestart
+                        revertCode: dism /Online /Enable-Feature /FeatureName:"DirectPlay" /NoRestart
                         recommend: false
                     -
                         name: Internet Explorer feature
-                        code:
+                        code: |-
                             dism /Online /Disable-Feature /FeatureName:"Internet-Explorer-Optional-x64" /NoRestart
                             dism /Online /Disable-Feature /FeatureName:"Internet-Explorer-Optional-x84" /NoRestart
                             dism /Online /Disable-Feature /FeatureName:"Internet-Explorer-Optional-amd64" /NoRestart
+                        revertCode: |-
+                            revertCode: dism /Online /Enable-Feature /FeatureName:"Internet-Explorer-Optional-x64" /NoRestart
+                            revertCode: dism /Online /Enable-Feature /FeatureName:"Internet-Explorer-Optional-x84" /NoRestart
+                            revertCode: dism /Online /Enable-Feature /FeatureName:"Internet-Explorer-Optional-amd64" /NoRestart
                         recommend: false
                     -
                         name: Legacy Components feature
                         code: dism /Online /Disable-Feature /FeatureName:"LegacyComponents" /NoRestart
+                        revertCode: dism /Online /Enable-Feature /FeatureName:"LegacyComponents" /NoRestart
                         recommend: false
                     -
                         category: Server features for developers & administrators
@@ -2485,37 +2596,45 @@ actions:
                                     -
                                         name: Hyper-V feature
                                         code: dism /Online /Disable-Feature /FeatureName:"Microsoft-Hyper-V-All" /NoRestart
+                                        revertCode: dism /Online /Enable-Feature /FeatureName:"Microsoft-Hyper-V-All" /NoRestart
                                         recommend: false
                                     -
                                         name: Hyper-V GUI Management Tools feature
                                         code: dism /Online /Disable-Feature /FeatureName:"Microsoft-Hyper-V-Management-Clients" /NoRestart
+                                        revertCode: dism /Online /Enable-Feature /FeatureName:"Microsoft-Hyper-V-Management-Clients" /NoRestart
                                         recommend: false
                                     -
                                         name: Hyper-V Management Tools feature
                                         code: dism /Online /Disable-Feature /FeatureName:"Microsoft-Hyper-V-Tools-All" /NoRestart
+                                        revertCode: dism /Online /Enable-Feature /FeatureName:"Microsoft-Hyper-V-Tools-All" /NoRestart
                                         recommend: false
                                     -
                                         name: Hyper-V Module for Windows PowerShell feature
                                         code: dism /Online /Disable-Feature /FeatureName:"Microsoft-Hyper-V-Management-PowerShell" /NoRestart
+                                        revertCode: dism /Online /Enable-Feature /FeatureName:"Microsoft-Hyper-V-Management-PowerShell" /NoRestart
                                         recommend: false
                             -
                                 name: Telnet Client feature
                                 code: dism /Online /Disable-Feature /FeatureName:"TelnetClient" /NoRestart
+                                revertCode: dism /Online /Enable-Feature /FeatureName:"TelnetClient" /NoRestart
                                 docs: https://social.technet.microsoft.com/wiki/contents/articles/38433.windows-10-enabling-telnet-client.aspx
                                 recommend: false
                             -
                                 name: Net.TCP Port Sharing feature
                                 code: dism /Online /Disable-Feature /FeatureName:"WCF-TCP-PortSharing45" /NoRestart
+                                revertCode: dism /Online /Enable-Feature /FeatureName:"WCF-TCP-PortSharing45" /NoRestart
                                 recommend: false
                                 docs: https://docs.microsoft.com/en-us/dotnet/framework/wcf/feature-details/net-tcp-port-sharing
                             -
                                 name: SMB Direct feature
                                 code: dism /Online /Disable-Feature /FeatureName:"SmbDirect" /NoRestart
+                                revertCode: dism /Online /Enable-Feature /FeatureName:"SmbDirect" /NoRestart
                                 recommend: false
                                 docs: https://docs.microsoft.com/en-us/windows-server/storage/file-server/smb-direct
                             -
                                 name: TFTP Client feature
                                 code: dism /Online /Disable-Feature /FeatureName:"TFTP" /NoRestart
+                                revertCode: dism /Online /Enable-Feature /FeatureName:"TFTP" /NoRestart
                                 recommend: false
                     -
                         category: Printing features
@@ -2524,28 +2643,34 @@ actions:
                                 category: Printer networking
                                 children:
                                     -
-                                        name: Internet Printing Client v
+                                        name: Internet Printing Client
                                         code: dism /Online /Disable-Feature /FeatureName:"Printing-Foundation-InternetPrinting-Client" /NoRestart
+                                        revertCode: dism /Online /Enable-Feature /FeatureName:"Printing-Foundation-InternetPrinting-Client" /NoRestart
                                         recommend: false
                                     -
-                                        name: LPD Print Service v
+                                        name: LPD Print Service
                                         code: dism /Online /Disable-Feature /FeatureName:"Printing-Foundation-LPDPrintService" /NoRestart
+                                        revertCode: dism /Online /Enable-Feature /FeatureName:"Printing-Foundation-LPDPrintService" /NoRestart
                                         recommend: false
                                     -
                                         name: LPR Port Monitor feature
                                         code: dism /Online /Disable-Feature /FeatureName:"Printing-Foundation-LPRPortMonitor" /NoRestart
+                                        revertCode: dism /Online /Enable-Feature /FeatureName:"Printing-Foundation-LPRPortMonitor" /NoRestart
                                         recommend: false
                                     -
                                         name: Microsoft Print to PDF feature
                                         code: dism /Online /Disable-Feature /FeatureName:"Printing-PrintToPDFServices-Features" /NoRestart
+                                        revertCode: dism /Online /Enable-Feature /FeatureName:"Printing-PrintToPDFServices-Features" /NoRestart
                                         recommend: false
                             -
                                 name: Print and Document Services feature
                                 code: dism /Online /Disable-Feature /FeatureName:"Printing-Foundation-Features" /NoRestart
+                                revertCode: dism /Online /Enable-Feature /FeatureName:"Printing-Foundation-Features" /NoRestart
                                 recommend: false
                             -
                                 name: Work Folders Client feature
                                 code: dism /Online /Disable-Feature /FeatureName:"WorkFolders-Client" /NoRestart
+                                revertCode: dism /Online /Enable-Feature /FeatureName:"WorkFolders-Client" /NoRestart
                                 recommend: false
                                 docs: https://docs.microsoft.com/en-us/windows-server/storage/work-folders/work-folders-overview
                             -
@@ -2554,30 +2679,37 @@ actions:
                                 -
                                     name: XPS Services feature
                                     code: dism /Online /Disable-Feature /FeatureName:"Printing-XPSServices-Features" /NoRestart
+                                    revertCode: dism /Online /Enable-Feature /FeatureName:"Printing-XPSServices-Features" /NoRestart
                                     recommend: false
                                 -
                                     name: XPS Viewer feature
                                     code: dism /Online /Disable-Feature /FeatureName:"Xps-Foundation-Xps-Viewer" /NoRestart
+                                    revertCode: dism /Online /Enable-Feature /FeatureName:"Xps-Foundation-Xps-Viewer" /NoRestart
                                     recommend: false
                     -
                         name: Media Features feature
                         code: dism /Online /Disable-Feature /FeatureName:"MediaPlayback" /NoRestart
+                        revertCode: dism /Online /Enable-Feature /FeatureName:"MediaPlayback" /NoRestart
                         recommend: false
                     -
                         name: Scan Management feature
                         code: dism /Online /Disable-Feature /FeatureName:"ScanManagementConsole" /NoRestart
+                        revertCode: dism /Online /Enable-Feature /FeatureName:"ScanManagementConsole" /NoRestart
                         recommend: false
                     -
                         name: Windows Fax and Scan feature
                         code: dism /Online /Disable-Feature /FeatureName:"FaxServicesClientPackage" /NoRestart
+                        revertCode: dism /Online /Enable-Feature /FeatureName:"FaxServicesClientPackage" /NoRestart
                         recommend: false
                     -
                         name: Windows Media Player feature
                         code: dism /Online /Disable-Feature /FeatureName:"WindowsMediaPlayer" /NoRestart
+                        revertCode: dism /Online /Enable-Feature /FeatureName:"WindowsMediaPlayer" /NoRestart
                         recommend: false
                     -
                         name: Windows Search feature
                         code: dism /Online /Disable-Feature /FeatureName:"SearchEngine-Client-Package" /NoRestart
+                        revertCode: dism /Online /Enable-Feature /FeatureName:"SearchEngine-Client-Package" /NoRestart
                         recommend: false
             -
                 category: Disable capabilities & features on demand
