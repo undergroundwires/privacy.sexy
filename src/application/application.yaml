@@ -376,9 +376,8 @@ actions:
                     del "%TEMP%\List.txt" /s /f /q
                     del "%TEMP%\tokensonly.txt" /s /f /q
             -
-                # If somebody is on LTSC 2019 then DefaultUser0 Account is by default created on Installation as telemetry account.
-                # Hence it must be removed . if by default this account is not found on other builds of win10 then it will not affect any functionality of OS & will ignore it
-                name: Delete default0 ghost telemetry user
+                name: Delete controversial default0 user
+                docs: https://github.com/undergroundwires/privacy.sexy/issues/30
                 recommend: true
                 code: net user defaultuser0 /delete 2>nul
             -
