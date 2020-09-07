@@ -182,9 +182,8 @@ actions:
                                         )
                                     )
                             -
-                                name: Clear all user settings and data
+                                name: Clear all Firefox user profiles, settings and data 
                                 recommend: false
-                                enables: Clear browsing history and caches
                                 code: |-
                                     rd "%localappdata%\Local\Mozilla\Firefox\Profiles"
                                     rd /s /q "%APPDATA%\Mozilla\Firefox\Profiles"
