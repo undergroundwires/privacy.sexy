@@ -1074,13 +1074,54 @@ actions:
                     - https://github.com/NateShoffner/Disable-Nvidia-Telemetry
                     - https://forum.palemoon.org/viewtopic.php?f=4&t=15686&sid=3d7982d3b9e89c713547f1a581ea44a2&start=20
             -
-                name: Disable Visual Studio Code telemetry
-                recommend: true
-                docs: https://code.visualstudio.com/docs/getstarted/telemetry
-                code: |- 
-                    mkdir %appdata%\Code\User
-                    del %appdata%\Code\User\settings.json
-                    echo { "telemetry.enableCrashReporter": false, "telemetry.enableTelemetry": false } > %appdata%\Code\User\settings.json
+                category: Disable Visual Studio Code data collection
+                docs:
+                    - https://code.visualstudio.com/updates/v1_26#_offline-mode
+                    - https://code.visualstudio.com/docs/getstarted/settings
+                children:
+                    -
+                        name: Disable Visual Studio Code telemetry
+                        docs: https://code.visualstudio.com/docs/getstarted/telemetry
+                        recommend : true
+                        code: Powershell -Command "$jsonfile = \"$env:APPDATA\Code\User\settings.json\"; $json = Get-Content $jsonfile | Out-String | ConvertFrom-Json; $json | Add-Member -Type NoteProperty -Name 'telemetry.enableTelemetry' -Value $false -Force; $json | ConvertTo-Json | Set-Content $jsonfile;"
+                        revertCode: Powershell -Command "$jsonfile = \"$env:APPDATA\Code\User\settings.json\"; $json = Get-Content $jsonfile | ConvertFrom-Json; $json.PSObject.Properties.Remove('telemetry.enableTelemetry'); $json | ConvertTo-Json | Set-Content $jsonfile;"
+                    -
+                        name: Disable Visual Studio Code crash reporting
+                        docs: https://code.visualstudio.com/docs/getstarted/telemetry
+                        recommend : true
+                        code: Powershell -Command "$jsonfile = \"$env:APPDATA\Code\User\settings.json\"; $json = Get-Content $jsonfile | Out-String | ConvertFrom-Json; $json | Add-Member -Type NoteProperty -Name 'telemetry.enableCrashReporter' -Value $false -Force; $json | ConvertTo-Json | Set-Content $jsonfile;"
+                        revertCode: Powershell -Command "$jsonfile = \"$env:APPDATA\Code\User\settings.json\"; $json = Get-Content $jsonfile | ConvertFrom-Json;$json.PSObject.Properties.Remove('telemetry.enableCrashReporter'); $json | ConvertTo-Json | Set-Content $jsonfile;"
+                    -
+                        name: Do not run Microsoft online experiments
+                        docs: https://github.com/Microsoft/vscode/blob/1aee0c194cff72d179b9f8ef324e47f34555a07d/src/vs/workbench/contrib/experiments/node/experimentService.ts#L173
+                        recommend : true
+                        code: Powershell -Command "$jsonfile = \"$env:APPDATA\Code\User\settings.json\"; $json = Get-Content $jsonfile | Out-String | ConvertFrom-Json; $json | Add-Member -Type NoteProperty -Name 'workbench.enableExperiments' -Value $false -Force; $json | ConvertTo-Json | Set-Content $jsonfile;"
+                        revertCode: Powershell -Command "$jsonfile = \"$env:APPDATA\Code\User\settings.json\"; $json = Get-Content $jsonfile | ConvertFrom-Json;$json.PSObject.Properties.Remove('workbench.enableExperiments'); $json | ConvertTo-Json | Set-Content $jsonfile;"
+                    -
+                        name: Choose manual updates over automatic updates
+                        docs: https://github.com/Microsoft/vscode/blob/1aee0c194cff72d179b9f8ef324e47f34555a07d/src/vs/workbench/contrib/experiments/node/experimentService.ts#L173
+                        code: Powershell -Command "$jsonfile = \"$env:APPDATA\Code\User\settings.json\"; $json = Get-Content $jsonfile | Out-String | ConvertFrom-Json; $json | Add-Member -Type NoteProperty -Name 'update.mode' -Value \"manual\" -Force; $json | ConvertTo-Json | Set-Content $jsonfile;"
+                        revertCode: Powershell -Command "$jsonfile = \"$env:APPDATA\Code\User\settings.json\"; $json = Get-Content $jsonfile | ConvertFrom-Json;$json.PSObject.Properties.Remove('update.mode'); $json | ConvertTo-Json | Set-Content $jsonfile;"
+                    -
+                        name: Show Release Notes from Microsoft online service after an update
+                        code: Powershell -Command "$jsonfile = \"$env:APPDATA\Code\User\settings.json\"; $json = Get-Content $jsonfile | Out-String | ConvertFrom-Json; $json | Add-Member -Type NoteProperty -Name 'update.showReleaseNotes' -Value $false -Force; $json | ConvertTo-Json | Set-Content $jsonfile;"
+                        revertCode: Powershell -Command "$jsonfile = \"$env:APPDATA\Code\User\settings.json\"; $json = Get-Content $jsonfile | ConvertFrom-Json;$json.PSObject.Properties.Remove('update.showReleaseNotes'); $json | ConvertTo-Json | Set-Content $jsonfile;"
+                    -
+                        name: Automatically check extensions from Microsoft online service
+                        code: Powershell -Command "$jsonfile = \"$env:APPDATA\Code\User\settings.json\"; $json = Get-Content $jsonfile | Out-String | ConvertFrom-Json; $json | Add-Member -Type NoteProperty -Name 'extensions.autoCheckUpdates' -Value $false -Force; $json | ConvertTo-Json | Set-Content $jsonfile;"
+                        revertCode: Powershell -Command "$jsonfile = \"$env:APPDATA\Code\User\settings.json\"; $json = Get-Content $jsonfile | ConvertFrom-Json;$json.PSObject.Properties.Remove('extensions.autoCheckUpdates'); $json | ConvertTo-Json | Set-Content $jsonfile;"
+                    -
+                        name: Fetch recommendations from a Microsoft online service
+                        code: Powershell -Command "$jsonfile = \"$env:APPDATA\Code\User\settings.json\"; $json = Get-Content $jsonfile | Out-String | ConvertFrom-Json; $json | Add-Member -Type NoteProperty -Name 'extensions.showRecommendationsOnlyOnDemand' -Value $true -Force; $json | ConvertTo-Json | Set-Content $jsonfile;"
+                        revertCode: Powershell -Command "$jsonfile = \"$env:APPDATA\Code\User\settings.json\"; $json = Get-Content $jsonfile | ConvertFrom-Json;$json.PSObject.Properties.Remove('extensions.showRecommendationsOnlyOnDemand'); $json | ConvertTo-Json | Set-Content $jsonfile;"
+                    -
+                        name: Automatically fetch git commits from remote repository
+                        code: Powershell -Command "$jsonfile = \"$env:APPDATA\Code\User\settings.json\"; $json = Get-Content $jsonfile | Out-String | ConvertFrom-Json; $json | Add-Member -Type NoteProperty -Name 'git.autofetch' -Value $false -Force; $json | ConvertTo-Json | Set-Content $jsonfile;"
+                        revertCode: Powershell -Command "$jsonfile = \"$env:APPDATA\Code\User\settings.json\"; $json = Get-Content $jsonfile | ConvertFrom-Json;$json.PSObject.Properties.Remove('git.autofetch'); $json | ConvertTo-Json | Set-Content $jsonfile;"
+                    -
+                        name: Fetch package information from NPM and Bower
+                        code: Powershell -Command "$jsonfile = \"$env:APPDATA\Code\User\settings.json\"; $json = Get-Content $jsonfile | Out-String | ConvertFrom-Json; $json | Add-Member -Type NoteProperty -Name 'npm.fetchOnlinePackageInfo' -Value $false -Force; $json | ConvertTo-Json | Set-Content $jsonfile;"
+                        revertCode: Powershell -Command "$jsonfile = \"$env:APPDATA\Code\User\settings.json\"; $json = Get-Content $jsonfile | ConvertFrom-Json;$json.PSObject.Properties.Remove('npm.fetchOnlinePackageInfo'); $json | ConvertTo-Json | Set-Content $jsonfile;"
             -
                 category: Disable Microsoft Office telemetry
                 docs: https://docs.microsoft.com/en-us/deployoffice/compat/manage-the-privacy-of-data-monitored-by-telemetry-in-office
