@@ -347,7 +347,7 @@ actions:
                     -
                         name: Clear main telemetry file
                         recommend: true
-                        code: echo "" > %ProgramData%\Microsoft\Diagnosis\ETLTraces\AutoLogger\AutoLogger-Diagtrack-Listener.etl
+                        code: echo "" > %ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl
                     -
                         name: Clear Event Logs in Event Viewer
                         recommend: false
