@@ -1,7 +1,8 @@
+import { getEnumValues } from '@/application/Common/Enum';
 import 'mocha';
 import { expect } from 'chai';
 import { Script } from '@/domain/Script';
-import { RecommendationLevel, RecommendationLevels } from '@/domain/RecommendationLevel';
+import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { ScriptCode } from '@/domain/ScriptCode';
 import { IScriptCode } from '@/domain/IScriptCode';
 
@@ -80,7 +81,7 @@ describe('Script', () => {
             });
             it('sets as expected', () => {
                 // arrange
-                for (const expected of RecommendationLevels) {
+                for (const expected of getEnumValues(RecommendationLevel)) {
                     // act
                     const sut = new ScriptBuilder()
                         .withRecommendationLevel(expected)

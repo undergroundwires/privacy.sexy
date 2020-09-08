@@ -215,30 +215,6 @@ describe('ScriptCompiler', () => {
             });
         });
         describe('parameter substitution', () => {
-            describe('substitutes by ignoring whitespaces inside mustaches', () => {
-                // arrange
-                const mustacheVariations = [
-                    'Hello {{ $test }}!',
-                    'Hello {{$test }}!',
-                    'Hello {{ $test}}!',
-                    'Hello {{$test}}!'];
-                mustacheVariations.forEach((variation) => {
-                    it(variation, () => {
-                        // arrange
-                        const env = new TestEnvironment({
-                            code: variation,
-                            parameters: {
-                                test: 'world',
-                            },
-                        });
-                        const expected = env.expect('Hello world!');
-                        // act
-                        const actual = env.sut.compile(env.script);
-                        // assert
-                        expect(actual).to.deep.equal(expected);
-                    });
-                });
-            });
             describe('substitutes as expected', () => {
                 it('with different parameters', () => {
                     // arrange
@@ -255,15 +231,15 @@ describe('ScriptCompiler', () => {
                     // assert
                     expect(actual).to.deep.equal(expected);
                 });
-                it('with same parameter repeated', () => {
+                it('with single parameter', () => {
                     // arrange
                     const env = new TestEnvironment({
-                        code: '{{ $parameter }} {{ $parameter }}!',
+                        code: '{{ $parameter }}!',
                         parameters: {
                             parameter: 'Hodor',
                         },
                     });
-                    const expected = env.expect('Hodor Hodor!');
+                    const expected = env.expect('Hodor!');
                     // act
                     const actual = env.sut.compile(env.script);
                     // assert
@@ -290,20 +266,6 @@ describe('ScriptCompiler', () => {
                     },
                 });
                 const expectedError = 'parameter value is not provided for "parameter" in function call';
-                // act
-                const act = () => env.sut.compile(env.script);
-                // assert
-                expect(act).to.throw(expectedError);
-            });
-            it('throws on unknown expressions', () => {
-                // arrange
-                const env = new TestEnvironment({
-                    code: '{{ each }}',
-                    parameters: {
-                        parameter: undefined,
-                    },
-                });
-                const expectedError = 'unknown expression: "each"';
                 // act
                 const act = () => env.sut.compile(env.script);
                 // assert

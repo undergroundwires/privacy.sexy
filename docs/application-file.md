@@ -10,16 +10,23 @@
 
 ### `Application`
 
-- Application file simply defines different categories and their scripts in a tree structure.
+- Application file simply defines:
+  - different categories and their scripts in a tree structure
+  - OS specific details
 - Application file also allows defining common [function](#function)s to be used throughout the application if you'd like different scripts to share same code.
 
 #### `Application` syntax
 
+- `os:` *`string`*  (**required**)
+  - Operating system that the application file is written for.
+  - 📖 See [OperatingSystem.ts](./../src/domain/OperatingSystem.ts) enumeration for allowed values.
 - `actions: [` ***[`Category`](#Category)*** `, ... ]` **(required)**
   - Each [category](#category) is rendered as different cards in card presentation.
   - ❗ Application must consist of at least one category.
 - `functions: [` ***[`Function`](#Function)*** `, ... ]`
   - Functions are optionally defined to re-use the same code throughout different scripts.
+- `scripting:` ***[`ScriptingDefinition`](#ScriptingDefinition)*** **(required)**
+  - Defines the scripting language that the code of other action uses.
 
 ### `Category`
 
@@ -137,3 +144,18 @@ It would print "Hello world" if it's called in a [script](#script) as following:
   - Code that'll undo the change done by `code` property.
   - E.g. let's say `code` sets an environment variable as `setx POWERSHELL_TELEMETRY_OPTOUT 1`
     - then `revertCode` should be doing `setx POWERSHELL_TELEMETRY_OPTOUT 0`
+
+### `ScriptingDefinition`
+
+- Defines global properties for scripting that's used throughout the application file.
+
+#### `ScriptingDefinition` syntax
+
+- `language:` *`string`* (**required**)
+  - 📖 See [ScriptingLanguage.ts](./../src/domain/ScriptingLanguage.ts) enumeration for allowed values.
+- `startCode:` *`string`* (**required**)
+  - Code that'll be inserted on top of user created script.
+  - Global variables such as `$homepage`, `$version`, `$date` can be used using [parameter substitution](#parameter-substitution) code syntax such as `Welcome to {{ $homepage }}!`
+- `endCode:` *`string`* (**required**)
+  - Code that'll be inserted at the end of user created script.
+  - Global variables such as `$homepage`, `$version`, `$date` can be used using [parameter substitution](#parameter-substitution) code syntax such as `Welcome to {{ $homepage }}!`

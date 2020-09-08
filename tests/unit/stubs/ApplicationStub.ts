@@ -1,7 +1,14 @@
+import { ScriptingDefinitionStub } from './ScriptingDefinitionStub';
 import { IApplication, ICategory, IScript } from '@/domain/IApplication';
 import { ProjectInformation } from '@/domain/ProjectInformation';
+import { OperatingSystem } from '@/domain/OperatingSystem';
+import { ScriptStub } from './ScriptStub';
+import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 
 export class ApplicationStub implements IApplication {
+    public scripting: IScriptingDefinition = new ScriptingDefinitionStub();
+    public os = OperatingSystem.Linux;
+    public initialScript: IScript = new ScriptStub('55');
     public totalScripts = 0;
     public totalCategories = 0;
     public readonly info = new ProjectInformation('StubApplication', '0.1.0', 'https://github.com/undergroundwires/privacy.sexy', 'https://privacy.sexy');
@@ -9,6 +16,18 @@ export class ApplicationStub implements IApplication {
 
     public withAction(category: ICategory): ApplicationStub {
         this.actions.push(category);
+        return this;
+    }
+    public withOs(os: OperatingSystem): ApplicationStub {
+        this.os = os;
+        return this;
+    }
+    public withScripting(scripting: IScriptingDefinition): ApplicationStub {
+        this.scripting = scripting;
+        return this;
+    }
+    public withInitialScript(script: IScript): ApplicationStub {
+        this.initialScript = script;
         return this;
     }
     public findCategory(categoryId: number): ICategory {

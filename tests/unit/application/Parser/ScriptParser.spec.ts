@@ -2,10 +2,11 @@ import 'mocha';
 import { expect } from 'chai';
 import { parseScript } from '@/application/Parser/ScriptParser';
 import { parseDocUrls } from '@/application/Parser/DocumentationParser';
-import { RecommendationLevelNames, RecommendationLevel } from '@/domain/RecommendationLevel';
+import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { ScriptCode } from '@/domain/ScriptCode';
 import { ScriptCompilerStub } from '../../stubs/ScriptCompilerStub';
 import { YamlScriptStub } from '../../stubs/YamlScriptStub';
+import { mockEnumParser } from '../../stubs/EnumParserStub';
 
 describe('ScriptParser', () => {
     describe('parseScript', () => {
@@ -84,63 +85,27 @@ describe('ScriptParser', () => {
                 undefinedLevels.forEach((undefinedLevel) => {
                     // arrange
                     const compiler = new ScriptCompilerStub();
-                    const script = YamlScriptStub.createWithCode();
-                    script.recommend = undefinedLevel;
+                    const script = YamlScriptStub.createWithCode()
+                        .withRecommend(undefinedLevel);
                     // act
                     const actual = parseScript(script, compiler);
                     // assert
                     expect(actual.level).to.equal(undefined);
                 });
             });
-            it('throws on unknown level', () => {
-                // arrange
-                const unknownLevel = 'boi';
-                const compiler = new ScriptCompilerStub();
-                const script = YamlScriptStub.createWithCode();
-                script.recommend = unknownLevel;
-                // act
-                const act = () => parseScript(script, compiler);
-                // assert
-                expect(act).to.throw(`unknown level: "${unknownLevel}"`);
-            });
-            it('throws on non-string type', () => {
-                const nonStringTypes: any[] = [ 5, true ];
-                nonStringTypes.forEach((nonStringType) => {
-                    // arrange
-                    const script = YamlScriptStub.createWithCode();
-                    const compiler = new ScriptCompilerStub();
-                    script.recommend = nonStringType;
-                    // act
-                    const act = () => parseScript(script, compiler);
-                    // assert
-                    expect(act).to.throw(`level must be a string but it was ${typeof nonStringType}`);
-                });
-            });
             describe('parses level as expected', () => {
-                for (const levelText of RecommendationLevelNames) {
-                    it(levelText, () => {
-                        // arrange
-                        const expectedLevel = RecommendationLevel[levelText];
-                        const script = YamlScriptStub.createWithCode();
-                        const compiler = new ScriptCompilerStub();
-                        script.recommend = levelText;
-                        // act
-                        const actual = parseScript(script, compiler);
-                        // assert
-                        expect(actual.level).to.equal(expectedLevel);
-                    });
-                }
-            });
-            it('parses level case insensitive', () => {
                 // arrange
-                const script = YamlScriptStub.createWithCode();
+                const expectedLevel = RecommendationLevel.Standard;
+                const expectedName = 'level';
+                const levelText = 'standard';
+                const script = YamlScriptStub.createWithCode()
+                    .withRecommend(levelText);
                 const compiler = new ScriptCompilerStub();
-                const expected = RecommendationLevel.Standard;
-                script.recommend = RecommendationLevel[expected].toUpperCase();
+                const parserMock = mockEnumParser(expectedName, levelText, expectedLevel);
                 // act
-                const actual = parseScript(script, compiler);
+                const actual = parseScript(script, compiler, parserMock);
                 // assert
-                expect(actual.level).to.equal(expected);
+                expect(actual.level).to.equal(expectedLevel);
             });
         });
         describe('code', () => {
@@ -196,3 +161,4 @@ describe('ScriptParser', () => {
         });
     });
 });
+

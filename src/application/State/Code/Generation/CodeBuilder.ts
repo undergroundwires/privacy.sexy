@@ -1,7 +1,9 @@
+import { ICodeBuilder } from './ICodeBuilder';
+
 const NewLine = '\n';
 const TotalFunctionSeparatorChars = 58;
 
-export class CodeBuilder {
+export class CodeBuilder implements ICodeBuilder {
     private readonly lines = new Array<string>();
 
     // Returns current line starting from 0 (no lines), or 1 (have single line)
@@ -54,7 +56,7 @@ export class CodeBuilder {
         return this
             .appendTrailingHyphensCommentLine()
             .appendCommentLine(firstHyphens + sectionName + secondHyphens)
-            .appendTrailingHyphensCommentLine();
+            .appendTrailingHyphensCommentLine(TotalFunctionSeparatorChars);
     }
 
     public toString(): string {

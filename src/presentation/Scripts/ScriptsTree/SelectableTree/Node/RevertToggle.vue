@@ -29,19 +29,20 @@
 
         public async mounted() {
             await this.onNodeChangedAsync(this.node);
-            const state = await this.getCurrentStateAsync();
-            this.updateState(state.selection.selectedScripts);
-            state.selection.changed.on((scripts) => this.updateState(scripts));
+            const context = await this.getCurrentContextAsync();
+            const currentSelection = context.state.selection;
+            this.updateState(currentSelection.selectedScripts);
+            currentSelection.changed.on((scripts) => this.updateState(scripts));
         }
 
         @Watch('node') public async onNodeChangedAsync(node: INode) {
-            const state = await this.getCurrentStateAsync();
-            this.handler = getReverter(node, state.app);
+            const context = await this.getCurrentContextAsync();
+            this.handler = getReverter(node, context.app);
         }
 
         public async onRevertToggledAsync() {
-            const state = await this.getCurrentStateAsync();
-            this.handler.selectWithRevertState(this.isReverted, state.selection);
+            const context = await this.getCurrentContextAsync();
+            this.handler.selectWithRevertState(this.isReverted, context.state.selection);
         }
 
         private updateState(scripts: ReadonlyArray<SelectedScript>) {

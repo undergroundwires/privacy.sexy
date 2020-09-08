@@ -74,7 +74,7 @@ export default class TheFooter extends StatefulVue {
   }
 
   public async mounted() {
-    const state = await this.getCurrentStateAsync();
+    const state = await this.getCurrentContextAsync();
     const info = state.app.info;
     this.version = info.version;
     this.homepageUrl = info.homepage;

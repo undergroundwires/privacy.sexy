@@ -73,12 +73,13 @@
         public searchHasMatches = false;
 
         public async mounted() {
-            const state = await this.getCurrentStateAsync();
-            this.repositoryUrl = state.app.info.repositoryWebUrl;
-            state.filter.filterRemoved.on(() => {
+            const context = await this.getCurrentContextAsync();
+            this.repositoryUrl = context.app.info.repositoryWebUrl;
+            const filter = context.state.filter;
+            filter.filterRemoved.on(() => {
                 this.isSearching = false;
             });
-            state.filter.filtered.on((result: IFilterResult) => {
+            filter.filtered.on((result: IFilterResult) => {
                 this.searchQuery = result.query;
                 this.isSearching = true;
                 this.searchHasMatches = result.hasAnyMatches();
@@ -86,8 +87,9 @@
         }
 
         public async clearSearchQueryAsync() {
-            const state = await this.getCurrentStateAsync();
-            state.filter.removeFilter();
+            const context = await this.getCurrentContextAsync();
+            const filter = context.state.filter;
+            filter.removeFilter();
         }
 
         public onGroupingChanged(group: Grouping) {

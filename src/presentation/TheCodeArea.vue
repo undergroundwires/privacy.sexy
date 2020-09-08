@@ -10,6 +10,7 @@ import 'ace-builds/webpack-resolver';
 import { CodeBuilder } from '@/application/State/Code/Generation/CodeBuilder';
 import { ICodeChangedEvent } from '@/application/State/Code/Event/ICodeChangedEvent';
 import { IScript } from '@/domain/IScript';
+import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 
 const NothingChosenCode =
   new CodeBuilder()
@@ -38,10 +39,11 @@ export default class TheCodeArea extends StatefulVue {
   @Prop() private theme!: string;
 
   public async mounted() {
-    this.editor = initializeEditor(this.theme, this.editorId);
-    const state = await this.getCurrentStateAsync();
-    this.editor.setValue(state.code.current || NothingChosenCode, 1);
-    state.code.changed.on((code) => this.updateCode(code));
+    const context = await this.getCurrentContextAsync();
+    this.editor = initializeEditor(this.theme, this.editorId, context.app.scripting.language);
+    const appCode = context.state.code;
+    this.editor.setValue(appCode.current || NothingChosenCode, 1);
+    appCode.changed.on((code) => this.updateCode(code));
   }
 
   private updateCode(event: ICodeChangedEvent) {
@@ -93,16 +95,25 @@ export default class TheCodeArea extends StatefulVue {
   }
 }
 
-function initializeEditor(theme: string, editorId: string): ace.Ace.Editor {
-  const lang = 'batchfile';
+function initializeEditor(theme: string, editorId: string, language: ScriptingLanguage): ace.Ace.Editor {
   theme = theme || 'github';
   const editor = ace.edit(editorId);
+  const lang = getLanguage(language);
   editor.getSession().setMode(`ace/mode/${lang}`);
   editor.setTheme(`ace/theme/${theme}`);
   editor.setReadOnly(true);
   editor.setAutoScrollEditorIntoView(true);
   editor.getSession().setUseWrapMode(true); // So code is readable on mobile
   return editor;
+}
+
+function getLanguage(language: ScriptingLanguage) {
+  switch (language) {
+    case ScriptingLanguage.batchfile:
+      return 'batchfile';
+    default:
+      throw new Error('unkown language');
+  }
 }
 
 </script>

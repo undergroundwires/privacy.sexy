@@ -1,37 +1,32 @@
 import { Script } from '@/domain/Script';
 import { YamlScript } from 'js-yaml-loader!./application.yaml';
 import { parseDocUrls } from './DocumentationParser';
-import { RecommendationLevelNames, RecommendationLevel } from '@/domain/RecommendationLevel';
+import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { IScriptCompiler } from './Compiler/IScriptCompiler';
 import { IScriptCode } from '@/domain/IScriptCode';
 import { ScriptCode } from '@/domain/ScriptCode';
+import { createEnumParser, IEnumParser } from '../Common/Enum';
 
-export function parseScript(yamlScript: YamlScript, compiler: IScriptCompiler): Script {
+export function parseScript(
+    yamlScript: YamlScript, compiler: IScriptCompiler,
+    levelParser = createEnumParser(RecommendationLevel)): Script {
     validateScript(yamlScript);
     if (!compiler) {
         throw new Error('undefined compiler');
     }
     const script = new Script(
-        /* name */              yamlScript.name,
-        /* code */              parseCode(yamlScript, compiler),
-        /* docs */              parseDocUrls(yamlScript),
-        /* level */             getLevel(yamlScript.recommend));
+        /* name */  yamlScript.name,
+        /* code */  parseCode(yamlScript, compiler),
+        /* docs */  parseDocUrls(yamlScript),
+        /* level */ parseLevel(yamlScript.recommend, levelParser));
     return script;
 }
 
-function getLevel(level: string): RecommendationLevel | undefined {
+function parseLevel(level: string, parser: IEnumParser<RecommendationLevel>): RecommendationLevel | undefined {
     if (!level) {
         return undefined;
     }
-    if (typeof level !== 'string') {
-        throw new Error(`level must be a string but it was ${typeof level}`);
-    }
-    const typedLevel = RecommendationLevelNames
-        .find((l) => l.toLowerCase() === level.toLowerCase());
-    if (!typedLevel) {
-        throw new Error(`unknown level: \"${level}\"`);
-    }
-    return RecommendationLevel[typedLevel as keyof typeof RecommendationLevel];
+    return parser.parseEnum(level, 'level');
 }
 
 function parseCode(yamlScript: YamlScript, compiler: IScriptCompiler): IScriptCode {

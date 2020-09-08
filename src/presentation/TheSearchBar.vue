@@ -24,19 +24,20 @@ export default class TheSearchBar extends StatefulVue {
   public searchQuery = '';
 
   public async mounted() {
-    const state = await this.getCurrentStateAsync();
-    const totalScripts = state.app.totalScripts;
+    const context = await this.getCurrentContextAsync();
+    const totalScripts = context.app.totalScripts;
     this.searchPlaceHolder = `Search in ${totalScripts} scripts`;
-    this.beginReacting(state.filter);
+    this.beginReacting(context.state.filter);
   }
 
   @Watch('searchQuery')
-  public async updateFilterAsync(filter: |string) {
-    const state = await this.getCurrentStateAsync();
-    if (!filter) {
-      state.filter.removeFilter();
+  public async updateFilterAsync(newFilter: |string) {
+    const context = await this.getCurrentContextAsync();
+    const filter = context.state.filter;
+    if (!newFilter) {
+      filter.removeFilter();
     } else {
-      state.filter.setFilter(filter);
+      filter.setFilter(newFilter);
     }
   }
 

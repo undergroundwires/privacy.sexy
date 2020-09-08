@@ -1,14 +1,18 @@
 import { Category } from '@/domain/Category';
 import { Application } from '@/domain/Application';
 import { IApplication } from '@/domain/IApplication';
-import { IProjectInformation } from '@/domain/IProjectInformation';
-import { ApplicationYaml } from 'js-yaml-loader!./../application.yaml';
+import { YamlApplication } from 'js-yaml-loader!./../application.yaml';
 import { parseCategory } from './CategoryParser';
-import { ProjectInformation } from '@/domain/ProjectInformation';
+import { parseProjectInformation } from './ProjectInformationParser';
 import { ScriptCompiler } from './Compiler/ScriptCompiler';
+import { OperatingSystem } from '@/domain/OperatingSystem';
+import { parseScriptingDefinition } from './ScriptingDefinitionParser';
+import { createEnumParser } from '../Common/Enum';
 
-
-export function parseApplication(content: ApplicationYaml, env: NodeJS.ProcessEnv = process.env): IApplication {
+export function parseApplication(
+    content: YamlApplication,
+    env: NodeJS.ProcessEnv = process.env,
+    osParser = createEnumParser(OperatingSystem)): IApplication {
     validate(content);
     const compiler = new ScriptCompiler(content.functions);
     const categories = new Array<Category>();
@@ -16,23 +20,18 @@ export function parseApplication(content: ApplicationYaml, env: NodeJS.ProcessEn
         const category = parseCategory(action, compiler);
         categories.push(category);
     }
-    const info = readAppInformation(env);
+    const os = osParser.parseEnum(content.os, 'os');
+    const info = parseProjectInformation(env);
+    const scripting = parseScriptingDefinition(content.scripting, info);
     const app = new Application(
+        os,
         info,
-        categories);
+        categories,
+        scripting);
     return app;
 }
 
-function readAppInformation(environment: NodeJS.ProcessEnv): IProjectInformation {
-    return new ProjectInformation(
-        environment.VUE_APP_NAME,
-        environment.VUE_APP_VERSION,
-        environment.VUE_APP_REPOSITORY_URL,
-        environment.VUE_APP_HOMEPAGE_URL,
-    );
-}
-
-function validate(content: ApplicationYaml): void {
+function validate(content: YamlApplication): void {
     if (!content) {
         throw new Error('application is null or undefined');
     }

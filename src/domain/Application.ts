@@ -1,9 +1,12 @@
+import { getEnumNames, getEnumValues } from '@/application/Common/Enum';
 import { IEntity } from '../infrastructure/Entity/IEntity';
 import { ICategory } from './ICategory';
 import { IScript } from './IScript';
 import { IApplication } from './IApplication';
 import { IProjectInformation } from './IProjectInformation';
-import { RecommendationLevel, RecommendationLevelNames, RecommendationLevels } from './RecommendationLevel';
+import { RecommendationLevel } from './RecommendationLevel';
+import { OperatingSystem } from './OperatingSystem';
+import { IScriptingDefinition } from './IScriptingDefinition';
 
 export class Application implements IApplication {
     public get totalScripts(): number { return this.queryable.allScripts.length; }
@@ -12,12 +15,18 @@ export class Application implements IApplication {
     private readonly queryable: IQueryableApplication;
 
     constructor(
+        public readonly os: OperatingSystem,
         public readonly info: IProjectInformation,
-        public readonly actions: ReadonlyArray<ICategory>) {
+        public readonly actions: ReadonlyArray<ICategory>,
+        public readonly scripting: IScriptingDefinition) {
         if (!info) {
-            throw new Error('info is undefined');
+            throw new Error('undefined info');
+        }
+        if (!scripting) {
+            throw new Error('undefined scripting definition');
         }
         this.queryable = makeQueryable(actions);
+        ensureValidOs(os);
         ensureValid(this.queryable);
         ensureNoDuplicates(this.queryable.allCategories);
         ensureNoDuplicates(this.queryable.allScripts);
@@ -50,13 +59,25 @@ export class Application implements IApplication {
     }
 }
 
+function ensureValidOs(os: OperatingSystem): void {
+    if (os === undefined) {
+        throw new Error('undefined os');
+    }
+    if (os === OperatingSystem.Unknown) {
+        throw new Error('unknown os');
+    }
+    if (!(os in OperatingSystem)) {
+        throw new Error(`os "${os}" is out of range`);
+    }
+}
+
 function ensureNoDuplicates<TKey>(entities: ReadonlyArray<IEntity<TKey>>) {
-    const totalOccurencesById = new Map<TKey, number>();
+    const totalOccurrencesById = new Map<TKey, number>();
     for (const entity of entities) {
-        totalOccurencesById.set(entity.id, (totalOccurencesById.get(entity.id) || 0) + 1);
+        totalOccurrencesById.set(entity.id, (totalOccurrencesById.get(entity.id) || 0) + 1);
     }
     const duplicatedIds = new Array<TKey>();
-    totalOccurencesById.forEach((index, id) => {
+    totalOccurrencesById.forEach((index, id) => {
         if (index > 1) {
             duplicatedIds.push(id);
         }
@@ -89,7 +110,7 @@ function ensureValidScripts(allScripts: readonly IScript[]) {
     if (!allScripts || allScripts.length === 0) {
         throw new Error('Application must consist of at least one script');
     }
-    for (const level of RecommendationLevels) {
+    for (const level of getEnumValues(RecommendationLevel)) {
         if (allScripts.every((script) => script.level !== level)) {
             throw new Error(`none of the scripts are recommended as ${RecommendationLevel[level]}`);
         }
@@ -143,7 +164,7 @@ function makeQueryable(
 
 function groupByLevel(allScripts: readonly IScript[]): Map<RecommendationLevel, readonly IScript[]> {
     const map = new Map<RecommendationLevel, readonly IScript[]>();
-    for (const levelName of RecommendationLevelNames) {
+    for (const levelName of getEnumNames(RecommendationLevel)) {
         const level = RecommendationLevel[levelName];
         const scripts = allScripts.filter((script) => script.level !== undefined && script.level <= level);
         map.set(level, scripts);

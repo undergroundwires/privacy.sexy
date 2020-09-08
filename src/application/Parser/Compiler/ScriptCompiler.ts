@@ -1,3 +1,4 @@
+import { generateIlCode, IILCode } from './ILCode';
 import { IScriptCode } from '@/domain/IScriptCode';
 import { ScriptCode } from '@/domain/ScriptCode';
 import { YamlScript, YamlFunction, FunctionCall, ScriptFunctionCall, FunctionCallParameters } from 'js-yaml-loader!./application.yaml';
@@ -125,20 +126,22 @@ function compileCode(func: YamlFunction, parameters: FunctionCallParameters): IC
 }
 
 function compileExpressions(code: string, parameters: FunctionCallParameters): string {
-    let intermediateCode = compileToIL(code);
+    let intermediateCode = generateIlCode(code);
     intermediateCode = substituteParameters(intermediateCode, parameters);
-    ensureNoExpressionLeft(intermediateCode);
-    return intermediateCode;
+    return intermediateCode.compile();
 }
 
-function substituteParameters(intermediateCode: string, parameters: FunctionCallParameters): string {
-    const parameterNames = getUniqueParameterNamesFromIL(intermediateCode);
+function substituteParameters(intermediateCode: IILCode, parameters: FunctionCallParameters): IILCode {
+    const parameterNames = intermediateCode.getUniqueParameterNames();
     if (parameterNames.length && !parameters) {
         throw new Error(`no parameters defined, expected: ${printList(parameterNames)}`);
     }
     for (const parameterName of parameterNames) {
         const parameterValue = parameters[parameterName];
-        intermediateCode = substituteParameter(intermediateCode, parameterName, parameterValue);
+        if (!parameterValue) {
+            throw Error(`parameter value is not provided for "${parameterName}" in function call`);
+        }
+        intermediateCode = intermediateCode.substituteParameter(parameterName, parameterValue);
     }
     return intermediateCode;
 }
@@ -157,44 +160,4 @@ function getCallSequence(call: ScriptFunctionCall): FunctionCall[] {
         return call as FunctionCall[];
     }
     return [ call as FunctionCall ];
-}
-
-function getDistinctValues(values: readonly string[]): string[] {
-    return values.filter((value, index, self) => {
-        return self.indexOf(value) === index;
-      });
-}
-
-// Trim each expression and put them inside "{{exp|}}" e.g. "{{ $hello }}" becomes "{{exp|$hello}}"
-function compileToIL(code: string) {
-    return code.replace(/\{\{([\s]*[^;\s\{]+[\s]*)\}\}/g, (_, match) => {
-        return `\{\{exp|${match.trim()}\}\}`;
-    });
-}
-
-// Parses all distinct usages of {{exp|$parameterName}}
-function getUniqueParameterNamesFromIL(ilCode: string) {
-    const allSubstitutions = ilCode.matchAll(/\{\{exp\|\$([^;\s\{]+[\s]*)\}\}/g);
-    const allParameters = Array.from(allSubstitutions, (match) => match[1]);
-    const uniqueParameterNames = getDistinctValues(allParameters);
-    return uniqueParameterNames;
-}
-
-// substitutes {{exp|$parameterName}} to value of the parameter
-function substituteParameter(ilCode: string, parameterName: string, parameterValue: string) {
-    if (!parameterValue) {
-        throw Error(`parameter value is not provided for "${parameterName}" in function call`);
-    }
-    const pattern = `{{exp|$${parameterName}}}`;
-    return ilCode.split(pattern).join(parameterValue); // as .replaceAll() is not yet supported by TS
-}
-
-// finds all "{{exp|..}} left"
-function ensureNoExpressionLeft(ilCode: string) {
-    const allSubstitutions = ilCode.matchAll(/\{\{exp\|(.*?)\}\}/g);
-    const allMatches = Array.from(allSubstitutions, (match) => match[1]);
-    const uniqueExpressions = getDistinctValues(allMatches);
-    if (uniqueExpressions.length > 0) {
-        throw new Error(`unknown expression: ${printList(uniqueExpressions)}`);
-    }
 }

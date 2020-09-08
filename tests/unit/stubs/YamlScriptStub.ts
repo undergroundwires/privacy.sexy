@@ -58,4 +58,10 @@ export class YamlScriptStub implements YamlScript {
         this.call = call;
         return this;
     }
+
+
+    public withRecommend(recommend: string): YamlScriptStub {
+        this.recommend = recommend;
+        return this;
+    }
 }

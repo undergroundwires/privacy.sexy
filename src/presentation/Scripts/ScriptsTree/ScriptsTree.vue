@@ -42,24 +42,19 @@
     private filtered?: IFilterResult;
 
     public async mounted() {
-      const state = await this.getCurrentStateAsync();
-      // React to state changes
-      state.selection.changed.on(this.handleSelectionChanged);
-      state.filter.filterRemoved.on(this.handleFilterRemoved);
-      state.filter.filtered.on(this.handleFiltered);
-      // Update initial state
-      await this.initializeNodesAsync(this.categoryId);
-      await this.initializeFilter(state.filter.currentFilter);
+      const context = await this.getCurrentContextAsync();
+      this.beginReactingToStateChanges(context.state);
+      this.setInitialState(context.state);
     }
 
     public async toggleNodeSelectionAsync(event: INodeSelectedEvent) {
-        const state = await this.getCurrentStateAsync();
+        const context = await this.getCurrentContextAsync();
         switch (event.node.type) {
           case NodeType.Category:
-            toggleCategoryNodeSelection(event, state);
+            toggleCategoryNodeSelection(event, context.state);
             break;
           case NodeType.Script:
-            toggleScriptNodeSelection(event, state);
+            toggleScriptNodeSelection(event, context.state);
             break;
           default:
             throw new Error(`Unknown node type: ${event.node.id}`);
@@ -68,13 +63,13 @@
 
     @Watch('categoryId')
     public async initializeNodesAsync(categoryId?: number) {
-      const state = await this.getCurrentStateAsync();
+      const context = await this.getCurrentContextAsync();
       if (categoryId) {
-        this.nodes = parseSingleCategory(categoryId, state.app);
+        this.nodes = parseSingleCategory(categoryId, context.app);
       } else {
-        this.nodes = parseAllCategories(state.app);
+        this.nodes = parseAllCategories(context.app);
       }
-      this.selectedNodeIds = state.selection.selectedScripts
+      this.selectedNodeIds = context.state.selection.selectedScripts
         .map((selected) => getScriptNodeId(selected.script));
     }
 
@@ -83,6 +78,17 @@
         (script: IScript) => node.id === getScriptNodeId(script))
         || this.filtered.categoryMatches.some(
           (category: ICategory) => node.id === getCategoryNodeId(category));
+    }
+
+    private beginReactingToStateChanges(state: IApplicationState) {
+      state.selection.changed.on(this.handleSelectionChanged);
+      state.filter.filterRemoved.on(this.handleFilterRemoved);
+      state.filter.filtered.on(this.handleFiltered);
+    }
+
+    private setInitialState(state: IApplicationState) {
+        this.initializeNodesAsync(this.categoryId);
+        this.initializeFilter(state.filter.currentFilter);
     }
 
     private initializeFilter(currentFilter: IFilterResult | undefined) {

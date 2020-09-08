@@ -69,8 +69,8 @@ export default class CardListItem extends StatefulVue {
   }
 
   public async mounted() {
-    const state = await this.getCurrentStateAsync();
-    state.selection.changed.on(() => {
+    const context = await this.getCurrentContextAsync();
+    context.state.selection.changed.on(() => {
       this.updateStateAsync(this.categoryId);
     });
     this.updateStateAsync(this.categoryId);
@@ -78,11 +78,12 @@ export default class CardListItem extends StatefulVue {
 
   @Watch('categoryId')
   public async updateStateAsync(value: |number) {
-    const state = await this.getCurrentStateAsync();
-    const category = !value ? undefined : state.app.findCategory(this.categoryId);
+    const context = await this.getCurrentContextAsync();
+    const category = !value ? undefined : context.app.findCategory(this.categoryId);
     this.cardTitle = category ? category.name : undefined;
-    this.isAnyChildSelected = category ? state.selection.isAnySelected(category) : false;
-    this.areAllChildrenSelected = category ? state.selection.areAllSelected(category) : false;
+    const currentSelection = context.state.selection;
+    this.isAnyChildSelected = category ? currentSelection.isAnySelected(category) : false;
+    this.areAllChildrenSelected = category ? currentSelection.areAllSelected(category) : false;
   }
 }
 

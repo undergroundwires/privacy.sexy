@@ -4,55 +4,54 @@ import { CodeBuilder } from './CodeBuilder';
 import { ICodePosition } from '@/application/State/Code/Position/ICodePosition';
 import { CodePosition } from '../Position/CodePosition';
 import { IUserScript } from './IUserScript';
-
-export const adminRightsScript = {
-    name: 'Ensure admin privileges',
-    code: 'fltmc >nul 2>&1 || (\n' +
-    '   echo Administrator privileges are required.\n' +
-    '   PowerShell Start -Verb RunAs \'%0\' 2> nul || (\n' +
-    '       echo Right-click on the script and select "Run as administrator".\n' +
-    '       pause & exit 1\n' +
-    '   )\n' +
-    '   exit 0\n' +
-    ')',
-};
+import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import { ICodeBuilder } from './ICodeBuilder';
 
 export class UserScriptGenerator implements IUserScriptGenerator {
-    public buildCode(selectedScripts: ReadonlyArray<SelectedScript>, version: string): IUserScript {
-        if (!selectedScripts) { throw new Error('scripts is undefined'); }
-        if (!version) { throw new Error('version is undefined'); }
+    constructor(private readonly codeBuilderFactory: () => ICodeBuilder = () => new CodeBuilder()) {
+
+    }
+    public buildCode(
+        selectedScripts: ReadonlyArray<SelectedScript>,
+        scriptingDefinition: IScriptingDefinition): IUserScript {
+        if (!selectedScripts) { throw new Error('undefined scripts'); }
+        if (!scriptingDefinition) { throw new Error('undefined definition'); }
         let scriptPositions = new Map<SelectedScript, ICodePosition>();
         if (!selectedScripts.length) {
             return { code: '', scriptPositions };
         }
-        const builder = initializeCode(version);
+        let builder = this.codeBuilderFactory();
+        builder = initializeCode(scriptingDefinition.startCode, builder);
         for (const selection of selectedScripts) {
             scriptPositions = appendSelection(selection, scriptPositions, builder);
         }
-        const code = finalizeCode(builder);
+        const code = finalizeCode(builder, scriptingDefinition.endCode);
         return { code, scriptPositions };
     }
 }
 
-function initializeCode(version: string): CodeBuilder {
-    return new CodeBuilder()
-        .appendLine('@echo off')
-        .appendCommentLine(`https://privacy.sexy — v${version} — ${new Date().toUTCString()}`)
-        .appendFunction(adminRightsScript.name, adminRightsScript.code)
+function initializeCode(startCode: string, builder: ICodeBuilder): ICodeBuilder {
+    if (!startCode) {
+        return builder;
+    }
+    return builder
+        .appendLine(startCode)
         .appendLine();
 }
 
-function finalizeCode(builder: CodeBuilder): string {
+function finalizeCode(builder: ICodeBuilder, endCode: string): string {
+    if (!endCode) {
+        return builder.toString();
+    }
     return builder.appendLine()
-        .appendLine('pause')
-        .appendLine('exit /b 0')
+        .appendLine(endCode)
         .toString();
 }
 
 function appendSelection(
     selection: SelectedScript,
     scriptPositions: Map<SelectedScript, ICodePosition>,
-    builder: CodeBuilder): Map<SelectedScript, ICodePosition> {
+    builder: ICodeBuilder): Map<SelectedScript, ICodePosition> {
     const startPosition = builder.currentLine + 1;
     appendCode(selection, builder);
     const endPosition = builder.currentLine - 1;
@@ -61,7 +60,7 @@ function appendSelection(
     return scriptPositions;
 }
 
-function appendCode(selection: SelectedScript, builder: CodeBuilder) {
+function appendCode(selection: SelectedScript, builder: ICodeBuilder) {
     const name = selection.revert ? `${selection.script.name} (revert)` : selection.script.name;
     const scriptCode = selection.revert ? selection.script.code.revert : selection.script.code.execute;
     builder.appendFunction(name, scriptCode);

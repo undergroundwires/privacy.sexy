@@ -1,6 +1,5 @@
 <template>
     <div class="container" v-if="hasCode">
-        </IconButton>
         <IconButton
             :text="this.isDesktop ? 'Save' : 'Download'"
             v-on:click="saveCodeAsync"
@@ -22,6 +21,9 @@ import { SaveFileDialog, FileType } from '@/infrastructure/SaveFileDialog';
 import { Clipboard } from '@/infrastructure/Clipboard';
 import IconButton from './IconButton.vue';
 import { Environment } from '@/application/Environment/Environment';
+import { IApplicationCode } from '../application/State/IApplicationState';
+import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { IApplicationContext } from '@/application/State/IApplicationContext';
 
 @Component({
   components: {
@@ -33,22 +35,44 @@ export default class TheCodeButtons extends StatefulVue {
   public isDesktop = false;
 
   public async mounted() {
-    const state = await this.getCurrentStateAsync();
-    this.isDesktop = Environment.CurrentEnvironment.isDesktop;
-    this.hasCode = state.code.current && state.code.current.length > 0;
-    state.code.changed.on((code) => {
-      this.hasCode = code && code.code.length > 0;
+    const code = await this.getCurrentCodeAsync();
+    this.hasCode = code.current && code.current.length > 0;
+    code.changed.on((newCode) => {
+      this.hasCode = newCode && newCode.code.length > 0;
     });
+    this.isDesktop = Environment.CurrentEnvironment.isDesktop;
   }
 
   public async copyCodeAsync() {
-      const state = await this.getCurrentStateAsync();
-      Clipboard.copyText(state.code.current);
+      const code = await this.getCurrentCodeAsync();
+      Clipboard.copyText(code.current);
   }
 
   public async saveCodeAsync() {
-      const state = await this.getCurrentStateAsync();
-      SaveFileDialog.saveFile(state.code.current, 'privacy-script.bat', FileType.BatchFile);
+      const context = await this.getCurrentContextAsync();
+      saveCode(context);
+  }
+
+  private async getCurrentCodeAsync(): Promise<IApplicationCode> {
+    const context = await this.getCurrentContextAsync();
+    const code = context.state.code;
+    return code;
+  }
+}
+
+function saveCode(context: IApplicationContext) {
+      const fileName = `privacy-script.${context.app.scripting.fileExtension}`;
+      const content = context.state.code.current;
+      const type = getType(context.app.scripting.language);
+      SaveFileDialog.saveFile(content, fileName, FileType.BatchFile);
+}
+
+function getType(language: ScriptingLanguage) {
+  switch (language) {
+    case ScriptingLanguage.batchfile:
+      return FileType.BatchFile;
+    default:
+      throw new Error('unknown file type');
   }
 }
 </script>

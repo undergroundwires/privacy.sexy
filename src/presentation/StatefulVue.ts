@@ -1,11 +1,13 @@
-import { ApplicationState } from '@/application/State/ApplicationState';
-import { IApplicationState } from '@/application/State/IApplicationState';
 import { Vue } from 'vue-property-decorator';
+import { AsyncLazy } from '@/infrastructure/Threading/AsyncLazy';
+import { IApplicationContext } from '@/application/State/IApplicationContext';
+import { buildContext } from '@/application/State/ApplicationContextProvider';
 
 export abstract class StatefulVue extends Vue {
-    public isLoading = true;
+    private static instance = new AsyncLazy<IApplicationContext>(
+        () => Promise.resolve(buildContext()));
 
-    protected getCurrentStateAsync(): Promise<IApplicationState> {
-        return ApplicationState.GetAsync();
+    protected getCurrentContextAsync(): Promise<IApplicationContext> {
+        return StatefulVue.instance.getValueAsync();
     }
 }

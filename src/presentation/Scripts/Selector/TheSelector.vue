@@ -49,6 +49,7 @@ import { IApplicationState } from '@/application/State/IApplicationState';
 import { IScript } from '@/domain/IScript';
 import { SelectedScript } from '@/application/State/Selection/SelectedScript';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
+import { IApplicationContext } from '../../../application/State/IApplicationContext';
 
 enum SelectionState {
     Standard,
@@ -67,66 +68,79 @@ export default class TheSelector extends StatefulVue {
     public currentSelection = SelectionState.None;
 
     public async mounted() {
-        const state = await this.getCurrentStateAsync();
-        this.updateSelections(state);
-        state.selection.changed.on(() => {
-            this.updateSelections(state);
-        });
+        const context = await this.getCurrentContextAsync();
+        this.updateSelections(context);
+        this.beginReactingToChanges(context);
     }
     public async selectAsync(type: SelectionState): Promise<void> {
         if (this.currentSelection === type) {
             return;
         }
-        const state = await this.getCurrentStateAsync();
-        selectType(state, type);
+        const context = await this.getCurrentContextAsync();
+        selectType(context, type);
     }
 
-    private updateSelections(state: IApplicationState) {
-       this.currentSelection = getCurrentSelectionState(state);
+    private updateSelections(context: IApplicationContext) {
+       this.currentSelection = getCurrentSelectionState(context);
+    }
+
+    private beginReactingToChanges(context: IApplicationContext) {
+        context.state.selection.changed.on(() => {
+            this.updateSelections(context);
+        });
     }
 }
 
 interface ITypeSelector {
-    isSelected: (state: IApplicationState) => boolean;
-    select: (state: IApplicationState) => void;
+    isSelected: (context: IApplicationContext) => boolean;
+    select: (context: IApplicationContext) => void;
 }
 
 const selectors = new Map<SelectionState, ITypeSelector>([
     [SelectionState.None, {
-        select: (state) => state.selection.deselectAll(),
-        isSelected: (state) => state.selection.totalSelected === 0,
+        select: (context) =>
+            context.state.selection.deselectAll(),
+        isSelected: (context) =>
+            context.state.selection.totalSelected === 0,
     }],
     [SelectionState.Standard, {
-        select: (state) => state.selection.selectOnly(state.app.getScriptsByLevel(RecommendationLevel.Standard)),
-        isSelected: (state) => hasAllSelectedLevelOf(RecommendationLevel.Standard, state),
+        select: (context) =>
+            context.state.selection.selectOnly(
+                context.app.getScriptsByLevel(RecommendationLevel.Standard)),
+        isSelected: (context) =>
+            hasAllSelectedLevelOf(RecommendationLevel.Standard, context),
     }],
     [SelectionState.Strict, {
-        select: (state) => state.selection.selectOnly(state.app.getScriptsByLevel(RecommendationLevel.Strict)),
-        isSelected: (state) => hasAllSelectedLevelOf(RecommendationLevel.Strict, state),
+        select: (context) =>
+            context.state.selection.selectOnly(context.app.getScriptsByLevel(RecommendationLevel.Strict)),
+        isSelected: (context) =>
+            hasAllSelectedLevelOf(RecommendationLevel.Strict, context),
     }],
     [SelectionState.All, {
-        select: (state) => state.selection.selectAll(),
-        isSelected: (state) => state.selection.totalSelected === state.app.totalScripts,
+        select: (context) =>
+            context.state.selection.selectAll(),
+        isSelected: (context) =>
+            context.state.selection.totalSelected === context.app.totalScripts,
     }],
 ]);
 
-function selectType(state: IApplicationState, type: SelectionState) {
+function selectType(context: IApplicationContext, type: SelectionState) {
     const selector = selectors.get(type);
-    selector.select(state);
+    selector.select(context);
 }
 
-function getCurrentSelectionState(state: IApplicationState): SelectionState {
+function getCurrentSelectionState(context: IApplicationContext): SelectionState {
     for (const [type, selector] of Array.from(selectors.entries())) {
-        if (selector.isSelected(state)) {
+        if (selector.isSelected(context)) {
             return type;
         }
     }
     return SelectionState.Custom;
 }
 
-function hasAllSelectedLevelOf(level: RecommendationLevel, state: IApplicationState) {
-    const scripts = state.app.getScriptsByLevel(level);
-    const selectedScripts = state.selection.selectedScripts;
+function hasAllSelectedLevelOf(level: RecommendationLevel, context: IApplicationContext) {
+    const scripts = context.app.getScriptsByLevel(level);
+    const selectedScripts = context.state.selection.selectedScripts;
     return areAllSelected(scripts, selectedScripts);
 }
 
