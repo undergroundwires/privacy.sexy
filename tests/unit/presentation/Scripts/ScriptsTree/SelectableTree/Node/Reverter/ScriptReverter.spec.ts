@@ -68,7 +68,7 @@ describe('ScriptReverter', () => {
                 selection: [ new SelectedScript(script, true)], revert: true, expectRevert: true,
             },
             {
-                name: 'keeps revert state deselected when already selected wtih non revert state',
+                name: 'keeps revert state deselected when already selected with non revert state',
                 selection: [ new SelectedScript(script, false)], revert: false, expectRevert: false,
             },
         ];
