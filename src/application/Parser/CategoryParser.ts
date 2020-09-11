@@ -52,7 +52,7 @@ function parseCategoryChild(
         children.subScripts.push(script);
     } else {
         throw new Error(`Child element is neither a category or a script.
-                Parent: ${parent.category}, element: ${categoryOrScript}`);
+                Parent: ${parent.category}, element: ${JSON.stringify(categoryOrScript)}`);
     }
 }
 
