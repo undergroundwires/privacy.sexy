@@ -41,6 +41,9 @@ function mayBeUniqueLine(codeLine: string): boolean {
     if (trimmed === ')' || trimmed === '(') { // "(" and ")" are used often in batch code
         return false;
     }
+    if (codeLine.startsWith(':: ') || codeLine.startsWith('REM ')) { // Is comment?
+        return false;
+    }
     return true;
 }
 
