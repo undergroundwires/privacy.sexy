@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.7.3 (2020-09-12)
+
+* fix vscode settings file override and add more configs | [commit](https://github.com/undergroundwires/privacy.sexy/commit/a0d61728ead04b4455437f85820121a848db9e00)
+* fix nvidia tweak error message, categorize and add reversibility | [commit](https://github.com/undergroundwires/privacy.sexy/commit/99a2035fdb0766a4dfc2753133eab0d7666516cd)
+* improve CPU specific tweaks by conditional platform checks and reversibility | [commit](https://github.com/undergroundwires/privacy.sexy/commit/8df5faf4ef05a49da63973bd0fbb5c5d07d5bd93)
+* fix wrong path to the main telemetry file | [commit](https://github.com/undergroundwires/privacy.sexy/commit/de4ac978bdda79573b36d355697b8a028d2c0beb)
+* fix naming of firefox cleanup to mention profiles | [commit](https://github.com/undergroundwires/privacy.sexy/commit/3ab48b1cf5f7f934f07e468ef2318ccee07f530c)
+* add reversibility and more scripts to denying app access with better structure | [commit](https://github.com/undergroundwires/privacy.sexy/commit/1d465ee3189d0e5a827453b3f0eb4361efe23770)
+* fix comment lines are being detected as duplicate in validation | [commit](https://github.com/undergroundwires/privacy.sexy/commit/b6ccb5927a20412976a54fd2215eb645092f98a8)
+* add more detailed error message | [commit](https://github.com/undergroundwires/privacy.sexy/commit/1f11c39773c12eccfb3efb898b58c2f6f37ab9ca)
+* fix typo in a test | [commit](https://github.com/undergroundwires/privacy.sexy/commit/1f19b2528a69383e63e579d2885f01cd804abf6c)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.7.2...0.7.3)
+
 ## 0.7.2 (2020-09-06)
 
 * update onesync documentation and do not recommend it as it breaks other apps | [commit](https://github.com/undergroundwires/privacy.sexy/commit/f36d8bfc7848bb65ac0c641e318a689bf3816ccf)
