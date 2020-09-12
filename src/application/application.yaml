@@ -185,7 +185,7 @@ actions:
                                 name: Clear all Firefox user profiles, settings and data 
                                 recommend: false
                                 code: |-
-                                    rd "%localappdata%\Local\Mozilla\Firefox\Profiles"
+                                    rd /s /q "%LOCALAPPDATA%\Mozilla\Firefox\Profiles"
                                     rd /s /q "%APPDATA%\Mozilla\Firefox\Profiles"
                     -
                         name: Clear Opera traces
