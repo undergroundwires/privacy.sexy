@@ -1313,7 +1313,7 @@ actions:
                             -    
                                 name: Do not send file samples for further analysis
                                 recommend: true
-                                docc:
+                                doc:
                                     - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-defender#defender-submitsamplesconsent
                                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SubmitSamplesConsent" /t REG_DWORD /d 2 /f
                                 revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SubmitSamplesConsent" /t REG_DWORD /d 1 /f
@@ -2870,7 +2870,7 @@ actions:
                         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /t REG_DWORD /v "DisableFileSyncNGSC" /d 0 /f
                         reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /t REG_DWORD /v "DisableFileSync" /d 0 /f
                 -
-                    name: Prevent automatical OneDrive install for current user
+                    name: Prevent automatic OneDrive install for current user
                     code: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "OneDriveSetup" /f
                     revertCode: |-
                         if %PROCESSOR_ARCHITECTURE%==x86 (
