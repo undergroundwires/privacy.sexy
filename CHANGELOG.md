@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.7.4 (2020-09-12)
+
+* fix checked checkbox has blue border | [commit](https://github.com/undergroundwires/privacy.sexy/commit/4ae385b7fcea9014a68442714b7d99e2ee7df7d0)
+* fix spectre protection getting single lined #31 | [commit](https://github.com/undergroundwires/privacy.sexy/commit/22b23a9ece446c7f9abd4ede293051eb616ad50a)
+* fix missing reg value in denying app access to account | [commit](https://github.com/undergroundwires/privacy.sexy/commit/3c13a9e837e06e097450b31d7eb0c0e6bf20cefb)
+* fix wrong path in clear all firefox user profile settings | [commit](https://github.com/undergroundwires/privacy.sexy/commit/ee66196d9a60f27d17ae7f62d02b4f119a47e6e0)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.7.3...0.7.4)
+
 ## 0.7.3 (2020-09-12)
 
 * fix vscode settings file override and add more configs | [commit](https://github.com/undergroundwires/privacy.sexy/commit/a0d61728ead04b4455437f85820121a848db9e00)
