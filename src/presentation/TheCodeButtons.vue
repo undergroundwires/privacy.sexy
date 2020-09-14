@@ -1,9 +1,11 @@
 <template>
     <div class="container" v-if="hasCode">
+        </IconButton>
         <IconButton
-            text="Download"
+            :text="this.isDesktop ? 'Save' : 'Download'"
             v-on:click="saveCodeAsync"
-            icon-prefix="fas" icon-name="file-download">
+            icon-prefix="fas" 
+            :icon-name="this.isDesktop ? 'save' : 'file-download'">
         </IconButton>
         <IconButton
             text="Copy"
@@ -16,9 +18,10 @@
 <script lang="ts">
 import { Component } from 'vue-property-decorator';
 import { StatefulVue } from './StatefulVue';
-import { SaveFileDialog, FileType } from './../infrastructure/SaveFileDialog';
-import { Clipboard } from './../infrastructure/Clipboard';
+import { SaveFileDialog, FileType } from '@/infrastructure/SaveFileDialog';
+import { Clipboard } from '@/infrastructure/Clipboard';
 import IconButton from './IconButton.vue';
+import { Environment } from '@/application/Environment/Environment';
 
 @Component({
   components: {
@@ -27,9 +30,11 @@ import IconButton from './IconButton.vue';
 })
 export default class TheCodeButtons extends StatefulVue {
   public hasCode = false;
+  public isDesktop = false;
 
   public async mounted() {
     const state = await this.getCurrentStateAsync();
+    this.isDesktop = Environment.CurrentEnvironment.isDesktop;
     this.hasCode = state.code.current && state.code.current.length > 0;
     state.code.changed.on((code) => {
       this.hasCode = code && code.code.length > 0;
