@@ -1,14 +1,14 @@
 <template>
     <div class="container" v-if="hasCode">
         <IconButton
-            text="Copy"
-            v-on:click="copyCodeAsync"
-            icon-prefix="fas" icon-name="copy">
-        </IconButton>
-        <IconButton
             text="Download"
             v-on:click="saveCodeAsync"
             icon-prefix="fas" icon-name="file-download">
+        </IconButton>
+        <IconButton
+            text="Copy"
+            v-on:click="copyCodeAsync"
+            icon-prefix="fas" icon-name="copy">
         </IconButton>
     </div>
 </template>
