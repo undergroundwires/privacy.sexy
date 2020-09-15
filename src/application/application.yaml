@@ -384,7 +384,7 @@ actions:
             -
                 name: Empty trash bin
                 recommend: false
-                code: rd /s %systemdrive%\$Recycle.bin
+                code: Powershell -Command "Clear-Recyclebin -Force"
             -
                 name: Enable Reset Base in Dism Component Store
                 recommend: true
