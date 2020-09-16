@@ -4,7 +4,10 @@ on: [ push, pull_request ]
 
 jobs:
   run-tests:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [macos, ubuntu, windows]
+    runs-on: ${{ matrix.os }}-latest
     steps:
       -
         name: Checkout
