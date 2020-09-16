@@ -8,6 +8,7 @@ import { Signal } from '@/infrastructure/Events/Signal';
 export class UserFilter implements IUserFilter {
     public readonly filtered = new Signal<IFilterResult>();
     public readonly filterRemoved = new Signal<void>();
+    public currentFilter: IFilterResult | undefined;
 
     constructor(private application: IApplication) {
 
@@ -28,11 +29,12 @@ export class UserFilter implements IUserFilter {
             filteredCategories,
             filter,
         );
-
+        this.currentFilter = matches;
         this.filtered.notify(matches);
     }
 
     public removeFilter(): void {
+        this.currentFilter = undefined;
         this.filterRemoved.notify();
     }
 }

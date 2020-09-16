@@ -49,6 +49,7 @@
       state.filter.filtered.on(this.handleFiltered);
       // Update initial state
       await this.initializeNodesAsync(this.categoryId);
+      await this.initializeFilter(state.filter.currentFilter);
     }
 
     public async toggleNodeSelectionAsync(event: INodeSelectedEvent) {
@@ -82,6 +83,14 @@
         (script: IScript) => node.id === getScriptNodeId(script))
         || this.filtered.categoryMatches.some(
           (category: ICategory) => node.id === getCategoryNodeId(category));
+    }
+
+    private initializeFilter(currentFilter: IFilterResult | undefined) {
+      if (!currentFilter) {
+        this.handleFilterRemoved();
+      } else {
+        this.handleFiltered(currentFilter);
+      }
     }
 
     private handleSelectionChanged(selectedScripts: ReadonlyArray<SelectedScript>): void {

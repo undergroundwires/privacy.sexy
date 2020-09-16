@@ -35,7 +35,7 @@
             Node,
         },
     })
-    export default class SelectableTree extends Vue {
+    export default class SelectableTree extends Vue { // Keep it stateless to make it easier to switch out
         @Prop() public filterPredicate?: FilterPredicate;
         @Prop() public filterText?: string;
         @Prop() public selectedNodeIds?: ReadonlyArray<string>;

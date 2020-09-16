@@ -72,7 +72,6 @@
         public isSearching = false;
         public searchHasMatches = false;
 
-
         public async mounted() {
             const state = await this.getCurrentStateAsync();
             this.repositoryUrl = state.app.repositoryUrl;
