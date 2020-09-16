@@ -384,7 +384,7 @@ actions:
             -
                 name: Empty trash bin
                 recommend: false
-                code: Powershell -Command "Clear-Recyclebin -Force"
+                code: Powershell -Command "$bin = (New-Object -ComObject Shell.Application).NameSpace(10);$bin.items() | ForEach { Write-Host "Deleting $($_.Name) from Recycle Bin"; Remove-Item $_.Path -Recurse -Force}"
             -
                 name: Enable Reset Base in Dism Component Store
                 recommend: true
