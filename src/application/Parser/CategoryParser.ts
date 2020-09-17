@@ -3,6 +3,7 @@ import { Script } from '@/domain/Script';
 import { Category } from '@/domain/Category';
 import { parseDocUrls } from './DocumentationParser';
 import { parseScript } from './ScriptParser';
+import { IScriptCompiler } from './Compiler/IScriptCompiler';
 
 let categoryIdCounter: number = 0;
 
@@ -11,14 +12,17 @@ interface ICategoryChildren {
     subScripts: Script[];
 }
 
-export function parseCategory(category: YamlCategory): Category {
+export function parseCategory(category: YamlCategory, compiler: IScriptCompiler): Category {
+    if (!compiler) {
+        throw new Error('undefined compiler');
+    }
     ensureValid(category);
     const children: ICategoryChildren = {
         subCategories: new Array<Category>(),
         subScripts: new Array<Script>(),
     };
     for (const categoryOrScript of category.children) {
-        parseCategoryChild(categoryOrScript, children, category);
+        parseCategoryChild(categoryOrScript, children, category, compiler);
     }
     return new Category(
         /*id*/ categoryIdCounter++,
@@ -42,13 +46,16 @@ function ensureValid(category: YamlCategory) {
 }
 
 function parseCategoryChild(
-    categoryOrScript: any, children: ICategoryChildren, parent: YamlCategory) {
+    categoryOrScript: any,
+    children: ICategoryChildren,
+    parent: YamlCategory,
+    compiler: IScriptCompiler) {
     if (isCategory(categoryOrScript)) {
-        const subCategory = parseCategory(categoryOrScript as YamlCategory);
+        const subCategory = parseCategory(categoryOrScript as YamlCategory, compiler);
         children.subCategories.push(subCategory);
     } else if (isScript(categoryOrScript)) {
         const yamlScript = categoryOrScript as YamlScript;
-        const script = parseScript(yamlScript);
+        const script = parseScript(yamlScript, compiler);
         children.subScripts.push(script);
     } else {
         throw new Error(`Child element is neither a category or a script.
@@ -57,7 +64,8 @@ function parseCategoryChild(
 }
 
 function isScript(categoryOrScript: any): boolean {
-    return categoryOrScript.code && categoryOrScript.code.length > 0;
+    return (categoryOrScript.code && categoryOrScript.code.length > 0)
+        || categoryOrScript.call;
 }
 
 function isCategory(categoryOrScript: any): boolean {

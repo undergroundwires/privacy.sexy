@@ -23,7 +23,6 @@ export class UserFilter implements IUserFilter {
             (script) => isScriptAMatch(script, filterLowercase));
         const filteredCategories = this.application.getAllCategories().filter(
             (category) => category.name.toLowerCase().includes(filterLowercase));
-
         const matches = new FilterResult(
             filteredScripts,
             filteredCategories,
@@ -43,11 +42,11 @@ function isScriptAMatch(script: IScript, filterLowercase: string) {
     if (script.name.toLowerCase().includes(filterLowercase)) {
         return true;
     }
-    if (script.code.toLowerCase().includes(filterLowercase)) {
+    if (script.code.execute.toLowerCase().includes(filterLowercase)) {
         return true;
     }
-    if (script.revertCode) {
-        return script.revertCode.toLowerCase().includes(filterLowercase);
+    if (script.code.revert) {
+        return script.code.revert.toLowerCase().includes(filterLowercase);
     }
     return false;
 }

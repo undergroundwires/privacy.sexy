@@ -4,8 +4,10 @@ import { RecommendationLevel } from '@/domain/RecommendationLevel';
 
 export class ScriptStub extends BaseEntity<string> implements IScript {
     public name = `name${this.id}`;
-    public code = `REM code${this.id}`;
-    public revertCode = `REM revertCode${this.id}`;
+    public code = {
+        execute: `REM execute-code (${this.id})`,
+        revert: `REM revert-code (${this.id})`,
+    };
     public readonly documentationUrls = new Array<string>();
     public level = RecommendationLevel.Standard;
 
@@ -14,7 +16,7 @@ export class ScriptStub extends BaseEntity<string> implements IScript {
     }
 
     public canRevert(): boolean {
-        return Boolean(this.revertCode);
+        return Boolean(this.code.revert);
     }
 
     public withLevel(value: RecommendationLevel): ScriptStub {
@@ -23,7 +25,7 @@ export class ScriptStub extends BaseEntity<string> implements IScript {
     }
 
     public withCode(value: string): ScriptStub {
-        this.code = value;
+        this.code.execute = value;
         return this;
     }
 
@@ -33,7 +35,7 @@ export class ScriptStub extends BaseEntity<string> implements IScript {
     }
 
     public withRevertCode(revertCode: string): ScriptStub {
-        this.revertCode = revertCode;
+        this.code.revert = revertCode;
         return this;
     }
 }

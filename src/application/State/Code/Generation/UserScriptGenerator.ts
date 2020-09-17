@@ -63,6 +63,6 @@ function appendSelection(
 
 function appendCode(selection: SelectedScript, builder: CodeBuilder) {
     const name = selection.revert ? `${selection.script.name} (revert)` : selection.script.name;
-    const scriptCode = selection.revert ? selection.script.revertCode : selection.script.code;
+    const scriptCode = selection.revert ? selection.script.code.revert : selection.script.code.execute;
     builder.appendFunction(name, scriptCode);
 }

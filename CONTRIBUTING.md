@@ -25,30 +25,6 @@
 
 ## Guidelines
 
-### Extend scripts
-
-- Create a [pull request](#Pull-Request-Process) for [application.yaml](./src/application/application.yaml)
-- 🙏 For any new script, please add `revertCode` and `docs` values if possible.
-- Structure of `script` object:
-  - `name`: *`string`* (**required**)
-    - Name of the script
-    - E.g. `Disable targeted ads`
-  - `code`: *`string`* (**required**)
-    - Batch file commands that will be executed
-  - `docs`: *`string`* | `[ string, ... ]`
-    - Documentation URL or list of URLs for those who wants to learn more about the script
-    - E.g. `https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_telemetry`
-  - `revertCode`: `string`
-    - Code that'll undo the change done by `code` property.
-    - E.g. let's say `code` sets an environment variable as `setx POWERSHELL_TELEMETRY_OPTOUT 1`
-      - then `revertCode` should be doing `setx POWERSHELL_TELEMETRY_OPTOUT 0`
-  - `recommend`: `"standard"` | `"strict"` | `undefined` (default)
-    - If not defined then the script will not be recommended
-    - If defined it can be either
-      - `standard`: Will be recommended for general users
-      - `strict`: Will only be recommended with a warning
-- See [typings](./src/application/application.yaml.d.ts) for documentation as code.
-
 ### Handle the state in presentation layer
 
 - There are two types of components:

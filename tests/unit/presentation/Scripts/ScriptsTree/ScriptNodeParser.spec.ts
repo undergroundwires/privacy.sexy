@@ -3,11 +3,11 @@ import { expect } from 'chai';
 import { getScriptNodeId, getScriptId, getCategoryNodeId, getCategoryId } from '@/presentation/Scripts/ScriptsTree/ScriptNodeParser';
 import { CategoryStub } from '../../../stubs/CategoryStub';
 import { ScriptStub } from '../../../stubs/ScriptStub';
-import { parseSingleCategory, parseAllCategories } from '../../../../../src/presentation/Scripts/ScriptsTree/ScriptNodeParser';
+import { parseSingleCategory, parseAllCategories } from '@/presentation/Scripts/ScriptsTree/ScriptNodeParser';
 import { ApplicationStub } from '../../../stubs/ApplicationStub';
-import { INode, NodeType } from '../../../../../src/presentation/Scripts/ScriptsTree/SelectableTree/Node/INode';
-import { IScript } from '../../../../../src/domain/IScript';
-import { ICategory } from '../../../../../src/domain/ICategory';
+import { INode, NodeType } from '@/presentation/Scripts/ScriptsTree/SelectableTree/Node/INode';
+import { IScript } from '@/domain/IScript';
+import { ICategory } from '@/domain/ICategory';
 
 describe('ScriptNodeParser', () => {
     it('can convert script id and back', () => {
@@ -80,7 +80,7 @@ describe('ScriptNodeParser', () => {
 
 function isReversible(category: ICategory): boolean {
     if (category.scripts) {
-        return category.scripts.every((s) => s.revertCode);
+        return category.scripts.every((s) => s.canRevert());
     }
     return category.subCategories.every((c) => isReversible(c));
 }
@@ -100,8 +100,8 @@ function expectSameCategory(node: INode, category: ICategory): void {
     }
     function getErrorMessage(field: string) {
         return  `Unexpected node field: ${field}.\n` +
-                `\nActual node:\n${JSON.stringify(node, null, 2)}` +
-                `\nExpected category:\n${JSON.stringify(category, null, 2)}`;
+                `\nActual node:\n${print(node)}` +
+                `\nExpected category:\n${print(category)}`;
     }
 }
 
@@ -110,11 +110,15 @@ function expectSameScript(node: INode, script: IScript): void {
     expect(node.id).to.equal(getScriptNodeId(script), getErrorMessage('id'));
     expect(node.documentationUrls).to.equal(script.documentationUrls, getErrorMessage('documentationUrls'));
     expect(node.text).to.equal(script.name, getErrorMessage('name'));
-    expect(node.isReversible).to.equal(!!script.revertCode, getErrorMessage('revertCode'));
+    expect(node.isReversible).to.equal(script.canRevert(), getErrorMessage('canRevert'));
     expect(node.children).to.equal(undefined);
     function getErrorMessage(field: string) {
         return  `Unexpected node field: ${field}.` +
-                `\nActual node:\n${JSON.stringify(node, null, 2)}\n` +
-                `\nExpected script:\n${JSON.stringify(script, null, 2)}`;
+                `\nActual node:\n${print(node)}\n` +
+                `\nExpected script:\n${print(script)}`;
     }
+}
+
+function print(object: any) {
+    return JSON.stringify(object, null, 2);
 }

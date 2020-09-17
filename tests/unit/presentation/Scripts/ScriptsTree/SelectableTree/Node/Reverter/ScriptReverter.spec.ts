@@ -4,7 +4,7 @@ import { ScriptReverter } from '@/presentation/Scripts/ScriptsTree/SelectableTre
 import { SelectedScriptStub } from '../../../../../../stubs/SelectedScriptStub';
 import { getScriptNodeId } from '@/presentation/Scripts/ScriptsTree/ScriptNodeParser';
 import { ScriptStub } from '../../../../../../stubs/ScriptStub';
-import { UserSelection } from '../../../../../../../../src/application/State/Selection/UserSelection';
+import { UserSelection } from '@/application/State/Selection/UserSelection';
 import { SelectedScript } from '@/application/State/Selection/SelectedScript';
 import { ApplicationStub } from '../../../../../../stubs/ApplicationStub';
 import { CategoryStub } from '../../../../../../stubs/CategoryStub';

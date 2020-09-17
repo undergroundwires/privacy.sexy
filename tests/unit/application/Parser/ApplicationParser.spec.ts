@@ -5,22 +5,41 @@ import 'mocha';
 import { expect } from 'chai';
 import { parseCategory } from '@/application/Parser/CategoryParser';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
+import { ScriptCompilerStub } from '../../stubs/ScriptCompilerStub';
 
 describe('ApplicationParser', () => {
     describe('parseApplication', () => {
         it('can parse current application file', () => {
-            expect(() => parseApplication(applicationFile)).to.not.throw();
+            // act
+            const act = () => parseApplication(applicationFile);
+            // assert
+            expect(act).to.not.throw();
         });
         it('throws when undefined', () => {
-            expect(() => parseApplication(undefined)).to.throw('application is null or undefined');
+            // arrange
+            const expectedError = 'application is null or undefined';
+            // act
+            const act = () => parseApplication(undefined);
+            // assert
+            expect(act).to.throw(expectedError);
         });
         it('throws when undefined actions', () => {
-            const sut: ApplicationYaml = { actions: undefined };
-            expect(() => parseApplication(sut)).to.throw('application does not define any action');
+            // arrange
+            const sut: ApplicationYaml = { actions: undefined, functions: undefined };
+            const expectedError = 'application does not define any action';
+            // act
+            const act = () => parseApplication(sut);
+            // assert
+            expect(act).to.throw(expectedError);
         });
         it('throws when has no actions', () => {
-            const sut: ApplicationYaml = { actions: [] };
-            expect(() => parseApplication(sut)).to.throw('application does not define any action');
+            // arrange
+            const sut: ApplicationYaml = { actions: [], functions: undefined };
+            const expectedError = 'application does not define any action';
+            // act
+            const act = () => parseApplication(sut);
+            // assert
+            expect(act).to.throw(expectedError);
         });
         describe('information', () => {
             it('returns expected repository version', () => {
@@ -28,7 +47,7 @@ describe('ApplicationParser', () => {
                 const expected = 'expected-version';
                 const env = getProcessEnvironmentStub();
                 env.VUE_APP_VERSION = expected;
-                const sut: ApplicationYaml = { actions: [ getTestCategory() ] };
+                const sut: ApplicationYaml = { actions: [ getTestCategory() ], functions: undefined };
                 // act
                 const actual = parseApplication(sut, env).info.version;
                 // assert
@@ -39,7 +58,7 @@ describe('ApplicationParser', () => {
                 const expected = 'https://expected-repository.url';
                 const env = getProcessEnvironmentStub();
                 env.VUE_APP_REPOSITORY_URL = expected;
-                const sut: ApplicationYaml = { actions: [ getTestCategory() ] };
+                const sut: ApplicationYaml = { actions: [ getTestCategory() ], functions: undefined };
                 // act
                 const actual = parseApplication(sut, env).info.repositoryUrl;
                 // assert
@@ -50,7 +69,7 @@ describe('ApplicationParser', () => {
                 const expected = 'expected-app-name';
                 const env = getProcessEnvironmentStub();
                 env.VUE_APP_NAME = expected;
-                const sut: ApplicationYaml = { actions: [ getTestCategory() ] };
+                const sut: ApplicationYaml = { actions: [ getTestCategory() ], functions: undefined };
                 // act
                 const actual = parseApplication(sut, env).info.name;
                 // assert
@@ -61,7 +80,7 @@ describe('ApplicationParser', () => {
                 const expected = 'https://expected.sexy';
                 const env = getProcessEnvironmentStub();
                 env.VUE_APP_HOMEPAGE_URL = expected;
-                const sut: ApplicationYaml = { actions: [ getTestCategory() ] };
+                const sut: ApplicationYaml = { actions: [ getTestCategory() ], functions: undefined };
                 // act
                 const actual = parseApplication(sut, env).info.homepage;
                 // assert
@@ -71,8 +90,9 @@ describe('ApplicationParser', () => {
         it('parses actions', () => {
             // arrange
             const actions = [ getTestCategory('test1'), getTestCategory('test2') ];
-            const expected = [ parseCategory(actions[0]), parseCategory(actions[1]) ];
-            const sut: ApplicationYaml = { actions };
+            const compiler = new ScriptCompilerStub();
+            const expected = [ parseCategory(actions[0], compiler), parseCategory(actions[1], compiler) ];
+            const sut: ApplicationYaml = { actions, functions: undefined };
             // act
             const actual = parseApplication(sut).actions;
             // assert
@@ -103,6 +123,7 @@ function getTestScript(scriptName: string, level: RecommendationLevel = Recommen
         code: 'script code',
         revertCode: 'revert code',
         recommend: RecommendationLevel[level].toLowerCase(),
+        call: undefined,
     };
 }
 

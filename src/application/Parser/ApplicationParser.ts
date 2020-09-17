@@ -4,14 +4,16 @@ import { IApplication } from '@/domain/IApplication';
 import { IProjectInformation } from '@/domain/IProjectInformation';
 import { ApplicationYaml } from 'js-yaml-loader!./../application.yaml';
 import { parseCategory } from './CategoryParser';
-import { ProjectInformation } from '../../domain/ProjectInformation';
+import { ProjectInformation } from '@/domain/ProjectInformation';
+import { ScriptCompiler } from './Compiler/ScriptCompiler';
 
 
 export function parseApplication(content: ApplicationYaml, env: NodeJS.ProcessEnv = process.env): IApplication {
     validate(content);
+    const compiler = new ScriptCompiler(content.functions);
     const categories = new Array<Category>();
     for (const action of content.actions) {
-        const category = parseCategory(action);
+        const category = parseCategory(action, compiler);
         categories.push(category);
     }
     const info = readAppInformation(env);
@@ -21,7 +23,7 @@ export function parseApplication(content: ApplicationYaml, env: NodeJS.ProcessEn
     return app;
 }
 
-function readAppInformation(environment): IProjectInformation {
+function readAppInformation(environment: NodeJS.ProcessEnv): IProjectInformation {
     return new ProjectInformation(
         environment.VUE_APP_NAME,
         environment.VUE_APP_VERSION,

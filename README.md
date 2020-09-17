@@ -27,13 +27,14 @@
 - No need to run any compiled software that has access to your system, just run the generated scripts
 - Have full visibility into what the tweaks do as you enable them
 - Ability to revert (undo) applied scripts
+- Everything is transparent: both application and its infrastructure are open-source and automated
 - Easily extendable
-- Everything is open-source and automated (both application and its infrastructure)
 
 ## Extend scripts
 
 - Fork it & add more scripts in [application.yaml](src/application/application.yaml) and send a pull request 👌
-- 📖 More: [extend scripts | CONTRIBUTING.md](./CONTRIBUTING.md#extend-scripts)
+- 📖 If you're unsure about the syntax you can refer to the [application file | documentation](docs/application-file.md).
+- 🙏 For any new script, please add `revertCode` and `docs` values if possible.
 
 ## Commands
 

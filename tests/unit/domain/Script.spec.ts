@@ -1,76 +1,149 @@
 import 'mocha';
 import { expect } from 'chai';
 import { Script } from '@/domain/Script';
-import { RecommendationLevelNames, RecommendationLevel } from '@/domain/RecommendationLevel';
+import { RecommendationLevel, RecommendationLevels } from '@/domain/RecommendationLevel';
+import { ScriptCode } from '@/domain/ScriptCode';
+import { IScriptCode } from '@/domain/IScriptCode';
 
 describe('Script', () => {
     describe('ctor', () => {
-        describe('code', () => {
-            it('cannot construct with duplicate lines', () => {
-                const code = 'duplicate\nduplicate\ntest\nduplicate';
-                expect(() => createWithCode(code)).to.throw();
-            });
-            it('cannot construct with empty lines', () => {
-                const code = 'duplicate\n\n\ntest\nduplicate';
-                expect(() => createWithCode(code)).to.throw();
-            });
+        describe('scriptCode', () => {
             it('sets as expected', () => {
-                const expected = 'expected-revert';
-                const sut = createWithCode(expected);
-                expect(sut.code).to.equal(expected);
+                // arrange
+                const name = 'test-script';
+                const expected = new ScriptCode(name, 'expected-execute', 'expected-revert');
+                const sut = new ScriptBuilder()
+                    .withCode(expected)
+                    .build();
+                // act
+                const actual = sut.code;
+                // assert
+                expect(actual).to.deep.equal(expected);
             });
-        });
-        describe('revertCode', () => {
-            it('cannot construct with duplicate lines', () => {
-                const code = 'duplicate\nduplicate\ntest\nduplicate';
-                expect(() => createWithCode('REM', code)).to.throw();
-            });
-            it('cannot construct with empty lines', () => {
-                const code = 'duplicate\n\n\ntest\nduplicate';
-                expect(() => createWithCode('REM', code)).to.throw();
-            });
-            it('cannot construct with when same as code', () => {
-                const code = 'REM';
-                expect(() => createWithCode(code, code)).to.throw();
-            });
-            it('sets as expected', () => {
-                const expected = 'expected-revert';
-                const sut = createWithCode('abc', expected);
-                expect(sut.revertCode).to.equal(expected);
+            it('throws if undefined', () => {
+                // arrange
+                const name = 'script-name';
+                const expectedError = `undefined code (script: ${name})`;
+                const code: IScriptCode = undefined;
+                // act
+                const construct = () => new ScriptBuilder()
+                    .withName(name)
+                    .withCode(code)
+                    .build();
+                // assert
+                expect(construct).to.throw(expectedError);
             });
         });
         describe('canRevert', () => {
             it('returns false without revert code', () => {
-                const sut = createWithCode('code');
-                expect(sut.canRevert()).to.equal(false);
+                // arrange
+                const sut = new ScriptBuilder()
+                    .withCodes('code')
+                    .build();
+                // act
+                const actual = sut.canRevert();
+                // assert
+                expect(actual).to.equal(false);
             });
             it('returns true with revert code', () => {
-                const sut = createWithCode('code', 'non empty revert code');
-                expect(sut.canRevert()).to.equal(true);
+                // arrange
+                const sut = new ScriptBuilder()
+                    .withCodes('code', 'non empty revert code')
+                    .build();
+                // act
+                const actual = sut.canRevert();
+                // assert
+                expect(actual).to.equal(true);
             });
         });
         describe('level', () => {
             it('cannot construct with invalid wrong value', () => {
-                expect(() => createWithLevel(55)).to.throw('invalid level');
+                // arrange
+                const invalidValue: RecommendationLevel = 55;
+                const expectedError = 'invalid level';
+                // act
+                const construct = () => new ScriptBuilder()
+                    .withRecommendationLevel(invalidValue)
+                    .build();
+                // assert
+                expect(construct).to.throw(expectedError);
             });
             it('sets undefined as expected', () => {
-                const sut = createWithLevel(undefined);
-                expect(sut.level).to.equal(undefined);
+                // arrange
+                const expected = undefined;
+                // act
+                const sut = new ScriptBuilder()
+                    .withRecommendationLevel(expected)
+                    .build();
+                // assert
+                expect(sut.level).to.equal(expected);
             });
             it('sets as expected', () => {
-                for (const expected of RecommendationLevelNames) {
-                    const sut = createWithLevel(RecommendationLevel[expected]);
-                    const actual = RecommendationLevel[sut.level];
+                // arrange
+                for (const expected of RecommendationLevels) {
+                    // act
+                    const sut = new ScriptBuilder()
+                        .withRecommendationLevel(expected)
+                        .build();
+                    // assert
+                    const actual = sut.level;
                     expect(actual).to.equal(expected);
                 }
+            });
+        });
+        describe('documentationUrls', () => {
+            it('sets as expected', () => {
+                // arrange
+                const expected = [ 'doc1', 'doc2 '];
+                // act
+                const sut = new ScriptBuilder()
+                    .withDocumentationUrls(expected)
+                    .build();
+                const actual = sut.documentationUrls;
+                // assert
+                expect(actual).to.equal(expected);
             });
         });
     });
 });
 
-function createWithCode(code: string, revertCode?: string): Script {
-    return new Script('name', code, revertCode, [], RecommendationLevel.Standard);
-}
-function createWithLevel(level: RecommendationLevel): Script {
-    return new Script('name', 'code', 'revertCode', [], level);
+class ScriptBuilder {
+    private name = 'test-script';
+    private code: IScriptCode = new ScriptCode(this.name, 'code', 'revert-code');
+    private level = RecommendationLevel.Standard;
+    private documentationUrls: readonly string[] = undefined;
+
+    public withCodes(code: string, revertCode = ''): ScriptBuilder {
+        this.code = new ScriptCode(this.name, code, revertCode);
+        return this;
+    }
+
+    public withCode(code: IScriptCode): ScriptBuilder {
+        this.code = code;
+        return this;
+    }
+
+    public withName(name: string): ScriptBuilder {
+        this.name = name;
+        return this;
+    }
+
+    public withRecommendationLevel(level: RecommendationLevel): ScriptBuilder {
+        this.level = level;
+        return this;
+    }
+
+    public withDocumentationUrls(urls: readonly string[]): ScriptBuilder {
+        this.documentationUrls = urls;
+        return this;
+    }
+
+    public build(): Script {
+        return new Script(
+            this.name,
+            this.code,
+            this.documentationUrls,
+            this.level,
+        );
+    }
 }
