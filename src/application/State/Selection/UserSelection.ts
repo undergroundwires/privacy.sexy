@@ -1,5 +1,5 @@
 import { SelectedScript } from './SelectedScript';
-import { IApplication } from '@/domain/IApplication';
+import { IApplication, ICategory } from '@/domain/IApplication';
 import { IUserSelection } from './IUserSelection';
 import { InMemoryRepository } from '@/infrastructure/Repository/InMemoryRepository';
 import { IScript } from '@/domain/IScript';
@@ -19,6 +19,24 @@ export class UserSelection implements IUserSelection {
                 this.scripts.addItem(script);
             }
         }
+    }
+
+    public areAllSelected(category: ICategory): boolean {
+        if (this.selectedScripts.length === 0) {
+            return false;
+        }
+        const scripts = category.getAllScriptsRecursively();
+        if (this.selectedScripts.length < scripts.length) {
+            return false;
+        }
+        return scripts.every((script) => this.selectedScripts.some((selected) => selected.id === script.id));
+    }
+
+    public isAnySelected(category: ICategory): boolean {
+        if (this.selectedScripts.length === 0) {
+            return false;
+        }
+        return this.selectedScripts.some((s) => category.includes(s.script));
     }
 
     public removeAllInCategory(categoryId: number): void {

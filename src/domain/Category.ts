@@ -15,6 +15,10 @@ export class Category extends BaseEntity<number> implements ICategory {
         validateCategory(this);
     }
 
+    public includes(script: IScript): boolean {
+        return this.getAllScriptsRecursively().some((childScript) => childScript.id === script.id);
+    }
+
     public getAllScriptsRecursively(): readonly IScript[] {
         return this.allSubScripts || (this.allSubScripts = parseScriptsRecursively(this));
     }

@@ -86,4 +86,41 @@ describe('Category', () => {
             expect(actualIds).to.have.deep.members(expectedScriptIds);
         });
     });
+    describe('includes', () => {
+        it('return false when does not include', () => {
+            // assert
+            const script = new ScriptStub('3');
+            const sut = new Category(0, 'category', [], [new CategoryStub(33).withScriptIds('1', '2')], []);
+            // act
+            const actual = sut.includes(script);
+            // assert
+            expect(actual).to.equal(false);
+        });
+        it('return true when includes as subscript', () => {
+            // assert
+            const script = new ScriptStub('3');
+            const sut = new Category(0, 'category', [], [
+                new CategoryStub(33).withScript(script).withScriptIds('non-related'),
+            ], []);
+            // act
+            const actual = sut.includes(script);
+            // assert
+            expect(actual).to.equal(true);
+        });
+        it('return true when includes as nested category script', () => {
+            // assert
+            const script = new ScriptStub('3');
+            const sut = new Category(11, 'category', [],
+                [
+                    new CategoryStub(22)
+                        .withScriptIds('non-relatedd')
+                        .withCategory(new CategoryStub(33).withScript(script)),
+                ],
+            []);
+            // act
+            const actual = sut.includes(script);
+            // assert
+            expect(actual).to.equal(true);
+        });
+    });
 });

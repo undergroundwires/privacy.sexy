@@ -6,7 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 /** REGULAR ICONS (PREFIX: far) */
 import { faFolderOpen, faFolder, faSmile } from '@fortawesome/free-regular-svg-icons';
 /** SOLID ICONS (PREFIX: fas (default)) */
-import { faTimes, faFileDownload, faCopy, faSearch, faInfoCircle, faUserSecret, faDesktop, faTag, faGlobe, faSave } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faFileDownload, faCopy, faSearch, faInfoCircle, faUserSecret, faDesktop,
+    faTag, faGlobe, faSave, faBatteryFull, faBatteryHalf } from '@fortawesome/free-solid-svg-icons';
 
 
 export class IconBootstrapper implements IVueBootstrapper {
@@ -24,6 +25,7 @@ export class IconBootstrapper implements IVueBootstrapper {
             faFileDownload, faSave,
             faCopy,
             faSearch,
+            faBatteryFull, faBatteryHalf,
             faInfoCircle);
         vue.component('font-awesome-icon', FontAwesomeIcon);
     }

@@ -12,6 +12,10 @@ export class CategoryStub extends BaseEntity<number> implements ICategory  {
         super(id);
     }
 
+    public includes(script: IScript): boolean {
+        return this.getAllScriptsRecursively().some((s) => s.id === script.id);
+    }
+
     public getAllScriptsRecursively(): readonly IScript[] {
         return [
             ...this.scripts,

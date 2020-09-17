@@ -45,7 +45,7 @@
 import { Component } from 'vue-property-decorator';
 import { StatefulVue } from '@/presentation/StatefulVue';
 import SelectableOption from './SelectableOption.vue';
-import { IApplicationState, IUserSelection } from '@/application/State/IApplicationState';
+import { IApplicationState } from '@/application/State/IApplicationState';
 import { IScript } from '@/domain/IScript';
 import { SelectedScript } from '@/application/State/Selection/SelectedScript';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';

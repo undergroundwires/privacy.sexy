@@ -292,4 +292,92 @@ describe('UserSelection', () => {
             expect(actual).to.equal(true);
         });
     });
+    describe('category state', () => {
+        describe('when no scripts are selected', () => {
+            // arrange
+            const category = new CategoryStub(1)
+                .withScriptIds('non-selected-script-1', 'non-selected-script-2');
+            const app = new ApplicationStub().withAction(category);
+            const sut = new UserSelection(app, [ ]);
+            it('areAllSelected returns false', () => {
+                // act
+                const actual = sut.areAllSelected(category);
+                // assert
+                expect(actual).to.equal(false);
+            });
+            it('isAnySelected returns false', () => {
+                // act
+                const actual = sut.isAnySelected(category);
+                // assert
+                expect(actual).to.equal(false);
+            });
+        });
+        describe('when no subscript exists in selected scripts', () => {
+            // arrange
+            const category = new CategoryStub(1)
+                .withScriptIds('non-selected-script-1', 'non-selected-script-2');
+            const selectedScript = new ScriptStub('selected');
+            const app = new ApplicationStub()
+                .withAction(category)
+                .withAction(new CategoryStub(22).withScript(selectedScript));
+            const sut = new UserSelection(app, [ new SelectedScript(selectedScript, false) ]);
+            it('areAllSelected returns false', () => {
+                // act
+                const actual = sut.areAllSelected(category);
+                // assert
+                expect(actual).to.equal(false);
+            });
+            it('isAnySelected returns false', () => {
+                // act
+                const actual = sut.isAnySelected(category);
+                // assert
+                expect(actual).to.equal(false);
+            });
+        });
+        describe('when one of the scripts are selected', () => {
+            // arrange
+            const selectedScript = new ScriptStub('selected');
+            const category = new CategoryStub(1)
+                .withScriptIds('non-selected-script-1', 'non-selected-script-2')
+                .withCategory(new CategoryStub(12).withScript(selectedScript));
+            const app = new ApplicationStub().withAction(category);
+            const sut = new UserSelection(app, [ new SelectedScript(selectedScript, false) ]);
+            it('areAllSelected returns false', () => {
+                // act
+                const actual = sut.areAllSelected(category);
+                // assert
+                expect(actual).to.equal(false);
+            });
+            it('isAnySelected returns true', () => {
+                // act
+                const actual = sut.isAnySelected(category);
+                // assert
+                expect(actual).to.equal(true);
+            });
+        });
+        describe('when all scripts are selected', () => {
+            // arrange
+            const firstSelectedScript = new ScriptStub('selected1');
+            const secondSelectedScript = new ScriptStub('selected2');
+            const category = new CategoryStub(1)
+                .withScript(firstSelectedScript)
+                .withCategory(new CategoryStub(12).withScript(secondSelectedScript));
+            const app = new ApplicationStub().withAction(category);
+            const sut = new UserSelection(app,
+                [ firstSelectedScript, secondSelectedScript ].map((s) => new SelectedScript(s, false)));
+            it('areAllSelected returns true', () => {
+                // act
+                const actual = sut.areAllSelected(category);
+                // assert
+                expect(actual).to.equal(true);
+            });
+            it('isAnySelected returns true', () => {
+                // act
+                const actual = sut.isAnySelected(category);
+                // assert
+                expect(actual).to.equal(true);
+            });
+        });
+
+    });
 });
