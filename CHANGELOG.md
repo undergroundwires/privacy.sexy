@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.7.5 (2020-09-14)
+
+* fix reverting (reinstalling) capabilities not working | [commit](https://github.com/undergroundwires/privacy.sexy/commit/939d838e3535bb1c9b00c8ea9dacb735ae41d700)
+* fix tests and checks are not running on PRs | [commit](https://github.com/undergroundwires/privacy.sexy/commit/82d509129b4e4a5df4b84786a0d6842a7d26e888)
+* fix the recycling bin option (#32) | [commit](https://github.com/undergroundwires/privacy.sexy/commit/15db3118012a172a2191a2afad57084a65b34642)
+* fix rendering issue in older edge/IE | [commit](https://github.com/undergroundwires/privacy.sexy/commit/6efed72bf25c2ddf0901caab7f22966ca13cd47a)
+* fix pasting in search bar after page load showing no results | [commit](https://github.com/undergroundwires/privacy.sexy/commit/d1694341578288eeaf8b80caf9296a38d76789f0)
+* fix typo | [commit](https://github.com/undergroundwires/privacy.sexy/commit/7dd15ed06433e0e6583ab0fa46a683ce6554bbea)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.7.4...0.7.5)
+
 ## 0.7.4 (2020-09-12)
 
 * fix checked checkbox has blue border | [commit](https://github.com/undergroundwires/privacy.sexy/commit/4ae385b7fcea9014a68442714b7d99e2ee7df7d0)
