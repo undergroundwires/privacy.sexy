@@ -1,11 +1,10 @@
 import { IApplication, ICategory, IScript } from '@/domain/IApplication';
+import { ProjectInformation } from '@/domain/ProjectInformation';
 
 export class ApplicationStub implements IApplication {
     public totalScripts = 0;
     public totalCategories = 0;
-    public readonly name = 'StubApplication';
-    public readonly repositoryUrl = 'https://privacy.sexy';
-    public readonly version = '0.1.0';
+    public readonly info = new ProjectInformation('StubApplication', '0.1.0', 'https://github.com/undergroundwires/privacy.sexy', 'https://privacy.sexy');
     public readonly actions = new Array<ICategory>();
 
     public withAction(category: ICategory): ApplicationStub {

@@ -2,6 +2,7 @@ import { IEntity } from '../infrastructure/Entity/IEntity';
 import { ICategory } from './ICategory';
 import { IScript } from './IScript';
 import { IApplication } from './IApplication';
+import { IProjectInformation } from './IProjectInformation';
 
 export class Application implements IApplication {
     public get totalScripts(): number { return this.flattened.allScripts.length; }
@@ -10,13 +11,11 @@ export class Application implements IApplication {
     private readonly flattened: IFlattenedApplication;
 
     constructor(
-        public readonly name: string,
-        public readonly repositoryUrl: string,
-        public readonly version: string,
+        public readonly info: IProjectInformation,
         public readonly actions: ReadonlyArray<ICategory>) {
-        if (!name) { throw Error('Application has no name'); }
-        if (!repositoryUrl) { throw Error('Application has no repository url'); }
-        if (!version) { throw Error('Version cannot be empty'); }
+        if (!info) {
+            throw new Error('info is undefined');
+        }
         this.flattened = flatten(actions);
         ensureValid(this.flattened);
         ensureNoDuplicates(this.flattened.allCategories);

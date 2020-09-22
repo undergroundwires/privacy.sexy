@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { OperatingSystem } from '@/application/Environment/OperatingSystem';
+import { OperatingSystem } from '@/domain/OperatingSystem';
 import { BrowserOsDetector } from '@/application/Environment/BrowserOs/BrowserOsDetector';
 import { BrowserOsTestCases } from './BrowserOsTestCases';
 

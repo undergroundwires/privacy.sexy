@@ -1,4 +1,4 @@
-import { OperatingSystem } from '../OperatingSystem';
+import { OperatingSystem } from '@/domain/OperatingSystem';
 import { DetectorBuilder } from './DetectorBuilder';
 import { IBrowserOsDetector } from './IBrowserOsDetector';
 

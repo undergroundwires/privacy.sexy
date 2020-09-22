@@ -1,6 +1,4 @@
 # Structure documented in "./application.yaml.d.ts" (as code)
-name: privacy.sexy
-repositoryUrl: https://github.com/undergroundwires/privacy.sexy
 actions:
     -
         category: Privacy cleanup

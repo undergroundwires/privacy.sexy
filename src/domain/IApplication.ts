@@ -1,10 +1,9 @@
 import { IScript } from '@/domain/IScript';
 import { ICategory } from '@/domain/ICategory';
+import { IProjectInformation } from './IProjectInformation';
 
 export interface IApplication {
-    readonly name: string;
-    readonly repositoryUrl: string;
-    readonly version: string;
+    readonly info: IProjectInformation;
     readonly totalScripts: number;
     readonly totalCategories: number;
     readonly actions: ReadonlyArray<ICategory>;

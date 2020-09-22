@@ -1,4 +1,4 @@
-import { OperatingSystem } from '@/application/Environment/OperatingSystem';
+import { OperatingSystem } from '@/domain/OperatingSystem';
 
 interface IBrowserOsTestCase {
     userAgent: string;
