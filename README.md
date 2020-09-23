@@ -22,14 +22,13 @@
 
 ## Why
 
-- You don't need to run any compiled software that has access to your system, just run the generated scripts.
-- Have full visibility into what the tweaks do as you enable them.
-- Ability to revert applied scripts
+- Rich tweak pool to harden security & privacy of the OS and other software on it
+- Free (both free as in beer and free as in speech)
+- No need to run any compiled software that has access to your system, just run the generated scripts
+- Have full visibility into what the tweaks do as you enable them
+- Ability to revert (undo) applied scripts
 - Easily extendable
-- Everything is open-sourced including both application and infrastructure
-  - Fully automated CI/CD pipeline using GitHub actions
-    - to AWS for provisioning serverless infrastructure
-    - for building and sharing the desktop applications
+- Everything is open-source and automated (both application and its infrastructure)
 
 ## Extend scripts
 
