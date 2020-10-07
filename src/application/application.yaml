@@ -2674,6 +2674,14 @@ actions:
                                         name: Code Writer app
                                         code: PowerShell -Command "Get-AppxPackage "ActiproSoftwareLLC.562882FEEB491" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "ActiproSoftwareLLC.562882FEEB491").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                    -
+                                        name: Spotify
+                                        code: PowerShell -Command "Get-AppxPackage "SpotifyAB.SpotifyMusic" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "SpotifyAB.SpotifyMusic").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                    -
+                                        name: GroupMe
+                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.GroupMe10" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.GroupMe10").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                     -
                         category: System apps
                         children:
