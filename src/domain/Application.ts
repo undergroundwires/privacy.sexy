@@ -3,12 +3,13 @@ import { ICategory } from './ICategory';
 import { IScript } from './IScript';
 import { IApplication } from './IApplication';
 import { IProjectInformation } from './IProjectInformation';
+import { RecommendationLevel, RecommendationLevelNames, RecommendationLevels } from './RecommendationLevel';
 
 export class Application implements IApplication {
-    public get totalScripts(): number { return this.flattened.allScripts.length; }
-    public get totalCategories(): number { return this.flattened.allCategories.length; }
+    public get totalScripts(): number { return this.queryable.allScripts.length; }
+    public get totalCategories(): number { return this.queryable.allCategories.length; }
 
-    private readonly flattened: IFlattenedApplication;
+    private readonly queryable: IQueryableApplication;
 
     constructor(
         public readonly info: IProjectInformation,
@@ -16,30 +17,36 @@ export class Application implements IApplication {
         if (!info) {
             throw new Error('info is undefined');
         }
-        this.flattened = flatten(actions);
-        ensureValid(this.flattened);
-        ensureNoDuplicates(this.flattened.allCategories);
-        ensureNoDuplicates(this.flattened.allScripts);
+        this.queryable = makeQueryable(actions);
+        ensureValid(this.queryable);
+        ensureNoDuplicates(this.queryable.allCategories);
+        ensureNoDuplicates(this.queryable.allScripts);
     }
 
     public findCategory(categoryId: number): ICategory | undefined {
-        return this.flattened.allCategories.find((category) => category.id === categoryId);
+        return this.queryable.allCategories.find((category) => category.id === categoryId);
     }
 
-    public getRecommendedScripts(): readonly IScript[] {
-        return this.flattened.allScripts.filter((script) => script.isRecommended);
+    public getScriptsByLevel(level: RecommendationLevel): readonly IScript[] {
+        if (isNaN(level)) {
+            throw new Error('undefined level');
+        }
+        if (!(level in RecommendationLevel)) {
+            throw new Error(`invalid level: ${level}`);
+        }
+        return this.queryable.scriptsByLevel.get(level);
     }
 
     public findScript(scriptId: string): IScript | undefined {
-        return this.flattened.allScripts.find((script) => script.id === scriptId);
+        return this.queryable.allScripts.find((script) => script.id === scriptId);
     }
 
     public getAllScripts(): IScript[] {
-        return this.flattened.allScripts;
+        return this.queryable.allScripts;
     }
 
     public getAllCategories(): ICategory[] {
-        return this.flattened.allCategories;
+        return this.queryable.allCategories;
     }
 }
 
@@ -61,55 +68,85 @@ function ensureNoDuplicates<TKey>(entities: ReadonlyArray<IEntity<TKey>>) {
     }
 }
 
-interface IFlattenedApplication {
+interface IQueryableApplication {
     allCategories: ICategory[];
     allScripts: IScript[];
+    scriptsByLevel: Map<RecommendationLevel, readonly IScript[]>;
 }
 
-function ensureValid(application: IFlattenedApplication) {
-    if (!application.allCategories || application.allCategories.length === 0) {
+function ensureValid(application: IQueryableApplication) {
+    ensureValidCategories(application.allCategories);
+    ensureValidScripts(application.allScripts);
+}
+
+function ensureValidCategories(allCategories: readonly ICategory[]) {
+    if (!allCategories || allCategories.length === 0) {
         throw new Error('Application must consist of at least one category');
     }
-    if (!application.allScripts || application.allScripts.length === 0) {
+}
+
+function ensureValidScripts(allScripts: readonly IScript[]) {
+    if (!allScripts || allScripts.length === 0) {
         throw new Error('Application must consist of at least one script');
     }
-    if (application.allScripts.filter((script) => script.isRecommended).length === 0) {
-        throw new Error('Application must consist of at least one recommended script');
+    for (const level of RecommendationLevels) {
+        if (allScripts.every((script) => script.level !== level)) {
+            throw new Error(`none of the scripts are recommended as ${RecommendationLevel[level]}`);
+        }
     }
+}
+
+function flattenApplication(categories: ReadonlyArray<ICategory>): [ICategory[], IScript[]] {
+    const allCategories = new Array<ICategory>();
+    const allScripts = new Array<IScript>();
+    flattenCategories(categories, allCategories, allScripts);
+    return [
+        allCategories,
+        allScripts,
+    ];
 }
 
 function flattenCategories(
     categories: ReadonlyArray<ICategory>,
-    flattened: IFlattenedApplication): IFlattenedApplication {
+    allCategories: ICategory[],
+    allScripts: IScript[]): IQueryableApplication {
     if (!categories || categories.length === 0) {
-        return flattened;
+        return;
     }
     for (const category of categories) {
-        flattened.allCategories.push(category);
-        flattened = flattenScripts(category.scripts, flattened);
-        flattened = flattenCategories(category.subCategories, flattened);
+        allCategories.push(category);
+        flattenScripts(category.scripts, allScripts);
+        flattenCategories(category.subCategories, allCategories, allScripts);
     }
-    return flattened;
 }
 
 function flattenScripts(
     scripts: ReadonlyArray<IScript>,
-    flattened: IFlattenedApplication): IFlattenedApplication {
+    allScripts: IScript[]): IScript[] {
     if (!scripts) {
-        return flattened;
+        return;
     }
     for (const script of scripts) {
-        flattened.allScripts.push(script);
+        allScripts.push(script);
     }
-    return flattened;
 }
 
-function flatten(
-    categories: ReadonlyArray<ICategory>): IFlattenedApplication {
-    let flattened: IFlattenedApplication = {
-        allCategories: new Array<ICategory>(),
-        allScripts: new Array<IScript>(),
+function makeQueryable(
+    actions: ReadonlyArray<ICategory>): IQueryableApplication {
+    const flattened = flattenApplication(actions);
+    return {
+        allCategories: flattened[0],
+        allScripts: flattened[1],
+        scriptsByLevel: groupByLevel(flattened[1]),
     };
-    flattened = flattenCategories(categories, flattened);
-    return flattened;
+}
+
+function groupByLevel(allScripts: readonly IScript[]): Map<RecommendationLevel, readonly IScript[]> {
+    const map = new Map<RecommendationLevel, readonly IScript[]>();
+    for (const levelName of RecommendationLevelNames) {
+        const level = RecommendationLevel[levelName];
+        const scripts = allScripts.filter((script) => script.level !== undefined && script.level <= level);
+        map.set(level, scripts);
+    }
+    return map;
 }

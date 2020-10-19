@@ -17,7 +17,7 @@ const NothingChosenCode =
     .appendLine()
     .appendCommentLine('-- 🤔 How to use')
     .appendCommentLine(' 📙 Start by exploring different categories and choosing different tweaks.')
-    .appendCommentLine(' 📙 You can select "Recommended" on the top to select "safer" tweaks. Always double check!')
+    .appendCommentLine(' 📙 On top left, you can apply predefined selections for privacy level you\'d like.')
     .appendCommentLine(' 📙 After you choose any tweak, you can download or copy to execute your script.')
     .appendCommentLine(' 📙 Come back regularly to apply latest version for stronger privacy and security.')
     .appendLine()

@@ -4,6 +4,7 @@ import { parseApplication } from '@/application/Parser/ApplicationParser';
 import 'mocha';
 import { expect } from 'chai';
 import { parseCategory } from '@/application/Parser/CategoryParser';
+import { RecommendationLevel } from '@/domain/RecommendationLevel';
 
 describe('ApplicationParser', () => {
     describe('parseApplication', () => {
@@ -86,19 +87,22 @@ describe('ApplicationParser', () => {
     });
 });
 
-function getTestCategory(scriptName = 'testScript'): YamlCategory {
+function getTestCategory(scriptPrefix = 'testScript'): YamlCategory {
     return {
         category: 'category name',
-        children: [ getTestScript(scriptName) ],
+        children: [
+            getTestScript(`${scriptPrefix}-standard`, RecommendationLevel.Standard),
+            getTestScript(`${scriptPrefix}-strict`, RecommendationLevel.Strict),
+        ],
     };
 }
 
-function getTestScript(scriptName: string): YamlScript {
+function getTestScript(scriptName: string, level: RecommendationLevel = RecommendationLevel.Standard): YamlScript {
     return {
         name: scriptName,
         code: 'script code',
         revertCode: 'revert code',
-        recommend: true,
+        recommend: RecommendationLevel[level].toLowerCase(),
     };
 }
 

@@ -1,6 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import { Script } from '@/domain/Script';
+import { RecommendationLevelNames, RecommendationLevel } from '@/domain/RecommendationLevel';
 
 describe('Script', () => {
     describe('ctor', () => {
@@ -12,6 +13,11 @@ describe('Script', () => {
             it('cannot construct with empty lines', () => {
                 const code = 'duplicate\n\n\ntest\nduplicate';
                 expect(() => createWithCode(code)).to.throw();
+            });
+            it('sets as expected', () => {
+                const expected = 'expected-revert';
+                const sut = createWithCode(expected);
+                expect(sut.code).to.equal(expected);
             });
         });
         describe('revertCode', () => {
@@ -27,6 +33,11 @@ describe('Script', () => {
                 const code = 'REM';
                 expect(() => createWithCode(code, code)).to.throw();
             });
+            it('sets as expected', () => {
+                const expected = 'expected-revert';
+                const sut = createWithCode('abc', expected);
+                expect(sut.revertCode).to.equal(expected);
+            });
         });
         describe('canRevert', () => {
             it('returns false without revert code', () => {
@@ -38,9 +49,28 @@ describe('Script', () => {
                 expect(sut.canRevert()).to.equal(true);
             });
         });
+        describe('level', () => {
+            it('cannot construct with invalid wrong value', () => {
+                expect(() => createWithLevel(55)).to.throw('invalid level');
+            });
+            it('sets undefined as expected', () => {
+                const sut = createWithLevel(undefined);
+                expect(sut.level).to.equal(undefined);
+            });
+            it('sets as expected', () => {
+                for (const expected of RecommendationLevelNames) {
+                    const sut = createWithLevel(RecommendationLevel[expected]);
+                    const actual = RecommendationLevel[sut.level];
+                    expect(actual).to.equal(expected);
+                }
+            });
+        });
     });
 });
 
 function createWithCode(code: string, revertCode?: string): Script {
-    return new Script('name', code, revertCode, [], false);
+    return new Script('name', code, revertCode, [], RecommendationLevel.Standard);
+}
+function createWithLevel(level: RecommendationLevel): Script {
+    return new Script('name', 'code', 'revertCode', [], level);
 }
