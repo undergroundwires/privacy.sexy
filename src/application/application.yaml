@@ -2551,6 +2551,11 @@ actions:
                                 code: PowerShell -Command "Get-AppxPackage "Microsoft.SkypeApp" | Remove-AppxPackage"
                                 revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.SkypeApp").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
+                                name: GroupMe app
+                                docs: https://www.microsoft.com/en-us/p/groupme/9nblggh5z4f2
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.GroupMe10" | Remove-AppxPackage"
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.GroupMe10").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                            -
                                 name: Windows Voice Recorder app
                                 code: PowerShell -Command "Get-AppxPackage "Microsoft.WindowsSoundRecorder" | Remove-AppxPackage"
                                 revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WindowsSoundRecorder").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
@@ -2637,6 +2642,11 @@ actions:
                                         name: Code Writer app
                                         code: PowerShell -Command "Get-AppxPackage "ActiproSoftwareLLC.562882FEEB491" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "ActiproSoftwareLLC.562882FEEB491").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                    -
+                                        name: Spotify app
+                                        docs: https://www.microsoft.com/en-us/p/spotify-music/9ncbcszsjrsb
+                                        code: PowerShell -Command "Get-AppxPackage "SpotifyAB.SpotifyMusic" | Remove-AppxPackage"
+                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "SpotifyAB.SpotifyMusic").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                     -
                         category: System apps
                         children:
