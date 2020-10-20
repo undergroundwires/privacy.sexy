@@ -1,6 +1,7 @@
 import { IScript } from '@/domain/IScript';
 import { ICategory } from '@/domain/ICategory';
 import { IProjectInformation } from './IProjectInformation';
+import { RecommendationLevel } from './RecommendationLevel';
 
 export interface IApplication {
     readonly info: IProjectInformation;
@@ -8,7 +9,7 @@ export interface IApplication {
     readonly totalCategories: number;
     readonly actions: ReadonlyArray<ICategory>;
 
-    getRecommendedScripts(): ReadonlyArray<IScript>;
+    getScriptsByLevel(level: RecommendationLevel): ReadonlyArray<IScript>;
     findCategory(categoryId: number): ICategory | undefined;
     findScript(scriptId: string): IScript | undefined;
     getAllScripts(): ReadonlyArray<IScript>;

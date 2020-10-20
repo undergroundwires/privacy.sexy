@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.7.6 (2020-10-18)
+
+* add docs for default0 pointing to github discussion (#30) | [commit](https://github.com/undergroundwires/privacy.sexy/commit/a3fc3782efd346b4c99d2a0b40df2eb0229f5b36)
+* add robots.txt to explicitly allow indexing | [commit](https://github.com/undergroundwires/privacy.sexy/commit/4c2f74949b0758d33049bdfa4f0124a28958f8ea)
+* add more reversibility | [commit](https://github.com/undergroundwires/privacy.sexy/commit/19a092dd31fb3588277f1ab3120b409d98506752)
+* refactor to read more from package.json | [commit](https://github.com/undergroundwires/privacy.sexy/commit/784a67afff681bc19147d03c947de0e165d97e87)
+* simplify "why" section | [commit](https://github.com/undergroundwires/privacy.sexy/commit/77c3d2bbb8d13db86bb82ed0b5cbeaacfdea3db9)
+* update dependencies to latest | [commit](https://github.com/undergroundwires/privacy.sexy/commit/11e06131655398db08faeeacff62062e46e0dddd)
+* run tests on all operating systems: macos, ubuntu, windows | [commit](https://github.com/undergroundwires/privacy.sexy/commit/d9d7f62d81d4d8f95104d33211e82641884d711f)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.7.5...0.7.6)
+
 ## 0.7.5 (2020-09-14)
 
 * fix reverting (reinstalling) capabilities not working | [commit](https://github.com/undergroundwires/privacy.sexy/commit/939d838e3535bb1c9b00c8ea9dacb735ae41d700)

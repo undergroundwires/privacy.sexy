@@ -10,7 +10,7 @@ declare module 'js-yaml-loader!*' {
         name: string;
         code: string;
         revertCode: string;
-        recommend: boolean;
+        recommend: string | undefined;
     }
 
     export interface YamlCategory extends YamlDocumentable {

@@ -4,6 +4,7 @@ import { parseCategory } from '@/application/Parser/CategoryParser';
 import { YamlCategory, CategoryOrScript, YamlScript } from 'js-yaml-loader!./application.yaml';
 import { parseScript } from '@/application/Parser/ScriptParser';
 import { parseDocUrls } from '@/application/Parser/DocumentationParser';
+import { RecommendationLevel } from '@/domain/RecommendationLevel';
 
 describe('CategoryParser', () => {
     describe('parseCategory', () => {
@@ -104,6 +105,6 @@ function getTestScript(): YamlScript {
         name: 'script name',
         code: 'script code',
         revertCode: 'revert code',
-        recommend: true,
+        recommend: RecommendationLevel[RecommendationLevel.Standard],
     };
 }

@@ -15,21 +15,20 @@
 ## Get started
 
 - Online version: [https://privacy.sexy](https://privacy.sexy)
-  - or download latest desktop version for [Windows](https://github.com/undergroundwires/privacy.sexy/releases/download/0.7.5/privacy.sexy-Setup-0.7.5.exe), [Linux](https://github.com/undergroundwires/privacy.sexy/releases/download/0.7.5/privacy.sexy-0.7.5.AppImage), [macOS](https://github.com/undergroundwires/privacy.sexy/releases/download/0.7.5/privacy.sexy-0.7.5.dmg)
+  - or download latest desktop version for [Windows](https://github.com/undergroundwires/privacy.sexy/releases/download/0.7.6/privacy.sexy-Setup-0.7.6.exe), [Linux](https://github.com/undergroundwires/privacy.sexy/releases/download/0.7.6/privacy.sexy-0.7.6.AppImage), [macOS](https://github.com/undergroundwires/privacy.sexy/releases/download/0.7.6/privacy.sexy-0.7.6.dmg)
 - 💡 Come back regularly to apply latest version for stronger privacy and security.
 
 [![privacy.sexy application](img/screenshot.png)](https://privacy.sexy)
 
 ## Why
 
-- You don't need to run any compiled software that has access to your system, just run the generated scripts.
-- Have full visibility into what the tweaks do as you enable them.
-- Ability to revert applied scripts
+- Rich tweak pool to harden security & privacy of the OS and other software on it
+- Free (both free as in beer and free as in speech)
+- No need to run any compiled software that has access to your system, just run the generated scripts
+- Have full visibility into what the tweaks do as you enable them
+- Ability to revert (undo) applied scripts
 - Easily extendable
-- Everything is open-sourced including both application and infrastructure
-  - Fully automated CI/CD pipeline using GitHub actions
-    - to AWS for provisioning serverless infrastructure
-    - for building and sharing the desktop applications
+- Everything is open-source and automated (both application and its infrastructure)
 
 ## Extend scripts
 
@@ -49,8 +48,8 @@
   - Development: `npm run serve` to compile & hot-reload for development.
   - Production: `npm run build` to prepare files for distribution.
   - Or run using Docker:
-    1. Build: `docker build -t undergroundwires/privacy.sexy:0.7.5 .`
-    2. Run: `docker run -it -p 8080:80 --rm --name privacy.sexy-0.7.5 undergroundwires/privacy.sexy:0.7.5`
+    1. Build: `docker build -t undergroundwires/privacy.sexy:0.7.6 .`
+    2. Run: `docker run -it -p 8080:80 --rm --name privacy.sexy-0.7.6 undergroundwires/privacy.sexy:0.7.6`
 
 ## Architecture
 

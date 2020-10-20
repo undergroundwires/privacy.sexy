@@ -1,5 +1,6 @@
 import { BaseEntity } from '@/infrastructure/Entity/BaseEntity';
 import { IScript } from './IScript';
+import { RecommendationLevel } from './RecommendationLevel';
 
 export class Script extends BaseEntity<string> implements IScript {
     constructor(
@@ -7,9 +8,10 @@ export class Script extends BaseEntity<string> implements IScript {
         public readonly code: string,
         public readonly revertCode: string,
         public readonly documentationUrls: ReadonlyArray<string>,
-        public readonly isRecommended: boolean) {
+        public readonly level?: RecommendationLevel) {
         super(name);
         validateCode(name, code);
+        validateLevel(level);
         if (revertCode) {
             validateCode(name, revertCode);
             if (code === revertCode) {
@@ -19,6 +21,12 @@ export class Script extends BaseEntity<string> implements IScript {
     }
     public canRevert(): boolean {
         return Boolean(this.revertCode);
+    }
+}
+
+function validateLevel(level?: RecommendationLevel) {
+    if (level !== undefined && !(level in RecommendationLevel)) {
+        throw new Error(`invalid level: ${level}`);
     }
 }
 

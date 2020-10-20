@@ -15,8 +15,8 @@ export class ApplicationStub implements IApplication {
         return this.getAllCategories().find(
             (category) => category.id === categoryId);
     }
-    public getRecommendedScripts(): readonly IScript[] {
-        throw new Error('Method not implemented: getRecommendedScripts');
+    public getScriptsByLevel(): readonly IScript[] {
+        throw new Error('Method not implemented: getScriptsByLevel');
     }
     public findScript(scriptId: string): IScript {
         return this.getAllScripts().find((script) => scriptId === script.id);

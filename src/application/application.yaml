@@ -8,26 +8,25 @@ actions:
                 children:
                     -
                         name: Clear Listary indexes
-                        recommend: false
                         code: del /f /s /q %appdata%\Listary\UserData > nul
                     -
                         name: Clear Java cache
-                        recommend: true
+                        recommend: strict
                         code: rd /s /q "%APPDATA%\Sun\Java\Deployment\cache"
                     -
                         name: Clear Flash traces
-                        recommend: true
+                        recommend: standard
                         code: rd /s /q "%APPDATA%\Macromedia\Flash Player"
                     -
                         name: Clear Steam dumps, logs and traces
-                        recommend: true
+                        recommend: standard
                         code: |-
                             del /f /q %ProgramFiles(x86)%\Steam\Dumps
                             del /f /q %ProgramFiles(x86)%\Steam\Traces
                             del /f /q %ProgramFiles(x86)%\Steam\appcache\*.log
                     -
                         name: Clear Visual Studio telemetry and feedback data
-                        recommend: true
+                        recommend: standard
                         code: |-
                             rmdir /s /q "%AppData%\vstelemetry" 2>nul
                             rmdir /s /q "%LocalAppData%\Microsoft\VSApplicationInsights" 2>nul
@@ -44,7 +43,7 @@ actions:
                         children:
                             -
                                 name: Clear windows recent files
-                                recommend: true
+                                recommend: standard
                                 docs: https://www.tenforums.com/tutorials/3476-reset-clear-recent-items-frequent-places-windows-10-a.html
                                 code: |-
                                     rd /s /q "%USERPROFILE%\Recent"
@@ -53,56 +52,56 @@ actions:
                                     del /f /q %APPDATA%\Microsoft\Windows\Recent\CustomDestinations\*
                             -
                                 name: Clear regedit last key
-                                recommend: true
+                                recommend: standard
                                 code: |-
                                     reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit" /va /f
                                     reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Regedit" /va /f
                             -
                                 name: Clear regedit favorites
-                                recommend: true
+                                recommend: standard
                                 code: |-
                                     reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit\Favorites" /va /f
                                     reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Regedit\Favorites" /va /f
                             -
                                 name: Clear list of recent programs opened 
-                                recommend: true
+                                recommend: standard
                                 code: |-
                                     reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRU" /va /f
                                     reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRULegacy" /va /f
                             -
                                 name: Clear Adobe Media Browser MRU
-                                recommend: true
+                                recommend: standard
                                 code: reg delete "HKCU\Software\Adobe\MediaBrowser\MRU" /va /f
                             -
                                 name: Clear MSPaint MRU
-                                recommend: true
+                                recommend: standard
                                 code: |-
                                     reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Paint\Recent File List" /va /f
                                     reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Paint\Recent File List" /va /f
                             -
                                 name: Clear Wordpad MRU
-                                recommend: true
+                                recommend: standard
                                 code: reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Wordpad\Recent File List" /va /f
                             -
                                 name: Clear Map Network Drive MRU MRU
-                                recommend: true
+                                recommend: standard
                                 code: |-
                                     reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Map Network Drive MRU" /va /f
                                     reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Map Network Drive MRU" /va /f
                             -
                                 name: Clear Windows Search Assistant history
-                                recommend: true
+                                recommend: standard
                                 code: reg delete "HKCU\Software\Microsoft\Search Assistant\ACMru" /va /f
                             -
                                 name: Clear list of Recent Files Opened, by Filetype
-                                recommend: true
+                                recommend: standard
                                 code: |-
                                     reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs" /va /f
                                     reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs" /va /f
                                     reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\OpenSaveMRU" /va /f
                             -
                                 name: Clear windows media player recent files and urls
-                                recommend: true
+                                recommend: standard
                                 code: |-
                                    reg delete "HKCU\Software\Microsoft\MediaPlayer\Player\RecentFileList" /va /f
                                    reg delete "HKCU\Software\Microsoft\MediaPlayer\Player\RecentURLList" /va /f
@@ -110,26 +109,26 @@ actions:
                                    reg delete "HKLM\SOFTWARE\Microsoft\MediaPlayer\Player\RecentURLList" /va /f
                             -
                                 name: Clear Most Recent Application's Use of DirectX 
-                                recommend: true
+                                recommend: standard
                                 code: |-
                                    reg delete "HKCU\Software\Microsoft\Direct3D\MostRecentApplication" /va /f
                                    reg delete "HKLM\SOFTWARE\Microsoft\Direct3D\MostRecentApplication" /va /f
                             -
                                 name: Clear Windows Run MRU & typedpaths
-                                recommend: true
+                                recommend: standard
                                 code: |-
                                    reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU" /va /f
                                    reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths" /va /f
                     -
                         name: Clear Dotnet CLI telemetry
-                        recommend: true
+                        recommend: standard
                         code: rmdir /s /q "%USERPROFILE%\.dotnet\TelemetryStorageService" 2>nul
             - 
                 category: Clear browser history
                 children:
                     -
                         name: Clear Internet Explorer traces
-                        recommend: true
+                        recommend: standard
                         code: |-
                             del /f /q "%localappdata%\Microsoft\Windows\INetCache\IE\*"
                             reg delete "HKCU\SOFTWARE\Microsoft\Internet Explorer\TypedURLs" /va /f
@@ -145,7 +144,7 @@ actions:
                             rd /s /q "%localappdata%\Microsoft\InternetExplorer\DOMStore"
                     -
                         name: Clear Google Chrome traces
-                        recommend: true
+                        recommend: standard
                         code: |-
                             del /f /q "%localappdata%\Google\Software Reporter Tool\*.log"
                             rd /s /q "%USERPROFILE%\Local Settings\Application Data\Google\Chrome\User Data"
@@ -157,7 +156,7 @@ actions:
                         children:
                             -
                                 name: Clear browsing history and caches
-                                recommend: true
+                                recommend: standard
                                 code: |-
                                     set ignoreFiles="content-prefs.sqlite" "permissions.sqlite" "favicons.sqlite"
                                     for %%d in ("%APPDATA%\Mozilla\Firefox\Profiles\"
@@ -180,21 +179,20 @@ actions:
                                         )
                                     )
                             -
-                                name: Clear all Firefox user profiles, settings and data 
-                                recommend: false
+                                name: Clear all Firefox user profiles, settings and data
                                 code: |-
                                     rd /s /q "%LOCALAPPDATA%\Mozilla\Firefox\Profiles"
                                     rd /s /q "%APPDATA%\Mozilla\Firefox\Profiles"
                     -
                         name: Clear Opera traces
-                        recommend: true
+                        recommend: standard
                         code: |-
                             rd /s /q "%USERPROFILE%\AppData\Local\Opera\Opera"
                             rd /s /q "%APPDATA%\Opera\Opera"
                             rd /s /q "%USERPROFILE%\Local Settings\Application Data\Opera\Opera"
                     -
                         name: Clear Safari traces
-                        recommend: true
+                        recommend: standard
                         code: |-
                             rd /s /q "%USERPROFILE%\AppData\Local\Apple Computer\Safari\Traces"
                             rd /s /q "%APPDATA%\Apple Computer\Safari"
@@ -208,7 +206,6 @@ actions:
                 children:
                     -
                         name: Clear thumbnail cache
-                        recommend: false
                         code: del /f /s /q /a %LocalAppData%\Microsoft\Windows\Explorer\*.db
                     -
                         category: Clear Windows log files
@@ -219,11 +216,11 @@ actions:
                                     -
                                         name: Clear Windows update and SFC scan logs
                                         docs: https://answers.microsoft.com/en-us/windows/forum/all/cwindowslogscbs/fe4e359a-bcb9-4988-954d-563ef83bac1c
-                                        recommend: true
+                                        recommend: standard
                                         code: del /f /q %SystemRoot%\Temp\CBS\*
                                     -
                                         name: Clear Windows Update Medic Service logs
-                                        recommend: true
+                                        recommend: standard
                                         docs: https://answers.microsoft.com/en-us/windows/forum/all/what-is-this-waasmedic-and-why-it-required-to/e5e55a95-d5bb-4bf4-a7ce-4783df371de4
                                         code: |-
                                             takeown /f %SystemRoot%\Logs\waasmedic /r /d y
@@ -231,7 +228,7 @@ actions:
                                             rd /s /q %SystemRoot%\Logs\waasmedic
                                     -
                                         name: Clear Cryptographic Services Traces
-                                        recommend: true
+                                        recommend: standard
                                         docs: https://www.thewindowsclub.com/catroot-catroot2-folder-reset-windows
                                         code: |-
                                             del /f /q %SystemRoot%\System32\catroot2\dberr.txt
@@ -241,33 +238,30 @@ actions:
                                             del /f /q %SystemRoot%\System32\catroot2.chk
                                     -
                                         name: Windows Update Events Logs
-                                        recommend: false
                                         code: del /f /q "%SystemRoot%\Logs\SIH\*"
                                     -
                                         name: Windows Update Logs
-                                        recommend: false
                                         code: del /f /q "%SystemRoot%\Traces\WindowsUpdate\*"
                             -
                                 name: Clear Optional Component Manager and COM+ components logs
-                                recommend: true
+                                recommend: standard
                                 code: del /f /q %SystemRoot%\comsetup.log
                             -
                                 name: Clear Distributed Transaction Coordinator logs
-                                recommend: true
+                                recommend: standard
                                 code: del /f /q %SystemRoot%\DtcInstall.log
                             -
                                 name: Clear Pending File Rename Operations logs
-                                recommend: false
                                 code: del /f /q %SystemRoot%\PFRO.log
                             -
                                 name: Clear Windows Deployment Upgrade Process Logs
-                                recommend: true
+                                recommend: standard
                                 code: |-
                                     del /f /q %SystemRoot%\setupact.log
                                     del /f /q %SystemRoot%\setuperr.log
                             -
                                 name: Clear Windows Setup Logs
-                                recommend: true
+                                recommend: standard
                                 docs: https://support.microsoft.com/en-gb/help/927521/windows-vista-windows-7-windows-server-2008-r2-windows-8-1-and-windows
                                 code: |-
                                     del /f /q %SystemRoot%\setupapi.log
@@ -277,32 +271,31 @@ actions:
                                     del /f /q %SystemRoot%\inf\setupapi.offline.log
                             -
                                 name: Clear Windows System Assessment Tool logs
-                                recommend: true
+                                recommend: standard
                                 docs: https://docs.microsoft.com/en-us/windows/win32/winsat/windows-system-assessment-tool-portal
                                 code: del /f /q %SystemRoot%\Performance\WinSAT\winsat.log
                             -
                                 name: Clear Password change events
-                                recommend: true
+                                recommend: standard
                                 code: del /f /q %SystemRoot%\debug\PASSWD.LOG
                             -
                                 name: Clear user web cache database
-                                recommend: true
+                                recommend: standard
                                 docs: https://support.microsoft.com/en-gb/help/4056823/performance-issue-with-custom-default-user-profile
                                 code: del /f /q %localappdata%\Microsoft\Windows\WebCache\*.*
                             -
                                 name: Clear system temp folder when noone is logged in
-                                recommend: true
+                                recommend: standard
                                 code: del /f /q %SystemRoot%\ServiceProfiles\LocalService\AppData\Local\Temp\*.*
                             -
                                 name: Clear DISM (Deployment Image Servicing and Management) Logs
-                                recommend: true
+                                recommend: standard
                                 docs: https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/deployment-troubleshooting-and-log-files
                                 code: |-
                                     del /f /q  %SystemRoot%\Logs\CBS\CBS.log
                                     del /f /q  %SystemRoot%\Logs\DISM\DISM.log
                             -
                                 name: Clear WUAgent (Windows Update History) logs
-                                recommend: false
                                 docs: https://social.technet.microsoft.com/Forums/ie/en-US/f5744a18-d4ca-4631-8324-878b9225251d/windowssoftwaredistribution-folder-cleanup-automation?forum=winserverwsus
                                 code: |-
                                     setlocal EnableDelayedExpansion 
@@ -318,32 +311,30 @@ actions:
                                     endlocal
                             -
                                 name: Clear Server-initiated Healing Events Logs
-                                recommend: false
                                 code: del /f /q "%SystemRoot%\Logs\SIH\*"
                             -
                                 name: Common Language Runtime Logs
-                                recommend: true
+                                recommend: standard
                                 code: |-
                                     del /f /q "%LocalAppData%\Microsoft\CLR_v4.0\UsageTraces\*"
                                     del /f /q "%LocalAppData%\Microsoft\CLR_v4.0_32\UsageTraces\*"
                             -
                                 name: Network Setup Service Events Logs
-                                recommend: true
+                                recommend: standard
                                 code: del /f /q "%SystemRoot%\Logs\NetSetup\*"
                             -
                                 name: Disk Cleanup tool (Cleanmgr.exe) Logs
-                                recommend: false
                                 code: del /f /q "%SystemRoot%\System32\LogFiles\setupcln\*"
                     -
                         name: Clear Windows temp files
-                        recommend: true
+                        recommend: standard
                         code: |-
                             del /f /q %localappdata%\Temp\*
                             rd /s /q "%WINDIR%\Temp"
                             rd /s /q "%TEMP%"
                     -
                         name: Clear main telemetry file
-                        recommend: true
+                        recommend: standard
                         code: |-
                             if exist "%ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl" (
                                 takeown /f "%ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl" /r /d y
@@ -355,7 +346,6 @@ actions:
                             )
                     -
                         name: Clear Event Logs in Event Viewer
-                        recommend: false
                         docs: https://serverfault.com/questions/407838/do-windows-events-from-the-windows-event-log-have-sensitive-information
                         code: |-
                             REM https://social.technet.microsoft.com/Forums/en-US/f6788f7d-7d04-41f1-a64e-3af9f700e4bd/failed-to-clear-log-microsoftwindowsliveidoperational-access-is-denied?forum=win10itprogeneral
@@ -366,7 +356,6 @@ actions:
                             )
             -
                 name: Clear credentials from Windows Credential Manager
-                recommend: false
                 code: |-
                     cmdkey.exe /list > "%TEMP%\List.txt"
                     findstr.exe Target "%TEMP%\List.txt" > "%TEMP%\tokensonly.txt"
@@ -376,35 +365,32 @@ actions:
             -
                 name: Delete controversial default0 user
                 docs: https://github.com/undergroundwires/privacy.sexy/issues/30
-                recommend: true
+                recommend: standard
                 code: net user defaultuser0 /delete 2>nul
             -
                 name: Empty trash bin
-                recommend: false
                 code: Powershell -Command "$bin = (New-Object -ComObject Shell.Application).NameSpace(10);$bin.items() | ForEach { Write-Host "Deleting $($_.Name) from Recycle Bin"; Remove-Item $_.Path -Recurse -Force}"
             -
                 name: Enable Reset Base in Dism Component Store
-                recommend: true
+                recommend: standard
                 code: reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\SideBySide\Configuration" /v "DisableResetbase" /t "REG_DWORD" /d "0" /f
             -
                 name: Clear Windows Product Key from Registry
-                recommend: false
                 code: slmgr /cpky
                 docs: https://winaero.com/blog/remove-windows-10-product-key-from-registry-and-protect-it-from-being-stolen/
             -
                 name: Clear volume backups (shadow copies)
-                recommend: false
                 docs: 
                     - https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/vssadmin-delete-shadows
                     - https://www.fortinet.com/blog/threat-research/stomping-shadow-copies-a-second-look-into-deletion-methods
                 code: vssadmin delete shadows /all /quiet
             - 
                 name: Remove Default Apps Associations
-                recommended: false
-                code:  dism /online /Remove-DefaultAppAssociations
+                recommend: standard
+                code: dism /online /Remove-DefaultAppAssociations
             -
                 name: Clear (Reset) Network Data Usage
-                recommended: false
+                recommend: standard
                 docs: https://www.windowslifestyle.com/reset-data-usage-tool-reset-network-data-usage-windows-10/
                 code: |-
                     setlocal EnableDelayedExpansion 
@@ -427,17 +413,17 @@ actions:
                     -
                         name: Disable Customer Experience Improvement (CEIP/SQM)
                         docs: https://docs.microsoft.com/en-us/windows/win32/devnotes/ceipenable
-                        recommend: true
+                        recommend: standard
                         code: reg add "HKLM\Software\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d "0" /f
                         revertCode: reg add "HKLM\Software\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d "1" /f
                     -
                         name: Disable Application Impact Telemetry (AIT)
-                        recommend: true
+                        recommend: standard
                         code: reg add "HKLM\Software\Policies\Microsoft\Windows\AppCompat" /v "AITEnable" /t REG_DWORD /d "0" /f
                         revertCode: reg add "HKLM\Software\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d "1" /f
                     -
                         name: Disable diagnostics telemetry
-                        recommend: true
+                        recommend: standard
                         code: |-
                             reg add "HKLM\SYSTEM\ControlSet001\Services\DiagTrack" /v "Start" /t REG_DWORD /d 4 /f 
                             reg add "HKLM\SYSTEM\ControlSet001\Services\dmwappushsvc" /v "Start" /t REG_DWORD /d 4 /f 
@@ -449,7 +435,7 @@ actions:
                             sc stop "diagsvc" & sc config "diagsvc" start=disabled
                     -
                         name: Disable Customer Experience Improvement Program
-                        recommend: true
+                        recommend: standard
                         code: |-
                             schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator" /DISABLE
                             schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask" /DISABLE
@@ -460,13 +446,14 @@ actions:
                             schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" /ENABLE
                     -
                         name: Disable Webcam Telemetry (devicecensus.exe)
+                        recommend: standard
                         docs: https://www.ghacks.net/2019/09/23/what-is-devicecensus-exe-on-windows-10-and-why-does-it-need-internet-connectivity/
                         recommend: true
                         code: schtasks /change /TN "Microsoft\Windows\Device Information\Device" /DISABLE
                         revertCode: schtasks /change /TN "Microsoft\Windows\Device Information\Device" /ENABLE
                     -
                         name: Disable Application Experience (Compatibility Telemetry)
-                        recommend: true
+                        recommend: standard
                         code: |-
                             schtasks /change /TN "Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" /DISABLE
                             schtasks /change /TN "Microsoft\Windows\Application Experience\ProgramDataUpdater" /DISABLE
@@ -481,7 +468,7 @@ actions:
                             reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\CompatTelRunner.exe" /v "Debugger" /f
                     -
                         name: Disable telemetry in data collection policy
-                        recommend: true
+                        recommend: standard
                         code: |-
                             reg add "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v "AllowTelemetry" /d 0 /t REG_DWORD /f
                             reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 0 /f
@@ -490,11 +477,11 @@ actions:
                             reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 0 /f 
                     -
                         name: Disable license telemetry
-                        recommend: true
+                        recommend: standard
                         code: reg add "HKLM\Software\Policies\Microsoft\Windows NT\CurrentVersion\Software Protection Platform" /v "NoGenTicket" /t "REG_DWORD" /d "1" /f
                     -
                         name: Disable error reporting
-                        recommend: true
+                        recommend: standard
                         docs:
                             - https://docs.microsoft.com/en-us/windows/win32/wer/wer-settings
                             - https://www.stigviewer.com/stig/windows_10/2016-06-24/finding/V-63493
@@ -532,7 +519,6 @@ actions:
                             sc config "wercplsupport" start=demand
             -
                 name: Disable online device metadata collection
-                recommend: false
                 docs:
                     - https://www.stigviewer.com/stig/windows_server_2012_member_server/2014-01-07/finding/V-21964
                     - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-deviceinstallation#deviceinstallation-preventdevicemetadatafromnetwork
@@ -544,23 +530,22 @@ actions:
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 0 /f
             -
                 name: Disable cloud speech recognation
-                recommend: true
+                recommend: standard
                 docs: https://www.tenforums.com/tutorials/101902-turn-off-online-speech-recognition-windows-10-a.html
                 code: reg add "HKCU\Software\Microsoft\Speech_OneCore\Settings\OnlineSpeechPrivacy" /v "HasAccepted" /t "REG_DWORD" /d 0 /f
                 revertCode: reg add "HKCU\Software\Microsoft\Speech_OneCore\Settings\OnlineSpeechPrivacy" /v "HasAccepted" /t "REG_DWORD" /d 1 /f
             -
                 name: Disable active prompting (pings to MSFT NCSI server)
-                recommend: false
                 code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet" /v "EnableActiveProbing" /t REG_DWORD /d "0" /f
                 revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet" /v "EnableActiveProbing" /t REG_DWORD /d "1" /f
             -
                 name: Opt out from Windows privacy consent
-                recommend: true
+                recommend: standard
                 code: reg add "HKCU\SOFTWARE\Microsoft\Personalization\Settings" /v "AcceptedPrivacyPolicy" /t REG_DWORD /d 0 /f
                 revertCode: reg add "HKCU\SOFTWARE\Microsoft\Personalization\Settings" /v "AcceptedPrivacyPolicy" /t REG_DWORD /d 1 /f
             -
                 name: Disable Windows feedback
-                recommend: true
+                recommend: standard
                 docs: https://www.tenforums.com/tutorials/2441-change-feedback-frequency-windows-10-a.html
                 code: |-
                     reg add "HKCU\SOFTWARE\Microsoft\Siuf\Rules" /v "NumberOfSIUFInPeriod" /t REG_DWORD /d 0 /f 
@@ -569,7 +554,7 @@ actions:
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "DoNotShowFeedbackNotifications" /t REG_DWORD /d 1 /f
             -
                 name: Disable text and handwriting collection
-                recommend: true
+                recommend: standard
                 code: |-
                     reg add "HKCU\Software\Policies\Microsoft\InputPersonalization" /v "RestrictImplicitInkCollection" /t REG_DWORD /d 1 /f
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\InputPersonalization" /v "RestrictImplicitInkCollection" /t REG_DWORD /d 1 /f
@@ -586,7 +571,7 @@ actions:
                 children:
                     -
                         name: Deny app access to location
-                        recommend: true
+                        recommend: standard
                         docs: 
                             - https://r-pufky.github.io/docs/operating-systems/windows/10/securing-installation/privacy/location.html
                             - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#privacy-letappsaccesslocation
@@ -610,7 +595,7 @@ actions:
                             reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessLocation_ForceDenyTheseApps" /f
                     -
                         name: Deny app accesss to account info, name and picture
-                        recommend: true
+                        recommend: standard
                         docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#privacy-letappsaccessaccountinfo
                         code: |-
                             reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userAccountInformation" /v "Value" /d "Deny" /f
@@ -632,7 +617,7 @@ actions:
                             reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessAccountInfo_ForceDenyTheseApps" /f
                     -
                         name: Deny app access to motion data
-                        recommend: true
+                        recommend: standard
                         docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#privacy-letappsaccessmotion
                         code: |-
                             reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\activity" /v "Value" /d "Deny" /f
@@ -650,7 +635,7 @@ actions:
                             reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMotion_ForceDenyTheseApps" /f
                     -
                         name: Deny app access to phone
-                        recommend: true
+                        recommend: standard
                         docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#privacy-letappsaccessphone
                         code: |-
                             :: Using GPO (re-activation through GUI is not possible)
@@ -667,7 +652,7 @@ actions:
                     -
                         name: Deny app access to trusted devices
                         docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#privacy-letappsaccesstrusteddevices
-                        recommend: true
+                        recommend: standard
                         code: |-
                             :: For older Windows (before 1903)
                             reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{C1D23ACC-752B-43E5-8448-8D0E519CD6D6}" /t REG_SZ /v "Value" /d "Deny" /f
@@ -686,7 +671,7 @@ actions:
                             reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessTrustedDevices_ForceDenyTheseApps" /f
                     -
                         name: Deny app sync with devices (unpaired, beacons, TVs etc.)
-                        recommend: true
+                        recommend: standard
                         docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#privacy-letappssyncwithdevices
                         code: |-
                             :: Using GPO (re-activation through GUI is not possible)
@@ -705,7 +690,6 @@ actions:
                         docs: 
                             - https://docs.microsoft.com/en-us/windows-hardware/drivers/install/kscategory-video-camera
                             - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#privacy-letappsaccesscamera
-                        recommend: false
                         code: |-
                             reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam" /v "Value" /d "Deny" /t REG_SZ /f
                             :: For older Windows (before 1903)
@@ -726,7 +710,6 @@ actions:
                             reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCamera_ForceDenyTheseApps" /f
                     -
                         name: Deny app access to microphone
-                        recommend: false
                         docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#privacy-letappsaccessmicrophonee
                         code: |-
                             reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\microphone" /v "Value" /d "Deny" /t REG_SZ /f
@@ -748,12 +731,11 @@ actions:
                             reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMicrophone_ForceDenyTheseApps" /f
                     -
                         name: Deny apps share and sync non-explicitly paired wireless devices over uPnP
-                        recommend: false
                         code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\LooselyCoupled" /t REG_SZ /v "Value" /d "Deny" /f
                         revertCode: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\LooselyCoupled" /t REG_SZ /v "Value" /d "Allow" /f
                     -
                         name: Deny app access to diagnostics info about your other apps
-                        recommend: true
+                        recommend: standard
                         docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#privacy-letappsgetdiagnosticinfo
                         code: |-
                             reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appDiagnostics" /v "Value" /d "Deny" /t REG_SZ /f
@@ -774,27 +756,27 @@ actions:
                         children:
                             -
                                 name: Deny app access to Document folder
-                                recommend: true
+                                recommend: standard
                                 code: reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\documentsLibrary" /v "Value" /d "Deny" /t REG_SZ /f
                                 revertCode: reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\documentsLibrary" /v "Value" /d "Allow" /t REG_SZ /f
                             -
                                 name: Deny app access to Pictures folder
-                                recommend: true
+                                recommend: standard
                                 code: reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\picturesLibrary" /v "Value" /d "Deny" /t REG_SZ /f
                                 revertCode: reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\picturesLibrary" /v "Value" /d "Allow" /t REG_SZ /f
                             -
                                 name: Deny app access to Videos folder
-                                recommend: true
+                                recommend: standard
                                 code: reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\videosLibrary" /v "Value" /d "Deny" /t REG_SZ /f
                                 revertCode: reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\videosLibrary" /v "Value" /d "Allow" /t REG_SZ /f
                             -
                                 name: Deny app access to other filesystem
-                                recommend: true
+                                recommend: standard
                                 code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\broadFileSystemAccess" /v "Value" /d "Deny" /t REG_SZ /f
                                 revertCode: reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\broadFileSystemAccess" /v "Value" /d "Allow" /t REG_SZ /f
                     -
                         name: Deny app access to your contacts
-                        recommend: true
+                        recommend: standard
                         docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#privacy-letappsaccesscontacts
                         code: |-
                             reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\contacts" /v "Value" /d "Deny" /t REG_SZ /f
@@ -816,7 +798,7 @@ actions:
                             reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessContacts_ForceDenyTheseApps" /f
                     -
                         name: Deny app access to Notifications
-                        recommend: true
+                        recommend: standard
                         docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#privacy-letappsaccessnotifications
                         code: |-
                             reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userNotificationListener" /v "Value" /d "Deny" /t REG_SZ /f
@@ -838,7 +820,7 @@ actions:
                             reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessNotifications_ForceDenyTheseApps" /f
                     -
                         name: Deny app access to Calendar
-                        recommend: true
+                        recommend: standard
                         docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#privacy-letappsaccesscalendar
                         code: |-
                             reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appointments" /v "Value" /d "Deny" /t REG_SZ /f
@@ -860,7 +842,7 @@ actions:
                             reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCalendar_ForceDenyTheseApps" /f
                     -
                         name: Deny app access to call history
-                        recommend: true
+                        recommend: standard
                         docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#privacy-letappsaccesscallhistory
                         code: |-
                             :: Using GPO (re-activation through GUI is not possible)
@@ -883,7 +865,7 @@ actions:
                             reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCallHistory_ForceDenyTheseApps" /f
                     -
                         name: Deny app access to email
-                        recommend: true
+                        recommend: standard
                         docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#privacy-letappsaccessemail
                         code: |-
                             reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\email" /v "Value" /d "Deny" /t REG_SZ /f
@@ -905,7 +887,7 @@ actions:
                             reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessEmail_ForceDenyTheseApps" /f
                     -
                         name: Deny app access to tasks
-                        recommend: true
+                        recommend: standard
                         docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#privacy-letappsaccesstasks
                         code: |-
                             reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userDataTasks" /v "Value" /d "Deny" /t REG_SZ /f
@@ -924,7 +906,7 @@ actions:
                     -
                         name: Deny app access to messaging (SMS / MMS)
                         docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#privacy-letappsaccessmessaging
-                        recommend: true
+                        recommend: standard
                         code: |-
                             reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\chat" /v "Value" /d "Deny" /t REG_SZ /f
                             :: For older Windows (before 1903)
@@ -947,7 +929,7 @@ actions:
                             reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMessaging_ForceDenyTheseApps" /f
                     -
                         name: Deny app access to radios
-                        recommend: true
+                        recommend: standard
                         docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#privacy-letappsaccessradios
                         code: |-
                             reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\radios" /v "Value" /d "Deny" /t REG_SZ /f
@@ -969,7 +951,7 @@ actions:
                             reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessRadios_ForceDenyTheseApps" /f
                     -
                         name: Deny app access to bluetooth devices
-                        recommend: true
+                        recommend: standard
                         code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\bluetoothSync" /v "Value" /d "Deny" /t REG_SZ /f
                         revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\bluetoothSync" /v "Value" /d "Allow" /t REG_SZ /f
             -
@@ -981,12 +963,12 @@ actions:
                         revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableWindowsLocationProvider" /t REG_DWORD /d "0" /f 
                     -
                         name: Turn off location scripting
-                        recommend: true
+                        recommend: standard
                         code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableLocationScripting" /t REG_DWORD /d "1" /f
                         revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableLocationScripting" /t REG_DWORD /d "0" /f
                     -
                         name: Turn off location
-                        recommend: true
+                        recommend: standard
                         code: |-
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableLocation" /d "1" /t REG_DWORD /f
                             :: For older Windows (before 1903)
@@ -999,7 +981,7 @@ actions:
                             reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}" /v "Value" /t REG_SZ /d "Allow" /f
             -
                 name: Turn off sensors
-                recommend: true
+                recommend: standard
                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableSensors" /t REG_DWORD /d "1" /f
                 revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableSensors" /t REG_DWORD /d "0" /f
             -
@@ -1007,7 +989,7 @@ actions:
                 children:
                     -
                         name: Disable cortana
-                        recommend: true
+                        recommend: standard
                         code: |-
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d 0 /f 
                             reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Experience\AllowCortana" /v "value" /t REG_DWORD /d 0 /f 
@@ -1023,45 +1005,45 @@ actions:
                             reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "CortanaConsent"  /d 0 /t REG_DWORD /f 
                     -
                         name: Disable web search in search bar
-                        recommend: true
+                        recommend: standard
                         code: |-
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v DisableWebSearch /t REG_DWORD /d 1 /f
                             reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /d 0 /t REG_DWORD /f                   
                     -
                         name: Disable search web when searching pc
-                        recommend: true
+                        recommend: standard
                         code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v ConnectedSearchUseWeb /t REG_DWORD /d 0 /f
                     -
                         name: Disable search indexing encrypted items / stores
-                        recommend: true
+                        recommend: standard
                         code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v AllowIndexingEncryptedStoresOrItems /t REG_DWORD /d 0 /f
                     -
                         name: Disable location based info in searches
-                        recommend: true
+                        recommend: standard
                         code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v AllowSearchToUseLocation /t REG_DWORD /d 0 /f
                     -
                         name: Disable language detection
-                        recommend: true
+                        recommend: standard
                         code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v AlwaysUseAutoLangDetection /t REG_DWORD /d 0 /f
             -
                 category: Disable targeted ads and marketing
                 children: 
                     -
                         name: Disable ad customization with Advertising ID
-                        recommend: true
+                        recommend: standard
                         code: |-
                             reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo" /v "Enabled" /t REG_DWORD /d 0 /f 
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" /v "DisabledByGroupPolicy" /t REG_DWORD /d 1 /f
                     -
                         name: Disable targeted tips
-                        recommend: true
+                        recommend: standard
                         code: |-
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v "DisableSoftLanding" /t REG_DWORD /d 1 /f
                             reg add "HKLM\Software\Policies\Microsoft\Windows\CloudContent" /v "DisableWindowsSpotlightFeatures" /t "REG_DWORD" /d "1" /f
                             reg add "HKLM\Software\Policies\Microsoft\Windows\CloudContent" /v "DisableWindowsConsumerFeatures" /t "REG_DWORD" /d "1" /f
                     - 
                         name: Turn Off Suggested Content in Settings app
-                        recommend: true
+                        recommend: standard
                         docs: https://www.tenforums.com/tutorials/100541-turn-off-suggested-content-settings-app-windows-10-a.html
                         code: |-
                             reg add HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager /v "SubscribedContent-338393Enabled" /d "0" /t REG_DWORD /f
@@ -1093,7 +1075,7 @@ actions:
                             sc config "WbioSrvc" start=demand
             -
                 name: Disable Wi-Fi sense
-                recommend: true
+                recommend: standard
                 code: |-
                     reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\WiFi\AllowWiFiHotSpotReporting" /v "value" /t REG_DWORD /d 0 /f 
                     reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\WiFi\AllowAutoConnectToWiFiSenseHotspots" /v "value" /t REG_DWORD /d 0 /f 
@@ -1101,50 +1083,50 @@ actions:
             -
                 name: Disable App Launch Tracking
                 docs: https://www.thewindowsclub.com/enable-or-disable-app-launch-tracking-in-windows-10
-                recommend: true
+                recommend: standard
                 code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /d 0 /t REG_DWORD /f
                 revertCode: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /d 1 /t REG_DWORD /f
             -
                 name: Disable Inventory Collector
-                recommend: true
+                recommend: standard
                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisableInventory" /t REG_DWORD /d 1 /f
                 revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisableInventory" /t REG_DWORD /d 0 /f
             -
                 name: Disable Website Access of Language List
-                recommend: true
+                recommend: standard
                 docs: https://www.tenforums.com/tutorials/82980-turn-off-website-access-language-list-windows-10-a.html
                 code: reg add "HKCU\Control Panel\International\User Profile" /v "HttpAcceptLanguageOptOut" /t REG_DWORD /d 1 /f 
                 revertCode: reg add "HKCU\Control Panel\International\User Profile" /v "HttpAcceptLanguageOptOut" /t REG_DWORD /d 0 /f 
             -
                 name: Disable Auto Downloading Maps
-                recommend: true
+                recommend: standard
                 code: |-
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Maps" /v "AllowUntriggeredNetworkTrafficOnSettingsPage" /t REG_DWORD /d 0 /f
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Maps" /v "AutoDownloadAndUpdateMapData" /t REG_DWORD /d 0 /f
             -
                 name: Disable steps recorder
-                recommend: true
+                recommend: standard
                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisableUAR" /t REG_DWORD /d 1 /f
             -
                 name: Disable game screen recording
-                recommend: true
+                recommend: standard
                 code: |-
                     reg add "HKCU\System\GameConfigStore" /v "GameDVR_Enabled" /t REG_DWORD /d 0 /f 
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR" /v "AllowGameDVR" /t REG_DWORD /d 0 /f
             -
                 name: Disable Windows DRM internet access
                 docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.DigitalRights2::DisableOnline
-                recommend: true
+                recommend: standard
                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\WMDRM" /v "DisableOnline" /t REG_DWORD /d 1 /f
             -
                 name: Disable feedback on write (sending typing info)
-                recommend: true
+                recommend: standard
                 code: |-
                     reg add "HKLM\SOFTWARE\Microsoft\Input\TIPC" /v "Enabled" /t REG_DWORD /d 0 /f
                     reg add "HKCU\SOFTWARE\Microsoft\Input\TIPC" /v "Enabled" /t REG_DWORD /d 0 /f
             - 
                 name: Disable Activity Feed
-                recommend: true
+                recommend: standard
                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableActivityFeed" /d "0" /t REG_DWORD /f
             - 
                 category: Disable Windows Insider Program
@@ -1152,13 +1134,13 @@ actions:
                     -
                         name: Disable Windows Insider Service
                         docs: http://revertservice.com/10/wisvc/
-                        recommend: true
+                        recommend: standard
                         code: sc stop "wisvc" & sc config "wisvc" start=disabled
                         revertCode: sc config "wisvc" start=demand
                     -
                         name: Do not let Microsoft try features on this build
                         docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.DataCollection::EnableExperimentation
-                        recommend: true
+                        recommend: standard
                         code: |-
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" /v "EnableExperimentation" /t REG_DWORD /d 0 /f
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" /v "EnableConfigFlighting" /t REG_DWORD /d 0 /f
@@ -1170,7 +1152,7 @@ actions:
                     -
                         name: Disable getting preview builds of Windows
                         docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.AllowBuildPreview::AllowBuildPreview
-                        recommend: true
+                        recommend: standard
                         code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" /v "AllowBuildPreview" /t REG_DWORD /d 0 /f
                         revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" /v "AllowBuildPreview" /f
                     -
@@ -1184,7 +1166,7 @@ actions:
                 children:
                     -
                         name: Disable all settings sync
-                        recommend: true
+                        recommend: standard
                         enabler: all those bottom
                         code: |-
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableSettingSync" /t REG_DWORD /d 2 /f
@@ -1193,56 +1175,56 @@ actions:
                             reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync" /v "SyncPolicy" /t REG_DWORD /d 5 /f
                     -
                         name: Disable Application Setting Sync
-                        recommend: true
+                        recommend: standard
                         code: |-
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableApplicationSettingSync" /t REG_DWORD /d 2 /f
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableApplicationSettingSyncUserOverride" /t REG_DWORD /d 1 /f
                     -
                         name: Disable App Sync Setting Sync
-                        recommend: true
+                        recommend: standard
                         code: |-
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableAppSyncSettingSync" /t REG_DWORD /d 2 /f
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableAppSyncSettingSyncUserOverride" /t REG_DWORD /d 1 /f
                     -
                         name: Disable Credentials Setting Sync
-                        recommend: true
+                        recommend: standard
                         code: |-
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableCredentialsSettingSync" /t REG_DWORD /d 2 /f
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableCredentialsSettingSyncUserOverride" /t REG_DWORD /d 1 /f
                             reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Credentials" /v "Enabled" /t REG_DWORD /d 0 /f
                     -
                         name: Disable Desktop Theme Setting Sync
-                        recommend: true
+                        recommend: standard
                         code: |-
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableDesktopThemeSettingSync" /t REG_DWORD /d 2 /f
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableDesktopThemeSettingSyncUserOverride" /t REG_DWORD /d 1 /f
                     -
                         name: Disable Personalization Setting Sync
-                        recommend: true
+                        recommend: standard
                         code: |-
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisablePersonalizationSettingSync" /t REG_DWORD /d 2 /f
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisablePersonalizationSettingSyncUserOverride" /t REG_DWORD /d 1 /f
                     -
                         name: Disable Start Layout Setting Sync
-                        recommend: true
+                        recommend: standard
                         code: |-
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableStartLayoutSettingSync" /t REG_DWORD /d 2 /f
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableStartLayoutSettingSyncUserOverride" /t REG_DWORD /d 1 /f
                     -
                         name: Disable Web Browser Setting Sync
-                        recommend: true
+                        recommend: standard
                         code: |-
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableWebBrowserSettingSync" /t REG_DWORD /d 2 /f
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableWebBrowserSettingSyncUserOverride" /t REG_DWORD /d 1 /f
                     -
                         name: Disable Windows Setting Sync
-                        recommend: true
+                        recommend: standard
                         code: |-
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableWindowsSettingSync" /t REG_DWORD /d 2 /f
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\SettingSync" /v "DisableWindowsSettingSyncUserOverride" /t REG_DWORD /d 1 /f
                     -
                         name: Disable Language Setting Sync
-                        recommend: true
+                        recommend: standard
                         docs: https://www.tenforums.com/tutorials/4077-turn-off-sync-settings-microsoft-account-windows-10-a.html
                         code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language" /t REG_DWORD /v "Enabled" /d 0 /f
                         revertCode: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language" /t REG_DWORD /v "Enabled" /d 1 /f
@@ -1260,7 +1242,7 @@ actions:
                         children:
                             -
                                 name: Disable SQM OS key
-                                recommend: true
+                                recommend: standard
                                 code: |-
                                     if %PROCESSOR_ARCHITECTURE%==x86 ( REM is 32 bit?
                                         reg add "HKLM\SOFTWARE\Microsoft\VSCommon\14.0\SQM" /v "OptIn" /t REG_DWORD /d 0 /f
@@ -1283,17 +1265,17 @@ actions:
                                     )
                             -
                                 name: Disable SQM group policy
-                                recommend: true
+                                recommend: standard
                                 code: reg add "HKLM\Software\Policies\Microsoft\VisualStudio\SQM" /v "OptIn" /t REG_DWORD /d 0 /f
                                 revertCode: reg add "HKLM\Software\Policies\Microsoft\VisualStudio\SQM" /v "OptIn" /t REG_DWORD /d 1 /f
                     -
                         name: Disable visual studio telemetry
-                        recommend: true
+                        recommend: standard
                         code: reg add "HKCU\Software\Microsoft\VisualStudio\Telemetry" /v "TurnOffSwitch" /t REG_DWORD /d 1 /f
                         revertCode: reg add "HKCU\Software\Microsoft\VisualStudio\Telemetry" /v "TurnOffSwitch" /t REG_DWORD /d 0 /f
                     -
                         name: Disable Visual Studio feedback
-                        recommend: true
+                        recommend: standard
                         code: |-
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\VisualStudio\Feedback" /v "DisableFeedbackDialog" /t REG_DWORD /d 1 /f
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\VisualStudio\Feedback" /v "DisableEmailInput" /t REG_DWORD /d 1 /f
@@ -1304,7 +1286,7 @@ actions:
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\VisualStudio\Feedback" /v "DisableScreenshotCapture" /t REG_DWORD /d 0 /f
                     -
                         name: Stop and disable Visual Studio Standard Collector Service
-                        recommend: true
+                        recommend: standard
                         code: sc stop "VSStandardCollectorService150" & sc config "VSStandardCollectorService150" start=disabled
                         revertCode: sc config "VSStandardCollectorService150" start=auto & sc start "VSStandardCollectorService150"
             - 
@@ -1312,7 +1294,7 @@ actions:
                 children:
                     -
                         name: Do not send Watson events 
-                        recommend: true
+                        recommend: standard
                         docs: https://getadmx.com/?Category=SystemCenterEndpointProtection&Policy=Microsoft.Policies.Antimalware::reporting_disablegenericreports
                         code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Reporting" /v "DisableGenericReports" /t REG_DWORD /d 1 /f
                         revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Reporting" /v "DisableGenericReports" /t REG_DWORD /d 0 /f
@@ -1321,7 +1303,7 @@ actions:
                         children:
                             -
                                 name: Disable local setting override for reporting to Microsoft MAPS
-                                recommend: true
+                                recommend: standard
                                 docs:
                                     - https://www.stigviewer.com/stig/windows_defender_antivirus/2017-12-27/finding/V-75161
                                     - https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Spynet_LocalSettingOverrideSpynetReporting
@@ -1329,7 +1311,7 @@ actions:
                                 revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "LocalSettingOverrideSpynetReporting" /t REG_DWORD /d 1 /f
                             -
                                 name: Turn off Windows Defender SpyNet reporting    
-                                recommend: true
+                                recommend: standard
                                 docs:
                                     - https://www.stigviewer.com/stig/windows_7/2012-07-02/finding/V-15713
                                     - https://getadmx.com/?Category=Windows_7_2008R2&Policy=Microsoft.Policies.WindowsDefender::SpyNetReporting
@@ -1338,25 +1320,25 @@ actions:
                                 revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SpynetReporting" /t REG_DWORD /d 1 /f
                             -    
                                 name: Do not send file samples for further analysis
-                                recommend: true
+                                recommend: standard
                                 doc:
                                     - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-defender#defender-submitsamplesconsent
                                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SubmitSamplesConsent" /t REG_DWORD /d 2 /f
                                 revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SubmitSamplesConsent" /t REG_DWORD /d 1 /f
                     - 
                         name: Disable Malicious Software Reporting tool diagnostic data
-                        recommend: true
+                        recommend: standard
                         docs: https://getadmx.com/?Category=Windows10_Telemetry&Policy=Microsoft.Policies.Win10Privacy::DontReportInfection
                         code: reg add "HKLM\SOFTWARE\Policies\Microsoft\MRT" /v "DontReportInfectionInformation" /t REG_DWORD /d 1 /f
                         revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\MRT" /v "DontReportInfectionInformation" /t REG_DWORD /d 0 /f
             -
                 name: Disable NET Core CLI telemetry
-                recommend: true
+                recommend: standard
                 code: setx DOTNET_CLI_TELEMETRY_OPTOUT 1
                 revertCode: setx DOTNET_CLI_TELEMETRY_OPTOUT 0
             -
                 name: Disable PowerShell 7+ telemetry
-                recommend: true
+                recommend: standard
                 docs: https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_telemetry
                 code: setx POWERSHELL_TELEMETRY_OPTOUT 1
                 revertCode: setx POWERSHELL_TELEMETRY_OPTOUT 0
@@ -1369,7 +1351,7 @@ actions:
                 children:
                     -
                         name: Uninstall NVIDIA telemetry tasks
-                        recommend: true
+                        recommend: standard
                         code: |-
                             if exist "%ProgramFiles%\NVIDIA Corporation\Installer2\InstallerCore\NVI2.DLL" (
                                 rundll32 "%PROGRAMFILES%\NVIDIA Corporation\Installer2\InstallerCore\NVI2.DLL",UninstallPackage NvTelemetryContainer
@@ -1377,14 +1359,14 @@ actions:
                             )
                     -
                         name: Delete NVIDIA residual telemetry files
-                        recommend: true
+                        recommend: standard
                         code: |-
                             del /s %systemdrive%\System32\DriverStore\FileRepository\NvTelemetry*.dll
                             rmdir /s /q "%ProgramFiles(x86)%\NVIDIA Corporation\NvTelemetry" 2>nul
                             rmdir /s /q "%ProgramFiles%\NVIDIA Corporation\NvTelemetry" 2>nul
                     -
                         name: Opt out from NVIDIA telemetry
-                        recommend: true
+                        recommend: standard
                         code: |-
                             reg add "HKLM\SOFTWARE\NVIDIA Corporation\NvControlPanel2\Client" /v "OptInOrOutPreference" /t REG_DWORD /d 0 /f 
                             reg add "HKLM\SOFTWARE\NVIDIA Corporation\Global\FTS" /v "EnableRID44231" /t REG_DWORD /d 0 /f 
@@ -1401,7 +1383,7 @@ actions:
                             reg delete "HKLM\SYSTEM\CurrentControlSet\services\NvTelemetryContainer" /f
                     -
                         name: Disable NVIDIA telemetry services
-                        recommend: true
+                        recommend: standard
                         code: |-
                             schtasks /change /TN NvTmMon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8} /DISABLE
                             schtasks /change /TN NvTmRep_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8} /DISABLE
@@ -1419,19 +1401,19 @@ actions:
                     -
                         name: Disable Visual Studio Code telemetry
                         docs: https://code.visualstudio.com/docs/getstarted/telemetry
-                        recommend : true
+                        recommend: standard
                         code: Powershell -Command "$jsonfile = \"$env:APPDATA\Code\User\settings.json\"; $json = Get-Content $jsonfile | Out-String | ConvertFrom-Json; $json | Add-Member -Type NoteProperty -Name 'telemetry.enableTelemetry' -Value $false -Force; $json | ConvertTo-Json | Set-Content $jsonfile;"
                         revertCode: Powershell -Command "$jsonfile = \"$env:APPDATA\Code\User\settings.json\"; $json = Get-Content $jsonfile | ConvertFrom-Json; $json.PSObject.Properties.Remove('telemetry.enableTelemetry'); $json | ConvertTo-Json | Set-Content $jsonfile;"
                     -
                         name: Disable Visual Studio Code crash reporting
                         docs: https://code.visualstudio.com/docs/getstarted/telemetry
-                        recommend : true
+                        recommend: standard
                         code: Powershell -Command "$jsonfile = \"$env:APPDATA\Code\User\settings.json\"; $json = Get-Content $jsonfile | Out-String | ConvertFrom-Json; $json | Add-Member -Type NoteProperty -Name 'telemetry.enableCrashReporter' -Value $false -Force; $json | ConvertTo-Json | Set-Content $jsonfile;"
                         revertCode: Powershell -Command "$jsonfile = \"$env:APPDATA\Code\User\settings.json\"; $json = Get-Content $jsonfile | ConvertFrom-Json;$json.PSObject.Properties.Remove('telemetry.enableCrashReporter'); $json | ConvertTo-Json | Set-Content $jsonfile;"
                     -
                         name: Do not run Microsoft online experiments
                         docs: https://github.com/Microsoft/vscode/blob/1aee0c194cff72d179b9f8ef324e47f34555a07d/src/vs/workbench/contrib/experiments/node/experimentService.ts#L173
-                        recommend : true
+                        recommend: standard
                         code: Powershell -Command "$jsonfile = \"$env:APPDATA\Code\User\settings.json\"; $json = Get-Content $jsonfile | Out-String | ConvertFrom-Json; $json | Add-Member -Type NoteProperty -Name 'workbench.enableExperiments' -Value $false -Force; $json | ConvertTo-Json | Set-Content $jsonfile;"
                         revertCode: Powershell -Command "$jsonfile = \"$env:APPDATA\Code\User\settings.json\"; $json = Get-Content $jsonfile | ConvertFrom-Json;$json.PSObject.Properties.Remove('workbench.enableExperiments'); $json | ConvertTo-Json | Set-Content $jsonfile;"
                     -
@@ -1465,7 +1447,7 @@ actions:
                 children:
                     -
                         name: Disable Microsoft Office logging
-                        recommend: true
+                        recommend: standard
                         code: |-
                             reg add "HKCU\SOFTWARE\Microsoft\Office\15.0\Outlook\Options\Mail" /v "EnableLogging" /t REG_DWORD /d 0 /f
                             reg add "HKCU\SOFTWARE\Microsoft\Office\16.0\Outlook\Options\Mail" /v "EnableLogging" /t REG_DWORD /d 0 /f
@@ -1490,7 +1472,7 @@ actions:
                             reg add "HKCU\SOFTWARE\Policies\Microsoft\Office\16.0\OSM" /v "EnableUpload" /t REG_DWORD /d 1 /f
                     -
                         name: Disable client telemetry
-                        recommend: true
+                        recommend: standard
                         code: |-
                             reg add "HKCU\SOFTWARE\Microsoft\Office\Common\ClientTelemetry" /v "DisableTelemetry" /t REG_DWORD /d 1 /f
                             reg add "HKCU\SOFTWARE\Microsoft\Office\16.0\Common\ClientTelemetry" /v "DisableTelemetry" /t REG_DWORD /d 1 /f
@@ -1504,7 +1486,7 @@ actions:
                     -
                         name: Customer Experience Improvement Program
                         docs: https://www.stigviewer.com/stig/microsoft_office_system_2013/2014-12-23/finding/V-17612
-                        recommend: true
+                        recommend: standard
                         code: |-
                             reg add "HKCU\SOFTWARE\Microsoft\Office\15.0\Common" /v "QMEnable" /t REG_DWORD /d 0 /f
                             reg add "HKCU\SOFTWARE\Microsoft\Office\16.0\Common" /v "QMEnable" /t REG_DWORD /d 0 /f
@@ -1513,7 +1495,7 @@ actions:
                             reg add "HKCU\SOFTWARE\Microsoft\Office\16.0\Common" /v "QMEnable" /t REG_DWORD /d 1 /f
                     -
                         name: Disable feedback
-                        recommend: true
+                        recommend: standard
                         code: |-
                             reg add "HKCU\SOFTWARE\Microsoft\Office\15.0\Common\Feedback" /v "Enabled" /t REG_DWORD /d 0 /f
                             reg add "HKCU\SOFTWARE\Microsoft\Office\16.0\Common\Feedback" /v "Enabled" /t REG_DWORD /d 0 /f
@@ -1522,7 +1504,7 @@ actions:
                             reg add "HKCU\SOFTWARE\Microsoft\Office\16.0\Common\Feedback" /v "Enabled" /t REG_DWORD /d 1 /f
                     -
                         name: Disable telemetry agent
-                        recommend: true
+                        recommend: standard
                         code: |-
                             schtasks /change /TN "Microsoft\Office\OfficeTelemetryAgentFallBack" /DISABLE
                             schtasks /change /TN "Microsoft\Office\OfficeTelemetryAgentFallBack2016" /DISABLE
@@ -1535,7 +1517,6 @@ actions:
                             schtasks /change /TN "Microsoft\Office\OfficeTelemetryAgentLogOn2016" /ENABLE
                     # - (breaks office, see https://answers.microsoft.com/en-us/office/forum/office_2016-officeapps/office-2016-click-to-run-service-is-it-necessary/07f87963-7193-488a-9885-d6339105824b)
                     #     name: Disable ClickToRun Service Monitor
-                    #     recommend: false
                     #     code: |-
                     #         schtasks /change /TN "Microsoft\Office\Office ClickToRun Service Monitor" /DISABLE
                     #         sc stop "ClickToRunSvc" & sc config "ClickToRunSvc" start=disabled
@@ -1544,7 +1525,6 @@ actions:
                     #         sc config "ClickToRunSvc" start=auto & sc start "ClickToRunSvc"
                     -
                         name: Disable Subscription Heartbeat
-                        recommend: false
                         code: |-
                             schtasks /change /TN "Microsoft\Office\Office 15 Subscription Heartbeat" /DISABLE
                             schtasks /change /TN "Microsoft\Office\Office 16 Subscription Heartbeat" /DISABLE
@@ -1559,7 +1539,7 @@ actions:
                         children: 
                             -
                                 name: Disable live tile data collection
-                                recommend: true
+                                recommend: standard
                                 docs: 
                                     - https://docs.microsoft.com/en-us/microsoft-edge/deploy/group-policies/telemetry-management-gp
                                     - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-browser#browser-preventlivetiledatacollection
@@ -1567,19 +1547,19 @@ actions:
                                 revertCode: reg add "HKCU\Software\Policies\Microsoft\MicrosoftEdge\Main" /v "PreventLiveTileDataCollection" /t REG_DWORD /d 0 /f         
                             -
                                 name: Disable MFU tracking
-                                recommend: true
+                                recommend: standard
                                 docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.EdgeUI::DisableMFUTracking
                                 code: reg add "HKCU\Software\Policies\Microsoft\Windows\EdgeUI" /v "DisableMFUTracking" /t REG_DWORD /d 1 /f
                                 revertCode: reg add "HKCU\Software\Policies\Microsoft\Windows\EdgeUI" /v "DisableMFUTracking" /t REG_DWORD /d 0 /f
                             -
                                 name: Disable recent apps
-                                recommend: true
+                                recommend: standard
                                 docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.EdgeUI::DisableRecentApps
                                 code: reg add "HKCU\Software\Policies\Microsoft\Windows\EdgeUI" /v "DisableRecentApps" /t REG_DWORD /d 1 /f
                                 revertCode: reg add "HKCU\Software\Policies\Microsoft\Windows\EdgeUI" /v "DisableRecentApps" /t REG_DWORD /d 0/f
                             -
                                 name: Turn off backtracking
-                                recommend: true
+                                recommend: standard
                                 docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.EdgeUI::TurnOffBackstack
                                 code: reg add "HKCU\Software\Policies\Microsoft\Windows\EdgeUI" /v "TurnOffBackstack" /t REG_DWORD /d 1 /f
                                 revertCode: reg add "HKCU\Software\Policies\Microsoft\Windows\EdgeUI" /v "TurnOffBackstack" /t REG_DWORD /d 0 /f
@@ -1588,12 +1568,11 @@ actions:
                                 docs: 
                                     - https://docs.microsoft.com/en-us/microsoft-edge/deploy/group-policies/address-bar-settings-gp
                                     - https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.MicrosoftEdge::AllowSearchSuggestionsinAddressBar
-                                recommend: true
+                                recommend: standard
                                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\SearchScopes" /v "ShowSearchSuggestionsGlobal" /t REG_DWORD /d 0 /f
                                 revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\SearchScopes" /v "ShowSearchSuggestionsGlobal" /t REG_DWORD /d 1 /f
                             -
                                 name: Disable Automatic Installation of Microsoft Edge Chromium
-                                recommend: false
                                 docs: https://docs.microsoft.com/en-us/deployedge/microsoft-edge-blocker-toolkit
                                 code: reg add "HKLM\SOFTWARE\Microsoft\EdgeUpdate" /v "DoNotUpdateToEdgeWithChromium" /t REG_DWORD /d 1 /f
                                 revertCode: reg delete "HKLM\SOFTWARE\Microsoft\EdgeUpdate" /v "DoNotUpdateToEdgeWithChromium" /f
@@ -1602,34 +1581,34 @@ actions:
                         children: 
                             -
                                 name: Disable Geolocation in Internet Explorer
-                                recommend: true
+                                recommend: standard
                                 code: reg add "HKCU\Software\Policies\Microsoft\Internet Explorer\Geolocation" /v "PolicyDisableGeolocation" /t REG_DWORD /d 1 /f
                                 revertCode: reg add "HKCU\Software\Policies\Microsoft\Internet Explorer\Geolocation" /v "PolicyDisableGeolocation" /t REG_DWORD /d 0 /f
                             -
                                 name: Disable Internet Explorer InPrivate logging
-                                recommend: true
+                                recommend: standard
                                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Safety\PrivacIE" /v "DisableLogging" /t REG_DWORD /d 1 /f
                                 revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\Safety\PrivacIE" /v "DisableLogging" /t REG_DWORD /d 0 /f
                             -
                                 name: Disable Internet Explorer CEIP
-                                recommend: true
+                                recommend: standard
                                 docs: https://www.stigviewer.com/stig/internet_explorer_8/2014-07-03/finding/V-15492
                                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\SQM" /v "DisableCustomerImprovementProgram" /t REG_DWORD /d 0 /f
                                 revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Internet Explorer\SQM" /v "DisableCustomerImprovementProgram" /t REG_DWORD /d 1 /f
                             -
                                 name: Disable calling legacy WCM policies
-                                recommend: true
+                                recommend: standard
                                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "CallLegacyWCMPolicies" /t REG_DWORD /d 0 /f
                                 revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "CallLegacyWCMPolicies" /t REG_DWORD /d 1 /f
                             -
                                 name: Disable SSLv3 fallback
-                                recommend: true
+                                recommend: standard
                                 docs: https://www.stigviewer.com/stig/microsoft_internet_explorer_11/2018-04-02/finding/V-64729
                                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "EnableSSL3Fallback" /t REG_DWORD /d 0 /f
                                 revertCode: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v EnableSSL3Fallback /t REG_DWORD /d 3 /f
                             -
                                 name: Disable ignoring cert errors
-                                recommend: true
+                                recommend: standard
                                 docs: https://www.stigviewer.com/stig/microsoft_internet_explorer_11/2017-03-01/finding/V-64717
                                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "PreventIgnoreCertErrors" /t REG_DWORD /d 1 /f
                                 revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\Internet Settings" /v "PreventIgnoreCertErrors" /t REG_DWORD /d 0 /f
@@ -1638,7 +1617,7 @@ actions:
                         children: 
                             -
                                 name: Disable Chrome Software Reporter Tool
-                                recommend: true
+                                recommend: standard
                                 code: |-
                                     icacls "%localappdata%\Google\Chrome\User Data\SwReporter" /inheritance:r /deny "*S-1-1-0:(OI)(CI)(F)" "*S-1-5-7:(OI)(CI)(F)"
                                     cacls "%localappdata%\Google\Chrome\User Data\SwReporter" /e /c /d %username%
@@ -1650,7 +1629,7 @@ actions:
                                 children:
                                     - 
                                         name: Do not share share scanned software data to Google
-                                        recommend: true
+                                        recommend: standard
                                         docs: 
                                             - https://www.chromium.org/administrators/policy-list-3#ChromeCleanupReportingEnabled
                                             - https://www.stigviewer.com/stig/google_chrome_current_windows/2018-09-06/finding/V-81593
@@ -1658,7 +1637,7 @@ actions:
                                         revertCode: reg delete "HKLM\SOFTWARE\Policies\Google\Chrome" /v "ChromeCleanupReportingEnabled" /f
                                     - 
                                         name: Prevent Chrome from scanning the system for cleanup
-                                        recommend: true
+                                        recommend: standard
                                         docs: 
                                             - https://www.chromium.org/administrators/policy-list-3#ChromeCleanupEnabled
                                             - https://www.stigviewer.com/stig/google_chrome_current_windows/2018-09-06/finding/V-81591
@@ -1666,7 +1645,7 @@ actions:
                                         revertCode: reg delete "HKLM\SOFTWARE\Policies\Google\Chrome" /v "ChromeCleanupEnabled" /f
                             -
                                 name: Disable Chrome metrics reporting
-                                recommend: true
+                                recommend: standard
                                 docs: https://www.stigviewer.com/stig/google_chrome_v23_windows/2013-01-11/finding/V-35780
                                 code: reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v "MetricsReportingEnabled" /t REG_DWORD /d 0 /f
                                 revertCode: reg delete "HKLM\SOFTWARE\Policies\Google\Chrome" /v "MetricsReportingEnabled" /f
@@ -1678,13 +1657,13 @@ actions:
                                 children:
                                     -
                                         name: Disable default browser agent reporting policy
-                                        recommend: true
+                                        recommend: standard
                                         docs: https://www.bleepingcomputer.com/news/software/firefox-now-tells-mozilla-what-your-default-browser-is-every-day/
                                         code: reg add HKLM\SOFTWARE\Policies\Mozilla\Firefox /v DisableDefaultBrowserAgent /t REG_DWORD /d 1 /f
                                         revertCode: reg add HKLM\SOFTWARE\Policies\Mozilla\Firefox /v DisableDefaultBrowserAgent /t REG_DWORD /d 0 /f
                                     -
                                         name: Disable default browser agent reporting services
-                                        recommend: true
+                                        recommend: standard
                                         code: |-
                                             schtasks.exe /change /disable /tn "\Mozilla\Firefox Default Browser Agent 308046B0AF4A39CB"
                                             schtasks.exe /change /disable /tn "\Mozilla\Firefox Default Browser Agent D2CEEC440E2074BD"
@@ -1693,13 +1672,13 @@ actions:
                                             schtasks.exe /change /enable /tn "\Mozilla\Firefox Default Browser Agent D2CEEC440E2074BD"
                             -
                                 name: Disable Firefox metrics reporting
-                                recommend: true
+                                recommend: standard
                                 docs: https://github.com/mozilla/policy-templates#disabletelemetry
                                 code: reg add HKLM\SOFTWARE\Policies\Mozilla\Firefox /v DisableTelemetry /t REG_DWORD /d 1 /f
                                 revertCode: reg add HKLM\SOFTWARE\Policies\Mozilla\Firefox /v DisableTelemetry /t REG_DWORD /d 0 /f
             -
                 name: Disable Google update service
-                recommend: true
+                recommend: standard
                 code: |-
                     sc stop "gupdate" & sc config "gupdate" start=disabled
                     sc stop "gupdatem" & sc config "gupdatem" start=disabled
@@ -1712,7 +1691,7 @@ actions:
                     schtasks /change /enable /tn "GoogleUpdateTaskMachineUA"
             -
                 name: Disable Adobe Acrobat update service
-                recommend: true
+                recommend: standard
                 code: |-
                     sc stop "AdobeARMservice" & sc config "AdobeARMservice" start=disabled
                     sc stop "adobeupdateservice" & sc config "adobeupdateservice" start=disabled
@@ -1727,17 +1706,17 @@ actions:
                     schtasks /change /tn "Adobe Flash Player Updater" /enable
             -
                 name: Disable Razer Game Scanner Service
-                recommend: true
+                recommend: standard
                 code: sc stop "Razer Game Scanner Service" & sc config "Razer Game Scanner Service" start=disabled
                 revertCode: sc config "Razer Game Scanner Service" start=demand
             -
                 name: Disable Logitech Gaming Registry Service 
-                recommend: true
+                recommend: standard
                 code: sc stop "LogiRegistryService" & sc config "LogiRegistryService" start=disabled
                 revertCode: sc config "LogiRegistryService" start=auto & sc start "LogiRegistryService" 
             -
                 name: Disable Dropbox auto update service
-                recommend: true
+                recommend: standard
                 code: |-
                     sc stop "dbupdate" & sc config "dbupdate" start=disabled
                     sc stop "dbupdatem" & sc config "dbupdatem" start=disabled
@@ -1753,11 +1732,11 @@ actions:
                 children: 
                     -
                         name: Do not send Windows Media Player statistics
-                        recommend: true
+                        recommend: standard
                         code: reg add "HKCU\SOFTWARE\Microsoft\MediaPlayer\Preferences" /v "UsageTracking" /t REG_DWORD /d 0 /f
                     -
                         name: Disable meta data retrieval
-                        recommend: true
+                        recommend: standard
                         code: |-
                             reg add "HKCU\Software\Policies\Microsoft\WindowsMediaPlayer" /v "PreventCDDVDMetadataRetrieval" /t REG_DWORD /d 1 /f
                             reg add "HKCU\Software\Policies\Microsoft\WindowsMediaPlayer" /v "PreventMusicFileMetadataRetrieval" /t REG_DWORD /d 1 /f
@@ -1765,11 +1744,10 @@ actions:
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\WMDRM" /v "DisableOnline" /t REG_DWORD /d 1 /f
                     -
                         name: Disable dows Media Player Network Sharing Service
-                        recommend: true
+                        recommend: standard
                         code: sc stop "WMPNetworkSvc" & sc config "WMPNetworkSvc" start=disabled
             -
                 name: Disable CCleaner Monitoring
-                recommend: false
                 code: |-
                     reg add "HKCU\Software\Piriform\CCleaner" /v "Monitoring" /t REG_DWORD /d 0 /f
                     reg add "HKCU\Software\Piriform\CCleaner" /v "HelpImproveCCleaner" /t REG_DWORD /d 0 /f
@@ -1822,12 +1800,11 @@ actions:
                         revertCode: reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Virtualization" /v MinVmVersionForCpuBasedMitigations /f
             -
                 name: Disable administrative shares 
-                recommend: true
+                recommend: standard
                 code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareWks" /t REG_DWORD /d 0 /f
                 revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareWks" /t REG_DWORD /d 1 /f
             - 
                 name: Force enable data execution prevention (DEP)
-                recommend: false
                 code: |-
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoDataExecutionPrevention" /t REG_DWORD /d 0 /f
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "DisableHHDEP" /t REG_DWORD /d 0 /f
@@ -1836,7 +1813,6 @@ actions:
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "DisableHHDEP" /t REG_DWORD /d 1 /f
             - 
                 name: Disable AutoPlay and AutoRun
-                recommend: false
                 docs:
                     - https://en.wikipedia.org/wiki/AutoRun
                     - https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63667
@@ -1853,7 +1829,7 @@ actions:
                     reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoAutoplayfornonVolume" /f
             - 
                 name: Disable remote Assistance
-                recommend: true
+                recommend: standard
                 docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63651
                 code: |-
                     reg add "HKLM\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v "fAllowToGetHelp" /t REG_DWORD /d 0 /f
@@ -1863,37 +1839,37 @@ actions:
                     reg add "HKLM\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v "fAllowFullControl" /t REG_DWORD /d 1 /f
             - 
                 name: Disable lock screen camera
-                recommend: true
+                recommend: standard
                 docs: https://www.stigviewer.com/stig/windows_8_8.1/2014-06-27/finding/V-43237
                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization" /v "NoLockScreenCamera" /t REG_DWORD /d 1 /f 
                 revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows\Personalization" /v NoLockScreenCamera /f
             - 
                 name: Prevent the storage of the LAN Manager hash of passwords
-                recommend: true
+                recommend: standard
                 docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63797
                 code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v "NoLMHash" /t REG_DWORD /d 1 /f
                 revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v "NoLMHash" /t REG_DWORD /d 10 /f
             - 
                 name: Disable Windows Installer Always install with elevated privileges
-                recommend: true
+                recommend: standard
                 docs: https://www.stigviewer.com/stig/windows_8/2013-07-03/finding/V-34974
                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer" /v "AlwaysInstallElevated" /t REG_DWORD /d 0 /f 
                 revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer" /v "AlwaysInstallElevated" /t REG_DWORD /d 1 /f 
             - 
                 name: Prevent WinRM from using Basic Authentication
-                recommend: true
+                recommend: standard
                 docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63335
                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client" /v "AllowBasic" /t REG_DWORD /d 0 /f
                 revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client" /v "AllowBasic" /t REG_DWORD /d 1 /f 
             - 
                 name: Restrict anonymous enumeration of shares
-                recommend: true
+                recommend: standard
                 docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63749
                 code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\LSA" /v "RestrictAnonymous" /t REG_DWORD /d 1 /f 
                 revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Control\LSA" /v "RestrictAnonymous" /t REG_DWORD /d 0 /f
             - 
                 name: Refuse less secure authentication
-                recommend: true
+                recommend: standard
                 docs:
                     - https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63801
                     - https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/network-security-lan-manager-authentication-level
@@ -1901,19 +1877,19 @@ actions:
                 revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v "LmCompatibilityLevel" /t REG_DWORD /d 3 /f
             - 
                 name: Enable Structured Exception Handling Overwrite Protection (SEHOP)
-                recommend: true
+                recommend: standard
                 docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-68849
                 code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "DisableExceptionChainValidation" /t REG_DWORD /d 0 /f 
                 revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "DisableExceptionChainValidation" /t REG_DWORD /d 1 /f 
             - 
                 name: Block Anonymous enumeration of SAM accounts
-                recommend: true
+                recommend: standard
                 docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63745
                 code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "RestrictAnonymousSAM" /t REG_DWORD /d 1 /f
                 revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "RestrictAnonymousSAM" /t REG_DWORD /d 0 /f
             - 
                 name: Restrict anonymous access to Named Pipes and Shares
-                recommend: true
+                recommend: standard
                 docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63759
                 code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanManServer\Parameters" /v "RestrictNullSessAccess" /t REG_DWORD /d 1 /f
                 revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanManServer\Parameters" /v "RestrictNullSessAccess" /t REG_DWORD /d 0 /f
@@ -1922,7 +1898,7 @@ actions:
                 children:
                     -
                         name: Disable unsafe SMBv1 protocol
-                        recommend: true
+                        recommend: standard
                         docs: https://techcommunity.microsoft.com/t5/storage-at-microsoft/stop-using-smb1/ba-p/425858
                         code: |-
                             dism /online /Disable-Feature /FeatureName:"SMB1Protocol" /NoRestart
@@ -1934,7 +1910,7 @@ actions:
                             dism /Online /Enable-Feature /FeatureName:"SMB1Protocol-Server" /NoRestart
                     -
                         name: Disable PowerShell 2.0 against downgrade attacks
-                        recommend: true
+                        recommend: standard
                         docs: https://www.stigviewer.com/stig/windows_10/2017-02-21/finding/V-70637
                         code: |-
                             dism /online /Disable-Feature /FeatureName:"MicrosoftWindowsPowerShellV2Root" /NoRestart
@@ -1944,7 +1920,7 @@ actions:
                             dism /online /Enable-Feature /FeatureName:"MicrosoftWindowsPowerShellV2" /NoRestart
             -
                 name: Disable the Windows Connect Now wizard
-                recommend: true
+                recommend: standard
                 docs:
                     - https://docs.microsoft.com/en-us/windows/win32/wcn/about-windows-connect-now
                     - https://www.stigviewer.com/stig/windows_server_20122012_r2_domain_controller/2019-01-16/finding/V-15698
@@ -2083,8 +2059,7 @@ actions:
                                 code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\SecurityHealthService" /v "Start" /t REG_DWORD /d "4" /f
                                 revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\SecurityHealthService" /v "Start" /t REG_DWORD /d "2" /f
             -
-                name: Disable Smart Screen 
-                recommend: false
+                name: Disable Smart Screen
                 code: |-
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "EnableSmartScreen" /t REG_DWORD /d 0 /f
                     reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /v "SmartScreenEnabled" /t REG_SZ /d "Off" /f 
@@ -2099,12 +2074,10 @@ actions:
                     reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost" /v "EnableWebContentEvaluation" /t REG_DWORD /d 1 /f
             -
                 name: Disable scheduled On Demand anti malware scanner (MRT)
-                recommend: false
                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\MRT" /v "DontOfferThroughWUAU" /t REG_DWORD /d 1 /f
                 revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\MRT" /v "DontOfferThroughWUAU" /t REG_DWORD /d 0 /f
             -
                 name: Disable automatic updates
-                recommend: false
                 docs: https://docs.microsoft.com/fr-fr/security-updates/windowsupdateservices/18127152
                 code: |-
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "NoAutoUpdate" /t "REG_DWORD" /d "0" /f
@@ -2123,7 +2096,7 @@ actions:
         children:         
             -
                 name: Disable lock screen app notifications
-                recommend: true
+                recommend: standard
                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "DisableLockScreenAppNotifications" /t REG_DWORD /d 1 /f
                 revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "DisableLockScreenAppNotifications" /t REG_DWORD /d 0 /f
                 docs: https://www.stigviewer.com/stig/windows_server_2012_member_server/2014-01-07/finding/V-36687
@@ -2132,19 +2105,19 @@ actions:
                 children:
                     -
                         name: Disable online tips
-                        recommend: true
+                        recommend: standard
                         docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.ControlPanel::AllowOnlineTips
                         code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "AllowOnlineTips" /t REG_DWORD /d 0 /f
                         revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "AllowOnlineTips" /t REG_DWORD /d 1 /f
                     -
                         name: Turn off Internet File Association service
-                        recommend: true
+                        recommend: standard
                         docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.InternetCommunicationManagement::ShellNoUseInternetOpenWith_2
                         code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoInternetOpenWith" /t REG_DWORD /d 1 /f
                         revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoInternetOpenWith" /t REG_DWORD /d 0 /f
                     -
                         name: Turn off the "Order Prints" picture task
-                        recommend: true
+                        recommend: standard
                         docs:
                             - https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.InternetCommunicationManagement::ShellRemoveOrderPrints_2
                             - https://www.stigviewer.com/stig/microsoft_windows_server_2012_member_server/2013-07-25/finding/WN12-CC-000042
@@ -2152,13 +2125,13 @@ actions:
                         revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoOnlinePrintsWizard" /t REG_DWORD /d 0 /f
                     -
                         name: Disable the file and folder Publish to Web option
-                        recommend: true
+                        recommend: standard
                         docs: https://www.stigviewer.com/stig/windows_server_2012_member_server/2014-01-07/finding/V-14255
                         code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoPublishingWizard" /t REG_DWORD /d 1 /f
                         revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoPublishingWizard" /t REG_DWORD /d 0 /f
                     -
                         name: Prevent downloading a list of providers for wizards
-                        recommend: true
+                        recommend: standard
                         docs: https://www.stigviewer.com/stig/windows_10/2017-12-01/finding/V-63621
                         code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoWebServices" /t REG_DWORD /d 1 /f
                         revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoWebServices" /t REG_DWORD /d 0 /f
@@ -2167,25 +2140,25 @@ actions:
                 children:
                     -
                         name: Do not keep history of recently opened documents
-                        recommend: true
+                        recommend: standard
                         docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.StartMenu::NoRecentDocsHistory
                         code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoRecentDocsHistory" /t REG_DWORD /d 1 /f
                         revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoRecentDocsHistory" /t REG_DWORD /d 0 /f
                     -
                         name: Clear history of recently opened documents on exit
-                        recommend: true
+                        recommend: standard
                         docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.StartMenu::ClearRecentDocsOnExit
                         code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "ClearRecentDocsOnExit" /t REG_DWORD /d 1 /f
                         revertCode: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "ClearRecentDocsOnExit" /t REG_DWORD /d 01 /f
             -
                 name: Disable Live Tiles push notifications
-                recommend: true
+                recommend: standard
                 docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.Notifications::NoTileNotification
                 code: reg add "HKCU\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\PushNotifications" /v "NoTileApplicationNotification" /t REG_DWORD /d 1 /f
                 revertCode: reg add "HKCU\SOFTWARE\Policies\Microsoft\Windows\CurrentVersion\PushNotifications" /v "NoTileApplicationNotification" /t REG_DWORD /d 0 /f
             -
                 name: Turn off "Look For An App In The Store" option
-                recommend: true
+                recommend: standard
                 docs:
                     - https://www.stigviewer.com/stig/microsoft_windows_server_2012_member_server/2013-07-25/finding/WN12-CC-000030
                     - https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.InternetCommunicationManagement::ShellNoUseStoreOpenWith_1
@@ -2193,7 +2166,7 @@ actions:
                 revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoUseStoreOpenWith" /t REG_DWORD /d 0 /f
             -
                 name: Do not show recently used files in Quick Access
-                recommend: true
+                recommend: standard
                 docs: https://www.tenforums.com/tutorials/2713-add-remove-recent-files-quick-access-windows-10-a.html
                 code: |-
                     if %PROCESSOR_ARCHITECTURE%==x86 ( REM is 32 bit?
@@ -2211,13 +2184,11 @@ actions:
                     )
             -
                 name: Disable Sync Provider Notifications
-                recommend: false
                 code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowSyncProviderNotifications" /d 0 /t REG_DWORD /f
                 revertCode: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowSyncProviderNotifications" /d 1 /t REG_DWORD /f
             -
                 name: Turn hibernate off to disable sleep for quick start
                 docs: http://www.windows10windows7.com/w10/win10zs/100102504.html
-                recommend: false
                 code: powercfg -h off
                 revertCode: powercfg -h on
             -
@@ -2225,7 +2196,6 @@ actions:
                 children:
                     -
                         name: 3D Objects
-                        recommend: false
                         code: |-
                             reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
                             reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
@@ -2234,7 +2204,6 @@ actions:
                             reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
                     -
                         name: Desktop
-                        recommend: false
                         code: |-
                             reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
                             reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
@@ -2243,7 +2212,6 @@ actions:
                             reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
                     -
                         name: Documents
-                        recommend: false
                         code: |-
                             reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{f42ee2d3-909f-4907-8871-4c22fc0bf756}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
                             reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{f42ee2d3-909f-4907-8871-4c22fc0bf756}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
@@ -2252,7 +2220,6 @@ actions:
                             reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{f42ee2d3-909f-4907-8871-4c22fc0bf756}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
                     -
                         name: Downloads
-                        recommend: false
                         code: |-
                             reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
                             reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
@@ -2261,7 +2228,6 @@ actions:
                             reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{7d83ee9b-2244-4e70-b1f5-5393042af1e4}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
                     -
                         name: Movies
-                        recommend: false
                         code: |-
                             reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{35286a68-3c57-41a1-bbb1-0eae73d76c95}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
                             reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{35286a68-3c57-41a1-bbb1-0eae73d76c95}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
@@ -2270,7 +2236,6 @@ actions:
                             reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{35286a68-3c57-41a1-bbb1-0eae73d76c95}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
                     -
                         name: Music
-                        recommend: false
                         code: |-
                             reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{a0c69a99-21c8-4671-8703-7934162fcf1d}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
                             reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{a0c69a99-21c8-4671-8703-7934162fcf1d}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
@@ -2278,8 +2243,7 @@ actions:
                             reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{a0c69a99-21c8-4671-8703-7934162fcf1d}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
                             reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{a0c69a99-21c8-4671-8703-7934162fcf1d}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
                     -
-                        name: Pictures 
-                        recommend: false               
+                        name: Pictures           
                         code: |-
                             reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{0ddd015d-b06c-45d5-8c4c-f59713854639}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
                             reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{0ddd015d-b06c-45d5-8c4c-f59713854639}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Hide" /f
@@ -2291,27 +2255,27 @@ actions:
         children:
             -
                 name: Delivery Optimization (P2P Windows Updates)
-                recommend: true
+                recommend: standard
                 code: sc stop "DoSvc" & sc config "DoSvc" start=disabled
                 revertCode: sc config "DoSvc" start=auto & sc start "DoSvc"
             -
                 name: Microsoft Windows Live ID Service
-                recommend: true
+                recommend: standard
                 code: sc stop "wlidsvc" & sc config "wlidsvc" start=demand
                 revertCode: sc config "wlidsvc" start=demand
             -
                 name: Program Compatibility Assistant Service
-                recommend: true
+                recommend: standard
                 code: sc stop "PcaSvc" & sc config "PcaSvc" start=disabled
                 revertCode: sc config "PcaSvc" start=demand
             -
                 name: Downloaded Maps Manager
-                recommend: true
+                recommend: standard
                 code: sc stop "MapsBroker" & sc config "MapsBroker" start=disabled
                 revertCode: sc config "MapsBroker" start=auto & sc start "MapsBroker"
             -
                 name: Microsoft Retail Demo experience
-                recommend: true
+                recommend: standard
                 code: sc stop "RetailDemo" & sc config "RetailDemo" start=disabled
                 revertCode: sc config "RetailDemo" start=demand
             -
@@ -2339,7 +2303,7 @@ actions:
                 revertCode: sc config "MessagingService" start=demand
             -
                 name: Windows Push Notification Service
-                recommend: true
+                recommend: standard
                 docs: https://en.wikipedia.org/wiki/Windows_Push_Notification_Service#Privacy_Issue
                 code: sc stop "WpnService" & sc config "WpnService" start=disabled
                 revertCode: sc config "WpnService" start=auto & sc start "WpnService"
@@ -2348,22 +2312,22 @@ actions:
                 children:
                     -
                         name: Xbox Live Auth Manager
-                        recommend: true
+                        recommend: standard
                         code: sc stop "XblAuthManager" & sc config "XblAuthManager" start=disabled
                         revertCode: sc config "XblAuthManager" start=demand
                     -
                         name: Xbox Live Game Save
-                        recommend: true
+                        recommend: standard
                         code: sc stop "XblGameSave" & sc config "XblGameSave" start=disabled
                         revertCode: sc config "XblGameSave" start=demand
                     -
                         name: Xbox Live Networking Service
-                        recommend: true
+                        recommend: standard
                         code: sc stop "XboxNetApiSvc" & sc config "XboxNetApiSvc" start=disabled
                         revertCode: sc config "XboxNetApiSvc" start=demand
             -
                 name: Volume Shadow Copy Service
-                recommend: true
+                recommend: standard
                 docs: https://docs.microsoft.com/en-us/windows-server/storage/file-server/volume-shadow-copy-service
                 code: sc stop "VSS" & sc config "VSS" start=disabled
                 revertCode: sc config "VSS" start=demand
@@ -2387,23 +2351,23 @@ actions:
                                 children:
                                     -
                                         name: MSN Weather app
-                                        recommend: true
+                                        recommend: standard
                                         docs: https://www.microsoft.com/en-us/p/msn-weather/9wzdncrfj3q2
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.BingWeather" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.BingWeather").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: MSN Sports app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.BingSports" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.BingSports").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: MSN News app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.BingNews" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.BingNews").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: MSN Money app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.BingFinance" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.BingFinance").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
@@ -2458,7 +2422,7 @@ actions:
                                 children:
                                     -
                                         name: My Office app
-                                        recommend: true
+                                        recommend: standard
                                         docs: https://www.microsoft.com/en-us/p/my-office-app/9n8vd0f315mh
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.MicrosoftOfficeHub" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.MicrosoftOfficeHub").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
@@ -2473,7 +2437,7 @@ actions:
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Office.Sway").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Feedback Hub app
-                                recommend: true
+                                recommend: standard
                                 code: PowerShell -Command "Get-AppxPackage "Microsoft.WindowsFeedbackHub" | Remove-AppxPackage"
                                 revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WindowsFeedbackHub").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
@@ -2490,7 +2454,7 @@ actions:
                                 revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.MSPaint").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Windows Maps app
-                                recommend: true
+                                recommend: standard
                                 code: PowerShell -Command "Get-AppxPackage "Microsoft.WindowsMaps" | Remove-AppxPackage"
                                 revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WindowsMaps").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
@@ -2615,7 +2579,7 @@ actions:
                         children:
                             -
                                 name: Microsoft Advertising app
-                                recommend: true
+                                recommend: standard
                                 code: PowerShell -Command "Get-AppxPackage "Microsoft.Advertising.Xaml" | Remove-AppxPackage"
                                 revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Advertising.Xaml").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
@@ -2624,7 +2588,7 @@ actions:
                                 revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.RemoteDesktop").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Network Speed Test app
-                                recommend: true
+                                recommend: standard
                                 code: PowerShell -Command "Get-AppxPackage "Microsoft.NetworkSpeedTest" | Remove-AppxPackage"
                                 revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.NetworkSpeedTest").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
@@ -2699,7 +2663,7 @@ actions:
                                 revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "E2A4F912-2574-4A75-9BB0-0D023378592B").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Add Suggested Folders To Library app
-                                recommend: true
+                                recommend: standard
                                 code: |-
                                     PowerShell -Command "Get-AppxPackage "F46D4000-FD22-4DB4-AC8E-4E1DDDE828FE" | Remove-AppxPackage"
                                     PowerShell -Command "Get-AppxPackage "InputApp" | Remove-AppxPackage"
@@ -2708,7 +2672,7 @@ actions:
                                     PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "InputApp").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
                                 name: Microsoft AAD Broker Plugin app
-                                recommend: true
+                                recommend: standard
                                 code: PowerShell -Command "Get-AppxPackage "Microsoft.AAD.Broker.Plugin" | Remove-AppxPackage"
                                 revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.AAD.Broker.Plugin").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
@@ -2724,7 +2688,7 @@ actions:
                                 children:
                                     -
                                         name: Bio enrollment app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.BioEnrollment" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.BioEnrollment").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
@@ -2744,47 +2708,47 @@ actions:
                                 children:
                                     -
                                         name: Microsoft Edge app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.MicrosoftEdge" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.MicrosoftEdge").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Microsoft Edge Dev Tools Client app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.MicrosoftEdgeDevToolsClient" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.MicrosoftEdgeDevToolsClient").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Microsoft PPI Projection app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.PPIProjection" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.PPIProjection").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Win32 Web View Host app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.Win32WebViewHost" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Win32WebViewHost").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: ChxApp app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.Apprep.ChxApp" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.Apprep.ChxApp").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Assigned Access Lock App app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.AssignedAccessLockApp" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.AssignedAccessLockApp").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Capture Picker app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.CapturePicker" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.CapturePicker").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Cloud Experience Host app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.CloudExperienceHost" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.CloudExperienceHost").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Content Delivery Manager app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.ContentDeliveryManager" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.ContentDeliveryManager").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
@@ -2792,27 +2756,27 @@ actions:
                                 children:
                                     -
                                         name: Cortana app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.Cortana" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.Cortana").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Holographic First Run app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.Holographic.FirstRun" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.Holographic.FirstRun").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: OOBE Network Captive Port app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.OOBENetworkCaptivePort" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.OOBENetworkCaptivePort").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: OOBE Network Connection Flow app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.OOBENetworkConnectionFlow" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.OOBENetworkConnectionFlow").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Parental Controls app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.ParentalControls" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.ParentalControls").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
@@ -2820,27 +2784,27 @@ actions:
                                 children:
                                     -
                                         name: People Experience Host app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.PeopleExperienceHost" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.PeopleExperienceHost").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Pinning Confirmation Dialog app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.PinningConfirmationDialog" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.PinningConfirmationDialog").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Sec Health UI app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.SecHealthUI" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.SecHealthUI").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Secondary Tile Experience app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.SecondaryTileExperience" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.SecondaryTileExperience").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Secure Assessment Browser app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.SecureAssessmentBrowser" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.SecureAssessmentBrowser").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
@@ -2852,17 +2816,17 @@ actions:
                                 children:
                                     -
                                         name: Windows Feedback app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.WindowsFeedback" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WindowsFeedback").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Xbox Game Callable UI app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.XboxGameCallableUI" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.XboxGameCallableUI").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: CBS Preview app
-                                        recommend: true
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Windows.CBSPreview" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Windows.CBSPreview").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
@@ -2975,7 +2939,6 @@ actions:
                         name: Direct Play feature
                         code: dism /Online /Disable-Feature /FeatureName:"DirectPlay" /NoRestart
                         revertCode: dism /Online /Enable-Feature /FeatureName:"DirectPlay" /NoRestart
-                        recommend: false
                     -
                         name: Internet Explorer feature
                         code: |-
@@ -2986,12 +2949,10 @@ actions:
                             dism /Online /Enable-Feature /FeatureName:"Internet-Explorer-Optional-x64" /NoRestart
                             dism /Online /Enable-Feature /FeatureName:"Internet-Explorer-Optional-x84" /NoRestart
                             dism /Online /Enable-Feature /FeatureName:"Internet-Explorer-Optional-amd64" /NoRestart
-                        recommend: false
                     -
                         name: Legacy Components feature
                         code: dism /Online /Disable-Feature /FeatureName:"LegacyComponents" /NoRestart
                         revertCode: dism /Online /Enable-Feature /FeatureName:"LegacyComponents" /NoRestart
-                        recommend: false
                     -
                         category: Server features for developers & administrators
                         children:
@@ -3002,45 +2963,37 @@ actions:
                                         name: Hyper-V feature
                                         code: dism /Online /Disable-Feature /FeatureName:"Microsoft-Hyper-V-All" /NoRestart
                                         revertCode: dism /Online /Enable-Feature /FeatureName:"Microsoft-Hyper-V-All" /NoRestart
-                                        recommend: false
                                     -
                                         name: Hyper-V GUI Management Tools feature
                                         code: dism /Online /Disable-Feature /FeatureName:"Microsoft-Hyper-V-Management-Clients" /NoRestart
                                         revertCode: dism /Online /Enable-Feature /FeatureName:"Microsoft-Hyper-V-Management-Clients" /NoRestart
-                                        recommend: false
                                     -
                                         name: Hyper-V Management Tools feature
                                         code: dism /Online /Disable-Feature /FeatureName:"Microsoft-Hyper-V-Tools-All" /NoRestart
                                         revertCode: dism /Online /Enable-Feature /FeatureName:"Microsoft-Hyper-V-Tools-All" /NoRestart
-                                        recommend: false
                                     -
                                         name: Hyper-V Module for Windows PowerShell feature
                                         code: dism /Online /Disable-Feature /FeatureName:"Microsoft-Hyper-V-Management-PowerShell" /NoRestart
                                         revertCode: dism /Online /Enable-Feature /FeatureName:"Microsoft-Hyper-V-Management-PowerShell" /NoRestart
-                                        recommend: false
                             -
                                 name: Telnet Client feature
                                 code: dism /Online /Disable-Feature /FeatureName:"TelnetClient" /NoRestart
                                 revertCode: dism /Online /Enable-Feature /FeatureName:"TelnetClient" /NoRestart
                                 docs: https://social.technet.microsoft.com/wiki/contents/articles/38433.windows-10-enabling-telnet-client.aspx
-                                recommend: false
                             -
                                 name: Net.TCP Port Sharing feature
                                 code: dism /Online /Disable-Feature /FeatureName:"WCF-TCP-PortSharing45" /NoRestart
                                 revertCode: dism /Online /Enable-Feature /FeatureName:"WCF-TCP-PortSharing45" /NoRestart
-                                recommend: false
                                 docs: https://docs.microsoft.com/en-us/dotnet/framework/wcf/feature-details/net-tcp-port-sharing
                             -
                                 name: SMB Direct feature
                                 code: dism /Online /Disable-Feature /FeatureName:"SmbDirect" /NoRestart
                                 revertCode: dism /Online /Enable-Feature /FeatureName:"SmbDirect" /NoRestart
-                                recommend: false
                                 docs: https://docs.microsoft.com/en-us/windows-server/storage/file-server/smb-direct
                             -
                                 name: TFTP Client feature
                                 code: dism /Online /Disable-Feature /FeatureName:"TFTP" /NoRestart
                                 revertCode: dism /Online /Enable-Feature /FeatureName:"TFTP" /NoRestart
-                                recommend: false
                     -
                         category: Printing features
                         children:
@@ -3051,32 +3004,26 @@ actions:
                                         name: Internet Printing Client
                                         code: dism /Online /Disable-Feature /FeatureName:"Printing-Foundation-InternetPrinting-Client" /NoRestart
                                         revertCode: dism /Online /Enable-Feature /FeatureName:"Printing-Foundation-InternetPrinting-Client" /NoRestart
-                                        recommend: false
                                     -
                                         name: LPD Print Service
                                         code: dism /Online /Disable-Feature /FeatureName:"Printing-Foundation-LPDPrintService" /NoRestart
                                         revertCode: dism /Online /Enable-Feature /FeatureName:"Printing-Foundation-LPDPrintService" /NoRestart
-                                        recommend: false
                                     -
                                         name: LPR Port Monitor feature
                                         code: dism /Online /Disable-Feature /FeatureName:"Printing-Foundation-LPRPortMonitor" /NoRestart
                                         revertCode: dism /Online /Enable-Feature /FeatureName:"Printing-Foundation-LPRPortMonitor" /NoRestart
-                                        recommend: false
                                     -
                                         name: Microsoft Print to PDF feature
                                         code: dism /Online /Disable-Feature /FeatureName:"Printing-PrintToPDFServices-Features" /NoRestart
                                         revertCode: dism /Online /Enable-Feature /FeatureName:"Printing-PrintToPDFServices-Features" /NoRestart
-                                        recommend: false
                             -
                                 name: Print and Document Services feature
                                 code: dism /Online /Disable-Feature /FeatureName:"Printing-Foundation-Features" /NoRestart
                                 revertCode: dism /Online /Enable-Feature /FeatureName:"Printing-Foundation-Features" /NoRestart
-                                recommend: false
                             -
                                 name: Work Folders Client feature
                                 code: dism /Online /Disable-Feature /FeatureName:"WorkFolders-Client" /NoRestart
                                 revertCode: dism /Online /Enable-Feature /FeatureName:"WorkFolders-Client" /NoRestart
-                                recommend: false
                                 docs: https://docs.microsoft.com/en-us/windows-server/storage/work-folders/work-folders-overview
                             -
                                 category: XPS support
@@ -3085,37 +3032,30 @@ actions:
                                     name: XPS Services feature
                                     code: dism /Online /Disable-Feature /FeatureName:"Printing-XPSServices-Features" /NoRestart
                                     revertCode: dism /Online /Enable-Feature /FeatureName:"Printing-XPSServices-Features" /NoRestart
-                                    recommend: false
                                 -
                                     name: XPS Viewer feature
                                     code: dism /Online /Disable-Feature /FeatureName:"Xps-Foundation-Xps-Viewer" /NoRestart
                                     revertCode: dism /Online /Enable-Feature /FeatureName:"Xps-Foundation-Xps-Viewer" /NoRestart
-                                    recommend: false
                     -
                         name: Media Features feature
                         code: dism /Online /Disable-Feature /FeatureName:"MediaPlayback" /NoRestart
                         revertCode: dism /Online /Enable-Feature /FeatureName:"MediaPlayback" /NoRestart
-                        recommend: false
                     -
                         name: Scan Management feature
                         code: dism /Online /Disable-Feature /FeatureName:"ScanManagementConsole" /NoRestart
                         revertCode: dism /Online /Enable-Feature /FeatureName:"ScanManagementConsole" /NoRestart
-                        recommend: false
                     -
                         name: Windows Fax and Scan feature
                         code: dism /Online /Disable-Feature /FeatureName:"FaxServicesClientPackage" /NoRestart
                         revertCode: dism /Online /Enable-Feature /FeatureName:"FaxServicesClientPackage" /NoRestart
-                        recommend: false
                     -
                         name: Windows Media Player feature
                         code: dism /Online /Disable-Feature /FeatureName:"WindowsMediaPlayer" /NoRestart
                         revertCode: dism /Online /Enable-Feature /FeatureName:"WindowsMediaPlayer" /NoRestart
-                        recommend: false
                     -
                         name: Windows Search feature
                         code: dism /Online /Disable-Feature /FeatureName:"SearchEngine-Client-Package" /NoRestart
                         revertCode: dism /Online /Enable-Feature /FeatureName:"SearchEngine-Client-Package" /NoRestart
-                        recommend: false
             -
                 category: Disable capabilities & features on demand
                 docs: https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/features-on-demand-non-language-fod#fods-that-are-not-preinstalled-but-may-need-to-be-preinstalled
@@ -3361,7 +3301,6 @@ actions:
             -
                 name: Change NTP (time) server to pool.ntp.org
                 docs: https://www.pool.ntp.org/en/use.html
-                recommend: false
                 code: |-
                     :: Configure time source
                     w32tm /config /syncfromflags:manual /manualpeerlist:"0.pool.ntp.org 1.pool.ntp.org 2.pool.ntp.org 3.pool.ntp.org"
@@ -3386,7 +3325,6 @@ actions:
                     w32tm /resync
             -
                 name: Disable Reserved Storage for updates
-                recommend: false
                 docs: 
                     - https://techcommunity.microsoft.com/t5/storage-at-microsoft/windows-10-and-reserved-storage/ba-p/428327
                     - https://www.tenforums.com/tutorials/124858-enable-disable-reserved-storage-windows-10-a.html
@@ -3402,7 +3340,6 @@ actions:
                     reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\ReserveManager" /v "PassedPolicy" /t REG_DWORD /d "1" /f
             -
                 name: Run script on start-up [EXPERIMENTAL]
-                recommend: false
                 code: |-
                     del /f /q %AppData%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat
                     copy "%~dpnx0" "%AppData%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat"

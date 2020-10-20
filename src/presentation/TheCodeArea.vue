@@ -17,15 +17,15 @@ const NothingChosenCode =
     .appendLine()
     .appendCommentLine('-- 🤔 How to use')
     .appendCommentLine(' 📙 Start by exploring different categories and choosing different tweaks.')
-    .appendCommentLine(' 📙 You can select "Recommended" on the top to select "safer" tweaks. Always double check!')
+    .appendCommentLine(' 📙 On top left, you can apply predefined selections for privacy level you\'d like.')
     .appendCommentLine(' 📙 After you choose any tweak, you can download or copy to execute your script.')
     .appendCommentLine(' 📙 Come back regularly to apply latest version for stronger privacy and security.')
     .appendLine()
     .appendCommentLine('-- 🧐 Why privacy.sexy')
-    .appendCommentLine(' ✔️ Rich tweak pool to harden security & privacy of the OS and other softwares on it.')
-    .appendCommentLine(' ✔️ You don\'t need to run any compiled software on your system, just run the generated scripts.')
+    .appendCommentLine(' ✔️ Rich tweak pool to harden security & privacy of the OS and other software on it.')
+    .appendCommentLine(' ✔️ No need to run any compiled software on your system, just run the generated scripts.')
     .appendCommentLine(' ✔️ Have full visibility into what the tweaks do as you enable them.')
-    .appendCommentLine(' ✔️ Free software, 100% transparency: both application & infrastructure code are open-sourced.')
+    .appendCommentLine(' ✔️ Open-source and free (both free as in beer and free as in speech).')
     .toString();
 
 @Component
