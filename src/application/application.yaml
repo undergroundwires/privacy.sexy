@@ -517,17 +517,32 @@ actions:
                             sc config "WerSvc" start=demand
                             sc config "wercplsupport" start=demand
             -
-                name: Disable online device metadata collection
-                docs:
-                    - https://www.stigviewer.com/stig/windows_server_2012_member_server/2014-01-07/finding/V-21964
-                    - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-deviceinstallation#deviceinstallation-preventdevicemetadatafromnetwork
-                recommend: strict
-                code: |-
-                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 1 /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 1 /f
-                revertCode: |-
-                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 0 /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 0 /f
+                category: Disable automatic driver updates by Windows Update
+                children:
+                    - 
+                        name: Disable device metadata retrieval (breaks auto updates)
+                        recommend: strict
+                        docs: 
+                            - https://www.stigviewer.com/stig/windows_server_2012_member_server/2014-01-07/finding/V-21964
+                            - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-deviceinstallation#deviceinstallation-preventdevicemetadatafromnetwork
+                        code: |-
+                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 1 /f
+                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 1 /f
+                        revertCode: |-
+                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 0 /f
+                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 0 /f
+                    -
+                        name: Do not include drivers with Windows Updates
+                        docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsUpdate::ExcludeWUDriversInQualityUpdate
+                        recommend: strict
+                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "ExcludeWUDriversInQualityUpdate" /t REG_DWORD /d 1 /f
+                        revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "ExcludeWUDriversInQualityUpdate" /t REG_DWORD /d 0 /f
+                    -
+                        name: Prevent Windows Update for device driver search
+                        docs: https://www.stigviewer.com/stig/windows_7/2018-02-12/finding/V-21965
+                        recommend: strict
+                        code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching" /v "SearchOrderConfig" /t REG_DWORD /d 0 /f
+                        revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching" /v "SearchOrderConfig" /t REG_DWORD /d 1 /f
             -
                 name: Disable cloud speech recognation
                 recommend: standard
