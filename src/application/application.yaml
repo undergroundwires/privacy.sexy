@@ -2822,7 +2822,11 @@ actions:
                                 recommend: standard
                                 code: PowerShell -Command "Get-AppxPackage "Microsoft.NetworkSpeedTest" | Remove-AppxPackage"
                                 revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.NetworkSpeedTest").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
-                            -
+                             -
+                                name: To Do app
+                                recommend: standard
+                                code: PowerShell -Command "Get-AppxPackage "Microsoft.Todos" | Remove-AppxPackage"
+			    -
                                 category: Third party
                                 children:
                                     -
