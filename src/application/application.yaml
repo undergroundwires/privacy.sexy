@@ -521,6 +521,7 @@ actions:
                 docs:
                     - https://www.stigviewer.com/stig/windows_server_2012_member_server/2014-01-07/finding/V-21964
                     - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-deviceinstallation#deviceinstallation-preventdevicemetadatafromnetwork
+                recommend: strict
                 code: |-
                     reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 1 /f
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 1 /f
@@ -535,6 +536,7 @@ actions:
                 revertCode: reg add "HKCU\Software\Microsoft\Speech_OneCore\Settings\OnlineSpeechPrivacy" /v "HasAccepted" /t "REG_DWORD" /d 1 /f
             -
                 name: Disable active prompting (pings to MSFT NCSI server)
+                recommend: strict
                 code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet" /v "EnableActiveProbing" /t REG_DWORD /d "0" /f
                 revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet" /v "EnableActiveProbing" /t REG_DWORD /d "1" /f
             -
@@ -1053,16 +1055,19 @@ actions:
                 children:
                     -
                         name: Do not allow the use of biometrics
+                        recommend: strict
                         docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.Biometrics::Biometrics_EnableBio
                         code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Biometrics" /v "Enabled" /t REG_DWORD /d "0" /f
                         revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Biometrics" /v "Enabled" /t REG_DWORD /d "1" /f
                     -
                         name: Do not allow users to log on using biometrics
+                        recommend: strict
                         docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.Biometrics::Biometrics_EnableCredProv
                         code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Biometrics\Credential Provider" /v "Enabled" /t "REG_DWORD" /d "0" /f
                         revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Biometrics\Credential Provider" /v "Enabled" /t "REG_DWORD" /d "1" /f
                     -
                         name: Do not start Windows Biometric Service
+                        recommend: strict
                         docs: 
                             - http://batcmd.com/windows/10/services/wbiosrvc/
                             - http://revertservice.com/10/wbiosrvc/
@@ -1082,7 +1087,7 @@ actions:
             -
                 name: Disable App Launch Tracking
                 docs: https://www.thewindowsclub.com/enable-or-disable-app-launch-tracking-in-windows-10
-                recommend: standard
+                recommend: strict
                 code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /d 0 /t REG_DWORD /f
                 revertCode: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /d 1 /t REG_DWORD /f
             -
@@ -1734,7 +1739,7 @@ actions:
                         recommend: standard
                         code: reg add "HKCU\SOFTWARE\Microsoft\MediaPlayer\Preferences" /v "UsageTracking" /t REG_DWORD /d 0 /f
                     -
-                        name: Disable meta data retrieval
+                        name: Disable metadata retrieval
                         recommend: standard
                         code: |-
                             reg add "HKCU\Software\Policies\Microsoft\WindowsMediaPlayer" /v "PreventCDDVDMetadataRetrieval" /t REG_DWORD /d 1 /f
@@ -1817,6 +1822,7 @@ actions:
                     - https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63667
                     - https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63671
                     - https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63673
+                recommend: standard
                 code: |-
                     :: 255 (0xff) means all drives
                     reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoDriveTypeAutoRun" /t REG_DWORD /d 255 /f 
@@ -2364,13 +2370,13 @@ actions:
                 children:
                     -
                         name: Do not keep history of recently opened documents
-                        recommend: standard
+                        recommend: strict
                         docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.StartMenu::NoRecentDocsHistory
                         code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoRecentDocsHistory" /t REG_DWORD /d 1 /f
                         revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoRecentDocsHistory" /t REG_DWORD /d 0 /f
                     -
                         name: Clear history of recently opened documents on exit
-                        recommend: standard
+                        recommend: strict
                         docs: https://getadmx.com/?Category=Windows_10_2016&Policy=Microsoft.Policies.StartMenu::ClearRecentDocsOnExit
                         code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "ClearRecentDocsOnExit" /t REG_DWORD /d 1 /f
                         revertCode: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "ClearRecentDocsOnExit" /t REG_DWORD /d 01 /f
@@ -2390,7 +2396,7 @@ actions:
                 revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoUseStoreOpenWith" /t REG_DWORD /d 0 /f
             -
                 name: Do not show recently used files in Quick Access
-                recommend: standard
+                recommend: strict
                 docs: https://www.tenforums.com/tutorials/2713-add-remove-recent-files-quick-access-windows-10-a.html
                 code: |-
                     if %PROCESSOR_ARCHITECTURE%==x86 ( REM is 32 bit?
@@ -2512,10 +2518,12 @@ actions:
                 children:
                     -
                         name: User Data Storage (UnistoreSvc) Service
+                        recommend: strict
                         code: sc stop "UnistoreSvc" & sc config "UnistoreSvc" start=disabled
                         revertCode: sc config "UnistoreSvc" start=demand
                     -
                         name: Sync Host (OneSyncSvc) Service Service
+                        recommend: strict
                         code: sc stop "OneSyncSvc" & sc config "OneSyncSvc" start=disabled
                         revertCode: sc config "OneSyncSvc" start=auto & sc start "OneSyncSvc"
             -
@@ -2736,26 +2744,32 @@ actions:
                                 children:
                                     -
                                         name: Xbox app
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.XboxApp" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.XboxApp").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Xbox TCUI app
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.Xbox.TCUI" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Xbox.TCUI").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Xbox Game Bar app
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.XboxGameOverlay" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.XboxGameOverlay").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Xbox Gaming Overlay app
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.XboxGamingOverlay" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.XboxGamingOverlay").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Xbox Identity Provider app
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.XboxIdentityProvider" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.XboxIdentityProvider").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
                                         name: Xbox Speech To Text Overlay app
+                                        recommend: standard
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.XboxSpeechToTextOverlay" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.XboxSpeechToTextOverlay").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                             -
@@ -2929,7 +2943,7 @@ actions:
                                 children:
                                     -
                                         name: Bio enrollment app
-                                        recommend: standard
+                                        recommend: strict
                                         code: PowerShell -Command "Get-AppxPackage "Microsoft.BioEnrollment" | Remove-AppxPackage"
                                         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.BioEnrollment").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
                                     -
@@ -3318,6 +3332,7 @@ actions:
                                 revertCode: Powershell -Command "$capability = Get-WindowsCapability -Online -Name \"MathRecognizer*\"; Add-WindowsCapability -Name \"$capability.Name\" -Online"
                             -
                                 name: OneSync capability (breaks Mail, People, and Calendar)
+                                recommend: strict
                                 docs: https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/features-on-demand-non-language-fod#onesync
                                 code: Powershell -Command "Get-WindowsCapability -Online -Name "OneCoreUAP.OneSync*" | Remove-WindowsCapability -Online"
                                 revertCode: Powershell -Command "$capability = Get-WindowsCapability -Online -Name \"OneCoreUAP.OneSync*\"; Add-WindowsCapability -Name \"$capability.Name\" -Online"
@@ -3542,6 +3557,7 @@ actions:
             -
                 name: Change NTP (time) server to pool.ntp.org
                 docs: https://www.pool.ntp.org/en/use.html
+                recommend: strict
                 code: |-
                     :: Configure time source
                     w32tm /config /syncfromflags:manual /manualpeerlist:"0.pool.ntp.org 1.pool.ntp.org 2.pool.ntp.org 3.pool.ntp.org"
