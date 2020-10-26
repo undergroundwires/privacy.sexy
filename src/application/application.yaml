@@ -3611,6 +3611,21 @@ actions:
                     slmgr -rearm
                     reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform" /v "SkipRearm" /d 1 /t REG_DWORD /f
                 revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform" /v "SkipRearm" /d 0 /t REG_DWORD /f
+            -   
+                category: Missing Power Plans
+                children:
+                    -
+                        name: Add and set as active Power saver plan
+                        code: powercfg /setactive a1841308-3541-4fab-bc81-f71556f20b4a
+                    -
+                        name: Add and set as active High performance plan
+                        code: powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
+                    -
+                        name: Add and set as active Ultimate Performance plan
+                        docs: Must be manually selected after selecting in powercfg menu
+                        code: |-
+                            powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61
+                            powercfg.cpl
             -
                 name: Run script on start-up [EXPERIMENTAL]
                 code: |-
