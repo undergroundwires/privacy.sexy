@@ -1782,6 +1782,47 @@ actions:
                     reg add "HKLM\Software\Piriform\CCleaner" /v "(Cfg)GetIpmForTrial" /t REG_DWORD /d 1 /f
                     reg add "HKLM\Software\Piriform\CCleaner" /v "(Cfg)SoftwareUpdater" /t REG_DWORD /d 1 /f
                     reg add "HKLM\Software\Piriform\CCleaner" /v "(Cfg)SoftwareUpdaterIpm" /t REG_DWORD /d 1 /f
+            -
+                name: Re-Enable option Image sharpening with DCH drivers in NVCP
+                docs: salsa: CHEF-KOCH github
+                code: |-
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableFSN1368" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableFSN414" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableGR53" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID50052" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID55335" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID57152" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID61091" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID67369" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID67826" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID68264" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID68361" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID69106" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID69436" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID69477" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID69527" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID69975" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID72201" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID72205" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID72540" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID72558" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID72938" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID73090" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID73106" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID73287" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID73737" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID73779" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID73780" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID74336" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID74361" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID74488" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID74501" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID74521" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID74712" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID74945" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID75044" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID75167" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\FTS" /v "EnableRID75307" /d 1 /t REG_DWORD /f
     -
         category: Security improvements
         children:         
