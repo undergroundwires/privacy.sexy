@@ -3653,7 +3653,7 @@ actions:
                     reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform" /v "SkipRearm" /d 1 /t REG_DWORD /f
                 revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform" /v "SkipRearm" /d 0 /t REG_DWORD /f
             -   
-                category: Missing Power Plans
+                category: Windows Power Plans
                 children:
                     -
                         name: Add and set as active Power saver plan
@@ -3663,10 +3663,141 @@ actions:
                         code: powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
                     -
                         name: Add and set as active Ultimate Performance plan
-                        docs: Must be manually selected after selecting in powercfg menu
+                        docs: 
+                            - Must be manually selected after selecting in powercfg menu
+                            - Laptops can OVERHEAT!
                         code: |-
                             powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61
                             powercfg.cpl
+                    -
+                        name: View All Power Plan Settings
+                        code: |-
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\0012ee47-9041-4b5d-9b77-535fba8b1442\0b2d69d7-a2a1-449c-9680-f91c70521c60" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\0012ee47-9041-4b5d-9b77-535fba8b1442\51dea550-bb38-4bc4-991b-eacf37be5ec8" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\0012ee47-9041-4b5d-9b77-535fba8b1442\80e3c60e-bb94-4ad8-bbe0-0d3195efc663" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\0012ee47-9041-4b5d-9b77-535fba8b1442\d3d55efd-c1ff-424e-9dc3-441be7833010" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\0012ee47-9041-4b5d-9b77-535fba8b1442\d639518a-e56d-4345-8af2-b9f32fb26109" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\0012ee47-9041-4b5d-9b77-535fba8b1442\dab60367-53fe-4fbc-825e-521d069d2456" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\0012ee47-9041-4b5d-9b77-535fba8b1442\dbc9e238-6de9-49e3-92cd-8c2b4946b472" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\0012ee47-9041-4b5d-9b77-535fba8b1442\fc95af4d-40e7-4b6d-835a-56d131dbc80e" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\0d7dbae2-4294-402a-ba8e-26777e8488cd\309dce9b-bef4-4119-9921-a851fb12f0f4" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\0E796BDB-100D-47D6-A2D5-F7D2DAA51F51" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\238C9FA8-0AAD-41ED-83F4-97BE242C8F20\1A34BDC3-7E6B-442E-A9D0-64B6EF378E84" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\238C9FA8-0AAD-41ED-83F4-97BE242C8F20\25DFA149-5DD1-4736-B5AB-E8A37B5B8187" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\238C9FA8-0AAD-41ED-83F4-97BE242C8F20\29f6c1db-86da-48c5-9fdb-f2b67b1f44da" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\238C9FA8-0AAD-41ED-83F4-97BE242C8F20\7bc4a2f9-d8fc-4469-b07b-33eb785aaca0" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\238C9FA8-0AAD-41ED-83F4-97BE242C8F20\9d7815a6-7ee4-497e-8888-515a05f02364" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\238C9FA8-0AAD-41ED-83F4-97BE242C8F20\A4B195F5-8225-47D8-8012-9D41369786E2" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\238C9FA8-0AAD-41ED-83F4-97BE242C8F20\abfc2519-3608-4c2a-94ea-171b0ed546ab" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\238C9FA8-0AAD-41ED-83F4-97BE242C8F20\d4c1d4c8-d5cc-43d3-b83e-fc51215cb04d" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\245d8541-3943-4422-b025-13a784f679b7" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\2a737441-1930-4402-8d77-b2bebba308a3\0853a681-27c8-4100-a2fd-82013e970683" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\2a737441-1930-4402-8d77-b2bebba308a3\498c044a-201b-4631-a522-5c744ed4e678" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\2a737441-1930-4402-8d77-b2bebba308a3\d4e98f31-5ffe-4ce1-be31-1b38b384c009" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\2E601130-5351-4d9d-8E04-252966BAD054\3166BC41-7E98-4e03-B34E-EC0F5F2B218E" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\2E601130-5351-4d9d-8E04-252966BAD054\C36F0EB4-2988-4a70-8EEE-0884FC2C2433" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\2E601130-5351-4d9d-8E04-252966BAD054\C42B79AA-AA3A-484b-A98F-2CF32AA90A28" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\2E601130-5351-4d9d-8E04-252966BAD054\D502F7EE-1DC7-4EFD-A55D-F04B6F5C0545" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\48672F38-7A9A-4bb2-8BF8-3D85BE19DE4E\2BFC24F9-5EA2-4801-8213-3DBAE01AA39D" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\48672F38-7A9A-4bb2-8BF8-3D85BE19DE4E\73CDE64D-D720-4bb2-A860-C755AFE77EF2" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\48672F38-7A9A-4bb2-8BF8-3D85BE19DE4E\D6BA4903-386F-4c2c-8ADB-5C21B3328D25" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\4f971e89-eebd-4455-a8de-9e59040e7347\5ca83367-6e45-459f-a27b-476b1d01c936" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\4f971e89-eebd-4455-a8de-9e59040e7347\7648efa3-dd9c-4e3e-b566-50f929386280" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\4f971e89-eebd-4455-a8de-9e59040e7347\833a6b62-dfa4-46d1-82f8-e09e34d029d6" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\4f971e89-eebd-4455-a8de-9e59040e7347\96996bc0-ad50-47ec-923b-6f41874dd9eb" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\4f971e89-eebd-4455-a8de-9e59040e7347\99ff10e7-23b1-4c07-a9d1-5c3206d741b4" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\4faab71a-92e5-4726-b531-224559672d19" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\06cadf0e-64ed-448a-8927-ce7bf90eb35d" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\06cadf0e-64ed-448a-8927-ce7bf90eb35e" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\0cc5b647-c1df-4637-891a-dec35c318583" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\0cc5b647-c1df-4637-891a-dec35c318584" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\12a0ab44-fe28-4fa9-b3bd-4b64f44960a6" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\12a0ab44-fe28-4fa9-b3bd-4b64f44960a7" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\1facfc65-a930-4bc5-9f38-504ec097bbc0" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\2430ab6f-a520-44a2-9601-f7f23b5134b1" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\2ddd5a84-5a71-437e-912a-db0b8c788732" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\36687f9e-e3a5-4dbf-b1dc-15eb381c6863" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\3b04d4fd-1cc7-4f23-ab1c-d1337819c4bb" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\4009efa7-e72d-4cba-9edf-91084ea8cbc3" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\40fbefc7-2e9d-4d25-a185-0cfd8574bac6" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\40fbefc7-2e9d-4d25-a185-0cfd8574bac7" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\447235c7-6a8d-4cc0-8e24-9eaf70b96e2b" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\447235c7-6a8d-4cc0-8e24-9eaf70b96e2c" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\45bcc044-d885-43e2-8605-ee0ec6e96b59" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\465e1f50-b610-473a-ab58-00d1077dc418" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\465e1f50-b610-473a-ab58-00d1077dc419" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\4b92d758-5a24-4851-a470-815d78aee119" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\4bdaf4e9-d103-46d7-a5f0-6280121616ef" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\4d2b0152-7d5c-498b-88e2-34345392a2c5" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\4e4450b3-6179-4e91-b8f1-5bb9938f81a1" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\5d76a2ca-e8c0-402f-a133-2158492d58ad" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\616cdaa5-695e-4545-97ad-97dc2d1bdd88" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\616cdaa5-695e-4545-97ad-97dc2d1bdd89" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\619b7505-003b-4e82-b7a6-4dd29c300971" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\619b7505-003b-4e82-b7a6-4dd29c300972" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\6c2993b0-8f48-481f-bcc6-00dd2742aa06" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\71021b41-c749-4d21-be74-a00f335d582b" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\75b0ae3f-bce0-45a7-8c89-c9611c25e100" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\75b0ae3f-bce0-45a7-8c89-c9611c25e101" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\7b224883-b3cc-4d79-819f-8374152cbe7c" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\7d24baa7-0b84-480f-840c-1b0743c00f5f" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\7d24baa7-0b84-480f-840c-1b0743c00f60" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\7f2492b6-60b1-45e5-ae55-773f8cd5caec" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\7f2f5cfa-f10c-4823-b5e1-e93ae85f46b5" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\893dee8e-2bef-41e0-89c6-b55d0929964d" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\8baa4a8a-14c6-4451-8e8b-14bdbd197537" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\93b8b6dc-0698-4d1c-9ee4-0644e900c85d" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\943c8cb6-6f93-4227-ad87-e9a3feec08d1" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\984cf492-3bed-4488-a8f9-4286c97bf5aa" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\984cf492-3bed-4488-a8f9-4286c97bf5ab" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\9943e905-9a30-4ec1-9b99-44dd3b76f7a2" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\b000397d-9b0b-483d-98c9-692a6060cfbf" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\bae08b81-2d5e-4688-ad6a-13243356654b" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\bc5038f7-23e0-4960-96da-33abaf5935ed" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\be337238-0d82-4146-a960-4f3749d470c7" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\c4581c31-89ab-4597-8e2b-9c9cab440e6b" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\c7be0679-2817-4d69-9d02-519a537ed0c6" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\cfeda3d0-7697-4566-a922-a9086cd49dfa" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\d8edeb9b-95cf-4f95-a73c-b061973693c8" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\d8edeb9b-95cf-4f95-a73c-b061973693c9" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\dfd10d17-d5eb-45dd-877a-9a34ddd15c82" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\e0007330-f589-42ed-a401-5ddb10e785d3" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\ea062031-0e34-4ff1-9b6d-eb1059334028" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\ea062031-0e34-4ff1-9b6d-eb1059334029" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\f735a673-2066-4f80-a0c5-ddee0cf1bf5d" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\f8861c27-95e7-475c-865b-13c0cb3f9d6b" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\fddc842b-8364-4edc-94cf-c17f60de1c80" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\5FB4938D-1EE8-4b0f-9A3C-5036B0AB995C\DD848B2A-8A5D-4451-9AE2-39CD41658F6C" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\68AFB2D9-EE95-47A8-8F50-4115088073B1" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\7516b95f-f776-4464-8c53-06167f40cc99\17aaa29b-8b43-4b94-aafe-35f64daaf1ee" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\7516b95f-f776-4464-8c53-06167f40cc99\3c0bc021-c8a8-4e07-a973-6b14cbcb2b7e" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\7516b95f-f776-4464-8c53-06167f40cc99\8EC4B3A5-6868-48c2-BE75-4F3044BE88A7" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\7516b95f-f776-4464-8c53-06167f40cc99\90959d22-d6a1-49b9-af93-bce885ad335b" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\7516b95f-f776-4464-8c53-06167f40cc99\A9CEB8DA-CD46-44FB-A98B-02AF69DE4623" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\7516b95f-f776-4464-8c53-06167f40cc99\aded5e82-b909-4619-9949-f5d71dac0bcb" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\7516b95f-f776-4464-8c53-06167f40cc99\f1fbfde2-a960-4165-9f88-50667911ce96" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\7516b95f-f776-4464-8c53-06167f40cc99\FBD9AA66-9553-4097-BA44-ED6E9D65EAB8" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\8619B916-E004-4dd8-9B66-DAE86F806698\468FE7E5-1158-46EC-88BC-5B96C9E44FD0" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\8619B916-E004-4dd8-9B66-DAE86F806698\49CB11A5-56E2-4AFB-9D38-3DF47872E21B" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\8619B916-E004-4dd8-9B66-DAE86F806698\5ADBBFBC-074E-4da1-BA38-DB8B36B2C8F3" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\8619B916-E004-4dd8-9B66-DAE86F806698\60C07FE1-0556-45CF-9903-D56E32210242" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\8619B916-E004-4dd8-9B66-DAE86F806698\82011705-FB95-4D46-8D35-4042B1D20DEF" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\8619B916-E004-4dd8-9B66-DAE86F806698\9FE527BE-1B70-48DA-930D-7BCF17B44990" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\8619B916-E004-4dd8-9B66-DAE86F806698\C763EE92-71E8-4127-84EB-F6ED043A3E3D" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\DE830923-A562-41AF-A086-E3A2C6BAD2DA" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\DE830923-A562-41AF-A086-E3A2C6BAD2DA\13D09884-F74E-474A-A852-B6BDE8AD03A8" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\DE830923-A562-41AF-A086-E3A2C6BAD2DA\5C5BB349-AD29-4ee2-9D0B-2B25270F7A81" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\DE830923-A562-41AF-A086-E3A2C6BAD2DA\E69653CA-CF7F-4F05-AA73-CB833FA90AD4" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\e73a048d-bf27-4f12-9731-8b2076e8891f\5dbb7c9f-38e9-40d2-9749-4f8a0e9f640f" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\e73a048d-bf27-4f12-9731-8b2076e8891f\637ea02f-bbcb-4015-8e2c-a1c7b9c0b546" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\e73a048d-bf27-4f12-9731-8b2076e8891f\8183ba9a-e910-48da-8769-14ae6dc1170a" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\e73a048d-bf27-4f12-9731-8b2076e8891f\9a66d8d7-4ff7-4ef9-b5a2-5a326ca2a469" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\e73a048d-bf27-4f12-9731-8b2076e8891f\bcded951-187b-4d05-bccc-f7e51960c258" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\e73a048d-bf27-4f12-9731-8b2076e8891f\d8742dcb-3e6a-4b3c-b3fe-374623cdcf06" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\e73a048d-bf27-4f12-9731-8b2076e8891f\F3C5027D-CD16-4930-AA6B-90DB844A8F00" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\F15576E8-98B7-4186-B944-EAFA664402D9" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\7516b95f-f776-4464-8c53-06167f40cc99\89cc76a4-f226-4d4b-a040-6e9a1da9b882" /v "Attributes" /d 2 /t REG_DWORD /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\7516b95f-f776-4464-8c53-06167f40cc99\aded5e82-b909-4619-9949-f5d71dac0bcc" /v "Attributes" /d 2 /t REG_DWORD /f
             -
                 name: Run script on start-up [EXPERIMENTAL]
                 code: |-
