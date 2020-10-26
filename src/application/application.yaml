@@ -1937,7 +1937,6 @@ actions:
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableUPnPRegistrar" /t REG_DWORD /d 1 /f
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableWPDRegistrar" /t REG_DWORD /d 1 /f
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "EnableRegistrars" /t REG_DWORD /d 1 /f
-									
             -
                 category: Increase cryptography on ISS
                 children:
@@ -2416,8 +2415,8 @@ actions:
                 docs: http://www.windows10windows7.com/w10/win10zs/100102504.html
                 code: powercfg -h off
                 revertCode: powercfg -h on
-	    -
-                name: Camera on/off OSD notification
+            -
+                name: Enable camera on/off OSD notifications
                 docs: https://www.tenforums.com/tutorials/166065-how-enable-disable-camera-off-osd-notifications-windows-10-a.html
                 code: reg add "HKLM\SOFTWARE\Microsoft\OEM\Device\Capture" /v "NoPhysicalCameraLED" /d 1 /t REG_DWORD /f
                 revertCode: reg delete "HKLM\Software\Microsoft\OEM\Device\Capture" /v "NoPhysicalCameraLED" /f
@@ -2831,11 +2830,12 @@ actions:
                                 recommend: standard
                                 code: PowerShell -Command "Get-AppxPackage "Microsoft.NetworkSpeedTest" | Remove-AppxPackage"
                                 revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.NetworkSpeedTest").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
-                             -
+                            -
                                 name: To Do app
-                                recommend: standard
+                                docs: https://www.microsoft.com/en-us/p/microsoft-to-do-lists-tasks-reminders/9nblggh5r558
                                 code: PowerShell -Command "Get-AppxPackage "Microsoft.Todos" | Remove-AppxPackage"
-			    -
+                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Todos").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                            -
                                 category: Third party
                                 children:
                                     -
