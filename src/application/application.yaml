@@ -1993,10 +1993,10 @@ actions:
                         name: Disable MD5 hash function
                         code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\MD5" /f /v Enabled /t REG_DWORD /d 0x00000000
                         revertCode: reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\MD5" /v "Enabled" /f
-		    -
-		    	name: Disable SHA1
-			code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\SHA" /f /v Enabled /t REG_DWORD /d 0x00000000
-			revertCode: reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\SHA" /v "Enabled" /f
+                    -
+			name: Disable SHA1
+                        code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\SHA" /f /v Enabled /t REG_DWORD /d 0x00000000
+                        revertCode: reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\SHA" /v "Enabled" /f
                     -
                         name: Disable null cipher
                         code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\NULL" /f /v Enabled /t REG_DWORD /d 0x00000000
@@ -2417,10 +2417,10 @@ actions:
                 code: powercfg -h off
                 revertCode: powercfg -h on
 	    -
-	    	name: Camera on/off OSD notification
-		docs: https://www.tenforums.com/tutorials/166065-how-enable-disable-camera-off-osd-notifications-windows-10-a.html
-		code: reg add "HKLM\SOFTWARE\Microsoft\OEM\Device\Capture" /v "NoPhysicalCameraLED" /d 1 /t REG_DWORD /f
-		revertCode: reg delete "HKLM\Software\Microsoft\OEM\Device\Capture" /v "NoPhysicalCameraLED" /f
+                name: Camera on/off OSD notification
+                docs: https://www.tenforums.com/tutorials/166065-how-enable-disable-camera-off-osd-notifications-windows-10-a.html
+                code: reg add "HKLM\SOFTWARE\Microsoft\OEM\Device\Capture" /v "NoPhysicalCameraLED" /d 1 /t REG_DWORD /f
+                revertCode: reg delete "HKLM\Software\Microsoft\OEM\Device\Capture" /v "NoPhysicalCameraLED" /f
             -
                 category: Hide from This PC and Browse in dialog boxes
                 children:
