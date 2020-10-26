@@ -1939,7 +1939,7 @@ actions:
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "EnableRegistrars" /t REG_DWORD /d 1 /f
 									
             -
-                category: Increase cryptography
+                category: Increase cryptography on ISS
                 children:
                     -
                         name: Increase Diffie-Hellman key (DHK) exchange to 4096-bit
