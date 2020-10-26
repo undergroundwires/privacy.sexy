@@ -1342,6 +1342,15 @@ actions:
                 code: setx POWERSHELL_TELEMETRY_OPTOUT 1
                 revertCode: setx POWERSHELL_TELEMETRY_OPTOUT 0
             -
+                name: Disable Optimize Drives Schedule (defragmentation)
+                docs: https://www.ghacks.net/2018/05/30/how-to-disable-automatic-drive-optimization-in-windows-10/
+                code: |-
+                    reg add "HKLM\SOFTWARE\Microsoft\Dfrg\TaskSettings" /v "fTaskEnabled" /t REG_DWORD /d 0 /f
+                    reg add "HKLM\SOFTWARE\Microsoft\Dfrg\TaskSettings" /v "fDeadlineEnabled" /t REG_DWORD /d 0 /f
+                revertCode: |-
+                    reg add "HKLM\SOFTWARE\Microsoft\Dfrg\TaskSettings" /v "fTaskEnabled" /t REG_DWORD /d 1 /f
+                    reg add "HKLM\SOFTWARE\Microsoft\Dfrg\TaskSettings" /v "fDeadlineEnabled" /t REG_DWORD /d 1 /f
+            -
                 category: Disable NVIDIA telemetry
                 docs:
                     - https://github.com/CHEF-KOCH/nVidia-modded-Inf
