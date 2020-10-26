@@ -3589,6 +3589,15 @@ actions:
                     reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\ReserveManager" /v "ShippedWithReserves" /t REG_DWORD /d "1" /f
                     reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\ReserveManager" /v "PassedPolicy" /t REG_DWORD /d "1" /f
             -
+                name: Windwos Evaluation Rearm for 360 days
+                docs: 
+                    - flagged CHEF-KOCH account | https://gist.github.com/CHEF-KOCH/6faf4dd1923bbe13e5dd8685672281bb
+                    - Works only for Evaluation versions, needs reboot.
+                code: |-
+                    slmgr -rearm
+                    reg add "SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform" /v "SkipRearm" /d 1 /t REG_DWORD /f
+                revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SoftwareProtectionPlatform" /v "SkipRearm" /d 0 /t REG_DWORD /f
+            -
                 name: Run script on start-up [EXPERIMENTAL]
                 code: |-
                     del /f /q %AppData%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat
