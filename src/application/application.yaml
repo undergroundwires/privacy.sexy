@@ -1342,6 +1342,20 @@ actions:
                 code: setx POWERSHELL_TELEMETRY_OPTOUT 1
                 revertCode: setx POWERSHELL_TELEMETRY_OPTOUT 0
             -
+                name: Set explorer to open to "This PC" for new windows
+                recommend: standard
+                code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "LaunchTo" /d 1 /t REG_DWORD /f
+                revertCode: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "LaunchTo" /d 2 /t REG_DWORD /f
+            -
+                name: Disable Optimize Hard Disk when idle
+                recommend: standard
+                code: |-
+                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OptimalLayout" /v "EnableAutoLayout" /d 0 /t REG_DWORD /f
+                    reg add "HKLM\SOFTWARE\Microsoft\Dfrg\BootOptimizeFunction" /v "Enable" /d n /t REG_SZ /f
+                revertCode: |-
+                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OptimalLayout" /v "EnableAutoLayout" /d 1 /t REG_DWORD /f
+                    reg add "HKLM\SOFTWARE\Microsoft\Dfrg\BootOptimizeFunction" /v "Enable" /d y /t REG_SZ /f
+            -
                 name: Disable Optimize Drives Schedule (defragmentation)
                 docs: https://www.ghacks.net/2018/05/30/how-to-disable-automatic-drive-optimization-in-windows-10/
                 code: |-
