@@ -3644,6 +3644,11 @@ actions:
                     reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\a55612aa-f624-42c6-a443-7397d064c04f" /v "Attributes" /d 1 /t REG_DWORD /f
                     reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power\PowerSettings\54533251-82be-4824-96c1-47b60b740d00\ea062031-0e34-4ff1-9b6d-eb1059334028" /v "Attributes" /d 1 /t REG_DWORD /f
             -
+                name: Disable HPET
+                docs: https://www.mikemartin.co/system_guides/hardware/motherboard/disable_high_precision_event_timer_hpet
+                code: bcdedit /deletevalue useplatformclock
+                revertCode: bcdedit /set useplatformclock true
+            -
                 name: Windows Evaluation Rearm for 360 days
                 docs: 
                     - flagged CHEF-KOCH account | https://gist.github.com/CHEF-KOCH/6faf4dd1923bbe13e5dd8685672281bb
