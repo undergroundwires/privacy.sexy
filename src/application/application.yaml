@@ -1,4 +1,4 @@
-# Structure documented in "./application.yaml.d.ts" (as code)
+# Structure documented in "docs/application-file.md"
 actions:
     -
         category: Privacy cleanup
@@ -2596,529 +2596,794 @@ actions:
                 docs: https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10
                 children:
                     -
-                        category: Provisioned Windows apps
+                        category: Uninstall provisioned Windows apps
+                        docs: https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10#provisioned-windows-apps
                         children:
                             -
-                                name: Microsoft 3D Builder
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.3DBuilder" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.3DBuilder").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
-                                docs: https://www.microsoft.com/en-us/p/3d-builder/9wzdncrfj3t6
+                                category: Uninstall 3D modeling apps
+                                children:
+                                    -
+                                        name: Microsoft 3D Builder app
+                                        docs: https://www.microsoft.com/en-us/p/3d-builder/9wzdncrfj3t6
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.3DBuilder
+                                    -
+                                        name: 3D Viewer app
+                                        docs: https://www.microsoft.com/en-us/p/3d-viewer/9nblggh42ths
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.Microsoft3DViewer
                             -
-                                category: MSN
+                                category: Uninstall MSN (Bing) apps
                                 children:
                                     -
                                         name: MSN Weather app
-                                        recommend: standard
                                         docs: https://www.microsoft.com/en-us/p/msn-weather/9wzdncrfj3q2
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.BingWeather" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.BingWeather").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        recommend: standard
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.BingWeather
                                     -
                                         name: MSN Sports app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.BingSports" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.BingSports").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        docs: https://www.microsoft.com/en-us/p/msn-sports/9wzdncrfhvh4
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.BingSports
                                     -
                                         name: MSN News app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.BingNews" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.BingNews").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        docs: https://www.microsoft.com/en-us/p/microsoft-news/9wzdncrfhvfw
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.BingNews
                                     -
                                         name: MSN Money app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.BingFinance" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.BingFinance").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        docs: https://www.microsoft.com/en-us/p/msn-money/9wzdncrfhv4v
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.BingFinance
                             -
                                 name: App Installer app
-                                docs: https://www.microsoft.com/en-us/p/app-installer/9nblggh4nns1?activetab=pivot:overviewtab
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.DesktopAppInstaller" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.DesktopAppInstaller").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                docs: https://www.microsoft.com/en-us/p/app-installer/9nblggh4nns1
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.DesktopAppInstaller
                             -
                                 name: Get Help app
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.GetHelp" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.GetHelp").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                docs: https://www.microsoft.com/en-us/p/get-help/9nblgggzhtbj
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.GetHelp
                             -
                                 name: Microsoft Tips app
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.Getstarted" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Getstarted").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                docs: https://www.microsoft.com/en-us/p/microsoft-tips/9wzdncrdtbjj
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.Getstarted
                             -
                                 category: Extensions
                                 children:
                                     -
                                         name: HEIF Image Extensions app
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.HEIFImageExtension" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.HEIFImageExtension").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        docs: https://www.microsoft.com/en-us/p/heif-image-extensions/9pmmsr1cgpwg
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.HEIFImageExtension
                                     -
                                         name: VP9 Video Extensions app
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.VP9VideoExtensions" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.VP9VideoExtensions").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        docs: https://www.microsoft.com/en-us/p/vp9-video-extensions/9n4d0msmp0pt
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.VP9VideoExtensions
                                     -
                                         name: Web Media Extensions app
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.WebMediaExtensions" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WebMediaExtensions").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        docs: https://www.microsoft.com/en-us/p/web-media-extensions/9n5tdp8vcmhs
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.WebMediaExtensions
                                     -
-                                        name: Webp Image Extension app
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.WebpImageExtension" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WebpImageExtension").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        name: Webp Image Extensions app
+                                        docs: https://www.microsoft.com/en-us/p/webp-image-extensions/9pg2dk419drg
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.WebpImageExtension
                             -
                                 name: Microsoft Messaging app
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.Messaging" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Messaging").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                docs: https://www.microsoft.com/en-us/p/microsoft-messaging/9wzdncrfjbq6
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.Messaging
                             -
-                                category: Mixed Reality
-                                children:
-                                    -
-                                        name: Mixed Reality Portal app
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.MixedReality.Portal" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.MixedReality.Portal").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
-                                    -
-                                        name: Mixed Reality Viewer app
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Microsoft3DViewer" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Microsoft3DViewer").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                name: Mixed Reality Portal app
+                                docs: https://www.microsoft.com/en-us/p/mixed-reality-portal
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.MixedReality.Portal
                             -
-                                category: Microsoft Office
+                                category: Uninstall Microsoft Office apps
                                 children:
                                     -
                                         name: My Office app
                                         recommend: standard
                                         docs: https://www.microsoft.com/en-us/p/my-office-app/9n8vd0f315mh
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.MicrosoftOfficeHub" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.MicrosoftOfficeHub").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.MicrosoftOfficeHub
                                     -
                                         name: OneNote app
-                                        docs: https://www.microsoft.com/en-us/p/onenote-for-windows-10/9wzdncrfhvjl
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Office.OneNote" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Office.OneNote").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        docs: https://www.microsoft.com/en-us/p/onenote-for-windows-10
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.Office.OneNote
                                     -
                                         name: Sway app
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Office.Sway" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Office.Sway").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        docs: https://www.microsoft.com/en-us/p/sway/9wzdncrd2g0j
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.Office.Sway
                             -
                                 name: Feedback Hub app
                                 recommend: standard
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.WindowsFeedbackHub" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WindowsFeedbackHub").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                docs: https://www.microsoft.com/en-us/p/feedback-hub/9nblggh4r32n
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.WindowsFeedbackHub
                             -
                                 name: Windows Alarms and Clock app
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.WindowsAlarms" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WindowsAlarms").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                docs: https://www.microsoft.com/en-us/p/windows-alarms-clock/9wzdncrfj3pr
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.WindowsAlarms
                             -
                                 name: Windows Camera app
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.WindowsCamera" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WindowsCamera").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                docs: https://www.microsoft.com/en-us/p/windows-camera/9wzdncrfjbbg
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.WindowsCamera
                             -
                                 name: Paint 3D app
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.MSPaint" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.MSPaint").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                docs: https://www.microsoft.com/en-us/p/paint-3d/9nblggh5fv99
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.MSPaint
                             -
                                 name: Windows Maps app
                                 recommend: standard
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.WindowsMaps" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WindowsMaps").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                docs: https://www.microsoft.com/en-us/p/windows-maps/9wzdncrdtbvb
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.WindowsMaps
                             -
-                                name: Minecraft app
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.MinecraftUWP" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.MinecraftUWP").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                name: Minecraft for Windows 10 app
+                                docs: https://www.microsoft.com/en-us/p/minecraft-for-windows-10/9nblggh2jhxj
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.MinecraftUWP
                             -
                                 name: Microsoft Store app
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.WindowsStore" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WindowsStore").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.WindowsStore
                             -
                                 name: Microsoft People app
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.People" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.People").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                docs: https://www.microsoft.com/en-us/p/microsoft-people/9nblggh10pg8
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.People
                             -
                                 name: Microsoft Pay app
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.Wallet" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Wallet").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.Wallet
                             -
                                 name: Store Purchase app
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.StorePurchaseApp" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.StorePurchaseApp").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                docs: https://social.technet.microsoft.com/Forums/exchange/en-US/24b1088d-0fc5-4a82-8015-c9c964532603/store-purchase-app?forum=win10itproapps
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.StorePurchaseApp
                             -
-                                name: Snip and Sketch app
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.ScreenSketch" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.ScreenSketch").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                name: Snip & Sketch app
+                                docs: https://www.microsoft.com/en-us/p/snip-sketch/9mz95kl8mr0l
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.ScreenSketch
                             -
-                                name: Print3D app
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.Print3D" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Print3D").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                name: Print 3D app
+                                docs: https://www.microsoft.com/en-us/p/print-3d/9pbpch085s3s
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.Print3D
                             -
-                                name: Paid Wi-Fi and Cellular app
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.OneConnect" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.OneConnect").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                name: Mobile Plans app                      
+                                docs: https://www.microsoft.com/en-us/p/mobile-plans/9nblggh5pnb1
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.OneConnect
                             -
                                 name: Microsoft Solitaire Collection app
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.MicrosoftSolitaireCollection" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.MicrosoftSolitaireCollection").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                docs: https://www.microsoft.com/en-us/p/microsoft-solitaire-collection/9wzdncrfhwd2
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.MicrosoftSolitaireCollection
                             -
                                 name: Microsoft Sticky Notes app
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.MicrosoftStickyNotes" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.MicrosoftStickyNotes").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                docs: https://www.microsoft.com/en-us/p/microsoft-sticky-notes/9nblggh4qghw
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.MicrosoftStickyNotes
                             -
                                 category: Xbox
                                 children:
                                     -
-                                        name: Xbox app
+                                        name: Xbox Console Companion app
+                                        docs: https://www.microsoft.com/en-us/p/xbox-console-companion/9wzdncrfjbd8
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.XboxApp" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.XboxApp").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.XboxApp
                                     -
-                                        name: Xbox TCUI app
+                                        name: Xbox Live in-game experience app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Xbox.TCUI" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Xbox.TCUI").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.Xbox.TCUI
                                     -
                                         name: Xbox Game Bar app
+                                        docs: https://www.microsoft.com/en-us/p/xbox-game-bar/9nzkpstsnw4p
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.XboxGameOverlay" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.XboxGameOverlay").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.XboxGamingOverlay
                                     -
-                                        name: Xbox Gaming Overlay app
+                                        name: Xbox Game Bar Plugin appcache
+                                        docs: https://www.microsoft.com/en-us/p/xbox-game-bar/9nzkpstsnw4p
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.XboxGamingOverlay" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.XboxGamingOverlay").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.XboxGameOverlay
                                     -
                                         name: Xbox Identity Provider app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.XboxIdentityProvider" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.XboxIdentityProvider").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.XboxIdentityProvider
                                     -
                                         name: Xbox Speech To Text Overlay app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.XboxSpeechToTextOverlay" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.XboxSpeechToTextOverlay").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.XboxSpeechToTextOverlay
                             -
                                 name: Mail and Calendar app
-                                code: PowerShell -Command "Get-AppxPackage "microsoft.windowscommunicationsapps" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "microsoft.windowscommunicationsapps").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                docs: https://www.microsoft.com/en-us/p/mail-and-calendar/9wzdncrfhvqm
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: microsoft.windowscommunicationsapps
                             -
                                 category: Zune
                                 children:
                                     -
-                                        name: Zune Music app
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.ZuneMusic" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.ZuneMusic").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        name: Groove Music app
+                                        docs: https://www.microsoft.com/en-us/p/groove-music/9wzdncrfj3pt
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.ZuneMusic
                                     -
-                                        name: Zune Video app
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.ZuneVideo" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.ZuneVideo").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        name: Movies & TV app
+                                        docs: https://www.microsoft.com/en-us/p/movies-tv/9wzdncrfj3p2
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.ZuneVideo
                             -
                                 name: Windows Calculator app
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.WindowsCalculator" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WindowsCalculator").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                docs: https://www.microsoft.com/en-us/p/windows-calculator/9wzdncrfhvn5
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.WindowsCalculator
                             -
                                 name: Microsoft Photos app
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.Photos" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.Photos").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                docs: https://www.microsoft.com/en-us/p/microsoft-photos/9wzdncrfjbh4
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.Windows.Photos
                             -
                                 name: Skype app
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.SkypeApp" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.SkypeApp").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                docs: https://www.microsoft.com/en-us/p/skype/9wzdncrfj364
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.SkypeApp
                             -
                                 name: GroupMe app
                                 docs: https://www.microsoft.com/en-us/p/groupme/9nblggh5z4f2
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.GroupMe10" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.GroupMe10").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.GroupMe10
                             -
                                 name: Windows Voice Recorder app
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.WindowsSoundRecorder" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WindowsSoundRecorder").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                docs: https://www.microsoft.com/en-us/p/windows-voice-recorder/9wzdncrfhwkn
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.WindowsSoundRecorder
                             -
                                 category: Phone
                                 children:
                                     -
-                                        name: Windows Phone app
-                                        code: |-
-                                            PowerShell -Command "Get-AppxPackage "Microsoft.WindowsPhone" | Remove-AppxPackage"
-                                            PowerShell -Command "Get-AppxPackage "Microsoft.Windows.Phone" | Remove-AppxPackage"
-                                        revertCode: |-
-                                            PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WindowsPhone").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
-                                            PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.Phone").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        name: Your Phone Companion app # Depreciated in newer Windows 10
+                                        call:
+                                            -
+                                                function: UninstallStoreApp
+                                                parameters:
+                                                    packageName: Microsoft.WindowsPhone
+                                            -
+                                                function: UninstallStoreApp
+                                                parameters:
+                                                    packageName: Microsoft.Windows.Phone
                                     -
-                                        name: Comms Phone app
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.CommsPhone" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.CommsPhone").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        name: Communications - Phone app # Depreciated in newer Windows 10
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.CommsPhone
                                     -
                                         name: Your Phone app
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.YourPhone" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.YourPhone").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        docs: https://www.microsoft.com/en-us/p/your-phone/9nmpj99vjbwv
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.YourPhone
                     -
-                        category: Installed Windows apps
+                        category: Uninstall installed Windows apps
+                        docs: https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10#installed-windows-apps
                         children:
                             -
                                 name: Microsoft Advertising app
                                 recommend: standard
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.Advertising.Xaml" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Advertising.Xaml").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                docs:  
+                                    - https://docs.microsoft.com/en-us/windows/uwp/monetize/install-the-microsoft-advertising-libraries
+                                    - https://social.msdn.microsoft.com/Forums/windowsapps/en-US/db8d44cb-1381-47f7-94d3-c6ded3fea36f/microsoft-ad-monetization-platform-shut-down-as-of-june-1st?forum=aiamgr
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.Advertising.Xaml
                             -
                                 name: Remote Desktop app
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.RemoteDesktop" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.RemoteDesktop").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                docs: https://www.microsoft.com/en-us/p/microsoft-remote-desktop/9wzdncrfj3ps?activetab=pivot:overviewtab
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.RemoteDesktop
                             -
                                 name: Network Speed Test app
                                 recommend: standard
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.NetworkSpeedTest" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.NetworkSpeedTest").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                docs: https://www.microsoft.com/en-us/p/network-speed-test/9wzdncrfhx52
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.NetworkSpeedTest
                             -
-                                name: To Do app
+                                name: Microsoft To Do app
                                 docs: https://www.microsoft.com/en-us/p/microsoft-to-do-lists-tasks-reminders/9nblggh5r558
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.Todos" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Todos").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.Todos
                             -
                                 category: Third party
                                 children:
                                     -
-                                        name: Shazam app
-                                        code: PowerShell -Command "Get-AppxPackage "ShazamEntertainmentLtd.Shazam" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "ShazamEntertainmentLtd.Shazam").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        name: Shazam app # Discontinued https://www.windowscentral.com/shazam-pulls-plug-windows-apps
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: ShazamEntertainmentLtd.Shazam
                                     -
                                         name: Candy Crush Saga app
-                                        code: |-
-                                            PowerShell -Command "Get-AppxPackage "king.com.CandyCrushSaga" | Remove-AppxPackage"
-                                            PowerShell -Command "Get-AppxPackage "king.com.CandyCrushSodaSaga" | Remove-AppxPackage"
-                                        revertCode: |-
-                                            PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "king.com.CandyCrushSaga").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
-                                            PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "king.com.CandyCrushSodaSaga").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        docs: https://www.microsoft.com/en-us/p/candy-crush-saga/9nblggh18846
+                                        call:
+                                            -
+                                                function: UninstallStoreApp
+                                                parameters:
+                                                    packageName: king.com.CandyCrushSaga
+                                            -
+                                                function: UninstallStoreApp
+                                                parameters:
+                                                    packageName: king.com.CandyCrushSodaSaga
                                     -
                                         name: Flipboard app
-                                        code: PowerShell -Command "Get-AppxPackage "Flipboard.Flipboard" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Flipboard.Flipboard").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        docs: https://www.microsoft.com/en-us/p/flipboard/9wzdncrfj32q
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Flipboard.Flipboard
                                     -
                                         name: Twitter app
-                                        code: PowerShell -Command "Get-AppxPackage "9E2F88E3.Twitter" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "9E2F88E3.Twitter").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        docs: https://www.microsoft.com/en-us/p/twitter/9wzdncrfj140
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: 9E2F88E3.Twitter
                                     -
                                         name: iHeartRadio app
-                                        code: PowerShell -Command "Get-AppxPackage "ClearChannelRadioDigital.iHeartRadio" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "ClearChannelRadioDigital.iHeartRadio").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        docs: https://www.microsoft.com/en-us/p/iheartradio/9wzdncrfj223
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: ClearChannelRadioDigital.iHeartRadio
                                     -
                                         name: Duolingo app
-                                        code: PowerShell -Command "Get-AppxPackage "D5EA27B7.Duolingo-LearnLanguagesforFree" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "D5EA27B7.Duolingo-LearnLanguagesforFree").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        docs: https://www.microsoft.com/en-us/p/duolingo-learn-languages-for-free/9wzdncrcv5xn
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: D5EA27B7.Duolingo-LearnLanguagesforFree
                                     -
                                         name: Photoshop Express app
-                                        code: PowerShell -Command "Get-AppxPackage "AdobeSystemIncorporated.AdobePhotoshop" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "AdobeSystemIncorporated.AdobePhotoshop").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        docs: https://www.microsoft.com/en-us/p/adobe-photoshop-express-image-editor-adjustments-filters-effects-borders/9wzdncrfj27n
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: AdobeSystemIncorporated.AdobePhotoshop
                                     -
                                         name: Pandora app
-                                        code: PowerShell -Command "Get-AppxPackage "PandoraMediaInc.29680B314EFC2" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "PandoraMediaInc.29680B314EFC2").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        docs: https://www.microsoft.com/en-us/p/pandora/9wzdncrfj46v
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: PandoraMediaInc.29680B314EFC2
                                     -
                                         name: Eclipse Manager app
-                                        code: PowerShell -Command "Get-AppxPackage "46928bounde.EclipseManager" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "46928bounde.EclipseManager").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        docs: https://www.microsoft.com/en-us/p/eclipse-manager/9wzdncrdjmh1
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: 46928bounde.EclipseManager
                                     -
                                         name: Code Writer app
-                                        code: PowerShell -Command "Get-AppxPackage "ActiproSoftwareLLC.562882FEEB491" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "ActiproSoftwareLLC.562882FEEB491").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        docs: https://www.microsoft.com/en-us/p/code-writer/9wzdncrfhzdt
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: ActiproSoftwareLLC.562882FEEB491
                                     -
                                         name: Spotify app
                                         docs: https://www.microsoft.com/en-us/p/spotify-music/9ncbcszsjrsb
-                                        code: PowerShell -Command "Get-AppxPackage "SpotifyAB.SpotifyMusic" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "SpotifyAB.SpotifyMusic").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: SpotifyAB.SpotifyMusic
                     -
-                        category: System apps
+                        category: Uninstall system apps
+                        docs: https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10#system-apps
                         children:
                             -
                                 name: File Picker app
-                                code: PowerShell -Command "Get-AppxPackage "1527c705-839a-4832-9118-54d4Bd6a0c89" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "1527c705-839a-4832-9118-54d4Bd6a0c89").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: 1527c705-839a-4832-9118-54d4Bd6a0c89
                             -
                                 name: File Explorer app
-                                code: PowerShell -Command "Get-AppxPackage "c5e2524a-ea46-4f67-841f-6a9465d9d515" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "c5e2524a-ea46-4f67-841f-6a9465d9d515").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: c5e2524a-ea46-4f67-841f-6a9465d9d515
                             -
                                 name: App Resolver UX app
-                                code: PowerShell -Command "Get-AppxPackage "E2A4F912-2574-4A75-9BB0-0D023378592B" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "E2A4F912-2574-4A75-9BB0-0D023378592B").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: E2A4F912-2574-4A75-9BB0-0D023378592B
                             -
                                 name: Add Suggested Folders To Library app
                                 recommend: standard
-                                code: |-
-                                    PowerShell -Command "Get-AppxPackage "F46D4000-FD22-4DB4-AC8E-4E1DDDE828FE" | Remove-AppxPackage"
-                                    PowerShell -Command "Get-AppxPackage "InputApp" | Remove-AppxPackage"
-                                revertCode: |-
-                                    PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "F46D4000-FD22-4DB4-AC8E-4E1DDDE828FE").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
-                                    PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "InputApp").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                call:
+                                    -
+                                        function: UninstallStoreApp
+                                        parameters:
+                                            packageName: F46D4000-FD22-4DB4-AC8E-4E1DDDE828FE
+                                    -
+                                        function: UninstallStoreApp
+                                        parameters:
+                                            packageName: InputApp
                             -
                                 name: Microsoft AAD Broker Plugin app
                                 recommend: standard
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.AAD.Broker.Plugin" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.AAD.Broker.Plugin").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.AAD.Broker.Plugin
                             -
                                 name: Microsoft Accounts Control app
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.AccountsControl" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.AccountsControl").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.AccountsControl
                             -
                                 name: Microsoft Async Text Service app
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.AsyncTextService" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.AsyncTextService").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.AsyncTextService
                             -
                                 category: Hello setup UI
                                 children:
                                     -
                                         name: Bio enrollment app
                                         recommend: strict
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.BioEnrollment" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.BioEnrollment").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.BioEnrollment
                                     -
                                         name: Cred Dialog Host app
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.CredDialogHost" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.CredDialogHost").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.CredDialogHost
                                     -
-                                        name: EC App
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.ECApp" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.ECApp").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        name: EC app
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.ECApp
                                     -
-                                        name: Lock App
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.LockApp" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.LockApp").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        name: Lock app
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.LockApp
                             -
                                 category: Microsoft Edge
                                 children:
                                     -
                                         name: Microsoft Edge app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.MicrosoftEdge" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.MicrosoftEdge").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.MicrosoftEdge
                                     -
                                         name: Microsoft Edge Dev Tools Client app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.MicrosoftEdgeDevToolsClient" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.MicrosoftEdgeDevToolsClient").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.MicrosoftEdgeDevToolsClient
                                     -
                                         name: Microsoft PPI Projection app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.PPIProjection" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.PPIProjection").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.PPIProjection
                                     -
                                         name: Win32 Web View Host app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Win32WebViewHost" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Win32WebViewHost").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.Win32WebViewHost
                                     -
                                         name: ChxApp app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.Apprep.ChxApp" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.Apprep.ChxApp").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.Windows.Apprep.ChxApp
                                     -
                                         name: Assigned Access Lock App app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.AssignedAccessLockApp" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.AssignedAccessLockApp").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.Windows.AssignedAccessLockApp
                                     -
                                         name: Capture Picker app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.CapturePicker" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.CapturePicker").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.Windows.CapturePicker
                                     -
                                         name: Cloud Experience Host app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.CloudExperienceHost" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.CloudExperienceHost").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.Windows.CloudExperienceHost
                                     -
                                         name: Content Delivery Manager app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.ContentDeliveryManager" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.ContentDeliveryManager").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.Windows.ContentDeliveryManager
                             -
-                                category: Cortana
+                                category: Uninstall Cortana apps
                                 children:
                                     -
                                         name: Cortana app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.Cortana" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.Cortana").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.Windows.Cortana
                                     -
                                         name: Holographic First Run app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.Holographic.FirstRun" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.Holographic.FirstRun").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.Windows.Holographic.FirstRun
                                     -
                                         name: OOBE Network Captive Port app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.OOBENetworkCaptivePort" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.OOBENetworkCaptivePort").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.Windows.OOBENetworkCaptivePort
                                     -
                                         name: OOBE Network Connection Flow app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.OOBENetworkConnectionFlow" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.OOBENetworkConnectionFlow").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.Windows.OOBENetworkConnectionFlow
                                     -
                                         name: Parental Controls app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.ParentalControls" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.ParentalControls").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.Windows.ParentalControls
                             -
                                 category: People Hub
                                 children:
                                     -
                                         name: People Experience Host app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.PeopleExperienceHost" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.PeopleExperienceHost").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.Windows.PeopleExperienceHost
                                     -
                                         name: Pinning Confirmation Dialog app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.PinningConfirmationDialog" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.PinningConfirmationDialog").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.Windows.PinningConfirmationDialog
                                     -
                                         name: Sec Health UI app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.SecHealthUI" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.SecHealthUI").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.Windows.SecHealthUI
                                     -
                                         name: Secondary Tile Experience app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.SecondaryTileExperience" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.SecondaryTileExperience").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.Windows.SecondaryTileExperience
                                     -
                                         name: Secure Assessment Browser app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.SecureAssessmentBrowser" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.SecureAssessmentBrowser").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.Windows.SecureAssessmentBrowser
                             -
                                 name: Start app
-                                code: PowerShell -Command "Get-AppxPackage "Microsoft.Windows.ShellExperienceHost" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Windows.ShellExperienceHost").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.Windows.ShellExperienceHost
                             -
                                 category: Windows Feedback
                                 children:
                                     -
                                         name: Windows Feedback app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.WindowsFeedback" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.WindowsFeedback").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.WindowsFeedback
                                     -
                                         name: Xbox Game Callable UI app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Microsoft.XboxGameCallableUI" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.XboxGameCallableUI").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Microsoft.XboxGameCallableUI
                                     -
                                         name: CBS Preview app
                                         recommend: standard
-                                        code: PowerShell -Command "Get-AppxPackage "Windows.CBSPreview" | Remove-AppxPackage"
-                                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Windows.CBSPreview").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                        call:
+                                            function: UninstallStoreApp
+                                            parameters:
+                                                packageName: Windows.CBSPreview
                             -
                                 name: Contact Support app
-                                code: PowerShell -Command "Get-AppxPackage "Windows.ContactSupport" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Windows.ContactSupport").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Windows.ContactSupport
                             -
                                 name: Settings app
-                                code: PowerShell -Command "Get-AppxPackage "Windows.immersivecontrolpanel" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Windows.immersivecontrolpanel").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Windows.immersivecontrolpanel
                             -
                                 name: Windows Print 3D app
-                                code: PowerShell -Command "Get-AppxPackage "Windows.Print3D" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Windows.Print3D").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Windows.Print3D
                             -
                                 name: Print UI app
-                                code: PowerShell -Command "Get-AppxPackage "Windows.PrintDialog" | Remove-AppxPackage"
-                                revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Windows.PrintDialog").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Windows.PrintDialog
                     -
                         name: App Connector app
-                        code: PowerShell -Command "Get-AppxPackage "Microsoft.Appconnector" | Remove-AppxPackage"
-                        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "& {$manifest = (Get-AppxPackage "Microsoft.Appconnector").InstallLocation + '\AppxManifest.xml'; Add-AppxPackage -DisableDevelopmentMode -Register $manifest}"
+                        call:
+                            function: UninstallStoreApp
+                            parameters:
+                                packageName: Microsoft.Appconnector
             - 
               category: Remove OneDrive
               children:
@@ -3616,3 +3881,13 @@ actions:
                     del /f /q %AppData%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat
                     copy "%~dpnx0" "%AppData%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat"
                 revertCode: del /f /q %AppData%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat
+functions:
+    -
+        name: UninstallStoreApp
+        parameters: [ appName ]
+        code: PowerShell -Command "Get-AppxPackage '{{ $packageName }}' | Remove-AppxPackage"
+        revertCode:
+            PowerShell -ExecutionPolicy Unrestricted -Command "
+                $manifest = (Get-AppxPackage '{{ $packageName }}').InstallLocation + '\AppxManifest.xml';
+                Add-AppxPackage -DisableDevelopmentMode -Register $manifest
+            "
