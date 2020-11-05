@@ -3884,10 +3884,13 @@ actions:
 functions:
     -
         name: UninstallStoreApp
-        parameters: [ appName ]
+        parameters: [ packageName ]
         code: PowerShell -Command "Get-AppxPackage '{{ $packageName }}' | Remove-AppxPackage"
         revertCode:
             PowerShell -ExecutionPolicy Unrestricted -Command "
-                $manifest = (Get-AppxPackage '{{ $packageName }}').InstallLocation + '\AppxManifest.xml';
-                Add-AppxPackage -DisableDevelopmentMode -Register $manifest
-            "
+                $package = Get-AppxPackage -AllUsers '{{ $packageName }}';
+                if (!$package) {
+                    Write-Error \"Cannot reinstall '{{ $packageName }}'\" -ErrorAction Stop
+                }
+                $manifest = $package.InstallLocation + '\AppxManifest.xml';
+                Add-AppxPackage -DisableDevelopmentMode -Register \"$manifest\" "
