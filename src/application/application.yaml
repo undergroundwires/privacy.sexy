@@ -3105,24 +3105,26 @@ actions:
                                                 packageName: SpotifyAB.SpotifyMusic
                     -
                         category: Uninstall system apps
-                        docs: https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10#system-apps
+                        docs: 
+                            - https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10#system-apps
+                            - https://github.com/Sycnex/Windows10Debloater/blob/02963b6844cf7d13ed3fa64d75128f4e312689ca/Windows10Debloater.ps1#L43
                         children:
                             -
                                 name: File Picker app
                                 call:
-                                    function: UninstallStoreApp
+                                    function: UninstallSystemApp
                                     parameters:
                                         packageName: 1527c705-839a-4832-9118-54d4Bd6a0c89
                             -
                                 name: File Explorer app
                                 call:
-                                    function: UninstallStoreApp
+                                    function: UninstallSystemApp
                                     parameters:
                                         packageName: c5e2524a-ea46-4f67-841f-6a9465d9d515
                             -
                                 name: App Resolver UX app
                                 call:
-                                    function: UninstallStoreApp
+                                    function: UninstallSystemApp
                                     parameters:
                                         packageName: E2A4F912-2574-4A75-9BB0-0D023378592B
                             -
@@ -3130,30 +3132,30 @@ actions:
                                 recommend: standard
                                 call:
                                     -
-                                        function: UninstallStoreApp
+                                        function: UninstallSystemApp
                                         parameters:
                                             packageName: F46D4000-FD22-4DB4-AC8E-4E1DDDE828FE
                                     -
-                                        function: UninstallStoreApp
+                                        function: UninstallSystemApp
                                         parameters:
                                             packageName: InputApp
                             -
                                 name: Microsoft AAD Broker Plugin app
                                 recommend: standard
                                 call:
-                                    function: UninstallStoreApp
+                                    function: UninstallSystemApp
                                     parameters:
                                         packageName: Microsoft.AAD.Broker.Plugin
                             -
                                 name: Microsoft Accounts Control app
                                 call:
-                                    function: UninstallStoreApp
+                                    function: UninstallSystemApp
                                     parameters:
                                         packageName: Microsoft.AccountsControl
                             -
                                 name: Microsoft Async Text Service app
                                 call:
-                                    function: UninstallStoreApp
+                                    function: UninstallSystemApp
                                     parameters:
                                         packageName: Microsoft.AsyncTextService
                             -
@@ -3163,25 +3165,25 @@ actions:
                                         name: Bio enrollment app
                                         recommend: strict
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.BioEnrollment
                                     -
                                         name: Cred Dialog Host app
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.CredDialogHost
                                     -
                                         name: EC app
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.ECApp
                                     -
                                         name: Lock app
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.LockApp
                             -
@@ -3191,63 +3193,63 @@ actions:
                                         name: Microsoft Edge app
                                         recommend: standard
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.MicrosoftEdge
                                     -
                                         name: Microsoft Edge Dev Tools Client app
                                         recommend: standard
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.MicrosoftEdgeDevToolsClient
                                     -
                                         name: Microsoft PPI Projection app
                                         recommend: standard
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.PPIProjection
                                     -
                                         name: Win32 Web View Host app
                                         recommend: standard
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Win32WebViewHost
                                     -
                                         name: ChxApp app
                                         recommend: standard
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.Apprep.ChxApp
                                     -
                                         name: Assigned Access Lock App app
                                         recommend: standard
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.AssignedAccessLockApp
                                     -
                                         name: Capture Picker app
                                         recommend: standard
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.CapturePicker
                                     -
                                         name: Cloud Experience Host app
                                         recommend: standard
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.CloudExperienceHost
                                     -
                                         name: Content Delivery Manager app
                                         recommend: standard
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.ContentDeliveryManager
                             -
@@ -3257,35 +3259,35 @@ actions:
                                         name: Cortana app
                                         recommend: standard
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.Cortana
                                     -
                                         name: Holographic First Run app
                                         recommend: standard
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.Holographic.FirstRun
                                     -
                                         name: OOBE Network Captive Port app
                                         recommend: standard
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.OOBENetworkCaptivePort
                                     -
                                         name: OOBE Network Connection Flow app
                                         recommend: standard
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.OOBENetworkConnectionFlow
                                     -
                                         name: Parental Controls app
                                         recommend: standard
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.ParentalControls
                             -
@@ -3295,41 +3297,41 @@ actions:
                                         name: People Experience Host app
                                         recommend: standard
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.PeopleExperienceHost
                                     -
                                         name: Pinning Confirmation Dialog app
                                         recommend: standard
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.PinningConfirmationDialog
                                     -
                                         name: Sec Health UI app
                                         recommend: standard
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.SecHealthUI
                                     -
                                         name: Secondary Tile Experience app
                                         recommend: standard
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.SecondaryTileExperience
                                     -
                                         name: Secure Assessment Browser app
                                         recommend: standard
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.SecureAssessmentBrowser
                             -
                                 name: Start app
                                 call:
-                                    function: UninstallStoreApp
+                                    function: UninstallSystemApp
                                     parameters:
                                         packageName: Microsoft.Windows.ShellExperienceHost
                             -
@@ -3339,45 +3341,45 @@ actions:
                                         name: Windows Feedback app
                                         recommend: standard
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.WindowsFeedback
                                     -
                                         name: Xbox Game Callable UI app
                                         recommend: standard
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.XboxGameCallableUI
                                     -
                                         name: CBS Preview app
                                         recommend: standard
                                         call:
-                                            function: UninstallStoreApp
+                                            function: UninstallSystemApp
                                             parameters:
                                                 packageName: Windows.CBSPreview
                             -
                                 name: Contact Support app
                                 call:
-                                    function: UninstallStoreApp
+                                    function: UninstallSystemApp
                                     parameters:
                                         packageName: Windows.ContactSupport
                             -
                                 name: Settings app
                                 call:
-                                    function: UninstallStoreApp
+                                    function: UninstallSystemApp
                                     parameters:
                                         packageName: Windows.immersivecontrolpanel
                             -
                                 name: Windows Print 3D app
                                 call:
-                                    function: UninstallStoreApp
+                                    function: UninstallSystemApp
                                     parameters:
                                         packageName: Windows.Print3D
                             -
                                 name: Print UI app
                                 call:
-                                    function: UninstallStoreApp
+                                    function: UninstallSystemApp
                                     parameters:
                                         packageName: Windows.PrintDialog
                     -
@@ -3896,3 +3898,47 @@ functions:
                 }
                 $manifest = $package.InstallLocation + '\AppxManifest.xml';
                 Add-AppxPackage -DisableDevelopmentMode -Register \"$manifest\" "
+    -
+        name: UninstallSystemApp
+        parameters: [ packageName ]
+        # It simply renames files
+        #   Because system apps are non removable (check: (Get-AppxPackage -AllUsers 'Windows.CBSPreview').NonRemovable)
+        #   Otherwise they throw 0x80070032 when trying to uninstall them
+        code:
+            PowerShell -Command "
+            $package = (Get-AppxPackage -AllUsers '{{ $packageName }}');
+            if (!$package) { 
+                Write-Host 'Not installed';
+                exit 0;
+            }
+            $directories = @($package.InstallLocation, \"$env:LOCALAPPDATA\Packages\$($package.PackageFamilyName)\");
+            foreach($dir in $directories) {
+                if ( !$dir -Or !(Test-Path \"$dir\") ) { continue; }
+                cmd /c takeown /f \"$dir\" /r /d y | Out-Null;
+                cmd /c icacls \"$dir\" /grant administrators:F /t | Out-Null;
+                $files = Get-ChildItem -File -Path $dir -Recurse -Force;
+                foreach($file in $files) {
+                    if($file.Name.EndsWith('.OLD')) { continue; }
+                    $newName =  $file.Name + '.OLD';
+                    Write-Host \"Renamed '$($file.FullName)' to '$newName'\";
+                    Rename-Item -Path $file.FullName -NewName \"$newName\";
+                }
+            }; "
+        revertCode:
+            PowerShell -Command "
+            $package = (Get-AppxPackage -AllUsers '{{ $packageName }}');
+            if (!$package) { 
+                Write-Error 'App could not be found' -ErrorAction Stop;
+            }
+            $directories = @($package.InstallLocation, \"$env:LOCALAPPDATA\Packages\$($package.PackageFamilyName)\");
+            foreach($dir in $directories) {
+                if ( !$dir -Or !(Test-Path \"$dir\") ) { continue; }
+                cmd /c takeown /f \"$dir\" /r /d y | Out-Null;
+                cmd /c icacls \"$dir\" /grant administrators:F /t | Out-Null;
+                $files = Get-ChildItem -File -Path \"$dir\*.OLD\" -Recurse -Force;
+                foreach($file in $files) {
+                    $newName = $file.Name.Substring(0, $file.Name.Length - 4);
+                    Write-Host \"Renamed '$($file.FullName)' to '$newName'\";
+                    Rename-Item -Path $file.FullName -NewName \"$newName\";
+                }
+            }; "
