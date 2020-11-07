@@ -42,14 +42,16 @@ actions:
                         category: Clear most recently used lists (MRU)
                         children:
                             -
-                                name: Clear windows recent files
-                                recommend: standard
-                                docs: https://www.tenforums.com/tutorials/3476-reset-clear-recent-items-frequent-places-windows-10-a.html
-                                code: |-
-                                    rd /s /q "%USERPROFILE%\Recent"
-                                    rd /s /q "%APPDATA%\Microsoft\Windows\Recent"
-                                    del /f /q %APPDATA%\Microsoft\Windows\Recent\AutomaticDestinations\*
-                                    del /f /q %APPDATA%\Microsoft\Windows\Recent\CustomDestinations\*
+                                category: Clear Quick Access (jump) lists
+                                docs: https://cyberforensicator.com/wp-content/uploads/2017/01/1-s2.0-S1742287616300202-main.2-14.pdf
+                                children:
+                                    -
+                                        name: Clear recently accessed files
+                                        recommend: standard
+                                        code: del /f /q "%APPDATA%\Microsoft\Windows\Recent\AutomaticDestinations\*"
+                                    -
+                                        name: Clear user pins
+                                        code: del /f /q "%APPDATA%\Microsoft\Windows\Recent\CustomDestinations\*"
                             -
                                 name: Clear regedit last key
                                 recommend: standard
