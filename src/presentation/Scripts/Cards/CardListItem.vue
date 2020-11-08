@@ -35,8 +35,6 @@
 import { Component, Prop, Watch, Emit } from 'vue-property-decorator';
 import ScriptsTree from '@/presentation/Scripts/ScriptsTree/ScriptsTree.vue';
 import { StatefulVue } from '@/presentation/StatefulVue';
-import { ICategory } from '@/domain/ICategory';
-import { IUserSelection } from '@/application/State/IApplicationState';
 
 @Component({
   components: {
