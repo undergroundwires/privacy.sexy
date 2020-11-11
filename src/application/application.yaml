@@ -3145,7 +3145,7 @@ actions:
                                 call:
                                     function: UninstallSystemApp
                                     parameters:
-                                        packageName: Microsoft.AAD.Broker.Plugin
+                                        packageName: Microsoft.AAD.BrokerPlugin # Offical docs point to wrong "Microsoft.AAD.Broker.Plugin"
                             -
                                 name: Microsoft Accounts Control app
                                 call:
@@ -3275,7 +3275,7 @@ actions:
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
-                                                packageName: Microsoft.Windows.OOBENetworkCaptivePort
+                                                packageName: Microsoft.Windows.OOBENetworkCaptivePortal # Offical docs point to wrong "Microsoft.Windows.OOBENetworkCaptivePort"
                                     -
                                         name: OOBE Network Connection Flow app
                                         recommend: standard
