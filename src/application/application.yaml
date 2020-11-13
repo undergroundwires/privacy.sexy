@@ -2602,6 +2602,12 @@ actions:
                         docs: https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10#provisioned-windows-apps
                         children:
                             -
+                                name: App Connector app
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.Appconnector # Discontinued after Windows 10 1511
+                            -
                                 category: Uninstall 3D modeling apps
                                 children:
                                     -
@@ -3389,12 +3395,6 @@ actions:
                                     function: UninstallSystemApp
                                     parameters:
                                         packageName: Windows.PrintDialog
-                    -
-                        name: App Connector app
-                        call:
-                            function: UninstallStoreApp
-                            parameters:
-                                packageName: Microsoft.Appconnector
             - 
               category: Remove OneDrive
               children:
