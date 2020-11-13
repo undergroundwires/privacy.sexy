@@ -3129,7 +3129,6 @@ actions:
                                         packageName: E2A4F912-2574-4A75-9BB0-0D023378592B
                             -
                                 name: Add Suggested Folders To Library app
-                                recommend: standard
                                 call:
                                     -
                                         function: UninstallSystemApp
@@ -3140,8 +3139,8 @@ actions:
                                         parameters:
                                             packageName: InputApp
                             -
-                                name: Microsoft AAD Broker Plugin app
-                                recommend: standard
+                                name: Microsoft AAD Broker Plugin app (breaks Office app authentication)
+                                recommend: strict
                                 call:
                                     function: UninstallSystemApp
                                     parameters:
@@ -3159,10 +3158,11 @@ actions:
                                     parameters:
                                         packageName: Microsoft.AsyncTextService
                             -
-                                category: Hello setup UI
+                                category: Windows Hello setup UI
                                 children:
                                     -
-                                        name: Bio enrollment app
+                                        name: Bio enrollment app (breaks biometric authentication)
+                                        docs: https://answers.microsoft.com/en-us/insider/forum/insider_wintp-insider_store-insiderplat_pc/what-is-bio-enrollment-app/53808b5a-8694-4128-a5bd-34e3b954434a
                                         recommend: strict
                                         call:
                                             function: UninstallSystemApp
@@ -3181,7 +3181,8 @@ actions:
                                             parameters:
                                                 packageName: Microsoft.ECApp
                                     -
-                                        name: Lock app
+                                        name: Lock app (shows lock screen)
+                                        docs: https://www.dashtech.org/can-you-disable-lockapp-exe-on-windows-10/
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
@@ -3191,63 +3192,63 @@ actions:
                                 children:
                                     -
                                         name: Microsoft Edge app
-                                        recommend: standard
+                                        recommend: strict
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.MicrosoftEdge
                                     -
                                         name: Microsoft Edge Dev Tools Client app
-                                        recommend: standard
+                                        docs: https://docs.microsoft.com/en-us/microsoft-edge/devtools-guide
+                                        recommend: strict
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.MicrosoftEdgeDevToolsClient
                                     -
                                         name: Microsoft PPI Projection app
-                                        recommend: standard
+                                        docs: https://en.wikipedia.org/wiki/Perceptive_Pixel
+                                        recommend: strict
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.PPIProjection
                                     -
-                                        name: Win32 Web View Host app
-                                        recommend: standard
+                                        name: Win32 Web View Host app / Desktop App Web Viewer
+                                        recommend: strict
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Win32WebViewHost
                                     -
                                         name: ChxApp app
-                                        recommend: standard
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.Apprep.ChxApp
                                     -
                                         name: Assigned Access Lock App app
-                                        recommend: standard
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.AssignedAccessLockApp
                                     -
                                         name: Capture Picker app
-                                        recommend: standard
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.CapturePicker
                                     -
-                                        name: Cloud Experience Host app
-                                        recommend: standard
+                                        name: Cloud Experience Host app # Allows to connect to corporate domains or Microsoft cloud based services
+                                        recommend: strict
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.CloudExperienceHost
                                     -
-                                        name: Content Delivery Manager app
-                                        recommend: standard
+                                        name: Content Delivery Manager app (automatically installs apps)
+                                        docs: https://www.ghacks.net/2019/12/23/how-to-block-the-automatic-installation-of-suggested-windows-10-apps/
+                                        recommend: strict
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
@@ -3256,8 +3257,8 @@ actions:
                                 category: Uninstall Cortana apps
                                 children:
                                     -
-                                        name: Cortana app
-                                        recommend: standard
+                                        name: Cortana app (breaks Windows search)
+                                        docs: https://thegeekpage.com/searchui-exe-suspended-error/
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
@@ -3265,27 +3266,31 @@ actions:
                                     -
                                         name: Holographic First Run app
                                         recommend: standard
+                                        docs: https://www.addictivetips.com/windows-tips/check-pc-windows-holographic-app-requirements/
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.Holographic.FirstRun
                                     -
                                         name: OOBE Network Captive Port app
-                                        recommend: standard
+                                        docs: https://docs.microsoft.com/en-us/windows-hardware/customize/desktop/oobe-screen-details#connect-users-to-the-network
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.OOBENetworkCaptivePortal # Offical docs point to wrong "Microsoft.Windows.OOBENetworkCaptivePort"
                                     -
                                         name: OOBE Network Connection Flow app
-                                        recommend: standard
+                                        docs: 
+                                            - https://docs.microsoft.com/en-us/windows-hardware/customize/desktop/oobe-screen-details
+                                            - https://www.windowscentral.com/windows-10-build-15019-pc-everything-you-need-know
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.OOBENetworkConnectionFlow
                                     -
-                                        name: Parental Controls app
+                                        name: Windows 10 Family Safety / Parental Controls app
                                         recommend: standard
+                                        docs: https://account.microsoft.com/family/about
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
@@ -3294,36 +3299,37 @@ actions:
                                 category: People Hub
                                 children:
                                     -
-                                        name: People Experience Host app
-                                        recommend: standard
+                                        name: My People / People Bar App on taskbar (People Experience Host)
+                                        docs: https://winaero.com/pin-contacts-taskbar-windows-10/
+                                        recommend: strict
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.PeopleExperienceHost
                                     -
                                         name: Pinning Confirmation Dialog app
-                                        recommend: standard
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.PinningConfirmationDialog
                                     -
-                                        name: Sec Health UI app
-                                        recommend: standard
+                                        name: Windows Security GUI (Sec Health UI) app
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.SecHealthUI
                                     -
                                         name: Secondary Tile Experience app
-                                        recommend: standard
+                                        docs: https://docs.microsoft.com/en-us/windows/uwp/design/shell/tiles-and-notifications/secondary-tiles
+                                        recommend: strict # Individual tiles may track e.g. like Firefox
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.SecondaryTileExperience
                                     -
-                                        name: Secure Assessment Browser app
-                                        recommend: standard
+                                        name: Secure Assessment Browser app (breaks Microsoft Intune/Graph)
+                                        recommend: strict
+                                        docs: https://docs.microsoft.com/en-us/graph/api/resources/intune-deviceconfig-windows10secureassessmentconfiguration?view=graph-rest-1.0
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
@@ -3345,8 +3351,9 @@ actions:
                                             parameters:
                                                 packageName: Microsoft.WindowsFeedback
                                     -
-                                        name: Xbox Game Callable UI app
-                                        recommend: standard
+                                        name: Xbox Game Callable UI app (breaks Xbox Live games)
+                                        docs: https://docs.microsoft.com/en-us/gaming/xbox-live/features/general/tcui/live-tcui-overview
+                                        recommend: strict
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
