@@ -3927,8 +3927,8 @@ functions:
                 foreach($file in $files) {
                     if($file.Name.EndsWith('.OLD')) { continue; }
                     $newName =  $file.Name + '.OLD';
-                    Write-Host \"Renamed '$($file.FullName)' to '$newName'\";
-                    Rename-Item -Path $file.FullName -NewName \"$newName\";
+                    Write-Host \"Rename '$($file.FullName)' to '$newName'\";
+                    Rename-Item -LiteralPath \"$($file.FullName)\" -NewName \"$newName\";
                 }
             }; "
         revertCode:
@@ -3945,7 +3945,7 @@ functions:
                 $files = Get-ChildItem -File -Path \"$dir\*.OLD\" -Recurse -Force;
                 foreach($file in $files) {
                     $newName = $file.Name.Substring(0, $file.Name.Length - 4);
-                    Write-Host \"Renamed '$($file.FullName)' to '$newName'\";
-                    Rename-Item -Path $file.FullName -NewName \"$newName\";
+                    Write-Host \"Rename '$($file.FullName)' to '$newName'\";
+                    Rename-Item -LiteralPath \"$($file.FullName)\" -NewName \"$newName\";
                 }
             }; "
