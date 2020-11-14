@@ -3926,9 +3926,9 @@ functions:
                 $files = Get-ChildItem -File -Path $dir -Recurse -Force;
                 foreach($file in $files) {
                     if($file.Name.EndsWith('.OLD')) { continue; }
-                    $newName =  $file.Name + '.OLD';
+                    $newName =  $file.FullName + '.OLD';
                     Write-Host \"Rename '$($file.FullName)' to '$newName'\";
-                    Rename-Item -LiteralPath \"$($file.FullName)\" -NewName \"$newName\";
+                    Move-Item -LiteralPath \"$($file.FullName)\" -Destination \"$newName\" -Force;
                 }
             }; "
         revertCode:
@@ -3944,8 +3944,8 @@ functions:
                 cmd /c icacls \"$dir\" /grant administrators:F /t | Out-Null;
                 $files = Get-ChildItem -File -Path \"$dir\*.OLD\" -Recurse -Force;
                 foreach($file in $files) {
-                    $newName = $file.Name.Substring(0, $file.Name.Length - 4);
+                    $newName = $file.FullName.Substring(0, $file.FullName.Length - 4);
                     Write-Host \"Rename '$($file.FullName)' to '$newName'\";
-                    Rename-Item -LiteralPath \"$($file.FullName)\" -NewName \"$newName\";
+                    Move-Item -LiteralPath \"$($file.FullName)\" -Destination \"$newName\" -Force;
                 }
             }; "
