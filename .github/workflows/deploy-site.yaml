@@ -23,7 +23,7 @@ jobs:
             --secret-access-key ${{secrets.AWS_DEPLOYMENT_USER_SECRET_ACCESS_KEY}} \
             --region us-east-1 \
           && \
-            echo "::set-env name=SESSION_NAME::${{github.actor}}-${{github.event_name}}-$(echo ${{github.sha}} | cut -c1-8)"
+            echo "SESSION_NAME=${{github.actor}}-${{github.event_name}}-$(echo ${{github.sha}} | cut -c1-8)" >> $GITHUB_ENV
         working-directory: aws
       -
         name: "Infrastructure: Deploy IAM stack"
