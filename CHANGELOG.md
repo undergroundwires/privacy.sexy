@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.8.1 (2020-11-16)
+
+* refactor removing bloatware to use functions #41 | [commit](https://github.com/undergroundwires/privacy.sexy/commit/ffa279f3dfe51db564f0a3859543eb212170e173)
+* fix reinstalling store apps by searching appx for all users | [commit](https://github.com/undergroundwires/privacy.sexy/commit/2c5ab3ea7da159cfb9fbfbbb7cdd28afbee965ea)
+* fix clearing jump lists causing os to break and user pin removal #37 | [commit](https://github.com/undergroundwires/privacy.sexy/commit/92c3dd923257ac940eab6cbab858698ed55a09b7)
+* fix reinstalling store apps by searching appx for all users | [commit](https://github.com/undergroundwires/privacy.sexy/commit/4e7267337301fe4a0480ba0603218fca25c2d096)
+* refactor unused imports | [commit](https://github.com/undergroundwires/privacy.sexy/commit/45b8dd972b1edf9e263858c23b27e7a1d2e07077)
+* fix not being able to uninstall system apps | [commit](https://github.com/undergroundwires/privacy.sexy/commit/31e08d231d52e2a691400468b7c599c142a29448)
+* fix wrong app names caused by wrong Microsoft docs | [commit](https://github.com/undergroundwires/privacy.sexy/commit/e41e40c5bf01e2971d3054fcd3a48f8465a96622)
+* unrecommend some system apps and document more | [commit](https://github.com/undergroundwires/privacy.sexy/commit/29c7704e0bd38f6e9923cde84accb569b02d2dd6)
+* fix not being able to rename paths including brackets | [commit](https://github.com/undergroundwires/privacy.sexy/commit/ad1872e7cd4ad7ef9facf33fadfa8c6a55065dd3)
+* fix errors when file already exists | [commit](https://github.com/undergroundwires/privacy.sexy/commit/c26bc209eb167aa71cad10b7f3ea02d0dedd97b0)
+* move Microsoft.Appconnector to right category | [commit](https://github.com/undergroundwires/privacy.sexy/commit/b247b12c3f009aab4350e33f4779fd193e570050)
+* replace deprecated github ::set-env command | [commit](https://github.com/undergroundwires/privacy.sexy/commit/ab7d617886a65fe4f3c2daa929168e5678ccae60)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.8.0...0.8.1)
+
 ## 0.8.0 (2020-11-01)
 
 * add support for different recommendation levels: strict and standard | [commit](https://github.com/undergroundwires/privacy.sexy/commit/14be3017c55ed5e0d9bdecb63fcc4e1131e79ab0)
