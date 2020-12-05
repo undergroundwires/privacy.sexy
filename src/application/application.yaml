@@ -2921,7 +2921,7 @@ actions:
                                             parameters:
                                                 packageName: Microsoft.ZuneMusic
                                     -
-                                        name: Movies & TV app
+                                        name: Movies and TV app
                                         docs: https://www.microsoft.com/en-us/p/movies-tv/9wzdncrfj3p2
                                         call:
                                             function: UninstallStoreApp
