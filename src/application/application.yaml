@@ -18,7 +18,7 @@ actions:
                         recommend: standard
                         code: rd /s /q "%APPDATA%\Macromedia\Flash Player"
                     -
-                        name: Clear Steam dumps, logs and traces
+                        name: Clear Steam dumps, logs, and traces
                         recommend: standard
                         code: |-
                             del /f /q %ProgramFiles(x86)%\Steam\Dumps
@@ -102,7 +102,7 @@ actions:
                                     reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs" /va /f
                                     reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\OpenSaveMRU" /va /f
                             -
-                                name: Clear windows media player recent files and urls
+                                name: Clear windows media player recent files and URLs
                                 recommend: standard
                                 code: |-
                                    reg delete "HKCU\Software\Microsoft\MediaPlayer\Player\RecentFileList" /va /f
@@ -181,7 +181,7 @@ actions:
                                         )
                                     )
                             -
-                                name: Clear all Firefox user profiles, settings and data
+                                name: Clear all Firefox user profiles, settings, and data
                                 code: |-
                                     rd /s /q "%LOCALAPPDATA%\Mozilla\Firefox\Profiles"
                                     rd /s /q "%APPDATA%\Mozilla\Firefox\Profiles"
@@ -286,7 +286,7 @@ actions:
                                 docs: https://support.microsoft.com/en-gb/help/4056823/performance-issue-with-custom-default-user-profile
                                 code: del /f /q %localappdata%\Microsoft\Windows\WebCache\*.*
                             -
-                                name: Clear system temp folder when noone is logged in
+                                name: Clear system temp folder when no one is logged in
                                 recommend: standard
                                 code: del /f /q %SystemRoot%\ServiceProfiles\LocalService\AppData\Local\Temp\*.*
                             -
@@ -546,13 +546,13 @@ actions:
                         code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching" /v "SearchOrderConfig" /t REG_DWORD /d 0 /f
                         revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching" /v "SearchOrderConfig" /t REG_DWORD /d 1 /f
             -
-                name: Disable cloud speech recognation
+                name: Disable cloud speech recognition
                 recommend: standard
                 docs: https://www.tenforums.com/tutorials/101902-turn-off-online-speech-recognition-windows-10-a.html
                 code: reg add "HKCU\Software\Microsoft\Speech_OneCore\Settings\OnlineSpeechPrivacy" /v "HasAccepted" /t "REG_DWORD" /d 0 /f
                 revertCode: reg add "HKCU\Software\Microsoft\Speech_OneCore\Settings\OnlineSpeechPrivacy" /v "HasAccepted" /t "REG_DWORD" /d 1 /f
             -
-                name: Disable active prompting (pings to MSFT NCSI server)
+                name: Disable active probing (pings to MSFT NCSI server)
                 recommend: strict
                 code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet" /v "EnableActiveProbing" /t REG_DWORD /d "0" /f
                 revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\NlaSvc\Parameters\Internet" /v "EnableActiveProbing" /t REG_DWORD /d "1" /f
@@ -612,7 +612,7 @@ actions:
                             reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessLocation_ForceAllowTheseApps" /f
                             reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessLocation_ForceDenyTheseApps" /f
                     -
-                        name: Deny app accesss to account info, name and picture
+                        name: Deny app access to account info, name, and picture
                         recommend: standard
                         docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#privacy-letappsaccessaccountinfo
                         code: |-
@@ -688,7 +688,7 @@ actions:
                             reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessTrustedDevices_ForceAllowTheseApps" /f
                             reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessTrustedDevices_ForceDenyTheseApps" /f
                     -
-                        name: Deny app sync with devices (unpaired, beacons, TVs etc.)
+                        name: Deny app sync with devices (unpaired, beacons, TVs, etc.)
                         recommend: standard
                         docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#privacy-letappssyncwithdevices
                         code: |-
@@ -1649,7 +1649,7 @@ actions:
                                 category: Chrome cleanup
                                 children:
                                     - 
-                                        name: Do not share share scanned software data to Google
+                                        name: Do not share scanned software data to Google
                                         recommend: standard
                                         docs: 
                                             - https://www.chromium.org/administrators/policy-list-3#ChromeCleanupReportingEnabled
