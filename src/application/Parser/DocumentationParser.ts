@@ -32,7 +32,7 @@ class DocumentationUrlContainer {
         this.urls.push(url);
     }
 
-    public addUrls(urls: any[]) {
+    public addUrls(urls: readonly any[]) {
         for (const url of urls) {
             if (typeof url !== 'string') {
                 throw new Error('Docs field (documentation url) must be an array of strings');
