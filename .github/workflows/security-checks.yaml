@@ -3,6 +3,7 @@ name: Security checks
 on:
   push:
   pull_request:
+    paths: [ '/package.json', '/package-lock.json' ] # Allow PRs to be green if they do not introduce dependency change
   schedule:
     - cron: '0 0 * * 0'
 
