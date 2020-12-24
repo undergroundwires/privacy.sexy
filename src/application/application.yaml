@@ -1102,7 +1102,7 @@ actions:
                     reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\WiFi\AllowAutoConnectToWiFiSenseHotspots" /v "value" /t REG_DWORD /d 0 /f 
                     reg add "HKLM\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config" /v "AutoConnectAllowedOEM" /t REG_DWORD /d 0 /f 
             -
-                name: Disable App Launch Tracking
+                name: Hide most used apps (tracks app launch)
                 docs: https://www.thewindowsclub.com/enable-or-disable-app-launch-tracking-in-windows-10
                 recommend: strict
                 code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /d 0 /t REG_DWORD /f
