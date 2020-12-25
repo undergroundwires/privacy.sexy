@@ -3603,7 +3603,7 @@ actions:
                         code: dism /Online /Disable-Feature /FeatureName:"SearchEngine-Client-Package" /NoRestart
                         revertCode: dism /Online /Enable-Feature /FeatureName:"SearchEngine-Client-Package" /NoRestart
             -
-                category: Disable capabilities & features on demand
+                category: Uninstall capabilities & features on demand
                 docs: https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/features-on-demand-non-language-fod#fods-that-are-not-preinstalled-but-may-need-to-be-preinstalled
                 children:
                     -
@@ -3612,19 +3612,19 @@ actions:
                             -
                                 name: DirectX Configuration Database capability
                                 call:
-                                    function: DisableCapability
+                                    function: UninstallCapability
                                     parameters:
                                         capabilityName: DirectX.Configuration.Database
                             -
                                 name: Internet Explorer 11 capability
                                 call:
-                                    function: DisableCapability
+                                    function: UninstallCapability
                                     parameters:
                                         capabilityName: Browser.InternetExplorer
                             -
                                 name: Math Recognizer capability
                                 call:
-                                    function: DisableCapability
+                                    function: UninstallCapability
                                     parameters:
                                         capabilityName: MathRecognizer
                             -
@@ -3632,43 +3632,43 @@ actions:
                                 recommend: strict
                                 docs: https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/features-on-demand-non-language-fod#onesync
                                 call:
-                                    function: DisableCapability
+                                    function: UninstallCapability
                                     parameters:
                                         capabilityName: OneCoreUAP.OneSync
                             -
                                 name: OpenSSH client capability
                                 call:
-                                    function: DisableCapability
+                                    function: UninstallCapability
                                     parameters:
                                         capabilityName: OpenSSH.Client
                             -
                                 name: PowerShell ISE capability
                                 call:
-                                    function: DisableCapability
+                                    function: UninstallCapability
                                     parameters:
                                         capabilityName: Microsoft.Windows.PowerShell.ISE
                             -
                                 name: Print Management Console capability
                                 call:
-                                    function: DisableCapability
+                                    function: UninstallCapability
                                     parameters:
                                         capabilityName: Print.Management.Console
                             -
                                 name: Quick Assist capability
                                 call:
-                                    function: DisableCapability
+                                    function: UninstallCapability
                                     parameters:
                                         capabilityName: App.Support.QuickAssist
                             -
                                 name: Steps Recorder capability
                                 call:
-                                    function: DisableCapability
+                                    function: UninstallCapability
                                     parameters:
                                         capabilityName: App.StepsRecorder
                             -
                                 name: Windows Fax and Scan capability
                                 call:
-                                    function: DisableCapability
+                                    function: UninstallCapability
                                     parameters:
                                         capabilityName: Print.Fax.Scan
                             # Following are excluded because:
@@ -3678,19 +3678,19 @@ actions:
                             # -
                             #     name: WordPad capability
                             #     call:
-                            #         function: DisableCapability
+                            #         function: UninstallCapability
                             #         parameters:
                             #             capabilityName: Microsoft.Windows.WordPad
                             # -
                             #     name: Paint capability
                             #     call:
-                            #         function: DisableCapability
+                            #         function: UninstallCapability
                             #         parameters:
                             #             capabilityName: Microsoft.Windows.MSPaint
                             # -
                             #     name: Notepad capability
                             #     call:
-                            #         function: DisableCapability
+                            #         function: UninstallCapability
                             #         parameters:
                             #             capabilityName: Microsoft.Windows.Notepad
                     -
@@ -3699,55 +3699,55 @@ actions:
                             -
                                 name: .NET Framework capability
                                 call:
-                                    function: DisableCapability
+                                    function: UninstallCapability
                                     parameters:
                                         capabilityName: NetFX3
                             -
                                 name: Mixed Reality capability
                                 call:
-                                    function: DisableCapability
+                                    function: UninstallCapability
                                     parameters:
                                         capabilityName: Analog.Holographic.Desktop
                             -
                                 name: Wireless Display capability
                                 call:
-                                    function: DisableCapability
+                                    function: UninstallCapability
                                     parameters:
                                         capabilityName: App.WirelessDisplay.Connect
                             -
                                 name: Accessibility - Braille Support capability
                                 call:
-                                    function: DisableCapability
+                                    function: UninstallCapability
                                     parameters:
                                         capabilityName: Accessibility.Braille
                             -
                                 name: Developer Mode capability
                                 call:
-                                    function: DisableCapability
+                                    function: UninstallCapability
                                     parameters:
                                         capabilityName: Tools.DeveloperMode.Core
                             -
                                 name: Graphics Tools capability
                                 call:
-                                    function: DisableCapability
+                                    function: UninstallCapability
                                     parameters:
                                         capabilityName: Tools.Graphics.DirectX
                             -
                                 name: IrDA capability
                                 call:
-                                    function: DisableCapability
+                                    function: UninstallCapability
                                     parameters:
                                         capabilityName: Network.Irda
                             -
                                 name: Microsoft WebDriver capability
                                 call:
-                                    function: DisableCapability
+                                    function: UninstallCapability
                                     parameters:
                                         capabilityName: Microsoft.WebDriver
                             -
                                 name: MSIX Packaging Tool Driver capability
                                 call:
-                                    function: DisableCapability
+                                    function: UninstallCapability
                                     parameters:
                                         capabilityName: Msix.PackagingTool.Driver
                             -
@@ -3756,31 +3756,31 @@ actions:
                                     -
                                         name: RAS Connection Manager Administration Kit (CMAK) capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: RasCMAK.Client
                                     -
                                         name: RIP Listener capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: RIP.Listener
                                     -
                                         name: Simple Network Management Protocol (SNMP) capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: SNMP.Client
                                     -
                                         name: SNMP WMI Provider capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: WMI-SNMP-Provider.Client
                             -
                                 name: OpenSSH Server capability
                                 call:
-                                    function: DisableCapability
+                                    function: UninstallCapability
                                     parameters:
                                         capabilityName: OpenSSH.Server
                             -
@@ -3789,13 +3789,13 @@ actions:
                                     -
                                         name: Enterprise Cloud Print capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: Print.EnterpriseCloudPrint
                                     -
                                         name: Mopria Cloud Service capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: Print.MopriaCloudService
                             -
@@ -3804,121 +3804,121 @@ actions:
                                     -
                                         name: Active Directory Domain Services and Lightweight Directory Services Tools capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: Rsat.ActiveDirectory.DS-LDS.Tools
                                     -
                                         name: BitLocker Drive Encryption Administration Utilities capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: Rsat.BitLocker.Recovery.Tools
                                     -
                                         name: Active Directory Certificate Services Tools
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: Rsat.CertificateServices.Tools
                                     -
                                         name: DHCP Server Tools capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: Rsat.DHCP.Tools
                                     -
                                         name: DNS Server Tools capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: Rsat.Dns.Tools
                                     -
                                         name: Failover Clustering Tools capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: Rsat.FailoverCluster.Management.Tools
                                     -
                                         name: File Services Tools capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: Rsat.FileServices.Tools
                                     -
                                         name: Group Policy Management Tools capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: Rsat.GroupPolicy.Management.Tools
                                     -
                                         name: IP Address Management (IPAM) Client capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: Rsat.IPAM.Client.Tools
                                     -
                                         name: Data Center Bridging LLDP Tools capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: Rsat.LLDP.Tools
                                     -
                                         name: Network Controller Management Tools capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: Rsat.NetworkController.Tools
                                     -
                                         name: Network Load Balancing Tools capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: Rsat.NetworkLoadBalancing.Tools
                                     -
                                         name: Remote Access Management Tools capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: Rsat.RemoteAccess.Management.Tools
                                     -
                                         name: Server Manager Tools
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: Rsat.ServerManager.Tools
                                     -
                                         name: Shielded VM Tools capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: Rsat.Shielded.VM.Tools
                                     -
                                         name: Storage Replica Module for Windows PowerShell capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: Rsat.StorageReplica.Tools
                                     -
                                         name: Volume Activation Tools capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: Rsat.VolumeActivation.Tools
                                     -
                                         name: Windows Server Update Services Tools capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: Rsat.WSUS.Tools
                                     -
                                         name: Storage Migration Service Management Tools capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: Rsat.StorageMigrationService.Management.Tools
                                     -
                                         name: Systems Insights Module for Windows PowerShell capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: Rsat.SystemInsights.Management.Tools
                             -
@@ -3927,25 +3927,25 @@ actions:
                                     -
                                         name: Windows Storage Management capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: Microsoft.Windows.StorageManagement
                                     -
                                         name: OneCore Storage Management capability
                                         call:
-                                            function: DisableCapability
+                                            function: UninstallCapability
                                             parameters:
                                                 capabilityName: Microsoft.OneCore.StorageManagement
                             -
                                 name: Windows Emergency Management Services and Serial Console capability
                                 call:
-                                    function: DisableCapability
+                                    function: UninstallCapability
                                     parameters:
                                         capabilityName: Windows.Desktop.EMS-SAC.Tools
                             -
                                 name: XPS Viewer capability
                                 call:
-                                    function: DisableCapability
+                                    function: UninstallCapability
                                     parameters:
                                         capabilityName: XPS.Viewer
     -
@@ -4056,7 +4056,7 @@ functions:
                 }
             }; "
     -
-        name: DisableCapability
+        name: UninstallCapability
         parameters: [ capabilityName ]
         code: PowerShell -Command "Get-WindowsCapability -Online -Name '{{ $capabilityName }}*'' | Remove-WindowsCapability -Online"
         revertCode: PowerShell -Command "$capability = Get-WindowsCapability -Online -Name '{{ $capabilityName }}*''; Add-WindowsCapability -Name \"$capability.Name\" -Online"
