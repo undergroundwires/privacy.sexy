@@ -1024,43 +1024,98 @@ actions:
                 category: Disable windows search data collection
                 children:
                     -
-                        name: Disable cortana
+                        category: Disable cortana
+                        children:
+                            -
+                                name: Do not allow Cortana
+                                recommend: standard
+                                docs:
+                                    - https://admx.help/?Category=Windows_10_2016&Policy=FullArmor.Policies.3B9EA2B5_A1D1_4CD5_9EDE_75B22990BC21::AllowCortana
+                                    - https://docs.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#21-cortana-and-search-group-policies
+                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d 0 /f
+                                revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /f
+                            -
+                                name: Do not allow Cortana experience
+                                recommend: standard
+                                code: reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Experience\AllowCortana" /v "value" /t REG_DWORD /d 0 /f
+                                revertCode: reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Experience\AllowCortana" /v "value" /t REG_DWORD /d 1 /f
+                            -
+                                name: Do not allow search and Cortana to search cloud sources like OneDrive and SharePoint
+                                recommend: standard
+                                docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search#search-allowcloudsearch
+                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCloudSearch" /t REG_DWORD /d 0 /f
+                                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCloudSearch" /t REG_DWORD /d 1 /f
+                            -
+                                name: Disable Cortana speech interaction while the system is locked
+                                recommend: standard
+                                docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-abovelock
+                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortanaAboveLock" /t REG_DWORD /d 0 /f
+                                revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortanaAboveLock" /f
+                            -
+                                name: Opt out from Cortana consent
+                                recommend: standard
+                                code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "CortanaConsent" /t REG_DWORD /d 0 /f
+                                revertCode: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "CortanaConsent" /t REG_DWORD /d 10 /f
+                            -
+                                name: Do not allow Cortana to be enabled
+                                recommend: standard
+                                code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CanCortanaBeEnabled" /t REG_DWORD /d 0 /f
+                                revertCode: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CanCortanaBeEnabled" /t REG_DWORD /d 1 /f
+                            -
+                                name: Disable Cortana (Internet search results in start menu)
+                                recommend: standard
+                                code: |-
+                                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CortanaEnabled" /t REG_DWORD /d 0 /f 
+                                    reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CortanaEnabled" /t REG_DWORD /d 0 /f 
+                                revertCode: |-
+                                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CortanaEnabled" /t REG_DWORD /d 1 /f 
+                                    reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CortanaEnabled" /t REG_DWORD /d 1 /f
+                            -
+                                name: Remove the Cortana taskbar icon
+                                code: reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /v "ShowCortanaButton" /t REG_DWORD /d 0 /f
+                                revertCode: reg delete HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /v "ShowCortanaButton" /f
+                    -
+                        category: Configure Windows search indexing
+                        children:
+                            -
+                                name: Disable search indexing encrypted items / stores
+                                recommend: standard
+                                docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search#search-allowindexingencryptedstoresoritems
+                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowIndexingEncryptedStoresOrItems" /t REG_DWORD /d 0 /f
+                                revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowIndexingEncryptedStoresOrItems" /f
+                            -
+                                name: Do not use automatic language detection when indexing
+                                recommend: standard
+                                docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search#search-alwaysuseautolangdetection
+                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AlwaysUseAutoLangDetection" /t REG_DWORD /d 0 /f
+                                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AlwaysUseAutoLangDetection" /t REG_DWORD /d 1 /f
+                    -
+                        name: Do not allow search to use location
                         recommend: standard
-                        code: |-
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d 0 /f 
-                            reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Experience\AllowCortana" /v "value" /t REG_DWORD /d 0 /f 
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CortanaEnabled" /t REG_DWORD /d 0 /f 
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CortanaEnabled" /t REG_DWORD /d 0 /f 
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CanCortanaBeEnabled" /t REG_DWORD /d 0 /f
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v BingSearchEnabled /t REG_DWORD /d 0 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCloudSearch" /t REG_DWORD /d 0 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d 0 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortanaAboveLock" /t REG_DWORD /d 0 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowSearchToUseLocation" /t REG_DWORD /d 0 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "ConnectedSearchUseWeb" /t REG_DWORD /d 0 /f
-                            reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "CortanaConsent"  /d 0 /t REG_DWORD /f 
+                        docs:
+                            - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search#search-allowsearchtouselocation
+                            - https://docs.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#21-cortana-and-search-group-policies
+                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowSearchToUseLocation" /t REG_DWORD /d 0 /f
+                        revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowSearchToUseLocation" /t REG_DWORD /d 1 /f
                     -
                         name: Disable web search in search bar
                         recommend: standard
-                        code: |-
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v DisableWebSearch /t REG_DWORD /d 1 /f
-                            reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /d 0 /t REG_DWORD /f                   
+                        docs:
+                            - https://admx.help/?Category=Windows_10_2016&Policy=FullArmor.Policies.3B9EA2B5_A1D1_4CD5_9EDE_75B22990BC21::DisableWebSearch
+                            - https://docs.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#21-cortana-and-search-group-policies
+                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "DisableWebSearch" /t REG_DWORD /d 1 /f
+                        revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "DisableWebSearch" /t REG_DWORD /d 0 /f
                     -
-                        name: Disable search web when searching pc
-                        recommend: standard
-                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v ConnectedSearchUseWeb /t REG_DWORD /d 0 /f
+                        name: Do not search the web or display web results in Search
+                        docs: https://docs.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#21-cortana-and-search-group-policies
+                        recomend: standard
+                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "ConnectedSearchUseWeb" /t REG_DWORD /d 0 /f
+                        revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "ConnectedSearchUseWeb" /t REG_DWORD /d 1 /f
                     -
-                        name: Disable search indexing encrypted items / stores
+                        name: Disable Bing search
                         recommend: standard
-                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v AllowIndexingEncryptedStoresOrItems /t REG_DWORD /d 0 /f
-                    -
-                        name: Disable location based info in searches
-                        recommend: standard
-                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v AllowSearchToUseLocation /t REG_DWORD /d 0 /f
-                    -
-                        name: Disable language detection
-                        recommend: standard
-                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v AlwaysUseAutoLangDetection /t REG_DWORD /d 0 /f
+                        code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /t REG_DWORD /d 0 /f
+                        revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /t REG_DWORD /d 1 /f
             -
                 category: Disable targeted ads and marketing
                 children: 
@@ -2704,6 +2759,14 @@ actions:
                                             parameters:
                                                 packageName: Microsoft.BingFinance
                             -
+                                name: Uninstall Cortana app
+                                recommend: standard
+                                docs: https://www.microsoft.com/en-us/p/msn-money/9wzdncrfhv4v
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.549981C3F5F10
+                            -
                                 name: App Installer app
                                 docs: https://www.microsoft.com/en-us/p/app-installer/9nblggh4nns1
                                 call:
@@ -3304,15 +3367,20 @@ actions:
                                             parameters:
                                                 packageName: Microsoft.Windows.ContentDeliveryManager
                             -
-                                category: Uninstall Cortana apps
+                                category: Uninstall Cortana system apps
                                 children:
                                     -
-                                        name: Cortana app (breaks Windows search)
+                                        name: Search app (breaks Windows search)
                                         docs: https://thegeekpage.com/searchui-exe-suspended-error/
                                         call:
-                                            function: UninstallSystemApp
-                                            parameters:
-                                                packageName: Microsoft.Windows.Cortana
+                                            -
+                                                function: UninstallSystemApp
+                                                parameters:
+                                                    packageName: Microsoft.Windows.Cortana # Removed since version 2004
+                                            -
+                                                function: UninstallStoreApp
+                                                parameters:
+                                                    packageName: Microsoft.Windows.Search # Added in version 2004, it was called "Cortana" before now it's plain "Search"
                                     -
                                         name: Holographic First Run app
                                         recommend: standard

@@ -22,9 +22,10 @@ describe('CategoryParser', () => {
             });
             it('throws when children are empty', () => {
                 // arrange
-                const expectedMessage = 'category has no children';
+                const categoryName = 'test';
+                const expectedMessage = `category has no children: "${categoryName}"`;
                 const category: YamlCategory = {
-                    category: 'test',
+                    category: categoryName,
                     children: [],
                 };
                 const compiler = new ScriptCompilerStub();
@@ -35,9 +36,10 @@ describe('CategoryParser', () => {
             });
             it('throws when children are undefined', () => {
                 // arrange
-                const expectedMessage = 'category has no children';
+                const categoryName = 'test';
+                const expectedMessage = `category has no children: "${categoryName}"`;
                 const category: YamlCategory = {
-                    category: 'test',
+                    category: categoryName,
                     children: undefined,
                 };
                 const compiler = new ScriptCompilerStub();

@@ -38,7 +38,7 @@ function ensureValid(category: YamlCategory) {
         throw Error('category is null or undefined');
     }
     if (!category.children || category.children.length === 0) {
-        throw Error('category has no children');
+        throw Error(`category has no children: "${category.category}"`);
     }
     if (!category.category || category.category.length === 0) {
         throw Error('category has no name');
