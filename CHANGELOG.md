@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.8.2 (2020-12-26)
+
+* replace ampersand in "Movies & TV app" with "and" to prevent batch file from misinterpreting it (#45) | [commit](https://github.com/undergroundwires/privacy.sexy/commit/52d4313156d2dcbc508b7271e7d9dfd45723d7bc)
+* update dependencies to latest #46 | [commit](https://github.com/undergroundwires/privacy.sexy/commit/d9e44e25744e5d0aa01b8fc0f0af74c48027aea3)
+* fix type assignment error after typescript upgrade | [commit](https://github.com/undergroundwires/privacy.sexy/commit/55f936fee9f86757f63fa8952d89711feb247e5b)
+* correct typos (#48) | [commit](https://github.com/undergroundwires/privacy.sexy/commit/a744415eb2ab65ee4f519f863fdd6a43953377bb)
+* in ci/cd, do not run security checks if PRs do not change dependencies #48 | [commit](https://github.com/undergroundwires/privacy.sexy/commit/54ba4dbb0bf8f08f9479f8facb2e12c786c1bc51)
+* rename app launch tracking tweak to make it more clear #44 | [commit](https://github.com/undergroundwires/privacy.sexy/commit/b3117c27f283c2d5a25fd94021a9f628a272cda6)
+* refactor capabilities to use a shared function #41 #47 | [commit](https://github.com/undergroundwires/privacy.sexy/commit/c4ec6a1445d2fd5eb923c97b54aee01e272e13a8)
+* rename "disable" to "uninstall" for removing capabilities #47 | [commit](https://github.com/undergroundwires/privacy.sexy/commit/8cd3352017f9dc85f8efcd7b450d90f555d3e92e)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.8.1...0.8.2)
+
 ## 0.8.1 (2020-11-16)
 
 * refactor removing bloatware to use functions #41 | [commit](https://github.com/undergroundwires/privacy.sexy/commit/ffa279f3dfe51db564f0a3859543eb212170e173)
