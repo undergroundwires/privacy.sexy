@@ -2,7 +2,7 @@ import 'mocha';
 import { expect } from 'chai';
 import { ScriptCompiler } from '@/application/Parser/Compiler/ScriptCompiler';
 import { YamlScriptStub } from '../../../stubs/YamlScriptStub';
-import { YamlFunction, YamlScript, FunctionCall, ScriptFunctionCall, FunctionCallParameters } from 'js-yaml-loader!./application.yaml';
+import { YamlFunction, YamlScript, FunctionCall, ScriptFunctionCall, FunctionCallParameters } from 'js-yaml-loader!@/application.yaml';
 import { IScriptCode } from '@/domain/IScriptCode';
 import { IScriptCompiler } from '@/application/Parser/Compiler/IScriptCompiler';
 

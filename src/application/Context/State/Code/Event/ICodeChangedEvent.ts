@@ -1,5 +1,5 @@
 import { IScript } from '@/domain/IScript';
-import { ICodePosition } from '@/application/State/Code/Position/ICodePosition';
+import { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
 
 export interface ICodeChangedEvent {
     readonly code: string;

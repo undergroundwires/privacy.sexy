@@ -1,8 +1,8 @@
-import { CategoryStub } from './../../../stubs/CategoryStub';
-import { ScriptStub } from './../../../stubs/ScriptStub';
-import { IFilterResult } from '@/application/State/Filter/IFilterResult';
-import { ApplicationStub } from './../../../stubs/ApplicationStub';
-import { UserFilter } from '@/application/State/Filter/UserFilter';
+import { CategoryStub } from '../../../../stubs/CategoryStub';
+import { ScriptStub } from '../../../../stubs/ScriptStub';
+import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
+import { ApplicationStub } from '../../../../stubs/ApplicationStub';
+import { UserFilter } from '@/application/Context/State/Filter/UserFilter';
 import 'mocha';
 import { expect } from 'chai';
 

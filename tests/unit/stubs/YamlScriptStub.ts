@@ -1,5 +1,5 @@
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
-import { ScriptFunctionCall, YamlScript } from 'js-yaml-loader!./application.yaml';
+import { ScriptFunctionCall, YamlScript } from 'js-yaml-loader!@/application.yaml';
 
 export class YamlScriptStub implements YamlScript {
     public static createWithCode(): YamlScriptStub {

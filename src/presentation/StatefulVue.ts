@@ -1,7 +1,7 @@
 import { Vue } from 'vue-property-decorator';
 import { AsyncLazy } from '@/infrastructure/Threading/AsyncLazy';
-import { IApplicationContext } from '@/application/State/IApplicationContext';
-import { buildContext } from '@/application/State/ApplicationContextProvider';
+import { IApplicationContext } from '@/application/Context/IApplicationContext';
+import { buildContext } from '@/application/Context/ApplicationContextProvider';
 
 export abstract class StatefulVue extends Vue {
     private static instance = new AsyncLazy<IApplicationContext>(

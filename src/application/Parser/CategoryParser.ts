@@ -1,4 +1,4 @@
-import { YamlCategory, YamlScript } from 'js-yaml-loader!./application.yaml';
+import { YamlCategory, YamlScript } from 'js-yaml-loader!@/application.yaml';
 import { Script } from '@/domain/Script';
 import { Category } from '@/domain/Category';
 import { parseDocUrls } from './DocumentationParser';

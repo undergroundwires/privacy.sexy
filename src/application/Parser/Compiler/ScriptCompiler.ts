@@ -1,7 +1,7 @@
 import { generateIlCode, IILCode } from './ILCode';
 import { IScriptCode } from '@/domain/IScriptCode';
 import { ScriptCode } from '@/domain/ScriptCode';
-import { YamlScript, YamlFunction, FunctionCall, ScriptFunctionCall, FunctionCallParameters } from 'js-yaml-loader!./application.yaml';
+import { YamlScript, YamlFunction, FunctionCall, ScriptFunctionCall, FunctionCallParameters } from 'js-yaml-loader!@/application.yaml';
 import { IScriptCompiler } from './IScriptCompiler';
 
 interface ICompiledCode {

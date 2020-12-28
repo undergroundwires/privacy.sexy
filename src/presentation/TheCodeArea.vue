@@ -7,8 +7,8 @@ import { Component, Prop } from 'vue-property-decorator';
 import { StatefulVue } from './StatefulVue';
 import ace from 'ace-builds';
 import 'ace-builds/webpack-resolver';
-import { CodeBuilder } from '@/application/State/Code/Generation/CodeBuilder';
-import { ICodeChangedEvent } from '@/application/State/Code/Event/ICodeChangedEvent';
+import { CodeBuilder } from '@/application/Context/State/Code/Generation/CodeBuilder';
+import { ICodeChangedEvent } from '@/application/Context/State/Code/Event/ICodeChangedEvent';
 import { IScript } from '@/domain/IScript';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 

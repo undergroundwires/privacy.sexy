@@ -1,6 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
-import { YamlDocumentable } from 'js-yaml-loader!./application.yaml';
+import { YamlDocumentable } from 'js-yaml-loader!@/application.yaml';
 import { parseDocUrls } from '@/application/Parser/DocumentationParser';
 
 describe('DocumentationParser', () => {

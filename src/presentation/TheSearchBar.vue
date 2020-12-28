@@ -13,7 +13,7 @@
 import { Component, Watch } from 'vue-property-decorator';
 import { StatefulVue } from './StatefulVue';
 import { NonCollapsing } from '@/presentation/Scripts/Cards/NonCollapsingDirective';
-import { IUserFilter } from '@/application/State/IApplicationState';
+import { IUserFilter } from '@/application/Context/State/IApplicationState';
 
 @Component( {
     directives: { NonCollapsing },

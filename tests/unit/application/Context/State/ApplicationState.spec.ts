@@ -1,11 +1,11 @@
-import { UserSelection } from '@/application/State/Selection/UserSelection';
-import { ApplicationCode } from '@/application/State/Code/ApplicationCode';
-import { ScriptStub } from './../../stubs/ScriptStub';
-import { CategoryStub } from './../../stubs/CategoryStub';
-import { ApplicationStub } from './../../stubs/ApplicationStub';
+import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
+import { ApplicationCode } from '@/application/Context/State/Code/ApplicationCode';
+import { ScriptStub } from '../../../stubs/ScriptStub';
+import { CategoryStub } from '../../../stubs/CategoryStub';
+import { ApplicationStub } from '../../../stubs/ApplicationStub';
 import 'mocha';
 import { expect } from 'chai';
-import { ApplicationState } from '@/application/State/ApplicationState';
+import { ApplicationState } from '@/application/Context/State/ApplicationState';
 import { IScript } from '@/domain/IScript';
 
 describe('ApplicationState', () => {

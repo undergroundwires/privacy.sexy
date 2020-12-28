@@ -1,6 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
-import { YamlScriptingDefinition } from 'js-yaml-loader!./application.yaml';
+import { YamlScriptingDefinition } from 'js-yaml-loader!@/application.yaml';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { parseScriptingDefinition } from '@/application/Parser/ScriptingDefinitionParser';
 import { ProjectInformationStub } from './../../stubs/ProjectInformationStub';

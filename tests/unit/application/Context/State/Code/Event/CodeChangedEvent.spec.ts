@@ -1,11 +1,11 @@
 import 'mocha';
 import { expect } from 'chai';
-import { CodeChangedEvent } from '@/application/State/Code/Event/CodeChangedEvent';
-import { SelectedScript } from '@/application/State/Selection/SelectedScript';
-import { ICodePosition } from '@/application/State/Code/Position/ICodePosition';
-import { CodePosition } from '@/application/State/Code/Position/CodePosition';
-import { SelectedScriptStub } from '../../../../stubs/SelectedScriptStub';
-import { ScriptStub } from '../../../../stubs/ScriptStub';
+import { CodeChangedEvent } from '@/application/Context/State/Code/Event/CodeChangedEvent';
+import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
+import { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
+import { CodePosition } from '@/application/Context/State/Code/Position/CodePosition';
+import { SelectedScriptStub } from '../../../../../stubs/SelectedScriptStub';
+import { ScriptStub } from '../../../../../stubs/ScriptStub';
 
 describe('CodeChangedEvent', () => {
     describe('ctor', () => {

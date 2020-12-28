@@ -5,8 +5,8 @@ import { CategoryReverter } from '@/presentation/Scripts/ScriptsTree/SelectableT
 import { getCategoryNodeId } from '@/presentation/Scripts/ScriptsTree/ScriptNodeParser';
 import { CategoryStub } from '../../../../../../stubs/CategoryStub';
 import { ApplicationStub } from '../../../../../../stubs/ApplicationStub';
-import { SelectedScript } from '@/application/State/Selection/SelectedScript';
-import { UserSelection } from '@/application/State/Selection/UserSelection';
+import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
+import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
 
 describe('CategoryReverter', () => {
     describe('getState', () => {

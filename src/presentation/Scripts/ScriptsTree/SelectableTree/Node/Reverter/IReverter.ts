@@ -1,5 +1,5 @@
-import { SelectedScript } from '@/application/State/Selection/SelectedScript';
-import { IUserSelection } from '@/application/State/IApplicationState';
+import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
+import { IUserSelection } from '@/application/Context/State/IApplicationState';
 
 export interface IReverter {
     getState(selectedScripts: ReadonlyArray<SelectedScript>): boolean;

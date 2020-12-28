@@ -45,11 +45,10 @@
 import { Component } from 'vue-property-decorator';
 import { StatefulVue } from '@/presentation/StatefulVue';
 import SelectableOption from './SelectableOption.vue';
-import { IApplicationState } from '@/application/State/IApplicationState';
 import { IScript } from '@/domain/IScript';
-import { SelectedScript } from '@/application/State/Selection/SelectedScript';
+import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
-import { IApplicationContext } from '../../../application/State/IApplicationContext';
+import { IApplicationContext } from '@/application/Context/IApplicationContext';
 
 enum SelectionState {
     Standard,

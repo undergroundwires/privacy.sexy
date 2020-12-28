@@ -1,10 +1,10 @@
 import 'mocha';
 import { expect } from 'chai';
-import { UserScriptGenerator } from '@/application/State/Code/Generation/UserScriptGenerator';
-import { SelectedScript } from '@/application/State/Selection/SelectedScript';
-import { CodeBuilder } from '@/application/State/Code/Generation/CodeBuilder';
-import { ScriptStub } from '../../../../stubs/ScriptStub';
-import { ScriptingDefinitionStub } from '../../../../stubs/ScriptingDefinitionStub';
+import { UserScriptGenerator } from '@/application/Context/State/Code/Generation/UserScriptGenerator';
+import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
+import { CodeBuilder } from '@/application/Context/State/Code/Generation/CodeBuilder';
+import { ScriptStub } from '../../../../../stubs/ScriptStub';
+import { ScriptingDefinitionStub } from '../../../../../stubs/ScriptingDefinitionStub';
 
 describe('UserScriptGenerator', () => {
     describe('scriptingDefinition', () => {

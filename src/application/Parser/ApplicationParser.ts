@@ -1,7 +1,7 @@
 import { Category } from '@/domain/Category';
 import { Application } from '@/domain/Application';
 import { IApplication } from '@/domain/IApplication';
-import { YamlApplication } from 'js-yaml-loader!./../application.yaml';
+import { YamlApplication } from 'js-yaml-loader!@/application.yaml';
 import { parseCategory } from './CategoryParser';
 import { parseProjectInformation } from './ProjectInformationParser';
 import { ScriptCompiler } from './Compiler/ScriptCompiler';

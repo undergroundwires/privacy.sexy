@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import { parseCategory } from '@/application/Parser/CategoryParser';
-import { YamlCategory, CategoryOrScript, YamlScript } from 'js-yaml-loader!./application.yaml';
+import { YamlCategory, CategoryOrScript, YamlScript } from 'js-yaml-loader!@/application.yaml';
 import { parseScript } from '@/application/Parser/ScriptParser';
 import { parseDocUrls } from '@/application/Parser/DocumentationParser';
 import { ScriptCompilerStub } from '../../stubs/ScriptCompilerStub';

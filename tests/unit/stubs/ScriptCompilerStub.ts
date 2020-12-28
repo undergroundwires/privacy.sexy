@@ -1,6 +1,6 @@
 import { IScriptCompiler } from '@/application/Parser/Compiler/IScriptCompiler';
 import { IScriptCode } from '@/domain/IScriptCode';
-import { YamlScript } from 'js-yaml-loader!./application.yaml';
+import { YamlScript } from 'js-yaml-loader!@/application.yaml';
 
 export class ScriptCompilerStub implements IScriptCompiler {
     public compilables = new Map<YamlScript, IScriptCode>();

@@ -17,7 +17,7 @@
     import { IReverter } from './Reverter/IReverter';
     import { StatefulVue } from '@/presentation/StatefulVue';
     import { INode } from './INode';
-    import { SelectedScript } from '@/application/State/Selection/SelectedScript';
+    import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
     import { getReverter } from './Reverter/ReverterFactory';
 
     @Component

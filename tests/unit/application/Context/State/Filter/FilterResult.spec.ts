@@ -1,6 +1,6 @@
-import { CategoryStub } from './../../../stubs/CategoryStub';
-import { ScriptStub } from './../../../stubs/ScriptStub';
-import { FilterResult } from '@/application/State/Filter/FilterResult';
+import { CategoryStub } from '../../../../stubs/CategoryStub';
+import { ScriptStub } from '../../../../stubs/ScriptStub';
+import { FilterResult } from '@/application/Context/State/Filter/FilterResult';
 import 'mocha';
 import { expect } from 'chai';
 

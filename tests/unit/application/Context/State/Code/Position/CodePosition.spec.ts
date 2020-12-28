@@ -1,4 +1,4 @@
-import { CodePosition } from '@/application/State/Code/Position/CodePosition';
+import { CodePosition } from '@/application/Context/State/Code/Position/CodePosition';
 import 'mocha';
 import { expect } from 'chai';
 

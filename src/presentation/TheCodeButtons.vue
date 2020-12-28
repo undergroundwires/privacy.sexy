@@ -21,9 +21,9 @@ import { SaveFileDialog, FileType } from '@/infrastructure/SaveFileDialog';
 import { Clipboard } from '@/infrastructure/Clipboard';
 import IconButton from './IconButton.vue';
 import { Environment } from '@/application/Environment/Environment';
-import { IApplicationCode } from '../application/State/IApplicationState';
+import { IApplicationCode } from '@/application/Context/State/IApplicationState';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
-import { IApplicationContext } from '@/application/State/IApplicationContext';
+import { IApplicationContext } from '@/application/Context/IApplicationContext';
 
 @Component({
   components: {
@@ -64,7 +64,7 @@ function saveCode(context: IApplicationContext) {
       const fileName = `privacy-script.${context.app.scripting.fileExtension}`;
       const content = context.state.code.current;
       const type = getType(context.app.scripting.language);
-      SaveFileDialog.saveFile(content, fileName, FileType.BatchFile);
+      SaveFileDialog.saveFile(content, fileName, type);
 }
 
 function getType(language: ScriptingLanguage) {

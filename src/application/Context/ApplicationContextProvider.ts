@@ -1,5 +1,5 @@
 import { ApplicationContext } from './ApplicationContext';
-import { IApplicationContext } from '@/application/State/IApplicationContext';
+import { IApplicationContext } from '@/application/Context/IApplicationContext';
 import applicationFile from 'js-yaml-loader!@/application/application.yaml';
 import { parseApplication } from '@/application/Parser/ApplicationParser';
 

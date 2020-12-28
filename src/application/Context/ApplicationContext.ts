@@ -1,7 +1,7 @@
 import { IApplicationContext } from './IApplicationContext';
 import { IApplication } from '@/domain/IApplication';
-import { IApplicationState } from './IApplicationState';
-import { ApplicationState } from './ApplicationState';
+import { IApplicationState } from './State/IApplicationState';
+import { ApplicationState } from './State/ApplicationState';
 import applicationFile from 'js-yaml-loader!@/application/application.yaml';
 import { parseApplication } from '../Parser/ApplicationParser';
 

@@ -1,4 +1,4 @@
-import { SelectedScript } from '@/application/State/Selection/SelectedScript';
+import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { ScriptStub } from './ScriptStub';
 
 export class SelectedScriptStub extends SelectedScript {

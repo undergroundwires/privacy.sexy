@@ -40,7 +40,7 @@
     import { Component } from 'vue-property-decorator';
     import { StatefulVue } from '@/presentation/StatefulVue';
     import { Grouping } from './Grouping/Grouping';
-    import { IFilterResult } from '@/application/State/Filter/IFilterResult';
+    import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
     import TheGrouper from '@/presentation/Scripts/Grouping/TheGrouper.vue';
     import TheSelector from '@/presentation/Scripts/Selector/TheSelector.vue';
     import ScriptsTree from '@/presentation/Scripts/ScriptsTree/ScriptsTree.vue';

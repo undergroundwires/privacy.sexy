@@ -1,6 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
-import { CodeBuilder } from '@/application/State/Code/Generation/CodeBuilder';
+import { CodeBuilder } from '@/application/Context/State/Code/Generation/CodeBuilder';
 
 describe('CodeBuilder', () => {
     describe('appendLine', () => {

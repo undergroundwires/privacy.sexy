@@ -1,5 +1,5 @@
-import { ScriptStub } from './../../../stubs/ScriptStub';
-import { SelectedScript } from '@/application/State/Selection/SelectedScript';
+import { ScriptStub } from '../../../../stubs/ScriptStub';
+import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import 'mocha';
 import { expect } from 'chai';
 

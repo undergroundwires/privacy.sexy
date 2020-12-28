@@ -1,5 +1,5 @@
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
-import { YamlScriptingDefinition } from 'js-yaml-loader!./application.yaml';
+import { YamlScriptingDefinition } from 'js-yaml-loader!@/application.yaml';
 import { ScriptingDefinition } from '@/domain/ScriptingDefinition';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { IProjectInformation } from '@/domain/IProjectInformation';

@@ -1,12 +1,12 @@
 import 'mocha';
 import { expect } from 'chai';
 import { IScript } from '@/domain/IScript';
-import { SelectedScriptStub } from '../../../stubs/SelectedScriptStub';
-import { ScriptStub } from '../../../stubs/ScriptStub';
-import { SelectedScript } from '@/application/State/Selection/SelectedScript';
-import { CategoryStub } from '../../../stubs/CategoryStub';
-import { ApplicationStub } from '../../../stubs/ApplicationStub';
-import { UserSelection } from '@/application/State/Selection/UserSelection';
+import { SelectedScriptStub } from '../../../../stubs/SelectedScriptStub';
+import { ScriptStub } from '../../../../stubs/ScriptStub';
+import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
+import { CategoryStub } from '../../../../stubs/CategoryStub';
+import { ApplicationStub } from '../../../../stubs/ApplicationStub';
+import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
 
 describe('UserSelection', () => {
     describe('ctor', () => {

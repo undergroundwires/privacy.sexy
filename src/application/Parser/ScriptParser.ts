@@ -1,5 +1,5 @@
 import { Script } from '@/domain/Script';
-import { YamlScript } from 'js-yaml-loader!./application.yaml';
+import { YamlScript } from 'js-yaml-loader!@/application.yaml';
 import { parseDocUrls } from './DocumentationParser';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { IScriptCompiler } from './Compiler/IScriptCompiler';

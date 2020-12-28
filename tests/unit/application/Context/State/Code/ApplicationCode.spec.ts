@@ -1,18 +1,18 @@
 import 'mocha';
 import { expect } from 'chai';
-import { CategoryStub } from './../../../stubs/CategoryStub';
-import { ScriptStub } from './../../../stubs/ScriptStub';
-import { ApplicationStub } from './../../../stubs/ApplicationStub';
-import { UserSelection } from '@/application/State/Selection/UserSelection';
-import { ApplicationCode } from '@/application/State/Code/ApplicationCode';
-import { SelectedScript } from '@/application/State/Selection/SelectedScript';
-import { ICodeChangedEvent } from '@/application/State/Code/Event/ICodeChangedEvent';
-import { IUserScriptGenerator } from '@/application/State/Code/Generation/IUserScriptGenerator';
-import { CodePosition } from '@/application/State/Code/Position/CodePosition';
-import { ICodePosition } from '@/application/State/Code/Position/ICodePosition';
-import { ScriptingDefinitionStub } from './../../../stubs/ScriptingDefinitionStub';
+import { CategoryStub } from '../../../../stubs/CategoryStub';
+import { ScriptStub } from '../../../../stubs/ScriptStub';
+import { ApplicationStub } from '../../../../stubs/ApplicationStub';
+import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
+import { ApplicationCode } from '@/application/Context/State/Code/ApplicationCode';
+import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
+import { ICodeChangedEvent } from '@/application/Context/State/Code/Event/ICodeChangedEvent';
+import { IUserScriptGenerator } from '@/application/Context/State/Code/Generation/IUserScriptGenerator';
+import { CodePosition } from '@/application/Context/State/Code/Position/CodePosition';
+import { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
+import { ScriptingDefinitionStub } from '../../../../stubs/ScriptingDefinitionStub';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
-import { IUserScript } from '@/application/State/Code/Generation/IUserScript';
+import { IUserScript } from '@/application/Context/State/Code/Generation/IUserScript';
 
 // TODO: Test scriptingDefinition: IScriptingDefinition logic
 

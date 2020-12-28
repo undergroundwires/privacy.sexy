@@ -19,12 +19,12 @@
   import { StatefulVue } from '@/presentation/StatefulVue';
   import { IScript } from '@/domain/IScript';
   import { ICategory } from '@/domain/ICategory';
-  import { IApplicationState } from '@/application/State/IApplicationState';
-  import { IFilterResult } from '@/application/State/Filter/IFilterResult';
+  import { IApplicationState } from '@/application/Context/State/IApplicationState';
+  import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
   import { parseAllCategories, parseSingleCategory, getScriptNodeId, getCategoryNodeId, getCategoryId, getScriptId } from './ScriptNodeParser';
   import SelectableTree from './SelectableTree/SelectableTree.vue';
   import { INode, NodeType } from './SelectableTree/Node/INode';
-  import { SelectedScript } from '@/application/State/Selection/SelectedScript';
+  import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
   import { INodeSelectedEvent } from './SelectableTree/INodeSelectedEvent';
 
   @Component({

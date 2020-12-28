@@ -1,8 +1,8 @@
 import { CodeChangedEvent } from './Event/CodeChangedEvent';
 import { CodePosition } from './Position/CodePosition';
 import { ICodeChangedEvent } from './Event/ICodeChangedEvent';
-import { SelectedScript } from '@/application/State/Selection/SelectedScript';
-import { IUserSelection } from '@/application/State/Selection/IUserSelection';
+import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
+import { IUserSelection } from '@/application/Context/State/Selection/IUserSelection';
 import { UserScriptGenerator } from './Generation/UserScriptGenerator';
 import { Signal } from '@/infrastructure/Events/Signal';
 import { IApplicationCode } from './IApplicationCode';
