@@ -1267,6 +1267,32 @@ actions:
                         docs: https://www.tenforums.com/tutorials/4077-turn-off-sync-settings-microsoft-account-windows-10-a.html
                         code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language" /t REG_DWORD /v "Enabled" /d 0 /f
                         revertCode: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language" /t REG_DWORD /v "Enabled" /d 1 /f
+            -
+                category: Prevent Microsoft family safety monitoring
+                children:
+                    -
+                        name: Disable Microsoft Family Safety Monitor
+                        recommend: standard
+                        code: |-
+                            schtasks /change /disable /tn "Microsoft\Windows\Shell\FamilySafetyMonitor"
+                            schtasks /change /disable /tn "Microsoft\Windows\Shell\FamilySafetyRefresh"
+                            schtasks /change /disable /tn "Microsoft\Windows\Shell\FamilySafetyUpload"
+                        revertCode: |-
+                            schtasks /change /enable /tn "Microsoft\Windows\Shell\FamilySafetyMonitor"
+                            schtasks /change /enable /tn "Microsoft\Windows\Shell\FamilySafetyRefresh"
+                            schtasks /change /enable /tn "Microsoft\Windows\Shell\FamilySafetyUpload"
+                    -
+                        name: Uninstall Microsoft Family Safety Monitor
+                        recommend: strict
+                        call:
+                            -
+                                function: RenameSystemFile
+                                parameters:
+                                    filePath: '%SystemRoot%\System32\WpcTok.exe'
+                            -
+                                function: RenameSystemFile
+                                parameters:
+                                    filePath: '%SystemRoot%\System32\WpcMon.exe'
     -
         category: Configure programs
         children: 
@@ -4078,3 +4104,24 @@ functions:
         parameters: [ capabilityName ]
         code: PowerShell -Command "Get-WindowsCapability -Online -Name '{{ $capabilityName }}*'' | Remove-WindowsCapability -Online"
         revertCode: PowerShell -Command "$capability = Get-WindowsCapability -Online -Name '{{ $capabilityName }}*''; Add-WindowsCapability -Name \"$capability.Name\" -Online"
+    -
+        name: RenameSystemFile
+        parameters: [ filePath ]
+        code: |-
+            if exist "{{ $filePath }}" (
+                takeown /f "{{ $filePath }}"
+                icacls "{{ $filePath }}" /grant administrators:F
+                move "{{ $filePath }}" "{{ $filePath }}.OLD"
+                echo Moved "{{ $filePath }}" to "{{ $filePath }}.OLD"
+            ) else (
+                echo No action required: {{ $filePath }} is not found.
+            )
+        revertCode: |-
+            if exist "{{ $filePath }}.OLD" (
+                takeown /f "{{ $filePath }}.OLD"
+                icacls "{{ $filePath }}.OLD" /grant administrators:F
+                move "{{ $filePath }}.OLD" "{{ $filePath }}"
+                echo Moved "{{ $filePath }}.OLD" to "{{ $filePath }}"
+            ) else (
+                echo Could not find backup file "{{ $filePath }}.OLD" 1>&2
+            )

@@ -23,19 +23,19 @@ function validateCode(name: string, code: string): void {
     if (!code || code.length === 0) {
         throw new Error(`code of ${name} is empty or undefined`);
     }
-    ensureCodeHasUniqueLines(name, code);
     ensureNoEmptyLines(name, code);
+    ensureCodeHasUniqueLines(name, code);
 }
 
 function ensureNoEmptyLines(name: string, code: string): void {
     if (code.split('\n').some((line) => line.trim().length === 0)) {
-        throw Error(`Script has empty lines "${name}"`);
+        throw Error(`script has empty lines "${name}"`);
     }
 }
 
 function ensureCodeHasUniqueLines(name: string, code: string): void {
     const lines = code.split('\n')
-        .filter((line) => mayBeUniqueLine(line));
+        .filter((line) => !shouldIgnoreLine(line));
     if (lines.length === 0) {
         return;
     }
@@ -45,13 +45,13 @@ function ensureCodeHasUniqueLines(name: string, code: string): void {
     }
 }
 
-function mayBeUniqueLine(codeLine: string): boolean {
-    const trimmed = codeLine.trim();
-    if (trimmed === ')' || trimmed === '(') { // "(" and ")" are used often in batch code
-        return false;
-    }
-    if (codeLine.startsWith(':: ') || codeLine.startsWith('REM ')) { // Is comment?
-        return false;
-    }
-    return true;
+function shouldIgnoreLine(codeLine: string): boolean {
+    codeLine = codeLine.toLowerCase();
+    const isCommentLine = () => codeLine.startsWith(':: ') || codeLine.startsWith('rem ');
+    const consistsOfFrequentCommands = () => {
+        const frequentCodeParts = [ '(', ')', 'else' ];
+        const trimmed = codeLine.trim().split(' ');
+        return trimmed.every((part) => frequentCodeParts.includes(part));
+    };
+    return isCommentLine() || consistsOfFrequentCommands();
 }
