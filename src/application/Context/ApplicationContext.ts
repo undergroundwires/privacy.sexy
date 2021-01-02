@@ -1,20 +1,20 @@
 import { IApplicationContext } from './IApplicationContext';
-import { IApplication } from '@/domain/IApplication';
-import { IApplicationState } from './State/IApplicationState';
-import { ApplicationState } from './State/ApplicationState';
+import { ICategoryCollectionState } from './State/ICategoryCollectionState';
+import { CategoryCollectionState } from './State/CategoryCollectionState';
 import applicationFile from 'js-yaml-loader!@/application/application.yaml';
-import { parseApplication } from '../Parser/ApplicationParser';
+import { parseCategoryCollection } from '../Parser/CategoryCollectionParser';
+import { ICategoryCollection } from '@/domain/ICategoryCollection';
 
 
 export function createContext(): IApplicationContext {
-    const application = parseApplication(applicationFile);
+    const application = parseCategoryCollection(applicationFile);
     const context = new ApplicationContext(application);
     return context;
 }
 
 export class ApplicationContext implements IApplicationContext {
-    public readonly state: IApplicationState;
-    public constructor(public readonly app: IApplication) {
-        this.state = new ApplicationState(app);
+    public readonly state: ICategoryCollectionState;
+    public constructor(public readonly collection: ICategoryCollection) {
+        this.state = new CategoryCollectionState(collection);
     }
 }

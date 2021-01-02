@@ -21,7 +21,7 @@ import { SaveFileDialog, FileType } from '@/infrastructure/SaveFileDialog';
 import { Clipboard } from '@/infrastructure/Clipboard';
 import IconButton from './IconButton.vue';
 import { Environment } from '@/application/Environment/Environment';
-import { IApplicationCode } from '@/application/Context/State/IApplicationState';
+import { IApplicationCode } from '@/application/Context/State/ICategoryCollectionState';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { IApplicationContext } from '@/application/Context/IApplicationContext';
 
@@ -61,9 +61,9 @@ export default class TheCodeButtons extends StatefulVue {
 }
 
 function saveCode(context: IApplicationContext) {
-      const fileName = `privacy-script.${context.app.scripting.fileExtension}`;
+      const fileName = `privacy-script.${context.collection.scripting.fileExtension}`;
       const content = context.state.code.current;
-      const type = getType(context.app.scripting.language);
+      const type = getType(context.collection.scripting.language);
       SaveFileDialog.saveFile(content, fileName, type);
 }
 

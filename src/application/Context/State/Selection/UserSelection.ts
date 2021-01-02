@@ -1,17 +1,18 @@
 import { SelectedScript } from './SelectedScript';
-import { IApplication, ICategory } from '@/domain/IApplication';
 import { IUserSelection } from './IUserSelection';
 import { InMemoryRepository } from '@/infrastructure/Repository/InMemoryRepository';
 import { IScript } from '@/domain/IScript';
 import { Signal } from '@/infrastructure/Events/Signal';
 import { IRepository } from '@/infrastructure/Repository/IRepository';
+import { ICategory } from '@/domain/ICategory';
+import { ICategoryCollection } from '@/domain/ICategoryCollection';
 
 export class UserSelection implements IUserSelection {
     public readonly changed = new Signal<ReadonlyArray<SelectedScript>>();
     private readonly scripts: IRepository<string, SelectedScript>;
 
     constructor(
-        private readonly app: IApplication,
+        private readonly collection: ICategoryCollection,
         selectedScripts: ReadonlyArray<SelectedScript>) {
         this.scripts =  new InMemoryRepository<string, SelectedScript>();
         if (selectedScripts && selectedScripts.length > 0) {
@@ -40,7 +41,7 @@ export class UserSelection implements IUserSelection {
     }
 
     public removeAllInCategory(categoryId: number): void {
-        const category = this.app.findCategory(categoryId);
+        const category = this.collection.findCategory(categoryId);
         const scriptsToRemove = category.getAllScriptsRecursively()
             .filter((script) => this.scripts.exists(script.id));
         if (!scriptsToRemove.length) {
@@ -53,7 +54,7 @@ export class UserSelection implements IUserSelection {
     }
 
     public addOrUpdateAllInCategory(categoryId: number, revert: boolean = false): void {
-        const category = this.app.findCategory(categoryId);
+        const category = this.collection.findCategory(categoryId);
         const scriptsToAddOrUpdate = category.getAllScriptsRecursively()
             .filter((script) =>
                 !this.scripts.exists(script.id)
@@ -70,7 +71,7 @@ export class UserSelection implements IUserSelection {
     }
 
     public addSelectedScript(scriptId: string, revert: boolean): void {
-        const script = this.app.findScript(scriptId);
+        const script = this.collection.findScript(scriptId);
         if (!script) {
             throw new Error(`Cannot add (id: ${scriptId}) as it is unknown`);
         }
@@ -80,7 +81,7 @@ export class UserSelection implements IUserSelection {
     }
 
     public addOrUpdateSelectedScript(scriptId: string, revert: boolean): void {
-        const script = this.app.findScript(scriptId);
+        const script = this.collection.findScript(scriptId);
         const selectedScript = new SelectedScript(script, revert);
         this.scripts.addOrUpdateItem(selectedScript);
         this.changed.notify(this.scripts.getItems());
@@ -105,7 +106,7 @@ export class UserSelection implements IUserSelection {
     }
 
     public selectAll(): void {
-        for (const script of this.app.getAllScripts()) {
+        for (const script of this.collection.getAllScripts()) {
             if (!this.scripts.exists(script.id)) {
                 const selection = new SelectedScript(script, false);
                 this.scripts.addItem(selection);

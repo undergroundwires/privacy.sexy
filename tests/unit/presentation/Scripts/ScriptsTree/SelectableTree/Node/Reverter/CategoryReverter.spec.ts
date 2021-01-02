@@ -4,7 +4,7 @@ import { ScriptStub } from '../../../../../../stubs/ScriptStub';
 import { CategoryReverter } from '@/presentation/Scripts/ScriptsTree/SelectableTree/Node/Reverter/CategoryReverter';
 import { getCategoryNodeId } from '@/presentation/Scripts/ScriptsTree/ScriptNodeParser';
 import { CategoryStub } from '../../../../../../stubs/CategoryStub';
-import { ApplicationStub } from '../../../../../../stubs/ApplicationStub';
+import { CategoryCollectionStub } from '../../../../../../stubs/CategoryCollectionStub';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
 
@@ -17,8 +17,8 @@ describe('CategoryReverter', () => {
         ];
         const category = new CategoryStub(1).withScripts(...scripts);
         const nodeId = getCategoryNodeId(category);
-        const app = new ApplicationStub().withAction(category);
-        const sut = new CategoryReverter(nodeId, app);
+        const collection = new CategoryCollectionStub().withAction(category);
+        const sut = new CategoryReverter(nodeId, collection);
         const testCases = [
             {
                 name: 'false when subscripts are not reverted',
@@ -52,7 +52,7 @@ describe('CategoryReverter', () => {
             new ScriptStub('revertable2').withRevertCode('REM revert me 2'),
         ];
         const category = new CategoryStub(1).withScripts(...scripts);
-        const app = new ApplicationStub().withAction(category);
+        const collection = new CategoryCollectionStub().withAction(category);
         const testCases = [
             {
                 name: 'selects with revert state when not selected',
@@ -88,8 +88,8 @@ describe('CategoryReverter', () => {
         const nodeId = getCategoryNodeId(category);
         for (const testCase of testCases) {
             it(testCase.name, () => {
-                const selection = new UserSelection(app, testCase.selection);
-                const sut = new CategoryReverter(nodeId, app);
+                const selection = new UserSelection(collection, testCase.selection);
+                const sut = new CategoryReverter(nodeId, collection);
                 // act
                 sut.selectWithRevertState(testCase.revert, selection);
                 // assert

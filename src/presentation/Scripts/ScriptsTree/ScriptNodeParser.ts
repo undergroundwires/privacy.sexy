@@ -1,18 +1,18 @@
-import { IApplication } from './../../../domain/IApplication';
 import { ICategory, IScript } from '@/domain/ICategory';
 import { INode, NodeType } from './SelectableTree/Node/INode';
+import { ICategoryCollection } from '@/domain/ICategoryCollection';
 
-export function parseAllCategories(app: IApplication): INode[] | undefined {
+export function parseAllCategories(collection: ICategoryCollection): INode[] | undefined {
   const nodes = new Array<INode>();
-  for (const category of app.actions) {
+  for (const category of collection.actions) {
     const children = parseCategoryRecursively(category);
     nodes.push(convertCategoryToNode(category, children));
   }
   return nodes;
 }
 
-export function parseSingleCategory(categoryId: number, app: IApplication): INode[] | undefined {
-  const category = app.findCategory(categoryId);
+export function parseSingleCategory(categoryId: number, collection: ICategoryCollection): INode[] | undefined {
+  const category = collection.findCategory(categoryId);
   if (!category) {
     throw new Error(`Category with id ${categoryId} does not exist`);
   }

@@ -1,13 +1,13 @@
 import 'mocha';
 import { expect } from 'chai';
 import { ScriptReverter } from '@/presentation/Scripts/ScriptsTree/SelectableTree/Node/Reverter/ScriptReverter';
-import { SelectedScriptStub } from '../../../../../../stubs/SelectedScriptStub';
 import { getScriptNodeId } from '@/presentation/Scripts/ScriptsTree/ScriptNodeParser';
-import { ScriptStub } from '../../../../../../stubs/ScriptStub';
 import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
-import { ApplicationStub } from '../../../../../../stubs/ApplicationStub';
+import { CategoryCollectionStub } from '../../../../../../stubs/CategoryCollectionStub';
 import { CategoryStub } from '../../../../../../stubs/CategoryStub';
+import { ScriptStub } from '../../../../../../stubs/ScriptStub';
+import { SelectedScriptStub } from '../../../../../../stubs/SelectedScriptStub';
 
 describe('ScriptReverter', () => {
     describe('getState', () => {
@@ -45,7 +45,8 @@ describe('ScriptReverter', () => {
     describe('selectWithRevertState', () => {
         // arrange
         const script = new ScriptStub('id');
-        const app = new ApplicationStub().withAction(new CategoryStub(5).withScript(script));
+        const collection = new CategoryCollectionStub()
+            .withAction(new CategoryStub(5).withScript(script));
         const testCases = [
             {
                 name: 'selects with revert state when not selected',
@@ -75,7 +76,7 @@ describe('ScriptReverter', () => {
         const nodeId = getScriptNodeId(script);
         for (const testCase of testCases) {
             it(testCase.name, () => {
-                const selection = new UserSelection(app, testCase.selection);
+                const selection = new UserSelection(collection, testCase.selection);
                 const sut = new ScriptReverter(nodeId);
                 // act
                 sut.selectWithRevertState(testCase.revert, selection);

@@ -4,7 +4,7 @@ import { getScriptNodeId, getScriptId, getCategoryNodeId, getCategoryId } from '
 import { CategoryStub } from '../../../stubs/CategoryStub';
 import { ScriptStub } from '../../../stubs/ScriptStub';
 import { parseSingleCategory, parseAllCategories } from '@/presentation/Scripts/ScriptsTree/ScriptNodeParser';
-import { ApplicationStub } from '../../../stubs/ApplicationStub';
+import { CategoryCollectionStub } from '../../../stubs/CategoryCollectionStub';
 import { INode, NodeType } from '@/presentation/Scripts/ScriptsTree/SelectableTree/Node/INode';
 import { IScript } from '@/domain/IScript';
 import { ICategory } from '@/domain/ICategory';
@@ -36,11 +36,11 @@ describe('ScriptNodeParser', () => {
             const secondSubCategory = new CategoryStub(categoryId)
                 .withCategory(new CategoryStub(33).withScriptIds('331', '331'))
                 .withCategory(new CategoryStub(44).withScriptIds('44'));
-            const app = new ApplicationStub().withAction(new CategoryStub(categoryId)
+            const collection = new CategoryCollectionStub().withAction(new CategoryStub(categoryId)
                 .withCategory(firstSubCategory)
                 .withCategory(secondSubCategory));
             // act
-            const nodes = parseSingleCategory(categoryId, app);
+            const nodes = parseSingleCategory(categoryId, collection);
             // assert
             expect(nodes).to.have.lengthOf(2);
             expectSameCategory(nodes[0], firstSubCategory);
@@ -50,9 +50,10 @@ describe('ScriptNodeParser', () => {
             // arrange
             const categoryId = 31;
             const scripts = [ new ScriptStub('script1'), new ScriptStub('script2'), new ScriptStub('script3') ];
-            const app = new ApplicationStub().withAction(new CategoryStub(categoryId).withScripts(...scripts));
+            const collection = new CategoryCollectionStub()
+                .withAction(new CategoryStub(categoryId).withScripts(...scripts));
             // act
-            const nodes = parseSingleCategory(categoryId, app);
+            const nodes = parseSingleCategory(categoryId, collection);
             // assert
             expect(nodes).to.have.lengthOf(3);
             expectSameScript(nodes[0], scripts[0]);
@@ -63,18 +64,18 @@ describe('ScriptNodeParser', () => {
 
     it('parseAllCategories parses as expected', () => {
         // arrange
-        const app = new ApplicationStub()
+        const collection = new CategoryCollectionStub()
             .withAction(new CategoryStub(0).withScriptIds('1, 2'))
             .withAction(new CategoryStub(1).withCategories(
                 new CategoryStub(3).withScriptIds('3', '4'),
                 new CategoryStub(4).withCategory(new CategoryStub(5).withScriptIds('6')),
             ));
         // act
-        const nodes = parseAllCategories(app);
+        const nodes = parseAllCategories(collection);
         // assert
         expect(nodes).to.have.lengthOf(2);
-        expectSameCategory(nodes[0], app.actions[0]);
-        expectSameCategory(nodes[1], app.actions[1]);
+        expectSameCategory(nodes[0], collection.actions[0]);
+        expectSameCategory(nodes[1], collection.actions[1]);
     });
 });
 

@@ -1,17 +1,18 @@
-import { CategoryStub } from '../../../../stubs/CategoryStub';
-import { ScriptStub } from '../../../../stubs/ScriptStub';
-import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
-import { ApplicationStub } from '../../../../stubs/ApplicationStub';
-import { UserFilter } from '@/application/Context/State/Filter/UserFilter';
+
 import 'mocha';
 import { expect } from 'chai';
+import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
+import { UserFilter } from '@/application/Context/State/Filter/UserFilter';
+import { CategoryStub } from '../../../../stubs/CategoryStub';
+import { ScriptStub } from '../../../../stubs/ScriptStub';
+import { CategoryCollectionStub } from '../../../../stubs/CategoryCollectionStub';
 
 describe('UserFilter', () => {
     describe('removeFilter', () => {
         it('signals when removing filter', () => {
             // arrange
             let isCalled = false;
-            const sut = new UserFilter(new ApplicationStub());
+            const sut = new UserFilter(new CategoryCollectionStub());
             sut.filterRemoved.on(() => isCalled = true);
             // act
             sut.removeFilter();
@@ -20,7 +21,7 @@ describe('UserFilter', () => {
         });
         it('sets currentFilter to undefined', () => {
             // arrange
-            const sut = new UserFilter(new ApplicationStub());
+            const sut = new UserFilter(new CategoryCollectionStub());
             // act
             sut.setFilter('non-important');
             sut.removeFilter();
@@ -33,7 +34,7 @@ describe('UserFilter', () => {
             // arrange
             let actual: IFilterResult;
             const nonMatchingFilter = 'non matching filter';
-            const sut = new UserFilter(new ApplicationStub());
+            const sut = new UserFilter(new CategoryCollectionStub());
             sut.filtered.on((filterResult) => actual = filterResult);
             // act
             sut.setFilter(nonMatchingFilter);
@@ -44,7 +45,7 @@ describe('UserFilter', () => {
         it('sets currentFilter as expected when no matches', () => {
             // arrange
             const nonMatchingFilter = 'non matching filter';
-            const sut = new UserFilter(new ApplicationStub());
+            const sut = new UserFilter(new CategoryCollectionStub());
             // act
             sut.setFilter(nonMatchingFilter);
             // assert
@@ -61,7 +62,7 @@ describe('UserFilter', () => {
                     let actual: IFilterResult;
                     const script = new ScriptStub('id').withCode(code);
                     const category = new CategoryStub(33).withScript(script);
-                    const sut = new UserFilter(new ApplicationStub()
+                    const sut = new UserFilter(new CategoryCollectionStub()
                         .withAction(category));
                     sut.filtered.on((filterResult) => actual = filterResult);
                     // act
@@ -81,7 +82,7 @@ describe('UserFilter', () => {
                     let actual: IFilterResult;
                     const script = new ScriptStub('id').withRevertCode(revertCode);
                     const category = new CategoryStub(33).withScript(script);
-                    const sut = new UserFilter(new ApplicationStub()
+                    const sut = new UserFilter(new CategoryCollectionStub()
                         .withAction(category));
                     sut.filtered.on((filterResult) => actual = filterResult);
                     // act
@@ -101,7 +102,7 @@ describe('UserFilter', () => {
                     let actual: IFilterResult;
                     const script = new ScriptStub('id').withName(name);
                     const category = new CategoryStub(33).withScript(script);
-                    const sut = new UserFilter(new ApplicationStub()
+                    const sut = new UserFilter(new CategoryCollectionStub()
                         .withAction(category));
                     sut.filtered.on((filterResult) => actual = filterResult);
                     // act
@@ -121,7 +122,7 @@ describe('UserFilter', () => {
                 const filter = 'Hello WoRLD';
                 let actual: IFilterResult;
                 const category = new CategoryStub(55).withName(categoryName);
-                const sut = new UserFilter(new ApplicationStub()
+                const sut = new UserFilter(new CategoryCollectionStub()
                     .withAction(category));
                 sut.filtered.on((filterResult) => actual = filterResult);
                 // act
@@ -144,9 +145,9 @@ describe('UserFilter', () => {
                 const category = new CategoryStub(55)
                     .withName(matchingText)
                     .withScript(script);
-                const app = new ApplicationStub()
+                const collection = new CategoryCollectionStub()
                     .withAction(category);
-                const sut = new UserFilter(app);
+                const sut = new UserFilter(collection);
                 sut.filtered.on((filterResult) => actual = filterResult);
                 // act
                 sut.setFilter(filter);

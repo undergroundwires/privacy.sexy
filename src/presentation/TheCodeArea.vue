@@ -40,7 +40,7 @@ export default class TheCodeArea extends StatefulVue {
 
   public async mounted() {
     const context = await this.getCurrentContextAsync();
-    this.editor = initializeEditor(this.theme, this.editorId, context.app.scripting.language);
+    this.editor = initializeEditor(this.theme, this.editorId, context.collection.scripting.language);
     const appCode = context.state.code;
     this.editor.setValue(appCode.current || NothingChosenCode, 1);
     appCode.changed.on((code) => this.updateCode(code));

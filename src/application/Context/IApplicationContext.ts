@@ -1,7 +1,7 @@
-import { IApplication } from '@/domain/IApplication';
-import { IApplicationState } from './State/IApplicationState';
+import { ICategoryCollectionState } from './State/ICategoryCollectionState';
+import { ICategoryCollection } from '@/domain/ICategoryCollection';
 
 export interface IApplicationContext {
-    readonly app: IApplication;
-    readonly state: IApplicationState;
+    readonly collection: ICategoryCollection;
+    readonly state: ICategoryCollectionState;
 }

@@ -33,7 +33,7 @@ export default class CardList extends StatefulVue {
 
   public async mounted() {
     const context = await this.getCurrentContextAsync();
-    this.setCategories(context.app.actions);
+    this.setCategories(context.collection.actions);
     this.onOutsideOfActiveCardClicked((element) => {
       if (hasDirective(element)) {
         return;

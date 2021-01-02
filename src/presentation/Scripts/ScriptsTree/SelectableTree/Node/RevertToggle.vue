@@ -37,7 +37,7 @@
 
         @Watch('node') public async onNodeChangedAsync(node: INode) {
             const context = await this.getCurrentContextAsync();
-            this.handler = getReverter(node, context.app);
+            this.handler = getReverter(node, context.collection);
         }
 
         public async onRevertToggledAsync() {

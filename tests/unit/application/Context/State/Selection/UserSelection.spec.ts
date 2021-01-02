@@ -1,21 +1,21 @@
 import 'mocha';
 import { expect } from 'chai';
 import { IScript } from '@/domain/IScript';
+import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
+import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
+import { CategoryStub } from '../../../../stubs/CategoryStub';
+import { CategoryCollectionStub } from '../../../../stubs/CategoryCollectionStub';
 import { SelectedScriptStub } from '../../../../stubs/SelectedScriptStub';
 import { ScriptStub } from '../../../../stubs/ScriptStub';
-import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
-import { CategoryStub } from '../../../../stubs/CategoryStub';
-import { ApplicationStub } from '../../../../stubs/ApplicationStub';
-import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
 
 describe('UserSelection', () => {
     describe('ctor', () => {
         it('has nothing with no initial selection', () => {
             // arrange
-            const app = new ApplicationStub().withAction(new CategoryStub(1).withScriptIds('s1'));
+            const collection = new CategoryCollectionStub().withAction(new CategoryStub(1).withScriptIds('s1'));
             const selection = [];
             // act
-            const sut = new UserSelection(app, selection);
+            const sut = new UserSelection(collection, selection);
             // assert
             expect(sut.selectedScripts).to.have.lengthOf(0);
         });
@@ -23,11 +23,11 @@ describe('UserSelection', () => {
             // arrange
             const firstScript = new ScriptStub('1');
             const secondScript = new ScriptStub('2');
-            const app = new ApplicationStub().withAction(
-                new CategoryStub(1).withScript(firstScript).withScripts(secondScript));
+            const collection = new CategoryCollectionStub()
+                .withAction(new CategoryStub(1).withScript(firstScript).withScripts(secondScript));
             const expected = [ new SelectedScript(firstScript, false), new SelectedScript(secondScript, true) ];
             // act
-            const sut = new UserSelection(app, expected);
+            const sut = new UserSelection(collection, expected);
             // assert
             expect(sut.selectedScripts).to.deep.include(expected[0]);
             expect(sut.selectedScripts).to.deep.include(expected[1]);
@@ -36,13 +36,13 @@ describe('UserSelection', () => {
     it('deselectAll removes all items', () => {
         // arrange
         const events: Array<readonly SelectedScript[]>  = [];
-        const app = new ApplicationStub()
+        const collection = new CategoryCollectionStub()
             .withAction(new CategoryStub(1)
-                .withScriptIds('s1', 's2', 's3', 's4'));
+            .withScriptIds('s1', 's2', 's3', 's4'));
         const selectedScripts = [
             new SelectedScriptStub('s1'), new SelectedScriptStub('s2'), new SelectedScriptStub('s3'),
         ];
-        const sut = new UserSelection(app, selectedScripts);
+        const sut = new UserSelection(collection, selectedScripts);
         sut.changed.on((newScripts) => events.push(newScripts));
         // act
         sut.deselectAll();
@@ -54,13 +54,13 @@ describe('UserSelection', () => {
     it('selectOnly selects expected', () => {
         // arrange
         const events: Array<readonly SelectedScript[]>  = [];
-        const app = new ApplicationStub()
+        const collection = new CategoryCollectionStub()
             .withAction(new CategoryStub(1)
-                .withScriptIds('s1', 's2', 's3', 's4'));
+            .withScriptIds('s1', 's2', 's3', 's4'));
         const selectedScripts = [
             new SelectedScriptStub('s1'), new SelectedScriptStub('s2'), new SelectedScriptStub('s3'),
         ];
-        const sut = new UserSelection(app, selectedScripts);
+        const sut = new UserSelection(collection, selectedScripts);
         sut.changed.on((newScripts) => events.push(newScripts));
         const scripts = [new ScriptStub('s2'), new ScriptStub('s3'), new ScriptStub('s4')];
         const expected = [ new SelectedScriptStub('s2'), new SelectedScriptStub('s3'),
@@ -78,10 +78,10 @@ describe('UserSelection', () => {
         // arrange
         const events: Array<readonly SelectedScript[]>  = [];
         const scripts: IScript[] = [new ScriptStub('s1'), new ScriptStub('s2'), new ScriptStub('s3'), new ScriptStub('s4')];
-        const app = new ApplicationStub()
+        const collection = new CategoryCollectionStub()
             .withAction(new CategoryStub(1)
-                .withScripts(...scripts));
-        const sut = new UserSelection(app, []);
+            .withScripts(...scripts));
+        const sut = new UserSelection(collection, []);
         sut.changed.on((newScripts) => events.push(newScripts));
         const expected = scripts.map((script) => new SelectedScript(script, false));
         // act
@@ -95,10 +95,10 @@ describe('UserSelection', () => {
         it('adds when item does not exist', () => {
             // arrange
             const events: Array<readonly SelectedScript[]>  = [];
-            const app = new ApplicationStub()
+            const collection = new CategoryCollectionStub()
                 .withAction(new CategoryStub(1)
-                    .withScripts(new ScriptStub('s1'), new ScriptStub('s2')));
-            const sut = new UserSelection(app, []);
+                .withScripts(new ScriptStub('s1'), new ScriptStub('s2')));
+            const sut = new UserSelection(collection, []);
             sut.changed.on((scripts) => events.push(scripts));
             const expected = [ new SelectedScript(new ScriptStub('s1'), false) ];
             // act
@@ -111,10 +111,10 @@ describe('UserSelection', () => {
         it('updates when item exists', () => {
             // arrange
             const events: Array<readonly SelectedScript[]>  = [];
-            const app = new ApplicationStub()
+            const collection = new CategoryCollectionStub()
                 .withAction(new CategoryStub(1)
-                    .withScripts(new ScriptStub('s1'), new ScriptStub('s2')));
-            const sut = new UserSelection(app, []);
+                .withScripts(new ScriptStub('s1'), new ScriptStub('s2')));
+            const sut = new UserSelection(collection, []);
             sut.changed.on((scripts) => events.push(scripts));
             const expected = [ new SelectedScript(new ScriptStub('s1'), true) ];
             // act
@@ -130,10 +130,10 @@ describe('UserSelection', () => {
             // arrange
             const events: Array<readonly SelectedScript[]>  = [];
             const categoryId = 1;
-            const app = new ApplicationStub()
+            const collection = new CategoryCollectionStub()
                 .withAction(new CategoryStub(categoryId)
-                    .withScripts(new ScriptStub('s1'), new ScriptStub('s2')));
-            const sut = new UserSelection(app, []);
+                .withScripts(new ScriptStub('s1'), new ScriptStub('s2')));
+            const sut = new UserSelection(collection, []);
             sut.changed.on((s) => events.push(s));
             // act
             sut.removeAllInCategory(categoryId);
@@ -145,10 +145,10 @@ describe('UserSelection', () => {
             // arrange
             const categoryId = 1;
             const scripts = [new SelectedScriptStub('s1'), new SelectedScriptStub('s2')];
-            const app = new ApplicationStub()
+            const collection = new CategoryCollectionStub()
                 .withAction(new CategoryStub(categoryId)
-                    .withScripts(...scripts.map((script) => script.script)));
-            const sut = new UserSelection(app, scripts);
+                .withScripts(...scripts.map((script) => script.script)));
+            const sut = new UserSelection(collection, scripts);
             // act
             sut.removeAllInCategory(categoryId);
             // assert
@@ -160,10 +160,10 @@ describe('UserSelection', () => {
             const categoryId = 1;
             const existing = [new ScriptStub('s1'), new ScriptStub('s2')];
             const notExisting = [new ScriptStub('s3'), new ScriptStub('s4')];
-            const app = new ApplicationStub()
+            const collection = new CategoryCollectionStub()
                 .withAction(new CategoryStub(categoryId)
-                    .withScripts(...existing, ...notExisting));
-            const sut = new UserSelection(app, existing.map((script) => new SelectedScript(script, false)));
+                .withScripts(...existing, ...notExisting));
+            const sut = new UserSelection(collection, existing.map((script) => new SelectedScript(script, false)));
             // act
             sut.removeAllInCategory(categoryId);
             // assert
@@ -177,10 +177,10 @@ describe('UserSelection', () => {
             const events: Array<readonly SelectedScript[]>  = [];
             const categoryId = 1;
             const scripts = [new ScriptStub('s1'), new ScriptStub('s2')];
-            const app = new ApplicationStub()
+            const collection = new CategoryCollectionStub()
                 .withAction(new CategoryStub(categoryId)
-                    .withScripts(...scripts));
-            const sut = new UserSelection(app, scripts.map((script) => new SelectedScript(script, false)));
+                .withScripts(...scripts));
+            const sut = new UserSelection(collection, scripts.map((script) => new SelectedScript(script, false)));
             sut.changed.on((s) => events.push(s));
             // act
             sut.addOrUpdateAllInCategory(categoryId);
@@ -193,10 +193,10 @@ describe('UserSelection', () => {
             // arrange
             const categoryId = 1;
             const expected = [new ScriptStub('s1'), new ScriptStub('s2')];
-            const app = new ApplicationStub()
+            const collection = new CategoryCollectionStub()
                 .withAction(new CategoryStub(categoryId)
-                    .withScripts(...expected));
-            const sut = new UserSelection(app, []);
+                .withScripts(...expected));
+            const sut = new UserSelection(collection, []);
             // act
             sut.addOrUpdateAllInCategory(categoryId);
             // assert
@@ -207,10 +207,10 @@ describe('UserSelection', () => {
             // arrange
             const categoryId = 1;
             const expected = [new ScriptStub('s1'), new ScriptStub('s2')];
-            const app = new ApplicationStub()
+            const collection = new CategoryCollectionStub()
                 .withAction(new CategoryStub(categoryId)
-                    .withScripts(...expected));
-            const sut = new UserSelection(app, []);
+                .withScripts(...expected));
+            const sut = new UserSelection(collection, []);
             // act
             sut.addOrUpdateAllInCategory(categoryId, true);
             // assert
@@ -223,10 +223,10 @@ describe('UserSelection', () => {
             const notExisting = [ new ScriptStub('notExisting1'), new ScriptStub('notExisting2') ];
             const existing = [ new ScriptStub('existing1'), new ScriptStub('existing2') ];
             const allScripts = [ ...existing, ...notExisting ];
-            const app = new ApplicationStub()
+            const collection = new CategoryCollectionStub()
                 .withAction(new CategoryStub(categoryId)
                 .withScripts(...allScripts));
-            const sut = new UserSelection(app, existing.map((script) => new SelectedScript(script, false)));
+            const sut = new UserSelection(collection, existing.map((script) => new SelectedScript(script, false)));
             // act
             sut.addOrUpdateAllInCategory(categoryId, true);
             // assert
@@ -239,10 +239,10 @@ describe('UserSelection', () => {
             const notExisting = [ new ScriptStub('notExisting1'), new ScriptStub('notExisting2') ];
             const existing = [ new ScriptStub('existing1'), new ScriptStub('existing2') ];
             const allScripts = [ ...existing, ...notExisting ];
-            const app = new ApplicationStub()
+            const collection = new CategoryCollectionStub()
                 .withAction(new CategoryStub(categoryId)
                 .withScripts(...allScripts));
-            const sut = new UserSelection(app, existing.map((script) => new SelectedScript(script, false)));
+            const sut = new UserSelection(collection, existing.map((script) => new SelectedScript(script, false)));
             // act
             sut.addOrUpdateAllInCategory(categoryId, true);
             // assert
@@ -253,10 +253,10 @@ describe('UserSelection', () => {
             // arrange
             const categoryId = 1;
             const scripts = [ new ScriptStub('existing1'), new ScriptStub('existing2') ];
-            const app = new ApplicationStub()
+            const collection = new CategoryCollectionStub()
                 .withAction(new CategoryStub(categoryId)
                 .withScripts(...scripts));
-            const sut = new UserSelection(app, scripts.map((script) => new SelectedScript(script, false)));
+            const sut = new UserSelection(collection, scripts.map((script) => new SelectedScript(script, false)));
             // act
             sut.addOrUpdateAllInCategory(categoryId, true);
             // assert
@@ -269,10 +269,10 @@ describe('UserSelection', () => {
             // arrange
             const selectedScript = new ScriptStub('selected');
             const notSelectedScript = new ScriptStub('not selected');
-            const app = new ApplicationStub()
+            const collection = new CategoryCollectionStub()
                 .withAction(new CategoryStub(1)
                 .withScripts(selectedScript, notSelectedScript));
-            const sut = new UserSelection(app, [ new SelectedScript(selectedScript, false) ]);
+            const sut = new UserSelection(collection, [ new SelectedScript(selectedScript, false) ]);
             // act
             const actual = sut.isSelected(notSelectedScript.id);
             // assert
@@ -282,10 +282,10 @@ describe('UserSelection', () => {
             // arrange
             const selectedScript = new ScriptStub('selected');
             const notSelectedScript = new ScriptStub('not selected');
-            const app = new ApplicationStub()
+            const collection = new CategoryCollectionStub()
                 .withAction(new CategoryStub(1)
                 .withScripts(selectedScript, notSelectedScript));
-            const sut = new UserSelection(app, [ new SelectedScript(selectedScript, false) ]);
+            const sut = new UserSelection(collection, [ new SelectedScript(selectedScript, false) ]);
             // act
             const actual = sut.isSelected(selectedScript.id);
             // assert
@@ -297,8 +297,8 @@ describe('UserSelection', () => {
             // arrange
             const category = new CategoryStub(1)
                 .withScriptIds('non-selected-script-1', 'non-selected-script-2');
-            const app = new ApplicationStub().withAction(category);
-            const sut = new UserSelection(app, [ ]);
+            const collection = new CategoryCollectionStub().withAction(category);
+            const sut = new UserSelection(collection, [ ]);
             it('areAllSelected returns false', () => {
                 // act
                 const actual = sut.areAllSelected(category);
@@ -317,10 +317,10 @@ describe('UserSelection', () => {
             const category = new CategoryStub(1)
                 .withScriptIds('non-selected-script-1', 'non-selected-script-2');
             const selectedScript = new ScriptStub('selected');
-            const app = new ApplicationStub()
+            const collection = new CategoryCollectionStub()
                 .withAction(category)
                 .withAction(new CategoryStub(22).withScript(selectedScript));
-            const sut = new UserSelection(app, [ new SelectedScript(selectedScript, false) ]);
+            const sut = new UserSelection(collection, [ new SelectedScript(selectedScript, false) ]);
             it('areAllSelected returns false', () => {
                 // act
                 const actual = sut.areAllSelected(category);
@@ -340,8 +340,8 @@ describe('UserSelection', () => {
             const category = new CategoryStub(1)
                 .withScriptIds('non-selected-script-1', 'non-selected-script-2')
                 .withCategory(new CategoryStub(12).withScript(selectedScript));
-            const app = new ApplicationStub().withAction(category);
-            const sut = new UserSelection(app, [ new SelectedScript(selectedScript, false) ]);
+            const collection = new CategoryCollectionStub().withAction(category);
+            const sut = new UserSelection(collection, [ new SelectedScript(selectedScript, false) ]);
             it('areAllSelected returns false', () => {
                 // act
                 const actual = sut.areAllSelected(category);
@@ -362,8 +362,8 @@ describe('UserSelection', () => {
             const category = new CategoryStub(1)
                 .withScript(firstSelectedScript)
                 .withCategory(new CategoryStub(12).withScript(secondSelectedScript));
-            const app = new ApplicationStub().withAction(category);
-            const sut = new UserSelection(app,
+            const collection = new CategoryCollectionStub().withAction(category);
+            const sut = new UserSelection(collection,
                 [ firstSelectedScript, secondSelectedScript ].map((s) => new SelectedScript(s, false)));
             it('areAllSelected returns true', () => {
                 // act
@@ -378,6 +378,5 @@ describe('UserSelection', () => {
                 expect(actual).to.equal(true);
             });
         });
-
     });
 });

@@ -1,19 +1,19 @@
-import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
-import { ApplicationCode } from '@/application/Context/State/Code/ApplicationCode';
-import { ScriptStub } from '../../../stubs/ScriptStub';
-import { CategoryStub } from '../../../stubs/CategoryStub';
-import { ApplicationStub } from '../../../stubs/ApplicationStub';
 import 'mocha';
 import { expect } from 'chai';
-import { ApplicationState } from '@/application/Context/State/ApplicationState';
+import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
+import { ApplicationCode } from '@/application/Context/State/Code/ApplicationCode';
+import { CategoryCollectionState } from '@/application/Context/State/CategoryCollectionState';
 import { IScript } from '@/domain/IScript';
+import { ScriptStub } from '../../../stubs/ScriptStub';
+import { CategoryStub } from '../../../stubs/CategoryStub';
+import { CategoryCollectionStub } from '../../../stubs/CategoryCollectionStub';
 
-describe('ApplicationState', () => {
+describe('CategoryCollectionState', () => {
     describe('code', () => {
         it('initialized with empty code', () => {
             // arrange
-            const app = new ApplicationStub();
-            const sut = new ApplicationState(app);
+            const collection = new CategoryCollectionStub();
+            const sut = new CategoryCollectionState(collection);
             // act
             const code = sut.code.current;
             // assert
@@ -21,13 +21,13 @@ describe('ApplicationState', () => {
         });
         it('reacts to selection changes as expected', () => {
             // arrange
-            const app = new ApplicationStub().withAction(new CategoryStub(0).withScriptIds('scriptId'));
-            const selectionStub = new UserSelection(app, []);
-            const expectedCodeGenerator = new ApplicationCode(selectionStub, app.scripting);
+            const collection = new CategoryCollectionStub().withAction(new CategoryStub(0).withScriptIds('scriptId'));
+            const selectionStub = new UserSelection(collection, []);
+            const expectedCodeGenerator = new ApplicationCode(selectionStub, collection.scripting);
             selectionStub.selectAll();
             const expectedCode = expectedCodeGenerator.current;
             // act
-            const sut = new ApplicationState(app);
+            const sut = new CategoryCollectionState(collection);
             sut.selection.selectAll();
             const actualCode = sut.code.current;
             // assert
@@ -37,18 +37,19 @@ describe('ApplicationState', () => {
     describe('selection', () => {
         it('initialized with no selection', () => {
             // arrange
-            const app = new ApplicationStub();
-            const sut = new ApplicationState(app);
+            const collection = new CategoryCollectionStub();
+            const sut = new CategoryCollectionState(collection);
             // act
             const actual = sut.selection.totalSelected;
             // assert
             expect(actual).to.equal(0);
         });
-        it('can select a script from current application', () => {
+        it('can select a script from current collection', () => {
             // arrange
             const expectedScript = new ScriptStub('scriptId');
-            const app = new ApplicationStub().withAction(new CategoryStub(0).withScript(expectedScript));
-            const sut = new ApplicationState(app);
+            const collection = new CategoryCollectionStub()
+                .withAction(new CategoryStub(0).withScript(expectedScript));
+            const sut = new CategoryCollectionState(collection);
             // act
             sut.selection.selectAll();
             // assert
@@ -59,20 +60,20 @@ describe('ApplicationState', () => {
     describe('filter', () => {
         it('initialized with an empty filter', () => {
             // arrange
-            const app = new ApplicationStub();
-            const sut = new ApplicationState(app);
+            const collection = new CategoryCollectionStub();
+            const sut = new CategoryCollectionState(collection);
             // act
             const actual = sut.filter.currentFilter;
             // assert
             expect(actual).to.equal(undefined);
         });
-        it('can match a script from current application', () => {
+        it('can match a script from current collection', () => {
             // arrange
             const scriptNameFilter = 'scriptName';
             const expectedScript = new ScriptStub('scriptId').withName(scriptNameFilter);
-            const app = new ApplicationStub()
+            const collection = new CategoryCollectionStub()
                 .withAction(new CategoryStub(0).withScript(expectedScript));
-            const sut = new ApplicationState(app);
+            const sut = new CategoryCollectionState(collection);
             // act
             let actualScript: IScript;
             sut.filter.filtered.on((result) => actualScript = result.scriptMatches[0]);

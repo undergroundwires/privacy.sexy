@@ -74,7 +74,7 @@
 
         public async mounted() {
             const context = await this.getCurrentContextAsync();
-            this.repositoryUrl = context.app.info.repositoryWebUrl;
+            this.repositoryUrl = context.collection.info.repositoryWebUrl;
             const filter = context.state.filter;
             filter.filterRemoved.on(() => {
                 this.isSearching = false;

@@ -19,7 +19,7 @@
   import { StatefulVue } from '@/presentation/StatefulVue';
   import { IScript } from '@/domain/IScript';
   import { ICategory } from '@/domain/ICategory';
-  import { IApplicationState } from '@/application/Context/State/IApplicationState';
+  import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
   import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
   import { parseAllCategories, parseSingleCategory, getScriptNodeId, getCategoryNodeId, getCategoryId, getScriptId } from './ScriptNodeParser';
   import SelectableTree from './SelectableTree/SelectableTree.vue';
@@ -65,9 +65,9 @@
     public async initializeNodesAsync(categoryId?: number) {
       const context = await this.getCurrentContextAsync();
       if (categoryId) {
-        this.nodes = parseSingleCategory(categoryId, context.app);
+        this.nodes = parseSingleCategory(categoryId, context.collection);
       } else {
-        this.nodes = parseAllCategories(context.app);
+        this.nodes = parseAllCategories(context.collection);
       }
       this.selectedNodeIds = context.state.selection.selectedScripts
         .map((selected) => getScriptNodeId(selected.script));
@@ -80,13 +80,13 @@
           (category: ICategory) => node.id === getCategoryNodeId(category));
     }
 
-    private beginReactingToStateChanges(state: IApplicationState) {
+    private beginReactingToStateChanges(state: ICategoryCollectionState) {
       state.selection.changed.on(this.handleSelectionChanged);
       state.filter.filterRemoved.on(this.handleFilterRemoved);
       state.filter.filtered.on(this.handleFiltered);
     }
 
-    private setInitialState(state: IApplicationState) {
+    private setInitialState(state: ICategoryCollectionState) {
         this.initializeNodesAsync(this.categoryId);
         this.initializeFilter(state.filter.currentFilter);
     }
@@ -114,7 +114,7 @@
     }
   }
 
-  function toggleCategoryNodeSelection(event: INodeSelectedEvent, state: IApplicationState): void {
+  function toggleCategoryNodeSelection(event: INodeSelectedEvent, state: ICategoryCollectionState): void {
     const categoryId = getCategoryId(event.node.id);
     if (event.isSelected) {
       state.selection.addOrUpdateAllInCategory(categoryId, false);
@@ -122,7 +122,7 @@
       state.selection.removeAllInCategory(categoryId);
     }
   }
-  function toggleScriptNodeSelection(event: INodeSelectedEvent, state: IApplicationState): void {
+  function toggleScriptNodeSelection(event: INodeSelectedEvent, state: ICategoryCollectionState): void {
     const scriptId = getScriptId(event.node.id);
     const actualToggleState = state.selection.isSelected(scriptId);
     const targetToggleState = event.isSelected;

@@ -48,8 +48,8 @@ export default class TheFooter extends StatefulVue {
 
   public async mounted() {
     const context = await this.getCurrentContextAsync();
-    this.repositoryUrl = context.app.info.repositoryWebUrl;
-    this.feedbackUrl = context.app.info.feedbackUrl;
+    this.repositoryUrl = context.collection.info.repositoryWebUrl;
+    this.feedbackUrl = context.collection.info.feedbackUrl;
   }
 }
 </script>

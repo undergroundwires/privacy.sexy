@@ -1,6 +1,6 @@
 import { IEntity } from '@/infrastructure/Entity/IEntity';
 import applicationFile, { YamlCategory, YamlScript, YamlApplication, YamlScriptingDefinition } from 'js-yaml-loader!@/application/application.yaml';
-import { parseApplication } from '@/application/Parser/ApplicationParser';
+import { parseCategoryCollection } from '@/application/Parser/CategoryCollectionParser';
 import 'mocha';
 import { expect } from 'chai';
 import { parseCategory } from '@/application/Parser/CategoryParser';
@@ -12,47 +12,49 @@ import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { parseScriptingDefinition } from '@/application/Parser/ScriptingDefinitionParser';
 import { mockEnumParser } from '../../stubs/EnumParserStub';
 
-describe('ApplicationParser', () => {
-    describe('parseApplication', () => {
+describe('CategoryCollectionParser', () => {
+    describe('parseCategoryCollection', () => {
         it('can parse current application file', () => {
             // act
-            const act = () => parseApplication(applicationFile);
+            const act = () => parseCategoryCollection(applicationFile);
             // assert
             expect(act).to.not.throw();
         });
         it('throws when undefined', () => {
             // arrange
-            const expectedError = 'application is null or undefined';
+            const expectedError = 'content is null or undefined';
             // act
-            const act = () => parseApplication(undefined);
+            const act = () => parseCategoryCollection(undefined);
             // assert
             expect(act).to.throw(expectedError);
         });
         describe('actions', () => {
             it('throws when undefined actions', () => {
                 // arrange
-                const app = new YamlApplicationBuilder().withActions(undefined).build();
+                const expectedError = 'content does not define any action';
+                const collection = new YamlApplicationBuilder().withActions(undefined).build();
                 // act
-                const act = () => parseApplication(app);
+                const act = () => parseCategoryCollection(collection);
                 // assert
-                expect(act).to.throw('application does not define any action');
+                expect(act).to.throw(expectedError);
             });
             it('throws when has no actions', () => {
                 // arrange
-                const app = new YamlApplicationBuilder().withActions([]).build();
+                const expectedError = 'content does not define any action';
+                const collection = new YamlApplicationBuilder().withActions([]).build();
                 // act
-                const act = () => parseApplication(app);
+                const act = () => parseCategoryCollection(collection);
                 // assert
-                expect(act).to.throw('application does not define any action');
+                expect(act).to.throw(expectedError);
             });
             it('parses actions', () => {
                 // arrange
                 const actions = [ getTestCategory('test1'), getTestCategory('test2') ];
                 const compiler = new ScriptCompilerStub();
                 const expected = [ parseCategory(actions[0], compiler), parseCategory(actions[1], compiler) ];
-                const app = new YamlApplicationBuilder().withActions(actions).build();
+                const collection = new YamlApplicationBuilder().withActions(actions).build();
                 // act
-                const actual = parseApplication(app).actions;
+                const actual = parseCategoryCollection(collection).actions;
                 // assert
                 expect(excludingId(actual)).to.be.deep.equal(excludingId(expected));
                 function excludingId<TId>(array: ReadonlyArray<IEntity<TId>>) {
@@ -69,9 +71,9 @@ describe('ApplicationParser', () => {
                 const expected = 'expected-version';
                 const env = getProcessEnvironmentStub();
                 env.VUE_APP_VERSION = expected;
-                const app = new YamlApplicationBuilder().build();
+                const collection = new YamlApplicationBuilder().build();
                 // act
-                const actual = parseApplication(app, env).info.version;
+                const actual = parseCategoryCollection(collection, env).info.version;
                 // assert
                 expect(actual).to.be.equal(expected);
             });
@@ -80,9 +82,9 @@ describe('ApplicationParser', () => {
                 const expected = 'https://expected-repository.url';
                 const env = getProcessEnvironmentStub();
                 env.VUE_APP_REPOSITORY_URL = expected;
-                const app = new YamlApplicationBuilder().build();
+                const collection = new YamlApplicationBuilder().build();
                 // act
-                const actual = parseApplication(app, env).info.repositoryUrl;
+                const actual = parseCategoryCollection(collection, env).info.repositoryUrl;
                 // assert
                 expect(actual).to.be.equal(expected);
             });
@@ -91,9 +93,9 @@ describe('ApplicationParser', () => {
                 const expected = 'expected-app-name';
                 const env = getProcessEnvironmentStub();
                 env.VUE_APP_NAME = expected;
-                const app = new YamlApplicationBuilder().build();
+                const collection = new YamlApplicationBuilder().build();
                 // act
-                const actual = parseApplication(app, env).info.name;
+                const actual = parseCategoryCollection(collection, env).info.name;
                 // assert
                 expect(actual).to.be.equal(expected);
             });
@@ -102,9 +104,9 @@ describe('ApplicationParser', () => {
                 const expected = 'https://expected.sexy';
                 const env = getProcessEnvironmentStub();
                 env.VUE_APP_HOMEPAGE_URL = expected;
-                const app = new YamlApplicationBuilder().build();
+                const collection = new YamlApplicationBuilder().build();
                 // act
-                const actual = parseApplication(app, env).info.homepage;
+                const actual = parseCategoryCollection(collection, env).info.homepage;
                 // assert
                 expect(actual).to.be.equal(expected);
             });
@@ -112,11 +114,11 @@ describe('ApplicationParser', () => {
         describe('scripting definition', () => {
             it('parses scripting definition as expected', () => {
                 // arrange
-                const app = new YamlApplicationBuilder().build();
+                const collection = new YamlApplicationBuilder().build();
                 const information = parseProjectInformation(process.env);
-                const expected = parseScriptingDefinition(app.scripting, information);
+                const expected = parseScriptingDefinition(collection.scripting, information);
                 // act
-                const actual = parseApplication(app).scripting;
+                const actual = parseCategoryCollection(collection).scripting;
                 // assert
                 expect(expected).to.deep.equal(actual);
             });
@@ -127,13 +129,13 @@ describe('ApplicationParser', () => {
                 const expectedOs = OperatingSystem.macOS;
                 const osText = 'macos';
                 const expectedName = 'os';
-                const app = new YamlApplicationBuilder()
+                const collection = new YamlApplicationBuilder()
                     .withOs(osText)
                     .build();
                 const parserMock = mockEnumParser(expectedName, osText, expectedOs);
                 const env = getProcessEnvironmentStub();
                 // act
-                const actual = parseApplication(app, env, parserMock);
+                const actual = parseCategoryCollection(collection, env, parserMock);
                 // assert
                 expect(actual.os).to.equal(expectedOs);
             });

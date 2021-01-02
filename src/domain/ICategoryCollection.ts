@@ -1,14 +1,13 @@
+import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import { OperatingSystem } from '@/domain/OperatingSystem';
+import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { IScript } from '@/domain/IScript';
 import { ICategory } from '@/domain/ICategory';
-import { IProjectInformation } from './IProjectInformation';
-import { RecommendationLevel } from './RecommendationLevel';
-import { OperatingSystem } from './OperatingSystem';
-import { IScriptingDefinition } from './IScriptingDefinition';
+import { IProjectInformation } from '@/domain/IProjectInformation';
 
-export interface IApplication {
+export interface ICategoryCollection {
     readonly info: IProjectInformation;
     readonly scripting: IScriptingDefinition;
-
     readonly os: OperatingSystem;
     readonly totalScripts: number;
     readonly totalCategories: number;
@@ -20,6 +19,3 @@ export interface IApplication {
     getAllScripts(): ReadonlyArray<IScript>;
     getAllCategories(): ReadonlyArray<ICategory>;
 }
-
-export { IScript } from '@/domain/IScript';
-export { ICategory } from '@/domain/ICategory';

@@ -1,8 +1,5 @@
 import 'mocha';
 import { expect } from 'chai';
-import { CategoryStub } from '../../../../stubs/CategoryStub';
-import { ScriptStub } from '../../../../stubs/ScriptStub';
-import { ApplicationStub } from '../../../../stubs/ApplicationStub';
 import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
 import { ApplicationCode } from '@/application/Context/State/Code/ApplicationCode';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
@@ -10,9 +7,12 @@ import { ICodeChangedEvent } from '@/application/Context/State/Code/Event/ICodeC
 import { IUserScriptGenerator } from '@/application/Context/State/Code/Generation/IUserScriptGenerator';
 import { CodePosition } from '@/application/Context/State/Code/Position/CodePosition';
 import { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
-import { ScriptingDefinitionStub } from '../../../../stubs/ScriptingDefinitionStub';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { IUserScript } from '@/application/Context/State/Code/Generation/IUserScript';
+import { ScriptingDefinitionStub } from '../../../../stubs/ScriptingDefinitionStub';
+import { CategoryStub } from '../../../../stubs/CategoryStub';
+import { ScriptStub } from '../../../../stubs/ScriptStub';
+import { CategoryCollectionStub } from '../../../../stubs/CategoryCollectionStub';
 
 // TODO: Test scriptingDefinition: IScriptingDefinition logic
 
@@ -20,7 +20,7 @@ describe('ApplicationCode', () => {
     describe('ctor', () => {
         it('empty when selection is empty', () => {
             // arrange
-            const selection = new UserSelection(new ApplicationStub(), []);
+            const selection = new UserSelection(new CategoryCollectionStub(), []);
             const definition = new ScriptingDefinitionStub();
             const sut = new ApplicationCode(selection, definition);
             // act
@@ -31,8 +31,8 @@ describe('ApplicationCode', () => {
         it('generates code from script generator when selection is not empty', () => {
             // arrange
             const scripts = [new ScriptStub('first'), new ScriptStub('second')];
-            const app = new ApplicationStub().withAction(new CategoryStub(1).withScripts(...scripts));
-            const selection = new UserSelection(app, scripts.map((script) => script.toSelectedScript()));
+            const collection = new CategoryCollectionStub().withAction(new CategoryStub(1).withScripts(...scripts));
+            const selection = new UserSelection(collection, scripts.map((script) => script.toSelectedScript()));
             const definition = new ScriptingDefinitionStub();
             const expected: IUserScript = {
                 code: 'expected-code',
@@ -53,8 +53,9 @@ describe('ApplicationCode', () => {
                 // arrange
                 let signaled: ICodeChangedEvent;
                 const scripts = [new ScriptStub('first'), new ScriptStub('second')];
-                const app = new ApplicationStub().withAction(new CategoryStub(1).withScripts(...scripts));
-                const selection = new UserSelection(app, scripts.map((script) => new SelectedScript(script, false)));
+                const collection = new CategoryCollectionStub().withAction(new CategoryStub(1).withScripts(...scripts));
+                const scriptsToSelect = scripts.map((script) => new SelectedScript(script, false));
+                const selection = new UserSelection(collection, scriptsToSelect);
                 const definition = new ScriptingDefinitionStub();
                 const sut = new ApplicationCode(selection, definition);
                 sut.changed.on((code) => signaled = code);
@@ -68,8 +69,9 @@ describe('ApplicationCode', () => {
                 // arrange
                 let signaled: ICodeChangedEvent;
                 const scripts = [new ScriptStub('first'), new ScriptStub('second')];
-                const app = new ApplicationStub().withAction(new CategoryStub(1).withScripts(...scripts));
-                const selection = new UserSelection(app, scripts.map((script) => new SelectedScript(script, false)));
+                const collection = new CategoryCollectionStub().withAction(new CategoryStub(1).withScripts(...scripts));
+                const scriptsToSelect = scripts.map((script) => new SelectedScript(script, false));
+                const selection = new UserSelection(collection, scriptsToSelect);
                 const definition = new ScriptingDefinitionStub();
                 const sut = new ApplicationCode(selection, definition);
                 sut.changed.on((code) => signaled = code);
@@ -84,8 +86,8 @@ describe('ApplicationCode', () => {
             it('sends scripting definition to generator', () => {
                 // arrange
                 const expectedDefinition = new ScriptingDefinitionStub();
-                const app = new ApplicationStub();
-                const selection = new UserSelection(app, []);
+                const collection = new CategoryCollectionStub();
+                const selection = new UserSelection(collection, []);
                 const generatorMock: IUserScriptGenerator = {
                     buildCode: (selectedScripts, definition) => {
                         if (definition !== expectedDefinition) {
@@ -108,9 +110,9 @@ describe('ApplicationCode', () => {
                 // arrange
                 const expectedDefinition = new ScriptingDefinitionStub();
                 const scripts = [new ScriptStub('first'), new ScriptStub('second')];
-                const app = new ApplicationStub().withAction(new CategoryStub(1).withScripts(...scripts));
-                const selection = new UserSelection(app, scripts.map((script) => new SelectedScript(script, false)));
-                const scriptsToSelect = scripts.map((s) => new SelectedScript(s, false));
+                const collection = new CategoryCollectionStub().withAction(new CategoryStub(1).withScripts(...scripts));
+                const scriptsToSelect = scripts.map((script) => new SelectedScript(script, false));
+                const selection = new UserSelection(collection, scriptsToSelect);
                 const generatorMock: IUserScriptGenerator = {
                     buildCode: (selectedScripts) => {
                         if (JSON.stringify(selectedScripts) !== JSON.stringify(scriptsToSelect)) {
@@ -133,10 +135,11 @@ describe('ApplicationCode', () => {
                 // arrange
                 let signaled: ICodeChangedEvent;
                 const scripts = [new ScriptStub('first'), new ScriptStub('second')];
-                const app = new ApplicationStub().withAction(new CategoryStub(1).withScripts(...scripts));
-                const selection = new UserSelection(app, scripts.map((script) => new SelectedScript(script, false)));
+                const collection = new CategoryCollectionStub()
+                    .withAction(new CategoryStub(1).withScripts(...scripts));
+                const scriptsToSelect = scripts.map((script) => new SelectedScript(script, false));
+                const selection = new UserSelection(collection, scriptsToSelect);
                 const scriptingDefinition = new ScriptingDefinitionStub();
-                const scriptsToSelect = scripts.map((s) => new SelectedScript(s, false));
                 const totalLines = 20;
                 const expected = new Map<SelectedScript, ICodePosition>(
                     [

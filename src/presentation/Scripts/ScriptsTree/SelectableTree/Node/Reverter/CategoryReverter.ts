@@ -1,16 +1,16 @@
 import { IReverter } from './IReverter';
 import { getCategoryId } from '../../../ScriptNodeParser';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
-import { IApplication } from '@/domain/IApplication';
 import { ScriptReverter } from './ScriptReverter';
 import { IUserSelection } from '@/application/Context/State/Selection/IUserSelection';
+import { ICategoryCollection } from '@/domain/ICategoryCollection';
 
 export class CategoryReverter implements IReverter {
     private readonly categoryId: number;
     private readonly scriptReverters: ReadonlyArray<ScriptReverter>;
-    constructor(nodeId: string, app: IApplication) {
+    constructor(nodeId: string, collection: ICategoryCollection) {
         this.categoryId = getCategoryId(nodeId);
-        this.scriptReverters = getAllSubScriptReverters(this.categoryId, app);
+        this.scriptReverters = getAllSubScriptReverters(this.categoryId, collection);
     }
     public getState(selectedScripts: ReadonlyArray<SelectedScript>): boolean {
         return this.scriptReverters.every((script) => script.getState(selectedScripts));
@@ -20,8 +20,8 @@ export class CategoryReverter implements IReverter {
     }
 }
 
-function getAllSubScriptReverters(categoryId: number, app: IApplication) {
-    const category = app.findCategory(categoryId);
+function getAllSubScriptReverters(categoryId: number, collection: ICategoryCollection) {
+    const category = collection.findCategory(categoryId);
     if (!category) {
         throw new Error(`Category with id "${categoryId}" does not exist`);
     }

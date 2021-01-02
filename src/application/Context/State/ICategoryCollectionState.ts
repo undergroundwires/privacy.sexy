@@ -3,7 +3,7 @@ import { IUserSelection } from './Selection/IUserSelection';
 import { IApplicationCode } from './Code/IApplicationCode';
 export { IUserSelection, IApplicationCode, IUserFilter };
 
-export interface IApplicationState {
+export interface ICategoryCollectionState {
     readonly code: IApplicationCode;
     readonly filter: IUserFilter;
     readonly selection: IUserSelection;

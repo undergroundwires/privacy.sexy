@@ -1,11 +1,13 @@
 import { ScriptingDefinitionStub } from './ScriptingDefinitionStub';
-import { IApplication, ICategory, IScript } from '@/domain/IApplication';
 import { ProjectInformation } from '@/domain/ProjectInformation';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { ScriptStub } from './ScriptStub';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import { IScript } from '@/domain/IScript';
+import { ICategory } from '@/domain/ICategory';
+import { ICategoryCollection } from '@/domain/ICategoryCollection';
 
-export class ApplicationStub implements IApplication {
+export class CategoryCollectionStub implements ICategoryCollection {
     public scripting: IScriptingDefinition = new ScriptingDefinitionStub();
     public os = OperatingSystem.Linux;
     public initialScript: IScript = new ScriptStub('55');
@@ -14,19 +16,19 @@ export class ApplicationStub implements IApplication {
     public readonly info = new ProjectInformation('StubApplication', '0.1.0', 'https://github.com/undergroundwires/privacy.sexy', 'https://privacy.sexy');
     public readonly actions = new Array<ICategory>();
 
-    public withAction(category: ICategory): ApplicationStub {
+    public withAction(category: ICategory): CategoryCollectionStub {
         this.actions.push(category);
         return this;
     }
-    public withOs(os: OperatingSystem): ApplicationStub {
+    public withOs(os: OperatingSystem): CategoryCollectionStub {
         this.os = os;
         return this;
     }
-    public withScripting(scripting: IScriptingDefinition): ApplicationStub {
+    public withScripting(scripting: IScriptingDefinition): CategoryCollectionStub {
         this.scripting = scripting;
         return this;
     }
-    public withInitialScript(script: IScript): ApplicationStub {
+    public withInitialScript(script: IScript): CategoryCollectionStub {
         this.initialScript = script;
         return this;
     }

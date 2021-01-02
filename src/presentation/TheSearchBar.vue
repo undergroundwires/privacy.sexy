@@ -13,7 +13,7 @@
 import { Component, Watch } from 'vue-property-decorator';
 import { StatefulVue } from './StatefulVue';
 import { NonCollapsing } from '@/presentation/Scripts/Cards/NonCollapsingDirective';
-import { IUserFilter } from '@/application/Context/State/IApplicationState';
+import { IUserFilter } from '@/application/Context/State/ICategoryCollectionState';
 
 @Component( {
     directives: { NonCollapsing },
@@ -25,7 +25,7 @@ export default class TheSearchBar extends StatefulVue {
 
   public async mounted() {
     const context = await this.getCurrentContextAsync();
-    const totalScripts = context.app.totalScripts;
+    const totalScripts = context.collection.totalScripts;
     this.searchPlaceHolder = `Search in ${totalScripts} scripts`;
     this.beginReacting(context.state.filter);
   }

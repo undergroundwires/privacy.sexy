@@ -39,7 +39,7 @@ export default class DownloadUrlListItem extends StatefulVue {
 
   private async getDownloadUrlAsync(os: OperatingSystem): Promise<string> {
     const context = await this.getCurrentContextAsync();
-    return context.app.info.getDownloadUrl(os);
+    return context.collection.info.getDownloadUrl(os);
   }
 }
 

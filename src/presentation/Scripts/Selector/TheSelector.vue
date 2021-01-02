@@ -105,13 +105,13 @@ const selectors = new Map<SelectionState, ITypeSelector>([
     [SelectionState.Standard, {
         select: (context) =>
             context.state.selection.selectOnly(
-                context.app.getScriptsByLevel(RecommendationLevel.Standard)),
+                context.collection.getScriptsByLevel(RecommendationLevel.Standard)),
         isSelected: (context) =>
             hasAllSelectedLevelOf(RecommendationLevel.Standard, context),
     }],
     [SelectionState.Strict, {
         select: (context) =>
-            context.state.selection.selectOnly(context.app.getScriptsByLevel(RecommendationLevel.Strict)),
+            context.state.selection.selectOnly(context.collection.getScriptsByLevel(RecommendationLevel.Strict)),
         isSelected: (context) =>
             hasAllSelectedLevelOf(RecommendationLevel.Strict, context),
     }],
@@ -119,7 +119,7 @@ const selectors = new Map<SelectionState, ITypeSelector>([
         select: (context) =>
             context.state.selection.selectAll(),
         isSelected: (context) =>
-            context.state.selection.totalSelected === context.app.totalScripts,
+            context.state.selection.totalSelected === context.collection.totalScripts,
     }],
 ]);
 
@@ -138,7 +138,7 @@ function getCurrentSelectionState(context: IApplicationContext): SelectionState 
 }
 
 function hasAllSelectedLevelOf(level: RecommendationLevel, context: IApplicationContext) {
-    const scripts = context.app.getScriptsByLevel(level);
+    const scripts = context.collection.getScriptsByLevel(level);
     const selectedScripts = context.state.selection.selectedScripts;
     return areAllSelected(scripts, selectedScripts);
 }

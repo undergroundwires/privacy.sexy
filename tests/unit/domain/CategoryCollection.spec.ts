@@ -1,18 +1,18 @@
-import { ScriptStub } from './../stubs/ScriptStub';
-import { CategoryStub } from './../stubs/CategoryStub';
-import { Application } from '@/domain/Application';
+import { ScriptStub } from '../stubs/ScriptStub';
+import { CategoryStub } from '../stubs/CategoryStub';
 import 'mocha';
 import { expect } from 'chai';
 import { ProjectInformation } from '@/domain/ProjectInformation';
 import { IProjectInformation } from '@/domain/IProjectInformation';
-import { ICategory } from '@/domain/IApplication';
+import { ICategory } from '@/domain/ICategory';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { getEnumValues } from '@/application/Common/Enum';
+import { CategoryCollection } from '../../../src/domain/CategoryCollection';
 
-describe('Application', () => {
+describe('CategoryCollection', () => {
     describe('getScriptsByLevel', () => {
         it('filters out scripts without levels', () => {
             // arrange
@@ -25,7 +25,9 @@ describe('Application', () => {
                 const category = new CategoryStub(0)
                     .withScripts(...scriptsWithLevels)
                     .withScript(toIgnore);
-                const sut = new ApplicationBuilder().withActions([category]).construct();
+                const sut = new CategoryCollectionBuilder()
+                    .withActions([category])
+                    .construct();
                 // act
                 const actual = sut.getScriptsByLevel(currentLevel);
                 // assert
@@ -43,7 +45,9 @@ describe('Application', () => {
                 new CategoryStub(3).withScripts(...expected,
                     new ScriptStub('S3').withLevel(RecommendationLevel.Strict)),
             ];
-            const sut = new ApplicationBuilder().withActions(actions).construct();
+            const sut = new CategoryCollectionBuilder()
+                .withActions(actions)
+                .construct();
             // act
             const actual = sut.getScriptsByLevel(level);
             // assert
@@ -59,7 +63,9 @@ describe('Application', () => {
             const actions = [
                 new CategoryStub(3).withScripts(...expected),
             ];
-            const sut = new ApplicationBuilder().withActions(actions).construct();
+            const sut = new CategoryCollectionBuilder()
+                .withActions(actions)
+                .construct();
             // act
             const actual = sut.getScriptsByLevel(level);
             // assert
@@ -67,7 +73,8 @@ describe('Application', () => {
         });
         it('throws when level is undefined', () => {
             // arrange
-            const sut = new ApplicationBuilder().construct();
+            const sut = new CategoryCollectionBuilder()
+                .construct();
             // act
             const act = () => sut.getScriptsByLevel(undefined);
             // assert
@@ -76,7 +83,8 @@ describe('Application', () => {
         it('throws when level is out of range', () => {
             // arrange
             const invalidValue = 66;
-            const sut = new ApplicationBuilder().construct();
+            const sut = new CategoryCollectionBuilder()
+                .construct();
             // act
             const act = () => sut.getScriptsByLevel(invalidValue);
             // assert
@@ -89,10 +97,12 @@ describe('Application', () => {
             const categories = [];
             // act
             function construct() {
-                new ApplicationBuilder().withActions(categories).construct();
+                new CategoryCollectionBuilder()
+                    .withActions(categories)
+                    .construct();
              }
             // assert
-            expect(construct).to.throw('Application must consist of at least one category');
+            expect(construct).to.throw('must consist of at least one category');
         });
         it('cannot construct without scripts', () => {
             // arrange
@@ -102,10 +112,12 @@ describe('Application', () => {
             ];
             // act
             function construct() {
-                new ApplicationBuilder().withActions(categories).construct();
+                new CategoryCollectionBuilder()
+                    .withActions(categories)
+                    .construct();
             }
             // assert
-            expect(construct).to.throw('Application must consist of at least one script');
+            expect(construct).to.throw('must consist of at least one script');
         });
         describe('cannot construct without any recommended scripts', () => {
             // arrange
@@ -119,7 +131,7 @@ describe('Application', () => {
                             new ScriptStub(`Script${index}`).withLevel(level),
                         ));
                     // act
-                    const construct = () => new ApplicationBuilder()
+                    const construct = () => new CategoryCollectionBuilder()
                         .withActions(categories)
                         .construct();
                     // assert
@@ -141,7 +153,9 @@ describe('Application', () => {
                     new CategoryStub(4).withScripts(new ScriptStub('S4'))),
             ];
             // act
-            const sut = new ApplicationBuilder().withActions(categories).construct();
+            const sut = new CategoryCollectionBuilder()
+                .withActions(categories)
+                .construct();
             // assert
             expect(sut.totalScripts).to.equal(4);
         });
@@ -156,7 +170,7 @@ describe('Application', () => {
                 new CategoryStub(3).withCategories(new CategoryStub(4).withScripts(new ScriptStub('S4'))),
             ];
             // act
-            const sut = new ApplicationBuilder()
+            const sut = new CategoryCollectionBuilder()
                 .withActions(categories)
                 .construct();
             // assert
@@ -169,7 +183,9 @@ describe('Application', () => {
             const expected = new ProjectInformation(
                 'expected-name', 'expected-repo', '0.31.0', 'expected-homepage');
             // act
-            const sut = new ApplicationBuilder().withInfo(expected).construct();
+            const sut = new CategoryCollectionBuilder()
+                .withInfo(expected)
+                .construct();
             // assert
             expect(sut.info).to.deep.equal(expected);
         });
@@ -178,7 +194,9 @@ describe('Application', () => {
             const information = undefined;
             // act
             function construct() {
-                return new ApplicationBuilder().withInfo(information).construct();
+                return new CategoryCollectionBuilder()
+                    .withInfo(information)
+                    .construct();
             }
             // assert
             expect(construct).to.throw('undefined info');
@@ -189,7 +207,9 @@ describe('Application', () => {
             // arrange
             const expected = OperatingSystem.macOS;
             // act
-            const sut = new ApplicationBuilder().withOs(expected).construct();
+            const sut = new CategoryCollectionBuilder()
+                .withOs(expected)
+                .construct();
             // assert
             expect(sut.os).to.deep.equal(expected);
         });
@@ -197,7 +217,9 @@ describe('Application', () => {
             // arrange
             const os = OperatingSystem.Unknown;
             // act
-            const construct = () => new ApplicationBuilder().withOs(os).construct();
+            const construct = () => new CategoryCollectionBuilder()
+                .withOs(os)
+                .construct();
             // assert
             expect(construct).to.throw('unknown os');
         });
@@ -205,7 +227,9 @@ describe('Application', () => {
             // arrange
             const os = undefined;
             // act
-            const construct = () => new ApplicationBuilder().withOs(os).construct();
+            const construct = () => new CategoryCollectionBuilder()
+                .withOs(os)
+                .construct();
             // assert
             expect(construct).to.throw('undefined os');
         });
@@ -213,7 +237,9 @@ describe('Application', () => {
             // arrange
             const os: OperatingSystem = 666;
             // act
-            const construct = () => new ApplicationBuilder().withOs(os).construct();
+            const construct = () => new CategoryCollectionBuilder()
+                .withOs(os)
+                .construct();
             // assert
             expect(construct).to.throw(`os "${os}" is out of range`);
         });
@@ -223,7 +249,9 @@ describe('Application', () => {
             // arrange
             const expected = getValidScriptingDefinition();
             // act
-            const sut = new ApplicationBuilder().withScripting(expected).construct();
+            const sut = new CategoryCollectionBuilder()
+                .withScripting(expected)
+                .construct();
             // assert
             expect(sut.scripting).to.deep.equal(expected);
         });
@@ -232,7 +260,9 @@ describe('Application', () => {
             const scriptingDefinition = undefined;
             // act
             function construct() {
-                return new ApplicationBuilder().withScripting(scriptingDefinition).construct();
+                return new CategoryCollectionBuilder()
+                    .withScripting(scriptingDefinition)
+                    .construct();
             }
             // assert
             expect(construct).to.throw('undefined scripting definition');
@@ -249,7 +279,7 @@ function getValidScriptingDefinition(): IScriptingDefinition {
     };
 }
 
-class ApplicationBuilder {
+class CategoryCollectionBuilder {
     private os = OperatingSystem.Windows;
     private info = new ProjectInformation('name', 'repo', '0.1.0', 'homepage');
     private actions: readonly ICategory[] = [
@@ -258,23 +288,23 @@ class ApplicationBuilder {
             new ScriptStub('S2').withLevel(RecommendationLevel.Strict)),
     ];
     private script: IScriptingDefinition = getValidScriptingDefinition();
-    public withOs(os: OperatingSystem): ApplicationBuilder {
+    public withOs(os: OperatingSystem): CategoryCollectionBuilder {
         this.os = os;
         return this;
     }
-    public withInfo(info: IProjectInformation) {
+    public withInfo(info: IProjectInformation): CategoryCollectionBuilder {
         this.info = info;
         return this;
     }
-    public withActions(actions: readonly ICategory[]) {
+    public withActions(actions: readonly ICategory[]): CategoryCollectionBuilder {
         this.actions = actions;
         return this;
     }
-    public withScripting(script: IScriptingDefinition) {
+    public withScripting(script: IScriptingDefinition): CategoryCollectionBuilder {
         this.script = script;
         return this;
     }
-    public construct(): Application {
-        return new Application(this.os, this.info, this.actions, this.script);
+    public construct(): CategoryCollection {
+        return new CategoryCollection(this.os, this.info, this.actions, this.script);
     }
 }

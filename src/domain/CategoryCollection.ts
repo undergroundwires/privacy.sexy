@@ -2,17 +2,17 @@ import { getEnumNames, getEnumValues } from '@/application/Common/Enum';
 import { IEntity } from '../infrastructure/Entity/IEntity';
 import { ICategory } from './ICategory';
 import { IScript } from './IScript';
-import { IApplication } from './IApplication';
 import { IProjectInformation } from './IProjectInformation';
 import { RecommendationLevel } from './RecommendationLevel';
 import { OperatingSystem } from './OperatingSystem';
 import { IScriptingDefinition } from './IScriptingDefinition';
+import { ICategoryCollection } from './ICategoryCollection';
 
-export class Application implements IApplication {
+export class CategoryCollection implements ICategoryCollection {
     public get totalScripts(): number { return this.queryable.allScripts.length; }
     public get totalCategories(): number { return this.queryable.allCategories.length; }
 
-    private readonly queryable: IQueryableApplication;
+    private readonly queryable: IQueryableCollection;
 
     constructor(
         public readonly os: OperatingSystem,
@@ -89,26 +89,26 @@ function ensureNoDuplicates<TKey>(entities: ReadonlyArray<IEntity<TKey>>) {
     }
 }
 
-interface IQueryableApplication {
+interface IQueryableCollection {
     allCategories: ICategory[];
     allScripts: IScript[];
     scriptsByLevel: Map<RecommendationLevel, readonly IScript[]>;
 }
 
-function ensureValid(application: IQueryableApplication) {
+function ensureValid(application: IQueryableCollection) {
     ensureValidCategories(application.allCategories);
     ensureValidScripts(application.allScripts);
 }
 
 function ensureValidCategories(allCategories: readonly ICategory[]) {
     if (!allCategories || allCategories.length === 0) {
-        throw new Error('Application must consist of at least one category');
+        throw new Error('must consist of at least one category');
     }
 }
 
 function ensureValidScripts(allScripts: readonly IScript[]) {
     if (!allScripts || allScripts.length === 0) {
-        throw new Error('Application must consist of at least one script');
+        throw new Error('must consist of at least one script');
     }
     for (const level of getEnumValues(RecommendationLevel)) {
         if (allScripts.every((script) => script.level !== level)) {
@@ -130,7 +130,7 @@ function flattenApplication(categories: ReadonlyArray<ICategory>): [ICategory[],
 function flattenCategories(
     categories: ReadonlyArray<ICategory>,
     allCategories: ICategory[],
-    allScripts: IScript[]): IQueryableApplication {
+    allScripts: IScript[]): IQueryableCollection {
     if (!categories || categories.length === 0) {
         return;
     }
@@ -153,7 +153,7 @@ function flattenScripts(
 }
 
 function makeQueryable(
-    actions: ReadonlyArray<ICategory>): IQueryableApplication {
+    actions: ReadonlyArray<ICategory>): IQueryableCollection {
     const flattened = flattenApplication(actions);
     return {
         allCategories: flattened[0],

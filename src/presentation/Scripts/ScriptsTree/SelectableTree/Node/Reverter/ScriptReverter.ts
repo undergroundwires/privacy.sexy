@@ -1,7 +1,7 @@
 import { IReverter } from './IReverter';
 import { getScriptId } from '../../../ScriptNodeParser';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
-import { IUserSelection } from '@/application/Context/State/IApplicationState';
+import { IUserSelection } from '@/application/Context/State/ICategoryCollectionState';
 
 export class ScriptReverter implements IReverter {
     private readonly scriptId: string;

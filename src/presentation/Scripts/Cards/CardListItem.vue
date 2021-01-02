@@ -79,7 +79,7 @@ export default class CardListItem extends StatefulVue {
   @Watch('categoryId')
   public async updateStateAsync(value: |number) {
     const context = await this.getCurrentContextAsync();
-    const category = !value ? undefined : context.app.findCategory(this.categoryId);
+    const category = !value ? undefined : context.collection.findCategory(this.categoryId);
     this.cardTitle = category ? category.name : undefined;
     const currentSelection = context.state.selection;
     this.isAnyChildSelected = category ? currentSelection.isAnySelected(category) : false;

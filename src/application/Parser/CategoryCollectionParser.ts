@@ -1,6 +1,4 @@
 import { Category } from '@/domain/Category';
-import { Application } from '@/domain/Application';
-import { IApplication } from '@/domain/IApplication';
 import { YamlApplication } from 'js-yaml-loader!@/application.yaml';
 import { parseCategory } from './CategoryParser';
 import { parseProjectInformation } from './ProjectInformationParser';
@@ -8,11 +6,13 @@ import { ScriptCompiler } from './Compiler/ScriptCompiler';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { parseScriptingDefinition } from './ScriptingDefinitionParser';
 import { createEnumParser } from '../Common/Enum';
+import { ICategoryCollection } from '@/domain/ICategoryCollection';
+import { CategoryCollection } from '@/domain/CategoryCollection';
 
-export function parseApplication(
+export function parseCategoryCollection(
     content: YamlApplication,
     env: NodeJS.ProcessEnv = process.env,
-    osParser = createEnumParser(OperatingSystem)): IApplication {
+    osParser = createEnumParser(OperatingSystem)): ICategoryCollection {
     validate(content);
     const compiler = new ScriptCompiler(content.functions);
     const categories = new Array<Category>();
@@ -23,19 +23,19 @@ export function parseApplication(
     const os = osParser.parseEnum(content.os, 'os');
     const info = parseProjectInformation(env);
     const scripting = parseScriptingDefinition(content.scripting, info);
-    const app = new Application(
+    const collection = new CategoryCollection(
         os,
         info,
         categories,
         scripting);
-    return app;
+    return collection;
 }
 
 function validate(content: YamlApplication): void {
     if (!content) {
-        throw new Error('application is null or undefined');
+        throw new Error('content is null or undefined');
     }
     if (!content.actions || content.actions.length <= 0) {
-        throw new Error('application does not define any action');
+        throw new Error('content does not define any action');
     }
 }
