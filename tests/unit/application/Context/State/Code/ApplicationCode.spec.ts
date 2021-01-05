@@ -14,8 +14,6 @@ import { CategoryStub } from '../../../../stubs/CategoryStub';
 import { ScriptStub } from '../../../../stubs/ScriptStub';
 import { CategoryCollectionStub } from '../../../../stubs/CategoryCollectionStub';
 
-// TODO: Test scriptingDefinition: IScriptingDefinition logic
-
 describe('ApplicationCode', () => {
     describe('ctor', () => {
         it('empty when selection is empty', () => {

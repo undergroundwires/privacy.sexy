@@ -1,5 +1,4 @@
 import { ScriptingDefinitionStub } from './ScriptingDefinitionStub';
-import { ProjectInformation } from '@/domain/ProjectInformation';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { ScriptStub } from './ScriptStub';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
@@ -13,7 +12,6 @@ export class CategoryCollectionStub implements ICategoryCollection {
     public initialScript: IScript = new ScriptStub('55');
     public totalScripts = 0;
     public totalCategories = 0;
-    public readonly info = new ProjectInformation('StubApplication', '0.1.0', 'https://github.com/undergroundwires/privacy.sexy', 'https://privacy.sexy');
     public readonly actions = new Array<ICategory>();
 
     public withAction(category: ICategory): CategoryCollectionStub {

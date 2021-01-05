@@ -3,10 +3,8 @@ import { OperatingSystem } from '@/domain/OperatingSystem';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { IScript } from '@/domain/IScript';
 import { ICategory } from '@/domain/ICategory';
-import { IProjectInformation } from '@/domain/IProjectInformation';
 
 export interface ICategoryCollection {
-    readonly info: IProjectInformation;
     readonly scripting: IScriptingDefinition;
     readonly os: OperatingSystem;
     readonly totalScripts: number;

@@ -65,9 +65,11 @@
     - Desktop application is created using [Electron](https://www.electronjs.org/).
     - Event driven as in components simply listens to events from the state and act accordingly.
   - **Application Layer**
-    - Keeps the application state
-      - The [state](src/application/Context/State/CategoryCollectionState.ts) is a mutable singleton & event producer.
-    - The application is defined & controlled in a [single YAML file](src/application/application.yaml) (see [Data-driven programming](https://en.wikipedia.org/wiki/Data-driven_programming))
+    - Keeps the application state using [state pattern](https://en.wikipedia.org/wiki/State_pattern)
+    - [ApplicationContext](src/application/Context/ApplicationContext.ts)
+      - Holds the [CategoryCollectionState](src/application/Context/State/CategoryCollectionState.ts)] for each OS
+      - Same instance is shared throughout the application
+    - The application is defined & controlled in a [single YAML file](src/application/application.yaml) using[data-driven programming](https://en.wikipedia.org/wiki/Data-driven_programming)
 
 ![DDD + vue.js](img/architecture/app-ddd.png)
 

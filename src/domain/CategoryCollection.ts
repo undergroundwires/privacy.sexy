@@ -2,7 +2,6 @@ import { getEnumNames, getEnumValues } from '@/application/Common/Enum';
 import { IEntity } from '../infrastructure/Entity/IEntity';
 import { ICategory } from './ICategory';
 import { IScript } from './IScript';
-import { IProjectInformation } from './IProjectInformation';
 import { RecommendationLevel } from './RecommendationLevel';
 import { OperatingSystem } from './OperatingSystem';
 import { IScriptingDefinition } from './IScriptingDefinition';
@@ -16,12 +15,8 @@ export class CategoryCollection implements ICategoryCollection {
 
     constructor(
         public readonly os: OperatingSystem,
-        public readonly info: IProjectInformation,
         public readonly actions: ReadonlyArray<ICategory>,
         public readonly scripting: IScriptingDefinition) {
-        if (!info) {
-            throw new Error('undefined info');
-        }
         if (!scripting) {
             throw new Error('undefined scripting definition');
         }

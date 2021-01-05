@@ -1,6 +1,6 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
 
 export interface IEnvironment {
-    isDesktop: boolean;
-    os: OperatingSystem;
+    readonly isDesktop: boolean;
+    readonly os: OperatingSystem;
 }

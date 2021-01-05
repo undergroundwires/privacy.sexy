@@ -16,7 +16,7 @@ export default class TheHeader extends StatefulVue {
 
   public async mounted() {
     const context = await this.getCurrentContextAsync();
-    this.title = context.collection.info.name;
+    this.title = context.app.info.name;
   }
 }
 </script>

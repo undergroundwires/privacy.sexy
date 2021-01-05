@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import { ScriptCode } from '@/domain/ScriptCode';
-import { IScriptCode } from '../../../src/domain/IScriptCode';
+import { IScriptCode } from '@/domain/IScriptCode';
 
 describe('ScriptCode', () => {
     describe('scriptName', () => {

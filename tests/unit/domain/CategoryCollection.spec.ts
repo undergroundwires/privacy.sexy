@@ -1,16 +1,15 @@
-import { ScriptStub } from '../stubs/ScriptStub';
-import { CategoryStub } from '../stubs/CategoryStub';
 import 'mocha';
 import { expect } from 'chai';
 import { ProjectInformation } from '@/domain/ProjectInformation';
-import { IProjectInformation } from '@/domain/IProjectInformation';
 import { ICategory } from '@/domain/ICategory';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { getEnumValues } from '@/application/Common/Enum';
-import { CategoryCollection } from '../../../src/domain/CategoryCollection';
+import { CategoryCollection } from '@/domain/CategoryCollection';
+import { ScriptStub } from '../stubs/ScriptStub';
+import { CategoryStub } from '../stubs/CategoryStub';
 
 describe('CategoryCollection', () => {
     describe('getScriptsByLevel', () => {
@@ -177,31 +176,6 @@ describe('CategoryCollection', () => {
             expect(sut.totalCategories).to.equal(expected);
         });
     });
-    describe('information', () => {
-        it('sets information as expected', () => {
-            // arrange
-            const expected = new ProjectInformation(
-                'expected-name', 'expected-repo', '0.31.0', 'expected-homepage');
-            // act
-            const sut = new CategoryCollectionBuilder()
-                .withInfo(expected)
-                .construct();
-            // assert
-            expect(sut.info).to.deep.equal(expected);
-        });
-        it('cannot construct without information', () => {
-            // arrange
-            const information = undefined;
-            // act
-            function construct() {
-                return new CategoryCollectionBuilder()
-                    .withInfo(information)
-                    .construct();
-            }
-            // assert
-            expect(construct).to.throw('undefined info');
-        });
-    });
     describe('os', () => {
         it('sets os as expected', () => {
             // arrange
@@ -281,7 +255,6 @@ function getValidScriptingDefinition(): IScriptingDefinition {
 
 class CategoryCollectionBuilder {
     private os = OperatingSystem.Windows;
-    private info = new ProjectInformation('name', 'repo', '0.1.0', 'homepage');
     private actions: readonly ICategory[] = [
         new CategoryStub(1).withScripts(
             new ScriptStub('S1').withLevel(RecommendationLevel.Standard),
@@ -290,10 +263,6 @@ class CategoryCollectionBuilder {
     private script: IScriptingDefinition = getValidScriptingDefinition();
     public withOs(os: OperatingSystem): CategoryCollectionBuilder {
         this.os = os;
-        return this;
-    }
-    public withInfo(info: IProjectInformation): CategoryCollectionBuilder {
-        this.info = info;
         return this;
     }
     public withActions(actions: readonly ICategory[]): CategoryCollectionBuilder {
@@ -305,6 +274,6 @@ class CategoryCollectionBuilder {
         return this;
     }
     public construct(): CategoryCollection {
-        return new CategoryCollection(this.os, this.info, this.actions, this.script);
+        return new CategoryCollection(this.os, this.actions, this.script);
     }
 }

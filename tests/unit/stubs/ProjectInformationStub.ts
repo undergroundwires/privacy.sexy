@@ -2,13 +2,13 @@ import { IProjectInformation } from '@/domain/IProjectInformation';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 
 export class ProjectInformationStub implements IProjectInformation {
-    public name: string;
-    public version: string;
-    public repositoryUrl: string;
-    public homepage: string;
-    public feedbackUrl: string;
-    public releaseUrl: string;
-    public repositoryWebUrl: string;
+    public name = 'name';
+    public version = 'version';
+    public repositoryUrl = 'repositoryUrl';
+    public homepage = 'homepage';
+    public feedbackUrl = 'feedbackUrl';
+    public releaseUrl = 'releaseUrl';
+    public repositoryWebUrl = 'repositoryWebUrl';
     public withName(name: string): ProjectInformationStub {
         this.name = name;
         return this;
