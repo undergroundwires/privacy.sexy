@@ -4181,8 +4181,8 @@ functions:
     -
         name: UninstallCapability
         parameters: [ capabilityName ]
-        code: PowerShell -Command "Get-WindowsCapability -Online -Name '{{ $capabilityName }}*'' | Remove-WindowsCapability -Online"
-        revertCode: PowerShell -Command "$capability = Get-WindowsCapability -Online -Name '{{ $capabilityName }}*''; Add-WindowsCapability -Name \"$capability.Name\" -Online"
+        code: PowerShell -Command "Get-WindowsCapability -Online -Name '{{ $capabilityName }}*' | Remove-WindowsCapability -Online"
+        revertCode: PowerShell -Command "$capability = Get-WindowsCapability -Online -Name '{{ $capabilityName }}*'; Add-WindowsCapability -Name \"$capability.Name\" -Online"
     -
         name: RenameSystemFile
         parameters: [ filePath ]
