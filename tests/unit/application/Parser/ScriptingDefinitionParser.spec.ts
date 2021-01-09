@@ -1,6 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
-import { YamlScriptingDefinition } from 'js-yaml-loader!@/application.yaml';
+import { ScriptingDefinitionData } from 'js-yaml-loader!@/*';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { parseScriptingDefinition } from '@/application/Parser/ScriptingDefinitionParser';
 import { ProjectInformationStub } from './../../stubs/ProjectInformationStub';
@@ -139,7 +139,7 @@ class ScriptingDefinitionBuilder {
         return this;
     }
 
-    public construct(): YamlScriptingDefinition {
+    public construct(): ScriptingDefinitionData {
         return {
             language: this.language,
             fileExtension: this.fileExtension,

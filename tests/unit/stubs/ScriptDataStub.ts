@@ -1,14 +1,14 @@
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
-import { ScriptFunctionCall, YamlScript } from 'js-yaml-loader!@/application.yaml';
+import { ScriptFunctionCallData, ScriptData } from 'js-yaml-loader!@/*';
 
-export class YamlScriptStub implements YamlScript {
-    public static createWithCode(): YamlScriptStub {
-        return new YamlScriptStub()
+export class ScriptDataStub implements ScriptData {
+    public static createWithCode(): ScriptDataStub {
+        return new ScriptDataStub()
             .withCode('stub-code')
             .withRevertCode('stub-revert-code');
     }
-    public static createWithCall(call?: ScriptFunctionCall): YamlScriptStub {
-        let instance = new YamlScriptStub();
+    public static createWithCall(call?: ScriptFunctionCallData): ScriptDataStub {
+        let instance = new ScriptDataStub();
         if (call) {
             instance = instance.withCall(call);
         } else {
@@ -16,8 +16,8 @@ export class YamlScriptStub implements YamlScript {
         }
         return instance;
     }
-    public static createWithoutCallOrCodes(): YamlScriptStub {
-        return new YamlScriptStub();
+    public static createWithoutCallOrCodes(): ScriptDataStub {
+        return new ScriptDataStub();
     }
 
     public name = 'valid-name';
@@ -29,38 +29,38 @@ export class YamlScriptStub implements YamlScript {
 
     private constructor() { }
 
-    public withName(name: string): YamlScriptStub {
+    public withName(name: string): ScriptDataStub {
         this.name = name;
         return this;
     }
 
-    public withDocs(docs: string[]): YamlScriptStub {
+    public withDocs(docs: string[]): ScriptDataStub {
         this.docs = docs;
         return this;
     }
 
-    public withCode(code: string): YamlScriptStub {
+    public withCode(code: string): ScriptDataStub {
         this.code = code;
         return this;
     }
 
-    public withRevertCode(revertCode: string): YamlScriptStub {
+    public withRevertCode(revertCode: string): ScriptDataStub {
         this.revertCode = revertCode;
         return this;
     }
 
-    public withMockCall(): YamlScriptStub {
+    public withMockCall(): ScriptDataStub {
         this.call = { function: 'func', parameters: [] };
         return this;
     }
 
-    public withCall(call: ScriptFunctionCall): YamlScriptStub {
+    public withCall(call: ScriptFunctionCallData): ScriptDataStub {
         this.call = call;
         return this;
     }
 
 
-    public withRecommend(recommend: string): YamlScriptStub {
+    public withRecommend(recommend: string): ScriptDataStub {
         this.recommend = recommend;
         return this;
     }

@@ -1,5 +1,5 @@
 import { Category } from '@/domain/Category';
-import { YamlApplication } from 'js-yaml-loader!@/application.yaml';
+import { CollectionData } from 'js-yaml-loader!@/*';
 import { parseCategory } from './CategoryParser';
 import { ScriptCompiler } from './Compiler/ScriptCompiler';
 import { OperatingSystem } from '@/domain/OperatingSystem';
@@ -10,7 +10,7 @@ import { CategoryCollection } from '@/domain/CategoryCollection';
 import { IProjectInformation } from '@/domain/IProjectInformation';
 
 export function parseCategoryCollection(
-    content: YamlApplication,
+    content: CollectionData,
     info: IProjectInformation,
     osParser = createEnumParser(OperatingSystem)): ICategoryCollection {
     validate(content);
@@ -29,7 +29,7 @@ export function parseCategoryCollection(
     return collection;
 }
 
-function validate(content: YamlApplication): void {
+function validate(content: CollectionData): void {
     if (!content) {
         throw new Error('content is null or undefined');
     }

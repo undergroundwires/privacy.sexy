@@ -1,5 +1,5 @@
 import { Script } from '@/domain/Script';
-import { YamlScript } from 'js-yaml-loader!@/application.yaml';
+import { ScriptData } from 'js-yaml-loader!@/*';
 import { parseDocUrls } from './DocumentationParser';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { IScriptCompiler } from './Compiler/IScriptCompiler';
@@ -8,17 +8,17 @@ import { ScriptCode } from '@/domain/ScriptCode';
 import { createEnumParser, IEnumParser } from '../Common/Enum';
 
 export function parseScript(
-    yamlScript: YamlScript, compiler: IScriptCompiler,
+    data: ScriptData, compiler: IScriptCompiler,
     levelParser = createEnumParser(RecommendationLevel)): Script {
-    validateScript(yamlScript);
+    validateScript(data);
     if (!compiler) {
         throw new Error('undefined compiler');
     }
     const script = new Script(
-        /* name */  yamlScript.name,
-        /* code */  parseCode(yamlScript, compiler),
-        /* docs */  parseDocUrls(yamlScript),
-        /* level */ parseLevel(yamlScript.recommend, levelParser));
+        /* name */  data.name,
+        /* code */  parseCode(data, compiler),
+        /* docs */  parseDocUrls(data),
+        /* level */ parseLevel(data.recommend, levelParser));
     return script;
 }
 
@@ -29,28 +29,28 @@ function parseLevel(level: string, parser: IEnumParser<RecommendationLevel>): Re
     return parser.parseEnum(level, 'level');
 }
 
-function parseCode(yamlScript: YamlScript, compiler: IScriptCompiler): IScriptCode {
-    if (compiler.canCompile(yamlScript)) {
-        return compiler.compile(yamlScript);
+function parseCode(script: ScriptData, compiler: IScriptCompiler): IScriptCode {
+    if (compiler.canCompile(script)) {
+        return compiler.compile(script);
     }
-    return new ScriptCode(yamlScript.name, yamlScript.code, yamlScript.revertCode);
+    return new ScriptCode(script.name, script.code, script.revertCode);
 }
 
-function ensureNotBothCallAndCode(yamlScript: YamlScript) {
-    if (yamlScript.code && yamlScript.call) {
+function ensureNotBothCallAndCode(script: ScriptData) {
+    if (script.code && script.call) {
         throw new Error('cannot define both "call" and "code"');
     }
-    if (yamlScript.revertCode && yamlScript.call) {
+    if (script.revertCode && script.call) {
         throw new Error('cannot define "revertCode" if "call" is defined');
     }
 }
 
-function validateScript(yamlScript: YamlScript) {
-    if (!yamlScript) {
+function validateScript(script: ScriptData) {
+    if (!script) {
         throw new Error('undefined script');
     }
-    if (!yamlScript.code && !yamlScript.call) {
+    if (!script.code && !script.call) {
         throw new Error('must define either "call" or "code"');
     }
-    ensureNotBothCallAndCode(yamlScript);
+    ensureNotBothCallAndCode(script);
 }

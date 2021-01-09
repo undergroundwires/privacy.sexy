@@ -1,11 +1,11 @@
 import 'mocha';
 import { expect } from 'chai';
 import { parseCategory } from '@/application/Parser/CategoryParser';
-import { YamlCategory, CategoryOrScript, YamlScript } from 'js-yaml-loader!@/application.yaml';
+import { CategoryData, CategoryOrScriptData } from 'js-yaml-loader!@/*';
 import { parseScript } from '@/application/Parser/ScriptParser';
 import { parseDocUrls } from '@/application/Parser/DocumentationParser';
 import { ScriptCompilerStub } from '../../stubs/ScriptCompilerStub';
-import { YamlScriptStub } from '../../stubs/YamlScriptStub';
+import { ScriptDataStub } from '../../stubs/ScriptDataStub';
 
 describe('CategoryParser', () => {
     describe('parseCategory', () => {
@@ -24,7 +24,7 @@ describe('CategoryParser', () => {
                 // arrange
                 const categoryName = 'test';
                 const expectedMessage = `category has no children: "${categoryName}"`;
-                const category: YamlCategory = {
+                const category: CategoryData = {
                     category: categoryName,
                     children: [],
                 };
@@ -38,7 +38,7 @@ describe('CategoryParser', () => {
                 // arrange
                 const categoryName = 'test';
                 const expectedMessage = `category has no children: "${categoryName}"`;
-                const category: YamlCategory = {
+                const category: CategoryData = {
                     category: categoryName,
                     children: undefined,
                 };
@@ -53,7 +53,7 @@ describe('CategoryParser', () => {
                 const expectedMessage = 'category has no name';
                 const invalidNames = ['', undefined];
                 invalidNames.forEach((invalidName) => {
-                    const category: YamlCategory = {
+                    const category: CategoryData = {
                         category: invalidName,
                         children: getTestChildren(),
                     };
@@ -80,7 +80,7 @@ describe('CategoryParser', () => {
             const url = 'https://privacy.sexy';
             const expected = parseDocUrls({ docs: url });
             const compiler = new ScriptCompilerStub();
-            const category: YamlCategory = {
+            const category: CategoryData = {
                 category: 'category name',
                 children: getTestChildren(),
                 docs: url,
@@ -93,10 +93,10 @@ describe('CategoryParser', () => {
         describe('parses expected subscript', () => {
             it('single script with code', () => {
                 // arrange
-                const script = YamlScriptStub.createWithCode();
+                const script = ScriptDataStub.createWithCode();
                 const compiler = new ScriptCompilerStub();
                 const expected = [ parseScript(script, compiler) ];
-                const category: YamlCategory = {
+                const category: CategoryData = {
                     category: 'category name',
                     children: [ script ],
                 };
@@ -107,11 +107,11 @@ describe('CategoryParser', () => {
             });
             it('single script with function call', () => {
                 // arrange
-                const script = YamlScriptStub.createWithCall();
+                const script = ScriptDataStub.createWithCall();
                 const compiler = new ScriptCompilerStub()
                     .withCompileAbility(script);
                 const expected = [ parseScript(script, compiler) ];
-                const category: YamlCategory = {
+                const category: CategoryData = {
                     category: 'category name',
                     children: [ script ],
                 };
@@ -122,12 +122,12 @@ describe('CategoryParser', () => {
             });
             it('multiple scripts with function call and code', () => {
                 // arrange
-                const callableScript = YamlScriptStub.createWithCall();
-                const scripts = [ callableScript, YamlScriptStub.createWithCode() ];
+                const callableScript = ScriptDataStub.createWithCall();
+                const scripts = [ callableScript, ScriptDataStub.createWithCode() ];
                 const compiler = new ScriptCompilerStub()
                     .withCompileAbility(callableScript);
                 const expected = scripts.map((script) => parseScript(script, compiler));
-                const category: YamlCategory = {
+                const category: CategoryData = {
                     category: 'category name',
                     children: scripts,
                 };
@@ -139,11 +139,11 @@ describe('CategoryParser', () => {
         });
         it('returns expected subcategories', () => {
             // arrange
-            const expected: YamlCategory[]  = [ {
+            const expected: CategoryData[]  = [ {
                 category: 'test category',
-                children: [ YamlScriptStub.createWithCode() ],
+                children: [ ScriptDataStub.createWithCode() ],
             }];
-            const category: YamlCategory = {
+            const category: CategoryData = {
                 category: 'category name',
                 children: expected,
             };
@@ -158,7 +158,7 @@ describe('CategoryParser', () => {
     });
 });
 
-function getValidCategory(): YamlCategory {
+function getValidCategory(): CategoryData {
     return {
         category: 'category name',
         children: getTestChildren(),
@@ -166,8 +166,8 @@ function getValidCategory(): YamlCategory {
     };
 }
 
-function getTestChildren(): ReadonlyArray<CategoryOrScript> {
+function getTestChildren(): ReadonlyArray<CategoryOrScriptData> {
     return [
-        YamlScriptStub.createWithCode(),
+        ScriptDataStub.createWithCode(),
     ];
 }

@@ -32,9 +32,11 @@
 
 ## Extend scripts
 
-- Fork it & add more scripts in [application.yaml](src/application/application.yaml) and send a pull request 👌
-- 📖 If you're unsure about the syntax you can refer to the [application file | documentation](docs/application-file.md).
-- 🙏 For any new script, please add `revertCode` and `docs` values if possible.
+1. Fork the repository
+2. Add more scripts in respective script collection in [collections](src/application/collections/) folder.
+   - 📖 If you're unsure about the syntax you can refer to the [collection files | documentation](docs/collection-files.md).
+   - 🙏 For any new script, please add `revertCode` and `docs` values if possible.
+3. Send a pull request 👌
 
 ## Commands
 
@@ -69,7 +71,9 @@
     - [ApplicationContext](src/application/Context/ApplicationContext.ts)
       - Holds the [CategoryCollectionState](src/application/Context/State/CategoryCollectionState.ts)] for each OS
       - Same instance is shared throughout the application
-    - The application is defined & controlled in a [single YAML file](src/application/application.yaml) using[data-driven programming](https://en.wikipedia.org/wiki/Data-driven_programming)
+    - The scripts are defined and controlled in [yaml files](src/application/collections/) per OS
+      - Uses [data-driven programming](https://en.wikipedia.org/wiki/Data-driven_programming)
+      - 📖 See [extend scripts](#extend-scripts) to read about how to extend them.
 
 ![DDD + vue.js](img/architecture/app-ddd.png)
 

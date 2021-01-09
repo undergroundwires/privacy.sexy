@@ -1,28 +1,28 @@
-# Application file
+# Collection files
 
-- privacy.sexy is a data-driven application where it reads the necessary OS-specific logic from [`application.yaml`](./../src/application/application.yaml)
+- privacy.sexy is a data-driven application where it reads the necessary OS-specific logic from yaml files in [`application/collections`](./../src/application/collections/)
 - 💡 Best practices
-  - If you repeat yourself, try to utilize [YAML-defined functions](#function)
-  - Always try to add documentation and a way to revert a tweak in [scripts](#script)
-- 📖 Types in code: [`application.d.ts`](./../src/application/application.yaml.d.ts)
+  - If you repeat yourself, try to utilize [YAML-defined functions](#Function)
+  - Always try to add documentation and a way to revert a tweak in [scripts](#Script)
+- 📖 Types in code: [`collection.yaml.d.ts`](./../src/application/collections/collection.yaml.d.ts)
 
 ## Objects
 
-### `Application`
+### `Collection`
 
-- Application file simply defines:
+- A collection simply defines:
   - different categories and their scripts in a tree structure
   - OS specific details
-- Application file also allows defining common [function](#function)s to be used throughout the application if you'd like different scripts to share same code.
+- Also allows defining common [function](#Function)s to be used throughout the collection if you'd like different scripts to share same code.
 
-#### `Application` syntax
+#### `Collection` syntax
 
 - `os:` *`string`*  (**required**)
-  - Operating system that the application file is written for.
+  - Operating system that the [Collection](#collection) is written for.
   - 📖 See [OperatingSystem.ts](./../src/domain/OperatingSystem.ts) enumeration for allowed values.
 - `actions: [` ***[`Category`](#Category)*** `, ... ]` **(required)**
   - Each [category](#category) is rendered as different cards in card presentation.
-  - ❗ Application must consist of at least one category.
+  - ❗ A [Collection](#collection) must consist of at least one category.
 - `functions: [` ***[`Function`](#Function)*** `, ... ]`
   - Functions are optionally defined to re-use the same code throughout different scripts.
 - `scripting:` ***[`ScriptingDefinition`](#ScriptingDefinition)*** **(required)**
@@ -37,8 +37,8 @@
 
 - `category:` *`string`*  (**required**)
   - Name of the category
-  - ❗ Must be unique throughout the application
-- `children: [` ***[`Category`](#category)*** `|` [***`Script`***](#Script) `, ... ]`  (**required**)
+  - ❗ Must be unique throughout the [Collection](#collection)
+- `children: [` ***[`Category`](#Category)*** `|` [***`Script`***](#Script) `, ... ]`  (**required**)
   - ❗ Category must consist of at least one subcategory or script.
   - Children can be combination of scripts and subcategories.
 
@@ -54,7 +54,7 @@
 
 - `name`: *`string`* (**required**)
   - Name of the script
-  - ❗ Must be unique throughout the application
+  - ❗ Must be unique throughout the [Collection](#collection)
   - E.g. `Disable targeted ads`
 - `code`: *`string`* (may be **required**)
   - Batch file commands that will be executed
@@ -86,7 +86,7 @@
 
 - `function`: *`string`* (**required**)
   - Name of the function to call.
-  - ❗ Function with same name must defined in `functions` property of [Application](#application)
+  - ❗ Function with same name must defined in `functions` property of [Collection](#collection)
 - `parameters`: `[ parameterName:` *`parameterValue`*`, ... ]`
   - Defines key value dictionary for each parameter and its value
   - E.g.
@@ -134,7 +134,7 @@ It would print "Hello world" if it's called in a [script](#script) as following:
   - ❗ Function names must be unique
 - `parameters`: `[` *`string`* `, ... ]`
   - Name of the parameters that the function has.
-  - Parameter values are provided by a [Script](#script) through a [FunctionCall](#functioncall)
+  - Parameter values are provided by a [Script](#script) through a [FunctionCall](#FunctionCall)
   - Parameter names must be defined to be used in expressions such as [parameter substitution](#parameter-substitution)
   - ❗ Parameter names must be unique
  `code`: *`string`* (**required**)
@@ -147,7 +147,7 @@ It would print "Hello world" if it's called in a [script](#script) as following:
 
 ### `ScriptingDefinition`
 
-- Defines global properties for scripting that's used throughout the application file.
+- Defines global properties for scripting that's used throughout its parent [Collection](#collection).
 
 #### `ScriptingDefinition` syntax
 

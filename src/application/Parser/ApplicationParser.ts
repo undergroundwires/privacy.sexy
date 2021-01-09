@@ -2,14 +2,15 @@ import { IApplication } from '@/domain/IApplication';
 import { IProjectInformation } from '@/domain/IProjectInformation';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { parseCategoryCollection } from './CategoryCollectionParser';
-import applicationFile, { YamlApplication } from 'js-yaml-loader!@/application/application.yaml';
+import WindowsData from 'js-yaml-loader!@/application/collections/windows.yaml';
+import { CollectionData } from 'js-yaml-loader!@/*';
 import { parseProjectInformation } from '@/application/Parser/ProjectInformationParser';
 import { Application } from '@/domain/Application';
 
 export function parseApplication(
     parser = CategoryCollectionParser,
     processEnv: NodeJS.ProcessEnv = process.env,
-    collectionData = CollectionData): IApplication {
+    collectionData = LoadedCollectionData): IApplication {
     const information = parseProjectInformation(processEnv);
     const collection = parser(collectionData, information);
     const app = new Application(information, [ collection ]);
@@ -17,11 +18,10 @@ export function parseApplication(
 }
 
 export type CategoryCollectionParserType
-    = (file: YamlApplication, info: IProjectInformation) => ICategoryCollection;
+    = (file: CollectionData, info: IProjectInformation) => ICategoryCollection;
 
 const CategoryCollectionParser: CategoryCollectionParserType
     = (file, info) => parseCategoryCollection(file, info);
 
-const CollectionData: YamlApplication
-    = applicationFile;
-
+const LoadedCollectionData: CollectionData
+    = WindowsData;

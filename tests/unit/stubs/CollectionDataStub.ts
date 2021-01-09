@@ -1,29 +1,29 @@
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
-import { YamlCategory, YamlScript, YamlApplication, YamlScriptingDefinition } from 'js-yaml-loader!@/application/application.yaml';
+import { CategoryData, ScriptData, CollectionData, ScriptingDefinitionData } from 'js-yaml-loader!@/*';
 
-export class YamlApplicationStub implements YamlApplication {
+export class CollectionDataStub implements CollectionData {
     public os = 'windows';
-    public actions: readonly YamlCategory[] = [ getCategoryStub() ];
-    public scripting: YamlScriptingDefinition = getTestDefinitionStub();
+    public actions: readonly CategoryData[] = [ getCategoryStub() ];
+    public scripting: ScriptingDefinitionData = getTestDefinitionStub();
 
-    public withActions(actions: readonly YamlCategory[]): YamlApplicationStub {
+    public withActions(actions: readonly CategoryData[]): CollectionDataStub {
         this.actions = actions;
         return this;
     }
 
-    public withOs(os: string): YamlApplicationStub {
+    public withOs(os: string): CollectionDataStub {
         this.os = os;
         return this;
     }
 
-    public withScripting(scripting: YamlScriptingDefinition): YamlApplicationStub {
+    public withScripting(scripting: ScriptingDefinitionData): CollectionDataStub {
         this.scripting = scripting;
         return this;
     }
 }
 
-export function getCategoryStub(scriptPrefix = 'testScript'): YamlCategory {
+export function getCategoryStub(scriptPrefix = 'testScript'): CategoryData {
     return {
         category: 'category name',
         children: [
@@ -33,7 +33,7 @@ export function getCategoryStub(scriptPrefix = 'testScript'): YamlCategory {
     };
 }
 
-function getTestDefinitionStub(): YamlScriptingDefinition {
+function getTestDefinitionStub(): ScriptingDefinitionData {
     return {
         fileExtension: '.bat',
         language: ScriptingLanguage[ScriptingLanguage.batchfile],
@@ -42,7 +42,7 @@ function getTestDefinitionStub(): YamlScriptingDefinition {
     };
 }
 
-function getScriptStub(scriptName: string, level: RecommendationLevel = RecommendationLevel.Standard): YamlScript {
+function getScriptStub(scriptName: string, level: RecommendationLevel = RecommendationLevel.Standard): ScriptData {
     return {
         name: scriptName,
         code: 'script code',

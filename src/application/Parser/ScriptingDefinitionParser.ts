@@ -1,5 +1,5 @@
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
-import { YamlScriptingDefinition } from 'js-yaml-loader!@/application.yaml';
+import { ScriptingDefinitionData } from 'js-yaml-loader!@/*';
 import { ScriptingDefinition } from '@/domain/ScriptingDefinition';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { IProjectInformation } from '@/domain/IProjectInformation';
@@ -7,7 +7,7 @@ import { createEnumParser } from '../Common/Enum';
 import { generateIlCode } from './Compiler/ILCode';
 
 export function parseScriptingDefinition(
-    definition: YamlScriptingDefinition,
+    definition: ScriptingDefinitionData,
     info: IProjectInformation,
     date = new Date(),
     languageParser = createEnumParser(ScriptingLanguage)): IScriptingDefinition {

@@ -1,7 +1,7 @@
 import { generateIlCode, IILCode } from './ILCode';
 import { IScriptCode } from '@/domain/IScriptCode';
 import { ScriptCode } from '@/domain/ScriptCode';
-import { YamlScript, YamlFunction, FunctionCall, ScriptFunctionCall, FunctionCallParameters } from 'js-yaml-loader!@/application.yaml';
+import { ScriptData, FunctionData, FunctionCallData, ScriptFunctionCallData, FunctionCallParametersData } from 'js-yaml-loader!@/*';
 import { IScriptCompiler } from './IScriptCompiler';
 
 interface ICompiledCode {
@@ -10,16 +10,16 @@ interface ICompiledCode {
 }
 
 export class ScriptCompiler implements IScriptCompiler {
-    constructor(private readonly functions: readonly YamlFunction[]) {
+    constructor(private readonly functions: readonly FunctionData[]) {
         ensureValidFunctions(functions);
     }
-    public canCompile(script: YamlScript): boolean {
+    public canCompile(script: ScriptData): boolean {
         if (!script.call) {
             return false;
         }
         return true;
     }
-    public compile(script: YamlScript): IScriptCode {
+    public compile(script: ScriptData): IScriptCode {
         this.ensureCompilable(script.call);
         const compiledCodes = new Array<ICompiledCode>();
         const calls = getCallSequence(script.call);
@@ -36,7 +36,7 @@ export class ScriptCompiler implements IScriptCompiler {
         return new ScriptCode(script.name, scriptCode.code, scriptCode.revertCode);
     }
 
-    private getFunctionByName(name: string): YamlFunction {
+    private getFunctionByName(name: string): FunctionData {
         const func = this.functions.find((f) => f.name === name);
         if (!func) {
             throw new Error(`called function is not defined "${name}"`);
@@ -44,7 +44,7 @@ export class ScriptCompiler implements IScriptCompiler {
         return func;
     }
 
-    private ensureCompilable(call: ScriptFunctionCall) {
+    private ensureCompilable(call: ScriptFunctionCallData) {
         if (!this.functions || this.functions.length === 0) {
             throw new Error('cannot compile without shared functions');
         }
@@ -62,7 +62,7 @@ function printList(list: readonly string[]): string {
     return `"${list.join('","')}"`;
 }
 
-function ensureNoDuplicatesInFunctionNames(functions: readonly YamlFunction[]) {
+function ensureNoDuplicatesInFunctionNames(functions: readonly FunctionData[]) {
     const duplicateFunctionNames = getDuplicates(functions
         .map((func) => func.name.toLowerCase()));
     if (duplicateFunctionNames.length) {
@@ -70,7 +70,7 @@ function ensureNoDuplicatesInFunctionNames(functions: readonly YamlFunction[]) {
     }
 }
 
-function ensureNoDuplicatesInParameterNames(functions: readonly YamlFunction[]) {
+function ensureNoDuplicatesInParameterNames(functions: readonly FunctionData[]) {
     const functionsWithParameters = functions
         .filter((func) => func.parameters && func.parameters.length > 0);
     for (const func of functionsWithParameters) {
@@ -81,7 +81,7 @@ function ensureNoDuplicatesInParameterNames(functions: readonly YamlFunction[]) 
     }
 }
 
-function ensureNoDuplicateCode(functions: readonly YamlFunction[]) {
+function ensureNoDuplicateCode(functions: readonly FunctionData[]) {
     const duplicateCodes = getDuplicates(functions.map((func) => func.code));
     if (duplicateCodes.length > 0) {
         throw new Error(`duplicate "code" in functions: ${printList(duplicateCodes)}`);
@@ -94,7 +94,7 @@ function ensureNoDuplicateCode(functions: readonly YamlFunction[]) {
     }
 }
 
-function ensureValidFunctions(functions: readonly YamlFunction[]) {
+function ensureValidFunctions(functions: readonly FunctionData[]) {
     if (!functions) {
         return;
     }
@@ -118,20 +118,20 @@ function merge(codes: readonly ICompiledCode[]): ICompiledCode {
     };
 }
 
-function compileCode(func: YamlFunction, parameters: FunctionCallParameters): ICompiledCode {
+function compileCode(func: FunctionData, parameters: FunctionCallParametersData): ICompiledCode {
     return {
         code: compileExpressions(func.code, parameters),
         revertCode: compileExpressions(func.revertCode, parameters),
     };
 }
 
-function compileExpressions(code: string, parameters: FunctionCallParameters): string {
+function compileExpressions(code: string, parameters: FunctionCallParametersData): string {
     let intermediateCode = generateIlCode(code);
     intermediateCode = substituteParameters(intermediateCode, parameters);
     return intermediateCode.compile();
 }
 
-function substituteParameters(intermediateCode: IILCode, parameters: FunctionCallParameters): IILCode {
+function substituteParameters(intermediateCode: IILCode, parameters: FunctionCallParametersData): IILCode {
     const parameterNames = intermediateCode.getUniqueParameterNames();
     if (parameterNames.length && !parameters) {
         throw new Error(`no parameters defined, expected: ${printList(parameterNames)}`);
@@ -146,7 +146,7 @@ function substituteParameters(intermediateCode: IILCode, parameters: FunctionCal
     return intermediateCode;
 }
 
-function ensureValidCall(call: FunctionCall, scriptName: string) {
+function ensureValidCall(call: FunctionCallData, scriptName: string) {
     if (!call) {
         throw new Error(`undefined function call in script "${scriptName}"`);
     }
@@ -155,9 +155,9 @@ function ensureValidCall(call: FunctionCall, scriptName: string) {
     }
 }
 
-function getCallSequence(call: ScriptFunctionCall): FunctionCall[] {
+function getCallSequence(call: ScriptFunctionCallData): FunctionCallData[] {
     if (call instanceof Array) {
-        return call as FunctionCall[];
+        return call as FunctionCallData[];
     }
-    return [ call as FunctionCall ];
+    return [ call as FunctionCallData ];
 }

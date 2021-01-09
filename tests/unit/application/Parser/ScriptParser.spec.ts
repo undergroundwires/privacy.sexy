@@ -5,7 +5,7 @@ import { parseDocUrls } from '@/application/Parser/DocumentationParser';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { ScriptCode } from '@/domain/ScriptCode';
 import { ScriptCompilerStub } from '../../stubs/ScriptCompilerStub';
-import { YamlScriptStub } from '../../stubs/YamlScriptStub';
+import { ScriptDataStub } from '../../stubs/ScriptDataStub';
 import { mockEnumParser } from '../../stubs/EnumParserStub';
 
 describe('ScriptParser', () => {
@@ -13,7 +13,7 @@ describe('ScriptParser', () => {
         it('parses name as expected', () => {
             // arrange
             const expected = 'test-expected-name';
-            const script = YamlScriptStub.createWithCode()
+            const script = ScriptDataStub.createWithCode()
                 .withName(expected);
             const compiler = new ScriptCompilerStub();
             // act
@@ -24,7 +24,7 @@ describe('ScriptParser', () => {
         it('parses docs as expected', () => {
             // arrange
             const docs = [ 'https://expected-doc1.com', 'https://expected-doc2.com' ];
-            const script = YamlScriptStub.createWithCode()
+            const script = ScriptDataStub.createWithCode()
                 .withDocs(docs);
             const compiler = new ScriptCompilerStub();
             const expected = parseDocUrls(script);
@@ -48,7 +48,7 @@ describe('ScriptParser', () => {
                 // arrange
                 const expectedError = 'cannot define both "call" and "code"';
                 const compiler = new ScriptCompilerStub();
-                const script = YamlScriptStub
+                const script = ScriptDataStub
                     .createWithCall()
                     .withCode('code');
                 // act
@@ -60,7 +60,7 @@ describe('ScriptParser', () => {
                 // arrange
                 const expectedError = 'cannot define "revertCode" if "call" is defined';
                 const compiler = new ScriptCompilerStub();
-                const script = YamlScriptStub
+                const script = ScriptDataStub
                     .createWithCall()
                     .withRevertCode('revert-code');
                 // act
@@ -72,7 +72,7 @@ describe('ScriptParser', () => {
                 // arrange
                 const expectedError = 'must define either "call" or "code"';
                 const compiler = new ScriptCompilerStub();
-                const script = YamlScriptStub.createWithoutCallOrCodes();
+                const script = ScriptDataStub.createWithoutCallOrCodes();
                 // act
                 const act = () => parseScript(script, compiler);
                 // assert
@@ -85,7 +85,7 @@ describe('ScriptParser', () => {
                 undefinedLevels.forEach((undefinedLevel) => {
                     // arrange
                     const compiler = new ScriptCompilerStub();
-                    const script = YamlScriptStub.createWithCode()
+                    const script = ScriptDataStub.createWithCode()
                         .withRecommend(undefinedLevel);
                     // act
                     const actual = parseScript(script, compiler);
@@ -98,7 +98,7 @@ describe('ScriptParser', () => {
                 const expectedLevel = RecommendationLevel.Standard;
                 const expectedName = 'level';
                 const levelText = 'standard';
-                const script = YamlScriptStub.createWithCode()
+                const script = ScriptDataStub.createWithCode()
                     .withRecommend(levelText);
                 const compiler = new ScriptCompilerStub();
                 const parserMock = mockEnumParser(expectedName, levelText, expectedLevel);
@@ -112,7 +112,7 @@ describe('ScriptParser', () => {
             it('parses code as expected', () => {
                 // arrange
                 const expected = 'expected-code';
-                const script = YamlScriptStub
+                const script = ScriptDataStub
                     .createWithCode()
                     .withCode(expected);
                 const compiler = new ScriptCompilerStub();
@@ -125,7 +125,7 @@ describe('ScriptParser', () => {
             it('parses revertCode as expected', () => {
                 // arrange
                 const expected = 'expected-revert-code';
-                const script = YamlScriptStub
+                const script = ScriptDataStub
                     .createWithCode()
                     .withRevertCode(expected);
                 const compiler = new ScriptCompilerStub();
@@ -138,7 +138,7 @@ describe('ScriptParser', () => {
             describe('compiler', () => {
                 it('throws when compiler is not defined', () => {
                     // arrange
-                    const script = YamlScriptStub.createWithCode();
+                    const script = ScriptDataStub.createWithCode();
                     const compiler = undefined;
                     // act
                     const act = () => parseScript(script, compiler);
@@ -148,7 +148,7 @@ describe('ScriptParser', () => {
                 it('gets code from compiler', () => {
                     // arrange
                     const expected = new ScriptCode('test-script', 'code', 'revert-code');
-                    const script = YamlScriptStub.createWithCode();
+                    const script = ScriptDataStub.createWithCode();
                     const compiler = new ScriptCompilerStub()
                         .withCompileAbility(script, expected);
                     // act

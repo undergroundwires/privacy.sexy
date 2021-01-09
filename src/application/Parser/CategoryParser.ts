@@ -1,4 +1,4 @@
-import { YamlCategory, YamlScript } from 'js-yaml-loader!@/application.yaml';
+import { CategoryData, ScriptData, CategoryOrScriptData } from 'js-yaml-loader!@/*';
 import { Script } from '@/domain/Script';
 import { Category } from '@/domain/Category';
 import { parseDocUrls } from './DocumentationParser';
@@ -12,7 +12,7 @@ interface ICategoryChildren {
     subScripts: Script[];
 }
 
-export function parseCategory(category: YamlCategory, compiler: IScriptCompiler): Category {
+export function parseCategory(category: CategoryData, compiler: IScriptCompiler): Category {
     if (!compiler) {
         throw new Error('undefined compiler');
     }
@@ -21,8 +21,8 @@ export function parseCategory(category: YamlCategory, compiler: IScriptCompiler)
         subCategories: new Array<Category>(),
         subScripts: new Array<Script>(),
     };
-    for (const categoryOrScript of category.children) {
-        parseCategoryChild(categoryOrScript, children, category, compiler);
+    for (const data of category.children) {
+        parseCategoryChild(data, children, category, compiler);
     }
     return new Category(
         /*id*/ categoryIdCounter++,
@@ -33,7 +33,7 @@ export function parseCategory(category: YamlCategory, compiler: IScriptCompiler)
     );
 }
 
-function ensureValid(category: YamlCategory) {
+function ensureValid(category: CategoryData) {
     if (!category) {
         throw Error('category is null or undefined');
     }
@@ -46,28 +46,28 @@ function ensureValid(category: YamlCategory) {
 }
 
 function parseCategoryChild(
-    categoryOrScript: any,
+    data: CategoryOrScriptData,
     children: ICategoryChildren,
-    parent: YamlCategory,
+    parent: CategoryData,
     compiler: IScriptCompiler) {
-    if (isCategory(categoryOrScript)) {
-        const subCategory = parseCategory(categoryOrScript as YamlCategory, compiler);
+    if (isCategory(data)) {
+        const subCategory = parseCategory(data as CategoryData, compiler);
         children.subCategories.push(subCategory);
-    } else if (isScript(categoryOrScript)) {
-        const yamlScript = categoryOrScript as YamlScript;
-        const script = parseScript(yamlScript, compiler);
+    } else if (isScript(data)) {
+        const scriptData = data as ScriptData;
+        const script = parseScript(scriptData, compiler);
         children.subScripts.push(script);
     } else {
         throw new Error(`Child element is neither a category or a script.
-                Parent: ${parent.category}, element: ${JSON.stringify(categoryOrScript)}`);
+                Parent: ${parent.category}, element: ${JSON.stringify(data)}`);
     }
 }
 
-function isScript(categoryOrScript: any): boolean {
-    return (categoryOrScript.code && categoryOrScript.code.length > 0)
-        || categoryOrScript.call;
+function isScript(data: any): boolean {
+    return (data.code && data.code.length > 0)
+        || data.call;
 }
 
-function isCategory(categoryOrScript: any): boolean {
-    return categoryOrScript.category && categoryOrScript.category.length > 0;
+function isCategory(data: any): boolean {
+    return data.category && data.category.length > 0;
 }

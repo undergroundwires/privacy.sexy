@@ -1,7 +1,7 @@
 import { IScriptCode } from '@/domain/IScriptCode';
-import { YamlScript } from 'js-yaml-loader!@/application.yaml';
+import { ScriptData } from 'js-yaml-loader!@/*';
 
 export interface IScriptCompiler {
-    canCompile(script: YamlScript): boolean;
-    compile(script: YamlScript): IScriptCode;
+    canCompile(script: ScriptData): boolean;
+    compile(script: ScriptData): IScriptCode;
 }

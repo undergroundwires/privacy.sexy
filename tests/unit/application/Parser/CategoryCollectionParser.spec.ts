@@ -9,7 +9,7 @@ import { parseScriptingDefinition } from '@/application/Parser/ScriptingDefiniti
 import { mockEnumParser } from '../../stubs/EnumParserStub';
 import { ProjectInformationStub } from '../../stubs/ProjectInformationStub';
 import { ScriptCompilerStub } from '../../stubs/ScriptCompilerStub';
-import { getCategoryStub, YamlApplicationStub } from '../../stubs/YamlApplicationStub';
+import { getCategoryStub, CollectionDataStub } from '../../stubs/CollectionDataStub';
 
 describe('CategoryCollectionParser', () => {
     describe('parseCategoryCollection', () => {
@@ -26,7 +26,7 @@ describe('CategoryCollectionParser', () => {
             it('throws when undefined actions', () => {
                 // arrange
                 const expectedError = 'content does not define any action';
-                const collection = new YamlApplicationStub()
+                const collection = new CollectionDataStub()
                     .withActions(undefined);
                 const info = new ProjectInformationStub();
                 // act
@@ -37,7 +37,7 @@ describe('CategoryCollectionParser', () => {
             it('throws when has no actions', () => {
                 // arrange
                 const expectedError = 'content does not define any action';
-                const collection = new YamlApplicationStub()
+                const collection = new CollectionDataStub()
                     .withActions([]);
                 const info = new ProjectInformationStub();
                 // act
@@ -50,7 +50,7 @@ describe('CategoryCollectionParser', () => {
                 const actions = [ getCategoryStub('test1'), getCategoryStub('test2') ];
                 const compiler = new ScriptCompilerStub();
                 const expected = [ parseCategory(actions[0], compiler), parseCategory(actions[1], compiler) ];
-                const collection = new YamlApplicationStub()
+                const collection = new CollectionDataStub()
                     .withActions(actions);
                 const info = new ProjectInformationStub();
                 // act
@@ -68,7 +68,7 @@ describe('CategoryCollectionParser', () => {
         describe('scripting definition', () => {
             it('parses scripting definition as expected', () => {
                 // arrange
-                const collection = new YamlApplicationStub();
+                const collection = new CollectionDataStub();
                 const information = parseProjectInformation(process.env);
                 const expected = parseScriptingDefinition(collection.scripting, information);
                 // act
@@ -83,7 +83,7 @@ describe('CategoryCollectionParser', () => {
                 const expectedOs = OperatingSystem.macOS;
                 const osText = 'macos';
                 const expectedName = 'os';
-                const collection = new YamlApplicationStub()
+                const collection = new CollectionDataStub()
                     .withOs(osText);
                 const parserMock = mockEnumParser(expectedName, osText, expectedOs);
                 const info = new ProjectInformationStub();

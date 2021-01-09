@@ -1,8 +1,8 @@
 import 'mocha';
 import { expect } from 'chai';
 import { ScriptCompiler } from '@/application/Parser/Compiler/ScriptCompiler';
-import { YamlScriptStub } from '../../../stubs/YamlScriptStub';
-import { YamlFunction, YamlScript, FunctionCall, ScriptFunctionCall, FunctionCallParameters } from 'js-yaml-loader!@/application.yaml';
+import { ScriptDataStub } from '../../../stubs/ScriptDataStub';
+import { FunctionData, ScriptData, FunctionCallData, ScriptFunctionCallData, FunctionCallParametersData } from 'js-yaml-loader!@/*';
 import { IScriptCode } from '@/domain/IScriptCode';
 import { IScriptCompiler } from '@/application/Parser/Compiler/IScriptCompiler';
 
@@ -11,7 +11,7 @@ describe('ScriptCompiler', () => {
         it('throws when functions have same names', () => {
             // arrange
             const expectedError = `duplicate function name: "same-func-name"`;
-            const functions: YamlFunction[] = [ {
+            const functions: FunctionData[] = [ {
                 name: 'same-func-name',
                 code: 'non-empty-code',
             }, {
@@ -25,7 +25,7 @@ describe('ScriptCompiler', () => {
         });
         it('throws when function parameters have same names', () => {
             // arrange
-            const func: YamlFunction = {
+            const func: FunctionData = {
                 name: 'function-name',
                 code: 'non-empty-code',
                 parameters: [ 'duplicate', 'duplicate' ],
@@ -40,7 +40,7 @@ describe('ScriptCompiler', () => {
             it('code', () => {
                 // arrange
                 const expectedError = `duplicate "code" in functions: "duplicate-code"`;
-                const functions: YamlFunction[] = [ {
+                const functions: FunctionData[] = [ {
                     name: 'func-1',
                     code: 'duplicate-code',
                 }, {
@@ -55,7 +55,7 @@ describe('ScriptCompiler', () => {
             it('revertCode', () => {
                 // arrange
                 const expectedError = `duplicate "revertCode" in functions: "duplicate-revert-code"`;
-                const functions: YamlFunction[] = [ {
+                const functions: FunctionData[] = [ {
                     name: 'func-1',
                     code: 'code-1',
                     revertCode: 'duplicate-revert-code',
@@ -75,7 +75,7 @@ describe('ScriptCompiler', () => {
         it('returns true if "call" is defined', () => {
             // arrange
             const sut = new ScriptCompiler([]);
-            const script = YamlScriptStub.createWithCall();
+            const script = ScriptDataStub.createWithCall();
             // act
             const actual = sut.canCompile(script);
             // assert
@@ -84,7 +84,7 @@ describe('ScriptCompiler', () => {
         it('returns false if "call" is undefined', () => {
             // arrange
             const sut = new ScriptCompiler([]);
-            const script = YamlScriptStub.createWithCode();
+            const script = ScriptDataStub.createWithCode();
             // act
             const actual = sut.canCompile(script);
             // assert
@@ -98,7 +98,7 @@ describe('ScriptCompiler', () => {
                 const expectedError = 'cannot compile without shared functions';
                 const functions = [];
                 const sut = new ScriptCompiler(functions);
-                const script = YamlScriptStub.createWithCall();
+                const script = ScriptDataStub.createWithCall();
                 // act
                 const act = () => sut.compile(script);
                 // assert
@@ -110,7 +110,7 @@ describe('ScriptCompiler', () => {
                 const invalidValues = [undefined, 'string', 33];
                 const sut = new ScriptCompiler(createFunctions());
                 invalidValues.forEach((invalidValue) => {
-                    const script = YamlScriptStub.createWithoutCallOrCodes() // because call ctor overwrites "undefined"
+                    const script = ScriptDataStub.createWithoutCallOrCodes() // because call ctor overwrites "undefined"
                         .withCall(invalidValue as any);
                     // act
                     const act = () => sut.compile(script);
@@ -124,8 +124,8 @@ describe('ScriptCompiler', () => {
                     const sut = new ScriptCompiler(createFunctions());
                     const nonExistingFunctionName = 'non-existing-func';
                     const expectedError = `called function is not defined "${nonExistingFunctionName}"`;
-                    const call: ScriptFunctionCall = { function: nonExistingFunctionName };
-                    const script = YamlScriptStub.createWithCall(call);
+                    const call: ScriptFunctionCallData = { function: nonExistingFunctionName };
+                    const script = ScriptDataStub.createWithCall(call);
                     // act
                     const act = () => sut.compile(script);
                     // assert
@@ -135,11 +135,11 @@ describe('ScriptCompiler', () => {
                     // arrange
                     const existingFunctionName = 'existing-func';
                     const sut = new ScriptCompiler(createFunctions(existingFunctionName));
-                    const call: ScriptFunctionCall = [
+                    const call: ScriptFunctionCallData = [
                         { function: existingFunctionName },
                         undefined,
                     ];
-                    const script = YamlScriptStub.createWithCall(call);
+                    const script = ScriptDataStub.createWithCall(call);
                     const expectedError = `undefined function call in script "${script.name}"`;
                     // act
                     const act = () => sut.compile(script);
@@ -150,10 +150,10 @@ describe('ScriptCompiler', () => {
                     // arrange
                     const existingFunctionName = 'existing-func';
                     const sut = new ScriptCompiler(createFunctions(existingFunctionName));
-                    const call: FunctionCall[] = [
+                    const call: FunctionCallData[] = [
                         { function: existingFunctionName },
                         { function: undefined }];
-                    const script = YamlScriptStub.createWithCall(call);
+                    const script = ScriptDataStub.createWithCall(call);
                     const expectedError = `empty function name called in script "${script.name}"`;
                     // act
                     const act = () => sut.compile(script);
@@ -170,15 +170,15 @@ describe('ScriptCompiler', () => {
                     execute: 'expected-code',
                     revert: 'expected-revert-code',
                 };
-                const func: YamlFunction = {
+                const func: FunctionData = {
                     name: functionName,
                     parameters: [],
                     code: expected.execute,
                     revertCode: expected.revert,
                 };
                 const sut = new ScriptCompiler([func]);
-                const call: FunctionCall = { function: functionName };
-                const script = YamlScriptStub.createWithCall(call);
+                const call: FunctionCallData = { function: functionName };
+                const script = ScriptDataStub.createWithCall(call);
                 // act
                 const actual = sut.compile(script);
                 // assert
@@ -186,13 +186,13 @@ describe('ScriptCompiler', () => {
             });
             it('builds call sequence as expected', () => {
                 // arrange
-                const firstFunction: YamlFunction = {
+                const firstFunction: FunctionData = {
                     name: 'first-function-name',
                     parameters: [],
                     code: 'first-function-code',
                     revertCode: 'first-function-revert-code',
                 };
-                const secondFunction: YamlFunction = {
+                const secondFunction: FunctionData = {
                     name: 'second-function-name',
                     parameters: [],
                     code: 'second-function-code',
@@ -203,11 +203,11 @@ describe('ScriptCompiler', () => {
                     revert: 'first-function-revert-code\nsecond-function-revert-code',
                 };
                 const sut = new ScriptCompiler([firstFunction, secondFunction]);
-                const call: FunctionCall[] = [
+                const call: FunctionCallData[] = [
                     { function: firstFunction.name },
                     { function: secondFunction.name },
                 ];
-                const script = YamlScriptStub.createWithCall(call);
+                const script = ScriptDataStub.createWithCall(call);
                 // act
                 const actual = sut.compile(script);
                 // assert
@@ -277,26 +277,26 @@ describe('ScriptCompiler', () => {
 
 interface ITestCase {
     code: string;
-    parameters?: FunctionCallParameters;
+    parameters?: FunctionCallParametersData;
 }
 
 class TestEnvironment {
     public readonly sut: IScriptCompiler;
-    public readonly script: YamlScript;
+    public readonly script: ScriptData;
     constructor(testCase: ITestCase) {
         const functionName = 'testFunction';
-        const func: YamlFunction = {
+        const func: FunctionData = {
             name: functionName,
             parameters: testCase.parameters ? Object.keys(testCase.parameters) : undefined,
             code: this.getCode(testCase.code, 'execute'),
             revertCode: this.getCode(testCase.code, 'revert'),
         };
         this.sut = new ScriptCompiler([func]);
-        const call: FunctionCall = {
+        const call: FunctionCallData = {
             function: functionName,
             parameters: testCase.parameters,
         };
-        this.script = YamlScriptStub.createWithCall(call);
+        this.script = ScriptDataStub.createWithCall(call);
     }
     public expect(code: string): IScriptCode {
         return {
@@ -309,12 +309,12 @@ class TestEnvironment {
     }
 }
 
-function createFunctions(...names: string[]): YamlFunction[] {
+function createFunctions(...names: string[]): FunctionData[] {
     if (!names || names.length === 0) {
         names = ['test-function'];
     }
     return names.map((functionName) => {
-        const func: YamlFunction = {
+        const func: FunctionData = {
             name: functionName,
             parameters: [],
             code: `REM test-code (${functionName})`,

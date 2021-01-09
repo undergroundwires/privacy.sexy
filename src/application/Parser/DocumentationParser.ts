@@ -1,6 +1,6 @@
-import { YamlDocumentable, DocumentationUrls } from 'js-yaml-loader!./application.yaml';
+import { DocumentableData, DocumentationUrlsData } from 'js-yaml-loader!@/*';
 
-export function parseDocUrls(documentable: YamlDocumentable): ReadonlyArray<string> {
+export function parseDocUrls(documentable: DocumentableData): ReadonlyArray<string> {
     if (!documentable) {
         throw new Error('documentable is null or undefined');
     }
@@ -13,7 +13,7 @@ export function parseDocUrls(documentable: YamlDocumentable): ReadonlyArray<stri
     return result.getAll();
 }
 
-function addDocs(docs: DocumentationUrls, urls: DocumentationUrlContainer): DocumentationUrlContainer {
+function addDocs(docs: DocumentationUrlsData, urls: DocumentationUrlContainer): DocumentationUrlContainer {
     if (docs instanceof Array) {
         urls.addUrls(docs);
     } else if (typeof docs === 'string') {

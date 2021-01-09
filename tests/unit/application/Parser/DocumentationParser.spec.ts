@@ -1,6 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
-import { YamlDocumentable } from 'js-yaml-loader!@/application.yaml';
+import { DocumentableData } from 'js-yaml-loader!@/*';
 import { parseDocUrls } from '@/application/Parser/DocumentationParser';
 
 describe('DocumentationParser', () => {
@@ -10,7 +10,7 @@ describe('DocumentationParser', () => {
         });
         it('returns empty when empty', () => {
             // arrange
-            const empty: YamlDocumentable = { };
+            const empty: DocumentableData = { };
             // act
             const actual = parseDocUrls(empty);
             // assert
@@ -20,7 +20,7 @@ describe('DocumentationParser', () => {
             // arrange
             const url = 'https://privacy.sexy';
             const expected = [ url ];
-            const sut: YamlDocumentable = { docs: url };
+            const sut: DocumentableData = { docs: url };
             // act
             const actual = parseDocUrls(sut);
             // assert
@@ -29,7 +29,7 @@ describe('DocumentationParser', () => {
         it('returns all when array', () => {
             // arrange
             const expected = [ 'https://privacy.sexy', 'https://github.com/undergroundwires/privacy.sexy' ];
-            const sut: YamlDocumentable = { docs: expected };
+            const sut: DocumentableData = { docs: expected };
             // act
             const actual = parseDocUrls(sut);
             // assert
