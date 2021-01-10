@@ -10,6 +10,7 @@ jobs:
     strategy:
       matrix:
         os: [macos, ubuntu, windows]
+      fail-fast: false # So publish runs for other OSes if one fails
     runs-on: ${{ matrix.os }}-latest
     steps:
       - uses: actions/checkout@v2
