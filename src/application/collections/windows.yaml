@@ -2687,6 +2687,8 @@ actions:
                         children:
                             -
                                 name: App Connector app
+                                recommend: strict
+                                docs: https://superuser.com/a/1003226
                                 call:
                                     function: UninstallStoreApp
                                     parameters:
