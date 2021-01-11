@@ -1083,6 +1083,7 @@ actions:
                                     reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CortanaEnabled" /t REG_DWORD /d 1 /f
                             -
                                 name: Remove the Cortana taskbar icon
+                                recommend: standard
                                 code: reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /v "ShowCortanaButton" /t REG_DWORD /d 0 /f
                                 revertCode: reg delete HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /v "ShowCortanaButton" /f
                     -
