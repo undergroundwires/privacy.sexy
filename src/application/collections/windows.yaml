@@ -3508,9 +3508,9 @@ actions:
                     recommend: strict
                     code: |-
                         if %PROCESSOR_ARCHITECTURE%==x86 (
-                            %SystemRoot%\System32\OneDriveSetup.exe /uninstall 2>null
+                            %SystemRoot%\System32\OneDriveSetup.exe /uninstall 2>nul
                         ) else (
-                            %SystemRoot%\SysWOW64\OneDriveSetup.exe /uninstall 2>null
+                            %SystemRoot%\SysWOW64\OneDriveSetup.exe /uninstall 2>nul
                         )
                     revertCode: |-
                         if %PROCESSOR_ARCHITECTURE%==x86 (
