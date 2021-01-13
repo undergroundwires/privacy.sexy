@@ -1,12 +1,15 @@
 import 'mocha';
 import { expect } from 'chai';
-import { parseScript } from '@/application/Parser/ScriptParser';
+import { parseScript } from '@/application/Parser/Script/ScriptParser';
 import { parseDocUrls } from '@/application/Parser/DocumentationParser';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
-import { ScriptCode } from '@/domain/ScriptCode';
-import { ScriptCompilerStub } from '../../stubs/ScriptCompilerStub';
-import { ScriptDataStub } from '../../stubs/ScriptDataStub';
-import { mockEnumParser } from '../../stubs/EnumParserStub';
+import { ICategoryCollectionParseContext } from '@/application/Parser/Script/ICategoryCollectionParseContext';
+import { ScriptCompilerStub } from '../../../stubs/ScriptCompilerStub';
+import { ScriptDataStub } from '../../../stubs/ScriptDataStub';
+import { mockEnumParser } from '../../../stubs/EnumParserStub';
+import { ScriptCodeStub } from '../../../stubs/ScriptCodeStub';
+import { CategoryCollectionParseContextStub } from '../../../stubs/CategoryCollectionParseContextStub';
+import { LanguageSyntaxStub } from '../../../stubs/LanguageSyntaxStub';
 
 describe('ScriptParser', () => {
     describe('parseScript', () => {
@@ -15,9 +18,9 @@ describe('ScriptParser', () => {
             const expected = 'test-expected-name';
             const script = ScriptDataStub.createWithCode()
                 .withName(expected);
-            const compiler = new ScriptCompilerStub();
+            const parseContext = new CategoryCollectionParseContextStub();
             // act
-            const actual = parseScript(script, compiler);
+            const actual = parseScript(script, parseContext);
             // assert
             expect(actual.name).to.equal(expected);
         });
@@ -26,10 +29,10 @@ describe('ScriptParser', () => {
             const docs = [ 'https://expected-doc1.com', 'https://expected-doc2.com' ];
             const script = ScriptDataStub.createWithCode()
                 .withDocs(docs);
-            const compiler = new ScriptCompilerStub();
+            const parseContext = new CategoryCollectionParseContextStub();
             const expected = parseDocUrls(script);
             // act
-            const actual = parseScript(script, compiler);
+            const actual = parseScript(script, parseContext);
             // assert
             expect(actual.documentationUrls).to.deep.equal(expected);
         });
@@ -37,44 +40,44 @@ describe('ScriptParser', () => {
             it('throws when script is undefined', () => {
                 // arrange
                 const expectedError = 'undefined script';
-                const compiler = new ScriptCompilerStub();
+                const parseContext = new CategoryCollectionParseContextStub();
                 const script = undefined;
                 // act
-                const act = () => parseScript(script, compiler);
+                const act = () => parseScript(script, parseContext);
                 // assert
                 expect(act).to.throw(expectedError);
             });
             it('throws when both function call and code are defined', () => {
                 // arrange
                 const expectedError = 'cannot define both "call" and "code"';
-                const compiler = new ScriptCompilerStub();
+                const parseContext = new CategoryCollectionParseContextStub();
                 const script = ScriptDataStub
                     .createWithCall()
                     .withCode('code');
                 // act
-                const act = () => parseScript(script, compiler);
+                const act = () => parseScript(script, parseContext);
                 // assert
                 expect(act).to.throw(expectedError);
             });
             it('throws when both function call and revertCode are defined', () => {
                 // arrange
                 const expectedError = 'cannot define "revertCode" if "call" is defined';
-                const compiler = new ScriptCompilerStub();
+                const parseContext = new CategoryCollectionParseContextStub();
                 const script = ScriptDataStub
                     .createWithCall()
                     .withRevertCode('revert-code');
                 // act
-                const act = () => parseScript(script, compiler);
+                const act = () => parseScript(script, parseContext);
                 // assert
                 expect(act).to.throw(expectedError);
             });
             it('throws when neither call or revertCode are defined', () => {
                 // arrange
                 const expectedError = 'must define either "call" or "code"';
-                const compiler = new ScriptCompilerStub();
+                const parseContext = new CategoryCollectionParseContextStub();
                 const script = ScriptDataStub.createWithoutCallOrCodes();
                 // act
-                const act = () => parseScript(script, compiler);
+                const act = () => parseScript(script, parseContext);
                 // assert
                 expect(act).to.throw(expectedError);
             });
@@ -84,11 +87,11 @@ describe('ScriptParser', () => {
                 const undefinedLevels: string[] = [ '', undefined ];
                 undefinedLevels.forEach((undefinedLevel) => {
                     // arrange
-                    const compiler = new ScriptCompilerStub();
+                    const parseContext = new CategoryCollectionParseContextStub();
                     const script = ScriptDataStub.createWithCode()
                         .withRecommend(undefinedLevel);
                     // act
-                    const actual = parseScript(script, compiler);
+                    const actual = parseScript(script, parseContext);
                     // assert
                     expect(actual.level).to.equal(undefined);
                 });
@@ -100,10 +103,10 @@ describe('ScriptParser', () => {
                 const levelText = 'standard';
                 const script = ScriptDataStub.createWithCode()
                     .withRecommend(levelText);
-                const compiler = new ScriptCompilerStub();
+                const parseContext = new CategoryCollectionParseContextStub();
                 const parserMock = mockEnumParser(expectedName, levelText, expectedLevel);
                 // act
-                const actual = parseScript(script, compiler, parserMock);
+                const actual = parseScript(script, parseContext, parserMock);
                 // assert
                 expect(actual.level).to.equal(expectedLevel);
             });
@@ -115,9 +118,9 @@ describe('ScriptParser', () => {
                 const script = ScriptDataStub
                     .createWithCode()
                     .withCode(expected);
-                const compiler = new ScriptCompilerStub();
+                const parseContext = new CategoryCollectionParseContextStub();
                 // act
-                const parsed = parseScript(script, compiler);
+                const parsed = parseScript(script, parseContext);
                 // assert
                 const actual = parsed.code.execute;
                 expect(actual).to.equal(expected);
@@ -128,34 +131,53 @@ describe('ScriptParser', () => {
                 const script = ScriptDataStub
                     .createWithCode()
                     .withRevertCode(expected);
-                const compiler = new ScriptCompilerStub();
+                const parseContext = new CategoryCollectionParseContextStub();
                 // act
-                const parsed = parseScript(script, compiler);
+                const parsed = parseScript(script, parseContext);
                 // assert
                 const actual = parsed.code.revert;
                 expect(actual).to.equal(expected);
             });
             describe('compiler', () => {
-                it('throws when compiler is not defined', () => {
+                it('throws when context is not defined', () => {
                     // arrange
+                    const expectedMessage = 'undefined context';
                     const script = ScriptDataStub.createWithCode();
-                    const compiler = undefined;
+                    const context: ICategoryCollectionParseContext = undefined;
                     // act
-                    const act = () => parseScript(script, compiler);
+                    const act = () => parseScript(script, context);
                     // assert
-                    expect(act).to.throw('undefined compiler');
+                    expect(act).to.throw(expectedMessage);
                 });
                 it('gets code from compiler', () => {
                     // arrange
-                    const expected = new ScriptCode('test-script', 'code', 'revert-code');
+                    const expected = new ScriptCodeStub();
                     const script = ScriptDataStub.createWithCode();
                     const compiler = new ScriptCompilerStub()
                         .withCompileAbility(script, expected);
+                    const parseContext = new CategoryCollectionParseContextStub()
+                        .withCompiler(compiler);
                     // act
-                    const parsed = parseScript(script, compiler);
+                    const parsed = parseScript(script, parseContext);
                     // assert
                     const actual = parsed.code;
                     expect(actual).to.equal(expected);
+                });
+            });
+            describe('syntax', () => {
+                it('set from the context', () => { // test through script validation logic
+                    // arrange
+                    const commentDelimiter = 'should not throw';
+                    const duplicatedCode = `${commentDelimiter} duplicate-line\n${commentDelimiter} duplicate-line`;
+                    const parseContext = new CategoryCollectionParseContextStub()
+                        .withSyntax(new LanguageSyntaxStub().withCommentDelimiters(commentDelimiter));
+                    const script = ScriptDataStub
+                        .createWithoutCallOrCodes()
+                        .withCode(duplicatedCode);
+                    // act
+                    const act = () => parseScript(script, parseContext);
+                    // assert
+                    expect(act).to.not.throw();
                 });
             });
         });

@@ -3,7 +3,6 @@ import { expect } from 'chai';
 import { ScriptingDefinition } from '@/domain/ScriptingDefinition';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { getEnumValues } from '@/application/Common/Enum';
-import { OperatingSystem } from '@/domain/OperatingSystem';
 
 describe('ScriptingDefinition', () => {
     describe('language', () => {
@@ -38,7 +37,7 @@ describe('ScriptingDefinition', () => {
             // arrange
             const testCases = new Map<ScriptingLanguage, string>([
                 [ScriptingLanguage.batchfile, 'bat'],
-                [ScriptingLanguage.bash, 'sh'],
+                [ScriptingLanguage.shellscript, 'sh'],
             ]);
             Array.from(testCases.entries()).forEach((test) => {
                 const language = test[0];
@@ -108,7 +107,7 @@ describe('ScriptingDefinition', () => {
 });
 
 class ScriptingDefinitionBuilder {
-    private language = ScriptingLanguage.bash;
+    private language = ScriptingLanguage.shellscript;
     private startCode = 'REM start-code';
     private endCode = 'REM end-code';
 

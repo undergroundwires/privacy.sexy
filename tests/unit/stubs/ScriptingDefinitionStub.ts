@@ -15,4 +15,8 @@ export class ScriptingDefinitionStub implements IScriptingDefinition {
         this.endCode = endCode;
         return this;
     }
+    public withLanguage(language: ScriptingLanguage): ScriptingDefinitionStub {
+        this.language = language;
+        return this;
+    }
 }

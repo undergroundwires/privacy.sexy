@@ -35,10 +35,10 @@ describe('AsyncLazy', () => {
             expect(results).to.deep.equal([1, 1, 1, 1, 1]);
         });
 
-        it('when running long-running task paralelly', async () => {
-            const sleep = (time: number) => new Promise(((resolve) => setTimeout(resolve, time)));
+        it('when running long-running task in parallel', async () => {
+            const sleepAsync = (time: number) => new Promise(((resolve) => setTimeout(resolve, time)));
             const sut = new AsyncLazy(async () => {
-                await sleep(100);
+                await sleepAsync(100);
                 totalExecuted++;
                 return Promise.resolve(totalExecuted);
             });

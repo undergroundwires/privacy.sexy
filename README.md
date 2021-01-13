@@ -1,6 +1,6 @@
 # privacy.sexy
 
-> Enforce privacy & security best-practices on Windows, because privacy is sexy 🍑🍆
+> Enforce privacy & security best-practices on Windows and macOS, because privacy is sexy 🍑🍆
 
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](./CONTRIBUTING.md)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/undergroundwires/privacy.sexy.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/undergroundwires/privacy.sexy/context:javascript)

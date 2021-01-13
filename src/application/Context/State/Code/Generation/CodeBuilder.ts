@@ -3,7 +3,7 @@ import { ICodeBuilder } from './ICodeBuilder';
 const NewLine = '\n';
 const TotalFunctionSeparatorChars = 58;
 
-export class CodeBuilder implements ICodeBuilder {
+export abstract class CodeBuilder implements ICodeBuilder {
     private readonly lines = new Array<string>();
 
     // Returns current line starting from 0 (no lines), or 1 (have single line)
@@ -29,7 +29,7 @@ export class CodeBuilder implements ICodeBuilder {
     }
 
     public appendCommentLine(commentLine?: string): CodeBuilder {
-        this.lines.push(`:: ${commentLine}`);
+        this.lines.push(`${this.getCommentDelimiter()} ${commentLine}`);
         return this;
     }
 
@@ -37,9 +37,8 @@ export class CodeBuilder implements ICodeBuilder {
         if (!name)  { throw new Error('name cannot be empty or null'); }
         if (!code)  { throw new Error('code cannot be empty or null'); }
         return this
-            .appendLine()
             .appendCommentLineWithHyphensAround(name)
-            .appendLine(`echo --- ${name}`)
+            .appendLine(this.writeStandardOut(`--- ${name}`))
             .appendLine(code)
             .appendTrailingHyphensCommentLine();
     }
@@ -62,4 +61,7 @@ export class CodeBuilder implements ICodeBuilder {
     public toString(): string {
         return this.lines.join(NewLine);
     }
+
+    protected abstract getCommentDelimiter(): string;
+    protected abstract writeStandardOut(text: string): string;
 }

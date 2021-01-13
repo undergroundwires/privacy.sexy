@@ -48,7 +48,8 @@ import SelectableOption from './SelectableOption.vue';
 import { IScript } from '@/domain/IScript';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
-import { IApplicationContext } from '@/application/Context/IApplicationContext';
+import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { IApplication } from '@/domain/IApplication';
 
 enum SelectionState {
     Standard,
@@ -66,80 +67,80 @@ export default class TheSelector extends StatefulVue {
     public SelectionState = SelectionState;
     public currentSelection = SelectionState.None;
 
-    public async mounted() {
-        const context = await this.getCurrentContextAsync();
-        this.updateSelections(context);
-        this.beginReactingToChanges(context);
-    }
     public async selectAsync(type: SelectionState): Promise<void> {
         if (this.currentSelection === type) {
             return;
         }
         const context = await this.getCurrentContextAsync();
-        selectType(context, type);
+        selectType(context.state, type);
     }
 
-    private updateSelections(context: IApplicationContext) {
-       this.currentSelection = getCurrentSelectionState(context);
+    protected initialize(app: IApplication): void {
+        return;
+    }
+    protected handleCollectionState(newState: ICategoryCollectionState, oldState: ICategoryCollectionState): void {
+        this.updateSelections(newState);
+        newState.selection.changed.on(() => this.updateSelections(newState));
+        if (oldState) {
+            oldState.selection.changed.on(() => this.updateSelections(oldState));
+        }
     }
 
-    private beginReactingToChanges(context: IApplicationContext) {
-        context.state.selection.changed.on(() => {
-            this.updateSelections(context);
-        });
+    private updateSelections(state: ICategoryCollectionState) {
+       this.currentSelection = getCurrentSelectionState(state);
     }
 }
 
 interface ITypeSelector {
-    isSelected: (context: IApplicationContext) => boolean;
-    select: (context: IApplicationContext) => void;
+    isSelected: (state: ICategoryCollectionState) => boolean;
+    select: (state: ICategoryCollectionState) => void;
 }
 
 const selectors = new Map<SelectionState, ITypeSelector>([
     [SelectionState.None, {
-        select: (context) =>
-            context.state.selection.deselectAll(),
-        isSelected: (context) =>
-            context.state.selection.totalSelected === 0,
+        select: (state) =>
+            state.selection.deselectAll(),
+        isSelected: (state) =>
+            state.selection.totalSelected === 0,
     }],
     [SelectionState.Standard, {
-        select: (context) =>
-            context.state.selection.selectOnly(
-                context.collection.getScriptsByLevel(RecommendationLevel.Standard)),
-        isSelected: (context) =>
-            hasAllSelectedLevelOf(RecommendationLevel.Standard, context),
+        select: (state) =>
+            state.selection.selectOnly(
+                state.collection.getScriptsByLevel(RecommendationLevel.Standard)),
+        isSelected: (state) =>
+            hasAllSelectedLevelOf(RecommendationLevel.Standard, state),
     }],
     [SelectionState.Strict, {
-        select: (context) =>
-            context.state.selection.selectOnly(context.collection.getScriptsByLevel(RecommendationLevel.Strict)),
-        isSelected: (context) =>
-            hasAllSelectedLevelOf(RecommendationLevel.Strict, context),
+        select: (state) =>
+            state.selection.selectOnly(state.collection.getScriptsByLevel(RecommendationLevel.Strict)),
+        isSelected: (state) =>
+            hasAllSelectedLevelOf(RecommendationLevel.Strict, state),
     }],
     [SelectionState.All, {
-        select: (context) =>
-            context.state.selection.selectAll(),
-        isSelected: (context) =>
-            context.state.selection.totalSelected === context.collection.totalScripts,
+        select: (state) =>
+            state.selection.selectAll(),
+        isSelected: (state) =>
+            state.selection.totalSelected === state.collection.totalScripts,
     }],
 ]);
 
-function selectType(context: IApplicationContext, type: SelectionState) {
+function selectType(state: ICategoryCollectionState, type: SelectionState) {
     const selector = selectors.get(type);
-    selector.select(context);
+    selector.select(state);
 }
 
-function getCurrentSelectionState(context: IApplicationContext): SelectionState {
+function getCurrentSelectionState(state: ICategoryCollectionState): SelectionState {
     for (const [type, selector] of Array.from(selectors.entries())) {
-        if (selector.isSelected(context)) {
+        if (selector.isSelected(state)) {
             return type;
         }
     }
     return SelectionState.Custom;
 }
 
-function hasAllSelectedLevelOf(level: RecommendationLevel, context: IApplicationContext) {
-    const scripts = context.collection.getScriptsByLevel(level);
-    const selectedScripts = context.state.selection.selectedScripts;
+function hasAllSelectedLevelOf(level: RecommendationLevel, state: ICategoryCollectionState) {
+    const scripts = state.collection.getScriptsByLevel(level);
+    const selectedScripts = state.selection.selectedScripts;
     return areAllSelected(scripts, selectedScripts);
 }
 

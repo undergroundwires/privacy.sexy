@@ -1,10 +1,12 @@
 <template>
     <div>
-        <div class="help-container">
-            <TheSelector />
+        <div class="heading">
+            <TheSelector class="item"/>
+            <TheOsChanger class="item"/>
             <TheGrouper
+                class="item"
                 v-on:groupingChanged="onGroupingChanged($event)"
-                v-show="!this.isSearching" />
+                v-if="!this.isSearching" />
         </div>
         <div class="scripts">
             <div v-if="!isSearching">
@@ -37,72 +39,93 @@
 </template>
 
 <script lang="ts">
-    import { Component } from 'vue-property-decorator';
-    import { StatefulVue } from '@/presentation/StatefulVue';
-    import { Grouping } from './Grouping/Grouping';
-    import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
-    import TheGrouper from '@/presentation/Scripts/Grouping/TheGrouper.vue';
-    import TheSelector from '@/presentation/Scripts/Selector/TheSelector.vue';
-    import ScriptsTree from '@/presentation/Scripts/ScriptsTree/ScriptsTree.vue';
-    import CardList from '@/presentation/Scripts/Cards/CardList.vue';
+import TheGrouper from '@/presentation/Scripts/Grouping/TheGrouper.vue';
+import TheOsChanger from '@/presentation/Scripts/TheOsChanger.vue';
+import TheSelector from '@/presentation/Scripts/Selector/TheSelector.vue';
+import ScriptsTree from '@/presentation/Scripts/ScriptsTree/ScriptsTree.vue';
+import CardList from '@/presentation/Scripts/Cards/CardList.vue';
+import { Component } from 'vue-property-decorator';
+import { StatefulVue } from '@/presentation/StatefulVue';
+import { Grouping } from './Grouping/Grouping';
+import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
+import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { IApplication } from '@/domain/IApplication';
+import { IEventSubscription } from '@/infrastructure/Events/ISubscription';
 
-    /** Shows content of single category or many categories */
-    @Component({
-    components: {
-        TheGrouper,
-        TheSelector,
-        ScriptsTree,
-        CardList,
+/** Shows content of single category or many categories */
+@Component({
+components: {
+    TheGrouper,
+    TheSelector,
+    ScriptsTree,
+    CardList,
+    TheOsChanger,
+},
+filters: {
+    threeDotsTrim(query: string) {
+        const threshold = 30;
+        if (query.length <= threshold - 3) {
+            return query;
+        }
+        return `${query.substr(0, threshold)}...`;
     },
-    filters: {
-        threeDotsTrim(query: string) {
-            const threshold = 30;
-            if (query.length <= threshold - 3) {
-                return query;
-            }
-            return `${query.substr(0, threshold)}...`;
-        },
-    },
-    })
-    export default class TheScripts extends StatefulVue {
-        public repositoryUrl = '';
-        public Grouping = Grouping; // Make it accessible from view
-        public currentGrouping = Grouping.Cards;
-        public searchQuery = '';
-        public isSearching = false;
-        public searchHasMatches = false;
+},
+})
+export default class TheScripts extends StatefulVue {
+    public repositoryUrl = '';
+    public Grouping = Grouping; // Make it accessible from view
+    public currentGrouping = Grouping.Cards;
+    public searchQuery = '';
+    public isSearching = false;
+    public searchHasMatches = false;
 
-        public async mounted() {
-            const context = await this.getCurrentContextAsync();
-            this.repositoryUrl = context.app.info.repositoryWebUrl;
-            const filter = context.state.filter;
-            filter.filterRemoved.on(() => {
-                this.isSearching = false;
-            });
-            filter.filtered.on((result: IFilterResult) => {
-                this.searchQuery = result.query;
-                this.isSearching = true;
-                this.searchHasMatches = result.hasAnyMatches();
-            });
-        }
+    private listeners = new Array<IEventSubscription>();
 
-        public async clearSearchQueryAsync() {
-            const context = await this.getCurrentContextAsync();
-            const filter = context.state.filter;
-            filter.removeFilter();
-        }
-
-        public onGroupingChanged(group: Grouping) {
-            this.currentGrouping = group;
-        }
+    public destroyed() {
+        this.unsubscribeAll();
     }
+    public async clearSearchQueryAsync() {
+        const context = await this.getCurrentContextAsync();
+        const filter = context.state.filter;
+        filter.removeFilter();
+    }
+    public onGroupingChanged(group: Grouping) {
+        this.currentGrouping = group;
+    }
+
+    protected initialize(app: IApplication): void {
+        this.repositoryUrl = app.info.repositoryWebUrl;
+    }
+    protected handleCollectionState(newState: ICategoryCollectionState): void {
+        this.unsubscribeAll();
+        this.subscribe(newState);
+    }
+
+    private subscribe(state: ICategoryCollectionState) {
+        this.listeners.push(state.filter.filterRemoved.on(() => {
+            this.isSearching = false;
+        }));
+        state.filter.filtered.on((result: IFilterResult) => {
+            this.searchQuery = result.query;
+            this.isSearching = true;
+            this.searchHasMatches = result.hasAnyMatches();
+        });
+    }
+    private unsubscribeAll() {
+        this.listeners.forEach((listener) => listener.unsubscribe());
+        this.listeners.splice(0, this.listeners.length);
+    }
+}
 </script>
 
 <style scoped lang="scss">
 @import "@/presentation/styles/colors.scss";
 @import "@/presentation/styles/fonts.scss";
+
+$inner-margin: 4px;
+
 .scripts {
-    margin-top:10px;
+    margin-top: $inner-margin;
     .tree {
         padding-left: 3%;
         padding-top: 15px;
@@ -151,9 +174,22 @@
     }
 }
 
-.help-container {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+.heading {
+    margin-top: $inner-margin;
+    display: flex;
+    flex-wrap: wrap;
+    .item {
+        flex: 1;
+        white-space: nowrap;
+        display: flex;
+        justify-content: center;
+        margin: 0 5px 0 5px;
+        &:first-child {
+            justify-content: flex-start;
+        }
+        &:last-child {
+            justify-content: flex-end;
+        }
+    }
 }
 </style>

@@ -36,9 +36,8 @@ export class ApplicationContext implements IApplicationContext {
             throw new Error(`os "${OperatingSystem[os]}" is not defined in application`);
         }
         const event: IApplicationContextChangedEvent = {
-            newState: this.state,
-            newCollection: this.collection,
-            newOs: os,
+            newState: this.states[os],
+            oldState: this.states[this.currentOs],
         };
         this.contextChanged.notify(event);
         this.currentOs = os;

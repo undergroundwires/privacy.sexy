@@ -2,10 +2,12 @@ import 'mocha';
 import { expect } from 'chai';
 import { parseCategory } from '@/application/Parser/CategoryParser';
 import { CategoryData, CategoryOrScriptData } from 'js-yaml-loader!@/*';
-import { parseScript } from '@/application/Parser/ScriptParser';
+import { parseScript } from '@/application/Parser/Script/ScriptParser';
 import { parseDocUrls } from '@/application/Parser/DocumentationParser';
 import { ScriptCompilerStub } from '../../stubs/ScriptCompilerStub';
 import { ScriptDataStub } from '../../stubs/ScriptDataStub';
+import { CategoryCollectionParseContextStub } from '../../stubs/CategoryCollectionParseContextStub';
+import { LanguageSyntaxStub } from '../../stubs/LanguageSyntaxStub';
 
 describe('CategoryParser', () => {
     describe('parseCategory', () => {
@@ -14,9 +16,9 @@ describe('CategoryParser', () => {
                 // arrange
                 const expectedMessage = 'category is null or undefined';
                 const category = undefined;
-                const compiler = new ScriptCompilerStub();
+                const context = new CategoryCollectionParseContextStub();
                 // act
-                const act = () => parseCategory(category, compiler);
+                const act = () => parseCategory(category, context);
                 // assert
                 expect(act).to.throw(expectedMessage);
             });
@@ -28,9 +30,9 @@ describe('CategoryParser', () => {
                     category: categoryName,
                     children: [],
                 };
-                const compiler = new ScriptCompilerStub();
+                const context = new CategoryCollectionParseContextStub();
                 // act
-                const act = () => parseCategory(category, compiler);
+                const act = () => parseCategory(category, context);
                 // assert
                 expect(act).to.throw(expectedMessage);
             });
@@ -42,9 +44,9 @@ describe('CategoryParser', () => {
                     category: categoryName,
                     children: undefined,
                 };
-                const compiler = new ScriptCompilerStub();
+                const context = new CategoryCollectionParseContextStub();
                 // act
-                const act = () => parseCategory(category, compiler);
+                const act = () => parseCategory(category, context);
                 // assert
                 expect(act).to.throw(expectedMessage);
             });
@@ -57,21 +59,21 @@ describe('CategoryParser', () => {
                         category: invalidName,
                         children: getTestChildren(),
                     };
-                    const compiler = new ScriptCompilerStub();
+                    const context = new CategoryCollectionParseContextStub();
                     // act
-                    const act = () => parseCategory(category, compiler);
+                    const act = () => parseCategory(category, context);
                     // assert
                     expect(act).to.throw(expectedMessage);
                 });
             });
         });
-        it('throws when compiler is undefined', () => {
+        it('throws when context is undefined', () => {
             // arrange
-            const expectedError = 'undefined compiler';
-            const compiler = undefined;
+            const expectedError = 'undefined context';
+            const context = undefined;
             const category = getValidCategory();
             // act
-            const act = () => parseCategory(category, compiler);
+            const act = () => parseCategory(category, context);
             // assert
             expect(act).to.throw(expectedError);
         });
@@ -79,14 +81,14 @@ describe('CategoryParser', () => {
             // arrange
             const url = 'https://privacy.sexy';
             const expected = parseDocUrls({ docs: url });
-            const compiler = new ScriptCompilerStub();
             const category: CategoryData = {
                 category: 'category name',
                 children: getTestChildren(),
                 docs: url,
             };
+            const context = new CategoryCollectionParseContextStub();
             // act
-            const actual = parseCategory(category, compiler).documentationUrls;
+            const actual = parseCategory(category, context).documentationUrls;
             // assert
             expect(actual).to.deep.equal(expected);
         });
@@ -94,14 +96,14 @@ describe('CategoryParser', () => {
             it('single script with code', () => {
                 // arrange
                 const script = ScriptDataStub.createWithCode();
-                const compiler = new ScriptCompilerStub();
-                const expected = [ parseScript(script, compiler) ];
+                const context = new CategoryCollectionParseContextStub();
+                const expected = [ parseScript(script, context) ];
                 const category: CategoryData = {
                     category: 'category name',
                     children: [ script ],
                 };
                 // act
-                const actual = parseCategory(category, compiler).scripts;
+                const actual = parseCategory(category, context).scripts;
                 // assert
                 expect(actual).to.deep.equal(expected);
             });
@@ -110,13 +112,15 @@ describe('CategoryParser', () => {
                 const script = ScriptDataStub.createWithCall();
                 const compiler = new ScriptCompilerStub()
                     .withCompileAbility(script);
-                const expected = [ parseScript(script, compiler) ];
+                const context = new CategoryCollectionParseContextStub()
+                    .withCompiler(compiler);
+                const expected = [ parseScript(script, context) ];
                 const category: CategoryData = {
                     category: 'category name',
                     children: [ script ],
                 };
                 // act
-                const actual = parseCategory(category, compiler).scripts;
+                const actual = parseCategory(category, context).scripts;
                 // assert
                 expect(actual).to.deep.equal(expected);
             });
@@ -124,17 +128,43 @@ describe('CategoryParser', () => {
                 // arrange
                 const callableScript = ScriptDataStub.createWithCall();
                 const scripts = [ callableScript, ScriptDataStub.createWithCode() ];
-                const compiler = new ScriptCompilerStub()
-                    .withCompileAbility(callableScript);
-                const expected = scripts.map((script) => parseScript(script, compiler));
                 const category: CategoryData = {
                     category: 'category name',
                     children: scripts,
                 };
+                const compiler = new ScriptCompilerStub()
+                    .withCompileAbility(callableScript);
+                const context = new CategoryCollectionParseContextStub()
+                    .withCompiler(compiler);
+                const expected = scripts.map((script) => parseScript(script, context));
                 // act
-                const actual = parseCategory(category, compiler).scripts;
+                const actual = parseCategory(category, context).scripts;
                 // assert
                 expect(actual).to.deep.equal(expected);
+            });
+            it('script is created with right context', () => { // test through script validation logic
+                // arrange
+                const commentDelimiter = 'should not throw';
+                const duplicatedCode = `${commentDelimiter} duplicate-line\n${commentDelimiter} duplicate-line`;
+                const parseContext = new CategoryCollectionParseContextStub()
+                    .withSyntax(new LanguageSyntaxStub().withCommentDelimiters(commentDelimiter));
+                const category: CategoryData = {
+                    category: 'category name',
+                    children: [
+                        {
+                            category: 'sub-category',
+                            children: [
+                                ScriptDataStub
+                                    .createWithoutCallOrCodes()
+                                    .withCode(duplicatedCode),
+                            ],
+                        },
+                    ],
+                };
+                // act
+                const act = () => parseCategory(category, parseContext).scripts;
+                // assert
+                expect(act).to.not.throw();
             });
         });
         it('returns expected subcategories', () => {
@@ -147,9 +177,9 @@ describe('CategoryParser', () => {
                 category: 'category name',
                 children: expected,
             };
-            const compiler = new ScriptCompilerStub();
+            const context = new CategoryCollectionParseContextStub();
             // act
-            const actual = parseCategory(category, compiler).subCategories;
+            const actual = parseCategory(category, context).subCategories;
             // assert
             expect(actual).to.have.lengthOf(1);
             expect(actual[0].name).to.equal(expected[0].category);

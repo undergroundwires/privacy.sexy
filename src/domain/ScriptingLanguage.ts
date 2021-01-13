@@ -1,4 +1,4 @@
 export enum ScriptingLanguage {
     batchfile = 0,
-    bash = 1,
+    shellscript = 1,
 }

@@ -24,9 +24,8 @@ function getInitialOs(app: IApplication, environment: IEnvironment): OperatingSy
         return currentOs;
     }
     supportedOsList.sort((os1, os2) => {
-        const os1SupportLevel = app.collections[os1].totalScripts;
-        const os2SupportLevel = app.collections[os2].totalScripts;
-        return os1SupportLevel - os2SupportLevel;
+        const getPriority = (os: OperatingSystem) => app.getCollection(os).totalScripts;
+        return getPriority(os2) - getPriority(os1);
     });
     return supportedOsList[0];
 }

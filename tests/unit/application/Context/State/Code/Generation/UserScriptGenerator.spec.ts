@@ -2,7 +2,8 @@ import 'mocha';
 import { expect } from 'chai';
 import { UserScriptGenerator } from '@/application/Context/State/Code/Generation/UserScriptGenerator';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
-import { CodeBuilder } from '@/application/Context/State/Code/Generation/CodeBuilder';
+import { ICodeBuilderFactory } from '@/application/Context/State/Code/Generation/ICodeBuilderFactory';
+import { ICodeBuilder } from '@/application/Context/State/Code/Generation/ICodeBuilder';
 import { ScriptStub } from '../../../../../stubs/ScriptStub';
 import { ScriptingDefinitionStub } from '../../../../../stubs/ScriptingDefinitionStub';
 
@@ -28,14 +29,15 @@ describe('UserScriptGenerator', () => {
             });
             it('is not prepended if empty', () => {
                 // arrange
-                const sut = new UserScriptGenerator();
+                const codeBuilderStub = new CodeBuilderStub();
+                const sut = new UserScriptGenerator(mockCodeBuilderFactory(codeBuilderStub));
                 const script = new ScriptStub('id')
                     .withCode('code\nmulti-lined')
                     .toSelectedScript();
                 const definition = new ScriptingDefinitionStub()
                     .withStartCode(undefined)
                     .withEndCode(undefined);
-                const expectedStart = new CodeBuilder()
+                const expectedStart = codeBuilderStub
                     .appendFunction(script.script.name, script.script.code.execute)
                     .toString();
                 // act
@@ -64,15 +66,16 @@ describe('UserScriptGenerator', () => {
             });
             it('is not appended if empty', () => {
                 // arrange
-                const sut = new UserScriptGenerator();
+                const codeBuilderStub = new CodeBuilderStub();
+                const sut = new UserScriptGenerator(mockCodeBuilderFactory(codeBuilderStub));
                 const script = new ScriptStub('id')
                     .withCode('code\nmulti-lined')
                     .toSelectedScript();
-                const definition = new ScriptingDefinitionStub()
-                    .withEndCode(undefined);
-                const expectedEnd = new CodeBuilder()
+                const expectedEnd = codeBuilderStub
                     .appendFunction(script.script.name, script.script.code.execute)
                     .toString();
+                const definition = new ScriptingDefinitionStub()
+                    .withEndCode(undefined);
                 // act
                 const code = sut.buildCode([script], definition);
                 // assert
@@ -199,3 +202,36 @@ describe('UserScriptGenerator', () => {
         });
     });
 });
+
+function mockCodeBuilderFactory(mock: ICodeBuilder): ICodeBuilderFactory {
+    return {
+        create: () => mock,
+    };
+}
+
+class CodeBuilderStub implements ICodeBuilder {
+    public currentLine = 0;
+    private text = '';
+    public appendLine(code?: string): ICodeBuilder {
+        this.text += this.text ? `${code}\n` : code;
+        this.currentLine++;
+        return this;
+    }
+    public appendTrailingHyphensCommentLine(totalRepeatHyphens: number): ICodeBuilder {
+        return this.appendLine(`trailing-hyphens-${totalRepeatHyphens}`);
+    }
+    public appendCommentLine(commentLine?: string): ICodeBuilder {
+        return this.appendLine(`Comment | ${commentLine}`);
+    }
+    public appendCommentLineWithHyphensAround(sectionName: string, totalRepeatHyphens: number): ICodeBuilder {
+        return this.appendLine(`hyphens-around-${totalRepeatHyphens} | Section name: ${sectionName} | hyphens-around-${totalRepeatHyphens}`);
+    }
+    public appendFunction(name: string, code: string): ICodeBuilder {
+        return this
+            .appendLine(`Function | Name: ${name}`)
+            .appendLine(`Function | Code: ${code}`);
+    }
+    public toString(): string {
+        return this.text;
+    }
+}

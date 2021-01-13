@@ -1,6 +1,6 @@
 import { ICodePosition } from './ICodePosition';
-export class CodePosition implements ICodePosition {
 
+export class CodePosition implements ICodePosition {
     public get totalLines(): number {
         return this.endLine - this.startLine;
     }

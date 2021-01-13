@@ -6,14 +6,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Emit } from 'vue-property-decorator';
-import { StatefulVue } from '@/presentation/StatefulVue';
+import { Component, Prop, Emit, Vue } from 'vue-property-decorator';
 import { NonCollapsing } from '@/presentation/Scripts/Cards/NonCollapsingDirective';
 
 @Component({
     directives: { NonCollapsing },
 })
-export default class SelectableOption extends StatefulVue {
+export default class SelectableOption extends Vue {
   @Prop() public enabled: boolean;
   @Prop() public label: string;
   @Emit('click') public onClicked() { return; }

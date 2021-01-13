@@ -1,4 +1,4 @@
-import { IScriptCompiler } from '@/application/Parser/Compiler/IScriptCompiler';
+import { IScriptCompiler } from '@/application/Parser/Script/Compiler/IScriptCompiler';
 import { IScriptCode } from '@/domain/IScriptCode';
 import { ScriptData } from 'js-yaml-loader!@/*';
 

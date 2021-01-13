@@ -1,81 +1,87 @@
+import { ISignal } from '@/infrastructure/Events/ISignal';
+import { IEventSubscription } from '@/infrastructure/Events/ISubscription';
 import { Signal } from '@/infrastructure/Events/Signal';
 import { expect } from 'chai';
+import { EventHandler } from '@/infrastructure/Events/ISignal';
+
 
 describe('Signal', () => {
-    class ReceiverMock {
-        public onRecieveCalls = new Array<number>();
-        public onReceive(arg: number): void { this.onRecieveCalls.push(arg); }
+    class ObserverMock {
+        public readonly onReceiveCalls = new Array<number>();
+        public readonly callbacks = new Array<EventHandler<number>>();
+        public readonly subscription: IEventSubscription;
+        constructor(subject: ISignal<number>) {
+            this.callbacks.push((arg) => this.onReceiveCalls.push(arg));
+            this.subscription = subject.on((arg) => this.callbacks.forEach((action) => action(arg)));
+        }
     }
-
     let signal: Signal<number>;
     beforeEach(() => signal = new Signal());
-
-    describe('single reciever', () => {
-        let receiver: ReceiverMock;
-
+    describe('single observer', () => {
+        // arrange
+        let observer: ObserverMock;
         beforeEach(() => {
-            receiver = new ReceiverMock();
-            signal.on((arg) => receiver.onReceive(arg));
+            observer = new ObserverMock(signal);
         });
-
         it('notify() executes the callback', () => {
+            // act
             signal.notify(5);
-            expect(receiver.onRecieveCalls).to.have.length(1);
+            // assert
+            expect(observer.onReceiveCalls).to.have.length(1);
         });
-
         it('notify() executes the callback with the payload', () => {
             const expected = 5;
+            // act
             signal.notify(expected);
-            expect(receiver.onRecieveCalls).to.deep.equal([expected]);
+            // assert
+            expect(observer.onReceiveCalls).to.deep.equal([expected]);
+        });
+        it('notify() does not call callback when unsubscribed', () => {
+            // act
+            observer.subscription.unsubscribe();
+            signal.notify(5);
+            // assert
+            expect(observer.onReceiveCalls).to.have.lengthOf(0);
         });
     });
 
-    describe('multiple recievers', () => {
-        let receivers: ReceiverMock[];
-
+    describe('multiple observers', () => {
+        // arrange
+        let observers: ObserverMock[];
         beforeEach(() => {
-            receivers = [
-                new ReceiverMock(), new ReceiverMock(),
-                new ReceiverMock(), new ReceiverMock()];
-            function subscribeReceiver(receiver: ReceiverMock) {
-                signal.on((arg) => receiver.onReceive(arg));
-            }
-            for (const receiver of receivers) {
-                subscribeReceiver(receiver);
-            }
+            observers = [
+                new ObserverMock(signal), new ObserverMock(signal),
+                new ObserverMock(signal), new ObserverMock(signal),
+            ];
         });
-
-
         it('notify() should execute all callbacks', () => {
+            // act
             signal.notify(5);
-            receivers.forEach((receiver) => {
-                expect(receiver.onRecieveCalls).to.have.length(1);
+            // assert
+            observers.forEach((observer) => {
+                expect(observer.onReceiveCalls).to.have.length(1);
             });
         });
-
         it('notify() should execute all callbacks with payload', () => {
             const expected = 5;
+            // act
             signal.notify(expected);
-            receivers.forEach((receiver) => {
-                expect(receiver.onRecieveCalls).to.deep.equal([expected]);
+            // assert
+            observers.forEach((observer) => {
+                expect(observer.onReceiveCalls).to.deep.equal([expected]);
             });
         });
-
         it('notify() executes in FIFO order', () => {
             // arrange
             const expectedSequence = [0, 1, 2, 3];
             const actualSequence = new Array<number>();
-            for (let i = 0; i < receivers.length; i++) {
-                receivers[i].onReceive = ((arg) => {
-                    actualSequence.push(i);
-                });
+            for (let i = 0; i < observers.length; i++) {
+                observers[i].callbacks.push(() => actualSequence.push(i));
             }
             // act
             signal.notify(5);
             // assert
             expect(actualSequence).to.deep.equal(expectedSequence);
         });
-
     });
-
 });

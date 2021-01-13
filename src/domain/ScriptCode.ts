@@ -2,16 +2,16 @@ import { IScriptCode } from './IScriptCode';
 
 export class ScriptCode implements IScriptCode {
     constructor(
-        scriptName: string,
         public readonly execute: string,
-        public readonly revert: string) {
-        if (!scriptName) {
-            throw new Error('script name is undefined');
-        }
-        validateCode(scriptName, execute);
+        public readonly revert: string,
+        scriptName: string,
+        syntax: ILanguageSyntax) {
+        if (!scriptName)    {   throw new Error('script name is undefined');    }
+        if (!syntax)        {   throw new Error('syntax is undefined');         }
+        validateCode(scriptName, execute, syntax);
         if (revert) {
             scriptName = `${scriptName} (revert)`;
-            validateCode(scriptName, revert);
+            validateCode(scriptName, revert, syntax);
             if (execute === revert) {
                 throw new Error(`${scriptName}: Code itself and its reverting code cannot be the same`);
             }
@@ -19,12 +19,17 @@ export class ScriptCode implements IScriptCode {
     }
 }
 
-function validateCode(name: string, code: string): void {
+export interface ILanguageSyntax {
+    readonly commentDelimiters: string[];
+    readonly commonCodeParts: string[];
+}
+
+function validateCode(name: string, code: string, syntax: ILanguageSyntax): void {
     if (!code || code.length === 0) {
         throw new Error(`code of ${name} is empty or undefined`);
     }
     ensureNoEmptyLines(name, code);
-    ensureCodeHasUniqueLines(name, code);
+    ensureCodeHasUniqueLines(name, code, syntax);
 }
 
 function ensureNoEmptyLines(name: string, code: string): void {
@@ -33,9 +38,9 @@ function ensureNoEmptyLines(name: string, code: string): void {
     }
 }
 
-function ensureCodeHasUniqueLines(name: string, code: string): void {
+function ensureCodeHasUniqueLines(name: string, code: string, syntax: ILanguageSyntax): void {
     const lines = code.split('\n')
-        .filter((line) => !shouldIgnoreLine(line));
+        .filter((line) => !shouldIgnoreLine(line, syntax));
     if (lines.length === 0) {
         return;
     }
@@ -45,13 +50,12 @@ function ensureCodeHasUniqueLines(name: string, code: string): void {
     }
 }
 
-function shouldIgnoreLine(codeLine: string): boolean {
+function shouldIgnoreLine(codeLine: string, syntax: ILanguageSyntax): boolean {
     codeLine = codeLine.toLowerCase();
-    const isCommentLine = () => codeLine.startsWith(':: ') || codeLine.startsWith('rem ');
+    const isCommentLine = () => syntax.commentDelimiters.some((delimiter) => codeLine.startsWith(delimiter));
     const consistsOfFrequentCommands = () => {
-        const frequentCodeParts = [ '(', ')', 'else' ];
         const trimmed = codeLine.trim().split(' ');
-        return trimmed.every((part) => frequentCodeParts.includes(part));
+        return trimmed.every((part) => syntax.commonCodeParts.includes(part));
     };
     return isCommentLine() || consistsOfFrequentCommands();
 }

@@ -13,11 +13,12 @@ import { Component, Prop, Watch } from 'vue-property-decorator';
 import { StatefulVue } from '@/presentation/StatefulVue';
 import { Environment } from '@/application/Environment/Environment';
 import { OperatingSystem } from '@/domain/OperatingSystem';
+import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { IApplication } from '@/domain/IApplication';
 
 @Component
 export default class DownloadUrlListItem extends StatefulVue {
   @Prop() public operatingSystem!: OperatingSystem;
-  public OperatingSystem = OperatingSystem;
 
   public downloadUrl: string = '';
   public operatingSystemName: string = '';
@@ -35,6 +36,13 @@ export default class DownloadUrlListItem extends StatefulVue {
     this.downloadUrl = await this.getDownloadUrlAsync(os);
     this.operatingSystemName = getOperatingSystemName(os);
     this.hasCurrentOsDesktopVersion = hasDesktopVersion(currentOs);
+  }
+
+  protected initialize(app: IApplication): void {
+      return;
+  }
+  protected handleCollectionState(newState: ICategoryCollectionState, oldState: ICategoryCollectionState): void {
+      return;
   }
 
   private async getDownloadUrlAsync(os: OperatingSystem): Promise<string> {

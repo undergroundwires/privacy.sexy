@@ -3,16 +3,15 @@ import 'mocha';
 import { expect } from 'chai';
 import { Script } from '@/domain/Script';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
-import { ScriptCode } from '@/domain/ScriptCode';
 import { IScriptCode } from '@/domain/IScriptCode';
+import { ScriptCodeStub } from '../stubs/ScriptCodeStub';
 
 describe('Script', () => {
     describe('ctor', () => {
         describe('scriptCode', () => {
             it('sets as expected', () => {
                 // arrange
-                const name = 'test-script';
-                const expected = new ScriptCode(name, 'expected-execute', 'expected-revert');
+                const expected = new ScriptCodeStub();
                 const sut = new ScriptBuilder()
                     .withCode(expected)
                     .build();
@@ -110,12 +109,14 @@ describe('Script', () => {
 
 class ScriptBuilder {
     private name = 'test-script';
-    private code: IScriptCode = new ScriptCode(this.name, 'code', 'revert-code');
+    private code: IScriptCode = new ScriptCodeStub();
     private level = RecommendationLevel.Standard;
     private documentationUrls: readonly string[] = undefined;
 
     public withCodes(code: string, revertCode = ''): ScriptBuilder {
-        this.code = new ScriptCode(this.name, code, revertCode);
+        this.code = new ScriptCodeStub()
+            .withExecute(code)
+            .withRevert(revertCode);
         return this;
     }
 

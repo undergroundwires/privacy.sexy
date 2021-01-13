@@ -1,18 +1,28 @@
-import { ISignal } from './ISignal';
-export { ISignal };
+import { EventHandler, ISignal } from './ISignal';
+import { IEventSubscription } from './ISubscription';
 
 export class Signal<T> implements ISignal<T> {
-    private handlers: Array<(data: T) => void> = [];
+    private handlers = new Map<number, EventHandler<T>>();
 
-    public on(handler: (data: T) => void): void {
-        this.handlers.push(handler);
-    }
-
-    public off(handler: (data: T) => void): void {
-        this.handlers = this.handlers.filter((h) => h !== handler);
+    public on(handler: EventHandler<T>): IEventSubscription {
+        const id = this.getUniqueEventHandlerId();
+        this.handlers.set(id, handler);
+        return {
+            unsubscribe: () => this.handlers.delete(id),
+        };
     }
 
     public notify(data: T) {
-        this.handlers.slice(0).forEach((h) => h(data));
+        for (const handler of Array.from(this.handlers.values())) {
+            handler(data);
+        }
+    }
+
+    private getUniqueEventHandlerId(): number {
+        const id = Math.random();
+        if (this.handlers.has(id)) {
+            return this.getUniqueEventHandlerId();
+        }
+        return id;
     }
 }

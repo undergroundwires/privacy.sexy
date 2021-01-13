@@ -27,39 +27,30 @@ export class ScriptDataStub implements ScriptData {
     public recommend = RecommendationLevel[RecommendationLevel.Standard].toLowerCase();
     public docs = ['hello.com'];
 
-    private constructor() { }
-
     public withName(name: string): ScriptDataStub {
         this.name = name;
         return this;
     }
-
     public withDocs(docs: string[]): ScriptDataStub {
         this.docs = docs;
         return this;
     }
-
     public withCode(code: string): ScriptDataStub {
         this.code = code;
         return this;
     }
-
     public withRevertCode(revertCode: string): ScriptDataStub {
         this.revertCode = revertCode;
         return this;
     }
-
     public withMockCall(): ScriptDataStub {
         this.call = { function: 'func', parameters: [] };
         return this;
     }
-
     public withCall(call: ScriptFunctionCallData): ScriptDataStub {
         this.call = call;
         return this;
     }
-
-
     public withRecommend(recommend: string): ScriptDataStub {
         this.recommend = recommend;
         return this;

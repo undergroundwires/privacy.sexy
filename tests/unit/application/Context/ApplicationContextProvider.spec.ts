@@ -17,7 +17,7 @@ describe('ApplicationContextProvider', () => {
             // act
             const context = buildContext(parserMock);
             // assert
-            // TODO:  expect(expected).to.equal(context.app);
+            expect(expected).to.equal(context.app);
         });
         describe('sets initial OS as expected', () => {
             it('returns currentOs if it is supported', () => {
@@ -28,7 +28,8 @@ describe('ApplicationContextProvider', () => {
                 // act
                 const context = buildContext(parser, environment);
                 // assert
-                expect(expected).to.equal(context.currentOs);
+                const actual = context.state.os;
+                expect(expected).to.equal(actual);
             });
             it('fallbacks to other os if OS in environment is not supported', () => {
                 // arrange
@@ -39,11 +40,25 @@ describe('ApplicationContextProvider', () => {
                 // act
                 const context = buildContext(parser, environment);
                 // assert
-                const actual = context.currentOs;
+                const actual = context.state.os;
                 expect(expected).to.equal(actual);
             });
             it('fallbacks to most supported os if current os is not supported', () => {
-                // TODO: After more than single collection can be parsed
+                // arrange
+                const expectedOs = OperatingSystem.Android;
+                const allCollections = [
+                    new CategoryCollectionStub().withOs(OperatingSystem.Linux).withTotalScripts(3),
+                    new CategoryCollectionStub().withOs(expectedOs).withTotalScripts(5),
+                    new CategoryCollectionStub().withOs(OperatingSystem.Windows).withTotalScripts(4),
+                ];
+                const environment = new EnvironmentStub().withOs(OperatingSystem.macOS);
+                const app = new ApplicationStub().withCollections(...allCollections);
+                const parser: ApplicationParserType = () => app;
+                // act
+                const context = buildContext(parser, environment);
+                // assert
+                const actual = context.state.os;
+                expect(expectedOs).to.equal(actual, `Expected: ${OperatingSystem[expectedOs]}, actual: ${OperatingSystem[actual]}`);
             });
         });
     });

@@ -49,16 +49,17 @@ export default class CardListItem extends StatefulVue {
   public isAnyChildSelected = false;
   public areAllChildrenSelected = false;
 
-@Emit('selected')
+  public async mounted() {
+    this.updateStateAsync(this.categoryId);
+  }
+  @Emit('selected')
   public onSelected(isExpanded: boolean) {
     this.isExpanded = isExpanded;
   }
-
   @Watch('activeCategoryId')
   public async onActiveCategoryChanged(value: |number) {
     this.isExpanded = value === this.categoryId;
   }
-
   @Watch('isExpanded')
   public async onExpansionChangedAsync(newValue: number, oldValue: number) {
     if (!oldValue && newValue) {
@@ -67,23 +68,21 @@ export default class CardListItem extends StatefulVue {
       (focusElement as HTMLElement).scrollIntoView({behavior: 'smooth'});
     }
   }
-
-  public async mounted() {
-    const context = await this.getCurrentContextAsync();
-    context.state.selection.changed.on(() => {
-      this.updateStateAsync(this.categoryId);
-    });
-    this.updateStateAsync(this.categoryId);
-  }
-
   @Watch('categoryId')
   public async updateStateAsync(value: |number) {
     const context = await this.getCurrentContextAsync();
-    const category = !value ? undefined : context.collection.findCategory(this.categoryId);
+    const category = !value ? undefined : context.state.collection.findCategory(this.categoryId);
     this.cardTitle = category ? category.name : undefined;
     const currentSelection = context.state.selection;
     this.isAnyChildSelected = category ? currentSelection.isAnySelected(category) : false;
     this.areAllChildrenSelected = category ? currentSelection.areAllSelected(category) : false;
+  }
+  protected initialize(): void {
+    return;
+  }
+  protected handleCollectionState(): void {
+    // No need, as categoryId will be updated instead
+    return;
   }
 }
 

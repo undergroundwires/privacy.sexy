@@ -1,0 +1,225 @@
+# Structure documented in "docs/collections.md"
+os: macos
+scripting:
+    language: shellscript
+    startCode: |-
+        #!/usr/bin/env bash
+        # {{ $homepage }} — v{{ $version }} — {{ $date }}
+        if [ "$EUID" -ne 0 ]; then
+            script_path=$([[ "$0" = /* ]] && echo "$0" || echo "$PWD/${0#./}")
+            sudo "$script_path" || (
+                echo 'Administrator privileges are required.'
+                exit 1
+            )
+            exit 0
+        fi
+    endCode: |-
+        echo 'Your privacy and security is now hardened 🎉💪'
+        echo 'Press any key to exit.'
+        read -n 1 -s
+actions:
+    -
+        category: Privacy cleanup
+        children:
+            - 
+                category: Clear terminal history
+                children:
+                    -
+                        name: Clear bash history
+                        recommend: standard
+                        code: rm -f ~/.bash_history
+                    -
+                        name: Clear zsh history
+                        recommend: standard
+                        code: rm -f ~/.zsh_history
+            -
+                name: Clear CUPS printer job cache
+                recommend: strict
+                code: |-
+                    sudo rm -rfv /var/spool/cups/c0*
+                    sudo rm -rfv /var/spool/cups/tmp/*
+                    sudo rm -rfv /var/spool/cups/cache/job.cache*
+            -
+                name: Clear the list of iOS devices connected
+                recommend: strict
+                code: |-
+                    sudo defaults delete /Users/$USER/Library/Preferences/com.apple.iPod.plist "conn:128:Last Connect"
+                    sudo defaults delete /Users/$USER/Library/Preferences/com.apple.iPod.plist Devices
+                    sudo defaults delete /Library/Preferences/com.apple.iPod.plist "conn:128:Last Connect"
+                    sudo defaults delete /Library/Preferences/com.apple.iPod.plist Devices
+                    sudo rm -rfv /var/db/lockdown/*
+            -
+                name: Reset privacy database (remove all permissions)
+                code: sudo tccutil reset All 
+    -
+        category: Configure programs
+        children:
+            -
+                name: Disable Firefox telemetry
+                recommend: standard
+                docs: https://github.com/mozilla/policy-templates/blob/master/README.md
+                code: |-
+                    # Enable Firefox policies so the telemetry can be configured.
+                    sudo defaults write /Library/Preferences/org.mozilla.firefox EnterprisePoliciesEnabled -bool TRUE
+                    # Disable sending usage data
+                    sudo defaults write /Library/Preferences/org.mozilla.firefox DisableTelemetry -bool TRUE
+                revertCode: |-
+                    sudo defaults delete /Library/Preferences/org.mozilla.firefox EnterprisePoliciesEnabled
+                    sudo defaults delete /Library/Preferences/org.mozilla.firefox DisableTelemetry
+            -
+                name: Disable Microsoft Office diagnostics data sending
+                recommend: standard
+                code: defaults write com.microsoft.office DiagnosticDataTypePreference -string ZeroDiagnosticData
+                revertCode: defaults delete com.microsoft.office DiagnosticDataTypePreference
+            -
+                name: Uninstall Google update
+                recommend: strict
+                code: |-
+                    googleUpdateFile=~/Library/Google/GoogleSoftwareUpdate/GoogleSoftwareUpdate.bundle/Contents/Resources/ksinstall
+                    if [ -f "$googleUpdateFile" ]; then
+                        $googleUpdateFile --nuke
+                        echo Uninstalled google update
+                    else
+                        echo Google update file does not exist
+                    fi
+            -
+                name: Disable Homebrew user behavior analytics
+                recommend: standard
+                docs: https://docs.brew.sh/Analytics
+                call:
+                    -
+                        function: PersistUserEnvironmentConfiguration
+                        parameters:
+                            configuration: export HOMEBREW_NO_ANALYTICS=1
+            -
+                name: Disable NET Core CLI telemetry
+                recommend: standard
+                call:
+                    -
+                        function: PersistUserEnvironmentConfiguration
+                        parameters:
+                            configuration: export DOTNET_CLI_TELEMETRY_OPTOUT=1
+            -
+                name: Disable PowerShell Core telemetry
+                recommend: standard
+                docs: https://github.com/PowerShell/PowerShell/tree/release/v7.1.1#telemetry
+                call:
+                    -
+                        function: PersistUserEnvironmentConfiguration
+                        parameters:
+                            configuration: export POWERSHELL_TELEMETRY_OPTOUT=1
+    -
+        category: Configure OS
+        children:
+            -
+                category: Configure Apple Remote Desktop
+                children:
+                    -
+                        name: Deactivate the Remote Management Service
+                        recommend: strict
+                        code: sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -deactivate -stop
+                        revertCode: sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -restart -agent -console
+                    -
+                        name: Remove Apple Remote Desktop Settings
+                        recommend: strict
+                        code: |-
+                            sudo rm -rf /var/db/RemoteManagement
+                            sudo defaults delete /Library/Preferences/com.apple.RemoteDesktop.plist
+                            defaults delete ~/Library/Preferences/com.apple.RemoteDesktop.plist
+                            sudo rm -r /Library/Application\ Support/Apple/Remote\ Desktop/ 
+                            rm -r ~/Library/Application\ Support/Remote\ Desktop/
+                            rm -r ~/Library/Containers/com.apple.RemoteDesktop
+            -
+                name: Disable Internet based spell correction
+                code: defaults write NSGlobalDomain WebAutomaticSpellingCorrectionEnabled -bool false
+                revertCode: defaults delete NSGlobalDomain WebAutomaticSpellingCorrectionEnabled
+            -
+                name: Disable Remote Apple Events
+                recommend: strict
+                code: sudo systemsetup -setremoteappleevents off
+                revertCode: sudo systemsetup -setremoteappleevents on
+            -
+                name: Do not store documents to iCloud Drive by default
+                docs: https://macos-defaults.com/finder/nsdocumentsavenewdocumentstocloud.html
+                recommend: standard
+                code: defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
+                revertCode: defaults delete NSGlobalDomain NSDocumentSaveNewDocumentsToCloud
+            -
+                category: Security improvements
+                children:
+                    -
+                        category: Configure macOS Application Firewall
+                        children:
+                            -
+                                name: Enable firewall
+                                recommend: standard
+                                docs: https://www.stigviewer.com/stig/apple_os_x_10.13/2018-10-01/finding/V-81681
+                                code: /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
+                                revertCode: /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate off
+                            -
+                                name: Turn on firewall logging
+                                recommend: standard
+                                docs: https://www.stigviewer.com/stig/apple_os_x_10.13/2018-10-01/finding/V-81671
+                                code: /usr/libexec/ApplicationFirewall/socketfilterfw --setloggingmode on
+                                revertCode: /usr/libexec/ApplicationFirewall/socketfilterfw --setloggingmode off
+                            -
+                                name: Turn on stealth mode
+                                recommend: standard
+                                docs: https://www.stigviewer.com/stig/apple_os_x_10.8_mountain_lion_workstation/2015-02-10/finding/V-51327
+                                code: /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on
+                                revertCode: /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode off
+                            -
+                                name: Disable Spotlight indexing
+                                code: sudo mdutil -i off -d /
+                                revertCode: sudo mdutil -i on /
+                    -
+                        name: Disable Captive portal
+                        docs:
+                            - https://web.archive.org/web/20171008071031if_/http://blog.erratasec.com/2010/09/apples-secret-wispr-request.html#.WdnPa5OyL6Y
+                            - https://web.archive.org/web/20130407200745/http://www.divertednetworks.net/apple-captiveportal.html
+                            - https://web.archive.org/web/20170622064304/https://grpugh.wordpress.com/2014/10/29/an-undocumented-change-to-captive-network-assistant-settings-in-os-x-10-10-yosemite/
+                        code: sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.captive.control.plist Active -bool false
+                        revertCode: sudo defaults delete /Library/Preferences/SystemConfiguration/com.apple.captive.control.plist Active
+                    -
+                        name: Require a password to wake the computer from sleep or screen saver
+                        code: defaults write /Library/Preferences/com.apple.screensaver askForPassword -bool true
+                        revertCode: sudo defaults delete /Library/Preferences/com.apple.screensaver askForPassword
+            -
+                name: Do not show recent items on dock
+                docs: https://developer.apple.com/documentation/devicemanagement/dock
+                code: defaults write com.apple.dock show-recents -bool false
+                revertCode: defaults delete com.apple.dock show-recents
+            -
+                name: Disable AirDrop file sharing
+                recommend: strict
+                code: defaults write com.apple.NetworkBrowser DisableAirDrop -bool true
+                revertCode: defaults write com.apple.NetworkBrowser DisableAirDrop -bool false
+functions:
+    -
+        name: PersistUserEnvironmentConfiguration
+        parameters: [ configuration ]
+        code: |-
+            command='{{ $configuration }}'
+            declare -a profile_files=("$HOME/.bash_profile" "$HOME/.zprofile")
+            for profile_file in "${profile_files[@]}"
+            do
+                touch "$profile_file"
+                if ! grep -q "$command" "${profile_file}"; then
+                    echo "$command" >> "$profile_file"
+                    echo "[$profile_file] Configured"
+                else
+                    echo "[$profile_file] No need for any action, already configured"
+                fi
+            done
+        revertCode: |-
+            command='{{ $configuration }}'
+            declare -a profile_files=("$HOME/.bash_profile" "$HOME/.zprofile")
+            for profile_file in "${profile_files[@]}"
+            do
+                if grep -q "$command" "${profile_file}" 2>/dev/null; then
+                    sed -i '' "/$command/d" "$profile_file"
+                    echo "[$profile_file] Reverted configuration"
+                else
+                    echo "[$profile_file] No need for any action, configuration does not exist"
+                fi
+            done

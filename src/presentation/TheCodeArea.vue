@@ -7,27 +7,14 @@ import { Component, Prop } from 'vue-property-decorator';
 import { StatefulVue } from './StatefulVue';
 import ace from 'ace-builds';
 import 'ace-builds/webpack-resolver';
-import { CodeBuilder } from '@/application/Context/State/Code/Generation/CodeBuilder';
 import { ICodeChangedEvent } from '@/application/Context/State/Code/Event/ICodeChangedEvent';
 import { IScript } from '@/domain/IScript';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
-
-const NothingChosenCode =
-  new CodeBuilder()
-    .appendCommentLine('privacy.sexy — 🔐 Enforce privacy & security best-practices on Windows')
-    .appendLine()
-    .appendCommentLine('-- 🤔 How to use')
-    .appendCommentLine(' 📙 Start by exploring different categories and choosing different tweaks.')
-    .appendCommentLine(' 📙 On top left, you can apply predefined selections for privacy level you\'d like.')
-    .appendCommentLine(' 📙 After you choose any tweak, you can download or copy to execute your script.')
-    .appendCommentLine(' 📙 Come back regularly to apply latest version for stronger privacy and security.')
-    .appendLine()
-    .appendCommentLine('-- 🧐 Why privacy.sexy')
-    .appendCommentLine(' ✔️ Rich tweak pool to harden security & privacy of the OS and other software on it.')
-    .appendCommentLine(' ✔️ No need to run any compiled software on your system, just run the generated scripts.')
-    .appendCommentLine(' ✔️ Have full visibility into what the tweaks do as you enable them.')
-    .appendCommentLine(' ✔️ Open-source and free (both free as in beer and free as in speech).')
-    .toString();
+import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { IApplication } from '@/domain/IApplication';
+import { IEventSubscription } from '@/infrastructure/Events/ISubscription';
+import { IApplicationCode } from '@/application/Context/State/Code/IApplicationCode';
+import { CodeBuilderFactory } from '@/application/Context/State/Code/Generation/CodeBuilderFactory';
 
 @Component
 export default class TheCodeArea extends StatefulVue {
@@ -35,21 +22,41 @@ export default class TheCodeArea extends StatefulVue {
 
   private editor!: ace.Ace.Editor;
   private currentMarkerId?: number;
+  private codeListener: IEventSubscription;
 
   @Prop() private theme!: string;
 
-  public async mounted() {
-    const context = await this.getCurrentContextAsync();
-    this.editor = initializeEditor(this.theme, this.editorId, context.collection.scripting.language);
-    const appCode = context.state.code;
-    this.editor.setValue(appCode.current || NothingChosenCode, 1);
-    appCode.changed.on((code) => this.updateCode(code));
+  public destroyed() {
+    this.unsubscribeCodeListening();
+    this.destroyEditor();
   }
 
-  private updateCode(event: ICodeChangedEvent) {
+  protected initialize(app: IApplication): void {
+    return;
+  }
+  protected handleCollectionState(newState: ICategoryCollectionState): void {
+    this.destroyEditor();
+    this.editor = initializeEditor(this.theme, this.editorId, newState.collection.scripting.language);
+    const appCode = newState.code;
+    this.editor.setValue(appCode.current || getDefaultCode(newState.collection.scripting.language), 1);
+    this.unsubscribeCodeListening();
+    this.subscribe(appCode);
+  }
+
+  private subscribe(appCode: IApplicationCode) {
+    this.codeListener = appCode.changed.on((code) => this.updateCodeAsync(code));
+  }
+  private unsubscribeCodeListening() {
+    if (this.codeListener) {
+      this.codeListener.unsubscribe();
+    }
+  }
+  private async updateCodeAsync(event: ICodeChangedEvent) {
     this.removeCurrentHighlighting();
     if (event.isEmpty()) {
-      this.editor.setValue(NothingChosenCode, 1);
+      const context = await this.getCurrentContextAsync();
+      const defaultCode = getDefaultCode(context.state.collection.scripting.language);
+      this.editor.setValue(defaultCode, 1);
       return;
     }
     this.editor.setValue(event.code, 1);
@@ -60,7 +67,6 @@ export default class TheCodeArea extends StatefulVue {
       this.reactToChanges(event, event.changedScripts);
     }
   }
-
   private reactToChanges(event: ICodeChangedEvent, scripts: ReadonlyArray<IScript>) {
       const positions = scripts
         .map((script) => event.getScriptPositionInCode(script));
@@ -73,25 +79,27 @@ export default class TheCodeArea extends StatefulVue {
       this.scrollToLine(end + 2);
       this.highlight(start, end);
   }
-
   private highlight(startRow: number, endRow: number) {
     const AceRange = ace.require('ace/range').Range;
     this.currentMarkerId = this.editor.session.addMarker(
         new AceRange(startRow, 0, endRow, 0), 'code-area__highlight', 'fullLine',
     );
   }
-
   private scrollToLine(row: number) {
     const column = this.editor.session.getLine(row).length;
     this.editor.gotoLine(row, column, true);
   }
-
   private removeCurrentHighlighting() {
     if (!this.currentMarkerId) {
       return;
     }
     this.editor.session.removeMarker(this.currentMarkerId);
     this.currentMarkerId = undefined;
+  }
+  private destroyEditor() {
+    if (this.editor) {
+      this.editor.destroy();
+    }
   }
 }
 
@@ -109,11 +117,30 @@ function initializeEditor(theme: string, editorId: string, language: ScriptingLa
 
 function getLanguage(language: ScriptingLanguage) {
   switch (language) {
-    case ScriptingLanguage.batchfile:
-      return 'batchfile';
+    case ScriptingLanguage.batchfile:   return 'batchfile';
+    case ScriptingLanguage.shellscript: return 'sh';
     default:
-      throw new Error('unkown language');
+      throw new Error('unknown language');
   }
+}
+
+function getDefaultCode(language: ScriptingLanguage): string {
+  return new CodeBuilderFactory()
+    .create(language)
+    .appendCommentLine('privacy.sexy — 🔐 Enforce privacy & security best-practices on Windows and macOS')
+    .appendLine()
+    .appendCommentLine('-- 🤔 How to use')
+    .appendCommentLine(' 📙 Start by exploring different categories and choosing different tweaks.')
+    .appendCommentLine(' 📙 On top left, you can apply predefined selections for privacy level you\'d like.')
+    .appendCommentLine(' 📙 After you choose any tweak, you can download or copy to execute your script.')
+    .appendCommentLine(' 📙 Come back regularly to apply latest version for stronger privacy and security.')
+    .appendLine()
+    .appendCommentLine('-- 🧐 Why privacy.sexy')
+    .appendCommentLine(' ✔️ Rich tweak pool to harden security & privacy of the OS and other software on it.')
+    .appendCommentLine(' ✔️ No need to run any compiled software on your system, just run the generated scripts.')
+    .appendCommentLine(' ✔️ Have full visibility into what the tweaks do as you enable them.')
+    .appendCommentLine(' ✔️ Open-source and free (both free as in beer and free as in speech).')
+    .toString();
 }
 
 </script>

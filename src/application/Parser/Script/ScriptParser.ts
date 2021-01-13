@@ -1,22 +1,20 @@
 import { Script } from '@/domain/Script';
 import { ScriptData } from 'js-yaml-loader!@/*';
-import { parseDocUrls } from './DocumentationParser';
+import { parseDocUrls } from '../DocumentationParser';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
-import { IScriptCompiler } from './Compiler/IScriptCompiler';
 import { IScriptCode } from '@/domain/IScriptCode';
 import { ScriptCode } from '@/domain/ScriptCode';
-import { createEnumParser, IEnumParser } from '../Common/Enum';
+import { createEnumParser, IEnumParser } from '../../Common/Enum';
+import { ICategoryCollectionParseContext } from './ICategoryCollectionParseContext';
 
 export function parseScript(
-    data: ScriptData, compiler: IScriptCompiler,
+    data: ScriptData, context: ICategoryCollectionParseContext,
     levelParser = createEnumParser(RecommendationLevel)): Script {
     validateScript(data);
-    if (!compiler) {
-        throw new Error('undefined compiler');
-    }
+    if (!context)    {    throw new Error('undefined context');  }
     const script = new Script(
         /* name */  data.name,
-        /* code */  parseCode(data, compiler),
+        /* code */  parseCode(data, context),
         /* docs */  parseDocUrls(data),
         /* level */ parseLevel(data.recommend, levelParser));
     return script;
@@ -29,11 +27,11 @@ function parseLevel(level: string, parser: IEnumParser<RecommendationLevel>): Re
     return parser.parseEnum(level, 'level');
 }
 
-function parseCode(script: ScriptData, compiler: IScriptCompiler): IScriptCode {
-    if (compiler.canCompile(script)) {
-        return compiler.compile(script);
+function parseCode(script: ScriptData, context: ICategoryCollectionParseContext): IScriptCode {
+    if (context.compiler.canCompile(script)) {
+        return context.compiler.compile(script);
     }
-    return new ScriptCode(script.name, script.code, script.revertCode);
+    return new ScriptCode(script.code, script.revertCode, script.name, context.syntax);
 }
 
 function ensureNotBothCallAndCode(script: ScriptData) {

@@ -34,23 +34,21 @@
 import { Component } from 'vue-property-decorator';
 import { StatefulVue } from '@/presentation/StatefulVue';
 import { Environment } from '@/application/Environment/Environment';
+import { IApplication } from '@/domain/IApplication';
 
 @Component
-export default class TheFooter extends StatefulVue {
+export default class PrivacyPolicy extends StatefulVue {
   public repositoryUrl: string = '';
   public feedbackUrl: string = '';
-  public isDesktop: boolean = false;
+  public isDesktop = Environment.CurrentEnvironment.isDesktop;
 
-  constructor() {
-    super();
-    this.isDesktop = Environment.CurrentEnvironment.isDesktop;
-  }
-
-  public async mounted() {
-    const context = await this.getCurrentContextAsync();
-    const info = context.app.info;
+  protected initialize(app: IApplication): void {
+    const info = app.info;
     this.repositoryUrl = info.repositoryWebUrl;
     this.feedbackUrl = info.feedbackUrl;
+  }
+  protected handleCollectionState(): void {
+    return;
   }
 }
 </script>

@@ -3,6 +3,7 @@ import { IScriptCode } from '@/domain/IScriptCode';
 import { ScriptCode } from '@/domain/ScriptCode';
 import { ScriptData, FunctionData, FunctionCallData, ScriptFunctionCallData, FunctionCallParametersData } from 'js-yaml-loader!@/*';
 import { IScriptCompiler } from './IScriptCompiler';
+import { ILanguageSyntax } from '@/domain/ScriptCode';
 
 interface ICompiledCode {
     readonly code: string;
@@ -10,8 +11,11 @@ interface ICompiledCode {
 }
 
 export class ScriptCompiler implements IScriptCompiler {
-    constructor(private readonly functions: readonly FunctionData[]) {
+    constructor(
+        private readonly functions: readonly FunctionData[] | undefined,
+        private syntax: ILanguageSyntax) {
         ensureValidFunctions(functions);
+        if (!syntax) { throw new Error('undefined syntax'); }
     }
     public canCompile(script: ScriptData): boolean {
         if (!script.call) {
@@ -33,7 +37,7 @@ export class ScriptCompiler implements IScriptCompiler {
             compiledCodes.push(functionCode);
         });
         const scriptCode = merge(compiledCodes);
-        return new ScriptCode(script.name, scriptCode.code, scriptCode.revertCode);
+        return new ScriptCode(scriptCode.code, scriptCode.revertCode, script.name, this.syntax);
     }
 
     private getFunctionByName(name: string): FunctionData {
@@ -43,7 +47,6 @@ export class ScriptCompiler implements IScriptCompiler {
         }
         return func;
     }
-
     private ensureCompilable(call: ScriptFunctionCallData) {
         if (!this.functions || this.functions.length === 0) {
             throw new Error('cannot compile without shared functions');
@@ -69,7 +72,11 @@ function ensureNoDuplicatesInFunctionNames(functions: readonly FunctionData[]) {
         throw new Error(`duplicate function name: ${printList(duplicateFunctionNames)}`);
     }
 }
-
+function ensureNoUndefinedItem(functions: readonly FunctionData[]) {
+    if (functions.some((func) => !func)) {
+        throw new Error(`some functions are undefined`);
+    }
+}
 function ensureNoDuplicatesInParameterNames(functions: readonly FunctionData[]) {
     const functionsWithParameters = functions
         .filter((func) => func.parameters && func.parameters.length > 0);
@@ -95,9 +102,10 @@ function ensureNoDuplicateCode(functions: readonly FunctionData[]) {
 }
 
 function ensureValidFunctions(functions: readonly FunctionData[]) {
-    if (!functions) {
+    if (!functions || functions.length === 0) {
         return;
     }
+    ensureNoUndefinedItem(functions);
     ensureNoDuplicatesInFunctionNames(functions);
     ensureNoDuplicatesInParameterNames(functions);
     ensureNoDuplicateCode(functions);

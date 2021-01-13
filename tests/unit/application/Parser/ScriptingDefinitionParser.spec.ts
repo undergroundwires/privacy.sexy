@@ -34,7 +34,8 @@ describe('ScriptingDefinitionParser', () => {
                 const expectedName = 'language';
                 const info = new ProjectInformationStub();
                 const definition = new ScriptingDefinitionBuilder()
-                    .withLanguage(languageText).construct();
+                    .withLanguage(languageText)
+                    .construct();
                 const parserMock = mockEnumParser(expectedName, languageText, expectedLanguage);
                 // act
                 const actual = parseScriptingDefinition(definition, info, new Date(), parserMock);

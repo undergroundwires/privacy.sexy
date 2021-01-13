@@ -1,7 +1,7 @@
 import { SelectedScript } from './SelectedScript';
-import { ISignal } from '@/infrastructure/Events/Signal';
 import { IScript } from '@/domain/IScript';
 import { ICategory } from '@/domain/ICategory';
+import { ISignal } from '@/infrastructure/Events/ISignal';
 
 export interface IUserSelection {
     readonly changed: ISignal<ReadonlyArray<SelectedScript>>;

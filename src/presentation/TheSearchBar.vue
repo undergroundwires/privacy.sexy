@@ -13,7 +13,11 @@
 import { Component, Watch } from 'vue-property-decorator';
 import { StatefulVue } from './StatefulVue';
 import { NonCollapsing } from '@/presentation/Scripts/Cards/NonCollapsingDirective';
-import { IUserFilter } from '@/application/Context/State/ICategoryCollectionState';
+import { IUserFilter } from '@/application/Context/State/Filter/IUserFilter';
+import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
+import { IApplication } from '@/domain/IApplication';
+import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { IEventSubscription } from '@/infrastructure/Events/ISubscription';
 
 @Component( {
     directives: { NonCollapsing },
@@ -23,12 +27,7 @@ export default class TheSearchBar extends StatefulVue {
   public searchPlaceHolder = 'Search';
   public searchQuery = '';
 
-  public async mounted() {
-    const context = await this.getCurrentContextAsync();
-    const totalScripts = context.collection.totalScripts;
-    this.searchPlaceHolder = `Search in ${totalScripts} scripts`;
-    this.beginReacting(context.state.filter);
-  }
+  private readonly listeners = new Array<IEventSubscription>();
 
   @Watch('searchQuery')
   public async updateFilterAsync(newFilter: |string) {
@@ -40,10 +39,34 @@ export default class TheSearchBar extends StatefulVue {
       filter.setFilter(newFilter);
     }
   }
+  public destroyed() {
+    this.unsubscribeAll();
+  }
 
-  private beginReacting(filter: IUserFilter) {
-    filter.filtered.on((result) => this.searchQuery = result.query);
-    filter.filterRemoved.on(() => this.searchQuery = '');
+  protected initialize(app: IApplication): void {
+    return;
+  }
+  protected handleCollectionState(newState: ICategoryCollectionState, oldState: ICategoryCollectionState | undefined) {
+    const totalScripts = newState.collection.totalScripts;
+    this.searchPlaceHolder = `Search in ${totalScripts} scripts`;
+    this.searchQuery = newState.filter.currentFilter ? newState.filter.currentFilter.query : '';
+    this.unsubscribeAll();
+    this.subscribe(newState.filter);
+  }
+
+  private subscribe(filter: IUserFilter) {
+    this.listeners.push(filter.filtered.on((result) => this.handleFiltered(result)));
+    this.listeners.push(filter.filterRemoved.on(() => this.handleFilterRemoved()));
+  }
+  private unsubscribeAll() {
+    this.listeners.forEach((listener) => listener.unsubscribe());
+    this.listeners.splice(0, this.listeners.length);
+  }
+  private handleFiltered(result: IFilterResult) {
+    this.searchQuery = result.query;
+  }
+  private handleFilterRemoved() {
+    this.searchQuery = '';
   }
 }
 </script>

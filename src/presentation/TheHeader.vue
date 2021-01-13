@@ -1,11 +1,13 @@
 <template>
     <div id="container">
       <h1 class="child title" >{{ title }}</h1>
-      <h2 class="child subtitle">Enforce privacy & security on Windows</h2>
+      <h2 class="child subtitle">Enforce privacy & security on Windows and macOS</h2>
     </div>
 </template>
 
 <script lang="ts">
+import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { IApplication } from '@/domain/IApplication';
 import { Component } from 'vue-property-decorator';
 import { StatefulVue } from './StatefulVue';
 
@@ -14,9 +16,11 @@ export default class TheHeader extends StatefulVue {
   public title = '';
   public subtitle = '';
 
-  public async mounted() {
-    const context = await this.getCurrentContextAsync();
-    this.title = context.app.info.name;
+  protected initialize(app: IApplication): void {
+    this.title = app.info.name;
+  }
+  protected handleCollectionState(newState: ICategoryCollectionState, oldState: ICategoryCollectionState): void {
+    return;
   }
 }
 </script>

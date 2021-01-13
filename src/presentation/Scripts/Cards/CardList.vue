@@ -21,6 +21,8 @@ import CardListItem from './CardListItem.vue';
 import { StatefulVue } from '@/presentation/StatefulVue';
 import { ICategory } from '@/domain/ICategory';
 import { hasDirective } from './NonCollapsingDirective';
+import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { IApplication } from '@/domain/IApplication';
 
 @Component({
   components: {
@@ -31,9 +33,7 @@ export default class CardList extends StatefulVue {
   public categoryIds: number[] = [];
   public activeCategoryId?: number = null;
 
-  public async mounted() {
-    const context = await this.getCurrentContextAsync();
-    this.setCategories(context.collection.actions);
+  public created() {
     this.onOutsideOfActiveCardClicked((element) => {
       if (hasDirective(element)) {
         return;
@@ -41,15 +41,21 @@ export default class CardList extends StatefulVue {
       this.activeCategoryId = null;
     });
   }
-
   public onSelected(categoryId: number, isExpanded: boolean) {
     this.activeCategoryId = isExpanded ? categoryId : undefined;
+  }
+
+  protected initialize(app: IApplication): void {
+    return;
+  }
+  protected handleCollectionState(newState: ICategoryCollectionState, oldState: ICategoryCollectionState): void {
+    this.setCategories(newState.collection.actions);
+    this.activeCategoryId = undefined;
   }
 
   private setCategories(categories: ReadonlyArray<ICategory>): void {
     this.categoryIds = categories.map((category) => category.id);
   }
-
   private onOutsideOfActiveCardClicked(callback: (clickedElement: Element) => void) {
     const outsideClickListener = (event) => {
       if (!this.activeCategoryId) {

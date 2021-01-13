@@ -1,5 +1,5 @@
+import { ISignal } from '@/infrastructure/Events/ISignal';
 import { IFilterResult } from './IFilterResult';
-import { ISignal } from '@/infrastructure/Events/Signal';
 
 export interface IUserFilter {
     readonly currentFilter: IFilterResult | undefined;

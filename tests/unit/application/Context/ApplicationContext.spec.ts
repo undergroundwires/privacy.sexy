@@ -22,7 +22,7 @@ describe('ApplicationContext', () => {
                     .construct();
                 sut.changeContext(OperatingSystem.macOS);
                 // assert
-                expect(sut.collection).to.equal(expectedCollection);
+                expect(sut.state.collection).to.equal(expectedCollection);
             });
             it('currentOs is changed as expected', () => {
                 // arrange
@@ -35,9 +35,9 @@ describe('ApplicationContext', () => {
                     .construct();
                 sut.changeContext(expectedOs);
                 // assert
-                expect(sut.currentOs).to.equal(expectedOs);
+                expect(sut.state.os).to.equal(expectedOs);
             });
-            it('state is changed as expected', () => {
+            it('new state is empty', () => {
                 // arrange
                 const testContext = new ObservableApplicationContextFactory()
                     .withAppContainingCollections(OperatingSystem.Windows, OperatingSystem.macOS);
@@ -45,6 +45,7 @@ describe('ApplicationContext', () => {
                 const sut = testContext
                     .withInitialOs(OperatingSystem.Windows)
                     .construct();
+                sut.state.filter.setFilter('filtered');
                 sut.changeContext(OperatingSystem.macOS);
                 // assert
                 expectEmptyState(sut.state);
@@ -82,12 +83,13 @@ describe('ApplicationContext', () => {
                 const sut = testContext
                     .withInitialOs(OperatingSystem.Windows)
                     .construct();
+                const oldState = sut.state;
                 sut.changeContext(nextOs);
                 // assert
                 expect(testContext.firedEvents.length).to.equal(1);
-                expect(testContext.firedEvents[0].newCollection).to.equal(expectedCollection);
                 expect(testContext.firedEvents[0].newState).to.equal(sut.state);
-                expect(testContext.firedEvents[0].newOs).to.equal(nextOs);
+                expect(testContext.firedEvents[0].newState.collection).to.equal(expectedCollection);
+                expect(testContext.firedEvents[0].oldState).to.equal(oldState);
             });
             it('is not fired when initial os is changed to same one', () => {
                 // arrange
@@ -148,7 +150,7 @@ describe('ApplicationContext', () => {
                     .withInitialOs(os)
                     .construct();
                 // assert
-                const actual = sut.collection;
+                const actual = sut.state.collection;
                 expect(actual).to.deep.equal(expected);
             });
         });
@@ -174,7 +176,7 @@ describe('ApplicationContext', () => {
                     .withInitialOs(expected)
                     .construct();
                 // assert
-                const actual = sut.currentOs;
+                const actual = sut.state.os;
                 expect(actual).to.deep.equal(expected);
             });
             describe('throws when OS is invalid', () => {

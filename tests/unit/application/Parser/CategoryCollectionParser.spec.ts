@@ -8,8 +8,8 @@ import { OperatingSystem } from '@/domain/OperatingSystem';
 import { parseScriptingDefinition } from '@/application/Parser/ScriptingDefinitionParser';
 import { mockEnumParser } from '../../stubs/EnumParserStub';
 import { ProjectInformationStub } from '../../stubs/ProjectInformationStub';
-import { ScriptCompilerStub } from '../../stubs/ScriptCompilerStub';
 import { getCategoryStub, CollectionDataStub } from '../../stubs/CollectionDataStub';
+import { CategoryCollectionParseContextStub } from '../../stubs/CategoryCollectionParseContextStub';
 
 describe('CategoryCollectionParser', () => {
     describe('parseCategoryCollection', () => {
@@ -48,8 +48,8 @@ describe('CategoryCollectionParser', () => {
             it('parses actions', () => {
                 // arrange
                 const actions = [ getCategoryStub('test1'), getCategoryStub('test2') ];
-                const compiler = new ScriptCompilerStub();
-                const expected = [ parseCategory(actions[0], compiler), parseCategory(actions[1], compiler) ];
+                const context = new CategoryCollectionParseContextStub();
+                const expected = [ parseCategory(actions[0], context), parseCategory(actions[1], context) ];
                 const collection = new CollectionDataStub()
                     .withActions(actions);
                 const info = new ProjectInformationStub();

@@ -1,6 +1,5 @@
 import 'mocha';
 import { expect } from 'chai';
-import { ProjectInformation } from '@/domain/ProjectInformation';
 import { ICategory } from '@/domain/ICategory';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';

@@ -52,6 +52,8 @@ import { StatefulVue } from '@/presentation/StatefulVue';
 import { Environment } from '@/application/Environment/Environment';
 import PrivacyPolicy from './PrivacyPolicy.vue';
 import DownloadUrlList from './DownloadUrlList.vue';
+import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { IApplication } from '@/domain/IApplication';
 
 @Component({
   components: {
@@ -73,14 +75,17 @@ export default class TheFooter extends StatefulVue {
     this.isDesktop = Environment.CurrentEnvironment.isDesktop;
   }
 
-  public async mounted() {
-    const context = await this.getCurrentContextAsync();
-    const info = context.app.info;
+  protected initialize(app: IApplication): void {
+    const info = app.info;
     this.version = info.version;
     this.homepageUrl = info.homepage;
     this.repositoryUrl = info.repositoryWebUrl;
     this.releaseUrl = info.releaseUrl;
     this.feedbackUrl = info.feedbackUrl;
+  }
+
+  protected handleCollectionState(newState: ICategoryCollectionState, oldState: ICategoryCollectionState): void {
+    return;
   }
 }
 

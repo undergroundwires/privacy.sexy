@@ -2,6 +2,8 @@ import 'mocha';
 import { expect } from 'chai';
 import { ScriptCode } from '@/domain/ScriptCode';
 import { IScriptCode } from '@/domain/IScriptCode';
+import { ILanguageSyntax } from '@/domain/ScriptCode';
+import { LanguageSyntaxStub } from '../stubs/LanguageSyntaxStub';
 
 describe('ScriptCode', () => {
     describe('scriptName', () => {
@@ -10,7 +12,9 @@ describe('ScriptCode', () => {
             const expectedError = 'name is undefined';
             const name = undefined;
             // act
-            const act = () => new ScriptCode(name, 'non-empty-code', '');
+            const act = () => new ScriptCodeBuilder()
+                .withName(name)
+                .build();
             // assert
             expect(act).to.throw(expectedError);
         });
@@ -48,7 +52,11 @@ describe('ScriptCode', () => {
             for (const testCase of testCases) {
                 it(testCase.name, () => {
                     // act
-                    const act = () => new ScriptCode(scriptName, testCase.code.execute, testCase.code.revert);
+                    const act = () => new ScriptCodeBuilder()
+                        .withName(scriptName)
+                        .withExecute( testCase.code.execute)
+                        .withRevert(testCase.code.revert)
+                        .build();
                     // assert
                     expect(act).to.throw(testCase.expectedError);
                 });
@@ -72,15 +80,21 @@ describe('ScriptCode', () => {
             // act
             const actions = [];
             for (const testCase of testCases) {
-                const substituteScriptName = (name) => testCase.expectedMessage.replace('$scriptName', name);
+                const substituteScriptName = (name: string) => testCase.expectedMessage.replace('$scriptName', name);
                 actions.push(...[
                     {
-                        act: () => new ScriptCode(scriptName, testCase.code, undefined),
+                        act: () => new ScriptCodeBuilder()
+                            .withName(scriptName)
+                            .withExecute(testCase.code)
+                            .build(),
                         testName: `execute: ${testCase.testName}`,
                         expectedMessage: substituteScriptName(scriptName),
                     },
                     {
-                        act: () => new ScriptCode(scriptName, 'valid code', testCase.code),
+                        act: () => new ScriptCodeBuilder()
+                            .withName(scriptName)
+                            .withRevert(testCase.code)
+                            .build(),
                         testName: `revert: ${testCase.testName}`,
                         expectedMessage: substituteScriptName(`${scriptName} (revert)`),
                     },
@@ -96,26 +110,29 @@ describe('ScriptCode', () => {
         });
         describe('sets as expected with valid "execute" or "revert"', () => {
             // arrange
+            const syntax = new LanguageSyntaxStub()
+                .withCommonCodeParts(')', 'else', '(')
+                .withCommentDelimiters('#', '//');
             const testCases = [
                 {
                     testName: 'code is a valid string',
                     code: 'valid code',
                 },
                 {
-                    testName: 'code consists of frequent code parts',
-                    code: ') else (',
+                    testName: 'code consists of common code parts',
+                    code: syntax.commonCodeParts.join(' '),
                 },
                 {
-                    testName: 'code is a frequent code part',
-                    code: ')',
+                    testName: 'code is a common code part',
+                    code: syntax.commonCodeParts[0],
                 },
                 {
-                    testName: 'code with duplicated comment lines (::)',
-                    code: ':: comment\n:: comment',
+                    testName: `code with duplicated comment lines (${syntax.commentDelimiters[0]})`,
+                    code: `${syntax.commentDelimiters[0]} comment\n${syntax.commentDelimiters[0]} comment`,
                 },
                 {
-                    testName: 'code with duplicated comment lines (REM)',
-                    code: 'REM comment\nREM comment',
+                    testName: `code with duplicated comment lines (${syntax.commentDelimiters[1]})`,
+                    code: `${syntax.commentDelimiters[1]} comment\n${syntax.commentDelimiters[1]} comment`,
                 },
             ];
             // act
@@ -124,12 +141,20 @@ describe('ScriptCode', () => {
                 actions.push(...[
                     {
                         testName: `execute: ${testCase.testName}`,
-                        act: () => createSut(testCase.code),
+                        act: () =>
+                            new ScriptCodeBuilder()
+                                .withSyntax(syntax)
+                                .withExecute(testCase.code)
+                                .build(),
                         expect: (sut: IScriptCode) => sut.execute === testCase.code,
                     },
                     {
                         testName: `revert: ${testCase.testName}`,
-                        act: () => createSut('different code', testCase.code),
+                        act: () =>
+                            new ScriptCodeBuilder()
+                                .withSyntax(syntax)
+                                .withRevert(testCase.code)
+                                .build(),
                         expect: (sut: IScriptCode) => sut.revert === testCase.code,
                     },
                 ]);
@@ -145,6 +170,34 @@ describe('ScriptCode', () => {
     });
 });
 
-function createSut(code: string, revert = ''): ScriptCode {
-    return new ScriptCode('test-code', code, revert);
+class ScriptCodeBuilder {
+    public execute = 'default-execute-code';
+    public revert = '';
+    public scriptName = 'default-script-name';
+    public syntax: ILanguageSyntax = new LanguageSyntaxStub();
+
+    public withName(name: string) {
+        this.scriptName = name;
+        return this;
+    }
+    public withExecute(execute: string) {
+        this.execute = execute;
+        return this;
+    }
+    public withRevert(revert: string) {
+        this.revert = revert;
+        return this;
+    }
+    public withSyntax(syntax: ILanguageSyntax) {
+        this.syntax = syntax;
+        return this;
+    }
+
+    public build(): ScriptCode {
+        return new ScriptCode(
+            this.execute,
+            this.revert,
+            this.scriptName,
+            this.syntax);
+    }
 }

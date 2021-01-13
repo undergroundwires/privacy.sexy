@@ -15,15 +15,13 @@
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
-import { StatefulVue } from '@/presentation/StatefulVue';
+import { Component, Vue } from 'vue-property-decorator';
 import { Grouping } from './Grouping';
 
 const DefaultGrouping = Grouping.Cards;
 
 @Component
-export default class TheGrouper extends StatefulVue {
-
+export default class TheGrouper extends Vue {
     public cardsSelected = false;
     public noneSelected = false;
 
@@ -32,11 +30,9 @@ export default class TheGrouper extends StatefulVue {
     public mounted() {
         this.changeGrouping(DefaultGrouping);
     }
-
     public groupByCard() {
         this.changeGrouping(Grouping.Cards);
     }
-
     public groupByNone() {
         this.changeGrouping(Grouping.None);
     }

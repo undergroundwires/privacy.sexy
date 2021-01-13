@@ -30,6 +30,11 @@ export class CategoryCollectionStub implements ICategoryCollection {
         this.initialScript = script;
         return this;
     }
+    public withTotalScripts(totalScripts: number) {
+        this.totalScripts = totalScripts;
+        return this;
+    }
+
     public findCategory(categoryId: number): ICategory {
         return this.getAllCategories().find(
             (category) => category.id === categoryId);

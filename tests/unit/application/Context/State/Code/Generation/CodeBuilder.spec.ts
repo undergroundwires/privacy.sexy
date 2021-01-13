@@ -3,10 +3,23 @@ import { expect } from 'chai';
 import { CodeBuilder } from '@/application/Context/State/Code/Generation/CodeBuilder';
 
 describe('CodeBuilder', () => {
+    class CodeBuilderConcrete extends CodeBuilder {
+        private commentDelimiter = '//';
+        public withCommentDelimiter(delimiter: string): CodeBuilderConcrete {
+            this.commentDelimiter = delimiter;
+            return this;
+        }
+        protected getCommentDelimiter(): string {
+            return this.commentDelimiter;
+        }
+        protected writeStandardOut(text: string): string {
+            return text;
+        }
+    }
     describe('appendLine', () => {
         it('when empty appends empty line', () => {
             // arrange
-            const sut = new CodeBuilder();
+            const sut = new CodeBuilderConcrete();
             // act
             sut.appendLine().appendLine().appendLine();
             // assert
@@ -14,7 +27,7 @@ describe('CodeBuilder', () => {
         });
         it('when not empty append string in new line', () => {
             // arrange
-            const sut = new CodeBuilder();
+            const sut = new CodeBuilderConcrete();
             const expected = 'str';
             // act
             sut.appendLine()
@@ -27,7 +40,7 @@ describe('CodeBuilder', () => {
     });
     it('appendFunction', () => {
         // arrange
-        const sut = new CodeBuilder();
+        const sut = new CodeBuilderConcrete();
         const functionName = 'function';
         const code = 'code';
         // act
@@ -39,11 +52,13 @@ describe('CodeBuilder', () => {
     });
     it('appendTrailingHyphensCommentLine', () => {
         // arrange
-        const sut = new CodeBuilder();
-        const totalHypens = 5;
-        const expected = `:: ${'-'.repeat(totalHypens)}`;
+        const commentDelimiter = '//';
+        const sut = new CodeBuilderConcrete()
+            .withCommentDelimiter(commentDelimiter);
+        const totalHyphens = 5;
+        const expected = `${commentDelimiter} ${'-'.repeat(totalHyphens)}`;
         // act
-        sut.appendTrailingHyphensCommentLine(totalHypens);
+        sut.appendTrailingHyphensCommentLine(totalHyphens);
         // assert
         const result = sut.toString();
         const lines = getLines(result);
@@ -51,38 +66,45 @@ describe('CodeBuilder', () => {
     });
     it('appendCommentLine', () => {
         // arrange
-        const sut = new CodeBuilder();
+        const commentDelimiter = '//';
+        const sut = new CodeBuilderConcrete()
+            .withCommentDelimiter(commentDelimiter);
         const comment = 'comment';
-        const expected = ':: comment';
+        const expected = `${commentDelimiter} comment`;
         // act
-        sut.appendCommentLine(comment);
+        const result = sut
+            .appendCommentLine(comment)
+            .toString();
         // assert
-        const result = sut.toString();
         const lines = getLines(result);
         expect(lines[0]).to.equal(expected);
     });
     it('appendCommentLineWithHyphensAround', () => {
         // arrange
-        const sut = new CodeBuilder();
+        const commentDelimiter = '//';
+        const sut = new CodeBuilderConcrete()
+            .withCommentDelimiter(commentDelimiter);
         const sectionName = 'section';
-        const totalHypens = sectionName.length + 3 * 2;
-        const expected = ':: ---section---';
-        sut.appendCommentLineWithHyphensAround(sectionName, totalHypens);
+        const totalHyphens = sectionName.length + 3 * 2;
+        const expected = `${commentDelimiter} ---section---`;
+        // act
+        const result = sut
+            .appendCommentLineWithHyphensAround(sectionName, totalHyphens)
+            .toString();
         // assert
-        const result = sut.toString();
         const lines = getLines(result);
         expect(lines[1]).to.equal(expected);
     });
     describe('currentLine', () => {
         it('no lines returns zero', () => {
             // arrange & act
-            const sut = new CodeBuilder();
+            const sut = new CodeBuilderConcrete();
             // assert
             expect(sut.currentLine).to.equal(0);
         });
         it('single line returns one', () => {
             // arrange
-            const sut = new CodeBuilder();
+            const sut = new CodeBuilderConcrete();
             // act
             sut.appendLine();
             // assert
@@ -90,15 +112,17 @@ describe('CodeBuilder', () => {
         });
         it('multiple lines returns as expected', () => {
             // arrange
-            const sut = new CodeBuilder();
+            const sut = new CodeBuilderConcrete();
             // act
-            sut.appendLine('1').appendCommentLine('2').appendLine();
+            sut.appendLine('1')
+               .appendCommentLine('2')
+               .appendLine();
             // assert
             expect(sut.currentLine).to.equal(3);
         });
         it('multiple lines in code', () => {
             // arrange
-            const sut = new CodeBuilder();
+            const sut = new CodeBuilderConcrete();
             // act
             sut.appendLine('hello\ncode-here\nwith-3-lines');
             // assert

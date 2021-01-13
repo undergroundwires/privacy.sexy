@@ -8,11 +8,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Emit } from 'vue-property-decorator';
-import { StatefulVue } from './StatefulVue';
+import { Component, Prop, Emit, Vue } from 'vue-property-decorator';
 
 @Component
-export default class IconButton extends StatefulVue {
+export default class IconButton extends Vue {
   @Prop() public text!: number;
   @Prop() public iconPrefix!: string;
   @Prop() public iconName!: string;
@@ -21,7 +20,6 @@ export default class IconButton extends StatefulVue {
   public onClicked() {
       return;
   }
-
 }
 </script>
 

@@ -16,7 +16,7 @@ export class ScriptingDefinition implements IScriptingDefinition {
 
 function findExtension(language: ScriptingLanguage): string {
     switch (language) {
-        case ScriptingLanguage.bash:
+        case ScriptingLanguage.shellscript:
             return 'sh';
         case ScriptingLanguage.batchfile:
             return 'bat';

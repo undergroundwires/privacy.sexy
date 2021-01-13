@@ -16,7 +16,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import TheHeader from '@/presentation/TheHeader.vue';
 import TheFooter from '@/presentation/TheFooter/TheFooter.vue';
 import TheCodeArea from '@/presentation/TheCodeArea.vue';
-import TheCodeButtons from '@/presentation/TheCodeButtons.vue';
+import TheCodeButtons from '@/presentation/CodeButtons/TheCodeButtons.vue';
 import TheSearchBar from '@/presentation/TheSearchBar.vue';
 import TheScripts from '@/presentation/Scripts/TheScripts.vue';
 

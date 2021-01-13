@@ -19,6 +19,9 @@
     import { INode } from './INode';
     import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
     import { getReverter } from './Reverter/ReverterFactory';
+    import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+    import { IApplication } from '@/domain/IApplication';
+    import { IEventSubscription } from '@/infrastructure/Events/ISubscription';
 
     @Component
     export default class RevertToggle extends StatefulVue {
@@ -26,26 +29,30 @@
         public isReverted = false;
 
         private handler: IReverter;
+        private selectionChangeListener: IEventSubscription;
 
-        public async mounted() {
-            await this.onNodeChangedAsync(this.node);
+        @Watch('node', {immediate: true}) public async onNodeChangedAsync(node: INode) {
             const context = await this.getCurrentContextAsync();
-            const currentSelection = context.state.selection;
-            this.updateState(currentSelection.selectedScripts);
-            currentSelection.changed.on((scripts) => this.updateState(scripts));
+            this.handler = getReverter(node, context.state.collection);
         }
-
-        @Watch('node') public async onNodeChangedAsync(node: INode) {
-            const context = await this.getCurrentContextAsync();
-            this.handler = getReverter(node, context.collection);
-        }
-
         public async onRevertToggledAsync() {
             const context = await this.getCurrentContextAsync();
             this.handler.selectWithRevertState(this.isReverted, context.state.selection);
         }
 
-        private updateState(scripts: ReadonlyArray<SelectedScript>) {
+        protected initialize(app: IApplication): void {
+          return;
+        }
+        protected handleCollectionState(newState: ICategoryCollectionState, oldState: ICategoryCollectionState): void {
+            this.updateStatus(newState.selection.selectedScripts);
+            if (this.selectionChangeListener) {
+                this.selectionChangeListener.unsubscribe();
+            }
+            this.selectionChangeListener = newState.selection.changed.on(
+                (scripts) => this.updateStatus(scripts));
+        }
+
+        private updateStatus(scripts: ReadonlyArray<SelectedScript>) {
             this.isReverted = this.handler.getState(scripts);
         }
     }

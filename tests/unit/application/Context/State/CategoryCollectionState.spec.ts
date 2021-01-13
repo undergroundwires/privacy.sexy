@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
 import { ApplicationCode } from '@/application/Context/State/Code/ApplicationCode';
 import { CategoryCollectionState } from '@/application/Context/State/CategoryCollectionState';
+import { OperatingSystem } from '@/domain/OperatingSystem';
 import { IScript } from '@/domain/IScript';
 import { ScriptStub } from '../../../stubs/ScriptStub';
 import { CategoryStub } from '../../../stubs/CategoryStub';
@@ -21,7 +22,8 @@ describe('CategoryCollectionState', () => {
         });
         it('reacts to selection changes as expected', () => {
             // arrange
-            const collection = new CategoryCollectionStub().withAction(new CategoryStub(0).withScriptIds('scriptId'));
+            const collection = new CategoryCollectionStub()
+                .withAction(new CategoryStub(0).withScriptIds('scriptId'));
             const selectionStub = new UserSelection(collection, []);
             const expectedCodeGenerator = new ApplicationCode(selectionStub, collection.scripting);
             selectionStub.selectAll();
@@ -32,6 +34,19 @@ describe('CategoryCollectionState', () => {
             const actualCode = sut.code.current;
             // assert
             expect(actualCode).to.equal(expectedCode);
+        });
+    });
+    describe('os', () => {
+        it('same as its collection', () => {
+            // arrange
+            const expected = OperatingSystem.macOS;
+            const collection = new CategoryCollectionStub()
+                .withOs(expected);
+            // act
+            const sut = new CategoryCollectionState(collection);
+            // assert
+            const actual = sut.os;
+            expect(expected).to.equal(actual);
         });
     });
     describe('selection', () => {
@@ -70,7 +85,8 @@ describe('CategoryCollectionState', () => {
         it('can match a script from current collection', () => {
             // arrange
             const scriptNameFilter = 'scriptName';
-            const expectedScript = new ScriptStub('scriptId').withName(scriptNameFilter);
+            const expectedScript = new ScriptStub('scriptId')
+                .withName(scriptNameFilter);
             const collection = new CategoryCollectionStub()
                 .withAction(new CategoryStub(0).withScript(expectedScript));
             const sut = new CategoryCollectionState(collection);

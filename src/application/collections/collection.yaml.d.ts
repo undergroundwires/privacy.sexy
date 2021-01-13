@@ -38,10 +38,10 @@ declare module 'js-yaml-loader!*' {
 
     export interface ScriptData extends DocumentableData {
         name: string;
-        code: string | undefined;
-        revertCode: string | undefined;
+        code?: string;
+        revertCode?: string;
         call: ScriptFunctionCallData;
-        recommend: string | undefined;
+        recommend?: string;
     }
 
     export interface ScriptingDefinitionData {

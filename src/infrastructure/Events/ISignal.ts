@@ -1,4 +1,6 @@
+import { IEventSubscription } from './ISubscription';
 export interface ISignal<T> {
-    on(handler: (data: T) => void): void;
-    off(handler: (data: T) => void): void;
+    on(handler: EventHandler<T>): IEventSubscription;
 }
+
+export type EventHandler<T> = (data: T) => void;

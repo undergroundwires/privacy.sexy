@@ -1,14 +1,15 @@
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { IUserScriptGenerator } from './IUserScriptGenerator';
-import { CodeBuilder } from './CodeBuilder';
 import { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
 import { CodePosition } from '../Position/CodePosition';
 import { IUserScript } from './IUserScript';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { ICodeBuilder } from './ICodeBuilder';
+import { ICodeBuilderFactory } from './ICodeBuilderFactory';
+import { CodeBuilderFactory } from './CodeBuilderFactory';
 
 export class UserScriptGenerator implements IUserScriptGenerator {
-    constructor(private readonly codeBuilderFactory: () => ICodeBuilder = () => new CodeBuilder()) {
+    constructor(private readonly codeBuilderFactory: ICodeBuilderFactory = new CodeBuilderFactory()) {
 
     }
     public buildCode(
@@ -20,7 +21,7 @@ export class UserScriptGenerator implements IUserScriptGenerator {
         if (!selectedScripts.length) {
             return { code: '', scriptPositions };
         }
-        let builder = this.codeBuilderFactory();
+        let builder = this.codeBuilderFactory.create(scriptingDefinition.language);
         builder = initializeCode(scriptingDefinition.startCode, builder);
         for (const selection of selectedScripts) {
             scriptPositions = appendSelection(selection, scriptPositions, builder);
@@ -52,16 +53,19 @@ function appendSelection(
     selection: SelectedScript,
     scriptPositions: Map<SelectedScript, ICodePosition>,
     builder: ICodeBuilder): Map<SelectedScript, ICodePosition> {
-    const startPosition = builder.currentLine + 1;
-    appendCode(selection, builder);
+    const startPosition = builder.currentLine + 1; // Because first line will be empty to separate scripts
+    builder = appendCode(selection, builder);
     const endPosition = builder.currentLine - 1;
     builder.appendLine();
-    scriptPositions.set(selection, new CodePosition(startPosition, endPosition));
+    const position = new CodePosition(startPosition, endPosition);
+    scriptPositions.set(selection, position);
     return scriptPositions;
 }
 
-function appendCode(selection: SelectedScript, builder: ICodeBuilder) {
+function appendCode(selection: SelectedScript, builder: ICodeBuilder): ICodeBuilder {
     const name = selection.revert ? `${selection.script.name} (revert)` : selection.script.name;
     const scriptCode = selection.revert ? selection.script.code.revert : selection.script.code.execute;
-    builder.appendFunction(name, scriptCode);
+    return builder
+        .appendLine()
+        .appendFunction(name, scriptCode);
 }
