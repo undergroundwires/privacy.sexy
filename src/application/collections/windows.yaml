@@ -1644,13 +1644,37 @@ actions:
                         category: Configure Edge
                         children: 
                             -
+                                category: Chromium Edge settings
+                                children:
+                                    -
+                                        name: Disable Edge usage and crash-related data reporting # Obselete since Microsoft Edge version 89
+                                        recommend: standard
+                                        docs:
+                                            - https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::MetricsReportingEnabled
+                                            - https://docs.microsoft.com/en-us/DeployEdge/microsoft-edge-policies#metricsreportingenabled
+                                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "MetricsReportingEnabled" /t REG_DWORD /d 0 /f
+                                        revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "MetricsReportingEnabled" /f  
+                                    -
+                                        name: Disable sending site information # Obselete since Microsoft Edge version 89
+                                        recommend: standard
+                                        docs: 
+                                            - https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::SendSiteInfoToImproveServices
+                                            - https://docs.microsoft.com/en-us/DeployEdge/microsoft-edge-policies#sendsiteinfotoimproveservices
+                                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "SendSiteInfoToImproveServices" /t REG_DWORD /d 0 /f
+                                        revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "SendSiteInfoToImproveServices" /f
+                                    -
+                                        name: Disable Automatic Installation of Microsoft Edge Chromium
+                                        docs: https://docs.microsoft.com/en-us/deployedge/microsoft-edge-blocker-toolkit
+                                        code: reg add "HKLM\SOFTWARE\Microsoft\EdgeUpdate" /v "DoNotUpdateToEdgeWithChromium" /t REG_DWORD /d 1 /f
+                                        revertCode: reg delete "HKLM\SOFTWARE\Microsoft\EdgeUpdate" /v "DoNotUpdateToEdgeWithChromium" /f
+                            -
                                 name: Disable live tile data collection
                                 recommend: standard
                                 docs: 
                                     - https://docs.microsoft.com/en-us/microsoft-edge/deploy/group-policies/telemetry-management-gp
                                     - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-browser#browser-preventlivetiledatacollection
                                 code: reg add "HKCU\Software\Policies\Microsoft\MicrosoftEdge\Main" /v "PreventLiveTileDataCollection" /t REG_DWORD /d 1 /f         
-                                revertCode: reg add "HKCU\Software\Policies\Microsoft\MicrosoftEdge\Main" /v "PreventLiveTileDataCollection" /t REG_DWORD /d 0 /f         
+                                revertCode: reg add "HKCU\Software\Policies\Microsoft\MicrosoftEdge\Main" /v "PreventLiveTileDataCollection" /t REG_DWORD /d 0 /f 
                             -
                                 name: Disable MFU tracking
                                 recommend: standard
@@ -1677,11 +1701,6 @@ actions:
                                 recommend: standard
                                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\SearchScopes" /v "ShowSearchSuggestionsGlobal" /t REG_DWORD /d 0 /f
                                 revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\MicrosoftEdge\SearchScopes" /v "ShowSearchSuggestionsGlobal" /t REG_DWORD /d 1 /f
-                            -
-                                name: Disable Automatic Installation of Microsoft Edge Chromium
-                                docs: https://docs.microsoft.com/en-us/deployedge/microsoft-edge-blocker-toolkit
-                                code: reg add "HKLM\SOFTWARE\Microsoft\EdgeUpdate" /v "DoNotUpdateToEdgeWithChromium" /t REG_DWORD /d 1 /f
-                                revertCode: reg delete "HKLM\SOFTWARE\Microsoft\EdgeUpdate" /v "DoNotUpdateToEdgeWithChromium" /f
                     -
                         category: Configure Internet Explorer
                         children: 
@@ -3292,20 +3311,27 @@ actions:
                                 category: Microsoft Edge
                                 children:
                                     -
-                                        name: Microsoft Edge app
+                                        name: Microsoft Edge (Legacy) app
                                         recommend: strict
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.MicrosoftEdge
                                     -
-                                        name: Microsoft Edge Dev Tools Client app
+                                        name: Microsoft Edge (Legacy) Dev Tools Client app
                                         docs: https://docs.microsoft.com/en-us/microsoft-edge/devtools-guide
                                         recommend: strict
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.MicrosoftEdgeDevToolsClient
+                                    -
+                                        name: Win32 Web View Host app / Desktop App Web Viewer
+                                        recommend: strict
+                                        call:
+                                            function: UninstallSystemApp
+                                            parameters:
+                                                packageName: Microsoft.Win32WebViewHost
                                     -
                                         name: Microsoft PPI Projection app
                                         docs: https://en.wikipedia.org/wiki/Perceptive_Pixel
@@ -3314,13 +3340,6 @@ actions:
                                             function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.PPIProjection
-                                    -
-                                        name: Win32 Web View Host app / Desktop App Web Viewer
-                                        recommend: strict
-                                        call:
-                                            function: UninstallSystemApp
-                                            parameters:
-                                                packageName: Microsoft.Win32WebViewHost
                                     -
                                         name: ChxApp app
                                         call:
@@ -3588,6 +3607,16 @@ actions:
                     recommend: strict
                     docs: https://stackoverflow.com/questions/46744840/export-registry-value-to-file-and-then-set-a-variable-in-batch
                     code: reg delete "HKCU\Environment" /v "OneDrive" /f
+            -
+                name: Uninstall Edge (chromium-based)
+                code:
+                    PowerShell -ExecutionPolicy Unrestricted -Command "
+                        $installer = (Get-ChildItem \"$env:ProgramFiles*\Microsoft\Edge\Application\*\Installer\setup.exe\");
+                        if (!$installer) {
+                            Write-Host Could not find the installer;
+                        } else {
+                            & $installer.FullName -uninstall -system-level -verbose-logging -force-uninstall
+                        }; "
             -
                 category: Disable built-in Windows features
                 children:
