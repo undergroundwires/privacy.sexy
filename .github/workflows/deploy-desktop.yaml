@@ -30,3 +30,4 @@ jobs:
         run: npm run electron:build -- -p always # https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/recipes.html#upload-release-to-github
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EP_GH_IGNORE_TIME: true # Otherwise publishing fails if GitHub release is more than 2 hours old https://github.com/electron-userland/electron-builder/issues/2074
