@@ -4,16 +4,17 @@ export class ScriptCode implements IScriptCode {
     constructor(
         public readonly execute: string,
         public readonly revert: string,
-        scriptName: string,
         syntax: ILanguageSyntax) {
-        if (!scriptName)    {   throw new Error('script name is undefined');    }
-        if (!syntax)        {   throw new Error('syntax is undefined');         }
-        validateCode(scriptName, execute, syntax);
+        if (!syntax) { throw new Error('undefined syntax'); }
+        validateCode(execute, syntax);
         if (revert) {
-            scriptName = `${scriptName} (revert)`;
-            validateCode(scriptName, revert, syntax);
-            if (execute === revert) {
-                throw new Error(`${scriptName}: Code itself and its reverting code cannot be the same`);
+            try {
+                validateCode(revert, syntax);
+                if (execute === revert) {
+                    throw new Error(`Code itself and its reverting code cannot be the same`);
+                }
+            } catch (err) {
+                throw Error(`(revert): ${err.message}`);
             }
         }
     }
@@ -24,21 +25,21 @@ export interface ILanguageSyntax {
     readonly commonCodeParts: string[];
 }
 
-function validateCode(name: string, code: string, syntax: ILanguageSyntax): void {
+function validateCode(code: string, syntax: ILanguageSyntax): void {
     if (!code || code.length === 0) {
-        throw new Error(`code of ${name} is empty or undefined`);
+        throw new Error(`code is empty or undefined`);
     }
-    ensureNoEmptyLines(name, code);
-    ensureCodeHasUniqueLines(name, code, syntax);
+    ensureNoEmptyLines(code);
+    ensureCodeHasUniqueLines(code, syntax);
 }
 
-function ensureNoEmptyLines(name: string, code: string): void {
+function ensureNoEmptyLines(code: string): void {
     if (code.split('\n').some((line) => line.trim().length === 0)) {
-        throw Error(`script has empty lines "${name}"`);
+        throw Error(`script has empty lines`);
     }
 }
 
-function ensureCodeHasUniqueLines(name: string, code: string, syntax: ILanguageSyntax): void {
+function ensureCodeHasUniqueLines(code: string, syntax: ILanguageSyntax): void {
     const lines = code.split('\n')
         .filter((line) => !shouldIgnoreLine(line, syntax));
     if (lines.length === 0) {
@@ -46,7 +47,7 @@ function ensureCodeHasUniqueLines(name: string, code: string, syntax: ILanguageS
     }
     const duplicateLines = lines.filter((e, i, a) => a.indexOf(e) !== i);
     if (duplicateLines.length !== 0) {
-        throw Error(`Duplicates detected in script "${name}":\n ${duplicateLines.join('\n')}`);
+        throw Error(`Duplicates detected in script :\n ${duplicateLines.join('\n')}`);
     }
 }
 

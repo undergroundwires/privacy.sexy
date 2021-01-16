@@ -105,7 +105,7 @@ describe('CategoryCollectionParser', () => {
                 const scriptName = 'script-name';
                 const script = ScriptDataStub.createWithCall({ function: functionName })
                     .withName(scriptName);
-                const func = new FunctionDataStub()
+                const func = FunctionDataStub.createWithCode()
                     .withName(functionName)
                     .withCode(expectedCode);
                 const category = new CategoryDataStub()

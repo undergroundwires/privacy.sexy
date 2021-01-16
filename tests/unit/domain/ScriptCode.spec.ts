@@ -6,23 +6,9 @@ import { ILanguageSyntax } from '@/domain/ScriptCode';
 import { LanguageSyntaxStub } from '../stubs/LanguageSyntaxStub';
 
 describe('ScriptCode', () => {
-    describe('scriptName', () => {
-        it('throws if undefined', () => {
-            // arrange
-            const expectedError = 'name is undefined';
-            const name = undefined;
-            // act
-            const act = () => new ScriptCodeBuilder()
-                .withName(name)
-                .build();
-            // assert
-            expect(act).to.throw(expectedError);
-        });
-    });
     describe('code', () => {
         describe('throws with invalid code', () => {
             // arrange
-            const scriptName = 'test-script';
             const testCases = [
                 {
                     name: 'throws when "execute" and "revert" are same',
@@ -30,7 +16,7 @@ describe('ScriptCode', () => {
                         execute: 'same',
                         revert: 'same',
                     },
-                    expectedError: `${scriptName} (revert): Code itself and its reverting code cannot be the same`,
+                    expectedError: `(revert): Code itself and its reverting code cannot be the same`,
                 },
                 {
                     name: 'cannot construct with undefined "execute"',
@@ -38,7 +24,7 @@ describe('ScriptCode', () => {
                         execute: undefined,
                         revert: 'code',
                     },
-                    expectedError: `code of ${scriptName} is empty or undefined`,
+                    expectedError: `code is empty or undefined`,
                 },
                 {
                     name: 'cannot construct with empty "execute"',
@@ -46,14 +32,13 @@ describe('ScriptCode', () => {
                         execute: '',
                         revert: 'code',
                     },
-                    expectedError: `code of ${scriptName} is empty or undefined`,
+                    expectedError: `code is empty or undefined`,
                 },
             ];
             for (const testCase of testCases) {
                 it(testCase.name, () => {
                     // act
                     const act = () => new ScriptCodeBuilder()
-                        .withName(scriptName)
                         .withExecute( testCase.code.execute)
                         .withRevert(testCase.code.revert)
                         .build();
@@ -64,39 +49,35 @@ describe('ScriptCode', () => {
         });
         describe('throws with invalid code in both "execute" or "revert"', () => {
             // arrange
-            const scriptName = 'script-name';
             const testCases = [
                 {
                     testName: 'cannot construct with duplicate lines',
                     code: 'duplicate\nduplicate\ntest\nduplicate',
-                    expectedMessage: 'Duplicates detected in script "$scriptName":\n duplicate\nduplicate',
+                    expectedMessage: 'Duplicates detected in script :\n duplicate\nduplicate',
                 },
                 {
                     testName: 'cannot construct with empty lines',
                     code: 'line1\n\n\nline2',
-                    expectedMessage: 'script has empty lines "$scriptName"',
+                    expectedMessage: 'script has empty lines',
                 },
             ];
             // act
             const actions = [];
             for (const testCase of testCases) {
-                const substituteScriptName = (name: string) => testCase.expectedMessage.replace('$scriptName', name);
                 actions.push(...[
                     {
                         act: () => new ScriptCodeBuilder()
-                            .withName(scriptName)
                             .withExecute(testCase.code)
                             .build(),
                         testName: `execute: ${testCase.testName}`,
-                        expectedMessage: substituteScriptName(scriptName),
+                        expectedMessage: testCase.expectedMessage,
                     },
                     {
                         act: () => new ScriptCodeBuilder()
-                            .withName(scriptName)
                             .withRevert(testCase.code)
                             .build(),
                         testName: `revert: ${testCase.testName}`,
-                        expectedMessage: substituteScriptName(`${scriptName} (revert)`),
+                        expectedMessage: `(revert): ${testCase.expectedMessage}`,
                     },
                 ]);
             }
@@ -168,18 +149,26 @@ describe('ScriptCode', () => {
             }
         });
     });
+    describe('syntax', () => {
+        it('throws if undefined', () => {
+            // arrange
+            const expectedError = 'undefined syntax';
+            const syntax = undefined;
+            // act
+            const act = () => new ScriptCodeBuilder()
+                .withSyntax(syntax)
+                .build();
+            // assert
+            expect(act).to.throw(expectedError);
+        });
+    });
 });
 
 class ScriptCodeBuilder {
     public execute = 'default-execute-code';
     public revert = '';
-    public scriptName = 'default-script-name';
     public syntax: ILanguageSyntax = new LanguageSyntaxStub();
 
-    public withName(name: string) {
-        this.scriptName = name;
-        return this;
-    }
     public withExecute(execute: string) {
         this.execute = execute;
         return this;
@@ -197,7 +186,6 @@ class ScriptCodeBuilder {
         return new ScriptCode(
             this.execute,
             this.revert,
-            this.scriptName,
             this.syntax);
     }
 }

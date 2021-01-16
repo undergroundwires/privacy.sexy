@@ -112,7 +112,7 @@ describe('ScriptParser', () => {
             });
         });
         describe('code', () => {
-            it('parses code as expected', () => {
+            it('parses "execute" as expected', () => {
                 // arrange
                 const expected = 'expected-code';
                 const script = ScriptDataStub
@@ -125,7 +125,7 @@ describe('ScriptParser', () => {
                 const actual = parsed.code.execute;
                 expect(actual).to.equal(expected);
             });
-            it('parses revertCode as expected', () => {
+            it('parses "revert" as expected', () => {
                 // arrange
                 const expected = 'expected-revert-code';
                 const script = ScriptDataStub

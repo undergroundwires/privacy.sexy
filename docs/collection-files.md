@@ -101,11 +101,15 @@
 ### `Function`
 
 - Functions allow re-usable code throughout the defined scripts.
-- Functions are templates compiled by privacy.sexy and uses special expressions.
-- Expressions are defined inside mustaches (double brackets, `{{` and `}}`)
+- Functions are templates compiled by privacy.sexy and uses special [expressions](#expressions).
+- Functions can call other functions by defining `call` property instead of `code`
 - 👀 See [parameter substitution](#parameter-substitution) for an example usage
 
-#### Parameter substitution
+#### Expressions
+
+- Expressions are defined inside mustaches (double brackets, `{{` and `}}`)
+
+##### Parameter substitution
 
 A simple function example
 
@@ -125,6 +129,22 @@ It would print "Hello world" if it's called in a [script](#script) as following:
       argument: World
 ```
 
+A function can call other functions such as:
+
+```yaml
+  - 
+    function: CallerFunction
+    parameters: [ 'value' ]
+    call:
+      function: EchoArgument
+      parameters:
+        argument: {{ $value }}
+  -
+    function: EchoArgument
+    parameters: [ 'argument' ]
+    code: Hello {{ $argument }} !
+```
+
 #### `Function` syntax
 
 - `name`: *`string`* (**required**)
@@ -135,15 +155,20 @@ It would print "Hello world" if it's called in a [script](#script) as following:
 - `parameters`: `[` *`string`* `, ... ]`
   - Name of the parameters that the function has.
   - Parameter values are provided by a [Script](#script) through a [FunctionCall](#FunctionCall)
-  - Parameter names must be defined to be used in expressions such as [parameter substitution](#parameter-substitution)
+  - Parameter names must be defined to be used in [expressions](#expressions)
   - ❗ Parameter names must be unique
- `code`: *`string`* (**required**)
+ `code`: *`string`* (**required** if `call` is undefined)
   - Batch file commands that will be executed
   - 💡 If defined, best practice to also define `revertCode`
+  - ❗ If not defined `call` must be defined
 - `revertCode`: *`string`*
   - Code that'll undo the change done by `code` property.
   - E.g. let's say `code` sets an environment variable as `setx POWERSHELL_TELEMETRY_OPTOUT 1`
     - then `revertCode` should be doing `setx POWERSHELL_TELEMETRY_OPTOUT 0`
+- `call`: ***[`FunctionCall`](#FunctionCall)*** | `[` ***[`FunctionCall`](#FunctionCall)*** `, ... ]` (may be **required**)
+  - A shared function or sequence of functions to call (called in order)
+  - The parameter values that are sent can use [expressions](#expressions)
+  - ❗ If not defined `code` must be defined
 
 ### `ScriptingDefinition`
 

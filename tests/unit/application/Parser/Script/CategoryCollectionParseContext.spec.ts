@@ -29,7 +29,7 @@ describe('CategoryCollectionParseContext', () => {
             // arrange
             const expectedError = 'undefined scripting';
             const scripting = undefined;
-            const functionsData = [ new FunctionDataStub() ];
+            const functionsData = [ FunctionDataStub.createWithCode() ];
             // act
             const act = () => new CategoryCollectionParseContext(functionsData, scripting);
             // assert
@@ -39,7 +39,7 @@ describe('CategoryCollectionParseContext', () => {
     describe('compiler', () => {
         it('constructed as expected', () => {
             // arrange
-            const functionsData = [ new FunctionDataStub() ];
+            const functionsData = [ FunctionDataStub.createWithCode() ];
             const syntax = new LanguageSyntaxStub();
             const expected = new ScriptCompiler(functionsData, syntax);
             const language = ScriptingLanguage.shellscript;

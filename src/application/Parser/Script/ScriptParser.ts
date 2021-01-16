@@ -31,7 +31,7 @@ function parseCode(script: ScriptData, context: ICategoryCollectionParseContext)
     if (context.compiler.canCompile(script)) {
         return context.compiler.compile(script);
     }
-    return new ScriptCode(script.code, script.revertCode, script.name, context.syntax);
+    return new ScriptCode(script.code, script.revertCode, context.syntax);
 }
 
 function ensureNotBothCallAndCode(script: ScriptData) {

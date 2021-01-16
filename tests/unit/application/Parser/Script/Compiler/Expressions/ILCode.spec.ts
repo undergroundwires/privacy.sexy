@@ -1,6 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
-import { generateIlCode } from '@/application/Parser/Script/Compiler/ILCode';
+import { generateIlCode } from '@/application/Parser/Script/Compiler/Expressions/ILCode';
 
 describe('ILCode', () => {
     describe('getUniqueParameterNames', () => {

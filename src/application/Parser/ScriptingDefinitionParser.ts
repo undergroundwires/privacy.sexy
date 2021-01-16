@@ -4,7 +4,7 @@ import { ScriptingDefinition } from '@/domain/ScriptingDefinition';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { IProjectInformation } from '@/domain/IProjectInformation';
 import { createEnumParser } from '../Common/Enum';
-import { generateIlCode } from './Script/Compiler/ILCode';
+import { generateIlCode } from './Script/Compiler/Expressions/ILCode';
 
 export function parseScriptingDefinition(
     definition: ScriptingDefinitionData,

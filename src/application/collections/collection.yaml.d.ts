@@ -18,30 +18,33 @@ declare module 'js-yaml-loader!*' {
         readonly docs?: DocumentationUrlsData;
     }
 
-    export interface FunctionData {
-        name: string;
-        code: string;
-        revertCode?: string;
-        parameters?: readonly string[];
+    export interface InstructionHolder {
+        readonly name: string;
+
+        readonly code?: string;
+        readonly revertCode?: string;
+
+        readonly call?: ScriptFunctionCallData;
+    }
+
+    export interface FunctionData extends InstructionHolder {
+        readonly parameters?: readonly string[];
     }
 
     export interface FunctionCallParametersData {
-        [index: string]: string;
+        readonly [index: string]: string;
     }
 
     export interface FunctionCallData {
-        function: string;
-        parameters?: FunctionCallParametersData;
+        readonly function: string;
+        readonly parameters?: FunctionCallParametersData;
     }
 
     export type ScriptFunctionCallData = readonly FunctionCallData[] | FunctionCallData | undefined;
 
-    export interface ScriptData extends DocumentableData {
-        name: string;
-        code?: string;
-        revertCode?: string;
-        call: ScriptFunctionCallData;
-        recommend?: string;
+    export interface ScriptData extends InstructionHolder, DocumentableData {
+        readonly name: string;
+        readonly recommend?: string;
     }
 
     export interface ScriptingDefinitionData {

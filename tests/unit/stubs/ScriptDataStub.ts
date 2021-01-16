@@ -27,6 +27,8 @@ export class ScriptDataStub implements ScriptData {
     public recommend = RecommendationLevel[RecommendationLevel.Standard].toLowerCase();
     public docs = ['hello.com'];
 
+    private constructor() { }
+
     public withName(name: string): ScriptDataStub {
         this.name = name;
         return this;
