@@ -17,7 +17,16 @@ module.exports = {
                     provider: 'github',
                     vPrefixedTagName: false, // default: true
                     releaseType: 'release' // or "draft" (default), "prerelease"
-                }] 
+                }],
+                mac: { // https://www.electron.build/configuration/mac
+                    target: 'dmg',
+                },
+                win: { // https://www.electron.build/configuration/win
+                    target: 'nsis',
+                },
+                linux: { // https://www.electron.build/configuration/linux
+                    target: 'AppImage',
+                }
             }
         }
     }
