@@ -35,6 +35,7 @@
 import { Component, Prop, Watch, Emit } from 'vue-property-decorator';
 import ScriptsTree from '@/presentation/Scripts/ScriptsTree/ScriptsTree.vue';
 import { StatefulVue } from '@/presentation/StatefulVue';
+import { IEventSubscription } from '@/infrastructure/Events/ISubscription';
 
 @Component({
   components: {
@@ -49,8 +50,17 @@ export default class CardListItem extends StatefulVue {
   public isAnyChildSelected = false;
   public areAllChildrenSelected = false;
 
+  private selectionChangedListener: IEventSubscription;
+
   public async mounted() {
     this.updateStateAsync(this.categoryId);
+    const context = await this.getCurrentContextAsync();
+    this.selectionChangedListener = context.state.selection.changed.on(() => this.updateStateAsync(this.categoryId));
+  }
+  public destroyed() {
+    if (this.selectionChangedListener) {
+      this.selectionChangedListener.unsubscribe();
+    }
   }
   @Emit('selected')
   public onSelected(isExpanded: boolean) {
