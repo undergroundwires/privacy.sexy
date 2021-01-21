@@ -1,14 +1,9 @@
 {
   "name": "privacy.sexy",
   "version": "0.9.0",
-  "author": "undergroundwires",
-  "description": "Enforce privacy & security best-practices on Windows and macOS, because privacy is sexy 🍑🍆",
-  "homepage": "https://privacy.sexy",
   "private": true,
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/undergroundwires/privacy.sexy.git"
-  },
+  "description": "Enforce privacy & security best-practices on Windows and macOS, because privacy is sexy 🍑🍆",
+  "author": "undergroundwires",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -32,6 +27,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "@fortawesome/vue-fontawesome": "^2.0.2",
     "ace-builds": "^1.4.12",
+    "core-js": "^3.6.5",
     "file-saver": "^2.0.5",
     "inversify": "^5.0.5",
     "liquor-tree": "^0.2.70",
@@ -46,6 +42,7 @@
     "@types/chai": "^4.2.14",
     "@types/file-saver": "^2.0.1",
     "@types/mocha": "^8.2.0",
+    "@vue/cli-plugin-babel": "^4.5.10",
     "@vue/cli-plugin-typescript": "^4.5.9",
     "@vue/cli-plugin-unit-mocha": "^4.5.9",
     "@vue/cli-service": "^4.5.9",
@@ -67,5 +64,10 @@
     "vue-cli-plugin-electron-builder": "^2.0.0-rc.5",
     "vue-template-compiler": "^2.6.12",
     "yaml-lint": "^1.2.4"
+  },
+  "homepage": "https://privacy.sexy",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/undergroundwires/privacy.sexy.git"
   }
 }
