@@ -9,6 +9,7 @@ module.exports = {
     pluginOptions: {
         // https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/guide.html#native-modules
         electronBuilder: {
+            nodeIntegration: true, // required to reach Node.js APIs for environment specific logic
             // https://www.electron.build/configuration/configuration
             builderOptions: {
                 publish: [{
