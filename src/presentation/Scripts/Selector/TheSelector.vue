@@ -7,7 +7,8 @@
                     label="None"
                     :enabled="this.currentSelection == SelectionState.None"
                     @click="selectAsync(SelectionState.None)"
-                    v-tooltip="'Deselect all selected scripts. Good start to dive deeper into tweaks and select only what you want.'"
+                    v-tooltip=" 'Deselect all selected scripts.<br/>' +
+                                '💡 Good start to dive deeper into tweaks and select only what you want.'"
                     />
             </div>
             <div class="part"> | </div>
@@ -16,7 +17,9 @@
                     label="Standard"
                     :enabled="this.currentSelection == SelectionState.Standard"
                     @click="selectAsync(SelectionState.Standard)"
-                    v-tooltip="'🛡️ Balanced for privacy and functionality. OS and applications will function normally.'"
+                    v-tooltip=" '🛡️ Balanced for privacy and functionality.<br/>' +
+                                'OS and applications will function normally.<br/>' +
+                                '💡 Recommended for everyone'"
                     />
                 </div>
             <div class="part"> | </div>
@@ -25,7 +28,9 @@
                     label="Strict"
                     :enabled="this.currentSelection == SelectionState.Strict"
                     @click="selectAsync(SelectionState.Strict)"
-                    v-tooltip="'🚫 Stronger privacy, disables risky functions that may leak your data. Double check selected tweaks!'"
+                    v-tooltip=" '🚫 Stronger privacy, disables risky functions that may leak your data.<br/>' +
+                                '⚠️ Double check to remove sripts where you would trade functionality for privacy<br/>' +
+                                '💡 Recommended for daily users that prefers more privacy over non-essential functions'"
                     />
                 </div>
             <div class="part"> | </div>
@@ -34,7 +39,9 @@
                         label="All"
                         :enabled="this.currentSelection == SelectionState.All"
                         @click="selectAsync(SelectionState.All)"
-                        v-tooltip="'🔒 Strongest privacy. Disables any functionality that may leak your data. ⚠️ Not recommended for inexperienced users'"
+                        v-tooltip=" '🔒 Strongest privacy, disabling any functionality that may leak your data.<br/>' +
+                                    '🛑 Not designed for daily users, it will break important functionalities.<br/>' +
+                                    '💡 Only recommended for extreme use-cases like crime labs where no leak is acceptable'"
                     />
             </div>
         </div>
