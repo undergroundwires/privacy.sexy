@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.9.1 (2021-01-23)
+
+* in CI/CD, allow publishing to github if release is more than 2 hours old electron-userland/electron-builder#2074 | [cf907d0](https://github.com/undergroundwires/privacy.sexy/commit/cf907d029a6d80682ba78ec887a9c4fab639db51)
+* in CI/CD, publish packages for other OSes if single one fails | [4015e2c](https://github.com/undergroundwires/privacy.sexy/commit/4015e2ccd8492e0693365b70fbfe3bd0ac7a6ea2)
+* specify desktop publish targets as defaults (may) change | [2316e3f](https://github.com/undergroundwires/privacy.sexy/commit/2316e3fb6867e5d765eafcf675b77f88bd2a0f52)
+* fix selection state indicator on cards not showing up | [8b0e47d](https://github.com/undergroundwires/privacy.sexy/commit/8b0e47da38c49cfe2645d7d25970c448ecd200f8)
+* transpile using babel for legacy browser support | [7930bef](https://github.com/undergroundwires/privacy.sexy/commit/7930bef48c4e9a4fe0823673958ed8377f5ee533)
+* fix node APIs no longer working on desktop nklayman/vue-cli-plugin-electron-builder#610, nklayman/vue-cli-plugin-electron-builder#742 | [d7f9ef1](https://github.com/undergroundwires/privacy.sexy/commit/d7f9ef1cbebe911aa19f29be8c5fa9360550793e)
+* improve explanation for selections | [229c13a](https://github.com/undergroundwires/privacy.sexy/commit/229c13a195dee92e4a31731b7b41c319273a16f1)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.9.0...0.9.1)
+
 ## 0.9.0 (2021-01-15)
 
 * refactor application.yaml to become an os definition #40 | [f7557bc](https://github.com/undergroundwires/privacy.sexy/commit/f7557bcc0faf44e8395b68c7eb14c5f715f07b92)
