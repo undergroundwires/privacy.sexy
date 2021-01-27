@@ -1467,7 +1467,7 @@ actions:
                         name: Delete NVIDIA residual telemetry files
                         recommend: standard
                         code: |-
-                            del /s %systemdrive%\System32\DriverStore\FileRepository\NvTelemetry*.dll
+                            del /s %SystemRoot%\System32\DriverStore\FileRepository\NvTelemetry*.dll
                             rmdir /s /q "%ProgramFiles(x86)%\NVIDIA Corporation\NvTelemetry" 2>nul
                             rmdir /s /q "%ProgramFiles%\NVIDIA Corporation\NvTelemetry" 2>nul
                     -
