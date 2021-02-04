@@ -2,12 +2,12 @@ import { IScript } from '@/domain/IScript';
 import { FilterResult } from './FilterResult';
 import { IFilterResult } from './IFilterResult';
 import { IUserFilter } from './IUserFilter';
-import { Signal } from '@/infrastructure/Events/Signal';
+import { EventSource } from '@/infrastructure/Events/EventSource';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
 
 export class UserFilter implements IUserFilter {
-    public readonly filtered = new Signal<IFilterResult>();
-    public readonly filterRemoved = new Signal<void>();
+    public readonly filtered = new EventSource<IFilterResult>();
+    public readonly filterRemoved = new EventSource<void>();
     public currentFilter: IFilterResult | undefined;
 
     constructor(private collection: ICategoryCollection) {

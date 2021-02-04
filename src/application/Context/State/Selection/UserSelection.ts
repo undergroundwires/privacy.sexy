@@ -2,13 +2,13 @@ import { SelectedScript } from './SelectedScript';
 import { IUserSelection } from './IUserSelection';
 import { InMemoryRepository } from '@/infrastructure/Repository/InMemoryRepository';
 import { IScript } from '@/domain/IScript';
-import { Signal } from '@/infrastructure/Events/Signal';
+import { EventSource } from '@/infrastructure/Events/EventSource';
 import { IRepository } from '@/infrastructure/Repository/IRepository';
 import { ICategory } from '@/domain/ICategory';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
 
 export class UserSelection implements IUserSelection {
-    public readonly changed = new Signal<ReadonlyArray<SelectedScript>>();
+    public readonly changed = new EventSource<ReadonlyArray<SelectedScript>>();
     private readonly scripts: IRepository<string, SelectedScript>;
 
     constructor(

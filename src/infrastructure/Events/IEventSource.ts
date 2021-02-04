@@ -1,6 +1,11 @@
-import { IEventSubscription } from './ISubscription';
-export interface ISignal<T> {
+export interface IEventSource<T> {
     on(handler: EventHandler<T>): IEventSubscription;
 }
 
+export interface IEventSubscription {
+    unsubscribe(): void;
+}
+
 export type EventHandler<T> = (data: T) => void;
+
+

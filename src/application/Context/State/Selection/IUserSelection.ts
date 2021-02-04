@@ -1,10 +1,10 @@
 import { SelectedScript } from './SelectedScript';
 import { IScript } from '@/domain/IScript';
 import { ICategory } from '@/domain/ICategory';
-import { ISignal } from '@/infrastructure/Events/ISignal';
+import { IEventSource } from '@/infrastructure/Events/IEventSource';
 
 export interface IUserSelection {
-    readonly changed: ISignal<ReadonlyArray<SelectedScript>>;
+    readonly changed: IEventSource<ReadonlyArray<SelectedScript>>;
     readonly selectedScripts: ReadonlyArray<SelectedScript>;
     readonly totalSelected: number;
     areAllSelected(category: ICategory): boolean;

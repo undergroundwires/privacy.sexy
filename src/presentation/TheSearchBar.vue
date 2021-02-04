@@ -15,9 +15,7 @@ import { StatefulVue } from './StatefulVue';
 import { NonCollapsing } from '@/presentation/Scripts/Cards/NonCollapsingDirective';
 import { IUserFilter } from '@/application/Context/State/Filter/IUserFilter';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
-import { IApplication } from '@/domain/IApplication';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
-import { IEventSubscription } from '@/infrastructure/Events/ISubscription';
 
 @Component( {
     directives: { NonCollapsing },
@@ -26,8 +24,6 @@ import { IEventSubscription } from '@/infrastructure/Events/ISubscription';
 export default class TheSearchBar extends StatefulVue {
   public searchPlaceHolder = 'Search';
   public searchQuery = '';
-
-  private readonly listeners = new Array<IEventSubscription>();
 
   @Watch('searchQuery')
   public async updateFilterAsync(newFilter: |string) {
@@ -39,28 +35,21 @@ export default class TheSearchBar extends StatefulVue {
       filter.setFilter(newFilter);
     }
   }
-  public destroyed() {
-    this.unsubscribeAll();
-  }
 
-  protected initialize(app: IApplication): void {
+  protected initialize(): void {
     return;
   }
   protected handleCollectionState(newState: ICategoryCollectionState, oldState: ICategoryCollectionState | undefined) {
     const totalScripts = newState.collection.totalScripts;
     this.searchPlaceHolder = `Search in ${totalScripts} scripts`;
     this.searchQuery = newState.filter.currentFilter ? newState.filter.currentFilter.query : '';
-    this.unsubscribeAll();
-    this.subscribe(newState.filter);
+    this.events.unsubscribeAll();
+    this.subscribeFilter(newState.filter);
   }
 
-  private subscribe(filter: IUserFilter) {
-    this.listeners.push(filter.filtered.on((result) => this.handleFiltered(result)));
-    this.listeners.push(filter.filterRemoved.on(() => this.handleFilterRemoved()));
-  }
-  private unsubscribeAll() {
-    this.listeners.forEach((listener) => listener.unsubscribe());
-    this.listeners.splice(0, this.listeners.length);
+  private subscribeFilter(filter: IUserFilter) {
+    this.events.register(filter.filtered.on((result) => this.handleFiltered(result)));
+    this.events.register(filter.filterRemoved.on(() => this.handleFilterRemoved()));
   }
   private handleFiltered(result: IFilterResult) {
     this.searchQuery = result.query;

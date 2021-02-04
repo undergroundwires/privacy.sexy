@@ -2,10 +2,10 @@ import { Component, Vue } from 'vue-property-decorator';
 import { AsyncLazy } from '@/infrastructure/Threading/AsyncLazy';
 import { IApplicationContext } from '@/application/Context/IApplicationContext';
 import { buildContext } from '@/application/Context/ApplicationContextProvider';
-import { IApplicationContextChangedEvent } from '../application/Context/IApplicationContext';
+import { IApplicationContextChangedEvent } from '@/application/Context/IApplicationContext';
 import { IApplication } from '@/domain/IApplication';
-import { ICategoryCollectionState } from '../application/Context/State/ICategoryCollectionState';
-import { IEventSubscription } from '../infrastructure/Events/ISubscription';
+import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { EventSubscriptionCollection } from '../infrastructure/Events/EventSubscriptionCollection';
 
 // @ts-ignore because https://github.com/vuejs/vue-class-component/issues/91
 @Component
@@ -13,18 +13,19 @@ export abstract class StatefulVue extends Vue {
     public static instance = new AsyncLazy<IApplicationContext>(
         () => Promise.resolve(buildContext()));
 
-    private listener: IEventSubscription;
+    protected readonly events = new EventSubscriptionCollection();
+
+    private readonly ownEvents = new EventSubscriptionCollection();
 
     public async mounted() {
         const context = await this.getCurrentContextAsync();
-        this.listener = context.contextChanged.on((event) => this.handleStateChangedEvent(event));
+        this.ownEvents.register(context.contextChanged.on((event) => this.handleStateChangedEvent(event)));
         this.initialize(context.app);
         this.handleCollectionState(context.state, undefined);
     }
     public destroyed() {
-        if (this.listener) {
-            this.listener.unsubscribe();
-        }
+        this.ownEvents.unsubscribeAll();
+        this.events.unsubscribeAll();
     }
 
     protected abstract initialize(app: IApplication): void;

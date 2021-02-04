@@ -35,9 +35,7 @@ import MacOsInstructions from './MacOsInstructions.vue';
 import { Environment } from '@/application/Environment/Environment';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
-import { IApplication } from '@/domain/IApplication';
 import { IApplicationCode } from '@/application/Context/State/Code/IApplicationCode';
-import { IEventSubscription } from '@/infrastructure/Events/ISubscription';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 
@@ -55,8 +53,6 @@ export default class TheCodeButtons extends StatefulVue {
   public isMacOsCollection = false;
   public fileName = '';
 
-  private codeListener: IEventSubscription;
-
   public async copyCodeAsync() {
     const code = await this.getCurrentCodeAsync();
     Clipboard.copyText(code.current);
@@ -68,13 +64,8 @@ export default class TheCodeButtons extends StatefulVue {
       this.$modal.show(this.macOsModalName);
     }
   }
-  public destroyed() {
-    if (this.codeListener) {
-      this.codeListener.unsubscribe();
-    }
-  }
 
-  protected initialize(app: IApplication): void {
+  protected initialize(): void {
     return;
   }
   protected handleCollectionState(newState: ICategoryCollectionState): void {
@@ -90,12 +81,10 @@ export default class TheCodeButtons extends StatefulVue {
   }
   private async react(code: IApplicationCode) {
     this.hasCode = code.current && code.current.length > 0;
-    if (this.codeListener) {
-      this.codeListener.unsubscribe();
-    }
-    this.codeListener = code.changed.on((newCode) => {
+    this.events.unsubscribeAll();
+    this.events.register(code.changed.on((newCode) => {
       this.hasCode = newCode && newCode.code.length > 0;
-    });
+    }));
   }
 }
 

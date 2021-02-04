@@ -35,7 +35,6 @@
 import { Component, Prop, Watch, Emit } from 'vue-property-decorator';
 import ScriptsTree from '@/presentation/Scripts/ScriptsTree/ScriptsTree.vue';
 import { StatefulVue } from '@/presentation/StatefulVue';
-import { IEventSubscription } from '@/infrastructure/Events/ISubscription';
 
 @Component({
   components: {
@@ -50,17 +49,11 @@ export default class CardListItem extends StatefulVue {
   public isAnyChildSelected = false;
   public areAllChildrenSelected = false;
 
-  private selectionChangedListener: IEventSubscription;
-
   public async mounted() {
-    this.updateStateAsync(this.categoryId);
     const context = await this.getCurrentContextAsync();
-    this.selectionChangedListener = context.state.selection.changed.on(() => this.updateStateAsync(this.categoryId));
-  }
-  public destroyed() {
-    if (this.selectionChangedListener) {
-      this.selectionChangedListener.unsubscribe();
-    }
+    this.events.register(context.state.selection.changed.on(
+      () => this.updateSelectionIndicatorsAsync(this.categoryId)));
+    await this.updateStateAsync(this.categoryId);
   }
   @Emit('selected')
   public onSelected(isExpanded: boolean) {
@@ -81,18 +74,23 @@ export default class CardListItem extends StatefulVue {
   @Watch('categoryId')
   public async updateStateAsync(value: |number) {
     const context = await this.getCurrentContextAsync();
-    const category = !value ? undefined : context.state.collection.findCategory(this.categoryId);
+    const category = !value ? undefined : context.state.collection.findCategory(value);
     this.cardTitle = category ? category.name : undefined;
-    const currentSelection = context.state.selection;
-    this.isAnyChildSelected = category ? currentSelection.isAnySelected(category) : false;
-    this.areAllChildrenSelected = category ? currentSelection.areAllSelected(category) : false;
+    await this.updateSelectionIndicatorsAsync(value);
   }
   protected initialize(): void {
     return;
   }
   protected handleCollectionState(): void {
-    // No need, as categoryId will be updated instead
     return;
+  }
+
+  private async updateSelectionIndicatorsAsync(categoryId: number) {
+    const context = await this.getCurrentContextAsync();
+    const selection = context.state.selection;
+    const category = context.state.collection.findCategory(categoryId);
+    this.isAnyChildSelected = category ? selection.isAnySelected(category) : false;
+    this.areAllChildrenSelected = category ? selection.areAllSelected(category) : false;
   }
 }
 

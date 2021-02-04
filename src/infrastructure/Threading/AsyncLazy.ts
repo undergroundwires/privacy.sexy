@@ -1,7 +1,7 @@
-import { Signal } from '../Events/Signal';
+import { EventSource } from '../Events/EventSource';
 
 export class AsyncLazy<T> {
-    private valueCreated = new Signal();
+    private valueCreated = new EventSource();
     private isValueCreated = false;
     private isCreatingValue = false;
     private value: T | undefined;
@@ -15,7 +15,7 @@ export class AsyncLazy<T> {
     public async getValueAsync(): Promise<T> {
         // If value is already created, return the value directly
         if (this.isValueCreated) {
-            return Promise.resolve(this.value as T);
+            return Promise.resolve(this.value);
         }
         // If value is being created, wait until the value is created and then return it.
         if (this.isCreatingValue) {

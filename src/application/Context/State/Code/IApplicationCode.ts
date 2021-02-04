@@ -1,7 +1,7 @@
 import { ICodeChangedEvent } from './Event/ICodeChangedEvent';
-import { ISignal } from '@/infrastructure/Events/ISignal';
+import { IEventSource } from '@/infrastructure/Events/IEventSource';
 
 export interface IApplicationCode {
-    readonly changed: ISignal<ICodeChangedEvent>;
+    readonly changed: IEventSource<ICodeChangedEvent>;
     readonly current: string;
 }

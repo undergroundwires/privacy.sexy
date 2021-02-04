@@ -4,12 +4,12 @@ import { CategoryCollectionState } from './State/CategoryCollectionState';
 import { IApplication } from '@/domain/IApplication';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
-import { Signal } from '@/infrastructure/Events/Signal';
+import { EventSource } from '@/infrastructure/Events/EventSource';
 
 type StateMachine = Map<OperatingSystem, ICategoryCollectionState>;
 
 export class ApplicationContext implements IApplicationContext {
-    public readonly contextChanged = new Signal<IApplicationContextChangedEvent>();
+    public readonly contextChanged = new EventSource<IApplicationContextChangedEvent>();
     public collection: ICategoryCollection;
     public currentOs: OperatingSystem;
 

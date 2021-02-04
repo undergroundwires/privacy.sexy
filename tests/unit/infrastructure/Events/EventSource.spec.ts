@@ -1,45 +1,43 @@
-import { ISignal } from '@/infrastructure/Events/ISignal';
-import { IEventSubscription } from '@/infrastructure/Events/ISubscription';
-import { Signal } from '@/infrastructure/Events/Signal';
+import { EventHandler, IEventSource, IEventSubscription } from '@/infrastructure/Events/IEventSource';
+import { EventSource } from '@/infrastructure/Events/EventSource';
 import { expect } from 'chai';
-import { EventHandler } from '@/infrastructure/Events/ISignal';
+import 'mocha';
 
-
-describe('Signal', () => {
+describe('EventSource', () => {
     class ObserverMock {
         public readonly onReceiveCalls = new Array<number>();
         public readonly callbacks = new Array<EventHandler<number>>();
         public readonly subscription: IEventSubscription;
-        constructor(subject: ISignal<number>) {
+        constructor(subject: IEventSource<number>) {
             this.callbacks.push((arg) => this.onReceiveCalls.push(arg));
             this.subscription = subject.on((arg) => this.callbacks.forEach((action) => action(arg)));
         }
     }
-    let signal: Signal<number>;
-    beforeEach(() => signal = new Signal());
+    let sut: EventSource<number>;
+    beforeEach(() => sut = new EventSource());
     describe('single observer', () => {
         // arrange
         let observer: ObserverMock;
         beforeEach(() => {
-            observer = new ObserverMock(signal);
+            observer = new ObserverMock(sut);
         });
         it('notify() executes the callback', () => {
             // act
-            signal.notify(5);
+            sut.notify(5);
             // assert
             expect(observer.onReceiveCalls).to.have.length(1);
         });
         it('notify() executes the callback with the payload', () => {
             const expected = 5;
             // act
-            signal.notify(expected);
+            sut.notify(expected);
             // assert
             expect(observer.onReceiveCalls).to.deep.equal([expected]);
         });
         it('notify() does not call callback when unsubscribed', () => {
             // act
             observer.subscription.unsubscribe();
-            signal.notify(5);
+            sut.notify(5);
             // assert
             expect(observer.onReceiveCalls).to.have.lengthOf(0);
         });
@@ -50,13 +48,13 @@ describe('Signal', () => {
         let observers: ObserverMock[];
         beforeEach(() => {
             observers = [
-                new ObserverMock(signal), new ObserverMock(signal),
-                new ObserverMock(signal), new ObserverMock(signal),
+                new ObserverMock(sut), new ObserverMock(sut),
+                new ObserverMock(sut), new ObserverMock(sut),
             ];
         });
         it('notify() should execute all callbacks', () => {
             // act
-            signal.notify(5);
+            sut.notify(5);
             // assert
             observers.forEach((observer) => {
                 expect(observer.onReceiveCalls).to.have.length(1);
@@ -65,7 +63,7 @@ describe('Signal', () => {
         it('notify() should execute all callbacks with payload', () => {
             const expected = 5;
             // act
-            signal.notify(expected);
+            sut.notify(expected);
             // assert
             observers.forEach((observer) => {
                 expect(observer.onReceiveCalls).to.deep.equal([expected]);
@@ -79,7 +77,7 @@ describe('Signal', () => {
                 observers[i].callbacks.push(() => actualSequence.push(i));
             }
             // act
-            signal.notify(5);
+            sut.notify(5);
             // assert
             expect(actualSequence).to.deep.equal(expectedSequence);
         });

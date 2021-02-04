@@ -1,12 +1,12 @@
 import { ICategoryCollectionState } from './State/ICategoryCollectionState';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { ISignal } from '@/infrastructure/Events/ISignal';
+import { IEventSource } from '@/infrastructure/Events/IEventSource';
 import { IApplication } from '@/domain/IApplication';
 
 export interface IApplicationContext {
     readonly app: IApplication;
     readonly state: ICategoryCollectionState;
-    readonly contextChanged: ISignal<IApplicationContextChangedEvent>;
+    readonly contextChanged: IEventSource<IApplicationContextChangedEvent>;
     changeContext(os: OperatingSystem): void;
 }
 

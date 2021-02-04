@@ -27,8 +27,6 @@ import SelectableTree from './SelectableTree/SelectableTree.vue';
 import { INode, NodeType } from './SelectableTree/Node/INode';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { INodeSelectedEvent } from './SelectableTree/INodeSelectedEvent';
-import { IApplication } from '@/domain/IApplication';
-import { IEventSubscription } from '@/infrastructure/Events/ISubscription';
 
 @Component({
   components: {
@@ -43,7 +41,6 @@ export default class ScriptsTree extends StatefulVue {
   public filterText?: string = null;
 
   private filtered?: IFilterResult;
-  private listeners = new Array<IEventSubscription>();
 
   public async toggleNodeSelectionAsync(event: INodeSelectedEvent) {
       const context = await this.getCurrentContextAsync();
@@ -75,11 +72,8 @@ export default class ScriptsTree extends StatefulVue {
       || this.filtered.categoryMatches.some(
         (category: ICategory) => node.id === getCategoryNodeId(category));
   }
-  public destroyed() {
-    this.unsubscribeAll();
-  }
 
-  protected initialize(app: IApplication): void {
+  protected initialize(): void {
     return;
   }
   protected async handleCollectionState(newState: ICategoryCollectionState) {
@@ -87,19 +81,18 @@ export default class ScriptsTree extends StatefulVue {
     if (!this.categoryId) {
       this.nodes = parseAllCategories(newState.collection);
     }
-    this.unsubscribeAll();
-    this.subscribe(newState);
+    this.events.unsubscribeAll();
+    this.subscribeState(newState);
   }
 
-  private subscribe(state: ICategoryCollectionState) {
-    this.listeners.push(state.selection.changed.on(this.handleSelectionChanged));
-    this.listeners.push(state.filter.filterRemoved.on(this.handleFilterRemoved));
-    this.listeners.push(state.filter.filtered.on(this.handleFiltered));
+  private subscribeState(state: ICategoryCollectionState) {
+    this.events.register(
+      state.selection.changed.on(this.handleSelectionChanged),
+      state.filter.filterRemoved.on(this.handleFilterRemoved),
+      state.filter.filtered.on(this.handleFiltered),
+    );
   }
-  private unsubscribeAll() {
-    this.listeners.forEach((listener) => listener.unsubscribe());
-    this.listeners.splice(0, this.listeners.length);
-  }
+
   private setCurrentFilter(currentFilter: IFilterResult | undefined) {
     if (!currentFilter) {
       this.handleFilterRemoved();

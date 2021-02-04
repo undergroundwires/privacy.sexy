@@ -1,7 +1,6 @@
-import { EventHandler, ISignal } from './ISignal';
-import { IEventSubscription } from './ISubscription';
+import { EventHandler, IEventSource, IEventSubscription } from './IEventSource';
 
-export class Signal<T> implements ISignal<T> {
+export class EventSource<T> implements IEventSource<T> {
     private handlers = new Map<number, EventHandler<T>>();
 
     public on(handler: EventHandler<T>): IEventSubscription {

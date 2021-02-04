@@ -4,13 +4,13 @@ import { ICodeChangedEvent } from './Event/ICodeChangedEvent';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { IUserSelection } from '@/application/Context/State/Selection/IUserSelection';
 import { UserScriptGenerator } from './Generation/UserScriptGenerator';
-import { Signal } from '@/infrastructure/Events/Signal';
+import { EventSource } from '@/infrastructure/Events/EventSource';
 import { IApplicationCode } from './IApplicationCode';
 import { IUserScriptGenerator } from './Generation/IUserScriptGenerator';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 
 export class ApplicationCode implements IApplicationCode {
-    public readonly changed = new Signal<ICodeChangedEvent>();
+    public readonly changed = new EventSource<ICodeChangedEvent>();
     public current: string;
 
     private scriptPositions = new Map<SelectedScript, CodePosition>();

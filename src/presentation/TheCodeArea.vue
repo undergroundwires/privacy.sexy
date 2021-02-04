@@ -11,9 +11,6 @@ import { ICodeChangedEvent } from '@/application/Context/State/Code/Event/ICodeC
 import { IScript } from '@/domain/IScript';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
-import { IApplication } from '@/domain/IApplication';
-import { IEventSubscription } from '@/infrastructure/Events/ISubscription';
-import { IApplicationCode } from '@/application/Context/State/Code/IApplicationCode';
 import { CodeBuilderFactory } from '@/application/Context/State/Code/Generation/CodeBuilderFactory';
 
 @Component
@@ -22,16 +19,14 @@ export default class TheCodeArea extends StatefulVue {
 
   private editor!: ace.Ace.Editor;
   private currentMarkerId?: number;
-  private codeListener: IEventSubscription;
 
   @Prop() private theme!: string;
 
   public destroyed() {
-    this.unsubscribeCodeListening();
     this.destroyEditor();
   }
 
-  protected initialize(app: IApplication): void {
+  protected initialize(): void {
     return;
   }
   protected handleCollectionState(newState: ICategoryCollectionState): void {
@@ -39,18 +34,10 @@ export default class TheCodeArea extends StatefulVue {
     this.editor = initializeEditor(this.theme, this.editorId, newState.collection.scripting.language);
     const appCode = newState.code;
     this.editor.setValue(appCode.current || getDefaultCode(newState.collection.scripting.language), 1);
-    this.unsubscribeCodeListening();
-    this.subscribe(appCode);
+    this.events.unsubscribeAll();
+    this.events.register(appCode.changed.on((code) => this.updateCodeAsync(code)));
   }
 
-  private subscribe(appCode: IApplicationCode) {
-    this.codeListener = appCode.changed.on((code) => this.updateCodeAsync(code));
-  }
-  private unsubscribeCodeListening() {
-    if (this.codeListener) {
-      this.codeListener.unsubscribe();
-    }
-  }
   private async updateCodeAsync(event: ICodeChangedEvent) {
     this.removeCurrentHighlighting();
     if (event.isEmpty()) {

@@ -13,49 +13,43 @@
 
 
 <script lang="ts">
-    import { Component, Prop, Watch } from 'vue-property-decorator';
-    import { IReverter } from './Reverter/IReverter';
-    import { StatefulVue } from '@/presentation/StatefulVue';
-    import { INode } from './INode';
-    import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
-    import { getReverter } from './Reverter/ReverterFactory';
-    import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
-    import { IApplication } from '@/domain/IApplication';
-    import { IEventSubscription } from '@/infrastructure/Events/ISubscription';
+import { Component, Prop, Watch } from 'vue-property-decorator';
+import { IReverter } from './Reverter/IReverter';
+import { StatefulVue } from '@/presentation/StatefulVue';
+import { INode } from './INode';
+import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
+import { getReverter } from './Reverter/ReverterFactory';
+import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 
-    @Component
-    export default class RevertToggle extends StatefulVue {
-        @Prop() public node: INode;
-        public isReverted = false;
+@Component
+export default class RevertToggle extends StatefulVue {
+    @Prop() public node: INode;
+    public isReverted = false;
 
-        private handler: IReverter;
-        private selectionChangeListener: IEventSubscription;
+    private handler: IReverter;
 
-        @Watch('node', {immediate: true}) public async onNodeChangedAsync(node: INode) {
-            const context = await this.getCurrentContextAsync();
-            this.handler = getReverter(node, context.state.collection);
-        }
-        public async onRevertToggledAsync() {
-            const context = await this.getCurrentContextAsync();
-            this.handler.selectWithRevertState(this.isReverted, context.state.selection);
-        }
-
-        protected initialize(app: IApplication): void {
-          return;
-        }
-        protected handleCollectionState(newState: ICategoryCollectionState, oldState: ICategoryCollectionState): void {
-            this.updateStatus(newState.selection.selectedScripts);
-            if (this.selectionChangeListener) {
-                this.selectionChangeListener.unsubscribe();
-            }
-            this.selectionChangeListener = newState.selection.changed.on(
-                (scripts) => this.updateStatus(scripts));
-        }
-
-        private updateStatus(scripts: ReadonlyArray<SelectedScript>) {
-            this.isReverted = this.handler.getState(scripts);
-        }
+    @Watch('node', {immediate: true}) public async onNodeChangedAsync(node: INode) {
+        const context = await this.getCurrentContextAsync();
+        this.handler = getReverter(node, context.state.collection);
     }
+    public async onRevertToggledAsync() {
+        const context = await this.getCurrentContextAsync();
+        this.handler.selectWithRevertState(this.isReverted, context.state.selection);
+    }
+
+    protected initialize(): void {
+        return;
+    }
+    protected handleCollectionState(newState: ICategoryCollectionState): void {
+        this.updateStatus(newState.selection.selectedScripts);
+        this.events.unsubscribeAll();
+        this.events.register(newState.selection.changed.on((scripts) => this.updateStatus(scripts)));
+    }
+
+    private updateStatus(scripts: ReadonlyArray<SelectedScript>) {
+        this.isReverted = this.handler.getState(scripts);
+    }
+}
 </script>
 
 

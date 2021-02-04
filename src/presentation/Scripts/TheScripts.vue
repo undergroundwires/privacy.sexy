@@ -50,7 +50,6 @@ import { Grouping } from './Grouping/Grouping';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { IApplication } from '@/domain/IApplication';
-import { IEventSubscription } from '@/infrastructure/Events/ISubscription';
 
 /** Shows content of single category or many categories */
 @Component({
@@ -79,11 +78,6 @@ export default class TheScripts extends StatefulVue {
     public isSearching = false;
     public searchHasMatches = false;
 
-    private listeners = new Array<IEventSubscription>();
-
-    public destroyed() {
-        this.unsubscribeAll();
-    }
     public async clearSearchQueryAsync() {
         const context = await this.getCurrentContextAsync();
         const filter = context.state.filter;
@@ -97,23 +91,21 @@ export default class TheScripts extends StatefulVue {
         this.repositoryUrl = app.info.repositoryWebUrl;
     }
     protected handleCollectionState(newState: ICategoryCollectionState): void {
-        this.unsubscribeAll();
-        this.subscribe(newState);
+        this.events.unsubscribeAll();
+        this.subscribeState(newState);
     }
 
-    private subscribe(state: ICategoryCollectionState) {
-        this.listeners.push(state.filter.filterRemoved.on(() => {
-            this.isSearching = false;
-        }));
-        state.filter.filtered.on((result: IFilterResult) => {
-            this.searchQuery = result.query;
-            this.isSearching = true;
-            this.searchHasMatches = result.hasAnyMatches();
-        });
-    }
-    private unsubscribeAll() {
-        this.listeners.forEach((listener) => listener.unsubscribe());
-        this.listeners.splice(0, this.listeners.length);
+    private subscribeState(state: ICategoryCollectionState) {
+        this.events.register(
+            state.filter.filterRemoved.on(() => {
+                this.isSearching = false;
+            }),
+            state.filter.filtered.on((result: IFilterResult) => {
+                        this.searchQuery = result.query;
+                        this.isSearching = true;
+                        this.searchHasMatches = result.hasAnyMatches();
+            }),
+        );
     }
 }
 </script>
