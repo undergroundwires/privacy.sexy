@@ -30,6 +30,7 @@ export class ScriptCompiler implements IScriptCompiler {
         calls.forEach((currentCall, currentCallIndex) => {
             ensureValidCall(currentCall, script.name);
             const commonFunction = this.getFunctionByName(currentCall.function);
+            ensureExpectedParameters(commonFunction, currentCall);
             let functionCode = compileCode(commonFunction, currentCall.parameters);
             if (currentCallIndex !== calls.length - 1) {
                 functionCode = appendLine(functionCode);
@@ -54,6 +55,18 @@ export class ScriptCompiler implements IScriptCompiler {
         if (typeof call !== 'object') {
             throw new Error('called function(s) must be an object');
         }
+    }
+}
+
+function ensureExpectedParameters(func: FunctionData, call: FunctionCallData) {
+    if (!func.parameters && !call.parameters) {
+        return;
+    }
+    const unexpectedParameters = Object.keys(call.parameters || {})
+        .filter((callParam) => !func.parameters.includes(callParam));
+    if (unexpectedParameters.length) {
+        throw new Error(
+            `function "${func.name}" has unexpected parameter(s) provided: "${unexpectedParameters.join('", "')}"`);
     }
 }
 

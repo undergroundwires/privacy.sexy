@@ -206,6 +206,26 @@ describe('ScriptCompiler', () => {
                     expect(act).to.throw(expectedError);
                 });
             });
+            it('throws if provided parameters does not match given ones', () => {
+                // arrange
+                const unexpectedParameterName = 'unexpected-parameter-name';
+                const functionName = 'test-function-name';
+                const expectedError = `function "${functionName}" has unexpected parameter(s) provided: "${unexpectedParameterName}"`;
+                const sut = new ScriptCompilerBuilder()
+                    .withFunctions(
+                        new FunctionDataStub()
+                            .withName(functionName)
+                            .withParameters('another-parameter'))
+                    .build();
+                const params: FunctionCallParametersData = {};
+                params[unexpectedParameterName] = 'unexpected-parameter-value';
+                const call: ScriptFunctionCallData = { function: functionName, parameters: params };
+                const script = ScriptDataStub.createWithCall(call);
+                // act
+                const act = () => sut.compile(script);
+                // assert
+                expect(act).to.throw(expectedError);
+            });
         });
         describe('builds code as expected', () => {
             it('creates code with expected syntax', () => { // test through script validation logic
@@ -304,7 +324,7 @@ describe('ScriptCompiler', () => {
                     expect(actual).to.deep.equal(expected);
                 });
             });
-            it('throws when parameters is undefined', () => {
+            it('throws when parameters are undefined', () => {
                 // arrange
                 const env = new TestEnvironment({
                     code: '{{ $parameter }} {{ $parameter }}!',
