@@ -36,9 +36,6 @@ export default class TheSearchBar extends StatefulVue {
     }
   }
 
-  protected initialize(): void {
-    return;
-  }
   protected handleCollectionState(newState: ICategoryCollectionState, oldState: ICategoryCollectionState | undefined) {
     const totalScripts = newState.collection.totalScripts;
     this.searchPlaceHolder = `Search in ${totalScripts} scripts`;

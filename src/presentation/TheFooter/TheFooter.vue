@@ -47,22 +47,21 @@
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
-import { StatefulVue } from '@/presentation/StatefulVue';
+import { Component, Vue } from 'vue-property-decorator';
 import { Environment } from '@/application/Environment/Environment';
 import PrivacyPolicy from './PrivacyPolicy.vue';
 import DownloadUrlList from './DownloadUrlList.vue';
-import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { IApplication } from '@/domain/IApplication';
+import { ApplicationFactory } from '@/application/ApplicationFactory';
 
 @Component({
   components: {
     PrivacyPolicy, DownloadUrlList,
   },
 })
-export default class TheFooter extends StatefulVue {
+export default class TheFooter extends Vue {
   public readonly modalName = 'privacy-policy';
-  public readonly isDesktop: boolean;
+  public readonly isDesktop = Environment.CurrentEnvironment.isDesktop;
 
   public version: string = '';
   public repositoryUrl: string = '';
@@ -70,22 +69,18 @@ export default class TheFooter extends StatefulVue {
   public feedbackUrl: string = '';
   public homepageUrl: string = '';
 
-  constructor() {
-    super();
-    this.isDesktop = Environment.CurrentEnvironment.isDesktop;
+  public async created() {
+    const app = await ApplicationFactory.Current.getAppAsync();
+    this.initialize(app);
   }
 
-  protected initialize(app: IApplication): void {
+  private initialize(app: IApplication) {
     const info = app.info;
     this.version = info.version;
     this.homepageUrl = info.homepage;
     this.repositoryUrl = info.repositoryWebUrl;
     this.releaseUrl = info.releaseUrl;
     this.feedbackUrl = info.feedbackUrl;
-  }
-
-  protected handleCollectionState(newState: ICategoryCollectionState, oldState: ICategoryCollectionState): void {
-    return;
   }
 }
 

@@ -9,15 +9,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch } from 'vue-property-decorator';
-import { StatefulVue } from '@/presentation/StatefulVue';
+import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
 import { Environment } from '@/application/Environment/Environment';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
-import { IApplication } from '@/domain/IApplication';
+import { ApplicationFactory } from '@/application/ApplicationFactory';
 
 @Component
-export default class DownloadUrlListItem extends StatefulVue {
+export default class DownloadUrlListItem extends Vue {
   @Prop() public operatingSystem!: OperatingSystem;
 
   public downloadUrl: string = '';
@@ -38,16 +36,9 @@ export default class DownloadUrlListItem extends StatefulVue {
     this.hasCurrentOsDesktopVersion = hasDesktopVersion(currentOs);
   }
 
-  protected initialize(app: IApplication): void {
-      return;
-  }
-  protected handleCollectionState(newState: ICategoryCollectionState, oldState: ICategoryCollectionState): void {
-      return;
-  }
-
   private async getDownloadUrlAsync(os: OperatingSystem): Promise<string> {
-    const context = await this.getCurrentContextAsync();
-    return context.app.info.getDownloadUrl(os);
+    const context = await ApplicationFactory.Current.getAppAsync();
+    return context.info.getDownloadUrl(os);
   }
 }
 

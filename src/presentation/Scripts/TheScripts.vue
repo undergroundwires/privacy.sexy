@@ -49,7 +49,7 @@ import { StatefulVue } from '@/presentation/StatefulVue';
 import { Grouping } from './Grouping/Grouping';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
-import { IApplication } from '@/domain/IApplication';
+import { ApplicationFactory } from '@/application/ApplicationFactory';
 
 /** Shows content of single category or many categories */
 @Component({
@@ -78,6 +78,10 @@ export default class TheScripts extends StatefulVue {
     public isSearching = false;
     public searchHasMatches = false;
 
+    public async created() {
+        const app = await ApplicationFactory.Current.getAppAsync();
+        this.repositoryUrl = app.info.repositoryWebUrl;
+    }
     public async clearSearchQueryAsync() {
         const context = await this.getCurrentContextAsync();
         const filter = context.state.filter;
@@ -87,9 +91,6 @@ export default class TheScripts extends StatefulVue {
         this.currentGrouping = group;
     }
 
-    protected initialize(app: IApplication): void {
-        this.repositoryUrl = app.info.repositoryWebUrl;
-    }
     protected handleCollectionState(newState: ICategoryCollectionState): void {
         this.events.unsubscribeAll();
         this.subscribeState(newState);

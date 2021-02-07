@@ -80,28 +80,25 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop } from 'vue-property-decorator';
-import { StatefulVue } from '@/presentation/StatefulVue';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 import Code from './Code.vue';
-import { IApplication } from '@/domain/IApplication';
 import { OperatingSystem } from '@/domain/OperatingSystem';
+import { ApplicationFactory } from '@/application/ApplicationFactory';
 
 @Component({
     components: {
         Code,
     },
 })
-export default class MacOsInstructions extends StatefulVue {
+export default class MacOsInstructions extends Vue {
   @Prop() public fileName: string;
   public appName = '';
   public macOsDownloadUrl = '';
 
-  protected initialize(app: IApplication): void {
+  public async created() {
+    const app = await ApplicationFactory.Current.getAppAsync();
     this.appName = app.info.name;
     this.macOsDownloadUrl = app.info.getDownloadUrl(OperatingSystem.macOS);
-  }
-  protected handleCollectionState(): void {
-    return;
   }
 }
 </script>

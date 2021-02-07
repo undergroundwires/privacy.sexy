@@ -22,7 +22,6 @@ import { StatefulVue } from '@/presentation/StatefulVue';
 import { ICategory } from '@/domain/ICategory';
 import { hasDirective } from './NonCollapsingDirective';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
-import { IApplication } from '@/domain/IApplication';
 
 @Component({
   components: {
@@ -45,9 +44,6 @@ export default class CardList extends StatefulVue {
     this.activeCategoryId = isExpanded ? categoryId : undefined;
   }
 
-  protected initialize(app: IApplication): void {
-    return;
-  }
   protected handleCollectionState(newState: ICategoryCollectionState, oldState: ICategoryCollectionState): void {
     this.setCategories(newState.collection.actions);
     this.activeCategoryId = undefined;

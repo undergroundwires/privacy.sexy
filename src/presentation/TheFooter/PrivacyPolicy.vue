@@ -31,24 +31,26 @@
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
-import { StatefulVue } from '@/presentation/StatefulVue';
+import { Component, Vue } from 'vue-property-decorator';
 import { Environment } from '@/application/Environment/Environment';
+import { ApplicationFactory } from '@/application/ApplicationFactory';
 import { IApplication } from '@/domain/IApplication';
 
 @Component
-export default class PrivacyPolicy extends StatefulVue {
+export default class PrivacyPolicy extends Vue {
   public repositoryUrl: string = '';
   public feedbackUrl: string = '';
   public isDesktop = Environment.CurrentEnvironment.isDesktop;
 
-  protected initialize(app: IApplication): void {
+  public async created() {
+    const app = await ApplicationFactory.Current.getAppAsync();
+    this.initialize(app);
+  }
+
+  private initialize(app: IApplication) {
     const info = app.info;
     this.repositoryUrl = info.repositoryWebUrl;
     this.feedbackUrl = info.feedbackUrl;
-  }
-  protected handleCollectionState(): void {
-    return;
   }
 }
 </script>

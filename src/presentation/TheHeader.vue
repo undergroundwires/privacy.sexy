@@ -1,26 +1,22 @@
 <template>
     <div id="container">
       <h1 class="child title" >{{ title }}</h1>
-      <h2 class="child subtitle">Enforce privacy & security on Windows and macOS</h2>
+      <h2 class="child subtitle">Enforce privacy &amp; security on Windows and macOS</h2>
     </div>
 </template>
 
 <script lang="ts">
-import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
-import { IApplication } from '@/domain/IApplication';
-import { Component } from 'vue-property-decorator';
-import { StatefulVue } from './StatefulVue';
+import { ApplicationFactory } from '@/application/ApplicationFactory';
+import { Component, Vue } from 'vue-property-decorator';
 
 @Component
-export default class TheHeader extends StatefulVue {
+export default class TheHeader extends Vue {
   public title = '';
   public subtitle = '';
 
-  protected initialize(app: IApplication): void {
+  public async created() {
+    const app = await ApplicationFactory.Current.getAppAsync();
     this.title = app.info.name;
-  }
-  protected handleCollectionState(newState: ICategoryCollectionState, oldState: ICategoryCollectionState): void {
-    return;
   }
 }
 </script>

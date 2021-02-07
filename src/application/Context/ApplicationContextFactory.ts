@@ -4,15 +4,15 @@ import { OperatingSystem } from '@/domain/OperatingSystem';
 import { Environment } from '../Environment/Environment';
 import { IApplication } from '@/domain/IApplication';
 import { IEnvironment } from '../Environment/IEnvironment';
-import { parseApplication } from '../Parser/ApplicationParser';
+import { IApplicationFactory } from '../IApplicationFactory';
+import { ApplicationFactory } from '../ApplicationFactory';
 
-export type ApplicationParserType = () => IApplication;
-const ApplicationParser: ApplicationParserType = parseApplication;
-
-export function buildContext(
-    parser = ApplicationParser,
-    environment = Environment.CurrentEnvironment): IApplicationContext {
-    const app = parser();
+export async function buildContextAsync(
+    factory: IApplicationFactory = ApplicationFactory.Current,
+    environment = Environment.CurrentEnvironment): Promise<IApplicationContext> {
+    if (!factory) { throw new Error('undefined factory'); }
+    if (!environment) { throw new Error('undefined environment'); }
+    const app = await factory.getAppAsync();
     const os = getInitialOs(app, environment);
     return new ApplicationContext(app, os);
 }

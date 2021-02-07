@@ -26,9 +26,6 @@ export default class TheCodeArea extends StatefulVue {
     this.destroyEditor();
   }
 
-  protected initialize(): void {
-    return;
-  }
   protected handleCollectionState(newState: ICategoryCollectionState): void {
     this.destroyEditor();
     this.editor = initializeEditor(this.theme, this.editorId, newState.collection.scripting.language);

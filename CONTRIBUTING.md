@@ -23,17 +23,6 @@
 - ❗ DON'T
   - Do not update the versions, current version is only [set by the maintainer](./img/architecture/gitops.png) and updated automatically by [bump-everywhere](https://github.com/undergroundwires/bump-everywhere)
 
-## Guidelines
-
-### Handle the state in presentation layer
-
-- There are two types of components:
-  - **Stateless**, extends `Vue`
-  - **Stateful**, extends [`StatefulVue`](./src/presentation/StatefulVue.ts)
-    - The source of truth for the state lies in application layer ([`./src/application/`](src/application/)) and must be updated from the views if they're mutating the state
-    - They mutate or/and react to state changes in [ApplicationContext](src/application/Context/ApplicationContext.ts).
-    - You can react by getting the state and listening to it and update the view accordingly in [`mounted()`](https://vuejs.org/v2/api/#mounted) method.
-
 ## License
 
 By contributing, you agree that your contributions will be licensed under its GNU General Public License v3.0.

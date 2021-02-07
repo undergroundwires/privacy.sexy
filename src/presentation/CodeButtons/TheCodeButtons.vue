@@ -65,9 +65,6 @@ export default class TheCodeButtons extends StatefulVue {
     }
   }
 
-  protected initialize(): void {
-    return;
-  }
   protected handleCollectionState(newState: ICategoryCollectionState): void {
     this.isMacOsCollection = newState.collection.os === OperatingSystem.macOS;
     this.fileName = buildFileName(newState.collection.scripting);

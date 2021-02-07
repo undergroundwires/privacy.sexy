@@ -37,9 +37,6 @@ export default class RevertToggle extends StatefulVue {
         this.handler.selectWithRevertState(this.isReverted, context.state.selection);
     }
 
-    protected initialize(): void {
-        return;
-    }
     protected handleCollectionState(newState: ICategoryCollectionState): void {
         this.updateStatus(newState.selection.selectedScripts);
         this.events.unsubscribeAll();

@@ -73,9 +73,6 @@ export default class ScriptsTree extends StatefulVue {
         (category: ICategory) => node.id === getCategoryNodeId(category));
   }
 
-  protected initialize(): void {
-    return;
-  }
   protected async handleCollectionState(newState: ICategoryCollectionState) {
     this.setCurrentFilter(newState.filter.currentFilter);
     if (!this.categoryId) {

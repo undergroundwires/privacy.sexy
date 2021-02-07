@@ -16,23 +16,24 @@ import { Component } from 'vue-property-decorator';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { StatefulVue } from '@/presentation/StatefulVue';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
-import { IApplication } from '@/domain/IApplication';
+import { ApplicationFactory } from '@/application/ApplicationFactory';
 
 @Component
 export default class TheOsChanger extends StatefulVue {
   public allOses: Array<{ name: string, os: OperatingSystem }> = [];
-  public currentOs: OperatingSystem = undefined;
+  public currentOs: OperatingSystem = OperatingSystem.Unknown;
 
+  public async created() {
+    const app = await ApplicationFactory.Current.getAppAsync();
+    this.allOses = app.getSupportedOsList()
+      .map((os) => ({ os, name: renderOsName(os) }));
+  }
   public async changeOsAsync(newOs: OperatingSystem) {
     const context = await this.getCurrentContextAsync();
     context.changeContext(newOs);
   }
 
-  protected initialize(app: IApplication): void {
-    this.allOses = app.getSupportedOsList()
-      .map((os) => ({ os, name: renderOsName(os) }));
-  }
-  protected handleCollectionState(newState: ICategoryCollectionState, oldState: ICategoryCollectionState): void {
+  protected handleCollectionState(newState: ICategoryCollectionState): void {
     this.currentOs = newState.os;
     this.$forceUpdate(); // v-bind:class is not updated otherwise
   }

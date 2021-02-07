@@ -78,9 +78,7 @@ export default class CardListItem extends StatefulVue {
     this.cardTitle = category ? category.name : undefined;
     await this.updateSelectionIndicatorsAsync(value);
   }
-  protected initialize(): void {
-    return;
-  }
+
   protected handleCollectionState(): void {
     return;
   }

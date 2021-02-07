@@ -54,26 +54,14 @@
     1. Build: `docker build -t undergroundwires/privacy.sexy:0.9.1 .`
     2. Run: `docker run -it -p 8080:80 --rm --name privacy.sexy-0.9.1 undergroundwires/privacy.sexy:0.9.1`
 
-## Architecture
+## Architecture overview
 
 ### Application
 
 - Powered by **TypeScript**, **Vue.js** and **Electron** 💪
   - and driven by **Domain-driven design**, **Event-driven architecture**, **Data-driven programming** concepts.
 - Application uses highly decoupled models & services in different DDD layers.
-  - **Domain layer** is where the application is modelled with validation logic.
-  - **Presentation Layer**
-    - Consists of Vue.js components and other UI-related code.
-    - Desktop application is created using [Electron](https://www.electronjs.org/).
-    - Event driven as in components simply listens to events from the state and act accordingly.
-  - **Application Layer**
-    - Keeps the application state using [state pattern](https://en.wikipedia.org/wiki/State_pattern)
-    - [ApplicationContext](src/application/Context/ApplicationContext.ts)
-      - Holds the [CategoryCollectionState](src/application/Context/State/CategoryCollectionState.ts)] for each OS
-      - Same instance is shared throughout the application
-    - The scripts are defined and controlled in [yaml files](src/application/collections/) per OS
-      - Uses [data-driven programming](https://en.wikipedia.org/wiki/Data-driven_programming)
-      - 📖 See [extend scripts](#extend-scripts) to read about how to extend them.
+- 📖 Read more on • [Presentation](./docs/presentation.md) • [Application](./docs/application.md)
 
 ![DDD + vue.js](img/architecture/app-ddd.png)
 

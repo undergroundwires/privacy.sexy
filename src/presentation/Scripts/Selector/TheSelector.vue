@@ -56,7 +56,6 @@ import { IScript } from '@/domain/IScript';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
-import { IApplication } from '@/domain/IApplication';
 
 enum SelectionState {
     Standard,
@@ -82,9 +81,6 @@ export default class TheSelector extends StatefulVue {
         selectType(context.state, type);
     }
 
-    protected initialize(app: IApplication): void {
-        return;
-    }
     protected handleCollectionState(newState: ICategoryCollectionState, oldState: ICategoryCollectionState): void {
         this.updateSelections(newState);
         newState.selection.changed.on(() => this.updateSelections(newState));
