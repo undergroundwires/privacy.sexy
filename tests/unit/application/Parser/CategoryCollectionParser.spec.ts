@@ -10,6 +10,10 @@ import { mockEnumParser } from '../../stubs/EnumParserStub';
 import { ProjectInformationStub } from '../../stubs/ProjectInformationStub';
 import { getCategoryStub, CollectionDataStub } from '../../stubs/CollectionDataStub';
 import { CategoryCollectionParseContextStub } from '../../stubs/CategoryCollectionParseContextStub';
+import { CategoryDataStub } from '../../stubs/CategoryDataStub';
+import { ScriptDataStub } from '../../stubs/ScriptDataStub';
+import { FunctionDataStub } from '../../stubs/FunctionDataStub';
+import { RecommendationLevel } from '../../../../src/domain/RecommendationLevel';
 
 describe('CategoryCollectionParser', () => {
     describe('parseCategoryCollection', () => {
@@ -91,6 +95,36 @@ describe('CategoryCollectionParser', () => {
                 const actual = parseCategoryCollection(collection, info, parserMock);
                 // assert
                 expect(actual.os).to.equal(expectedOs);
+            });
+        });
+        describe('functions', () => {
+            it('compiles script call with given function', () => {
+                // arrange
+                const expectedCode = 'code-from-the-function';
+                const functionName = 'function-name';
+                const scriptName = 'script-name';
+                const script = ScriptDataStub.createWithCall({ function: functionName })
+                    .withName(scriptName);
+                const func = new FunctionDataStub()
+                    .withName(functionName)
+                    .withCode(expectedCode);
+                const category = new CategoryDataStub()
+                    .withChildren([ script,
+                        ScriptDataStub.createWithCode().withName('2')
+                            .withRecommendationLevel(RecommendationLevel.Standard),
+                        ScriptDataStub.createWithCode()
+                            .withName('3').withRecommendationLevel(RecommendationLevel.Strict),
+                     ]);
+                const collection = new CollectionDataStub()
+                    .withActions([ category ])
+                    .withFunctions([ func ]);
+                const info = new ProjectInformationStub();
+                // act
+                const actual = parseCategoryCollection(collection, info);
+                // assert
+                const actualScript = actual.findScript(scriptName);
+                const actualCode = actualScript.code.execute;
+                expect(actualCode).to.equal(expectedCode);
             });
         });
     });

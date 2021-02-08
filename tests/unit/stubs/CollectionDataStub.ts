@@ -1,24 +1,27 @@
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
-import { CategoryData, ScriptData, CollectionData, ScriptingDefinitionData } from 'js-yaml-loader!@/*';
+import { CategoryData, ScriptData, CollectionData, ScriptingDefinitionData, FunctionData } from 'js-yaml-loader!@/*';
 
 export class CollectionDataStub implements CollectionData {
     public os = 'windows';
     public actions: readonly CategoryData[] = [ getCategoryStub() ];
     public scripting: ScriptingDefinitionData = getTestDefinitionStub();
+    public functions?: ReadonlyArray<FunctionData>;
 
     public withActions(actions: readonly CategoryData[]): CollectionDataStub {
         this.actions = actions;
         return this;
     }
-
     public withOs(os: string): CollectionDataStub {
         this.os = os;
         return this;
     }
-
     public withScripting(scripting: ScriptingDefinitionData): CollectionDataStub {
         this.scripting = scripting;
+        return this;
+    }
+    public withFunctions(functions: ReadonlyArray<FunctionData>) {
+        this.functions = functions;
         return this;
     }
 }

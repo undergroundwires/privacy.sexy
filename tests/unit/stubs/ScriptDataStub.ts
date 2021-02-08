@@ -55,4 +55,8 @@ export class ScriptDataStub implements ScriptData {
         this.recommend = recommend;
         return this;
     }
+    public withRecommendationLevel(level: RecommendationLevel): ScriptDataStub {
+        this.recommend = RecommendationLevel[level].toLowerCase();
+        return this;
+    }
 }
