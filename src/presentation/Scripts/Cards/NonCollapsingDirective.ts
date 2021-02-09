@@ -1,6 +1,6 @@
 import { DirectiveOptions } from 'vue';
 
-const attributeName = 'data-interactionDoesNotCollapse';
+const attributeName = 'data-interaction-does-not-collapse';
 
 export function hasDirective(el: Element): boolean {
     if (el.hasAttribute(attributeName)) {
