@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.9.2 (2021-02-13)
+
+* do not compile with unused locals vuejs/vetur#1063 | [73e0520](https://github.com/undergroundwires/privacy.sexy/commit/73e0520de70cdbaf0ecdc6e9be5e85f003fcfb79)
+* fix wrong path for NvTelemtry file in NVIDIA script | [34b8822](https://github.com/undergroundwires/privacy.sexy/commit/34b8822ac821acb47e483e21b57e380551bcf455)
+* refactor event handling to consume base class for lifecycling | [f1e21ba](https://github.com/undergroundwires/privacy.sexy/commit/f1e21babbfaac21903594a37e30163bfe3338279)
+* make compiler throw if a function call includes an unexpected parameter | [15353d0](https://github.com/undergroundwires/privacy.sexy/commit/15353d0e2513c89ee4ffd9d9c5e9e83ef69b96b6)
+* refactor vscode configuration scripts using functions #41 | [67b2d1c](https://github.com/undergroundwires/privacy.sexy/commit/67b2d1c11cd5b131dff93a4437db79d96ed8b3dc)
+* refactor state handling to make application available independent of the state | [df273f7](https://github.com/undergroundwires/privacy.sexy/commit/df273f7f635ab156ac51a8dfb3fec66c4979f1c4)
+* add test to ensure correct shared functions are being parsed | [d7de420](https://github.com/undergroundwires/privacy.sexy/commit/d7de420d5c91bd9ce64880cd4a4391ad3a0a5401)
+* refactor and add tests for NonCollapsingDirective | [5934b17](https://github.com/undergroundwires/privacy.sexy/commit/5934b1728328c3b2ece1597b74dd87477d162175)
+* add GitHub issue templates | [daa997b](https://github.com/undergroundwires/privacy.sexy/commit/daa997b21b624d133c6f5e4cd6b70214588f9144)
+* correct the typo in application.md (#60) | [575636e](https://github.com/undergroundwires/privacy.sexy/commit/575636e6b728a2bdd1a9bd72c57bbf2752f10887)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.9.1...0.9.2)
+
 ## 0.9.1 (2021-01-23)
 
 * in CI/CD, allow publishing to github if release is more than 2 hours old electron-userland/electron-builder#2074 | [cf907d0](https://github.com/undergroundwires/privacy.sexy/commit/cf907d029a6d80682ba78ec887a9c4fab639db51)
