@@ -7,8 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faFolderOpen, faFolder, faSmile } from '@fortawesome/free-regular-svg-icons';
 /** SOLID ICONS (PREFIX: fas (default)) */
 import { faTimes, faFileDownload, faCopy, faSearch, faInfoCircle, faUserSecret, faDesktop,
-    faTag, faGlobe, faSave, faBatteryFull, faBatteryHalf } from '@fortawesome/free-solid-svg-icons';
-
+    faTag, faGlobe, faSave, faBatteryFull, faBatteryHalf, faPlay } from '@fortawesome/free-solid-svg-icons';
 
 export class IconBootstrapper implements IVueBootstrapper {
     public bootstrap(vue: VueConstructor): void {
@@ -24,6 +23,7 @@ export class IconBootstrapper implements IVueBootstrapper {
             faTimes,
             faFileDownload, faSave,
             faCopy,
+            faPlay,
             faSearch,
             faBatteryFull, faBatteryHalf,
             faInfoCircle);

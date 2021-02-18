@@ -1,8 +1,8 @@
 <template>
     <div class="instructions">
-        <!-- <p>
+        <p>
             Since you're using online version of {{ this.appName }}, you will need to do additional steps after downloading the file to execute your script on macOS:
-        </p> -->
+        </p>
         <p>
             <ol>
                 <li>
@@ -73,9 +73,9 @@
                 </li>
             </ol>
         </p>
-        <!-- <p>
+        <p>
             Or download the <a :href="this.macOsDownloadUrl">offline version</a> to run your scripts directly to skip these steps.
-        </p> -->
+        </p>
     </div>
 </template>
 

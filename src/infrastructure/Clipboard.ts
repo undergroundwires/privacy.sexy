@@ -1,4 +1,3 @@
-
 export class Clipboard {
     public static copyText(text: string): void {
         const el = document.createElement('textarea');
