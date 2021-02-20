@@ -489,23 +489,49 @@ actions:
                             -
                                 name: Disable devicecensus.exe (telemetry) process
                                 recommend: standard
-                                code: reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\DeviceCensus.exe" /v "Debugger" /t REG_SZ /d "%windir%\System32\taskkill.exe" /f
-                                revertCode: reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\DeviceCensus.exe" /v "Debugger" /f
+                                call:
+                                    function: KillProcessWhenItStarts
+                                    parameters:
+                                        processName: DeviceCensus.exe
                     -
-                        name: Disable Application Experience (Compatibility Telemetry)
-                        recommend: standard
-                        code: |-
-                            schtasks /change /TN "Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" /DISABLE
-                            schtasks /change /TN "Microsoft\Windows\Application Experience\ProgramDataUpdater" /DISABLE
-                            schtasks /change /TN "Microsoft\Windows\Application Experience\StartupAppTask" /DISABLE
-                            schtasks /change /TN "Microsoft\Windows\Application Experience\AitAgent" /DISABLE
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\CompatTelRunner.exe" /v "Debugger" /t REG_SZ /d "%windir%\System32\taskkill.exe" /f
-                        revertCode: |-
-                            schtasks /change /TN "Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" /ENABLE
-                            schtasks /change /TN "Microsoft\Windows\Application Experience\ProgramDataUpdater" /ENABLE
-                            schtasks /change /TN "Microsoft\Windows\Application Experience\StartupAppTask" /ENABLE
-                            schtasks /change /TN "Microsoft\Windows\Application Experience\AitAgent" /ENABLE
-                            reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\CompatTelRunner.exe" /v "Debugger" /f
+                        category: Disable Compatibility Telemetry (Application Experience)
+                        children:
+                            -
+                                category: Disable Microsoft Compatibility Appraiser
+                                docs: https://www.ghacks.net/2016/10/26/turn-off-the-windows-customer-experience-program/
+                                children:
+                                    -
+                                        name: Disable Microsoft Compatibility Appraiser task
+                                        recommend: standard
+                                        code: schtasks /change /TN "Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" /disable
+                                        revertCode: schtasks /change /TN "Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" /enable
+                                    -
+                                        name: Disable CompatTelRunner.exe (Microsoft Compatibility Appraiser) process
+                                        recommend: standard
+                                        call:
+                                            function: KillProcessWhenItStarts
+                                            parameters:
+                                                processName: CompatTelRunner.exe
+                            -
+                                name: Disable sending information to Customer Experience Improvement Program
+                                recommend: standard
+                                docs:
+                                    - https://www.ghacks.net/2016/10/26/turn-off-the-windows-customer-experience-program/
+                                    - https://answers.microsoft.com/en-us/windows/forum/windows_10-performance/permanently-disabling-windows-compatibility/6bf71583-81b0-4a74-ae2e-8fd73305aad1
+                                code: schtasks /change /TN "Microsoft\Windows\Application Experience\ProgramDataUpdater" /disable
+                                revertCode: schtasks /change /TN "Microsoft\Windows\Application Experience\ProgramDataUpdater" /enable
+                            -
+                                name: Disable Application Impact Telemetry Agent task
+                                recommend: standard
+                                docs: https://www.shouldiblockit.com/aitagent.exe-6181.aspx
+                                code: schtasks /change /TN "Microsoft\Windows\Application Experience\AitAgent" /disable
+                                revertCode: schtasks /change /TN "Microsoft\Windows\Application Experience\AitAgent" /enable
+                            -
+                                name: Disable "Disable apps to improve performance" reminder
+                                recommend: strict
+                                docs: https://www.ghacks.net/2016/10/26/turn-off-the-windows-customer-experience-program/
+                                code: schtasks /change /TN "Microsoft\Windows\Application Experience\StartupAppTask" /disable
+                                revertCode: schtasks /change /TN "Microsoft\Windows\Application Experience\StartupAppTask" /enable
                     -
                         name: Disable telemetry in data collection policy
                         recommend: standard
@@ -4186,6 +4212,12 @@ actions:
                     copy "%~dpnx0" "%AppData%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat"
                 revertCode: del /f /q %AppData%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat
 functions:
+    -
+        name: KillProcessWhenItStarts
+        parameters: [ processName ]
+        # https://docs.microsoft.com/en-us/previous-versions/windows/desktop/xperf/image-file-execution-options
+        code: reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\'{{ $processName }}'" /v "Debugger" /t REG_SZ /d "%windir%\System32\taskkill.exe" /f
+        revertCode: reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\'{{ $processName }}'" /v "Debugger" /f
     -
         name: UninstallStoreApp
         parameters: [ packageName ]
