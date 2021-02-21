@@ -23,15 +23,37 @@ describe('BatchBuilder', () => {
         });
     });
     describe('writeStandardOut', () => {
-        it('prepends expected', () => {
-            // arrange
-            const text = 'test';
-            const expected = `echo ${text}`;
-            const sut = new BatchBuilderRevealer();
-            // act
-            const actual = sut.writeStandardOut(text);
-            // assert
-            expect(expected).to.equal(actual);
-        });
+        const testData = [
+            {
+                name: 'plain text',
+                text: 'test',
+                expected: 'echo test',
+            },
+            {
+                name: 'text with ampersand',
+                text: 'a & b',
+                expected: 'echo a ^& b',
+            },
+            {
+                name: 'text with percent sign',
+                text: '90%',
+                expected: 'echo 90%%',
+            },
+            {
+                name: 'text with multiple ampersands and percent signs',
+                text: 'Me&you in % ? You & me = 0%',
+                expected: 'echo Me^&you in %% ? You ^& me = 0%%',
+            },
+        ];
+        for (const test of testData) {
+            it(test.name, () => {
+                // arrange
+                const sut = new BatchBuilderRevealer();
+                // act
+                const actual = sut.writeStandardOut(test.text);
+                // assert
+                expect(test.expected).to.equal(actual);
+            });
+        }
     });
 });

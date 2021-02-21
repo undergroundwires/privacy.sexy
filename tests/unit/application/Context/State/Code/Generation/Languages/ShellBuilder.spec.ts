@@ -23,15 +23,32 @@ describe('ShellBuilder', () => {
         });
     });
     describe('writeStandardOut', () => {
-        it('prepends expected', () => {
-            // arrange
-            const text = 'test';
-            const expected = `echo '${text}'`;
-            const sut = new ShellBuilderRevealer();
-            // act
-            const actual = sut.writeStandardOut(text);
-            // assert
-            expect(expected).to.equal(actual);
-        });
+        const testData = [
+            {
+                name: 'plain text',
+                text: 'test',
+                expected: 'echo \'test\'',
+            },
+            {
+                name: 'text with single quote',
+                text: 'I\'m not who you think I am',
+                expected: 'echo \'I\'\\\'\'m not who you think I am\'',
+            },
+            {
+                name: 'text with multiple single quotes',
+                text: 'I\'m what you\'re',
+                expected: 'echo \'I\'\\\'\'m what you\'\\\'\'re\'',
+            },
+        ];
+        for (const test of testData) {
+            it(test.name, () => {
+                // arrange
+                const sut = new ShellBuilderRevealer();
+                // act
+                const actual = sut.writeStandardOut(test.text);
+                // assert
+                expect(test.expected).to.equal(actual);
+            });
+        }
     });
 });

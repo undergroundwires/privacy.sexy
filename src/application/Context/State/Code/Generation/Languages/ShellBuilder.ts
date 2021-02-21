@@ -5,6 +5,11 @@ export class ShellBuilder extends CodeBuilder {
         return '#';
     }
     protected writeStandardOut(text: string): string {
-        return `echo '${text}'`;
+        return `echo '${escapeForEcho(text)}'`;
     }
+}
+
+function escapeForEcho(text: string) {
+    return text
+        .replace(/'/g, '\'\\\'\'');
 }
