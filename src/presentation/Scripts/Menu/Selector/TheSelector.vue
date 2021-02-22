@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div class="part select">Select:</div>
+        <div class="part">Select:</div>
         <div class="part">
             <div class="part">
                 <SelectableOption
@@ -173,5 +173,4 @@ function areAllSelected(
     }
     font-family: $normal-font;
 }
-
 </style>

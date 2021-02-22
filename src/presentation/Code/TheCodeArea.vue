@@ -1,10 +1,15 @@
 <template>
-    <div :id="editorId" class="code-area" ></div>
+  <Responsive v-on:sizeChanged="sizeChanged()">
+    <div
+      :id="editorId"
+      class="code-area"
+    ></div>
+  </Responsive>
 </template>
 
 <script lang="ts">
 import { Component, Prop } from 'vue-property-decorator';
-import { StatefulVue } from './StatefulVue';
+import { StatefulVue } from '@/presentation/StatefulVue';
 import ace from 'ace-builds';
 import 'ace-builds/webpack-resolver';
 import { ICodeChangedEvent } from '@/application/Context/State/Code/Event/ICodeChangedEvent';
@@ -12,8 +17,13 @@ import { IScript } from '@/domain/IScript';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { CodeBuilderFactory } from '@/application/Context/State/Code/Generation/CodeBuilderFactory';
+import Responsive from '@/presentation/Responsive.vue';
 
-@Component
+@Component({
+  components: {
+    Responsive,
+  },
+})
 export default class TheCodeArea extends StatefulVue {
   public readonly editorId = 'codeEditor';
 
@@ -24,6 +34,11 @@ export default class TheCodeArea extends StatefulVue {
 
   public destroyed() {
     this.destroyEditor();
+  }
+  public sizeChanged() {
+    if (this.editor) {
+      this.editor.resize();
+    }
   }
 
   protected handleCollectionState(newState: ICategoryCollectionState): void {
@@ -44,7 +59,6 @@ export default class TheCodeArea extends StatefulVue {
       return;
     }
     this.editor.setValue(event.code, 1);
-
     if (event.addedScripts && event.addedScripts.length) {
       this.reactToChanges(event, event.addedScripts);
     } else if (event.changedScripts && event.changedScripts.length) {
@@ -83,6 +97,7 @@ export default class TheCodeArea extends StatefulVue {
   private destroyEditor() {
     if (this.editor) {
       this.editor.destroy();
+      this.editor = undefined;
     }
   }
 }
@@ -95,6 +110,7 @@ function initializeEditor(theme: string, editorId: string, language: ScriptingLa
   editor.setTheme(`ace/theme/${theme}`);
   editor.setReadOnly(true);
   editor.setAutoScrollEditorIntoView(true);
+  editor.setShowPrintMargin(false); // hides vertical line
   editor.getSession().setUseWrapMode(true); // So code is readable on mobile
   return editor;
 }
@@ -129,17 +145,17 @@ function getDefaultCode(language: ScriptingLanguage): string {
 
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 @import "@/presentation/styles/colors.scss";
-.code-area {
-    width: 100%;
-    max-height: 1000px;
-    min-height: 200px;
-    overflow: auto;
-    &__highlight {
-      background-color:$accent;
-      opacity: 0.2; // having procent fails in production (minified) build
-      position:absolute;
-    }
+::v-deep .code-area {
+  min-height: 200px;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  &__highlight {
+    background-color: $accent;
+    opacity: 0.2; // having procent fails in production (minified) build
+    position: absolute;
+  }
 }
 </style>

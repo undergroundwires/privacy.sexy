@@ -99,13 +99,13 @@ export default class TheFooter extends Vue {
 .footer {
   display: flex;
   justify-content: space-between;
-  @media (max-width: $big-screen-width) {  
+  @media screen and (max-width: $big-screen-width) {  
     flex-direction: column;
     align-items: center;
   }
   &__section {
     display: flex;
-    @media (max-width: $big-screen-width) {  
+    @media screen and (max-width: $big-screen-width) {  
       justify-content: space-around;
       width:100%;  
       &:not(:first-child) {
@@ -129,7 +129,7 @@ export default class TheFooter extends Vue {
         content: "|";
         padding: 0 5px;
       }
-      @media (max-width: $big-screen-width) {  
+      @media screen and (max-width: $big-screen-width) {  
         margin-top: 3px;
         &::before {
           content: "";

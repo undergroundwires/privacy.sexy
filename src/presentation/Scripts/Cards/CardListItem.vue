@@ -106,12 +106,7 @@ $expanded-margin-top: 30px;
 
 .card {
   margin: 15px; 
-  width: calc((100% / 3) - #{$card-line-break-width});
   transition: all 0.2s ease-in-out;
-  // Media queries for stacking cards
-  @media screen and (max-width: $big-screen-width) {  width: calc((100% / 2) - #{$card-line-break-width}); }
-  @media screen and (max-width: $medium-screen-width) {  width: 100%; }
-  @media screen and (max-width: $small-screen-width) {  width: 90%; }
 
   &__inner {  
     padding: $card-padding $card-padding 0 $card-padding;
@@ -241,31 +236,32 @@ $expanded-margin-top: 30px;
     }
   }
 }
-
-@media screen and (min-width: $big-screen-width) { // when 3 cards in a row
-  .card:nth-of-type(3n+2) .card__expander {
-    margin-left: calc(-100% - #{$card-line-break-width});
-  }
-  .card:nth-of-type(3n+3) .card__expander {
-    margin-left: calc(-200% - (#{$card-line-break-width} * 2));
-  }
-  .card:nth-of-type(3n+4) {
-    clear: left;
+@mixin adaptive-card($cards-in-row) {
+  &.card {
+    width: calc((100% / #{$cards-in-row}) - #{$card-line-break-width});
+    @for $nth-card from 2 through $cards-in-row {
+      &:nth-of-type(#{$cards-in-row}n+#{$nth-card}) {
+        .card__expander {
+          $card-left: -100% * ($nth-card - 1);
+          $additional-space: $card-line-break-width * ($nth-card - 1);
+          margin-left: calc(#{$card-left} - #{$additional-space});
+        }
+      }
+    }
+    // Ensure new line after last row
+    $card-after-last: $cards-in-row + 1;
+    &:nth-of-type(#{$cards-in-row}n+#{$card-after-last}) {
+      clear: left;
+    }
   }
   .card__expander {
-    width: calc(300% + (#{$card-line-break-width} * 2));
+    $all-cards-width: 100% * $cards-in-row;
+    $card-padding: $card-line-break-width * ($cards-in-row - 1);
+    width: calc(#{$all-cards-width} + #{$card-padding});
   }
 }
 
-@media screen and (min-width: $medium-screen-width) and (max-width: $big-screen-width) { // when 2 cards in a row
-  .card:nth-of-type(2n+2) .card__expander {
-    margin-left: calc(-100% - #{$card-line-break-width});
-  }
-  .card:nth-of-type(2n+3) {
-    clear: left;
-  }
-  .card__expander {
-    width: calc(200% + #{$card-line-break-width});
-  }
-}
+.big-screen     {   @include adaptive-card(3);  }
+.medium-screen  {   @include adaptive-card(2);  }
+.small-screen   {   @include adaptive-card(1);  }
 </style>

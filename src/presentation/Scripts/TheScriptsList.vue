@@ -1,52 +1,40 @@
 <template>
-    <div>
-        <div class="heading">
-            <TheSelector class="item"/>
-            <TheOsChanger class="item"/>
-            <TheGrouper
-                class="item"
-                v-on:groupingChanged="onGroupingChanged($event)"
-                v-if="!this.isSearching" />
+    <div class="scripts">
+        <div v-if="!isSearching">
+            <CardList v-if="grouping === Grouping.Cards"/>
+            <div class="tree" v-if="grouping === Grouping.None">
+                <ScriptsTree />
+            </div>
         </div>
-        <div class="scripts">
-            <div v-if="!isSearching">
-                <CardList v-if="currentGrouping === Grouping.Cards"/>
-                <div class="tree" v-if="currentGrouping === Grouping.None">
-                    <ScriptsTree />
+        <div v-else> <!-- Searching -->
+            <div class="search">
+                <div class="search__query">
+                    <div>Searching for "{{this.searchQuery | threeDotsTrim}}"</div>
+                    <div class="search__query__close-button">
+                        <font-awesome-icon
+                            :icon="['fas', 'times']" 
+                            v-on:click="clearSearchQueryAsync()"/>
+                    </div>
+                </div>
+                <div v-if="!searchHasMatches" class="search-no-matches">
+                    <div>Sorry, no matches for "{{this.searchQuery | threeDotsTrim}}" 😞</div>
+                    <div>Feel free to extend the scripts <a :href="repositoryUrl" target="_blank" class="child github" >here</a> ✨</div>
                 </div>
             </div>
-            <div v-else> <!-- Searching -->
-                <div class="search">
-                    <div class="search__query">
-                        <div>Searching for "{{this.searchQuery | threeDotsTrim}}"</div>
-                        <div class="search__query__close-button">
-                            <font-awesome-icon
-                                :icon="['fas', 'times']" 
-                                v-on:click="clearSearchQueryAsync()"/>
-                        </div>
-                    </div>
-                    <div v-if="!searchHasMatches" class="search-no-matches">
-                        <div>Sorry, no matches for "{{this.searchQuery | threeDotsTrim}}" 😞</div>
-                        <div>Feel free to extend the scripts <a :href="repositoryUrl" target="_blank" class="child github" >here</a> ✨</div>
-                    </div>
-                </div>
-                <div v-if="searchHasMatches" class="tree tree--searching">
-                    <ScriptsTree />
-                </div>
+            <div v-if="searchHasMatches" class="tree tree--searching">
+                <ScriptsTree />
             </div>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import TheGrouper from '@/presentation/Scripts/Grouping/TheGrouper.vue';
-import TheOsChanger from '@/presentation/Scripts/TheOsChanger.vue';
-import TheSelector from '@/presentation/Scripts/Selector/TheSelector.vue';
+import TheGrouper from '@/presentation/Scripts/Menu/Grouping/TheGrouper.vue';
 import ScriptsTree from '@/presentation/Scripts/ScriptsTree/ScriptsTree.vue';
 import CardList from '@/presentation/Scripts/Cards/CardList.vue';
-import { Component } from 'vue-property-decorator';
+import { Component, Prop } from 'vue-property-decorator';
 import { StatefulVue } from '@/presentation/StatefulVue';
-import { Grouping } from './Grouping/Grouping';
+import { Grouping } from '@/presentation/Scripts/Menu/Grouping/Grouping';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { ApplicationFactory } from '@/application/ApplicationFactory';
@@ -55,10 +43,8 @@ import { ApplicationFactory } from '@/application/ApplicationFactory';
 @Component({
 components: {
     TheGrouper,
-    TheSelector,
     ScriptsTree,
     CardList,
-    TheOsChanger,
 },
 filters: {
     threeDotsTrim(query: string) {
@@ -70,10 +56,11 @@ filters: {
     },
 },
 })
-export default class TheScripts extends StatefulVue {
+export default class TheScriptsList extends StatefulVue {
+    @Prop() public grouping: Grouping;
+
     public repositoryUrl = '';
-    public Grouping = Grouping; // Make it accessible from view
-    public currentGrouping = Grouping.Cards;
+    public Grouping = Grouping; // Make it accessible from the view
     public searchQuery = '';
     public isSearching = false;
     public searchHasMatches = false;
@@ -86,9 +73,6 @@ export default class TheScripts extends StatefulVue {
         const context = await this.getCurrentContextAsync();
         const filter = context.state.filter;
         filter.removeFilter();
-    }
-    public onGroupingChanged(group: Grouping) {
-        this.currentGrouping = group;
     }
 
     protected handleCollectionState(newState: ICategoryCollectionState): void {
@@ -114,11 +98,16 @@ export default class TheScripts extends StatefulVue {
 <style scoped lang="scss">
 @import "@/presentation/styles/colors.scss";
 @import "@/presentation/styles/fonts.scss";
+@import "@/presentation/styles/media.scss";
 
 $inner-margin: 4px;
 
 .scripts {
     margin-top: $inner-margin;
+    @media screen and (min-width: $vertical-view-breakpoint) { // so the current code is always visible
+        overflow: auto;
+        max-height: 70vh;
+    }
     .tree {
         padding-left: 3%;
         padding-top: 15px;
@@ -167,22 +156,4 @@ $inner-margin: 4px;
     }
 }
 
-.heading {
-    margin-top: $inner-margin;
-    display: flex;
-    flex-wrap: wrap;
-    .item {
-        flex: 1;
-        white-space: nowrap;
-        display: flex;
-        justify-content: center;
-        margin: 0 5px 0 5px;
-        &:first-child {
-            justify-content: flex-start;
-        }
-        &:last-child {
-            justify-content: flex-end;
-        }
-    }
-}
 </style>

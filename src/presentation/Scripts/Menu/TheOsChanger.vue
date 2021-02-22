@@ -1,12 +1,15 @@
 <template>
   <div class="container">
-    <div v-for="os in this.allOses" :key="os.name">
-      <span
-        class="name"
-        v-bind:class="{ 'current': currentOs === os.os }"
-        v-on:click="changeOsAsync(os.os)">
-        {{ os.name }}
-      </span>
+    <!-- <div>OS:</div> -->
+    <div class="os-list">
+      <div v-for="os in this.allOses" :key="os.name">
+        <span
+          class="os-name"
+          v-bind:class="{ 'current': currentOs === os.os }"
+          v-on:click="changeOsAsync(os.os)">
+          {{ os.name }}
+        </span>
+      </div>
     </div>
   </div>
 </template>
@@ -55,20 +58,24 @@ function renderOsName(os: OperatingSystem): string {
   font-family: $normal-font;
   display: flex;
   align-items: center;
-  div + div::before {
-      content: "|";
-      margin-left: 0.5rem;
-  }
-  .name {
-    &:not(.current) {
-      cursor: pointer;
-      &:hover {
-          font-weight: bold;
-          text-decoration: underline;
-      }
+  .os-list {
+    display: flex;
+    margin-left: 0.25rem;
+    div + div::before {
+        content: "|";
+        margin-left: 0.5rem;
     }
-    &.current {
-      color: $gray;
+    .os-name {
+      &:not(.current) {
+        cursor: pointer;
+        &:hover {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+      }
+      &.current {
+        color: $gray;
+      }
     }
   }
 }

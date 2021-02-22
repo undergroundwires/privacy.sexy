@@ -31,6 +31,7 @@
     "file-saver": "^2.0.5",
     "inversify": "^5.0.5",
     "liquor-tree": "^0.2.70",
+    "resize-observer-polyfill": "^1.5.1",
     "v-tooltip": "2.0.2",
     "vue": "^2.6.12",
     "vue-class-component": "^7.2.6",
