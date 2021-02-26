@@ -40,17 +40,315 @@ actions:
                     sudo rm -rfv /var/spool/cups/tmp/*
                     sudo rm -rfv /var/spool/cups/cache/job.cache*
             -
-                name: Clear the list of iOS devices connected
+                name: Empty trash on all volumes
                 recommend: strict
                 code: |-
-                    sudo defaults delete /Users/$USER/Library/Preferences/com.apple.iPod.plist "conn:128:Last Connect"
-                    sudo defaults delete /Users/$USER/Library/Preferences/com.apple.iPod.plist Devices
-                    sudo defaults delete /Library/Preferences/com.apple.iPod.plist "conn:128:Last Connect"
-                    sudo defaults delete /Library/Preferences/com.apple.iPod.plist Devices
-                    sudo rm -rfv /var/db/lockdown/*
+                    # on all mounted volumes
+                    sudo rm -rfv /Volumes/*/.Trashes/* &>/dev/null
+                    # on main HDD
+                    sudo rm -rfv ~/.Trash/* &>/dev/null
             -
-                name: Reset privacy database (remove all permissions)
-                code: sudo tccutil reset All 
+                name: Clear system cache files
+                recommend: strict
+                code: |-
+                    sudo rm -rfv /Library/Caches/* &>/dev/null
+                    sudo rm -rfv /System/Library/Caches/* &>/dev/null
+                    sudo rm -rfv ~/Library/Caches/* &>/dev/null
+            -
+                name: Clear system log files
+                recommend: strict
+                code: |-
+                    sudo rm -rfv /private/var/log/asl/*.asl &>/dev/null
+                    sudo rm -rfv /Library/Logs/DiagnosticReports/* &>/dev/null
+                    sudo rm -rfv /Library/Logs/Adobe/* &>/dev/null
+                    rm -rfv ~/Library/Containers/com.apple.mail/Data/Library/Logs/Mail/* &>/dev/null
+                    rm -rfv ~/Library/Logs/CoreSimulator/* &>/dev/null
+                    sudo rm -rfv /var/log/*
+            -
+                category: Clear browser history
+                children:
+                    -
+                        category: Clear Google Chrome history
+                        children:
+                            -
+                                name: Clear Google Chrome browsing history
+                                code: |-
+                                    rm -rfv ~/Library/Application\ Support/Google/Chrome/Default/History &>/dev/null
+                                    rm -rfv ~/Library/Application\ Support/Google/Chrome/Default/History-journal &>/dev/null
+                            -
+                                name: Google Chrome Cache Files
+                                code: sudo rm -rfv ~/Library/Application\ Support/Google/Chrome/Default/Application\ Cache/* &>/dev/null
+                    -
+                        category: Clear Safari history
+                        children:
+                            -
+                                name: Clear Safari browsing history
+                                code: |-
+                                    rm -f ~/Library/Safari/History.plist 
+                                    rm -f ~/Library/Safari/HistoryIndex.sk
+                            -
+                                name: Clear Safari downloads history
+                                code: rm -f ~/Library/Safari/Downloads.plist
+                            -
+                                name: Clear Safari top sites
+                                code: rm -f ~/Library/Safari/TopSites.plist 
+                            -
+                                name: Clear Safari last session history
+                                code: rm -f ~/Library/Safari/LastSession.plist
+                            -
+                                name: Clear Safari caches
+                                code: |-
+                                    rm -f ~/Library/Caches/com.apple.Safari/Cache.db
+                                    rm -f ~/Library/Safari/WebpageIcons.db
+                                    rm -rf ~/Library/Caches/com.apple.Safari/Webpage Previews
+                            -
+                                name: Clear copy of the Safari history
+                                code: rm -rf ~/Library/Caches/Metadata/Safari/History
+                            -
+                                name: Clear search history embedded in Safari preferences
+                                code: defaults write ~/Library/Preferences/com.apple.Safari RecentSearchStrings '( )'
+                            -
+                                name: Clear Safari cookies
+                                code: rm -f ~/Library/Cookies/Cookies.plists
+                            -
+                                name: Clear Safari zoom level preferences per site
+                                code: rm -f ~/Library/Safari/PerSiteZoomPreferences.plists
+                            -
+                                name: Clear URLs that are allowed to display notifications in Safari
+                                code: rm -f ~/Library/Safari/UserNotificationPreferences.plist
+                            -
+                                name: Clear Safari per-site preferences for Downloads, Geolocation, PopUps, and Autoplays
+                                code: rm -f ~/Library/Safari/PerSitePreferences.db
+                    -
+                        category: Clear Firefox history
+                        children:
+                            -
+                                name: Clear Firefox cache
+                                code: |-
+                                    sudo rm -rf ~/Library/Caches/Mozilla/
+                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/netpredictions.sqlite
+                            -
+                                name: Delete Firefox form history
+                                code: |-
+                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/formhistory.sqlite
+                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/formhistory.dat
+                            -
+                                name: Delete Firefox site preferences
+                                code: rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/content-prefs.sqlite
+                            -
+                                name: Delete Firefox session restore data (loads after the browser closes or crashes)
+                                code: |-
+                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/sessionCheckpoints.json
+                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/sessionstore*.js*
+                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/sessionstore.bak*
+                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/sessionstore-backups/previous.js*
+                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/sessionstore-backups/recovery.js*
+                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/sessionstore-backups/recovery.bak*
+                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/sessionstore-backups/previous.bak*
+                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/sessionstore-backups/upgrade.js*-20*
+                            -
+                                name: Delete Firefox passwords
+                                docs: http://kb.mozillazine.org/Password_Manager
+                                code: |-
+                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/signons.txt
+                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/signons2.txt
+                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/signons3.txt
+                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/signons.sqlite
+                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/logins.json
+                            -
+                                name: Delete Firefox HTML5 cookies
+                                code: rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/webappsstore.sqlite
+                            -
+                                name: Delete Firefox crash reports
+                                code: |-
+                                    rm -rfv ~/Library/Application\ Support/Firefox/Crash\ Reports/
+                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/minidumps/*.dmp
+                            -
+                                name: Delete Firefox backup files
+                                code: |-
+                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/bookmarkbackups/*.json
+                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/bookmarkbackups/*.jsonlz4
+                            -
+                                name: Delete Firefox cookies
+                                code: |-
+                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/cookies.txt
+                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/cookies.sqlite
+                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/cookies.sqlite-shm
+                                    rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/cookies.sqlite-wal
+                                    rm -rfv ~/Library/Application\ Support/Firefox/Profiles/*/storage/default/http*
+            -
+                category: Clear third party application data
+                children:
+                    -
+                        name: Clear Adobe cache
+                        recommend: standard
+                        code: sudo rm -rfv ~/Library/Application\ Support/Adobe/Common/Media\ Cache\ Files/* &>/dev/null
+                    -
+                        name: Clear Gradle cache
+                        recommend: strict
+                        code: |-
+                            if [ -d "/Users/${HOST}/.gradle/caches" ]; then
+                                rm -rfv ~/.gradle/caches/ &> /dev/null
+                            fi
+                    -
+                        name: Clear Dropbox cache
+                        recommend: standard
+                        code: |-
+                            if [ -d "/Users/${HOST}/Dropbox" ]; then
+                                sudo rm -rfv ~/Dropbox/.dropbox.cache/* &>/dev/null
+                            fi
+                    -
+                        name: Clear Google Drive file stream cache
+                        recommend: standard
+                        code: |-
+                            killall "Google Drive File Stream"
+                            rm -rfv ~/Library/Application\ Support/Google/DriveFS/[0-9a-zA-Z]*/content_cache &>/dev/null
+                    -
+                        name: Clear Composer cache
+                        recommend: strict
+                        code: |-
+                            if type "composer" &> /dev/null; then
+                                composer clearcache &> /dev/null
+                            fi
+                    -
+                        name: Clear Homebrew cache
+                        recommend: strict
+                        code: |-
+                            if type "brew" &>/dev/null; then
+                                brew cleanup -s &>/dev/null
+                                rm -rfv $(brew --cache) &>/dev/null
+                                brew tap --repair &>/dev/null
+                            fi
+                    -
+                        name: Clear any old versions of Ruby gems
+                        recommend: strict
+                        code: |-
+                            if type "gem" &> /dev/null; then
+                                gem cleanup &>/dev/null
+                            fi
+                    -
+                        name: Clear Docker
+                        recommend: strict
+                        code: |-
+                            if type "docker" &> /dev/null; then
+                                docker system prune -af
+                            fi
+                    -
+                        name: Clear Pyenv-VirtualEnv cache
+                        recommend: strict
+                        code: |-
+                            if [ "$PYENV_VIRTUALENV_CACHE_PATH" ]; then
+                                rm -rfv $PYENV_VIRTUALENV_CACHE_PATH &>/dev/null
+                            fi
+                    -
+                        name: Clear NPM cache
+                        recommend: strict
+                        code: |-
+                            if type "npm" &> /dev/null; then
+                                npm cache clean --force
+                            fi
+                    -
+                        name: Clear Yarn cache
+                        recommend: strict
+                        code: |-
+                            if type "yarn" &> /dev/null; then
+                                echo 'Cleanup Yarn Cache...'
+                                yarn cache clean --force
+                            fi
+            -
+                category: iOS Cleanup
+                children:
+                    -
+                        name: Clear iOS applications
+                        recommend: strict
+                        code: rm -rfv ~/Music/iTunes/iTunes\ Media/Mobile\ Applications/* &>/dev/null
+                    -
+                        name: Clear iOS photo caches
+                        recommend: standard
+                        code: rm -rf ~/Pictures/iPhoto\ Library/iPod\ Photo\ Cache/*
+                    -
+                        name: Remove iOS Device Backups
+                        recommend: strict
+                        code: rm -rfv ~/Library/Application\ Support/MobileSync/Backup/* &>/dev/null
+                    -
+                        name: Clear iOS Simulators
+                        recommend: strict
+                        code: |-
+                            if type "xcrun" &>/dev/null; then
+                                osascript -e 'tell application "com.apple.CoreSimulator.CoreSimulatorService" to quit'
+                                osascript -e 'tell application "iOS Simulator" to quit'
+                                osascript -e 'tell application "Simulator" to quit'
+                                xcrun simctl shutdown all
+                                xcrun simctl erase all
+                            fi
+                    -
+                        name: Clear the list of iOS devices connected
+                        recommend: strict
+                        code: |-
+                            sudo defaults delete /Users/$USER/Library/Preferences/com.apple.iPod.plist "conn:128:Last Connect"
+                            sudo defaults delete /Users/$USER/Library/Preferences/com.apple.iPod.plist Devices
+                            sudo defaults delete /Library/Preferences/com.apple.iPod.plist "conn:128:Last Connect"
+                            sudo defaults delete /Library/Preferences/com.apple.iPod.plist Devices
+                            sudo rm -rfv /var/db/lockdown/*
+            -
+                name: Clear XCode Derived Data and Archives
+                recommend: strict
+                code: |-
+                    rm -rfv ~/Library/Developer/Xcode/DerivedData/* &>/dev/null
+                    rm -rfv ~/Library/Developer/Xcode/Archives/* &>/dev/null
+                    rm -rfv ~/Library/Developer/Xcode/iOS Device Logs/* &>/dev/null
+            -
+                name: Clear DNS cache
+                recommend: standard
+                code: |-
+                    sudo dscacheutil -flushcache
+                    sudo killall -HUP mDNSResponder
+            -
+                name: Purge inactive memory
+                recommend: standard
+                code: sudo purge
+            -
+                category: Reset privacy permissions for all applications
+                children:
+                    -
+                        name: Reset camera permissions
+                        code: tccutil reset Camera
+                    -
+                        name: Reset microphone permissions
+                        code: tccutil reset Microphone
+                    -
+                        name: Reset accessibility permissions
+                        code: tccutil reset Accessibility
+                    -
+                        name: Reset screen capture permissions
+                        code: tccutil reset ScreenCapture
+                    -
+                        name: Reset reminders permissions
+                        code: tccutil reset Reminders
+                    -
+                        name: Reset photos permissions
+                        code: tccutil reset Photos
+                    -
+                        name: Reset calendar permissions
+                        code: tccutil reset Calendar
+                    -
+                        name: Reset full disk access permissions
+                        code: tccutil reset SystemPolicyAllFiles
+                    -
+                        name: Reset contacts permissions
+                        code: tccutil reset SystemPolicyAllFiles
+                    -
+                        name: Reset desktop folder permissions
+                        code: tccutil reset SystemPolicyDesktopFolder
+                    -
+                        name: Reset documents folder permissions
+                        code: tccutil reset SystemPolicyDocumentsFolder
+                    -
+                        name: Reset downloads permissions
+                        code: tccutil reset SystemPolicyDownloadsFolder
+                    -
+                        name: Reset all app permissions
+                        code: tccutil reset All 
     -
         category: Configure programs
         children:
