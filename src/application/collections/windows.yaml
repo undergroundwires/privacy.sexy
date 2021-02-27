@@ -4394,11 +4394,18 @@ functions:
             parameters:
                 code:
                     $jsonfile = \"$env:APPDATA\Code\User\settings.json\";
+                    if (!(Test-Path $jsonfile -PathType Leaf)) {
+                        Write-Host \"No updates. Settings file was not at $jsonfile\";
+                        exit 0;
+                    }
                     $json = Get-Content $jsonfile | Out-String | ConvertFrom-Json;
                     $json | Add-Member -Type NoteProperty -Name '{{ $setting }}' -Value {{ $powerShellValue }} -Force;
                     $json | ConvertTo-Json | Set-Content $jsonfile;
                 revertCode:
                     $jsonfile = \"$env:APPDATA\Code\User\settings.json\";
+                    if (!(Test-Path $jsonfile -PathType Leaf)) {
+                        Write-Error \"Settings file could not be found at $jsonfile\" -ErrorAction Stop;
+                    }
                     $json = Get-Content $jsonfile | ConvertFrom-Json;
                     $json.PSObject.Properties.Remove('{{ $setting }}');
                     $json | ConvertTo-Json | Set-Content $jsonfile;
