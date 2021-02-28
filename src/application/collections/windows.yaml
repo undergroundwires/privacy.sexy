@@ -3611,12 +3611,13 @@ actions:
                                             function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.SecureAssessmentBrowser
-                            -
-                                name: Start app
-                                call:
-                                    function: UninstallSystemApp
-                                    parameters:
-                                        packageName: Microsoft.Windows.ShellExperienceHost
+                            # -
+                            #   # Not a bloatware, required for different setting windows such as WiFi and battery panes in action bar
+                            #   name: Start app
+                            #   call:
+                            #       function: UninstallSystemApp
+                            #       parameters:
+                            #       packageName: Microsoft.Windows.ShellExperienceHost
                             -
                                 category: Windows Feedback
                                 children:
@@ -3648,12 +3649,13 @@ actions:
                                     function: UninstallSystemApp
                                     parameters:
                                         packageName: Windows.ContactSupport
-                            -
-                                name: Settings app
-                                call:
-                                    function: UninstallSystemApp
-                                    parameters:
-                                        packageName: Windows.immersivecontrolpanel
+                            # -
+                            #     # Not a bloatware, required for core OS functinoality
+                            #     name: Settings app
+                            #     call:
+                            #         function: UninstallSystemApp
+                            #         parameters:
+                            #             packageName: Windows.immersivecontrolpanel
                             -
                                 name: Windows Print 3D app
                                 call:
