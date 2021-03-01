@@ -45,7 +45,7 @@ export default class TheOsChanger extends StatefulVue {
 function renderOsName(os: OperatingSystem): string {
     switch (os) {
       case OperatingSystem.Windows: return 'Windows';
-      case OperatingSystem.macOS: return 'macOS (preview)';
+      case OperatingSystem.macOS: return 'macOS';
       default: throw new RangeError(`Cannot render os name: ${OperatingSystem[os]}`);
     }
 }
