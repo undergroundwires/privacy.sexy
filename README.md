@@ -20,7 +20,7 @@
   - 💡 Single click to execute your script.
 - ❗ Come back regularly to apply latest version for stronger privacy and security.
 
-[![privacy.sexy application](img/screenshot.png)](https://privacy.sexy)
+[![privacy.sexy application](img/screenshot.png?raw=true)](https://privacy.sexy)
 
 ## Why
 
