@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.10.0 (2021-03-02)
+
+* allow functions to call other functions #53 | [7661575](https://github.com/undergroundwires/privacy.sexy/commit/7661575573c6d3e8f4bc28bfa7a124a764c72ef9)
+* add option to run script directly in desktop app | [9a6b903](https://github.com/undergroundwires/privacy.sexy/commit/9a6b903b9297802845043fd41115756acd4a145c)
+* add script to automatically kill devicecensus process | [c9b91f6](https://github.com/undergroundwires/privacy.sexy/commit/c9b91f6d8f9bd16308b6beda119e7154a985b6cf)
+* refactor disabling application experience and document better | [45a3669](https://github.com/undergroundwires/privacy.sexy/commit/45a3669443d82855a52f60524d341c15f380f9e7)
+* escape printed characters to prevent command injection #45 | [1260eea](https://github.com/undergroundwires/privacy.sexy/commit/1260eea690e4fa5420e58c9de9f88cc29cb242db)
+* move code area to right on bigger screens | [cf39e6d](https://github.com/undergroundwires/privacy.sexy/commit/cf39e6d2541ea547f41d9553c380c54c24c58038)
+* more scripts to disable speech recognition and Cortana | [ee43fd9](https://github.com/undergroundwires/privacy.sexy/commit/ee43fd92a019ebd26c13890f9146c5b5bb56afaf)
+* add more macos scripts for privacy cleanup | [b0a7d0b](https://github.com/undergroundwires/privacy.sexy/commit/b0a7d0b53b3d8ac144a0241d70c037f460b0c0cc)
+* add better error messages to setting vscode settings | [65226f3](https://github.com/undergroundwires/privacy.sexy/commit/65226f3984480d0bc7932fd8d76a328f08308850)
+* remove windows scripts for removing non-bloating system apps #55 | [15004ff](https://github.com/undergroundwires/privacy.sexy/commit/15004ff1f1fb85a1d92e11ef695bcb2f37110610)
+* remove "preview" disclaimer from macOS | [970221b](https://github.com/undergroundwires/privacy.sexy/commit/970221b996e25fe5b029cbaa78607c9bbc8c3c0e)
+* update screenshot | [bd41af4](https://github.com/undergroundwires/privacy.sexy/commit/bd41af466fd135f7dc2f171633e4f60d8547c373)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.9.2...0.10.0)
+
 ## 0.9.2 (2021-02-13)
 
 * do not compile with unused locals vuejs/vetur#1063 | [73e0520](https://github.com/undergroundwires/privacy.sexy/commit/73e0520de70cdbaf0ecdc6e9be5e85f003fcfb79)
