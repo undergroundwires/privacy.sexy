@@ -6,7 +6,7 @@ import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { ICategoryCollectionParseContext } from '@/application/Parser/Script/ICategoryCollectionParseContext';
 import { ScriptCompilerStub } from '../../../stubs/ScriptCompilerStub';
 import { ScriptDataStub } from '../../../stubs/ScriptDataStub';
-import { mockEnumParser } from '../../../stubs/EnumParserStub';
+import { EnumParserStub } from '../../../stubs/EnumParserStub';
 import { ScriptCodeStub } from '../../../stubs/ScriptCodeStub';
 import { CategoryCollectionParseContextStub } from '../../../stubs/CategoryCollectionParseContextStub';
 import { LanguageSyntaxStub } from '../../../stubs/LanguageSyntaxStub';
@@ -104,7 +104,8 @@ describe('ScriptParser', () => {
                 const script = ScriptDataStub.createWithCode()
                     .withRecommend(levelText);
                 const parseContext = new CategoryCollectionParseContextStub();
-                const parserMock = mockEnumParser(expectedName, levelText, expectedLevel);
+                const parserMock = new EnumParserStub<RecommendationLevel>()
+                    .setup(expectedName, levelText, expectedLevel);
                 // act
                 const actual = parseScript(script, parseContext, parserMock);
                 // assert

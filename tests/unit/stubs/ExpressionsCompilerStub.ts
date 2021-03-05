@@ -3,12 +3,14 @@ import { IExpressionsCompiler, ParameterValueDictionary } from '@/application/Pa
 interface Scenario { code: string; parameters: ParameterValueDictionary; result: string; }
 
 export class ExpressionsCompilerStub implements IExpressionsCompiler {
+    public readonly callHistory = new Array<{code: string, parameters?: ParameterValueDictionary}>();
     private readonly scenarios = new Array<Scenario>();
     public setup(code: string, parameters: ParameterValueDictionary, result: string) {
         this.scenarios.push({ code, parameters, result });
         return this;
     }
     public compileExpressions(code: string, parameters?: ParameterValueDictionary): string {
+        this.callHistory.push({ code, parameters});
         const scenario = this.scenarios.find((s) => s.code === code && deepEqual(s.parameters, parameters));
         if (scenario) {
             return scenario.result;

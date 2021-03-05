@@ -5,15 +5,15 @@ import { parseCategoryCollection } from '@/application/Parser/CategoryCollection
 import { parseCategory } from '@/application/Parser/CategoryParser';
 import { parseProjectInformation } from '@/application/Parser/ProjectInformationParser';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { parseScriptingDefinition } from '@/application/Parser/ScriptingDefinitionParser';
-import { mockEnumParser } from '../../stubs/EnumParserStub';
+import { RecommendationLevel } from '@/domain/RecommendationLevel';
+import { ScriptingDefinitionParser } from '@/application/Parser/ScriptingDefinition/ScriptingDefinitionParser';
+import { EnumParserStub } from '../../stubs/EnumParserStub';
 import { ProjectInformationStub } from '../../stubs/ProjectInformationStub';
 import { getCategoryStub, CollectionDataStub } from '../../stubs/CollectionDataStub';
 import { CategoryCollectionParseContextStub } from '../../stubs/CategoryCollectionParseContextStub';
 import { CategoryDataStub } from '../../stubs/CategoryDataStub';
 import { ScriptDataStub } from '../../stubs/ScriptDataStub';
 import { FunctionDataStub } from '../../stubs/FunctionDataStub';
-import { RecommendationLevel } from '../../../../src/domain/RecommendationLevel';
 
 describe('CategoryCollectionParser', () => {
     describe('parseCategoryCollection', () => {
@@ -74,7 +74,8 @@ describe('CategoryCollectionParser', () => {
                 // arrange
                 const collection = new CollectionDataStub();
                 const information = parseProjectInformation(process.env);
-                const expected = parseScriptingDefinition(collection.scripting, information);
+                const expected = new ScriptingDefinitionParser()
+                    .parse(collection.scripting, information);
                 // act
                 const actual = parseCategoryCollection(collection, information).scripting;
                 // assert
@@ -89,7 +90,8 @@ describe('CategoryCollectionParser', () => {
                 const expectedName = 'os';
                 const collection = new CollectionDataStub()
                     .withOs(osText);
-                const parserMock = mockEnumParser(expectedName, osText, expectedOs);
+                const parserMock = new EnumParserStub<OperatingSystem>()
+                    .setup(expectedName, osText, expectedOs);
                 const info = new ProjectInformationStub();
                 // act
                 const actual = parseCategoryCollection(collection, info, parserMock);

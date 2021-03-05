@@ -53,7 +53,7 @@ describe('ScriptCode', () => {
                 {
                     testName: 'cannot construct with duplicate lines',
                     code: 'duplicate\nduplicate\ntest\nduplicate',
-                    expectedMessage: 'Duplicates detected in script :\n duplicate\nduplicate',
+                    expectedMessage: 'Duplicates detected in script:\n(0) - duplicate\n(1) - duplicate',
                 },
                 {
                     testName: 'cannot construct with empty lines',

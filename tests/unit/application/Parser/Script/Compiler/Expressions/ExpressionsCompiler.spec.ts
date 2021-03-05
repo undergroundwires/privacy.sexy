@@ -1,79 +1,127 @@
 import 'mocha';
 import { expect } from 'chai';
 import { ExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/ExpressionsCompiler';
+import { IExpressionParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/IExpressionParser';
+import { ExpressionStub } from '../../../../../stubs/ExpressionStub';
+import { ExpressionParserStub } from '../../../../../stubs/ExpressionParserStub';
 
 describe('ExpressionsCompiler', () => {
-    describe('parameter substitution', () => {
-        describe('substitutes as expected', () => {
+    describe('compileExpressions', () => {
+        describe('combines expressions as expected', () => {
             // arrange
-            const testCases = [ {
-                name: 'with different parameters',
-                code: 'He{{ $firstParameter }} {{ $secondParameter }}!',
-                parameters: {
-                    firstParameter: 'llo',
-                    secondParameter: 'world',
+            const code = 'part1 {{ a }} part2 {{ b }} part3';
+            const testCases = [
+                {
+                    name: 'with ordered expressions',
+                    expressions: [
+                        new ExpressionStub().withPosition(6, 13).withEvaluatedResult('a'),
+                        new ExpressionStub().withPosition(20, 27).withEvaluatedResult('b'),
+                    ],
+                    expected: 'part1 a part2 b part3',
                 },
-                expected: 'Hello world!',
-            }, {
-                name: 'with single parameter',
-                code: '{{ $parameter }}!',
-                parameters: {
-                    parameter: 'Hodor',
+                {
+                    name: 'unordered expressions',
+                    expressions: [
+                        new ExpressionStub().withPosition(6, 13).withEvaluatedResult('a'),
+                        new ExpressionStub().withPosition(20, 27).withEvaluatedResult('b'),
+                    ],
+                    expected: 'part1 a part2 b part3',
                 },
-                expected: 'Hodor!',
-
-            }];
+                {
+                    name: 'with no expressions',
+                    expressions: [],
+                    expected: code,
+                },
+            ];
             for (const testCase of testCases) {
                 it(testCase.name, () => {
-                    const sut = new MockableExpressionsCompiler();
+                    const expressionParserMock = new ExpressionParserStub()
+                        .withResult(testCase.expressions);
+                    const sut = new MockableExpressionsCompiler(expressionParserMock);
                     // act
-                    const actual = sut.compileExpressions(testCase.code, testCase.parameters);
+                    const actual = sut.compileExpressions(code);
                     // assert
                     expect(actual).to.equal(testCase.expected);
                 });
             }
         });
-        describe('throws when expected value is not provided', () => {
+        it('passes arguments to expressions as expected', () => {
+            // arrange
+            const expected = {
+                parameter1: 'value1',
+                parameter2: 'value2',
+            };
+            const code = 'non-important';
+            const expressions = [
+                new ExpressionStub(),
+                new ExpressionStub(),
+            ];
+            const expressionParserMock = new ExpressionParserStub()
+                .withResult(expressions);
+            const sut = new MockableExpressionsCompiler(expressionParserMock);
+            // act
+            sut.compileExpressions(code, expected);
+            // assert
+            expect(expressions[0].callHistory).to.have.lengthOf(1);
+            expect(expressions[0].callHistory[0]).to.equal(expected);
+            expect(expressions[1].callHistory).to.have.lengthOf(1);
+            expect(expressions[1].callHistory[0]).to.equal(expected);
+        });
+        describe('throws when expected argument is not provided', () => {
             // arrange
             const noParameterTestCases = [
                 {
                     name: 'empty parameters',
-                    code: '{{ $parameter }}!',
-                    parameters: {},
+                    expressions: [
+                        new ExpressionStub().withParameters('parameter'),
+                    ],
+                    args: {},
                     expectedError: 'parameter value(s) not provided for: "parameter"',
                 },
                 {
                     name: 'undefined parameters',
-                    code: '{{ $parameter }}!',
-                    parameters: undefined,
+                    expressions: [
+                        new ExpressionStub().withParameters('parameter'),
+                    ],
+                    args: undefined,
                     expectedError: 'parameter value(s) not provided for: "parameter"',
                 },
                 {
                     name: 'unnecessary parameter provided',
-                    code: '{{ $parameter }}!',
-                    parameters: {
+                    expressions: [
+                        new ExpressionStub().withParameters('parameter'),
+                    ],
+                    args: {
                         unnecessaryParameter: 'unnecessaryValue',
                     },
                     expectedError: 'parameter value(s) not provided for: "parameter"',
                 },
                 {
                     name: 'undefined value',
-                    code: '{{ $parameter }}!',
-                    parameters: {
+                    expressions: [
+                        new ExpressionStub().withParameters('parameter'),
+                    ],
+                    args: {
                         parameter: undefined,
                     },
                     expectedError: 'parameter value(s) not provided for: "parameter"',
                 },
                 {
-                    name: 'multiple values are not',
-                    code: '{{ $parameter1 }}, {{ $parameter2 }}, {{ $parameter3 }}',
-                    parameters: {},
+                    name: 'multiple values are not provided',
+                    expressions: [
+                        new ExpressionStub().withParameters('parameter1'),
+                        new ExpressionStub().withParameters('parameter2', 'parameter3'),
+                    ],
+                    args: {},
                     expectedError: 'parameter value(s) not provided for: "parameter1", "parameter2", "parameter3"',
                 },
                 {
                     name: 'some values are provided',
-                    code: '{{ $parameter1 }}, {{ $parameter2 }}, {{ $parameter3 }}',
-                    parameters: {
+                    expressions: [
+                        new ExpressionStub().withParameters('parameter1'),
+                        new ExpressionStub().withParameters('parameter2', 'parameter3'),
+                    ],
+                    args: {
                         parameter2: 'value',
                     },
                     expectedError: 'parameter value(s) not provided for: "parameter1", "parameter3"',
@@ -81,19 +129,33 @@ describe('ExpressionsCompiler', () => {
             ];
             for (const testCase of noParameterTestCases) {
                 it(testCase.name, () => {
-                    const sut = new MockableExpressionsCompiler();
+                    const code = 'non-important-code';
+                    const expressionParserMock = new ExpressionParserStub()
+                        .withResult(testCase.expressions);
+                    const sut = new MockableExpressionsCompiler(expressionParserMock);
                     // act
-                    const act = () => sut.compileExpressions(testCase.code, testCase.parameters);
+                    const act = () => sut.compileExpressions(code, testCase.args);
                     // assert
                     expect(act).to.throw(testCase.expectedError);
                 });
             }
         });
+        it('calls parser with expected code', () => {
+            // arrange
+            const expected = 'expected-code';
+            const expressionParserMock = new ExpressionParserStub();
+            const sut = new MockableExpressionsCompiler(expressionParserMock);
+            // act
+            sut.compileExpressions(expected);
+            // assert
+            expect(expressionParserMock.callHistory).to.have.lengthOf(1);
+            expect(expressionParserMock.callHistory[0]).to.equal(expected);
+        });
     });
 });
 
 class MockableExpressionsCompiler extends ExpressionsCompiler {
-    constructor() {
-        super();
+    constructor(extractor: IExpressionParser) {
+        super(extractor);
     }
 }

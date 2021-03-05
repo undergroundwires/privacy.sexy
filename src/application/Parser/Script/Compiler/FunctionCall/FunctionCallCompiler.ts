@@ -8,7 +8,7 @@ import { ExpressionsCompiler } from '../Expressions/ExpressionsCompiler';
 export class FunctionCallCompiler implements IFunctionCallCompiler {
     public static readonly instance: IFunctionCallCompiler = new FunctionCallCompiler();
     protected constructor(
-        private readonly expressionsCompiler: IExpressionsCompiler = ExpressionsCompiler.instance) { }
+        private readonly expressionsCompiler: IExpressionsCompiler = new ExpressionsCompiler()) { }
     public compileCall(
         call: ScriptFunctionCallData,
         functions: ISharedFunctionCollection): ICompiledCode {
@@ -32,11 +32,12 @@ export class FunctionCallCompiler implements IFunctionCallCompiler {
 }
 
 function ensureExpectedParameters(func: FunctionData, call: FunctionCallData) {
-    if (!func.parameters && !call.parameters) {
+    const actual = Object.keys(call.parameters || {});
+    const expected = func.parameters || [];
+    if (!actual.length && !expected.length) {
         return;
     }
-    const unexpectedParameters = Object.keys(call.parameters || {})
-        .filter((callParam) => !func.parameters.includes(callParam));
+    const unexpectedParameters = actual.filter((callParam) => !expected.includes(callParam));
     if (unexpectedParameters.length) {
         throw new Error(
             `function "${func.name}" has unexpected parameter(s) provided: "${unexpectedParameters.join('", "')}"`);

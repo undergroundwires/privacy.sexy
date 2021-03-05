@@ -46,6 +46,18 @@ describe('FunctionsCompiler', () => {
                 // assert
                 expect(act).to.throw(expectedError);
             });
+            it('throws when parameters is not an array of strings', () => {
+                // arrange
+                const parameterNameWithUnexpectedType = 5;
+                const func = FunctionDataStub.createWithCall()
+                    .withParameters(parameterNameWithUnexpectedType as any);
+                const expectedError = `unexpected parameter name type in "${func.name}"`;
+                const sut = new MockableFunctionCompiler();
+                // act
+                const act = () => sut.compileFunctions([ func ]);
+                // assert
+                expect(act).to.throw(expectedError);
+            });
             describe('throws when when function have duplicate code', () => {
                 it('code', () => {
                     // arrange

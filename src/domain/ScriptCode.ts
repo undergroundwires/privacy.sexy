@@ -47,7 +47,7 @@ function ensureCodeHasUniqueLines(code: string, syntax: ILanguageSyntax): void {
     }
     const duplicateLines = lines.filter((e, i, a) => a.indexOf(e) !== i);
     if (duplicateLines.length !== 0) {
-        throw Error(`Duplicates detected in script :\n ${duplicateLines.join('\n')}`);
+        throw Error(`Duplicates detected in script:\n${duplicateLines.map((line, index) => `(${index}) - ${line}`).join('\n')}`);
     }
 }
 

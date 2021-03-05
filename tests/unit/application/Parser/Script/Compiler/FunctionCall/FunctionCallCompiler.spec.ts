@@ -10,103 +10,131 @@ import { SharedFunctionStub } from '../../../../../stubs/SharedFunctionStub';
 
 describe('FunctionCallCompiler', () => {
     describe('compileCall', () => {
-        describe('call', () => {
-            it('throws with undefined call', () => {
-                // arrange
-                const expectedError = 'undefined call';
-                const call = undefined;
-                const functions = new SharedFunctionCollectionStub();
-                const sut = new MockableFunctionCallCompiler();
-                // act
-                const act = () => sut.compileCall(call, functions);
-                // assert
-                expect(act).to.throw(expectedError);
-            });
-            it('throws if call is not an object', () => {
-                // arrange
-                const expectedError = 'called function(s) must be an object';
-                const invalidCalls: readonly any[] = ['string', 33];
-                const sut = new MockableFunctionCallCompiler();
-                const functions = new SharedFunctionCollectionStub();
-                invalidCalls.forEach((invalidCall) => {
+        describe('parameter validation', () => {
+            describe('call', () => {
+                it('throws with undefined call', () => {
+                    // arrange
+                    const expectedError = 'undefined call';
+                    const call = undefined;
+                    const functions = new SharedFunctionCollectionStub();
+                    const sut = new MockableFunctionCallCompiler();
                     // act
-                    const act = () => sut.compileCall(invalidCall, functions);
+                    const act = () => sut.compileCall(call, functions);
+                    // assert
+                    expect(act).to.throw(expectedError);
+                });
+                it('throws if call is not an object', () => {
+                    // arrange
+                    const expectedError = 'called function(s) must be an object';
+                    const invalidCalls: readonly any[] = ['string', 33];
+                    const sut = new MockableFunctionCallCompiler();
+                    const functions = new SharedFunctionCollectionStub();
+                    invalidCalls.forEach((invalidCall) => {
+                        // act
+                        const act = () => sut.compileCall(invalidCall, functions);
+                        // assert
+                        expect(act).to.throw(expectedError);
+                    });
+                });
+                it('throws if call sequence has undefined call', () => {
+                    // arrange
+                    const expectedError = 'undefined function call';
+                    const call: FunctionCallData[] = [
+                        { function: 'function-name' },
+                        undefined,
+                    ];
+                    const functions = new SharedFunctionCollectionStub();
+                    const sut = new MockableFunctionCallCompiler();
+                    // act
+                    const act = () => sut.compileCall(call, functions);
+                    // assert
+                    expect(act).to.throw(expectedError);
+                });
+                it('throws if call sequence has undefined function name', () => {
+                    // arrange
+                    const expectedError = 'empty function name called';
+                    const call: FunctionCallData[] = [
+                        { function: 'function-name' },
+                        { function: undefined },
+                    ];
+                    const functions = new SharedFunctionCollectionStub();
+                    const sut = new MockableFunctionCallCompiler();
+                    // act
+                    const act = () => sut.compileCall(call, functions);
+                    // assert
+                    expect(act).to.throw(expectedError);
+                });
+                it('throws if call parameters does not match function parameters', () => {
+                    // arrange
+                    const functionName = 'test-function-name';
+                    const testCases = [
+                        {
+                            name: 'an unexpected parameter instead',
+                            functionParameters: [ 'another-parameter' ],
+                            callParameters: [ 'unexpected-parameter' ],
+                            expectedError: `function "${functionName}" has unexpected parameter(s) provided: "unexpected-parameter"`,
+                        },
+                        {
+                            name: 'an unexpected parameter when none required',
+                            functionParameters: undefined,
+                            callParameters: [ 'unexpected-parameter' ],
+                            expectedError: `function "${functionName}" has unexpected parameter(s) provided: "unexpected-parameter"`,
+                        },
+                        {
+                            name: 'expected and unexpected parameter',
+                            functionParameters: [ 'expected-parameter' ],
+                            callParameters: [ 'expected-parameter', 'unexpected-parameter' ],
+                            expectedError: `function "${functionName}" has unexpected parameter(s) provided: "unexpected-parameter"`,
+                        },
+                    ];
+                    for (const testCase of testCases) {
+                        it(testCase.name, () => {
+                            const func = new SharedFunctionStub()
+                                .withName('test-function-name')
+                                .withParameters(...testCase.functionParameters);
+                            let params: FunctionCallParametersData = {};
+                            for (const parameter of testCase.callParameters) {
+                                params = {...params, [parameter]: 'defined-parameter-value '};
+                            }
+                            const call: FunctionCallData = { function: func.name, parameters: params };
+                            const functions = new SharedFunctionCollectionStub().withFunction(func);
+                            const sut = new MockableFunctionCallCompiler();
+                            // act
+                            const act = () => sut.compileCall(call, functions);
+                            // assert
+                            expect(act).to.throw(testCase.expectedError);
+                        });
+                    }
+                });
+            });
+            describe('functions', () => {
+                it('throws with undefined functions', () => {
+                    // arrange
+                    const expectedError = 'undefined functions';
+                    const call: FunctionCallData = { function: 'function-call' };
+                    const functions = undefined;
+                    const sut = new MockableFunctionCallCompiler();
+                    // act
+                    const act = () => sut.compileCall(call, functions);
+                    // assert
+                    expect(act).to.throw(expectedError);
+                });
+                it('throws if function does not exist', () => {
+                    // arrange
+                    const expectedError = 'function does not exist';
+                    const call: FunctionCallData = { function: 'function-call' };
+                    const functions: ISharedFunctionCollection = {
+                        getFunctionByName: () => { throw new Error(expectedError); },
+                    };
+                    const sut = new MockableFunctionCallCompiler();
+                    // act
+                    const act = () => sut.compileCall(call, functions);
                     // assert
                     expect(act).to.throw(expectedError);
                 });
             });
-            it('throws if call sequence has undefined call', () => {
-                // arrange
-                const expectedError = 'undefined function call';
-                const call: FunctionCallData[] = [
-                    { function: 'function-name' },
-                    undefined,
-                ];
-                const functions = new SharedFunctionCollectionStub();
-                const sut = new MockableFunctionCallCompiler();
-                // act
-                const act = () => sut.compileCall(call, functions);
-                // assert
-                expect(act).to.throw(expectedError);
-            });
-            it('throws if call sequence has undefined function name', () => {
-                // arrange
-                const expectedError = 'empty function name called';
-                const call: FunctionCallData[] = [
-                    { function: 'function-name' },
-                    { function: undefined },
-                ];
-                const functions = new SharedFunctionCollectionStub();
-                const sut = new MockableFunctionCallCompiler();
-                // act
-                const act = () => sut.compileCall(call, functions);
-                // assert
-                expect(act).to.throw(expectedError);
-            });
-            it('throws if call parameters does not match function parameters', () => {
-                // arrange
-                const unexpectedCallParameterName = 'unexpected-parameter-name';
-                const func = new SharedFunctionStub()
-                    .withName('test-function-name')
-                    .withParameters('another-parameter');
-                const expectedError = `function "${func.name}" has unexpected parameter(s) provided: "${unexpectedCallParameterName}"`;
-                const sut = new MockableFunctionCallCompiler();
-                const params: FunctionCallParametersData = {
-                    [`${unexpectedCallParameterName}`]: 'unexpected-parameter-value',
-                };
-                const call: FunctionCallData = { function: func.name, parameters: params };
-                const functions = new SharedFunctionCollectionStub().withFunction(func);
-                // act
-                const act = () => sut.compileCall(call, functions);
-                // assert
-                expect(act).to.throw(expectedError);
-            });
-        });
-        describe('functions', () => {
-            it('throws with undefined functions', () => {
-                // arrange
-                const expectedError = 'undefined functions';
-                const call: FunctionCallData = { function: 'function-call' };
-                const functions = undefined;
-                const sut = new MockableFunctionCallCompiler();
-                // act
-                const act = () => sut.compileCall(call, functions);
-                // assert
-                expect(act).to.throw(expectedError);
-            });
-            it('throws if function does not exist', () => {
-                // arrange
-                const expectedError = 'function does not exist';
-                const call: FunctionCallData = { function: 'function-call' };
-                const functions: ISharedFunctionCollection = {
-                    getFunctionByName: () => { throw new Error(expectedError); },
-                };
-                const sut = new MockableFunctionCallCompiler();
-                // act
-                const act = () => sut.compileCall(call, functions);
-                // assert
-                expect(act).to.throw(expectedError);
-            });
+
+
         });
         describe('builds code as expected', () => {
             describe('builds single call as expected', () => {

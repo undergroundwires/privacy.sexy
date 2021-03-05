@@ -7,9 +7,9 @@
   - Proposing new features
   - Becoming a maintainer
 
-## Pull Request Process
+## Pull request process
 
-- [GitHub flow](https://guides.github.com/introduction/flow/index.html) is used
+- [GitHub flow](https://guides.github.com/introduction/flow/index.html) with [GitOps](./img/architecture/gitops.png) is used
 - Your pull requests are actively welcomed.
 - The steps:
   1. Fork the repo and create your branch from master.
@@ -25,4 +25,10 @@
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under its GNU General Public License v3.0.
+By contributing, you agree that your contributions will be licensed under its [GNU General Public License v3.0](./LICENSE).
+
+## Read more
+
+- See [tests](./docs/tests.md) for testing
+- See [extend script](./README.md#extend-scripts) for quick steps to extend scripts
+- See [architecture overview](./README.md#architecture-overview) to deep dive into privacy.sexy codebase

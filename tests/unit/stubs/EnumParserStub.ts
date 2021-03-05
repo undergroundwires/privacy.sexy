@@ -1,15 +1,24 @@
 import { IEnumParser } from '@/application/Common/Enum';
 
-export function mockEnumParser<T>(inputName: string, inputValue: string, outputValue: T): IEnumParser<T> {
-    return {
-        parseEnum: (value, name) => {
-            if (name !== inputName) {
-                throw new Error(`Unexpected name: "${name}"`);
-            }
-            if (value !== inputValue) {
-                throw new Error(`Unexpected value: "${value}"`);
-            }
-            return outputValue;
-        },
-    };
+export class EnumParserStub<T> implements IEnumParser<T> {
+    private readonly scenarios = new Array<{ inputName: string, inputValue: string, outputValue: T }>();
+    private defaultValue: T;
+    public setup(inputName: string, inputValue: string, outputValue: T) {
+        this.scenarios.push({inputName, inputValue, outputValue});
+        return this;
+    }
+    public setupDefaultValue(outputValue: T) {
+        this.defaultValue = outputValue;
+        return this;
+    }
+    public parseEnum(value: string, propertyName: string): T {
+        const scenario = this.scenarios.find((s) => s.inputName === propertyName && s.inputValue === value);
+        if (scenario) {
+            return scenario.outputValue;
+        }
+        if (this.defaultValue) {
+            return this.defaultValue;
+        }
+        throw new Error('enum parser is not set up');
+    }
 }

@@ -123,13 +123,31 @@ describe('ScriptCompiler', () => {
             // assert
             expect(isUsed).to.equal(true);
         });
-        it('rethrows error from ScriptCode with script name', () => {
+        it('rethrows error with script name', () => {
             // arrange
-            const scriptName = 'scriptName';            // // arrange
+            const scriptName = 'scriptName';
             const innerError = 'innerError';
             const expectedError = `Script "${scriptName}" ${innerError}`;
             const callCompiler: IFunctionCallCompiler = {
                 compileCall: () => { throw new Error(innerError); },
+            };
+            const scriptData = ScriptDataStub.createWithCall()
+                .withName(scriptName);
+            const sut = new ScriptCompilerBuilder()
+                .withSomeFunctions()
+                .withFunctionCallCompiler(callCompiler)
+                .build();
+            // act
+            const act = () => sut.compile(scriptData);
+            // assert
+            expect(act).to.throw(expectedError);
+        });
+        it('rethrows error from ScriptCode with script name', () => {
+            // arrange
+            const scriptName = 'scriptName';
+            const expectedError = `Script "${scriptName}" code is empty or undefined`;
+            const callCompiler: IFunctionCallCompiler = {
+                compileCall: () => ({ code: undefined, revertCode: undefined }),
             };
             const scriptData = ScriptDataStub.createWithCall()
                 .withName(scriptName);

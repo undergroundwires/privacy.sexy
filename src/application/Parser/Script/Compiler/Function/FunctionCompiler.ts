@@ -49,6 +49,7 @@ function ensureValidFunctions(functions: readonly FunctionData[]) {
     ensureNoDuplicatesInParameterNames(functions);
     ensureNoDuplicateCode(functions);
     ensureEitherCallOrCodeIsDefined(functions);
+    ensureExpectedParameterNameTypes(functions);
 }
 
 function printList(list: readonly string[]): string {
@@ -67,6 +68,17 @@ function ensureEitherCallOrCodeIsDefined(holders: readonly InstructionHolder[]) 
         throw new Error(`neither "code" or "call" is defined in ${printNames(hasEitherCodeOrCall)}`);
     }
 }
+
+function ensureExpectedParameterNameTypes(functions: readonly FunctionData[]) {
+    const unexpectedFunctions = functions.filter((func) => func.parameters && !isArrayOfStrings(func.parameters));
+    if (unexpectedFunctions.length) {
+        throw new Error(`unexpected parameter name type in ${printNames(unexpectedFunctions)}`);
+    }
+    function isArrayOfStrings(value: any): boolean {
+        return Array.isArray(value) && value.every((item) => typeof item === 'string');
+     }
+}
+
 function printNames(holders: readonly InstructionHolder[]) {
     return printList(holders.map((holder) => holder.name));
 }
