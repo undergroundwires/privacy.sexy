@@ -8,7 +8,7 @@ import { BatchFileSyntax } from '@/application/Parser/Script/Syntax/BatchFileSyn
 describe('SyntaxFactory', () => {
     describe('getSyntax', () => {
         describe('creates expected type', () => {
-            it('shellscript returns ShellBuilder', () => {
+            describe('shellscript returns ShellBuilder', () => {
                 // arrange
                 const testCases: Array< { language: ScriptingLanguage, expected: any} > = [
                     { language: ScriptingLanguage.shellscript,  expected: ShellScriptSyntax},
