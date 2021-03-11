@@ -38,6 +38,7 @@ function createWindow() {
     width: 1350,
     height: 955,
     webPreferences: {
+      contextIsolation: false, // To reach node https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/1285
       // Use pluginOptions.nodeIntegration, leave this alone
       // See https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration
       nodeIntegration: (process.env
