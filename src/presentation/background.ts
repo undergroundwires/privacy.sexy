@@ -115,14 +115,14 @@ if (isDevelopment) {
 function loadApplication(window: BrowserWindow) {
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
-    win.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string);
+    loadUrlWithNodeWorkaround(win, process.env.WEBPACK_DEV_SERVER_URL as string);
     if (!process.env.IS_TEST) {
       win.webContents.openDevTools();
     }
   } else {
     createProtocol('app');
     // Load the index.html when not in development
-    win.loadURL('app://./index.html');
+    loadUrlWithNodeWorkaround(win, 'app://./index.html');
     // tslint:disable-next-line:max-line-length
     autoUpdater.checkForUpdatesAndNotify(); // https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/recipes.html#check-for-updates-in-background-js-ts
   }
@@ -135,4 +135,11 @@ function configureExternalsUrlsOpenBrowser(window: BrowserWindow) {
       shell.openExternal(url);
     }
   });
+}
+
+// Workaround for https://github.com/electron/electron/issues/19554 otherwise fs does not work
+function loadUrlWithNodeWorkaround(window: BrowserWindow, url: string) {
+  setTimeout(() => {
+    window.loadURL(url);
+  }, 10);
 }
