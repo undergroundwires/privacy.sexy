@@ -17,17 +17,9 @@
             v-on:click="copyCodeAsync"
             icon-prefix="fas" icon-name="copy">
         </IconButton>
-        <modal :name="macOsModalName" height="auto" :scrollable="true" :adaptive="true"
-          v-if="this.isMacOsCollection">
-          <div class="modal">
-            <div class="modal__content">
-                <MacOsInstructions :fileName="this.fileName" />
-            </div>
-            <div class="modal__close-button">
-              <font-awesome-icon :icon="['fas', 'times']"  @click="$modal.hide(macOsModalName)"/>
-            </div>
-          </div>
-        </modal>
+        <Dialog v-if="this.isMacOsCollection" ref="instructionsDialog">
+          <MacOsInstructions :fileName="this.fileName" />
+        </Dialog>
     </div>
 </template>
 
@@ -36,6 +28,7 @@ import { Component } from 'vue-property-decorator';
 import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
 import { SaveFileDialog, FileType } from '@/infrastructure/SaveFileDialog';
 import { Clipboard } from '@/infrastructure/Clipboard';
+import Dialog from '@/presentation/components/Shared/Dialog.vue';
 import IconButton from './IconButton.vue';
 import MacOsInstructions from './MacOsInstructions.vue';
 import { Environment } from '@/application/Environment/Environment';
@@ -51,11 +44,10 @@ import { IApplicationContext } from '@/application/Context/IApplicationContext';
   components: {
     IconButton,
     MacOsInstructions,
+    Dialog,
   },
 })
 export default class TheCodeButtons extends StatefulVue {
-  public readonly macOsModalName = 'macos-instructions';
-
   public readonly isDesktopVersion = Environment.CurrentEnvironment.isDesktop;
   public canRun = false;
   public hasCode = false;
@@ -70,7 +62,7 @@ export default class TheCodeButtons extends StatefulVue {
     const context = await this.getCurrentContextAsync();
     saveCode(this.fileName, context.state);
     if (this.isMacOsCollection) {
-      this.$modal.show(this.macOsModalName);
+      (this.$refs.instructionsDialog as any).show();
     }
   }
   public async executeCodeAsync() {
@@ -134,9 +126,6 @@ async function executeCodeAsync(context: IApplicationContext) {
 </script>
 
 <style scoped lang="scss">
-@import "@/presentation/styles/colors.scss";
-@import "@/presentation/styles/fonts.scss";
-
 .container {
     display: flex;
     flex-direction: row;
@@ -144,27 +133,5 @@ async function executeCodeAsync(context: IApplicationContext) {
 }
 .container > * + * {
   margin-left: 30px;
-}
-.modal {
-    font-family: $normal-font;
-    margin-bottom: 10px;
-    display: flex;
-    flex-direction: row;
-
-    &__content {
-      width: 100%;
-      margin: 5%;
-    }
-
-    &__close-button {
-      width: auto;
-      font-size: 1.5em;
-      margin-right:0.25em;
-      align-self: flex-start;
-      cursor: pointer;
-      &:hover {
-        opacity: 0.9;
-      }
-    }
 }
 </style>

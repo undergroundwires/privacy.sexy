@@ -31,18 +31,13 @@
         </div>
         <div class="footer__section__item">
           <font-awesome-icon class="icon" :icon="['fas', 'user-secret']"  />
-          <a @click="$modal.show(modalName)">Privacy</a>
+          <a @click="$refs.privacyDialog.show()">Privacy</a>
         </div>
       </div>
     </div>
-    <modal :name="modalName" height="auto" :scrollable="true" :adaptive="true">
-      <div class="modal">
-        <PrivacyPolicy class="modal__content"/>
-        <div class="modal__close-button">
-          <font-awesome-icon :icon="['fas', 'times']"  @click="$modal.hide(modalName)"/>
-        </div>
-      </div>
-    </modal>
+    <Dialog ref="privacyDialog">
+        <PrivacyPolicy />
+    </Dialog>
   </div>
 </template>
 
@@ -50,17 +45,17 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { Environment } from '@/application/Environment/Environment';
 import PrivacyPolicy from './PrivacyPolicy.vue';
+import Dialog from '@/presentation/components/Shared/Dialog.vue';
 import DownloadUrlList from './DownloadUrlList.vue';
 import { IApplication } from '@/domain/IApplication';
 import { ApplicationFactory } from '@/application/ApplicationFactory';
 
 @Component({
   components: {
-    PrivacyPolicy, DownloadUrlList,
+    Dialog, PrivacyPolicy, DownloadUrlList,
   },
 })
 export default class TheFooter extends Vue {
-  public readonly modalName = 'privacy-policy';
   public readonly isDesktop = Environment.CurrentEnvironment.isDesktop;
 
   public version: string = '';

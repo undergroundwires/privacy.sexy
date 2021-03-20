@@ -36,3 +36,16 @@
 - Do not forget to subscribe from events when component is destroyed or if needed [collection](./collection-files.md) is changed.
   - 💡 `events` in base class [`StatefulVue`](./../src/presentation/components/Shared/StatefulVue.ts) makes lifecycling easier
 - 📖 See [Application state | Application layer](./presentation.md#application-state) where the state is implemented using using state pattern.
+
+## Modals
+
+- [Dialog.vue](./../src/presentation/components/Shared/Dialog.vue) is a shared component that can be used to show modal windows
+- Simply wrap the content inside of its slot and call `.show()` method on its reference.
+- Example:
+
+  ```html
+    <Dialog ref="testDialog">
+      <div>Hello world</div>
+    </Dialog>
+    <div @click="$refs.testDialog.show()">Show dialog</div>
+  ```
