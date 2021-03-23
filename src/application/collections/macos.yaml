@@ -83,41 +83,78 @@ actions:
                         children:
                             -
                                 name: Clear Safari browsing history
+                                docs:
+                                    - https://discussions.apple.com/thread/7586106?answerId=30314600022#30314600022
+                                    - https://davidkoepi.wordpress.com/2013/04/20/safariforensic/
                                 code: |-
-                                    rm -f ~/Library/Safari/History.plist 
-                                    rm -f ~/Library/Safari/HistoryIndex.sk
+                                    rm -f ~/Library/Safari/History.db
+                                    rm -f ~/Library/Safari/History.db-lock
+                                    rm -f ~/Library/Safari/History.db-shm
+                                    rm -f ~/Library/Safari/History.db-wal
+                                    # For older versions of Safari
+                                    rm -f ~/Library/Safari/History.plist # URL, visit count, webpage title, last visited timestamp, redirected URL, autocomplete
+                                    rm -f ~/Library/Safari/HistoryIndex.sk # History index
                             -
                                 name: Clear Safari downloads history
+                                docs: https://blog.d204n6.com/2020/09/macos-safari-preferences-and-privacy.html
                                 code: rm -f ~/Library/Safari/Downloads.plist
                             -
                                 name: Clear Safari top sites
-                                code: rm -f ~/Library/Safari/TopSites.plist 
+                                docs: https://davidkoepi.wordpress.com/2013/04/20/safariforensic/
+                                code: rm -f ~/Library/Safari/TopSites.plist
                             -
-                                name: Clear Safari last session history
+                                name: Clear Safari last session (open tabs) history
+                                docs:
+                                    - https://apple.stackexchange.com/a/374116
+                                    - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2013-7127
                                 code: rm -f ~/Library/Safari/LastSession.plist
                             -
-                                name: Clear Safari caches
-                                code: |-
-                                    rm -f ~/Library/Caches/com.apple.Safari/Cache.db
-                                    rm -f ~/Library/Safari/WebpageIcons.db
-                                    rm -rf ~/Library/Caches/com.apple.Safari/Webpage Previews
+                                category: Clear Safari caches
+                                children:
+                                    -
+                                        name: Clear Safari cached blobs, URLs and timestamps
+                                        docs: https://davidkoepi.wordpress.com/2013/04/20/safariforensic/
+                                        code: rm -f ~/Library/Caches/com.apple.Safari/Cache.db
+                                    -
+                                        name: Clear Safari web page icons displayed on URL bar
+                                        docs:
+                                          - https://davidkoepi.wordpress.com/2013/04/20/safariforensic/
+                                          - https://lifehacker.com/safaris-private-browsing-mode-saves-urls-in-an-easily-a-1691944343
+                                        code: rm -f ~/Library/Safari/WebpageIcons.db
+                                    -
+                                        name: Clear Safari webpage previews (thumbnails)
+                                        docs:
+                                          - https://davidkoepi.wordpress.com/2013/04/20/safariforensic/
+                                          - https://www.reddit.com/r/apple/comments/18lp92/your_apple_computer_keeps_a_screen_shot_of_nearly/
+                                        code: rm -rfv ~/Library/Caches/com.apple.Safari/Webpage\ Previews
                             -
                                 name: Clear copy of the Safari history
-                                code: rm -rf ~/Library/Caches/Metadata/Safari/History
+                                docs: https://forensicsfromthesausagefactory.blogspot.com/2010/06/safari-history-spotlight-webhistory.html
+                                code: rm -rfv ~/Library/Caches/Metadata/Safari/History
                             -
                                 name: Clear search history embedded in Safari preferences
+                                docs: https://krypted.com/tag/recentsearchstrings/
                                 code: defaults write ~/Library/Preferences/com.apple.Safari RecentSearchStrings '( )'
                             -
                                 name: Clear Safari cookies
-                                code: rm -f ~/Library/Cookies/Cookies.plists
+                                docs:
+                                  - https://www.toolbox.com/tech/operating-systems/blogs/understanding-the-safari-cookiesbinarycookies-file-format-010712/
+                                  - https://link.springer.com/content/pdf/10.1007/0-387-36891-4_13.pdf
+                                code: |-
+                                    rm -f ~/Library/Cookies/Cookies.binarycookies
+                                    # Used before Safari 5.1
+                                    rm -f ~/Library/Cookies/Cookies.plist
                             -
                                 name: Clear Safari zoom level preferences per site
-                                code: rm -f ~/Library/Safari/PerSiteZoomPreferences.plists
+                                docs: https://blog.d204n6.com/2020/09/macos-safari-preferences-and-privacy.html
+                                code: rm -f ~/Library/Safari/PerSiteZoomPreferences.plist
                             -
                                 name: Clear URLs that are allowed to display notifications in Safari
+                                docs: https://blog.d204n6.com/2020/09/macos-safari-preferences-and-privacy.html
                                 code: rm -f ~/Library/Safari/UserNotificationPreferences.plist
                             -
                                 name: Clear Safari per-site preferences for Downloads, Geolocation, PopUps, and Autoplays
+                                docs: https://blog.d204n6.com/2020/09/macos-safari-preferences-and-privacy.html
                                 code: rm -f ~/Library/Safari/PerSitePreferences.db
                     -
                         category: Clear Firefox history
