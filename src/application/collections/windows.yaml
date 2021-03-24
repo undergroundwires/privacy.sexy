@@ -3776,22 +3776,31 @@ actions:
                 children:
                     -
                         name: Direct Play feature
-                        code: dism /Online /Disable-Feature /FeatureName:"DirectPlay" /NoRestart
-                        revertCode: dism /Online /Enable-Feature /FeatureName:"DirectPlay" /NoRestart
+                        call:
+                            function: DisableFeature
+                            parameters:
+                                featureName: DirectPlay
                     -
                         name: Internet Explorer feature
-                        code: |-
-                            dism /Online /Disable-Feature /FeatureName:"Internet-Explorer-Optional-x64" /NoRestart
-                            dism /Online /Disable-Feature /FeatureName:"Internet-Explorer-Optional-x84" /NoRestart
-                            dism /Online /Disable-Feature /FeatureName:"Internet-Explorer-Optional-amd64" /NoRestart
-                        revertCode: |-
-                            dism /Online /Enable-Feature /FeatureName:"Internet-Explorer-Optional-x64" /NoRestart
-                            dism /Online /Enable-Feature /FeatureName:"Internet-Explorer-Optional-x84" /NoRestart
-                            dism /Online /Enable-Feature /FeatureName:"Internet-Explorer-Optional-amd64" /NoRestart
+                        call:
+                            -
+                                function: DisableFeature
+                                parameters:
+                                    featureName: Internet-Explorer-Optional-x64
+                            -
+                                function: DisableFeature
+                                parameters:
+                                    featureName: Internet-Explorer-Optional-x84
+                            -
+                                function: DisableFeature
+                                parameters:
+                                    featureName: Internet-Explorer-Optional-amd64
                     -
                         name: Legacy Components feature
-                        code: dism /Online /Disable-Feature /FeatureName:"LegacyComponents" /NoRestart
-                        revertCode: dism /Online /Enable-Feature /FeatureName:"LegacyComponents" /NoRestart
+                        call:
+                            function: DisableFeature
+                            parameters:
+                                featureName: LegacyComponents
                     -
                         category: Server features for developers & administrators
                         children:
@@ -3800,39 +3809,55 @@ actions:
                                 children:
                                     -
                                         name: Hyper-V feature
-                                        code: dism /Online /Disable-Feature /FeatureName:"Microsoft-Hyper-V-All" /NoRestart
-                                        revertCode: dism /Online /Enable-Feature /FeatureName:"Microsoft-Hyper-V-All" /NoRestart
+                                        call:
+                                            function: DisableFeature
+                                            parameters:
+                                                featureName: Microsoft-Hyper-V-All
                                     -
                                         name: Hyper-V GUI Management Tools feature
-                                        code: dism /Online /Disable-Feature /FeatureName:"Microsoft-Hyper-V-Management-Clients" /NoRestart
-                                        revertCode: dism /Online /Enable-Feature /FeatureName:"Microsoft-Hyper-V-Management-Clients" /NoRestart
+                                        call:
+                                            function: DisableFeature
+                                            parameters:
+                                                featureName: Microsoft-Hyper-V-Management-Clients
                                     -
                                         name: Hyper-V Management Tools feature
-                                        code: dism /Online /Disable-Feature /FeatureName:"Microsoft-Hyper-V-Tools-All" /NoRestart
-                                        revertCode: dism /Online /Enable-Feature /FeatureName:"Microsoft-Hyper-V-Tools-All" /NoRestart
+                                        call:
+                                            function: DisableFeature
+                                            parameters:
+                                                featureName: Microsoft-Hyper-V-Tools-All
                                     -
                                         name: Hyper-V Module for Windows PowerShell feature
-                                        code: dism /Online /Disable-Feature /FeatureName:"Microsoft-Hyper-V-Management-PowerShell" /NoRestart
-                                        revertCode: dism /Online /Enable-Feature /FeatureName:"Microsoft-Hyper-V-Management-PowerShell" /NoRestart
+                                        call:
+                                            function: DisableFeature
+                                            parameters:
+                                                featureName: Microsoft-Hyper-V-Management-PowerShell
                             -
                                 name: Telnet Client feature
-                                code: dism /Online /Disable-Feature /FeatureName:"TelnetClient" /NoRestart
-                                revertCode: dism /Online /Enable-Feature /FeatureName:"TelnetClient" /NoRestart
                                 docs: https://social.technet.microsoft.com/wiki/contents/articles/38433.windows-10-enabling-telnet-client.aspx
+                                call:
+                                    function: DisableFeature
+                                    parameters:
+                                        featureName: TelnetClient
                             -
                                 name: Net.TCP Port Sharing feature
-                                code: dism /Online /Disable-Feature /FeatureName:"WCF-TCP-PortSharing45" /NoRestart
-                                revertCode: dism /Online /Enable-Feature /FeatureName:"WCF-TCP-PortSharing45" /NoRestart
                                 docs: https://docs.microsoft.com/en-us/dotnet/framework/wcf/feature-details/net-tcp-port-sharing
+                                call:
+                                    function: DisableFeature
+                                    parameters:
+                                        featureName: WCF-TCP-PortSharing45
                             -
                                 name: SMB Direct feature
-                                code: dism /Online /Disable-Feature /FeatureName:"SmbDirect" /NoRestart
-                                revertCode: dism /Online /Enable-Feature /FeatureName:"SmbDirect" /NoRestart
                                 docs: https://docs.microsoft.com/en-us/windows-server/storage/file-server/smb-direct
+                                call:
+                                    function: DisableFeature
+                                    parameters:
+                                        featureName: SmbDirect
                             -
                                 name: TFTP Client feature
-                                code: dism /Online /Disable-Feature /FeatureName:"TFTP" /NoRestart
-                                revertCode: dism /Online /Enable-Feature /FeatureName:"TFTP" /NoRestart
+                                call:
+                                    function: DisableFeature
+                                    parameters:
+                                        featureName: TFTP
                     -
                         category: Printing features
                         children:
@@ -3841,60 +3866,86 @@ actions:
                                 children:
                                     -
                                         name: Internet Printing Client
-                                        code: dism /Online /Disable-Feature /FeatureName:"Printing-Foundation-InternetPrinting-Client" /NoRestart
-                                        revertCode: dism /Online /Enable-Feature /FeatureName:"Printing-Foundation-InternetPrinting-Client" /NoRestart
+                                        call:
+                                            function: DisableFeature
+                                            parameters:
+                                                featureName: Printing-Foundation-InternetPrinting-Client
                                     -
                                         name: LPD Print Service
-                                        code: dism /Online /Disable-Feature /FeatureName:"Printing-Foundation-LPDPrintService" /NoRestart
-                                        revertCode: dism /Online /Enable-Feature /FeatureName:"Printing-Foundation-LPDPrintService" /NoRestart
+                                        call:
+                                            function: DisableFeature
+                                            parameters:
+                                                featureName: LPDPrintService
                                     -
                                         name: LPR Port Monitor feature
-                                        code: dism /Online /Disable-Feature /FeatureName:"Printing-Foundation-LPRPortMonitor" /NoRestart
-                                        revertCode: dism /Online /Enable-Feature /FeatureName:"Printing-Foundation-LPRPortMonitor" /NoRestart
+                                        call:
+                                            function: DisableFeature
+                                            parameters:
+                                                featureName: Printing-Foundation-LPRPortMonitor
                                     -
                                         name: Microsoft Print to PDF feature
-                                        code: dism /Online /Disable-Feature /FeatureName:"Printing-PrintToPDFServices-Features" /NoRestart
-                                        revertCode: dism /Online /Enable-Feature /FeatureName:"Printing-PrintToPDFServices-Features" /NoRestart
+                                        call:
+                                            function: DisableFeature
+                                            parameters:
+                                                featureName: Printing-PrintToPDFServices-Features
                             -
                                 name: Print and Document Services feature
-                                code: dism /Online /Disable-Feature /FeatureName:"Printing-Foundation-Features" /NoRestart
-                                revertCode: dism /Online /Enable-Feature /FeatureName:"Printing-Foundation-Features" /NoRestart
+                                call:
+                                    function: DisableFeature
+                                    parameters:
+                                        featureName: Printing-Foundation-Features
                             -
                                 name: Work Folders Client feature
-                                code: dism /Online /Disable-Feature /FeatureName:"WorkFolders-Client" /NoRestart
-                                revertCode: dism /Online /Enable-Feature /FeatureName:"WorkFolders-Client" /NoRestart
                                 docs: https://docs.microsoft.com/en-us/windows-server/storage/work-folders/work-folders-overview
+                                call:
+                                    function: DisableFeature
+                                    parameters:
+                                        featureName: WorkFolders-Client
                             -
                                 category: XPS support
                                 children:
                                 -
                                     name: XPS Services feature
-                                    code: dism /Online /Disable-Feature /FeatureName:"Printing-XPSServices-Features" /NoRestart
-                                    revertCode: dism /Online /Enable-Feature /FeatureName:"Printing-XPSServices-Features" /NoRestart
+                                    call:
+                                        function: DisableFeature
+                                        parameters:
+                                            featureName: Printing-XPSServices-Features
                                 -
                                     name: XPS Viewer feature
-                                    code: dism /Online /Disable-Feature /FeatureName:"Xps-Foundation-Xps-Viewer" /NoRestart
-                                    revertCode: dism /Online /Enable-Feature /FeatureName:"Xps-Foundation-Xps-Viewer" /NoRestart
+                                    call:
+                                        function: DisableFeature
+                                        parameters:
+                                            featureName: Xps-Foundation-Xps-Viewer
                     -
                         name: Media Features feature
-                        code: dism /Online /Disable-Feature /FeatureName:"MediaPlayback" /NoRestart
-                        revertCode: dism /Online /Enable-Feature /FeatureName:"MediaPlayback" /NoRestart
+                        call:
+                            function: DisableFeature
+                            parameters:
+                                featureName: MediaPlayback
                     -
                         name: Scan Management feature
-                        code: dism /Online /Disable-Feature /FeatureName:"ScanManagementConsole" /NoRestart
-                        revertCode: dism /Online /Enable-Feature /FeatureName:"ScanManagementConsole" /NoRestart
+                        call:
+                            function: DisableFeature
+                            parameters:
+                                featureName: ScanManagementConsole
                     -
                         name: Windows Fax and Scan feature
-                        code: dism /Online /Disable-Feature /FeatureName:"FaxServicesClientPackage" /NoRestart
-                        revertCode: dism /Online /Enable-Feature /FeatureName:"FaxServicesClientPackage" /NoRestart
+                        call:
+                            function: DisableFeature
+                            parameters:
+                                featureName: FaxServicesClientPackage
                     -
                         name: Windows Media Player feature
-                        code: dism /Online /Disable-Feature /FeatureName:"WindowsMediaPlayer" /NoRestart
-                        revertCode: dism /Online /Enable-Feature /FeatureName:"WindowsMediaPlayer" /NoRestart
+                        call:
+                            function: DisableFeature
+                            parameters:
+                                featureName: WindowsMediaPlayer
                     -
                         name: Windows Search feature
-                        code: dism /Online /Disable-Feature /FeatureName:"SearchEngine-Client-Package" /NoRestart
-                        revertCode: dism /Online /Enable-Feature /FeatureName:"SearchEngine-Client-Package" /NoRestart
+                        call:
+                            function: DisableFeature
+                            parameters:
+                                featureName: SearchEngine-Client-Package
             -
                 category: Uninstall capabilities & features on demand
                 docs: https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/features-on-demand-non-language-fod#fods-that-are-not-preinstalled-but-may-need-to-be-preinstalled
@@ -4298,6 +4349,11 @@ functions:
         # https://docs.microsoft.com/en-us/previous-versions/windows/desktop/xperf/image-file-execution-options
         code: reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\'{{ $processName }}'" /v "Debugger" /t REG_SZ /d "%windir%\System32\taskkill.exe" /f
         revertCode: reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\'{{ $processName }}'" /v "Debugger" /f
+    -
+        name: DisableFeature
+        parameters: [ featureName ]
+        code: dism /Online /Disable-Feature /FeatureName:"{{ $featureName }}" /NoRestart
+        revertCode: dism /Online /Enable-Feature /FeatureName:"{{ $featureName }}" /NoRestart
     -
         name: UninstallStoreApp
         parameters: [ packageName ]
