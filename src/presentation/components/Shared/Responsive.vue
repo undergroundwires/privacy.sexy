@@ -6,7 +6,6 @@
 
 <script lang="ts">
 import { Component, Vue, Emit } from 'vue-property-decorator';
-import { ResizeObserver } from '@juggle/resize-observer';
 import { throttle } from './Throttle';
 
 @Component
@@ -16,11 +15,17 @@ export default class Responsive extends Vue {
   private observer: ResizeObserver;
   private get container(): HTMLElement { return this.$refs.containerElement as HTMLElement; }
 
-  public mounted() {
+  public async mounted() {
     this.width = this.container.offsetWidth;
     this.height = this.container.offsetHeight;
     const resizeCallback = throttle(() => this.updateSize(), 200);
-    this.observer = new ResizeObserver(resizeCallback);
+
+    if ('ResizeObserver' in window === false) {
+      const module = await import('@juggle/resize-observer');
+      window.ResizeObserver = module.ResizeObserver;
+    }
+
+    this.observer = new window.ResizeObserver(resizeCallback);
     this.observer.observe(this.container);
     this.fireChangeEvents();
   }
