@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.10.1 (2021-03-25)
+
+* refactor script compilation to make it easy to add new expressions #41 #53 | [646db90](https://github.com/undergroundwires/privacy.sexy/commit/646db9058541cebd0af437554de04fdc6bb63a6e)
+* restructure presentation layer | [f3c7413](https://github.com/undergroundwires/privacy.sexy/commit/f3c7413f529be4a00dba7b0ab23904b48ea13a35)
+* fix a test where "it" is not used inside "describe" | [1a5f920](https://github.com/undergroundwires/privacy.sexy/commit/1a5f92021f7423cd039f8f5326cd6f99b355c962)
+* bump dependencies to latest | [1f515e7](https://github.com/undergroundwires/privacy.sexy/commit/1f515e7be525291c960ccb71db05312db6da53f5)
+* fix throttle function not being able to run with argument(s) | [1935db1](https://github.com/undergroundwires/privacy.sexy/commit/1935db10192051401ab00ca2cd767955d0d3b866)
+* fix fs module hanging not allowing code to run | [5f527a0](https://github.com/undergroundwires/privacy.sexy/commit/5f527a00cf225d3e74b3f6577d6e2456e919de24)
+* refactor all modals to use same dialog component | [6f46cdb](https://github.com/undergroundwires/privacy.sexy/commit/6f46cdb4ed49a8941c6c0dde5c5e2a816c06daef)
+* fix safari cleanup scripts that are not working on modern versions | [05932c5](https://github.com/undergroundwires/privacy.sexy/commit/05932c5a36446d551c5bc811165e3295fbe15e3f)
+* refactor features to use shared functions #41 | [ac2249f](https://github.com/undergroundwires/privacy.sexy/commit/ac2249f25664827d8a6d2c7ebd659ccf126b0cde)
+* increase performance by polyfilling ResizeObserver only if required | [448e378](https://github.com/undergroundwires/privacy.sexy/commit/448e378dc4501f9de69af63634c87d0e5060bf52)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.10.0...0.10.1)
+
 ## 0.10.0 (2021-03-02)
 
 * allow functions to call other functions #53 | [7661575](https://github.com/undergroundwires/privacy.sexy/commit/7661575573c6d3e8f4bc28bfa7a124a764c72ef9)
