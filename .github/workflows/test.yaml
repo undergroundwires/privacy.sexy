@@ -7,6 +7,7 @@ jobs:
     strategy:
       matrix:
         os: [macos, ubuntu, windows]
+      fail-fast: false # So it still runs on other OSes if one of them fails
     runs-on: ${{ matrix.os }}-latest
     steps:
       -
