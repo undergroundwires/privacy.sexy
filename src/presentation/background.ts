@@ -4,7 +4,7 @@
 // This script is running through entire life of the application.
 // It doesn't have any windows which you can see on screen, opens the main window from here.
 
-import { app, protocol, BrowserWindow, shell } from 'electron';
+import { app, protocol, BrowserWindow, shell, screen } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import path from 'path';
@@ -34,9 +34,10 @@ if (!process.env.IS_TEST) {
 
 function createWindow() {
   // Create the browser window.
+  const size = getWindowSize(1350, 955);
   win = new BrowserWindow({
-    width: 1350,
-    height: 955,
+    width: size.width,
+    height: size.height,
     webPreferences: {
       contextIsolation: false, // To reach node https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/1285
       // Use pluginOptions.nodeIntegration, leave this alone
@@ -142,4 +143,13 @@ function loadUrlWithNodeWorkaround(window: BrowserWindow, url: string) {
   setTimeout(() => {
     window.loadURL(url);
   }, 10);
+}
+
+function getWindowSize(idealWidth: number, idealHeight: number) {
+  let { width, height } = screen.getPrimaryDisplay().workAreaSize;
+  // To ensure not creating a screen bigger than current screen size
+  // Not using "enableLargerThanScreen" as it's macOS only (see https://www.electronjs.org/docs/api/browser-window)
+  width = Math.min(width, idealWidth);
+  height = Math.min(height, idealHeight);
+  return { width, height };
 }
