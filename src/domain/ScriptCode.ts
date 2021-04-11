@@ -7,22 +7,27 @@ export class ScriptCode implements IScriptCode {
         syntax: ILanguageSyntax) {
         if (!syntax) { throw new Error('undefined syntax'); }
         validateCode(execute, syntax);
-        if (revert) {
-            try {
-                validateCode(revert, syntax);
-                if (execute === revert) {
-                    throw new Error(`Code itself and its reverting code cannot be the same`);
-                }
-            } catch (err) {
-                throw Error(`(revert): ${err.message}`);
-            }
-        }
+        validateRevertCode(revert, execute, syntax);
     }
 }
 
 export interface ILanguageSyntax {
     readonly commentDelimiters: string[];
     readonly commonCodeParts: string[];
+}
+
+function validateRevertCode(revertCode: string, execute: string, syntax: ILanguageSyntax) {
+    if (!revertCode) {
+        return;
+    }
+    try {
+        validateCode(revertCode, syntax);
+        if (execute === revertCode) {
+            throw new Error(`Code itself and its reverting code cannot be the same`);
+        }
+    } catch (err) {
+        throw Error(`(revert): ${err.message}`);
+    }
 }
 
 function validateCode(code: string, syntax: ILanguageSyntax): void {

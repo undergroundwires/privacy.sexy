@@ -1,6 +1,5 @@
 import { ILanguageSyntax } from '@/domain/ScriptCode';
-import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { IScriptingLanguageFactory } from '@/application/Common/ScriptingLanguage/IScriptingLanguageFactory';
 
-export interface ISyntaxFactory {
-    create(language: ScriptingLanguage): ILanguageSyntax;
+export interface ISyntaxFactory extends IScriptingLanguageFactory<ILanguageSyntax> {
 }

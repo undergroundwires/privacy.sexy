@@ -2,6 +2,7 @@ import 'mocha';
 import { expect } from 'chai';
 import { ProjectInformation } from '@/domain/ProjectInformation';
 import { OperatingSystem } from '@/domain/OperatingSystem';
+import { EnumRangeTestRunner } from '../application/Common/EnumRangeTestRunner';
 
 describe('ProjectInformation', () => {
     it('sets name as expected', () => {
@@ -115,14 +116,16 @@ describe('ProjectInformation', () => {
             // assert
             expect(actual).to.equal(expected);
         });
-        it('throws when OS is unknown', () => {
+        describe('throws when os is invalid', () => {
             // arrange
             const sut = new ProjectInformation('name', 'version', 'repositoryUrl', 'homepage');
-            const os = OperatingSystem.Unknown;
             // act
-            const act = () => sut.getDownloadUrl(os);
+            const act = (os: OperatingSystem) =>  sut.getDownloadUrl(os);
             // assert
-            expect(act).to.throw(`Unsupported os: ${OperatingSystem[os]}`);
+            new EnumRangeTestRunner(act)
+                .testOutOfRangeThrows()
+                .testUndefinedValueThrows()
+                .testInvalidValueThrows(OperatingSystem.KaiOS, `Unsupported os: ${OperatingSystem[OperatingSystem.KaiOS]}`);
         });
     });
 });

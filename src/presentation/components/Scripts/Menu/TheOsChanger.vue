@@ -24,7 +24,7 @@ import { ApplicationFactory } from '@/application/ApplicationFactory';
 @Component
 export default class TheOsChanger extends StatefulVue {
   public allOses: Array<{ name: string, os: OperatingSystem }> = [];
-  public currentOs: OperatingSystem = OperatingSystem.Unknown;
+  public currentOs?: OperatingSystem = undefined;
 
   public async created() {
     const app = await ApplicationFactory.Current.getAppAsync();

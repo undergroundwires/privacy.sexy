@@ -7,6 +7,7 @@ import { IApplicationContext, IApplicationContextChangedEvent } from '@/applicat
 import { IApplication } from '@/domain/IApplication';
 import { ApplicationStub } from '../../stubs/ApplicationStub';
 import { CategoryCollectionStub } from '../../stubs/CategoryCollectionStub';
+import { EnumRangeTestRunner } from '../Common/EnumRangeTestRunner';
 
 describe('ApplicationContext', () => {
     describe('changeContext', () => {
@@ -180,40 +181,15 @@ describe('ApplicationContext', () => {
                 expect(actual).to.deep.equal(expected);
             });
             describe('throws when OS is invalid', () => {
-                // arrange
-                const testCases = [
-                    {
-                        name: 'out of range',
-                        expectedError: 'os "9999" is out of range',
-                        os: 9999,
-                    },
-                    {
-                        name: 'undefined',
-                        expectedError: 'undefined os',
-                        os: undefined,
-                    },
-                    {
-                        name: 'unknown',
-                        expectedError: 'unknown os',
-                        os: OperatingSystem.Unknown,
-                    },
-                    {
-                        name: 'does not exist in application',
-                        expectedError: 'os "Android" is not defined in application',
-                        os: OperatingSystem.Android,
-                    },
-                ];
                 // act
-                for (const testCase of testCases) {
-                    it(testCase.name, () => {
-                        const act = () =>
-                            new ObservableApplicationContextFactory()
-                                .withInitialOs(testCase.os)
-                                .construct();
-                        // assert
-                        expect(act).to.throw(testCase.expectedError);
-                    });
-                }
+                const act = (os: OperatingSystem) => new ObservableApplicationContextFactory()
+                    .withInitialOs(os)
+                    .construct();
+                // assert
+                new EnumRangeTestRunner(act)
+                    .testOutOfRangeThrows()
+                    .testUndefinedValueThrows()
+                    .testInvalidValueThrows(OperatingSystem.Android, 'os "Android" is not defined in application');
             });
         });
         describe('app', () => {

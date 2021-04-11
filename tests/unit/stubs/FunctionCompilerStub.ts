@@ -1,3 +1,4 @@
+import { sequenceEqual } from '@/application/Common/Array';
 import { IFunctionCompiler } from '@/application/Parser/Script/Compiler/Function/IFunctionCompiler';
 import { ISharedFunctionCollection } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionCollection';
 import { FunctionData } from 'js-yaml-loader!*';
@@ -25,17 +26,5 @@ export class FunctionCompilerStub implements IFunctionCompiler {
             }
         }
         return undefined;
-    }
-}
-
-function sequenceEqual<T>(array1: readonly T[], array2: readonly T[]) {
-    if (array1.length !== array2.length) {
-        return false;
-    }
-    const sortedArray1 = sort(array1);
-    const sortedArray2 = sort(array2);
-    return sortedArray1.every((val, index) => val === sortedArray2[index]);
-    function sort(array: readonly T[]) {
-        return array.slice().sort();
     }
 }

@@ -1,6 +1,5 @@
-import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { ICodeBuilder } from './ICodeBuilder';
+import { IScriptingLanguageFactory } from '@/application/Common/ScriptingLanguage/IScriptingLanguageFactory';
 
-export interface ICodeBuilderFactory {
-    create(language: ScriptingLanguage): ICodeBuilder;
+export interface ICodeBuilderFactory extends IScriptingLanguageFactory<ICodeBuilder> {
 }

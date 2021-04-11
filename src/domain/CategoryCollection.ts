@@ -1,4 +1,4 @@
-import { getEnumNames, getEnumValues } from '@/application/Common/Enum';
+import { getEnumNames, getEnumValues, assertInRange } from '@/application/Common/Enum';
 import { IEntity } from '../infrastructure/Entity/IEntity';
 import { ICategory } from './ICategory';
 import { IScript } from './IScript';
@@ -21,7 +21,7 @@ export class CategoryCollection implements ICategoryCollection {
             throw new Error('undefined scripting definition');
         }
         this.queryable = makeQueryable(actions);
-        ensureValidOs(os);
+        assertInRange(os, OperatingSystem);
         ensureValid(this.queryable);
         ensureNoDuplicates(this.queryable.allCategories);
         ensureNoDuplicates(this.queryable.allScripts);
@@ -51,18 +51,6 @@ export class CategoryCollection implements ICategoryCollection {
 
     public getAllCategories(): ICategory[] {
         return this.queryable.allCategories;
-    }
-}
-
-function ensureValidOs(os: OperatingSystem): void {
-    if (os === undefined) {
-        throw new Error('undefined os');
-    }
-    if (os === OperatingSystem.Unknown) {
-        throw new Error('unknown os');
-    }
-    if (!(os in OperatingSystem)) {
-        throw new Error(`os "${os}" is out of range`);
     }
 }
 

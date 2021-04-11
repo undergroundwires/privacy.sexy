@@ -5,16 +5,20 @@ import fs from 'fs';
 import child_process from 'child_process';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 
-export async function runCodeAsync(
-    code: string, folderName: string, fileExtension: string,
-    node = getNodeJs(), environment = Environment.CurrentEnvironment): Promise<void> {
-    const dir = node.path.join(node.os.tmpdir(), folderName);
-    await node.fs.promises.mkdir(dir, {recursive: true});
-    const filePath = node.path.join(dir, `run.${fileExtension}`);
-    await node.fs.promises.writeFile(filePath, code);
-    await node.fs.promises.chmod(filePath, '755');
-    const command = getExecuteCommand(filePath, environment);
-    node.child_process.exec(command);
+export class CodeRunner {
+    constructor(
+        private readonly node = getNodeJs(),
+        private readonly environment = Environment.CurrentEnvironment) {
+    }
+    public async runCodeAsync(code: string, folderName: string, fileExtension: string): Promise<void> {
+        const dir = this.node.path.join(this.node.os.tmpdir(), folderName);
+        await this.node.fs.promises.mkdir(dir, {recursive: true});
+        const filePath = this.node.path.join(dir, `run.${fileExtension}`);
+        await this.node.fs.promises.writeFile(filePath, code);
+        await this.node.fs.promises.chmod(filePath, '755');
+        const command = getExecuteCommand(filePath, this.environment);
+        this.node.child_process.exec(command);
+    }
 }
 
 function getExecuteCommand(scriptPath: string, environment: Environment): string {

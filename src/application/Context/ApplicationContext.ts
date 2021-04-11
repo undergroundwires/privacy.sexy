@@ -5,6 +5,7 @@ import { IApplication } from '@/domain/IApplication';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { EventSource } from '@/infrastructure/Events/EventSource';
+import { assertInRange } from '@/application/Common/Enum';
 
 type StateMachine = Map<OperatingSystem, ICategoryCollectionState>;
 
@@ -22,7 +23,7 @@ export class ApplicationContext implements IApplicationContext {
         public readonly app: IApplication,
         initialContext: OperatingSystem) {
         validateApp(app);
-        validateOs(initialContext);
+        assertInRange(initialContext, OperatingSystem);
         this.states = initializeStates(app);
         this.changeContext(initialContext);
     }
@@ -47,18 +48,6 @@ export class ApplicationContext implements IApplicationContext {
 function validateApp(app: IApplication) {
     if (!app) {
         throw new Error('undefined app');
-    }
-}
-
-function validateOs(os: OperatingSystem) {
-    if (os === undefined) {
-        throw new Error('undefined os');
-    }
-    if (os === OperatingSystem.Unknown) {
-        throw new Error('unknown os');
-    }
-    if (!(os in OperatingSystem)) {
-        throw new Error(`os "${os}" is out of range`);
     }
 }
 

@@ -2,7 +2,7 @@ import { EnvironmentStub } from './../stubs/EnvironmentStub';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import 'mocha';
 import { expect } from 'chai';
-import { runCodeAsync } from '@/infrastructure/CodeRunner';
+import { CodeRunner } from '@/infrastructure/CodeRunner';
 
 describe('CodeRunner', () => {
     describe('runCodeAsync', () => {
@@ -127,7 +127,8 @@ class TestContext {
     private env = mockEnvironment(OperatingSystem.Windows);
 
     public async runCodeAsync(): Promise<void> {
-        await runCodeAsync(this.code, this.folderName, this.fileExtension, this.mocks, this.env);
+        const runner = new CodeRunner(this.mocks, this.env);
+        await runner.runCodeAsync(this.code, this.folderName, this.fileExtension);
     }
     public withOs(os: OperatingSystem) {
         this.env = mockEnvironment(os);

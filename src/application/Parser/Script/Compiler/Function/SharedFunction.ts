@@ -1,9 +1,10 @@
 import { ISharedFunction } from './ISharedFunction';
 
 export class SharedFunction implements ISharedFunction {
+    public readonly parameters: readonly string[];
     constructor(
         public readonly name: string,
-        public readonly parameters: readonly string[],
+        parameters: readonly string[],
         public readonly code: string,
         public readonly revertCode: string,
         ) {

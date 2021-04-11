@@ -10,5 +10,4 @@ export enum OperatingSystem {
     Android,
     iOS,
     WindowsPhone,
-    Unknown,
 }

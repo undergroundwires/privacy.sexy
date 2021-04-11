@@ -9,7 +9,7 @@ interface IDesktopTestCase {
 export const DesktopOsTestCases: ReadonlyArray<IDesktopTestCase> = [
     {
         processPlatform: 'aix',
-        expectedOs: OperatingSystem.Unknown,
+        expectedOs: undefined,
     },
     {
         processPlatform: 'darwin',
@@ -17,7 +17,7 @@ export const DesktopOsTestCases: ReadonlyArray<IDesktopTestCase> = [
     },
     {
         processPlatform: 'freebsd',
-        expectedOs: OperatingSystem.Unknown,
+        expectedOs: undefined,
     },
     {
         processPlatform: 'linux',
@@ -25,11 +25,11 @@ export const DesktopOsTestCases: ReadonlyArray<IDesktopTestCase> = [
     },
     {
         processPlatform: 'openbsd',
-        expectedOs: OperatingSystem.Unknown,
+        expectedOs: undefined,
     },
     {
         processPlatform: 'sunos',
-        expectedOs: OperatingSystem.Unknown,
+        expectedOs: undefined,
     },
     {
         processPlatform: 'win32',

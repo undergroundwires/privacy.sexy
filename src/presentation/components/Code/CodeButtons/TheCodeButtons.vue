@@ -37,7 +37,7 @@ import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { IApplicationCode } from '@/application/Context/State/Code/IApplicationCode';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { runCodeAsync } from '@/infrastructure/CodeRunner';
+import { CodeRunner } from '@/infrastructure/CodeRunner';
 import { IApplicationContext } from '@/application/Context/IApplicationContext';
 
 @Component({
@@ -116,11 +116,12 @@ function buildFileName(scripting: IScriptingDefinition) {
 }
 
 async function executeCodeAsync(context: IApplicationContext) {
-    await runCodeAsync(
-        /*code*/ context.state.code.current,
-        /*appName*/ context.app.info.name,
-        /*fileExtension*/ context.state.collection.scripting.fileExtension,
-      );
+  const runner = new CodeRunner();
+  await runner.runCodeAsync(
+    /*code*/ context.state.code.current,
+    /*appName*/ context.app.info.name,
+    /*fileExtension*/ context.state.collection.scripting.fileExtension,
+  );
 }
 
 </script>

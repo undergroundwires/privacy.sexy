@@ -3,6 +3,14 @@
 - It's mainly responsible for
   - creating and event based [application state](#application-state)
   - [parsing](#parsing) and [compiling](#compiling) [application data](#application-data)
+- Consumed by [presentation layer](./presentation.md)
+
+## Structure
+
+- [`/src/` **`application/`**](./../src/application/): Contains all application related code.
+  - [**`collections/`**](./../src/application/collections/): Holds [collection files](./collection-files.md)
+  - [**`Common/`**](./../src/application/Common/): Contains common functionality that is shared in application layer.
+  - `..`: other classes are categorized using folders-by-feature structure
 
 ## Application state
 

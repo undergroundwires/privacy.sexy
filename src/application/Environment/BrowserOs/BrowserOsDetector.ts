@@ -4,17 +4,17 @@ import { IBrowserOsDetector } from './IBrowserOsDetector';
 
 export class BrowserOsDetector implements IBrowserOsDetector {
     private readonly detectors = BrowserDetectors;
-    public detect(userAgent: string): OperatingSystem {
+    public detect(userAgent: string): OperatingSystem | undefined {
         if (!userAgent) {
-            return OperatingSystem.Unknown;
+            return undefined;
         }
         for (const detector of this.detectors) {
             const os = detector.detect(userAgent);
-            if (os !== OperatingSystem.Unknown) {
+            if (os !== undefined) {
                 return os;
             }
         }
-        return OperatingSystem.Unknown;
+        return undefined;
     }
 }
 

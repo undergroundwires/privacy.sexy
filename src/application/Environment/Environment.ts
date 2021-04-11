@@ -44,7 +44,7 @@ function getProcessPlatform(variables: IEnvironmentVariables): string {
     return variables.process.platform;
 }
 
-function getDesktopOsType(processPlatform: string): OperatingSystem {
+function getDesktopOsType(processPlatform: string): OperatingSystem | undefined {
     // https://nodejs.org/api/process.html#process_process_platform
     if (processPlatform === 'darwin') {
         return OperatingSystem.macOS;
@@ -53,7 +53,7 @@ function getDesktopOsType(processPlatform: string): OperatingSystem {
     } else if (processPlatform === 'linux') {
         return OperatingSystem.Linux;
     }
-    return OperatingSystem.Unknown;
+    return undefined;
 }
 
 function isDesktop(variables: IEnvironmentVariables): boolean {

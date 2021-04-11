@@ -1,6 +1,8 @@
 import 'mocha';
 import { expect } from 'chai';
-import { getEnumNames, getEnumValues, createEnumParser } from '@/application/Common/Enum';
+import { getEnumNames, getEnumValues, createEnumParser, assertInRange } from '@/application/Common/Enum';
+import { EnumRangeTestRunner } from './EnumRangeTestRunner';
+import { scrambledEqual } from '@/application/Common/Array';
 
 describe('Enum', () => {
     describe('createEnumParser', () => {
@@ -78,7 +80,7 @@ describe('Enum', () => {
             // act
             const actual = getEnumNames(TestEnum);
             // assert
-            expect(expected.sort()).to.deep.equal(actual.sort());
+            expect(scrambledEqual(expected, actual));
         });
     });
     describe('getEnumValues', () => {
@@ -89,7 +91,19 @@ describe('Enum', () => {
             // act
             const actual = getEnumValues(TestEnum);
             // assert
-            expect(expected.sort()).to.deep.equal(actual.sort());
+            expect(scrambledEqual(expected, actual));
         });
+    });
+    describe('assertInRange', () => {
+        // arrange
+        enum TestEnum { Red, Green, Blue }
+        const validValue = TestEnum.Red;
+        // act
+        const act = (value: TestEnum) => assertInRange(value, TestEnum);
+        // assert
+        new EnumRangeTestRunner(act)
+            .testOutOfRangeThrows()
+            .testUndefinedValueThrows()
+            .testValidValueDoesNotThrow(validValue);
     });
 });

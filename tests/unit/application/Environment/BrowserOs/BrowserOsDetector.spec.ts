@@ -4,13 +4,14 @@ import { BrowserOsDetector } from '@/application/Environment/BrowserOs/BrowserOs
 import { BrowserOsTestCases } from './BrowserOsTestCases';
 
 describe('BrowserOsDetector', () => {
-    it('unkown when user agent is undefined', () => {
+    it('returns undefined when user agent is undefined', () => {
         // arrange
+        const expected = undefined;
         const sut = new BrowserOsDetector();
         // act
         const actual = sut.detect(undefined);
         // assert
-        expect(actual).to.equal(OperatingSystem.Unknown);
+        expect(actual).to.equal(expected);
     });
     it('detects as expected', () => {
         for (const testCase of BrowserOsTestCases) {

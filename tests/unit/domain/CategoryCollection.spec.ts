@@ -9,6 +9,7 @@ import { getEnumValues } from '@/application/Common/Enum';
 import { CategoryCollection } from '@/domain/CategoryCollection';
 import { ScriptStub } from '../stubs/ScriptStub';
 import { CategoryStub } from '../stubs/CategoryStub';
+import { EnumRangeTestRunner } from '../application/Common/EnumRangeTestRunner';
 
 describe('CategoryCollection', () => {
     describe('getScriptsByLevel', () => {
@@ -186,35 +187,15 @@ describe('CategoryCollection', () => {
             // assert
             expect(sut.os).to.deep.equal(expected);
         });
-        it('cannot construct with unknown os', () => {
-            // arrange
-            const os = OperatingSystem.Unknown;
+        describe('throws when invalid', () => {
             // act
-            const construct = () => new CategoryCollectionBuilder()
+            const act = (os: OperatingSystem) => new CategoryCollectionBuilder()
                 .withOs(os)
                 .construct();
             // assert
-            expect(construct).to.throw('unknown os');
-        });
-        it('cannot construct with undefined os', () => {
-            // arrange
-            const os = undefined;
-            // act
-            const construct = () => new CategoryCollectionBuilder()
-                .withOs(os)
-                .construct();
-            // assert
-            expect(construct).to.throw('undefined os');
-        });
-        it('cannot construct with OS not in range', () => {
-            // arrange
-            const os: OperatingSystem = 666;
-            // act
-            const construct = () => new CategoryCollectionBuilder()
-                .withOs(os)
-                .construct();
-            // assert
-            expect(construct).to.throw(`os "${os}" is out of range`);
+            new EnumRangeTestRunner(act)
+                .testOutOfRangeThrows()
+                .testUndefinedValueThrows();
         });
     });
     describe('scriptingDefinition', () => {

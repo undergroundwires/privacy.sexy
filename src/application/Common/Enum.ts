@@ -1,6 +1,6 @@
 // Because we cannot do "T extends enum" 😞 https://github.com/microsoft/TypeScript/issues/30611
-type EnumType = number | string;
-type EnumVariable<T extends EnumType, TEnumValue extends EnumType> = { [key in T]: TEnumValue };
+export type EnumType = number | string;
+export type EnumVariable<T extends EnumType, TEnumValue extends EnumType> = { [key in T]: TEnumValue };
 
 export interface IEnumParser<TEnum> {
     parseEnum(value: string, propertyName: string): TEnum;
@@ -40,4 +40,15 @@ export function getEnumValues<T extends EnumType, TEnumValue extends EnumType>(
     enumVariable: EnumVariable<T, TEnumValue>): TEnumValue[] {
     return getEnumNames(enumVariable)
         .map((level) => enumVariable[level]) as TEnumValue[];
+}
+
+export function assertInRange<T extends EnumType, TEnumValue extends EnumType>(
+    value: TEnumValue,
+    enumVariable: EnumVariable<T, TEnumValue>) {
+    if (value === undefined) {
+        throw new Error('undefined enum value');
+    }
+    if (!(value in enumVariable)) {
+        throw new RangeError(`enum value "${value}" is out of range`);
+    }
 }

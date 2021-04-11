@@ -29,10 +29,10 @@ export class DetectorBuilder {
             throw new Error('User agent is null or undefined');
         }
         if (this.existingPartsInUserAgent.some((part) => !userAgent.includes(part))) {
-            return OperatingSystem.Unknown;
+            return undefined;
         }
         if (this.notExistingPartsInUserAgent.some((part) => userAgent.includes(part))) {
-            return OperatingSystem.Unknown;
+            return undefined;
         }
         return this.os;
     }

@@ -1,5 +1,6 @@
 import { IProjectInformation } from './IProjectInformation';
 import { OperatingSystem } from './OperatingSystem';
+import { assertInRange } from '@/application/Common/Enum';
 
 export class ProjectInformation implements IProjectInformation {
     public readonly repositoryWebUrl: string;
@@ -42,6 +43,7 @@ function getWebUrl(gitUrl: string) {
 }
 
 function getFileName(os: OperatingSystem, version: string): string {
+    assertInRange(os, OperatingSystem);
     switch (os) {
         case OperatingSystem.Linux:
             return `privacy.sexy-${version}.AppImage`;
@@ -50,6 +52,6 @@ function getFileName(os: OperatingSystem, version: string): string {
         case OperatingSystem.Windows:
             return `privacy.sexy-Setup-${version}.exe`;
         default:
-            throw new Error(`Unsupported os: ${OperatingSystem[os]}`);
+            throw new RangeError(`Unsupported os: ${OperatingSystem[os]}`);
     }
 }
