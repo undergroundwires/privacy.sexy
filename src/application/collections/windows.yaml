@@ -3538,7 +3538,7 @@ actions:
                                             parameters:
                                                 packageName: Microsoft.Windows.CapturePicker
                                     -
-                                        name: Cloud Experience Host app # Allows to connect to corporate domains or Microsoft cloud based services
+                                        name: Cloud Experience Host app (breaks Microsoft cloud/corporate sign in) # Allows to connect to corporate domains or Microsoft cloud based services
                                         recommend: strict
                                         call:
                                             function: UninstallSystemApp
