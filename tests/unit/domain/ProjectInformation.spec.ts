@@ -2,7 +2,7 @@ import 'mocha';
 import { expect } from 'chai';
 import { ProjectInformation } from '@/domain/ProjectInformation';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { EnumRangeTestRunner } from '../application/Common/EnumRangeTestRunner';
+import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
 
 describe('ProjectInformation', () => {
     it('sets name as expected', () => {

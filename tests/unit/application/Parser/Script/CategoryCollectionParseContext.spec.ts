@@ -1,14 +1,14 @@
 import 'mocha';
 import { expect } from 'chai';
+import { FunctionData } from 'js-yaml-loader!@/*';
 import { ISyntaxFactory } from '@/application/Parser/Script/Syntax/ISyntaxFactory';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
-import { LanguageSyntaxStub } from '../../../stubs/LanguageSyntaxStub';
 import { CategoryCollectionParseContext } from '@/application/Parser/Script/CategoryCollectionParseContext';
-import { ScriptingDefinitionStub } from '../../../stubs/ScriptingDefinitionStub';
-import { FunctionDataStub } from '../../../stubs/FunctionDataStub';
 import { ILanguageSyntax } from '@/domain/ScriptCode';
 import { ScriptCompiler } from '@/application/Parser/Script/Compiler/ScriptCompiler';
-import { FunctionData } from 'js-yaml-loader!*';
+import { LanguageSyntaxStub } from '@tests/unit/stubs/LanguageSyntaxStub';
+import { ScriptingDefinitionStub } from '@tests/unit/stubs/ScriptingDefinitionStub';
+import { FunctionDataStub } from '@tests/unit/stubs/FunctionDataStub';
 
 describe('CategoryCollectionParseContext', () => {
     describe('ctor', () => {

@@ -1,7 +1,7 @@
 import { ISharedFunctionCollection } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionCollection';
 import { ICompiledCode } from '@/application/Parser/Script/Compiler/FunctionCall/ICompiledCode';
 import { IFunctionCallCompiler } from '@/application/Parser/Script/Compiler/FunctionCall/IFunctionCallCompiler';
-import { FunctionCallData, ScriptFunctionCallData } from 'js-yaml-loader!*';
+import { FunctionCallData, ScriptFunctionCallData } from 'js-yaml-loader!@/*';
 
 interface Scenario { call: ScriptFunctionCallData; functions: ISharedFunctionCollection; result: ICompiledCode; }
 

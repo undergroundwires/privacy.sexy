@@ -2,8 +2,8 @@ import 'mocha';
 import { expect } from 'chai';
 import { ExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/ExpressionsCompiler';
 import { IExpressionParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/IExpressionParser';
-import { ExpressionStub } from '../../../../../stubs/ExpressionStub';
-import { ExpressionParserStub } from '../../../../../stubs/ExpressionParserStub';
+import { ExpressionStub } from '@tests/unit/stubs/ExpressionStub';
+import { ExpressionParserStub } from '@tests/unit/stubs/ExpressionParserStub';
 
 describe('ExpressionsCompiler', () => {
     describe('compileExpressions', () => {

@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import { ApplicationFactory, ApplicationGetter } from '@/application/ApplicationFactory';
-import { ApplicationStub } from '../stubs/ApplicationStub';
+import { ApplicationStub } from '@tests/unit/stubs/ApplicationStub';
 
 describe('ApplicationFactory', () => {
     describe('ctor', () => {

@@ -4,7 +4,6 @@ import { ILanguageSyntax } from '@/domain/ScriptCode';
 import { BatchFileSyntax } from '@/application/Parser/Script/Syntax/BatchFileSyntax';
 import { ShellScriptSyntax } from '@/application/Parser/Script/Syntax/ShellScriptSyntax';
 
-
 function getSystemsUnderTest(): ILanguageSyntax[] {
     return [ new BatchFileSyntax(), new ShellScriptSyntax() ];
 }

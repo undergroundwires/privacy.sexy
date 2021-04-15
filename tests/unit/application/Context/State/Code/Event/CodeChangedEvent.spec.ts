@@ -4,8 +4,8 @@ import { CodeChangedEvent } from '@/application/Context/State/Code/Event/CodeCha
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
 import { CodePosition } from '@/application/Context/State/Code/Position/CodePosition';
-import { SelectedScriptStub } from '../../../../../stubs/SelectedScriptStub';
-import { ScriptStub } from '../../../../../stubs/ScriptStub';
+import { SelectedScriptStub } from '@tests/unit/stubs/SelectedScriptStub';
+import { ScriptStub } from '@tests/unit/stubs/ScriptStub';
 
 describe('CodeChangedEvent', () => {
     describe('ctor', () => {

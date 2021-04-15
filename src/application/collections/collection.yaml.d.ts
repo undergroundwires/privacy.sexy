@@ -1,4 +1,4 @@
-declare module 'js-yaml-loader!*' {
+declare module 'js-yaml-loader!@/*' {
     export interface CollectionData {
         readonly os: string;
         readonly scripting: ScriptingDefinitionData;

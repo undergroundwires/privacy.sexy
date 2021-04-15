@@ -6,9 +6,9 @@ import {
 import { ScriptReverter } from '@/presentation/components/Scripts/ScriptsTree/SelectableTree/Node/Reverter/ScriptReverter';
 import { CategoryReverter } from '@/presentation/components/Scripts/ScriptsTree/SelectableTree/Node/Reverter/CategoryReverter';
 import { getScriptNodeId, getCategoryNodeId } from '@/presentation/components/Scripts/ScriptsTree/ScriptNodeParser';
-import { CategoryCollectionStub } from '../../../../../../../stubs/CategoryCollectionStub';
-import { CategoryStub } from '../../../../../../../stubs/CategoryStub';
-import { ScriptStub } from '../../../../../../../stubs/ScriptStub';
+import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
+import { CategoryStub } from '@tests/unit/stubs/CategoryStub';
+import { ScriptStub } from '@tests/unit/stubs/ScriptStub';
 
 describe('ReverterFactory', () => {
     describe('getReverter', () => {

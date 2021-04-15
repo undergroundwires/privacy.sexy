@@ -1,4 +1,4 @@
-import { FunctionData, ScriptFunctionCallData } from 'js-yaml-loader!*';
+import { FunctionData, ScriptFunctionCallData } from 'js-yaml-loader!@/*';
 
 export class FunctionDataStub implements FunctionData {
     public static createWithCode() {

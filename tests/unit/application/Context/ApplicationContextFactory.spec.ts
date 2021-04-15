@@ -2,12 +2,12 @@ import 'mocha';
 import { expect } from 'chai';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
-import { CategoryCollectionStub } from '../../stubs/CategoryCollectionStub';
-import { EnvironmentStub } from '../../stubs/EnvironmentStub';
-import { ApplicationStub } from '../../stubs/ApplicationStub';
 import { buildContextAsync } from '@/application/Context/ApplicationContextFactory';
 import { IApplicationFactory } from '@/application/IApplicationFactory';
 import { IApplication } from '@/domain/IApplication';
+import { EnvironmentStub } from '@tests/unit/stubs/EnvironmentStub';
+import { ApplicationStub } from '@tests/unit/stubs/ApplicationStub';
+import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
 
 describe('ApplicationContextFactory', () => {
     describe('buildContextAsync', () => {

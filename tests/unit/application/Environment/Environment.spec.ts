@@ -1,8 +1,9 @@
+import 'mocha';
+import { expect } from 'chai';
 import { IBrowserOsDetector } from '@/application/Environment/BrowserOs/IBrowserOsDetector';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { DesktopOsTestCases } from './DesktopOsTestCases';
 import { Environment } from '@/application/Environment/Environment';
-import { expect } from 'chai';
 
 interface EnvironmentVariables {
     window?: any;

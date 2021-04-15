@@ -10,6 +10,13 @@ module.exports = {
     chainWebpack: (config) => {
         changeAppEntryPoint('./src/presentation/main.ts', config);
     },
+    configureWebpack:{
+        resolve: {
+            alias: {  // also requires path alias in tsconfig.json
+              "@tests": require('path').resolve(__dirname, 'tests/'),
+            },
+        },
+    },
     pluginOptions: {
         // https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/guide.html#native-modules
         electronBuilder: {

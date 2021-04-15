@@ -1,7 +1,7 @@
 import { sequenceEqual } from '@/application/Common/Array';
 import { IFunctionCompiler } from '@/application/Parser/Script/Compiler/Function/IFunctionCompiler';
 import { ISharedFunctionCollection } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionCollection';
-import { FunctionData } from 'js-yaml-loader!*';
+import { FunctionData } from 'js-yaml-loader!@/*';
 import { SharedFunctionCollectionStub } from './SharedFunctionCollectionStub';
 
 export class FunctionCompilerStub implements IFunctionCompiler {

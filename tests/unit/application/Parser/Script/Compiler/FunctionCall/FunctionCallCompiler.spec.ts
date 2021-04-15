@@ -1,12 +1,12 @@
 import 'mocha';
 import { expect } from 'chai';
-import { FunctionCallData, FunctionCallParametersData } from 'js-yaml-loader!*';
+import { FunctionCallData, FunctionCallParametersData } from 'js-yaml-loader!@/*';
 import { FunctionCallCompiler } from '@/application/Parser/Script/Compiler/FunctionCall/FunctionCallCompiler';
 import { ISharedFunctionCollection } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionCollection';
 import { IExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/IExpressionsCompiler';
-import { ExpressionsCompilerStub } from '../../../../../stubs/ExpressionsCompilerStub';
-import { SharedFunctionCollectionStub } from '../../../../../stubs/SharedFunctionCollectionStub';
-import { SharedFunctionStub } from '../../../../../stubs/SharedFunctionStub';
+import { ExpressionsCompilerStub } from '@tests/unit/stubs/ExpressionsCompilerStub';
+import { SharedFunctionCollectionStub } from '@tests/unit/stubs/SharedFunctionCollectionStub';
+import { SharedFunctionStub } from '@tests/unit/stubs/SharedFunctionStub';
 
 describe('FunctionCallCompiler', () => {
     describe('compileCall', () => {

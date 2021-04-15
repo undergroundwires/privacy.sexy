@@ -1,11 +1,11 @@
 import 'mocha';
 import { expect } from 'chai';
 import { ISharedFunction } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
-import { FunctionData } from 'js-yaml-loader!*';
+import { FunctionData } from 'js-yaml-loader!@/*';
 import { IFunctionCallCompiler } from '@/application/Parser/Script/Compiler/FunctionCall/IFunctionCallCompiler';
 import { FunctionCompiler } from '@/application/Parser/Script/Compiler/Function/FunctionCompiler';
-import { FunctionCallCompilerStub } from '../../../../../stubs/FunctionCallCompilerStub';
-import { FunctionDataStub } from '../../../../../stubs/FunctionDataStub';
+import { FunctionCallCompilerStub } from '@tests/unit/stubs/FunctionCallCompilerStub';
+import { FunctionDataStub } from '@tests/unit/stubs/FunctionDataStub';
 
 describe('FunctionsCompiler', () => {
     describe('compileFunctions', () => {

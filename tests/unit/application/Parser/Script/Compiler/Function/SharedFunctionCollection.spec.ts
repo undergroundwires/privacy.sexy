@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import { SharedFunctionCollection } from '@/application/Parser/Script/Compiler/Function/SharedFunctionCollection';
-import { SharedFunctionStub } from '../../../../../stubs/SharedFunctionStub';
+import { SharedFunctionStub } from '@tests/unit/stubs/SharedFunctionStub';
 
 describe('SharedFunctionCollection', () => {
     describe('addFunction', () => {

@@ -2,8 +2,8 @@ import 'mocha';
 import { expect } from 'chai';
 import { CodeSubstituter } from '@/application/Parser/ScriptingDefinition/CodeSubstituter';
 import { IExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/IExpressionsCompiler';
-import { ProjectInformationStub } from '../../../stubs/ProjectInformationStub';
-import { ExpressionsCompilerStub } from '../../../stubs/ExpressionsCompilerStub';
+import { ProjectInformationStub } from '@tests/unit/stubs/ProjectInformationStub';
+import { ExpressionsCompilerStub } from '@tests/unit/stubs/ExpressionsCompilerStub';
 
 describe('CodeSubstituter', () => {
     describe('throws with invalid parameters', () => {

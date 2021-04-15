@@ -1,7 +1,7 @@
-import { EnvironmentStub } from './../stubs/EnvironmentStub';
-import { OperatingSystem } from '@/domain/OperatingSystem';
 import 'mocha';
 import { expect } from 'chai';
+import { EnvironmentStub } from '@tests/unit/stubs/EnvironmentStub';
+import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CodeRunner } from '@/infrastructure/CodeRunner';
 
 describe('CodeRunner', () => {

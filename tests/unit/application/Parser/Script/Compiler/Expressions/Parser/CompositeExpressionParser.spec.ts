@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import { IExpression } from '@/application/Parser/Script/Compiler/Expressions/Expression/IExpression';
 import { IExpressionParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/IExpressionParser';
 import { CompositeExpressionParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/CompositeExpressionParser';
-import { ExpressionStub } from '../../../../../../stubs/ExpressionStub';
+import { ExpressionStub } from '@tests/unit/stubs/ExpressionStub';
 
 describe('CompositeExpressionParser', () => {
     describe('ctor', () => {

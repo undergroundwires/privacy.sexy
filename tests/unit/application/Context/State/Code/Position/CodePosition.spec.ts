@@ -1,6 +1,6 @@
-import { CodePosition } from '@/application/Context/State/Code/Position/CodePosition';
 import 'mocha';
 import { expect } from 'chai';
+import { CodePosition } from '@/application/Context/State/Code/Position/CodePosition';
 
 describe('CodePosition', () => {
     describe('ctor', () => {

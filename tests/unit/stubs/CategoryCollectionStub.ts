@@ -1,10 +1,10 @@
-import { ScriptingDefinitionStub } from './ScriptingDefinitionStub';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { ScriptStub } from './ScriptStub';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { IScript } from '@/domain/IScript';
 import { ICategory } from '@/domain/ICategory';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
+import { ScriptStub } from './ScriptStub';
+import { ScriptingDefinitionStub } from './ScriptingDefinitionStub';
 
 export class CategoryCollectionStub implements ICategoryCollection {
     public scripting: IScriptingDefinition = new ScriptingDefinitionStub();

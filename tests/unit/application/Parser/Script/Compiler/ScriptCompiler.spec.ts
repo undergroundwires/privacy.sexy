@@ -6,12 +6,12 @@ import { ILanguageSyntax } from '@/domain/ScriptCode';
 import { IFunctionCompiler } from '@/application/Parser/Script/Compiler/Function/IFunctionCompiler';
 import { IFunctionCallCompiler } from '@/application/Parser/Script/Compiler/FunctionCall/IFunctionCallCompiler';
 import { ICompiledCode } from '@/application/Parser/Script/Compiler/FunctionCall/ICompiledCode';
-import { LanguageSyntaxStub } from '../../../../stubs/LanguageSyntaxStub';
-import { ScriptDataStub } from '../../../../stubs/ScriptDataStub';
-import { FunctionDataStub } from '../../../../stubs/FunctionDataStub';
-import { FunctionCallCompilerStub } from '../../../../stubs/FunctionCallCompilerStub';
-import { FunctionCompilerStub } from '../../../../stubs/FunctionCompilerStub';
-import { SharedFunctionCollectionStub } from '../../../../stubs/SharedFunctionCollectionStub';
+import { LanguageSyntaxStub } from '@tests/unit/stubs/LanguageSyntaxStub';
+import { ScriptDataStub } from '@tests/unit/stubs/ScriptDataStub';
+import { FunctionDataStub } from '@tests/unit/stubs/FunctionDataStub';
+import { FunctionCallCompilerStub } from '@tests/unit/stubs/FunctionCallCompilerStub';
+import { FunctionCompilerStub } from '@tests/unit/stubs/FunctionCompilerStub';
+import { SharedFunctionCollectionStub } from '@tests/unit/stubs/SharedFunctionCollectionStub';
 
 describe('ScriptCompiler', () => {
     describe('ctor', () => {

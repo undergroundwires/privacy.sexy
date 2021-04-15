@@ -4,12 +4,12 @@ import { parseScript } from '@/application/Parser/Script/ScriptParser';
 import { parseDocUrls } from '@/application/Parser/DocumentationParser';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { ICategoryCollectionParseContext } from '@/application/Parser/Script/ICategoryCollectionParseContext';
-import { ScriptCompilerStub } from '../../../stubs/ScriptCompilerStub';
-import { ScriptDataStub } from '../../../stubs/ScriptDataStub';
-import { EnumParserStub } from '../../../stubs/EnumParserStub';
-import { ScriptCodeStub } from '../../../stubs/ScriptCodeStub';
-import { CategoryCollectionParseContextStub } from '../../../stubs/CategoryCollectionParseContextStub';
-import { LanguageSyntaxStub } from '../../../stubs/LanguageSyntaxStub';
+import { ScriptCompilerStub } from '@tests/unit/stubs/ScriptCompilerStub';
+import { ScriptDataStub } from '@tests/unit/stubs/ScriptDataStub';
+import { EnumParserStub } from '@tests/unit/stubs/EnumParserStub';
+import { ScriptCodeStub } from '@tests/unit/stubs/ScriptCodeStub';
+import { CategoryCollectionParseContextStub } from '@tests/unit/stubs/CategoryCollectionParseContextStub';
+import { LanguageSyntaxStub } from '@tests/unit/stubs/LanguageSyntaxStub';
 
 describe('ScriptParser', () => {
     describe('parseScript', () => {

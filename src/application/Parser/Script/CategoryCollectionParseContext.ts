@@ -1,6 +1,6 @@
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { ILanguageSyntax } from '@/domain/ScriptCode';
-import { FunctionData } from 'js-yaml-loader!*';
+import { FunctionData } from 'js-yaml-loader!@/*';
 import { IScriptCompiler } from './Compiler/IScriptCompiler';
 import { ScriptCompiler } from './Compiler/ScriptCompiler';
 import { ICategoryCollectionParseContext } from './ICategoryCollectionParseContext';

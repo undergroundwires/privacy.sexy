@@ -1,7 +1,7 @@
+import 'mocha';
+import { expect } from 'chai';
 import { EventHandler, IEventSource, IEventSubscription } from '@/infrastructure/Events/IEventSource';
 import { EventSource } from '@/infrastructure/Events/EventSource';
-import { expect } from 'chai';
-import 'mocha';
 
 describe('EventSource', () => {
     class ObserverMock {
@@ -42,7 +42,6 @@ describe('EventSource', () => {
             expect(observer.onReceiveCalls).to.have.lengthOf(0);
         });
     });
-
     describe('multiple observers', () => {
         // arrange
         let observers: ObserverMock[];

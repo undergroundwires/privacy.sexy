@@ -1,3 +1,4 @@
+import 'mocha';
 import { expect } from 'chai';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { BrowserOsDetector } from '@/application/Environment/BrowserOs/BrowserOsDetector';

@@ -1,4 +1,4 @@
-import { FunctionData, InstructionHolder } from 'js-yaml-loader!*';
+import { FunctionData, InstructionHolder } from 'js-yaml-loader!@/*';
 import { SharedFunction } from './SharedFunction';
 import { SharedFunctionCollection } from './SharedFunctionCollection';
 import { ISharedFunctionCollection } from './ISharedFunctionCollection';

@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { ScriptingLanguageFactory } from '@/application/Common/ScriptingLanguage/ScriptingLanguageFactory';
 import { ScriptingLanguageFactoryTestRunner } from './ScriptingLanguageFactoryTestRunner';
-import { EnumRangeTestRunner } from '../EnumRangeTestRunner';
+import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
 
 class ScriptingLanguageConcrete extends ScriptingLanguageFactory<number> {
     public registerGetter(language: ScriptingLanguage, getter: () => number) {

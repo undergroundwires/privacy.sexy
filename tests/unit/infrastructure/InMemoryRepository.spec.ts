@@ -1,6 +1,7 @@
-import { NumericEntityStub } from './../stubs/NumericEntityStub';
-import { InMemoryRepository } from '@/infrastructure/Repository/InMemoryRepository';
+import 'mocha';
 import { expect } from 'chai';
+import { NumericEntityStub } from '@tests/unit/stubs/NumericEntityStub';
+import { InMemoryRepository } from '@/infrastructure/Repository/InMemoryRepository';
 
 describe('InMemoryRepository', () => {
     describe('exists', () => {

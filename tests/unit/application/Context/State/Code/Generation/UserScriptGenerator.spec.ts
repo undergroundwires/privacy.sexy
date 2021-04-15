@@ -4,8 +4,8 @@ import { UserScriptGenerator } from '@/application/Context/State/Code/Generation
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { ICodeBuilderFactory } from '@/application/Context/State/Code/Generation/ICodeBuilderFactory';
 import { ICodeBuilder } from '@/application/Context/State/Code/Generation/ICodeBuilder';
-import { ScriptStub } from '../../../../../stubs/ScriptStub';
-import { ScriptingDefinitionStub } from '../../../../../stubs/ScriptingDefinitionStub';
+import { ScriptStub } from '@tests/unit/stubs/ScriptStub';
+import { ScriptingDefinitionStub } from '@tests/unit/stubs/ScriptingDefinitionStub';
 
 describe('UserScriptGenerator', () => {
     describe('scriptingDefinition', () => {

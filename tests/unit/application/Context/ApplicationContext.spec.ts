@@ -5,9 +5,9 @@ import { OperatingSystem } from '@/domain/OperatingSystem';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { IApplicationContext, IApplicationContextChangedEvent } from '@/application/Context/IApplicationContext';
 import { IApplication } from '@/domain/IApplication';
-import { ApplicationStub } from '../../stubs/ApplicationStub';
-import { CategoryCollectionStub } from '../../stubs/CategoryCollectionStub';
-import { EnumRangeTestRunner } from '../Common/EnumRangeTestRunner';
+import { ApplicationStub } from '@tests/unit/stubs/ApplicationStub';
+import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
+import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
 
 describe('ApplicationContext', () => {
     describe('changeContext', () => {

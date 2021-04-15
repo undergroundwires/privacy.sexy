@@ -1,9 +1,9 @@
 import 'mocha';
 import { expect } from 'chai';
 import { Application } from '@/domain/Application';
-import { CategoryCollectionStub } from '../stubs/CategoryCollectionStub';
-import { ProjectInformationStub } from '../stubs/ProjectInformationStub';
 import { OperatingSystem } from '@/domain/OperatingSystem';
+import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
+import { ProjectInformationStub } from '@tests/unit/stubs/ProjectInformationStub';
 
 describe('Application', () => {
     describe('getCollection', () => {

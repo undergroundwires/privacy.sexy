@@ -1,8 +1,8 @@
-import { CategoryStub } from '../../../../stubs/CategoryStub';
-import { ScriptStub } from '../../../../stubs/ScriptStub';
-import { FilterResult } from '@/application/Context/State/Filter/FilterResult';
 import 'mocha';
 import { expect } from 'chai';
+import { FilterResult } from '@/application/Context/State/Filter/FilterResult';
+import { CategoryStub } from '@tests/unit/stubs/CategoryStub';
+import { ScriptStub } from '@tests/unit/stubs/ScriptStub';
 
 describe('FilterResult', () => {
     describe('hasAnyMatches', () => {

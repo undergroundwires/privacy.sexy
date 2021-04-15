@@ -3,10 +3,10 @@ import { expect } from 'chai';
 import { IScript } from '@/domain/IScript';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
-import { CategoryStub } from '../../../../stubs/CategoryStub';
-import { CategoryCollectionStub } from '../../../../stubs/CategoryCollectionStub';
-import { SelectedScriptStub } from '../../../../stubs/SelectedScriptStub';
-import { ScriptStub } from '../../../../stubs/ScriptStub';
+import { CategoryStub } from '@tests/unit/stubs/CategoryStub';
+import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
+import { SelectedScriptStub } from '@tests/unit/stubs/SelectedScriptStub';
+import { ScriptStub } from '@tests/unit/stubs/ScriptStub';
 
 describe('UserSelection', () => {
     describe('ctor', () => {

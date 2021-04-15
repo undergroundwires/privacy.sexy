@@ -1,7 +1,8 @@
+import 'mocha';
+import { expect } from 'chai';
 import { IScriptingLanguageFactory } from '@/application/Common/ScriptingLanguage/IScriptingLanguageFactory';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
-import { expect } from 'chai';
-import { EnumRangeTestRunner } from '../EnumRangeTestRunner';
+import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
 
 export class ScriptingLanguageFactoryTestRunner<T> {
     private expectedTypes = new Map<ScriptingLanguage, T>();

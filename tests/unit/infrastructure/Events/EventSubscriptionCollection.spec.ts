@@ -1,7 +1,7 @@
+import 'mocha';
+import { expect } from 'chai';
 import { EventSubscriptionCollection } from '@/infrastructure/Events/EventSubscriptionCollection';
 import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
-import { expect } from 'chai';
-import 'mocha';
 
 describe('EventSubscriptionCollection', () => {
     it('unsubscribeAll unsubscribes from all registered subscriptions', () => {

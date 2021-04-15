@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import { ScriptCode } from '@/domain/ScriptCode';
 import { IScriptCode } from '@/domain/IScriptCode';
 import { ILanguageSyntax } from '@/domain/ScriptCode';
-import { LanguageSyntaxStub } from '../stubs/LanguageSyntaxStub';
+import { LanguageSyntaxStub } from '@tests/unit/stubs/LanguageSyntaxStub';
 
 describe('ScriptCode', () => {
     describe('code', () => {

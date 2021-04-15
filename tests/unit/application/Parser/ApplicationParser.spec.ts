@@ -10,9 +10,9 @@ import { ProjectInformation } from '@/domain/ProjectInformation';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { getEnumValues } from '@/application/Common/Enum';
-import { CategoryCollectionStub } from '../../stubs/CategoryCollectionStub';
-import { getProcessEnvironmentStub } from '../../stubs/ProcessEnvironmentStub';
-import { CollectionDataStub } from '../../stubs/CollectionDataStub';
+import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
+import { getProcessEnvironmentStub } from '@tests/unit/stubs/ProcessEnvironmentStub';
+import { CollectionDataStub } from '@tests/unit/stubs/CollectionDataStub';
 
 describe('ApplicationParser', () => {
     describe('parseApplication', () => {

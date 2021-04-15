@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import { parseProjectInformation } from '@/application/Parser/ProjectInformationParser';
-import { getProcessEnvironmentStub } from '../../stubs/ProcessEnvironmentStub';
+import { getProcessEnvironmentStub } from '@tests/unit/stubs/ProcessEnvironmentStub';
 
 describe('ProjectInformationParser', () => {
     describe('parseProjectInformation', () => {

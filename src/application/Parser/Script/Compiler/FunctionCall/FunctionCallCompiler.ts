@@ -1,4 +1,4 @@
-import { FunctionCallData, FunctionCallParametersData, FunctionData, ScriptFunctionCallData } from 'js-yaml-loader!*';
+import { FunctionCallData, FunctionCallParametersData, FunctionData, ScriptFunctionCallData } from 'js-yaml-loader!@/*';
 import { ICompiledCode } from './ICompiledCode';
 import { ISharedFunctionCollection } from '../Function/ISharedFunctionCollection';
 import { IFunctionCallCompiler } from './IFunctionCallCompiler';

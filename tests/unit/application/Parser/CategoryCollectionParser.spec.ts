@@ -7,13 +7,13 @@ import { parseProjectInformation } from '@/application/Parser/ProjectInformation
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { ScriptingDefinitionParser } from '@/application/Parser/ScriptingDefinition/ScriptingDefinitionParser';
-import { EnumParserStub } from '../../stubs/EnumParserStub';
-import { ProjectInformationStub } from '../../stubs/ProjectInformationStub';
-import { getCategoryStub, CollectionDataStub } from '../../stubs/CollectionDataStub';
-import { CategoryCollectionParseContextStub } from '../../stubs/CategoryCollectionParseContextStub';
-import { CategoryDataStub } from '../../stubs/CategoryDataStub';
-import { ScriptDataStub } from '../../stubs/ScriptDataStub';
-import { FunctionDataStub } from '../../stubs/FunctionDataStub';
+import { EnumParserStub } from '@tests/unit/stubs/EnumParserStub';
+import { ProjectInformationStub } from '@tests/unit/stubs/ProjectInformationStub';
+import { getCategoryStub, CollectionDataStub } from '@tests/unit/stubs/CollectionDataStub';
+import { CategoryCollectionParseContextStub } from '@tests/unit/stubs/CategoryCollectionParseContextStub';
+import { CategoryDataStub } from '@tests/unit/stubs/CategoryDataStub';
+import { ScriptDataStub } from '@tests/unit/stubs/ScriptDataStub';
+import { FunctionDataStub } from '@tests/unit/stubs/FunctionDataStub';
 
 describe('CategoryCollectionParser', () => {
     describe('parseCategoryCollection', () => {

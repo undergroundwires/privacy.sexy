@@ -1,11 +1,10 @@
-
 import 'mocha';
 import { expect } from 'chai';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
 import { UserFilter } from '@/application/Context/State/Filter/UserFilter';
-import { CategoryStub } from '../../../../stubs/CategoryStub';
-import { ScriptStub } from '../../../../stubs/ScriptStub';
-import { CategoryCollectionStub } from '../../../../stubs/CategoryCollectionStub';
+import { CategoryStub } from '@tests/unit/stubs/CategoryStub';
+import { ScriptStub } from '@tests/unit/stubs/ScriptStub';
+import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
 
 describe('UserFilter', () => {
     describe('removeFilter', () => {

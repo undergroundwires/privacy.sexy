@@ -3,11 +3,11 @@ import { expect } from 'chai';
 import { parseCategory } from '@/application/Parser/CategoryParser';
 import { parseScript } from '@/application/Parser/Script/ScriptParser';
 import { parseDocUrls } from '@/application/Parser/DocumentationParser';
-import { ScriptCompilerStub } from '../../stubs/ScriptCompilerStub';
-import { ScriptDataStub } from '../../stubs/ScriptDataStub';
-import { CategoryCollectionParseContextStub } from '../../stubs/CategoryCollectionParseContextStub';
-import { LanguageSyntaxStub } from '../../stubs/LanguageSyntaxStub';
-import { CategoryDataStub } from '../../stubs/CategoryDataStub';
+import { ScriptCompilerStub } from '@tests/unit/stubs/ScriptCompilerStub';
+import { ScriptDataStub } from '@tests/unit/stubs/ScriptDataStub';
+import { CategoryCollectionParseContextStub } from '@tests/unit/stubs/CategoryCollectionParseContextStub';
+import { LanguageSyntaxStub } from '@tests/unit/stubs/LanguageSyntaxStub';
+import { CategoryDataStub } from '@tests/unit/stubs/CategoryDataStub';
 
 describe('CategoryParser', () => {
     describe('parseCategory', () => {

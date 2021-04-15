@@ -1,10 +1,10 @@
-import { getEnumValues } from '@/application/Common/Enum';
 import 'mocha';
 import { expect } from 'chai';
+import { getEnumValues } from '@/application/Common/Enum';
 import { Script } from '@/domain/Script';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { IScriptCode } from '@/domain/IScriptCode';
-import { ScriptCodeStub } from '../stubs/ScriptCodeStub';
+import { ScriptCodeStub } from '@tests/unit/stubs/ScriptCodeStub';
 
 describe('Script', () => {
     describe('ctor', () => {

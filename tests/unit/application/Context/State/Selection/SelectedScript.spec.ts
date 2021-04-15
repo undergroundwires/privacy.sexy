@@ -1,7 +1,7 @@
-import { ScriptStub } from '../../../../stubs/ScriptStub';
-import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import 'mocha';
 import { expect } from 'chai';
+import { ScriptStub } from '@tests/unit/stubs/ScriptStub';
+import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 
 describe('SelectedScript', () => {
     it('id is same as script id', () => {

@@ -9,10 +9,10 @@ import { CodePosition } from '@/application/Context/State/Code/Position/CodePosi
 import { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { IUserScript } from '@/application/Context/State/Code/Generation/IUserScript';
-import { ScriptingDefinitionStub } from '../../../../stubs/ScriptingDefinitionStub';
-import { CategoryStub } from '../../../../stubs/CategoryStub';
-import { ScriptStub } from '../../../../stubs/ScriptStub';
-import { CategoryCollectionStub } from '../../../../stubs/CategoryCollectionStub';
+import { ScriptingDefinitionStub } from '@tests/unit/stubs/ScriptingDefinitionStub';
+import { CategoryStub } from '@tests/unit/stubs/CategoryStub';
+import { ScriptStub } from '@tests/unit/stubs/ScriptStub';
+import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
 
 describe('ApplicationCode', () => {
     describe('ctor', () => {

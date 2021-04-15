@@ -1,8 +1,8 @@
 import { ICategoryCollectionParseContext } from '@/application/Parser/Script/ICategoryCollectionParseContext';
-import { ScriptCompilerStub } from './ScriptCompilerStub';
-import { LanguageSyntaxStub } from './LanguageSyntaxStub';
 import { IScriptCompiler } from '@/application/Parser/Script/Compiler/IScriptCompiler';
 import { ILanguageSyntax } from '@/domain/ScriptCode';
+import { ScriptCompilerStub } from './ScriptCompilerStub';
+import { LanguageSyntaxStub } from './LanguageSyntaxStub';
 
 export class CategoryCollectionParseContextStub implements ICategoryCollectionParseContext {
     public compiler: IScriptCompiler = new ScriptCompilerStub();

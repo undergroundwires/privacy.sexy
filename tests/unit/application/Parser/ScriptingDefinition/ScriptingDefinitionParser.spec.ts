@@ -5,10 +5,10 @@ import { ScriptingDefinitionParser } from '@/application/Parser/ScriptingDefinit
 import { IEnumParser } from '@/application/Common/Enum';
 import { ICodeSubstituter } from '@/application/Parser/ScriptingDefinition/ICodeSubstituter';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
-import { ProjectInformationStub } from '../../../stubs/ProjectInformationStub';
-import { EnumParserStub } from '../../../stubs/EnumParserStub';
-import { ScriptingDefinitionDataStub } from '../../../stubs/ScriptingDefinitionDataStub';
-import { CodeSubstituterStub } from '../../../stubs/CodeSubstituterStub';
+import { ProjectInformationStub } from '@tests/unit/stubs/ProjectInformationStub';
+import { EnumParserStub } from '@tests/unit/stubs/EnumParserStub';
+import { ScriptingDefinitionDataStub } from '@tests/unit/stubs/ScriptingDefinitionDataStub';
+import { CodeSubstituterStub } from '@tests/unit/stubs/CodeSubstituterStub';
 
 describe('ScriptingDefinitionParser', () => {
     describe('parseScriptingDefinition', () => {
