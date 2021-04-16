@@ -1815,7 +1815,7 @@ actions:
                                 category: Chromium Edge settings
                                 children:
                                     -
-                                        name: Disable Edge usage and crash-related data reporting # Obselete since Microsoft Edge version 89
+                                        name: Disable Edge usage and crash-related data reporting (shows "Your browser is managed") # Obselete since Microsoft Edge version 89
                                         recommend: standard
                                         docs:
                                             - https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::MetricsReportingEnabled
@@ -1823,7 +1823,7 @@ actions:
                                         code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "MetricsReportingEnabled" /t REG_DWORD /d 0 /f
                                         revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "MetricsReportingEnabled" /f  
                                     -
-                                        name: Disable sending site information # Obselete since Microsoft Edge version 89
+                                        name: Disable sending site information (shows "Your browser is managed") # Obselete since Microsoft Edge version 89
                                         recommend: standard
                                         docs: 
                                             - https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::SendSiteInfoToImproveServices
@@ -1921,7 +1921,7 @@ actions:
                                 category: Chrome cleanup
                                 children:
                                     - 
-                                        name: Do not share scanned software data to Google
+                                        name: Do not share scanned software data to Google (shows "Your browser is managed")
                                         recommend: standard
                                         docs: 
                                             - https://www.chromium.org/administrators/policy-list-3#ChromeCleanupReportingEnabled
@@ -1929,7 +1929,7 @@ actions:
                                         code: reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v "ChromeCleanupReportingEnabled" /t REG_DWORD /d 0 /f
                                         revertCode: reg delete "HKLM\SOFTWARE\Policies\Google\Chrome" /v "ChromeCleanupReportingEnabled" /f
                                     - 
-                                        name: Prevent Chrome from scanning the system for cleanup
+                                        name: Prevent Chrome from scanning the system for cleanup (shows "Your browser is managed")
                                         recommend: standard
                                         docs: 
                                             - https://www.chromium.org/administrators/policy-list-3#ChromeCleanupEnabled
@@ -1937,7 +1937,7 @@ actions:
                                         code: reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v "ChromeCleanupEnabled" /t REG_DWORD /d 0 /f
                                         revertCode: reg delete "HKLM\SOFTWARE\Policies\Google\Chrome" /v "ChromeCleanupEnabled" /f
                             -
-                                name: Disable Chrome metrics reporting
+                                name: Disable Chrome metrics reporting (shows "Your browser is managed")
                                 recommend: standard
                                 docs: https://www.stigviewer.com/stig/google_chrome_v23_windows/2013-01-11/finding/V-35780
                                 code: reg add "HKLM\SOFTWARE\Policies\Google\Chrome" /v "MetricsReportingEnabled" /t REG_DWORD /d 0 /f
