@@ -6,7 +6,6 @@ import { IEventSource } from '@/infrastructure/Events/IEventSource';
 export interface IUserSelection {
     readonly changed: IEventSource<ReadonlyArray<SelectedScript>>;
     readonly selectedScripts: ReadonlyArray<SelectedScript>;
-    readonly totalSelected: number;
     areAllSelected(category: ICategory): boolean;
     isAnySelected(category: ICategory): boolean;
     removeAllInCategory(categoryId: number): void;

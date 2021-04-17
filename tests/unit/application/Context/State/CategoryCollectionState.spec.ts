@@ -55,7 +55,7 @@ describe('CategoryCollectionState', () => {
             const collection = new CategoryCollectionStub();
             const sut = new CategoryCollectionState(collection);
             // act
-            const actual = sut.selection.totalSelected;
+            const actual = sut.selection.selectedScripts.length;
             // assert
             expect(actual).to.equal(0);
         });
@@ -68,7 +68,7 @@ describe('CategoryCollectionState', () => {
             // act
             sut.selection.selectAll();
             // assert
-            expect(sut.selection.totalSelected).to.equal(1);
+            expect(sut.selection.selectedScripts.length).to.equal(1);
             expect(sut.selection.isSelected(expectedScript.id)).to.equal(true);
         });
     });

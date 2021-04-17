@@ -101,10 +101,6 @@ export class UserSelection implements IUserSelection {
         return this.scripts.getItems();
     }
 
-    public get totalSelected(): number {
-        return this.scripts.getItems().length;
-    }
-
     public selectAll(): void {
         for (const script of this.collection.getAllScripts()) {
             if (!this.scripts.exists(script.id)) {

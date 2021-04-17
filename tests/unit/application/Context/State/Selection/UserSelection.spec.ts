@@ -152,7 +152,6 @@ describe('UserSelection', () => {
             // act
             sut.removeAllInCategory(categoryId);
             // assert
-            expect(sut.totalSelected).to.equal(0);
             expect(sut.selectedScripts.length).to.equal(0);
         });
         it('removes existing some exists', () => {
@@ -167,7 +166,6 @@ describe('UserSelection', () => {
             // act
             sut.removeAllInCategory(categoryId);
             // assert
-            expect(sut.totalSelected).to.equal(0);
             expect(sut.selectedScripts.length).to.equal(0);
         });
     });

@@ -5,6 +5,7 @@ import { ICategory } from '@/domain/ICategory';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { ScriptStub } from './ScriptStub';
 import { ScriptingDefinitionStub } from './ScriptingDefinitionStub';
+import { RecommendationLevel } from '@/domain/RecommendationLevel';
 
 export class CategoryCollectionStub implements ICategoryCollection {
     public scripting: IScriptingDefinition = new ScriptingDefinitionStub();
@@ -36,14 +37,16 @@ export class CategoryCollectionStub implements ICategoryCollection {
     }
 
     public findCategory(categoryId: number): ICategory {
-        return this.getAllCategories().find(
-            (category) => category.id === categoryId);
+        return this.getAllCategories()
+            .find((category) => category.id === categoryId);
     }
-    public getScriptsByLevel(): readonly IScript[] {
-        throw new Error('Method not implemented: getScriptsByLevel');
+    public getScriptsByLevel(level: RecommendationLevel): readonly IScript[] {
+        return this.getAllScripts()
+            .filter((script) => script.level !== undefined && script.level <= level);
     }
     public findScript(scriptId: string): IScript {
-        return this.getAllScripts().find((script) => scriptId === script.id);
+        return this.getAllScripts()
+            .find((script) => scriptId === script.id);
     }
     public getAllScripts(): ReadonlyArray<IScript> {
         const scripts = [];
@@ -79,9 +82,7 @@ function getSubCategoriesRecursively(category: ICategory): ReadonlyArray<ICatego
 function getScriptsRecursively(category: ICategory): ReadonlyArray<IScript> {
     const categoryScripts = [];
     if (category.scripts) {
-        for (const script of category.scripts) {
-            categoryScripts.push(script);
-        }
+        categoryScripts.push(...category.scripts);
     }
     if (category.subCategories) {
         for (const subCategory of category.subCategories) {
