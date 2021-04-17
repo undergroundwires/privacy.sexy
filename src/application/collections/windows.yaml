@@ -4329,23 +4329,23 @@ actions:
                 code: |-
                     :: Configure time source
                     w32tm /config /syncfromflags:manual /manualpeerlist:"0.pool.ntp.org 1.pool.ntp.org 2.pool.ntp.org 3.pool.ntp.org"
-                    :: Restart time service if running
+                    :: Stop time service if running
                     SC queryex "w32time"|Find "STATE"|Find /v "RUNNING">Nul||(
                         net stop w32time
-                        net start w32time
                     )
-                    :: Sync now
+                    :: Start time service and sync now
+                    net start w32time
                     w32tm /config /update
                     w32tm /resync
                 revertCode: |-
                     :: Configure time source
                     w32tm /config /syncfromflags:manual /manualpeerlist:"time.windows.com"
-                    :: Restart time service if running
+                    :: Stop time service if running
                     SC queryex "w32time"|Find "STATE"|Find /v "RUNNING">Nul||(
                         net stop w32time
-                        net start w32time
                     )
-                    :: Sync now
+                    :: Start time servie and sync now
+                    net start w32time
                     w32tm /config /update
                     w32tm /resync
             -
