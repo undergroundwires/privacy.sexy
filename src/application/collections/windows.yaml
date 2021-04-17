@@ -2036,7 +2036,7 @@ actions:
                             reg add "HKCU\Software\Policies\Microsoft\WindowsMediaPlayer" /v "PreventRadioPresetsRetrieval" /t REG_DWORD /d 1 /f
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\WMDRM" /v "DisableOnline" /t REG_DWORD /d 1 /f
                     -
-                        name: Disable dows Media Player Network Sharing Service
+                        name: Disable Windows Media Player Network Sharing Service
                         recommend: standard
                         code: sc stop "WMPNetworkSvc" & sc config "WMPNetworkSvc" start=disabled
             -
@@ -3013,7 +3013,7 @@ actions:
                                         packageName: Microsoft.Messaging
                             -
                                 name: Mixed Reality Portal app
-                                docs: https://www.microsoft.com/en-us/p/mixed-reality-portal
+                                docs: https://www.microsoft.com/en-us/p/mixed-reality-portal/9ng1h8b3zc7m
                                 call:
                                     function: UninstallStoreApp
                                     parameters:
@@ -3031,7 +3031,7 @@ actions:
                                                 packageName: Microsoft.MicrosoftOfficeHub
                                     -
                                         name: OneNote app
-                                        docs: https://www.microsoft.com/en-us/p/onenote-for-windows-10
+                                        docs: https://www.microsoft.com/en-us/p/onenote-for-windows-10/9wzdncrfhvjl
                                         call:
                                             function: UninstallStoreApp
                                             parameters:
