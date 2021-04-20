@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.10.2 (2021-04-19)
+
+* in CI/CD, run other tests/check even if one of them fails | [5c43965](https://github.com/undergroundwires/privacy.sexy/commit/5c43965f0bc44f991ada7d3bad68937a80665dc3)
+* fix desktop initial window size being bigger than current display size on smaller Linux/Windows screens | [02bdc4c](https://github.com/undergroundwires/privacy.sexy/commit/02bdc4cf0426c452f3fc9af52b819ca9b0757290)
+* refactor extra code, duplicates, complexity | [00d8e55](https://github.com/undergroundwires/privacy.sexy/commit/00d8e551db001247fadfb6f6af7a4c5ce19a9e64)
+* improve disabling ads and marketing #65 | [040ed27](https://github.com/undergroundwires/privacy.sexy/commit/040ed2701c4a468749901f4c5369b221bc0973c4)
+* document breaking behavior in script name #64 | [b1ed3ce](https://github.com/undergroundwires/privacy.sexy/commit/b1ed3ce55f2d003cad1ead23e674aa66d4eb5802)
+* add module alias '@tests/' | [60c8061](https://github.com/undergroundwires/privacy.sexy/commit/60c80611eab227791fabb883caf93418cef5fd00)
+* document chromium warning for policy changes | [aea04e5](https://github.com/undergroundwires/privacy.sexy/commit/aea04e5f7cd48fbb9b407b68ade75575a6064c82)
+* fix script revert activating recommendation level | [a2f1085](https://github.com/undergroundwires/privacy.sexy/commit/a2f10857e2a8debb3ce01f79b0dfbe8649ea9a17)
+* fix typo and dead URL in Windows scripts (#70) | [8141a01](https://github.com/undergroundwires/privacy.sexy/commit/8141a01ef798331b4d82f5ca95f7b18df4f6f912)
+* fix vue warning for undefined property during render | [b25b8cc](https://github.com/undergroundwires/privacy.sexy/commit/b25b8cc8052655af70b0695c6c3085974d783bb6)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.10.1...0.10.2)
+
 ## 0.10.1 (2021-03-25)
 
 * refactor script compilation to make it easy to add new expressions #41 #53 | [646db90](https://github.com/undergroundwires/privacy.sexy/commit/646db9058541cebd0af437554de04fdc6bb63a6e)
