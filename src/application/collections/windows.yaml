@@ -2852,9 +2852,11 @@ actions:
                         code: sc stop "XboxNetApiSvc" & sc config "XboxNetApiSvc" start=disabled
                         revertCode: sc config "XboxNetApiSvc" start=demand
             -
-                name: Volume Shadow Copy Service
-                recommend: standard
-                docs: https://docs.microsoft.com/en-us/windows-server/storage/file-server/volume-shadow-copy-service
+                name: Disable Volume Shadow Copy Service (breaks System Restore and Windows Backup) # Also known as • Volume Snapshot Service • VSS • VSC
+                recommend: strict
+                docs:
+                    - https://docs.microsoft.com/en-us/windows-server/storage/file-server/volume-shadow-copy-service
+                    - https://www.schneier.com/blog/archives/2009/12/the_security_im.html
                 code: sc stop "VSS" & sc config "VSS" start=disabled
                 revertCode: sc config "VSS" start=demand
             -
