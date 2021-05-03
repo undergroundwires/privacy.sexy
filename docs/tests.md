@@ -1,10 +1,14 @@
 # Tests
 
+- There are two different types of tests executed:
+  1. [Unit tests](#unit-tests)
+  2. [Integration tests](#integration-tests)
 - 💡 You can use path/module alias `@/tests` in import statements.
 
 ## Unit tests
 
-- Unit tests are defined in [`./tests`](./../tests)
+- Tests each component in isolation
+- Defined in [`./tests/unit`](./../tests/unit)
 - They follow same folder structure as [`./src`](./../src)
 
 ### Naming
@@ -31,3 +35,9 @@
 
 - Stubs are defined in [`./tests/stubs`](./../tests/unit/stubs)
 - They implement dummy behavior to be functional
+
+## Integration tests
+
+- Tests functionality of a component in combination with others (not isolated)
+- Ensure dependencies to third parties work as expected
+- Defined in [`./tests/integration`](./../tests/integration)

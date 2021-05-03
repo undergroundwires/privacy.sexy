@@ -90,7 +90,9 @@ jobs:
         working-directory: site
       -
         name: "App: Run tests"
-        run: npm run test:unit
+        run: |
+          npm run test:unit
+          npm run test:integration
         working-directory: site
       - 
         name: "App: Build"

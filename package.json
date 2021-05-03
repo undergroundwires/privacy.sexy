@@ -8,6 +8,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
+    "test:integration": "vue-cli-service test:unit \"tests/integration/**/*.spec.ts\"",
     "lint": "npm run lint:vue && npm run lint:yaml && npm run lint:md && npm run lint:md:relative-urls && npm run lint:md:consistency",
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",

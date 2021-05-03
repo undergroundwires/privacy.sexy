@@ -16,12 +16,6 @@ import { CollectionDataStub } from '@tests/unit/stubs/CollectionDataStub';
 
 describe('ApplicationParser', () => {
     describe('parseApplication', () => {
-        it('can parse current application', () => { // Integration test
-            // act
-            const act = () => parseApplication();
-            // assert
-            expect(act).to.not.throw();
-        });
         describe('parser', () => {
             it('returns result from the parser', () => {
                 // arrange

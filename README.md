@@ -45,6 +45,7 @@
 - Project setup: `npm install`
 - Testing
   - Run unit tests: `npm run test:unit`
+  - Run integration tests: `npm run test:integration`
   - Lint: `npm run lint`
 - **Desktop app**
   - Development: `npm run electron:serve`

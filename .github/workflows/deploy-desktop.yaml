@@ -26,7 +26,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run tests
-        run: npm run test:unit
+        run: |
+          npm run test:unit
+          npm run test:integration
       - name: Publish desktop app
         run: npm run electron:build -- -p always # https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/recipes.html#upload-release-to-github
         env:
