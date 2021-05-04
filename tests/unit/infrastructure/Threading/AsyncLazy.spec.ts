@@ -1,6 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import { AsyncLazy } from '@/infrastructure/Threading/AsyncLazy';
+import { sleepAsync } from '@/infrastructure/Threading/AsyncSleep';
 
 describe('AsyncLazy', () => {
     it('returns value from lambda', async () => {
@@ -33,7 +34,6 @@ describe('AsyncLazy', () => {
         });
         it('when running long-running task in parallel', async () => {
             // act
-            const sleepAsync = (time: number) => new Promise(((resolve) => setTimeout(resolve, time)));
             const sut = new AsyncLazy(async () => {
                 await sleepAsync(100);
                 totalExecuted++;

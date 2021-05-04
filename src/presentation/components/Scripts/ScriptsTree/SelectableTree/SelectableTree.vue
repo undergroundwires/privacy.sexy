@@ -22,7 +22,8 @@ import LiquorTree from 'liquor-tree';
 import Node from './Node/Node.vue';
 import { INode } from './Node/INode';
 import { convertExistingToNode, toNewLiquorTreeNode } from './LiquorTree/NodeWrapper/NodeTranslator';
-import { INodeSelectedEvent } from './/INodeSelectedEvent';
+import { INodeSelectedEvent } from './INodeSelectedEvent';
+import { sleepAsync } from '@/infrastructure/Threading/AsyncSleep';
 import { getNewState } from './LiquorTree/NodeWrapper/NodeStateUpdater';
 import { LiquorTreeOptions } from './LiquorTree/LiquorTreeOptions';
 import { FilterPredicate, NodePredicateFilter } from './LiquorTree/NodeWrapper/NodePredicateFilter';
@@ -121,7 +122,6 @@ function recurseDown(
 async function tryUntilDefinedAsync<T>(
     accessor: () => T | undefined,
     delayInMs: number, maxTries: number): Promise<T | undefined> {
-    const sleepAsync = () => new Promise(((resolve) => setTimeout(resolve, delayInMs)));
     let triesLeft = maxTries;
     let value: T;
     while (triesLeft !== 0) {
@@ -130,7 +130,7 @@ async function tryUntilDefinedAsync<T>(
             return value;
         }
         triesLeft--;
-        await sleepAsync();
+        await sleepAsync(delayInMs);
     }
     return value;
 }
