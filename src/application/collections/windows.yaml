@@ -613,7 +613,7 @@ actions:
             -
                 name: Disable cloud speech recognition
                 recommend: standard
-                docs: https://www.tenforums.com/tutorials/101902-turn-off-online-speech-recognition-windows-10-a.html
+                docs: https://docs.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#186-speech
                 code: reg add "HKCU\Software\Microsoft\Speech_OneCore\Settings\OnlineSpeechPrivacy" /v "HasAccepted" /t "REG_DWORD" /d 0 /f
                 revertCode: reg add "HKCU\Software\Microsoft\Speech_OneCore\Settings\OnlineSpeechPrivacy" /v "HasAccepted" /t "REG_DWORD" /d 1 /f
             -
@@ -629,7 +629,7 @@ actions:
             -
                 name: Disable Windows feedback
                 recommend: standard
-                docs: https://www.tenforums.com/tutorials/2441-change-feedback-frequency-windows-10-a.html
+                docs: https://docs.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#1816-feedback--diagnostics
                 code: |-
                     reg add "HKCU\SOFTWARE\Microsoft\Siuf\Rules" /v "NumberOfSIUFInPeriod" /t REG_DWORD /d 0 /f 
                     reg delete "HKCU\SOFTWARE\Microsoft\Siuf\Rules" /v "PeriodInNanoSeconds" /f
@@ -656,8 +656,9 @@ actions:
                         name: Deny app access to location
                         recommend: standard
                         docs: 
-                            - https://r-pufky.github.io/docs/operating-systems/windows/10/securing-installation/privacy/location.html
-                            - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#privacy-letappsaccesslocation
+                            - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#privacy-letappsaccesslocation # LetAppsAccessLocation
+                            - https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ # ConsentStore\location
+                            - https://social.technet.microsoft.com/Forums/en-US/63904312-04af-41e5-8b57-1dd446ea45c5/ # lfsvc\Service\Configuration
                         code: |-
                             reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location" /v "Value" /d "Deny" /f
                             :: For older Windows (before 1903)
@@ -1039,7 +1040,6 @@ actions:
                         revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\bluetoothSync" /v "Value" /d "Allow" /t REG_SZ /f
                     -
                         category: Disable app access to voice activation
-                        docs: https://www.tenforums.com/tutorials/130122-allow-deny-apps-access-use-voice-activation-windows-10-a.html
                         children:
                             -
                                 name: Disable apps and Cortana to activate with voice
@@ -1284,7 +1284,9 @@ actions:
                     -
                         name: Turn Off Suggested Content in Settings app
                         recommend: standard
-                        docs: https://www.tenforums.com/tutorials/100541-turn-off-suggested-content-settings-app-windows-10-a.html
+                        docs:
+                            - https://docs.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds-vdi-recommendations-2004
+                            - https://news.softpedia.com/news/how-to-block-banners-in-windows-10-version-1809-settings-app-523331.shtml
                         code: |-
                             reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-338393Enabled" /d "0" /t REG_DWORD /f
                             reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" /v "SubscribedContent-353694Enabled" /d "0" /t REG_DWORD /f
@@ -1311,9 +1313,7 @@ actions:
                     -
                         name: Do not start Windows Biometric Service
                         recommend: strict
-                        docs: 
-                            - http://batcmd.com/windows/10/services/wbiosrvc/
-                            - http://revertservice.com/10/wbiosrvc/
+                        docs: https://docs.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server#windows-biometric-service
                         code: |-
                             reg add "HKLM\SYSTEM\CurrentControlSet\Services\WbioSrvc" /v "Start" /t REG_DWORD /d 4 /f
                             sc stop "WbioSrvc" & sc config "WbioSrvc" start=disabled
@@ -1341,7 +1341,7 @@ actions:
             -
                 name: Disable Website Access of Language List
                 recommend: standard
-                docs: https://www.tenforums.com/tutorials/82980-turn-off-website-access-language-list-windows-10-a.html
+                docs: https://docs.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#181-general
                 code: reg add "HKCU\Control Panel\International\User Profile" /v "HttpAcceptLanguageOptOut" /t REG_DWORD /d 1 /f 
                 revertCode: reg add "HKCU\Control Panel\International\User Profile" /v "HttpAcceptLanguageOptOut" /t REG_DWORD /d 0 /f 
             -
@@ -1380,7 +1380,7 @@ actions:
                 children:
                     -
                         name: Disable Windows Insider Service
-                        docs: http://revertservice.com/10/wisvc/
+                        docs: https://docs.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server#windows-insider-service
                         recommend: standard
                         code: sc stop "wisvc" & sc config "wisvc" start=disabled
                         revertCode: sc config "wisvc" start=demand
@@ -1404,7 +1404,7 @@ actions:
                         revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds" /v "AllowBuildPreview" /f
                     -
                         name: Remove "Windows Insider Program" from Settings 
-                        docs: https://www.askvg.com/windows-10-tip-remove-windows-insider-program-section-from-settings-page/
+                        docs: https://winaero.com/how-to-hide-the-windows-insider-program-page-from-the-settings-app-in-windows-10/
                         code: reg add "HKLM\SOFTWARE\Microsoft\WindowsSelfHost\UI\Visibility" /v "HideInsiderPage" /t "REG_DWORD" /d "1" /f
                         revertCode: reg delete "HKLM\SOFTWARE\Microsoft\WindowsSelfHost\UI\Visibility" /v "HideInsiderPage" /f
             -
@@ -1472,7 +1472,10 @@ actions:
                     -
                         name: Disable Language Setting Sync
                         recommend: standard
-                        docs: https://www.tenforums.com/tutorials/4077-turn-off-sync-settings-microsoft-account-windows-10-a.html
+                        docs:
+                            - https://winaero.com/turn-on-off-sync-settings-windows-10/
+                            - https://www.thewindowsclub.com/how-to-configure-windows-10-sync-settings-using-registry-editor
+                            - https://tuxicoman.jesuislibre.net/blog/wp-content/uploads/Windows10_Telemetrie_1709.pdf # from guide on confidentiality and privacy with Windows 10 distributed to the French police, previous version of guide: https://www.pmenier.net/dotclear/docext/win10/.Windows10-Presentation.pdf
                         code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language" /t REG_DWORD /v "Enabled" /d 0 /f
                         revertCode: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\Language" /t REG_DWORD /v "Enabled" /d 1 /f
     -
@@ -1832,7 +1835,9 @@ actions:
                                         revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "SendSiteInfoToImproveServices" /f
                                     -
                                         name: Disable Automatic Installation of Microsoft Edge Chromium
-                                        docs: https://docs.microsoft.com/en-us/deployedge/microsoft-edge-blocker-toolkit
+                                        docs:
+                                            - https://admx.help/?Category=EdgeChromium_Blocker&Policy=Microsoft.Policies.EdgeUpdate::NoUpdate
+                                            - https://web.archive.org/web/20210118230052/https://docs.microsoft.com/en-us/deployedge/microsoft-edge-blocker-toolkit
                                         code: reg add "HKLM\SOFTWARE\Microsoft\EdgeUpdate" /v "DoNotUpdateToEdgeWithChromium" /t REG_DWORD /d 1 /f
                                         revertCode: reg delete "HKLM\SOFTWARE\Microsoft\EdgeUpdate" /v "DoNotUpdateToEdgeWithChromium" /f
                             -
@@ -2686,7 +2691,10 @@ actions:
             -
                 name: Do not show recently used files in Quick Access
                 recommend: strict
-                docs: https://www.tenforums.com/tutorials/2713-add-remove-recent-files-quick-access-windows-10-a.html
+                docs:
+                    - https://matthewhill.uk/windows/group-policy-disable-recent-files-frequent-folder-explorer/ # ShowRecent
+                    - https://www.howto-connect.com/delete-recent-frequent-from-file-explorer-on-windows-10/ # 3134ef9c-6b18-4996-ad04-ed5912e00eb5
+                    - https://docs.microsoft.com/en-us/windows/win32/sysinfo/32-bit-and-64-bit-application-data-in-the-registry # Wow6432Node
                 code: |-
                     if %PROCESSOR_ARCHITECTURE%==x86 ( REM is 32 bit?
                         reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowRecent" /d 0 /t REG_DWORD /f
@@ -2707,12 +2715,15 @@ actions:
                 revertCode: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowSyncProviderNotifications" /d 1 /t REG_DWORD /f
             -
                 name: Turn hibernate off to disable sleep for quick start
-                docs: http://www.windows10windows7.com/w10/win10zs/100102504.html
+                docs: https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/compact-os#ram-pagefilesys-and-hiberfilsys
                 code: powercfg -h off
                 revertCode: powercfg -h on
             -
                 name: Enable camera on/off OSD notifications
-                docs: https://www.tenforums.com/tutorials/166065-how-enable-disable-camera-off-osd-notifications-windows-10-a.html
+                docs:
+                    - https://docs.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/microsoft-windows-coremmres-nophysicalcameraled
+                    - https://www.reddit.com/r/Surface/comments/88nyln/the_webcamled_took_anyone_it_apart/dwm64p5
+                    - https://answers.microsoft.com/en-us/windows/forum/all/enable-osd-notification-for-webcam/caf1fff4-78d3-4b93-905b-ef657097a44e
                 code: reg add "HKLM\SOFTWARE\Microsoft\OEM\Device\Capture" /v "NoPhysicalCameraLED" /d 1 /t REG_DWORD /f
                 revertCode: reg delete "HKLM\Software\Microsoft\OEM\Device\Capture" /v "NoPhysicalCameraLED" /f
             -
@@ -2861,7 +2872,9 @@ actions:
                 revertCode: sc config "VSS" start=demand
             -
                 name: Disable NetBios for all interfaces
-                docs: https://10dsecurity.com/saying-goodbye-netbios/
+                docs:
+                    - https://bobcares.com/blog/disable-netbios-and-llmnr-protocols-in-windows-using-gpo/
+                    - https://social.technet.microsoft.com/Forums/windowsserver/en-US/c5f3c095-1ad2-4963-b075-787f800b81f2/
                 call:
                     function: RunPowerShell
                     parameters:
@@ -3483,7 +3496,7 @@ actions:
                                                 packageName: Microsoft.ECApp
                                     -
                                         name: Lock app (shows lock screen)
-                                        docs: https://www.dashtech.org/can-you-disable-lockapp-exe-on-windows-10/
+                                        docs: https://www.getwox.com/what-is-lockapp-exe/
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
@@ -4351,10 +4364,12 @@ actions:
                     w32tm /config /update
                     w32tm /resync
             -
-                name: Disable Reserved Storage for updates
+                name: Disable Reserved Storage for updates # since 19H1 (1903)
                 docs: 
-                    - https://techcommunity.microsoft.com/t5/storage-at-microsoft/windows-10-and-reserved-storage/ba-p/428327
-                    - https://www.tenforums.com/tutorials/124858-enable-disable-reserved-storage-windows-10-a.html
+                    - https://techcommunity.microsoft.com/t5/storage-at-microsoft/windows-10-and-reserved-storage/ba-p/428327 # Announcement
+                    - https://techcommunity.microsoft.com/t5/windows-it-pro-blog/managing-reserved-storage-in-windows-10-environments/ba-p/1297070#toc-hId--8696946 # Set-ReservedStorageState
+                    - https://www.howtogeek.com/425563/how-to-disable-reserved-storage-on-windows-10/ # ShippedWithReserves
+                    - https://techcommunity.microsoft.com/t5/windows-servicing/reserve-manager-enabled-with-low-disk-space-block/m-p/2073132 # PassedPolicy
                 code: |-
                     dism /online /Set-ReservedStorageState /State:Disabled /NoRestart
                     reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\ReserveManager" /v "MiscPolicyInfo" /t REG_DWORD /d "2" /f

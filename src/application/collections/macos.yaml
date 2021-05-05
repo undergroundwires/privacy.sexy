@@ -185,7 +185,7 @@ actions:
                                     rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/sessionstore-backups/upgrade.js*-20*
                             -
                                 name: Delete Firefox passwords
-                                docs: http://kb.mozillazine.org/Password_Manager
+                                docs: https://web.archive.org/web/20210425202923/http://kb.mozillazine.org/Password_Manager
                                 code: |-
                                     rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/signons.txt
                                     rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/signons2.txt
@@ -437,7 +437,7 @@ actions:
             -
                 name: Disable PowerShell Core telemetry
                 recommend: standard
-                docs: https://github.com/PowerShell/PowerShell/tree/release/v7.1.1#telemetry
+                docs: https://github.com/PowerShell/PowerShell/blob/v7.1.0/README.md#telemetry
                 call:
                     -
                         function: PersistUserEnvironmentConfiguration
