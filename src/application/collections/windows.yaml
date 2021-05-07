@@ -2696,18 +2696,16 @@ actions:
                     - https://www.howto-connect.com/delete-recent-frequent-from-file-explorer-on-windows-10/ # 3134ef9c-6b18-4996-ad04-ed5912e00eb5
                     - https://docs.microsoft.com/en-us/windows/win32/sysinfo/32-bit-and-64-bit-application-data-in-the-registry # Wow6432Node
                 code: |-
-                    if %PROCESSOR_ARCHITECTURE%==x86 ( REM is 32 bit?
-                        reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowRecent" /d 0 /t REG_DWORD /f
-                    ) else (
+                    reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowRecent" /d 0 /t "REG_DWORD" /f
+                    reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5}" /f
+                    if not %PROCESSOR_ARCHITECTURE%==x86 ( REM is 64 bit?
                         reg delete "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5}" /f
-                        reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5}" /f
                     )
                 revertCode:
-                    if %PROCESSOR_ARCHITECTURE%==x86 ( REM is 32 bit?
-                        reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowRecent" /d 1 /t REG_DWORD /f
-                    ) else (
+                    reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowRecent" /d "1" /t "REG_DWORD" /f
+                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5}" /f
+                    if not %PROCESSOR_ARCHITECTURE%==x86 ( REM is 64 bit?
                         reg add "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5}" /f
-                        reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5}" /f
                     )
             -
                 name: Disable Sync Provider Notifications
