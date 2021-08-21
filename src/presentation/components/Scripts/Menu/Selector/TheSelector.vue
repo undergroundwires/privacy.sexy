@@ -29,7 +29,7 @@
                     :enabled="this.currentSelection == SelectionType.Strict"
                     @click="selectType(SelectionType.Strict)"
                     v-tooltip=" '🚫 Stronger privacy, disables risky functions that may leak your data.<br/>' +
-                                '⚠️ Double check to remove sripts where you would trade functionality for privacy<br/>' +
+                                '⚠️ Double check to remove scripts where you would trade functionality for privacy<br/>' +
                                 '💡 Recommended for daily users that prefers more privacy over non-essential functions'"
                     />
                 </div>
