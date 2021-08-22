@@ -11,9 +11,11 @@ Please fill in as much of the template below as you're able.
 As a small open source project with small community, it can sometimes take a long time for issues to be addressed so please be patient. 
 -->
 
-### Describe the bug
+### Description
 
-<!-- A clear and concise description of what the bug is. -->
+<!--
+A clear and concise description of what the bug is.
+-->
 
 ### OS
 
@@ -23,14 +25,32 @@ On Windows you can find it using "Start button" > "Settings" > "System" > "About
 On macOS you can find it using "Apple menu (top left corner)" > "About This Mac".
 -->
 
-### Screenshots
+### Reproduction steps
 
-<!-- If applicable, add screenshots to help explain your problem. -->
+<!--
+How can the bug be recreated?
+It's the most important information in the bug report. Bugs that cannot be reproduced cannot be fixed and verified.
+E.g.
+    1. Go to '...'
+    2. Click on '....'
+    3. Scroll down to '....'
+    4. See error
+-->
 
 ### Scripts
 
-<!-- Which scripts did you execute? If applicable, please paste the executed scripts or attach the generated privacy.sexy file . -->
+<!--
+If applicable, please attach the generated privacy.sexy file instead of copy pasting which becomes too long.
+-->
+
+### Screenshots
+
+<!--
+If applicable, add screenshots to help explain your problem.
+-->
 
 ### Additional information
 
-<!-- Add any other context about the problem here. -->
+<!--
+If applicable, add any other context about the problem here.
+-->

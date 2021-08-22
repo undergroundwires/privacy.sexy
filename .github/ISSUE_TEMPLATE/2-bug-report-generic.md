@@ -11,13 +11,16 @@ Please fill in as much of the template below as you're able.
 As a small open source project with small community, it can sometimes take a long time for issues to be addressed so please be patient. 
 -->
 
-### Describe the bug
+### Description
 
-<!-- A clear and concise description of what the bug is. -->
+<!--
+A clear and concise description of what the bug is.
+-->
 
-### To Reproduce
+### Reproduction steps
 
-<!-- 
+<!--
+It's the most important information in the bug report. Bugs that cannot be reproduced cannot be fixed and verified.
 Steps to reproduce the behavior:
 1. Go to '...'
 2. Click on '....'
@@ -41,12 +44,12 @@ If applicable, add screenshots to help explain your problem.
 
 <!--
 If applicable, mention how you were using privacy.sexy when the bug was encountered:
-- Web (on Desktop or mobile?)
-- Or desktop (Windows, macOS or Linux?)
+   - Web (on Desktop or mobile?)
+   - Or desktop (Windows, macOS or Linux?)
 -->
 
 ### Additional context
 
 <!--
-Add any other context about the problem here.
+If applicable, add any other context about the problem here.
 -->

@@ -34,11 +34,13 @@
 
 ## Extend scripts
 
-1. Fork the repository
-2. Add more scripts in respective script collection in [collections](src/application/collections/) folder.
-   - 📖 If you're unsure about the syntax you can refer to the [collection files | documentation](docs/collection-files.md).
-   - 🙏 For any new script, please add `revertCode` and `docs` values if possible.
-3. Send a pull request 👌
+- You can either [create an issue](https://github.com/undergroundwires/privacy.sexy/issues/new/choose)
+- Or send a PR:
+  1. Fork the repository
+  2. Add more scripts in respective script collection in [collections](src/application/collections/) folder.
+     - 📖 If you're unsure about the syntax you can refer to the [collection files | documentation](docs/collection-files.md).
+     - 🙏 For any new script, please add `revertCode` and `docs` values if possible.
+  3. Send a pull request 👌
 
 ## Commands
 
