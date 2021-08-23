@@ -72,13 +72,11 @@ export default class TheSelector extends StatefulVue {
         this.selectionTypeHandler.selectType(type);
     }
 
-    protected handleCollectionState(newState: ICategoryCollectionState, oldState: ICategoryCollectionState): void {
+    protected handleCollectionState(newState: ICategoryCollectionState): void {
+        this.events.unsubscribeAll();
         this.selectionTypeHandler = new SelectionTypeHandler(newState);
         this.updateSelections();
-        newState.selection.changed.on(() => this.updateSelections());
-        if (oldState) {
-            oldState.selection.changed.on(() => this.updateSelections());
-        }
+        this.events.register(newState.selection.changed.on(() => this.updateSelections()));
     }
 
     private updateSelections() {
