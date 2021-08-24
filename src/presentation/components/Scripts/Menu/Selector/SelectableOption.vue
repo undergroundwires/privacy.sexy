@@ -2,7 +2,7 @@
     <span
         v-bind:class="{ 'disabled': enabled, 'enabled': !enabled}"
         v-non-collapsing
-        @click="onClicked()">{{label}}</span>
+        @click="!enabled && onClicked()">{{label}}</span>
 </template>
 
 <script lang="ts">
