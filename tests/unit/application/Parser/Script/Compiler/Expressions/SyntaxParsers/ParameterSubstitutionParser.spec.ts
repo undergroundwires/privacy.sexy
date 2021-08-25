@@ -5,17 +5,25 @@ import { ExpressionPosition } from '@/application/Parser/Script/Compiler/Express
 import { ExpressionArguments } from '@/application/Parser/Script/Compiler/Expressions/Expression/IExpression';
 
 describe('ParameterSubstitutionParser', () => {
-    it('finds at expected positions', () => {
+    describe('finds at expected positions', () => {
         // arrange
-        const testCases = [ {
-                name: 'single parameter',
+        const testCases = [
+            {
+                name: 'matches single parameter',
                 code: '{{ $parameter }}!',
-                expected: [ new ExpressionPosition(0, 16) ],
-            }, {
-                name: 'different parameters',
+                expected: [new ExpressionPosition(0, 16)],
+            },
+            {
+                name: 'matches different parameters',
                 code: 'He{{ $firstParameter }} {{ $secondParameter }}!!',
-                expected: [ new ExpressionPosition(2, 23), new ExpressionPosition(24, 46) ],
-        }];
+                expected: [new ExpressionPosition(2, 23), new ExpressionPosition(24, 46)],
+            },
+            {
+                name: 'tolerates spaces around brackets',
+                code: 'He{{$firstParameter}}!!',
+                expected: [new ExpressionPosition(2, 21) ],
+            },
+        ];
         for (const testCase of testCases) {
             it(testCase.name, () => {
                 const sut = new ParameterSubstitutionParser();
@@ -27,7 +35,7 @@ describe('ParameterSubstitutionParser', () => {
             });
         }
     });
-    it('evaluates as expected', () => {
+    describe('evaluates as expected', () => {
         const testCases = [ {
             name: 'single parameter',
             code: '{{ $parameter }}',
@@ -45,7 +53,7 @@ describe('ParameterSubstitutionParser', () => {
                 value: 'Hello',
             },
             {
-                name: 'firstParameter',
+                name: 'secondParameter',
                 value: 'World',
             }],
             expected: [ 'Hello', 'World' ],
