@@ -1,26 +1,38 @@
 <template>
     <div class="container">
-        <span class="part">Group by:</span>
+        <MenuOptionList
+            label="Group by"
+            class="part">
+            <MenuOptionListItem
+                label="Cards"
+                :enabled="!cardsSelected"
+                @click="groupByCard()"
+            />
+            <MenuOptionListItem
+                label="None"
+                :enabled="!noneSelected"
+                @click="groupByNone()"
+            />
+        </MenuOptionList>
         <span class="part">
-            <span 
-                class="part"
-                v-bind:class="{ 'disabled': cardsSelected, 'enabled': !cardsSelected}"
-                @click="groupByCard()">Cards</span>
-            <span class="part">|</span>
-            <span class="part"
-                v-bind:class="{ 'disabled': noneSelected, 'enabled': !noneSelected}"
-                @click="groupByNone()">None</span>
-            </span>
+        </span>
     </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { Grouping } from './Grouping';
+import MenuOptionList from './../MenuOptionList.vue';
+import MenuOptionListItem from './../MenuOptionListItem.vue';
 
 const DefaultGrouping = Grouping.Cards;
 
-@Component
+@Component({
+  components: {
+    MenuOptionList,
+    MenuOptionListItem,
+  },
+})
 export default class TheGrouper extends Vue {
     public cardsSelected = false;
     public noneSelected = false;
@@ -50,29 +62,5 @@ export default class TheGrouper extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "@/presentation/styles/colors.scss";
-@import "@/presentation/styles/fonts.scss";
-
-.container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    font-family: $normal-font;
-    .part {
-        display: flex;
-        margin-right:5px;
-    }
-}
-
-.enabled {
-    cursor: pointer;
-    &:hover {
-        font-weight:bold;
-        text-decoration:underline;
-    }
-}
-.disabled {
-    color:$gray;
-}
 
 </style>

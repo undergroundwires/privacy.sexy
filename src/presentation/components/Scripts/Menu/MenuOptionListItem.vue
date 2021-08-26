@@ -1,8 +1,10 @@
 <template>
-    <span
-        v-bind:class="{ 'disabled': enabled, 'enabled': !enabled}"
-        v-non-collapsing
-        @click="!enabled && onClicked()">{{label}}</span>
+    <span> <!-- Parent wrapper allows adding content inside with CSS without making it clickable -->
+        <span
+            v-bind:class="{ 'disabled': !enabled, 'enabled': enabled}"
+            v-non-collapsing
+            @click="enabled && onClicked()">{{label}}</span>
+    </span>
 </template>
 
 <script lang="ts">
@@ -12,7 +14,7 @@ import { NonCollapsing } from '@/presentation/components/Scripts/Cards/NonCollap
 @Component({
     directives: { NonCollapsing },
 })
-export default class SelectableOption extends Vue {
+export default class MenuOptionListItem extends Vue {
   @Prop() public enabled: boolean;
   @Prop() public label: string;
   @Emit('click') public onClicked() { return; }

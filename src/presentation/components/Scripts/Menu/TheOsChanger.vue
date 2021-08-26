@@ -1,17 +1,12 @@
 <template>
-  <div class="container">
-    <!-- <div>OS:</div> -->
-    <div class="os-list">
-      <div v-for="os in this.allOses" :key="os.name">
-        <span
-          class="os-name"
-          v-bind:class="{ 'current': currentOs === os.os }"
-          v-on:click="changeOsAsync(os.os)">
-          {{ os.name }}
-        </span>
-      </div>
-    </div>
-  </div>
+  <MenuOptionList>
+      <MenuOptionListItem
+        v-for="os in this.allOses" :key="os.name"
+        :enabled="currentOs !== os.os"
+        @click="changeOsAsync(os.os)"
+        :label="os.name"
+        />
+  </MenuOptionList>
 </template>
 
 <script lang="ts">
@@ -20,8 +15,15 @@ import { OperatingSystem } from '@/domain/OperatingSystem';
 import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { ApplicationFactory } from '@/application/ApplicationFactory';
+import MenuOptionList from './MenuOptionList.vue';
+import MenuOptionListItem from './MenuOptionListItem.vue';
 
-@Component
+@Component({
+  components: {
+    MenuOptionList,
+    MenuOptionListItem,
+  },
+})
 export default class TheOsChanger extends StatefulVue {
   public allOses: Array<{ name: string, os: OperatingSystem }> = [];
   public currentOs?: OperatingSystem = null;
@@ -52,31 +54,5 @@ function renderOsName(os: OperatingSystem): string {
 </script>
 
 <style scoped lang="scss">
-@import "@/presentation/styles/fonts.scss";
-@import "@/presentation/styles/colors.scss";
-.container {
-  font-family: $normal-font;
-  display: flex;
-  align-items: center;
-  .os-list {
-    display: flex;
-    margin-left: 0.25rem;
-    div + div::before {
-        content: "|";
-        margin-left: 0.5rem;
-    }
-    .os-name {
-      &:not(.current) {
-        cursor: pointer;
-        &:hover {
-            font-weight: bold;
-            text-decoration: underline;
-        }
-      }
-      &.current {
-        color: $gray;
-      }
-    }
-  }
-}
+
 </style>

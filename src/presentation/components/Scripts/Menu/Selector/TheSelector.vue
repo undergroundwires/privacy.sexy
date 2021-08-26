@@ -1,63 +1,51 @@
 <template>
-    <div class="container">
-        <div class="part">Select:</div>
-        <div class="part">
-            <div class="part">
-                <SelectableOption
-                    label="None"
-                    :enabled="this.currentSelection == SelectionType.None"
-                    @click="selectType(SelectionType.None)"
-                    v-tooltip=" 'Deselect all selected scripts.<br/>' +
-                                '💡 Good start to dive deeper into tweaks and select only what you want.'"
-                    />
-            </div>
-            <div class="part"> | </div>
-            <div class="part">
-                <SelectableOption
-                    label="Standard"
-                    :enabled="this.currentSelection == SelectionType.Standard"
-                    @click="selectType(SelectionType.Standard)"
-                    v-tooltip=" '🛡️ Balanced for privacy and functionality.<br/>' +
-                                'OS and applications will function normally.<br/>' +
-                                '💡 Recommended for everyone'"
-                    />
-                </div>
-            <div class="part"> | </div>
-            <div class="part">
-                <SelectableOption
-                    label="Strict"
-                    :enabled="this.currentSelection == SelectionType.Strict"
-                    @click="selectType(SelectionType.Strict)"
-                    v-tooltip=" '🚫 Stronger privacy, disables risky functions that may leak your data.<br/>' +
-                                '⚠️ Double check to remove scripts where you would trade functionality for privacy<br/>' +
-                                '💡 Recommended for daily users that prefers more privacy over non-essential functions'"
-                    />
-                </div>
-            <div class="part"> | </div>
-            <div class="part">
-                    <SelectableOption
-                        label="All"
-                        :enabled="this.currentSelection == SelectionType.All"
-                        @click="selectType(SelectionType.All)"
-                        v-tooltip=" '🔒 Strongest privacy, disabling any functionality that may leak your data.<br/>' +
-                                    '🛑 Not designed for daily users, it will break important functionalities.<br/>' +
-                                    '💡 Only recommended for extreme use-cases like crime labs where no leak is acceptable'"
-                    />
-            </div>
-        </div>
-    </div>
+    <MenuOptionList label="Select">
+        <MenuOptionListItem
+            label="None"
+            :enabled="this.currentSelection !== SelectionType.None"
+            @click="selectType(SelectionType.None)"
+            v-tooltip=" 'Deselect all selected scripts.<br/>' +
+                        '💡 Good start to dive deeper into tweaks and select only what you want.'"
+            />
+        <MenuOptionListItem
+            label="Standard"
+            :enabled="this.currentSelection !== SelectionType.Standard"
+            @click="selectType(SelectionType.Standard)"
+            v-tooltip=" '🛡️ Balanced for privacy and functionality.<br/>' +
+                        'OS and applications will function normally.<br/>' +
+                        '💡 Recommended for everyone'"
+            />
+        <MenuOptionListItem
+            label="Strict"
+            :enabled="this.currentSelection !== SelectionType.Strict"
+            @click="selectType(SelectionType.Strict)"
+            v-tooltip=" '🚫 Stronger privacy, disables risky functions that may leak your data.<br/>' +
+                        '⚠️ Double check to remove scripts where you would trade functionality for privacy<br/>' +
+                        '💡 Recommended for daily users that prefers more privacy over non-essential functions'"
+            />
+        <MenuOptionListItem
+            label="All"
+            :enabled="this.currentSelection !== SelectionType.All"
+            @click="selectType(SelectionType.All)"
+            v-tooltip=" '🔒 Strongest privacy, disabling any functionality that may leak your data.<br/>' +
+                        '🛑 Not designed for daily users, it will break important functionalities.<br/>' +
+                        '💡 Only recommended for extreme use-cases like crime labs where no leak is acceptable'"
+        />
+    </MenuOptionList>
 </template>
 
 <script lang="ts">
 import { Component } from 'vue-property-decorator';
 import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
-import SelectableOption from './SelectableOption.vue';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { SelectionType, SelectionTypeHandler } from './SelectionTypeHandler';
+import MenuOptionList from './../MenuOptionList.vue';
+import MenuOptionListItem from '../MenuOptionListItem.vue';
 
 @Component({
   components: {
-    SelectableOption,
+    MenuOptionList,
+    MenuOptionListItem,
   },
 })
 export default class TheSelector extends StatefulVue {
@@ -87,16 +75,5 @@ export default class TheSelector extends StatefulVue {
 </script>
 
 <style scoped lang="scss">
-@import "@/presentation/styles/fonts.scss";
 
-.container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    .part {
-        display: flex;
-        margin-right:5px;
-    }
-    font-family: $normal-font;
-}
 </style>
