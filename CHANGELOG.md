@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.10.3 (2021-08-27)
+
+* unrecommend VSS and document its breaking behavior | [7714898](https://github.com/undergroundwires/privacy.sexy/commit/77148980e08859f89c15c6604e55b56ce4f74358)
+* fix incorrect modification of Desktop folder on ThisPC (#71) | [eb9ac35](https://github.com/undergroundwires/privacy.sexy/commit/eb9ac35a923325cc2c9983ef71c0d904337a58f5)
+* add initial integration tests | [49600c5](https://github.com/undergroundwires/privacy.sexy/commit/49600c5f37ca33c1687885fdf02a71ef7d3e6e8c)
+* unify usage of sleepAsync and add tests | [36f0805](https://github.com/undergroundwires/privacy.sexy/commit/36f08055909f371fd9cbe3480ea813b963aea22b)
+* fix broken URLs and automate broken URL checks #70 | [db62ed7](https://github.com/undergroundwires/privacy.sexy/commit/db62ed7f3ac63e9f2d762eb946060595eb9f5626)
+* fix hiding recent files in quick access | [b976b92](https://github.com/undergroundwires/privacy.sexy/commit/b976b920318dba55b32d39f148fdca4f6be3cce3)
+* bump dependencies to latest #75, #69 | [0a857aa](https://github.com/undergroundwires/privacy.sexy/commit/0a857aa09ee703d34ad0422bd1731158017a9a58)
+* Fix NTP configuration before running the service (#72) | [71e70e5](https://github.com/undergroundwires/privacy.sexy/commit/71e70e50c51249bb10f6203414948b325acc2b2a)
+* Fix typo on main page (#82) | [487001a](https://github.com/undergroundwires/privacy.sexy/commit/487001af485fdbb958615d7b52c09c2e386ddaf2)
+* Improve issue templates | [f2935e4](https://github.com/undergroundwires/privacy.sexy/commit/f2935e4008f1231ef174f8932290e11715564d20)
+* Fix infinitely subscribing to state changes | [ea5f9ec](https://github.com/undergroundwires/privacy.sexy/commit/ea5f9ec27df7cec6ac575e23fef18948d2b8e68a)
+* Fix select options being clickable when disabled | [1c6b305](https://github.com/undergroundwires/privacy.sexy/commit/1c6b3057ea6e45125cadf374f20a905712ccdf3c)
+* Fix tests for `ParameterSubstitutionParser` | [2a08855](https://github.com/undergroundwires/privacy.sexy/commit/2a08855e5d1bdf74354fd692cbfebd1a48e495ac)
+* Fix excessive highlighting on hover | [ec0c972](https://github.com/undergroundwires/privacy.sexy/commit/ec0c972d348ffd5897f115d201031b704875b56a)
+* Fix dead URLs | [439cd30](https://github.com/undergroundwires/privacy.sexy/commit/439cd303ff3db96a53664e5f44fefe12b95c5e6c)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.10.2...0.10.3)
+
 ## 0.10.2 (2021-04-19)
 
 * in CI/CD, run other tests/check even if one of them fails | [5c43965](https://github.com/undergroundwires/privacy.sexy/commit/5c43965f0bc44f991ada7d3bad68937a80665dc3)
