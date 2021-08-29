@@ -2,9 +2,9 @@
     <div id="container">
         <TheSelector class="item" />
         <TheOsChanger class="item"  />
-        <TheGrouper
+        <TheViewChanger
             class="item"
-            v-on:groupingChanged="$emit('groupingChanged', $event)"
+            v-on:viewChanged="$emit('viewChanged', $event)"
             v-if="!this.isSearching" />
     </div>
 </template>
@@ -13,7 +13,7 @@
 import { Component } from 'vue-property-decorator';
 import TheOsChanger from './TheOsChanger.vue';
 import TheSelector from './Selector/TheSelector.vue';
-import TheGrouper from './Grouping/TheGrouper.vue';
+import TheViewChanger from './View/TheViewChanger.vue';
 import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
@@ -22,7 +22,7 @@ import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
   components: {
     TheSelector,
     TheOsChanger,
-    TheGrouper,
+    TheViewChanger,
   },
 })
 export default class TheScriptsMenu extends StatefulVue {

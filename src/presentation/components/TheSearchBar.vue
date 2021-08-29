@@ -12,7 +12,7 @@
 <script lang="ts">
 import { Component, Watch } from 'vue-property-decorator';
 import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
-import { NonCollapsing } from '@/presentation/components/Scripts/Cards/NonCollapsingDirective';
+import { NonCollapsing } from '@/presentation/components/Scripts/View/Cards/NonCollapsingDirective';
 import { IUserFilter } from '@/application/Context/State/Filter/IUserFilter';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';

@@ -1,8 +1,8 @@
 import 'mocha';
 import { expect } from 'chai';
 import { ILiquorTreeNode } from 'liquor-tree';
-import { NodeType } from '@/presentation/components/Scripts/ScriptsTree/SelectableTree/Node/INode';
-import { getNewState } from '@/presentation/components/Scripts/ScriptsTree/SelectableTree/LiquorTree/NodeWrapper/NodeStateUpdater';
+import { NodeType } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/Node/INode';
+import { getNewState } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/LiquorTree/NodeWrapper/NodeStateUpdater';
 
 describe('NodeStateUpdater', () => {
     describe('getNewState', () => {

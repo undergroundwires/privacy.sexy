@@ -1,8 +1,8 @@
 <template>
     <div class="scripts">
         <div v-if="!isSearching">
-            <CardList v-if="grouping === Grouping.Cards"/>
-            <div class="tree" v-if="grouping === Grouping.None">
+            <CardList v-if="currentView === ViewType.Cards"/>
+            <div class="tree" v-else-if="currentView === ViewType.Tree">
                 <ScriptsTree />
             </div>
         </div>
@@ -29,12 +29,12 @@
 </template>
 
 <script lang="ts">
-import TheGrouper from '@/presentation/components/Scripts/Menu/Grouping/TheGrouper.vue';
-import ScriptsTree from '@/presentation/components/Scripts/ScriptsTree/ScriptsTree.vue';
-import CardList from '@/presentation/components/Scripts/Cards/CardList.vue';
+import TheGrouper from '@/presentation/components/Scripts/Menu/View/TheViewChanger.vue';
+import ScriptsTree from '@/presentation/components/Scripts/View/ScriptsTree/ScriptsTree.vue';
+import CardList from '@/presentation/components/Scripts/View/Cards/CardList.vue';
 import { Component, Prop } from 'vue-property-decorator';
 import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
-import { Grouping } from '@/presentation/components/Scripts/Menu/Grouping/Grouping';
+import { ViewType } from '@/presentation/components/Scripts/Menu/View/ViewType';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { ApplicationFactory } from '@/application/ApplicationFactory';
@@ -56,14 +56,13 @@ filters: {
     },
 },
 })
-export default class TheScriptsList extends StatefulVue {
-    @Prop() public grouping: Grouping;
-
+export default class TheScriptsView extends StatefulVue {
     public repositoryUrl = '';
-    public Grouping = Grouping; // Make it accessible from the view
     public searchQuery = '';
     public isSearching = false;
     public searchHasMatches = false;
+    @Prop() public currentView: ViewType;
+    public ViewType = ViewType; // Make it accessible from the view
 
     public async created() {
         const app = await ApplicationFactory.Current.getAppAsync();

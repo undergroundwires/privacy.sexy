@@ -1,8 +1,8 @@
 import 'mocha';
 import { expect } from 'chai';
-import { NodeType, INode } from '@/presentation/components/Scripts/ScriptsTree/SelectableTree/Node/INode';
+import { NodeType, INode } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/Node/INode';
 import { ILiquorTreeExistingNode, ILiquorTreeNewNode, ILiquorTreeNodeData, ICustomLiquorTreeData } from 'liquor-tree';
-import { convertExistingToNode, toNewLiquorTreeNode } from '@/presentation/components/Scripts/ScriptsTree/SelectableTree/LiquorTree/NodeWrapper/NodeTranslator';
+import { convertExistingToNode, toNewLiquorTreeNode } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/LiquorTree/NodeWrapper/NodeTranslator';
 
 describe('NodeTranslator', () => {
     it('convertExistingToNode', () => {

@@ -1,5 +1,5 @@
 import { ILiquorTreeNewNode, ILiquorTreeExistingNode } from 'liquor-tree';
-import { INode } from './../../Node/INode';
+import { INode } from '../../Node/INode';
 
 // Functions to translate INode to LiqourTree models and vice versa for anti-corruption
 

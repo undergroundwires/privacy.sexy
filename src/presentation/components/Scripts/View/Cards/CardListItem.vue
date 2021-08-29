@@ -33,7 +33,7 @@
 
 <script lang="ts">
 import { Component, Prop, Watch, Emit } from 'vue-property-decorator';
-import ScriptsTree from '@/presentation/components/Scripts/ScriptsTree/ScriptsTree.vue';
+import ScriptsTree from '@/presentation/components/Scripts/View/ScriptsTree/ScriptsTree.vue';
 import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
 
 @Component({

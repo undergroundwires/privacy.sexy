@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { Component, Prop, Emit, Vue } from 'vue-property-decorator';
-import { NonCollapsing } from '@/presentation/components/Scripts/Cards/NonCollapsingDirective';
+import { NonCollapsing } from '@/presentation/components/Scripts/View/Cards/NonCollapsingDirective';
 
 @Component({
     directives: { NonCollapsing },

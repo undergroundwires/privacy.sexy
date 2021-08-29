@@ -1,9 +1,9 @@
 <template>
 <div class="scripts">
-    <TheScriptsMenu v-on:groupingChanged="grouping = $event" />
+    <TheScriptsMenu v-on:viewChanged="currentView = $event" />
     <HorizontalResizeSlider class="row">
         <template v-slot:left>
-            <TheScriptsList :grouping="grouping" />
+            <TheScriptsView :currentView="currentView" />
         </template>
         <template v-slot:right>
             <TheCodeArea theme="xcode" />
@@ -15,21 +15,21 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import TheCodeArea from '@/presentation/components/Code/TheCodeArea.vue';
-import TheScriptsList from '@/presentation/components/Scripts/TheScriptsList.vue';
+import TheScriptsView from '@/presentation/components/Scripts/View/TheScriptsView.vue';
 import TheScriptsMenu from '@/presentation/components/Scripts/Menu/TheScriptsMenu.vue';
 import HorizontalResizeSlider from '@/presentation/components/Scripts/Slider/HorizontalResizeSlider.vue';
-import { Grouping } from '@/presentation/components/Scripts/Menu/Grouping/Grouping';
+import { ViewType } from '@/presentation/components/Scripts/Menu/View/ViewType';
 
 @Component({
   components: {
     TheCodeArea,
-    TheScriptsList,
+    TheScriptsView,
     TheScriptsMenu,
     HorizontalResizeSlider,
   },
 })
 export default class TheScriptArea extends Vue {
-    public grouping = Grouping.Cards;
+    public currentView = ViewType.Cards;
 }
 </script>
 

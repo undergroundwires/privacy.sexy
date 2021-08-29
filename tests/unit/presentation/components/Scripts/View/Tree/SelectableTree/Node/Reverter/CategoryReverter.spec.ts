@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
-import { CategoryReverter } from '@/presentation/components/Scripts/ScriptsTree/SelectableTree/Node/Reverter/CategoryReverter';
-import { getCategoryNodeId } from '@/presentation/components/Scripts/ScriptsTree/ScriptNodeParser';
+import { CategoryReverter } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/Node/Reverter/CategoryReverter';
+import { getCategoryNodeId } from '@/presentation/components/Scripts/View/ScriptsTree/ScriptNodeParser';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
 import { CategoryStub } from '@tests/unit/stubs/CategoryStub';

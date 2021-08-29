@@ -1,6 +1,6 @@
 import { ILiquorTreeFilter, ILiquorTreeExistingNode } from 'liquor-tree';
 import { convertExistingToNode } from './NodeTranslator';
-import { INode } from './../../Node/INode';
+import { INode } from '../../Node/INode';
 
 export type FilterPredicate = (node: INode) => boolean;
 

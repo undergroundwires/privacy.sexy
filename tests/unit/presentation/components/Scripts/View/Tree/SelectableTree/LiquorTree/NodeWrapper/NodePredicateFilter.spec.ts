@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
-import { NodeType, INode } from '@/presentation/components/Scripts/ScriptsTree/SelectableTree/Node/INode';
-import { NodePredicateFilter } from '@/presentation/components/Scripts/ScriptsTree/SelectableTree/LiquorTree/NodeWrapper/NodePredicateFilter';
+import { NodeType, INode } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/Node/INode';
+import { NodePredicateFilter } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/LiquorTree/NodeWrapper/NodePredicateFilter';
 import { ILiquorTreeExistingNode } from 'liquor-tree';
 
 describe('NodePredicateFilter', () => {

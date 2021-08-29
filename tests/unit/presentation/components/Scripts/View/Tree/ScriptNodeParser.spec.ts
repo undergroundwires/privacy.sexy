@@ -1,9 +1,9 @@
 import 'mocha';
 import { expect } from 'chai';
-import { getScriptNodeId, getScriptId, getCategoryNodeId, getCategoryId } from '@/presentation/components/Scripts/ScriptsTree/ScriptNodeParser';
+import { getScriptNodeId, getScriptId, getCategoryNodeId, getCategoryId } from '@/presentation/components/Scripts/View/ScriptsTree/ScriptNodeParser';
 import { parseSingleCategory,
-    parseAllCategories } from '@/presentation/components/Scripts/ScriptsTree/ScriptNodeParser';
-import { INode, NodeType } from '@/presentation/components/Scripts/ScriptsTree/SelectableTree/Node/INode';
+    parseAllCategories } from '@/presentation/components/Scripts/View/ScriptsTree/ScriptNodeParser';
+import { INode, NodeType } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/Node/INode';
 import { IScript } from '@/domain/IScript';
 import { ICategory } from '@/domain/ICategory';
 import { CategoryStub } from '@tests/unit/stubs/CategoryStub';
