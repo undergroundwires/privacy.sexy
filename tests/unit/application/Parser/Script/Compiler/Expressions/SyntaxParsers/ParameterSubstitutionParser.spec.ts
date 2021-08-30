@@ -23,6 +23,11 @@ describe('ParameterSubstitutionParser', () => {
                 code: 'He{{$firstParameter}}!!',
                 expected: [new ExpressionPosition(2, 21) ],
             },
+            {
+                name: 'does not tolerate space after dollar sign',
+                code: 'He{{ $ firstParameter }}!!',
+                expected: [ ],
+            },
         ];
         for (const testCase of testCases) {
             it(testCase.name, () => {
