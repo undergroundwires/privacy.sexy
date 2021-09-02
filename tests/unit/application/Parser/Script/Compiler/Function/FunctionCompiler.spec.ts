@@ -1,11 +1,14 @@
 import 'mocha';
 import { expect } from 'chai';
 import { ISharedFunction } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
-import { FunctionData } from 'js-yaml-loader!@/*';
+import { FunctionData, ParameterDefinitionData } from 'js-yaml-loader!@/*';
 import { IFunctionCallCompiler } from '@/application/Parser/Script/Compiler/FunctionCall/IFunctionCallCompiler';
 import { FunctionCompiler } from '@/application/Parser/Script/Compiler/Function/FunctionCompiler';
+import { IReadOnlyFunctionParameterCollection } from '@/application/Parser/Script/Compiler/Function/Parameter/IFunctionParameterCollection';
 import { FunctionCallCompilerStub } from '@tests/unit/stubs/FunctionCallCompilerStub';
 import { FunctionDataStub } from '@tests/unit/stubs/FunctionDataStub';
+import { ParameterDefinitionDataStub } from '@tests/unit/stubs/ParameterDefinitionDataStub';
+import { FunctionParameter } from '@/application/Parser/Script/Compiler/Function/Parameter/FunctionParameter';
 
 describe('FunctionsCompiler', () => {
     describe('compileFunctions', () => {
@@ -34,29 +37,31 @@ describe('FunctionsCompiler', () => {
                 // assert
                 expect(act).to.throw(expectedError);
             });
-            it('throws when function parameters have same names', () => {
-                // arrange
-                const parameterName = 'duplicate-parameter';
-                const func = FunctionDataStub.createWithCall()
-                    .withParameters(parameterName, parameterName);
-                const expectedError = `"${func.name}": duplicate parameter name: "${parameterName}"`;
-                const sut = new MockableFunctionCompiler();
-                // act
-                const act = () => sut.compileFunctions([ func ]);
-                // assert
-                expect(act).to.throw(expectedError);
-            });
-            it('throws when parameters is not an array of strings', () => {
-                // arrange
-                const parameterNameWithUnexpectedType = 5;
-                const func = FunctionDataStub.createWithCall()
-                    .withParameters(parameterNameWithUnexpectedType as any);
-                const expectedError = `unexpected parameter name type in "${func.name}"`;
-                const sut = new MockableFunctionCompiler();
-                // act
-                const act = () => sut.compileFunctions([ func ]);
-                // assert
-                expect(act).to.throw(expectedError);
+            describe('throws when parameters type is not as expected', () => {
+                const testCases = [
+                    {
+                        state: 'when not an array',
+                        invalidType: 5,
+                    },
+                    {
+                        state: 'when array but not of objects',
+                        invalidType: [ 'a', { a: 'b'} ],
+                    },
+                ];
+                for (const testCase of testCases) {
+                    it(testCase.state, () => {
+                        // arrange
+                        const func = FunctionDataStub
+                            .createWithCall()
+                            .withParametersObject(testCase.invalidType as any);
+                        const expectedError = `parameters must be an array of objects in function(s) "${func.name}"`;
+                        const sut = new MockableFunctionCompiler();
+                        // act
+                        const act = () => sut.compileFunctions([ func ]);
+                        // assert
+                        expect(act).to.throw(expectedError);
+                    });
+                }
             });
             describe('throws when when function have duplicate code', () => {
                 it('code', () => {
@@ -116,6 +121,37 @@ describe('FunctionsCompiler', () => {
                 // assert
                 expect(act).to.throw(expectedError);
             });
+            it('rethrows including function name when FunctionParameter throws', () => {
+                // arrange
+                const functionName = 'invalid-function';
+                const expectedError = `neither "code" or "call" is defined in "${functionName}"`;
+                const invalidFunction = FunctionDataStub.createWithoutCallOrCodes()
+                    .withName(functionName);
+                const sut = new MockableFunctionCompiler();
+                // act
+                const act = () => sut.compileFunctions([ invalidFunction ]);
+                // assert
+                expect(act).to.throw(expectedError);
+            });
+            it('rethrows including function name when FunctionParameter throws', () => {
+                // arrange
+                const invalidParameterName = 'invalid function p@r4meter name';
+                const functionName = 'functionName';
+                let parameterException: Error;
+                // tslint:disable-next-line:no-unused-expression
+                try { new FunctionParameter(invalidParameterName, false); } catch (e) { parameterException = e; }
+                const expectedError = `"${functionName}": ${parameterException.message}`;
+                const functionData = FunctionDataStub.createWithCode()
+                    .withName(functionName)
+                    .withParameters(new ParameterDefinitionDataStub().withName(invalidParameterName));
+
+                // act
+                const sut = new MockableFunctionCompiler();
+                const act = () => sut.compileFunctions([ functionData ]);
+
+                // assert
+                expect(act).to.throw(expectedError);
+            });
         });
         it('returns empty with empty functions', () => {
             // arrange
@@ -136,7 +172,10 @@ describe('FunctionsCompiler', () => {
                 .withName(name)
                 .withCode('expected-code')
                 .withRevertCode('expected-revert-code')
-                .withParameters('expected-parameter-1', 'expected-parameter-2');
+                .withParameters(
+                    new ParameterDefinitionDataStub().withName('expectedParameter').withOptionality(true),
+                    new ParameterDefinitionDataStub().withName('expectedParameter2').withOptionality(false),
+                );
             const sut = new MockableFunctionCompiler();
             // act
             const collection = sut.compileFunctions([ expected ]);
@@ -188,13 +227,30 @@ describe('FunctionsCompiler', () => {
 
 function expectEqualFunctions(expected: FunctionData, actual: ISharedFunction) {
     expect(actual.name).to.equal(expected.name);
-    expect(actual.parameters).to.deep.equal(expected.parameters);
+    expect(areScrambledEqual(actual.parameters, expected.parameters));
     expectEqualFunctionCode(expected, actual);
 }
 
 function expectEqualFunctionCode(expected: FunctionData, actual: ISharedFunction) {
     expect(actual.code).to.equal(expected.code);
     expect(actual.revertCode).to.equal(expected.revertCode);
+}
+
+function areScrambledEqual(
+    expected: IReadOnlyFunctionParameterCollection,
+    actual: readonly ParameterDefinitionData[],
+) {
+    if (expected.all.length !== actual.length) {
+        return false;
+    }
+    for (const expectedParameter of expected.all) {
+        if (!actual.some(
+            (a) => a.name === expectedParameter.name
+                && (a.optional || false) === expectedParameter.isOptional)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 class MockableFunctionCompiler extends FunctionCompiler {

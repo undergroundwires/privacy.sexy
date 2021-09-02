@@ -115,7 +115,8 @@ A simple function example
 
 ```yaml
   function: EchoArgument
-  parameters: [ 'argument' ]
+  parameters:
+    - name: 'argument'
   code: Hello {{ $argument }} !
 ```
 
@@ -134,14 +135,16 @@ A function can call other functions such as:
 ```yaml
   - 
     function: CallerFunction
-    parameters: [ 'value' ]
+    parameters:
+      - name: 'value'
     call:
       function: EchoArgument
       parameters:
         argument: {{ $value }}
   -
     function: EchoArgument
-    parameters: [ 'argument' ]
+    parameters:
+      - name: 'argument'
     code: Hello {{ $argument }} !
 ```
 
@@ -152,11 +155,9 @@ A function can call other functions such as:
   - Convention is to use camelCase, and be verbs.
   - E.g. `uninstallStoreApp`
   - ❗ Function names must be unique
-- `parameters`: `[` *`string`* `, ... ]`
-  - Name of the parameters that the function has.
-  - Parameter values are provided by a [Script](#script) through a [FunctionCall](#FunctionCall)
-  - Parameter names must be defined to be used in [expressions](#expressions)
-  - ❗ Parameter names must be unique
+- `parameters`: `[` ***[`FunctionParameter`](#FunctionParameter)*** `, ... ]`
+  - List of parameters that function code refers to.
+  - ❗ Must be defined to be able use in [`FunctionCall`](#functioncall) or [expressions](#expressions)
  `code`: *`string`* (**required** if `call` is undefined)
   - Batch file commands that will be executed
   - 💡 If defined, best practice to also define `revertCode`
@@ -169,6 +170,24 @@ A function can call other functions such as:
   - A shared function or sequence of functions to call (called in order)
   - The parameter values that are sent can use [expressions](#expressions)
   - ❗ If not defined `code` must be defined
+
+### `FunctionParameter`
+
+- Defines a parameter that function requires optionally or mandatory.
+- Its arguments are provided by a [Script](#script) through a [FunctionCall](#FunctionCall).
+
+#### `FunctionParameter` syntax
+
+- `name`: *`string`* (**required**)
+  - Name of the parameters that the function has.
+  - Parameter names must be defined to be used in [expressions](#expressions).
+  - ❗ Parameter names must be unique and include alphanumeric characters only.
+- `optional`: *`boolean`* (default: `false`)
+  - Specifies whether the caller [Script](#script) must provide any value for the parameter.
+  - If set to `false` i.e. an argument value is not optional then it expects a non-empty value for the variable;
+    - Otherwise it throws.
+  - 💡 Set it to `true` if a parameter is used conditionally;
+    - Or else set it to `false` for verbosity or do not define it as default value is `false` anyway.
 
 ### `ScriptingDefinition`
 

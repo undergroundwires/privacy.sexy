@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import { ExpressionEvaluator } from '@/application/Parser/Script/Compiler/Expressions/Expression/Expression';
 import { IPrimitiveExpression, RegexParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/RegexParser';
 import { ExpressionPosition } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionPosition';
+import { FunctionParameterStub } from '@tests/unit/stubs/FunctionParameterStub';
 
 describe('RegexParser', () => {
     describe('findExpressions', () => {
@@ -59,7 +60,10 @@ describe('RegexParser', () => {
         });
         it('sets parameters as expected', () => {
             // arrange
-            const expected = [ 'parameter1', 'parameter2' ];
+            const expected = [
+                new FunctionParameterStub().withName('parameter1').withOptionality(true),
+                new FunctionParameterStub().withName('parameter2').withOptionality(false),
+             ];
             const regex = /hello/g;
             const code = 'hello';
             const builder = (): IPrimitiveExpression => ({
@@ -71,7 +75,7 @@ describe('RegexParser', () => {
             const expressions = sut.findExpressions(code);
             // assert
             expect(expressions).to.have.lengthOf(1);
-            expect(expressions[0].parameters).to.equal(expected);
+            expect(expressions[0].parameters.all).to.deep.equal(expected);
         });
         it('sets expected position', () => {
             // arrange

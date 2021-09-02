@@ -1,12 +1,16 @@
 import { ExpressionPosition } from './ExpressionPosition';
-import { ExpressionArguments, IExpression } from './IExpression';
+import { IExpression } from './IExpression';
+import { IReadOnlyFunctionCallArgumentCollection } from '../../FunctionCall/Argument/IFunctionCallArgumentCollection';
+import { IReadOnlyFunctionParameterCollection } from '../../Function/Parameter/IFunctionParameterCollection';
+import { FunctionParameterCollection } from '@/application/Parser/Script/Compiler/Function/Parameter/FunctionParameterCollection';
+import { FunctionCallArgumentCollection } from '../../FunctionCall/Argument/FunctionCallArgumentCollection';
 
-export type ExpressionEvaluator = (args?: ExpressionArguments) => string;
+export type ExpressionEvaluator = (args: IReadOnlyFunctionCallArgumentCollection) => string;
 export class Expression implements IExpression {
     constructor(
         public readonly position: ExpressionPosition,
         public readonly evaluator: ExpressionEvaluator,
-        public readonly parameters: readonly string[] = new Array<string>()) {
+        public readonly parameters: IReadOnlyFunctionParameterCollection = new FunctionParameterCollection()) {
         if (!position) {
             throw new Error('undefined position');
         }
@@ -14,22 +18,42 @@ export class Expression implements IExpression {
             throw new Error('undefined evaluator');
         }
     }
-    public evaluate(args?: ExpressionArguments): string {
+    public evaluate(args: IReadOnlyFunctionCallArgumentCollection): string {
+        if (!args) {
+            throw new Error('undefined args, send empty collection instead');
+        }
+        validateThatAllRequiredParametersAreSatisfied(this.parameters, args);
         args = filterUnusedArguments(this.parameters, args);
         return this.evaluator(args);
     }
 }
 
-function filterUnusedArguments(
-    parameters: readonly string[], args: ExpressionArguments): ExpressionArguments {
-    let result: ExpressionArguments = {};
-    for (const parameter of Object.keys(args)) {
-        if (parameters.includes(parameter)) {
-            result = {
-                ...result,
-                [parameter]: args[parameter],
-            };
-        }
+function validateThatAllRequiredParametersAreSatisfied(
+    parameters: IReadOnlyFunctionParameterCollection,
+    args: IReadOnlyFunctionCallArgumentCollection,
+) {
+    const requiredParameterNames = parameters
+        .all
+        .filter((parameter) => !parameter.isOptional)
+        .map((parameter) => parameter.name);
+    const missingParameterNames = requiredParameterNames
+        .filter((parameterName) => !args.hasArgument(parameterName));
+    if (missingParameterNames.length) {
+        throw new Error(
+            `argument values are provided for required parameters: "${missingParameterNames.join('", "')}"`);
     }
-    return result;
+}
+
+function filterUnusedArguments(
+    parameters: IReadOnlyFunctionParameterCollection,
+    allFunctionArgs: IReadOnlyFunctionCallArgumentCollection): IReadOnlyFunctionCallArgumentCollection {
+    const specificCallArgs = new FunctionCallArgumentCollection();
+    for (const parameter of parameters.all) {
+        if (parameter.isOptional && !allFunctionArgs.hasArgument(parameter.name)) {
+            continue; // Optional parameter is not necessarily provided
+        }
+        const arg = allFunctionArgs.getArgument(parameter.name);
+        specificCallArgs.addArgument(arg);
+    }
+    return specificCallArgs;
 }

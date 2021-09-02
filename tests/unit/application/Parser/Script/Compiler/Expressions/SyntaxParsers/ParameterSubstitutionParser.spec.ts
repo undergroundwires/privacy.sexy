@@ -2,7 +2,7 @@ import 'mocha';
 import { expect } from 'chai';
 import { ParameterSubstitutionParser } from '@/application/Parser/Script/Compiler/Expressions/SyntaxParsers/ParameterSubstitutionParser';
 import { ExpressionPosition } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionPosition';
-import { ExpressionArguments } from '@/application/Parser/Script/Compiler/Expressions/Expression/IExpression';
+import { FunctionCallArgumentCollectionStub } from '@tests/unit/stubs/FunctionCallArgumentCollectionStub';
 
 describe('ParameterSubstitutionParser', () => {
     describe('finds at expected positions', () => {
@@ -44,36 +44,25 @@ describe('ParameterSubstitutionParser', () => {
         const testCases = [ {
             name: 'single parameter',
             code: '{{ $parameter }}',
-            args: [ {
-                name: 'parameter',
-                value: 'Hello world',
-            }],
+            args: new FunctionCallArgumentCollectionStub()
+                .withArgument('parameter', 'Hello world'),
             expected: [ 'Hello world' ],
         },
         {
             name: 'different parameters',
             code: '{{ $firstParameter }} {{ $secondParameter }}!',
-            args: [ {
-                name: 'firstParameter',
-                value: 'Hello',
-            },
-            {
-                name: 'secondParameter',
-                value: 'World',
-            }],
+            args: new FunctionCallArgumentCollectionStub()
+                .withArgument('firstParameter', 'Hello')
+                .withArgument('secondParameter', 'World'),
             expected: [ 'Hello', 'World' ],
         }];
         for (const testCase of testCases) {
             it(testCase.name, () => {
                 const sut = new ParameterSubstitutionParser();
-                let args: ExpressionArguments = {};
-                for (const arg of testCase.args) {
-                    args = {...args, [arg.name]: arg.value };
-                }
                 // act
                 const expressions = sut.findExpressions(testCase.code);
                 // assert
-                const actual = expressions.map((e) => e.evaluate(args));
+                const actual = expressions.map((e) => e.evaluate(testCase.args));
                 expect(actual).to.deep.equal(testCase.expected);
             });
         }

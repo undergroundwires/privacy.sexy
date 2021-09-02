@@ -5,6 +5,9 @@ import { ISharedFunctionCollection } from './ISharedFunctionCollection';
 import { IFunctionCompiler } from './IFunctionCompiler';
 import { IFunctionCallCompiler } from '../FunctionCall/IFunctionCallCompiler';
 import { FunctionCallCompiler } from '../FunctionCall/FunctionCallCompiler';
+import { FunctionParameter } from './Parameter/FunctionParameter';
+import { FunctionParameterCollection } from './Parameter/FunctionParameterCollection';
+import { IReadOnlyFunctionParameterCollection } from './Parameter/IFunctionParameterCollection';
 
 export class FunctionCompiler implements IFunctionCompiler {
     public static readonly instance: IFunctionCompiler = new FunctionCompiler();
@@ -20,18 +23,37 @@ export class FunctionCompiler implements IFunctionCompiler {
         functions
             .filter((func) => hasCode(func))
             .forEach((func) => {
-                const shared = new SharedFunction(func.name, func.parameters, func.code, func.revertCode);
+                const parameters = parseParameters(func);
+                const shared = new SharedFunction(func.name, parameters, func.code, func.revertCode);
                 collection.addFunction(shared);
             });
         functions
             .filter((func) => hasCall(func))
             .forEach((func) => {
+                const parameters = parseParameters(func);
                 const code = this.functionCallCompiler.compileCall(func.call, collection);
-                const shared = new SharedFunction(func.name, func.parameters, code.code, code.revertCode);
+                const shared = new SharedFunction(func.name, parameters, code.code, code.revertCode);
                 collection.addFunction(shared);
             });
         return collection;
     }
+}
+
+function parseParameters(data: FunctionData): IReadOnlyFunctionParameterCollection {
+    const parameters = new FunctionParameterCollection();
+    if (!data.parameters) {
+        return parameters;
+    }
+    for (const parameterData of data.parameters) {
+        const isOptional = parameterData.optional || false;
+        try {
+            const parameter = new FunctionParameter(parameterData.name, isOptional);
+            parameters.addParameter(parameter);
+        } catch (err) {
+            throw new Error(`"${data.name}": ${err.message}`);
+        }
+    }
+    return parameters;
 }
 
 function hasCode(data: FunctionData): boolean {
@@ -46,10 +68,9 @@ function hasCall(data: FunctionData): boolean {
 function ensureValidFunctions(functions: readonly FunctionData[]) {
     ensureNoUndefinedItem(functions);
     ensureNoDuplicatesInFunctionNames(functions);
-    ensureNoDuplicatesInParameterNames(functions);
     ensureNoDuplicateCode(functions);
     ensureEitherCallOrCodeIsDefined(functions);
-    ensureExpectedParameterNameTypes(functions);
+    ensureExpectedParametersType(functions);
 }
 
 function printList(list: readonly string[]): string {
@@ -69,14 +90,18 @@ function ensureEitherCallOrCodeIsDefined(holders: readonly InstructionHolder[]) 
     }
 }
 
-function ensureExpectedParameterNameTypes(functions: readonly FunctionData[]) {
-    const unexpectedFunctions = functions.filter((func) => func.parameters && !isArrayOfStrings(func.parameters));
+function ensureExpectedParametersType(functions: readonly FunctionData[]) {
+    const unexpectedFunctions = functions
+        .filter((func) => func.parameters && !isArrayOfObjects(func.parameters));
     if (unexpectedFunctions.length) {
-        throw new Error(`unexpected parameter name type in ${printNames(unexpectedFunctions)}`);
+        const errorMessage = `parameters must be an array of objects in function(s) ${printNames(unexpectedFunctions)}`;
+        throw new Error(errorMessage);
     }
-    function isArrayOfStrings(value: any): boolean {
-        return Array.isArray(value) && value.every((item) => typeof item === 'string');
-     }
+}
+
+function isArrayOfObjects(value: any): boolean {
+    return Array.isArray(value)
+        && value.every((item) => typeof item === 'object');
 }
 
 function printNames(holders: readonly InstructionHolder[]) {
@@ -90,21 +115,13 @@ function ensureNoDuplicatesInFunctionNames(functions: readonly FunctionData[]) {
         throw new Error(`duplicate function name: ${printList(duplicateFunctionNames)}`);
     }
 }
+
 function ensureNoUndefinedItem(functions: readonly FunctionData[]) {
     if (functions.some((func) => !func)) {
         throw new Error(`some functions are undefined`);
     }
 }
-function ensureNoDuplicatesInParameterNames(functions: readonly FunctionData[]) {
-    const functionsWithParameters = functions
-        .filter((func) => func.parameters && func.parameters.length > 0);
-    for (const func of functionsWithParameters) {
-        const duplicateParameterNames = getDuplicates(func.parameters);
-        if (duplicateParameterNames.length) {
-            throw new Error(`"${func.name}": duplicate parameter name: ${printList(duplicateParameterNames)}`);
-        }
-    }
-}
+
 function ensureNoDuplicateCode(functions: readonly FunctionData[]) {
     const duplicateCodes = getDuplicates(functions
         .map((func) => func.code)

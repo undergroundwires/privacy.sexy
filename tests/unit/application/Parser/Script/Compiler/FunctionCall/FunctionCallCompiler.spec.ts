@@ -7,6 +7,7 @@ import { IExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expre
 import { ExpressionsCompilerStub } from '@tests/unit/stubs/ExpressionsCompilerStub';
 import { SharedFunctionCollectionStub } from '@tests/unit/stubs/SharedFunctionCollectionStub';
 import { SharedFunctionStub } from '@tests/unit/stubs/SharedFunctionStub';
+import { FunctionCallArgumentCollectionStub } from '@tests/unit/stubs/FunctionCallArgumentCollectionStub';
 
 describe('FunctionCallCompiler', () => {
     describe('compileCall', () => {
@@ -52,7 +53,7 @@ describe('FunctionCallCompiler', () => {
                 });
                 it('throws if call sequence has undefined function name', () => {
                     // arrange
-                    const expectedError = 'empty function name called';
+                    const expectedError = 'empty function name in function call';
                     const call: FunctionCallData[] = [
                         { function: 'function-name' },
                         { function: undefined },
@@ -91,13 +92,14 @@ describe('FunctionCallCompiler', () => {
                         it(testCase.name, () => {
                             const func = new SharedFunctionStub()
                                 .withName('test-function-name')
-                                .withParameters(...testCase.functionParameters);
+                                .withParameterNames(...testCase.functionParameters);
                             let params: FunctionCallParametersData = {};
                             for (const parameter of testCase.callParameters) {
                                 params = {...params, [parameter]: 'defined-parameter-value '};
                             }
                             const call: FunctionCallData = { function: func.name, parameters: params };
-                            const functions = new SharedFunctionCollectionStub().withFunction(func);
+                            const functions = new SharedFunctionCollectionStub()
+                                .withFunction(func);
                             const sut = new MockableFunctionCallCompiler();
                             // act
                             const act = () => sut.compileCall(call, functions);
@@ -134,38 +136,33 @@ describe('FunctionCallCompiler', () => {
                 });
             });
 
-
         });
         describe('builds code as expected', () => {
             describe('builds single call as expected', () => {
                 // arrange
                 const parametersTestCases = [
                     {
-                        name: 'undefined parameters',
-                        parameters: undefined,
-                        parameterValues: undefined,
-                    },
-                    {
                         name: 'empty parameters',
                         parameters: [],
-                        parameterValues: { },
+                        callArgs: { },
                     },
                     {
                         name: 'non-empty parameters',
                         parameters: [ 'param1', 'param2' ],
-                        parameterValues: { param1: 'value1', param2: 'value2' },
+                        callArgs: { param1: 'value1', param2: 'value2' },
                     },
                 ];
                 for (const testCase of parametersTestCases) {
                     it(testCase.name, () => {
                         const expectedExecute = `expected-execute`;
                         const expectedRevert = `expected-revert`;
-                        const func = new SharedFunctionStub().withParameters(...testCase.parameters);
+                        const func = new SharedFunctionStub().withParameterNames(...testCase.parameters);
                         const functions = new SharedFunctionCollectionStub().withFunction(func);
-                        const call: FunctionCallData = { function: func.name, parameters: testCase.parameterValues };
+                        const call: FunctionCallData = { function: func.name, parameters: testCase.callArgs };
+                        const args = new FunctionCallArgumentCollectionStub().withArguments(testCase.callArgs);
                         const expressionsCompilerMock = new ExpressionsCompilerStub()
-                            .setup(func.code, testCase.parameterValues, expectedExecute)
-                            .setup(func.revertCode, testCase.parameterValues, expectedRevert);
+                            .setup(func.code, args, expectedExecute)
+                            .setup(func.revertCode, args, expectedRevert);
                         const sut = new MockableFunctionCallCompiler(expressionsCompilerMock);
                         // act
                         const actual = sut.compileCall(call, functions);
@@ -183,7 +180,7 @@ describe('FunctionCallCompiler', () => {
                     .withRevertCode('first-function-revert-code');
                 const secondFunction = new SharedFunctionStub()
                     .withName('second-function-name')
-                    .withParameters('testParameter')
+                    .withParameterNames('testParameter')
                     .withCode('second-function-code')
                     .withRevertCode('second-function-revert-code');
                 const secondCallArguments = { testParameter: 'testValue' };
@@ -191,11 +188,14 @@ describe('FunctionCallCompiler', () => {
                     { function: firstFunction.name },
                     { function: secondFunction.name, parameters: secondCallArguments },
                 ];
+                const firstFunctionCallArgs = new FunctionCallArgumentCollectionStub();
+                const secondFunctionCallArgs = new FunctionCallArgumentCollectionStub()
+                    .withArguments(secondCallArguments);
                 const expressionsCompilerMock = new ExpressionsCompilerStub()
-                    .setup(firstFunction.code, {}, firstFunction.code)
-                    .setup(firstFunction.revertCode, {}, firstFunction.revertCode)
-                    .setup(secondFunction.code, secondCallArguments, secondFunction.code)
-                    .setup(secondFunction.revertCode, secondCallArguments, secondFunction.revertCode);
+                    .setup(firstFunction.code, firstFunctionCallArgs, firstFunction.code)
+                    .setup(firstFunction.revertCode, firstFunctionCallArgs, firstFunction.revertCode)
+                    .setup(secondFunction.code, secondFunctionCallArgs, secondFunction.code)
+                    .setup(secondFunction.revertCode, secondFunctionCallArgs, secondFunction.revertCode);
                 const expectedExecute = `${firstFunction.code}\n${secondFunction.code}`;
                 const expectedRevert = `${firstFunction.revertCode}\n${secondFunction.revertCode}`;
                 const functions = new SharedFunctionCollectionStub()

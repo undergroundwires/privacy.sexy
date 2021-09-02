@@ -1,6 +1,8 @@
 import 'mocha';
 import { expect } from 'chai';
 import { SharedFunction } from '@/application/Parser/Script/Compiler/Function/SharedFunction';
+import { IReadOnlyFunctionParameterCollection } from '@/application/Parser/Script/Compiler/Function/Parameter/IFunctionParameterCollection';
+import { FunctionParameterCollectionStub } from '@tests/unit/stubs/FunctionParameterCollectionStub';
 
 describe('SharedFunction', () => {
     describe('name', () => {
@@ -31,25 +33,25 @@ describe('SharedFunction', () => {
     describe('parameters', () => {
         it('sets as expected', () => {
             // arrange
-            const expected = [ 'expected-parameter' ];
+            const expected = new FunctionParameterCollectionStub()
+                .withParameterName('test-parameter');
             // act
             const sut = new SharedFunctionBuilder()
                 .withParameters(expected)
                 .build();
             // assert
-            expect(sut.parameters).to.deep.equal(expected);
+            expect(sut.parameters).to.equal(expected);
         });
-        it('returns empty array if undefined', () => {
+        it('throws if undefined', () => {
             // arrange
-            const expected = [ ];
-            const value = undefined;
+            const expectedError = 'undefined parameters';
+            const parameters = undefined;
             // act
-            const sut = new SharedFunctionBuilder()
-                .withParameters(value)
+            const act = () => new SharedFunctionBuilder()
+                .withParameters(parameters)
                 .build();
             // assert
-            expect(sut.parameters).to.not.equal(undefined);
-            expect(sut.parameters).to.deep.equal(expected);
+            expect(act).to.throw(expectedError);
         });
     });
     describe('code', () => {
@@ -97,7 +99,7 @@ describe('SharedFunction', () => {
 
 class SharedFunctionBuilder {
     private name = 'name';
-    private parameters: readonly string[] = [ 'parameter' ];
+    private parameters: IReadOnlyFunctionParameterCollection = new FunctionParameterCollectionStub();
     private code = 'code';
     private revertCode = 'revert-code';
 
@@ -113,7 +115,7 @@ class SharedFunctionBuilder {
         this.name = name;
         return this;
     }
-    public withParameters(parameters: readonly string[]) {
+    public withParameters(parameters: IReadOnlyFunctionParameterCollection) {
         this.parameters = parameters;
         return this;
     }

@@ -1,63 +1,63 @@
-import { FunctionCallData, FunctionCallParametersData, FunctionData, ScriptFunctionCallData } from 'js-yaml-loader!@/*';
+import { FunctionCallData, ScriptFunctionCallData } from 'js-yaml-loader!@/*';
 import { ICompiledCode } from './ICompiledCode';
 import { ISharedFunctionCollection } from '../Function/ISharedFunctionCollection';
 import { IFunctionCallCompiler } from './IFunctionCallCompiler';
 import { IExpressionsCompiler } from '../Expressions/IExpressionsCompiler';
 import { ExpressionsCompiler } from '../Expressions/ExpressionsCompiler';
+import { ISharedFunction } from '../Function/ISharedFunction';
+import { IFunctionCall } from './IFunctionCall';
+import { FunctionCall } from './FunctionCall';
+import { FunctionCallArgument } from './Argument/FunctionCallArgument';
+import { IReadOnlyFunctionCallArgumentCollection } from './Argument/IFunctionCallArgumentCollection';
+import { FunctionCallArgumentCollection } from './Argument/FunctionCallArgumentCollection';
 
 export class FunctionCallCompiler implements IFunctionCallCompiler {
     public static readonly instance: IFunctionCallCompiler = new FunctionCallCompiler();
+
     protected constructor(
-        private readonly expressionsCompiler: IExpressionsCompiler = new ExpressionsCompiler()) { }
+        private readonly expressionsCompiler: IExpressionsCompiler = new ExpressionsCompiler()) {
+
+    }
+
     public compileCall(
         call: ScriptFunctionCallData,
         functions: ISharedFunctionCollection): ICompiledCode {
         if (!functions) { throw new Error('undefined functions'); }
         if (!call) { throw new Error('undefined call'); }
-        const compiledCodes = new Array<ICompiledCode>();
-        const calls = getCallSequence(call);
-        calls.forEach((currentCall, currentCallIndex) => {
-            ensureValidCall(currentCall);
-            const commonFunction = functions.getFunctionByName(currentCall.function);
-            ensureExpectedParameters(commonFunction, currentCall);
-            let functionCode = compileCode(commonFunction, currentCall.parameters, this.expressionsCompiler);
-            if (currentCallIndex !== calls.length - 1) {
-                functionCode = appendLine(functionCode);
-            }
-            compiledCodes.push(functionCode);
-        });
-        const compiledCode = merge(compiledCodes);
-        return compiledCode;
+        const compiledFunctions = new Array<ICompiledFunction>();
+        const callSequence = getCallSequence(call);
+        for (const currentCall of callSequence) {
+            const functionCall = parseFunctionCall(currentCall);
+            const sharedFunction = functions.getFunctionByName(functionCall.functionName);
+            ensureThatCallArgumentsExistInParameterDefinition(sharedFunction, functionCall.args);
+            const compiledFunction = compileCode(sharedFunction, functionCall.args, this.expressionsCompiler);
+            compiledFunctions.push(compiledFunction);
+        }
+        return {
+            code: merge(compiledFunctions.map((f) => f.code)),
+            revertCode: merge(compiledFunctions.map((f) => f.revertCode)),
+        };
     }
 }
 
-function ensureExpectedParameters(func: FunctionData, call: FunctionCallData) {
-    const actual = Object.keys(call.parameters || {});
-    const expected = func.parameters || [];
-    if (!actual.length && !expected.length) {
-        return;
-    }
-    const unexpectedParameters = actual.filter((callParam) => !expected.includes(callParam));
-    if (unexpectedParameters.length) {
-        throw new Error(
-            `function "${func.name}" has unexpected parameter(s) provided: "${unexpectedParameters.join('", "')}"`);
-    }
+function merge(codeParts: readonly string[]): string {
+    return codeParts
+        .filter((part) => part?.length > 0)
+        .join('\n');
 }
 
-function merge(codes: readonly ICompiledCode[]): ICompiledCode {
-    return {
-        code: codes.map((code) => code.code).join(''),
-        revertCode: codes.map((code) => code.revertCode).join(''),
-    };
+interface ICompiledFunction {
+    readonly code: string;
+    readonly revertCode: string;
 }
 
 function compileCode(
-    func: FunctionData,
-    parameters: FunctionCallParametersData,
-    compiler: IExpressionsCompiler): ICompiledCode {
+    func: ISharedFunction,
+    args: IReadOnlyFunctionCallArgumentCollection,
+    compiler: IExpressionsCompiler): ICompiledFunction {
     return {
-        code: compiler.compileExpressions(func.code, parameters),
-        revertCode: compiler.compileExpressions(func.revertCode, parameters),
+        code: compiler.compileExpressions(func.code, args),
+        revertCode: compiler.compileExpressions(func.revertCode, args),
     };
 }
 
@@ -71,19 +71,31 @@ function getCallSequence(call: ScriptFunctionCallData): FunctionCallData[] {
     return [ call as FunctionCallData ];
 }
 
-function ensureValidCall(call: FunctionCallData) {
+function parseFunctionCall(call: FunctionCallData): IFunctionCall {
     if (!call) {
         throw new Error(`undefined function call`);
     }
-    if (!call.function) {
-        throw new Error(`empty function name called`);
+    const args = new FunctionCallArgumentCollection();
+    for (const parameterName of Object.keys(call.parameters || {})) {
+        const arg = new FunctionCallArgument(parameterName, call.parameters[parameterName]);
+        args.addArgument(arg);
     }
+    return new FunctionCall(call.function, args);
 }
 
-function appendLine(code: ICompiledCode): ICompiledCode {
-    const appendLineIfNotEmpty = (str: string) => str ? `${str}\n` : str;
-    return {
-        code: appendLineIfNotEmpty(code.code),
-        revertCode: appendLineIfNotEmpty(code.revertCode),
-    };
+function ensureThatCallArgumentsExistInParameterDefinition(
+    func: ISharedFunction,
+    args: IReadOnlyFunctionCallArgumentCollection): void {
+    const callArgumentNames = args.getAllParameterNames();
+    const functionParameterNames = func.parameters.all.map((param) => param.name) || [];
+    if (!callArgumentNames.length && !functionParameterNames.length) {
+        return;
+    }
+    const parametersOutsideFunction = callArgumentNames
+        .filter((callParam) => !functionParameterNames.includes(callParam));
+    if (parametersOutsideFunction.length) {
+        throw new Error(
+            `function "${func.name}" has unexpected parameter(s) provided:` +
+            `"${parametersOutsideFunction.join('", "')}"`);
+    }
 }

@@ -1,4 +1,4 @@
-# Structure documented in "docs/collections.md"
+# Structure documented in "docs/collection-files.md"
 os: macos
 scripting:
     language: shellscript
@@ -532,7 +532,8 @@ actions:
 functions:
     -
         name: PersistUserEnvironmentConfiguration
-        parameters: [ configuration ]
+        parameters:
+            - name: configuration
         code: |-
             command='{{ $configuration }}'
             declare -a profile_files=("$HOME/.bash_profile" "$HOME/.zprofile")

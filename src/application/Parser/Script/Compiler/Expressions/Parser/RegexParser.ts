@@ -2,9 +2,12 @@ import { IExpressionParser } from './IExpressionParser';
 import { ExpressionPosition } from '../Expression/ExpressionPosition';
 import { IExpression } from '../Expression/IExpression';
 import { Expression, ExpressionEvaluator } from '../Expression/Expression';
+import { IFunctionParameter } from '../../Function/Parameter/IFunctionParameter';
+import { FunctionParameterCollection } from '../../Function/Parameter/FunctionParameterCollection';
 
 export abstract class RegexParser implements IExpressionParser {
     protected abstract readonly regex: RegExp;
+
     public findExpressions(code: string): IExpression[] {
         return Array.from(this.findRegexExpressions(code));
     }
@@ -23,7 +26,8 @@ export abstract class RegexParser implements IExpressionParser {
                 throw new Error(`[${this.constructor.name}] invalid script position: ${error.message}\nRegex ${this.regex}\nCode: ${code}`);
             }
             const primitiveExpression = this.buildExpression(match);
-            const expression = new Expression(position, primitiveExpression.evaluator, primitiveExpression.parameters);
+            const parameters = getParameters(primitiveExpression);
+            const expression = new Expression(position, primitiveExpression.evaluator, parameters);
             yield expression;
         }
     }
@@ -31,5 +35,14 @@ export abstract class RegexParser implements IExpressionParser {
 
 export interface IPrimitiveExpression {
     evaluator: ExpressionEvaluator;
-    parameters?: readonly string[];
+    parameters?: readonly IFunctionParameter[];
+}
+
+function getParameters(
+    expression: IPrimitiveExpression): FunctionParameterCollection {
+    const parameters  = new FunctionParameterCollection();
+    for (const parameter of expression.parameters || []) {
+        parameters.addParameter(parameter);
+    }
+    return parameters;
 }

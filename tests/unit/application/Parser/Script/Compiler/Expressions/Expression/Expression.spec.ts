@@ -3,7 +3,11 @@ import { expect } from 'chai';
 import { ExpressionPosition } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionPosition';
 import { ExpressionEvaluator } from '@/application/Parser/Script/Compiler/Expressions/Expression/Expression';
 import { Expression } from '@/application/Parser/Script/Compiler/Expressions/Expression/Expression';
-import { ExpressionArguments } from '@/application/Parser/Script/Compiler/Expressions/Expression/IExpression';
+import { IReadOnlyFunctionParameterCollection } from '@/application/Parser/Script/Compiler/Function/Parameter/IFunctionParameterCollection';
+import { IReadOnlyFunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/FunctionCall/Argument/IFunctionCallArgumentCollection';
+import { FunctionCallArgumentCollectionStub } from '@tests/unit/stubs/FunctionCallArgumentCollectionStub';
+import { FunctionParameterCollectionStub } from '@tests/unit/stubs/FunctionParameterCollectionStub';
+import { FunctionCallArgumentStub } from '@tests/unit/stubs/FunctionCallArgumentStub';
 
 describe('Expression', () => {
     describe('ctor', () => {
@@ -39,11 +43,15 @@ describe('Expression', () => {
                     .withParameters(parameters)
                     .build();
                 // assert
-                expect(actual.parameters).to.have.lengthOf(0);
+                expect(actual.parameters);
+                expect(actual.parameters.all);
+                expect(actual.parameters.all.length).to.equal(0);
             });
             it('sets as expected', () => {
                 // arrange
-                const expected = [ 'firstParameterName', 'secondParameterName' ];
+                const expected = new FunctionParameterCollectionStub()
+                    .withParameterName('firstParameterName')
+                    .withParameterName('secondParameterName');
                 // act
                 const actual = new ExpressionBuilder()
                     .withParameters(expected)
@@ -67,52 +75,119 @@ describe('Expression', () => {
         });
     });
     describe('evaluate', () => {
+        describe('throws with invalid arguments', () => {
+            const testCases = [
+                {
+                    name: 'throws if arguments is undefined',
+                    args: undefined,
+                    expectedError: 'undefined args, send empty collection instead',
+                },
+                {
+                    name: 'throws when some of the required args are not provided',
+                    sut: (i: ExpressionBuilder) => i.withParameterNames(['a', 'b', 'c'], false),
+                    args: new FunctionCallArgumentCollectionStub().withArgument('b', 'provided'),
+                    expectedError: 'argument values are provided for required parameters: "a", "c"',
+                },
+                {
+                    name: 'throws when none of the required args are not provided',
+                    sut: (i: ExpressionBuilder) => i.withParameterNames(['a', 'b'], false),
+                    args: new FunctionCallArgumentCollectionStub().withArgument('c', 'unrelated'),
+                    expectedError: 'argument values are provided for required parameters: "a", "b"',
+                },
+            ];
+            for (const testCase of testCases) {
+                it(testCase.name, () => {
+                    // arrange
+                    const sutBuilder = new ExpressionBuilder();
+                    if (testCase.sut) {
+                        testCase.sut(sutBuilder);
+                    }
+                    const sut = sutBuilder.build();
+                    // act
+                    const act = () => sut.evaluate(testCase.args);
+                    // assert
+                    expect(act).to.throw(testCase.expectedError);
+                });
+            }
+        });
         it('returns result from evaluator', () => {
             // arrange
-            const evaluatorMock: ExpressionEvaluator = (args) => JSON.stringify(args);
-            const givenArguments = { parameter1: 'value1', parameter2: 'value2' };
+            const evaluatorMock: ExpressionEvaluator = (args) =>
+                `"${args
+                    .getAllParameterNames()
+                    .map((name) => args.getArgument(name))
+                    .map((arg) => `${arg.parameterName}': '${arg.argumentValue}'`)
+                    .join('", "')}"`;
+            const givenArguments = new FunctionCallArgumentCollectionStub()
+                .withArgument('parameter1', 'value1')
+                .withArgument('parameter2', 'value2');
+            const expectedParameterNames = givenArguments.getAllParameterNames();
             const expected = evaluatorMock(givenArguments);
             const sut = new ExpressionBuilder()
                 .withEvaluator(evaluatorMock)
-                .withParameters(Object.keys(givenArguments))
+                .withParameterNames(expectedParameterNames)
                 .build();
             // arrange
             const actual = sut.evaluate(givenArguments);
             // assert
-            expect(expected).to.equal(actual);
+            expect(expected).to.equal(actual,
+                `\nGiven arguments: ${JSON.stringify(givenArguments)}\n` +
+                `\nExpected parameter names: ${JSON.stringify(expectedParameterNames)}\n`,
+            );
         });
-        it('filters unused arguments', () => {
+        describe('filters unused parameters', () => {
             // arrange
-            let actual: ExpressionArguments = {};
-            const evaluatorMock: ExpressionEvaluator = (providedArgs) => {
-                Object.keys(providedArgs)
-                    .forEach((name) => actual = {...actual, [name]: providedArgs[name] });
-                return '';
-            };
-            const parameterNameToHave = 'parameterToHave';
-            const parameterNameToIgnore = 'parameterToIgnore';
-            const sut = new ExpressionBuilder()
-                .withEvaluator(evaluatorMock)
-                .withParameters([ parameterNameToHave ])
-                .build();
-            const args: ExpressionArguments = {
-                [parameterNameToHave]: 'value-to-have',
-                [parameterNameToIgnore]: 'value-to-ignore',
-            };
-            const expected: ExpressionArguments = {
-                [parameterNameToHave]: args[parameterNameToHave],
-            };
-            // arrange
-            sut.evaluate(args);
-            // assert
-            expect(expected).to.deep.equal(actual);
+            const testCases = [
+                {
+                    name: 'with a provided argument',
+                    expressionParameters: new FunctionParameterCollectionStub()
+                        .withParameterName('parameterToHave', false),
+                    arguments: new FunctionCallArgumentCollectionStub()
+                        .withArgument('parameterToHave', 'value-to-have')
+                        .withArgument('parameterToIgnore', 'value-to-ignore'),
+                    expectedArguments: [
+                        new FunctionCallArgumentStub()
+                            .withParameterName('parameterToHave').withArgumentValue('value-to-have'),
+                    ],
+                },
+                {
+                    name: 'without a provided argument',
+                    expressionParameters: new FunctionParameterCollectionStub()
+                        .withParameterName('parameterToHave', false)
+                        .withParameterName('parameterToIgnore', true),
+                    arguments: new FunctionCallArgumentCollectionStub()
+                        .withArgument('parameterToHave', 'value-to-have'),
+                    expectedArguments: [
+                        new FunctionCallArgumentStub()
+                            .withParameterName('parameterToHave').withArgumentValue('value-to-have'),
+                    ],
+                },
+            ];
+            for (const testCase of testCases) {
+                it(testCase.name, () => {
+                    let actual: IReadOnlyFunctionCallArgumentCollection;
+                    const evaluatorMock: ExpressionEvaluator = (providedArgs) => {
+                        actual = providedArgs;
+                        return '';
+                    };
+                    const sut = new ExpressionBuilder()
+                        .withEvaluator(evaluatorMock)
+                        .withParameters(testCase.expressionParameters)
+                        .build();
+                    // act
+                    sut.evaluate(testCase.arguments);
+                    // assert
+                    const actualArguments = actual.getAllParameterNames().map((name) => actual.getArgument(name));
+                    expect(actualArguments).to.deep.equal(testCase.expectedArguments);
+                });
+            }
         });
     });
 });
 
 class ExpressionBuilder {
     private position: ExpressionPosition = new ExpressionPosition(0, 5);
-    private parameters: readonly string[] = new Array<string>();
+    private parameters: IReadOnlyFunctionParameterCollection = new FunctionParameterCollectionStub();
 
     public withPosition(position: ExpressionPosition) {
         this.position = position;
@@ -122,9 +197,19 @@ class ExpressionBuilder {
         this.evaluator = evaluator;
         return this;
     }
-    public withParameters(parameters: string[]) {
+    public withParameters(parameters: IReadOnlyFunctionParameterCollection) {
         this.parameters = parameters;
         return this;
+    }
+    public withParameterName(parameterName: string, isOptional: boolean = true) {
+        const collection = new FunctionParameterCollectionStub()
+            .withParameterName(parameterName, isOptional);
+        return this.withParameters(collection);
+    }
+    public withParameterNames(parameterNames: string[], isOptional: boolean = true) {
+        const collection = new FunctionParameterCollectionStub()
+            .withParameterNames(parameterNames, isOptional);
+        return this.withParameters(collection);
     }
     public build() {
         return new Expression(this.position, this.evaluator, this.parameters);

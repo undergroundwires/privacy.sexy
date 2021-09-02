@@ -1,5 +1,7 @@
-export interface ParameterValueDictionary { [parameterName: string]: string; }
+import { IReadOnlyFunctionCallArgumentCollection } from '../FunctionCall/Argument/IFunctionCallArgumentCollection';
 
 export interface IExpressionsCompiler {
-    compileExpressions(code: string, parameters?: ParameterValueDictionary): string;
+    compileExpressions(
+        code: string,
+        args: IReadOnlyFunctionCallArgumentCollection): string;
 }

@@ -1,4 +1,4 @@
-# Structure documented in "docs/collections.md"
+# Structure documented in "docs/collection-files.md"
 os: windows
 scripting:
     language: batchfile
@@ -4387,18 +4387,21 @@ actions:
 functions:
     -
         name: KillProcessWhenItStarts
-        parameters: [ processName ]
+        parameters:
+            - name: processName
         # https://docs.microsoft.com/en-us/previous-versions/windows/desktop/xperf/image-file-execution-options
         code: reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\'{{ $processName }}'" /v "Debugger" /t REG_SZ /d "%windir%\System32\taskkill.exe" /f
         revertCode: reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\'{{ $processName }}'" /v "Debugger" /f
     -
         name: DisableFeature
-        parameters: [ featureName ]
+        parameters:
+            - name: featureName
         code: dism /Online /Disable-Feature /FeatureName:"{{ $featureName }}" /NoRestart
         revertCode: dism /Online /Enable-Feature /FeatureName:"{{ $featureName }}" /NoRestart
     -
         name: UninstallStoreApp
-        parameters: [ packageName ]
+        parameters:
+            - name: packageName
         call:
             function: RunPowerShell
             parameters:
@@ -4412,7 +4415,8 @@ functions:
                     Add-AppxPackage -DisableDevelopmentMode -Register \"$manifest\"
     -
         name: UninstallSystemApp
-        parameters: [ packageName ]
+        parameters:
+            - name: packageName
         # It simply renames files
         #   Because system apps are non removable (check: (Get-AppxPackage -AllUsers 'Windows.CBSPreview').NonRemovable)
         #   Otherwise they throw 0x80070032 when trying to uninstall them
@@ -4457,7 +4461,8 @@ functions:
                     }
     -
         name: UninstallCapability
-        parameters: [ capabilityName ]
+        parameters:
+            - name: capabilityName
         call:
             function: RunPowerShell
             parameters:
@@ -4467,7 +4472,8 @@ functions:
                     Add-WindowsCapability -Name \"$capability.Name\" -Online
     -
         name: RenameSystemFile
-        parameters: [ filePath ]
+        parameters:
+            - name: filePath
         code: |-
             if exist "{{ $filePath }}" (
                 takeown /f "{{ $filePath }}"
@@ -4488,7 +4494,9 @@ functions:
             )
     -
         name: SetVsCodeSetting
-        parameters: [ setting, powerShellValue ]
+        parameters:
+            - name: setting
+            - name: powerShellValue
         call:
             function: RunPowerShell
             parameters:
@@ -4511,6 +4519,8 @@ functions:
                     $json | ConvertTo-Json | Set-Content $jsonfile;
     -
         name: RunPowerShell
-        parameters: [ code, revertCode ]
+        parameters:
+            -   name: code
+            -   name: revertCode
         code: PowerShell -ExecutionPolicy Unrestricted -Command "{{ $code }}"
         revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "{{ $revertCode }}"

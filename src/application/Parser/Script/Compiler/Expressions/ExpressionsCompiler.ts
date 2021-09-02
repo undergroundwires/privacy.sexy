@@ -1,30 +1,39 @@
-import { IExpressionsCompiler, ParameterValueDictionary } from './IExpressionsCompiler';
+import { IExpressionsCompiler } from './IExpressionsCompiler';
 import { IExpression } from './Expression/IExpression';
 import { IExpressionParser } from './Parser/IExpressionParser';
 import { CompositeExpressionParser } from './Parser/CompositeExpressionParser';
+import { IReadOnlyFunctionCallArgumentCollection } from '../FunctionCall/Argument/IFunctionCallArgumentCollection';
 
 export class ExpressionsCompiler implements IExpressionsCompiler {
-    public constructor(private readonly extractor: IExpressionParser = new CompositeExpressionParser()) { }
-    public compileExpressions(code: string, parameters?: ParameterValueDictionary): string {
+    public constructor(
+        private readonly extractor: IExpressionParser = new CompositeExpressionParser()) { }
+    public compileExpressions(
+        code: string,
+        args: IReadOnlyFunctionCallArgumentCollection): string {
+        if (!args) {
+            throw new Error('undefined args, send empty collection instead');
+        }
         const expressions = this.extractor.findExpressions(code);
-        const requiredParameterNames = expressions.map((e) => e.parameters).filter((p) => p).flat();
-        const uniqueParameterNames = Array.from(new Set(requiredParameterNames));
-        ensureRequiredArgsProvided(uniqueParameterNames, parameters);
-        return compileExpressions(expressions, code, parameters);
+        ensureParamsUsedInCodeHasArgsProvided(expressions, args);
+        const compiledCode = compileExpressions(expressions, code, args);
+        return compiledCode;
     }
 }
 
-function compileExpressions(expressions: IExpression[], code: string, parameters?: ParameterValueDictionary) {
+function compileExpressions(
+    expressions: readonly IExpression[],
+    code: string,
+    args: IReadOnlyFunctionCallArgumentCollection): string {
     let compiledCode = '';
-    expressions = expressions
+    const sortedExpressions = expressions
         .slice() // copy the array to not mutate the parameter
         .sort((a, b) => b.position.start - a.position.start);
     let index = 0;
     while (index !== code.length) {
-        const nextExpression = expressions.pop();
+        const nextExpression = sortedExpressions.pop();
         if (nextExpression) {
             compiledCode += code.substring(index, nextExpression.position.start);
-            const expressionCode = nextExpression.evaluate(parameters);
+            const expressionCode = nextExpression.evaluate(args);
             compiledCode += expressionCode;
             index = nextExpression.position.end;
         } else {
@@ -35,15 +44,29 @@ function compileExpressions(expressions: IExpression[], code: string, parameters
     return compiledCode;
 }
 
-function ensureRequiredArgsProvided(parameters: readonly string[], args: ParameterValueDictionary) {
-    parameters = parameters || [];
-    args = args || {};
-    if (!parameters.length) {
+function extractRequiredParameterNames(
+    expressions: readonly IExpression[]): string[] {
+    const usedParameterNames = expressions
+        .map((e) => e.parameters.all
+            .filter((p) => !p.isOptional)
+            .map((p) => p.name))
+        .filter((p) => p)
+        .flat();
+    const uniqueParameterNames = Array.from(new Set(usedParameterNames));
+    return uniqueParameterNames;
+}
+
+function ensureParamsUsedInCodeHasArgsProvided(
+    expressions: readonly IExpression[],
+    providedArgs: IReadOnlyFunctionCallArgumentCollection): void {
+    const usedParameterNames = extractRequiredParameterNames(expressions);
+    if (!usedParameterNames?.length) {
         return;
     }
-    const notProvidedParameters = parameters.filter((parameter) => !Boolean(args[parameter]));
+    const notProvidedParameters = usedParameterNames
+        .filter((parameterName) => !providedArgs.hasArgument(parameterName));
     if (notProvidedParameters.length) {
-        throw new Error(`parameter value(s) not provided for: ${printList(notProvidedParameters)}`);
+        throw new Error(`parameter value(s) not provided for: ${printList(notProvidedParameters)} but used in code`);
     }
 }
 

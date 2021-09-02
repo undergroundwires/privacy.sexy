@@ -1,4 +1,4 @@
-import { FunctionData, ScriptFunctionCallData } from 'js-yaml-loader!@/*';
+import { FunctionData, ParameterDefinitionData, ScriptFunctionCallData } from 'js-yaml-loader!@/*';
 
 export class FunctionDataStub implements FunctionData {
     public static createWithCode() {
@@ -19,11 +19,11 @@ export class FunctionDataStub implements FunctionData {
         return new FunctionDataStub();
     }
 
-    public name = 'function data stub';
+    public name = 'functionDataStub';
     public code: string;
     public revertCode: string;
-    public parameters?: readonly string[];
     public call?: ScriptFunctionCallData;
+    public parameters?: readonly ParameterDefinitionData[];
 
     private constructor() { }
 
@@ -31,7 +31,10 @@ export class FunctionDataStub implements FunctionData {
         this.name = name;
         return this;
     }
-    public withParameters(...parameters: string[]) {
+    public withParameters(...parameters: readonly ParameterDefinitionData[]) {
+        return this.withParametersObject(parameters);
+    }
+    public withParametersObject(parameters: readonly ParameterDefinitionData[]) {
         this.parameters = parameters;
         return this;
     }

@@ -4,6 +4,7 @@ import { ExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expres
 import { IExpressionParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/IExpressionParser';
 import { ExpressionStub } from '@tests/unit/stubs/ExpressionStub';
 import { ExpressionParserStub } from '@tests/unit/stubs/ExpressionParserStub';
+import { FunctionCallArgumentCollectionStub } from '@tests/unit/stubs/FunctionCallArgumentCollectionStub';
 
 describe('ExpressionsCompiler', () => {
     describe('compileExpressions', () => {
@@ -22,8 +23,18 @@ describe('ExpressionsCompiler', () => {
                 {
                     name: 'unordered expressions',
                     expressions: [
-                        new ExpressionStub().withPosition(6, 13).withEvaluatedResult('a'),
                         new ExpressionStub().withPosition(20, 27).withEvaluatedResult('b'),
+                        new ExpressionStub().withPosition(6, 13).withEvaluatedResult('a'),
+                    ],
+                    expected: 'part1 a part2 b part3',
+                },
+                {
+                    name: 'with an optional expected argument that is not provided',
+                    expressions: [
+                        new ExpressionStub().withPosition(6, 13).withEvaluatedResult('a')
+                            .withParameterNames(['optionalParameter'], true),
+                        new ExpressionStub().withPosition(20, 27).withEvaluatedResult('b')
+                            .withParameterNames(['optionalParameterTwo'], true),
                     ],
                     expected: 'part1 a part2 b part3',
                 },
@@ -37,97 +48,89 @@ describe('ExpressionsCompiler', () => {
                 it(testCase.name, () => {
                     const expressionParserMock = new ExpressionParserStub()
                         .withResult(testCase.expressions);
+                    const args = new FunctionCallArgumentCollectionStub();
                     const sut = new MockableExpressionsCompiler(expressionParserMock);
                     // act
-                    const actual = sut.compileExpressions(code);
+                    const actual = sut.compileExpressions(code, args);
                     // assert
                     expect(actual).to.equal(testCase.expected);
                 });
             }
         });
-        it('passes arguments to expressions as expected', () => {
-            // arrange
-            const expected = {
-                parameter1: 'value1',
-                parameter2: 'value2',
-            };
-            const code = 'non-important';
-            const expressions = [
-                new ExpressionStub(),
-                new ExpressionStub(),
-            ];
-            const expressionParserMock = new ExpressionParserStub()
-                .withResult(expressions);
-            const sut = new MockableExpressionsCompiler(expressionParserMock);
-            // act
-            sut.compileExpressions(code, expected);
-            // assert
-            expect(expressions[0].callHistory).to.have.lengthOf(1);
-            expect(expressions[0].callHistory[0]).to.equal(expected);
-            expect(expressions[1].callHistory).to.have.lengthOf(1);
-            expect(expressions[1].callHistory[0]).to.equal(expected);
+        describe('arguments', () => {
+            it('passes arguments to expressions as expected', () => {
+                // arrange
+                const expected = new FunctionCallArgumentCollectionStub()
+                    .withArgument('test-arg', 'test-value');
+                const code = 'non-important';
+                const expressions = [
+                    new ExpressionStub(),
+                    new ExpressionStub(),
+                ];
+                const expressionParserMock = new ExpressionParserStub()
+                    .withResult(expressions);
+                const sut = new MockableExpressionsCompiler(expressionParserMock);
+                // act
+                sut.compileExpressions(code, expected);
+                // assert
+                expect(expressions[0].callHistory).to.have.lengthOf(1);
+                expect(expressions[0].callHistory[0]).to.equal(expected);
+                expect(expressions[1].callHistory).to.have.lengthOf(1);
+                expect(expressions[1].callHistory[0]).to.equal(expected);
+            });
+            it('throws if arguments is undefined', () => {
+                // arrange
+                const expectedError = 'undefined args, send empty collection instead';
+                const args = undefined;
+                const expressionParserMock = new ExpressionParserStub();
+                const sut = new MockableExpressionsCompiler(expressionParserMock);
+                // act
+                const act = () => sut.compileExpressions('code', args);
+                // assert
+                expect(act).to.throw(expectedError);
+            });
         });
-        describe('throws when expected argument is not provided', () => {
+        describe('throws when expected argument is not provided but used in code', () => {
             // arrange
-            const noParameterTestCases = [
+            const testCases = [
                 {
                     name: 'empty parameters',
                     expressions: [
-                        new ExpressionStub().withParameters('parameter'),
+                        new ExpressionStub().withParameterNames(['parameter'], false),
                     ],
-                    args: {},
-                    expectedError: 'parameter value(s) not provided for: "parameter"',
+                    args: new FunctionCallArgumentCollectionStub(),
+                    expectedError: 'parameter value(s) not provided for: "parameter" but used in code',
                 },
                 {
-                    name: 'undefined parameters',
+                    name: 'unnecessary parameter is provided',
                     expressions: [
-                        new ExpressionStub().withParameters('parameter'),
+                        new ExpressionStub().withParameterNames(['parameter'], false),
                     ],
-                    args: undefined,
-                    expectedError: 'parameter value(s) not provided for: "parameter"',
-                },
-                {
-                    name: 'unnecessary parameter provided',
-                    expressions: [
-                        new ExpressionStub().withParameters('parameter'),
-                    ],
-                    args: {
-                        unnecessaryParameter: 'unnecessaryValue',
-                    },
-                    expectedError: 'parameter value(s) not provided for: "parameter"',
-                },
-                {
-                    name: 'undefined value',
-                    expressions: [
-                        new ExpressionStub().withParameters('parameter'),
-                    ],
-                    args: {
-                        parameter: undefined,
-                    },
-                    expectedError: 'parameter value(s) not provided for: "parameter"',
+                    args: new FunctionCallArgumentCollectionStub()
+                        .withArgument('unnecessaryParameter', 'unnecessaryValue'),
+                    expectedError: 'parameter value(s) not provided for: "parameter" but used in code',
                 },
                 {
                     name: 'multiple values are not provided',
                     expressions: [
-                        new ExpressionStub().withParameters('parameter1'),
-                        new ExpressionStub().withParameters('parameter2', 'parameter3'),
+                        new ExpressionStub().withParameterNames(['parameter1'], false),
+                        new ExpressionStub().withParameterNames(['parameter2', 'parameter3'], false),
                     ],
-                    args: {},
-                    expectedError: 'parameter value(s) not provided for: "parameter1", "parameter2", "parameter3"',
+                    args: new FunctionCallArgumentCollectionStub(),
+                    expectedError: 'parameter value(s) not provided for: "parameter1", "parameter2", "parameter3" but used in code',
                 },
                 {
                     name: 'some values are provided',
                     expressions: [
-                        new ExpressionStub().withParameters('parameter1'),
-                        new ExpressionStub().withParameters('parameter2', 'parameter3'),
+                        new ExpressionStub().withParameterNames(['parameter1'], false),
+                        new ExpressionStub().withParameterNames(['parameter2', 'parameter3'], false),
                     ],
-                    args: {
-                        parameter2: 'value',
-                    },
-                    expectedError: 'parameter value(s) not provided for: "parameter1", "parameter3"',
+                    args: new FunctionCallArgumentCollectionStub()
+                        .withArgument('parameter2', 'value'),
+                    expectedError: 'parameter value(s) not provided for: "parameter1", "parameter3" but used in code',
                 },
             ];
-            for (const testCase of noParameterTestCases) {
+            for (const testCase of testCases) {
                 it(testCase.name, () => {
                     const code = 'non-important-code';
                     const expressionParserMock = new ExpressionParserStub()
@@ -145,8 +148,9 @@ describe('ExpressionsCompiler', () => {
             const expected = 'expected-code';
             const expressionParserMock = new ExpressionParserStub();
             const sut = new MockableExpressionsCompiler(expressionParserMock);
+            const args = new FunctionCallArgumentCollectionStub();
             // act
-            sut.compileExpressions(expected);
+            sut.compileExpressions(expected, args);
             // assert
             expect(expressionParserMock.callHistory).to.have.lengthOf(1);
             expect(expressionParserMock.callHistory[0]).to.equal(expected);

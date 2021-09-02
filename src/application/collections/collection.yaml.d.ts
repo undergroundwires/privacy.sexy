@@ -27,8 +27,13 @@ declare module 'js-yaml-loader!@/*' {
         readonly call?: ScriptFunctionCallData;
     }
 
+    export interface ParameterDefinitionData {
+        readonly name: string;
+        readonly optional?: boolean;
+    }
+
     export interface FunctionData extends InstructionHolder {
-        readonly parameters?: readonly string[];
+        readonly parameters?: readonly ParameterDefinitionData[];
     }
 
     export interface FunctionCallParametersData {

@@ -60,7 +60,10 @@ describe('CodeSubstituter', () => {
                 sut.substitute('non empty code', info);
                 // assert
                 expect(compilerStub.callHistory).to.have.lengthOf(1);
-                expect(compilerStub.callHistory[0].parameters[testCase.parameter]).to.equal(testCase.argument);
+                const parameters = compilerStub.callHistory[0].parameters;
+                expect(parameters.hasArgument(testCase.parameter));
+                const argumentValue = parameters.getArgument(testCase.parameter).argumentValue;
+                expect(argumentValue).to.equal(testCase.argument);
             });
         }
     });
