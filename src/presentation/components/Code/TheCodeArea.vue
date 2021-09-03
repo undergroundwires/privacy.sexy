@@ -1,5 +1,7 @@
 <template>
-  <Responsive v-on:sizeChanged="sizeChanged()">
+  <Responsive
+    v-on:sizeChanged="sizeChanged()"
+    v-non-collapsing>
     <div
       :id="editorId"
       class="code-area"
@@ -18,11 +20,13 @@ import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { CodeBuilderFactory } from '@/application/Context/State/Code/Generation/CodeBuilderFactory';
 import Responsive from '@/presentation/components/Shared/Responsive.vue';
+import { NonCollapsing } from '@/presentation/components/Scripts/View/Cards/NonCollapsingDirective';
 
 @Component({
   components: {
     Responsive,
   },
+  directives: { NonCollapsing },
 })
 export default class TheCodeArea extends StatefulVue {
   public readonly editorId = 'codeEditor';

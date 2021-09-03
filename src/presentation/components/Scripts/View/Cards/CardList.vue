@@ -45,13 +45,13 @@ export default class CardList extends StatefulVue {
   public activeCategoryId?: number = null;
 
   public created() {
-    this.onOutsideOfActiveCardClicked((element) => {
-      if (hasDirective(element)) {
-        return;
-      }
-      this.activeCategoryId = null;
-    });
+    document.addEventListener('click', this.outsideClickListener);
   }
+
+  public destroyed() {
+    document.removeEventListener('click', this.outsideClickListener);
+  }
+
   public onSelected(categoryId: number, isExpanded: boolean) {
     this.activeCategoryId = isExpanded ? categoryId : undefined;
   }
@@ -64,18 +64,42 @@ export default class CardList extends StatefulVue {
   private setCategories(categories: ReadonlyArray<ICategory>): void {
     this.categoryIds = categories.map((category) => category.id);
   }
-  private onOutsideOfActiveCardClicked(callback: (clickedElement: Element) => void) {
-    const outsideClickListener = (event) => {
-      if (!this.activeCategoryId) {
-        return;
-      }
-      const element = document.querySelector(`[data-category="${this.activeCategoryId}"]`);
-      if (element && !element.contains(event.target)) {
-          callback(event.target);
-      }
-    };
-    document.addEventListener('click', outsideClickListener);
+
+  private onOutsideOfActiveCardClicked(clickedElement: Element): void {
+    if (isClickable(clickedElement) || hasDirective(clickedElement)) {
+      return;
+    }
+    this.collapseAllCards();
+    if (hasDirective(clickedElement)) {
+      return;
+    }
+    this.activeCategoryId = null;
   }
+  private outsideClickListener(event: PointerEvent) {
+    if (this.areAllCardsCollapsed()) {
+        return;
+    }
+    const element = document.querySelector(`[data-category="${this.activeCategoryId}"]`);
+    const target = event.target as Element;
+    if (element && !element.contains(target)) {
+      this.onOutsideOfActiveCardClicked(target);
+    }
+  }
+
+  private collapseAllCards(): void {
+    this.activeCategoryId = undefined;
+  }
+  private areAllCardsCollapsed(): boolean {
+    return !this.activeCategoryId;
+  }
+}
+
+function isClickable(element: Element) {
+  const cursorName = window.getComputedStyle(element).cursor;
+  return [ 'pointer', 'move', 'grab'].some((name) => cursorName === name)
+    || cursorName.includes('resize')
+    || [ 'onclick', 'href'].some((attributeName) => element.hasAttribute(attributeName))
+    || [ 'a', 'button'].some((tagName) => element.closest(`.${tagName}`));
 }
 
 </script>
