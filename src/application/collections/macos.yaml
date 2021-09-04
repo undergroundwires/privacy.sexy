@@ -529,6 +529,85 @@ actions:
                 recommend: strict
                 code: defaults write com.apple.NetworkBrowser DisableAirDrop -bool true
                 revertCode: defaults write com.apple.NetworkBrowser DisableAirDrop -bool false
+            -
+                category: Configure Siri
+                children:
+                    -
+                        name: Opt-out from Siri data collection
+                        recommend: standard
+                        code: defaults write com.apple.assistant.support 'Siri Data Sharing Opt-In Status' -int 2
+                        revertCode: defaults delete com.apple.assistant.support 'Siri Data Sharing Opt-In Status'
+                    -
+                        category: Disable Siri
+                        children:
+                            -
+                                name: Disable "Ask Siri"
+                                recommend: strict
+                                docs: https://derflounder.wordpress.com/2016/09/20/blocking-siri-on-macos-sierra/
+                                code: defaults write com.apple.assistant.support 'Assistant Enabled' -bool false
+                                revertCode: defaults write com.apple.assistant.support 'Assistant Enabled' -bool true
+                            -
+                                name: Disable Siri voice feedback
+                                recommend: strict
+                                docs:
+                                    - https://github.com/joeyhoer/starter/blob/master/system/siri.sh
+                                    - https://machippie.github.io/system/
+                                code: defaults write com.apple.assistant.backedup 'Use device speaker for TTS' -int 3
+                                revertCode: defaults write com.apple.assistant.backedup 'Use device speaker for TTS' -int 2
+                            -
+                                name: Disable Siri services (Siri and assistantd)
+                                recommend: strict
+                                docs:
+                                    - https://apple.stackexchange.com/questions/57514/what-is-assistantd
+                                    - https://www.jamf.com/jamf-nation/discussions/22757/kill-siri#responseChild137563
+                                    - https://apple.stackexchange.com/a/370426
+                                # To see status: • `launchctl print-disabled system` • `launchctl print-disabled user/$UID` • `launchctl print-disabled gui/$UID`
+                                code: |-
+                                    launchctl disable "user/$UID/com.apple.assistantd"
+                                    launchctl disable "gui/$UID/com.apple.assistantd"
+                                    sudo launchctl disable 'system/com.apple.assistantd'
+                                    launchctl disable "user/$UID/com.apple.Siri.agent"
+                                    launchctl disable "gui/$UID/com.apple.Siri.agent"
+                                    sudo launchctl disable 'system/com.apple.Siri.agent'
+                                    if [ $(/usr/bin/csrutil status | awk '/status/ {print $5}' | sed 's/\.$//') = "enabled" ]; then
+                                        >&2 echo 'This script requires SIP to be disabled. Read more: https://developer.apple.com/documentation/security/disabling_and_enabling_system_integrity_protection'
+                                    fi
+                                revertCode: |-
+                                    launchctl enable "user/$UID/com.apple.assistantd"
+                                    launchctl enable "gui/$UID/com.apple.assistantd"
+                                    sudo launchctl enable 'system/com.apple.assistantd'
+                                    launchctl enable "user/$UID/com.apple.Siri.agent"
+                                    launchctl enable "gui/$UID/com.apple.Siri.agent"
+                                    sudo launchctl enable 'system/com.apple.Siri.agent'
+                                    if [ $(/usr/bin/csrutil status | awk '/status/ {print $5}' | sed 's/\.$//') = "enabled" ]; then
+                                        >&2 echo 'This script requires SIP to be disabled. Read more: https://developer.apple.com/documentation/security/disabling_and_enabling_system_integrity_protection''
+                                    fi
+                            -
+                                name: Disable "Do you want to enable Siri?" pop-up
+                                docs:
+                                    - https://discussions.apple.com/thread/7694127?answerId=30752577022#30752577022
+                                    - https://windowsreport.com/mac/siri-keeps-popping-up/
+                                    - https://www.jamf.com/jamf-nation/discussions/21783/disable-siri-setup-assistant-in-macos-sierra#responseChild131588
+                                code: defaults write com.apple.SetupAssistant 'DidSeeSiriSetup' -bool True
+                                revertCode: defaults delete com.apple.SetupAssistant 'DidSeeSiriSetup'
+                    -
+                        category: Hide Siri
+                        children:
+                            -
+                                name: Hide Siri from menu bar
+                                recommend: strict
+                                code: defaults write com.apple.systemuiserver 'NSStatusItem Visible Siri' 0
+                                revertCode: defaults write com.apple.systemuiserver 'NSStatusItem Visible Siri' 1
+                            -
+                                name: Hide Siri from status menu
+                                recommend: strict
+                                docs: https://derflounder.wordpress.com/2016/09/20/blocking-siri-on-macos-sierra/
+                                code: |-
+                                    defaults write com.apple.Siri 'StatusMenuVisible' -bool false
+                                    defaults write com.apple.Siri 'UserHasDeclinedEnable' -bool true
+                                revertCode: |-
+                                    defaults delete com.apple.Siri 'StatusMenuVisible'
+                                    defaults delete com.apple.Siri 'UserHasDeclinedEnable'
 functions:
     -
         name: PersistUserEnvironmentConfiguration
