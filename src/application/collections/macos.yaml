@@ -55,15 +55,81 @@ actions:
                     sudo rm -rfv /System/Library/Caches/* &>/dev/null
                     sudo rm -rfv ~/Library/Caches/* &>/dev/null
             -
-                name: Clear system log files
+                category: Clear OS logs
                 recommend: strict
-                code: |-
-                    sudo rm -rfv /private/var/log/asl/*.asl &>/dev/null
-                    sudo rm -rfv /Library/Logs/DiagnosticReports/* &>/dev/null
-                    sudo rm -rfv /Library/Logs/Adobe/* &>/dev/null
-                    rm -rfv ~/Library/Containers/com.apple.mail/Data/Library/Logs/Mail/* &>/dev/null
-                    rm -rfv ~/Library/Logs/CoreSimulator/* &>/dev/null
-                    sudo rm -rfv /var/log/*
+                children:
+                    -
+                        category: Clear unified logs (diagnostics)
+                        docs: https://developer.apple.com/documentation/os/logging
+                        children:
+                            -
+                                name: Clear diagnostics logs
+                                docs: https://eclecticlight.co/2017/10/10/inside-the-macos-log-logd-and-the-files-that-it-manages/
+                                code: |-
+                                    sudo rm -rfv /private/var/db/diagnostics/*
+                                    sudo rm -rfv /var/db/diagnostics/*
+                            -
+                                name: Clear shared-cache strings data
+                                docs: 
+                                    - https://eclecticlight.co/2017/09/23/sierras-unified-log-evolves-more-persistent-and-a-valuable-log-log/
+                                    - https://github.com/libyal/dtformats/blob/main/documentation/Apple%20Unified%20Logging%20and%20Activity%20Tracing%20formats.asciidoc
+                                code: |-
+                                    sudo rm -rfv /private/var/db/uuidtext/
+                                    sudo rm -rfv /var/db/uuidtext/
+                    -
+                        category: Clear system logs (/var/log/)
+                        children:
+                            -
+                                name: Clear Apple System Logs (ASL)
+                                docs:
+                                    - https://papers.put.as/papers/macosx/2012/Mac_Log_Analysis_Sarah_Edwards_DFIRSummit2012.pdf
+                                    - https://apple.stackexchange.com/questions/98197/is-it-safe-to-delete-system-logs
+                                code: |-
+                                    sudo rm -rfv /private/var/log/asl/*
+                                    sudo rm -rfv /var/log/asl/*
+                                    sudo rm -fv /var/log/asl.log # Legacy ASL (10.4)
+                                    sudo rm -fv /var/log/asl.db
+                            -
+                                name: Clear install logs
+                                docs: https://discussions.apple.com/thread/1829842
+                                code: sudo rm -fv /var/log/install.log
+                            -
+                                name: Clear all system logs
+                                docs: https://www.howtogeek.com/356942/how-to-view-the-system-log-on-a-mac/
+                                code: sudo rm -rfv /var/log/* # Clears including /var/log/system.log
+                    -
+                        name: Clear system application logs
+                        docs: https://papers.put.as/papers/macosx/2012/Mac_Log_Analysis_Sarah_Edwards_DFIRSummit2012.pdf
+                        code: sudo rm -rfv /Library/Logs/*
+                    -
+                        name: Clear Mail logs
+                        code: rm -rfv ~/Library/Containers/com.apple.mail/Data/Library/Logs/Mail/*
+                    -
+                        name: Clear audit logs (login, logout, authentication and other user activity)
+                        docs:
+                            - https://papers.put.as/papers/macosx/2012/Mac_Log_Analysis_Sarah_Edwards_DFIRSummit2012.pdf
+                            - http://macadmins.psu.edu/wp-content/uploads/sites/24696/2016/06/psumac2016-19-osxlogs_macadmins_2016.pdf
+                        code: |-
+                            sudo rm -rfv /var/audit/*
+                            sudo rm -rfv /private/var/audit/*
+                    -
+                        name: Clear user logs (user reports)
+                        docs:
+                            - https://www.howtogeek.com/356942/how-to-view-the-system-log-on-a-mac/
+                            - https://apple.stackexchange.com/questions/272929/is-it-safe-to-delete-the-content-of-library-logs
+                        code: sudo rm -rfv ~/Library/Logs/*
+                    -
+                        name: Clear daily logs
+                        docs: https://salt4n6.com/2018/12/11/mac-os-daily-logs/
+                        code: sudo rm -fv /System/Library/LaunchDaemons/com.apple.periodic-*.plist
+                    -
+                        name: Clear receipt logs for installed packages/apps
+                        docs:
+                            - https://apple.stackexchange.com/questions/327174/whats-the-purpose-of-directory-private-var-db-receipts
+                            - https://papers.put.as/papers/macosx/2012/Mac_Log_Analysis_Sarah_Edwards_DFIRSummit2012.pdf
+                        code: |-
+                            sudo rm -rfv /var/db/receipts/*
+                            sudo rm -vf /Library/Receipts/InstallHistory.plist
             -
                 category: Clear browser history
                 children:
