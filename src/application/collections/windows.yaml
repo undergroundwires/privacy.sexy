@@ -389,7 +389,15 @@ actions:
                 code: net user defaultuser0 /delete 2>nul
             -
                 name: Empty trash bin
-                code: Powershell -Command "$bin = (New-Object -ComObject Shell.Application).NameSpace(10);$bin.items() | ForEach { Write-Host "Deleting $($_.Name) from Recycle Bin"; Remove-Item $_.Path -Recurse -Force}"
+                call:
+                    function: RunPowerShell
+                    parameters:
+                        code: 
+                            $bin = (New-Object -ComObject Shell.Application).NameSpace(10);
+                            $bin.items() | ForEach {
+                                Write-Host "Deleting $($_.Name) from Recycle Bin";
+                                Remove-Item $_.Path -Recurse -Force
+                            }
             -
                 name: Enable Reset Base in Dism Component Store
                 recommend: standard
@@ -3803,14 +3811,16 @@ actions:
                     code: reg delete "HKCU\Environment" /v "OneDrive" /f
             -
                 name: Uninstall Edge (chromium-based)
-                code:
-                    PowerShell -ExecutionPolicy Unrestricted -Command "
-                        $installer = (Get-ChildItem \"$env:ProgramFiles*\Microsoft\Edge\Application\*\Installer\setup.exe\");
-                        if (!$installer) {
-                            Write-Host Could not find the installer;
-                        } else {
-                            & $installer.FullName -uninstall -system-level -verbose-logging -force-uninstall
-                        }; "
+                call:
+                    function: RunPowerShell
+                    parameters:
+                        code: 
+                            $installer = (Get-ChildItem \"$env:ProgramFiles*\Microsoft\Edge\Application\*\Installer\setup.exe\");
+                            if (!$installer) {
+                                Write-Host Could not find the installer;
+                            } else {
+                                & $installer.FullName -Uninstall -System-Level -Verbose-Logging -Force-Uninstall
+                            };
             -
                 category: Disable built-in Windows features
                 children:
@@ -4522,5 +4532,9 @@ functions:
         parameters:
             -   name: code
             -   name: revertCode
+                optional: true
         code: PowerShell -ExecutionPolicy Unrestricted -Command "{{ $code }}"
-        revertCode: PowerShell -ExecutionPolicy Unrestricted -Command "{{ $revertCode }}"
+        revertCode: |-
+            {{ with $revertCode }}
+                PowerShell -ExecutionPolicy Unrestricted -Command "{{ . }}"
+            {{ end }}

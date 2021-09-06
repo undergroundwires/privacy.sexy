@@ -108,6 +108,7 @@
 #### Expressions
 
 - Expressions are defined inside mustaches (double brackets, `{{` and `}}`)
+- Expression syntax is inspired by [Go Templates](https://pkg.go.dev/text/template)
 
 ##### Parameter substitution
 
@@ -147,6 +148,25 @@ A function can call other functions such as:
       - name: 'argument'
     code: Hello {{ $argument }} !
 ```
+
+##### with
+
+- Skips the block if the variable is absent or empty.
+- Binds its context (`.`) value of provided argument for the parameter only if its value is provided.
+- A block is defined as `{{ with $parameterName }} Parameter value is {{ . }} here {{ end }}`
+- The parameters used for `with` condition should be declared as optional, otherwise `with` block becomes redundant.
+- Example:
+
+  ```yaml
+    function: FunctionThatOutputsConditionally
+    parameters:
+      - name: 'argument'
+        optional: true
+    code: |- 
+      {{ with $argument }}
+        $argument's value is: {{ . }}
+      {{ end }}
+  ```
 
 #### `Function` syntax
 
@@ -188,6 +208,7 @@ A function can call other functions such as:
     - Otherwise it throws.
   - 💡 Set it to `true` if a parameter is used conditionally;
     - Or else set it to `false` for verbosity or do not define it as default value is `false` anyway.
+  - 💡 Can be used in conjunction with [`with` expression](#with).
 
 ### `ScriptingDefinition`
 

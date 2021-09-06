@@ -39,21 +39,35 @@ function validateCode(code: string, syntax: ILanguageSyntax): void {
 }
 
 function ensureNoEmptyLines(code: string): void {
-    if (code.split('\n').some((line) => line.trim().length === 0)) {
-        throw Error(`script has empty lines`);
+    const lines = code.split(/\r\n|\r|\n/);
+    if (lines.some((line) => line.trim().length === 0)) {
+        throw Error(`Script has empty lines:\n${lines.map((part, index) => `\n (${index}) ${part || '❌'}`).join('')}`);
     }
 }
 
 function ensureCodeHasUniqueLines(code: string, syntax: ILanguageSyntax): void {
-    const lines = code.split('\n')
-        .filter((line) => !shouldIgnoreLine(line, syntax));
-    if (lines.length === 0) {
+    const allLines = code.split(/\r\n|\r|\n/);
+    const checkedLines = allLines.filter((line) => !shouldIgnoreLine(line, syntax));
+    if (checkedLines.length === 0) {
         return;
     }
-    const duplicateLines = lines.filter((e, i, a) => a.indexOf(e) !== i);
+    const duplicateLines = checkedLines.filter((e, i, a) => a.indexOf(e) !== i);
     if (duplicateLines.length !== 0) {
-        throw Error(`Duplicates detected in script:\n${duplicateLines.map((line, index) => `(${index}) - ${line}`).join('\n')}`);
+        throw Error(`Duplicates detected in script:\n${printDuplicatedLines(allLines)}`);
     }
+}
+
+function printDuplicatedLines(allLines: string[]) {
+    return allLines
+        .map((line, index) => {
+            const occurrenceIndices = allLines
+                .map((e, i) => e === line ? i : '')
+                .filter(String);
+            const isDuplicate = occurrenceIndices.length > 1;
+            const indicator = isDuplicate ? `❌ (${occurrenceIndices.join(',')})\t` : '✅ ';
+            return `${indicator}[${index}] ${line}`;
+        })
+        .join('\n');
 }
 
 function shouldIgnoreLine(codeLine: string, syntax: ILanguageSyntax): boolean {

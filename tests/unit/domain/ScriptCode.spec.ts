@@ -52,13 +52,13 @@ describe('ScriptCode', () => {
             const testCases = [
                 {
                     testName: 'cannot construct with duplicate lines',
-                    code: 'duplicate\nduplicate\ntest\nduplicate',
-                    expectedMessage: 'Duplicates detected in script:\n(0) - duplicate\n(1) - duplicate',
+                    code: 'duplicate\nduplicate\nunique\nduplicate',
+                    expectedMessage: 'Duplicates detected in script:\n❌ (0,1,3)\t[0] duplicate\n❌ (0,1,3)\t[1] duplicate\n✅ [2] unique\n❌ (0,1,3)\t[3] duplicate',
                 },
                 {
                     testName: 'cannot construct with empty lines',
                     code: 'line1\n\n\nline2',
-                    expectedMessage: 'script has empty lines',
+                    expectedMessage: 'Script has empty lines:\n\n (0) line1\n (1) ❌\n (2) ❌\n (3) line2',
                 },
             ];
             // act

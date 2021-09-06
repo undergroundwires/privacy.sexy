@@ -1,9 +1,11 @@
 import { IExpression } from '../Expression/IExpression';
 import { IExpressionParser } from './IExpressionParser';
 import { ParameterSubstitutionParser } from '../SyntaxParsers/ParameterSubstitutionParser';
+import { WithParser } from '../SyntaxParsers/WithParser';
 
 const Parsers = [
     new ParameterSubstitutionParser(),
+    new WithParser(),
 ];
 
 export class CompositeExpressionParser implements IExpressionParser {

@@ -1,25 +1,25 @@
 import 'mocha';
-import { expect } from 'chai';
 import { ParameterSubstitutionParser } from '@/application/Parser/Script/Compiler/Expressions/SyntaxParsers/ParameterSubstitutionParser';
 import { ExpressionPosition } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionPosition';
-import { FunctionCallArgumentCollectionStub } from '@tests/unit/stubs/FunctionCallArgumentCollectionStub';
+import { SyntaxParserTestsRunner } from './SyntaxParserTestsRunner';
 
 describe('ParameterSubstitutionParser', () => {
-    describe('finds at expected positions', () => {
-        // arrange
-        const testCases = [
+    const sut = new ParameterSubstitutionParser();
+    const runner = new SyntaxParserTestsRunner(sut);
+    describe('finds as expected', () => {
+        runner.expectPosition(
             {
-                name: 'matches single parameter',
+                name: 'single parameter',
                 code: '{{ $parameter }}!',
-                expected: [new ExpressionPosition(0, 16)],
+                expected: [ new ExpressionPosition(0, 16) ],
             },
             {
-                name: 'matches different parameters',
+                name: 'different parameters',
                 code: 'He{{ $firstParameter }} {{ $secondParameter }}!!',
-                expected: [new ExpressionPosition(2, 23), new ExpressionPosition(24, 46)],
+                expected: [ new ExpressionPosition(2, 23), new ExpressionPosition(24, 46) ],
             },
             {
-                name: 'tolerates spaces around brackets',
+                name: 'tolerates lack of spaces around brackets',
                 code: 'He{{$firstParameter}}!!',
                 expected: [new ExpressionPosition(2, 21) ],
             },
@@ -28,44 +28,33 @@ describe('ParameterSubstitutionParser', () => {
                 code: 'He{{ $ firstParameter }}!!',
                 expected: [ ],
             },
-        ];
-        for (const testCase of testCases) {
-            it(testCase.name, () => {
-                const sut = new ParameterSubstitutionParser();
-                // act
-                const expressions = sut.findExpressions(testCase.code);
-                // assert
-                const actual = expressions.map((e) => e.position);
-                expect(actual).to.deep.equal(testCase.expected);
-            });
-        }
+        );
     });
     describe('evaluates as expected', () => {
-        const testCases = [ {
-            name: 'single parameter',
-            code: '{{ $parameter }}',
-            args: new FunctionCallArgumentCollectionStub()
-                .withArgument('parameter', 'Hello world'),
-            expected: [ 'Hello world' ],
-        },
-        {
-            name: 'different parameters',
-            code: '{{ $firstParameter }} {{ $secondParameter }}!',
-            args: new FunctionCallArgumentCollectionStub()
-                .withArgument('firstParameter', 'Hello')
-                .withArgument('secondParameter', 'World'),
-            expected: [ 'Hello', 'World' ],
-        }];
-        for (const testCase of testCases) {
-            it(testCase.name, () => {
-                const sut = new ParameterSubstitutionParser();
-                // act
-                const expressions = sut.findExpressions(testCase.code);
-                // assert
-                const actual = expressions.map((e) => e.evaluate(testCase.args));
-                expect(actual).to.deep.equal(testCase.expected);
-            });
-        }
+        runner.expectResults(
+            {
+                name: 'single parameter',
+                code: '{{ $parameter }}',
+                args: (args) => args
+                    .withArgument('parameter', 'Hello world'),
+                expected: [ 'Hello world' ],
+            },
+            {
+                name: 'different parameters',
+                code: '{{ $firstParameter }} {{ $secondParameter }}!',
+                args: (args) => args
+                    .withArgument('firstParameter', 'Hello')
+                    .withArgument('secondParameter', 'World'),
+                expected: [ 'Hello', 'World' ],
+            },
+            {
+                name: 'same parameters used twice',
+                code: '{{ $letterH }}e{{ $letterL }}{{ $letterL }}o Wor{{ $letterL }}d!',
+                args: (args) => args
+                    .withArgument('letterL', 'l')
+                    .withArgument('letterH', 'H'),
+                expected: [ 'H', 'l', 'l', 'l' ],
+            },
+        );
     });
 });
-
