@@ -4,8 +4,10 @@ import { IReadOnlyFunctionCallArgumentCollection } from '../../FunctionCall/Argu
 import { IReadOnlyFunctionParameterCollection } from '../../Function/Parameter/IFunctionParameterCollection';
 import { FunctionParameterCollection } from '@/application/Parser/Script/Compiler/Function/Parameter/FunctionParameterCollection';
 import { FunctionCallArgumentCollection } from '../../FunctionCall/Argument/FunctionCallArgumentCollection';
+import { IExpressionEvaluationContext } from './ExpressionEvaluationContext';
+import { ExpressionEvaluationContext } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionEvaluationContext';
 
-export type ExpressionEvaluator = (args: IReadOnlyFunctionCallArgumentCollection) => string;
+export type ExpressionEvaluator = (context: IExpressionEvaluationContext) => string;
 export class Expression implements IExpression {
     constructor(
         public readonly position: ExpressionPosition,
@@ -18,13 +20,14 @@ export class Expression implements IExpression {
             throw new Error('undefined evaluator');
         }
     }
-    public evaluate(args: IReadOnlyFunctionCallArgumentCollection): string {
-        if (!args) {
-            throw new Error('undefined args, send empty collection instead');
+    public evaluate(context: IExpressionEvaluationContext): string {
+        if (!context) {
+            throw new Error('undefined context');
         }
-        validateThatAllRequiredParametersAreSatisfied(this.parameters, args);
-        args = filterUnusedArguments(this.parameters, args);
-        return this.evaluator(args);
+        validateThatAllRequiredParametersAreSatisfied(this.parameters, context.args);
+        const args = filterUnusedArguments(this.parameters, context.args);
+        context = new ExpressionEvaluationContext(args, context.pipelineCompiler);
+        return this.evaluator(context);
     }
 }
 

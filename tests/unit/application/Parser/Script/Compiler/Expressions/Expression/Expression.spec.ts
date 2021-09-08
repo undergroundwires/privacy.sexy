@@ -1,13 +1,16 @@
 import 'mocha';
 import { expect } from 'chai';
 import { ExpressionPosition } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionPosition';
-import { ExpressionEvaluator } from '@/application/Parser/Script/Compiler/Expressions/Expression/Expression';
-import { Expression } from '@/application/Parser/Script/Compiler/Expressions/Expression/Expression';
-import { IReadOnlyFunctionParameterCollection } from '@/application/Parser/Script/Compiler/Function/Parameter/IFunctionParameterCollection';
+// tslint:disable-next-line:max-line-length
+import { ExpressionEvaluator, Expression } from '@/application/Parser/Script/Compiler/Expressions/Expression/Expression';
 import { IReadOnlyFunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/FunctionCall/Argument/IFunctionCallArgumentCollection';
 import { FunctionCallArgumentCollectionStub } from '@tests/unit/stubs/FunctionCallArgumentCollectionStub';
 import { FunctionParameterCollectionStub } from '@tests/unit/stubs/FunctionParameterCollectionStub';
 import { FunctionCallArgumentStub } from '@tests/unit/stubs/FunctionCallArgumentStub';
+import { ExpressionEvaluationContextStub } from '@tests/unit/stubs/ExpressionEvaluationContextStub';
+import { IPipelineCompiler } from '@/application/Parser/Script/Compiler/Expressions/Pipes/IPipelineCompiler';
+import { PipelineCompilerStub } from '@tests/unit/stubs/PipelineCompilerStub';
+import { IReadOnlyFunctionParameterCollection } from '@/application/Parser/Script/Compiler/Function/Parameter/IFunctionParameterCollection';
 
 describe('Expression', () => {
     describe('ctor', () => {
@@ -79,19 +82,21 @@ describe('Expression', () => {
             const testCases = [
                 {
                     name: 'throws if arguments is undefined',
-                    args: undefined,
-                    expectedError: 'undefined args, send empty collection instead',
+                    context: undefined,
+                    expectedError: 'undefined context',
                 },
                 {
                     name: 'throws when some of the required args are not provided',
                     sut: (i: ExpressionBuilder) => i.withParameterNames(['a', 'b', 'c'], false),
-                    args: new FunctionCallArgumentCollectionStub().withArgument('b', 'provided'),
+                    context: new ExpressionEvaluationContextStub()
+                        .withArgs(new FunctionCallArgumentCollectionStub().withArgument('b', 'provided')),
                     expectedError: 'argument values are provided for required parameters: "a", "c"',
                 },
                 {
                     name: 'throws when none of the required args are not provided',
                     sut: (i: ExpressionBuilder) => i.withParameterNames(['a', 'b'], false),
-                    args: new FunctionCallArgumentCollectionStub().withArgument('c', 'unrelated'),
+                    context: new ExpressionEvaluationContextStub()
+                        .withArgs(new FunctionCallArgumentCollectionStub().withArgument('c', 'unrelated')),
                     expectedError: 'argument values are provided for required parameters: "a", "b"',
                 },
             ];
@@ -104,7 +109,7 @@ describe('Expression', () => {
                     }
                     const sut = sutBuilder.build();
                     // act
-                    const act = () => sut.evaluate(testCase.args);
+                    const act = () => sut.evaluate(testCase.context);
                     // assert
                     expect(act).to.throw(testCase.expectedError);
                 });
@@ -112,28 +117,49 @@ describe('Expression', () => {
         });
         it('returns result from evaluator', () => {
             // arrange
-            const evaluatorMock: ExpressionEvaluator = (args) =>
-                `"${args
+            const evaluatorMock: ExpressionEvaluator = (c) =>
+                `"${c
+                    .args
                     .getAllParameterNames()
-                    .map((name) => args.getArgument(name))
+                    .map((name) => context.args.getArgument(name))
                     .map((arg) => `${arg.parameterName}': '${arg.argumentValue}'`)
                     .join('", "')}"`;
             const givenArguments = new FunctionCallArgumentCollectionStub()
                 .withArgument('parameter1', 'value1')
                 .withArgument('parameter2', 'value2');
             const expectedParameterNames = givenArguments.getAllParameterNames();
-            const expected = evaluatorMock(givenArguments);
+            const context = new ExpressionEvaluationContextStub()
+                    .withArgs(givenArguments);
+            const expected = evaluatorMock(context);
             const sut = new ExpressionBuilder()
                 .withEvaluator(evaluatorMock)
                 .withParameterNames(expectedParameterNames)
                 .build();
             // arrange
-            const actual = sut.evaluate(givenArguments);
+            const actual = sut.evaluate(context);
             // assert
             expect(expected).to.equal(actual,
                 `\nGiven arguments: ${JSON.stringify(givenArguments)}\n` +
                 `\nExpected parameter names: ${JSON.stringify(expectedParameterNames)}\n`,
             );
+        });
+        it('sends pipeline compiler as it is', () => {
+            // arrange
+            const expected = new PipelineCompilerStub();
+            const context = new ExpressionEvaluationContextStub()
+                .withPipelineCompiler(expected);
+            let actual: IPipelineCompiler;
+            const evaluatorMock: ExpressionEvaluator = (c) => {
+                actual = c.pipelineCompiler;
+                return '';
+            };
+            const sut = new ExpressionBuilder()
+                .withEvaluator(evaluatorMock)
+                .build();
+            // arrange
+            sut.evaluate(context);
+            // assert
+            expect(expected).to.equal(actual);
         });
         describe('filters unused parameters', () => {
             // arrange
@@ -166,16 +192,18 @@ describe('Expression', () => {
             for (const testCase of testCases) {
                 it(testCase.name, () => {
                     let actual: IReadOnlyFunctionCallArgumentCollection;
-                    const evaluatorMock: ExpressionEvaluator = (providedArgs) => {
-                        actual = providedArgs;
+                    const evaluatorMock: ExpressionEvaluator = (c) => {
+                        actual = c.args;
                         return '';
                     };
+                    const context = new ExpressionEvaluationContextStub()
+                        .withArgs(testCase.arguments);
                     const sut = new ExpressionBuilder()
                         .withEvaluator(evaluatorMock)
                         .withParameters(testCase.expressionParameters)
                         .build();
                     // act
-                    sut.evaluate(testCase.arguments);
+                    sut.evaluate(context);
                     // assert
                     const actualArguments = actual.getAllParameterNames().map((name) => actual.getArgument(name));
                     expect(actualArguments).to.deep.equal(testCase.expectedArguments);

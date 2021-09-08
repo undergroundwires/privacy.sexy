@@ -1,24 +1,58 @@
-import { RegexParser, IPrimitiveExpression } from '../Parser/RegexParser';
+import { RegexParser, IPrimitiveExpression } from '../Parser/Regex/RegexParser';
 import { FunctionParameter } from '@/application/Parser/Script/Compiler/Function/Parameter/FunctionParameter';
+import { ExpressionRegexBuilder } from '../Parser/Regex/ExpressionRegexBuilder';
 
 export class WithParser extends RegexParser {
-    protected readonly regex = /{{\s*with\s+\$([^}| ]+)\s*}}\s*([^)]+?)\s*{{\s*end\s*}}/g;
+    protected readonly regex = new ExpressionRegexBuilder()
+        // {{ with $parameterName }}
+        .expectExpressionStart()
+        .expectCharacters('with')
+        .expectOneOrMoreWhitespaces()
+        .expectCharacters('$')
+        .matchUntilFirstWhitespace()                    // First match: parameter name
+        .expectExpressionEnd()
+        // ...
+        .matchAnythingExceptSurroundingWhitespaces()    // Second match: Scope text
+        // {{ end }}
+        .expectExpressionStart()
+        .expectCharacters('end')
+        .expectExpressionEnd()
+        .buildRegExp();
+
     protected buildExpression(match: RegExpMatchArray): IPrimitiveExpression {
         const parameterName = match[1];
-        const innerText = match[2];
+        const scopeText = match[2];
         return {
             parameters: [ new FunctionParameter(parameterName, true) ],
-            evaluator: (args) => {
-                const argumentValue = args.hasArgument(parameterName) ?
-                    args.getArgument(parameterName).argumentValue
+            evaluator: (context) => {
+                const argumentValue = context.args.hasArgument(parameterName) ?
+                    context.args.getArgument(parameterName).argumentValue
                     : undefined;
                 if (!argumentValue) {
                     return '';
                 }
-                const substitutionRegex = /{{\s*.\s*}}/g;
-                const newText = innerText.replace(substitutionRegex, argumentValue);
-                return newText;
+                return replaceEachScopeSubstitution(scopeText, (pipeline) => {
+                    if (!pipeline) {
+                        return argumentValue;
+                    }
+                    return context.pipelineCompiler.compile(argumentValue, pipeline);
+                });
             },
         };
     }
+}
+
+const ScopeSubstitutionRegEx = new ExpressionRegexBuilder()
+    // {{ . | pipeName }}
+    .expectExpressionStart()
+    .expectCharacters('.')
+    .matchPipeline()    // First match: pipeline
+    .expectExpressionEnd()
+    .buildRegExp();
+
+function replaceEachScopeSubstitution(scopeText: string, replacer: (pipeline: string) => string) {
+    // Not using /{{\s*.\s*(?:(\|\s*[^{}]*?)\s*)?}}/g for not matching brackets, but let pipeline compiler fail on those
+    return scopeText.replaceAll(ScopeSubstitutionRegEx, (_$, match1 ) => {
+        return replacer(match1);
+    });
 }

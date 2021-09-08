@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import { ExpressionEvaluator } from '@/application/Parser/Script/Compiler/Expressions/Expression/Expression';
-import { IPrimitiveExpression, RegexParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/RegexParser';
+import { IPrimitiveExpression, RegexParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/Regex/RegexParser';
 import { ExpressionPosition } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionPosition';
 import { FunctionParameterStub } from '@tests/unit/stubs/FunctionParameterStub';
 

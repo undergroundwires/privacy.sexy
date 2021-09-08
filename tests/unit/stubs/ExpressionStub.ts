@@ -1,11 +1,11 @@
 import { ExpressionPosition } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionPosition';
 import { IExpression } from '@/application/Parser/Script/Compiler/Expressions/Expression/IExpression';
-import { IReadOnlyFunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/FunctionCall/Argument/IFunctionCallArgumentCollection';
 import { IReadOnlyFunctionParameterCollection } from '@/application/Parser/Script/Compiler/Function/Parameter/IFunctionParameterCollection';
 import { FunctionParameterCollectionStub } from './FunctionParameterCollectionStub';
+import { IExpressionEvaluationContext } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionEvaluationContext';
 
 export class ExpressionStub implements IExpression {
-    public callHistory = new Array<IReadOnlyFunctionCallArgumentCollection>();
+    public callHistory = new Array<IExpressionEvaluationContext>();
     public position = new ExpressionPosition(0, 5);
     public parameters: IReadOnlyFunctionParameterCollection = new FunctionParameterCollectionStub();
     private result: string;
@@ -26,8 +26,9 @@ export class ExpressionStub implements IExpression {
         this.result = result;
         return this;
     }
-    public evaluate(args: IReadOnlyFunctionCallArgumentCollection): string {
-        this.callHistory.push(args);
+    public evaluate(context: IExpressionEvaluationContext): string {
+        const args = context.args;
+        this.callHistory.push(context);
         const result = this.result || `[expression-stub] args: ${args ? Object.keys(args).map((key) => `${key}: ${args[key]}`).join('", "') : 'none'}`;
         return result;
     }

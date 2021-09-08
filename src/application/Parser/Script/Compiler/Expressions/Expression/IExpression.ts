@@ -1,9 +1,9 @@
 import { ExpressionPosition } from './ExpressionPosition';
-import { IReadOnlyFunctionCallArgumentCollection } from '../../FunctionCall/Argument/IFunctionCallArgumentCollection';
 import { IReadOnlyFunctionParameterCollection } from '../../Function/Parameter/IFunctionParameterCollection';
+import { IExpressionEvaluationContext } from './ExpressionEvaluationContext';
 
 export interface IExpression {
     readonly position: ExpressionPosition;
     readonly parameters: IReadOnlyFunctionParameterCollection;
-    evaluate(args: IReadOnlyFunctionCallArgumentCollection): string;
+    evaluate(context: IExpressionEvaluationContext): string;
 }

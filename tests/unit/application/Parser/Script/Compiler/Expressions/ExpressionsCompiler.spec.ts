@@ -74,9 +74,9 @@ describe('ExpressionsCompiler', () => {
                 sut.compileExpressions(code, expected);
                 // assert
                 expect(expressions[0].callHistory).to.have.lengthOf(1);
-                expect(expressions[0].callHistory[0]).to.equal(expected);
+                expect(expressions[0].callHistory[0].args).to.equal(expected);
                 expect(expressions[1].callHistory).to.have.lengthOf(1);
-                expect(expressions[1].callHistory[0]).to.equal(expected);
+                expect(expressions[1].callHistory[0].args).to.equal(expected);
             });
             it('throws if arguments is undefined', () => {
                 // arrange

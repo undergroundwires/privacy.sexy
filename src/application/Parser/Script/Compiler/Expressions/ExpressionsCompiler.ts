@@ -3,6 +3,8 @@ import { IExpression } from './Expression/IExpression';
 import { IExpressionParser } from './Parser/IExpressionParser';
 import { CompositeExpressionParser } from './Parser/CompositeExpressionParser';
 import { IReadOnlyFunctionCallArgumentCollection } from '../FunctionCall/Argument/IFunctionCallArgumentCollection';
+import { ExpressionEvaluationContext } from './Expression/ExpressionEvaluationContext';
+import { IExpressionEvaluationContext } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionEvaluationContext';
 
 export class ExpressionsCompiler implements IExpressionsCompiler {
     public constructor(
@@ -15,7 +17,8 @@ export class ExpressionsCompiler implements IExpressionsCompiler {
         }
         const expressions = this.extractor.findExpressions(code);
         ensureParamsUsedInCodeHasArgsProvided(expressions, args);
-        const compiledCode = compileExpressions(expressions, code, args);
+        const context = new ExpressionEvaluationContext(args);
+        const compiledCode = compileExpressions(expressions, code, context);
         return compiledCode;
     }
 }
@@ -23,7 +26,7 @@ export class ExpressionsCompiler implements IExpressionsCompiler {
 function compileExpressions(
     expressions: readonly IExpression[],
     code: string,
-    args: IReadOnlyFunctionCallArgumentCollection): string {
+    context: IExpressionEvaluationContext) {
     let compiledCode = '';
     const sortedExpressions = expressions
         .slice() // copy the array to not mutate the parameter
@@ -33,7 +36,7 @@ function compileExpressions(
         const nextExpression = sortedExpressions.pop();
         if (nextExpression) {
             compiledCode += code.substring(index, nextExpression.position.start);
-            const expressionCode = nextExpression.evaluate(args);
+            const expressionCode = nextExpression.evaluate(context);
             compiledCode += expressionCode;
             index = nextExpression.position.end;
         } else {

@@ -30,7 +30,8 @@
 - Have full visibility into what the tweaks do as you enable them
 - Ability to revert (undo) applied scripts
 - Everything is transparent: both application and its infrastructure are open-source and automated
-- Easily extendable
+- Easily extendable with [own powerful templating language](./docs/templating.md)
+- Each script is independently executable without cross-dependencies
 
 ## Extend scripts
 

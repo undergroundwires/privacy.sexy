@@ -57,4 +57,11 @@ describe('ParameterSubstitutionParser', () => {
             },
         );
     });
+    describe('compiles pipes as expected', () => {
+        runner.expectPipeHits({
+            codeBuilder: (pipeline) => `{{ $argument${pipeline}}}`,
+            parameterName: 'argument',
+            parameterValue: 'value',
+        });
+    });
 });

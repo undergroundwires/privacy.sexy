@@ -1,9 +1,9 @@
-import { IExpressionParser } from './IExpressionParser';
-import { ExpressionPosition } from '../Expression/ExpressionPosition';
-import { IExpression } from '../Expression/IExpression';
-import { Expression, ExpressionEvaluator } from '../Expression/Expression';
-import { IFunctionParameter } from '../../Function/Parameter/IFunctionParameter';
-import { FunctionParameterCollection } from '../../Function/Parameter/FunctionParameterCollection';
+import { IExpressionParser } from '../IExpressionParser';
+import { ExpressionPosition } from '../../Expression/ExpressionPosition';
+import { IExpression } from '../../Expression/IExpression';
+import { Expression, ExpressionEvaluator } from '../../Expression/Expression';
+import { IFunctionParameter } from '../../../Function/Parameter/IFunctionParameter';
+import { FunctionParameterCollection } from '../../../Function/Parameter/FunctionParameterCollection';
 
 export abstract class RegexParser implements IExpressionParser {
     protected abstract readonly regex: RegExp;
