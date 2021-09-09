@@ -18,7 +18,7 @@ jobs:
         name: Setup node
         uses: actions/setup-node@v1
         with:
-          node-version: 14.x
+          node-version: 15.x
       -
         name: NPM audit
-        run: npm audit
+        run: exit "$(npm audit)" # Since node 15.x, it does not fail with error if we don't explicitly exit
