@@ -20,7 +20,7 @@ module.exports = {
     pluginOptions: {
         // https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/guide.html#native-modules
         electronBuilder: {
-            mainProcessFile: './src/presentation/background.ts', // https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/configuration.html#webpack-configuration
+            mainProcessFile: './src/presentation/electron/main.ts', // https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/configuration.html#webpack-configuration
             nodeIntegration: true, // required to reach Node.js APIs for environment specific logic
             // https://www.electron.build/configuration/configuration
             builderOptions: {

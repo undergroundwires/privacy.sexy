@@ -12,7 +12,8 @@
     - [**`Shared/`**](./../src/presentation/components/Shared): Contains Vue components and component helpers that are shared across other components.
   - [**`styles/`**](./../src/presentation/styles/): Contains shared styles used throughout different components.
   - [**`main.ts`**](./../src/presentation/main.ts): Application entry point that mounts and starts Vue application.
-  - [**`background.ts`**](./../src/presentation/background.ts): Main process of Electron, started as first thing when app starts.
+  - [`electron/`](./../src/presentation/electron/): Electron configuration for the desktop application.
+    - [**`main.ts`**](./../src/presentation/main.ts): Main process of Electron, started as first thing when app starts.
 - [**`/public/`**](./../public/): Contains static assets that will simply be copied and not go through webpack.
 - [**`/vue.config.js`**](./../vue.config.js): Global Vue CLI configurations loaded by `@vue/cli-service`
 - [**`/postcss.config.js`**](./../postcss.config.js): PostCSS configurations that are used by Vue CLI internally

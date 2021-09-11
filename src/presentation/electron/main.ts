@@ -8,9 +8,8 @@ import { app, protocol, BrowserWindow, shell, screen } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import path from 'path';
-import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
-
+import { setupAutoUpdater } from './Updater';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 declare const __static: string; // https://github.com/electron-userland/electron-webpack/issues/172
@@ -24,8 +23,6 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } },
 ]);
 
-// Setup logging
-autoUpdater.logger = log; // https://www.electron.build/auto-update#debugging
 log.transports.file.level = 'silly';
 if (!process.env.IS_TEST) {
   Object.assign(console, log.functions);  // override console.log, console.warn etc.
@@ -90,14 +87,6 @@ app.on('ready', async () => {
   createWindow();
 });
 
-// See electron-builder issue "checkForUpdatesAndNotify updates but does not notify on Windows 10"
-// https://github.com/electron-userland/electron-builder/issues/2700
-// https://github.com/electron/electron/issues/10864
-if (process.platform === 'win32') {
-  // https://docs.microsoft.com/en-us/windows/win32/shell/appid#how-to-form-an-application-defined-appusermodelid
-  app.setAppUserModelId('Undergroundwires.PrivacySexy');
-}
-
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
   if (process.platform === 'win32') {
@@ -118,14 +107,14 @@ function loadApplication(window: BrowserWindow) {
     // Load the url of the dev server if in development mode
     loadUrlWithNodeWorkaround(win, process.env.WEBPACK_DEV_SERVER_URL as string);
     if (!process.env.IS_TEST) {
-      win.webContents.openDevTools();
+      window.webContents.openDevTools();
     }
   } else {
     createProtocol('app');
     // Load the index.html when not in development
     loadUrlWithNodeWorkaround(win, 'app://./index.html');
-    // tslint:disable-next-line:max-line-length
-    autoUpdater.checkForUpdatesAndNotify(); // https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/recipes.html#check-for-updates-in-background-js-ts
+    const updater = setupAutoUpdater();
+    updater.checkForUpdatesAsync();
   }
 }
 
@@ -153,3 +142,4 @@ function getWindowSize(idealWidth: number, idealHeight: number) {
   height = Math.min(height, idealHeight);
   return { width, height };
 }
+
