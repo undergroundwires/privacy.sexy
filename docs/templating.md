@@ -79,3 +79,9 @@ A function can call other functions such as:
 - Pipes are provided and defined by the compiler and consumed by collection files.
 - Pipes can be combined with [parameter substitution](#parameter-substitution) and [with](#with).
 - ❗ Pipe names must be camelCase without any space or special characters.
+- **Existing pipes**
+  - `inlinePowerShell`: Converts a multi-lined PowerShell script to a single line.
+  - `escapeDoubleQuotes`: Escapes `"` characters to be used inside double quotes (`"`)
+- **Example usages**
+  - `{{ with $code }} echo "{{ . | inlinePowerShell }}" {{ end }}`
+  - `{{ with $code }} echo "{{ . | inlinePowerShell | escapeDoubleQuotes }}" {{ end }}`

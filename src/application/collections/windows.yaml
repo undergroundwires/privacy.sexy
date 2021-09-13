@@ -392,10 +392,10 @@ actions:
                 call:
                     function: RunPowerShell
                     parameters:
-                        code: 
-                            $bin = (New-Object -ComObject Shell.Application).NameSpace(10);
+                        code: |-
+                            $bin = (New-Object -ComObject Shell.Application).NameSpace(10)
                             $bin.items() | ForEach {
-                                Write-Host "Deleting $($_.Name) from Recycle Bin";
+                                Write-Host "Deleting $($_.Name) from Recycle Bin"
                                 Remove-Item $_.Path -Recurse -Force
                             }
             -
@@ -2884,15 +2884,15 @@ actions:
                 call:
                     function: RunPowerShell
                     parameters:
-                        code: 
-                            $key = 'HKLM:SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces';
-                            Get-ChildItem $key | foreach {
-                                Set-ItemProperty -Path \"$key\$($_.pschildname)\" -Name NetbiosOptions -Value 2 -Verbose
+                        code: |-
+                            $key = 'HKLM:SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces'
+                            Get-ChildItem $key | ForEach {
+                                Set-ItemProperty -Path "$key\$($_.PSChildName)" -Name NetbiosOptions -Value 2 -Verbose
                             }
-                        revertCode:
-                            $key = 'HKLM:SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces';
-                            Get-ChildItem $key | foreach {
-                                Set-ItemProperty -Path \"$key\$($_.pschildname)\" -Name NetbiosOptions -Value 0 -Verbose
+                        revertCode: |-
+                            $key = 'HKLM:SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces'
+                            Get-ChildItem $key | ForEach {
+                                Set-ItemProperty -Path "$key\$($_.PSChildName)" -Name NetbiosOptions -Value 0 -Verbose
                             }
     -
         category: Remove bloatware
@@ -3814,13 +3814,13 @@ actions:
                 call:
                     function: RunPowerShell
                     parameters:
-                        code: 
-                            $installer = (Get-ChildItem \"$env:ProgramFiles*\Microsoft\Edge\Application\*\Installer\setup.exe\");
+                        code: |-
+                            $installer = (Get-ChildItem "$env:ProgramFiles*\Microsoft\Edge\Application\*\Installer\setup.exe")
                             if (!$installer) {
-                                Write-Host Could not find the installer;
+                                Write-Host 'Could not find the installer'
                             } else {
                                 & $installer.FullName -Uninstall -System-Level -Verbose-Logging -Force-Uninstall
-                            };
+                            }
             -
                 category: Disable built-in Windows features
                 children:
@@ -4416,13 +4416,13 @@ functions:
             function: RunPowerShell
             parameters:
                 code: Get-AppxPackage '{{ $packageName }}' | Remove-AppxPackage
-                revertCode:
-                    $package = Get-AppxPackage -AllUsers '{{ $packageName }}';
+                revertCode: |-
+                    $package = Get-AppxPackage -AllUsers '{{ $packageName }}'
                     if (!$package) {
-                        Write-Error \"Cannot reinstall '{{ $packageName }}'\" -ErrorAction Stop
+                        Write-Error "Cannot reinstall '{{ $packageName }}'" -ErrorAction Stop
                     }
-                    $manifest = $package.InstallLocation + '\AppxManifest.xml';
-                    Add-AppxPackage -DisableDevelopmentMode -Register \"$manifest\"
+                    $manifest = $package.InstallLocation + '\AppxManifest.xml'
+                    Add-AppxPackage -DisableDevelopmentMode -Register "$manifest"
     -
         name: UninstallSystemApp
         parameters:
@@ -4433,40 +4433,44 @@ functions:
         call:
             function: RunPowerShell
             parameters:
-                code:
-                    $package = (Get-AppxPackage -AllUsers '{{ $packageName }}');
+                code: |-
+                    $package = Get-AppxPackage -AllUsers '{{ $packageName }}'
                     if (!$package) { 
-                        Write-Host 'Not installed';
-                        exit 0;
+                        Write-Host 'Not installed'
+                        exit 0
                     }
-                    $directories = @($package.InstallLocation, \"$env:LOCALAPPDATA\Packages\$($package.PackageFamilyName)\");
+                    $directories = @($package.InstallLocation, "$env:LOCALAPPDATA\Packages\$($package.PackageFamilyName)")
                     foreach($dir in $directories) {
-                        if ( !$dir -Or !(Test-Path \"$dir\") ) { continue; }
-                        cmd /c ('takeown /f \"' + $dir + '\" /r /d y 1> nul'); if($LASTEXITCODE) { throw 'Failed to take ownership'; }
-                        cmd /c ('icacls \"' + $dir + '\" /grant administrators:F /t 1> nul'); if($LASTEXITCODE) { throw 'Failed to take ownership'; }
-                        $files = Get-ChildItem -File -Path $dir -Recurse -Force;
+                        if ( !$dir -Or !(Test-Path "$dir") ) { continue }
+                        cmd /c ('takeown /f "' + $dir + '" /r /d y 1> nul')
+                            if($LASTEXITCODE) { throw 'Failed to take ownership' }
+                        cmd /c ('icacls "' + $dir + '" /grant administrators:F /t 1> nul')
+                            if($LASTEXITCODE) { throw 'Failed to take ownership' }
+                        $files = Get-ChildItem -File -Path $dir -Recurse -Force
                         foreach($file in $files) {
-                            if($file.Name.EndsWith('.OLD')) { continue; }
-                            $newName =  $file.FullName + '.OLD';
-                            Write-Host \"Rename '$($file.FullName)' to '$newName'\";
-                            Move-Item -LiteralPath \"$($file.FullName)\" -Destination \"$newName\" -Force;
+                            if($file.Name.EndsWith('.OLD')) { continue }
+                            $newName =  $file.FullName + '.OLD'
+                            Write-Host "Rename '$($file.FullName)' to '$newName'"
+                            Move-Item -LiteralPath "$($file.FullName)" -Destination "$newName" -Force
                         }
                     }
-                revertCode:
-                    $package = (Get-AppxPackage -AllUsers '{{ $packageName }}');
+                revertCode: |-
+                    $package = Get-AppxPackage -AllUsers '{{ $packageName }}'
                     if (!$package) { 
-                        Write-Error 'App could not be found' -ErrorAction Stop;
+                        Write-Error 'App could not be found' -ErrorAction Stop
                     }
-                    $directories = @($package.InstallLocation, \"$env:LOCALAPPDATA\Packages\$($package.PackageFamilyName)\");
+                    $directories = @($package.InstallLocation, "$env:LOCALAPPDATA\Packages\$($package.PackageFamilyName)")
                     foreach($dir in $directories) {
-                        if ( !$dir -Or !(Test-Path \"$dir\") ) { continue; }
-                        cmd /c ('takeown /f \"' + $dir + '\" /r /d y 1> nul'); if($LASTEXITCODE) { throw 'Failed to take ownership'; }
-                        cmd /c ('icacls \"' + $dir + '\" /grant administrators:F /t 1> nul'); if($LASTEXITCODE) { throw 'Failed to take ownership'; }
-                        $files = Get-ChildItem -File -Path \"$dir\*.OLD\" -Recurse -Force;
+                        if ( !$dir -Or !(Test-Path "$dir") ) { continue; }
+                        cmd /c ('takeown /f "' + $dir + '" /r /d y 1> nul')
+                            if($LASTEXITCODE) { throw 'Failed to take ownership' }
+                        cmd /c ('icacls "' + $dir + '" /grant administrators:F /t 1> nul')
+                            if($LASTEXITCODE) { throw 'Failed to take ownership' }
+                        $files = Get-ChildItem -File -Path "$dir\*.OLD" -Recurse -Force
                         foreach($file in $files) {
-                            $newName = $file.FullName.Substring(0, $file.FullName.Length - 4);
-                            Write-Host \"Rename '$($file.FullName)' to '$newName'\";
-                            Move-Item -LiteralPath \"$($file.FullName)\" -Destination \"$newName\" -Force;
+                            $newName = $file.FullName.Substring(0, $file.FullName.Length - 4)
+                            Write-Host "Rename '$($file.FullName)' to '$newName'"
+                            Move-Item -LiteralPath "$($file.FullName)" -Destination "$newName" -Force
                         }
                     }
     -
@@ -4477,9 +4481,9 @@ functions:
             function: RunPowerShell
             parameters:
                 code: Get-WindowsCapability -Online -Name '{{ $capabilityName }}*' | Remove-WindowsCapability -Online
-                revertCode:
-                    $capability = Get-WindowsCapability -Online -Name '{{ $capabilityName }}*';
-                    Add-WindowsCapability -Name \"$capability.Name\" -Online
+                revertCode: |-
+                    $capability = Get-WindowsCapability -Online -Name '{{ $capabilityName }}*'
+                    Add-WindowsCapability -Name "$capability.Name" -Online
     -
         name: RenameSystemFile
         parameters:
@@ -4516,25 +4520,25 @@ functions:
                         Write-Host \"No updates. Settings file was not at $jsonfile\";
                         exit 0;
                     }
-                    $json = Get-Content $jsonfile | Out-String | ConvertFrom-Json;
-                    $json | Add-Member -Type NoteProperty -Name '{{ $setting }}' -Value {{ $powerShellValue }} -Force;
-                    $json | ConvertTo-Json | Set-Content $jsonfile;
-                revertCode:
-                    $jsonfile = \"$env:APPDATA\Code\User\settings.json\";
+                    $json = Get-Content $jsonfile | Out-String | ConvertFrom-Json
+                    $json | Add-Member -Type NoteProperty -Name '{{ $setting }}' -Value {{ $powerShellValue }} -Force
+                    $json | ConvertTo-Json | Set-Content $jsonfile
+                revertCode: |-
+                    $jsonfile = "$env:APPDATA\Code\User\settings.json"
                     if (!(Test-Path $jsonfile -PathType Leaf)) {
-                        Write-Error \"Settings file could not be found at $jsonfile\" -ErrorAction Stop;
+                        Write-Error "Settings file could not be found at $jsonfile" -ErrorAction Stop
                     }
-                    $json = Get-Content $jsonfile | ConvertFrom-Json;
-                    $json.PSObject.Properties.Remove('{{ $setting }}');
-                    $json | ConvertTo-Json | Set-Content $jsonfile;
+                    $json = Get-Content $jsonfile | ConvertFrom-Json
+                    $json.PSObject.Properties.Remove('{{ $setting }}')
+                    $json | ConvertTo-Json | Set-Content $jsonfile
     -
         name: RunPowerShell
         parameters:
             -   name: code
             -   name: revertCode
                 optional: true
-        code: PowerShell -ExecutionPolicy Unrestricted -Command "{{ $code }}"
+        code: PowerShell -ExecutionPolicy Unrestricted -Command "{{ $code | inlinePowerShell | escapeDoubleQuotes }}"
         revertCode: |-
             {{ with $revertCode }}
-                PowerShell -ExecutionPolicy Unrestricted -Command "{{ . }}"
+                PowerShell -ExecutionPolicy Unrestricted -Command "{{ . | inlinePowerShell | escapeDoubleQuotes }}"
             {{ end }}

@@ -1,6 +1,11 @@
 import { IPipe } from './IPipe';
+import { InlinePowerShell } from './PipeDefinitions/InlinePowerShell';
+import { EscapeDoubleQuotes } from './PipeDefinitions/EscapeDoubleQuotes';
 
-const RegisteredPipes = [ ];
+const RegisteredPipes = [
+    new EscapeDoubleQuotes(),
+    new InlinePowerShell(),
+];
 
 export interface IPipeFactory {
     get(pipeName: string): IPipe;
