@@ -1,11 +1,13 @@
 <template>
 <div class="scripts">
     <TheScriptsMenu v-on:viewChanged="currentView = $event" />
-    <HorizontalResizeSlider class="row">
-        <template v-slot:left>
+    <HorizontalResizeSlider class="row"
+        verticalMargin="15px" firstInitialWidth="55%"
+        firstMinWidth="20%" secondMinWidth="20%">
+        <template v-slot:first>
             <TheScriptsView :currentView="currentView" />
         </template>
-        <template v-slot:right>
+        <template v-slot:second>
             <TheCodeArea theme="xcode" />
         </template>
     </HorizontalResizeSlider>
@@ -38,12 +40,5 @@ export default class TheScriptArea extends Vue {
     > * + * {
         margin-top: 15px;
     }
-}
-::v-deep .left {
-    width: 55%; // initial width
-    min-width: 20%;
-}
-::v-deep .right {
-    min-width: 20%;
 }
 </style>

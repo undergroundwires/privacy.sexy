@@ -97,25 +97,25 @@ export default class CardListItem extends StatefulVue {
 <style scoped lang="scss">
 @import "@/presentation/styles/colors.scss";
 @import "@/presentation/styles/media.scss";
+@import "@/presentation/styles/components/card.scss";
 
-$card-padding: 30px;
-$card-margin: 15px;
-$card-line-break-width: 30px;
-$arrow-size: 15px;
-$expanded-margin-top: 30px;
+$card-inner-padding     : 30px;
+$arrow-size             : 15px;
+$expanded-margin-top    : 30px;
+$card-horizontal-gap    : $card-gap;
 
 .card {
-  margin: 15px; 
   transition: all 0.2s ease-in-out;
 
   &__inner {  
-    padding: $card-padding $card-padding 0 $card-padding;
+    padding: /*top:*/ $card-inner-padding /*right:*/ $card-inner-padding /*bottom:*/ 0 /*left:*/ $card-inner-padding;
     position: relative;
     cursor: pointer;
     background-color: $gray;
     color: $light-gray;
     font-size: 1.5em;
     height: 100%;
+    width: 100%;
     text-transform: uppercase;
     text-align: center;
     transition: all 0.2s ease-in-out;
@@ -133,8 +133,8 @@ $expanded-margin-top: 30px;
     }
 
     &__state-icons {
-      height: $card-padding;
-      margin-right: -$card-padding;
+      height: $card-inner-padding;
+      margin-right: -$card-inner-padding;
       padding-right: 10px;
       display: flex;
       justify-content: flex-end;
@@ -155,7 +155,7 @@ $expanded-margin-top: 30px;
     align-items: center;
 
     &__content {
-      width: 100%;
+      flex: 1;flex: 1;
       display: flex;
       justify-content: center;
       word-break: break-word;
@@ -238,12 +238,21 @@ $expanded-margin-top: 30px;
 }
 @mixin adaptive-card($cards-in-row) {
   &.card {
-    width: calc((100% / #{$cards-in-row}) - #{$card-line-break-width});
-    @for $nth-card from 2 through $cards-in-row {
+    $total-times-gap-is-used-in-row: $cards-in-row - 1;
+    $total-gap-width-in-row: $total-times-gap-is-used-in-row * $card-horizontal-gap;
+    $available-row-width-for-cards: calc(100% - #{$total-gap-width-in-row});
+    $available-width-per-card: calc(#{$available-row-width-for-cards} / #{$cards-in-row});
+    width:$available-width-per-card;
+    .card__expander {
+      $all-cards-width: 100% * $cards-in-row;
+      $additional-padding-width: $card-horizontal-gap * ($cards-in-row - 1);
+      width: calc(#{$all-cards-width} + #{$additional-padding-width});
+    }
+    @for $nth-card from 2 through $cards-in-row { // From second card to rest
       &:nth-of-type(#{$cards-in-row}n+#{$nth-card}) {
         .card__expander {
           $card-left: -100% * ($nth-card - 1);
-          $additional-space: $card-line-break-width * ($nth-card - 1);
+          $additional-space: $card-horizontal-gap * ($nth-card - 1);
           margin-left: calc(#{$card-left} - #{$additional-space});
         }
       }
@@ -253,11 +262,6 @@ $expanded-margin-top: 30px;
     &:nth-of-type(#{$cards-in-row}n+#{$card-after-last}) {
       clear: left;
     }
-  }
-  .card__expander {
-    $all-cards-width: 100% * $cards-in-row;
-    $card-padding: $card-line-break-width * ($cards-in-row - 1);
-    width: calc(#{$all-cards-width} + #{$card-padding});
   }
 }
 

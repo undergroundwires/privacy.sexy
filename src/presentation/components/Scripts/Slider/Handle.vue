@@ -7,7 +7,7 @@
         <font-awesome-icon
             class="image"
             :icon="['fas', 'arrows-alt-h']" 
-        /> <!-- exchange-alt arrows-alt-h-->
+        />
         <div class="line"></div>
     </div>
 </template>
@@ -66,6 +66,7 @@ export default class Handle extends Vue {
     .image {
         color: $dark-gray;
     }
-    margin-right: 10px;
+    margin-right: 5px;
+    margin-left: 5px;
 }
 </style>

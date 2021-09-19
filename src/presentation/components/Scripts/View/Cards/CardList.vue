@@ -106,10 +106,18 @@ function isClickable(element: Element) {
 
 <style scoped lang="scss">
 @import "@/presentation/styles/fonts.scss";
+@import "@/presentation/styles/components/card.scss";
+
 .cards {
   display: flex;
   flex-flow: row wrap;
   font-family: $main-font;
+  gap: $card-gap;
+  /* 
+    Padding is used to allow scale animation (growing size) for cards on hover.
+    It ensures that there's room to grow, so the animation is shown without overflowing with scrollbars.
+  */
+  padding: 10px;
 }
 
 .error {

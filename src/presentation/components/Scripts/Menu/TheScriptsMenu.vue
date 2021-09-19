@@ -57,21 +57,24 @@ export default class TheScriptsMenu extends StatefulVue {
 </script>
 
 <style scoped lang="scss">
+$margin-between-lines: 7px;
 #container {
-    display: flex;
-    flex-wrap: wrap;
-    .item {
-        flex: 1;
-        white-space: nowrap;
-        display: flex;
-        justify-content: center;
-        margin: 0 5px 0 5px;
-        &:first-child {
-            justify-content: flex-start;
-        }
-        &:last-child {
-            justify-content: flex-end;
-        }
-    }
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: -$margin-between-lines;
+  .item {
+      flex: 1;
+      white-space: nowrap;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: $margin-between-lines 5px 0 5px;
+      &:first-child {
+          justify-content: flex-start;
+      }
+      &:last-child {
+          justify-content: flex-end;
+      }
+  }
 }
 </style>

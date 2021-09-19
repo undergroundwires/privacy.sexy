@@ -1,17 +1,22 @@
 <template>
-    <div class="slider">
-        <div class="left" ref="leftElement">
-            <slot name="left"></slot>
+    <div class="slider" v-bind:style="{
+            '--vertical-margin': this.verticalMargin,
+            '--first-min-width': this.firstMinWidth,
+            '--first-initial-width': this.firstInitialWidth,
+            '--second-min-width': this.secondMinWidth,
+        }">
+        <div class="first" ref="firstElement">
+            <slot name="first"></slot>
         </div>
         <Handle class="handle" @resized="onResize($event)" />
-        <div class="right">
-            <slot name="right"></slot>
+        <div class="second">
+            <slot name="second"></slot>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Prop } from 'vue-property-decorator';
 import Handle from './Handle.vue';
 
 @Component({
@@ -20,7 +25,12 @@ import Handle from './Handle.vue';
   },
 })
 export default class HorizontalResizeSlider extends Vue {
-    private get left(): HTMLElement { return this.$refs.leftElement as HTMLElement; }
+    @Prop() public verticalMargin: string;
+    @Prop() public firstMinWidth: string;
+    @Prop() public firstInitialWidth: string;
+    @Prop() public secondMinWidth: string;
+
+    private get left(): HTMLElement { return this.$refs.firstElement as HTMLElement; }
 
     public onResize(displacementX: number): void {
         const leftWidth = this.left.offsetWidth + displacementX;
@@ -35,15 +45,21 @@ export default class HorizontalResizeSlider extends Vue {
 .slider {
     display: flex;
     flex-direction: row;
-    .right {
-        flex: 1;
+    .first {
+        min-width: var(--first-min-width);
+        width: var(--first-initial-width);
     }
-}
-@media screen and (max-width: $vertical-view-breakpoint) {
-    .slider {
+    .second {
+        flex: 1;
+        min-width: var(--second-min-width);
+    }
+    @media screen and (max-width: $vertical-view-breakpoint) {
         flex-direction: column;
-        .left {
+        .first {
             width: auto !important;
+        }
+        .second {
+            margin-top: var(--vertical-margin);
         }
         .handle {
             display: none;
