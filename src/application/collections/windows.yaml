@@ -2825,25 +2825,40 @@ actions:
                     -
                         name: User Data Storage (UnistoreSvc) Service
                         recommend: strict
-                        code: sc stop "UnistoreSvc" & sc config "UnistoreSvc" start=disabled
-                        revertCode: sc config "UnistoreSvc" start=demand
+                        call:
+                            function: DisablePerUserService
+                            parameters:
+                                serviceName: UnistoreSvc
+                                defaultStartUpMode: 3 # 0: Boot | 1: System | 2: Automatic | 3: Manual | 4: Disabled
                     -
                         name: Sync Host (OneSyncSvc) Service Service
                         recommend: strict
-                        code: sc stop "OneSyncSvc" & sc config "OneSyncSvc" start=disabled
-                        revertCode: sc config "OneSyncSvc" start=auto & sc start "OneSyncSvc"
+                        call:
+                            function: DisablePerUserService
+                            parameters:
+                                serviceName: OneSyncSvc
+                                defaultStartUpMode: 2 # 0: Boot | 1: System | 2: Automatic | 3: Manual | 4: Disabled
             -
                 name: Contact data indexing
-                code: sc stop "PimIndexMaintenanceSvc" & sc config "PimIndexMaintenanceSvc" start=disabled
-                revertCode: sc config "PimIndexMaintenanceSvc" start=demand
+                call:
+                    function: DisablePerUserService
+                    parameters:
+                        serviceName: PimIndexMaintenanceSvc
+                        defaultStartUpMode: 3 # 0: Boot | 1: System | 2: Automatic | 3: Manual | 4: Disabled
             -
                 name: App user data access
-                code: sc stop "UserDataSvc" & sc config "UserDataSvc" start=disabled
-                revertCode: sc config "UserDataSvc" start=demand
+                call:
+                    function: DisablePerUserService
+                    parameters:
+                        serviceName: UserDataSvc
+                        defaultStartUpMode: 3 # 0: Boot | 1: System | 2: Automatic | 3: Manual | 4: Disabled
             -
                 name: Text messaging
-                code: sc stop "MessagingService" & sc config "MessagingService" start=disabled
-                revertCode: sc config "MessagingService" start=demand
+                call:
+                    function: DisablePerUserService
+                    parameters:
+                        serviceName: MessagingService
+                        defaultStartUpMode: 3 # 0: Boot | 1: System | 2: Automatic | 3: Manual | 4: Disabled
             -
                 name: Windows Push Notification Service
                 recommend: standard
@@ -4542,3 +4557,51 @@ functions:
             {{ with $revertCode }}
                 PowerShell -ExecutionPolicy Unrestricted -Command "{{ . | inlinePowerShell | escapeDoubleQuotes }}"
             {{ end }}
+    -
+        name: DisablePerUserService # https://docs.microsoft.com/en-us/windows/application-management/per-user-services-in-windows
+        parameters: 
+            - name: serviceName
+            - name: defaultStartUpMode
+        call:
+            function: RunPowerShell
+            parameters:
+                code: |-
+                    $serviceQueries = @('{{ $serviceName }}', '{{ $serviceName }}_*')
+                    foreach ($serviceQuery in $serviceQueries) {
+                        $service = Get-Service -Name $serviceQuery -ErrorAction Ignore
+                        if(!$service) {
+                            Write-Host "Service `"$serviceQuery`" is not found, no action is needed"
+                            continue
+                        }
+                        $name = $service.Name
+                        Stop-Service $name -ErrorAction SilentlyContinue
+                        if($?) {
+                            Write-Host "Stopped `"$name`""
+                        } else {
+                            Write-Warning "Could not stop `"$name`""
+                        }
+                        $regKey = "HKLM:\SYSTEM\CurrentControlSet\Services\$name"
+                        if(Test-Path $regKey) {
+                            Set-ItemProperty $regKey -Name Start -Value 4 -Force
+                            Write-Host "Disabled `"$name`""
+                        } else {
+                            Write-Host "Service is not registered at Windows startup, no action is needed."
+                        }
+                    }
+                revertCode: |-
+                    $serviceQueries = @('{{ $serviceName }}', '{{ $serviceName }}_*')
+                    foreach ($serviceQuery in $serviceQueries) {
+                        $service = Get-Service -Name $serviceQuery -ErrorAction SilentlyContinue
+                        if(!$service) {
+                            Write-Warning "Service `"$serviceQuery`" not found"
+                            continue
+                        }
+                        $name = $service.Name
+                        $regKey = "HKLM:\SYSTEM\CurrentControlSet\Services\$name"
+                        if(Test-Path $regKey) {
+                            Set-ItemProperty $regKey -Name Start -Value 0 -Force
+                            Write-Host "Enabled `"$name`", may require restarting your computer."
+                        } else {
+                            Write-Error "Registry key at `"$regKey`" does not exist"
+                        }
+                    }
