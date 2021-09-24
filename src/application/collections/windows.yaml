@@ -4357,6 +4357,14 @@ actions:
                                     function: UninstallCapability
                                     parameters:
                                         capabilityName: XPS.Viewer
+            -
+                name: Remove Meet Now icon from taskbar
+                recommend: strict
+                docs: # Skype feature, introduced in 20H2, KB4580364 update
+                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.TaskBar2::HideSCAMeetNow
+                    - https://www.windowscentral.com/how-disable-meet-now-feature-windows-10
+                code: reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "HideSCAMeetNow" /t REG_DWORD /d 1 /f
+                revertCode: reg delete "HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "HideSCAMeetNow" /f
     -
         category: Advanced settings
         children:   
