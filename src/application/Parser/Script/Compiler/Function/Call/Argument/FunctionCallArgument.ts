@@ -1,5 +1,5 @@
 import { IFunctionCallArgument } from './IFunctionCallArgument';
-import { ensureValidParameterName } from '../../ParameterNameValidator';
+import { ensureValidParameterName } from '../../Shared/ParameterNameValidator';
 
 export class FunctionCallArgument implements IFunctionCallArgument {
     constructor(

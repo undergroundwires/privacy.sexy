@@ -6,7 +6,7 @@ export class SharedFunctionCollection implements ISharedFunctionCollection {
 
     public addFunction(func: ISharedFunction): void {
         if (!func) { throw new Error('undefined function'); }
-        if (this.functionsByName.has(func.name)) {
+        if (this.has(func.name)) {
             throw new Error(`function with name ${func.name} already exists`);
         }
         this.functionsByName.set(func.name, func);
@@ -19,5 +19,9 @@ export class SharedFunctionCollection implements ISharedFunctionCollection {
             throw new Error(`called function is not defined "${name}"`);
         }
         return func;
+    }
+
+    private has(functionName: string) {
+        return this.functionsByName.has(functionName);
     }
 }

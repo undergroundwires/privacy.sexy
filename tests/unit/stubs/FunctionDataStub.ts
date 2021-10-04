@@ -1,4 +1,5 @@
-import { FunctionData, ParameterDefinitionData, ScriptFunctionCallData } from 'js-yaml-loader!@/*';
+import { FunctionData, ParameterDefinitionData, FunctionCallsData } from 'js-yaml-loader!@/*';
+import { FunctionCallDataStub } from './FunctionCallDataStub';
 
 export class FunctionDataStub implements FunctionData {
     public static createWithCode() {
@@ -6,7 +7,7 @@ export class FunctionDataStub implements FunctionData {
             .withCode('stub-code')
             .withRevertCode('stub-revert-code');
     }
-    public static createWithCall(call?: ScriptFunctionCallData) {
+    public static createWithCall(call?: FunctionCallsData) {
         let instance = new FunctionDataStub();
         if (call) {
             instance = instance.withCall(call);
@@ -22,10 +23,10 @@ export class FunctionDataStub implements FunctionData {
     public name = 'functionDataStub';
     public code: string;
     public revertCode: string;
-    public call?: ScriptFunctionCallData;
+    public call?: FunctionCallsData;
     public parameters?: readonly ParameterDefinitionData[];
 
-    private constructor() { }
+    private constructor() { /* use static factory methods to create an instance */ }
 
     public withName(name: string) {
         this.name = name;
@@ -46,12 +47,12 @@ export class FunctionDataStub implements FunctionData {
         this.revertCode = revertCode;
         return this;
     }
-    public withCall(call: ScriptFunctionCallData) {
+    public withCall(call: FunctionCallsData) {
         this.call = call;
         return this;
     }
     public withMockCall() {
-        this.call = { function: 'func' };
+        this.call = new FunctionCallDataStub();
         return this;
     }
 }

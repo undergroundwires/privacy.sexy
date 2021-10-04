@@ -1,4 +1,4 @@
-import { IReadOnlyFunctionCallArgumentCollection } from '../../FunctionCall/Argument/IFunctionCallArgumentCollection';
+import { IReadOnlyFunctionCallArgumentCollection } from '../../Function/Call/Argument/IFunctionCallArgumentCollection';
 import { IPipelineCompiler } from '../Pipes/IPipelineCompiler';
 import { PipelineCompiler } from '../Pipes/PipelineCompiler';
 

@@ -1,6 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
-import { FunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/FunctionCall/Argument/FunctionCallArgumentCollection';
+import { FunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/Function/Call/Argument/FunctionCallArgumentCollection';
 import { FunctionCallArgumentStub } from '@tests/unit/stubs/FunctionCallArgumentStub';
 
 describe('FunctionCallArgumentCollection', () => {

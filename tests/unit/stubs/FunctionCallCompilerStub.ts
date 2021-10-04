@@ -1,26 +1,40 @@
+import { ICompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/ICompiledCode';
+import { IFunctionCallCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/IFunctionCallCompiler';
 import { ISharedFunctionCollection } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionCollection';
-import { ICompiledCode } from '@/application/Parser/Script/Compiler/FunctionCall/ICompiledCode';
-import { IFunctionCallCompiler } from '@/application/Parser/Script/Compiler/FunctionCall/IFunctionCallCompiler';
-import { FunctionCallData, ScriptFunctionCallData } from 'js-yaml-loader!@/*';
+import { IFunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/IFunctionCall';
 
-interface Scenario { call: ScriptFunctionCallData; functions: ISharedFunctionCollection; result: ICompiledCode; }
+interface IScenario {
+    calls: IFunctionCall[];
+    functions: ISharedFunctionCollection;
+    result: ICompiledCode;
+}
 
 export class FunctionCallCompilerStub implements IFunctionCallCompiler {
-    public scenarios = new Array<Scenario>();
-    public setup(call: ScriptFunctionCallData, functions: ISharedFunctionCollection, result: ICompiledCode) {
-        this.scenarios.push({ call, functions, result });
+    public scenarios = new Array<IScenario>();
+    public setup(
+        calls: IFunctionCall[],
+        functions: ISharedFunctionCollection,
+        result: ICompiledCode) {
+        this.scenarios.push({ calls, functions, result });
     }
     public compileCall(
-        call: ScriptFunctionCallData,
+        calls: IFunctionCall[],
         functions: ISharedFunctionCollection): ICompiledCode {
-        const predefined = this.scenarios.find((s) => s.call === call && s.functions === functions);
+        const predefined = this.scenarios.find((s) => areEqual(s.calls, calls) && s.functions === functions);
         if (predefined) {
             return predefined.result;
         }
-        const callee = functions.getFunctionByName((call as FunctionCallData).function);
         return {
-            code: callee.code,
-            revertCode: callee.revertCode,
+            code: 'function code [FunctionCallCompilerStub]',
+            revertCode: 'function revert code [FunctionCallCompilerStub]',
         };
     }
+}
+
+function areEqual(
+    first: readonly IFunctionCall[],
+    second: readonly IFunctionCall[]) {
+    const comparer = (a: IFunctionCall, b: IFunctionCall) => a.functionName.localeCompare(b.functionName);
+    const printSorted = (calls: readonly IFunctionCall[]) => JSON.stringify([...calls].sort(comparer));
+    return printSorted(first) === printSorted(second);
 }

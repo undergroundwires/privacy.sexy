@@ -1,41 +1,39 @@
 import { FunctionData, InstructionHolder } from 'js-yaml-loader!@/*';
-import { SharedFunction } from './SharedFunction';
+import { createFunctionWithInlineCode, createCallerFunction } from './SharedFunction';
 import { SharedFunctionCollection } from './SharedFunctionCollection';
 import { ISharedFunctionCollection } from './ISharedFunctionCollection';
-import { IFunctionCompiler } from './IFunctionCompiler';
-import { IFunctionCallCompiler } from '../FunctionCall/IFunctionCallCompiler';
-import { FunctionCallCompiler } from '../FunctionCall/FunctionCallCompiler';
+import { ISharedFunctionsParser } from './ISharedFunctionsParser';
 import { FunctionParameter } from './Parameter/FunctionParameter';
 import { FunctionParameterCollection } from './Parameter/FunctionParameterCollection';
 import { IReadOnlyFunctionParameterCollection } from './Parameter/IFunctionParameterCollection';
+import { ISharedFunction } from './ISharedFunction';
+import { parseFunctionCalls } from './Call/FunctionCallParser';
 
-export class FunctionCompiler implements IFunctionCompiler {
-    public static readonly instance: IFunctionCompiler = new FunctionCompiler();
-    protected constructor(
-        private readonly functionCallCompiler: IFunctionCallCompiler = FunctionCallCompiler.instance) {
-     }
-    public compileFunctions(functions: readonly FunctionData[]): ISharedFunctionCollection {
+export class SharedFunctionsParser implements ISharedFunctionsParser {
+    public static readonly instance: ISharedFunctionsParser = new SharedFunctionsParser();
+    public parseFunctions(
+        functions: readonly FunctionData[]): ISharedFunctionCollection {
         const collection = new SharedFunctionCollection();
         if (!functions || !functions.length) {
             return collection;
         }
         ensureValidFunctions(functions);
-        functions
-            .filter((func) => hasCode(func))
-            .forEach((func) => {
-                const parameters = parseParameters(func);
-                const shared = new SharedFunction(func.name, parameters, func.code, func.revertCode);
-                collection.addFunction(shared);
-            });
-        functions
-            .filter((func) => hasCall(func))
-            .forEach((func) => {
-                const parameters = parseParameters(func);
-                const code = this.functionCallCompiler.compileCall(func.call, collection);
-                const shared = new SharedFunction(func.name, parameters, code.code, code.revertCode);
-                collection.addFunction(shared);
-            });
+        for (const func of functions) {
+            const sharedFunction = parseFunction(func);
+            collection.addFunction(sharedFunction);
+        }
         return collection;
+    }
+}
+
+function parseFunction(data: FunctionData): ISharedFunction {
+    const name = data.name;
+    const parameters = parseParameters(data);
+    if (hasCode(data)) {
+        return createFunctionWithInlineCode(name, parameters, data.code, data.revertCode);
+    } else { // has call
+        const calls = parseFunctionCalls(data.call);
+        return createCallerFunction(name, parameters, calls);
     }
 }
 
@@ -63,7 +61,6 @@ function hasCode(data: FunctionData): boolean {
 function hasCall(data: FunctionData): boolean {
     return Boolean(data.call);
 }
-
 
 function ensureValidFunctions(functions: readonly FunctionData[]) {
     ensureNoUndefinedItem(functions);

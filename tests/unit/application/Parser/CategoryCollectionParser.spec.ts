@@ -14,6 +14,7 @@ import { CategoryCollectionParseContextStub } from '@tests/unit/stubs/CategoryCo
 import { CategoryDataStub } from '@tests/unit/stubs/CategoryDataStub';
 import { ScriptDataStub } from '@tests/unit/stubs/ScriptDataStub';
 import { FunctionDataStub } from '@tests/unit/stubs/FunctionDataStub';
+import { FunctionCallDataStub } from '@tests/unit/stubs/FunctionCallDataStub';
 
 describe('CategoryCollectionParser', () => {
     describe('parseCategoryCollection', () => {
@@ -105,9 +106,10 @@ describe('CategoryCollectionParser', () => {
                 const expectedCode = 'code-from-the-function';
                 const functionName = 'function-name';
                 const scriptName = 'script-name';
-                const script = ScriptDataStub.createWithCall({ function: functionName })
+                const script = ScriptDataStub.createWithCall()
+                    .withCall(new FunctionCallDataStub().withName(functionName).withParameters({}))
                     .withName(scriptName);
-                const func = FunctionDataStub.createWithCode()
+                const func = FunctionDataStub.createWithCode().withParametersObject([])
                     .withName(functionName)
                     .withCode(expectedCode);
                 const category = new CategoryDataStub()

@@ -45,9 +45,11 @@
 ### `Script`
 
 - Script represents a single tweak.
-- A script must include either:
-  - A `code` and `revertCode`
-  - Or `call` to call YAML-defined functions
+- A script can be of two different types (just like [functions](#function)):
+  1. Inline script; a script with an inline code
+     - Must define `code` property and optionally `revertCode` but not `call`
+  2. Caller script; a script that calls other functions
+     - Must define `call` property but not `code` or `revertCode`
 - 🙏 For any new script, please add `revertCode` and `docs` values if possible.
 
 #### `Script` syntax
@@ -98,12 +100,18 @@
         appName: Microsoft.WindowsFeedbackHub
     ```
 
+  - 💡 [Expressions (templating)](./templating.md#expressions) can be used as parameter value
+
 ### `Function`
 
-- Functions allow re-usable code throughout the defined scripts
-- Functions are templates compiled by privacy.sexy and uses special expression expressions
-- Functions can call other functions by defining `call` property instead of `code`
-- 👀 Read more on [Templating](./templating.md) for function expressions and [example usages](./templating.md#parameter-substitution)
+- Functions allow re-usable code throughout the defined scripts.
+- Functions are templates compiled by privacy.sexy and uses special expression expressions.
+- A function can be of two different types (just like [scripts](#script)):
+  1. Inline function: a function with an inline code.
+     - Must define `code` property and optionally `revertCode` but not `call`.
+  2. Caller function: a function that calls other functions.
+     - Must define `call` property but not `code` or `revertCode`.
+- 👀 Read more on [Templating](./templating.md) for function expressions and [example usages](./templating.md#parameter-substitution).
 
 #### `Function` syntax
 
@@ -114,18 +122,20 @@
   - ❗ Function names must be unique
 - `parameters`: `[` ***[`FunctionParameter`](#FunctionParameter)*** `, ... ]`
   - List of parameters that function code refers to.
-  - ❗ Must be defined to be able use in [`FunctionCall`](#functioncall) or [expressions](./templating.md#expressions)
+  - ❗ Must be defined to be able use in [`FunctionCall`](#functioncall) or [expressions (templating)](./templating.md#expressions)
  `code`: *`string`* (**required** if `call` is undefined)
   - Batch file commands that will be executed
+  - 💡 [Expressions (templating)](./templating.md#expressions) can be used in its value
   - 💡 If defined, best practice to also define `revertCode`
   - ❗ If not defined `call` must be defined
 - `revertCode`: *`string`*
   - Code that'll undo the change done by `code` property.
   - E.g. let's say `code` sets an environment variable as `setx POWERSHELL_TELEMETRY_OPTOUT 1`
     - then `revertCode` should be doing `setx POWERSHELL_TELEMETRY_OPTOUT 0`
+  - 💡 [Expressions (templating)](./templating.md#expressions) can be used in code
 - `call`: ***[`FunctionCall`](#FunctionCall)*** | `[` ***[`FunctionCall`](#FunctionCall)*** `, ... ]` (may be **required**)
   - A shared function or sequence of functions to call (called in order)
-  - The parameter values that are sent can use [expressions](./templating.md#expressions)
+  - The parameter values that are sent can use [expressions (templating)](./templating.md#expressions)
   - ❗ If not defined `code` must be defined
 
 ### `FunctionParameter`
@@ -137,7 +147,7 @@
 
 - `name`: *`string`* (**required**)
   - Name of the parameters that the function has.
-  - Parameter names must be defined to be used in [expressions](./templating.md#expressions).
+  - Parameter names must be defined to be used in [expressions (templating)](./templating.md#expressions).
   - ❗ Parameter names must be unique and include alphanumeric characters only.
 - `optional`: *`boolean`* (default: `false`)
   - Specifies whether the caller [Script](#script) must provide any value for the parameter.

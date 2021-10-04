@@ -2,6 +2,8 @@ import 'mocha';
 import { expect } from 'chai';
 import { SharedFunctionCollection } from '@/application/Parser/Script/Compiler/Function/SharedFunctionCollection';
 import { SharedFunctionStub } from '@tests/unit/stubs/SharedFunctionStub';
+import { FunctionBodyType } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
+import { FunctionCallStub } from '@tests/unit/stubs/FunctionCallStub';
 
 describe('SharedFunctionCollection', () => {
     describe('addFunction', () => {
@@ -19,7 +21,7 @@ describe('SharedFunctionCollection', () => {
             // arrange
             const functionName = 'duplicate-function';
             const expectedError = `function with name ${functionName} already exists`;
-            const func = new SharedFunctionStub()
+            const func = new SharedFunctionStub(FunctionBodyType.Code)
                 .withName('duplicate-function');
             const sut = new SharedFunctionCollection();
             sut.addFunction(func);
@@ -27,7 +29,6 @@ describe('SharedFunctionCollection', () => {
             const act = () => sut.addFunction(func);
             // assert
             expect(act).to.throw(expectedError);
-
         });
     });
     describe('getFunctionByName', () => {
@@ -48,7 +49,7 @@ describe('SharedFunctionCollection', () => {
             // arrange
             const name = 'unique-name';
             const expectedError = `called function is not defined "${name}"`;
-            const func = new SharedFunctionStub()
+            const func = new SharedFunctionStub(FunctionBodyType.Code)
                 .withName('unexpected-name');
             const sut = new SharedFunctionCollection();
             sut.addFunction(func);
@@ -57,18 +58,33 @@ describe('SharedFunctionCollection', () => {
             // assert
             expect(act).to.throw(expectedError);
         });
-        it('returns existing function', () => {
-            // arrange
-            const name = 'expected-function-name';
-            const expected = new SharedFunctionStub()
-                .withName(name);
-            const sut = new SharedFunctionCollection();
-            sut.addFunction(new SharedFunctionStub().withName('another-function-name'));
-            sut.addFunction(expected);
-            // act
-            const actual = sut.getFunctionByName(name);
-            // assert
-            expect(actual).to.equal(expected);
+        describe('returns existing function', () => {
+            it('when function with inline code is added', () => {
+                // arrange
+                const expected = new SharedFunctionStub(FunctionBodyType.Code)
+                    .withName('expected-function-name');
+                const sut = new SharedFunctionCollection();
+                // act
+                sut.addFunction(expected);
+                const actual = sut.getFunctionByName(expected.name);
+                // assert
+                expect(actual).to.equal(expected);
+            });
+            it('when calling function is added', () => {
+                // arrange
+                const callee = new SharedFunctionStub(FunctionBodyType.Code)
+                    .withName('calleeFunction');
+                const caller = new SharedFunctionStub(FunctionBodyType.Calls)
+                    .withName('callerFunction')
+                    .withCalls(new FunctionCallStub().withFunctionName(callee.name));
+                const sut = new SharedFunctionCollection();
+                // act
+                sut.addFunction(callee);
+                sut.addFunction(caller);
+                const actual = sut.getFunctionByName(caller.name);
+                // assert
+                expect(actual).to.equal(caller);
+            });
         });
     });
 });

@@ -1,13 +1,33 @@
-import { ISharedFunction } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
+import { ISharedFunction, ISharedFunctionBody, FunctionBodyType } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
 import { IReadOnlyFunctionParameterCollection } from '@/application/Parser/Script/Compiler/Function/Parameter/IFunctionParameterCollection';
 import { FunctionParameterCollectionStub } from './FunctionParameterCollectionStub';
+import { FunctionCallStub } from './FunctionCallStub';
+import { IFunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/IFunctionCall';
 
 export class SharedFunctionStub implements ISharedFunction {
     public name = 'shared-function-stub-name';
     public parameters: IReadOnlyFunctionParameterCollection = new FunctionParameterCollectionStub()
         .withParameterName('shared-function-stub-parameter-name');
-    public code = 'shared-function-stub-code';
-    public revertCode = 'shared-function-stub-revert-code';
+
+    private code = 'shared-function-stub-code';
+    private revertCode = 'shared-function-stub-revert-code';
+    private bodyType: FunctionBodyType = FunctionBodyType.Code;
+    private calls: IFunctionCall[] = [ new FunctionCallStub() ];
+
+    constructor(type: FunctionBodyType) {
+        this.bodyType = type;
+    }
+
+    public get body(): ISharedFunctionBody {
+        return {
+            type: this.bodyType,
+            code: this.bodyType === FunctionBodyType.Code ? {
+                do: this.code,
+                revert: this.revertCode,
+            } : undefined,
+            calls: this.bodyType === FunctionBodyType.Calls ? this.calls : undefined,
+        };
+    }
 
     public withName(name: string) {
         this.name = name;
@@ -23,6 +43,10 @@ export class SharedFunctionStub implements ISharedFunction {
     }
     public withParameters(parameters: IReadOnlyFunctionParameterCollection) {
         this.parameters = parameters;
+        return this;
+    }
+    public withCalls(...calls: readonly IFunctionCall[]) {
+        this.calls = [...calls];
         return this;
     }
     public withParameterNames(...parameterNames: readonly string[]) {

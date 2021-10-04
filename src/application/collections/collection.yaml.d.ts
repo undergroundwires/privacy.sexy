@@ -24,7 +24,7 @@ declare module 'js-yaml-loader!@/*' {
         readonly code?: string;
         readonly revertCode?: string;
 
-        readonly call?: ScriptFunctionCallData;
+        readonly call?: FunctionCallsData;
     }
 
     export interface ParameterDefinitionData {
@@ -45,7 +45,7 @@ declare module 'js-yaml-loader!@/*' {
         readonly parameters?: FunctionCallParametersData;
     }
 
-    export type ScriptFunctionCallData = readonly FunctionCallData[] | FunctionCallData | undefined;
+    export type FunctionCallsData = readonly FunctionCallData[] | FunctionCallData | undefined;
 
     export interface ScriptData extends InstructionHolder, DocumentableData {
         readonly name: string;

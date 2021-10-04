@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
-import { FunctionCallArgument } from '@/application/Parser/Script/Compiler/FunctionCall/Argument/FunctionCallArgument';
-import { testParameterName } from '../../ParameterNameTestRunner';
+import { FunctionCallArgument } from '@/application/Parser/Script/Compiler/Function/Call/Argument/FunctionCallArgument';
+import { testParameterName } from '../../../ParameterNameTestRunner';
 
 describe('FunctionCallArgument', () => {
     describe('ctor', () => {

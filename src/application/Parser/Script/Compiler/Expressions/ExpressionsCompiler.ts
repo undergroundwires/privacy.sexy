@@ -2,7 +2,7 @@ import { IExpressionsCompiler } from './IExpressionsCompiler';
 import { IExpression } from './Expression/IExpression';
 import { IExpressionParser } from './Parser/IExpressionParser';
 import { CompositeExpressionParser } from './Parser/CompositeExpressionParser';
-import { IReadOnlyFunctionCallArgumentCollection } from '../FunctionCall/Argument/IFunctionCallArgumentCollection';
+import { IReadOnlyFunctionCallArgumentCollection } from '../Function/Call/Argument/IFunctionCallArgumentCollection';
 import { ExpressionEvaluationContext } from './Expression/ExpressionEvaluationContext';
 import { IExpressionEvaluationContext } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionEvaluationContext';
 

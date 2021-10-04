@@ -1,6 +1,6 @@
 // tslint:disable-next-line:max-line-length
-import { IFunctionCallArgument } from '@/application/Parser/Script/Compiler/FunctionCall/Argument/IFunctionCallArgument';
-import { IFunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/FunctionCall/Argument/IFunctionCallArgumentCollection';
+import { IFunctionCallArgument } from '@/application/Parser/Script/Compiler/Function/Call/Argument/IFunctionCallArgument';
+import { IFunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/Function/Call/Argument/IFunctionCallArgumentCollection';
 import { FunctionCallArgumentStub } from './FunctionCallArgumentStub';
 
 export class FunctionCallArgumentCollectionStub implements IFunctionCallArgumentCollection {

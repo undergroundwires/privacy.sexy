@@ -10,8 +10,9 @@
 
 - Expressions in the language are defined inside mustaches (double brackets, `{{` and `}}`).
 - Expression syntax is inspired mainly by [Go Templates](https://pkg.go.dev/text/template).
-
-## Syntax
+- Expressions are used in and enabled by functions where they can be used.
+  - In script definition parts of a function, see [`Function`](./collection-files.md#Function).
+  - When doing a call as argument values, see [`FunctionCall`](./collection-files.md#Function).
 
 ### Parameter substitution
 

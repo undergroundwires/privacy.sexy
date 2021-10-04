@@ -4,8 +4,8 @@ import { CompositeExpressionParser } from '@/application/Parser/Script/Compiler/
 import { ExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/ExpressionsCompiler';
 import { IProjectInformation } from '@/domain/IProjectInformation';
 import { ICodeSubstituter } from './ICodeSubstituter';
-import { FunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/FunctionCall/Argument/FunctionCallArgumentCollection';
-import { FunctionCallArgument } from '@/application/Parser/Script/Compiler/FunctionCall/Argument/FunctionCallArgument';
+import { FunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/Function/Call/Argument/FunctionCallArgumentCollection';
+import { FunctionCallArgument } from '@/application/Parser/Script/Compiler/Function/Call/Argument/FunctionCallArgument';
 
 export class CodeSubstituter implements ICodeSubstituter {
     constructor(

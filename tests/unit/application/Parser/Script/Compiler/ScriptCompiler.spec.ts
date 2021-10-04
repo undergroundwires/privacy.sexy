@@ -1,17 +1,19 @@
 import 'mocha';
 import { expect } from 'chai';
-import { ScriptCompiler } from '@/application/Parser/Script/Compiler/ScriptCompiler';
 import { FunctionData } from 'js-yaml-loader!@/*';
 import { ILanguageSyntax } from '@/domain/ScriptCode';
-import { IFunctionCompiler } from '@/application/Parser/Script/Compiler/Function/IFunctionCompiler';
-import { IFunctionCallCompiler } from '@/application/Parser/Script/Compiler/FunctionCall/IFunctionCallCompiler';
-import { ICompiledCode } from '@/application/Parser/Script/Compiler/FunctionCall/ICompiledCode';
+import { ScriptCompiler } from '@/application/Parser/Script/Compiler/ScriptCompiler';
+import { ISharedFunctionsParser } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionsParser';
+import { ICompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/ICompiledCode';
+import { IFunctionCallCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/IFunctionCallCompiler';
 import { LanguageSyntaxStub } from '@tests/unit/stubs/LanguageSyntaxStub';
 import { ScriptDataStub } from '@tests/unit/stubs/ScriptDataStub';
 import { FunctionDataStub } from '@tests/unit/stubs/FunctionDataStub';
 import { FunctionCallCompilerStub } from '@tests/unit/stubs/FunctionCallCompilerStub';
-import { FunctionCompilerStub } from '@tests/unit/stubs/FunctionCompilerStub';
+import { SharedFunctionsParserStub } from '@tests/unit/stubs/SharedFunctionsParserStub';
 import { SharedFunctionCollectionStub } from '@tests/unit/stubs/SharedFunctionCollectionStub';
+import { parseFunctionCalls } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCallParser';
+import { FunctionCallDataStub } from '@tests/unit/stubs/FunctionCallDataStub';
 
 describe('ScriptCompiler', () => {
     describe('ctor', () => {
@@ -82,16 +84,17 @@ describe('ScriptCompiler', () => {
                 code: 'expected-code',
                 revertCode: 'expected-revert-code',
             };
-            const script = ScriptDataStub.createWithCall();
+            const call = new FunctionCallDataStub();
+            const script = ScriptDataStub.createWithCall(call);
             const functions = [ FunctionDataStub.createWithCode().withName('existing-func') ];
             const compiledFunctions = new SharedFunctionCollectionStub();
-            const compilerMock = new FunctionCompilerStub();
-            compilerMock.setup(functions, compiledFunctions);
+            const functionParserMock = new SharedFunctionsParserStub();
+            functionParserMock.setup(functions, compiledFunctions);
             const callCompilerMock = new FunctionCallCompilerStub();
-            callCompilerMock.setup(script.call, compiledFunctions, expected);
+            callCompilerMock.setup(parseFunctionCalls(call), compiledFunctions, expected);
             const sut = new ScriptCompilerBuilder()
                 .withFunctions(...functions)
-                .withFunctionCompiler(compilerMock)
+                .withSharedFunctionsParser(functionParserMock)
                 .withFunctionCallCompiler(callCompilerMock)
                 .build();
             // act
@@ -171,7 +174,7 @@ class ScriptCompilerBuilder {
     }
     private functions: FunctionData[];
     private syntax: ILanguageSyntax = new LanguageSyntaxStub();
-    private functionCompiler: IFunctionCompiler = new FunctionCompilerStub();
+    private sharedFunctionsParser: ISharedFunctionsParser = new SharedFunctionsParserStub();
     private callCompiler: IFunctionCallCompiler = new FunctionCallCompilerStub();
     public withFunctions(...functions: FunctionData[]): ScriptCompilerBuilder {
         this.functions = functions;
@@ -193,8 +196,8 @@ class ScriptCompilerBuilder {
         this.syntax = syntax;
         return this;
     }
-    public withFunctionCompiler(functionCompiler: IFunctionCompiler): ScriptCompilerBuilder {
-        this.functionCompiler = functionCompiler;
+    public withSharedFunctionsParser(SharedFunctionsParser: ISharedFunctionsParser): ScriptCompilerBuilder {
+        this.sharedFunctionsParser = SharedFunctionsParser;
         return this;
     }
     public withFunctionCallCompiler(callCompiler: IFunctionCallCompiler): ScriptCompilerBuilder {
@@ -205,6 +208,6 @@ class ScriptCompilerBuilder {
         if (!this.functions) {
             throw new Error('Function behavior not defined');
         }
-        return new ScriptCompiler(this.functions, this.syntax, this.functionCompiler, this.callCompiler);
+        return new ScriptCompiler(this.functions, this.syntax, this.sharedFunctionsParser, this.callCompiler);
     }
 }

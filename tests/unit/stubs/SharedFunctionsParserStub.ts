@@ -1,10 +1,10 @@
 import { sequenceEqual } from '@/application/Common/Array';
-import { IFunctionCompiler } from '@/application/Parser/Script/Compiler/Function/IFunctionCompiler';
 import { ISharedFunctionCollection } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionCollection';
+import { ISharedFunctionsParser } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionsParser';
 import { FunctionData } from 'js-yaml-loader!@/*';
 import { SharedFunctionCollectionStub } from './SharedFunctionCollectionStub';
 
-export class FunctionCompilerStub implements IFunctionCompiler {
+export class SharedFunctionsParserStub implements ISharedFunctionsParser {
     private setupResults = new Array<{
         functions: readonly FunctionData[],
         result: ISharedFunctionCollection,
@@ -14,7 +14,7 @@ export class FunctionCompilerStub implements IFunctionCompiler {
         this.setupResults.push( { functions, result });
     }
 
-    public compileFunctions(functions: readonly FunctionData[]): ISharedFunctionCollection {
+    public parseFunctions(functions: readonly FunctionData[]): ISharedFunctionCollection {
         const result = this.findResult(functions);
         return result || new SharedFunctionCollectionStub();
     }

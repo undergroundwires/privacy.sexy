@@ -1,5 +1,5 @@
 // tslint:disable-next-line:max-line-length
-import { IFunctionCallArgument } from '@/application/Parser/Script/Compiler/FunctionCall/Argument/IFunctionCallArgument';
+import { IFunctionCallArgument } from '@/application/Parser/Script/Compiler/Function/Call/Argument/IFunctionCallArgument';
 
 export class FunctionCallArgumentStub implements IFunctionCallArgument {
     public parameterName = 'stub-parameter-name';

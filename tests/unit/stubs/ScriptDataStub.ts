@@ -1,5 +1,6 @@
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
-import { ScriptFunctionCallData, ScriptData } from 'js-yaml-loader!@/*';
+import { FunctionCallData, ScriptData } from 'js-yaml-loader!@/*';
+import { FunctionCallDataStub } from '@tests/unit/stubs/FunctionCallDataStub';
 
 export class ScriptDataStub implements ScriptData {
     public static createWithCode(): ScriptDataStub {
@@ -7,7 +8,7 @@ export class ScriptDataStub implements ScriptData {
             .withCode('stub-code')
             .withRevertCode('stub-revert-code');
     }
-    public static createWithCall(call?: ScriptFunctionCallData): ScriptDataStub {
+    public static createWithCall(call?: FunctionCallData): ScriptDataStub {
         let instance = new ScriptDataStub();
         if (call) {
             instance = instance.withCall(call);
@@ -27,7 +28,7 @@ export class ScriptDataStub implements ScriptData {
     public recommend = RecommendationLevel[RecommendationLevel.Standard].toLowerCase();
     public docs = ['hello.com'];
 
-    private constructor() { }
+    private constructor() { /* use static methods for constructing */ }
 
     public withName(name: string): ScriptDataStub {
         this.name = name;
@@ -46,10 +47,10 @@ export class ScriptDataStub implements ScriptData {
         return this;
     }
     public withMockCall(): ScriptDataStub {
-        this.call = { function: 'func', parameters: [] };
+        this.call = new FunctionCallDataStub();
         return this;
     }
-    public withCall(call: ScriptFunctionCallData): ScriptDataStub {
+    public withCall(call: FunctionCallData): ScriptDataStub {
         this.call = call;
         return this;
     }

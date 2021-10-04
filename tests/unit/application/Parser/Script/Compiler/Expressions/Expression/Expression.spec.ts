@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import { ExpressionPosition } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionPosition';
 // tslint:disable-next-line:max-line-length
 import { ExpressionEvaluator, Expression } from '@/application/Parser/Script/Compiler/Expressions/Expression/Expression';
-import { IReadOnlyFunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/FunctionCall/Argument/IFunctionCallArgumentCollection';
+import { IReadOnlyFunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/Function/Call/Argument/IFunctionCallArgumentCollection';
 import { FunctionCallArgumentCollectionStub } from '@tests/unit/stubs/FunctionCallArgumentCollectionStub';
 import { FunctionParameterCollectionStub } from '@tests/unit/stubs/FunctionParameterCollectionStub';
 import { FunctionCallArgumentStub } from '@tests/unit/stubs/FunctionCallArgumentStub';

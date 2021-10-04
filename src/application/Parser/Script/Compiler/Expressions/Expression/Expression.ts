@@ -1,9 +1,9 @@
 import { ExpressionPosition } from './ExpressionPosition';
 import { IExpression } from './IExpression';
-import { IReadOnlyFunctionCallArgumentCollection } from '../../FunctionCall/Argument/IFunctionCallArgumentCollection';
+import { IReadOnlyFunctionCallArgumentCollection } from '../../Function/Call/Argument/IFunctionCallArgumentCollection';
 import { IReadOnlyFunctionParameterCollection } from '../../Function/Parameter/IFunctionParameterCollection';
 import { FunctionParameterCollection } from '@/application/Parser/Script/Compiler/Function/Parameter/FunctionParameterCollection';
-import { FunctionCallArgumentCollection } from '../../FunctionCall/Argument/FunctionCallArgumentCollection';
+import { FunctionCallArgumentCollection } from '../../Function/Call/Argument/FunctionCallArgumentCollection';
 import { IExpressionEvaluationContext } from './ExpressionEvaluationContext';
 import { ExpressionEvaluationContext } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionEvaluationContext';
 
