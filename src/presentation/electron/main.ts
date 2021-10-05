@@ -31,7 +31,7 @@ if (!process.env.IS_TEST) {
 
 function createWindow() {
   // Create the browser window.
-  const size = getWindowSize(1350, 955);
+  const size = getWindowSize(1650, 955);
   win = new BrowserWindow({
     width: size.width,
     height: size.height,
