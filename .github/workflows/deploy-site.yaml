@@ -89,10 +89,8 @@ jobs:
         run: npm ci
         working-directory: site
       -
-        name: "App: Run tests"
-        run: |
-          npm run test:unit
-          npm run test:integration
+        name: "App: Run unit tests"
+        run: npm run test:unit
         working-directory: site
       - 
         name: "App: Build"
