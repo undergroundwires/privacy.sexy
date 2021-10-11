@@ -1,7 +1,7 @@
 <template>
   <span 
     class="container"
-    v-bind:class="{ 'container_unsupported': !hasCurrentOsDesktopVersion, 'container_supported': hasCurrentOsDesktopVersion }">
+    v-bind:class="{ 'container-unsupported': !hasCurrentOsDesktopVersion, 'container-supported': hasCurrentOsDesktopVersion }">
     <span class="description">
       <font-awesome-icon class="description__icon" :icon="['fas', 'desktop']"  />
       <span class="description__text">For desktop:</span>
@@ -39,15 +39,16 @@ export default class DownloadUrlList extends Vue {
 
 <style scoped lang="scss">
 @import "@/presentation/styles/media.scss";
+@import "@/presentation/styles/colors.scss";
 
 .container {
   display:flex;
   flex-wrap: wrap;
   justify-content: space-around;
-  &_unsupported {
-    opacity: 0.9;
+  &-unsupported {
+    opacity: $color-primary-light;
   }
-  &_supported {
+  &-supported {
     font-size: 1em;
   }
   .description {
@@ -62,7 +63,6 @@ export default class DownloadUrlList extends Vue {
 .urls {
   &__url {
     &:not(:first-child)::before {
-      opacity: 0.5;
       content: "|";
       font-size: 0.6rem;
       padding: 0 5px;

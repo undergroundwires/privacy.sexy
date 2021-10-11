@@ -1,8 +1,25 @@
-$white: #fff;
-$light-gray: #eceef1;
-$gray: darken($light-gray, 30%);
-$dark-gray: #616f86;
-$slate: darken($light-gray, 70%);
-$dark-slate: #2f3133;
-$accent: #1abc9c;
-$black: #000
+/*
+    Colors used throughout the application
+    Inspired by material color system: https://material.io/design/color/the-color-system.html, https://material.io/develop/web/theming/color
+    Colors are named using Vue Design System: https://github.com/viljamis/vue-design-system/wiki/Naming-of-Things#naming-colors
+*/
+
+// --- Primary | The color displayed most frequently across screens and components
+$color-primary              : #949fb0;
+$color-primary-light        : lighten($color-primary, 15%);
+$color-primary-dark         : darken($color-primary, 18%);
+$color-primary-darker       : darken($color-primary, 40%);
+$color-primary-darkest      : darken($color-primary, 44%);
+$color-on-primary           : lighten($color-primary, 30%);     // Text/iconography color that is usable on top of primary color
+
+// --- Secondary | Accent color, should be applied sparingly to accent select parts of UI
+$color-secondary            : #1abc9c;
+$color-secondary-light      : lighten($color-secondary, 48%);
+$color-on-secondary         : #fff;                             // Text/iconography color that is usable on top of secondary color
+
+// --- Surface | Affect surfaces of components, such as cards, sheets, and menus.
+$color-surface              : #fff;
+$color-on-surface           : #000;                             // Text/iconography color that is usable on surface
+
+// Background | Appears behind scrollable content.
+$color-background           : lighten($color-primary, 30);

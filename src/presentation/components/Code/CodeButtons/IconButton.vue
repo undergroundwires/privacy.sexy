@@ -32,25 +32,22 @@ export default class IconButton extends Vue {
     flex-direction: column;
     align-items: center;
 
-    background-color: $accent;
+    background-color: $color-secondary;
+    color: $color-on-secondary;
+
     border: none;
-    color: $white;
     padding:20px;
     transition-duration: 0.4s;
     overflow: hidden;
-    box-shadow: 0 3px 9px $dark-slate;
+    box-shadow: 0 3px 9px $color-primary-darkest;
     border-radius: 4px;
 
     cursor: pointer;
-    // border: 0.1em solid $slate;
-	// border-radius: 80px;
-	// padding: 0.5em;
     width: 10%;
     min-width: 90px;
     &:hover {
-        background: $white;
-        box-shadow: 0px 2px 10px 5px $accent;
-        color: $black;
+        background: $color-surface;
+        box-shadow: 0px 2px 10px 5px $color-secondary;
     }
     &:hover>&__text {
         display: block;
@@ -62,7 +59,7 @@ export default class IconButton extends Vue {
         display: none;
         font-family: $artistic-font;
         font-size: 1.5em;
-        color: $gray;
+        color: $color-primary;
         font-weight: 500;
         line-height: 1.1;
     }

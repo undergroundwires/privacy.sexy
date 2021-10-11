@@ -32,8 +32,8 @@ export default class Code extends Vue {
     white-space: nowrap;
     justify-content: space-between;
     font-family: $normal-font;
-    background-color: $slate;
-    color: $light-gray;
+    background-color: $color-primary-darker;
+    color: $color-on-primary;
     padding-left: 0.3rem;
     padding-right: 0.3rem;
     .dollar {
@@ -45,7 +45,7 @@ export default class Code extends Vue {
         margin-left: 1rem;
         cursor: pointer;
         &:hover {
-            opacity: 0.8;
+            color: $color-primary;
         }
     }
     code {

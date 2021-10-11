@@ -34,15 +34,15 @@
 <style scoped lang="scss">
 @import "@/presentation/styles/colors.scss";
 #node {
-    display:flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    .text {
-      display: flex;
-      align-items: center;
-    }
-    .item:not(:first-child) {
-      margin-left: 5px;
-    }
+  display:flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  .text {
+    display: flex;
+    align-items: center;
+  }
+  .item:not(:first-child) {
+    margin-left: 5px;
+  }
 }
 </style>

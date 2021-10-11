@@ -1,9 +1,9 @@
 <template>
   <div class="search" v-non-collapsing>
-      <input type="search" class="searchTerm"
+      <input type="search" class="search-term"
         :placeholder="searchPlaceHolder"
         v-model="searchQuery" >
-      <div class="iconWrapper">
+      <div class="icon-wrapper">
           <font-awesome-icon :icon="['fas', 'search']" />
       </div>
   </div>
@@ -65,34 +65,36 @@ export default class TheSearchBar extends StatefulVue {
   width: 100%;
   position: relative;
   display: flex;
+  input {
+    background: inherit;
+  }
 }
 
-.searchTerm {
+.search-term {
   width: 100%;
   min-width: 60px;
-  border: 1.5px solid $gray;
+  border: 1.5px solid $color-primary;
   border-right: none;
   height: 36px;
   border-radius: 3px 0 0 3px;
   padding-left:10px;
   padding-right:10px;
   outline: none;
-  color: $gray;
-    font-family: $normal-font;
-    font-size:1em;
+  color: $color-primary;
+  font-family: $normal-font;
+  font-size:1em;
+  &:focus {
+    color: $color-primary-darker;
+  }
 }
 
-.searchTerm:focus{
-  color: $slate;
-}
-
-.iconWrapper {
+.icon-wrapper {
   width: 40px;
   height: 36px;
-  border: 1px solid $gray;
-  background: $gray;
+  border: 1px solid $color-primary;
+  background: $color-primary;
   text-align: center;
-  color: $white;
+  color: $color-on-primary;
   border-radius: 0 5px 5px 0;
   font-size: 20px;
   padding:5px;

@@ -1,12 +1,12 @@
-// based on https://github.com/Akryum/v-tooltip/blob/83615e394c96ca491a4df04b892ae87e833beb97/demo-src/src/App.vue#L179-L303
+// Based on https://github.com/Akryum/v-tooltip/blob/83615e394c96ca491a4df04b892ae87e833beb97/demo-src/src/App.vue#L179-L303
 @import "@/presentation/styles/colors.scss";
 
 .tooltip {
     display: block !important;
     z-index: 10000;
     .tooltip-inner {
-      background: $black;
-      color: $white;
+      background: $color-primary-darkest;
+      color: $color-on-primary;
       border-radius: 16px;
       padding: 5px 10px 4px;
     }
@@ -16,7 +16,7 @@
       border-style: solid;
       position: absolute;
       margin: 5px;
-      border-color: $black;
+      border-color: $color-primary-darkest;
       z-index: 1;
     }
     &[x-placement^="top"] {

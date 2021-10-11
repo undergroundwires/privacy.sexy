@@ -3,12 +3,12 @@
         class="handle"
         :style="{ cursor: cursorCssValue }"
         @mousedown="startResize">
-        <div class="line"></div>
+        <div class="line" />
         <font-awesome-icon
-            class="image"
+            class="icon"
             :icon="['fas', 'arrows-alt-h']" 
         />
-        <div class="line"></div>
+        <div class="line" />
     </div>
 </template>
 
@@ -45,6 +45,9 @@ export default class Handle extends Vue {
 <style lang="scss" scoped>
 @import "@/presentation/styles/colors.scss";
 
+$color          : $color-primary-dark;
+$color-hover    : $color-primary;
+
 .handle {
     user-select: none;
     display: flex;
@@ -52,19 +55,19 @@ export default class Handle extends Vue {
     align-items: center;
     &:hover {
         .line {
-            background: $gray;
+            background: $color-hover;
         }
         .image {
-            color: $gray;
+            color: $color-hover;
         }
     }
     .line {
         flex: 1;
-        background: $dark-gray;
+        background: $color;
         width: 3px;
     }
-    .image {
-        color: $dark-gray;
+    .icon {
+        color: $color;
     }
     margin-right: 5px;
     margin-left: 5px;

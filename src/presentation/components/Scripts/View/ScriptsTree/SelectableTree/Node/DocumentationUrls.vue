@@ -33,11 +33,11 @@
 }
 .documentationUrl {
     display: flex;
-    color: $gray;
+    color: $color-primary;
     cursor: pointer;
     vertical-align: middle;
     &:hover {
-        color: $slate;
+        color: $color-primary-darker;
     }
     &:not(:first-child) {
       margin-left: 0.1em;

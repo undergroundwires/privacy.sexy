@@ -78,7 +78,6 @@ export default class TheFooter extends Vue {
     this.feedbackUrl = info.feedbackUrl;
   }
 }
-
 </script>
 
 <style scoped lang="scss">
@@ -108,17 +107,8 @@ export default class TheFooter extends Vue {
       }
     }
     flex-wrap: wrap;
-    color: $dark-gray;
     font-size: 1rem;
     font-family: $normal-font;
-    a {
-      color:inherit;
-      text-decoration: underline;
-      cursor: pointer;
-      &:hover {
-        opacity: 0.8;
-      }
-    }
     &__item:not(:first-child) {
       &::before {
         content: "|";
@@ -133,25 +123,5 @@ export default class TheFooter extends Vue {
       }
     }
   }
-}
-.modal {
-    margin-bottom: 10px;
-    display: flex;
-    flex-direction: row;
-
-    &__content {
-      width: 100%;
-    }
-
-    &__close-button {
-      width: auto;
-      font-size: 1.5em;
-      margin-right:0.25em;
-      align-self: flex-start;
-      cursor: pointer;
-      &:hover {
-        opacity: 0.9;
-      }
-    }
 }
 </style>

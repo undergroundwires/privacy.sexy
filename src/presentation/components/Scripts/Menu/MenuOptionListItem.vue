@@ -32,6 +32,6 @@ export default class MenuOptionListItem extends Vue {
     }
 }
 .disabled {
-    color:$gray;
+    color: $color-primary-light;
 }
 </style>

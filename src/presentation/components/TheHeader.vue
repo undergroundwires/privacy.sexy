@@ -36,7 +36,6 @@ export default class TheHeader extends Vue {
 
   .title {
     margin: 0;
-    color: $black;
     text-transform: uppercase;
     font-family: $main-font;
     font-size: 2.5em;
@@ -45,7 +44,7 @@ export default class TheHeader extends Vue {
   .subtitle {
     margin: 0;
     font-size: 1.5em;
-    color: $gray;
+    color: $color-primary;
     font-family: $artistic-font;
     font-weight: 500;
     line-height: 1.2;

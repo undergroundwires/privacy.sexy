@@ -71,11 +71,5 @@ function getOperatingSystemName(os: OperatingSystem): string {
     &__inactive {
         font-size: 0.70em;
     }
-    a {
-        color:inherit;
-        &:hover {
-            opacity: 0.8;
-        }
-    }
 }
 </style>

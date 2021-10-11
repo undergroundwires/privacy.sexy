@@ -51,100 +51,109 @@ export default class RevertToggle extends StatefulVue {
 
 
 <style scoped lang="scss">
-    @import "@/presentation/styles/colors.scss";
-    $width: 85px;
-    $height: 30px;
-    // https://www.designlabthemes.com/css-toggle-switch/
-    .checkbox-switch {
+@import "@/presentation/styles/colors.scss";
+
+$color-unchecked-bullet : $color-primary-darker;
+$color-unchecked-text   : $color-on-primary;
+$color-unchecked-bg     : $color-primary;
+$color-checked-bg       : $color-secondary;
+$color-checked-text     : $color-on-secondary;
+$color-checked-bullet   : $color-on-secondary;
+$size-width             : 85px;
+$size-height            : 30px;
+
+// https://www.designlabthemes.com/css-toggle-switch/
+.checkbox-switch {
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    position: relative;
+    width: $size-width;
+    height: $size-height;
+    -webkit-border-radius: $size-height;
+    border-radius: $size-height;
+    line-height: $size-height;
+    font-size: $size-height / 2;
+    display: inline-block;
+
+    input.input-checkbox {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: $size-width;
+        height: $size-height;
+        padding: 0;
+        margin: 0;
+        opacity: 0;
+        z-index: 2;
         cursor: pointer;
-        display: inline-block;
-        overflow: hidden;
+    }
+
+    .checkbox-animate {
         position: relative;
-        width: $width;
-        height: $height;
-        -webkit-border-radius: $height;
-        border-radius: $height;
-        line-height: $height;
-        font-size: $height / 2;
-        display: inline-block;
+        width: $size-width;
+        height: $size-height;
+        background-color: $color-unchecked-bg;
+        -webkit-transition: background-color 0.25s ease-out 0s;
+        transition: background-color 0.25s ease-out 0s;
 
-        input.input-checkbox {
+        // Circle
+        &:before {
+            $circle-size: $size-height * 0.66;
+
+            content: "";
+            display: block;
             position: absolute;
-            left: 0;
-            top: 0;
-            width: $width;
-            height: $height;
-            padding: 0;
-            margin: 0;
-            opacity: 0;
-            z-index: 2;
-            cursor: pointer;
-        }
-
-        .checkbox-animate {
-            position: relative;
-            width: $width;
-            height: $height;
-            background-color: $gray;
-            -webkit-transition: background-color 0.25s ease-out 0s;
-            transition: background-color 0.25s ease-out 0s;
-
-            // Circle
-            &:before {
-                $circle-size: $height * 0.66;
-
-                content: "";
-                display: block;
-                position: absolute;
-                width: $circle-size;
-                height: $circle-size;
-                border-radius: $circle-size * 2;
-                -webkit-border-radius: $circle-size * 2;
-                background-color: $slate;
-                top: $height * 0.16;
-                left: $width * 0.05;
-                -webkit-transition: left 0.3s ease-out 0s;
-                transition: left 0.3s ease-out 0s;
-                z-index: 10;
-            }
-        }
-
-        input.input-checkbox:checked {
-            + .checkbox-animate {
-                background-color: $accent;
-            }
-            + .checkbox-animate:before {
-                left: ($width - $width/3.5);
-                background-color: $light-gray;
-            }
-            + .checkbox-animate .checkbox-off {
-                display: none;
-                opacity: 0;
-            }
-            + .checkbox-animate .checkbox-on {
-                display: block;
-                opacity: 1;
-            }
-        }
-
-        .checkbox-off, .checkbox-on {
-            float: left;
-            color: $white;
-            font-weight: 700;
-                -webkit-transition: all 0.3s ease-out 0s;
-            transition: all 0.3s ease-out 0s;
-        }
-
-        .checkbox-off {
-            margin-left: $width / 3;
-            opacity: 1;
-        }
-
-        .checkbox-on {
-            display: none;
-            float: right;
-            margin-right: $width / 3;
-            opacity: 0;
+            width: $circle-size;
+            height: $circle-size;
+            border-radius: $circle-size * 2;
+            -webkit-border-radius: $circle-size * 2;
+            background-color: $color-unchecked-bullet;
+            top: $size-height * 0.16;
+            left: $size-width * 0.05;
+            -webkit-transition: left 0.3s ease-out 0s;
+            transition: left 0.3s ease-out 0s;
+            z-index: 10;
         }
     }
+
+    input.input-checkbox:checked {
+        + .checkbox-animate {
+            background-color: $color-checked-bg;
+        }
+        + .checkbox-animate:before {
+            left: ($size-width - $size-width/3.5);
+            background-color: $color-checked-bullet;
+        }
+        + .checkbox-animate .checkbox-off {
+            display: none;
+            opacity: 0;
+        }
+        + .checkbox-animate .checkbox-on {
+            display: block;
+            opacity: 1;
+        }
+    }
+
+    .checkbox-off, .checkbox-on {
+        float: left;
+        font-weight: 700;
+            -webkit-transition: all 0.3s ease-out 0s;
+        transition: all 0.3s ease-out 0s;
+    }
+
+    .checkbox-off {
+        margin-left: $size-width / 3;
+        opacity: 1;
+        color: $color-unchecked-text;
+    }
+
+    .checkbox-on {
+        display: none;
+        float: right;
+        margin-right: $size-width / 3;
+        opacity: 0;
+        color: $color-checked-text;
+    }
+}
 </style>

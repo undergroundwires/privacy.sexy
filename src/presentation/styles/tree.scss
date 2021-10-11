@@ -1,41 +1,57 @@
 // Overrides base styling for LiquorTree
 @import "@/presentation/styles/colors.scss";
 
+$color-tree-bg                              : $color-primary-darker;
+$color-node-arrow                           : $color-on-primary;
+$color-node-fg                              : $color-on-primary;
+$color-node-hover-bg                        : $color-primary-dark;
+$color-node-keyboard-bg                     : $color-surface;
+$color-node-keyboard-fg                     : $color-on-surface;
+$color-node-checkbox-checked-bg             : $color-secondary;
+$color-node-checkbox-checked-border         : $color-secondary;
+$color-node-checkbox-checked-checked-tick   : $color-on-secondary;
+$color-node-checkbox-unchecked-bg           : $color-primary-darkest;
+$color-node-checkbox-unchecked-border       : $color-on-primary;
+
 .tree {
-    background: $slate;
+    background: $color-tree-bg;
     &-node { 
         white-space: normal !important;
         > .tree-content {
             > .tree-anchor > span {
-                color: $white;
+                color: $color-node-fg;
                 text-transform: uppercase;
                 font-size: 1.5em;
             }
             &:hover {
-                background: $dark-gray !important;
+                background: $color-node-hover-bg !important;
             }
         }
-        &.selected { // When using keyboard navigation it higlights current item and its child items
-             background: $gray;
+        &.selected { // When using keyboard navigation it highlights current item and its child items
+            background: $color-node-keyboard-bg;
             .tree-text {
-                color: $black !important;
+                color: $color-node-keyboard-fg !important; //  $block
             }
         }
     }
     &-checkbox {
+        border-color: $color-node-checkbox-unchecked-border !important;
         &.checked {
-            background: $accent !important;
-            border-color: $accent !important;
+            background: $color-node-checkbox-checked-bg !important;
+            border-color: $color-node-checkbox-checked-border !important;
+            &:after {
+                border-color: $color-node-checkbox-checked-checked-tick !important;
+            }
         }
         &.indeterminate {
-            border-color: $gray !important;
+            border-color: $color-node-checkbox-unchecked-border !important;
         }
-        background: $dark-slate !important;
+        background: $color-node-checkbox-unchecked-bg !important;
     }
     &-arrow {
         &.has-child {
             &.rtl:after, &:after {
-                border-color: $white !important;
+                border-color: $color-node-arrow !important;
             }
         }
     }

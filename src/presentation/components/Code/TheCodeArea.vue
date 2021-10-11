@@ -157,8 +157,7 @@ function getDefaultCode(language: ScriptingLanguage): string {
   height: 100%;
   overflow: auto;
   &__highlight {
-    background-color: $accent;
-    opacity: 0.2; // having procent fails in production (minified) build
+    background-color: $color-secondary-light;
     position: absolute;
   }
 }

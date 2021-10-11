@@ -111,8 +111,8 @@ $card-horizontal-gap    : $card-gap;
     padding: /*top:*/ $card-inner-padding /*right:*/ $card-inner-padding /*bottom:*/ 0 /*left:*/ $card-inner-padding;
     position: relative;
     cursor: pointer;
-    background-color: $gray;
-    color: $light-gray;
+    background-color: $color-primary;
+    color: $color-on-primary;
     font-size: 1.5em;
     height: 100%;
     width: 100%;
@@ -125,7 +125,8 @@ $card-horizontal-gap    : $card-gap;
     justify-content: center;
 
     &:hover {
-      background-color: $accent;
+      background-color: $color-secondary;
+      color: $color-on-secondary;
       transform: scale(1.05);
     }
     &:after {
@@ -149,13 +150,13 @@ $card-horizontal-gap    : $card-gap;
   &__expander {
     transition: all 0.2s ease-in-out;
     position: relative;
-    background-color: $slate;
-    color: $light-gray;
+    background-color: $color-primary-darker;
+    color: $color-on-primary;
     display: flex;
     align-items: center;
 
     &__content {
-      flex: 1;flex: 1;
+      flex: 1;
       display: flex;
       justify-content: center;
       word-break: break-word;
@@ -165,10 +166,11 @@ $card-horizontal-gap    : $card-gap;
       width: auto;
       font-size: 1.5em;
       align-self: flex-start;
-      margin-right:0.25em;
+      margin-right: 0.25em;
       cursor: pointer;
+      color: $color-primary-light;
       &:hover {
-        opacity: 0.9;
+        color: $color-primary;
       }
     }
   }
@@ -192,7 +194,8 @@ $card-horizontal-gap    : $card-gap;
   &.is-expanded {
     .card__inner {
       height: auto;
-      background-color: $accent;
+      background-color: $color-secondary;
+      color: $color-on-secondary;
       &:after { // arrow
         content: "";
         display: block;
@@ -201,7 +204,7 @@ $card-horizontal-gap    : $card-gap;
         left: calc(50% - #{$arrow-size});
         border-left: #{$arrow-size} solid transparent;
         border-right: #{$arrow-size} solid transparent;
-        border-bottom: #{$arrow-size} solid #333a45;
+        border-bottom: #{$arrow-size} solid $color-primary-darker;
       }
     }
 
@@ -224,13 +227,13 @@ $card-horizontal-gap    : $card-gap;
     .card__inner {
       pointer-events: none;
       height: auto;
-      opacity: 0.5;
+      background-color: $color-primary-light;
       transform: scale(0.95);
     }
     
     &:hover {
       .card__inner {
-        background-color: $gray;
+        background-color: $color-primary;
         transform: scale(1);
       }
     }

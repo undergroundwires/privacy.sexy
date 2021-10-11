@@ -32,26 +32,30 @@ export default class Dialog extends Vue {
 
 <style scoped lang="scss">
 @import "@/presentation/styles/fonts.scss";
+@import "@/presentation/styles/colors.scss";
 
 .dialog {
+  color: $color-surface;
   font-family: $normal-font;
   margin-bottom: 10px;
   display: flex;
   flex-direction: row;
 
   &__content {
+    color: $color-on-surface;
     width: 100%;
     margin: 5%;
   }
 
   &__close-button {
+    color: $color-primary-dark;
     width: auto;
     font-size: 1.5em;
     margin-right: 0.25em;
     align-self: flex-start;
     cursor: pointer;
     &:hover {
-      opacity: 0.9;
+      color: $color-primary;
     }
   }
 }

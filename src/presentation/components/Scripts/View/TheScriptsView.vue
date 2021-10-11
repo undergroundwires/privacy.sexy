@@ -120,20 +120,20 @@ $inner-margin: 4px;
 .search {
     display: flex;
     flex-direction: column;
-    background-color: $slate;
+    background-color: $color-primary-darker;
     &__query {
         display: flex;
         justify-content: center;
         flex-direction: row;
         align-items: center;
         margin-top: 1em;
-        color: $gray;
+        color: $color-primary;
         &__close-button {
             cursor: pointer;
             font-size: 1.25em;
             margin-left: 0.25rem;
             &:hover {
-                opacity: 0.9;
+                color: $color-primary-dark;
             }
         }
     }
@@ -142,7 +142,7 @@ $inner-margin: 4px;
         flex-direction: column;
         word-break:break-word;
         text-transform: uppercase;
-        color: $light-gray;
+        color: $color-on-primary;
         font-size: 1.5em;
         padding:10px;
         text-align:center;
@@ -150,7 +150,7 @@ $inner-margin: 4px;
             padding-bottom:13px;
         }
         a {
-            color: $gray;
+            color: $color-primary;
         }
     }
 }

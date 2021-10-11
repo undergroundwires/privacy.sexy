@@ -71,12 +71,5 @@ export default class PrivacyPolicy extends Vue {
           margin-top:0.2rem;
         }
     }
-
-    a {
-      color:inherit;
-      &:hover {
-        opacity: 0.8;
-      }
-    }
 }
 </style>

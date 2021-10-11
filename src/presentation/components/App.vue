@@ -1,10 +1,10 @@
 <template>
   <div id="app">
-      <div class="wrapper">
-        <TheHeader class="row" />
-        <TheSearchBar class="row" />
-        <TheScriptArea class="row" />
-        <TheCodeButtons class="row code-buttons" />
+      <div class="app__wrapper">
+        <TheHeader class="app__row" />
+        <TheSearchBar class="app__row" />
+        <TheScriptArea class="app__row" />
+        <TheCodeButtons class="app__row app__code-buttons" />
         <TheFooter />
       </div>
    </div>
@@ -41,27 +41,36 @@ export default class App extends Vue {
   box-sizing: border-box;
 }
 
+a {
+    color:inherit;
+    text-decoration: underline;
+    cursor: pointer;
+    &:hover {
+        color: $color-primary;
+    }
+}
+
 body {
-  background: $light-gray;
+  background: $color-background;
   font-family: $main-font;
-  color: $slate;
 }
 
 #app {
   margin-right: auto;
   margin-left: auto;
   max-width: 1600px;
-  .wrapper {
+  .app__wrapper {
     margin: 0% 2% 0% 2%;
-    background-color: white;
+    background-color: $color-surface;
+    color: $color-on-surface;
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.06);
     padding: 2%;
     display:flex;
     flex-direction: column;
-    .row {
+    .app__row {
       margin-bottom: 10px;
     }
-    .code-buttons {
+    .app__code-buttons {
       padding-bottom: 10px;
     }
   }
