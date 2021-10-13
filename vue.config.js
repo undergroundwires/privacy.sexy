@@ -1,10 +1,4 @@
-const packageJson = require('./package.json');
-
-// Send data to application runtime
-process.env.VUE_APP_VERSION         = packageJson.version;
-process.env.VUE_APP_NAME            = packageJson.name;
-process.env.VUE_APP_REPOSITORY_URL  = packageJson.repository.url;
-process.env.VUE_APP_HOMEPAGE_URL    = packageJson.homepage;
+loadVueAppRuntimeVariables();
 
 module.exports = {
     chainWebpack: (config) => {
@@ -42,9 +36,17 @@ module.exports = {
                 }
             }
         }
-    }
+    },
 }
 
 function changeAppEntryPoint(entryPath, config) {
     config.entry('app').clear().add(entryPath).end();
 }
+
+function loadVueAppRuntimeVariables() {
+    const packageJson = require('./package.json');
+    process.env.VUE_APP_VERSION         = packageJson.version;
+    process.env.VUE_APP_NAME            = packageJson.name;
+    process.env.VUE_APP_REPOSITORY_URL  = packageJson.repository.url;
+    process.env.VUE_APP_HOMEPAGE_URL    = packageJson.homepage;
+};

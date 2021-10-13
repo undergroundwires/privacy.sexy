@@ -9,7 +9,7 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import path from 'path';
 import log from 'electron-log';
-import { setupAutoUpdater } from './Updater';
+import { setupAutoUpdater } from './Update/Updater';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 declare const __static: string; // https://github.com/electron-userland/electron-webpack/issues/172
@@ -27,7 +27,6 @@ log.transports.file.level = 'silly';
 if (!process.env.IS_TEST) {
   Object.assign(console, log.functions);  // override console.log, console.warn etc.
 }
-
 
 function createWindow() {
   // Create the browser window.
@@ -55,14 +54,25 @@ function createWindow() {
   });
 }
 
+let macOsQuit = false;
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
-  // On macOS it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
-    app.quit();
+  if (process.platform === 'darwin'
+    && !macOsQuit) {
+    // On macOS it is common for applications and their menu bar
+    // to stay active until the user quits explicitly with Cmd + Q
+    return;
   }
+  app.quit();
 });
+
+if (process.platform === 'darwin') {
+  // On macOS we application quit is stopped if user does not Cmd + Q
+  // But we still want to be able to use app.quit() and quit the application on menu bar, after updates etc.
+  app.on('before-quit', () => {
+    macOsQuit = true;
+  });
+}
 
 app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
@@ -142,4 +152,3 @@ function getWindowSize(idealWidth: number, idealHeight: number) {
   height = Math.min(height, idealHeight);
   return { width, height };
 }
-

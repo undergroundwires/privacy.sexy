@@ -11,11 +11,16 @@ export class UpdateProgressBar {
         this.progressBar = progressBarFactory.createWithIndeterminateState();
     }
     public showProgress(progress: ProgressInfo) {
+        const percentage = getUpdatePercent(progress);
+        this.showPercentage(percentage);
+    }
+    public showPercentage(percentage: number) {
         if (!this.showingProgress) { // First time showing progress
             this.progressBar?.close();
             this.showingProgress = true;
+            this.progressBar = progressBarFactory.createWithPercentile(percentage);
         } else {
-            updateProgressBar(progress, this.progressBar);
+            updateProgressBar(percentage, this.progressBar);
         }
     }
     public showError(e: Error) {
@@ -53,34 +58,33 @@ const progressBarFactory = {
             text: `Downloading ${app.name} update...`,
         });
     },
-    createWithPercentile: (initialProgress: ProgressInfo) => {
-        const percent = getUpdatePercent(initialProgress);
+    createWithPercentile: (initialPercentage: number) => {
         const progressBar = new ProgressBar({
             indeterminate: false,
             title: `${app.name} Update`,
             text: `Downloading ${app.name} update...`,
-            detail: `${percent}% ...`,
-            initialValue: percent,
+            detail: `${initialPercentage}% ...`,
+            initialValue: initialPercentage,
         });
         progressBar
             .on('completed', () => {
                 progressBar.detail = 'Download completed.';
             })
-            .on('aborted', (value) => {
+            .on('aborted', (value: number) => {
                 log.info(`progress aborted... ${value}`);
             })
-            .on('progress', (value) => {
+            .on('progress', (value: number) => {
                 progressBar.detail = `${value}% ...`;
             })
             .on('ready', () => {
                 // initialValue doesn't set the UI, so this is needed to render it correctly
-                progressBar.value = percent;
+                progressBar.value = initialPercentage;
             });
         return progressBar;
     },
 };
 
 
-function updateProgressBar(progress: ProgressInfo, progressBar: ProgressBar) {
-    progressBar.value = getUpdatePercent(progress);
+function updateProgressBar(percentage: number, progressBar: ProgressBar) {
+    progressBar.value = percentage;
 }
