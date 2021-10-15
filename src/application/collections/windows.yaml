@@ -374,6 +374,10 @@ actions:
                                 echo Deleting event log: "%%i"
                                 wevtutil.exe cl %1 "%%i"
                             )
+                    -
+                        name: Clean Windows Defender scan history
+                        docs: https://www.thewindowsclub.com/clear-windows-defender-protection-history
+                        code: del "%ProgramData%\Microsoft\Windows Defender\Scans\History\" /s /f /q
             -
                 name: Clear credentials from Windows Credential Manager
                 code: |-
@@ -1547,48 +1551,6 @@ actions:
                         recommend: standard
                         code: sc stop "VSStandardCollectorService150" & sc config "VSStandardCollectorService150" start=disabled
                         revertCode: sc config "VSStandardCollectorService150" start=auto & sc start "VSStandardCollectorService150"
-            - 
-                category: Configure Windows Defender
-                children:
-                    -
-                        name: Do not send Watson events 
-                        recommend: standard
-                        docs: https://admx.help/?Category=SystemCenterEndpointProtection&Policy=Microsoft.Policies.Antimalware::reporting_disablegenericreports
-                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Reporting" /v "DisableGenericReports" /t REG_DWORD /d 1 /f
-                        revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Reporting" /v "DisableGenericReports" /t REG_DWORD /d 0 /f
-                    -
-                        category: Disable Microsoft SpyNet (Windows Defender cloud export for analysis)
-                        children:
-                            -
-                                name: Disable local setting override for reporting to Microsoft MAPS
-                                recommend: standard
-                                docs:
-                                    - https://www.stigviewer.com/stig/windows_defender_antivirus/2017-12-27/finding/V-75161
-                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Spynet_LocalSettingOverrideSpynetReporting
-                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "LocalSettingOverrideSpynetReporting" /t REG_DWORD /d 0 /f
-                                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "LocalSettingOverrideSpynetReporting" /t REG_DWORD /d 1 /f
-                            -
-                                name: Turn off Windows Defender SpyNet reporting    
-                                recommend: standard
-                                docs:
-                                    - https://www.stigviewer.com/stig/windows_7/2012-07-02/finding/V-15713
-                                    - https://admx.help/?Category=Windows_7_2008R2&Policy=Microsoft.Policies.WindowsDefender::SpyNetReporting
-                                    - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-defender#defender-allowcloudprotection
-                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SpynetReporting" /t REG_DWORD /d 0 /f
-                                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SpynetReporting" /t REG_DWORD /d 1 /f
-                            -    
-                                name: Do not send file samples for further analysis
-                                recommend: standard
-                                doc:
-                                    - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-defender#defender-submitsamplesconsent
-                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SubmitSamplesConsent" /t REG_DWORD /d 2 /f
-                                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SubmitSamplesConsent" /t REG_DWORD /d 1 /f
-                    - 
-                        name: Disable Malicious Software Reporting tool diagnostic data
-                        recommend: standard
-                        docs: https://admx.help/?Category=Windows10_Telemetry&Policy=Microsoft.Policies.Win10Privacy::DontReportInfection
-                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\MRT" /v "DontReportInfectionInformation" /t REG_DWORD /d 1 /f
-                        revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\MRT" /v "DontReportInfectionInformation" /t REG_DWORD /d 0 /f
             -
                 name: Disable NET Core CLI telemetry
                 recommend: standard
@@ -2475,121 +2437,1281 @@ actions:
         children:         
             -
                 category: Disable Windows Defender
+                docs: https://en.wikipedia.org/wiki/Windows_Firewall
+                # See defender status: Get-MpComputerStatus
                 children:
                     -
-                        name: Turn off Windows Firewall
-                        code: netsh advfirewall set allprofiles state off
-                        revertCode: netsh advfirewall set allprofiles state on
+                        category: Disable Windows Defender Firewall # Also known as Windows Firewall, Microsoft Defender Firewall
+                        children:
+                            -
+                                name: Disable Firewall through command-line utility
+                                docs: https://docs.microsoft.com/en-us/troubleshoot/windows-server/networking/netsh-advfirewall-firewall-control-firewall-behavior
+                                code: netsh advfirewall set allprofiles state off
+                                revertCode: netsh advfirewall set allprofiles state on
+                            -
+                                name: Disable Firewall through registry # Lower-level, good in case command-line utility is not available/functioning
+                                docs:
+                                    - https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-gpfas/2100c552-7f37-4a7f-9fa0-2a864ab87212
+                                    - https://www.stigviewer.com/stig/windows_firewall_with_advanced_security/2016-05-12/finding/V-17415
+                                    - https://www.stigviewer.com/stig/windows_firewall_with_advanced_security/2016-05-12/finding/V-17416
+                                    - https://www.stigviewer.com/stig/windows_firewall_with_advanced_security/2018-02-21/finding/V-17417
+                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsFirewall::WF_EnableFirewall_Name_1
+                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsFirewall::WF_EnableFirewall_Name_2
+                                code: |-
+                                    :: Policy based
+                                    reg add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\StandardProfile" /v "EnableFirewall" /t REG_DWORD /d 0 /f
+                                    reg add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "EnableFirewall" /t REG_DWORD /d 0 /f
+                                    reg add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile" /v "EnableFirewall" /t REG_DWORD /d 0 /f
+                                    reg add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile" /v "EnableFirewall" /t REG_DWORD /d 0 /f
+                                    :: Non-policy based
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\StandardProfile" /v "EnableFirewall" /t REG_DWORD /d 0 /f
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\DomainProfile" /v "EnableFirewall" /t REG_DWORD /d 0 /f
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\PublicProfile" /v "EnableFirewall" /t REG_DWORD /d 0 /f
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\PrivateProfile" /v "EnableFirewall" /t REG_DWORD /d 0 /f
+                                revertCode: |-
+                                    :: Policy based
+                                    reg add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\StandardProfile" /v "EnableFirewall" /t REG_DWORD /d 1 /f
+                                    reg add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PublicProfile" /v "EnableFirewall" /t REG_DWORD /d 1 /f
+                                    reg add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\PrivateProfile" /v "EnableFirewall" /t REG_DWORD /d 1 /f
+                                    reg add "HKLM\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfile" /v "EnableFirewall" /t REG_DWORD /d 1 /f
+                                    :: Non-policy based
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\StandardProfile" /v "EnableFirewall" /t REG_DWORD /d 1 /f
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\DomainProfile" /v "EnableFirewall" /t REG_DWORD /d 1 /f
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\PublicProfile" /v "EnableFirewall" /t REG_DWORD /d 1 /f
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\PrivateProfile" /v "EnableFirewall" /t REG_DWORD /d 1 /f
                     -
-                        name: Disable Microsoft Defender Antivirus
-                        docs: https://docs.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/security-malware-windows-defender-disableantispyware
-                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v DisableAntiSpyware /t REG_DWORD /d 1 /f
+                        name: Disable Microsoft Defender Antivirus # Depreciated since Windows 10 version 1903
+                        docs:
+                            - https://docs.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/security-malware-windows-defender-disableantispyware
+                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::DisableAntiSpywareDefender
+                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v "DisableAntiSpyware" /t REG_DWORD /d 1 /f
                         revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender" /v "DisableAntiSpyware" /f
                     -
-                        name: Disable the Potentially Unwanted Application (PUA) feature
-                        docs: https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75147
-                        code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\MpEngine" /v "MpEnablePus" /t REG_DWORD /d "0" /f
-                        revertCode: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\MpEngine" /v "MpEnablePus" /t REG_DWORD /d "1" /f
-                    -
-                        category: Disable Real-Time Protection
+                        category: Disable Defender features
                         children:
                             -
-                                name: Disable behavior monitoring
-                                docs: https://www.stigviewer.com/stig/windows_defender_antivirus/2017-12-27/finding/V-75229
-                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableBehaviorMonitoring" /t REG_DWORD /d "1" /f
-                                revertCode: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableBehaviorMonitoring" /t REG_DWORD /d "0" /f
+                                category: Disable Windows Defender Antivirus cloud protection service
+                                docs: https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/enable-cloud-protection-microsoft-defender-antivirus
+                                # Also known as Microsoft MAPS (Microsoft Active Protection Service) or Microsoft SpyNet
+                                children:
+                                    -
+                                        category: Disable cloud protection service features
+                                        children:
+                                            -
+                                                name: Turn off block at first sight
+                                                docs:
+                                                    - https://docs.microsoft.com/en-us/windows/security/threat-protection/microsoft-defender-antivirus/configure-block-at-first-sight-microsoft-defender-antivirus
+                                                    - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                call:
+                                                    -
+                                                        function: RunPowerShell
+                                                        parameters:
+                                                            code: Set-MpPreference -Force -DisableBlockAtFirstSeen $True
+                                                            revertCode: Set-MpPreference -Force -DisableBlockAtFirstSeen $False
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\SpyNet" /v "DisableBlockAtFirstSeen" /t REG_DWORD /d "1" /f
+                                                            revertCode: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\SpyNet" /v "DisableBlockAtFirstSeen" /t REG_DWORD /d "0" /f
+                                            -
+                                                name: Set maximum time possible for extended cloud check timeout # Requires "Block at First Sight", "Join Microsoft MAPS", "Send file samples when further analysis is required"
+                                                docs:
+                                                    - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-defender#defender-cloudextendedtimeout
+                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::MpEngine_MpBafsExtendedTimeout
+                                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\MpEngine" /v "MpBafsExtendedTimeout" /t REG_DWORD /d 50 /f
+                                                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\MpEngine" /v "MpBafsExtendedTimeout" /f
+                                            -
+                                                name: Set lowest possible cloud protection level # Requires "Join Microsoft MAPS"
+                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::MpEngine_MpCloudBlockLevel
+                                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\MpEngine" /v "MpCloudBlockLevel" /t REG_DWORD /d 0 /f
+                                                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\MpEngine" /v "MpCloudBlockLevel" /f
+                                            -
+                                                name: Disable receiving notifications to disable security intelligence # Requires "Join Microsoft MAPS"
+                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_SignatureDisableNotification
+                                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "SignatureDisableNotification" /t REG_DWORD /d 0 /f
+                                                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "SignatureDisableNotification" /f
+                                    -
+                                        category: Disable Defender cloud export for analysis
+                                        children:
+                                            -
+                                                name: Turn off Windows Defender SpyNet reporting    
+                                                recommend: strict
+                                                docs:
+                                                    - https://www.stigviewer.com/stig/windows_7/2012-07-02/finding/V-15713
+                                                    - https://admx.help/?Category=Windows_7_2008R2&Policy=Microsoft.Policies.WindowsDefender::SpyNetReporting
+                                                    - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-defender#defender-allowcloudprotection
+                                                call:
+                                                    -
+                                                        function: RunPowerShell
+                                                        parameters:
+                                                            code: Set-MpPreference -Force -MAPSReporting 'Disabled'
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SpynetReporting" /t REG_DWORD /d 0 /f
+                                                            revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SpynetReporting" /t REG_DWORD /d 1 /f
+                                            -    
+                                                name: Do not send file samples for further analysis
+                                                recommend: strict
+                                                doc:
+                                                    - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-defender#defender-submitsamplesconsent
+                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SubmitSamplesConsent
+                                                    - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                call:
+                                                    -
+                                                        function: RunPowerShell
+                                                        parameters:
+                                                            code: Set-MpPreference -Force -SubmitSamplesConsent 'NeverSend'
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SubmitSamplesConsent" /t REG_DWORD /d 2 /f
+                                                            revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Spynet" /v "SubmitSamplesConsent" /t REG_DWORD /d 1 /f
+                                            - 
+                                                name: Disable Malicious Software Reporting tool diagnostic data
+                                                recommend: strict
+                                                docs: https://admx.help/?Category=Windows10_Telemetry&Policy=Microsoft.Policies.Win10Privacy::DontReportInfection
+                                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\MRT" /v "DontReportInfectionInformation" /t REG_DWORD /d 1 /f
+                                                revertCode: reg add "HKLM\SOFqTWARE\Policies\Microsoft\MRT" /v "DontReportInfectionInformation" /t REG_DWORD /d 0 /f
+                                            -
+                                                name: Disable uploading files for threat analysis in real-time # Requires "Join Microsoft MAPS"
+                                                recommend: strict
+                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_RealtimeSignatureDelivery
+                                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "RealtimeSignatureDelivery" /t REG_DWORD /d 0 /f
+                                                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "RealtimeSignatureDelivery" /f
                             -
-                                name: Disable scanning for all downloaded files and attachments
-                                docs: https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75225
-                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableIOAVProtection" /t REG_DWORD /d "1" /f
-                                revertCode: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableIOAVProtection" /t REG_DWORD /d "0" /f
-                            -
-                                name: Disable monitoring file and program activity
-                                docs: https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75223
-                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableOnAccessProtection" /t REG_DWORD /d "1" /f
-                                revertCode: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableOnAccessProtection" /t REG_DWORD /d "0" /f
-                            -
-                                name: Disable automatically taking action on all detected tasks
+                                name: Disable the Potentially Unwanted Application (PUA) feature
                                 docs:
-                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableRoutinelyTakingAction" /t REG_DWORD /d "1" /f
-                                revertCode: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableRoutinelyTakingAction" /t REG_DWORD /d "0" /f
+                                    - https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75147
+                                    - https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/detect-block-potentially-unwanted-apps-microsoft-defender-antivirus?view=o365-worldwide
+                                    - https://blogs.technet.microsoft.com/mmpc/2015/11/25/shields-up-on-potentially-unwanted-applications-in-your-enterprise/
+                                    - https://admx.help/?Category=security-compliance-toolkit&Policy=Microsoft.Policies.SecGuide::Pol_SecGuide_0101_WDPUA
+                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Root_PUAProtection
+                                call:
+                                    -
+                                        function: RunPowerShell
+                                        parameters:
+                                            code: Set-MpPreference -Force -PUAProtection 'Disabled'
+                                            revertCode: Set-MpPreference -Force -DisableRealtimeMonitoring $False
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: |-
+                                                :: For legacy versions: Windows 10 v1809 and Windows Server 2019
+                                                reg add "HKLM\Software\Policies\Microsoft\Windows Defender\MpEngine" /v "MpEnablePus" /t REG_DWORD /d "0" /f
+                                                :: For newer Windows versions
+                                                reg add "HKLM\Software\Policies\Microsoft\Windows Defender" /v "PUAProtection" /t REG_DWORD /d "0" /f
+                                            revertCode: |-
+                                                :: For legacy versions: Windows 10 v1809 and Windows Server 2019
+                                                reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\MpEngine" /v "MpEnablePus" /f
+                                                :: For newer Windows versions
+                                                reg delete "HKLM\Software\Policies\Microsoft\Windows Defender" /v "PUAProtection" /f
                             -
-                                name: Disable process scanning on real-time protection
-                                docs: https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75231
-                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableScanOnRealtimeEnable" /t REG_DWORD /d "1" /f
-                                revertCode: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableScanOnRealtimeEnable" /t REG_DWORD /d "0" /f
+                                name: Turn off tamper protection # Added in Windows 10, version 1903
+                                docs:
+                                    - https://www.thewindowsclub.com/how-to-enable-tamper-protection-in-windows-10
+                                    - https://docs.microsoft.com/en-us/windows/client-management/mdm/defender-csp#configuration-tamperprotection
+                                code: |-
+                                    reg add "HKLM\SOFTWARE\Microsoft\Windows Defender\Features" /v "TamperProtection" /t REG_DWORD /d "4" /f
+                                    reg add "HKLM\SOFTWARE\Microsoft\Windows Defender\Features" /v "TamperProtectionSource" /t REG_DWORD /d "2" /f    
+                                revertCode: |-
+                                    reg delete "HKLM\SOFTWARE\Microsoft\Windows Defender\Features" /v "TamperProtection" /f
+                                    reg delete "HKLM\SOFTWARE\Microsoft\Windows Defender\Features" /v "TamperProtectionSource" /f    
+                            -
+                                name: Disable file hash computation feature # Added in Windows 10, version 2004
+                                docs:
+                                    - https://docs.microsoft.com/en-us/windows/client-management/mdm/defender-csp#configuration-enablefilehashcomputation
+                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::MpEngine_EnableFileHashComputation
+                                    - https://techcommunity.microsoft.com/t5/microsoft-security-baselines/security-baseline-final-windows-10-and-windows-server-version/ba-p/1543631
+                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\MpEngine" /v "EnableFileHashComputation" /t REG_DWORD /d "0" /f
+                                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\MpEngine" /v "EnableFileHashComputation" /f
+                            -
+                                category: Disable Windows Defender Exploit Guard
+                                docs: https://www.microsoft.com/security/blog/2017/10/23/windows-defender-exploit-guard-reduce-the-attack-surface-against-next-generation-malware/
+                                children:
+                                    -
+                                        name: Disable prevention of users and apps from accessing dangerous websites
+                                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::ExploitGuard_EnableNetworkProtection
+                                        code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" /v "EnableNetworkProtection" /t REG_DWORD /d "1" /f
+                                        revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Network Protection" /v "EnableNetworkProtection" /f
+                                    -
+                                        name: Disable Controlled folder access
+                                        docs: 
+                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::ExploitGuard_ControlledFolderAccess_EnableControlledFolderAccess
+                                            - https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/enable-controlled-folders?view=o365-worldwide
+                                        code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access" /v "EnableControlledFolderAccess" /t REG_DWORD /d "0" /f
+                                        revertCode: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\Controlled Folder Access" /v "EnableControlledFolderAccess" /t REG_DWORD /d "1" /f
+                            -
+                                category: Disable Network Inspection System features
+                                children:
+                                    -
+                                        name: Disable protocol recognition
+                                        docs:
+                                            - https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2019-12-12/finding/V-75209
+                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Nis_DisableProtocolRecognition
+                                        code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\NIS" /v "DisableProtocolRecognition" /t REG_DWORD /d "1" /f
+                                        revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\NIS" /v "DisableProtocolRecognition" /f
+                                    -
+                                        name: Disable definition retirement
+                                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Nis_Consumers_IPS_DisableSignatureRetirement
+                                        code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\NIS\Consumers\IPS" /v "DisableSignatureRetirement" /t REG_DWORD /d "1" /f
+                                        revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\NIS\Consumers\IPS" /v "DisableSignatureRetirement" /f
+                                    -
+                                        name: Limit detection events rate to minimum
+                                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Nis_Consumers_IPS_ThrottleDetectionEventsRate
+                                        code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\NIS\Consumers\IPS" /v "ThrottleDetectionEventsRate" /t REG_DWORD /d "10000000" /f
+                                        revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\NIS\Consumers\IPS" /v "ThrottleDetectionEventsRate" /f
+                            -
+                                category: Disable Real-Time protection
+                                children:
+                                    -
+                                        name: Disable real-time monitoring
+                                        docs: 
+                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::DisableRealtimeMonitoring
+                                            - https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75227
+                                            - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                        call:
+                                            -
+                                                function: RunPowerShell
+                                                parameters:
+                                                    code: Set-MpPreference -Force -DisableRealtimeMonitoring $True
+                                                    revertCode: Set-MpPreference -Force -DisableRealtimeMonitoring $False
+                                            -
+                                                function: RunInlineCode
+                                                parameters:
+                                                    code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableRealtimeMonitoring" /t REG_DWORD /d "1" /f
+                                                    revertCode: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableRealtimeMonitoring" /t REG_DWORD /d "0" /f
+                                    -
+                                        name: Disable Intrusion Prevention System (IPS)
+                                        docs:
+                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::RealtimeProtection_DisableIntrusionPreventionSystem
+                                            - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                        call:
+                                            -
+                                                function: RunPowerShell
+                                                parameters:
+                                                    code: Set-MpPreference -Force -DisableIntrusionPreventionSystem $True
+                                                    revertCode: Set-MpPreference -Force -DisableIntrusionPreventionSystem $False
+                                            -
+                                                function: RunInlineCode
+                                                parameters:
+                                                    code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableIntrusionPreventionSystem" /t REG_DWORD /d "1" /f
+                                                    revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableIntrusionPreventionSystem" /f
+                                    -
+                                        name: Disable Information Protection Control (IPC)
+                                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::RealtimeProtection_DisableInformationProtectionControl
+                                        code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableInformationProtectionControl" /t REG_DWORD /d "1" /f
+                                        revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableInformationProtectionControl" /f
+                                    -
+                                        category: Disable Defender monitoring of behavior
+                                        children:
+                                            -
+                                                name: Disable behavior monitoring
+                                                docs:
+                                                    - https://www.stigviewer.com/stig/windows_defender_antivirus/2017-12-27/finding/V-75229
+                                                    - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                call:
+                                                    - # Status: Get-MpComputerStatus | Select-Object -Property BehaviorMonitorEnabled
+                                                        function: RunPowerShell
+                                                        parameters:
+                                                            code: Set-MpPreference -Force -DisableBehaviorMonitoring $True
+                                                            revertCode: Set-MpPreference -Force -DisableBehaviorMonitoring $False
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableBehaviorMonitoring" /t REG_DWORD /d "1" /f
+                                                            revertCode: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableBehaviorMonitoring" /t REG_DWORD /d "0" /f
+                                            -
+                                                name: Disable sending raw write notifications to behavior monitoring
+                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::RealtimeProtection_DisableRawWriteNotification
+                                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableRawWriteNotification" /t REG_DWORD /d "1" /f
+                                                revertCode: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableRawWriteNotification" /t REG_DWORD /d "0" /f
+                                    -
+                                        category: Disable Defender monitoring of downloaded files and attachments
+                                        children:
+                                            -
+                                                name: Disable scanning for all downloaded files and attachments
+                                                docs:
+                                                    - https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75225
+                                                    - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                call:
+                                                    -
+                                                        function: RunPowerShell
+                                                        parameters:
+                                                            code: Set-MpPreference -Force -DisableIOAVProtection $True
+                                                            revertCode: Set-MpPreference -Force -DisableIOAVProtection $False
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableIOAVProtection" /t REG_DWORD /d "1" /f
+                                                            revertCode: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableIOAVProtection" /t REG_DWORD /d "0" /f
+                                            -
+                                                name: Disable scanning files bigger than 1 KB (minimum possible)
+                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::RealtimeProtection_IOAVMaxSize
+                                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "IOAVMaxSize" /t REG_DWORD /d "1" /f
+                                                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "IOAVMaxSize" /f
+                                    -
+                                        category: Disable Defender monitoring of file and program activity
+                                        children:
+                                            -
+                                                name: Disable monitoring file and program activity
+                                                docs:
+                                                    - https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75223
+                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::RealtimeProtection_DisableOnAccessProtection
+                                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableOnAccessProtection" /t REG_DWORD /d "1" /f
+                                                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableOnAccessProtection" /f
+                                            -
+                                                name: Disable bidirectional scanning of ncoming and outgoing file and program activity
+                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::RealtimeProtection_RealtimeScanDirection
+                                                # 0: bi-directional (full on-access), 1: scan only incoming (disable on-open), 2: scan only outgoing (disable on-close)
+                                                call:
+                                                    -
+                                                        function: RunPowerShell
+                                                        parameters:
+                                                            code: Set-MpPreference -Force -RealTimeScanDirection 1
+                                                            revertCode: Set-MpPreference -Force -RealTimeScanDirection 0
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "RealtimeScanDirection" /t REG_DWORD /d "1" /f
+                                                            revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "RealtimeScanDirection" /f
+                                    -
+                                        name: Disable process scanning on real-time protection
+                                        docs:
+                                            - https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75231
+                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::RealtimeProtection_DisableScanOnRealtimeEnable
+                                        code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableScanOnRealtimeEnable" /t REG_DWORD /d "1" /f
+                                        revertCode: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableScanOnRealtimeEnable" /t REG_DWORD /d "0" /f
+                            -
+                                category: Disable Defender remediation
+                                children:
+                                    -
+                                        name: Disable routine remediation
+                                        docs:
+                                            - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-microsoftdefenderantivirus#admx-microsoftdefenderantivirus-disableroutinelytakingaction
+                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::DisableRoutinelyTakingAction
+                                        code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender" /v "DisableRoutinelyTakingAction" /t REG_DWORD /d "1" /f
+                                        revertCode: reg add "HKLM\Software\Policies\Microsoft\Windows Defender" /v "DisableRoutinelyTakingAction" /t REG_DWORD /d "0" /f
+                                    -
+                                        name: Disable running scheduled auto-remediation
+                                        docs:
+                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Remediation_Scan_ScheduleDay
+                                            - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                        call:
+                                            -
+                                                function: RunInlineCode
+                                                parameters:
+                                                    code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Remediation" /v "Scan_ScheduleDay" /t REG_DWORD /d "0" /f
+                                                    revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Remediation" /v "Scan_ScheduleDay" /f
+                                            -
+                                                function: RunPowerShell
+                                                parameters:
+                                                    code: Set-MpPreference -Force -RemediationScheduleDay 8
+                                    -
+                                        name: Disable remediation actions
+                                        docs:
+                                            - https://docs.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/security-malware-windows-defender-threatseveritydefaultaction
+                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Threats_ThreatSeverityDefaultAction
+                                            - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                        call: # Not using ThreatIdDefaultAction as it requires known threat IDs
+                                            -
+                                                function: RunPowerShell
+                                                parameters:
+                                                    code: Set-MpPreference -Force -UnknownThreatDefaultAction 'NoAction'
+                                                    revertCode: Remove-MpPreference -Force -UnknownThreatDefaultAction
+                                            -
+                                                function: RunPowerShell
+                                                parameters:
+                                                    code: Set-MpPreference -Force -LowThreatDefaultAction 'NoAction'
+                                                    revertCode: Remove-MpPreference -Force -LowThreatDefaultAction
+                                            -
+                                                function: RunPowerShell
+                                                parameters:
+                                                    code: Set-MpPreference -Force -ModerateThreatDefaultAction 'NoAction'
+                                                    revertCode: Remove-MpPreference -Force -ModerateThreatDefaultAction
+                                            -
+                                                function: RunPowerShell
+                                                parameters:
+                                                    code: Set-MpPreference -Force -HighThreatDefaultAction 'NoAction'
+                                                    revertCode: Remove-MpPreference -Force -HighThreatDefaultAction
+                                            -
+                                                function: RunPowerShell
+                                                parameters:
+                                                    code: Set-MpPreference -Force -SevereThreatDefaultAction 'NoAction'
+                                                    revertCode: Remove-MpPreference -Force -SevereThreatDefaultAction
+                                            -
+                                                function: RunInlineCode
+                                                parameters:
+                                                    code: |-
+                                                        reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Threats" /v "Threats_ThreatSeverityDefaultAction" /t "REG_DWORD" /d "1" /f
+                                                        :: 1: Clean, 2: Quarantine, 3: Remove, 6: Allow, 8: Ask user, 9: No action, 10: Block, NULL: default (based on the update definition)
+                                                        reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Threats\ThreatSeverityDefaultAction" /v "5" /t "REG_SZ" /d "9" /f
+                                                        reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Threats\ThreatSeverityDefaultAction" /v "4" /t "REG_SZ" /d "9" /f
+                                                        reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Threats\ThreatSeverityDefaultAction" /v "3" /t "REG_SZ" /d "9" /f
+                                                        reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Threats\ThreatSeverityDefaultAction" /v "2" /t "REG_SZ" /d "9" /f
+                                                        reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Threats\ThreatSeverityDefaultAction" /v "1" /t "REG_SZ" /d "9" /f
+                                                    revertCode: |-
+                                                        reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Threats" /v "Threats_ThreatSeverityDefaultAction" /f
+                                                        reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Threats\ThreatSeverityDefaultAction" /v "5" /f
+                                                        reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Threats\ThreatSeverityDefaultAction" /v "4" /f
+                                                        reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Threats\ThreatSeverityDefaultAction" /v "3" /f
+                                                        reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Threats\ThreatSeverityDefaultAction" /v "2" /f
+                                                        reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Threats\ThreatSeverityDefaultAction" /v "1" /f
+                                    -
+                                        name: Auto-purge items from Quarantine folder
+                                        docs:
+                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Quarantine_PurgeItemsAfterDelay
+                                            - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                        # 30 is the default, 1 is the minimum, 0 means indefinitely
+                                        call:
+                                            -
+                                                function: RunPowerShell
+                                                parameters:
+                                                    code: Set-MpPreference -Force -QuarantinePurgeItemsAfterDelay $True
+                                                    revertCode: Set-MpPreference -Force -QuarantinePurgeItemsAfterDelay ""
+                                            -
+                                                function: RunInlineCode
+                                                parameters:
+                                                    code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Quarantine" /v "PurgeItemsAfterDelay" /t REG_DWORD /d "1" /f
+                                                    revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Quarantine" /v "PurgeItemsAfterDelay" /f
+                            -
+                                name: Disable always running antimalware service
+                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::ServiceKeepAlive
+                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender" /v "ServiceKeepAlive" /t REG_DWORD /d "1" /f
+                                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender" /v "ServiceKeepAlive" /f
+                            # -  Too good to disable
+                            #     category: Disable Windows Defender Device Guard and Credential Guard
+                            #     docs: https://techcommunity.microsoft.com/t5/iis-support-blog/windows-10-device-guard-and-credential-guard-demystified/ba-p/376419
+                            #     children:
+                            #         -
+                            #             name: Disable LSA protection (disabled by default)
+                            #             docs:
+                            #                 - https://docs.microsoft.com/en-us/windows-server/security/credentials-protection-and-management/configuring-additional-lsa-protection
+                            #                 - https://itm4n.github.io/lsass-runasppl/
+                            #                 - https://docs.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/microsoft-windows-deviceguard-unattend-lsacfgflags
+                            #                 - https://docs.microsoft.com/en-us/windows/security/identity-protection/credential-guard/credential-guard-manage#disable-windows-defender-credential-guard
+                            #                 - https://docs.microsoft.com/en-us/windows/security/identity-protection/credential-guard/dg-readiness-tool
+                            #             code: |-
+                            #                 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v "LsaCfgFlags" /t REG_DWORD /d 0 /f
+                            #                 reg add "HKLM\Software\Policies\Microsoft\Windows\DeviceGuard" /v "LsaCfgFlags" /t REG_DWORD /d 0 /f
+                            #             revertCode: |-
+                            #                 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v "LsaCfgFlags" /t REG_DWORD /d 1 /f
+                            #                 reg add "HKLM\Software\Policies\Microsoft\Windows\DeviceGuard" /v "LsaCfgFlags" /t REG_DWORD /d 1 /f
+                            #         -
+                            #             name: Disable virtualization-based security  (disabled by default)
+                            #             docs: 
+                            #                 - https://docs.microsoft.com/en-us/windows/security/identity-protection/credential-guard/credential-guard-manage#disable-windows-defender-credential-guard
+                            #                 - https://docs.microsoft.com/en-us/windows/security/identity-protection/credential-guard/dg-readiness-tool
+                            #                 - https://docs.microsoft.com/en-us/windows/security/threat-protection/device-guard/enable-virtualization-based-protection-of-code-integrity
+                            #             code: |-
+                            #                 :: Virtualization features
+                            #                 reg delete "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "EnableVirtualizationBasedSecurity" /f
+                            #                 reg delete "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "RequirePlatformSecurityFeatures" /f
+                            #                 :: Lock
+                            #                 reg delete "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "Locked" /f
+                            #                 reg delete "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "NoLock" /f
+                            #                 :: HypervisorEnforcedCodeIntegrity
+                            #                 reg delete "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "HypervisorEnforcedCodeIntegrity" /f
+                            #                 reg delete "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity" /f
+                            #             revertCode: |-
+                            #                 :: Virtualization features
+                            #                 reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "EnableVirtualizationBasedSecurity" /t REG_DWORD /d 1 /f
+                            #                 reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "RequirePlatformSecurityFeatures" /t REG_DWORD /d 1 /f
+                            #                 :: Lock
+                            #                 reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "Locked" /t REG_DWORD /d 0 /f
+                            #                 reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "NoLock" /t REG_DWORD /d 1 /f
+                            #                 :: HypervisorEnforcedCodeIntegrity
+                            #                 reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity" /v "Enabled" /t REG_DWORD /d 1 /f
+                            #                 reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity" /v "Locked" /t REG_DWORD /d 0 /f
+                            #                 reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard" /v "HypervisorEnforcedCodeIntegrity" /t REG_DWORD /d 1 /f
+                            #         -
+                            #             name: Disable System Guard Secure Launch
+                            #             docs:
+                            #                 - https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-system-guard/system-guard-secure-launch-and-smm-protection
+                            #                 - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-deviceguard#deviceguard-configuresystemguardlaunch
+                            #             code: |-
+                            #                 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" /v "ConfigureSystemGuardLaunch" /t REG_DWORD /d 2 /f
+                            #                 reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\SystemGuard" /v "Enabled" /t REG_DWORD /d 0 /f
+                            #             revertCode: |-
+                            #                 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" /v "ConfigureSystemGuardLaunch" /t REG_DWORD /d 1 /f
+                            #                 reg add "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\SystemGuard" /v "Enabled" /t REG_DWORD /d 1 /f
+                            #         -
+                            #             name: Disable Windows Defender Application Control Code Integrity Policy
+                            #             docs:
+                            #                 - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Windows.DeviceGuard::ConfigCIPolicy
+                            #                 - https://docs.microsoft.com/en-us/windows/security/identity-protection/credential-guard/dg-readiness-tool
+                            #             code: |-
+                            #                 del "$env:windir\System32\CodeIntegrity\SIPolicy.p7b"
+                            #                 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" /v "DeployConfigCIPolicy" /t REG_DWORD /d 0 /f
+                            #             revertCode: |-
+                            #                 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" /v "DeployConfigCIPolicy" /t REG_DWORD /d 1 /f
+                            -
+                                name: Disable auto-exclusions
+                                docs:
+                                    - https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/configure-server-exclusions-microsoft-defender-antivirus
+                                    - https://www.stigviewer.com/stig/windows_defender_antivirus/2017-12-27/finding/V-75159
+                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::DisableAutoExclusions
+                                    - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                call:
+                                    -
+                                        function: RunPowerShell
+                                        parameters:
+                                            code: Set-MpPreference -Force -DisableAutoExclusions $True
+                                            revertCode: Set-MpPreference -Force -DisableAutoExclusions $False
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Exclusions" /v "DisableAutoExclusions" /t reg_DWORD /d "1" /f
+                                            revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Exclusions" /v "DisableAutoExclusions" /t reg_DWORD /d "0" /f
+                            -
+                                category: Disable Defender scans
+                                children:
+                                    -
+                                        category: Disable scan actions
+                                        children:
+                                            -
+                                                name: Disable checking for signatures before scan
+                                                docs:
+                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::CheckForSignaturesBeforeRunningScan
+                                                    - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                call:
+                                                    -
+                                                        function: RunPowerShell
+                                                        parameters:
+                                                            code: Set-MpPreference -Force -CheckForSignaturesBeforeRunningScan $False
+                                                            revertCode: Set-MpPreference -Force -CheckForSignaturesBeforeRunningScan $True
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "CheckForSignaturesBeforeRunningScan" /t REG_DWORD /d "1" /f
+                                                            revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "CheckForSignaturesBeforeRunningScan" /f
+                                            -
+                                                name: Disable creating system restore point on a daily basis
+                                                docs:
+                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableRestorePoint
+                                                    - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                call:
+                                                    -
+                                                        function: RunPowerShell
+                                                        parameters:
+                                                            code: Set-MpPreference -Force -DisableRestorePoint $False
+                                                            revertCode: Set-MpPreference -Force -DisableRestorePoint $True
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableRestorePoint" /t REG_DWORD /d "1" /f
+                                                            revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableRestorePoint" /f
+                                            -
+                                                name: Set minumum time for keeping files in scan history folder
+                                                docs:
+                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_PurgeItemsAfterDelay
+                                                    - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                call: # Default is 15, minimum is 0 which means never removing items
+                                                    -
+                                                        function: RunPowerShell
+                                                        parameters:
+                                                            code: Set-MpPreference -Force -ScanPurgeItemsAfterDelay 1
+                                                            revertCode: Set-MpPreference -Force -ScanPurgeItemsAfterDelay 15
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "PurgeItemsAfterDelay" /t REG_DWORD /d "1" /f
+                                                            revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "PurgeItemsAfterDelay" /f
+                                    -
+                                        category: Disable catch-up scans
+                                        children:
+                                            -
+                                                name: Set maximum days before a catch-up scan is forced
+                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_MissedScheduledScanCountBeforeCatchup
+                                                # Default and minumum is 2, maximum is 20
+                                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "MissedScheduledScanCountBeforeCatchup" /t REG_DWORD /d "20" /f
+                                                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "MissedScheduledScanCountBeforeCatchup" /f
+                                            -
+                                                name: Disable catch-up full scans
+                                                docs:
+                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableCatchupFullScan
+                                                    - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                call:
+                                                    -
+                                                        function: RunPowerShell
+                                                        parameters:
+                                                            code: Set-MpPreference -Force -DisableCatchupQuickScan $False
+                                                            revertCode: Set-MpPreference -Force -DisableCatchupQuickScan $True
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableCatchupFullScan" /t REG_DWORD /d "1" /f
+                                                            revertCode: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableCatchupFullScan" /t REG_DWORD /d "0" /f
+                                            -
+                                                name: Disable catch-up quick scans
+                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableCatchupQuickScan
+                                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableCatchupQuickScan" /t REG_DWORD /d "1" /f
+                                                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableCatchupQuickScan" /f
+                                    -
+                                        category: Turn off scan options
+                                        children:
+                                            -
+                                                name: Disable scan heuristics
+                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableHeuristics
+                                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableHeuristics" /t REG_DWORD /d "1" /f
+                                                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableHeuristics" /f
+                                            -
+                                                category: Limit CPU usage during scans
+                                                children:
+                                                    -
+                                                        name: Limit CPU usage during scans to minimum
+                                                        docs:
+                                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_AvgCPULoadFact
+                                                            - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                        call:
+                                                            -
+                                                                function: RunPowerShell
+                                                                parameters:
+                                                                    code: Set-MpPreference -Force -ScanAvgCPULoadFactor 1
+                                                                    revertCode: Set-MpPreference -Force -ScanAvgCPULoadFactor 50
+                                                            -
+                                                                function: RunInlineCode
+                                                                parameters:
+                                                                    code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "AvgCPULoadFactor" /t REG_DWORD /d "1" /f
+                                                                    revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "AvgCPULoadFactor" /f
+                                                    -
+                                                        name: Limit CPU usage during idle scans to minumum
+                                                        docs: https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                        call:
+                                                            -
+                                                                function: RunPowerShell
+                                                                parameters:
+                                                                    code: Set-MpPreference -Force -DisableCpuThrottleOnIdleScans $True
+                                                                    revertCode: Set-MpPreference -Force -DisableCpuThrottleOnIdleScans $False
+                                                            -
+                                                                function: RunInlineCode
+                                                                parameters:
+                                                                    code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableCpuThrottleOnIdleScans" /t REG_DWORD /d "0" /f
+                                                                    revertCode: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableCpuThrottleOnIdleScans" /t REG_DWORD /d "1" /f
+
+                                            -
+                                                name: Disable scanning when not idle
+                                                docs: 
+                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_ScanOnlyIfIdle
+                                                    - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                call:
+                                                    -
+                                                        function: RunPowerShell
+                                                        parameters:
+                                                            code: Set-MpPreference -Force -ScanOnlyIfIdleEnabled $True
+                                                            revertCode: Set-MpPreference -Force -ScanOnlyIfIdleEnabled $False
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "ScanOnlyIfIdle" /t REG_DWORD /d "1" /f
+                                                            revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "ScanOnlyIfIdle" /f
+                                            -
+                                                name: Disable scheduled On Demand anti malware scanner (MRT)
+                                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\MRT" /v "DontOfferThroughWUAU" /t REG_DWORD /d 1 /f
+                                                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\MRT" /v "DontOfferThroughWUAU" /t REG_DWORD /d 0 /f
+                                    -
+                                        category: Limit scanned areas
+                                        children:
+                                            -
+                                                name: Disable e-mail scanning
+                                                docs:
+                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableEmailScanning
+                                                    - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                call:
+                                                    -
+                                                        function: RunPowerShell
+                                                        parameters:
+                                                            code: Set-MpPreference -Force -DisableEmailScanning $True
+                                                            revertCode: Set-MpPreference -Force -DisableEmailScanning $False
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableEmailScanning" /t REG_DWORD /d "1" /f
+                                                            revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableEmailScanning" /f
+                                            -
+                                                name: Disable script scanning
+                                                docs: https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                call:
+                                                    function: RunPowerShell
+                                                    parameters:
+                                                        code: Set-MpPreference -Force -DisableScriptScanning $True
+                                                        revertCode: Set-MpPreference -Force -DisableScriptScanning $False
+                                            -
+                                                name: Disable reparse point scanning
+                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableReparsePointScanning
+                                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableReparsePointScanning" /t REG_DWORD /d "1" /f
+                                                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableReparsePointScanning" /f
+                                            -
+                                                name: Disable scanning on mapped network drives on full-scan
+                                                docs:
+                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableScanningMappedNetworkDrivesForFullScan
+                                                    - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                call:
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableScanningMappedNetworkDrivesForFullScan" /t REG_DWORD /d "1" /f
+                                                            revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableScanningMappedNetworkDrivesForFullScan" /f
+                                                    -
+                                                        function: RunPowerShell
+                                                        parameters:
+                                                            code: Set-MpPreference -Force -DisableScanningMappedNetworkDrivesForFullScan $True
+                                                            revertCode: Set-MpPreference -Force -DisableScanningMappedNetworkDrivesForFullScan $False
+                                            -
+                                                name: Disable scanning network files
+                                                docs:
+                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableScanningNetworkFiles
+                                                    - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                call:
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableScanningNetworkFiles" /t REG_DWORD /d "1" /f
+                                                            revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableScanningNetworkFiles" /f
+                                                    -
+                                                        function: RunPowerShell
+                                                        parameters:
+                                                            code: Set-MpPreference -Force -DisableScanningNetworkFiles $True
+                                                            revertCode: Set-MpPreference -Force -DisableScanningNetworkFiles $False
+                                            -
+                                                name: Disable scanning packed executables
+                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisablePackedExeScanning
+                                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisablePackedExeScanning" /t REG_DWORD /d "1" /f
+                                                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisablePackedExeScanning" /f
+                                            -
+                                                category: Disable scanning archive files
+                                                children:
+                                                    -
+                                                        name: Disable scanning archive files
+                                                        docs:
+                                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableArchiveScanning
+                                                            - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                        call:
+                                                            -
+                                                                function: RunInlineCode
+                                                                parameters:
+                                                                    code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableArchiveScanning" /t REG_DWORD /d "1" /f
+                                                                    revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableArchiveScanning" /f
+                                                            -
+                                                                function: RunPowerShell
+                                                                parameters:
+                                                                    code: Set-MpPreference -Force -DisableArchiveScanning $True
+                                                                    revertCode: Set-MpPreference -Force -DisableArchiveScanning $False
+                                                    -
+                                                        name: Limit depth for scanning archive files to minimum
+                                                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_ArchiveMaxDepth
+                                                        code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "ArchiveMaxDepth" /t REG_DWORD /d "0" /f
+                                                        revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "ArchiveMaxDepth" /f
+                                                    -
+                                                        name: Limit file size for archive files to be scanned to minimum
+                                                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_ArchiveMaxSize
+                                                        code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "ArchiveMaxSize" /t REG_DWORD /d "1" /f
+                                                        revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "ArchiveMaxSize" /f
+                                            -
+                                                name: Disable scanning removable drives
+                                                docs:
+                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableRemovableDriveScanning
+                                                    - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                call:
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableRemovableDriveScanning" /t REG_DWORD /d "1" /f
+                                                            revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableRemovableDriveScanning" /f
+                                                    -
+                                                        function: RunPowerShell
+                                                        parameters:
+                                                            code: Set-MpPreference -Force -DisableRemovableDriveScanning $True
+                                                            revertCode: Set-MpPreference -Force -DisableRemovableDriveScanning $False
+                                    -
+                                        category: Disable auto-scans
+                                        children:
+                                            -
+                                                name: Disable scheduled scans # Already disabled as default
+                                                docs:
+                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_ScheduleDay
+                                                    - https://docs.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/security-malware-windows-defender-scan-scheduleday
+                                                    - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                call:
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "ScheduleDay" /t REG_DWORD /d "8" /f
+                                                            revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "ScheduleDay" /f
+                                                    -
+                                                        function: RunPowerShell
+                                                        parameters:
+                                                            code: Set-MpPreference -Force -ScanScheduleDay 8 # Default is also 8: never
+                                            -
+                                                name: Disable randomizing scheduled task times
+                                                docs:
+                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::RandomizeScheduleTaskTimes
+                                                    - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                call:
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender" /v "RandomizeScheduleTaskTimes" /t REG_DWORD /d "8" /f
+                                                            revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender" /v "RandomizeScheduleTaskTimes" /f
+                                                    -
+                                                        function: RunPowerShell
+                                                        parameters:
+                                                            code: Set-MpPreference -Force -RandomizeScheduleTaskTimes $False
+                                                            revertCode: Set-MpPreference -Force -RandomizeScheduleTaskTimes $True
+                                            -
+                                                name: Disable scheduled full-scans
+                                                docs:
+                                                    - https://docs.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/security-malware-windows-defender-scan-scanparameters
+                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_ScanParameters
+                                                    - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                call:
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "ScanParameters" /t REG_DWORD /d "1" /f
+                                                            revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "ScanParameters" /f
+                                                    -
+                                                        function: RunPowerShell
+                                                        parameters:
+                                                            code: Set-MpPreference -Force -ScanParameters "QuickScan"
+                                                            # (Registry revert should be enough) revertCode: Set-MpPreference -Force -ScanParameters "FullScan"
+                                            -
+                                                name: Limit how many times quick scans run per day
+                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_QuickScanInterval
+                                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "QuickScanInterval" /t REG_DWORD /d "24" /f
+                                                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "QuickScanInterval" /f
+                                            -
+                                                name: Disable scanning after security intelligence (signature) update
+                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_DisableScanOnUpdate
+                                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "DisableScanOnUpdate" /t REG_DWORD /d "1" /f
+                                                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "DisableScanOnUpdate" /f
+                            -
+                                category: Limit Defender updates
+                                children:
+                                    -
+                                        category: Disable Defender Security Intelligence (signature) updates
+                                        children:
+                                            -
+                                                name: Disable forced security intelligence (signature) updates from Microsoft Update
+                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_ForceUpdateFromMU
+                                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "ForceUpdateFromMU" /t REG_DWORD /d 1 /f
+                                                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "ForceUpdateFromMU" /f
+                                            -
+                                                name: Disable security intelligence (signature) updates when running on battery power
+                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_DisableScheduledSignatureUpdateonBattery
+                                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "DisableScheduledSignatureUpdateOnBattery" /t REG_DWORD /d 1 /f
+                                                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "DisableScheduledSignatureUpdateOnBattery" /f
+                                            -
+                                                name: Disable checking for the latest virus and spyware security intelligence (signature) on startup
+                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_UpdateOnStartup
+                                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "UpdateOnStartUp" /t REG_DWORD /d 1 /f
+                                                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "UpdateOnStartUp" /f
+                                            -
+                                                name: Limit catch-up security intelligence (signature) updates # default is one day
+                                                docs:
+                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_SignatureUpdateCatchupInterval
+                                                    - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                call:
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "SignatureUpdateCatchupInterval" /t REG_DWORD /d 4294967295 /f
+                                                            revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "SignatureUpdateCatchupInterval" /f
+                                                    -
+                                                        function: RunPowerShell
+                                                        parameters:
+                                                            code: Set-MpPreference -Force -SignatureUpdateCatchupInterval 4294967295
+                                                            # (Registry revert should be enough) revertCode: Set-MpPreference -Force -SignatureUpdateCatchupInterval ""
+                                            -
+                                                name: Limit spyware security intelligence (signature) updates  # default is one day, recommended is 7 days
+                                                # Maximize period when spyware security intelligence (signature) is considered up-to-dates
+                                                docs:
+                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_ASSignatureDue
+                                                    - https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75241
+                                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "ASSignatureDue" /t REG_DWORD /d 4294967295 /f
+                                                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "ASSignatureDue" /f
+                                            -
+                                                name: Limit virus security intelligence (signature) updates  # default is one day, recommended is 7 days
+                                                # Maximize period when virus security intelligence (signature) is considered up-to-date
+                                                docs:
+                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_AVSignatureDue
+                                                    - https://www.stigviewer.com/stig/windows_defender_antivirus/2017-12-27/finding/V-75243
+                                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "AVSignatureDue" /t REG_DWORD /d 4294967295 /f
+                                                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "AVSignatureDue" /f
+                                            -
+                                                name: Disable security intelligence (signature) update on startup
+                                                docs:
+                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_DisableUpdateOnStartupWithoutEngine
+                                                    - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                call:
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "DisableUpdateOnStartupWithoutEngine" /t REG_DWORD /d 1 /f
+                                                            revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "DisableUpdateOnStartupWithoutEngine" /f
+                                                    -
+                                                        function: RunPowerShell
+                                                        parameters:
+                                                            code: Set-MpPreference -Force -SignatureDisableUpdateOnStartupWithoutEngine $True
+                                                            # (Registry revert should be enough) revertCode: Set-MpPreference -Force -SignatureDisableUpdateOnStartupWithoutEngine $False
+                                            -
+                                                name: Disable automatically checking security intelligence (signature) updates
+                                                docs:
+                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_ScheduleDay
+                                                    - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                call:
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "ScheduleDay" /t REG_DWORD /d 8 /f
+                                                            revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "ScheduleDay" /f
+                                                    -
+                                                        function: RunPowerShell
+                                                        parameters:
+                                                            code: Set-MpPreference -Force -SignatureScheduleDay "8"
+                                            -
+                                                name: Limit update checks for security intelligence (signature) updates
+                                                docs:
+                                                    - https://docs.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/security-malware-windows-defender-signatureupdateinterval
+                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::SignatureUpdate_SignatureUpdateInterval
+                                                    - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                call:
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "SignatureUpdateInterval" /t REG_DWORD /d 24 /f
+                                                            revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "SignatureUpdateInterval" /f
+                                                    -
+                                                        function: RunPowerShell
+                                                        parameters:
+                                                            code: Set-MpPreference -Force -SignatureUpdateInterval "24"
+                                                            # (Registry revert should be enough) revertCode: Set-MpPreference -Force -SignatureUpdateInterval ""
+                                            -
+                                                category: Disable alternate definition updates
+                                                children:
+                                                    -
+                                                        name: Disable definition updates through both WSUS and the Microsoft Malware Protection Center
+                                                        docs: https://admx.help/?Category=Windows_7_2008R2&Policy=Microsoft.Policies.WindowsDefender::CheckAlternateHttpLocation
+                                                        code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "CheckAlternateHttpLocation" /t REG_DWORD /d "0" /f
+                                                        revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "CheckAlternateHttpLocation" /f
+                                                    -
+                                                        name: Disable definition updates through both WSUS and Windows Update
+                                                        docs: https://admx.help/?Category=Windows_7_2008R2&Policy=Microsoft.Policies.WindowsDefender::CheckAlternateDownloadLocation
+                                                        code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "CheckAlternateDownloadLocation" /t REG_DWORD /d "0" /f
+                                                        revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "CheckAlternateDownloadLocation" /f
+                                    -
+                                        name: Limit Defender updates to those that complete gradual release cycle
+                                        docs: https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                        call:
+                                            function: RunPowerShell
+                                            parameters:
+                                                code: Set-MpPreference -Force -DisableGradualRelease $True
+                                                revertCode: Set-MpPreference -Force -DisableGradualRelease $False
+                                    -
+                                        name: Limit Defender engine updates to those that complete gradual release cycle
+                                        docs: https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                        call:
+                                            function: RunPowerShell
+                                            parameters:
+                                                code: Set-MpPreference -Force -EngineUpdatesChannel 'Broad' # "Delayed" is not generally supported
+                                                revertCode: Set-MpPreference -Force -EngineUpdatesChannel 'NotConfigured'
+                                    -
+                                        name: Limit Defender platform updates to those that complete gradual release cycle
+                                        docs: https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                        call:
+                                            function: RunPowerShell
+                                            parameters:
+                                                code: Set-MpPreference -Force -PlatformUpdatesChannel 'Broad' # "Delayed" is not generally supported
+                                                revertCode: Set-MpPreference -Force -PlatformUpdatesChannel 'NotConfigured'
+                                    # - # Not generally supported
+                                    #     name: Limit Defender definition updates to those that complete gradual release cycle
+                                    #     docs: https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                    #     call:
+                                    #         function: RunPowerShell
+                                    #         parameters:
+                                    #             code: Set-MpPreference -Force -DefinitionUpdatesChannel 'Broad'
+                                    #             revertCode: Set-MpPreference -Force -DefinitionUpdatesChannel 'NotConfigured'
+                            - 
+                                category: Disable Windows Defender reporting
+                                children:
+                                    -
+                                        name: Disable Windows Defender logging
+                                        code: |-
+                                            reg add "HKLM\System\CurrentControlSet\Control\WMI\Autologger\DefenderApiLogger" /v "Start" /t REG_DWORD /d "0" /f
+                                            reg add "HKLM\System\CurrentControlSet\Control\WMI\Autologger\DefenderAuditLogger" /v "Start" /t REG_DWORD /d "0" /f
+                                        revertCode: |-
+                                            reg add "HKLM\System\CurrentControlSet\Control\WMI\Autologger\DefenderApiLogger" /v "Start" /t REG_DWORD /d "1" /f
+                                            reg add "HKLM\System\CurrentControlSet\Control\WMI\Autologger\DefenderAuditLogger" /v "Start" /t REG_DWORD /d "1" /f
+                                    -
+                                        name: Disable ETW Provider of Windows Defender (Windows Event Logs)
+                                        docs:
+                                            - https://m365internals.com/2021/07/05/why-are-windows-defender-av-logs-so-important-and-how-to-monitor-them-with-azure-sentinel/
+                                            - https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/event-views
+                                        code: |-
+                                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\Microsoft-Windows-Windows Defender/Operational" /v "Enabled" /t Reg_DWORD /d 0 /f
+                                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\Microsoft-Windows-Windows Defender/WHC" /v "Enabled" /t Reg_DWORD /d 0 /f
+                                        revertCode: |-
+                                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\Microsoft-Windows-Windows Defender/Operational" /v "Enabled" /t Reg_DWORD /d 1 /f
+                                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WINEVT\Channels\Microsoft-Windows-Windows Defender/WHC" /v "Enabled" /t Reg_DWORD /d 1 /f
+                                    -
+                                        name: Do not send Watson events
+                                        # Deprecated since February 2015 update http://support.microsoft.com/kb/3036437
+                                        docs: https://admx.help/?Category=SystemCenterEndpointProtection&Policy=Microsoft.Policies.Antimalware::reporting_disablegenericreports
+                                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Reporting" /v "DisableGenericRePorts" /t REG_DWORD /d 1 /f
+                                        revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender\Reporting" /v "DisableGenericRePorts" /f
+                                    -    
+                                        name: Send minimum Windows software trace preprocessor (WPP Software Tracing) levels
+                                        docs:
+                                            - https://docs.microsoft.com/en-us/windows-hardware/drivers/devtest/wpp-software-tracing
+                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Reporting_WppTracingLevel
+                                        code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Reporting" /v "WppTracingLevel" /t REG_DWORD /d 1 /f
+                                        revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Reporting" /v "WppTracingLevel" /f
+                                    -
+                                        name: Disable auditing events in Microsoft Defender Application Guard
+                                        docs:
+                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.AppHVSI::AppHVSI_AuditApplicationGuardConfig
+                                            - https://docs.microsoft.com/en-us/windows/security/threat-protection/microsoft-defender-application-guard/md-app-guard-overview
+                                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\AppHVSI" /v "AuditApplicationGuard" /t REG_DWORD /d 0 /f
+                                        revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\AppHVSI" /v "AuditApplicationGuard" /f
+                            -
+                                category: Remove Defender from UI
+                                children:
+                                    -
+                                        name: Hide Windows Defender Security Center icon
+                                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefenderSecurityCenter::Systray_HideSystray
+                                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Systray" /v "HideSystray" /t REG_DWORD /d "1" /f
+                                        revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Systray" /v "HideSystray" /t REG_DWORD /d "0" /f
+                                    -
+                                        name: Remove "Scan with Windows Defender" option from context menu
+                                        docs:
+                                            - https://windowsreport.com/remove-right-click-windows-defender-scan-windows-10/
+                                            - https://twigstechtips.blogspot.com/2010/06/windows-remove-with-microsoft-security.html
+                                        code: |-
+                                            reg delete "HKLM\SOFTWARE\Classes\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}\InprocServer32" /v "" /f
+                                            reg delete "HKLM\SOFTWARE\Classes\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}\InprocServer32" /v "ThreadingModel" /f
+                                            reg delete "HKCR\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}" /v "InprocServer32" /f
+                                            reg delete "HKCR\*\shellex\ContextMenuHandlers"/v "EPP" /f
+                                            reg delete "HKCR\Directory\shellex\ContextMenuHandlers" /v "EPP" /f
+                                            reg delete "HKCR\Drive\shellex\ContextMenuHandlers" /v "EPP" /f
+                                        revertCode: |-
+                                            reg add "HKLM\SOFTWARE\Classes\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}" /v "InprocServer32" /t REG_SZ /d "%ProgramFiles%\Windows Defender\shellext.dll"
+                                            reg add "HKCR\SOFTWARE\Classes\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}\InprocServer32" /v "ThreadingModel" /t REG_SZ /d "Apartment" /f
+                                            reg add "HKCR\CLSID\{09A47860-11B0-4DA5-AFA5-26D86198A780}\InprocServer32" /ve /t REG_SZ /d "%ProgramFiles%\Windows Defender\shellext.dll"
+                                            reg add "HKCR\*\shellex\ContextMenuHandlers" /v "EPP" /t REG_SZ /d "{09A47860-11B0-4DA5-AFA5-26D86198A780}"
+                                            reg add "HKCR\Directory\shellex\ContextMenuHandlers" /v "EPP" /t REG_SZ /d "{09A47860-11B0-4DA5-AFA5-26D86198A780}"
+                                            reg add "HKCR\Drive\shellex\ContextMenuHandlers" /v "EPP" /t REG_SZ /d "{09A47860-11B0-4DA5-AFA5-26D86198A780}"
+                                    -
+                                        name: Remove Windows Defender Security Center from taskbar
+                                        docs: https://www.alfintechcomputer.com/what-is-securityhealthsystray-exe-windows-security-notification-icon/
+                                        code: reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "SecurityHealth" /f # Renamed from WindowsDefender/MSASCuiL.exe in Windows 10 version 1809 
+                                        revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "SecurityHealth" /t REG_EXPAND_SZ /d "%windir%\system32\SecurityHealthSystray.exe" /f
+                                    -
+                                        category: Hide Defender UI
+                                        children:
+                                            -
+                                                name: Enable headless UI mode
+                                                docs:
+                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::UX_Configuration_UILockdown
+                                                    - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                call:
+                                                    -
+                                                        function: RunPowerShell
+                                                        parameters:
+                                                            code: Set-MpPreference -Force -UILockdown $True
+                                                            # (Registry revert should be enough) revertCode: Set-MpPreference -Force -UILockdown $False
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\UX Configuration" /v "UILockdown" /t REG_DWORD /d "1" /f
+                                                            revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\UX Configuration" /v "UILockdown" /f
+                                            -
+                                                name: Restrict threat history to administrators
+                                                docs: https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                call:
+                                                    -
+                                                        function: RunPowerShell
+                                                        parameters:
+                                                            code: Set-MpPreference -Force -DisablePrivacyMode $True
+                                                            revertCode: Set-MpPreference -Force -DisablePrivacyMode $False
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\SOFTWARE\Microsoft\Windows Defender\UX Configuration" /v "DisablePrivacyMode" /t REG_DWORD /d "1" /f
+                                                            revertCode: reg delete "HKLM\SOFTWARE\Microsoft\Windows Defender\UX Configuration" /v "DisablePrivacyMode" /f
+                                            -
+                                                category: Hide areas in Windows Defender Security Center
+                                                children:
+                                                    -
+                                                        name: Hide the "Virus and threat protection" area
+                                                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefenderSecurityCenter::VirusThreatProtection_UILockdown
+                                                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Virus and threat protection" /v "UILockdown" /t REG_DWORD /d "1" /f
+                                                        revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Virus and threat protection" /v "UILockdown" /f
+                                                    -
+                                                        name: Hide the "Ransomware data recovery" area
+                                                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefenderSecurityCenter::VirusThreatProtection_HideRansomwareRecovery
+                                                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Virus and threat protection" /v "HideRansomwareRecovery" /t REG_DWORD /d "1" /f
+                                                        revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Virus and threat protection" /v "HideRansomwareRecovery" /f
+                                                    -
+                                                        name: Hide the "Family options" area
+                                                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefenderSecurityCenter::FamilyOptions_UILockdown
+                                                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Family options" /v "UILockdown" /t REG_DWORD /d "1" /f
+                                                        revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Family options" /v "UILockdown" /f
+                                                    -
+                                                        name: Hide the "Device performance and health" area
+                                                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefenderSecurityCenter::DevicePerformanceHealth_UILockdown
+                                                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Device performance and health" /v "UILockdown" /t REG_DWORD /d "1" /f
+                                                        revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Device performance and health" /v "UILockdown" /f
+                                                    -
+                                                        name: Hide the "Account protection" area
+                                                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefenderSecurityCenter::AccountProtection_UILockdown
+                                                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Account protection" /v "UILockdown" /t REG_DWORD /d "1" /f
+                                                        revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Account protection" /v "UILockdown" /f
+                                                    -
+                                                        name: Hide the "App and browser protection" area
+                                                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefenderSecurityCenter::AppBrowserProtection_UILockdown
+                                                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\App and Browser protection" /v "UILockdown" /t REG_DWORD /d "1" /f
+                                                        revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\App and Browser protection" /v "UILockdown" /f
+                                                    -
+                                                        category: Hide the Device security areas
+                                                        children:
+                                                            -
+                                                                name: Hide the Device security area
+                                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefenderSecurityCenter::DeviceSecurity_UILockdown
+                                                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Device security" /v "UILockdown" /t REG_DWORD /d "1" /f
+                                                                revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Device security" /v "UILockdown" /f
+                                                            -
+                                                                name: Disable the Clear TPM button
+                                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefenderSecurityCenter::DeviceSecurity_DisableClearTpmButton
+                                                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Device security" /v "DisableClearTpmButton" /t REG_DWORD /d "1" /f
+                                                                revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Device security" /v "DisableClearTpmButton" /f
+                                                            -
+                                                                name: Disable the Secure boot area button
+                                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefenderSecurityCenter::DeviceSecurity_HideSecureBoot
+                                                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Device security" /v "HideSecureBoot" /t REG_DWORD /d "1" /f
+                                                                revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Device security" /v "HideSecureBoot" /f
+                                                            -
+                                                                name: Hide the Security processor (TPM) troubleshooter page
+                                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefenderSecurityCenter::DeviceSecurity_HideTPMTroubleshooting
+                                                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Device security" /v "HideTPMTroubleshooting" /t REG_DWORD /d "1" /f
+                                                                revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Device security" /v "HideTPMTroubleshooting" /f
+                                                            -
+                                                                name: Hide the TPM Firmware Update recommendation
+                                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefenderSecurityCenter::DeviceSecurity_DisableTpmFirmwareUpdateWarning
+                                                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Device security" /v "DisableTpmFirmwareUpdateWarning" /t REG_DWORD /d "1" /f
+                                                                revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Device security" /v "DisableTpmFirmwareUpdateWarning" /f
+                                                    -
+                                                        name: Hide the "Firewall and network protection" area
+                                                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefenderSecurityCenter::FirewallNetworkProtection_UILockdown
+                                                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Firewall and network protection" /v "UILockdown" /t REG_DWORD /d "1" /f
+                                                        revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Firewall and network protection" /v "UILockdown" /f
+                                    -
+                                        category: Hide Windows Defender notifications
+                                        children:
+                                            -
+                                                category: Hide Windows Defender Security Center notifications
+                                                docs: https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-security-center/wdsc-hide-notifications
+                                                children:
+                                                    -
+                                                        name: Hide all notifications
+                                                        docs:
+                                                            - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsdefendersecuritycenter#windowsdefendersecuritycenter-disablenotifications
+                                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefenderSecurityCenter::Notifications_DisableNotifications
+                                                        code: |-
+                                                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Notifications" /v "DisableNotifications" /t REG_DWORD /d "1" /f
+                                                            reg add "HKLM\SOFTWARE\Microsoft\Windows Defender Security Center\Notifications" /v "DisableNotifications" /t REG_DWORD /d "1" /f
+                                                        revertCode: |-
+                                                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Notifications" /v "DisableNotifications" /t REG_DWORD /d "0" /f
+                                                            reg add "HKLM\SOFTWARE\Microsoft\Windows Defender Security Center\Notifications" /v "DisableNotifications" /t REG_DWORD /d "1" /f
+                                                    -
+                                                        name: Hide non-critical notifications
+                                                        docs: 
+                                                            - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsdefendersecuritycenter#windowsdefendersecuritycenter-disableenhancednotifications
+                                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefenderSecurityCenter::Notifications_DisableEnhancedNotifications
+                                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Reporting_DisableEnhancedNotifications
+                                                        code: |-
+                                                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Notifications" /v "DisableEnhancedNotifications" /t REG_DWORD /d "1" /f
+                                                            reg add "HKLM\SOFTWARE\Microsoft\Windows Defender Security Center\Notifications" /v "DisableEnhancedNotifications" /t REG_DWORD /d "1" /f
+                                                            reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Reporting" /v "DisableEnhancedNotifications" /t REG_DWORD /d "1" /f
+                                                        revertCode: |-
+                                                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Notifications" /v "DisableEnhancedNotifications" /f
+                                                            reg delete "HKLM\SOFTWARE\Microsoft\Windows Defender Security Center\Notifications" /v "DisableEnhancedNotifications" /f
+                                                            reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Reporting" /v "DisableEnhancedNotifications" /f
+                                            -
+                                                name: Disable Windows Action Center security and maintenance notifications # For Windows 10 build 1607 and above
+                                                docs: https://web.archive.org/web/20171206070211/https://blogs.technet.microsoft.com/platforms_lync_cloud/2017/05/05/disabling-windows-10-action-center-notifications/
+                                                code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.SecurityAndMaintenance" /v "Enabled" /t REG_DWORD /d "0" /f
+                                                revertCode: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Notifications\Settings\Windows.SystemToast.SecurityAndMaintenance" /v "Enabled" /t REG_DWORD /d "1" /f
+                                            -
+                                                name: Disable all Windows Defender Antivirus notifications
+                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::UX_Configuration_Notification_Suppress
+                                                code: |-
+                                                    reg add "HKCU\SOFTWARE\Policies\Microsoft\Windows Defender\UX Configuration" /v "Notification_Suppress" /t REG_DWORD /d "1" /f
+                                                    reg add "HKCU\SOFTWARE\Microsoft\Windows Defender\UX Configuration" /v "Notification_Suppress" /t REG_DWORD /d "1" /f
+                                                revertCode: |-
+                                                    reg add "HKCU\SOFTWARE\Policies\Microsoft\Windows Defender\UX Configuration" /v "Notification_Suppress" /t REG_DWORD /d "0" /f
+                                                    reg add "HKCU\SOFTWARE\Microsoft\Windows Defender\UX Configuration" /v "Notification_Suppress" /t REG_DWORD /d "0" /f
+                                            -
+                                                name: Suppress reboot notifications
+                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::UX_Configuration_SuppressRebootNotification
+                                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\UX Configuration" /v "SuppressRebootNotification" /t REG_DWORD /d "1" /f
+                                                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\UX Configuration" /v "SuppressRebootNotification" /f
                     -
-                        name: Turn off enhanced notifications
-                        docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsdefendersecuritycenter#windowsdefendersecuritycenter-disableenhancednotifications
-                        code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Reporting" /v "DisableEnhancedNotifications" /t REG_DWORD /d "1" /f
-                        revertCode: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Reporting" /v "DisableEnhancedNotifications" /t REG_DWORD /d "0" /f
-                    -
-                        name: Disable Windows Defender logging
-                        code: |-
-                            reg add "HKLM\System\CurrentControlSet\Control\WMI\Autologger\DefenderApiLogger" /v "Start" /t REG_DWORD /d "0" /f
-                            reg add "HKLM\System\CurrentControlSet\Control\WMI\Autologger\DefenderAuditLogger" /v "Start" /t REG_DWORD /d "0" /f
-                        revertCode: |-
-                            reg add "HKLM\System\CurrentControlSet\Control\WMI\Autologger\DefenderApiLogger" /v "Start" /t REG_DWORD /d "1" /f
-                            reg add "HKLM\System\CurrentControlSet\Control\WMI\Autologger\DefenderAuditLogger" /v "Start" /t REG_DWORD /d "1" /f
-                    -
-                        name: Turn off block at first sight
-                        docs: https://docs.microsoft.com/en-us/windows/security/threat-protection/microsoft-defender-antivirus/configure-block-at-first-sight-microsoft-defender-antivirus
-                        code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\SpyNet" /v "DisableBlockAtFirstSeen" /t REG_DWORD /d "1" /f
-                        revertCode:  reg add "HKLM\Software\Policies\Microsoft\Windows Defender\SpyNet" /v "DisableBlockAtFirstSeen" /t REG_DWORD /d "0" /f
-                    -
-                        category: Disable Windows Defender tasks
+                        category: Disable OS components for Defender # Hackers way of disabling Defender
                         children:
                             -
-                                name: Disable Windows Defender ExploitGuard task
-                                code: schtasks /Change /TN "Microsoft\Windows\ExploitGuard\ExploitGuard MDM policy Refresh" /Disable
-                                revertCode: schtasks /Change /TN "Microsoft\Windows\ExploitGuard\ExploitGuard MDM policy Refresh" /Enable
+                                category: Disable Windows Defender tasks
+                                children:
+                                    -
+                                        name: Disable Windows Defender ExploitGuard task
+                                        code: schtasks /Change /TN "Microsoft\Windows\ExploitGuard\ExploitGuard MDM policy Refresh" /Disable
+                                        revertCode: schtasks /Change /TN "Microsoft\Windows\ExploitGuard\ExploitGuard MDM policy Refresh" /Enable
+                                    -
+                                        name: Disable Windows Defender Cache Maintenance task
+                                        code: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Cache Maintenance" /Disable
+                                        revertCode: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Cache Maintenance" /Enable
+                                    -
+                                        name: Disable Windows Defender Cleanup task
+                                        code: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Cleanup" /Disable
+                                        revertCode: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Cleanup" /Enable
+                                    -
+                                        name: Disable Windows Defender Scheduled Scan task
+                                        code: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Scheduled Scan" /Disable
+                                        revertCode: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Scheduled Scan" /Enable
+                                    -
+                                        name: Disable Windows Defender Verification task
+                                        code: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Verification" /Disable
+                                        revertCode: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Verification" /Enable
                             -
-                                name: Disable Windows Defender Cache Maintenance task
-                                code: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Cache Maintenance" /Disable
-                                revertCode: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Cache Maintenance" /Enable
-                            -
-                                name: Disable Windows Defender Cleanup task
-                                code: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Cleanup" /Disable
-                                revertCode: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Cleanup" /Enable
-                            -
-                                name: Disable Windows Defender Scheduled Scan task
-                                code: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Scheduled Scan" /Disable
-                                revertCode: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Scheduled Scan" /Enable
-                            -
-                                name: Disable Windows Defender Verification task
-                                code: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Verification" /Disable
-                                revertCode: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Verification" /Enable
-                    -
-                        category: Disable Windows Defender services
-                        children:
-                            -
-                                name: Disable Windows Defender Firewall service
-                                code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\MpsSvc" /v "Start" /t REG_DWORD /d "4" /f
-                                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\MpsSvc" /v "Start" /t REG_DWORD /d "2" /f
-                            -
-                                name: Disable Windows Defender Antivirus service
-                                code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WinDefend" /v "Start" /t REG_DWORD /d "4" /f
-                                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WinDefend" /v "Start" /t REG_DWORD /d "2" /f
-                            -
-                                name: Disable Microsoft Defender Antivirus Boot Driver service
-                                code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdBoot" /v "Start" /t REG_DWORD /d "4" /f
-                                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdBoot" /v "Start" /t REG_DWORD /d "2" /f
-                            -
-                                name: Disable Microsoft Defender Antivirus Mini-Filter Driver service
-                                code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdFilter" /v "Start" /t REG_DWORD /d "4" /f
-                                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdFilter" /v "Start" /t REG_DWORD /d "2" /f
-                            -
-                                name: Disable Microsoft Defender Antivirus Network Inspection System Driver service
-                                code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisDrv" /v "Start" /t REG_DWORD /d "4" /f
-                                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisDrv" /v "Start" /t REG_DWORD /d "2" /f
-                            -
-                                name: Disable Microsoft Defender Antivirus Network Inspection service
-                                code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisSvc" /v "Start" /t REG_DWORD /d "4" /f
-                                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisSvc" /v "Start" /t REG_DWORD /d "2" /f
-                            -
-                                name: Disable Windows Security service
-                                code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\SecurityHealthService" /v "Start" /t REG_DWORD /d "4" /f
-                                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\SecurityHealthService" /v "Start" /t REG_DWORD /d "2" /f
+                                category: Disable Windows Defender services
+                                children:
+                                    -
+                                        name: Disable Windows Defender Firewall service
+                                        code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\MpsSvc" /v "Start" /t REG_DWORD /d "4" /f
+                                        revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\MpsSvc" /v "Start" /t REG_DWORD /d "2" /f
+                                    -
+                                        name: Disable Windows Defender Antivirus service
+                                        code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WinDefend" /v "Start" /t REG_DWORD /d "4" /f
+                                        revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WinDefend" /v "Start" /t REG_DWORD /d "2" /f
+                                    -
+                                        name: Disable Microsoft Defender Antivirus Boot Driver service
+                                        code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdBoot" /v "Start" /t REG_DWORD /d "4" /f
+                                        revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdBoot" /v "Start" /t REG_DWORD /d "2" /f
+                                    -
+                                        name: Disable Microsoft Defender Antivirus Mini-Filter Driver service
+                                        code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdFilter" /v "Start" /t REG_DWORD /d "4" /f
+                                        revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdFilter" /v "Start" /t REG_DWORD /d "2" /f
+                                    -
+                                        name: Disable Microsoft Defender Antivirus Network Inspection System Driver service
+                                        code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisDrv" /v "Start" /t REG_DWORD /d "4" /f
+                                        revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisDrv" /v "Start" /t REG_DWORD /d "2" /f
+                                    -
+                                        name: Disable Microsoft Defender Antivirus Network Inspection service
+                                        code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisSvc" /v "Start" /t REG_DWORD /d "4" /f
+                                        revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisSvc" /v "Start" /t REG_DWORD /d "2" /f
+                                    -
+                                        name: Disable Windows Security service
+                                        code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\SecurityHealthService" /v "Start" /t REG_DWORD /d "4" /f
+                                        revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\SecurityHealthService" /v "Start" /t REG_DWORD /d "2" /f
                     -
                         category: Disable SmartScreen
                         docs:
@@ -2620,7 +3742,7 @@ actions:
                                     -
                                         name: Disable SmartScreen preventing users from running applications
                                         docs:
-                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsExplorer::EnableSmartScreen
+                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.SmartScreen::ShellConfigureSmartScreen
                                             - https://www.stigviewer.com/stig/windows_10/2018-04-06/finding/V-63685
                                         code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "ShellSmartScreenLevel" /t REG_SZ /d "Warn" /f
                                         revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "ShellSmartScreenLevel" /f
@@ -2685,10 +3807,6 @@ actions:
                                         revertCode: |-
                                             reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost" /v "EnableWebContentEvaluation" /t REG_DWORD /d "1" /f
                                             reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost" /v "EnableWebContentEvaluation" /t REG_DWORD /d "1" /f
-            -
-                name: Disable scheduled On Demand anti malware scanner (MRT)
-                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\MRT" /v "DontOfferThroughWUAU" /t REG_DWORD /d 1 /f
-                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\MRT" /v "DontOfferThroughWUAU" /t REG_DWORD /d 0 /f
             -
                 name: Disable automatic updates
                 docs: https://docs.microsoft.com/fr-fr/security-updates/windowsupdateservices/18127152
@@ -4694,3 +5812,11 @@ functions:
                             Write-Error "Registry key at `"$regKey`" does not exist"
                         }
                     }
+    -
+        name: RunInlineCode
+        parameters:
+            -   name: code
+            -   name: revertCode
+                optional: true
+        code: "{{ $code }}"
+        revertCode: "{{ $revertCode }}"
