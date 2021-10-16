@@ -674,6 +674,273 @@ actions:
                                 revertCode: |-
                                     defaults delete com.apple.Siri 'StatusMenuVisible'
                                     defaults delete com.apple.Siri 'UserHasDeclinedEnable'
+    -
+        category: Privacy over security
+        children:
+            -
+                category: Disable File Quarantine (tracks downloaded files and warns)
+                # OS tracks downloaded files with help of quarantine-aware applications
+                # (such as Safari, Chrome) adding quarantine extended attributes to files.
+                # then OS warns and asks if you really want to open it
+                docs: https://support.apple.com/en-gb/HT202491
+                children:
+                    -
+                        category: Clean File Quarantine from downloaded files
+                        children:
+                            -
+                                name: Clear File Quarantine logs of all downloaded files
+                                recommend: strict
+                                docs:
+                                    - https://www.macobserver.com/tips/how-to/your-mac-remembers-everything-you-download-heres-how-to-clear-download-history/
+                                    - https://eclecticlight.co/2019/04/25/%F0%9F%8E%97-quarantine-apps/
+                                    - https://eclecticlight.co/2017/12/11/xattr-com-apple-quarantine-the-quarantine-flag/
+                                    - https://eclecticlight.co/2017/08/14/show-me-your-metadata-extended-attributes-in-macos-sierra/
+                                    # Query entries using:
+                                    #   sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2 'select DISTINCT LSQuarantineDataURLString from LSQuarantineEvent'
+                                code: |-
+                                    db_file=~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2
+                                    db_query='delete from LSQuarantineEvent'
+                                    if [ -f "$db_file" ]; then
+                                        echo "Database exists at \"$db_file\""
+                                        if ls -lO "$db_file" | grep --silent 'schg'; then
+                                            sudo chflags noschg "$db_file"
+                                            echo "Found and removed system immutable flag"
+                                            has_sytem_immutable_flag=true
+                                        fi
+                                        if ls -lO "$db_file" | grep --silent 'uchg'; then
+                                            sudo chflags nouchg "$db_file"
+                                            echo "Found and removed user immutable flag"
+                                            has_user_immutable_flag=true
+                                        fi
+                                        sqlite3 "$db_file" "$db_query"
+                                        echo "Executed the query \"$db_query\""
+                                        if [ "$has_sytem_immutable_flag" = true ] ; then
+                                            sudo chflags schg "$db_file"
+                                            echo "Added system immutable flag back"
+                                        fi
+                                        if [ "$has_user_immutable_flag" = true ] ; then
+                                            sudo chflags uchg "$db_file"
+                                            echo "Added user immutable flag back"
+                                        fi
+                                    else
+                                        echo "No action needed, database does not exist at \"$db_file\""
+                                    fi
+                            -
+                                name: Clear File Quarantine attribute from downloaded files
+                                docs: https://superuser.com/questions/28384/what-should-i-do-about-com-apple-quarantine
+                                code: |-
+                                    find ~/Downloads        \
+                                            -type f         \
+                                            -exec           \
+                                                sh -c       \
+                                                    '
+                                                        attr="com.apple.quarantine"
+                                                        file="{}"
+                                                        if [[ $(xattr "$file") = *$attr* ]]; then
+                                                            if xattr -d "$attr" "$file" 2>/dev/null; then
+                                                                echo "🧹 Cleaned attribute from \"$file\""
+                                                            else
+                                                                >&2 echo "❌ Failed to clean attribute from \"$file\""
+                                                            fi
+                                                        else
+                                                            echo "No attribute in \"$file\""
+                                                        fi
+                                                    '       \
+                                                {} \;
+                    -
+                        category: Disable File Quarantine from tracking downloaded files
+                        children:
+                            -
+                                name: Prevent quarantine from logging downloaded files
+                                docs:
+                                    - https://eclecticlight.co/2019/04/25/%F0%9F%8E%97-quarantine-apps/
+                                    - https://eclecticlight.co/2017/12/11/xattr-com-apple-quarantine-the-quarantine-flag/
+                                    - https://eclecticlight.co/2017/08/14/show-me-your-metadata-extended-attributes-in-macos-sierra/
+                                recommend: strict
+                                code: |-
+                                    file_to_lock=~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2
+                                    if [ -f "$file_to_lock" ]; then
+                                        sudo chflags schg "$file_to_lock"
+                                        echo "Made file immutable at \"$file_to_lock\""
+                                    else
+                                        echo "No action is needed, file does not exist at \"$file_to_lock\""
+                                    fi
+                                revertCode: |-
+                                    file_to_lock=~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2
+                                    if [ -f "$file_to_lock" ]; then
+                                        sudo chflags noschg "$file_to_lock"
+                                        echo "Successfully reverted immutability from \"$file_to_lock\""
+                                    else
+                                        >&2 echo "Cannot revert immutability, file does not exist at\"$file_to_lock\""
+                                    fi
+                            -
+                                name: Disable using extended quarantine attribute on downloaded files (disables warning)
+                                # Disables dialogs shown when opening an application for the first time
+                                # i.e. "Application Downloaded from Internet" quarantine warning.
+                                docs:
+                                    - https://apple.stackexchange.com/questions/373176/disable-the-use-of-the-com-apple-quarantine-extended-attribute-on-mojave
+                                    - https://superuser.com/questions/266176/is-there-some-way-to-disable-the-dialogs-shown-when-opening-an-application-for-t
+                                    - https://macos-defaults.com/misc/lsquarantine.html
+                                code: sudo defaults write com.apple.LaunchServices 'LSQuarantine' -bool NO
+                                revertCode: sudo defaults delete com.apple.LaunchServices 'LSQuarantine'
+            -
+                category: Disable Gatekeeper (enforces code-signing)
+                # Built on top of File Quarantine, requires code-signing for apps.
+                # Warns user if a file is not signed by it's developer with certificate issued by Apple.
+                # Can protect against unknown threats.
+                children:
+                    -
+                        name: Prevent Gatekeeper from automatically reactivating itself
+                        docs:
+                            - https://osxdaily.com/2015/11/05/stop-gatekeeper-auto-rearm-mac-os-x/
+                            - https://www.cnet.com/tech/computing/how-to-disable-gatekeeper-permanently-on-os-x/
+                        code: sudo defaults write /Library/Preferences/com.apple.security GKAutoRearm -bool true
+                        revertCode: sudo defaults write /Library/Preferences/com.apple.security GKAutoRearm -bool false
+                    -
+                        name: Disable Gatekeeper
+                        docs:
+                            # References for spctl --master-disable
+                                - https://www.manpagez.com/man/8/spctl/
+                            # References for /var/db/SystemPolicy-prefs.plist
+                                - https://krypted.com/mac-security/manage-gatekeeper-from-the-command-line-in-mountain-lion/
+                                - https://community.jamf.com/t5/jamf-pro/users-can-t-change-password-greyed-out/m-p/54228
+                        code: |-
+                            os_major_ver=$(sw_vers -productVersion | awk -F "." '{print $1}')
+                            os_minor_ver=$(sw_vers -productVersion | awk -F "." '{print $2}')
+                            if  [[  $os_major_ver -le 10 \
+                                    || ( $os_major_ver -eq 10 && $os_minor_ver -lt 7 )  \
+                                ]]; then
+                                echo "No action needed, Gatekeeper is not available this OS version"
+                            else
+                                gatekeeper_status="$(spctl --status | awk '/assessments/ {print $2}')"
+                                if [ $gatekeeper_status = "disabled" ]; then
+                                    echo "No action needed, Gatekeeper is already disabled"
+                                elif [ $gatekeeper_status = "enabled" ]; then
+                                    sudo spctl --master-disable
+                                    sudo defaults write '/var/db/SystemPolicy-prefs' 'enabled' -string 'no'
+                                    echo "Disabled Gatekeeper"
+                                else
+                                    >&2 echo "Unknown gatekeeper status: $gatekeeper_status"
+                                fi
+                            fi
+                        revertCode: |-
+                            os_major_ver=$(sw_vers -productVersion | awk -F "." '{print $1}')
+                            os_minor_ver=$(sw_vers -productVersion | awk -F "." '{print $2}')
+                            if  [[  $os_major_ver -le 10 \
+                                    || ( $os_major_ver -eq 10 && $os_minor_ver -lt 7 )  \
+                                ]]; then
+                                >&2 echo "Gatekeeper is not available in this OS version"
+                            else
+                                gatekeeper_status="$(spctl --status | awk '/assessments/ {print $2}')"
+                                if [ $gatekeeper_status = "disabled" ]; then
+                                    sudo spctl --master-enable
+                                    sudo defaults write '/var/db/SystemPolicy-prefs' 'enabled' -string 'yes'
+                                    echo "Enabled Gatekeeper"
+                                elif [ $gatekeeper_status = "enabled" ]; then
+                                    echo "No action needed, Gatekeeper is already enabled"
+                                else
+                                    >&2 echo "Unknown Gatekeeper status: $gatekeeper_status"
+                                fi
+                            fi
+            -
+                name: Disable Library Validation Entitlement (checks signature of libraries)
+                docs:
+                    - https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_cs_disable-library-validation
+                    - https://www.macenhance.com/docs/general/sip-library-validation.html
+                    - https://www.naut.ca/blog/2020/11/13/forbidden-commands-to-liberate-macos/
+                code: sudo defaults write /Library/Preferences/com.apple.security.libraryvalidation.plist 'DisableLibraryValidation' -bool true
+                revertCode: sudo defaults write /Library/Preferences/com.apple.security.libraryvalidation.plist 'DisableLibraryValidation' -bool false
+            -
+                category: Disable automatic updates
+                docs:
+                    - https://developer.apple.com/documentation/devicemanagement/deviceinformationresponse/queryresponses/osupdatesettings
+                    - https://macadminsdoc.readthedocs.io/en/master/Profiles-and-Settings/OS-X-Updates.html
+                children:
+                    -
+                        name: Disable automatically checking for updates
+                        docs: https://developer.apple.com/documentation/devicemanagement/softwareupdate
+                        code: |-
+                            # For OS X Yosemite and later (>= 10.10)
+                            sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AutomaticCheckEnabled' -bool false
+                        revertCode: |-
+                            # For OS X Yosemite and later (>= 10.10)
+                            sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AutomaticCheckEnabled' -bool true
+                    -
+                        name: Disable automatically downloading new updates when available
+                        docs: https://developer.apple.com/documentation/devicemanagement/softwareupdate
+                        code: |-
+                            # For OS X Yosemite and later (>= 10.10)
+                            sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AutomaticDownload' -bool false
+                        revertCode: |-
+                            # For OS X Yosemite and later (>= 10.10)
+                            sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AutomaticDownload' -bool true
+                    -
+                        name: Disable automatically installing macOS updates
+                        docs:
+                            # References for AutoUpdateRestartRequired
+                                - https://kb.vmware.com/s/article/2960635
+                                - https://derflounder.wordpress.com/2018/12/28/enabling-automatic-macos-software-updates-for-os-x-yosemite-through-macos-mojave/
+                            # References for AutomaticallyInstallMacOSUpdates
+                                - https://developer.apple.com/documentation/devicemanagement/softwareupdate
+                        code: |-
+                            # For OS X Yosemite through macOS High Sierra (>= 10.10 && < 10.14)
+                            sudo defaults write /Library/Preferences/com.apple.commerce 'AutoUpdateRestartRequired' -bool false
+                            # For Mojave and later (>= 10.14)
+                            sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AutomaticallyInstallMacOSUpdates' -bool false
+                        revertCode: |-
+                            # For OS X Yosemite through macOS High Sierra (>= 10.10 && < 10.14)
+                            sudo defaults write /Library/Preferences/com.apple.commerce 'AutoUpdateRestartRequired' -bool true
+                            # For Mojave and later (>= 10.14)
+                            sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AutomaticallyInstallMacOSUpdates' -bool true
+                    -
+                        name: Disable automatically updating app from the App Store
+                        docs:
+                            - https://kb.vmware.com/s/article/2960635
+                            - https://derflounder.wordpress.com/2018/12/28/enabling-automatic-macos-software-updates-for-os-x-yosemite-through-macos-mojave/
+                        code: |-
+                            # For OS X Yosemite and later (>= 10.10)
+                            sudo defaults write /Library/Preferences/com.apple.commerce 'AutoUpdate' -bool false
+                            # For Mojave and later (>= 10.14)
+                            sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AutomaticallyInstallAppUpdates' -bool false
+                        revertCode: |-
+                            # For OS X Yosemite and later
+                            sudo defaults write /Library/Preferences/com.apple.commerce 'AutoUpdate' -bool true
+                            # For Mojave and later (>= 10.14)
+                            sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AutomaticallyInstallAppUpdates' -bool true
+                    -
+                        name: Disable installation of macOS beta releases
+                        docs: https://support.apple.com/en-gb/HT203018
+                        code: |-
+                            # For OS X Yosemite and later (>= 10.10)
+                            sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AllowPreReleaseInstallation' -bool false
+                        revertCode: |-
+                            # For OS X Yosemite and later (>= 10.10)
+                            sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AllowPreReleaseInstallation' -bool true
+                    -
+                        name: Disable automatically installing configuration data (e.g. XProtect, Gatekeeper, MRT)
+                        docs: https://derflounder.wordpress.com/2018/12/28/enabling-automatic-macos-software-updates-for-os-x-yosemite-through-macos-mojave/
+                        code: |-
+                            # For OS X Yosemite and later (>= 10.10)
+                            sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'ConfigDataInstall' -bool false
+                        revertCode: |-
+                            # For OS X Yosemite and later (>= 10.10)
+                            sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'ConfigDataInstall' -bool true
+                    -
+                        name: Disable automatically installing system data files and security updates
+                        docs:
+                            # References for CriticalUpdateInstall
+                                - https://derflounder.wordpress.com/2014/12/24/managing-os-xs-automatic-security-updates/
+                                - https://developer.apple.com/documentation/devicemanagement/softwareupdate
+                            # References for softwareupdate --background-critical
+                                - https://managingosx.wordpress.com/2013/04/30/undocumented-options/
+                        code: |-
+                            # For OS X Yosemite and later (>= 10.10)
+                            sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'CriticalUpdateInstall' -bool false
+                        revertCode: |-
+                            # For OS X Yosemite and later (>= 10.10)
+                            sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'CriticalUpdateInstall' -bool true
+                            # Trigger background check with normal scan (critical updates only)
+                            sudo softwareupdate --background-critical
 functions:
     -
         name: PersistUserEnvironmentConfiguration
