@@ -10,7 +10,7 @@ describe('EscapeDoubleQuotes', () => {
         {
             name: 'using "',
             input: 'hello "world"',
-            expectedOutput: 'hello \\"world\\"',
+            expectedOutput: 'hello "^""world"^""',
         },
         {
             name: 'not using any double quotes',
@@ -20,7 +20,7 @@ describe('EscapeDoubleQuotes', () => {
         {
             name: 'consecutive double quotes',
             input: '""hello world""',
-            expectedOutput: '\\"\\"hello world\\"\\"',
+            expectedOutput: '"^"""^""hello world"^"""^""',
         },
         {
             name: 'returns undefined when if input is undefined',
