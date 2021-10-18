@@ -5,21 +5,24 @@
 */
 
 // --- Primary | The color displayed most frequently across screens and components
-$color-primary              : #949fb0;
-$color-primary-light        : lighten($color-primary, 15%);
+$color-primary              : #3a65ab;
+$color-primary-light        : lighten($color-primary, 30%);
 $color-primary-dark         : darken($color-primary, 18%);
-$color-primary-darker       : darken($color-primary, 40%);
+$color-primary-darker       : darken($color-primary, 32%);
 $color-primary-darkest      : darken($color-primary, 44%);
-$color-on-primary           : lighten($color-primary, 30%);     // Text/iconography color that is usable on top of primary color
+// Text/iconography color that is usable on top of primary color
+$color-on-primary           : #e4f1fe;
 
 // --- Secondary | Accent color, should be applied sparingly to accent select parts of UI
-$color-secondary            : #1abc9c;
+$color-secondary            : #00D1AD;
 $color-secondary-light      : lighten($color-secondary, 48%);
-$color-on-secondary         : #fff;                             // Text/iconography color that is usable on top of secondary color
+// Text/iconography color that is usable on top of secondary color
+$color-on-secondary         : #005051;
 
 // --- Surface | Affect surfaces of components, such as cards, sheets, and menus.
 $color-surface              : #fff;
-$color-on-surface           : #000;                             // Text/iconography color that is usable on surface
+// Text/iconography color that is usable on surface
+$color-on-surface           : #4d5156;
 
 // Background | Appears behind scrollable content.
-$color-background           : lighten($color-primary, 30);
+$color-background           : #e6ecf4;
