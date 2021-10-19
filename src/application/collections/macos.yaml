@@ -546,46 +546,6 @@ actions:
                 code: defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
                 revertCode: defaults delete NSGlobalDomain NSDocumentSaveNewDocumentsToCloud
             -
-                category: Security improvements
-                children:
-                    -
-                        category: Configure macOS Application Firewall
-                        children:
-                            -
-                                name: Enable firewall
-                                recommend: standard
-                                docs: https://www.stigviewer.com/stig/apple_os_x_10.13/2018-10-01/finding/V-81681
-                                code: /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
-                                revertCode: /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate off
-                            -
-                                name: Turn on firewall logging
-                                recommend: standard
-                                docs: https://www.stigviewer.com/stig/apple_os_x_10.13/2018-10-01/finding/V-81671
-                                code: /usr/libexec/ApplicationFirewall/socketfilterfw --setloggingmode on
-                                revertCode: /usr/libexec/ApplicationFirewall/socketfilterfw --setloggingmode off
-                            -
-                                name: Turn on stealth mode
-                                recommend: standard
-                                docs: https://www.stigviewer.com/stig/apple_os_x_10.8_mountain_lion_workstation/2015-02-10/finding/V-51327
-                                code: /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on
-                                revertCode: /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode off
-                            -
-                                name: Disable Spotlight indexing
-                                code: sudo mdutil -i off -d /
-                                revertCode: sudo mdutil -i on /
-                    -
-                        name: Disable Captive portal
-                        docs:
-                            - https://web.archive.org/web/20171008071031if_/http://blog.erratasec.com/2010/09/apples-secret-wispr-request.html#.WdnPa5OyL6Y
-                            - https://web.archive.org/web/20130407200745/http://www.divertednetworks.net/apple-captiveportal.html
-                            - https://web.archive.org/web/20170622064304/https://grpugh.wordpress.com/2014/10/29/an-undocumented-change-to-captive-network-assistant-settings-in-os-x-10-10-yosemite/
-                        code: sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.captive.control.plist Active -bool false
-                        revertCode: sudo defaults delete /Library/Preferences/SystemConfiguration/com.apple.captive.control.plist Active
-                    -
-                        name: Require a password to wake the computer from sleep or screen saver
-                        code: defaults write /Library/Preferences/com.apple.screensaver askForPassword -bool true
-                        revertCode: sudo defaults delete /Library/Preferences/com.apple.screensaver askForPassword
-            -
                 name: Do not show recent items on dock
                 docs: https://developer.apple.com/documentation/devicemanagement/dock
                 code: defaults write com.apple.dock show-recents -bool false
@@ -674,6 +634,181 @@ actions:
                                 revertCode: |-
                                     defaults delete com.apple.Siri 'StatusMenuVisible'
                                     defaults delete com.apple.Siri 'UserHasDeclinedEnable'
+            -
+                name: Disable Spotlight indexing 
+                code: sudo mdutil -i off -d /
+                revertCode: sudo mdutil -i on /
+    -
+        category: Security improvements
+        children:
+            -
+                category: Configure macOS Application Firewall
+                children:
+                    -
+                        name: Enable application firewall
+                        recommend: standard
+                        docs:
+                            - https://www.stigviewer.com/stig/apple_os_x_10.13/2018-10-01/finding/V-81681
+                            - https://daiderd.com/nix-darwin/manual/index.html
+                            - https://developer.apple.com/documentation/devicemanagement/firewall
+                        code: |-
+                            /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
+                            sudo defaults write /Library/Preferences/com.apple.alf globalstate -bool true
+                            defaults write com.apple.security.firewall EnableFirewall -bool true
+                        revertCode: |-
+                            /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate off
+                            sudo defaults write /Library/Preferences/com.apple.alf globalstate -bool false
+                            defaults write com.apple.security.firewall EnableFirewall -bool false
+                    -
+                        name: Turn on firewall logging
+                        recommend: standard
+                        docs:
+                            - https://www.stigviewer.com/stig/apple_os_x_10.13/2018-10-01/finding/V-81671
+                            - https://daiderd.com/nix-darwin/manual/index.html
+                        code: |-
+                            /usr/libexec/ApplicationFirewall/socketfilterfw --setloggingmode on
+                            sudo defaults write /Library/Preferences/com.apple.alf loggingenabled -bool true
+                        revertCode: |-
+                            /usr/libexec/ApplicationFirewall/socketfilterfw --setloggingmode off
+                            sudo defaults write /Library/Preferences/com.apple.alf loggingenabled -bool false
+                    -
+                        name: Turn on stealth mode
+                        recommend: standard
+                        docs:
+                            - https://www.stigviewer.com/stig/apple_os_x_10.8_mountain_lion_workstation/2015-02-10/finding/V-51327
+                            - https://daiderd.com/nix-darwin/manual/index.html
+                            - https://developer.apple.com/documentation/devicemanagement/firewall
+                        code: |-
+                            /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode on
+                            sudo defaults write /Library/Preferences/com.apple.alf stealthenabled -bool true
+                            defaults write com.apple.security.firewall EnableStealthMode -bool true
+                        revertCode: |-
+                            /usr/libexec/ApplicationFirewall/socketfilterfw --setstealthmode off
+                            sudo defaults write /Library/Preferences/com.apple.alf stealthenabled -bool false
+                            defaults write com.apple.security.firewall EnableStealthMode -bool false
+                    -
+                        category: Disable auto-permitting incoming traffic for apps
+                        children:
+                            -
+                                name: Prevent automatically allowing incoming connections to signed apps
+                                docs: https://daiderd.com/nix-darwin/manual/index.html
+                                recommend: strict
+                                code: sudo defaults write /Library/Preferences/com.apple.alf allowsignedenabled -bool false
+                                revertCode: sudo defaults write /Library/Preferences/com.apple.alf allowsignedenabled -bool true
+                            -
+                                name: Prevent automatically allowing incoming connections to downloaded signed apps
+                                docs: https://daiderd.com/nix-darwin/manual/index.html
+                                recommend: strict
+                                code: sudo defaults write /Library/Preferences/com.apple.alf allowdownloadsignedenabled -bool false
+                                revertCode: sudo defaults write /Library/Preferences/com.apple.alf allowdownloadsignedenabled -bool true
+            -
+                name: Disable Captive portal
+                # An attacker could trigger the utility and direct a Mac to a site with malware without user interaction,
+                # so it's best to disable this feature and log in to captive portals using regular Web browser instead.
+                recommend: standard
+                docs:
+                    # Risks with captive portals:
+                        - https://www.eff.org/deeplinks/2017/08/how-captive-portals-interfere-wireless-security-and-privacy
+                    # More about apple Captive portal:
+                        - https://web.archive.org/web/20171008071031if_/http://blog.erratasec.com/2010/09/apples-secret-wispr-request.html#.WdnPa5OyL6Y
+                        - https://web.archive.org/web/20130407200745/http://www.divertednetworks.net/apple-captiveportal.html
+                        - https://web.archive.org/web/20170622064304/https://grpugh.wordpress.com/2014/10/29/an-undocumented-change-to-captive-network-assistant-settings-in-os-x-10-10-yosemite/
+                code: sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.captive.control.plist Active -bool false
+                revertCode: sudo defaults delete /Library/Preferences/SystemConfiguration/com.apple.captive.control.plist Active
+            -
+                category: Use screen saver for protection
+                children:
+                    -
+                        name: Require a password to wake the computer from sleep or screen saver
+                        # The screen saver acts as a session lock and prevents unauthorized users from accessing the current user's account.
+                        docs: https://www.stigviewer.com/stig/apple_macos_11_big_sur/2020-11-27/finding/V-230744
+                        code: sudo defaults write /Library/Preferences/com.apple.screensaver askForPassword -bool true
+                        revertCode: sudo defaults delete /Library/Preferences/com.apple.screensaver askForPassword
+                    -
+                        name: Initiate session lock five seconds after screen saver is started
+                        docs: https://www.stigviewer.com/stig/apple_macos_11_big_sur/2020-11-27/finding/V-230745
+                        # An unattended system with an excessive grace period is vulnerable to a malicious user. 
+                        code: sudo defaults write /Library/Preferences/com.apple.screensaver 'askForPasswordDelay' -int 5
+                        revertCode: sudo defaults delete /Library/Preferences/com.apple.screensaver 'askForPasswordDelay'
+            -
+                category: Disable guest accounts
+                docs:
+                    - https://www.stigviewer.com/stig/apple_macos_11_big_sur/2021-06-16/finding/V-230823
+                    - https://www.stigviewer.com/stig/apple_os_x_10.13/2018-10-01/finding/V-81615
+                children: 
+                    - 
+                        name: Disables signing in as Guest from the login screen
+                        code: sudo defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -bool NO
+                        revetCode: sudo defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -bool YES
+                    -
+                        name: Disables Guest access to file shares over AF
+                        code: sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server AllowGuestAccess -bool NO
+                        revetCode: sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server AllowGuestAccess -bool YES
+                    -
+                        name: Disables Guest access to file shares over SMB
+                        code: sudo defaults write /Library/Preferences/com.apple.AppleFileServer guestAccess -bool NO
+                        revetCode: sudo defaults write /Library/Preferences/com.apple.AppleFileServer guestAccess -bool YES
+            -
+                category: Prevent unauthorized connections
+                children:
+                    -
+                        name: Disable remote login (incoming SSH and SFTP connections)
+                        recommend: standard
+                        docs: https://osxdaily.com/2016/08/16/enable-ssh-mac-command-line/
+                        # Check if enabled: sudo systemsetup -getremotelogin, returns "Remote Login: On" or "Off"
+                        code: echo 'yes' | sudo systemsetup -setremotelogin off
+                        revertCode: sudo systemsetup -setremotelogin on
+                    -
+                        name: Disable insecure TFTP service
+                        recommend: standard
+                        # If the system does not require Trivial File Transfer Protocol (TFTP), then support for
+                        # it is non-essential and should be disabled. The information system should be configured to
+                        # provide only essential capabilities. Disabling TFTP helps prevent the unauthorized connection
+                        # of devices and the unauthorized transfer of information.  
+                        docs: https://www.stigviewer.com/stig/apple_macos_11_big_sur/2021-06-16/finding/V-230813
+                        code: sudo launchctl disable 'system/com.apple.tftpd'
+                        revertCode: sudo launchctl enable 'system/com.apple.tftpd'
+                    -
+                        name: Disable Bonjour multicast advertising
+                        recommend: standard
+                        docs: https://www.stigviewer.com/stig/apple_os_x_10.11/2017-04-06/finding/V-67593
+                        code: sudo defaults write /Library/Preferences/com.apple.mDNSResponder.plist NoMulticastAdvertisements -bool true
+                        revertCode: sudo defaults write /Library/Preferences/com.apple.mDNSResponder.plist NoMulticastAdvertisements -bool false
+                    -
+                        name: Disable insecure telnet protocol
+                        recommend: standard
+                        docs:
+                            - https://www.stigviewer.com/stig/apple_os_x_10.13/2020-09-11/finding/V-214882
+                            - https://www.stigviewer.com/stig/apple_os_x_10.10_yosemite_workstation/2017-04-06/finding/V-59671
+                        code: sudo launchctl disable system/com.apple.telnetd
+                        revertCode: sudo launchctl enable system/com.apple.telnetd
+            -
+                category: Disable printer sharing (IPP, LDP, SMB and Bonjour protocols)
+                # Used typically for servers
+                # By default, the CUPS only listens to requests from the machine that it's running on
+                # cupsctl is a tool to manage the configuration of the CUPS daemon
+                docs:
+                    - https://www.cups.org/doc/sharing.html
+                    - https://www.cups.org/doc/security.html # Security risks
+                children:
+                    -
+                        name: Disable sharing of local printers with other computers
+                        recommend: standard
+                        docs: https://www.cups.org/doc/man-cupsctl.html
+                        code: cupsctl --no-share-printers
+                        revertCode: cupsctl --share-printers
+                    -
+                        name: Disable printing from any address including the Internet
+                        recommend: standard
+                        docs: https://www.cups.org/doc/man-cupsctl.html
+                        code: cupsctl --no-remote-any
+                        revertCode: cupsctl --remote-any
+                    -
+                        name: Disable remote printer administration
+                        recommend: standard
+                        docs: https://www.cups.org/doc/man-cupsctl.html
+                        code: cupsctl --no-remote-admin
+                        revertCode: cupsctl --remote-admin
     -
         category: Privacy over security
         children:
