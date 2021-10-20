@@ -1,7 +1,7 @@
 import { ILanguageSyntax } from '@/domain/ScriptCode';
 
 
-const BatchFileCommonCodeParts = [ '(', ')', 'else' ];
+const BatchFileCommonCodeParts = [ '(', ')', 'else', '||' ];
 const PowerShellCommonCodeParts = [ '{', '}' ];
 
 export class BatchFileSyntax implements ILanguageSyntax {

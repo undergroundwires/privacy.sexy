@@ -2,13 +2,13 @@ import 'mocha';
 import { expect } from 'chai';
 import { IPipe } from '@/application/Parser/Script/Compiler/Expressions/Pipes/IPipe';
 
-interface ITestCase {
+export interface IPipeTestCase {
     readonly name: string;
     readonly input: string;
     readonly expectedOutput: string;
 }
 
-export function runPipeTests(sut: IPipe, testCases: ITestCase[]) {
+export function runPipeTests(sut: IPipe, testCases: IPipeTestCase[]) {
     for (const testCase of testCases) {
         it(testCase.name, () => {
             // act

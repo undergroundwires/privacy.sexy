@@ -3659,59 +3659,192 @@ actions:
                         category: Disable OS components for Defender # Hackers way of disabling Defender
                         children:
                             -
-                                category: Disable Windows Defender tasks
+                                category: Disable Defender tasks
                                 children:
                                     -
                                         name: Disable Windows Defender ExploitGuard task
+                                        docs: https://www.microsoft.com/security/blog/2017/10/23/windows-defender-exploit-guard-reduce-the-attack-surface-against-next-generation-malware/
                                         code: schtasks /Change /TN "Microsoft\Windows\ExploitGuard\ExploitGuard MDM policy Refresh" /Disable
                                         revertCode: schtasks /Change /TN "Microsoft\Windows\ExploitGuard\ExploitGuard MDM policy Refresh" /Enable
                                     -
                                         name: Disable Windows Defender Cache Maintenance task
+                                        # Cache Maintenance is the storage for temporary files that are being either quarantined by Windows Defender
+                                        # or being checked. Running this will clear the Cache.
+                                        docs: https://answers.microsoft.com/en-us/windows/forum/all/win10-windows-defender-schedulable-tasks-what-does/968ddd6b-3a71-46ce-bc80-d2af11f7e1ae
                                         code: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Cache Maintenance" /Disable
                                         revertCode: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Cache Maintenance" /Enable
                                     -
                                         name: Disable Windows Defender Cleanup task
+                                        docs: https://answers.microsoft.com/en-us/windows/forum/all/win10-windows-defender-schedulable-tasks-what-does/968ddd6b-3a71-46ce-bc80-d2af11f7e1ae
+                                        # Periodic cleanup task
+                                        # Clears up files that are not needed anymore by Windows Defender.
                                         code: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Cleanup" /Disable
                                         revertCode: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Cleanup" /Enable
                                     -
-                                        name: Disable Windows Defender Scheduled Scan task
+                                        name: Disable Windows Defender Scheduled Scan task # May not exist
+                                        docs: 
+                                            - https://support.microsoft.com/en-us/windows/schedule-a-scan-in-microsoft-defender-antivirus-54b64e9c-880a-c6b6-2416-0eb330ed5d2d
+                                            - https://winbuzzer.com/2020/05/26/windows-defender-how-to-perform-a-scheduled-scan-in-windows-10-xcxwbt/
                                         code: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Scheduled Scan" /Disable
                                         revertCode: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Scheduled Scan" /Enable
                                     -
                                         name: Disable Windows Defender Verification task
+                                        # Check if there are any problems with your Windows Defender like in updates, system files, etc,.
+                                        # Creates daily restore points
+                                        docs:
+                                            - https://answers.microsoft.com/en-us/windows/forum/all/win10-windows-defender-schedulable-tasks-what-does/968ddd6b-3a71-46ce-bc80-d2af11f7e1ae
+                                            - https://answers.microsoft.com/en-us/windows/forum/all/windows-defender-system-restore-points/86f77a7f-4ee9-411f-b016-223993c55426
+                                            - https://www.windowsphoneinfo.com/threads/same-problems-with-windows-defender-verification-and-scan-tasks.121489/#Same_problems_with_Windows_Defender_Verification_and_Scan_Tasks
                                         code: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Verification" /Disable
                                         revertCode: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Verification" /Enable
                             -
-                                category: Disable Windows Defender services
+                                category: Disable Defender services and drivers
+                                # Normally users can disable services on GUI or using commands like "sc config"
+                                # However Defender services are protected with different ways
+                                #   1. Some cannot be disabled (access error) normally but only with DisableServiceInRegistry
+                                #   2. Some cannot be disabled even using DisableServiceInRegistry, must be disabled as TrustedInstaller using RunInlineCodeAsTrustedInstaller
                                 children:
                                     -
                                         name: Disable Windows Defender Firewall service
-                                        code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\MpsSvc" /v "Start" /t REG_DWORD /d "4" /f
-                                        revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\MpsSvc" /v "Start" /t REG_DWORD /d "2" /f
+                                        docs: http://batcmd.com/windows/10/services/mpssvc/
+                                        call:
+                                            -
+                                                function: DisableServiceInRegistry # We must disable it on registry level, "Access is denied" for sc config
+                                                parameters:
+                                                    serviceName: MpsSvc
+                                                    defaultStartUpMode: 2 # 0: Boot | 1: System | 2: Automatic | 3: Manual | 4: Disabled
+                                            -
+                                                function: RenameSystemFile
+                                                parameters:
+                                                    filePath: '%WinDir%\system32\mpssvc.dll'
                                     -
                                         name: Disable Windows Defender Antivirus service
-                                        code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WinDefend" /v "Start" /t REG_DWORD /d "4" /f
-                                        revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WinDefend" /v "Start" /t REG_DWORD /d "2" /f
+                                        docs: http://batcmd.com/windows/10/services/windefend/
+                                        call:
+                                            -
+                                                function: RunInlineCodeAsTrustedInstaller
+                                                parameters:
+                                                    code: sc stop "WinDefend" & sc config "WinDefend" start=disabled
+                                                    revertCode: sc config "WinDefend" start=auto & sc start "WinDefend"
+                                            # - # "Access is denied" when renaming file
+                                            #     function: RenameSystemFile
+                                            #     parameters:
+                                            #         filePath: '%ProgramFiles%\Windows Defender\MsMpEng.exe' # Found also in C:\ProgramData\Microsoft\Windows Defender\Platform\4.18.2107.4-0 and \4.18.2103.7-0 ...
                                     -
-                                        name: Disable Microsoft Defender Antivirus Boot Driver service
-                                        code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdBoot" /v "Start" /t REG_DWORD /d "4" /f
-                                        revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdBoot" /v "Start" /t REG_DWORD /d "2" /f
-                                    -
-                                        name: Disable Microsoft Defender Antivirus Mini-Filter Driver service
-                                        code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdFilter" /v "Start" /t REG_DWORD /d "4" /f
-                                        revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdFilter" /v "Start" /t REG_DWORD /d "2" /f
-                                    -
-                                        name: Disable Microsoft Defender Antivirus Network Inspection System Driver service
-                                        code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisDrv" /v "Start" /t REG_DWORD /d "4" /f
-                                        revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisDrv" /v "Start" /t REG_DWORD /d "2" /f
+                                        category: Disable kernel-level Windows Defender drivers
+                                        children:
+                                            -
+                                                name: Disable Windows Defender Firewall Authorization Driver service
+                                                docs: http://batcmd.com/windows/10/services/mpsdrv/
+                                                call:
+                                                    -
+                                                        function: DisableServiceInRegistry # We must disable it on registry level, "Access is denied" for sc config
+                                                        parameters:
+                                                            serviceName: mpsdrv
+                                                            defaultStartUpMode: 3 # 0: Boot | 1: System | 2: Automatic | 3: Manual | 4: Disabled
+                                                    -
+                                                        function: RenameSystemFile
+                                                        parameters:
+                                                            filePath: '%SystemRoot%\System32\drivers\mpsdrv.sys'
+                                            # - Skipping wdnsfltr "Windows Defender Network Stream Filter Driver" as it's Windows 1709 only
+                                            -
+                                                name: Disable Microsoft Defender Antivirus Network Inspection System Driver service
+                                                docs: http://batcmd.com/windows/10/services/wdnisdrv/
+                                                call:
+                                                    -
+                                                        function: RunInlineCodeAsTrustedInstaller
+                                                        parameters:
+                                                            # We use "net stop" to stop dependend services as well
+                                                            code: net stop "WdNisDrv" /yes & sc config "WdNisDrv" start=disabled 
+                                                            revertCode: sc config "WdNisDrv" start=demand & sc start "WdNisDrv"
+                                                    -
+                                                        function: RenameSystemFile
+                                                        parameters:
+                                                            filePath: '%SystemRoot%\System32\drivers\WdNisDrv.sys'
+                                                    # -  # "Access is denied" when renaming file
+                                                    #     function: RenameSystemFile
+                                                    #     parameters:
+                                                    #         filePath: '%SystemRoot%\System32\drivers\wd\WdNisDrv.sys'
+                                            -
+                                                name: Disable Microsoft Defender Antivirus Mini-Filter Driver service
+                                                docs:
+                                                    - https://www.n4r1b.com/posts/2020/01/dissecting-the-windows-defender-driver-wdfilter-part-1/
+                                                    - http://batcmd.com/windows/10/services/wdfilter/
+                                                call:
+                                                    -
+                                                        function: RunInlineCodeAsTrustedInstaller
+                                                        parameters:
+                                                            # We use "net stop" to stop dependend services as well
+                                                            code: sc stop "WdFilter" & sc config "WdFilter" start=disabled 
+                                                            revertCode: sc config "WdFilter" start=boot & sc start "WdFilter"
+                                                    -
+                                                        function: RenameSystemFile
+                                                        parameters:
+                                                            filePath: '%SystemRoot%\System32\drivers\WdFilter.sys'
+                                                    # -  # "Access is denied" when renaming file
+                                                    #    function: RenameSystemFile
+                                                    #    parameters:
+                                                    #        filePath: '%SystemRoot%\System32\drivers\wd\WdFilter.sys'
+                                            -
+                                                name: Disable Microsoft Defender Antivirus Boot Driver service
+                                                docs: http://batcmd.com/windows/10/services/wdboot/
+                                                call:
+                                                    -
+                                                        function: RunInlineCodeAsTrustedInstaller
+                                                        parameters:
+                                                            # We use "net stop" to stop dependend services as well
+                                                            code: sc stop "WdBoot" & sc config "WdBoot" start=disabled 
+                                                            revertCode: sc config "WdBoot" start=boot & sc start "WdBoot"
+                                                    -
+                                                        function: RenameSystemFile
+                                                        parameters:
+                                                            filePath: '%SystemRoot%\System32\drivers\WdBoot.sys'
+                                                    # -  # "Access is denied" when renaming file
+                                                    #    function: RenameSystemFile
+                                                    #    parameters:
+                                                    #        filePath: '%SystemRoot%\System32\drivers\wd\WdBoot.sys'
                                     -
                                         name: Disable Microsoft Defender Antivirus Network Inspection service
-                                        code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisSvc" /v "Start" /t REG_DWORD /d "4" /f
-                                        revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisSvc" /v "Start" /t REG_DWORD /d "2" /f
+                                        docs:
+                                            - http://batcmd.com/windows/10/services/wdnissvc/
+                                            - https://www.howtogeek.com/357184/what-is-microsoft-network-realtime-inspection-service-nissrv.exe-and-why-is-it-running-on-my-pc/
+                                        call:
+                                            -
+                                                function: RunInlineCodeAsTrustedInstaller
+                                                parameters:
+                                                    # We use "net stop" to stop dependend services as well
+                                                    code: sc stop "WdNisSvc" & sc config "WdNisSvc" start=disabled 
+                                                    revertCode: sc config "WdNisSvc" start=auto & sc start "WdNisSvc"
+                                            # - # "Access is denied" when renaming file
+                                            #     function: RenameSystemFile
+                                            #     parameters:
+                                            #         filePath: '%ProgramFiles%\Windows Defender\NisSrv.exe' # Found also in C:\ProgramData\Microsoft\Windows Defender\Platform\4.18.2107.4-0 and \4.18.2103.7-0 ...
                                     -
-                                        name: Disable Windows Security service
-                                        code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\SecurityHealthService" /v "Start" /t REG_DWORD /d "4" /f
-                                        revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\SecurityHealthService" /v "Start" /t REG_DWORD /d "2" /f
+                                        name: Disable Windows Defender Advanced Threat Protection Service service
+                                        docs: http://batcmd.com/windows/10/services/sense/
+                                        call:
+                                            -
+                                                function: DisableServiceInRegistry # We must disable it on registry level, "Access is denied" for sc config
+                                                parameters:
+                                                    serviceName: Sense
+                                                    defaultStartUpMode: 3 # 0: Boot | 1: System | 2: Automatic | 3: Manual | 4: Disabled
+                                            -
+                                                function: RenameSystemFile
+                                                parameters:
+                                                    filePath: '%ProgramFiles%\Windows Defender Advanced Threat Protection\MsSense.exe'
+                                    -
+                                        name: Disable Windows Defender Security Center Service
+                                        docs: http://batcmd.com/windows/10/services/securityhealthservice/
+                                        call:
+                                            -
+                                                function: DisableServiceInRegistry # We must disable it on registry level, "Access is denied" for sc config
+                                                parameters:
+                                                    serviceName: SecurityHealthService
+                                                    defaultStartUpMode: 3 # 0: Boot | 1: System | 2: Automatic | 3: Manual | 4: Disabled
+                                            -
+                                                function: RenameSystemFile
+                                                parameters:
+                                                    filePath: '%WinDir%\system32\SecurityHealthService.exe'
                     -
                         category: Disable SmartScreen
                         docs:
@@ -5714,8 +5847,11 @@ functions:
             if exist "{{ $filePath }}" (
                 takeown /f "{{ $filePath }}"
                 icacls "{{ $filePath }}" /grant administrators:F
-                move "{{ $filePath }}" "{{ $filePath }}.OLD"
-                echo Moved "{{ $filePath }}" to "{{ $filePath }}.OLD"
+                move "{{ $filePath }}" "{{ $filePath }}.OLD" && (
+                    echo Moved "{{ $filePath }}" to "{{ $filePath }}.OLD"
+                ) || (
+                    echo Could not move {{ $filePath }} 1>&2
+                )
             ) else (
                 echo No action required: {{ $filePath }} is not found.
             )
@@ -5723,8 +5859,11 @@ functions:
             if exist "{{ $filePath }}.OLD" (
                 takeown /f "{{ $filePath }}.OLD"
                 icacls "{{ $filePath }}.OLD" /grant administrators:F
-                move "{{ $filePath }}.OLD" "{{ $filePath }}"
-                echo Moved "{{ $filePath }}.OLD" to "{{ $filePath }}"
+                move "{{ $filePath }}.OLD" "{{ $filePath }}" && (
+                    echo Moved "{{ $filePath }}.OLD" to "{{ $filePath }}"
+                ) || (
+                    echo Could restore from backup file {{ $filePath }}.OLD 1>&2
+                )
             ) else (
                 echo Could not find backup file "{{ $filePath }}.OLD" 1>&2
             )
@@ -5815,8 +5954,161 @@ functions:
     -
         name: RunInlineCode
         parameters:
-            -   name: code
-            -   name: revertCode
-                optional: true
-        code: "{{ $code }}"
-        revertCode: "{{ $revertCode }}"
+            - name: code
+            - name: revertCode
+              optional: true
+        code: '{{ $code }}'
+        revertCode: '{{ with $revertCode }}{{ . }}{{ end }}'
+    -
+        name: RunPowerShellWithSameCodeAndRevertCode
+        parameters:
+            - name: code
+        call:
+            function: RunPowerShell
+            parameters:
+                code: '{{ $code }}'
+                revertCode: '{{ $code }}'
+    -
+        name: RunInlineCodeAsTrustedInstaller
+        parameters:
+            - name: code
+            - name: revertCode
+        call:
+            function: RunPowerShell
+            parameters:
+                code: |-
+                    $trustedInstallerSid = [System.Security.Principal.SecurityIdentifier]::new('S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464')
+                    $trustedInstallerName = $trustedInstallerSid.Translate([System.Security.Principal.NTAccount])
+                    $command = '{{ $code }}'
+                    $stdOutFile = New-TemporaryFile
+                    $batchFile = New-TemporaryFile
+                    $powerShellFile = New-TemporaryFile
+                    try {
+                        $batchFile = Rename-Item $batchFile "$($batchFile.BaseName).bat" -PassThru
+                        "@echo off`r`n$command`r`nexit 0" | Out-File $batchFile -Encoding ASCII
+                        $taskName = 'privacy.sexy invoke'
+                        if(Get-ScheduledTask $taskName -ErrorAction Ignore) { # Something may have gone wrong before
+                            Unregister-ScheduledTask $taskName -Confirm:$false
+                        }
+                        $taskAction = New-ScheduledTaskAction               `
+                            -Execute 'cmd.exe'                              `
+                            -Argument "cmd /c `"$batchFile`" > $stdOutFile"
+                        $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
+                        Register-ScheduledTask -TaskName $taskName -Action $taskAction -Settings $settings -Force -ErrorAction Stop | Out-Null
+                        try {
+                            ($scheduleService = New-Object -ComObject Schedule.Service).Connect()
+                            $scheduleService.GetFolder('\').GetTask($taskName).RunEx($null, 0, 0, $trustedInstallerName) | Out-Null
+                            $timeOutLimit = (Get-Date).AddMinutes(5)
+                            Write-Host "Running as $trustedInstallerName"
+                            while((Get-ScheduledTask $taskName).State -eq 'Running') {
+                                Start-Sleep -Milliseconds 200
+                                if((Get-Date) -gt $timeOutLimit) {
+                                    Write-Warning "Skipping results, it took so long to execute script."
+                                    break;
+                                }
+                            }
+                            if (($result = (Get-ScheduledTaskInfo $taskName).LastTaskResult) -ne 0) {
+                                Write-Error "Failed to execute with exit code: $result."
+                            }
+                        } finally {
+                            Unregister-ScheduledTask $taskName -Confirm:$false
+                        }
+                        Get-Content $stdOutFile
+                    } finally {
+                        Remove-Item $stdOutFile, $batchFile #
+                    }
+                revertCode: |- # Duplicated until custom pipes are implemented
+                    $trustedInstallerSid = [System.Security.Principal.SecurityIdentifier]::new('S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464')
+                    $trustedInstallerName = $trustedInstallerSid.Translate([System.Security.Principal.NTAccount])
+                    $command = '{{ $revertCode }}'
+                    $stdOutFile = New-TemporaryFile
+                    $batchFile = New-TemporaryFile
+                    try {
+                        $batchFile = Rename-Item $batchFile "$($batchFile.BaseName).bat" -PassThru
+                        "@echo off`r`n$command`r`nexit 0" | Out-File $batchFile -Encoding ASCII
+                        $taskName = 'privacy.sexy invoke'
+                        if(Get-ScheduledTask $taskName -ErrorAction Ignore) { # Something may have gone wrong before
+                            Unregister-ScheduledTask $taskName -Confirm:$false
+                        }
+                        $taskAction = New-ScheduledTaskAction               `
+                            -Execute 'cmd.exe'                              `
+                            -Argument "cmd /c `"$batchFile`" > $stdOutFile"
+                        $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
+                        Register-ScheduledTask -TaskName $taskName -Action $taskAction -Settings $settings -Force -ErrorAction Stop | Out-Null
+                        try {
+                            ($scheduleService = New-Object -ComObject Schedule.Service).Connect()
+                            $scheduleService.GetFolder('\').GetTask($taskName).RunEx($null, 0, 0, $trustedInstallerName) | Out-Null
+                            $timeOutLimit = (Get-Date).AddMinutes(5)
+                            Write-Host "Running as $trustedInstallerName"
+                            while((Get-ScheduledTask $taskName).State -eq 'Running') {
+                                Start-Sleep -Milliseconds 200
+                                if((Get-Date) -gt $timeOutLimit) {
+                                    Write-Warning "Skipping results, it took so long to execute script."
+                                    break;
+                                }
+                            }
+                            if (($result = (Get-ScheduledTaskInfo $taskName).LastTaskResult) -ne 0) {
+                                Write-Error "Failed to execute with exit code: $result."
+                            }
+                        } finally {
+                            Unregister-ScheduledTask $taskName -Confirm:$false
+                        }
+                        Get-Content $stdOutFile
+                    } finally {
+                        Remove-Item $stdOutFile, $batchFile
+                    }
+    -
+        name: DisableServiceInRegistry
+        parameters:
+            - name: serviceName
+            - name: defaultStartUpMode
+        call:
+            function: RunPowerShell
+            parameters:
+                code: |- # We do registry way as sc config won't not work
+                    $serviceName = '{{ $serviceName }}'
+                    $service = Get-Service -Name $serviceName -ErrorAction Ignore
+                    if(!$service) {
+                        Write-Host "Service `"$serviceName`" is not found, no action is needed"
+                        exit 0
+                    }
+                    $name = $service.Name
+                    Stop-Service $name -Force -ErrorAction SilentlyContinue
+                    if($?) {
+                        Write-Host "Stopped `"$name`""
+                    } else {
+                        Write-Warning "Could not stop `"$name`""
+                    }
+                    $regKey = "HKLM:\SYSTEM\CurrentControlSet\Services\$name"
+                    if(Test-Path $regKey) {
+                        if( $(Get-ItemProperty -Path "$regKey").Start -eq 4) {
+                            Write-Host "Service `"$name`" is already disabled, no action is needed"
+                        } else {
+                            Set-ItemProperty $regKey -Name Start -Value 4 -Force
+                            Write-Host "Disabled `"$name`""
+                        }
+                    } else {
+                        Write-Host "Service is not registered at Windows startup, no action is needed."
+                    }
+                revertCode: |-
+                    $serviceName = '{{ $serviceName }}'
+                    $defaultStartUpMode = '{{ $defaultStartUpMode }}'
+                    $service = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
+                    if(!$service) {
+                        Write-Warning "Service `"$serviceName`" not found"
+                        continue
+                    }
+                    $name = $service.Name
+                    $regKey = "HKLM:\SYSTEM\CurrentControlSet\Services\$name"
+                    if(Test-Path $regKey) {
+                        if( $(Get-ItemProperty -Path "$regKey").Start -eq $defaultStartUpMode) {
+                            Write-Host "Service $serviceName already enabled"
+                        } else {
+                            Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\$serviceName" -Name Start -Value $defaultStartUpMode
+                            Write-Host "Enabled service $serviceName (requires reboot)"
+                        }
+                        Set-ItemProperty $regKey -Name Start -Value 0 -Force
+                        Write-Host "Enabled `"$name`", may require restarting your computer."
+                    } else {
+                        Write-Error "Registry key at `"$regKey`" does not exist"
+                    }
