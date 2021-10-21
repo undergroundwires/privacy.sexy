@@ -1,5 +1,38 @@
 # Changelog
 
+## 0.11.0 (2021-10-21)
+
+* Change "grouping" to "view" | [c0c475f](https://github.com/undergroundwires/privacy.sexy/commit/c0c475ff564b23a4dabcc03ac2909207a8eb61ce)
+* Tighten parameter substitution tolerance | [dcccb61](https://github.com/undergroundwires/privacy.sexy/commit/dcccb617813625c224a28242c5b965bb4cd6f189)
+* Add optionality for parameters | [6a89c62](https://github.com/undergroundwires/privacy.sexy/commit/6a89c6224bdef5eb96980471f3b3935b9351b197)
+* Do not collapse cards on links and code area #88 | [e73c0ad](https://github.com/undergroundwires/privacy.sexy/commit/e73c0ad1bf922b1dd3360fc5aafc3434951fa63c)
+* Add scripts to disable, hide and opt-out from Siri | [c92dc1e](https://github.com/undergroundwires/privacy.sexy/commit/c92dc1e25387c65a3a41ca64d2a23cf8131b4c86)
+* Improve macOS scripts for cleaning OS logs | [6c3c2e6](https://github.com/undergroundwires/privacy.sexy/commit/6c3c2e6709ec84f8e0411f19c024bab2c7e5753b)
+* Add "with" expression for templating #53 | [862914b](https://github.com/undergroundwires/privacy.sexy/commit/862914b06ea9ef74c4b58a9a4164a10a38273638)
+* Add support for pipes in templates #53 | [4d7ff7e](https://github.com/undergroundwires/privacy.sexy/commit/4d7ff7edc5a96cc0d99d3c1ca4fdf9bbdace3fd2)
+* Bump node environment to 15.x | [2f0321f](https://github.com/undergroundwires/privacy.sexy/commit/2f0321f315ac0da8c713dd50e37032f1de194942)
+* Add new UX for optionally downloading updates | [ddf417a](https://github.com/undergroundwires/privacy.sexy/commit/ddf417a16a79551b43576befab0541ea08487969)
+* Add pipes to write pretty PowerShell #53 | [5217b0b](https://github.com/undergroundwires/privacy.sexy/commit/5217b0b7587ccfe509ba8adc3a7748b9bae14d7a)
+* Improve alignment, padding/margin issues on UI | [c8cb7a5](https://github.com/undergroundwires/privacy.sexy/commit/c8cb7a5c28420557319606da82f56b011e88f470)
+* Support disabling per-user services in Windows #16 | [4b23907](https://github.com/undergroundwires/privacy.sexy/commit/4b2390736ac1f9de2d5176b7b07da0e827112f9a)
+* Add script to remove Meet Now icon in Windows | [f39ee76](https://github.com/undergroundwires/privacy.sexy/commit/f39ee76c0cda95f54502b19d5c49390fd0f12b5e)
+* Add support for more depth in function calls | [20b7d28](https://github.com/undergroundwires/privacy.sexy/commit/20b7d283b02dd751dfbde18ef1fe334c6bf76e2b)
+* Increase default screen width on desktop app | [9942df1](https://github.com/undergroundwires/privacy.sexy/commit/9942df16c8334ff041fb92f432a3a29e351c88df)
+* Improve disabling of SmartScreen #74 | [0696ed8](https://github.com/undergroundwires/privacy.sexy/commit/0696ed8396e298a358bec17adb91c9145dd90418)
+* Remove integration tests from deployments #90 | [37ad26a](https://github.com/undergroundwires/privacy.sexy/commit/37ad26a082851c02497c36e7fce40555b9480e11)
+* Use a consistent color system | [b08a6b5](https://github.com/undergroundwires/privacy.sexy/commit/b08a6b5cecf4a53023053695292146edbd24b960)
+* Add semi-automatic update support for macOS | [410bcd8](https://github.com/undergroundwires/privacy.sexy/commit/410bcd82445097c29c9fcf0eabf7af9ebcb93c1e)
+* Add more ways to disable and clean Defender #74 | [2492f2d](https://github.com/undergroundwires/privacy.sexy/commit/2492f2d8141b3abdf590ccad59680b1f50ecb59e)
+* Add privacy over security scripts for macOS #83 | [236a0f6](https://github.com/undergroundwires/privacy.sexy/commit/236a0f6c8241294fc397194cd1b20bdeccbbb50b)
+* Change PowerShell double quotes escape | [9aa8166](https://github.com/undergroundwires/privacy.sexy/commit/9aa816689146ee6cd86d8262112677c38651c6bd)
+* Change theme colors | [a8031d1](https://github.com/undergroundwires/privacy.sexy/commit/a8031d18d520dd3b0567f7b8cfe2dcd694b65073)
+* Improve security hardening for macOS | [e6152fa](https://github.com/undergroundwires/privacy.sexy/commit/e6152fa76f5e7d23b0f79d5dd98713daaecbff90)
+* Support disabling of protected services #74 | [ab8bce7](https://github.com/undergroundwires/privacy.sexy/commit/ab8bce768650a10677f0a13b3a9fae93c83802ff)
+* Fix minor issues with Defender scripts | [739287a](https://github.com/undergroundwires/privacy.sexy/commit/739287ac71b3f8b04348fc101f1fa06f2d7d86a2)
+* Update screenshot | [504fa05](https://github.com/undergroundwires/privacy.sexy/commit/504fa056d7d8b17fc20afd398f9a557495fca7e8)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.10.3...0.11.0)
+
 ## 0.10.3 (2021-08-27)
 
 * unrecommend VSS and document its breaking behavior | [7714898](https://github.com/undergroundwires/privacy.sexy/commit/77148980e08859f89c15c6604e55b56ce4f74358)
