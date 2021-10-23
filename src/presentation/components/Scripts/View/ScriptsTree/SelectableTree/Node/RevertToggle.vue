@@ -51,6 +51,7 @@ export default class RevertToggle extends StatefulVue {
 
 
 <style scoped lang="scss">
+@use 'sass:math';
 @import "@/presentation/styles/colors.scss";
 
 $color-unchecked-bullet : $color-primary-darker;
@@ -73,7 +74,7 @@ $size-height            : 30px;
     -webkit-border-radius: $size-height;
     border-radius: $size-height;
     line-height: $size-height;
-    font-size: $size-height / 2;
+    font-size: math.div($size-height, 2);
     display: inline-block;
 
     input.input-checkbox {
@@ -122,7 +123,7 @@ $size-height            : 30px;
             background-color: $color-checked-bg;
         }
         + .checkbox-animate:before {
-            left: ($size-width - $size-width/3.5);
+            left: ($size-width - math.div($size-width, 3.5));
             background-color: $color-checked-bullet;
         }
         + .checkbox-animate .checkbox-off {
@@ -143,7 +144,7 @@ $size-height            : 30px;
     }
 
     .checkbox-off {
-        margin-left: $size-width / 3;
+        margin-left: math.div($size-width, 3);
         opacity: 1;
         color: $color-unchecked-text;
     }
@@ -151,7 +152,7 @@ $size-height            : 30px;
     .checkbox-on {
         display: none;
         float: right;
-        margin-right: $size-width / 3;
+        margin-right: math.div($size-width, 3);
         opacity: 0;
         color: $color-checked-text;
     }
