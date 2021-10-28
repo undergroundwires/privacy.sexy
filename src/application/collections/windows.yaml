@@ -147,32 +147,109 @@ actions:
                 category: Clear browser history
                 children:
                     -
-                        name: Clear Internet Explorer traces
-                        recommend: standard
-                        code: |-
-                            del /f /q "%localappdata%\Microsoft\Windows\INetCache\IE\*"
-                            reg delete "HKCU\SOFTWARE\Microsoft\Internet Explorer\TypedURLs" /va /f
-                            reg delete "HKCU\SOFTWARE\Microsoft\Internet Explorer\TypedURLsTime" /va /f
-                            rd /s /q "%localappdata%\Microsoft\Internet Explorer"
-                            rd /s /q "%APPDATA%\Microsoft\Windows\Cookies"
-                            rd /s /q "%USERPROFILE%\Cookies"
-                            rd /s /q "%USERPROFILE%\Local Settings\Traces"
-                            rd /s /q "%localappdata%\Temporary Internet Files"
-                            rd /s /q "%localappdata%\Microsoft\Windows\Temporary Internet Files"
-                            rd /s /q "%localappdata%\Microsoft\Windows\INetCookies\PrivacIE"
-                            rd /s /q "%localappdata%\Microsoft\Feeds Cache"
-                            rd /s /q "%localappdata%\Microsoft\InternetExplorer\DOMStore"
+                        category: Clear Internet Explorer history
+                        children:
+                            -
+                                name: Clear Internet Explorer caches
+                                recommend: standard
+                                docs:
+                                    # INetCache
+                                        - https://support.microsoft.com/en-us/help/260897/how-to-delete-the-contents-of-the-temporary-internet-files-folder
+                                        - https://docs.microsoft.com/en-us/troubleshoot/browsers/apps-access-admin-web-cache
+                                    # WebCache
+                                        - https://docs.microsoft.com/en-us/troubleshoot/browsers/apps-access-admin-web-cache
+                                code: |-
+                                    del /f /q "%localappdata%\Microsoft\Windows\INetCache\IE\*"
+                                    rd /s /q "%localappdata%\Microsoft\Windows\WebCache"
+                            -
+                                name: Clear Internet Explorer recent URLs
+                                recommend: strict
+                                docs:
+                                    - https://web.archive.org/web/20160304232740/http://crucialsecurityblog.harris.com/2011/03/14/typedurls-part-1/
+                                    - https://web.archive.org/web/20160321221849/http://crucialsecurityblog.harris.com/2011/03/23/typedurls-part-2/
+                                    - https://web.archive.org/web/20150601014235/http://randomthoughtsofforensics.blogspot.com/2012/07/trouble-with-typedurlstime.html
+                                    - http://sketchymoose.blogspot.com/2014/02/typedurls-registry-key.html
+                                code: |-
+                                    reg delete "HKCU\SOFTWARE\Microsoft\Internet Explorer\TypedURLs" /va /f
+                                    reg delete "HKCU\SOFTWARE\Microsoft\Internet Explorer\TypedURLsTime" /va /f
+                            -
+                                name: Clear Temporary Internet Files (browser cache)
+                                recommend: standard
+                                docs:
+                                    - https://en.wikipedia.org/wiki/Temporary_Internet_Files
+                                    - https://www.windows-commandline.com/delete-temporary-internet-files/ # %localappdata%\Temporary Internet Files
+                                    - https://www.thewindowsclub.com/temporary-internet-files-folder-location # %localappdata%\Microsoft\Windows\Temporary Internet Files and INetCache
+                                code: |-
+                                    :: Windows XP
+                                    rd /s /q %userprofile%\Local Settings\Temporary Internet Files
+                                    :: Windows 7
+                                    rd /s /q "%localappdata%\Microsoft\Windows\Temporary Internet Files"
+                                    takeown /f "%localappdata%\Temporary Internet Files" /r /d y
+                                    icacls "%localappdata%\Temporary Internet Files" /grant administrators:F /t
+                                    rd /s /q "%localappdata%\Temporary Internet Files"
+                                    :: Windows 8 and above
+                                    rd /s /q "%localappdata%\Microsoft\Windows\INetCache"
+                            -
+                                name: Clear Internet Explorer Feeds Cache
+                                recommend: standard
+                                docs: https://kb.digital-detective.net/display/BF/Location+of+Internet+Explorer+11+Data
+                                code: rd /s /q "%localappdata%\Microsoft\Feeds Cache"
+                            -
+                                name: Clear Internet Explorer cookies
+                                recommend: strict
+                                docs:
+                                    - https://docs.microsoft.com/en-us/windows/win32/wininet/managing-cookies
+                                    - https://docs.microsoft.com/en-us/internet-explorer/kb-support/ie-edge-faqs
+                                    - https://www.thewindowsclub.com/cookies-folder-location-windows
+                                code: |-
+                                    :: Windows 7 browsers
+                                    rd /s /q "%APPDATA%\Microsoft\Windows\Cookies"
+                                    :: Windows 8 and higher
+                                    rd /s /q "%localappdata%\Microsoft\Windows\INetCookies"
+                            -
+                                name: Clear Internet Explorer DOMStore
+                                recommend: standard
+                                docs: https://web.archive.org/web/20100416135352/http://msdn.microsoft.com/en-us/library/cc197062(VS.85).aspx
+                                code: rd /s /q "%localappdata%\Microsoft\InternetExplorer\DOMStore"
+                            -
+                                name: Clear all Internet Explorer user data
+                                docs:
+                                    - https://kb.digital-detective.net/display/BF/Location+of+Internet+Explorer+Data
+                                    - https://kb.digital-detective.net/display/BF/Location+of+Internet+Explorer+11+Data
+                                    - https://www.forensafe.com/blogs/internetexplorer.html
+                                # Includes Internet Explorer cache, tab recovery data, persistance storage (DOMStore, indexed DB etc.)
+                                # Folders:  CacheStorage\, Tracking Protection\, Tiles\, TabRoaming\, IECompatData\
+                                #           DOMStore\, Recovery\ (that includes browser history), DomainSuggestions\,
+                                #           VersionManager\, UrlBlockManager\, Indexed DB\, imagestore\, IEFlipAheadCache\
+                                #           EUPP\, EmieUserList\, EmieSiteList\, EmieBrowserModeList\
+                                # Files:    brndlog.txt, brndlog.bak, ie4uinit-ClearIconCache.log, ie4uinit-UserConfig.log,
+                                #           MSIMGSIZ.DAT
+                                code: rd /s /q "%localappdata%\Microsoft\Internet Explorer"
                     -
-                        name: Clear Google Chrome traces
-                        recommend: standard
-                        code: |-
-                            del /f /q "%localappdata%\Google\Software Reporter Tool\*.log"
-                            rd /s /q "%USERPROFILE%\Local Settings\Application Data\Google\Chrome\User Data"
-                            rd /s /q "%localappdata%\Google\Chrome\User Data"
-                            rd /s /q "%localappdata%\Google\CrashReports\""
-                            rd /s /q "%localappdata%\Google\Chrome\User Data\Crashpad\reports\""
+                        category: Clear Google Chrome history
+                        children:
+                            -
+                                name: Clear Google Chrome crash reports
+                                recommend: standard
+                                docs: https://www.chromium.org/developers/crash-reports
+                                code: |-
+                                    rd /s /q "%localappdata%\Google\Chrome\User Data\Crashpad\reports\"
+                                    rd /s /q "%localappdata%\Google\CrashReports\"
+                            -
+                                name: Clear Software Reporter Tool logs
+                                recommend: standard
+                                docs: https://support.google.com/chrome/forum/AAAAP1KN0B0T8qnffV5gwM/
+                                code: del /f /q "%localappdata%\Google\Software Reporter Tool\*.log"
+                            -
+                                name: Clear all Chrome user data
+                                docs: https://chromium.googlesource.com/chromium/src/+/HEAD/docs/user_data_dir.md
+                                code: |-
+                                    :: Windows XP
+                                    rd /s /q "%USERPROFILE%\Local Settings\Application Data\Google\Chrome\User Data"
+                                    :: Windows Vista and later
+                                    rd /s /q "%localappdata%\Google\Chrome\User Data"
                     -
-                        category: Clear Firefox traces
+                        category: Clear Firefox history
                         children:
                             -
                                 name: Clear browsing history and caches
@@ -201,26 +278,57 @@ actions:
                             -
                                 name: Clear all Firefox user profiles, settings, and data
                                 code: |-
-                                    rd /s /q "%LOCALAPPDATA%\Mozilla\Firefox\Profiles"
+                                    rd /s /q "%localappdata%\Mozilla\Firefox\Profiles"
                                     rd /s /q "%APPDATA%\Mozilla\Firefox\Profiles"
                     -
-                        name: Clear Opera traces
-                        recommend: standard
+                        name: Clear all Opera data (user profiles, settings, and data)
                         code: |-
-                            rd /s /q "%USERPROFILE%\AppData\Local\Opera\Opera"
-                            rd /s /q "%APPDATA%\Opera\Opera"
+                            :: Windows XP
                             rd /s /q "%USERPROFILE%\Local Settings\Application Data\Opera\Opera"
+                            :: Windows Vista and later
+                            rd /s /q "%localappdata%\Opera\Opera"
+                            rd /s /q "%APPDATA%\Opera\Opera"
                     -
-                        name: Clear Safari traces
-                        recommend: standard
-                        code: |-
-                            rd /s /q "%USERPROFILE%\AppData\Local\Apple Computer\Safari\Traces"
-                            rd /s /q "%APPDATA%\Apple Computer\Safari"
-                            del /q /s /f "%USERPROFILE%\AppData\Local\Apple Computer\Safari\Cache.db"
-                            del /q /s /f "%USERPROFILE%\AppData\Local\Apple Computer\Safari\WebpageIcons.db"
-                            rd /s /q "%USERPROFILE%\Local Settings\Application Data\Apple Computer\Safari\Traces"
-                            del /q /s /f "%USERPROFILE%\Local Settings\Application Data\Apple Computer\Safari\Cache.db"
-                            del /q /s /f "%USERPROFILE%\Local Settings\Application Data\Safari\WebpageIcons.db"
+                        category: Clear Safari history
+                        children:
+                            -
+                                name: Clear Webpage Icons
+                                recommend: standard
+                                docs: https://www.sans.org/blog/safari-browser-forensics/
+                                code: |-
+                                    :: Windows XP
+                                    del /q /s /f "%USERPROFILE%\Local Settings\Application Data\Safari\WebpageIcons.db"
+                                    :: Windows Vista and later
+                                    del /q /s /f "%localappdata%\Apple Computer\Safari\WebpageIcons.db"
+                            -
+                                name: Clear Safari cache
+                                recommend: standard
+                                docs: https://forensicswiki.xyz/wiki/index.php?title=Apple_Safari
+                                code: |-
+                                    :: Windows XP
+                                    del /q /s /f "%USERPROFILE%\Local Settings\Application Data\Apple Computer\Safari\Cache.db"
+                                    :: Windows Vista and later
+                                    del /q /s /f "%localappdata%\Apple Computer\Safari\Cache.db"
+                            -
+                                name: Clear Safari cookies
+                                recommend: strict
+                                docs: https://kb.digital-detective.net/display/BF/Location+of+Safari+Data
+                                code: |-
+                                    :: Windows XP
+                                    del /q /s /f "%USERPROFILE%\Local Settings\Application Data\Apple Computer\Safari\Cookies.db"
+                                    :: Windows Vista and later
+                                    del /q /s /f "%localappdata%\Apple Computer\Safari\Cookies.db"
+                            -
+                                name: Clear all Safari data (user profiles, settings, and data)
+                                docs:
+                                    - https://kb.digital-detective.net/display/BF/Location+of+Safari+Data
+                                    - https://forensicswiki.xyz/wiki/index.php?title=Apple_Safari
+                                    - https://zerosecurity.org/2013/04/safari-forensic-tutorial
+                                code: |-
+                                    :: Windows XP
+                                    rd /s /q "%USERPROFILE%\Local Settings\Application Data\Apple Computer\Safari"
+                                    :: Windows Vista and later
+                                    rd /s /q "%AppData%\Apple Computer\Safari"
             - 
                 category: Clear Windows logs & caches
                 children:
