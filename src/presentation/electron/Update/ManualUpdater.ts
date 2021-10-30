@@ -12,8 +12,8 @@ export function requiresManualUpdate(): boolean {
     return process.platform === 'darwin';
 }
 
-export async function handleManualUpdateAsync(info: UpdateInfo) {
-    const result = await askForVisitingWebsiteForManualUpdateAsync();
+export async function handleManualUpdate(info: UpdateInfo) {
+    const result = await askForVisitingWebsiteForManualUpdate();
     if (result === ManualDownloadDialogResult.NoAction) {
         return;
     }
@@ -26,7 +26,7 @@ export async function handleManualUpdateAsync(info: UpdateInfo) {
     if (result === ManualDownloadDialogResult.VisitReleasesPage) {
         await shell.openExternal(project.releaseUrl);
     } else if (result === ManualDownloadDialogResult.UpdateNow) {
-        await downloadAsync(info, project);
+        await download(info, project);
     }
 }
 
@@ -35,7 +35,7 @@ enum ManualDownloadDialogResult {
     UpdateNow = 1,
     VisitReleasesPage = 2,
 }
-async function askForVisitingWebsiteForManualUpdateAsync(): Promise<ManualDownloadDialogResult> {
+async function askForVisitingWebsiteForManualUpdate(): Promise<ManualDownloadDialogResult> {
     const visitPageResult = await dialog.showMessageBox({
         type: 'info',
         buttons: [
@@ -54,7 +54,7 @@ async function askForVisitingWebsiteForManualUpdateAsync(): Promise<ManualDownlo
     return visitPageResult.response;
 }
 
-async function downloadAsync(info: UpdateInfo, project: ProjectInformation) {
+async function download(info: UpdateInfo, project: ProjectInformation) {
     log.info('Downloading update manually');
     const progressBar = new UpdateProgressBar();
     progressBar.showIndeterminateState();
@@ -69,7 +69,7 @@ async function downloadAsync(info: UpdateInfo, project: ProjectInformation) {
             await fs.promises.mkdir(parentFolder, { recursive: true });
         }
         const dmgFileUrl = project.getDownloadUrl(OperatingSystem.macOS);
-        await downloadFileWithProgressAsync(dmgFileUrl, filePath,
+        await downloadFileWithProgress(dmgFileUrl, filePath,
             (percentage) => { progressBar.showPercentage(percentage); });
         await shell.openPath(filePath);
         progressBar.close();
@@ -81,7 +81,7 @@ async function downloadAsync(info: UpdateInfo, project: ProjectInformation) {
 
 type ProgressCallback = (progress: number) => void;
 
-async function downloadFileWithProgressAsync(
+async function downloadFileWithProgress(
     url: string, filePath: string, progressHandler: ProgressCallback) {
     // We don't download through autoUpdater as it cannot download DMG but requires distributing ZIP
     log.info(`Fetching ${url}`);
@@ -100,10 +100,10 @@ async function downloadFileWithProgressAsync(
     if (!reader) {
         throw new Error('No response body');
     }
-    await streamWithProgressAsync(contentLength, reader, writer, progressHandler);
+    await streamWithProgress(contentLength, reader, writer, progressHandler);
 }
 
-async function streamWithProgressAsync(
+async function streamWithProgress(
     totalLength: number,
     readStream: NodeJS.ReadableStream,
     writeStream: fs.WriteStream,

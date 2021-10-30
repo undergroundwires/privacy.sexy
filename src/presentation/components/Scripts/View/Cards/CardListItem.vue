@@ -50,10 +50,10 @@ export default class CardListItem extends StatefulVue {
   public areAllChildrenSelected = false;
 
   public async mounted() {
-    const context = await this.getCurrentContextAsync();
+    const context = await this.getCurrentContext();
     this.events.register(context.state.selection.changed.on(
-      () => this.updateSelectionIndicatorsAsync(this.categoryId)));
-    await this.updateStateAsync(this.categoryId);
+      () => this.updateSelectionIndicators(this.categoryId)));
+    await this.updateState(this.categoryId);
   }
   @Emit('selected')
   public onSelected(isExpanded: boolean) {
@@ -64,7 +64,7 @@ export default class CardListItem extends StatefulVue {
     this.isExpanded = value === this.categoryId;
   }
   @Watch('isExpanded')
-  public async onExpansionChangedAsync(newValue: number, oldValue: number) {
+  public async onExpansionChanged(newValue: number, oldValue: number) {
     if (!oldValue && newValue) {
       await new Promise((r) => setTimeout(r, 400));
       const focusElement = this.$refs.cardElement as HTMLElement;
@@ -72,19 +72,19 @@ export default class CardListItem extends StatefulVue {
     }
   }
   @Watch('categoryId')
-  public async updateStateAsync(value: |number) {
-    const context = await this.getCurrentContextAsync();
+  public async updateState(value: |number) {
+    const context = await this.getCurrentContext();
     const category = !value ? undefined : context.state.collection.findCategory(value);
     this.cardTitle = category ? category.name : undefined;
-    await this.updateSelectionIndicatorsAsync(value);
+    await this.updateSelectionIndicators(value);
   }
 
   protected handleCollectionState(): void {
     return;
   }
 
-  private async updateSelectionIndicatorsAsync(categoryId: number) {
-    const context = await this.getCurrentContextAsync();
+  private async updateSelectionIndicators(categoryId: number) {
+    const context = await this.getCurrentContext();
     const selection = context.state.selection;
     const category = context.state.collection.findCategory(categoryId);
     this.isAnyChildSelected = category ? selection.isAnySelected(category) : false;

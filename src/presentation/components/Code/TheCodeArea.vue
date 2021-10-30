@@ -51,13 +51,13 @@ export default class TheCodeArea extends StatefulVue {
     const appCode = newState.code;
     this.editor.setValue(appCode.current || getDefaultCode(newState.collection.scripting.language), 1);
     this.events.unsubscribeAll();
-    this.events.register(appCode.changed.on((code) => this.updateCodeAsync(code)));
+    this.events.register(appCode.changed.on((code) => this.updateCode(code)));
   }
 
-  private async updateCodeAsync(event: ICodeChangedEvent) {
+  private async updateCode(event: ICodeChangedEvent) {
     this.removeCurrentHighlighting();
     if (event.isEmpty()) {
-      const context = await this.getCurrentContextAsync();
+      const context = await this.getCurrentContext();
       const defaultCode = getDefaultCode(context.state.collection.scripting.language);
       this.editor.setValue(defaultCode, 1);
       return;

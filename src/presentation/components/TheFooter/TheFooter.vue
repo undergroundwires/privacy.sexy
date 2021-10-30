@@ -65,7 +65,7 @@ export default class TheFooter extends Vue {
   public homepageUrl: string = '';
 
   public async created() {
-    const app = await ApplicationFactory.Current.getAppAsync();
+    const app = await ApplicationFactory.Current.getApp();
     this.initialize(app);
   }
 

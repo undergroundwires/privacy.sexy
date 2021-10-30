@@ -4,8 +4,8 @@ import { ProgressInfo } from 'electron-builder';
 import { UpdateProgressBar } from './UpdateProgressBar';
 import log from 'electron-log';
 
-export async function handleAutoUpdateAsync() {
-    if (await askDownloadAndInstallAsync() === DownloadDialogResult.NotNow) {
+export async function handleAutoUpdate() {
+    if (await askDownloadAndInstall() === DownloadDialogResult.NotNow) {
         return;
     }
     startHandlingUpdateProgress();
@@ -29,12 +29,12 @@ function startHandlingUpdateProgress() {
     autoUpdater.on('update-downloaded', async (info: UpdateInfo) => {
         log.info('@update-downloaded@\n', info);
         progressBar.close();
-        await handleUpdateDownloadedAsync();
+        await handleUpdateDownloaded();
     });
 }
 
-async function handleUpdateDownloadedAsync() {
-    if (await askRestartAndInstallAsync() === InstallDialogResult.NotNow) {
+async function handleUpdateDownloaded() {
+    if (await askRestartAndInstall() === InstallDialogResult.NotNow) {
         return;
     }
     setTimeout(() => autoUpdater.quitAndInstall(), 1);
@@ -44,7 +44,7 @@ enum DownloadDialogResult {
     Install = 0,
     NotNow = 1,
 }
-async function askDownloadAndInstallAsync(): Promise<DownloadDialogResult> {
+async function askDownloadAndInstall(): Promise<DownloadDialogResult> {
     const updateDialogResult = await dialog.showMessageBox({
         type: 'question',
         buttons: ['Install', 'Not now' ],
@@ -61,7 +61,7 @@ enum InstallDialogResult {
     InstallAndRestart = 0,
     NotNow = 1,
 }
-async function askRestartAndInstallAsync(): Promise<InstallDialogResult> {
+async function askRestartAndInstall(): Promise<InstallDialogResult> {
     const installDialogResult = await dialog.showMessageBox({
         type: 'question',
         buttons: ['Install and restart', 'Later'],

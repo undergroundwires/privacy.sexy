@@ -10,7 +10,7 @@ export class CodeRunner {
         private readonly node = getNodeJs(),
         private readonly environment = Environment.CurrentEnvironment) {
     }
-    public async runCodeAsync(code: string, folderName: string, fileExtension: string): Promise<void> {
+    public async runCode(code: string, folderName: string, fileExtension: string): Promise<void> {
         const dir = this.node.path.join(this.node.os.tmpdir(), folderName);
         await this.node.fs.promises.mkdir(dir, {recursive: true});
         const filePath = this.node.path.join(dir, `run.${fileExtension}`);

@@ -26,8 +26,8 @@ export default class TheSearchBar extends StatefulVue {
   public searchQuery = '';
 
   @Watch('searchQuery')
-  public async updateFilterAsync(newFilter: |string) {
-    const context = await this.getCurrentContextAsync();
+  public async updateFilter(newFilter: |string) {
+    const context = await this.getCurrentContext();
     const filter = context.state.filter;
     if (!newFilter) {
       filter.removeFilter();

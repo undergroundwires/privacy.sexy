@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import { AsyncLazy } from '@/infrastructure/Threading/AsyncLazy';
-import { sleepAsync } from '@/infrastructure/Threading/AsyncSleep';
+import { sleep } from '@/infrastructure/Threading/AsyncSleep';
 
 describe('AsyncLazy', () => {
     it('returns value from lambda', async () => {
@@ -10,7 +10,7 @@ describe('AsyncLazy', () => {
         const lambda = () => Promise.resolve(expected);
         const sut = new AsyncLazy(lambda);
         // act
-        const actual = await sut.getValueAsync();
+        const actual = await sut.getValue();
         // assert
         expect(actual).to.equal(expected);
     });
@@ -26,7 +26,7 @@ describe('AsyncLazy', () => {
             });
             const results = new Array<number>();
             for (let i = 0; i < 5; i++) {
-                results.push(await sut.getValueAsync());
+                results.push(await sut.getValue());
             }
             // assert
             expect(totalExecuted).to.equal(1);
@@ -35,16 +35,16 @@ describe('AsyncLazy', () => {
         it('when running long-running task in parallel', async () => {
             // act
             const sut = new AsyncLazy(async () => {
-                await sleepAsync(100);
+                await sleep(100);
                 totalExecuted++;
                 return Promise.resolve(totalExecuted);
             });
             const results = await Promise.all([
-                sut.getValueAsync(),
-                sut.getValueAsync(),
-                sut.getValueAsync(),
-                sut.getValueAsync(),
-                sut.getValueAsync()]);
+                sut.getValue(),
+                sut.getValue(),
+                sut.getValue(),
+                sut.getValue(),
+                sut.getValue()]);
             // assert
             expect(totalExecuted).to.equal(1);
             expect(results).to.deep.equal([1, 1, 1, 1, 1]);

@@ -124,7 +124,7 @@ function loadApplication(window: BrowserWindow) {
     // Load the index.html when not in development
     loadUrlWithNodeWorkaround(win, 'app://./index.html');
     const updater = setupAutoUpdater();
-    updater.checkForUpdatesAsync();
+    updater.checkForUpdates();
   }
 }
 

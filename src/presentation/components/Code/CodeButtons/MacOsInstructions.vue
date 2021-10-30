@@ -96,7 +96,7 @@ export default class MacOsInstructions extends Vue {
   public macOsDownloadUrl = '';
 
   public async created() {
-    const app = await ApplicationFactory.Current.getAppAsync();
+    const app = await ApplicationFactory.Current.getApp();
     this.appName = app.info.name;
     this.macOsDownloadUrl = app.info.getDownloadUrl(OperatingSystem.macOS);
   }

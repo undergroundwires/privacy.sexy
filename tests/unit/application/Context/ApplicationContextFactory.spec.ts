@@ -2,7 +2,7 @@ import 'mocha';
 import { expect } from 'chai';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
-import { buildContextAsync } from '@/application/Context/ApplicationContextFactory';
+import { buildContext } from '@/application/Context/ApplicationContextFactory';
 import { IApplicationFactory } from '@/application/IApplicationFactory';
 import { IApplication } from '@/domain/IApplication';
 import { EnvironmentStub } from '@tests/unit/stubs/EnvironmentStub';
@@ -10,7 +10,7 @@ import { ApplicationStub } from '@tests/unit/stubs/ApplicationStub';
 import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
 
 describe('ApplicationContextFactory', () => {
-    describe('buildContextAsync', () => {
+    describe('buildContext', () => {
         describe('factory', () => {
             it('sets application from factory', async () => {
                 // arrange
@@ -18,7 +18,7 @@ describe('ApplicationContextFactory', () => {
                     new CategoryCollectionStub().withOs(OperatingSystem.macOS));
                 const factoryMock = mockFactoryWithApp(expected);
                 // act
-                const context = await buildContextAsync(factoryMock);
+                const context = await buildContext(factoryMock);
                 // assert
                 expect(expected).to.equal(context.app);
             });
@@ -32,7 +32,7 @@ describe('ApplicationContextFactory', () => {
                     const collection = new CategoryCollectionStub().withOs(expected);
                     const factoryMock = mockFactoryWithCollection(collection);
                     // act
-                    const context = await buildContextAsync(factoryMock, environment);
+                    const context = await buildContext(factoryMock, environment);
                     // assert
                     const actual = context.state.os;
                     expect(expected).to.equal(actual);
@@ -45,7 +45,7 @@ describe('ApplicationContextFactory', () => {
                     const collection = new CategoryCollectionStub().withOs(expected);
                     const factoryMock = mockFactoryWithCollection(collection);
                     // act
-                    const context = await buildContextAsync(factoryMock, environment);
+                    const context = await buildContext(factoryMock, environment);
                     // assert
                     const actual = context.state.os;
                     expect(expected).to.equal(actual);
@@ -62,7 +62,7 @@ describe('ApplicationContextFactory', () => {
                     const app = new ApplicationStub().withCollections(...allCollections);
                     const factoryMock = mockFactoryWithApp(app);
                     // act
-                    const context = await buildContextAsync(factoryMock, environment);
+                    const context = await buildContext(factoryMock, environment);
                     // assert
                     const actual = context.state.os;
                     expect(expectedOs).to.equal(actual, `Expected: ${OperatingSystem[expectedOs]}, actual: ${OperatingSystem[actual]}`);
@@ -78,6 +78,6 @@ function mockFactoryWithCollection(result: ICategoryCollection): IApplicationFac
 
 function mockFactoryWithApp(app: IApplication): IApplicationFactory {
     return {
-        getAppAsync: () => Promise.resolve(app),
+        getApp: () => Promise.resolve(app),
     };
 }

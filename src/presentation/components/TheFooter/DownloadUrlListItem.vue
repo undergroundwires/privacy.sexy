@@ -24,20 +24,20 @@ export default class DownloadUrlListItem extends Vue {
   public hasCurrentOsDesktopVersion: boolean = false;
 
   public async mounted() {
-      await this.onOperatingSystemChangedAsync(this.operatingSystem);
+      await this.onOperatingSystemChanged(this.operatingSystem);
   }
 
   @Watch('operatingSystem')
-  public async onOperatingSystemChangedAsync(os: OperatingSystem) {
+  public async onOperatingSystemChanged(os: OperatingSystem) {
     const currentOs = Environment.CurrentEnvironment.os;
     this.isCurrentOs = os === currentOs;
-    this.downloadUrl = await this.getDownloadUrlAsync(os);
+    this.downloadUrl = await this.getDownloadUrl(os);
     this.operatingSystemName = getOperatingSystemName(os);
     this.hasCurrentOsDesktopVersion = hasDesktopVersion(currentOs);
   }
 
-  private async getDownloadUrlAsync(os: OperatingSystem): Promise<string> {
-    const context = await ApplicationFactory.Current.getAppAsync();
+  private async getDownloadUrl(os: OperatingSystem): Promise<string> {
+    const context = await ApplicationFactory.Current.getApp();
     return context.info.getDownloadUrl(os);
   }
 }

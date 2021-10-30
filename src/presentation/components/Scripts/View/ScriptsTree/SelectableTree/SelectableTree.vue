@@ -23,7 +23,7 @@ import Node from './Node/Node.vue';
 import { INode } from './Node/INode';
 import { convertExistingToNode, toNewLiquorTreeNode } from './LiquorTree/NodeWrapper/NodeTranslator';
 import { INodeSelectedEvent } from './INodeSelectedEvent';
-import { sleepAsync } from '@/infrastructure/Threading/AsyncSleep';
+import { sleep } from '@/infrastructure/Threading/AsyncSleep';
 import { getNewState } from './LiquorTree/NodeWrapper/NodeStateUpdater';
 import { LiquorTreeOptions } from './LiquorTree/LiquorTreeOptions';
 import { FilterPredicate, NodePredicateFilter } from './LiquorTree/NodeWrapper/NodePredicateFilter';
@@ -56,7 +56,7 @@ export default class SelectableTree extends Vue { // Keep it stateless to make i
     }
 
     @Watch('initialNodes', { immediate: true })
-    public async updateNodesAsync(nodes: readonly INode[]) {
+    public async updateNodes(nodes: readonly INode[]) {
         if (!nodes) {
             throw new Error('undefined initial nodes');
         }
@@ -66,12 +66,12 @@ export default class SelectableTree extends Vue { // Keep it stateless to make i
                 (node) => node.state = updateState(node.state, node, this.selectedNodeIds));
         }
         this.initialLiquourTreeNodes = initialNodes;
-        const api = await this.getLiquorTreeApiAsync();
+        const api = await this.getLiquorTreeApi();
         api.setModel(this.initialLiquourTreeNodes); // as liquor tree is not reactive to data after initialization
     }
     @Watch('filterText', { immediate: true })
-    public async updateFilterTextAsync(filterText: |string) {
-        const api = await this.getLiquorTreeApiAsync();
+    public async updateFilterText(filterText: |string) {
+        const api = await this.getLiquorTreeApi();
         if (!filterText) {
             api.clearFilter();
         } else {
@@ -80,22 +80,22 @@ export default class SelectableTree extends Vue { // Keep it stateless to make i
     }
 
     @Watch('selectedNodeIds')
-    public async setSelectedStatusAsync(selectedNodeIds: ReadonlyArray<string>) {
+    public async setSelectedStatus(selectedNodeIds: ReadonlyArray<string>) {
         if (!selectedNodeIds) {
             throw new Error('SelectedrecurseDown nodes are undefined');
         }
-        const tree = await this.getLiquorTreeApiAsync();
+        const tree = await this.getLiquorTreeApi();
         tree.recurseDown(
             (node) => node.states = updateState(node.states, node, selectedNodeIds),
         );
     }
 
-    private async getLiquorTreeApiAsync(): Promise<ILiquorTree> {
+    private async getLiquorTreeApi(): Promise<ILiquorTree> {
         const accessor = (): ILiquorTree => {
             const uiElement = this.$refs.treeElement;
             return uiElement ? (uiElement as any).tree : undefined;
         };
-        const treeElement = await tryUntilDefinedAsync(accessor, 5, 20); // Wait for it to render
+        const treeElement = await tryUntilDefined(accessor, 5, 20); // Wait for it to render
         if (!treeElement) {
             throw Error('Referenced tree element cannot be found. Perhaps it\'s not yet rendered?');
         }
@@ -119,7 +119,7 @@ function recurseDown(
         }
     }
 }
-async function tryUntilDefinedAsync<T>(
+async function tryUntilDefined<T>(
     accessor: () => T | undefined,
     delayInMs: number, maxTries: number): Promise<T | undefined> {
     let triesLeft = maxTries;
@@ -130,7 +130,7 @@ async function tryUntilDefinedAsync<T>(
             return value;
         }
         triesLeft--;
-        await sleepAsync(delayInMs);
+        await sleep(delayInMs);
     }
     return value;
 }

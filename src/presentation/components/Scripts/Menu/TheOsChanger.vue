@@ -3,7 +3,7 @@
       <MenuOptionListItem
         v-for="os in this.allOses" :key="os.name"
         :enabled="currentOs !== os.os"
-        @click="changeOsAsync(os.os)"
+        @click="changeOs(os.os)"
         :label="os.name"
         />
   </MenuOptionList>
@@ -29,12 +29,12 @@ export default class TheOsChanger extends StatefulVue {
   public currentOs?: OperatingSystem = null;
 
   public async created() {
-    const app = await ApplicationFactory.Current.getAppAsync();
+    const app = await ApplicationFactory.Current.getApp();
     this.allOses = app.getSupportedOsList()
       .map((os) => ({ os, name: renderOsName(os) }));
   }
-  public async changeOsAsync(newOs: OperatingSystem) {
-    const context = await this.getCurrentContextAsync();
+  public async changeOs(newOs: OperatingSystem) {
+    const context = await this.getCurrentContext();
     context.changeContext(newOs);
   }
 

@@ -1,16 +1,16 @@
-import { sleepAsync } from '@/infrastructure/Threading/AsyncSleep';
+import { sleep } from '@/infrastructure/Threading/AsyncSleep';
 import { IUrlStatus } from './IUrlStatus';
-import { getUrlStatusAsync, IRequestOptions } from './Requestor';
+import { getUrlStatus, IRequestOptions } from './Requestor';
 import { groupUrlsByDomain } from './UrlPerDomainGrouper';
 
-export async function getUrlStatusesInParallelAsync(
+export async function getUrlStatusesInParallel(
     urls: string[],
     options?: IBatchRequestOptions): Promise<IUrlStatus[]> {
     // urls = [ 'https://privacy.sexy' ]; // Here to comment out when testing
     const uniqueUrls = Array.from(new Set(urls));
     options = { ...DefaultOptions, ...options };
     console.log('Options: ', options); // tslint:disable-line: no-console
-    const results = await requestAsync(uniqueUrls, options);
+    const results = await request(uniqueUrls, options);
     return results;
 }
 
@@ -35,19 +35,19 @@ const DefaultOptions: IBatchRequestOptions = {
     },
 };
 
-function requestAsync(urls: string[], options: IBatchRequestOptions): Promise<IUrlStatus[]> {
+function request(urls: string[], options: IBatchRequestOptions): Promise<IUrlStatus[]> {
     if (!options.domainOptions.sameDomainParallelize) {
-        return runOnEachDomainWithDelayAsync(
+        return runOnEachDomainWithDelay(
             urls,
-            (url) => getUrlStatusAsync(url, options.requestOptions),
+            (url) => getUrlStatus(url, options.requestOptions),
             options.domainOptions.sameDomainDelayInMs);
     } else {
         return Promise.all(
-            urls.map((url) => getUrlStatusAsync(url, options.requestOptions)));
+            urls.map((url) => getUrlStatus(url, options.requestOptions)));
     }
 }
 
-async function runOnEachDomainWithDelayAsync(
+async function runOnEachDomainWithDelay(
     urls: string[],
     action: (url: string) => Promise<IUrlStatus>,
     delayInMs: number): Promise<IUrlStatus[]> {
@@ -58,7 +58,7 @@ async function runOnEachDomainWithDelayAsync(
             const status = await action(url);
             results.push(status);
             if (results.length !== group.length) {
-                await sleepAsync(delayInMs);
+                await sleep(delayInMs);
             }
         }
         return results;

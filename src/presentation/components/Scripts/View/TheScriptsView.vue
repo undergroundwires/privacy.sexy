@@ -13,7 +13,7 @@
                     <div class="search__query__close-button">
                         <font-awesome-icon
                             :icon="['fas', 'times']" 
-                            v-on:click="clearSearchQueryAsync()"/>
+                            v-on:click="clearSearchQuery()"/>
                     </div>
                 </div>
                 <div v-if="!searchHasMatches" class="search-no-matches">
@@ -65,11 +65,11 @@ export default class TheScriptsView extends StatefulVue {
     public ViewType = ViewType; // Make it accessible from the view
 
     public async created() {
-        const app = await ApplicationFactory.Current.getAppAsync();
+        const app = await ApplicationFactory.Current.getApp();
         this.repositoryUrl = app.info.repositoryWebUrl;
     }
-    public async clearSearchQueryAsync() {
-        const context = await this.getCurrentContextAsync();
+    public async clearSearchQuery() {
+        const context = await this.getCurrentContext();
         const filter = context.state.filter;
         filter.removeFilter();
     }

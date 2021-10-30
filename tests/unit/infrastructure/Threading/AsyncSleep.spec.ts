@@ -1,33 +1,35 @@
 import 'mocha';
 import { expect } from 'chai';
-import { sleepAsync, SchedulerType } from '@/infrastructure/Threading/AsyncSleep';
+import { sleep, SchedulerType } from '@/infrastructure/Threading/AsyncSleep';
 
 describe('AsyncSleep', () => {
-    it('fulfills after delay', async () => {
-        // arrange
-        const delayInMs = 10;
-        const scheduler = new SchedulerMock();
-        // act
-        const sleep = sleepAsync(delayInMs, scheduler.mock);
-        const promiseState = watchPromiseState(sleep);
-        scheduler.tickNext(delayInMs);
-        await flushPromiseResolutionQueue();
-        // assert
-        const actual = promiseState.isFulfilled();
-        expect(actual).to.equal(true);
-    });
-    it('pending before delay', async () => {
-        // arrange
-        const delayInMs = 10;
-        const scheduler = new SchedulerMock();
-        // act
-        const sleep = sleepAsync(delayInMs, scheduler.mock);
-        const promiseState = watchPromiseState(sleep);
-        scheduler.tickNext(delayInMs / 5);
-        await flushPromiseResolutionQueue();
-        // assert
-        const actual = promiseState.isPending();
-        expect(actual).to.equal(true);
+    describe('sleep', () => {
+        it('fulfills after delay', async () => {
+            // arrange
+            const delayInMs = 10;
+            const scheduler = new SchedulerMock();
+            // act
+            const promise = sleep(delayInMs, scheduler.mock);
+            const promiseState = watchPromiseState(promise);
+            scheduler.tickNext(delayInMs);
+            await flushPromiseResolutionQueue();
+            // assert
+            const actual = promiseState.isFulfilled();
+            expect(actual).to.equal(true);
+        });
+        it('pending before delay', async () => {
+            // arrange
+            const delayInMs = 10;
+            const scheduler = new SchedulerMock();
+            // act
+            const promise = sleep(delayInMs, scheduler.mock);
+            const promiseState = watchPromiseState(promise);
+            scheduler.tickNext(delayInMs / 5);
+            await flushPromiseResolutionQueue();
+            // assert
+            const actual = promiseState.isPending();
+            expect(actual).to.equal(true);
+        });
     });
 });
 

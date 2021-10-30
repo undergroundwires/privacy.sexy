@@ -12,7 +12,7 @@ export class AsyncLazy<T> {
         this.valueFactory = valueFactory;
     }
 
-    public async getValueAsync(): Promise<T> {
+    public async getValue(): Promise<T> {
         // If value is already created, return the value directly
         if (this.isValueCreated) {
             return Promise.resolve(this.value);

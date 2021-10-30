@@ -15,7 +15,7 @@ export class ApplicationFactory implements IApplicationFactory {
         }
         this.getter = new AsyncLazy<IApplication>(() => Promise.resolve(costlyGetter()));
     }
-    public getAppAsync(): Promise<IApplication> {
-        return this.getter.getValueAsync();
+    public getApp(): Promise<IApplication> {
+        return this.getter.getValue();
     }
 }

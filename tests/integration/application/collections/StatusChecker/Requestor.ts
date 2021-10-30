@@ -1,13 +1,13 @@
-import { retryWithExponentialBackOffAsync } from './ExponentialBackOffRetryHandler';
+import { retryWithExponentialBackOff } from './ExponentialBackOffRetryHandler';
 import { IUrlStatus } from './IUrlStatus';
 import { fetchFollow, IFollowOptions } from './FetchFollow';
 
-export async function getUrlStatusAsync(
+export async function getUrlStatus(
     url: string,
     options: IRequestOptions = DefaultOptions): Promise<IUrlStatus> {
     options = { ...DefaultOptions, ...options };
     const fetchOptions = getFetchOptions(url, options);
-    return retryWithExponentialBackOffAsync(async () => {
+    return retryWithExponentialBackOff(async () => {
         console.log('Requesting', url); // tslint:disable-line: no-console
         let result: IUrlStatus;
         try {

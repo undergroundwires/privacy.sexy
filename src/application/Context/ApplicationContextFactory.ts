@@ -7,12 +7,12 @@ import { IEnvironment } from '../Environment/IEnvironment';
 import { IApplicationFactory } from '../IApplicationFactory';
 import { ApplicationFactory } from '../ApplicationFactory';
 
-export async function buildContextAsync(
+export async function buildContext(
     factory: IApplicationFactory = ApplicationFactory.Current,
     environment = Environment.CurrentEnvironment): Promise<IApplicationContext> {
     if (!factory) { throw new Error('undefined factory'); }
     if (!environment) { throw new Error('undefined environment'); }
-    const app = await factory.getAppAsync();
+    const app = await factory.getApp();
     const os = getInitialOs(app, environment);
     return new ApplicationContext(app, os);
 }

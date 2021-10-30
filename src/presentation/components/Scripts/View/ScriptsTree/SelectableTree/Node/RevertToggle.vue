@@ -2,7 +2,7 @@
         <div class="checkbox-switch" >
             <input type="checkbox" class="input-checkbox" 
                 v-model="isReverted"
-                @change="onRevertToggledAsync()"
+                @change="onRevertToggled()"
                 v-on:click.stop>
             <div class="checkbox-animate">
                 <span class="checkbox-off">revert</span>
@@ -28,12 +28,12 @@ export default class RevertToggle extends StatefulVue {
 
     private handler: IReverter;
 
-    @Watch('node', {immediate: true}) public async onNodeChangedAsync(node: INode) {
-        const context = await this.getCurrentContextAsync();
+    @Watch('node', {immediate: true}) public async onNodeChanged(node: INode) {
+        const context = await this.getCurrentContext();
         this.handler = getReverter(node, context.state.collection);
     }
-    public async onRevertToggledAsync() {
-        const context = await this.getCurrentContextAsync();
+    public async onRevertToggled() {
+        const context = await this.getCurrentContext();
         this.handler.selectWithRevertState(this.isReverted, context.state.selection);
     }
 

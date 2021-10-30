@@ -15,7 +15,7 @@ describe('ApplicationFactory', () => {
             expect(act).to.throw(expectedError);
         });
     });
-    describe('getAppAsync', () => {
+    describe('getApp', () => {
         it('returns result from the getter', async () => {
             // arrange
             const expected = new ApplicationStub();
@@ -23,10 +23,10 @@ describe('ApplicationFactory', () => {
             const sut = new SystemUnderTest(getter);
             // act
             const actual = await Promise.all( [
-                sut.getAppAsync(),
-                sut.getAppAsync(),
-                sut.getAppAsync(),
-                sut.getAppAsync(),
+                sut.getApp(),
+                sut.getApp(),
+                sut.getApp(),
+                sut.getApp(),
             ]);
             // assert
             expect(actual.every((value) => value === expected));
@@ -42,10 +42,10 @@ describe('ApplicationFactory', () => {
             const sut = new SystemUnderTest(getter);
             // act
             await Promise.all( [
-                sut.getAppAsync(),
-                sut.getAppAsync(),
-                sut.getAppAsync(),
-                sut.getAppAsync(),
+                sut.getApp(),
+                sut.getApp(),
+                sut.getApp(),
+                sut.getApp(),
             ]);
             // assert
             expect(totalExecution).to.equal(1);

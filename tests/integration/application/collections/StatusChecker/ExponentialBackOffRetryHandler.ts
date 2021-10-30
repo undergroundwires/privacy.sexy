@@ -1,9 +1,9 @@
-import { sleepAsync } from '@/infrastructure/Threading/AsyncSleep';
+import { sleep } from '@/infrastructure/Threading/AsyncSleep';
 import { IUrlStatus } from './IUrlStatus';
 
 const DefaultBaseRetryIntervalInMs = 5 /* sec */ * 1000;
 
-export async function retryWithExponentialBackOffAsync(
+export async function retryWithExponentialBackOff(
     action: () => Promise<IUrlStatus>,
     baseRetryIntervalInMs: number = DefaultBaseRetryIntervalInMs,
     currentRetry = 1): Promise<IUrlStatus> {
@@ -14,8 +14,8 @@ export async function retryWithExponentialBackOffAsync(
             const exponentialBackOffInMs = getRetryTimeoutInMs(currentRetry, baseRetryIntervalInMs);
             // tslint:disable-next-line: no-console
             console.log(`Retrying (${currentRetry}) in ${exponentialBackOffInMs / 1000} seconds`, status);
-            await sleepAsync(exponentialBackOffInMs);
-            return retryWithExponentialBackOffAsync(action, baseRetryIntervalInMs, currentRetry + 1);
+            await sleep(exponentialBackOffInMs);
+            return retryWithExponentialBackOff(action, baseRetryIntervalInMs, currentRetry + 1);
         }
     }
     return status;

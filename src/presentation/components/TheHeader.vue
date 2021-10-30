@@ -15,7 +15,7 @@ export default class TheHeader extends Vue {
   public subtitle = '';
 
   public async created() {
-    const app = await ApplicationFactory.Current.getAppAsync();
+    const app = await ApplicationFactory.Current.getApp();
     this.title = app.info.name;
   }
 }

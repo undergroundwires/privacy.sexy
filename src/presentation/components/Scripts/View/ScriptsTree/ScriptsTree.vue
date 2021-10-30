@@ -6,7 +6,7 @@
                 :selectedNodeIds="selectedNodeIds"
                 :filterPredicate="filterPredicate"
                 :filterText="filterText"
-                v-on:nodeSelected="toggleNodeSelectionAsync($event)"
+                v-on:nodeSelected="toggleNodeSelection($event)"
                 >
             </SelectableTree>
         </span>
@@ -42,8 +42,8 @@ export default class ScriptsTree extends StatefulVue {
 
   private filtered?: IFilterResult;
 
-  public async toggleNodeSelectionAsync(event: INodeSelectedEvent) {
-      const context = await this.getCurrentContextAsync();
+  public async toggleNodeSelection(event: INodeSelectedEvent) {
+      const context = await this.getCurrentContext();
       switch (event.node.type) {
         case NodeType.Category:
           toggleCategoryNodeSelection(event, context.state);
@@ -56,8 +56,8 @@ export default class ScriptsTree extends StatefulVue {
       }
   }
   @Watch('categoryId', { immediate: true })
-  public async setNodesAsync(categoryId?: number) {
-    const context = await this.getCurrentContextAsync();
+  public async setNodes(categoryId?: number) {
+    const context = await this.getCurrentContext();
     if (categoryId) {
       this.nodes = parseSingleCategory(categoryId, context.state.collection);
     } else {

@@ -21,11 +21,11 @@ Coming soon 🚧
 
 Programmatic usage is supported both on Node.js and browser.
 
-### `getUrlStatusesInParallelAsync`
+### `getUrlStatusesInParallel`
 
 ```js
 // Simple example
-const statuses = await getUrlStatusesInParallelAsync([ 'https://privacy.sexy', /* ... */ ]);
+const statuses = await getUrlStatusesInParallel([ 'https://privacy.sexy', /* ... */ ]);
 if(statuses.all((r) => r.code === 200)) {
     console.log('All URLs are alive!');
 } else {
@@ -33,7 +33,7 @@ if(statuses.all((r) => r.code === 200)) {
 }
 
 // Fastest configuration
-const statuses = await getUrlStatusesInParallelAsync([ 'https://privacy.sexy', /* ... */ ], {
+const statuses = await getUrlStatusesInParallel([ 'https://privacy.sexy', /* ... */ ], {
     domainOptions: {
         sameDomainParallelize: false,
     }
@@ -53,13 +53,13 @@ const statuses = await getUrlStatusesInParallelAsync([ 'https://privacy.sexy', /
     - Sets delay between requests to same host (domain) if same domain parallelization is disabled.
 - `requestOptions` (*object*): See [request options](#request-options).
 
-### `getUrlStatusAsync`
+### `getUrlStatus`
 
 Checks whether single URL is dead or alive.
 
 ```js
 // Simple example
-const status = await getUrlStatusAsync('https://privacy.sexy');
+const status = await getUrlStatus('https://privacy.sexy');
 console.log(`Status code: ${status.code}`);
 ```
 

@@ -1,10 +1,10 @@
 import { autoUpdater, UpdateInfo } from 'electron-updater';
 import log from 'electron-log';
-import { handleManualUpdateAsync, requiresManualUpdate } from './ManualUpdater';
-import { handleAutoUpdateAsync } from './AutoUpdater';
+import { handleManualUpdate, requiresManualUpdate } from './ManualUpdater';
+import { handleAutoUpdate } from './AutoUpdater';
 
 interface IUpdater {
-    checkForUpdatesAsync(): Promise<void>;
+    checkForUpdates(): Promise<void>;
 }
 
 export function setupAutoUpdater(): IUpdater {
@@ -21,20 +21,20 @@ export function setupAutoUpdater(): IUpdater {
             return;
         }
         isAlreadyHandled = true;
-        await handleAvailableUpdateAsync(info);
+        await handleAvailableUpdate(info);
     });
     return {
-        checkForUpdatesAsync: async () => {
+        checkForUpdates: async () => {
             // autoUpdater.emit('update-available'); // For testing
             await autoUpdater.checkForUpdates();
         },
     };
 }
 
-async function handleAvailableUpdateAsync(info: UpdateInfo) {
+async function handleAvailableUpdate(info: UpdateInfo) {
     if (requiresManualUpdate()) {
-        await handleManualUpdateAsync(info);
+        await handleManualUpdate(info);
         return;
     }
-    await handleAutoUpdateAsync();
+    await handleAutoUpdate();
 }

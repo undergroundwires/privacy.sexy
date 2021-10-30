@@ -5,7 +5,7 @@ import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CodeRunner } from '@/infrastructure/CodeRunner';
 
 describe('CodeRunner', () => {
-    describe('runCodeAsync', () => {
+    describe('runCode', () => {
         it('creates temporary directory recursively', async () => {
             // arrange
             const expectedDir = 'expected-dir';
@@ -17,7 +17,7 @@ describe('CodeRunner', () => {
             // act
             await context
                 .withFolderName(folderName)
-                .runCodeAsync();
+                .runCode();
 
             // assert
             expect(context.mocks.fs.mkdirHistory.length).to.equal(1);
@@ -42,7 +42,7 @@ describe('CodeRunner', () => {
                 .withCode(expectedCode)
                 .withFolderName(folderName)
                 .withExtension(extension)
-                .runCodeAsync();
+                .runCode();
 
             // assert
             expect(context.mocks.fs.writeFileHistory.length).to.equal(1);
@@ -66,7 +66,7 @@ describe('CodeRunner', () => {
             await context
                 .withFolderName(folderName)
                 .withExtension(extension)
-                .runCodeAsync();
+                .runCode();
 
             // assert
             expect(context.mocks.fs.chmodCallHistory.length).to.equal(1);
@@ -93,7 +93,7 @@ describe('CodeRunner', () => {
                     // act
                     await context
                         .withOs(data.os)
-                        .runCodeAsync();
+                        .runCode();
 
                     // assert
                     expect(context.mocks.child_process.executionHistory.length).to.equal(1);
@@ -109,7 +109,7 @@ describe('CodeRunner', () => {
             context.mocks.path.setupJoinSequence('non-important-folder-name1', 'non-important-folder-name2');
 
             // act
-            await context.runCodeAsync();
+            await context.runCode();
 
             // assert
             const actualOrder = context.mocks.commandHistory.filter((command) => expectedOrder.includes(command));
@@ -126,9 +126,9 @@ class TestContext {
     private fileExtension: string = 'fileExtension';
     private env = mockEnvironment(OperatingSystem.Windows);
 
-    public async runCodeAsync(): Promise<void> {
+    public async runCode(): Promise<void> {
         const runner = new CodeRunner(this.mocks, this.env);
-        await runner.runCodeAsync(this.code, this.folderName, this.fileExtension);
+        await runner.runCode(this.code, this.folderName, this.fileExtension);
     }
     public withOs(os: OperatingSystem) {
         this.env = mockEnvironment(os);

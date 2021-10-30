@@ -1,7 +1,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { AsyncLazy } from '@/infrastructure/Threading/AsyncLazy';
 import { IApplicationContext } from '@/application/Context/IApplicationContext';
-import { buildContextAsync } from '@/application/Context/ApplicationContextFactory';
+import { buildContext } from '@/application/Context/ApplicationContextFactory';
 import { IApplicationContextChangedEvent } from '@/application/Context/IApplicationContext';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { EventSubscriptionCollection } from '@/infrastructure/Events/EventSubscriptionCollection';
@@ -9,14 +9,14 @@ import { EventSubscriptionCollection } from '@/infrastructure/Events/EventSubscr
 // @ts-ignore because https://github.com/vuejs/vue-class-component/issues/91
 @Component
 export abstract class StatefulVue extends Vue {
-    private static readonly instance = new AsyncLazy<IApplicationContext>(() => buildContextAsync());
+    private static readonly instance = new AsyncLazy<IApplicationContext>(() => buildContext());
 
     protected readonly events = new EventSubscriptionCollection();
 
     private readonly ownEvents = new EventSubscriptionCollection();
 
     public async mounted() {
-        const context = await this.getCurrentContextAsync();
+        const context = await this.getCurrentContext();
         this.ownEvents.register(context.contextChanged.on((event) => this.handleStateChangedEvent(event)));
         this.handleCollectionState(context.state, undefined);
     }
@@ -27,8 +27,8 @@ export abstract class StatefulVue extends Vue {
 
     protected abstract handleCollectionState(
         newState: ICategoryCollectionState, oldState: ICategoryCollectionState | undefined): void;
-    protected getCurrentContextAsync(): Promise<IApplicationContext> {
-        return StatefulVue.instance.getValueAsync();
+    protected getCurrentContext(): Promise<IApplicationContext> {
+        return StatefulVue.instance.getValue();
     }
 
     private handleStateChangedEvent(event: IApplicationContextChangedEvent) {

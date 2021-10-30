@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import { parseApplication } from '@/application/Parser/ApplicationParser';
 import { IApplication } from '@/domain/IApplication';
 import { IUrlStatus } from './StatusChecker/IUrlStatus';
-import { getUrlStatusesInParallelAsync, IBatchRequestOptions } from './StatusChecker/BatchStatusChecker';
+import { getUrlStatusesInParallel, IBatchRequestOptions } from './StatusChecker/BatchStatusChecker';
 
 describe('collections', () => {
     // arrange
@@ -25,7 +25,7 @@ describe('collections', () => {
     const testTimeoutInMs = urls.length * 60000 /* 1 minute */;
     it('have no dead urls', async () => {
         // act
-        const results = await getUrlStatusesInParallelAsync(urls, options);
+        const results = await getUrlStatusesInParallel(urls, options);
         // assert
         const deadUrls = results.filter((r) => r.code !== 200);
         expect(deadUrls).to.have.lengthOf(0, printUrls(deadUrls));

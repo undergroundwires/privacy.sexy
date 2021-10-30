@@ -43,7 +43,7 @@ export default class PrivacyPolicy extends Vue {
   public isDesktop = Environment.CurrentEnvironment.isDesktop;
 
   public async created() {
-    const app = await ApplicationFactory.Current.getAppAsync();
+    const app = await ApplicationFactory.Current.getApp();
     this.initialize(app);
   }
 

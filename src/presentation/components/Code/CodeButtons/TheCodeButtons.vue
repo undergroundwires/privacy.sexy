@@ -3,18 +3,18 @@
         <IconButton
             v-if="this.canRun"
             text="Run"
-            v-on:click="executeCodeAsync"
+            v-on:click="executeCode"
             icon-prefix="fas" icon-name="play">
         </IconButton>
         <IconButton
             :text="this.isDesktopVersion ? 'Save' : 'Download'"
-            v-on:click="saveCodeAsync"
+            v-on:click="saveCode"
             icon-prefix="fas" 
             :icon-name="this.isDesktopVersion ? 'save' : 'file-download'">
         </IconButton>
         <IconButton
             text="Copy"
-            v-on:click="copyCodeAsync"
+            v-on:click="copyCode"
             icon-prefix="fas" icon-name="copy">
         </IconButton>
         <Dialog v-if="this.isMacOsCollection" ref="instructionsDialog">
@@ -54,20 +54,20 @@ export default class TheCodeButtons extends StatefulVue {
   public isMacOsCollection = false;
   public fileName = '';
 
-  public async copyCodeAsync() {
-    const code = await this.getCurrentCodeAsync();
+  public async copyCode() {
+    const code = await this.getCurrentCode();
     Clipboard.copyText(code.current);
   }
-  public async saveCodeAsync() {
-    const context = await this.getCurrentContextAsync();
+  public async saveCode() {
+    const context = await this.getCurrentContext();
     saveCode(this.fileName, context.state);
     if (this.isMacOsCollection) {
       (this.$refs.instructionsDialog as any).show();
     }
   }
-  public async executeCodeAsync() {
-    const context = await this.getCurrentContextAsync();
-    await executeCodeAsync(context);
+  public async executeCode() {
+    const context = await this.getCurrentContext();
+    await executeCode(context);
   }
 
   protected handleCollectionState(newState: ICategoryCollectionState): void {
@@ -77,8 +77,8 @@ export default class TheCodeButtons extends StatefulVue {
     this.react(newState.code);
   }
 
-  private async getCurrentCodeAsync(): Promise<IApplicationCode> {
-    const context = await this.getCurrentContextAsync();
+  private async getCurrentCode(): Promise<IApplicationCode> {
+    const context = await this.getCurrentContext();
     const code = context.state.code;
     return code;
   }
@@ -115,9 +115,9 @@ function buildFileName(scripting: IScriptingDefinition) {
   return fileName;
 }
 
-async function executeCodeAsync(context: IApplicationContext) {
+async function executeCode(context: IApplicationContext) {
   const runner = new CodeRunner();
-  await runner.runCodeAsync(
+  await runner.runCode(
     /*code*/ context.state.code.current,
     /*appName*/ context.app.info.name,
     /*fileExtension*/ context.state.collection.scripting.fileExtension,
