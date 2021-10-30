@@ -2572,60 +2572,89 @@ actions:
                                 code: reg add HKLM\SOFTWARE\Policies\Mozilla\Firefox /v DisableTelemetry /t REG_DWORD /d 1 /f
                                 revertCode: reg add HKLM\SOFTWARE\Policies\Mozilla\Firefox /v DisableTelemetry /t REG_DWORD /d 0 /f
             -
-                name: Disable Google update service
-                recommend: standard
-                docs:
-                    - https://websetnet.net/how-to-disable-google-chrome-automatic-updates-in-windows-10/
-                    - https://www.bleepingcomputer.com/startups/GoogleUpdate.exe-25791.html #gupdate
-                    - https://www.bleepingcomputer.com/startups/GoogleUpdate.exe-26582.html #gupdatem
-                call:
+                category: Disable background update check services
+                # Reduces frequent requests to third party servers
+                # Those request reveal information like machine information (such as software version and IP address) and usage behavior
+                # Once disabled, applications only check for updates and notify when they're being used
+                children:
                     -
-                        function: RunInlineCode
-                        parameters:
-                            code: |-
-                                schtasks /change /disable /tn "GoogleUpdateTaskMachineCore"
-                                schtasks /change /disable /tn "GoogleUpdateTaskMachineUA"
-                            revertCode: |-
-                                schtasks /Change /enable /tn "GoogleUpdateTaskMachineCore"
-                                schtasks /change /enable /tn "GoogleUpdateTaskMachineUA"
+                        name: Disable Google update service
+                        recommend: strict
+                        docs:
+                            - https://websetnet.net/how-to-disable-google-chrome-automatic-updates-in-windows-10/
+                            - https://www.bleepingcomputer.com/startups/GoogleUpdate.exe-25791.html #gupdate
+                            - https://www.bleepingcomputer.com/startups/GoogleUpdate.exe-26582.html #gupdatem
+                        call:
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: |-
+                                        schtasks /change /disable /tn "GoogleUpdateTaskMachineCore"
+                                        schtasks /change /disable /tn "GoogleUpdateTaskMachineUA"
+                                    revertCode: |-
+                                        schtasks /Change /enable /tn "GoogleUpdateTaskMachineCore"
+                                        schtasks /change /enable /tn "GoogleUpdateTaskMachineUA"
+                            -
+                                function: DisableService
+                                parameters:
+                                    serviceName: gupdate # Check: (Get-Service -Name gupdate).StartType
+                                    defaultStartupMode: Automatic # Allowed values: Automatic | Manual
+                            -
+                                function: DisableService
+                                parameters:
+                                    serviceName: gupdatem # Check: (Get-Service -Name gupdatem).StartType
+                                    defaultStartupMode: Automatic # Allowed values: Automatic | Manual
                     -
-                        function: DisableService
-                        parameters:
-                            serviceName: gupdate # Check: (Get-Service -Name gupdate).StartType
-                            defaultStartupMode: Automatic # Allowed values: Automatic | Manual
+                        name: Disable Adobe Acrobat update service
+                        recommend: strict
+                        call:
+                            -
+                                function: DisableService
+                                parameters:
+                                    serviceName: AdobeARMservice # Check: (Get-Service -Name AdobeARMservice).StartType
+                                    defaultStartupMode: Automatic # Allowed values: Automatic | Manual
+                            -
+                                function: DisableService
+                                parameters:
+                                    serviceName: adobeupdateservice # Check: (Get-Service -Name adobeupdateservice).StartType
+                                    defaultStartupMode: Automatic # Allowed values: Automatic | Manual
+                            -
+                                function: DisableService
+                                parameters:
+                                    serviceName: adobeflashplayerupdatesvc # Check: (Get-Service -Name adobeflashplayerupdatesvc).StartType
+                                    defaultStartupMode: Automatic # Allowed values: Automatic | Manual
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: |-
+                                        schtasks /change /tn "Adobe Acrobat Update Task" /disable
+                                        schtasks /change /tn "Adobe Flash Player Updater" /disable
+                                    revertCode: |-
+                                        schtasks /change /tn "Adobe Acrobat Update Task" /enable
+                                        schtasks /change /tn "Adobe Flash Player Updater" /enable
                     -
-                        function: DisableService
-                        parameters:
-                            serviceName: gupdatem # Check: (Get-Service -Name gupdatem).StartType
-                            defaultStartupMode: Automatic # Allowed values: Automatic | Manual
-            -
-                name: Disable Adobe Acrobat update service
-                recommend: standard
-                call:
-                    -
-                        function: DisableService
-                        parameters:
-                            serviceName: AdobeARMservice # Check: (Get-Service -Name AdobeARMservice).StartType
-                            defaultStartupMode: Automatic # Allowed values: Automatic | Manual
-                    -
-                        function: DisableService
-                        parameters:
-                            serviceName: adobeupdateservice # Check: (Get-Service -Name adobeupdateservice).StartType
-                            defaultStartupMode: Automatic # Allowed values: Automatic | Manual
-                    -
-                        function: DisableService
-                        parameters:
-                            serviceName: adobeflashplayerupdatesvc # Check: (Get-Service -Name adobeflashplayerupdatesvc).StartType
-                            defaultStartupMode: Automatic # Allowed values: Automatic | Manual
-                    -
-                        function: RunInlineCode
-                        parameters:
-                            code: |-
-                                schtasks /change /tn "Adobe Acrobat Update Task" /disable
-                                schtasks /change /tn "Adobe Flash Player Updater" /disable
-                            revertCode: |-
-                                schtasks /change /tn "Adobe Acrobat Update Task" /enable
-                                schtasks /change /tn "Adobe Flash Player Updater" /enable
+                        name: Disable Dropbox auto update service
+                        recommend: strict
+                        call:
+                            -
+                                function: DisableService
+                                parameters:
+                                    serviceName: dbupdate # Check: (Get-Service -Name 'dbupdate').StartType
+                                    defaultStartupMode: Automatic # Allowed values: Automatic | Manual
+                            -
+                                function: DisableService
+                                parameters:
+                                    serviceName: dbupdatem # Check: (Get-Service -Name 'dbupdatem').StartType
+                                    defaultStartupMode: Automatic # Allowed values: Automatic | Manual
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: |-
+                                        schtasks /Change /DISABLE /TN "DropboxUpdateTaskMachineCore"
+                                        schtasks /Change /DISABLE /TN "DropboxUpdateTaskMachineUA" 
+                                    revertCode: |-
+                                        schtasks /Change /ENABLE /TN "DropboxUpdateTaskMachineCore"
+                                        schtasks /Change /ENABLE /TN "DropboxUpdateTaskMachineUA"
             -
                 name: Disable Razer Game Scanner Service
                 recommend: standard
@@ -2642,29 +2671,7 @@ actions:
                     parameters:
                         serviceName: LogiRegistryService # Check: (Get-Service -Name 'LogiRegistryService').StartType
                         defaultStartupMode: Automatic # Allowed values: Automatic | Manual
-            -
-                name: Disable Dropbox auto update service
-                recommend: standard
-                call:
-                    -
-                        function: DisableService
-                        parameters:
-                            serviceName: dbupdate # Check: (Get-Service -Name 'dbupdate').StartType
-                            defaultStartupMode: Automatic # Allowed values: Automatic | Manual
-                    -
-                        function: DisableService
-                        parameters:
-                            serviceName: dbupdatem # Check: (Get-Service -Name 'dbupdatem').StartType
-                            defaultStartupMode: Automatic # Allowed values: Automatic | Manual
-                    -
-                        function: RunInlineCode
-                        parameters:
-                            code: |-
-                                schtasks /Change /DISABLE /TN "DropboxUpdateTaskMachineCore"
-                                schtasks /Change /DISABLE /TN "DropboxUpdateTaskMachineUA" 
-                            revertCode: |-
-                                schtasks /Change /ENABLE /TN "DropboxUpdateTaskMachineCore"
-                                schtasks /Change /ENABLE /TN "DropboxUpdateTaskMachineUA"
+
             -
                 category: Disable Media Player data collection
                 children: 
