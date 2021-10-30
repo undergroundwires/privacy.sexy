@@ -17,6 +17,9 @@ describe('collections', () => {
         requestOptions: {
             retryExponentialBaseInMs: 3 /* sec */ * 1000,
             additionalHeaders: { referer: app.info.homepage },
+            additionalHeadersUrlIgnore: [
+                'http://batcmd.com/', // Otherwise it responds with 403
+            ],
         },
     };
     const testTimeoutInMs = urls.length * 60000 /* 1 minute */;
@@ -24,7 +27,7 @@ describe('collections', () => {
         // act
         const results = await getUrlStatusesInParallelAsync(urls, options);
         // assert
-        const deadUrls = results.filter((r) => r.statusCode !== 200);
+        const deadUrls = results.filter((r) => r.code !== 200);
         expect(deadUrls).to.have.lengthOf(0, printUrls(deadUrls));
     }).timeout(testTimeoutInMs);
 });
@@ -41,7 +44,7 @@ function printUrls(statuses: IUrlStatus[]): string {
     return '\n' +
         statuses.map((status) =>
             `- ${status.url}\n` +
-            (status.statusCode ? `\tResponse code: ${status.statusCode}` : '') +
+            (status.code ? `\tResponse code: ${status.code}` : '') +
             (status.error ? `\tException: ${JSON.stringify(status.error, null, '\t')}` : ''))
         .join(`\n`)
         + '\n';

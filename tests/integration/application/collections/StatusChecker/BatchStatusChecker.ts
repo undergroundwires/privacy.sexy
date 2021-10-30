@@ -6,6 +6,7 @@ import { groupUrlsByDomain } from './UrlPerDomainGrouper';
 export async function getUrlStatusesInParallelAsync(
     urls: string[],
     options?: IBatchRequestOptions): Promise<IUrlStatus[]> {
+    // urls = [ 'https://privacy.sexy' ]; // Here to comment out when testing
     const uniqueUrls = Array.from(new Set(urls));
     options = { ...DefaultOptions, ...options };
     console.log('Options: ', options); // tslint:disable-line: no-console

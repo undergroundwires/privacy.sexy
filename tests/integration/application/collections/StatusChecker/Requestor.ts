@@ -1,37 +1,44 @@
 import { retryWithExponentialBackOffAsync } from './ExponentialBackOffRetryHandler';
 import { IUrlStatus } from './IUrlStatus';
-import fetch from 'cross-fetch';
-
-export interface IRequestOptions {
-    retryExponentialBaseInMs?: number;
-    additionalHeaders?: Record<string, string>;
-}
+import { fetchFollow, IFollowOptions } from './FetchFollow';
 
 export async function getUrlStatusAsync(
     url: string,
     options: IRequestOptions = DefaultOptions): Promise<IUrlStatus> {
     options = { ...DefaultOptions, ...options };
-    const fetchOptions = getFetchOptions(options);
+    const fetchOptions = getFetchOptions(url, options);
     return retryWithExponentialBackOffAsync(async () => {
         console.log('Requesting', url); // tslint:disable-line: no-console
+        let result: IUrlStatus;
         try {
-            const response = await fetch(url, fetchOptions);
-            return { url, statusCode: response.status};
+            const response = await fetchFollow(url, fetchOptions, options.followOptions);
+            result = { url, code: response.status };
         } catch (err) {
-            return { url, error: err};
+            result = { url, error: err };
         }
+        return result;
     }, options.retryExponentialBaseInMs);
+}
+
+export interface IRequestOptions {
+    retryExponentialBaseInMs?: number;
+    additionalHeaders?: Record<string, string>;
+    additionalHeadersUrlIgnore?: string[];
+    followOptions?: IFollowOptions;
 }
 
 const DefaultOptions: IRequestOptions = {
     retryExponentialBaseInMs: 5000,
     additionalHeaders: {},
+    additionalHeadersUrlIgnore: [],
 };
 
-function getFetchOptions(options: IRequestOptions) {
+function getFetchOptions(url: string, options: IRequestOptions): RequestInit {
+    const additionalHeaders = options.additionalHeadersUrlIgnore.some(
+        (ignorePattern) => url.match(ignorePattern)) ? {} : options.additionalHeaders;
     return {
         method: 'GET',
-        headers: { ...DefaultHeaders, ...options.additionalHeaders },
+        headers: { ...DefaultHeaders, ...additionalHeaders },
     };
 }
 
