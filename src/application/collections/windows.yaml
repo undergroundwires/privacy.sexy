@@ -573,17 +573,42 @@ actions:
                         code: reg add "HKLM\Software\Policies\Microsoft\Windows\AppCompat" /v "AITEnable" /t REG_DWORD /d "0" /f
                         revertCode: reg add "HKLM\Software\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d "1" /f
                     -
-                        name: Disable diagnostics telemetry
-                        recommend: standard
-                        code: |-
-                            reg add "HKLM\SYSTEM\ControlSet001\Services\DiagTrack" /v "Start" /t REG_DWORD /d 4 /f 
-                            reg add "HKLM\SYSTEM\ControlSet001\Services\dmwappushsvc" /v "Start" /t REG_DWORD /d 4 /f 
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Services\dmwappushservice" /v "Start" /t REG_DWORD /d 4 /f 
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Services\diagnosticshub.standardcollector.service" /v "Start" /t REG_DWORD /d 4 /f
-                            sc stop "DiagTrack" & sc config "DiagTrack" start=disabled
-                            sc stop "dmwappushservice" & sc config "dmwappushservice" start=disabled
-                            sc stop "diagnosticshub.standardcollector.service" & sc config "diagnosticshub.standardcollector.service" start=disabled
-                            sc stop "diagsvc" & sc config "diagsvc" start=disabled
+                        category: Disable diagnostics telemetry services
+                        children:
+                            -
+                                name: Disable connected user experiences and telemetry service # Connected User Experiences and Telemetry
+                                recommend: standard
+                                docs: http://batcmd.com/windows/10/services/diagtrack/
+                                call:
+                                    function: DisableService
+                                    parameters:
+                                        serviceName: DiagTrack
+                                        defaultStartUpMode: Automatic # Automatic | Manual
+                            -
+                                name: Disable WAP push message routing service # Device Management Wireless Application Protocol (WAP) Push message Routing Service
+                                recommend: standard
+                                docs: http://batcmd.com/windows/10/services/dmwappushservice/
+                                call:
+                                    function: DisableService
+                                    parameters:
+                                        serviceName: dmwappushservice
+                                        defaultStartUpMode: Manual # Automatic | Manual
+                            -
+                                name: Disable diagnostics hub standard collector service # Microsoft (R) Diagnostics Hub Standard Collector
+                                docs: http://batcmd.com/windows/10/services/diagnosticshub-standardcollector-service/
+                                call:
+                                    function: DisableService
+                                    parameters:
+                                        serviceName: diagnosticshub.standardcollector.service
+                                        defaultStartUpMode: Manual # Automatic | Manual
+                            -
+                                name: Disable diagnostic execution service # Diagnostic Execution Service
+                                docs: http://batcmd.com/windows/10/services/diagsvc/
+                                call:
+                                    function: DisableService
+                                    parameters:
+                                        serviceName: diagsvc
+                                        defaultStartUpMode: Manual # Automatic | Manual
                     -
                         name: Disable Customer Experience Improvement Program
                         recommend: standard
@@ -669,40 +694,53 @@ actions:
                         name: Disable error reporting
                         recommend: standard
                         docs:
-                            - https://docs.microsoft.com/en-us/windows/win32/wer/wer-settings
-                            - https://www.stigviewer.com/stig/windows_10/2016-06-24/finding/V-63493
-                        code: |-
-                            :: Disable Windows Error Reporting (WER)
-                            reg add "HKLM\Software\Policies\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /t REG_DWORD /d "1" /f
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /t "REG_DWORD" /d "1" /f
-                            :: DefaultConsent / 1 - Always ask (default) / 2 - Parameters only / 3 - Parameters and safe data / 4 - All data
-                            reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting\Consent" /v "DefaultConsent" /t REG_DWORD /d "0" /f
-                            reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting\Consent" /v "DefaultOverrideBehavior" /t REG_DWORD /d "1" /f
-                            :: Disable WER sending second-level data
-                            reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting" /v "DontSendAdditionalData" /t REG_DWORD /d "1" /f
-                            :: Disable WER crash dialogs, popups
-                            reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting" /v "LoggingDisabled" /t REG_DWORD /d "1" /f
-                            schtasks /Change /TN "Microsoft\Windows\ErrorDetails\EnableErrorDetailsUpdate" /Disable
-                            schtasks /Change /TN "Microsoft\Windows\Windows Error Reporting\QueueReporting" /Disable
-                            :: Disable Windows Error Reporting Service
-                            sc stop "WerSvc" & sc config "WerSvc" start=disabled
-                            sc stop "wercplsupport" & sc config "wercplsupport" start=disabled
-                        revertCode: |-
-                            :: Enable Windows Error Reporting (WER)
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /f
-                            reg delete "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /f
-                            :: DefaultConsent / 1 - Always ask (default) / 2 - Parameters only / 3 - Parameters and safe data / 4 - All data
-                            reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting\Consent" /v "DefaultConsent" /t REG_DWORD /d "1" /f
-                            reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting\Consent" /v "DefaultOverrideBehavior" /t REG_DWORD /d "0" /f
-                            :: Enable WER sending second-level data
-                            reg delete "HKLM\Software\Microsoft\Windows\Windows Error Reporting" /v "DontSendAdditionalData" /f
-                            :: Enable WER crash dialogs, popups
-                            reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting" /v "LoggingDisabled" /t REG_DWORD /d "0" /f
-                            schtasks /Change /TN "Microsoft\Windows\ErrorDetails\EnableErrorDetailsUpdate" /Enable
-                            schtasks /Change /TN "Microsoft\Windows\Windows Error Reporting\QueueReporting" /Enable
-                            :: Enable Windows Error Reporting Service
-                            sc config "WerSvc" start=demand
-                            sc config "wercplsupport" start=demand
+                            # Settings
+                                - https://docs.microsoft.com/en-us/windows/win32/wer/wer-settings
+                                - https://www.stigviewer.com/stig/windows_10/2016-06-24/finding/V-63493
+                            # Windows Error Reporting Service
+                                - http://batcmd.com/windows/10/services/wersvc/
+                            # Problem Reports Control Panel Support
+                                - http://batcmd.com/windows/10/services/wercplsupport/
+                        call:
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: |-
+                                        :: Disable Windows Error Reporting (WER)
+                                        reg add "HKLM\Software\Policies\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /t REG_DWORD /d "1" /f
+                                        reg add "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /t "REG_DWORD" /d "1" /f
+                                        :: DefaultConsent / 1 - Always ask (default) / 2 - Parameters only / 3 - Parameters and safe data / 4 - All data
+                                        reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting\Consent" /v "DefaultConsent" /t REG_DWORD /d "0" /f
+                                        reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting\Consent" /v "DefaultOverrideBehavior" /t REG_DWORD /d "1" /f
+                                        :: Disable WER sending second-level data
+                                        reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting" /v "DontSendAdditionalData" /t REG_DWORD /d "1" /f
+                                        :: Disable WER crash dialogs, popups
+                                        reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting" /v "LoggingDisabled" /t REG_DWORD /d "1" /f
+                                        schtasks /Change /TN "Microsoft\Windows\ErrorDetails\EnableErrorDetailsUpdate" /Disable
+                                        schtasks /Change /TN "Microsoft\Windows\Windows Error Reporting\QueueReporting" /Disable
+                                    revertCode: |-
+                                        :: Enable Windows Error Reporting (WER)
+                                        reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /f
+                                        reg delete "HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /f
+                                        :: DefaultConsent / 1 - Always ask (default) / 2 - Parameters only / 3 - Parameters and safe data / 4 - All data
+                                        reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting\Consent" /v "DefaultConsent" /t REG_DWORD /d "1" /f
+                                        reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting\Consent" /v "DefaultOverrideBehavior" /t REG_DWORD /d "0" /f
+                                        :: Enable WER sending second-level data
+                                        reg delete "HKLM\Software\Microsoft\Windows\Windows Error Reporting" /v "DontSendAdditionalData" /f
+                                        :: Enable WER crash dialogs, popups
+                                        reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting" /v "LoggingDisabled" /t REG_DWORD /d "0" /f
+                                        schtasks /Change /TN "Microsoft\Windows\ErrorDetails\EnableErrorDetailsUpdate" /Enable
+                                        schtasks /Change /TN "Microsoft\Windows\Windows Error Reporting\QueueReporting" /Enable
+                            - # Windows Error Reporting Service
+                                function: DisableService
+                                parameters:
+                                    serviceName: wersvc
+                                    defaultStartUpMode: Manual # Automatic | Manual
+                            - # Problem Reports Control Panel Support
+                                function: DisableService
+                                parameters:
+                                    serviceName: wercplsupport
+                                    defaultStartUpMode: Manual # Automatic | Manual
             -
                 category: Disable automatic driver updates by Windows Update
                 children:
@@ -1431,15 +1469,16 @@ actions:
                         code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Biometrics\Credential Provider" /v "Enabled" /t "REG_DWORD" /d "0" /f
                         revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Biometrics\Credential Provider" /v "Enabled" /t "REG_DWORD" /d "1" /f
                     -
-                        name: Do not start Windows Biometric Service
+                        name: Disable Windows Biometric Service
                         recommend: strict
-                        docs: https://docs.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server#windows-biometric-service
-                        code: |-
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Services\WbioSrvc" /v "Start" /t REG_DWORD /d 4 /f
-                            sc stop "WbioSrvc" & sc config "WbioSrvc" start=disabled
-                        revertCode: |-
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Services\WbioSrvc" /v "Start" /t REG_DWORD /d 2 /f
-                            sc config "WbioSrvc" start=demand
+                        docs:
+                            - https://docs.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server#windows-biometric-service
+                            - http://batcmd.com/windows/10/services/wbiosrvc/
+                        call:
+                            function: DisableService
+                            parameters:
+                                serviceName: WbioSrvc
+                                defaultStartUpMode: Manual # Automatic | Manual
             -
                 name: Disable Wi-Fi sense
                 recommend: standard
@@ -1500,10 +1539,15 @@ actions:
                 children:
                     -
                         name: Disable Windows Insider Service
-                        docs: https://docs.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server#windows-insider-service
+                        docs:
+                            - https://docs.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server#windows-insider-service
+                            - http://batcmd.com/windows/10/services/wisvc/
                         recommend: standard
-                        code: sc stop "wisvc" & sc config "wisvc" start=disabled
-                        revertCode: sc config "wisvc" start=demand
+                        call:
+                            function: DisableService
+                            parameters:
+                                serviceName: wisvc
+                                defaultStartUpMode: Manual # Automatic | Manual
                     -
                         name: Do not let Microsoft try features on this build
                         docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.DataCollection::EnableExperimentation
@@ -1656,9 +1700,13 @@ actions:
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\VisualStudio\Feedback" /v "DisableScreenshotCapture" /t REG_DWORD /d 0 /f
                     -
                         name: Stop and disable Visual Studio Standard Collector Service
+                        # Collects logs for Diagnostics Hub
                         recommend: standard
-                        code: sc stop "VSStandardCollectorService150" & sc config "VSStandardCollectorService150" start=disabled
-                        revertCode: sc config "VSStandardCollectorService150" start=auto & sc start "VSStandardCollectorService150"
+                        call:
+                            function: DisableService
+                            parameters:
+                                serviceName: VSStandardCollectorService150
+                                defaultStartUpMode: Automatic # Automatic | Manual
             -
                 name: Disable NET Core CLI telemetry
                 recommend: standard
@@ -1872,12 +1920,18 @@ actions:
                             schtasks /change /TN "Microsoft\Office\OfficeTelemetryAgentLogOn2016" /ENABLE
                     # - (breaks office, see https://answers.microsoft.com/en-us/office/forum/office_2016-officeapps/office-2016-click-to-run-service-is-it-necessary/07f87963-7193-488a-9885-d6339105824b)
                     #     name: Disable ClickToRun Service Monitor
-                    #     code: |-
-                    #         schtasks /change /TN "Microsoft\Office\Office ClickToRun Service Monitor" /DISABLE
-                    #         sc stop "ClickToRunSvc" & sc config "ClickToRunSvc" start=disabled
-                    #     revertCode: |-
-                    #         schtasks /change /TN "Microsoft\Office\Office ClickToRun Service Monitor" /ENABLE
-                    #         sc config "ClickToRunSvc" start=auto & sc start "ClickToRunSvc"
+                    #     docs: https://web.archive.org/web/20180201221907/https://technet.microsoft.com/en-us/library/jj219427.aspx
+                    #     call:
+                    #         -
+                    #             function: RunInlineCode
+                    #             parameters:
+                    #                 code: schtasks /change /TN "Microsoft\Office\Office ClickToRun Service Monitor" /DISABLE
+                    #                 revertCode: schtasks /change /TN "Microsoft\Office\Office ClickToRun Service Monitor" /ENABLE
+                    #         -
+                    #             function: DisableService
+                    #             parameters:
+                    #                 serviceName: ClickToRunSvc
+                    #                 defaultStartUpMode: Automatic # Automatic | Manual
                     -
                         name: Disable Subscription Heartbeat
                         code: |-
@@ -2055,54 +2109,97 @@ actions:
             -
                 name: Disable Google update service
                 recommend: standard
-                code: |-
-                    sc stop "gupdate" & sc config "gupdate" start=disabled
-                    sc stop "gupdatem" & sc config "gupdatem" start=disabled
-                    schtasks /change /disable /tn "GoogleUpdateTaskMachineCore"
-                    schtasks /change /disable /tn "GoogleUpdateTaskMachineUA"
-                revertCode: |-
-                    sc config "gupdate" start=auto & sc start "gupdate"
-                    sc config "gupdatem" start=auto & sc start "gupdatem"
-                    schtasks /Change /enable /tn "GoogleUpdateTaskMachineCore"
-                    schtasks /change /enable /tn "GoogleUpdateTaskMachineUA"
+                docs:
+                    - https://websetnet.net/how-to-disable-google-chrome-automatic-updates-in-windows-10/
+                    - https://www.bleepingcomputer.com/startups/GoogleUpdate.exe-25791.html #gupdate
+                    - https://www.bleepingcomputer.com/startups/GoogleUpdate.exe-26582.html #gupdatem
+                call:
+                    -
+                        function: RunInlineCode
+                        parameters:
+                            code: |-
+                                schtasks /change /disable /tn "GoogleUpdateTaskMachineCore"
+                                schtasks /change /disable /tn "GoogleUpdateTaskMachineUA"
+                            revertCode: |-
+                                schtasks /Change /enable /tn "GoogleUpdateTaskMachineCore"
+                                schtasks /change /enable /tn "GoogleUpdateTaskMachineUA"
+                    -
+                        function: DisableService
+                        parameters:
+                            serviceName: gupdate
+                            defaultStartUpMode: Automatic # Automatic | Manual
+                    -
+                        function: DisableService
+                        parameters:
+                            serviceName: gupdatem
+                            defaultStartUpMode: Automatic # Automatic | Manual
             -
                 name: Disable Adobe Acrobat update service
                 recommend: standard
-                code: |-
-                    sc stop "AdobeARMservice" & sc config "AdobeARMservice" start=disabled
-                    sc stop "adobeupdateservice" & sc config "adobeupdateservice" start=disabled
-                    sc stop "adobeflashplayerupdatesvc" & sc config "adobeflashplayerupdatesvc" start=disabled
-                    schtasks /change /tn "Adobe Acrobat Update Task" /disable
-                    schtasks /change /tn "Adobe Flash Player Updater" /disable
-                revertCode: |-
-                    sc config "AdobeARMservice" start=auto & sc start "AdobeARMservice"
-                    sc config "adobeupdateservice" start=auto & sc start "adobeupdateservice"
-                    sc config "adobeflashplayerupdatesvc" start=auto & sc start "adobeflashplayerupdatesvc"
-                    schtasks /change /tn "Adobe Acrobat Update Task" /enable
-                    schtasks /change /tn "Adobe Flash Player Updater" /enable
+                call:
+                    -
+                        function: DisableService
+                        parameters:
+                            serviceName: AdobeARMservice
+                            defaultStartUpMode: Automatic # Automatic | Manual
+                    -
+                        function: DisableService
+                        parameters:
+                            serviceName: adobeupdateservice
+                            defaultStartUpMode: Automatic # Automatic | Manual
+                    -
+                        function: DisableService
+                        parameters:
+                            serviceName: adobeflashplayerupdatesvc
+                            defaultStartUpMode: Automatic # Automatic | Manual
+                    -
+                        function: RunInlineCode
+                        parameters:
+                            code: |-
+                                schtasks /change /tn "Adobe Acrobat Update Task" /disable
+                                schtasks /change /tn "Adobe Flash Player Updater" /disable
+                            revertCode: |-
+                                schtasks /change /tn "Adobe Acrobat Update Task" /enable
+                                schtasks /change /tn "Adobe Flash Player Updater" /enable
             -
                 name: Disable Razer Game Scanner Service
                 recommend: standard
-                code: sc stop "Razer Game Scanner Service" & sc config "Razer Game Scanner Service" start=disabled
-                revertCode: sc config "Razer Game Scanner Service" start=demand
+                call:
+                    function: DisableService
+                    parameters:
+                        serviceName: Razer Game Scanner Service
+                        defaultStartUpMode: Manual # Automatic | Manual
             -
                 name: Disable Logitech Gaming Registry Service 
                 recommend: standard
-                code: sc stop "LogiRegistryService" & sc config "LogiRegistryService" start=disabled
-                revertCode: sc config "LogiRegistryService" start=auto & sc start "LogiRegistryService" 
+                call:
+                    function: DisableService
+                    parameters:
+                        serviceName: LogiRegistryService
+                        defaultStartUpMode: Automatic # Automatic | Manual
             -
                 name: Disable Dropbox auto update service
                 recommend: standard
-                code: |-
-                    sc stop "dbupdate" & sc config "dbupdate" start=disabled
-                    sc stop "dbupdatem" & sc config "dbupdatem" start=disabled
-                    schtasks /Change /DISABLE /TN "DropboxUpdateTaskMachineCore"
-                    schtasks /Change /DISABLE /TN "DropboxUpdateTaskMachineUA" 
-                revertCode: |-
-                    sc config "dbupdate" start=auto & sc start "dbupdate"
-                    sc config "dbupdatem" start=auto & sc start "dbupdatem"
-                    schtasks /Change /ENABLE /TN "DropboxUpdateTaskMachineCore"
-                    schtasks /Change /ENABLE /TN "DropboxUpdateTaskMachineUA" 
+                call:
+                    -
+                        function: DisableService
+                        parameters:
+                            serviceName: dbupdate
+                            defaultStartUpMode: Automatic # Automatic | Manual
+                    -
+                        function: DisableService
+                        parameters:
+                            serviceName: dbupdatem
+                            defaultStartUpMode: Automatic # Automatic | Manual
+                    -
+                        function: RunInlineCode
+                        parameters:
+                            code: |-
+                                schtasks /Change /DISABLE /TN "DropboxUpdateTaskMachineCore"
+                                schtasks /Change /DISABLE /TN "DropboxUpdateTaskMachineUA" 
+                            revertCode: |-
+                                schtasks /Change /ENABLE /TN "DropboxUpdateTaskMachineCore"
+                                schtasks /Change /ENABLE /TN "DropboxUpdateTaskMachineUA"
             -
                 category: Disable Media Player data collection
                 children: 
@@ -2120,8 +2217,13 @@ actions:
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\WMDRM" /v "DisableOnline" /t REG_DWORD /d 1 /f
                     -
                         name: Disable Windows Media Player Network Sharing Service
+                        docs: http://batcmd.com/windows/10/services/wmpnetworksvc/
                         recommend: standard
-                        code: sc stop "WMPNetworkSvc" & sc config "WMPNetworkSvc" start=disabled
+                        call:
+                            function: DisableService
+                            parameters:
+                                serviceName: WMPNetworkSvc
+                                defaultStartUpMode: Automatic # Automatic | Manual
             -
                 name: Disable CCleaner Monitoring
                 code: |-
@@ -4104,7 +4206,7 @@ actions:
                                             -
                                                 function: DisableServiceInRegistry # We must disable it on registry level, "Access is denied" for sc config
                                                 parameters:
-                                                    serviceName: Sense
+                                                    serviceName: SenseAutomatic
                                                     defaultStartUpMode: 3 # 0: Boot | 1: System | 2: Automatic | 3: Manual | 4: Disabled
                                             -
                                                 function: RenameSystemFile
@@ -4228,19 +4330,28 @@ actions:
                                             reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost" /v "EnableWebContentEvaluation" /f 2>nul
             -
                 name: Disable automatic updates
-                docs: https://docs.microsoft.com/fr-fr/security-updates/windowsupdateservices/18127152
-                code: |-
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "NoAutoUpdate" /t "REG_DWORD" /d "0" /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "AUOptions" /t "REG_DWORD" /d "2" /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallDay" /t "REG_DWORD" /d "0" /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallTime" /t "REG_DWORD" /d "3" /f
-                    sc stop "UsoSvc" & sc config "UsoSvc" start=disabled
-                revertCode: |-
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "NoAutoUpdate" /t "REG_DWORD" /d "1" /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "AUOptions" /t "REG_DWORD" /d "3" /f
-                    reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallDay" /f 2>nul
-                    reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallTime /f 2>nul
-                    sc config "UsoSvc" start=auto & sc start "UsoSvc"
+                docs:
+                    - https://docs.microsoft.com/fr-fr/security-updates/windowsupdateservices/18127152
+                    - http://batcmd.com/windows/10/services/usosvc/
+                call:
+                    -
+                        function: RunInlineCode
+                        parameters:
+                            code: |-
+                                reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "NoAutoUpdate" /t "REG_DWORD" /d "0" /f
+                                reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "AUOptions" /t "REG_DWORD" /d "2" /f
+                                reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallDay" /t "REG_DWORD" /d "0" /f
+                                reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallTime" /t "REG_DWORD" /d "3" /f
+                            revertCode: |-
+                                reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "NoAutoUpdate" /t "REG_DWORD" /d "1" /f
+                                reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "AUOptions" /t "REG_DWORD" /d "3" /f
+                                reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallDay" /f 2>nul
+                                reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallTime /f 2>nul
+                    -
+                        function: DisableService
+                        parameters:
+                            serviceName: UsoSvc
+                            defaultStartUpMode: Automatic # Automatic | Manual
     -
         category: UI for privacy
         children:         
@@ -4415,28 +4526,48 @@ actions:
             -
                 name: Delivery Optimization (P2P Windows Updates)
                 recommend: standard
-                code: sc stop "DoSvc" & sc config "DoSvc" start=disabled
-                revertCode: sc config "DoSvc" start=auto & sc start "DoSvc"
+                docs: http://batcmd.com/windows/10/services/dosvc/
+                call:
+                    function: DisableService
+                    parameters:
+                        serviceName: DoSvc
+                        defaultStartUpMode: Automatic # Automatic | Manual
             -
                 name: Microsoft Windows Live ID Service
                 recommend: standard
-                code: sc stop "wlidsvc" & sc config "wlidsvc" start=demand
-                revertCode: sc config "wlidsvc" start=demand
+                docs: http://batcmd.com/windows/10/services/wlidsvc/
+                call:
+                    function: DisableService
+                    parameters:
+                        serviceName: wlidsvc
+                        defaultStartUpMode: Manual # Automatic | Manual
             -
                 name: Program Compatibility Assistant Service
                 recommend: standard
-                code: sc stop "PcaSvc" & sc config "PcaSvc" start=disabled
-                revertCode: sc config "PcaSvc" start=demand
+                docs: http://batcmd.com/windows/10/services/pcasvc/
+                call:
+                    function: DisableService
+                    parameters:
+                        serviceName: PcaSvc
+                        defaultStartUpMode: Manual # Automatic | Manual
             -
                 name: Downloaded Maps Manager
                 recommend: standard
-                code: sc stop "MapsBroker" & sc config "MapsBroker" start=disabled
-                revertCode: sc config "MapsBroker" start=auto & sc start "MapsBroker"
+                docs: http://batcmd.com/windows/10/services/mapsbroker/
+                call:
+                    function: DisableService
+                    parameters:
+                        serviceName: MapsBroker
+                        defaultStartUpMode: Automatic # Automatic | Manual
             -
                 name: Microsoft Retail Demo experience
                 recommend: standard
-                code: sc stop "RetailDemo" & sc config "RetailDemo" start=disabled
-                revertCode: sc config "RetailDemo" start=demand
+                docs: http://batcmd.com/windows/10/services/retaildemo/
+                call:
+                    function: DisableService
+                    parameters:
+                        serviceName: RetailDemo
+                        defaultStartUpMode: Manual # Automatic | Manual
             -
                 category: Mail, contact, calendar and user data synchronization
                 children:
@@ -4481,34 +4612,49 @@ actions:
                 name: Windows Push Notification Service
                 recommend: standard
                 docs: https://en.wikipedia.org/w/index.php?title=Windows_Push_Notification_Service&oldid=1012335551#Privacy_Issue
-                code: sc stop "WpnService" & sc config "WpnService" start=disabled
-                revertCode: sc config "WpnService" start=auto & sc start "WpnService"
+                call:
+                    function: DisableService
+                    parameters:
+                        serviceName: WpnService
+                        defaultStartUpMode: Automatic # Automatic | Manual
             -
                 category: Disable Xbox services
                 children:
                     -
                         name: Xbox Live Auth Manager
                         recommend: standard
-                        code: sc stop "XblAuthManager" & sc config "XblAuthManager" start=disabled
-                        revertCode: sc config "XblAuthManager" start=demand
+                        call:
+                            function: DisableService
+                            parameters:
+                                serviceName: XblAuthManager
+                                defaultStartUpMode: Manual # Automatic | Manual
                     -
                         name: Xbox Live Game Save
                         recommend: standard
-                        code: sc stop "XblGameSave" & sc config "XblGameSave" start=disabled
-                        revertCode: sc config "XblGameSave" start=demand
+                        call:
+                            function: DisableService
+                            parameters:
+                                serviceName: XblGameSave
+                                defaultStartUpMode: Manual # Automatic | Manual
                     -
                         name: Xbox Live Networking Service
                         recommend: standard
-                        code: sc stop "XboxNetApiSvc" & sc config "XboxNetApiSvc" start=disabled
-                        revertCode: sc config "XboxNetApiSvc" start=demand
+                        call:
+                            function: DisableService
+                            parameters:
+                                serviceName: XboxNetApiSvc
+                                defaultStartUpMode: Manual # Automatic | Manual
             -
                 name: Disable Volume Shadow Copy Service (breaks System Restore and Windows Backup) # Also known as • Volume Snapshot Service • VSS • VSC
                 recommend: strict
                 docs:
                     - https://docs.microsoft.com/en-us/windows-server/storage/file-server/volume-shadow-copy-service
                     - https://www.schneier.com/blog/archives/2009/12/the_security_im.html
-                code: sc stop "VSS" & sc config "VSS" start=disabled
-                revertCode: sc config "VSS" start=demand
+                call:
+                    function: DisableService
+                    parameters:
+                        serviceName: VSS
+                        defaultStartUpMode: Manual # Automatic | Manual
             -
                 name: Disable NetBios for all interfaces
                 docs:
@@ -6378,7 +6524,7 @@ functions:
         call:
             function: RunPowerShell
             parameters:
-                code: |- # We do registry way as sc config won't not work
+                code: |- # We do registry way because GUI, "sc config" or "Set-Service" won't not work
                     $serviceName = '{{ $serviceName }}'
                     $service = Get-Service -Name $serviceName -ErrorAction Ignore
                     if(!$service) {
@@ -6551,4 +6697,101 @@ functions:
                             Write-Error "Failed to set using $($command.Name): $_"
                         }
                         exit 1
+    -
+        name: DisableService
+        parameters: 
+            - name: serviceName
+            - name: defaultStartUpMode # Allowed values: Automatic | Manual
+        call:
+            function: RunPowerShell
+            # Careful with Set-Service cmdlet:
+            #   1.  It exits with positive code even if service is disabled
+            #   2.  It had breaking API change for -StartupMode parameter:
+            #           Powershell >= 6.0 : Automatic, AutomaticDelayedStart, Disabled, InvalidValue, Manual
+            #           PowerShell <= 5   : Boot, System, Automatic, Manual, Disabled
+            #           "Disabled", "Automatic" and "Manual" are only consistent ones.
+            #       Read more:
+            #           https://github.com/PowerShell/PowerShell/blob/v7.2.0/src/Microsoft.PowerShell.Commands.Management/commands/management/Service.cs#L2966-L2978
+            #           https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-service?view=powershell-7.1
+            parameters:
+                code: |-
+                    $serviceName = '{{ $serviceName }}'
+                    Write-Host "Disabling service: `"$serviceName`"."
+                    # -- Skip if service does not exist
+                    $service = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
+                    if(!$service) {
+                        Write-Host "Service `"$serviceName`" could not be not found, no need to disable it."
+                        Exit 0
+                    }
+                    # -- Stop if running
+                    if ($service.Status -eq [System.ServiceProcess.ServiceControllerStatus]::Running) {
+                        Write-Host "`"$servicename`" is running, trying to stop it."
+                        try {
+                            Stop-Service -Name "$serviceName" -Force -ErrorAction Stop
+                            Write-Host "Stopped `"$serviceName`" successfully."
+                        } catch {
+                            Write-Warning "Could not stop `"$serviceName`", it will be stopped after reboot: $_"
+                        }
+                    } else {
+                        Write-Host "`"$serviceName`" is not running, no need to stop."
+                    }
+                    # -- Skip if already disabled
+                    $startupType = $service.StartType # Does not work before .NET 4.6.1
+                    if(!$startupType) {
+                        $startupType = (Get-WmiObject -Query "Select StartMode From Win32_Service Where Name='$serviceName'" -ErrorAction Ignore).StartMode
+                        if(!$startupType) {
+                            $startupType = (Get-WmiObject -Class Win32_Service -Property StartMode -Filter "Name='$serviceName'" -ErrorAction Ignore).StartMode
+                        }
+                    }
+                    if($startupType -eq 'Disabled') {
+                        Write-Host "$serviceName is already disabled, no further action is needed"
+                    }
+                    # -- Disable service
+                    try {
+                        Set-Service -Name "$serviceName" -StartupType Disabled -Confirm:$false -ErrorAction Stop
+                        Write-Host "Disabled `"$serviceName`" successfully."
+                    } catch {
+                        Write-Error "Could not disable `"$serviceName`": $_"
+                    }
+                revertCode: |-
+                    $serviceName = '{{ $serviceName }}'
+                    $defaultStartUpMode = '{{ $defaultStartUpMode }}'
+                    Write-Host "Enabling service: `"$serviceName`" with `"$defaultStartUpMode`" start."
+                    # -- Skip if service does not exist
+                    $service = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
+                    if(!$service) {
+                        throw "Service `"$serviceName`" could not be not found, cannot enable it."
+                    }
+                    # -- Skip if already enabled
+                    $startupType = $service.StartType # Does not work before .NET 4.6.1
+                    if(!$startupType) {
+                        $startupType = (Get-WmiObject -Query "Select StartMode From Win32_Service Where Name='$serviceName'" -ErrorAction Ignore).StartMode
+                        if(!$startupType) {
+                            $startupType = (Get-WmiObject -Class Win32_Service -Property StartMode -Filter "Name='$serviceName'" -ErrorAction Ignore).StartMode
+                        }
+                    }
+                    if($startupType -eq "$defaultStartUpMode") {
+                        Write-Host "`"$serviceName`" is already enabled with `"$defaultStartupMode`" start, no further action is needed."
+                        Exit 0
+                    }
+                    # -- Enable service
+                    try {
+                        Set-Service -Name "$serviceName" -StartupType "$defaultStartUpMode" -Confirm:$false -ErrorAction Stop
+                        Write-Host "Enabled `"$serviceName`" successfully with `"$defaultStartUpMode`" start."
+                    } catch {
+                        Write-Error "Could not enable `"$serviceName`": $_"
+                    }
+                    # -- Start if not running (must done after enabling)
+                    if($defaultStartUpMode -eq 'Automatic') {
+                        if ($service.Status -ne [System.ServiceProcess.ServiceControllerStatus]::Running) {
+                            Write-Host "`"$serviceName`" is not running, trying to start it"
+                            try {
+                                Start-Service $serviceName -ErrorAction Stop
+                                Write-Host "Started `"$serviceName`" successfully."
+                            } catch {
+                                Write-Warning "Could not start `"$serviceName`", it will be stopped after reboot.`r`n$_"
+                            }
+                        } else {
+                            Write-Host "`"$serviceName`" is already running, no need to start."
+                        }
                     }
