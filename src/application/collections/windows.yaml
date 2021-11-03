@@ -1673,8 +1673,8 @@ actions:
             -
                 category: Disable NVIDIA telemetry
                 docs:
-                    - https://github.com/CHEF-KOCH/nVidia-modded-Inf
-                    - https://github.com/NateShoffner/Disable-Nvidia-Telemetry
+                    - https://github.com/privacysexy-forks/nVidia-modded-Inf
+                    - https://github.com/privacysexy-forks/Disable-Nvidia-Telemetry
                     - https://forum.palemoon.org/viewtopic.php?f=4&t=15686&sid=3d7982d3b9e89c713547f1a581ea44a2&start=20
                 children:
                     -
@@ -1746,7 +1746,7 @@ actions:
                                 powerShellValue: $false
                     -
                         name: Do not run Microsoft online experiments
-                        docs: https://github.com/Microsoft/vscode/blob/1aee0c194cff72d179b9f8ef324e47f34555a07d/src/vs/workbench/contrib/experiments/node/experimentService.ts#L173
+                        docs: https://github.com/privacysexy-forks/vscode/blob/1aee0c194cff72d179b9f8ef324e47f34555a07d/src/vs/workbench/contrib/experiments/node/experimentService.ts#L173
                         recommend: standard
                         call:
                             function: SetVsCodeSetting
@@ -2049,7 +2049,7 @@ actions:
                             -
                                 name: Disable Firefox metrics reporting
                                 recommend: standard
-                                docs: https://github.com/mozilla/policy-templates#disabletelemetry
+                                docs: https://github.com/privacysexy-forks/policy-templates#disabletelemetry
                                 code: reg add HKLM\SOFTWARE\Policies\Mozilla\Firefox /v DisableTelemetry /t REG_DWORD /d 1 /f
                                 revertCode: reg add HKLM\SOFTWARE\Policies\Mozilla\Firefox /v DisableTelemetry /t REG_DWORD /d 0 /f
             -
@@ -3178,7 +3178,7 @@ actions:
                                                     -
                                                         name: Limit CPU usage during scans to minimum
                                                         docs:
-                                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_AvgCPULoadFact
+                                                            - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_AvgCPULoadFactor
                                                             - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
                                                         call:
                                                             -
@@ -4318,7 +4318,7 @@ actions:
             -
                 name: Windows Push Notification Service
                 recommend: standard
-                docs: https://en.wikipedia.org/wiki/Windows_Push_Notification_Service#Privacy_Issue
+                docs: https://en.wikipedia.org/w/index.php?title=Windows_Push_Notification_Service&oldid=1012335551#Privacy_Issue
                 code: sc stop "WpnService" & sc config "WpnService" start=disabled
                 revertCode: sc config "WpnService" start=auto & sc start "WpnService"
             -
@@ -4898,7 +4898,7 @@ actions:
                         category: Uninstall system apps
                         docs: 
                             - https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10#system-apps
-                            - https://github.com/Sycnex/Windows10Debloater/blob/02963b6844cf7d13ed3fa64d75128f4e312689ca/Windows10Debloater.ps1#L43
+                            - https://github.com/privacysexy-forks/Windows10Debloater/blob/d4ede6d3225e7def087b389c7e8cf6be0d5e2cd7/Windows10Debloater.ps1#L43-L47
                         children:
                             -
                                 name: File Picker app

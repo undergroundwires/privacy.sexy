@@ -72,7 +72,7 @@ actions:
                                 name: Clear shared-cache strings data
                                 docs: 
                                     - https://eclecticlight.co/2017/09/23/sierras-unified-log-evolves-more-persistent-and-a-valuable-log-log/
-                                    - https://github.com/libyal/dtformats/blob/main/documentation/Apple%20Unified%20Logging%20and%20Activity%20Tracing%20formats.asciidoc
+                                    - https://github.com/privacysexy-forks/dtformats/blob/main/documentation/Apple%20Unified%20Logging%20and%20Activity%20Tracing%20formats.asciidoc
                                 code: |-
                                     sudo rm -rfv /private/var/db/uuidtext/
                                     sudo rm -rfv /var/db/uuidtext/
@@ -458,7 +458,7 @@ actions:
             -
                 name: Disable Firefox telemetry
                 recommend: standard
-                docs: https://github.com/mozilla/policy-templates/blob/master/README.md
+                docs: https://github.com/privacysexy-forks/policy-templates/blob/master/README.md
                 code: |-
                     # Enable Firefox policies so the telemetry can be configured.
                     sudo defaults write /Library/Preferences/org.mozilla.firefox EnterprisePoliciesEnabled -bool TRUE
@@ -503,7 +503,7 @@ actions:
             -
                 name: Disable PowerShell Core telemetry
                 recommend: standard
-                docs: https://github.com/PowerShell/PowerShell/blob/v7.1.0/README.md#telemetry
+                docs: https://github.com/privacysexy-forks/PowerShell/blob/v7.1.5/README.md#telemetry
                 call:
                     -
                         function: PersistUserEnvironmentConfiguration
@@ -576,7 +576,7 @@ actions:
                                 name: Disable Siri voice feedback
                                 recommend: strict
                                 docs:
-                                    - https://github.com/joeyhoer/starter/blob/master/system/siri.sh
+                                    - https://github.com/privacysexy-forks/starter/blob/master/system/siri.sh
                                     - https://machippie.github.io/system/
                                 code: defaults write com.apple.assistant.backedup 'Use device speaker for TTS' -int 3
                                 revertCode: defaults write com.apple.assistant.backedup 'Use device speaker for TTS' -int 2
