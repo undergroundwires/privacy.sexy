@@ -283,7 +283,7 @@ function getCommentCases(): IPipeTestCase[] {
             ),
         },
         {
-            name: 'can convert comment with inline comment parts',
+            name: 'can convert comment with inline comment parts inside',
             input: getWindowsLines(
                 '$text+= #Comment with < inside',
                 '$text+= #Comment ending with >',
@@ -296,13 +296,27 @@ function getCommentCases(): IPipeTestCase[] {
             ),
         },
         {
+            name: 'can convert comment with inline comment parts around', // Pretty uncommon
+            input: getWindowsLines(
+                'Write-Host "hi" # Comment ending line inline comment but not one #>',
+                'Write-Host "hi" #>Comment starting like inline comment end but not one',
+                // Following line does not compile as valid PowerShell referring to missing #> for inline comment
+                'Write-Host "hi" <#Comment starting like inline comment start but not one',
+            ),
+            expectedOutput: getSingleLinedOutput(
+                'Write-Host "hi" <# Comment ending line inline comment but not one #> #>',
+                'Write-Host "hi" <# >Comment starting like inline comment end but not one #>',
+                'Write-Host "hi" <<# Comment starting like inline comment start but not one #>',
+            ),
+        },
+        {
             name: 'converts empty hash comment',
             input: getWindowsLines(
-                'Write-Host "Lorem ipsus" #',
+                'Write-Host "Comment without text" #',
                 'Write-Host "Non-empty line"',
             ),
             expectedOutput: getSingleLinedOutput(
-                'Write-Host "Lorem ipsus" <##>',
+                'Write-Host "Comment without text" <##>',
                 'Write-Host "Non-empty line"',
             ),
         },
@@ -318,7 +332,7 @@ function getCommentCases(): IPipeTestCase[] {
             ),
         },
         {
-            name: 'trims whitespaces around from match',
+            name: 'trims whitespaces around comment',
             input: getWindowsLines(
                 '#      Comment with whitespaces around       ',
                 '#\tComment with tabs around\t\t',

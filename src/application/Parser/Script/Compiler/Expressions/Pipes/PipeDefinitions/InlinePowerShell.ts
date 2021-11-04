@@ -6,7 +6,7 @@ export class InlinePowerShell implements IPipe {
         if (!code || !hasLines(code)) {
             return code;
         }
-        code = replaceComments(code);
+        code = inlineComments(code);
         code = mergeLinesWithBacktick(code);
         code = mergeHereStrings(code);
         const lines = getLines(code)
@@ -25,18 +25,71 @@ function hasLines(text: string) {
     Line comments using "#" are replaced with inline comment syntax <# comment.. #>
     Otherwise single # comments out rest of the code
 */
-function replaceComments(code: string) {
-    return code.replaceAll(/#(?<!<#)(?![<>])(.*)$/gm, (_$, match1 ) => {
-        const value = match1?.trim();
+function inlineComments(code: string): string {
+    const makeInlineComment = (comment: string) => {
+        const value = comment?.trim();
         if (!value) {
             return '<##>';
         }
         return `<# ${value} #>`;
+    };
+    return code.replaceAll(/<#.*?#>|#(.*)/g, (match, captureComment) => {
+        if (captureComment === undefined) {
+            return match;
+        }
+        return makeInlineComment(captureComment);
     });
+    /*
+        Other alternatives considered:
+            --------------------------
+            /#(?<!<#)(?![<>])(.*)$/gm
+            -------------------------
+                ✅ Simple, yet matches and captures only what's necessary
+                ❌ Fails to match some cases
+                    ❌ `Write-Host "hi" # Comment ending line inline comment but not one #>`
+                    ❌ `Write-Host "hi" <#Comment starting like inline comment start but not one`
+                    ❌ `Write-Host "hi" #>Comment starting like inline comment end but not one`
+                ❌ Uses lookbehind
+                    Safari does not yet support lookbehind and syntax, leading application to not
+                    load and throw "Invalid regular expression: invalid group specifier name"
+                    https://caniuse.com/js-regexp-lookbehind
+                ⏩ Usage
+                    return code.replaceAll(/#(?<!<#)(?![<>])(.*)$/gm, (match, captureComment) => {
+                        return makeInlineComment(captureComment)
+                    });
+            ----------------
+            /<#.*?#>|#(.*)/g
+            ----------------
+                ✅ Simple yet affective
+                ❌ Matches all comments, but only captures dash comments
+                ❌ Fails to match some cases
+                    ❌ `Write-Host "hi" # Comment ending line inline comment but not one #>`
+                    ❌ `Write-Host "hi" <#Comment starting like inline comment start but not one`
+                ⏩ Usage
+                    return code.replaceAll(/<#.*?#>|#(.*)/g, (match, captureComment) => {
+                        if (captureComment === undefined) {
+                            return match;
+                        }
+                        return makeInlineComment(captureComment);
+                    });
+            ------------------------------------
+            /(^(?:<#.*?#>|[^#])*)(?:(#)(.*))?/gm
+            ------------------------------------
+                ✅ Covers all cases
+                ❌ Matches every line, three capture groups are used to build result
+                ⏩ Usage
+                    return code.replaceAll(/(^(?:<#.*?#>|[^#])*)(?:(#)(.*))?/gm,
+                        (match, captureLeft, captureDash, captureComment) => {
+                            if (!captureDash) {
+                                return match;
+                            }
+                            return captureLeft + makeInlineComment(captureComment);
+                        });
+    */
 }
 
-function getLines(code: string) {
-    return (code.split(/\r\n|\r|\n/) || []);
+function getLines(code: string): string [] {
+    return (code?.split(/\r\n|\r|\n/) || []);
 }
 
 /*
@@ -59,7 +112,7 @@ interface IInlinedHereString {
     readonly escapedQuotes: string;
     readonly separator: string;
 }
- // We handle @' and @" differently so single quotes are interpreted literally and doubles are expandable
+// We handle @' and @" differently so single quotes are interpreted literally and doubles are expandable
 function getHereStringHandler(quotes: string): IInlinedHereString {
     const expandableNewLine = '`r`n';
     switch (quotes) {
