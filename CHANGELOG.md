@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.11.1 (2021-11-04)
+
+* Update dependencies | [64631a4](https://github.com/undergroundwires/privacy.sexy/commit/64631a4552fad7f7b06286aba8d3ca2d731f9342)
+* Fix, document, unrecommend Windows browser cleanup | [5ead1a0](https://github.com/undergroundwires/privacy.sexy/commit/5ead1a087d91948890bc4ae6fea176123f18c285)
+* Fix failing URL status checking integration tests | [799fb09](https://github.com/undergroundwires/privacy.sexy/commit/799fb091b8eb06c70ac0c67f2ef5385dce73501f)
+* Refactor to remove "Async" function name suffix | [82c43ba](https://github.com/undergroundwires/privacy.sexy/commit/82c43ba2e37fb6e7f62ccd9bec8c5f48575f0613)
+* Fix dead URLs and use forks as GitHub references | [97ddc02](https://github.com/undergroundwires/privacy.sexy/commit/97ddc027cb5395a74991cabc1d8c875ee945636d)
+* Fix website not loading on Safari | [0db8cc4](https://github.com/undergroundwires/privacy.sexy/commit/0db8cc420655e01cbbed57c4658489b761a15899)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.11.0...0.11.1)
+
 ## 0.11.0 (2021-10-21)
 
 * Change "grouping" to "view" | [c0c475f](https://github.com/undergroundwires/privacy.sexy/commit/c0c475ff564b23a4dabcc03ac2909207a8eb61ce)
