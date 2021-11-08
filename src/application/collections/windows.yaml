@@ -6100,31 +6100,46 @@ functions:
         call:
             function: RunPowerShell
             parameters:
+                # schtasks.exe
+                #   PowerShell commands (Unregister-ScheduledTask and Get-ScheduledTask) sometimes fail to find existing tasks.
+                #   They are seen to throw different exceptions:
+                #       - `ObjectNotFound: (MSFT_ScheduledTask:Root/Microsoft/...T_ScheduledTask)` with `HRESULT 0x80070002`
+                #       - `No MSFT_ScheduledTask objects found with property 'TaskName'`
+                #       - `The system cannot find the file specified`
+                #   So schtasks.exe is used instead of those:
+                #       >   `schtasks.exe /delete /tn "$taskName" /f 2>&1 | Out-Null`
+                #           Replaces `Unregister-ScheduledTask $taskName -Confirm:$false`
+                #       >   `"$(schtasks.exe /query /tn "$taskName" 2>$null)".Contains('Running')`
+                #           Replaces `Get-ScheduledTask -TaskName $taskName).State -eq 'Running'`
                 code: |-
+                    $command = '{{ $code }}'
                     $trustedInstallerSid = [System.Security.Principal.SecurityIdentifier]::new('S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464')
                     $trustedInstallerName = $trustedInstallerSid.Translate([System.Security.Principal.NTAccount])
-                    $command = '{{ $code }}'
-                    $stdOutFile = New-TemporaryFile
+                    $streamOutFile = New-TemporaryFile
                     $batchFile = New-TemporaryFile
                     $powerShellFile = New-TemporaryFile
                     try {
                         $batchFile = Rename-Item $batchFile "$($batchFile.BaseName).bat" -PassThru
                         "@echo off`r`n$command`r`nexit 0" | Out-File $batchFile -Encoding ASCII
                         $taskName = 'privacy.sexy invoke'
-                        if(Get-ScheduledTask $taskName -ErrorAction Ignore) { # Something may have gone wrong before
-                            Unregister-ScheduledTask $taskName -Confirm:$false
-                        }
+                        schtasks.exe /delete /tn "$taskName" /f 2>&1 | Out-Null # Clean if something went wrong before
                         $taskAction = New-ScheduledTaskAction               `
                             -Execute 'cmd.exe'                              `
-                            -Argument "cmd /c `"$batchFile`" > $stdOutFile"
+                            -Argument "cmd /c `"$batchFile`" > $streamOutFile 2>&1"
                         $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
-                        Register-ScheduledTask -TaskName $taskName -Action $taskAction -Settings $settings -Force -ErrorAction Stop | Out-Null
+                        Register-ScheduledTask      `
+                            -TaskName $taskName     `
+                            -Action $taskAction     `
+                            -Settings $settings     `
+                            -Force                  `
+                            -ErrorAction Stop       `
+                            | Out-Null
                         try {
                             ($scheduleService = New-Object -ComObject Schedule.Service).Connect()
                             $scheduleService.GetFolder('\').GetTask($taskName).RunEx($null, 0, 0, $trustedInstallerName) | Out-Null
                             $timeOutLimit = (Get-Date).AddMinutes(5)
                             Write-Host "Running as $trustedInstallerName"
-                            while((Get-ScheduledTask $taskName).State -eq 'Running') {
+                            while("$(schtasks.exe /query /tn "$taskName" 2>$null)".Contains('Running')) {
                                 Start-Sleep -Milliseconds 200
                                 if((Get-Date) -gt $timeOutLimit) {
                                     Write-Warning "Skipping results, it took so long to execute script."
@@ -6135,36 +6150,41 @@ functions:
                                 Write-Error "Failed to execute with exit code: $result."
                             }
                         } finally {
-                            Unregister-ScheduledTask $taskName -Confirm:$false
+                            schtasks.exe /delete /tn "$taskName" /f | Out-Null # Outputs only errors
                         }
-                        Get-Content $stdOutFile
+                        Get-Content $streamOutFile
                     } finally {
-                        Remove-Item $stdOutFile, $batchFile #
+                        Remove-Item $streamOutFile, $batchFile
                     }
                 revertCode: |- # Duplicated until custom pipes are implemented
+                    $command = '{{ $revertCode }}'
                     $trustedInstallerSid = [System.Security.Principal.SecurityIdentifier]::new('S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464')
                     $trustedInstallerName = $trustedInstallerSid.Translate([System.Security.Principal.NTAccount])
-                    $command = '{{ $revertCode }}'
-                    $stdOutFile = New-TemporaryFile
+                    $streamOutFile = New-TemporaryFile
                     $batchFile = New-TemporaryFile
+                    $powerShellFile = New-TemporaryFile
                     try {
                         $batchFile = Rename-Item $batchFile "$($batchFile.BaseName).bat" -PassThru
                         "@echo off`r`n$command`r`nexit 0" | Out-File $batchFile -Encoding ASCII
                         $taskName = 'privacy.sexy invoke'
-                        if(Get-ScheduledTask $taskName -ErrorAction Ignore) { # Something may have gone wrong before
-                            Unregister-ScheduledTask $taskName -Confirm:$false
-                        }
+                        schtasks.exe /delete /tn "$taskName" /f 2>&1 | Out-Null # Clean if something went wrong before
                         $taskAction = New-ScheduledTaskAction               `
                             -Execute 'cmd.exe'                              `
-                            -Argument "cmd /c `"$batchFile`" > $stdOutFile"
+                            -Argument "cmd /c `"$batchFile`" > $streamOutFile 2>&1"
                         $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
-                        Register-ScheduledTask -TaskName $taskName -Action $taskAction -Settings $settings -Force -ErrorAction Stop | Out-Null
+                        Register-ScheduledTask      `
+                            -TaskName $taskName     `
+                            -Action $taskAction     `
+                            -Settings $settings     `
+                            -Force                  `
+                            -ErrorAction Stop       `
+                            | Out-Null
                         try {
                             ($scheduleService = New-Object -ComObject Schedule.Service).Connect()
                             $scheduleService.GetFolder('\').GetTask($taskName).RunEx($null, 0, 0, $trustedInstallerName) | Out-Null
                             $timeOutLimit = (Get-Date).AddMinutes(5)
                             Write-Host "Running as $trustedInstallerName"
-                            while((Get-ScheduledTask $taskName).State -eq 'Running') {
+                            while("$(schtasks.exe /query /tn "$taskName" 2>$null)".Contains('Running')) {
                                 Start-Sleep -Milliseconds 200
                                 if((Get-Date) -gt $timeOutLimit) {
                                     Write-Warning "Skipping results, it took so long to execute script."
@@ -6175,11 +6195,11 @@ functions:
                                 Write-Error "Failed to execute with exit code: $result."
                             }
                         } finally {
-                            Unregister-ScheduledTask $taskName -Confirm:$false
+                            schtasks.exe /delete /tn "$taskName" /f | Out-Null # Outputs only errors
                         }
-                        Get-Content $stdOutFile
+                        Get-Content $streamOutFile
                     } finally {
-                        Remove-Item $stdOutFile, $batchFile
+                        Remove-Item $streamOutFile, $batchFile
                     }
     -
         name: DisableServiceInRegistry
