@@ -1,265 +1,283 @@
 import 'mocha';
 import { expect } from 'chai';
-import { IScript } from '@/domain/IScript';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
 import { CategoryStub } from '@tests/unit/stubs/CategoryStub';
 import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
 import { SelectedScriptStub } from '@tests/unit/stubs/SelectedScriptStub';
 import { ScriptStub } from '@tests/unit/stubs/ScriptStub';
+import { UserSelectionTestRunner } from './UserSelectionTestRunner';
 
 describe('UserSelection', () => {
     describe('ctor', () => {
-        it('has nothing with no initial selection', () => {
+        describe('has nothing with no initial selection', () => {
             // arrange
-            const collection = new CategoryCollectionStub().withAction(new CategoryStub(1).withScriptIds('s1'));
-            const selection = [];
+            const allScripts = [
+                new SelectedScriptStub('s1', false),
+            ];
+            new UserSelectionTestRunner()
+                .withSelectedScripts([])
+                .withCategory(1, allScripts.map((s) => s.script))
             // act
-            const sut = new UserSelection(collection, selection);
+                .run()
             // assert
-            expect(sut.selectedScripts).to.have.lengthOf(0);
+                .expectFinalScripts([]);
         });
-        it('has initial selection', () => {
+        describe('has initial selection', () => {
             // arrange
-            const firstScript = new ScriptStub('1');
-            const secondScript = new ScriptStub('2');
-            const collection = new CategoryCollectionStub()
-                .withAction(new CategoryStub(1).withScript(firstScript).withScripts(secondScript));
-            const expected = [ new SelectedScript(firstScript, false), new SelectedScript(secondScript, true) ];
+            const scripts = [
+                new SelectedScriptStub('s1', false),
+                new SelectedScriptStub('s2', false),
+            ];
+            new UserSelectionTestRunner()
+                .withSelectedScripts(scripts)
+                .withCategory(1, scripts.map((s) => s.script))
             // act
-            const sut = new UserSelection(collection, expected);
+                .run()
             // assert
-            expect(sut.selectedScripts).to.deep.include(expected[0]);
-            expect(sut.selectedScripts).to.deep.include(expected[1]);
+                .expectFinalScripts(scripts);
         });
     });
-    it('deselectAll removes all items', () => {
+    describe('deselectAll removes all items', () => {
         // arrange
-        const events: Array<readonly SelectedScript[]>  = [];
-        const collection = new CategoryCollectionStub()
-            .withAction(new CategoryStub(1)
-            .withScriptIds('s1', 's2', 's3', 's4'));
-        const selectedScripts = [
-            new SelectedScriptStub('s1'), new SelectedScriptStub('s2'), new SelectedScriptStub('s3'),
+        const allScripts = [
+            new SelectedScriptStub('s1', false),
+            new SelectedScriptStub('s2', false),
+            new SelectedScriptStub('s3', false),
+            new SelectedScriptStub('s4', false),
         ];
-        const sut = new UserSelection(collection, selectedScripts);
-        sut.changed.on((newScripts) => events.push(newScripts));
+        const selectedScripts = allScripts.filter(
+            (s) => ['s1', 's2', 's3'].includes(s.id));
+        new UserSelectionTestRunner()
+            .withSelectedScripts(selectedScripts)
+            .withCategory(1, allScripts.map((s) => s.script))
         // act
-        sut.deselectAll();
+            .run((sut) => {
+                sut.deselectAll();
+            })
         // assert
-        expect(sut.selectedScripts).to.have.length(0);
-        expect(events).to.have.lengthOf(1);
-        expect(events[0]).to.have.length(0);
+            .expectTotalFiredEvents(1)
+            .expectFinalScripts([])
+            .expectFinalScriptsInEvent(0, []);
     });
-    it('selectOnly selects expected', () => {
+    describe('selectOnly selects expected', () => {
         // arrange
-        const events: Array<readonly SelectedScript[]>  = [];
-        const collection = new CategoryCollectionStub()
-            .withAction(new CategoryStub(1)
-            .withScriptIds('s1', 's2', 's3', 's4'));
-        const selectedScripts = [
-            new SelectedScriptStub('s1'), new SelectedScriptStub('s2'), new SelectedScriptStub('s3'),
+        const allScripts = [
+            new SelectedScriptStub('s1', false),
+            new SelectedScriptStub('s2', false),
+            new SelectedScriptStub('s3', false),
+            new SelectedScriptStub('s4', false),
         ];
-        const sut = new UserSelection(collection, selectedScripts);
-        sut.changed.on((newScripts) => events.push(newScripts));
-        const scripts = [new ScriptStub('s2'), new ScriptStub('s3'), new ScriptStub('s4')];
-        const expected = [ new SelectedScriptStub('s2'), new SelectedScriptStub('s3'),
-            new SelectedScript(scripts[2], false)];
+        const selectedScripts = allScripts.filter(
+            (s) => ['s1', 's2', 's3'].includes(s.id));
+        const scriptsToSelect = allScripts.filter(
+            (s) => ['s2', 's3', 's4'].includes(s.id));
+        new UserSelectionTestRunner()
+            .withSelectedScripts(selectedScripts)
+            .withCategory(1, allScripts.map((s) => s.script))
         // act
-        sut.selectOnly(scripts);
+            .run((sut) => {
+                sut.selectOnly(scriptsToSelect.map((s) => s.script));
+            })
         // assert
-        expect(sut.selectedScripts).to.have.deep.members(expected,
-            `Expected: ${JSON.stringify(sut.selectedScripts)}\n` +
-            `Actual: ${JSON.stringify(expected)}`);
-        expect(events).to.have.lengthOf(1);
-        expect(events[0]).to.deep.equal(expected);
+            .expectTotalFiredEvents(1)
+            .expectFinalScripts(scriptsToSelect)
+            .expectFinalScriptsInEvent(0, scriptsToSelect);
     });
-    it('selectAll selects as expected', () => {
+    describe('selectAll selects as expected', () => {
         // arrange
-        const events: Array<readonly SelectedScript[]>  = [];
-        const scripts: IScript[] = [new ScriptStub('s1'), new ScriptStub('s2'), new ScriptStub('s3'), new ScriptStub('s4')];
-        const collection = new CategoryCollectionStub()
-            .withAction(new CategoryStub(1)
-            .withScripts(...scripts));
-        const sut = new UserSelection(collection, []);
-        sut.changed.on((newScripts) => events.push(newScripts));
-        const expected = scripts.map((script) => new SelectedScript(script, false));
+        const expected = [
+            new SelectedScriptStub('s1', false),
+            new SelectedScriptStub('s2', false),
+        ];
+        new UserSelectionTestRunner()
+            .withSelectedScripts([])
+            .withCategory(1, expected.map((s) => s.script))
         // act
-        sut.selectAll();
+            .run((sut) => {
+                sut.selectAll();
+            })
         // assert
-        expect(sut.selectedScripts).to.deep.equal(expected);
-        expect(events).to.have.lengthOf(1);
-        expect(events[0]).to.deep.equal(expected);
+            .expectTotalFiredEvents(1)
+            .expectFinalScripts(expected)
+            .expectFinalScriptsInEvent(0, expected);
     });
     describe('addOrUpdateSelectedScript', () => {
-        it('adds when item does not exist', () => {
+        describe('adds when item does not exist', () => {
             // arrange
-            const events: Array<readonly SelectedScript[]>  = [];
-            const collection = new CategoryCollectionStub()
-                .withAction(new CategoryStub(1)
-                .withScripts(new ScriptStub('s1'), new ScriptStub('s2')));
-            const sut = new UserSelection(collection, []);
-            sut.changed.on((scripts) => events.push(scripts));
-            const expected = [ new SelectedScript(new ScriptStub('s1'), false) ];
+            const scripts = [new ScriptStub('s1'), new ScriptStub('s2')];
+            const expected = [ new SelectedScript(scripts[0], false) ];
+            new UserSelectionTestRunner()
+                .withSelectedScripts([])
+                .withCategory(1, scripts)
             // act
-            sut.addOrUpdateSelectedScript('s1', false);
+                .run((sut) => {
+                    sut.addOrUpdateSelectedScript(scripts[0].id, false);
+                })
             // assert
-            expect(sut.selectedScripts).to.deep.equal(expected);
-            expect(events).to.have.lengthOf(1);
-            expect(events[0]).to.deep.equal(expected);
+                .expectTotalFiredEvents(1)
+                .expectFinalScripts(expected)
+                .expectFinalScriptsInEvent(0, expected);
         });
-        it('updates when item exists', () => {
+        describe('updates when item exists', () => {
             // arrange
-            const events: Array<readonly SelectedScript[]>  = [];
-            const collection = new CategoryCollectionStub()
-                .withAction(new CategoryStub(1)
-                .withScripts(new ScriptStub('s1'), new ScriptStub('s2')));
-            const sut = new UserSelection(collection, []);
-            sut.changed.on((scripts) => events.push(scripts));
-            const expected = [ new SelectedScript(new ScriptStub('s1'), true) ];
+            const scripts = [new ScriptStub('s1'), new ScriptStub('s2')];
+            const existing = new SelectedScript(scripts[0], false);
+            const expected = new SelectedScript(scripts[0], true);
+            new UserSelectionTestRunner()
+                .withSelectedScripts([existing])
+                .withCategory(1, scripts)
             // act
-            sut.addOrUpdateSelectedScript('s1', true);
+                .run((sut) => {
+                    sut.addOrUpdateSelectedScript(expected.id, expected.revert);
+                })
             // assert
-            expect(sut.selectedScripts).to.deep.equal(expected);
-            expect(events).to.have.lengthOf(1);
-            expect(events[0]).to.deep.equal(expected);
+                .expectTotalFiredEvents(1)
+                .expectFinalScripts([ expected ])
+                .expectFinalScriptsInEvent(0, [ expected ]);
         });
     });
     describe('removeAllInCategory', () => {
-        it('does nothing when nothing exists', () => {
+        describe('does nothing when nothing exists', () => {
             // arrange
-            const events: Array<readonly SelectedScript[]>  = [];
-            const categoryId = 1;
-            const collection = new CategoryCollectionStub()
-                .withAction(new CategoryStub(categoryId)
-                .withScripts(new ScriptStub('s1'), new ScriptStub('s2')));
-            const sut = new UserSelection(collection, []);
-            sut.changed.on((s) => events.push(s));
+            const categoryId = 99;
+            const scripts = [new ScriptStub('s1'), new ScriptStub('s2')];
+            new UserSelectionTestRunner()
+                .withSelectedScripts([])
+                .withCategory(categoryId, scripts)
             // act
-            sut.removeAllInCategory(categoryId);
+                .run((sut) => {
+                    sut.removeAllInCategory(categoryId);
+                })
             // assert
-            expect(events).to.have.lengthOf(0);
-            expect(sut.selectedScripts).to.have.lengthOf(0);
+                .expectTotalFiredEvents(0)
+                .expectFinalScripts([]);
         });
-        it('removes all when all exists', () => {
+        describe('removes all when all exists', () => {
             // arrange
-            const categoryId = 1;
+            const categoryId = 34;
             const scripts = [new SelectedScriptStub('s1'), new SelectedScriptStub('s2')];
-            const collection = new CategoryCollectionStub()
-                .withAction(new CategoryStub(categoryId)
-                .withScripts(...scripts.map((script) => script.script)));
-            const sut = new UserSelection(collection, scripts);
+            new UserSelectionTestRunner()
+                .withSelectedScripts(scripts)
+                .withCategory(categoryId, scripts.map((s) => s.script))
             // act
-            sut.removeAllInCategory(categoryId);
+                .run((sut) => {
+                    sut.removeAllInCategory(categoryId);
+                })
             // assert
-            expect(sut.selectedScripts.length).to.equal(0);
+                .expectTotalFiredEvents(1)
+                .expectFinalScripts([]);
         });
-        it('removes existing some exists', () => {
+        describe('removes existing when some exists', () => {
             // arrange
-            const categoryId = 1;
+            const categoryId = 55;
             const existing = [new ScriptStub('s1'), new ScriptStub('s2')];
             const notExisting = [new ScriptStub('s3'), new ScriptStub('s4')];
-            const collection = new CategoryCollectionStub()
-                .withAction(new CategoryStub(categoryId)
-                .withScripts(...existing, ...notExisting));
-            const sut = new UserSelection(collection, existing.map((script) => new SelectedScript(script, false)));
+            new UserSelectionTestRunner()
+                .withSelectedScripts(existing.map((script) => new SelectedScript(script, false)))
+                .withCategory(categoryId, [ ...existing, ...notExisting ])
             // act
-            sut.removeAllInCategory(categoryId);
+                .run((sut) => {
+                    sut.removeAllInCategory(categoryId);
+                })
             // assert
-            expect(sut.selectedScripts.length).to.equal(0);
+                .expectTotalFiredEvents(1)
+                .expectFinalScripts([]);
         });
     });
     describe('addOrUpdateAllInCategory', () => {
-        it('does nothing when all already exists', () => {
-            // arrange
-            const events: Array<readonly SelectedScript[]>  = [];
-            const categoryId = 1;
-            const scripts = [new ScriptStub('s1'), new ScriptStub('s2')];
-            const collection = new CategoryCollectionStub()
-                .withAction(new CategoryStub(categoryId)
-                .withScripts(...scripts));
-            const sut = new UserSelection(collection, scripts.map((script) => new SelectedScript(script, false)));
-            sut.changed.on((s) => events.push(s));
-            // act
-            sut.addOrUpdateAllInCategory(categoryId);
-            // assert
-            expect(events).to.have.lengthOf(0);
-            expect(sut.selectedScripts.map((script) => script.id))
-                .to.have.deep.members(scripts.map((script) => script.id));
+        describe('when all already exists', () => {
+            describe('does nothing if nothing is changed', () => {
+                // arrange
+                const categoryId = 55;
+                const existingScripts = [
+                    new SelectedScriptStub('s1', false),
+                    new SelectedScriptStub('s2', false),
+                ];
+                new UserSelectionTestRunner()
+                    .withSelectedScripts(existingScripts)
+                    .withCategory(categoryId, existingScripts.map((s) => s.script))
+                // act
+                    .run((sut) => {
+                        sut.addOrUpdateAllInCategory(categoryId);
+                    })
+                // assert
+                    .expectTotalFiredEvents(0)
+                    .expectFinalScripts(existingScripts);
+            });
+            describe('changes revert status of all', () => {
+                // arrange
+                const newStatus = false;
+                const scripts = [
+                    new SelectedScriptStub('e1', !newStatus),
+                    new SelectedScriptStub('e2', !newStatus),
+                    new SelectedScriptStub('e3', newStatus),
+                ];
+                const expectedScripts = scripts.map((s) => new SelectedScript(s.script, newStatus));
+                const categoryId = 31;
+                new UserSelectionTestRunner()
+                    .withSelectedScripts(scripts)
+                    .withCategory(categoryId, scripts.map((s) => s.script))
+                // act
+                    .run((sut) => {
+                        sut.addOrUpdateAllInCategory(categoryId, newStatus);
+                    })
+                // assert
+                    .expectTotalFiredEvents(1)
+                    .expectFinalScripts(expectedScripts)
+                    .expectFinalScriptsInEvent(0, expectedScripts);
+            });
         });
-        it('adds all when nothing exists', () => {
-            // arrange
-            const categoryId = 1;
-            const expected = [new ScriptStub('s1'), new ScriptStub('s2')];
-            const collection = new CategoryCollectionStub()
-                .withAction(new CategoryStub(categoryId)
-                .withScripts(...expected));
-            const sut = new UserSelection(collection, []);
-            // act
-            sut.addOrUpdateAllInCategory(categoryId);
-            // assert
-            expect(sut.selectedScripts.map((script) => script.id))
-                .to.have.deep.members(expected.map((script) => script.id));
+        describe('when nothing exists; adds all with given revert status', () => {
+            const revertStatuses = [ true, false ];
+            for (const revertStatus of revertStatuses) {
+                describe(`when revert status is ${revertStatus}`, () => {
+                    // arrange
+                    const categoryId = 1;
+                    const scripts = [
+                        new SelectedScriptStub('s1', !revertStatus),
+                        new SelectedScriptStub('s2', !revertStatus),
+                    ];
+                    const expected = scripts.map((s) => new SelectedScript(s.script, revertStatus));
+                    new UserSelectionTestRunner()
+                        .withSelectedScripts([])
+                        .withCategory(categoryId, scripts.map((s) => s.script))
+                    // act
+                        .run((sut) => {
+                            sut.addOrUpdateAllInCategory(categoryId, revertStatus);
+                        })
+                    // assert
+                        .expectTotalFiredEvents(1)
+                        .expectFinalScripts(expected)
+                        .expectFinalScriptsInEvent(0, expected);
+                });
+            }
         });
-        it('adds all with given revert status when nothing exists', () => {
+        describe('when some exists; changes revert status of all', () => {
             // arrange
-            const categoryId = 1;
-            const expected = [new ScriptStub('s1'), new ScriptStub('s2')];
-            const collection = new CategoryCollectionStub()
-                .withAction(new CategoryStub(categoryId)
-                .withScripts(...expected));
-            const sut = new UserSelection(collection, []);
-            // act
-            sut.addOrUpdateAllInCategory(categoryId, true);
-            // assert
-            expect(sut.selectedScripts.every((script) => script.revert))
-                .to.equal(true);
-        });
-        it('changes revert status of all when some exists', () => {
-            // arrange
-            const categoryId = 1;
-            const notExisting = [ new ScriptStub('notExisting1'), new ScriptStub('notExisting2') ];
-            const existing = [ new ScriptStub('existing1'), new ScriptStub('existing2') ];
+            const newStatus = true;
+            const existing = [
+                new SelectedScriptStub('e1', true),
+                new SelectedScriptStub('e2', false),
+            ];
+            const notExisting = [
+                new SelectedScriptStub('n3', true),
+                new SelectedScriptStub('n4', false),
+            ];
             const allScripts = [ ...existing, ...notExisting ];
-            const collection = new CategoryCollectionStub()
-                .withAction(new CategoryStub(categoryId)
-                .withScripts(...allScripts));
-            const sut = new UserSelection(collection, existing.map((script) => new SelectedScript(script, false)));
+            const expectedScripts = allScripts.map((s) => new SelectedScript(s.script, newStatus));
+            const categoryId = 77;
+            new UserSelectionTestRunner()
+                .withSelectedScripts(existing)
+                .withCategory(categoryId, allScripts.map((s) => s.script))
             // act
-            sut.addOrUpdateAllInCategory(categoryId, true);
+                .run((sut) => {
+                    sut.addOrUpdateAllInCategory(categoryId, newStatus);
+                })
             // assert
-            expect(sut.selectedScripts.every((script) => script.revert))
-                .to.equal(true);
-        });
-        it('changes revert status of all when some exists', () => {
-            // arrange
-            const categoryId = 1;
-            const notExisting = [ new ScriptStub('notExisting1'), new ScriptStub('notExisting2') ];
-            const existing = [ new ScriptStub('existing1'), new ScriptStub('existing2') ];
-            const allScripts = [ ...existing, ...notExisting ];
-            const collection = new CategoryCollectionStub()
-                .withAction(new CategoryStub(categoryId)
-                .withScripts(...allScripts));
-            const sut = new UserSelection(collection, existing.map((script) => new SelectedScript(script, false)));
-            // act
-            sut.addOrUpdateAllInCategory(categoryId, true);
-            // assert
-            expect(sut.selectedScripts.every((script) => script.revert))
-                .to.equal(true);
-        });
-        it('changes revert status of all when all already exists', () => {
-            // arrange
-            const categoryId = 1;
-            const scripts = [ new ScriptStub('existing1'), new ScriptStub('existing2') ];
-            const collection = new CategoryCollectionStub()
-                .withAction(new CategoryStub(categoryId)
-                .withScripts(...scripts));
-            const sut = new UserSelection(collection, scripts.map((script) => new SelectedScript(script, false)));
-            // act
-            sut.addOrUpdateAllInCategory(categoryId, true);
-            // assert
-            expect(sut.selectedScripts.every((script) => script.revert))
-                .to.equal(true);
+                .expectTotalFiredEvents(1)
+                .expectFinalScripts(expectedScripts)
+                .expectFinalScriptsInEvent(0, expectedScripts);
         });
     });
     describe('isSelected', () => {
