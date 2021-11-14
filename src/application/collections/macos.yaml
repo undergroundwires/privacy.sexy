@@ -509,6 +509,37 @@ actions:
                         function: PersistUserEnvironmentConfiguration
                         parameters:
                             configuration: export POWERSHELL_TELEMETRY_OPTOUT=1
+            -
+                category: Configure Parallels
+                children:
+                    -
+                        name: Turn off ads in Parallels
+                        docs: https://hints.macworld.com/article.php?story=20120724235352514
+                        # Check:    defaults read 'com.parallels.Parallels Desktop' 'ProductPromo.ForcePromoOff'
+                        code: defaults write 'com.parallels.Parallels Desktop' 'ProductPromo.ForcePromoOff' -bool yes
+                        # Default:  0 (no)
+                        revertCode: defaults write 'com.parallels.Parallels Desktop' 'ProductPromo.ForcePromoOff' -bool no
+                        # There's more settings but they're off (has value "1" by default):
+                        #   WelcomeScreenPromo.PromoOff         (default 1)
+                        #   NotificationPromo.6635.PromoOff     (default 1)
+                    -
+                        category: Disable Parallels auto-updates
+                        children:
+                            -
+                                name: Disable automatically downloading Parallels updates
+                                docs: https://download.parallels.com/desktop/v17/docs/en_US/Parallels-Desktop-Business-Edition-Administrators-Guide/37744.htm
+                                # Check:    defaults read 'com.parallels.Parallels Desktop' 'Application preferences.Download updates automatically'
+                                code: defaults write 'com.parallels.Parallels Desktop' 'Application preferences.Download updates automatically' -bool no
+                                # Default:  1 (enabled)
+                                revertCode: defaults write 'com.parallels.Parallels Desktop' 'Application preferences.Download updates automatically' -bool yes
+                            -
+                                name: Disable automatically checking for Parallels updates
+                                docs: https://download.parallels.com/desktop/v17/docs/en_US/Parallels-Desktop-Business-Edition-Administrators-Guide/37744.htm
+                                # Check:    defaults read 'com.parallels.Parallels Desktop' 'Application preferences.Check for updates'
+                                # Values:   0 - Never, 1 - Once a day, 2 - Once a week, 3 - Once a month
+                                code: defaults write 'com.parallels.Parallels Desktop' 'Application preferences.Check for updates' -int 0
+                                # Default:  2 (once a week)
+                                revertCode: defaults write 'com.parallels.Parallels Desktop' 'Application preferences.Check for updates' -int 2
     -
         category: Configure OS
         children:
@@ -638,6 +669,52 @@ actions:
                 name: Disable Spotlight indexing 
                 code: sudo mdutil -i off -d /
                 revertCode: sudo mdutil -i on /
+            -
+                category: Configure crash reporting (quit dialog after an application crash)
+                # Prompts for sending data to Apple 
+                children:
+                    -
+                        name: Disable Crash reporting
+                        # Quit dialog after an application crash
+                        # "The application <application> has unexpectedly quit" alert
+                        docs:
+                            # Since 10.4 (Basic, Developer, and Server)
+                            - https://web.archive.org/web/20090411195107/http://developer.apple.com/qa/qa2001/qa1288.html
+                            # Before 10.4
+                            #   "none"          =   Don't show any dialog at all (crash reports are still silently written to disk)
+                            #   "prompt"        = show the unexpectedly quit dialog and prompt to see if the user wants to submit/view the crashreport
+                            #   "crashreport"   = don't show the unexpectedly quit dialog - instead immediately show the crashreport/submission screen.
+                            - https://web.archive.org/web/20040816171016/http://developer.apple.com/qa/qa2001/qa1288.html
+                            # Description for crashreporter preferences (basic, developer, server), stating basic is the default one
+                            #   https://web.archive.org/web/20090228102631/http://developer.apple.com/technotes/tn2004/tn2123.html#SECCRASHREPORTERPREFS
+                        # Check:    defaults read 'com.apple.CrashReporter' 'DialogType'
+                        # Values:   none|basic (default)|developer|server (before 10.4: crashreport|none)
+                        code: defaults write 'com.apple.CrashReporter' 'DialogType' -string 'none'
+                        revertCode: |-  # TODO: Or delete? Since monterey com.apple.CrashReporter is empty
+                            os_major_ver=$(sw_vers -productVersion | awk -F "." '{print $1}')
+                            os_minor_ver=$(sw_vers -productVersion | awk -F "." '{print $2}')
+                            # Older (before 10.4): prompt|crashreport
+                            if  [[  $os_major_ver -le 10 \
+                                    || ( $os_major_ver -eq 10 && $os_minor_ver -le 4 )  \
+                                ]]; then
+                                defaults write 'com.apple.CrashReporter' 'DialogType' -string 'prompt'
+                            else
+                                # Newer (since 10.4): basic|developer|server
+                                defaults write 'com.apple.CrashReporter' 'DialogType' -string 'basic'
+                            fi
+                    -
+                        name: Use notification instead of report after crash
+                        docs:
+                            # Removing the Crash Reporter may be overkill for some users, so another option is to
+                            # change this to a notification instead.
+                            #  The advantage of this is you still get notified if an app has crashed, but you don't
+                            # have to respond in any way (nothing to click on). To undo this change you would use the
+                            # same entry but replace the 1 with a 0.
+                            - https://www.defaults-write.com/os-x-make-crash-reporter-appear-as-a-notification/
+                            - https://osxdaily.com/2015/10/13/set-crash-reporter-as-notification-mac-os-x/
+                        code: defaults write 'com.apple.CrashReporter' 'UseUNC' 1
+                        revertCode: |-  # TODO: Or delete? Since monterey com.apple.CrashReporter is empty
+                            defaults write 'com.apple.CrashReporter' 'UseUNC' 1
     -
         category: Security improvements
         children:
@@ -1076,6 +1153,106 @@ actions:
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'CriticalUpdateInstall' -bool true
                             # Trigger background check with normal scan (critical updates only)
                             sudo softwareupdate --background-critical
+    -
+        category: UI for privacy
+        children:
+            -
+                name: Show hidden files in Finder
+                recommend: strict # Because NIST recommends it
+                docs: 
+                    # Disables hiding files `.htaccess` in Finder
+                    - https://macos-defaults.com/finder/appleshowallfiles.html
+                    # Securing Apple OSX X 10.10 Systems: NIST Security Configuration Checklist:
+                    #   Finder should be configured to not show hidden files and folders; this is already configured by
+                    #   default. Finder should also be configured to show file extensions, to show a warning before
+                    #   changing a file extension or emptying the trash, and to search this system when performing a
+                    #   search. Administrators with intimate knowledge of the OS X system could notice unusual hidden
+                    #   files and would benefit from their visibility. Consequently, hidden files should be displayed in an
+                    #   SSLF environment. These options can improve defenses against malware. To configure these
+                    #   options, go to Finder / Preferences / Advanced; then enable the corresponding options.
+                    - https://nvlpubs.nist.gov/nistpubs/specialpublications/nist.sp.800-179.pdf
+                # Check: defaults read 'com.apple.finder' 'AppleShowAllFiles' (expect: 'TRUE', 'FALSE', or key not exists (default in Monterey))
+                code: |-
+                    killall cfprefsd
+                    defaults write 'com.apple.finder' 'AppleShowAllFiles' -bool true
+                    killall 'Finder'
+                revertCode: |-
+                    killall cfprefsd
+                    defaults delete 'com.apple.finder' 'AppleShowAllFiles'
+                    killall 'Finder'
+            -
+                name: Hide Desktop icons
+                docs: https://www.defaults-write.com/os-x-how-to-quickly-hide-the-desktop-icons/
+                # When doing presentations, it can be useful to hide desktop icons
+                # Check: defaults read 'com.apple.finder' 'CreateDesktop' (expect: 'TRUE', 'FALSE', or key not exists (default in Monterey))
+                code: |-
+                    killall cfprefsd
+                    defaults write 'com.apple.finder' 'CreateDesktop' -bool false
+                    killall Finder
+                revertCode: |-
+                    killall cfprefsd
+                    defaults delete 'com.apple.finder' 'CreateDesktop'
+                    killall Finder
+                # TODO: https://github.com/mathiasbynens/dotfiles/blob/main/.macos
+                #   defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool false
+                #   defaults write com.apple.finder ShowHardDrivesOnDesktop -bool false
+                #   defaults write com.apple.finder ShowMountedServersOnDesktop -bool false
+                #   defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool false
+            -
+                name: Show all filename extensions # TODO: docs from https://nvlpubs.nist.gov/nistpubs/specialpublications/nist.sp.800-179.pdf
+                # Check: defaults read 'NSGlobalDomain' 'AppleShowAllExtensions' (expect: 'TRUE', 'FALSE', or key not exists (default in Monterey))
+                code: |-
+                    killall cfprefsd
+                    defaults write 'NSGlobalDomain' 'AppleShowAllExtensions' -bool true
+                    killall Finder
+                revertCode: |-
+                    killall cfprefsd
+                    defaults delete 'NSGlobalDomain' 'AppleShowAllExtensions'
+                    killall Finder
+            -
+                name: show path bar
+                # TODO: defaults write com.apple.finder ShowPathbar -bool true
+            -
+                category: Disable creation of metadata files (`.DS_Store`) # TODO: A better category
+                # macOS creates metadata files as and when files are saved to the hard drive.
+                # These metadata files can also be viewed further giving malicious actors the extra edge.
+                # It is recommended that Mac OS X users disable creation of Metadata Files to further boost the
+                # privacy levels.
+                children:
+                    -
+                        name: Disable metadata files (`.DS_Store`) on Network Volumes
+                        recommend: strict
+                        docs:
+                            - https://support.apple.com/en-us/HT208209
+                            - https://web.archive.org/web/20190919161732/https://support.apple.com/en-gb/HT1629
+                        # Check: defaults read 'com.apple.desktopservices' 'DSDontWriteNetworkStores' (expect: 'TRUE', 'FALSE', or key not exists (default in Monterey))
+                        code: defaults write 'com.apple.desktopservices' 'DSDontWriteNetworkStores' -bool true
+                        revertCode: defaults delete 'com.apple.desktopservices' 'DSDontWriteNetworkStores'
+                    -
+                        name: Disable metadata files (`.DS_Store`) on USB Volumes
+                        recommend: strict
+                        docs: https://krypted.com/mac-security/disable-dsstore-files-on-usb-drives/
+                        # Check: defaults read 'com.apple.desktopservices' 'DSDontWriteUSBStores' (expect: 'TRUE', 'FALSE', or key not exists (default in Monterey))
+                        code: defaults write 'com.apple.desktopservices' 'DSDontWriteUSBStores' -bool true
+                        revertCode: defaults delete 'com.apple.desktopservices' 'DSDontWriteUSBStores'
+                    -
+                        name: Clear created metadata files # TODO: Not tested
+                        code: |- # "fstype local to search only on the local mounted file system and ignore any other mounted disk under
+                            find ~        \
+                                -type f         \
+                                -name .DS_Store \
+                                -fstype local   \
+                                -exec           \
+                                    sh -c       \
+                                        '
+                                            file="{}"
+                                            rm -fv "$file"
+                                        '       \
+                                    {} \;
+
+
+
+
 functions:
     -
         name: PersistUserEnvironmentConfiguration
@@ -1106,3 +1283,9 @@ functions:
                     echo "[$profile_file] No need for any action, configuration does not exist"
                 fi
             done
+
+# TODO:
+# Disable disk image verification (or do enable)
+#   defaults write com.apple.frameworks.diskimages skip-verify -bool true
+#   defaults write com.apple.frameworks.diskimages skip-verify-locked -bool true
+#   defaults write com.apple.frameworks.diskimages skip-verify-remote -bool true
