@@ -33,27 +33,7 @@ export default class App extends Vue {
 </script>
 
 <style lang="scss">
-@import "@/presentation/styles/colors.scss";
-@import "@/presentation/styles/fonts.scss";
-@import "@/presentation/styles/media.scss";
-
-* {
-  box-sizing: border-box;
-}
-
-a {
-    color:inherit;
-    text-decoration: underline;
-    cursor: pointer;
-    &:hover {
-        color: $color-primary;
-    }
-}
-
-body {
-  background: $color-background;
-  font-family: $main-font;
-}
+@use "@/presentation/assets/styles/main" as *;
 
 #app {
   margin-right: auto;
@@ -76,6 +56,4 @@ body {
   }
 }
 
-@import "@/presentation/styles/tooltip.scss";
-@import "@/presentation/styles/tree.scss";
 </style>

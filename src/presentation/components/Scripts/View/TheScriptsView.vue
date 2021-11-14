@@ -95,15 +95,13 @@ export default class TheScriptsView extends StatefulVue {
 </script>
 
 <style scoped lang="scss">
-@import "@/presentation/styles/colors.scss";
-@import "@/presentation/styles/fonts.scss";
-@import "@/presentation/styles/media.scss";
+@use "@/presentation/assets/styles/main" as *;
 
-$inner-margin: 4px;
+$margin-inner: 4px;
 
 .scripts {
-    margin-top: $inner-margin;
-    @media screen and (min-width: $vertical-view-breakpoint) { // so the current code is always visible
+    margin-top: $margin-inner;
+    @media screen and (min-width: $media-vertical-view-breakpoint) { // so the current code is always visible
         overflow: auto;
         max-height: 70vh;
     }

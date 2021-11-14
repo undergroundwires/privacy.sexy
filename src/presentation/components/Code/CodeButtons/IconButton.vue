@@ -24,8 +24,7 @@ export default class IconButton extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "@/presentation/styles/colors.scss";
-@import "@/presentation/styles/fonts.scss";
+@use "@/presentation/assets/styles/main" as *;
 
 .button {
     display: flex;
@@ -57,7 +56,7 @@ export default class IconButton extends Vue {
     }
     &__text {
         display: none;
-        font-family: $artistic-font;
+        font-family: $font-artistic;
         font-size: 1.5em;
         color: $color-primary;
         font-weight: 500;

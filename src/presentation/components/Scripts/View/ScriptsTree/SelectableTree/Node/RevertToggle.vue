@@ -52,14 +52,14 @@ export default class RevertToggle extends StatefulVue {
 
 <style scoped lang="scss">
 @use 'sass:math';
-@import "@/presentation/styles/colors.scss";
+@use "@/presentation/assets/styles/main" as *;
 
-$color-unchecked-bullet : $color-primary-darker;
-$color-unchecked-text   : $color-on-primary;
-$color-unchecked-bg     : $color-primary;
-$color-checked-bg       : $color-secondary;
-$color-checked-text     : $color-on-secondary;
-$color-checked-bullet   : $color-on-secondary;
+$color-bullet-unchecked : $color-primary-darker;
+$color-bullet-checked   : $color-on-secondary;
+$color-text-unchecked   : $color-on-primary;
+$color-text-checked     : $color-on-secondary;
+$color-bg-unchecked     : $color-primary;
+$color-bg-checked       : $color-secondary;
 $size-width             : 85px;
 $size-height            : 30px;
 
@@ -94,7 +94,7 @@ $size-height            : 30px;
         position: relative;
         width: $size-width;
         height: $size-height;
-        background-color: $color-unchecked-bg;
+        background-color: $color-bg-unchecked;
         -webkit-transition: background-color 0.25s ease-out 0s;
         transition: background-color 0.25s ease-out 0s;
 
@@ -109,7 +109,7 @@ $size-height            : 30px;
             height: $circle-size;
             border-radius: $circle-size * 2;
             -webkit-border-radius: $circle-size * 2;
-            background-color: $color-unchecked-bullet;
+            background-color: $color-bullet-unchecked;
             top: $size-height * 0.16;
             left: $size-width * 0.05;
             -webkit-transition: left 0.3s ease-out 0s;
@@ -120,11 +120,11 @@ $size-height            : 30px;
 
     input.input-checkbox:checked {
         + .checkbox-animate {
-            background-color: $color-checked-bg;
+            background-color: $color-bg-checked;
         }
         + .checkbox-animate:before {
             left: ($size-width - math.div($size-width, 3.5));
-            background-color: $color-checked-bullet;
+            background-color: $color-bullet-checked;
         }
         + .checkbox-animate .checkbox-off {
             display: none;
@@ -146,7 +146,7 @@ $size-height            : 30px;
     .checkbox-off {
         margin-left: math.div($size-width, 3);
         opacity: 1;
-        color: $color-unchecked-text;
+        color: $color-text-unchecked;
     }
 
     .checkbox-on {
@@ -154,7 +154,7 @@ $size-height            : 30px;
         float: right;
         margin-right: math.div($size-width, 3);
         opacity: 0;
-        color: $color-checked-text;
+        color: $color-text-checked;
     }
 }
 </style>

@@ -104,8 +104,7 @@ export default class MacOsInstructions extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "@/presentation/styles/colors.scss";
-@import "@/presentation/styles/fonts.scss";
+@use "@/presentation/assets/styles/main" as *;
 
 li {
   margin: 10px 0;

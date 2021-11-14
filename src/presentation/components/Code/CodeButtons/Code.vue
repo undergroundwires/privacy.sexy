@@ -25,13 +25,12 @@ export default class Code extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "@/presentation/styles/colors.scss";
-@import "@/presentation/styles/fonts.scss";
+@use "@/presentation/assets/styles/main" as *;
 
 .code-wrapper {
     white-space: nowrap;
     justify-content: space-between;
-    font-family: $normal-font;
+    font-family: $font-normal;
     background-color: $color-primary-darker;
     color: $color-on-primary;
     padding-left: 0.3rem;

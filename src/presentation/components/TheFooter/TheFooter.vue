@@ -81,9 +81,7 @@ export default class TheFooter extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "@/presentation/styles/colors.scss";
-@import "@/presentation/styles/fonts.scss";
-@import "@/presentation/styles/media.scss";
+@use "@/presentation/assets/styles/main" as *;
 
 .icon {
   margin-right: 0.5em;
@@ -93,13 +91,13 @@ export default class TheFooter extends Vue {
 .footer {
   display: flex;
   justify-content: space-between;
-  @media screen and (max-width: $big-screen-width) {  
+  @media screen and (max-width: $media-screen-big-width) {  
     flex-direction: column;
     align-items: center;
   }
   &__section {
     display: flex;
-    @media screen and (max-width: $big-screen-width) {  
+    @media screen and (max-width: $media-screen-big-width) {  
       justify-content: space-around;
       width:100%;  
       &:not(:first-child) {
@@ -108,13 +106,13 @@ export default class TheFooter extends Vue {
     }
     flex-wrap: wrap;
     font-size: 1rem;
-    font-family: $normal-font;
+    font-family: $font-normal;
     &__item:not(:first-child) {
       &::before {
         content: "|";
         padding: 0 5px;
       }
-      @media screen and (max-width: $big-screen-width) {  
+      @media screen and (max-width: $media-screen-big-width) {  
         margin-top: 3px;
         &::before {
           content: "";

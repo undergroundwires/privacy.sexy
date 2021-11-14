@@ -43,7 +43,7 @@ export default class Handle extends Vue {
 </script>
 
 <style lang="scss" scoped>
-@import "@/presentation/styles/colors.scss";
+@use "@/presentation/assets/styles/main" as *;
 
 $color          : $color-primary-dark;
 $color-hover    : $color-primary;

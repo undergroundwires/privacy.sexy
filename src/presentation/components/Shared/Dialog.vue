@@ -31,12 +31,11 @@ export default class Dialog extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "@/presentation/styles/fonts.scss";
-@import "@/presentation/styles/colors.scss";
+@use "@/presentation/assets/styles/main" as *;
 
 .dialog {
   color: $color-surface;
-  font-family: $normal-font;
+  font-family: $font-normal;
   margin-bottom: 10px;
   display: flex;
   flex-direction: row;

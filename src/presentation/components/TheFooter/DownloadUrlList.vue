@@ -38,8 +38,7 @@ export default class DownloadUrlList extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "@/presentation/styles/media.scss";
-@import "@/presentation/styles/colors.scss";
+@use "@/presentation/assets/styles/main" as *;
 
 .container {
   display:flex;

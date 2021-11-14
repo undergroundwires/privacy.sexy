@@ -22,7 +22,7 @@ export default class MenuOptionListItem extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "@/presentation/styles/colors.scss";
+@use "@/presentation/assets/styles/main" as *;
 
 .enabled {
     cursor: pointer;

@@ -1,0 +1,25 @@
+/* 
+    Defines global styles that applies to globally defined tags by default (body, main, article, div etc.)
+*/
+
+@use "@/presentation/assets/styles/colors" as *;
+@use "@/presentation/assets/styles/fonts" as *;
+
+
+* {
+    box-sizing: border-box;
+}
+
+a {
+    color:inherit;
+    text-decoration: underline;
+    cursor: pointer;
+    &:hover {
+        color: $color-primary;
+    }
+}
+
+body {
+    background: $color-background;
+    font-family: $font-main;
+}

@@ -1,0 +1,11 @@
+/* This class is not supposed to more than forwarding other styles */
+
+@forward "./fonts";
+@forward "./media";
+@forward "./colors";
+@forward "./globals";
+
+@forward "./components/card";
+
+@forward "./third-party-extensions/tooltip.scss";
+@forward "./third-party-extensions/tree.scss";

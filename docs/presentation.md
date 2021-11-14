@@ -10,11 +10,16 @@
   - [**`bootstrapping/`**](./../src/presentation/bootstrapping/): Registers Vue global objects including components and plugins.
   - [**`components/`**](./../src/presentation/components/): Contains all Vue components and their helper classes.
     - [**`Shared/`**](./../src/presentation/components/Shared): Contains Vue components and component helpers that are shared across other components.
-  - [**`styles/`**](./../src/presentation/styles/): Contains shared styles used throughout different components.
+  - [**`assets/`**](./../src/presentation/assets/styles/): Contains assets that will be processed by webpack.
+    - [**`fonts/`**](./../src/presentation/assets/fonts/): Contains fonts
+    - [**`styles/`**](./../src/presentation/assets/styles/): Contains shared styles used throughout different components.
+      - [**`components/`**](./../src/presentation/assets/styles/components): Contains styles that are reusable and tightly coupled a Vue/HTML component.
+      - [**`vendors-extensions/`**](./../src/presentation/assets/styles/third-party-extensions): Contains styles that override third-party components used.
+      - [**`main.scss`**](./../src/presentation/assets/styles/main.scss): Primary Sass file, passes along all other styles, should be the only file used from other components.
   - [**`main.ts`**](./../src/presentation/main.ts): Application entry point that mounts and starts Vue application.
-  - [`electron/`](./../src/presentation/electron/): Electron configuration for the desktop application.
+  - [**`electron/`**](./../src/presentation/electron/): Electron configuration for the desktop application.
     - [**`main.ts`**](./../src/presentation/main.ts): Main process of Electron, started as first thing when app starts.
-- [**`/public/`**](./../public/): Contains static assets that will simply be copied and not go through webpack.
+- [**`/public/`**](./../public/): Contains static assets that will directly be copied and not go through webpack.
 - [**`/vue.config.js`**](./../vue.config.js): Global Vue CLI configurations loaded by `@vue/cli-service`
 - [**`/postcss.config.js`**](./../postcss.config.js): PostCSS configurations that are used by Vue CLI internally
 - [**`/babel.config.js`**](./../babel.config.js): Babel configurations for polyfills used by `@vue/cli-plugin-babel`
@@ -50,3 +55,18 @@
     </Dialog>
     <div @click="$refs.testDialog.show()">Show dialog</div>
   ```
+
+## Sass naming convention
+
+- Use lowercase for variables/functions/mixins e.g.
+  - Variable: `$variable: value;`
+  - Function: `@function function() {}`
+  - Mixin: `@mixin mixin() {}`
+- Use - for a phrase/compound word e.g.
+  - Variable: `$some-variable: value;`
+  - Function: `@function some-function() {}`
+  - Mixin: `@mixin some-mixin() {}`
+- Grouping and name variables from generic to specific e.g.
+  - ✅ `$border-blue`, `$border-blue-light`, `$border-blue-lightest`, `$border-red`
+  - ❌ `$blue-border`, `$light-blue-border`, `$lightest-blue-border`, `$red-border`
+  

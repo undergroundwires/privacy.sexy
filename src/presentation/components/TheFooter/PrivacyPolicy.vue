@@ -56,11 +56,12 @@ export default class PrivacyPolicy extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "@/presentation/styles/fonts.scss";
+@use "@/presentation/assets/styles/main" as *;
+
 .privacy-policy {
     display: flex;
     flex-direction: column;
-    font-family: $normal-font;
+    font-family: $font-normal;
     text-align:center;
 
     .line {

@@ -95,9 +95,7 @@ export default class CardListItem extends StatefulVue {
 </script>
 
 <style scoped lang="scss">
-@import "@/presentation/styles/colors.scss";
-@import "@/presentation/styles/media.scss";
-@import "@/presentation/styles/components/card.scss";
+@use "@/presentation/assets/styles/main" as *;
 
 $card-inner-padding     : 30px;
 $arrow-size             : 15px;

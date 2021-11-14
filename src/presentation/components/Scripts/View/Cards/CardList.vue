@@ -105,13 +105,12 @@ function isClickable(element: Element) {
 </script>
 
 <style scoped lang="scss">
-@import "@/presentation/styles/fonts.scss";
-@import "@/presentation/styles/components/card.scss";
+@use "@/presentation/assets/styles/main" as *;
 
 .cards {
   display: flex;
   flex-flow: row wrap;
-  font-family: $main-font;
+  font-family: $font-main;
   gap: $card-gap;
   /* 
     Padding is used to allow scale animation (growing size) for cards on hover.
@@ -124,6 +123,6 @@ function isClickable(element: Element) {
   width: 100%;
   text-align: center;
   font-size: 3.5em;
-  font-family: $normal-font;
+  font-family: $font-normal;
 }
 </style>

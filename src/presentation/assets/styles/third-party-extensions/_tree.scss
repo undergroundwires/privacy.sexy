@@ -1,0 +1,58 @@
+// Overrides base styling for LiquorTree
+@use "@/presentation/assets/styles/colors" as *;
+
+$color-tree-bg                          : $color-primary-darker;
+$color-node-arrow                       : $color-on-primary;
+$color-node-fg                          : $color-on-primary;
+$color-node-hover-bg                    : $color-primary-dark;
+$color-node-keyboard-bg                 : $color-surface;
+$color-node-keyboard-fg                 : $color-on-surface;
+$color-node-checkbox-bg-checked         : $color-secondary;
+$color-node-checkbox-bg-unchecked       : $color-primary-darkest;
+$color-node-checkbox-border-checked     : $color-secondary;
+$color-node-checkbox-border-unchecked   : $color-on-primary;
+$color-node-checkbox-tick-checked       : $color-on-secondary;
+
+.tree {
+    background: $color-tree-bg;
+    &-node { 
+        white-space: normal !important;
+        > .tree-content {
+            > .tree-anchor > span {
+                color: $color-node-fg;
+                text-transform: uppercase;
+                font-size: 1.5em;
+            }
+            &:hover {
+                background: $color-node-hover-bg !important;
+            }
+        }
+        &.selected { // When using keyboard navigation it highlights current item and its child items
+            background: $color-node-keyboard-bg;
+            .tree-text {
+                color: $color-node-keyboard-fg !important; //  $block
+            }
+        }
+    }
+    &-checkbox {
+        border-color: $color-node-checkbox-border-unchecked !important;
+        &.checked {
+            background: $color-node-checkbox-bg-checked !important;
+            border-color: $color-node-checkbox-border-checked !important;
+            &:after {
+                border-color: $color-node-checkbox-tick-checked !important;
+            }
+        }
+        &.indeterminate {
+            border-color: $color-node-checkbox-border-unchecked !important;
+        }
+        background: $color-node-checkbox-bg-unchecked !important;
+    }
+    &-arrow {
+        &.has-child {
+            &.rtl:after, &:after {
+                border-color: $color-node-arrow !important;
+            }
+        }
+    }
+}

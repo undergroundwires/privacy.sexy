@@ -24,7 +24,8 @@
 
 
 <style scoped lang="scss">
-@import "@/presentation/styles/colors.scss";
+@use "@/presentation/assets/styles/main" as *;
+
 .documentationUrls {
     display: flex;
     flex-direction: row;

@@ -22,8 +22,8 @@ export default class TheHeader extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "@/presentation/styles/colors.scss";
-@import "@/presentation/styles/fonts.scss";
+@use "@/presentation/assets/styles/main" as *;
+
 #container {
   display: flex;
   align-items: center;
@@ -37,7 +37,7 @@ export default class TheHeader extends Vue {
   .title {
     margin: 0;
     text-transform: uppercase;
-    font-family: $main-font;
+    font-family: $font-main;
     font-size: 2.5em;
     line-height: 1.1;
   }
@@ -45,7 +45,7 @@ export default class TheHeader extends Vue {
     margin: 0;
     font-size: 1.5em;
     color: $color-primary;
-    font-family: $artistic-font;
+    font-family: $font-artistic;
     font-weight: 500;
     line-height: 1.2;
   }

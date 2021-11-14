@@ -150,7 +150,8 @@ function getDefaultCode(language: ScriptingLanguage): string {
 </script>
 
 <style scoped lang="scss">
-@import "@/presentation/styles/colors.scss";
+@use "@/presentation/assets/styles/main" as *;
+
 ::v-deep .code-area {
   min-height: 200px;
   width: 100%;

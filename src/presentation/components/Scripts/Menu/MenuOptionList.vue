@@ -17,11 +17,11 @@ export default class MenuOptionList extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import "@/presentation/styles/fonts.scss";
+@use "@/presentation/assets/styles/main" as *;
 
 $gap: 0.25rem;
 .list {
-  font-family: $normal-font;
+  font-family: $font-normal;
   display: flex;
   align-items: center;
   .items {

@@ -58,8 +58,7 @@ export default class TheSearchBar extends StatefulVue {
 </script>
 
 <style scoped lang="scss">
-@import "@/presentation/styles/colors.scss";
-@import "@/presentation/styles/fonts.scss";
+@use "@/presentation/assets/styles/main" as *;
 
 .search {
   width: 100%;
@@ -81,7 +80,7 @@ export default class TheSearchBar extends StatefulVue {
   padding-right:10px;
   outline: none;
   color: $color-primary;
-  font-family: $normal-font;
+  font-family: $font-normal;
   font-size:1em;
   &:focus {
     color: $color-primary-darker;

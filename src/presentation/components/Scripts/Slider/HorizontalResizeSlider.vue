@@ -40,7 +40,7 @@ export default class HorizontalResizeSlider extends Vue {
 </script>
 
 <style lang="scss" scoped>
-@import "@/presentation/styles/media.scss";
+@use "@/presentation/assets/styles/main" as *;
 
 .slider {
     display: flex;
@@ -53,7 +53,7 @@ export default class HorizontalResizeSlider extends Vue {
         flex: 1;
         min-width: var(--second-min-width);
     }
-    @media screen and (max-width: $vertical-view-breakpoint) {
+    @media screen and (max-width: $media-vertical-view-breakpoint) {
         flex-direction: column;
         .first {
             width: auto !important;

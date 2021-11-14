@@ -32,7 +32,8 @@
 
 
 <style scoped lang="scss">
-@import "@/presentation/styles/colors.scss";
+@use "@/presentation/assets/styles/main" as *;
+
 #node {
   display:flex;
   flex-direction: row;
