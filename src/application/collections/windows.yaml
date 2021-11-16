@@ -2618,17 +2618,16 @@ actions:
                                                     - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
                                                 call:
                                                     -
-                                                        function: RunPowerShell
+                                                        function: SetMpPreference
                                                         parameters:
-                                                            # Default: False (enabled)
-                                                            # Status: Get-MpPreference | Select-Object -Property DisableBlockAtFirstSeen
-                                                            code: try { Set-MpPreference -Force -DisableBlockAtFirstSeen $True } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            revertCode: try { Remove-MpPreference -Force -DisableBlockAtFirstSeen } catch { Write-Warning 'Function not found'; exit 1 }
+                                                            property: DisableBlockAtFirstSeen   # Status:   Get-MpPreference | Select-Object -Property DisableBlockAtFirstSeen
+                                                            value: $True                        # Set:      Set-MpPreference -Force -DisableBlockAtFirstSeen $True
+                                                            default: $False                     # Default:  False (Enabled) | Remove-MpPreference -Force -DisableBlockAtFirstSeen | Set-MpPreference -Force -DisableBlockAtFirstSeen $False
                                                     -
                                                         function: RunInlineCode
                                                         parameters:
                                                             code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\SpyNet" /v "DisableBlockAtFirstSeen" /t REG_DWORD /d "1" /f
-                                                            revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\SpyNet" /v "DisableBlockAtFirstSeen" /t REG_DWORD /d "0" /f 2>nul
+                                                            revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\SpyNet" /v "DisableBlockAtFirstSeen" /f 2>nul
                                             -
                                                 name: Set maximum time possible for extended cloud check timeout # Requires "Block at First Sight", "Join Microsoft MAPS", "Send file samples when further analysis is required"
                                                 docs:
@@ -2666,12 +2665,11 @@ actions:
                                                 call:
                                                     # 0: Disabled, 1: Basic, 2: Advanced (default)
                                                     -
-                                                        function: RunPowerShell
+                                                        function: SetMpPreference
                                                         parameters:
-                                                            # Default: 2 (Advanced)
-                                                            # Status: Get-MpPreference | Select-Object -Property MAPSReporting
-                                                            code: try { Set-MpPreference -Force -MAPSReporting 0 } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            revertCode: try { Remove-MpPreference -Force -MAPSReporting } catch { Write-Warning 'Function not found'; exit 1 }
+                                                            property: MAPSReporting     # Status:   Get-MpPreference | Select-Object -Property MAPSReporting
+                                                            value: "'0'"                # Set:      Set-MpPreference -Force -MAPSReporting 0
+                                                            default: "'2'"              # Default:  2 (Advanced) | Remove-MpPreference -Force -MAPSReporting | Set-MpPreference -Force -MAPSReporting 2
                                                     -
                                                         function: RunInlineCode
                                                         parameters:
@@ -2689,15 +2687,12 @@ actions:
                                                 call:
                                                     # 0 = 'Always Prompt',  1 = 'Send safe samples automatically' (default), 2 = 'Never send', 3 = 'Send all samples automatically'
                                                     -
-                                                        function: RunPowerShell
+                                                        function: SetMpPreference
                                                         parameters:
-                                                            # Default: 1 (Send safe samples automatically)
-                                                            # Status: Get-MpPreference | Select-Object -Property SubmitSamplesConsent
-                                                            code: try { Set-MpPreference -Force -SubmitSamplesConsent 2 } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            # revertCode: try { Set-MpPreference -Force -SubmitSamplesConsent 1 } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            revertCode: try { Remove-MpPreference -Force -SubmitSamplesConsent } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            # ❌ Remove-MpPreference does not work in Windows 10 21H1, and sets it to 0 instead 1 (OS default) in Windows 11
-                                                            # ❌ Remove-MpPreference -EnableFileHashComputation fails on Windows 10 with NamedParameterNotFound, successful on Windows 11
+                                                            property: SubmitSamplesConsent  # Status:   Get-MpPreference | Select-Object -Property SubmitSamplesConsent
+                                                            value: "'2'"                    # Set:      Set-MpPreference -Force -SubmitSamplesConsent 2
+                                                            default: "'1'"                  # Default:  1 (Send safe samples automatically) | Remove-MpPreference -Force -SubmitSamplesConsent | Set-MpPreference -Force -SubmitSamplesConsent 1
+                                                            setDefaultOnWindows11: true     # `Remove-MpPreference` sets it to 0 instead 1 (OS default) in Windows 11
                                                     -
                                                         function: RunInlineCode
                                                         parameters:
@@ -2708,7 +2703,7 @@ actions:
                                                 recommend: strict
                                                 docs: https://admx.help/?Category=Windows10_Telemetry&Policy=Microsoft.Policies.Win10Privacy::DontReportInfection
                                                 code: reg add "HKLM\SOFTWARE\Policies\Microsoft\MRT" /v "DontReportInfectionInformation" /t REG_DWORD /d 1 /f
-                                                revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\MRT" /v "DontReportInfectionInformation" /f
+                                                revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\MRT" /v "DontReportInfectionInformation" /f 2>nul
                                             -
                                                 name: Disable uploading files for threat analysis in real-time # Requires "Join Microsoft MAPS"
                                                 recommend: strict
@@ -2716,7 +2711,7 @@ actions:
                                                 code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "RealtimeSignatureDelivery" /t REG_DWORD /d 0 /f
                                                 revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "RealtimeSignatureDelivery" /f 2>nul
                             -
-                                name: Disable the Potentially Unwanted Application (PUA) feature
+                                name: Disable the Potentially Unwanted Application (PUA) feature # Already disabled as default
                                 docs:
                                     - https://www.stigviewer.com/stig/ms_windows_defender_antivirus/2018-03-29/finding/V-75147
                                     - https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/detect-block-potentially-unwanted-apps-microsoft-defender-antivirus
@@ -2727,13 +2722,12 @@ actions:
                                     - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
                                 call:
                                     -
-                                        function: RunPowerShell
+                                        function: SetMpPreference
                                         parameters:
-                                            # Default: 0
                                             # 0 = 'Disabled' (default), 1 = 'Enabled', 2 = 'AuditMode'
-                                            # Status: Get-MpPreference | Select-Object -Property PUAProtection
-                                            code: try { Set-MpPreference -Force -PUAProtection 0 } catch { Write-Warning 'Function not found'; exit 1 }
-                                            revertCode: try { Remove-MpPreference -Force -PUAProtection } catch { Write-Warning 'Function not found'; exit 1 } # Sets to 0
+                                            property: PUAProtection     # Status:   Get-MpPreference | Select-Object -Property PUAProtection
+                                            value: "'0'"                # Set:      Set-MpPreference -Force -PUAProtection 0
+                                            default: "'0'"              # Default:  0 (Disabled) | Remove-MpPreference -Force -PUAProtection | Set-MpPreference -Force -PUAProtection 0
                                     -
                                         function: RunInlineCode
                                         parameters:
@@ -2821,13 +2815,13 @@ actions:
                                             - https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disablerealtimemonitoring
                                         call: # Enabled by default (DisableRealtimeMonitoring is false)
                                             -
-                                                function: RunPowerShell
+                                                function: SetMpPreference
                                                 parameters:
-                                                    # Default: False
-                                                    # Status: Get-MpPreference | Select-Object -Property DisableRealtimeMonitoring
-                                                    # ❌ Windows 11: Does not fail but does not set the value | ✅ Windows 10: Works as expected
-                                                    code: try { Set-MpPreference -Force -DisableRealtimeMonitoring $True } catch { Write-Warning 'Function not found'; exit 1 }
-                                                    revertCode: try { Remove-MpPreference -Force -DisableRealtimeMonitoring } catch { Write-Warning 'Function not found'; exit 1 }
+                                                    property: DisableRealtimeMonitoring     # Status:   Get-MpPreference | Select-Object -Property DisableRealtimeMonitoring
+                                                    value: $True                            # Set:      Set-MpPreference -Force -DisableRealtimeMonitoring $True
+                                                                                            # ❌ Windows 11: Does not fail but does not set $True value | ✅ Windows 10: Works as expected
+                                                    default: $False                         # Default: False (Enabled) | Remove-MpPreference -Force -DisableRealtimeMonitoring | Set-MpPreference -Force -DisableRealtimeMonitoring $False
+
                                             -
                                                 function: RunInlineCode
                                                 parameters:
@@ -2842,13 +2836,13 @@ actions:
                                             - https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disableintrusionpreventionsystem
                                         call:
                                             -
-                                                function: RunPowerShell
+                                                function: SetMpPreference
                                                 parameters:
-                                                    # Default: empty (no value)
-                                                    # Status: Get-MpPreference | Select-Object -Property DisableIntrusionPreventionSystem
-                                                    # ❌ Windows 11 and Windows 10: Does not fail but does not set the value
-                                                    code: try { Set-MpPreference -Force -DisableIntrusionPreventionSystem $True } catch { Write-Warning 'Function not found'; exit 1 }
-                                                    revertCode: try { Remove-MpPreference -Force -DisableIntrusionPreventionSystem } catch { Write-Warning 'Function not found'; exit 1 }
+                                                    property: DisableIntrusionPreventionSystem  # Status:   Get-MpPreference | Select-Object -Property DisableIntrusionPreventionSystem
+                                                    value: $True                                # Set:      Set-MpPreference -Force -DisableIntrusionPreventionSystem $True
+                                                                                                # ❌ Windows 11 and Windows 10: Does not fail but does not change the value
+                                                    default: $False                             # Default: empty (no value) | Remove-MpPreference -Force -DisableIntrusionPreventionSystem | Set-MpPreference -Force -DisableIntrusionPreventionSystem $False
+                                                                                                # ❗️ Default is empty (no value), but cannot set this way using Set-MpPreference, so $False is set
                                             -
                                                 function: RunInlineCode
                                                 parameters:
@@ -2871,13 +2865,12 @@ actions:
                                                     - https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disablebehaviormonitoring
                                                 call:
                                                     -
-                                                        function: RunPowerShell
+                                                        function: SetMpPreference
                                                         parameters:
-                                                            # Default: False
-                                                            # Status: Get-MpPreference | Select-Object -Property DisableBehaviorMonitoring
-                                                            # ❌ Windows 11: Does not fail but does not set the value | ✅ Windows 10: Works as expected
-                                                            code: try { Set-MpPreference -Force -DisableBehaviorMonitoring $True } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            revertCode: try { Remove-MpPreference -Force -DisableBehaviorMonitoring } catch { Write-Warning 'Function not found'; exit 1 }
+                                                            property: DisableBehaviorMonitoring # Status:   Get-MpPreference | Select-Object -Property DisableBehaviorMonitoring
+                                                            value: $True                        # Set:      Set-MpPreference -Force -DisableBehaviorMonitoring $True
+                                                                                                # ❌ Windows 11: Does not fail but does not set $True value | ✅ Windows 10: Works as expected
+                                                            default: $False                     # Default: False | Remove-MpPreference -Force -DisableBehaviorMonitoring | Set-MpPreference -Force -DisableBehaviorMonitoring $False
                                                     -
                                                         function: RunInlineCode
                                                         parameters:
@@ -2900,13 +2893,12 @@ actions:
                                                     - https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disableioavprotection
                                                 call:
                                                     -
-                                                        function: RunPowerShell
+                                                        function: SetMpPreference
                                                         parameters:
-                                                            # Default: False
-                                                            # Status: Get-MpPreference | Select-Object -Property DisableIOAVProtection
-                                                            # ❌ Windows 11: Does not fail but does not set the value | ✅ Windows 10: Works as expected
-                                                            code: try { Set-MpPreference -Force -DisableIOAVProtection $True } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            revertCode: try { Remove-MpPreference -Force -DisableIOAVProtection } catch { Write-Warning 'Function not found'; exit 1 }
+                                                            property: DisableIOAVProtection     # Status:   Get-MpPreference | Select-Object -Property DisableIOAVProtection
+                                                            value: $True                        # Set:      Set-MpPreference -Force -DisableIOAVProtection $True
+                                                                                                # ❌ Windows 11: Does not fail but does not change the value | ✅ Windows 10: Works as expected
+                                                            default: $False                     # Default: False | Remove-MpPreference -Force -DisableIOAVProtection | Set-MpPreference -Force -DisableIOAVProtection $False
                                                     -
                                                         function: RunInlineCode
                                                         parameters:
@@ -2929,7 +2921,7 @@ actions:
                                                 revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "DisableOnAccessProtection" /f 2>nul
                                             -
                                                 name: Disable bidirectional scanning of incoming and outgoing file and program activity
-                                                docs:
+                                                docs: 
                                                     - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::RealtimeProtection_RealtimeScanDirection
                                                     # Managing with MpPreference module:
                                                     - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
@@ -2939,17 +2931,16 @@ actions:
                                                     # 1='Incoming': scan only incoming (disable on-open)
                                                     # 2='Outcoming': scan only outgoing (disable on-close)
                                                     -
-                                                        function: RunPowerShell
+                                                        function: SetMpPreference
                                                         parameters:
-                                                            # Default: 0 (Both)
-                                                            # Status: Get-MpPreference | Select-Object -Property RealTimeScanDirection
-                                                            code: try { Set-MpPreference -Force -RealTimeScanDirection 1 } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            revertCode: try { Remove-MpPreference -Force -RealTimeScanDirection } catch { Write-Warning 'Function not found'; exit 1 }
+                                                            property: RealTimeScanDirection     # Status:   Get-MpPreference | Select-Object -Property RealTimeScanDirection
+                                                            value: "'1'"                        # Set:      Set-MpPreference -Force -RealTimeScanDirection 1
+                                                            default: "'0'"                      # Default:  0 (Both) | Remove-MpPreference -Force -RealTimeScanDirection | Set-MpPreference -Force -RealTimeScanDirection 0
                                                     -
                                                         function: RunInlineCode
                                                         parameters:
-                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "RealtimeScanDirection" /t REG_DWORD /d "1" /f
-                                                            revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "RealtimeScanDirection" /f 2>nul
+                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "RealTimeScanDirection" /t REG_DWORD /d "1" /f
+                                                            revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Real-Time Protection" /v "RealTimeScanDirection" /f 2>nul
                                     -
                                         name: Disable process scanning on real-time protection
                                         docs:
@@ -2982,12 +2973,11 @@ actions:
                                                     code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Remediation" /v "Scan_ScheduleDay" /t REG_DWORD /d "8" /f
                                                     revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Remediation" /v "Scan_ScheduleDay" /f 2>nul
                                             -
-                                                function: RunPowerShell
+                                                function: SetMpPreference
                                                 parameters:
-                                                    # Default: 0
-                                                    # Status: Get-MpPreference | Select-Object -Property RemediationScheduleDay
-                                                    code: try { Set-MpPreference -Force -RemediationScheduleDay 8 } catch { Write-Warning 'Function not found'; exit 1 }
-                                                    revertCode: try { Remove-MpPreference -Force -RemediationScheduleDay } catch { Write-Warning 'Function not found'; exit 1 }
+                                                    property: RemediationScheduleDay    # Status:   Get-MpPreference | Select-Object -Property RemediationScheduleDay
+                                                    value: "'8'"                        # Set:      Set-MpPreference -Force -RemediationScheduleDay 8
+                                                    default: "'0'"                      # Default:  0 | Remove-MpPreference -Force -RemediationScheduleDay | Set-MpPreference -Force -RemediationScheduleDay 0
                                     -
                                         name: Disable remediation actions
                                         docs:
@@ -2998,45 +2988,18 @@ actions:
                                         # None = 0 (default), Clean = 1, Quarantine = 2, Remove = 3, Allow = 6, UserDefined = 8, NoAction = 9, Block = 10
                                         call: # Not using ThreatIdDefaultAction as it requires known threat IDs
                                             -
-                                                function: RunPowerShell
+                                                function: SetMpPreference
+                                                # https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#unknownthreatdefaultaction
                                                 parameters:
-                                                    # Default: None (0)
-                                                    # Status: Get-MpPreference | Select-Object -Property UnknownThreatDefaultAction
-                                                    # https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#unknownthreatdefaultaction
-                                                    code: try { Set-MpPreference -Force -UnknownThreatDefaultAction 'NoAction' } catch { Write-Warning 'Function not found'; exit 1 }
-                                                    revertCode: Remove-MpPreference -Force -UnknownThreatDefaultAction
-                                            -
-                                                function: RunPowerShell
-                                                parameters:
-                                                    # Default: None (0)
-                                                    # Status: Get-MpPreference | Select-Object -Property LowThreatDefaultAction
-                                                    # https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#lowthreatdefaultaction
-                                                    code: try { Set-MpPreference -Force -LowThreatDefaultAction 'NoAction' } catch { Write-Warning 'Function not found'; exit 1 }
-                                                    revertCode: Remove-MpPreference -Force -LowThreatDefaultAction
-                                            -
-                                                function: RunPowerShell
-                                                parameters:
-                                                    # Default: None (0)
-                                                    # Status: Get-MpPreference | Select-Object -Property ModerateThreatDefaultAction
-                                                    # https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#moderatethreatdefaultaction
-                                                    code: try { Set-MpPreference -Force -ModerateThreatDefaultAction 'NoAction' } catch { Write-Warning 'Function not found'; exit 1 }
-                                                    revertCode: Remove-MpPreference -Force -ModerateThreatDefaultAction
-                                            -
-                                                function: RunPowerShell
-                                                parameters:
-                                                    # Default: None (0)
-                                                    # Status: Get-MpPreference | Select-Object -Property HighThreatDefaultAction
-                                                    # https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#highthreatdefaultaction
-                                                    code: try { Set-MpPreference -Force -HighThreatDefaultAction 'NoAction' } catch { Write-Warning 'Function not found'; exit 1 }
-                                                    revertCode: Remove-MpPreference -Force -HighThreatDefaultAction
-                                            -
-                                                function: RunPowerShell
-                                                parameters:
-                                                    # Default: None (0)
-                                                    # Status: Get-MpPreference | Select-Object -Property SevereThreatDefaultAction
-                                                    # https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#severethreatdefaultaction
-                                                    code: try { Set-MpPreference -Force -SevereThreatDefaultAction 'NoAction' } catch { Write-Warning 'Function not found'; exit 1 }
-                                                    revertCode: Remove-MpPreference -Force -SevereThreatDefaultAction
+                                                    property: UnknownThreatDefaultAction    # Status:   Get-MpPreference | Select-Object -Property UnknownThreatDefaultAction
+                                                        #  Setting or removing `UnknownThreatDefaultAction` has same affect for (sets also same value):
+                                                        #   `LowThreatDefaultAction`, `ModerateThreatDefaultAction`, `HighThreatDefaultAction`, `SevereThreatDefaultAction`.
+                                                        #  E.g. if it's set to 8, all others will also be set to 8, and once it's removed, all others get also removed.
+                                                        #  Those properties cannot have different values than `UnknownThreatDefaultAction`, so we only set `UnknownThreatDefaultAction`
+                                                    value: "'9'"                            # Set:      Set-MpPreference -Force -UnknownThreatDefaultAction 9
+                                                    # Default: 0 (none)
+                                                    #   Setting default is not needed because `Remove-MpPreference -Force -UnknownThreatDefaultAction`
+                                                    #   works on both Windows 10 and Windows 11
                                             -
                                                 function: RunInlineCode
                                                 parameters:
@@ -3068,12 +3031,12 @@ actions:
                                             #   Minimum: 1
                                             #   0 means indefinitely
                                             -
-                                                function: RunPowerShell
+                                                function: SetMpPreference
                                                 parameters:
-                                                    # Default: 90
-                                                    # Status: Get-MpPreference | Select-Object -Property QuarantinePurgeItemsAfterDelay
-                                                    code: try { Set-MpPreference -Force -QuarantinePurgeItemsAfterDelay "1" } catch { Write-Warning 'Function not found'; exit 1 }
-                                                    revertCode: try { Remove-MpPreference -Force -QuarantinePurgeItemsAfterDelay } catch { Write-Warning 'Function not found'; exit 1 } # TODO: SETS TO 0 BUT IS 90 SEEMS TO BE DEFAULT?
+                                                    property: QuarantinePurgeItemsAfterDelay    # Status:   Get-MpPreference | Select-Object -Property QuarantinePurgeItemsAfterDelay
+                                                    value: "'1'"                                # Set:      Set-MpPreference -Force -QuarantinePurgeItemsAfterDelay 1
+                                                    default: "'90'"                             # Default:  90 | Remove-MpPreference -Force -QuarantinePurgeItemsAfterDelay | Set-MpPreference -Force -QuarantinePurgeItemsAfterDelay 90
+                                                    setDefaultOnWindows11: true                 # `Remove-MpPreference` sets it to 0 instead 90 (OS default) in Windows 11
                                             -
                                                 function: RunInlineCode
                                                 parameters:
@@ -3161,12 +3124,12 @@ actions:
                                     - https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disableautoexclusions
                                 call:
                                     -
-                                        function: RunPowerShell
+                                        function: SetMpPreference
                                         parameters:
-                                            # Default: False
-                                            # Status: Get-MpPreference | Select-Object -Property DisableAutoExclusions
-                                            code: try { Set-MpPreference -Force -DisableAutoExclusions $True } catch { Write-Warning 'Function not found'; exit 1 }
-                                            revertCode: try { Remove-MpPreference -Force -DisableAutoExclusions } catch { Write-Warning 'Function not found'; exit 1 }
+                                            property: DisableAutoExclusions     # Status:   Get-MpPreference | Select-Object -Property DisableAutoExclusions
+                                            value: $True                        # Set:      Set-MpPreference -Force -DisableAutoExclusions $True
+                                            default: $False                     # Default:  False | Remove-MpPreference -Force -DisableAutoExclusions | Set-MpPreference -Force -DisableAutoExclusions $False
+                                            setDefaultOnWindows11: true         # `Remove-MpPreference` has no affect (does not change the value) in Windows 11
                                     -
                                         function: RunInlineCode
                                         parameters:
@@ -3187,16 +3150,15 @@ actions:
                                                     - https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#checkforsignaturesbeforerunningscan
                                                 call:
                                                     -
-                                                        function: RunPowerShell
+                                                        function: SetMpPreference
                                                         parameters:
-                                                            # Default: False
-                                                            # Status: Get-MpPreference | Select-Object -Property CheckForSignaturesBeforeRunningScan
-                                                            code: try { Set-MpPreference -Force -CheckForSignaturesBeforeRunningScan $False } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            revertCode: try { Remove-MpPreference -Force -CheckForSignaturesBeforeRunningScan } catch { Write-Warning 'Function not found'; exit 1 }
+                                                            property: CheckForSignaturesBeforeRunningScan   # Status:   Get-MpPreference | Select-Object -Property CheckForSignaturesBeforeRunningScan
+                                                            value: $False                                   # Set:      Set-MpPreference -Force -CheckForSignaturesBeforeRunningScan $False
+                                                            default: $False                                 # Default:  False | Remove-MpPreference -Force -CheckForSignaturesBeforeRunningScan | Set-MpPreference -Force -CheckForSignaturesBeforeRunningScan $False
                                                     -
                                                         function: RunInlineCode
                                                         parameters: # Default: Does not exist
-                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "CheckForSignaturesBeforeRunningScan" /t REG_DWORD /d "1" /f
+                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "CheckForSignaturesBeforeRunningScan" /t REG_DWORD /d "0" /f
                                                             revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "CheckForSignaturesBeforeRunningScan" /f 2>nul
                                             -
                                                 name: Disable creating system restore point on a daily basis # Default behavior
@@ -3207,13 +3169,11 @@ actions:
                                                     - https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disablerestorepoint
                                                 call:
                                                     -
-                                                        function: RunPowerShell
+                                                        function: SetMpPreference
                                                         parameters:
-                                                            # Default: True
-                                                            # Status: Get-MpPreference | Select-Object -Property DisableRestorePoint
-                                                            code: try { Set-MpPreference -Force -DisableRestorePoint $True } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            revertCode: try { Remove-MpPreference -Force -DisableRestorePoint } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            # ❌ Remove-MpPreference -DisableRestorePoint fails on Windows 10 with NamedParameterNotFound, successful on Windows 11
+                                                            property: DisableRestorePoint   # Status: Get-MpPreference | Select-Object -Property DisableRestorePoint
+                                                            value: $True                    # Set:    Set-MpPreference -Force -DisableRestorePoint $True
+                                                            default: $True                  # Default: True | Remove-MpPreference -Force -DisableRestorePoint | Set-MpPreference -Force -DisableRestorePoint $True
                                                     -
                                                         function: RunInlineCode
                                                         parameters:
@@ -3228,12 +3188,11 @@ actions:
                                                     - https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#scanpurgeitemsafterdelay
                                                 call: # Default is 15, minimum is 0 which means never removing items
                                                     -
-                                                        function: RunPowerShell
+                                                        function: SetMpPreference
                                                         parameters:
-                                                            # Default: 15
-                                                            # Status: Get-MpPreference | Select-Object -Property ScanPurgeItemsAfterDelay
-                                                            code: try { Set-MpPreference -Force -ScanPurgeItemsAfterDelay 1 } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            revertCode: try { Remove-MpPreference -Force -ScanPurgeItemsAfterDelay } catch { Write-Warning 'Function not found'; exit 1 }
+                                                            property: ScanPurgeItemsAfterDelay  # Status: Get-MpPreference | Select-Object -Property ScanPurgeItemsAfterDelay
+                                                            value: "'1'"                        # Set:    Set-MpPreference -Force -ScanPurgeItemsAfterDelay 1
+                                                            default: "'15'"                     # Default: 15 | Remove-MpPreference -Force -ScanPurgeItemsAfterDelay | Set-MpPreference -Force -ScanPurgeItemsAfterDelay 15
                                                     -
                                                         function: RunInlineCode
                                                         parameters:
@@ -3254,15 +3213,14 @@ actions:
                                                     - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableCatchupFullScan
                                                     # Managing with MpPreference module:
                                                     - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
-                                                    - https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disablecatchupquickscan
+                                                    - https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disablecatchupfullscan
                                                 call:
                                                     -
-                                                        function: RunPowerShell
+                                                        function: SetMpPreference
                                                         parameters:
-                                                            # Default: True
-                                                            # Status: Get-MpPreference | Select-Object -Property DisableCatchupQuickScan
-                                                            code: try { Set-MpPreference -Force -DisableCatchupQuickScan $True } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            revertCode: try { Remove-MpPreference -Force -DisableCatchupQuickScan } catch { Write-Warning 'Function not found'; exit 1 }
+                                                            property: DisableCatchupFullScan    # Status:   Get-MpPreference | Select-Object -Property DisableCatchupFullScan
+                                                            value: $True                        # Set:      Set-MpPreference -Force -DisableCatchupFullScan $True
+                                                            default: $True                      # Default:  True | Remove-MpPreference -Force -DisableCatchupFullScan | Set-MpPreference -Force -DisableCatchupFullScan $True
                                                     -
                                                         function: RunInlineCode
                                                         parameters:
@@ -3270,9 +3228,23 @@ actions:
                                                             revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableCatchupFullScan" /f 2>nul
                                             -
                                                 name: Disable catch-up quick scans
-                                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableCatchupQuickScan
-                                                code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableCatchupQuickScan" /t REG_DWORD /d "1" /f
-                                                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableCatchupQuickScan" /f 2>nul
+                                                docs:
+                                                    - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableCatchupQuickScan
+                                                    # Managing with MpPreference module:
+                                                    - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
+                                                    - https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disablecatchupquickscan
+                                                call:
+                                                    -
+                                                        function: SetMpPreference
+                                                        parameters:
+                                                            property: DisableCatchupQuickScan   # Status:   Get-MpPreference | Select-Object -Property DisableCatchupQuickScan
+                                                            value: $True                        # Set:      Set-MpPreference -Force -DisableCatchupQuickScan $True
+                                                            default: $True                      # Default:  True | Remove-MpPreference -Force -DisableCatchupQuickScan | Set-MpPreference -Force -DisableCatchupQuickScan $True
+                                                    -
+                                                        function: RunInlineCode
+                                                        parameters:
+                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableCatchupQuickScan" /t REG_DWORD /d "1" /f
+                                                            revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableCatchupQuickScan" /f 2>nul
                                     -
                                         category: Turn off scan options
                                         children:
@@ -3294,12 +3266,11 @@ actions:
                                                         call:
                                                             # Default: 50, minimum 1
                                                             -
-                                                                function: RunPowerShell
+                                                                function: SetMpPreference
                                                                 parameters:
-                                                                    # Default: 50
-                                                                    # Status: Get-MpPreference | Select-Object -Property ScanAvgCPULoadFactor
-                                                                    code: try { Set-MpPreference -Force -ScanAvgCPULoadFactor 1 } catch { Write-Warning 'Function not found'; exit 1 }
-                                                                    revertCode: try { Remove-MpPreference -Force -ScanAvgCPULoadFactor } catch { Write-Warning 'Function not found'; exit 1 }
+                                                                    property: ScanAvgCPULoadFactor  # Status:   Get-MpPreference | Select-Object -Property ScanAvgCPULoadFactor
+                                                                    value: "'1'"                    # Set:      Set-MpPreference -Force -ScanAvgCPULoadFactor 1
+                                                                    default: "'50'"                 # Default   50 | Remove-MpPreference -Force -ScanAvgCPULoadFactor | Set-MpPreference -Force -ScanAvgCPULoadFactor 50
                                                             -
                                                                 function: RunInlineCode
                                                                 parameters:
@@ -3312,18 +3283,16 @@ actions:
                                                             - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
                                                         call:
                                                             -
-                                                                function: RunPowerShell
+                                                                function: SetMpPreference
                                                                 parameters:
-                                                                    # Status: Get-MpPreference | Select-Object -Property DisableCpuThrottleOnIdleScans
-                                                                    # Default: True
-                                                                    code: try { Set-MpPreference -Force -DisableCpuThrottleOnIdleScans $False } catch { Write-Warning 'Function not found'; exit 1 }
-                                                                    revertCode: try { Remove-MpPreference -Force -DisableCpuThrottleOnIdleScans } catch { Write-Warning 'Function not found'; exit 1 }
+                                                                    property: DisableCpuThrottleOnIdleScans # Status: Get-MpPreference | Select-Object -Property DisableCpuThrottleOnIdleScans
+                                                                    value: $False                           # Set:    Set-MpPreference -Force -DisableCpuThrottleOnIdleScans $False
+                                                                    default: $True                          # Default: $True | Remove-MpPreference -Force -DisableCpuThrottleOnIdleScans | Set-MpPreference -Force -DisableCpuThrottleOnIdleScans $True
                                                             -
                                                                 function: RunInlineCode
                                                                 parameters:
                                                                     code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableCpuThrottleOnIdleScans" /t REG_DWORD /d "0" /f
                                                                     revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableCpuThrottleOnIdleScans" /f 2>nul
-
                                             -
                                                 name: Disable scanning when not idle # Default OS setting
                                                 docs: 
@@ -3333,12 +3302,11 @@ actions:
                                                     - https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#scanonlyifidleenabled
                                                 call:
                                                     -
-                                                        function: RunPowerShell
+                                                        function: SetMpPreference
                                                         parameters:
-                                                            # Default: True
-                                                            # Status: Get-MpPreference | Select-Object -Property ScanOnlyIfIdleEnabled
-                                                            code: try { Set-MpPreference -Force -ScanOnlyIfIdleEnabled $True } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            revertCode: try { Remove-MpPreference -Force -ScanOnlyIfIdleEnabled } catch { Write-Warning 'Function not found'; exit 1 }
+                                                            property: ScanOnlyIfIdleEnabled # Status:   Get-MpPreference | Select-Object -Property ScanOnlyIfIdleEnabled
+                                                            value: $True                    # Set:      Set-MpPreference -Force -ScanOnlyIfIdleEnabled $True
+                                                            default: $True                  # Default:  True | Remove-MpPreference -Force -ScanOnlyIfIdleEnabled | Set-MpPreference -Force -ScanOnlyIfIdleEnabled $True
                                                     -
                                                         function: RunInlineCode
                                                         parameters:
@@ -3360,12 +3328,11 @@ actions:
                                                     - https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disableemailscanning
                                                 call:
                                                     -
-                                                        function: RunPowerShell
+                                                        function: SetMpPreference
                                                         parameters:
-                                                            # Default: True
-                                                            # Status: Get-MpPreference | Select-Object -Property DisableEmailScanning
-                                                            code: try { Set-MpPreference -Force -DisableEmailScanning $True } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            revertCode: try { Remove-MpPreference -Force -DisableEmailScanning } catch { Write-Warning 'Function not found'; exit 1 }
+                                                            property: DisableEmailScanning  # Status:   Get-MpPreference | Select-Object -Property DisableEmailScanning
+                                                            value: $True                    # Set:      Set-MpPreference -Force -DisableEmailScanning $False
+                                                            default: $True                  # Default:  True | Remove-MpPreference -Force -DisableEmailScanning | Set-MpPreference -Force -DisableEmailScanning $True
                                                     -
                                                         function: RunInlineCode
                                                         parameters:
@@ -3378,13 +3345,12 @@ actions:
                                                     - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
                                                     - https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disablescriptscanning
                                                 call:
-                                                    function: RunPowerShell
+                                                    function: SetMpPreference
                                                     parameters:
-                                                        # Default: False
-                                                        # Status: Get-MpPreference | Select-Object -Property DisableScriptScanning
-                                                        # ❌ Windows 11: Does not fail but does not set the value | ✅ Windows 10: Works as expected
-                                                        code: try { Set-MpPreference -Force -DisableScriptScanning $True } catch { Write-Warning 'Function not found'; exit 1 }
-                                                        revertCode: try { Remove-MpPreference -Force -DisableScriptScanning } catch { Write-Warning 'Function not found'; exit 1 }
+                                                        property: DisableScriptScanning # Status:   Get-MpPreference | Select-Object -Property DisableScriptScanning
+                                                        value: $True                    # Set:      Set-MpPreference -Force -DisableScriptScanning $True
+                                                                                        # ❌ Windows 11: Does not fail but does not set $True value | ✅ Windows 10: Works as expected
+                                                        default: $False                 # Default:  False | Remove-MpPreference -Force -DisableScriptScanning | Set-MpPreference -Force -DisableScriptScanning $False
                                             -
                                                 name: Disable reparse point scanning
                                                 docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableReparsePointScanning
@@ -3404,13 +3370,11 @@ actions:
                                                             code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableScanningMappedNetworkDrivesForFullScan" /t REG_DWORD /d "1" /f
                                                             revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableScanningMappedNetworkDrivesForFullScan" /f 2>nul
                                                     -
-                                                        function: RunPowerShell
+                                                        function: SetMpPreference
                                                         parameters:
-                                                            # Default: True
-                                                            # Status: Get-MpPreference | Select-Object -Property DisableScanningMappedNetworkDrivesForFullScan
-                                                            code: try { Set-MpPreference -Force -DisableScanningMappedNetworkDrivesForFullScan $True } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            revertCode: try { Remove-MpPreference -Force -DisableScanningMappedNetworkDrivesForFullScan } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            # ❌ Remove-MpPreference -DisableScanningMappedNetworkDrivesForFullScan fails on Windows 10 with NamedParameterNotFound, successful on Windows 11
+                                                            property: DisableScanningMappedNetworkDrivesForFullScan # Status:   Get-MpPreference | Select-Object -Property DisableScanningMappedNetworkDrivesForFullScan
+                                                            value: $True                                            # Set:      Set-MpPreference -Force -DisableScanningMappedNetworkDrivesForFullScan $False
+                                                            default: $True                                          # Default:  True | Remove-MpPreference -Force -DisableScanningMappedNetworkDrivesForFullScan | Set-MpPreference -Force -DisableScanningMappedNetworkDrivesForFullScan $True
                                             -
                                                 name: Disable scanning network files
                                                 docs:
@@ -3425,12 +3389,11 @@ actions:
                                                             code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableScanningNetworkFiles" /t REG_DWORD /d "1" /f
                                                             revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableScanningNetworkFiles" /f 2>nul
                                                     -
-                                                        function: RunPowerShell
+                                                        function: SetMpPreference
                                                         parameters:
-                                                            # Default: False
-                                                            # Status: Get-MpPreference | Select-Object -Property DisableScanningNetworkFiles
-                                                            code: try { Set-MpPreference -Force -DisableScanningNetworkFiles $True } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            revertCode: try { Remove-MpPreference -Force -DisableScanningNetworkFiles } catch { Write-Warning 'Function not found'; exit 1 }
+                                                            property: DisableScanningNetworkFiles   # Status:   Get-MpPreference | Select-Object -Property DisableScanningNetworkFiles
+                                                            value: $True                            # Set:      Set-MpPreference -Force -DisableScanningNetworkFiles $True
+                                                            default: $False                         # Default:  False | Remove-MpPreference -Force -DisableScanningNetworkFiles | Set-MpPreference -Force -DisableScanningNetworkFiles $False
                                             -
                                                 name: Disable scanning packed executables
                                                 docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisablePackedExeScanning
@@ -3453,12 +3416,11 @@ actions:
                                                                     code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableArchiveScanning" /t REG_DWORD /d "1" /f
                                                                     revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableArchiveScanning" /f 2>nul
                                                             -
-                                                                function: RunPowerShell
+                                                                function: SetMpPreference
                                                                 parameters:
-                                                                    # Default: False
-                                                                    # Status: Get-MpPreference | Select-Object -Property DisableArchiveScanning
-                                                                    code: try { Set-MpPreference -Force -DisableArchiveScanning $True } catch { Write-Warning 'Function not found'; exit 1 }
-                                                                    revertCode: try { Remove-MpPreference -Force -DisableArchiveScanning } catch { Write-Warning 'Function not found'; exit 1 }
+                                                                    property: DisableArchiveScanning    # Status:   Get-MpPreference | Select-Object -Property DisableArchiveScanning
+                                                                    value: $True                        # Set:      Set-MpPreference -Force -DisableArchiveScanning $True
+                                                                    default: $False                     # Default:  False | Remove-MpPreference -Force -DisableArchiveScanning | Set-MpPreference -Force -DisableArchiveScanning $False
                                                     -
                                                         name: Limit depth for scanning archive files to minimum
                                                         docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_ArchiveMaxDepth
@@ -3484,12 +3446,11 @@ actions:
                                                             code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableRemovableDriveScanning" /t REG_DWORD /d "1" /f
                                                             revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "DisableRemovableDriveScanning" /f 2>nul
                                                     -
-                                                        function: RunPowerShell
+                                                        function: SetMpPreference
                                                         parameters:
-                                                            # Default: True
-                                                            # Status: Get-MpPreference | Select-Object -Property DisableRemovableDriveScanning
-                                                            code: try { Set-MpPreference -Force -DisableRemovableDriveScanning $True } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            revertCode: try { Remove-MpPreference -Force -DisableRemovableDriveScanning } catch { Write-Warning 'Function not found'; exit 1 }
+                                                            property: DisableRemovableDriveScanning # Status:   Get-MpPreference | Select-Object -Property DisableRemovableDriveScanning
+                                                            value: $True                            # Set:      Set-MpPreference -Force -DisableRemovableDriveScanning $False
+                                                            default: $True                          # Default:  True | Remove-MpPreference -Force -DisableRemovableDriveScanning | Set-MpPreference -Force -DisableRemovableDriveScanning $True
                                     -
                                         category: Disable auto-scans
                                         children:
@@ -3511,12 +3472,11 @@ actions:
                                                             code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "ScheduleDay" /t REG_DWORD /d "8" /f
                                                             revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "ScheduleDay" /f 2>nul
                                                     -
-                                                        function: RunPowerShell
+                                                        function: SetMpPreference
                                                         parameters:
-                                                            # Default: 0 (Every Day)
-                                                            # Status: Get-MpPreference | Select-Object -Property ScanScheduleDay
-                                                            code: try { Set-MpPreference -Force -ScanScheduleDay 8  } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            revertCode: try { Remove-MpPreference -Force -ScanScheduleDay } catch { Write-Warning 'Function not found'; exit 1 }
+                                                            property: ScanScheduleDay   # Status:   Get-MpPreference | Select-Object -Property ScanScheduleDay
+                                                            value: "'8'"                # Set:      Set-MpPreference -Force -ScanScheduleDay '8'
+                                                            default: "'0'"              # Default:  0 (Every Day) | Remove-MpPreference -Force -ScanScheduleDay | Set-MpPreference -Force -ScanScheduleDay '0'
                                             -
                                                 name: Disable randomizing scheduled task times
                                                 docs:
@@ -3531,12 +3491,11 @@ actions:
                                                             code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender" /v "RandomizeScheduleTaskTimes" /t REG_DWORD /d "0" /f
                                                             revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender" /v "RandomizeScheduleTaskTimes" /f 2>nul
                                                     -
-                                                        function: RunPowerShell
+                                                        function: SetMpPreference
                                                         parameters:
-                                                            # Default is True
-                                                            # Status: Get-MpPreference | Select-Object -Property RandomizeScheduleTaskTimes
-                                                            code: try { Set-MpPreference -Force -RandomizeScheduleTaskTimes $False } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            revertCode: try { Remove-MpPreference -Force -RandomizeScheduleTaskTimes } catch { Write-Warning 'Function not found'; exit 1 }
+                                                            property: RandomizeScheduleTaskTimes    # Status:   Get-MpPreference | Select-Object -Property RandomizeScheduleTaskTimes
+                                                            value: $False                           # Set:      Set-MpPreference -Force -RandomizeScheduleTaskTimes $False
+                                                            default: $True                          # Default:  True | Remove-MpPreference -Force -RandomizeScheduleTaskTimes | Set-MpPreference -Force -RandomizeScheduleTaskTimes $True
                                             -
                                                 name: Disable scheduled full-scans
                                                 docs:
@@ -3553,14 +3512,12 @@ actions:
                                                             code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "ScanParameters" /t REG_DWORD /d "1" /f
                                                             revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "ScanParameters" /f 2>nul
                                                     -
-                                                        function: RunPowerShell
+                                                        function: SetMpPreference
                                                         parameters:
-                                                            # Default: 1
-                                                            # Status: Get-MpPreference | Select-Object -Property ScanParameters
-                                                            code: try { Set-MpPreference -Force -ScanParameters 1 } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            # revertCode: try { Remove-MpPreference -Force -ScanParameters } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            #   ❌  Remove-MpPreference with -ScanParameters fails due to a buggy behavior where it tries to set it to True on Windows 10 and 11
-                                                            #       Commenting out revert code as this script is setting the default behavior anyway.
+                                                            property: ScanParameters    # Status:   Get-MpPreference | Select-Object -Property ScanParameters
+                                                            value: "'1'"                # Set:      Set-MpPreference -Force -ScanParameters '1'
+                                                            default: "'1'"              # Default:  1 | Remove-MpPreference -Force -ScanParameters | Set-MpPreference -Force -ScanParameters '1'
+                                                            setDefaultOnWindows11: true # ❌ Remove-MpPreference with -ScanParameters fails due to a buggy behavior where it tries to set it to True on Windows 11
                                             -
                                                 name: Limit how many times quick scans run per day
                                                 docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_QuickScanInterval
@@ -3604,15 +3561,14 @@ actions:
                                                     -
                                                         function: RunInlineCode
                                                         parameters:
-                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "SignatureUpdateCatchupInterval" /t REG_DWORD /d 4294967295 /f
+                                                            code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "SignatureUpdateCatchupInterval" /t REG_DWORD /d "0" /f
                                                             revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "SignatureUpdateCatchupInterval" /f 2>nul
                                                     -
-                                                        function: RunPowerShell
+                                                        function: SetMpPreference
                                                         parameters:
-                                                            # Default: 1
-                                                            # Status: Get-MpPreference | Select-Object -Property SignatureUpdateCatchupInterval
-                                                            code: try { Set-MpPreference -Force -SignatureUpdateCatchupInterval 0 } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            revertCode: try { Remove-MpPreference -Force -SignatureUpdateCatchupInterval } catch { Write-Warning 'Function not found'; exit 1 }
+                                                            property: SignatureUpdateCatchupInterval    # Status:   Get-MpPreference | Select-Object -Property SignatureUpdateCatchupInterval
+                                                            value: "'0'"                                # Set:      Set-MpPreference -Force -SignatureUpdateCatchupInterval '0'
+                                                            default: "'1'"                              # Default:  1 | Remove-MpPreference -Force -SignatureUpdateCatchupInterval | Set-MpPreference -Force -SignatureUpdateCatchupInterval '1'
                                             -
                                                 name: Limit spyware security intelligence (signature) updates  # default is one day, recommended is 7 days
                                                 # Maximize period when spyware security intelligence (signature) is considered up-to-dates
@@ -3643,12 +3599,11 @@ actions:
                                                             code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "DisableUpdateOnStartupWithoutEngine" /t REG_DWORD /d 1 /f
                                                             revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "DisableUpdateOnStartupWithoutEngine" /f 2>nul
                                                     -
-                                                        function: RunPowerShell
+                                                        function: SetMpPreference
                                                         parameters:
-                                                            # Default: False
-                                                            # Status: Get-MpPreference | Select-Object -Property SignatureDisableUpdateOnStartupWithoutEngine
-                                                            code: try { Set-MpPreference -Force -SignatureDisableUpdateOnStartupWithoutEngine $True } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            revertCode: try { Remove-MpPreference -Force -SignatureDisableUpdateOnStartupWithoutEngine } catch { Write-Warning 'Function not found'; exit 1 }
+                                                            property: SignatureDisableUpdateOnStartupWithoutEngine  # Status:   Get-MpPreference | Select-Object -Property SignatureDisableUpdateOnStartupWithoutEngine
+                                                            value: $True        # Set:      Set-MpPreference -Force -SignatureDisableUpdateOnStartupWithoutEngine $True
+                                                            default: $False     # Default:  False | Remove-MpPreference -Force -SignatureDisableUpdateOnStartupWithoutEngine | Set-MpPreference -Force -SignatureDisableUpdateOnStartupWithoutEngine $False
                                             -
                                                 name: Disable automatically checking security intelligence (signature) updates # Already disabled by default
                                                 docs:
@@ -3666,12 +3621,11 @@ actions:
                                                             code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "ScheduleDay" /t REG_DWORD /d "8" /f
                                                             revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "ScheduleDay" /f 2>nul
                                                     -
-                                                        function: RunPowerShell
+                                                        function: SetMpPreference
                                                         parameters:
-                                                            # Default: 8
-                                                            # Status: Get-MpPreference | Select-Object -Property SignatureScheduleDay
-                                                            code: try { Set-MpPreference -Force -SignatureScheduleDay "8" } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            revertCode: try { Remove-MpPreference -Force -SignatureScheduleDay } catch { Write-Warning 'Function not found'; exit 1 }
+                                                            property: SignatureScheduleDay  # Status:   Get-MpPreference | Select-Object -Property SignatureScheduleDay
+                                                            value: "'8'"                    # Set:      Set-MpPreference -Force -SignatureScheduleDay '8'
+                                                            default: "'8'"                  # Default:  1 | Remove-MpPreference -Force -SignatureScheduleDay | Set-MpPreference -Force -SignatureScheduleDay '8'
                                             -
                                                 name: Limit update checks for security intelligence (signature) updates
                                                 docs:
@@ -3689,12 +3643,11 @@ actions:
                                                             code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "SignatureUpdateInterval" /t REG_DWORD /d 24 /f
                                                             revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Signature Updates" /v "SignatureUpdateInterval" /f 2>nul
                                                     -
-                                                        function: RunPowerShell
+                                                        function: SetMpPreference
                                                         parameters:
-                                                            # Default: 0
-                                                            # Status: Get-MpPreference | Select-Object -Property SignatureUpdateInterval
-                                                            code: try { Set-MpPreference -Force -SignatureUpdateInterval "24" } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            revertCode: try { Remove-MpPreference -Force -SignatureUpdateInterval } catch { Write-Warning 'Function not found'; exit 1 }
+                                                            property: SignatureUpdateInterval   # Status:   Get-MpPreference | Select-Object -Property SignatureUpdateInterval
+                                                            value: "'24'"                       # Set:      Set-MpPreference -Force -SignatureUpdateInterval '24'
+                                                            default: "'0'"                      # Default:  0 | Remove-MpPreference -Force -SignatureUpdateInterval | Set-MpPreference -Force -SignatureUpdateInterval '0'
                                             -
                                                 category: Disable alternate definition updates
                                                 children:
@@ -3714,60 +3667,58 @@ actions:
                                             # Managing with MpPreference module:
                                             - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
                                         call:
-                                            function: RunPowerShell
+                                            function: SetMpPreference
                                             parameters:
-                                                # Default: False
-                                                # Status: Get-MpPreference | Select-Object -Property DisableGradualRelease
-                                                code: try { Set-MpPreference -Force -DisableGradualRelease $True } catch { Write-Warning 'Function not found'; exit 1 }
-                                                revertCode: try { Remove-MpPreference -Force -DisableGradualRelease } catch { Write-Warning 'Function not found'; exit 1 }
+                                                # ❌ Not generally supported on Windows (before 4.18.2106.5 Defender platform)
+                                                property: DisableGradualRelease # Status:   Get-MpPreference | Select-Object -Property DisableGradualRelease
+                                                value: $True                    # Set:      Set-MpPreference -Force -DisableGradualRelease $True
+                                                default: $False                 # Default: False | Remove-MpPreference -Force -DisableGradualRelease
+
                                     -
                                         name: Limit Defender engine updates to those that complete gradual release cycle
                                         docs:
                                             # Managing with MpPreference module:
                                             - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
                                         call:
-                                            function: RunPowerShell
+                                            function: SetMpPreference
                                             parameters:
-                                                # Default: 0 (NotConfigured)
-                                                # Status: Get-MpPreference | Select-Object -Property EngineUpdatesChannel
-                                                # Valid values:
-                                                #   0 = 'NotConfigured' (default), 'Beta', 'Broad', 'Preview', 'Staged'
-                                                #   ❌ Some options are not supported on Windows 11: 'Broad', 'Staged'
-                                                code: try { Set-MpPreference -Force -EngineUpdatesChannel 'Broad' } catch { Write-Warning 'Function not found'; exit 1 }
-                                                revertCode: try { Remove-MpPreference -Force -EngineUpdatesChannel } catch { Write-Warning 'Function not found'; exit 1 }
+                                                # ❌ Not generally supported on Windows (before 4.18.2106.5 Defender platform)
+                                                property: EngineUpdatesChannel  # Status:   Get-MpPreference | Select-Object -Property EngineUpdatesChannel
+                                                value: "'Broad'"                # Set:      Set-MpPreference -Force -EngineUpdatesChannel 'Broad'
+                                                                                # Valid values:
+                                                                                #   0 = 'NotConfigured' (default), 'Beta', 'Broad', 'Preview', 'Staged'
+                                                                                #   ❌ Windows 11 21H2 supports only 'NotConfigured', 'Beta', 'Preview' but not 'Broad', 'Staged'
+                                                default: "'NotConfigured'"      # Default: 0 (NotConfigured) | Remove-MpPreference -Force -EngineUpdatesChannel | Set-MpPreference -Force -EngineUpdatesChannel "'NotConfigured'"
                                     -
                                         name: Limit Defender platform updates to those that complete gradual release cycle
                                         docs:
                                             # Managing with MpPreference module:
                                             - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
                                         call:
-                                            function: RunPowerShell  
+                                            function: SetMpPreference
                                             parameters:
-                                                # Default: 0 (NotConfigured)
-                                                # Status: Get-MpPreference | Select-Object -Property PlatformUpdatesChannel
-                                                # Valid values:
-                                                #   0 = 'NotConfigured' (default), 'Beta', 'Broad', 'Preview', 'Staged'
-                                                #   ❌ Some options are not supported on Windows 11: 'Broad', 'Staged'
-                                                code: try { Set-MpPreference -Force -PlatformUpdatesChannel 'Broad' } catch { Write-Warning 'Function not found'; exit 1 }
-                                                revertCode: try { Remove-MpPreference -Force -PlatformUpdatesChannel } catch { Write-Warning 'Function not found'; exit 1 }
+                                                # ❌ Not generally supported on Windows (before 4.18.2106.5 Defender platform)
+                                                property: PlatformUpdatesChannel    # Status:   Get-MpPreference | Select-Object -Property PlatformUpdatesChannel
+                                                value: "'Broad'"                    # Set:      Set-MpPreference -Force -PlatformUpdatesChannel 'Broad'
+                                                                                    # Valid values:
+                                                                                    #   0 = 'NotConfigured' (default), 'Beta', 'Broad', 'Preview', 'Staged'
+                                                                                    #   ❌ Windows 11 21H2 supports only 'NotConfigured', 'Beta', 'Preview' but not 'Broad', 'Staged'
+                                                default: "'NotConfigured'"          # Default: 0 (NotConfigured) | Remove-MpPreference -Force -PlatformUpdatesChannel | Set-MpPreference -Force -PlatformUpdatesChannel "'NotConfigured'"
                                     - 
                                         name: Limit Defender definition updates to those that complete gradual release cycle
                                         docs:
                                             # Managing with MpPreference module:
                                             - https://docs.microsoft.com/en-us/powershell/module/defender/set-mppreference
                                         call:
-                                            function: RunPowerShell
+                                            # ❌ Not generally supported on Windows (before 4.18.2106.5 Defender platform)
+                                            function: SetMpPreference
                                             parameters:
-                                                # Default: 0 (NotConfigured)
-                                                # Status: Get-MpPreference | Select-Object -Property DefinitionUpdatesChannel
-                                                # Valid values: 'NotConfigured', 'Beta', 'Preview'
-                                                # Parameter "DefinitionUpdatesChannel"
-                                                #   ❌ Not generally supported (Windows 10 21H1, Windows 11 21H2)
-                                                #   Its former name was SignaturesUpdatesChannel
-                                                #       Supported since Windows 11 21H2 with parameters "NotConfigured", "Beta", "Preview"
-                                                #       Not supported on Windows 10 21H1
-                                                code: try { Set-MpPreference -Force -DefinitionUpdatesChannel 'Broad' } catch { Write-Warning 'Function not found'; exit 1 }
-                                                revertCode: try { Remove-MpPreference -Force -DefinitionUpdatesChannel } catch { Write-Warning 'Function not found'; exit 1 }
+                                                property: DefinitionUpdatesChannel  # Status:   Get-MpPreference | Select-Object -Property DefinitionUpdatesChannel
+                                                                                    # Its former name was "SignaturesUpdatesChannel"
+                                                value: "'Broad'"                    # Set:      Set-MpPreference -Force -DefinitionUpdatesChannel 'Broad'
+                                                                                    #   0 = 'NotConfigured' (default), 'Beta', Preview' 'Broad', 'Staged'
+                                                                                    #   ❌ Windows 11 21H2 supports only 'NotConfigured', 'Beta', 'Preview' but not 'Broad', 'Staged'
+                                                default: "'NotConfigured'"          # Default: 0 (NotConfigured) | Remove-MpPreference -Force -DefinitionUpdatesChannel | Set-MpPreference -Force -DefinitionUpdatesChannel "'NotConfigured'"
                             - 
                                 category: Disable Windows Defender reporting
                                 children:
@@ -3858,12 +3809,11 @@ actions:
                                                     - https://powershell.one/wmi/root/microsoft/windows/defender/msft_mppreference#disableprivacymode
                                                 call:
                                                     -
-                                                        function: RunPowerShell
+                                                        function: SetMpPreference
                                                         parameters:
-                                                            # Default: False
-                                                            # Status: Get-MpPreference | Select-Object -Property DisablePrivacyMode
-                                                            code: try { Set-MpPreference -Force -DisablePrivacyMode $True } catch { Write-Warning 'Function not found'; exit 1 }
-                                                            revertCode: try { Remove-MpPreference -Force -DisablePrivacyMode } catch { Write-Warning 'Function not found'; exit 1 }
+                                                            property: DisablePrivacyMode    # Status:   Get-MpPreference | Select-Object -Property DisablePrivacyMode
+                                                            value: $True                    # Set:      Set-MpPreference -Force -DisablePrivacyMode $True
+                                                            default: $False                 # Default:  False | Remove-MpPreference -Force -DisablePrivacyMode | Set-MpPreference -Force -DisablePrivacyMode $False
                                                     -
                                                         function: RunInlineCodeAsTrustedInstaller # Otherwise we get "ERROR: Access is denied." (>= 20H2)
                                                         parameters:
@@ -6467,4 +6417,131 @@ functions:
                         Write-Host "Enabled `"$name`", may require restarting your computer."
                     } else {
                         Write-Error "Registry key at `"$regKey`" does not exist"
+                    }
+    -
+        name: SetMpPreference
+        # Configures preferences for Windows Defender scans and updates.
+        parameters:
+            -  name: property
+            -  name: value
+            -  
+                # When provided, it sets defaults using `Set-MpPreference`.
+                # Used by default in Windows 10 as `Remove-MpPreference` cmdlet is very limited/poor in Windows 10.
+                # Ignored by default in Windows 11 with providing a value for `setDefaultOnWindows11`
+                name: default
+                optional: true
+            - 
+                # When reverting in Windows 11, `Set-MpPreference` is called instead of `Remove-MpPreference`
+                # Should be used in cases where `Remove-MpPreference` cmdlet is not setting expected values in Windows 11.
+                name: setDefaultOnWindows11
+                optional: true
+        call:
+            function: RunPowerShell
+            parameters:
+                # Unsupported arguments ->
+                #   Skips when error contains "Cannot convert", this happens e.g. when trying to set `PlatformUpdatesChannel`,
+                #   `EngineUpdatesChannel`, `DefinitionUpdatesChannel` to `Broad`. `Broad` is not supported on all platforms
+                #   and throws e.g. with:
+                #       `Cannot process argument transformation on parameter 'EngineUpdatesChannel'. Cannot convert value
+                #       "Broad" to type "Microsoft.PowerShell.Cmdletization.GeneratedTypes.MpPreference.UpdatesChannelType".
+                #       Error: "Unable to match the identifier name Broad to a valid enumerator name. Specify one of the
+                #       following enumerator names and try again: NotConfigured, Beta, Preview"`
+                code: |-
+                    $propertyName = '{{ $property }}'
+                    $value = {{ $value }}
+                    if((Get-MpPreference -ErrorAction Ignore).$propertyName -eq $value) {
+                        Write-Host "Skipping. `"$propertyName`" is already `"$value`" as desired."
+                        exit 0
+                    }
+                    $command = Get-Command 'Set-MpPreference' -ErrorAction Ignore
+                    if (!$command) {
+                        Write-Warning 'Skipping. Command not found: "Set-MpPreference".'
+                        exit 0
+                    }
+                    if(!$command.Parameters.Keys.Contains($propertyName)) {
+                        Write-Host "Skipping. `"$propertyName`" is not supported for `"$($command.Name)`"."
+                        exit 0
+                    }
+                    try {
+                        Invoke-Expression "$($command.Name) -Force -$propertyName `$value -ErrorAction Stop"
+                        Set-MpPreference -Force -{{ $property }} $value -ErrorAction Stop
+                        Write-Host "Successfully set `"$propertyName`" to `"$value`"."
+                        exit 0
+                    } catch {
+                        if ($_.FullyQualifiedErrorId -like '*0x800106ba*') {
+                            Write-Warning "Cannot $($command.Name): Defender is not running. Try to enable it (revert) -> reboot -> re-run this?"
+                            exit 0
+                        } elseif (($_ | Out-String) -like '*Cannot convert*') {
+                            Write-Host "Skipping. Argument `"$value`" for property `"$propertyName`" is not supported for `"$($command.Name)`"."
+                            exit 0
+                        } else {
+                            Write-Error "Failed to set using $($command.Name): $_"
+                            exit 1
+                        }
+                    }
+                # `Remove-MpPreference` is different in Windows 11 / 10
+                #   Windows 11 and 10 have different revert behavior which is caused by different `Remove-MpPreference` cmdlet versions used
+                #       Windows 10 version: https://docs.microsoft.com/en-us/powershell/module/defender/remove-mppreference?view=windowsserver2019-ps
+                #       Windows 11 version: https://docs.microsoft.com/en-us/powershell/module/defender/remove-mppreference?view=windowsserver2022-ps
+                #   On Windows 11:
+                #       - By default, `Remove-MpPreference` sets default values for settings for all cases.
+                #       - `setDefaultOnWindows11` parameter changes this behavior to set the default value using `Set-MpPreference`
+                #   On Windows 10:
+                #       - If `default` argument is is provided, it's set using `Set-MpPreference`
+                #       - `default` argument should not be provided if `Remove-MpPreference` is suppored in Windows 10,
+                revertCode: |-
+                    $propertyName = '{{ $property }}'
+                    {{ with $default }} $defaultValue = {{ . }} {{ end }}
+                    $setDefaultOnWindows10 = {{ with $default }} $true # {{ end }} $false
+                    $setDefaultOnWindows11 = {{ with $setDefaultOnWindows11 }} $true # {{ end }} $false
+                    # ------ Set-MpPreference ------
+                    if(($setDefaultOnWindows10 -and [System.Environment]::OSVersion.Version.Major -lt 11) `
+                            -or ($setDefaultOnWindows11 -and [System.Environment]::OSVersion.Version.Major -eq 11)) {
+                        if((Get-MpPreference -ErrorAction Ignore).$propertyName -eq $defaultValue) {
+                            Write-Host "Skipping. `"$propertyName`" is already configured as desired `"$defaultValue`"."
+                            exit 0
+                        }
+                        $command = Get-Command 'Set-MpPreference' -ErrorAction Ignore
+                        if (!$command) {
+                            Write-Warning 'Skipping. Command not found: "Set-MpPreference".'
+                            exit 1
+                        }
+                        if(!$command.Parameters.Keys.Contains($propertyName)) {
+                            Write-Host "Skipping. `"$propertyName`" is not supported for `"$($command.Name)`"."
+                            exit 0
+                        }
+                        try {
+                            Invoke-Expression "$($command.Name) -Force -$propertyName `$defaultValue -ErrorAction Stop"
+                            Write-Host "Successfully restored `"$propertyName`" to its default `"$defaultValue`"."
+                            exit 0
+                        } catch {
+                            if ($_.FullyQualifiedErrorId -like '*0x800106ba*') {
+                                Write-Warning "Cannot $($command.Name): Defender is not running. Try to enable it (revert) -> reboot -> re-run this?"
+                            } else {
+                                Write-Error "Failed to set using $($command.Name): $_"
+                            }
+                            exit 1
+                        }
+                    }
+                    # ------ Remove-MpPreference ------
+                    $command = Get-Command 'Remove-MpPreference' -ErrorAction Ignore
+                    if (!$command) {
+                        Write-Warning 'Skipping. Command not found: "Remove-MpPreference".'
+                        exit 1
+                    }
+                    if(!$command.Parameters.Keys.Contains($propertyName)) {
+                        Write-Host "Skipping. `"$propertyName`" is not supported for `"$($command.Name)`"."
+                        exit 0
+                    }
+                    try {
+                        Invoke-Expression "$($command.Name) -Force -$propertyName -ErrorAction Stop"
+                        Write-Host "Successfully restored `"$propertyName`" to its default."
+                        exit 0
+                    } catch {
+                        if ($_.FullyQualifiedErrorId -like '*0x800106ba*') {
+                            Write-Warning "Cannot $($command.Name): Defender is not running. Try to enable it (revert) -> reboot -> re-run this?"
+                        } else {
+                            Write-Error "Failed to set using $($command.Name): $_"
+                        }
+                        exit 1
                     }
