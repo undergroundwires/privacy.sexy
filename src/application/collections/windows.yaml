@@ -1623,7 +1623,7 @@ actions:
                                         reg add "HKLM\SOFTWARE\Wow6432Node\Microsoft\VSCommon\15.0\SQM" /v "OptIn" /t REG_DWORD /d 0 /f
                                         reg add "HKLM\SOFTWARE\Wow6432Node\Microsoft\VSCommon\16.0\SQM" /v "OptIn" /t REG_DWORD /d 0 /f
                                     )
-                                revertCode:
+                                revertCode: |-
                                     if %PROCESSOR_ARCHITECTURE%==x86 ( REM is 32 bit?
                                         reg add "HKLM\SOFTWARE\Microsoft\VSCommon\14.0\SQM" /v "OptIn" /t REG_DWORD /d 1 /f
                                         reg add "HKLM\SOFTWARE\Microsoft\VSCommon\15.0\SQM" /v "OptIn" /t REG_DWORD /d 1 /f
@@ -4327,7 +4327,7 @@ actions:
                     if not %PROCESSOR_ARCHITECTURE%==x86 ( REM is 64 bit?
                         reg delete "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5}" /f
                     )
-                revertCode:
+                revertCode: |-
                     reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer" /v "ShowRecent" /d "1" /t "REG_DWORD" /f
                     reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\HomeFolderDesktop\NameSpace\DelegateFolders\{3134ef9c-6b18-4996-ad04-ed5912e00eb5}" /f
                     if not %PROCESSOR_ARCHITECTURE%==x86 ( REM is 64 bit?
@@ -6161,11 +6161,11 @@ functions:
         call:
             function: RunPowerShell
             parameters:
-                code:
-                    $jsonfile = \"$env:APPDATA\Code\User\settings.json\";
+                code: |-
+                    $jsonfile = \"$env:APPDATA\Code\User\settings.json\"
                     if (!(Test-Path $jsonfile -PathType Leaf)) {
-                        Write-Host \"No updates. Settings file was not at $jsonfile\";
-                        exit 0;
+                        Write-Host \"No updates. Settings file was not at $jsonfile\"
+                        exit 0
                     }
                     $json = Get-Content $jsonfile | Out-String | ConvertFrom-Json
                     $json | Add-Member -Type NoteProperty -Name '{{ $setting }}' -Value {{ $powerShellValue }} -Force
