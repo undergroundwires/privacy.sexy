@@ -5441,8 +5441,38 @@ actions:
                                             parameters:
                                                 packageName: Microsoft.Windows.CapturePicker
                                     -
-                                        name: Cloud Experience Host app (breaks Microsoft cloud/corporate sign in) # Allows to connect to corporate domains or Microsoft cloud based services
-                                        recommend: strict
+                                        name: Cloud Experience Host app (breaks Windows Hello password/PIN sign-in options, and Microsoft cloud/corporate sign in)
+                                        docs:
+                                            # Allows to connect to corporate domains or Microsoft cloud based services
+                                            # ❗️ Uninstalling it breaks:
+                                            #   - Sign-in to Windows using Microsoft account (cloud-based sign-in)
+                                            #       https://github.com/undergroundwires/privacy.sexy/issues/99
+                                            #       https://github.com/undergroundwires/privacy.sexy/issues/64
+                                            #   - Password and PIN sign-in options in Settings > Sign-in Options
+                                            #       https://github.com/undergroundwires/privacy.sexy/issues/67
+                                            # Its functionalites include
+                                            #   - Microsoft accounts
+                                            #       Used to connect Microsoft accounts
+                                            - https://docs.microsoft.com/en-us/windows/client-management/mdm/applocker-csp
+                                            - https://answers.microsoft.com/en-us/windows/forum/all/cant-login-to-microsoft-account-because-of-cloud/0861c72d-3621-45bc-bae0-67d13121f526
+                                            #   - Corporate login
+                                            #       Cloud Experience Host is an application used while joining the workplace environment or
+                                            #       Azure AD for rendering the experience when collecting your company-provided credentials.
+                                            #       Once you enroll your device to your workplace environment or Azure AD, your organization
+                                            #       will be able to manage your PC and collect information about you (including your location).
+                                            #       It might add or remove apps or content, change settings, disable features, prevent you
+                                            #       from removing your company account, or reset your PC.
+                                            - https://docs.microsoft.com/en-us/windows/security/identity-protection/hello-for-business/hello-how-it-works-technology#cloud-experience-host
+                                            #   - PIN/Biometric/Device authentication
+                                            #       Used for Windows Hello, that allows authentication through device, or a biometric or PIN code
+                                            #       Allows joining a machine to Azure AD or on-premises AD domain
+                                            - https://docs.microsoft.com/en-us/windows/security/identity-protection/hello-for-business/hello-how-it-works-provisioning
+                                            #   - OOBE troubleshooting
+                                            #       It also helps to detect blocking errors occurring during OOBE (Out-of-box experience) flow
+                                            #       OOBE consists of a series of screens for license agreement, internet connection, loggining in etc.
+                                            - https://docs.microsoft.com/en-us/windows-hardware/customize/desktop/customize-oobe # More about OOBE
+                                            - https://docs.microsoft.com/en-us/windows/privacy/required-windows-11-diagnostic-events-and-fields#cloud-experience-host-events
+                                        # recommend: strict (Unrecommended until better warning mechanism is implemented)
                                         call:
                                             function: UninstallSystemApp
                                             parameters:
