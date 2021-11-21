@@ -425,7 +425,7 @@ actions:
                             -
                                 name: Clear WUAgent (Windows Update History) logs
                                 docs: https://social.technet.microsoft.com/Forums/ie/en-US/f5744a18-d4ca-4631-8324-878b9225251d/windowssoftwaredistribution-folder-cleanup-automation?forum=winserverwsus
-                                code: |-
+                                code: |- # `sc queryex` output is same in every OS language
                                     setlocal EnableDelayedExpansion 
                                         SET /A wuau_service_running=0
                                         SC queryex "wuauserv"|Find "STATE"|Find /v "RUNNING">Nul||(
@@ -532,7 +532,7 @@ actions:
                 name: Clear (Reset) Network Data Usage
                 recommend: standard
                 docs: https://www.windowslifestyle.com/reset-data-usage-tool-reset-network-data-usage-windows-10/
-                code: |-
+                code: |- # `sc queryex` output is same in every OS language
                     setlocal EnableDelayedExpansion 
                         SET /A dps_service_running=0
                         SC queryex "DPS"|Find "STATE"|Find /v "RUNNING">Nul||(
@@ -5990,6 +5990,7 @@ actions:
                 name: Change NTP (time) server to pool.ntp.org
                 docs: https://www.pool.ntp.org/en/use.html
                 recommend: strict
+                 # `sc queryex` output is same in every OS language
                 code: |-
                     :: Configure time source
                     w32tm /config /syncfromflags:manual /manualpeerlist:"0.pool.ntp.org 1.pool.ntp.org 2.pool.ntp.org 3.pool.ntp.org"
@@ -6262,29 +6263,36 @@ functions:
         call:
             function: RunPowerShell
             parameters:
-                # schtasks.exe
-                #   PowerShell commands (Unregister-ScheduledTask and Get-ScheduledTask) sometimes fail to find existing tasks.
+                # PowerShell commands (`Unregister-ScheduledTask` and `Get-ScheduledTask`) sometimes fail to find existing tasks.
+                #   Seen e.g. on Windows 11 when reverting scripts after executing them and reboot.
                 #   They are seen to throw different exceptions:
-                #       - `ObjectNotFound: (MSFT_ScheduledTask:Root/Microsoft/...T_ScheduledTask)` with `HRESULT 0x80070002`
+                #       - `Unregister-ScheduledTask : The system cannot find the file specified`
+                #           `ObjectNotFound: (MSFT_ScheduledTask:Root/Microsoft/...T_ScheduledTask)` with `HRESULT 0x80070002`
                 #       - `No MSFT_ScheduledTask objects found with property 'TaskName'`
-                #       - `The system cannot find the file specified`
-                #   So schtasks.exe is used instead of those:
-                #       >   `schtasks.exe /delete /tn "$taskName" /f 2>&1 | Out-Null`
-                #           Replaces `Unregister-ScheduledTask $taskName -Confirm:$false`
-                #       >   `"$(schtasks.exe /query /tn "$taskName" 2>$null)".Contains('Running')`
-                #           Replaces `Get-ScheduledTask -TaskName $taskName).State -eq 'Running'`
+                #       - Because task is already running but `Get-ScheduledTask` cannot find it it throws:
+                #           `Failed to execute with exit code: 267009`
+                #   Solution
+                #       Checking if task is running:
+                #           - ❌ Not using `$(schtasks.exe /query /tn "$taskName" 2>$null)".Contains('Running')` because it outputs
+                #                different text (not always "Running") in German/English versions.
+                #           - ❌ Not using `(Get-ScheduledTask $taskName -ErrorAction Ignore).State -eq 'Running'
+                #                because `Get-ScheduledTask `sometimes fails.
+                #           - ✅ Using `(Get-ScheduledTaskInfo $taskName).LastTaskResult -eq 267009` where "267009" indicates running.
+                #       Deleting existing task:
+                #           - ❌  Not using `Unregister-ScheduledTask $taskName -Confirm:$false` because it sometimes fails with `0x80070002`
+                #           - ✅ Using `schtasks.exe /delete /tn "$taskName" /f` with additional `| Out-Null` or `2>&1 | Out-Null`
+                #                to suppress errors.
                 code: |-
                     $command = '{{ $code }}'
                     $trustedInstallerSid = [System.Security.Principal.SecurityIdentifier]::new('S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464')
                     $trustedInstallerName = $trustedInstallerSid.Translate([System.Security.Principal.NTAccount])
                     $streamOutFile = New-TemporaryFile
                     $batchFile = New-TemporaryFile
-                    $powerShellFile = New-TemporaryFile
                     try {
                         $batchFile = Rename-Item $batchFile "$($batchFile.BaseName).bat" -PassThru
                         "@echo off`r`n$command`r`nexit 0" | Out-File $batchFile -Encoding ASCII
                         $taskName = 'privacy.sexy invoke'
-                        schtasks.exe /delete /tn "$taskName" /f 2>&1 | Out-Null # Clean if something went wrong before
+                        schtasks.exe /delete /tn "$taskName" /f 2>&1 | Out-Null # Clean if something went wrong before, suppress any output
                         $taskAction = New-ScheduledTaskAction               `
                             -Execute 'cmd.exe'                              `
                             -Argument "cmd /c `"$batchFile`" > $streamOutFile 2>&1"
@@ -6301,7 +6309,7 @@ functions:
                             $scheduleService.GetFolder('\').GetTask($taskName).RunEx($null, 0, 0, $trustedInstallerName) | Out-Null
                             $timeOutLimit = (Get-Date).AddMinutes(5)
                             Write-Host "Running as $trustedInstallerName"
-                            while("$(schtasks.exe /query /tn "$taskName" 2>$null)".Contains('Running')) {
+                            while((Get-ScheduledTaskInfo $taskName).LastTaskResult -eq 267009) {
                                 Start-Sleep -Milliseconds 200
                                 if((Get-Date) -gt $timeOutLimit) {
                                     Write-Warning "Skipping results, it took so long to execute script."
@@ -6324,12 +6332,11 @@ functions:
                     $trustedInstallerName = $trustedInstallerSid.Translate([System.Security.Principal.NTAccount])
                     $streamOutFile = New-TemporaryFile
                     $batchFile = New-TemporaryFile
-                    $powerShellFile = New-TemporaryFile
                     try {
                         $batchFile = Rename-Item $batchFile "$($batchFile.BaseName).bat" -PassThru
                         "@echo off`r`n$command`r`nexit 0" | Out-File $batchFile -Encoding ASCII
                         $taskName = 'privacy.sexy invoke'
-                        schtasks.exe /delete /tn "$taskName" /f 2>&1 | Out-Null # Clean if something went wrong before
+                        schtasks.exe /delete /tn "$taskName" /f 2>&1 | Out-Null # Clean if something went wrong before, suppress any output
                         $taskAction = New-ScheduledTaskAction               `
                             -Execute 'cmd.exe'                              `
                             -Argument "cmd /c `"$batchFile`" > $streamOutFile 2>&1"
@@ -6346,7 +6353,7 @@ functions:
                             $scheduleService.GetFolder('\').GetTask($taskName).RunEx($null, 0, 0, $trustedInstallerName) | Out-Null
                             $timeOutLimit = (Get-Date).AddMinutes(5)
                             Write-Host "Running as $trustedInstallerName"
-                            while("$(schtasks.exe /query /tn "$taskName" 2>$null)".Contains('Running')) {
+                            while((Get-ScheduledTaskInfo $taskName).LastTaskResult -eq 267009) {
                                 Start-Sleep -Milliseconds 200
                                 if((Get-Date) -gt $timeOutLimit) {
                                     Write-Warning "Skipping results, it took so long to execute script."
