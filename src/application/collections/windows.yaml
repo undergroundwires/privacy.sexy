@@ -2655,9 +2655,45 @@ actions:
                         children:
                             -
                                 name: Disable Firewall through command-line utility
+                                # ❗️ Following must be enabled and in running state:
+                                #   - mpsdrv (Windows Defender Firewall Authorization Driver)
+                                #   - bfe (Base Filtering Engine)
+                                #   - mpssvc (Windows Defender Firewall)
+                                #   If the dependent services are not running, the script fails with:
+                                #       "An error occurred while attempting to contact the Windows Defender Firewall service. Make sure that the service is running and try your request again."
+                                #   Requires rebooting after reverting privacy.sexy scripts for the services mpsdrv, mpssvc
                                 docs: https://docs.microsoft.com/en-us/troubleshoot/windows-server/networking/netsh-advfirewall-firewall-control-firewall-behavior
-                                code: netsh advfirewall set allprofiles state off
-                                revertCode: netsh advfirewall set allprofiles state on
+                                call:
+                                    function: RunPowerShell
+                                    parameters:
+                                        code: |-
+                                            if(!(Get-Command 'netsh' -ErrorAction Ignore)) {
+                                                throw '"netsh" does not exist, is system installed correctly?'
+                                            }
+                                            $message=netsh advfirewall set allprofiles state off 2>&1
+                                            if($?) {
+                                                Write-Host "Successfully disabled firewall."
+                                            } else {
+                                                if($message -like '*Firewall service*') {
+                                                    Write-Warning 'Cannot use CLI because MpsSvc or MpsDrv is not running. Try to enable them (revert) -> reboot -> re-run this?'
+                                                } else {
+                                                    throw "Cannot disable: $message"
+                                                }
+                                            }
+                                        revertCode: |-
+                                            if(!(Get-Command 'netsh' -ErrorAction Ignore)) {
+                                                throw '"netsh" does not exist, is system installed correctly?'
+                                            }
+                                            $message=netsh advfirewall set allprofiles state on 2>&1
+                                            if($?) {
+                                                Write-Host "Successfully enabled firewall."
+                                            } else {
+                                                if($message -like '*Firewall service*') {
+                                                    Write-Warning 'Cannot use CLI because MpsSvc or MpsDrv is not running. Try to enable them (revert) -> reboot -> re-run this?'
+                                                } else {
+                                                    throw "Cannot enable: $message"
+                                                }
+                                            }
                             -
                                 name: Disable Firewall through registry # Lower-level, good in case command-line utility is not available/functioning
                                 docs:
@@ -2724,7 +2760,7 @@ actions:
                                                         parameters:
                                                             property: DisableBlockAtFirstSeen   # Status:   Get-MpPreference | Select-Object -Property DisableBlockAtFirstSeen
                                                             value: $True                        # Set:      Set-MpPreference -Force -DisableBlockAtFirstSeen $True
-                                                            default: $False                     # Default:  False (Enabled) | Remove-MpPreference -Force -DisableBlockAtFirstSeen | Set-MpPreference -Force -DisableBlockAtFirstSeen $False
+                                                            default: $False                     # Default:  False (Enabled) | Remove-MpPreference -Force -DisableBlockAtFirstSeen | Set-MpPreference -Force -DisableBlockAtFirstSeen $False
                                                     -
                                                         function: RunInlineCode
                                                         parameters:
@@ -2829,7 +2865,7 @@ actions:
                                             # 0 = 'Disabled' (default), 1 = 'Enabled', 2 = 'AuditMode'
                                             property: PUAProtection     # Status:   Get-MpPreference | Select-Object -Property PUAProtection
                                             value: "'0'"                # Set:      Set-MpPreference -Force -PUAProtection 0
-                                            default: "'0'"              # Default:  0 (Disabled) | Remove-MpPreference -Force -PUAProtection | Set-MpPreference -Force -PUAProtection 0
+                                            default: "'0'"              # Default:  0 (Disabled) | Remove-MpPreference -Force -PUAProtection | Set-MpPreference -Force -PUAProtection 0
                                     -
                                         function: RunInlineCode
                                         parameters:
@@ -2851,7 +2887,7 @@ actions:
                                 call:
                                     -
                                         function: RunInlineCodeAsTrustedInstaller  # Otherwise we get "ERROR: Access is denied." (>= 20H2)
-                                        # ❌ Fails with "ERROR: Access is denied." in Windows 11 21H2 | ✅ Works in Windows 10 >= 20H2
+                                        # ❌ Fails with "ERROR: Access is denied." in Windows 11 21H2 | ✅ Works in Windows 10 >= 20H2
                                         parameters:
                                             code: reg add "HKLM\SOFTWARE\Microsoft\Windows Defender\Features" /v "TamperProtection" /t REG_DWORD /d "4" /f
                                             revertCode: reg delete "HKLM\SOFTWARE\Microsoft\Windows Defender\Features" /v "TamperProtection" /f 2>nul
@@ -2922,7 +2958,7 @@ actions:
                                                     property: DisableRealtimeMonitoring     # Status:   Get-MpPreference | Select-Object -Property DisableRealtimeMonitoring
                                                     value: $True                            # Set:      Set-MpPreference -Force -DisableRealtimeMonitoring $True
                                                                                             # ❌ Windows 11: Does not fail but does not set $True value | ✅ Windows 10: Works as expected
-                                                    default: $False                         # Default: False (Enabled) | Remove-MpPreference -Force -DisableRealtimeMonitoring | Set-MpPreference -Force -DisableRealtimeMonitoring $False
+                                                    default: $False                         # Default: False (Enabled) | Remove-MpPreference -Force -DisableRealtimeMonitoring | Set-MpPreference -Force -DisableRealtimeMonitoring $False
 
                                             -
                                                 function: RunInlineCode
@@ -3452,7 +3488,7 @@ actions:
                                                         property: DisableScriptScanning # Status:   Get-MpPreference | Select-Object -Property DisableScriptScanning
                                                         value: $True                    # Set:      Set-MpPreference -Force -DisableScriptScanning $True
                                                                                         # ❌ Windows 11: Does not fail but does not set $True value | ✅ Windows 10: Works as expected
-                                                        default: $False                 # Default:  False | Remove-MpPreference -Force -DisableScriptScanning | Set-MpPreference -Force -DisableScriptScanning $False
+                                                        default: $False                 # Default:  False | Remove-MpPreference -Force -DisableScriptScanning | Set-MpPreference -Force -DisableScriptScanning $False
                                             -
                                                 name: Disable reparse point scanning
                                                 docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_DisableReparsePointScanning
@@ -3578,7 +3614,7 @@ actions:
                                                         parameters:
                                                             property: ScanScheduleDay   # Status:   Get-MpPreference | Select-Object -Property ScanScheduleDay
                                                             value: "'8'"                # Set:      Set-MpPreference -Force -ScanScheduleDay '8'
-                                                            default: "'0'"              # Default:  0 (Every Day) | Remove-MpPreference -Force -ScanScheduleDay | Set-MpPreference -Force -ScanScheduleDay '0'
+                                                            default: "'0'"              # Default:  0 (Every Day) | Remove-MpPreference -Force -ScanScheduleDay | Set-MpPreference -Force -ScanScheduleDay '0'
                                             -
                                                 name: Disable randomizing scheduled task times
                                                 docs:
@@ -3597,7 +3633,7 @@ actions:
                                                         parameters:
                                                             property: RandomizeScheduleTaskTimes    # Status:   Get-MpPreference | Select-Object -Property RandomizeScheduleTaskTimes
                                                             value: $False                           # Set:      Set-MpPreference -Force -RandomizeScheduleTaskTimes $False
-                                                            default: $True                          # Default:  True | Remove-MpPreference -Force -RandomizeScheduleTaskTimes | Set-MpPreference -Force -RandomizeScheduleTaskTimes $True
+                                                            default: $True                          # Default:  True | Remove-MpPreference -Force -RandomizeScheduleTaskTimes | Set-MpPreference -Force -RandomizeScheduleTaskTimes $True
                                             -
                                                 name: Disable scheduled full-scans
                                                 docs:
@@ -3670,7 +3706,7 @@ actions:
                                                         parameters:
                                                             property: SignatureUpdateCatchupInterval    # Status:   Get-MpPreference | Select-Object -Property SignatureUpdateCatchupInterval
                                                             value: "'0'"                                # Set:      Set-MpPreference -Force -SignatureUpdateCatchupInterval '0'
-                                                            default: "'1'"                              # Default:  1 | Remove-MpPreference -Force -SignatureUpdateCatchupInterval | Set-MpPreference -Force -SignatureUpdateCatchupInterval '1'
+                                                            default: "'1'"                              # Default:  1 | Remove-MpPreference -Force -SignatureUpdateCatchupInterval | Set-MpPreference -Force -SignatureUpdateCatchupInterval '1'
                                             -
                                                 name: Limit spyware security intelligence (signature) updates  # default is one day, recommended is 7 days
                                                 # Maximize period when spyware security intelligence (signature) is considered up-to-dates
@@ -3705,7 +3741,7 @@ actions:
                                                         parameters:
                                                             property: SignatureDisableUpdateOnStartupWithoutEngine  # Status:   Get-MpPreference | Select-Object -Property SignatureDisableUpdateOnStartupWithoutEngine
                                                             value: $True        # Set:      Set-MpPreference -Force -SignatureDisableUpdateOnStartupWithoutEngine $True
-                                                            default: $False     # Default:  False | Remove-MpPreference -Force -SignatureDisableUpdateOnStartupWithoutEngine | Set-MpPreference -Force -SignatureDisableUpdateOnStartupWithoutEngine $False
+                                                            default: $False     # Default:  False | Remove-MpPreference -Force -SignatureDisableUpdateOnStartupWithoutEngine | Set-MpPreference -Force -SignatureDisableUpdateOnStartupWithoutEngine $False
                                             -
                                                 name: Disable automatically checking security intelligence (signature) updates # Already disabled by default
                                                 docs:
@@ -3774,7 +3810,7 @@ actions:
                                                 # ❌ Not generally supported on Windows (before 4.18.2106.5 Defender platform)
                                                 property: DisableGradualRelease # Status:   Get-MpPreference | Select-Object -Property DisableGradualRelease
                                                 value: $True                    # Set:      Set-MpPreference -Force -DisableGradualRelease $True
-                                                default: $False                 # Default: False | Remove-MpPreference -Force -DisableGradualRelease
+                                                default: $False                 # Default: False | Remove-MpPreference -Force -DisableGradualRelease
 
                                     -
                                         name: Limit Defender engine updates to those that complete gradual release cycle
@@ -3805,7 +3841,7 @@ actions:
                                                                                     # Valid values:
                                                                                     #   0 = 'NotConfigured' (default), 'Beta', 'Broad', 'Preview', 'Staged'
                                                                                     #   ❌ Windows 11 21H2 supports only 'NotConfigured', 'Beta', 'Preview' but not 'Broad', 'Staged'
-                                                default: "'NotConfigured'"          # Default: 0 (NotConfigured) | Remove-MpPreference -Force -PlatformUpdatesChannel | Set-MpPreference -Force -PlatformUpdatesChannel "'NotConfigured'"
+                                                default: "'NotConfigured'"          # Default: 0 (NotConfigured) | Remove-MpPreference -Force -PlatformUpdatesChannel | Set-MpPreference -Force -PlatformUpdatesChannel "'NotConfigured'"
                                     - 
                                         name: Limit Defender definition updates to those that complete gradual release cycle
                                         docs:
@@ -3820,7 +3856,7 @@ actions:
                                                 value: "'Broad'"                    # Set:      Set-MpPreference -Force -DefinitionUpdatesChannel 'Broad'
                                                                                     #   0 = 'NotConfigured' (default), 'Beta', Preview' 'Broad', 'Staged'
                                                                                     #   ❌ Windows 11 21H2 supports only 'NotConfigured', 'Beta', 'Preview' but not 'Broad', 'Staged'
-                                                default: "'NotConfigured'"          # Default: 0 (NotConfigured) | Remove-MpPreference -Force -DefinitionUpdatesChannel | Set-MpPreference -Force -DefinitionUpdatesChannel "'NotConfigured'"
+                                                default: "'NotConfigured'"          # Default: 0 (NotConfigured) | Remove-MpPreference -Force -DefinitionUpdatesChannel | Set-MpPreference -Force -DefinitionUpdatesChannel "'NotConfigured'"
                             - 
                                 category: Disable Windows Defender reporting
                                 children:
@@ -4088,8 +4124,32 @@ actions:
                                 #   2. Some cannot be disabled even using DisableServiceInRegistry, must be disabled as TrustedInstaller using RunInlineCodeAsTrustedInstaller
                                 children:
                                     -
-                                        name: Disable Windows Defender Firewall service
-                                        docs: http://batcmd.com/windows/10/services/mpssvc/
+                                        name: Disable Windows Defender Firewall service (breaks Microsoft Store and `netsh advfirewall` CLI)
+                                        docs:
+                                            - http://batcmd.com/windows/10/services/mpssvc/
+                                            - https://en.wikipedia.org/wiki/Windows_Firewall
+                                            # More information about MpsSvc:
+                                            - https://web.archive.org/web/20110203202612/http://technet.microsoft.com/en-us/library/dd364391(v=WS.10).aspx
+                                            # More information about boot time protection and stopping the firewall service:
+                                            - https://web.archive.org/web/20110131034058/http://blogs.technet.com:80/b/networking/archive/2009/03/24/stopping-the-windows-authenticating-firewall-service-and-the-boot-time-policy.aspx
+                                            # Stopping the service associated with Windows Firewall is not supported by Microsoft:
+                                            - https://web.archive.org/web/20121106033255/http://technet.microsoft.com/en-us/library/cc753180.aspx
+                                            # ❗️ Breaks Microsoft Store
+                                            #   Can no longer update nor install apps, they both fail with 0x80073D0A
+                                            #   Also breaks some of Store apps such as Photos:
+                                            #       - https://answers.microsoft.com/en-us/windows/forum/all/microsoft-store-windows-defender-windows-firewall/f2f68cd7-64ec-4fe1-ade4-9d12cde057f9
+                                            #       - https://github.com/undergroundwires/privacy.sexy/issues/104#issuecomment-962651791
+                                            #   > The MpsSvc service host much more functionality than just windows firewall. For instance, Windows
+                                            #     Service hardening which is a windows protection of system services. It also host network isolatio
+                                            #     which is a crucial part of the confidence model for Windows Store based applications. 3rd party firewalls
+                                            #     know this fact and instead of disabling the firewall service they coordinate through public APIs with Windows
+                                            #     Firewall so that they can have ownership of the firewall policies of the computer. Hence you do not have to do
+                                            #     anything special once you install a 3rd party security product.
+                                            #     Source: https://www.walkernews.net/2012/09/23/how-to-fix-windows-store-app-update-error-code-0x80073d0a/
+                                            # ❗️ Breaks: `netsh advfirewall set`
+                                            #   Disabling and stopping it breaks "netsh advfirewall set" commands such as
+                                            #   `netsh advfirewall set allprofiles state on`, `netsh advfirewall set allprofiles state off`.
+                                            #   More about `netsh firewall` context: https://docs.microsoft.com/en-us/troubleshoot/windows-server/networking/netsh-advfirewall-firewall-control-firewall-behavior
                                         call:
                                             -
                                                 function: DisableServiceInRegistry # We must disable it on registry level, "Access is denied" for sc config
@@ -4102,6 +4162,10 @@ actions:
                                                     filePath: '%WinDir%\system32\mpssvc.dll'
                                     -
                                         name: Disable Windows Defender Antivirus service
+                                        # ❗️ Breaks `Set-MpPreference` PowerShell cmdlet that helps to manage Defender
+                                        #   E.g. `Set-MpPreference -Force -MAPSReporting 0` throws:
+                                        #       `Set-MpPreference: Operation failed with the following error: 0x800106ba. Operation: Set-MpPreference.`
+                                        #       `Target: MAPS_MAPSReporting. FullyQualifiedErrorId : HRESULT 0x800106ba,Set-MpPreference`
                                         docs: http://batcmd.com/windows/10/services/windefend/
                                         call:
                                             -
@@ -4117,8 +4181,13 @@ actions:
                                         category: Disable kernel-level Windows Defender drivers
                                         children:
                                             -
-                                                name: Disable Windows Defender Firewall Authorization Driver service
-                                                docs: http://batcmd.com/windows/10/services/mpsdrv/
+                                                name: Disable Windows Defender Firewall Authorization Driver service (breaks `netsh advfirewall` CLI)
+                                                docs:
+                                                    - http://batcmd.com/windows/10/services/mpsdrv/
+                                                    # ❗️ Breaks: `netsh advfirewall set`
+                                                    #   Disabling and stopping it breaks "netsh advfirewall set" commands such as
+                                                    #   `netsh advfirewall set allprofiles state on`, `netsh advfirewall set allprofiles state off`.
+                                                    #   More about `netsh firewall` context: https://docs.microsoft.com/en-us/troubleshoot/windows-server/networking/netsh-advfirewall-firewall-control-firewall-behavior
                                                 call:
                                                     -
                                                         function: DisableServiceInRegistry # We must disable it on registry level, "Access is denied" for sc config
@@ -6600,6 +6669,7 @@ functions:
     -
         name: SetMpPreference
         # Configures preferences for Windows Defender scans and updates.
+        # ❗️ Requires "WinDefend" service in running state, otherwise fails
         parameters:
             -  name: property
             -  name: value
@@ -6647,8 +6717,8 @@ functions:
                         Write-Host "Successfully set `"$propertyName`" to `"$value`"."
                         exit 0
                     } catch {
-                        if ($_.FullyQualifiedErrorId -like '*0x800106ba*') {
-                            Write-Warning "Cannot $($command.Name): Defender is not running. Try to enable it (revert) -> reboot -> re-run this?"
+                        if ( $_.FullyQualifiedErrorId -like '*0x800106ba*') {
+                            Write-Warning "Cannot $($command.Name): Defender service (WinDefend) is not running. Try to enable it (revert) and re-run this?"
                             exit 0
                         } elseif (($_ | Out-String) -like '*Cannot convert*') {
                             Write-Host "Skipping. Argument `"$value`" for property `"$propertyName`" is not supported for `"$($command.Name)`"."
@@ -6695,7 +6765,7 @@ functions:
                             exit 0
                         } catch {
                             if ($_.FullyQualifiedErrorId -like '*0x800106ba*') {
-                                Write-Warning "Cannot $($command.Name): Defender is not running. Try to enable it (revert) -> reboot -> re-run this?"
+                                Write-Warning "Cannot $($command.Name): Defender service (WinDefend) is not running. Try to enable it (revert) and re-run this?"
                             } else {
                                 Write-Error "Failed to set using $($command.Name): $_"
                             }
@@ -6718,7 +6788,7 @@ functions:
                         exit 0
                     } catch {
                         if ($_.FullyQualifiedErrorId -like '*0x800106ba*') {
-                            Write-Warning "Cannot $($command.Name): Defender is not running. Try to enable it (revert) -> reboot -> re-run this?"
+                            Write-Warning "Cannot $($command.Name): Defender service (WinDefend) is not running. Try to enable it (revert) and re-run this?"
                         } else {
                             Write-Error "Failed to set using $($command.Name): $_"
                         }
