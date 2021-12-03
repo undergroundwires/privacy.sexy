@@ -4694,13 +4694,30 @@ actions:
                         defaultStartupMode: Manual # Alowed values: Boot | System | Automatic | Manual
             -
                 name: Windows Push Notification Service
-                recommend: standard
-                docs: https://en.wikipedia.org/w/index.php?title=Windows_Push_Notification_Service&oldid=1012335551#Privacy_Issue
+                # Hosts Windows notification platform, which provides support for local and push notifications.
+                # While connected to a VPN that disallows Split Tunneling, the WpnUserService_[unique ID] process bypasses the tunnel
+                # connecting directly to Microsoft. This behavior will reveal the real IP address of the host. This can be observed with
+                # the Windows Resource Monitor. 
+                recommend: strict
+                docs:
+                    - https://en.wikipedia.org/w/index.php?title=Windows_Push_Notification_Service&oldid=1012335551#Privacy_Issue
+                    # System-wide service:
+                    - http://batcmd.com/windows/10/services/wpnservice/
+                    # Per-user service:
+                    - http://batcmd.com/windows/10/services/wpnuserservice/
                 call:
-                    function: DisableService
-                    parameters:
-                        serviceName: WpnService # Check: (Get-Service -Name 'WpnService').StartType
-                        defaultStartupMode: Automatic # Allowed values: Automatic | Manual
+                    - # Windows Push Notifications System Service
+                        function: DisableService
+                        parameters:
+                            serviceName: WpnService # Check: (Get-Service -Name 'WpnService').StartType
+                            defaultStartupMode: Automatic # Allowed values: Automatic | Manual
+                    - # Windows Push Notifications User Service
+                        function: DisablePerUserService
+                        parameters:
+                            # Check (system-wide):  (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\WpnUserService").Start
+                            # Check (per-user):     (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\WpnUserService_*").Start
+                            serviceName: WpnUserService
+                            defaultStartupMode: Automatic # Alowed values: Boot | System | Automatic | Manual
             -
                 category: Disable Xbox services
                 children:
