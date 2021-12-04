@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.11.2 (2021-12-03)
+
+* Fix Windows TrustedInstaller session errors | [20a0071](https://github.com/undergroundwires/privacy.sexy/commit/20a0071c0d3d769a8f31218abdbfc4cafa25c6ff)
+* Improve tests for `UserSelection` | [2f90cac](https://github.com/undergroundwires/privacy.sexy/commit/2f90cac52ab9e57615aeec41f9daa842bce770a5)
+* Fix disabling/enabling Defender on Windows #104 | [2e08293](https://github.com/undergroundwires/privacy.sexy/commit/2e082932c952b0849ab2b8709ff0c75293b88e95)
+* Refactor Saas naming, structure and modules | [bf83c58](https://github.com/undergroundwires/privacy.sexy/commit/bf83c58982ffa178facc6d35e50c7f1eac7ff236)
+* Fix Defender features errors in Windows #104 | [d7761ab](https://github.com/undergroundwires/privacy.sexy/commit/d7761ab30e7f1e10a2919c196804d67511d6163a)
+* Fix unintendedly inlined Windows scripts | [f2d9881](https://github.com/undergroundwires/privacy.sexy/commit/f2d988138257ff184884e4adc83c39e3bc247e9b)
+* Fix Defender error due to non-english Windows #104 | [7c02ffb](https://github.com/undergroundwires/privacy.sexy/commit/7c02ffb6c95382b94f0b05e6f259cc418ec91c93)
+* Improve and unify disabling of Windows services | [70cdf38](https://github.com/undergroundwires/privacy.sexy/commit/70cdf3865a0de3214fc9e26fbdada4b0cb413c46)
+* Improve Windows defender docs and errors #104 | [d2518b1](https://github.com/undergroundwires/privacy.sexy/commit/d2518b11a7774ec58b9b46a691e2f013855bf0f9)
+* Unrecommend and complete Windows Push Notif. #101 | [c65209e](https://github.com/undergroundwires/privacy.sexy/commit/c65209e6a99230f15ace8955e8d5a6f3333d146b)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.11.1...0.11.2)
+
 ## 0.11.1 (2021-11-04)
 
 * Update dependencies | [64631a4](https://github.com/undergroundwires/privacy.sexy/commit/64631a4552fad7f7b06286aba8d3ca2d731f9342)
