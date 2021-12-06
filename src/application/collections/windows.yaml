@@ -6410,9 +6410,9 @@ functions:
             function: RunPowerShell
             parameters:
                 code: |-
-                    $jsonfile = \"$env:APPDATA\Code\User\settings.json\"
+                    $jsonfile = "$env:APPDATA\Code\User\settings.json"
                     if (!(Test-Path $jsonfile -PathType Leaf)) {
-                        Write-Host \"No updates. Settings file was not at $jsonfile\"
+                        Write-Host "No updates. Settings file was not at $jsonfile"
                         exit 0
                     }
                     $json = Get-Content $jsonfile | Out-String | ConvertFrom-Json
