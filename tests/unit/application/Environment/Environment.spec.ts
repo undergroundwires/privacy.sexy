@@ -59,7 +59,21 @@ describe('Environment', () => {
         });
     });
     describe('os', () => {
-        describe('browser os from BrowserOsDetector', () => {
+        it('returns undefined without user agent', () => {
+            // arrange
+            const expected = undefined;
+            const mock: IBrowserOsDetector = {
+                detect: (agent) => {
+                    throw new Error('should not reach here');
+                },
+            };
+            const sut = new SystemUnderTest({ }, mock);
+            // act
+            const actual = sut.os;
+            // assert
+            expect(actual).to.equal(expected);
+        });
+        it('browser os from BrowserOsDetector', () => {
             // arrange
             const givenUserAgent = 'testUserAgent';
             const expected = OperatingSystem.macOS;
@@ -87,17 +101,19 @@ describe('Environment', () => {
                 userAgent: 'Electron',
             };
             for (const testCase of DesktopOsTestCases) {
-                // arrange
-                const process = {
-                    platform: testCase.processPlatform,
-                };
-                // act
-                const sut = new SystemUnderTest({ navigator, process });
-                // assert
-                expect(sut.os).to.equal(testCase.expectedOs,
-                    `Expected: "${OperatingSystem[testCase.expectedOs]}"\n` +
-                    `Actual: "${OperatingSystem[sut.os]}"\n` +
-                    `Platform: "${testCase.processPlatform}"`);
+                it(testCase.processPlatform, () => {
+                    // arrange
+                    const process = {
+                        platform: testCase.processPlatform,
+                    };
+                    // act
+                    const sut = new SystemUnderTest({ navigator, process });
+                    // assert
+                    expect(sut.os).to.equal(testCase.expectedOs,
+                        `Expected: "${OperatingSystem[testCase.expectedOs]}"\n` +
+                        `Actual: "${OperatingSystem[sut.os]}"\n` +
+                        `Platform: "${testCase.processPlatform}"`);
+                });
             }
         });
     });

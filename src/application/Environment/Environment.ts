@@ -24,9 +24,12 @@ export class Environment implements IEnvironment {
             throw new Error('variables is null or empty');
         }
         this.isDesktop = isDesktop(variables);
-        this.os = this.isDesktop ?
-            getDesktopOsType(getProcessPlatform(variables))
-          : browserOsDetector.detect(getUserAgent(variables));
+        if (this.isDesktop) {
+            this.os = getDesktopOsType(getProcessPlatform(variables));
+        } else {
+            const userAgent = getUserAgent(variables);
+            this.os = !userAgent ? undefined : browserOsDetector.detect(userAgent);
+        }
     }
 }
 
