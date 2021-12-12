@@ -516,8 +516,10 @@ actions:
                 code: reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\SideBySide\Configuration" /v "DisableResetbase" /t "REG_DWORD" /d "0" /f
             -
                 name: Clear Windows Product Key from Registry
-                code: slmgr /cpky
+                # Helps to protect it from being stolen and used for identity theft or identifying you.
                 docs: https://winaero.com/blog/remove-windows-10-product-key-from-registry-and-protect-it-from-being-stolen/
+                # We use cscript.exe to execute instead of `slmgr` command directly to keep the output but surpress the dialogs.
+                code: cscript.exe //nologo "%SystemRoot%\system32\slmgr.vbs" /cpky
             -
                 name: Clear volume backups (shadow copies)
                 docs: 
