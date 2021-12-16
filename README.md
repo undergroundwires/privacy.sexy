@@ -49,6 +49,9 @@
 - Testing
   - Run unit tests: `npm run test:unit`
   - Run integration tests: `npm run test:integration`
+  - Run e2e (end-to-end) tests
+    - Interactive mode with GUI: `npm run test:e2e`
+    - Headless mode without GUI: `npm run test:e2e -- --headless`
   - Lint: `npm run lint`
 - **Desktop app**
   - Development: `npm run electron:serve`

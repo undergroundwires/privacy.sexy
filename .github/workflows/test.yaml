@@ -31,3 +31,7 @@ jobs:
       -
         name: Run integration tests
         run: npm run test:integration
+      -
+        name: Run e2e tests
+        if: always() # Run even if previous step fail
+        run: npm run test:e2e -- --headless

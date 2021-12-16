@@ -4,3 +4,6 @@ dist/
 .vscode
 #Electron-builder output
 /dist_electron
+# Cypress
+/tests/e2e/screenshots
+/tests/e2e/videos
