@@ -24,12 +24,10 @@ describe('Script', () => {
       describe('throws when missing', () => {
         itEachAbsentObjectValue((absentValue) => {
           // arrange
-          const name = 'script-name';
-          const expectedError = `missing code (script: ${name})`;
+          const expectedError = 'missing code';
           const code: IScriptCode = absentValue;
           // act
           const construct = () => new ScriptBuilder()
-            .withName(name)
             .withCode(code)
             .build();
           // assert

@@ -5,22 +5,31 @@ import { IScriptCode } from '@/domain/IScriptCode';
 import { ScriptCode } from '@/domain/ScriptCode';
 import { parseDocUrls } from '../DocumentationParser';
 import { createEnumParser, IEnumParser } from '../../Common/Enum';
+import { NodeType } from '../NodeValidation/NodeType';
+import { NodeValidator } from '../NodeValidation/NodeValidator';
 import { ICategoryCollectionParseContext } from './ICategoryCollectionParseContext';
 
+// eslint-disable-next-line consistent-return
 export function parseScript(
   data: ScriptData,
   context: ICategoryCollectionParseContext,
   levelParser = createEnumParser(RecommendationLevel),
+  scriptFactory: ScriptFactoryType = ScriptFactory,
 ): Script {
-  validateScript(data);
+  const validator = new NodeValidator({ type: NodeType.Script, selfNode: data });
+  validateScript(data, validator);
   if (!context) { throw new Error('missing context'); }
-  const script = new Script(
-    /* name: */ data.name,
-    /* code: */ parseCode(data, context),
-    /* docs: */ parseDocUrls(data),
-    /* level: */ parseLevel(data.recommend, levelParser),
-  );
-  return script;
+  try {
+    const script = scriptFactory(
+      /* name: */ data.name,
+      /* code: */ parseCode(data, context),
+      /* docs: */ parseDocUrls(data),
+      /* level: */ parseLevel(data.recommend, levelParser),
+    );
+    return script;
+  } catch (err) {
+    validator.throw(err.message);
+  }
 }
 
 function parseLevel(
@@ -40,21 +49,24 @@ function parseCode(script: ScriptData, context: ICategoryCollectionParseContext)
   return new ScriptCode(script.code, script.revertCode, context.syntax);
 }
 
-function ensureNotBothCallAndCode(script: ScriptData) {
-  if (script.code && script.call) {
-    throw new Error('cannot define both "call" and "code"');
-  }
-  if (script.revertCode && script.call) {
-    throw new Error('cannot define "revertCode" if "call" is defined');
-  }
+function validateScript(script: ScriptData, validator: NodeValidator) {
+  validator
+    .assertDefined(script)
+    .assertValidName(script.name)
+    .assert(
+      () => Boolean(script.code || script.call),
+      'Must define either "call" or "code".',
+    )
+    .assert(
+      () => !(script.code && script.call),
+      'Cannot define both "call" and "code".',
+    )
+    .assert(
+      () => !(script.revertCode && script.call),
+      'Cannot define "revertCode" if "call" is defined.',
+    );
 }
 
-function validateScript(script: ScriptData) {
-  if (!script) {
-    throw new Error('missing script');
-  }
-  if (!script.code && !script.call) {
-    throw new Error('must define either "call" or "code"');
-  }
-  ensureNotBothCallAndCode(script);
-}
+export type ScriptFactoryType = (...parameters: ConstructorParameters<typeof Script>) => Script;
+
+const ScriptFactory: ScriptFactoryType = (...parameters) => new Script(...parameters);

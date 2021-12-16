@@ -23,9 +23,9 @@ export class EnumParserStub<T> implements IEnumParser<T> {
     if (scenario) {
       return scenario.outputValue;
     }
-    if (this.defaultValue) {
+    if (this.defaultValue !== undefined) {
       return this.defaultValue;
     }
-    throw new Error('enum parser is not set up');
+    throw new Error(`Don't know now what to return from ${EnumParserStub.name}, forgot to set-up?`);
   }
 }

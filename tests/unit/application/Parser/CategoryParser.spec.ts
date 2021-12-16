@@ -1,6 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
-import { parseCategory } from '@/application/Parser/CategoryParser';
+import type { CategoryData, CategoryOrScriptData } from '@/application/collections/';
+import { CategoryFactoryType, parseCategory } from '@/application/Parser/CategoryParser';
 import { parseScript } from '@/application/Parser/Script/ScriptParser';
 import { parseDocUrls } from '@/application/Parser/DocumentationParser';
 import { ScriptCompilerStub } from '@tests/unit/shared/Stubs/ScriptCompilerStub';
@@ -8,50 +9,136 @@ import { ScriptDataStub } from '@tests/unit/shared/Stubs/ScriptDataStub';
 import { CategoryCollectionParseContextStub } from '@tests/unit/shared/Stubs/CategoryCollectionParseContextStub';
 import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
 import { CategoryDataStub } from '@tests/unit/shared/Stubs/CategoryDataStub';
-import { itEachAbsentCollectionValue, itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { itEachAbsentCollectionValue, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { NodeType } from '@/application/Parser/NodeValidation/NodeType';
+import { expectThrowsNodeError, ITestScenario, NodeValidationTestRunner } from '@tests/unit/application/Parser/NodeValidation/NodeValidatorTestRunner';
+import { ICategoryCollectionParseContext } from '@/application/Parser/Script/ICategoryCollectionParseContext';
+import { Category } from '@/domain/Category';
 
 describe('CategoryParser', () => {
   describe('parseCategory', () => {
-    describe('invalid category', () => {
-      describe('throws when category data is absent', () => {
-        itEachAbsentObjectValue((absentValue) => {
-          // arrange
-          const expectedMessage = 'missing category';
-          const category = absentValue;
-          const context = new CategoryCollectionParseContextStub();
-          // act
-          const act = () => parseCategory(category, context);
-          // assert
-          expect(act).to.throw(expectedMessage);
+    describe('invalid category data', () => {
+      describe('validates script data', () => {
+        describe('satisfies shared node tests', () => {
+          new NodeValidationTestRunner()
+            .testInvalidNodeName((invalidName) => {
+              return createTest(
+                new CategoryDataStub().withName(invalidName),
+              );
+            })
+            .testMissingNodeData((node) => {
+              return createTest(node as CategoryData);
+            });
         });
+        describe('throws when category children is absent', () => {
+          itEachAbsentCollectionValue((absentValue) => {
+            // arrange
+            const categoryName = 'test';
+            const expectedMessage = `"${categoryName}" has no children.`;
+            const category = new CategoryDataStub()
+              .withName(categoryName)
+              .withChildren(absentValue);
+            // act
+            const test = createTest(category);
+            // assert
+            expectThrowsNodeError(test, expectedMessage);
+          });
+        });
+        describe('throws when category child is missing', () => {
+          new NodeValidationTestRunner()
+            .testMissingNodeData((missingNode) => {
+              // arrange
+              const invalidChildNode = missingNode;
+              const parent = new CategoryDataStub()
+                .withName('parent')
+                .withChildren([new CategoryDataStub().withName('valid child'), invalidChildNode]);
+              return ({
+                // act
+                act: () => new TestBuilder()
+                  .withData(parent)
+                  .parseCategory(),
+                // assert
+                expectedContext: {
+                  selfNode: invalidChildNode,
+                  parentNode: parent,
+                },
+              });
+            });
+        });
+        it('throws when node is neither a category or a script', () => {
+          // arrange
+          const expectedError = 'Node is neither a category or a script.';
+          const invalidChildNode = { property: 'non-empty-value' } as never as CategoryOrScriptData;
+          const parent = new CategoryDataStub()
+            .withName('parent')
+            .withChildren([new CategoryDataStub().withName('valid child'), invalidChildNode]);
+          // act
+          const test: ITestScenario = {
+            // act
+            act: () => new TestBuilder()
+              .withData(parent)
+              .parseCategory(),
+            // assert
+            expectedContext: {
+              selfNode: invalidChildNode,
+              parentNode: parent,
+            },
+          };
+          // assert
+          expectThrowsNodeError(test, expectedError);
+        });
+        describe('throws when category child is invalid category', () => {
+          new NodeValidationTestRunner().testInvalidNodeName((invalidName) => {
+            // arrange
+            const invalidChildNode = new CategoryDataStub()
+              .withName(invalidName);
+            const parent = new CategoryDataStub()
+              .withName('parent')
+              .withChildren([new CategoryDataStub().withName('valid child'), invalidChildNode]);
+            return ({
+              // act
+              act: () => new TestBuilder()
+                .withData(parent)
+                .parseCategory(),
+              // assert
+              expectedContext: {
+                type: NodeType.Category,
+                selfNode: invalidChildNode,
+                parentNode: parent,
+              },
+            });
+          });
+        });
+        function createTest(category: CategoryData): ITestScenario {
+          return {
+            act: () => new TestBuilder()
+              .withData(category)
+              .parseCategory(),
+            expectedContext: {
+              type: NodeType.Category,
+              selfNode: category,
+            },
+          };
+        }
       });
-      describe('throws when category children is absent', () => {
-        itEachAbsentCollectionValue((absentValue) => {
-          // arrange
-          const categoryName = 'test';
-          const expectedMessage = `category has no children: "${categoryName}"`;
-          const category = new CategoryDataStub()
-            .withName(categoryName)
-            .withChildren(absentValue);
-          const context = new CategoryCollectionParseContextStub();
-          // act
-          const act = () => parseCategory(category, context);
-          // assert
-          expect(act).to.throw(expectedMessage);
-        });
-      });
-      describe('throws when name is absent', () => {
-        itEachAbsentStringValue((absentValue) => {
-          // arrange
-          const expectedMessage = 'category has no name';
-          const category = new CategoryDataStub()
-            .withName(absentValue);
-          const context = new CategoryCollectionParseContextStub();
-          // act
-          const act = () => parseCategory(category, context);
-          // assert
-          expect(act).to.throw(expectedMessage);
-        });
+      it(`rethrows exception if ${Category.name} cannot be constructed`, () => {
+        // arrange
+        const expectedError = 'category creation failed';
+        const factoryMock: CategoryFactoryType = () => { throw new Error(expectedError); };
+        const data = new CategoryDataStub();
+        // act
+        const act = () => new TestBuilder()
+          .withData(data)
+          .withFactory(factoryMock)
+          .parseCategory();
+        // expect
+        expectThrowsNodeError({
+          act,
+          expectedContext: {
+            type: NodeType.Category,
+            selfNode: data,
+          },
+        }, expectedError);
       });
     });
     describe('throws when context is absent', () => {
@@ -59,9 +146,10 @@ describe('CategoryParser', () => {
         // arrange
         const expectedError = 'missing context';
         const context = absentValue;
-        const category = new CategoryDataStub();
         // act
-        const act = () => parseCategory(category, context);
+        const act = () => new TestBuilder()
+          .withContext(context)
+          .parseCategory();
         // assert
         expect(act).to.throw(expectedError);
       });
@@ -72,9 +160,11 @@ describe('CategoryParser', () => {
       const expected = parseDocUrls({ docs: url });
       const category = new CategoryDataStub()
         .withDocs(url);
-      const context = new CategoryCollectionParseContextStub();
       // act
-      const actual = parseCategory(category, context).documentationUrls;
+      const actual = new TestBuilder()
+        .withData(category)
+        .parseCategory()
+        .documentationUrls;
       // assert
       expect(actual).to.deep.equal(expected);
     });
@@ -87,7 +177,11 @@ describe('CategoryParser', () => {
         const category = new CategoryDataStub()
           .withChildren([script]);
         // act
-        const actual = parseCategory(category, context).scripts;
+        const actual = new TestBuilder()
+          .withData(category)
+          .withContext(context)
+          .parseCategory()
+          .scripts;
         // assert
         expect(actual).to.deep.equal(expected);
       });
@@ -102,7 +196,11 @@ describe('CategoryParser', () => {
         const category = new CategoryDataStub()
           .withChildren([script]);
         // act
-        const actual = parseCategory(category, context).scripts;
+        const actual = new TestBuilder()
+          .withData(category)
+          .withContext(context)
+          .parseCategory()
+          .scripts;
         // assert
         expect(actual).to.deep.equal(expected);
       });
@@ -118,7 +216,11 @@ describe('CategoryParser', () => {
           .withCompiler(compiler);
         const expected = scripts.map((script) => parseScript(script, context));
         // act
-        const actual = parseCategory(category, context).scripts;
+        const actual = new TestBuilder()
+          .withData(category)
+          .withContext(context)
+          .parseCategory()
+          .scripts;
         // assert
         expect(actual).to.deep.equal(expected);
       });
@@ -139,7 +241,11 @@ describe('CategoryParser', () => {
               ]),
           ]);
         // act
-        const act = () => parseCategory(category, parseContext).scripts;
+        const act = () => new TestBuilder()
+          .withData(category)
+          .withContext(parseContext)
+          .parseCategory()
+          .scripts;
         // assert
         expect(act).to.not.throw();
       });
@@ -153,9 +259,11 @@ describe('CategoryParser', () => {
       const category = new CategoryDataStub()
         .withName('category name')
         .withChildren(expected);
-      const context = new CategoryCollectionParseContextStub();
       // act
-      const actual = parseCategory(category, context).subCategories;
+      const actual = new TestBuilder()
+        .withData(category)
+        .parseCategory()
+        .subCategories;
       // assert
       expect(actual).to.have.lengthOf(1);
       expect(actual[0].name).to.equal(expected[0].category);
@@ -163,3 +271,30 @@ describe('CategoryParser', () => {
     });
   });
 });
+
+class TestBuilder {
+  private data: CategoryData = new CategoryDataStub();
+
+  private context: ICategoryCollectionParseContext = new CategoryCollectionParseContextStub();
+
+  private factory: CategoryFactoryType = undefined;
+
+  public withData(data: CategoryData) {
+    this.data = data;
+    return this;
+  }
+
+  public withContext(context: ICategoryCollectionParseContext) {
+    this.context = context;
+    return this;
+  }
+
+  public withFactory(factory: CategoryFactoryType) {
+    this.factory = factory;
+    return this;
+  }
+
+  public parseCategory() {
+    return parseCategory(this.data, this.context, this.factory);
+  }
+}

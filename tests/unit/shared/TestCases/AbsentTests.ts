@@ -1,16 +1,18 @@
 export function itEachAbsentStringValue(runner: (absentValue: string) => void): void {
-  itEachTestCase(AbsentStringTestCases, runner);
+  itEachAbsentTestCase(AbsentStringTestCases, runner);
 }
 
-export function itEachAbsentObjectValue(runner: (absentValue: AbsentObjectType) => void): void {
-  itEachTestCase(AbsentObjectTestCases, runner);
+export function itEachAbsentObjectValue(
+  runner: (absentValue: AbsentObjectType) => void,
+): void {
+  itEachAbsentTestCase(AbsentObjectTestCases, runner);
 }
 
 export function itEachAbsentCollectionValue<T>(runner: (absentValue: []) => void): void {
-  itEachTestCase(getAbsentCollectionTestCases<T>(), runner);
+  itEachAbsentTestCase(getAbsentCollectionTestCases<T>(), runner);
 }
 
-function itEachTestCase<T>(
+export function itEachAbsentTestCase<T>(
   testCases: readonly IAbsentTestCase<T>[],
   runner: (absentValue: T) => void,
 ): void {
@@ -53,8 +55,8 @@ export function getAbsentCollectionTestCases<T>(): readonly IAbsentCollectionCas
 type AbsentObjectType = undefined | null;
 
 interface IAbsentTestCase<T> {
-  valueName: string;
-  absentValue: T;
+  readonly valueName: string;
+  readonly absentValue: T;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
