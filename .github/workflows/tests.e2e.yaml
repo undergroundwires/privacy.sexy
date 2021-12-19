@@ -1,10 +1,8 @@
-name: Test
+name: e2e-tests
 
 on:
   push:
   pull_request:
-  schedule: # for integration tests
-    - cron: '0 0 * * 0' # at 00:00 on every Sunday
 
 jobs:
   run-tests:
@@ -26,12 +24,5 @@ jobs:
         name: Install dependencies
         run: npm ci
       -
-        name: Run unit tests
-        run: npm run test:unit
-      -
-        name: Run integration tests
-        run: npm run test:integration
-      -
         name: Run e2e tests
-        if: always() # Run even if previous step fail
         run: npm run test:e2e -- --headless

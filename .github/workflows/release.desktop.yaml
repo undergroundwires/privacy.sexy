@@ -1,4 +1,4 @@
-name: Deploy desktop
+name: desktop-release
 
 on:
  release:

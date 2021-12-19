@@ -1,4 +1,4 @@
-name: Quality checks
+name: quality-checks
 
 on: [ push, pull_request ]
 

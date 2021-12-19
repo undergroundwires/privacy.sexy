@@ -1,4 +1,4 @@
-name: Security checks
+name: security-checks
 
 on:
   push:

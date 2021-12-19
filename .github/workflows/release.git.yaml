@@ -1,4 +1,4 @@
-name: Bump & release
+name: git-release
 
 on:
   push: # Ensure a new release is created for each new tag
