@@ -10,10 +10,13 @@ export class ExpressionsCompiler implements IExpressionsCompiler {
     public constructor(
         private readonly extractor: IExpressionParser = new CompositeExpressionParser()) { }
     public compileExpressions(
-        code: string,
+        code: string | undefined,
         args: IReadOnlyFunctionCallArgumentCollection): string {
         if (!args) {
             throw new Error('undefined args, send empty collection instead');
+        }
+        if (!code) {
+            return code;
         }
         const expressions = this.extractor.findExpressions(code);
         ensureParamsUsedInCodeHasArgsProvided(expressions, args);

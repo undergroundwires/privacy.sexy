@@ -7,6 +7,30 @@ import { FunctionParameterStub } from '@tests/unit/stubs/FunctionParameterStub';
 
 describe('RegexParser', () => {
     describe('findExpressions', () => {
+        describe('throws when code is unexpected', () => {
+            // arrange
+            const testCases = [
+                {
+                    name: 'undefined',
+                    value: undefined,
+                    expectedError: 'undefined code',
+                },
+                {
+                    name: 'empty',
+                    value: '',
+                    expectedError: 'undefined code',
+                },
+            ];
+            for (const testCase of testCases) {
+                it(`given ${testCase.name}`, () => {
+                    const sut = new RegexParserConcrete(/unimportant/);
+                    // act
+                    const act = () => sut.findExpressions(testCase.value);
+                    // assert
+                    expect(act).to.throw(testCase.expectedError);
+                });
+            }
+        });
         describe('matches regex as expected', () => {
             // arrange
             const testCases = [

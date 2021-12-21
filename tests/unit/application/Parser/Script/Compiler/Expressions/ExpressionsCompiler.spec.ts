@@ -8,6 +8,28 @@ import { FunctionCallArgumentCollectionStub } from '@tests/unit/stubs/FunctionCa
 
 describe('ExpressionsCompiler', () => {
     describe('compileExpressions', () => {
+        describe('returns code when it is empty or undefined', () => {
+            // arrange
+            const testCases = [{
+                    name: 'empty',
+                    value: '',
+                }, {
+                    name: 'undefined',
+                    value: undefined,
+                },
+            ];
+            for (const test of testCases) {
+                it(`given ${test.name}`, () => {
+                    const expected = test.value;
+                    const sut = new SystemUnderTest();
+                    const args = new FunctionCallArgumentCollectionStub();
+                    // act
+                    const value = sut.compileExpressions(test.value, args);
+                    // assert
+                    expect(value).to.equal(expected);
+                });
+            }
+        });
         describe('combines expressions as expected', () => {
             // arrange
             const code = 'part1 {{ a }} part2 {{ b }} part3';
@@ -49,7 +71,7 @@ describe('ExpressionsCompiler', () => {
                     const expressionParserMock = new ExpressionParserStub()
                         .withResult(testCase.expressions);
                     const args = new FunctionCallArgumentCollectionStub();
-                    const sut = new MockableExpressionsCompiler(expressionParserMock);
+                    const sut = new SystemUnderTest(expressionParserMock);
                     // act
                     const actual = sut.compileExpressions(code, args);
                     // assert
@@ -69,7 +91,7 @@ describe('ExpressionsCompiler', () => {
                 ];
                 const expressionParserMock = new ExpressionParserStub()
                     .withResult(expressions);
-                const sut = new MockableExpressionsCompiler(expressionParserMock);
+                const sut = new SystemUnderTest(expressionParserMock);
                 // act
                 sut.compileExpressions(code, expected);
                 // assert
@@ -83,7 +105,7 @@ describe('ExpressionsCompiler', () => {
                 const expectedError = 'undefined args, send empty collection instead';
                 const args = undefined;
                 const expressionParserMock = new ExpressionParserStub();
-                const sut = new MockableExpressionsCompiler(expressionParserMock);
+                const sut = new SystemUnderTest(expressionParserMock);
                 // act
                 const act = () => sut.compileExpressions('code', args);
                 // assert
@@ -135,7 +157,7 @@ describe('ExpressionsCompiler', () => {
                     const code = 'non-important-code';
                     const expressionParserMock = new ExpressionParserStub()
                         .withResult(testCase.expressions);
-                    const sut = new MockableExpressionsCompiler(expressionParserMock);
+                    const sut = new SystemUnderTest(expressionParserMock);
                     // act
                     const act = () => sut.compileExpressions(code, testCase.args);
                     // assert
@@ -147,7 +169,7 @@ describe('ExpressionsCompiler', () => {
             // arrange
             const expected = 'expected-code';
             const expressionParserMock = new ExpressionParserStub();
-            const sut = new MockableExpressionsCompiler(expressionParserMock);
+            const sut = new SystemUnderTest(expressionParserMock);
             const args = new FunctionCallArgumentCollectionStub();
             // act
             sut.compileExpressions(expected, args);
@@ -158,8 +180,8 @@ describe('ExpressionsCompiler', () => {
     });
 });
 
-class MockableExpressionsCompiler extends ExpressionsCompiler {
-    constructor(extractor: IExpressionParser) {
+class SystemUnderTest extends ExpressionsCompiler {
+    constructor(extractor: IExpressionParser = new ExpressionParserStub()) {
         super(extractor);
     }
 }

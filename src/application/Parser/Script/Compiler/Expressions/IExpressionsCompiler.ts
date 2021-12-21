@@ -2,6 +2,6 @@ import { IReadOnlyFunctionCallArgumentCollection } from '../Function/Call/Argume
 
 export interface IExpressionsCompiler {
     compileExpressions(
-        code: string,
+        code: string | undefined,
         args: IReadOnlyFunctionCallArgumentCollection): string;
 }
