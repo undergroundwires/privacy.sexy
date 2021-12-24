@@ -5,7 +5,7 @@ import { UserSelection } from './Selection/UserSelection';
 import { IUserSelection } from './Selection/IUserSelection';
 import { ICategoryCollectionState } from './ICategoryCollectionState';
 import { IApplicationCode } from './Code/IApplicationCode';
-import { ICategoryCollection } from '../../../domain/ICategoryCollection';
+import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 
 export class CategoryCollectionState implements ICategoryCollectionState {

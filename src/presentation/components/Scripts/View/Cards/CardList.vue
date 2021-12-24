@@ -31,7 +31,7 @@ import { Component } from 'vue-property-decorator';
 import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
 import { ICategory } from '@/domain/ICategory';
 import { hasDirective } from './NonCollapsingDirective';
-import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 
 @Component({
   components: {
@@ -56,7 +56,7 @@ export default class CardList extends StatefulVue {
     this.activeCategoryId = isExpanded ? categoryId : undefined;
   }
 
-  protected handleCollectionState(newState: ICategoryCollectionState, oldState: ICategoryCollectionState): void {
+  protected handleCollectionState(newState: IReadOnlyCategoryCollectionState): void {
     this.setCategories(newState.collection.actions);
     this.activeCategoryId = undefined;
   }

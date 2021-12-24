@@ -17,7 +17,7 @@ import 'ace-builds/webpack-resolver';
 import { ICodeChangedEvent } from '@/application/Context/State/Code/Event/ICodeChangedEvent';
 import { IScript } from '@/domain/IScript';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
-import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { CodeBuilderFactory } from '@/application/Context/State/Code/Generation/CodeBuilderFactory';
 import Responsive from '@/presentation/components/Shared/Responsive.vue';
 import { NonCollapsing } from '@/presentation/components/Scripts/View/Cards/NonCollapsingDirective';
@@ -45,7 +45,7 @@ export default class TheCodeArea extends StatefulVue {
     }
   }
 
-  protected handleCollectionState(newState: ICategoryCollectionState): void {
+  protected handleCollectionState(newState: IReadOnlyCategoryCollectionState): void {
     this.destroyEditor();
     this.editor = initializeEditor(this.theme, this.editorId, newState.collection.scripting.language);
     const appCode = newState.code;

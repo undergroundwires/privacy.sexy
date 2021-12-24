@@ -13,7 +13,7 @@
 import { Component } from 'vue-property-decorator';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
-import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { ApplicationFactory } from '@/application/ApplicationFactory';
 import MenuOptionList from './MenuOptionList.vue';
 import MenuOptionListItem from './MenuOptionListItem.vue';
@@ -38,7 +38,7 @@ export default class TheOsChanger extends StatefulVue {
     context.changeContext(newOs);
   }
 
-  protected handleCollectionState(newState: ICategoryCollectionState): void {
+  protected handleCollectionState(newState: IReadOnlyCategoryCollectionState): void {
     this.currentOs = newState.os;
     this.$forceUpdate(); // v-bind:class is not updated otherwise
   }

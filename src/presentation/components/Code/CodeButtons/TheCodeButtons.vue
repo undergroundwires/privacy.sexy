@@ -32,13 +32,13 @@ import Dialog from '@/presentation/components/Shared/Dialog.vue';
 import IconButton from './IconButton.vue';
 import MacOsInstructions from './MacOsInstructions.vue';
 import { Environment } from '@/application/Environment/Environment';
-import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { IApplicationCode } from '@/application/Context/State/Code/IApplicationCode';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CodeRunner } from '@/infrastructure/CodeRunner';
-import { IApplicationContext } from '@/application/Context/IApplicationContext';
+import { IReadOnlyApplicationContext } from '@/application/Context/IApplicationContext';
 
 @Component({
   components: {
@@ -70,7 +70,7 @@ export default class TheCodeButtons extends StatefulVue {
     await executeCode(context);
   }
 
-  protected handleCollectionState(newState: ICategoryCollectionState): void {
+  protected handleCollectionState(newState: IReadOnlyCategoryCollectionState): void {
     this.canRun = this.isDesktopVersion && newState.collection.os === Environment.CurrentEnvironment.os;
     this.isMacOsCollection = newState.collection.os === OperatingSystem.macOS;
     this.fileName = buildFileName(newState.collection.scripting);
@@ -91,7 +91,7 @@ export default class TheCodeButtons extends StatefulVue {
   }
 }
 
-function saveCode(fileName: string, state: ICategoryCollectionState) {
+function saveCode(fileName: string, state: IReadOnlyCategoryCollectionState) {
   const content = state.code.current;
   const type = getType(state.collection.scripting.language);
   SaveFileDialog.saveFile(content, fileName, type);
@@ -115,7 +115,7 @@ function buildFileName(scripting: IScriptingDefinition) {
   return fileName;
 }
 
-async function executeCode(context: IApplicationContext) {
+async function executeCode(context: IReadOnlyApplicationContext) {
   const runner = new CodeRunner();
   await runner.runCode(
     /*code*/ context.state.code.current,

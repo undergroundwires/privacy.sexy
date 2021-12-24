@@ -15,7 +15,7 @@ import TheOsChanger from './TheOsChanger.vue';
 import TheSelector from './Selector/TheSelector.vue';
 import TheViewChanger from './View/TheViewChanger.vue';
 import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
-import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 
 @Component({
@@ -37,11 +37,11 @@ export default class TheScriptsMenu extends StatefulVue {
   protected initialize(): void {
     return;
   }
-  protected handleCollectionState(newState: ICategoryCollectionState): void {
+  protected handleCollectionState(newState: IReadOnlyCategoryCollectionState): void {
     this.subscribe(newState);
   }
 
-  private subscribe(state: ICategoryCollectionState) {
+  private subscribe(state: IReadOnlyCategoryCollectionState) {
       this.listeners.push(state.filter.filterRemoved.on(() => {
           this.isSearching = false;
       }));

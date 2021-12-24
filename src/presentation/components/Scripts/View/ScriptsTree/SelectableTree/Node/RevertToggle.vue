@@ -19,7 +19,7 @@ import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
 import { INode } from './INode';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { getReverter } from './Reverter/ReverterFactory';
-import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 
 @Component
 export default class RevertToggle extends StatefulVue {
@@ -37,7 +37,7 @@ export default class RevertToggle extends StatefulVue {
         this.handler.selectWithRevertState(this.isReverted, context.state.selection);
     }
 
-    protected handleCollectionState(newState: ICategoryCollectionState): void {
+    protected handleCollectionState(newState: IReadOnlyCategoryCollectionState): void {
         this.updateStatus(newState.selection.selectedScripts);
         this.events.unsubscribeAll();
         this.events.register(newState.selection.changed.on((scripts) => this.updateStatus(scripts)));

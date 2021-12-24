@@ -2,7 +2,7 @@ import { IScript } from '@/domain/IScript';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { scrambledEqual } from '@/application/Common/Array';
-import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { ICategoryCollectionState, IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 
 export enum SelectionType {
     Standard,
@@ -34,7 +34,7 @@ export class SelectionTypeHandler {
 }
 
 interface ISingleTypeHandler {
-    isSelected: (state: ICategoryCollectionState) => boolean;
+    isSelected: (state: IReadOnlyCategoryCollectionState) => boolean;
     select: (state: ICategoryCollectionState) => void;
 }
 
@@ -62,7 +62,7 @@ function getRecommendationLevelSelector(level: RecommendationLevel): ISingleType
     };
 }
 
-function hasAllSelectedLevelOf(level: RecommendationLevel, state: ICategoryCollectionState) {
+function hasAllSelectedLevelOf(level: RecommendationLevel, state: IReadOnlyCategoryCollectionState) {
     const scripts = state.collection.getScriptsByLevel(level);
     const selectedScripts = state.selection.selectedScripts;
     return areAllSelected(scripts, selectedScripts);

@@ -36,7 +36,7 @@ import { Component, Prop } from 'vue-property-decorator';
 import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
 import { ViewType } from '@/presentation/components/Scripts/Menu/View/ViewType';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
-import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { ApplicationFactory } from '@/application/ApplicationFactory';
 
 /** Shows content of single category or many categories */
@@ -74,12 +74,12 @@ export default class TheScriptsView extends StatefulVue {
         filter.removeFilter();
     }
 
-    protected handleCollectionState(newState: ICategoryCollectionState): void {
+    protected handleCollectionState(newState: IReadOnlyCategoryCollectionState): void {
         this.events.unsubscribeAll();
         this.subscribeState(newState);
     }
 
-    private subscribeState(state: ICategoryCollectionState) {
+    private subscribeState(state: IReadOnlyCategoryCollectionState) {
         this.events.register(
             state.filter.filterRemoved.on(() => {
                 this.isSearching = false;

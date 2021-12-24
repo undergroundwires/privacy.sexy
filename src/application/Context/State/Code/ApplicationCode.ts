@@ -2,7 +2,7 @@ import { CodeChangedEvent } from './Event/CodeChangedEvent';
 import { CodePosition } from './Position/CodePosition';
 import { ICodeChangedEvent } from './Event/ICodeChangedEvent';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
-import { IUserSelection } from '@/application/Context/State/Selection/IUserSelection';
+import { IReadOnlyUserSelection } from '@/application/Context/State/Selection/IUserSelection';
 import { UserScriptGenerator } from './Generation/UserScriptGenerator';
 import { EventSource } from '@/infrastructure/Events/EventSource';
 import { IApplicationCode } from './IApplicationCode';
@@ -16,7 +16,7 @@ export class ApplicationCode implements IApplicationCode {
     private scriptPositions = new Map<SelectedScript, CodePosition>();
 
     constructor(
-        userSelection: IUserSelection,
+        userSelection: IReadOnlyUserSelection,
         private readonly scriptingDefinition: IScriptingDefinition,
         private readonly generator: IUserScriptGenerator = new UserScriptGenerator()) {
         if (!userSelection) { throw new Error('userSelection is null or undefined'); }

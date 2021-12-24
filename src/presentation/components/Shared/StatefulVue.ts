@@ -3,7 +3,7 @@ import { AsyncLazy } from '@/infrastructure/Threading/AsyncLazy';
 import { IApplicationContext } from '@/application/Context/IApplicationContext';
 import { buildContext } from '@/application/Context/ApplicationContextFactory';
 import { IApplicationContextChangedEvent } from '@/application/Context/IApplicationContext';
-import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { EventSubscriptionCollection } from '@/infrastructure/Events/EventSubscriptionCollection';
 
 // @ts-ignore because https://github.com/vuejs/vue-class-component/issues/91
@@ -26,7 +26,8 @@ export abstract class StatefulVue extends Vue {
     }
 
     protected abstract handleCollectionState(
-        newState: ICategoryCollectionState, oldState: ICategoryCollectionState | undefined): void;
+        newState: IReadOnlyCategoryCollectionState,
+        oldState: IReadOnlyCategoryCollectionState | undefined): void;
     protected getCurrentContext(): Promise<IApplicationContext> {
         return StatefulVue.instance.getValue();
     }

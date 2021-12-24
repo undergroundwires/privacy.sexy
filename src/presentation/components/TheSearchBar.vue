@@ -13,9 +13,9 @@
 import { Component, Watch } from 'vue-property-decorator';
 import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
 import { NonCollapsing } from '@/presentation/components/Scripts/View/Cards/NonCollapsingDirective';
-import { IUserFilter } from '@/application/Context/State/Filter/IUserFilter';
+import { IReadOnlyUserFilter } from '@/application/Context/State/Filter/IUserFilter';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
-import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 
 @Component( {
     directives: { NonCollapsing },
@@ -36,7 +36,7 @@ export default class TheSearchBar extends StatefulVue {
     }
   }
 
-  protected handleCollectionState(newState: ICategoryCollectionState, oldState: ICategoryCollectionState | undefined) {
+  protected handleCollectionState(newState: IReadOnlyCategoryCollectionState) {
     const totalScripts = newState.collection.totalScripts;
     this.searchPlaceHolder = `Search in ${totalScripts} scripts`;
     this.searchQuery = newState.filter.currentFilter ? newState.filter.currentFilter.query : '';
@@ -44,7 +44,7 @@ export default class TheSearchBar extends StatefulVue {
     this.subscribeFilter(newState.filter);
   }
 
-  private subscribeFilter(filter: IUserFilter) {
+  private subscribeFilter(filter: IReadOnlyUserFilter) {
     this.events.register(filter.filtered.on((result) => this.handleFiltered(result)));
     this.events.register(filter.filterRemoved.on(() => this.handleFilterRemoved()));
   }
