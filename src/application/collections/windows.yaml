@@ -5341,8 +5341,21 @@ actions:
                                         parameters:
                                             packageName: InputApp
                             -
-                                name: Microsoft AAD Broker Plugin app (breaks Office app authentication)
-                                recommend: strict
+                                name: Microsoft AAD Broker Plugin app (breaks Night Light settings, taskbar keyboard selection and Office app authentication)
+                                docs:
+                                    # Azure Active Directory plugin, is needed for apps using Azure Active Directory authentication.
+                                    #   More about Azure Active Directory:
+                                    - https://azure.microsoft.com/en-us/services/active-directory/
+                                    # ❗️ In some version it breaks selection of keyboard in taskbar.
+                                    #   Clicking on taskbar language selection icon does not show the selection dialog.
+                                    - https://github.com/undergroundwires/privacy.sexy/issues/24
+                                    # ❗️ Uninstalling it breaks Night Light functionality and sign in for Office app.s
+                                    #   Reverting the script and rebooting solves the night light functionality.
+                                    #   About the issue:
+                                    - https://github.com/undergroundwires/privacy.sexy/issues/54
+                                    # More about night light:
+                                    - https://support.microsoft.com/en-us/windows/set-your-display-for-night-time-in-windows-18fe903a-e0a1-8326-4c68-fd23d7aaf136
+                                # recommend: strict (Unrecommended until better warning mechanism is implemented)
                                 call:
                                     function: UninstallSystemApp
                                     parameters:
