@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         lint-command:
-          - npm run lint:vue
+          - npm run lint:eslint
           - npm run lint:yaml
           - npm run lint:md
           - npm run lint:md:relative-urls

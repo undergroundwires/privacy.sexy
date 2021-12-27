@@ -1,11 +1,9 @@
 import 'mocha';
 import { expect } from 'chai';
 import { INode, NodeType } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/Node/INode';
-// tslint:disable-next-line:max-line-length
 import { getReverter } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/Node/Reverter/ReverterFactory';
 import { ScriptReverter } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/Node/Reverter/ScriptReverter';
 import { CategoryReverter } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/Node/Reverter/CategoryReverter';
-// tslint:disable-next-line:max-line-length
 import { getScriptNodeId, getCategoryNodeId } from '@/presentation/components/Scripts/View/ScriptsTree/ScriptNodeParser';
 import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
 import { CategoryStub } from '@tests/unit/stubs/CategoryStub';

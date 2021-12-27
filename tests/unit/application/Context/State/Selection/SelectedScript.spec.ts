@@ -20,7 +20,7 @@ describe('SelectedScript', () => {
         const script = new ScriptStub(expectedId)
             .withRevertCode(undefined);
         // act
-        function construct() { new SelectedScript(script, true); } // tslint:disable-line:no-unused-expression
+        function construct() { new SelectedScript(script, true); }
         // assert
         expect(construct).to.throw('cannot revert an irreversible script');
     });

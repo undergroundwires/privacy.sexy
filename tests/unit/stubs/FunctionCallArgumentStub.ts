@@ -1,4 +1,3 @@
-// tslint:disable-next-line:max-line-length
 import { IFunctionCallArgument } from '@/application/Parser/Script/Compiler/Function/Call/Argument/IFunctionCallArgument';
 
 export class FunctionCallArgumentStub implements IFunctionCallArgument {

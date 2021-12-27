@@ -9,7 +9,7 @@ export async function getUrlStatusesInParallel(
     // urls = [ 'https://privacy.sexy' ]; // Here to comment out when testing
     const uniqueUrls = Array.from(new Set(urls));
     options = { ...DefaultOptions, ...options };
-    console.log('Options: ', options); // tslint:disable-line: no-console
+    console.log('Options: ', options);
     const results = await request(uniqueUrls, options);
     return results;
 }

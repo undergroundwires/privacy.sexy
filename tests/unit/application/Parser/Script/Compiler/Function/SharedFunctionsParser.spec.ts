@@ -126,7 +126,6 @@ describe('SharedFunctionsParser', () => {
                 const invalidParameterName = 'invalid function p@r4meter name';
                 const functionName = 'functionName';
                 let parameterException: Error;
-                // tslint:disable-next-line:no-unused-expression
                 try { new FunctionParameter(invalidParameterName, false); } catch (e) { parameterException = e; }
                 const expectedError = `"${functionName}": ${parameterException.message}`;
                 const functionData = FunctionDataStub.createWithCode()

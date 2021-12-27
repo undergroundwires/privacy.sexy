@@ -8,7 +8,7 @@ export async function getUrlStatus(
     options = { ...DefaultOptions, ...options };
     const fetchOptions = getFetchOptions(url, options);
     return retryWithExponentialBackOff(async () => {
-        console.log('Requesting', url); // tslint:disable-line: no-console
+        console.log('Requesting', url);
         let result: IUrlStatus;
         try {
             const response = await fetchFollow(url, fetchOptions, options.followOptions);

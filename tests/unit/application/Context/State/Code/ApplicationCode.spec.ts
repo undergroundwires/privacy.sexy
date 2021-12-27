@@ -97,7 +97,6 @@ describe('ApplicationCode', () => {
                         };
                     },
                 };
-                // tslint:disable-next-line:no-unused-expression
                 new ApplicationCode(selection, expectedDefinition, generatorMock);
                 // act
                 const act = () => selection.changed.notify([]);
@@ -122,7 +121,6 @@ describe('ApplicationCode', () => {
                         };
                     },
                 };
-                // tslint:disable-next-line:no-unused-expression
                 new ApplicationCode(selection, expectedDefinition, generatorMock);
                 // act
                 const act = () => selection.changed.notify(scriptsToSelect);
