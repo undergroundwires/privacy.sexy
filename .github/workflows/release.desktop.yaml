@@ -1,4 +1,4 @@
-name: desktop-release
+name: release-desktop
 
 on:
  release:

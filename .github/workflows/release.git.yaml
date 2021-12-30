@@ -1,4 +1,4 @@
-name: git-release
+name: release-git
 
 on:
   push: # Ensure a new release is created for each new tag

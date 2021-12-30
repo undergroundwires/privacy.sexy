@@ -24,21 +24,21 @@
       src="https://api.codeclimate.com/v1/badges/3a70b7ef602e2264342c/maintainability"
     />
   </a>
-  <!-- Code quality -->
+  <!-- Tests -->
   <br />
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions">
+  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/tests.unit.yaml">
     <img
       alt="Unit tests status"
       src="https://github.com/undergroundwires/privacy.sexy/workflows/unit-tests/badge.svg"
     />
   </a>
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions">
+  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/tests.integration.yaml">
     <img
       alt="Integration tests status"
       src="https://github.com/undergroundwires/privacy.sexy/workflows/integration-tests/badge.svg"
     />
   </a>
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions">
+  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/tests.e2e.yaml">
     <img
       alt="E2E tests status"
       src="https://github.com/undergroundwires/privacy.sexy/workflows/e2e-tests/badge.svg"
@@ -46,36 +46,42 @@
   </a>
   <!-- Checks -->
   <br />
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions">
+  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.quality.yaml">
     <img
       alt="Quality checks status"
       src="https://github.com/undergroundwires/privacy.sexy/workflows/quality-checks/badge.svg"
     />
   </a>
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions">
+  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.security.yaml">
     <img
       alt="Security checks status"
       src="https://github.com/undergroundwires/privacy.sexy/workflows/security-checks/badge.svg"
     />
   </a>
+  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.build.yaml">
+    <img
+      alt="Build checks status"
+      src="https://github.com/undergroundwires/privacy.sexy/workflows/build-checks/badge.svg"
+    />
+  </a>
   <!-- Release -->
   <br />
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions">
+  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/release.git.yaml">
     <img
       alt="Git release status"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/git-release/badge.svg"
+      src="https://github.com/undergroundwires/privacy.sexy/workflows/release-git/badge.svg"
     />
   </a>
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions">
+  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/release.site.yaml">
     <img
       alt="Site release status"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/site-release/badge.svg"
+      src="https://github.com/undergroundwires/privacy.sexy/workflows/release-site/badge.svg"
     />
   </a>
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions">
+  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/release.desktop.yaml">
     <img
       alt="Desktop application release status"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/desktop-release/badge.svg"
+      src="https://github.com/undergroundwires/privacy.sexy/workflows/release-desktop/badge.svg"
     />
   </a>
   <!-- Others -->
