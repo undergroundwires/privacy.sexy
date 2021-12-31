@@ -12,7 +12,7 @@ interface IEnvironmentVariables {
 export class Environment implements IEnvironment {
     public static readonly CurrentEnvironment: IEnvironment = new Environment({
         window,
-        process,
+        process: typeof process !== 'undefined' ? process /* electron only */ : undefined,
         navigator,
     });
     public readonly isDesktop: boolean;

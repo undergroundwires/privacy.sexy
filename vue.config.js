@@ -1,6 +1,8 @@
+const { defineConfig } = require('@vue/cli-service');
+
 loadVueAppRuntimeVariables();
 
-module.exports = {
+module.exports = defineConfig({
     chainWebpack: (config) => {
         changeAppEntryPoint('./src/presentation/main.ts', config);
     },
@@ -9,7 +11,14 @@ module.exports = {
             alias: {  // also requires path alias in tsconfig.json
               "@tests": require('path').resolve(__dirname, 'tests/'),
             },
+            fallback: {
+                /* Tell webpack to ignore polyfilling them because Node core modules are never used
+                    for browser code but only for desktop where Electron supports them. */
+                ...ignorePolyfills('os', 'child_process', 'fs', 'path'),
+            }
         },
+        // Fix compilation failing on macOS when running unit/integration tests
+        externals: ['fsevents'],
     },
     pluginOptions: {
         // https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/guide.html#native-modules
@@ -34,10 +43,10 @@ module.exports = {
                 linux: { // https://www.electron.build/configuration/linux
                     target: 'AppImage',
                 }
-            }
-        }
+            },
+        },
     },
-}
+});
 
 function changeAppEntryPoint(entryPath, config) {
     config.entry('app').clear().add(entryPath).end();
@@ -50,3 +59,8 @@ function loadVueAppRuntimeVariables() {
     process.env.VUE_APP_REPOSITORY_URL  = packageJson.repository.url;
     process.env.VUE_APP_HOMEPAGE_URL    = packageJson.homepage;
 };
+
+function ignorePolyfills(...moduleNames) {
+    return moduleNames
+        .reduce((obj, module) => { obj[module] = false; return obj; }, {});
+}
