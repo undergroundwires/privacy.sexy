@@ -31,6 +31,7 @@ export default class TheCodeArea extends StatefulVue {
   public readonly editorId = 'codeEditor';
 
   private editor!: ace.Ace.Editor;
+
   private currentMarkerId?: number;
 
   @Prop() private theme!: string;
@@ -38,6 +39,7 @@ export default class TheCodeArea extends StatefulVue {
   public destroyed() {
     this.destroyEditor();
   }
+
   public sizeChanged() {
     if (this.editor) {
       this.editor.resize();
@@ -46,9 +48,14 @@ export default class TheCodeArea extends StatefulVue {
 
   protected handleCollectionState(newState: IReadOnlyCategoryCollectionState): void {
     this.destroyEditor();
-    this.editor = initializeEditor(this.theme, this.editorId, newState.collection.scripting.language);
+    this.editor = initializeEditor(
+      this.theme,
+      this.editorId,
+      newState.collection.scripting.language,
+    );
     const appCode = newState.code;
-    this.editor.setValue(appCode.current || getDefaultCode(newState.collection.scripting.language), 1);
+    const innerCode = appCode.current || getDefaultCode(newState.collection.scripting.language);
+    this.editor.setValue(innerCode, 1);
     this.events.unsubscribeAll();
     this.events.register(appCode.changed.on((code) => this.updateCode(code)));
   }
@@ -68,28 +75,34 @@ export default class TheCodeArea extends StatefulVue {
       this.reactToChanges(event, event.changedScripts);
     }
   }
+
   private reactToChanges(event: ICodeChangedEvent, scripts: ReadonlyArray<IScript>) {
-      const positions = scripts
-        .map((script) => event.getScriptPositionInCode(script));
-      const start = Math.min(
-        ...positions.map((position) => position.startLine),
-      );
-      const end = Math.max(
-        ...positions.map((position) => position.endLine),
-      );
-      this.scrollToLine(end + 2);
-      this.highlight(start, end);
+    const positions = scripts
+      .map((script) => event.getScriptPositionInCode(script));
+    const start = Math.min(
+      ...positions.map((position) => position.startLine),
+    );
+    const end = Math.max(
+      ...positions.map((position) => position.endLine),
+    );
+    this.scrollToLine(end + 2);
+    this.highlight(start, end);
   }
+
   private highlight(startRow: number, endRow: number) {
     const AceRange = ace.require('ace/range').Range;
     this.currentMarkerId = this.editor.session.addMarker(
-        new AceRange(startRow, 0, endRow, 0), 'code-area__highlight', 'fullLine',
+      new AceRange(startRow, 0, endRow, 0),
+      'code-area__highlight',
+      'fullLine',
     );
   }
+
   private scrollToLine(row: number) {
     const column = this.editor.session.getLine(row).length;
     this.editor.gotoLine(row, column, true);
   }
+
   private removeCurrentHighlighting() {
     if (!this.currentMarkerId) {
       return;
@@ -97,6 +110,7 @@ export default class TheCodeArea extends StatefulVue {
     this.editor.session.removeMarker(this.currentMarkerId);
     this.currentMarkerId = undefined;
   }
+
   private destroyEditor() {
     if (this.editor) {
       this.editor.destroy();
@@ -105,7 +119,11 @@ export default class TheCodeArea extends StatefulVue {
   }
 }
 
-function initializeEditor(theme: string, editorId: string, language: ScriptingLanguage): ace.Ace.Editor {
+function initializeEditor(
+  theme: string,
+  editorId: string,
+  language: ScriptingLanguage,
+): ace.Ace.Editor {
   theme = theme || 'github';
   const editor = ace.edit(editorId);
   const lang = getLanguage(language);
@@ -120,7 +138,7 @@ function initializeEditor(theme: string, editorId: string, language: ScriptingLa
 
 function getLanguage(language: ScriptingLanguage) {
   switch (language) {
-    case ScriptingLanguage.batchfile:   return 'batchfile';
+    case ScriptingLanguage.batchfile: return 'batchfile';
     case ScriptingLanguage.shellscript: return 'sh';
     default:
       throw new Error('unknown language');

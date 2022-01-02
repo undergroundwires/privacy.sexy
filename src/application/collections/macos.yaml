@@ -955,7 +955,7 @@ actions:
                                     sudo defaults write '/var/db/SystemPolicy-prefs' 'enabled' -string 'no'
                                     echo "Disabled Gatekeeper"
                                 else
-                                    >&2 echo "Unknown gatekeeper status: $gatekeeper_status"
+                                    >&2 echo "Unknown gatekeeper status: $gatekeeper_status"
                                 fi
                             fi
                         revertCode: |-
@@ -974,7 +974,7 @@ actions:
                                 elif [ $gatekeeper_status = "enabled" ]; then
                                     echo "No action needed, Gatekeeper is already enabled"
                                 else
-                                    >&2 echo "Unknown Gatekeeper status: $gatekeeper_status"
+                                    >&2 echo "Unknown Gatekeeper status: $gatekeeper_status"
                                 fi
                             fi
             -

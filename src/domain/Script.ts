@@ -4,24 +4,26 @@ import { RecommendationLevel } from './RecommendationLevel';
 import { IScriptCode } from './IScriptCode';
 
 export class Script extends BaseEntity<string> implements IScript {
-    constructor(
-        public readonly name: string,
-        public readonly code: IScriptCode,
-        public readonly documentationUrls: ReadonlyArray<string>,
-        public readonly level?: RecommendationLevel) {
-        super(name);
-        if (!code) {
-            throw new Error(`undefined code (script: ${name})`);
-        }
-        validateLevel(level);
+  constructor(
+    public readonly name: string,
+    public readonly code: IScriptCode,
+    public readonly documentationUrls: ReadonlyArray<string>,
+    public readonly level?: RecommendationLevel,
+  ) {
+    super(name);
+    if (!code) {
+      throw new Error(`undefined code (script: ${name})`);
     }
-    public canRevert(): boolean {
-        return Boolean(this.code.revert);
-    }
+    validateLevel(level);
+  }
+
+  public canRevert(): boolean {
+    return Boolean(this.code.revert);
+  }
 }
 
 function validateLevel(level?: RecommendationLevel) {
-    if (level !== undefined && !(level in RecommendationLevel)) {
-        throw new Error(`invalid level: ${level}`);
-    }
+  if (level !== undefined && !(level in RecommendationLevel)) {
+    throw new Error(`invalid level: ${level}`);
+  }
 }

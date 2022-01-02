@@ -2,14 +2,16 @@
   <span class="url">
     <a :href="downloadUrl"
         v-bind:class="{
-            'url__active': hasCurrentOsDesktopVersion && isCurrentOs,
-            'url__inactive': hasCurrentOsDesktopVersion && !isCurrentOs,
-            }">{{ operatingSystemName }}</a>
+        'url__active': hasCurrentOsDesktopVersion && isCurrentOs,
+        'url__inactive': hasCurrentOsDesktopVersion && !isCurrentOs,
+      }">{{ operatingSystemName }}</a>
   </span>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Vue } from 'vue-property-decorator';
+import {
+  Component, Prop, Watch, Vue,
+} from 'vue-property-decorator';
 import { Environment } from '@/application/Environment/Environment';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { ApplicationFactory } from '@/application/ApplicationFactory';
@@ -18,58 +20,61 @@ import { ApplicationFactory } from '@/application/ApplicationFactory';
 export default class DownloadUrlListItem extends Vue {
   @Prop() public operatingSystem!: OperatingSystem;
 
-  public downloadUrl: string = '';
-  public operatingSystemName: string = '';
-  public isCurrentOs: boolean = false;
-  public hasCurrentOsDesktopVersion: boolean = false;
+  public downloadUrl = '';
+
+  public operatingSystemName = '';
+
+  public isCurrentOs = false;
+
+  public hasCurrentOsDesktopVersion = false;
 
   public async mounted() {
-      await this.onOperatingSystemChanged(this.operatingSystem);
+    await this.onOperatingSystemChanged(this.operatingSystem);
   }
 
   @Watch('operatingSystem')
   public async onOperatingSystemChanged(os: OperatingSystem) {
     const currentOs = Environment.CurrentEnvironment.os;
     this.isCurrentOs = os === currentOs;
-    this.downloadUrl = await this.getDownloadUrl(os);
+    this.downloadUrl = await getDownloadUrl(os);
     this.operatingSystemName = getOperatingSystemName(os);
     this.hasCurrentOsDesktopVersion = hasDesktopVersion(currentOs);
   }
+}
 
-  private async getDownloadUrl(os: OperatingSystem): Promise<string> {
-    const context = await ApplicationFactory.Current.getApp();
-    return context.info.getDownloadUrl(os);
-  }
+async function getDownloadUrl(os: OperatingSystem): Promise<string> {
+  const context = await ApplicationFactory.Current.getApp();
+  return context.info.getDownloadUrl(os);
 }
 
 function hasDesktopVersion(os: OperatingSystem): boolean {
-    return os === OperatingSystem.Windows
-        || os === OperatingSystem.Linux
-        || os === OperatingSystem.macOS;
+  return os === OperatingSystem.Windows
+    || os === OperatingSystem.Linux
+    || os === OperatingSystem.macOS;
 }
 
 function getOperatingSystemName(os: OperatingSystem): string {
-    switch (os) {
-        case OperatingSystem.Linux:
-            return 'Linux';
-        case OperatingSystem.macOS:
-            return 'macOS';
-        case OperatingSystem.Windows:
-            return 'Windows';
-        default:
-            throw new Error(`Unsupported os: ${OperatingSystem[os]}`);
-    }
+  switch (os) {
+    case OperatingSystem.Linux:
+      return 'Linux';
+    case OperatingSystem.macOS:
+      return 'macOS';
+    case OperatingSystem.Windows:
+      return 'Windows';
+    default:
+      throw new Error(`Unsupported os: ${OperatingSystem[os]}`);
+  }
 }
 
 </script>
 
 <style scoped lang="scss">
 .url {
-    &__active {
-        font-size: 1em;
-    }
-    &__inactive {
-        font-size: 0.70em;
-    }
+  &__active {
+      font-size: 1em;
+  }
+  &__inactive {
+      font-size: 0.70em;
+  }
 }
 </style>

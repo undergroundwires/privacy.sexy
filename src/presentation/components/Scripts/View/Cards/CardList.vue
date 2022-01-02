@@ -1,16 +1,21 @@
 <template>
   <Responsive v-on:widthChanged="width = $event">
-    <!-- <div id="responsivity-debug">
-      Width: {{ width || 'undefined' }}
-      Size: <span v-if="width <= 500">small</span><span v-if="width > 500 && width < 750">medium</span><span v-if="width >= 750">big</span> 
-    </div> -->
+    <!--
+      <div id="responsivity-debug">
+        Width: {{ width || 'undefined' }}
+        Size:
+          <span v-if="width <= 500">small</span>
+          <span v-if="width > 500 && width < 750">medium</span>
+          <span v-if="width >= 750">big</span>
+      </div>
+    -->
     <div v-if="categoryIds != null && categoryIds.length > 0"  class="cards">
       <CardListItem
         class="card"
-        v-bind:class="{ 
+        v-bind:class="{
           'small-screen': width <= 500,
           'medium-screen': width > 500 && width < 750,
-          'big-screen': width >= 750         
+          'big-screen': width >= 750
         }"
         v-for="categoryId of categoryIds"
         :data-category="categoryId"
@@ -25,13 +30,13 @@
 </template>
 
 <script lang="ts">
-import CardListItem from './CardListItem.vue';
-import Responsive from '@/presentation/components/Shared/Responsive.vue';
 import { Component } from 'vue-property-decorator';
+import Responsive from '@/presentation/components/Shared/Responsive.vue';
 import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
 import { ICategory } from '@/domain/ICategory';
-import { hasDirective } from './NonCollapsingDirective';
 import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { hasDirective } from './NonCollapsingDirective';
+import CardListItem from './CardListItem.vue';
 
 @Component({
   components: {
@@ -40,8 +45,10 @@ import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/IC
   },
 })
 export default class CardList extends StatefulVue {
-  public width: number = 0;
+  public width = 0;
+
   public categoryIds: number[] = [];
+
   public activeCategoryId?: number = null;
 
   public created() {
@@ -75,9 +82,10 @@ export default class CardList extends StatefulVue {
     }
     this.activeCategoryId = null;
   }
+
   private outsideClickListener(event: PointerEvent) {
     if (this.areAllCardsCollapsed()) {
-        return;
+      return;
     }
     const element = document.querySelector(`[data-category="${this.activeCategoryId}"]`);
     const target = event.target as Element;
@@ -89,6 +97,7 @@ export default class CardList extends StatefulVue {
   private collapseAllCards(): void {
     this.activeCategoryId = undefined;
   }
+
   private areAllCardsCollapsed(): boolean {
     return !this.activeCategoryId;
   }
@@ -96,10 +105,10 @@ export default class CardList extends StatefulVue {
 
 function isClickable(element: Element) {
   const cursorName = window.getComputedStyle(element).cursor;
-  return [ 'pointer', 'move', 'grab'].some((name) => cursorName === name)
+  return ['pointer', 'move', 'grab'].some((name) => cursorName === name)
     || cursorName.includes('resize')
-    || [ 'onclick', 'href'].some((attributeName) => element.hasAttribute(attributeName))
-    || [ 'a', 'button'].some((tagName) => element.closest(`.${tagName}`));
+    || ['onclick', 'href'].some((attributeName) => element.hasAttribute(attributeName))
+    || ['a', 'button'].some((tagName) => element.closest(`.${tagName}`));
 }
 
 </script>
@@ -112,9 +121,10 @@ function isClickable(element: Element) {
   flex-flow: row wrap;
   font-family: $font-main;
   gap: $card-gap;
-  /* 
+  /*
     Padding is used to allow scale animation (growing size) for cards on hover.
-    It ensures that there's room to grow, so the animation is shown without overflowing with scrollbars.
+    It ensures that there's room to grow, so the animation is shown without overflowing
+    with scrollbars.
   */
   padding: 10px;
 }

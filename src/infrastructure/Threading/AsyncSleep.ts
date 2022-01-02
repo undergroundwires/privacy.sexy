@@ -1,5 +1,8 @@
-export type SchedulerType = (callback: (...args: any[]) => void, ms: number) => void;
+export type SchedulerCallbackType = (...args: unknown[]) => void;
+export type SchedulerType = (callback: SchedulerCallbackType, ms: number) => void;
 
 export function sleep(time: number, scheduler: SchedulerType = setTimeout) {
-    return new Promise((resolve) => scheduler(() => resolve(undefined), time));
+  return new Promise((resolve) => {
+    scheduler(() => resolve(undefined), time);
+  });
 }

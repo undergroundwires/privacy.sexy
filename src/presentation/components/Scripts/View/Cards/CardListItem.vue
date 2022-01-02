@@ -1,38 +1,49 @@
 <template>
-    <div class="card"
-          v-on:click="onSelected(!isExpanded)"
-          v-bind:class="{ 
-                    'is-collapsed': !isExpanded,
-                    'is-inactive': activeCategoryId && activeCategoryId != categoryId,
-                    'is-expanded': isExpanded
-                    }"
-          ref="cardElement">
-        <div class="card__inner">
-          <span v-if="cardTitle && cardTitle.length > 0">
-            <span>{{cardTitle}}</span>
-          </span>
-          <span v-else>Oh no 😢</span>
-          <!-- Expand icon -->
-          <font-awesome-icon :icon="['far', isExpanded ? 'folder-open' : 'folder']" class="card__inner__expand-icon" />
-          <!-- Indeterminate and full states -->
-          <div class="card__inner__state-icons">
-            <font-awesome-icon v-if="isAnyChildSelected && !areAllChildrenSelected" :icon="['fa', 'battery-half']" />
-            <font-awesome-icon v-if="areAllChildrenSelected" :icon="['fa', 'battery-full']" />
-          </div>
+  <div class="card"
+    v-on:click="onSelected(!isExpanded)"
+    v-bind:class="{
+      'is-collapsed': !isExpanded,
+      'is-inactive': activeCategoryId && activeCategoryId != categoryId,
+      'is-expanded': isExpanded
+    }"
+    ref="cardElement">
+      <div class="card__inner">
+        <span v-if="cardTitle && cardTitle.length > 0">
+          <span>{{cardTitle}}</span>
+        </span>
+        <span v-else>Oh no 😢</span>
+        <!-- Expand icon -->
+        <font-awesome-icon
+          class="card__inner__expand-icon"
+          :icon="['far', isExpanded ? 'folder-open' : 'folder']"
+        />
+        <!-- Indeterminate and full states -->
+        <div class="card__inner__state-icons">
+          <font-awesome-icon
+            :icon="['fa', 'battery-half']"
+            v-if="isAnyChildSelected && !areAllChildrenSelected"
+          />
+          <font-awesome-icon
+            :icon="['fa', 'battery-full']"
+            v-if="areAllChildrenSelected"
+          />
         </div>
-        <div class="card__expander" v-on:click.stop>
-          <div class="card__expander__content">
-            <ScriptsTree :categoryId="categoryId"></ScriptsTree>
-          </div>
-          <div class="card__expander__close-button">
-            <font-awesome-icon :icon="['fas', 'times']"  v-on:click="onSelected(false)"/>
-          </div>
       </div>
+      <div class="card__expander" v-on:click.stop>
+        <div class="card__expander__content">
+          <ScriptsTree :categoryId="categoryId"></ScriptsTree>
+        </div>
+        <div class="card__expander__close-button">
+          <font-awesome-icon :icon="['fas', 'times']"  v-on:click="onSelected(false)"/>
+        </div>
     </div>
+  </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Emit } from 'vue-property-decorator';
+import {
+  Component, Prop, Watch, Emit,
+} from 'vue-property-decorator';
 import ScriptsTree from '@/presentation/components/Scripts/View/ScriptsTree/ScriptsTree.vue';
 import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
 
@@ -43,34 +54,44 @@ import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
 })
 export default class CardListItem extends StatefulVue {
   @Prop() public categoryId!: number;
+
   @Prop() public activeCategoryId!: number;
+
   public cardTitle = '';
+
   public isExpanded = false;
+
   public isAnyChildSelected = false;
+
   public areAllChildrenSelected = false;
 
   public async mounted() {
     const context = await this.getCurrentContext();
     this.events.register(context.state.selection.changed.on(
-      () => this.updateSelectionIndicators(this.categoryId)));
+      () => this.updateSelectionIndicators(this.categoryId),
+    ));
     await this.updateState(this.categoryId);
   }
+
   @Emit('selected')
   public onSelected(isExpanded: boolean) {
     this.isExpanded = isExpanded;
   }
+
   @Watch('activeCategoryId')
   public async onActiveCategoryChanged(value: |number) {
     this.isExpanded = value === this.categoryId;
   }
+
   @Watch('isExpanded')
   public async onExpansionChanged(newValue: number, oldValue: number) {
     if (!oldValue && newValue) {
-      await new Promise((r) => setTimeout(r, 400));
+      await new Promise((resolve) => { setTimeout(resolve, 400); });
       const focusElement = this.$refs.cardElement as HTMLElement;
-      (focusElement as HTMLElement).scrollIntoView({behavior: 'smooth'});
+      focusElement.scrollIntoView({ behavior: 'smooth' });
     }
   }
+
   @Watch('categoryId')
   public async updateState(value: |number) {
     const context = await this.getCurrentContext();
@@ -79,13 +100,11 @@ export default class CardListItem extends StatefulVue {
     await this.updateSelectionIndicators(value);
   }
 
-  protected handleCollectionState(): void {
-    return;
-  }
+  protected handleCollectionState(): void { /* do nothing */ }
 
   private async updateSelectionIndicators(categoryId: number) {
     const context = await this.getCurrentContext();
-    const selection = context.state.selection;
+    const { selection } = context.state;
     const category = context.state.collection.findCategory(categoryId);
     this.isAnyChildSelected = category ? selection.isAnySelected(category) : false;
     this.areAllChildrenSelected = category ? selection.areAllSelected(category) : false;
@@ -105,8 +124,11 @@ $card-horizontal-gap    : $card-gap;
 .card {
   transition: all 0.2s ease-in-out;
 
-  &__inner {  
-    padding: /*top:*/ $card-inner-padding /*right:*/ $card-inner-padding /*bottom:*/ 0 /*left:*/ $card-inner-padding;
+  &__inner {
+    padding-top: $card-inner-padding;
+    padding-right: $card-inner-padding;
+    padding-bottom: 0;
+    padding-left: $card-inner-padding;
     position: relative;
     cursor: pointer;
     background-color: $color-primary;
@@ -138,7 +160,7 @@ $card-horizontal-gap    : $card-gap;
       display: flex;
       justify-content: flex-end;
     }
-  
+
     &__expand-icon {
       width: 100%;
       margin-top: .25em;
@@ -159,7 +181,7 @@ $card-horizontal-gap    : $card-gap;
       justify-content: center;
       word-break: break-word;
     }
-    
+
     &__close-button {
       width: auto;
       font-size: 1.5em;
@@ -220,7 +242,7 @@ $card-horizontal-gap    : $card-gap;
       }
     }
   }
-  
+
   &.is-inactive {
     .card__inner {
       pointer-events: none;
@@ -228,7 +250,7 @@ $card-horizontal-gap    : $card-gap;
       background-color: $color-primary-light;
       transform: scale(0.95);
     }
-    
+
     &:hover {
       .card__inner {
         background-color: $color-primary;

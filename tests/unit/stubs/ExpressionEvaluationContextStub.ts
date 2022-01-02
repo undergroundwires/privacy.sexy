@@ -5,15 +5,18 @@ import { FunctionCallArgumentCollectionStub } from './FunctionCallArgumentCollec
 import { PipelineCompilerStub } from './PipelineCompilerStub';
 
 export class ExpressionEvaluationContextStub implements IExpressionEvaluationContext {
-    public args: IReadOnlyFunctionCallArgumentCollection = new FunctionCallArgumentCollectionStub()
-        .withArgument('test-arg', 'test-value');
-    public pipelineCompiler: IPipelineCompiler = new PipelineCompilerStub();
-    public withArgs(args: IReadOnlyFunctionCallArgumentCollection) {
-        this.args = args;
-        return this;
-    }
-    public withPipelineCompiler(pipelineCompiler: IPipelineCompiler) {
-        this.pipelineCompiler = pipelineCompiler;
-        return this;
-    }
+  public args: IReadOnlyFunctionCallArgumentCollection = new FunctionCallArgumentCollectionStub()
+    .withArgument('test-arg', 'test-value');
+
+  public pipelineCompiler: IPipelineCompiler = new PipelineCompilerStub();
+
+  public withArgs(args: IReadOnlyFunctionCallArgumentCollection) {
+    this.args = args;
+    return this;
+  }
+
+  public withPipelineCompiler(pipelineCompiler: IPipelineCompiler) {
+    this.pipelineCompiler = pipelineCompiler;
+    return this;
+  }
 }

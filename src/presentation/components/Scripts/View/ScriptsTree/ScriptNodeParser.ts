@@ -1,6 +1,6 @@
 import { ICategory, IScript } from '@/domain/ICategory';
-import { INode, NodeType } from './SelectableTree/Node/INode';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
+import { INode, NodeType } from './SelectableTree/Node/INode';
 
 export function parseAllCategories(collection: ICategoryCollection): INode[] | undefined {
   const nodes = new Array<INode>();
@@ -11,7 +11,10 @@ export function parseAllCategories(collection: ICategoryCollection): INode[] | u
   return nodes;
 }
 
-export function parseSingleCategory(categoryId: number, collection: ICategoryCollection): INode[] | undefined {
+export function parseSingleCategory(
+  categoryId: number,
+  collection: ICategoryCollection,
+): INode[] | undefined {
   const category = collection.findCategory(categoryId);
   if (!category) {
     throw new Error(`Category with id ${categoryId} does not exist`);
@@ -35,7 +38,8 @@ export function getCategoryNodeId(category: ICategory): string {
 }
 
 function parseCategoryRecursively(
-  parentCategory: ICategory): INode[] {
+  parentCategory: ICategory,
+): INode[] {
   if (!parentCategory) {
     throw new Error('parentCategory is undefined');
   }
@@ -67,7 +71,9 @@ function addCategories(categories: ReadonlyArray<ICategory>, nodes: INode[]): IN
 }
 
 function convertCategoryToNode(
-  category: ICategory, children: readonly INode[]): INode {
+  category: ICategory,
+  children: readonly INode[],
+): INode {
   return {
     id: getCategoryNodeId(category),
     type: NodeType.Category,

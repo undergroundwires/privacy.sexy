@@ -1,4 +1,4 @@
 export interface IFunctionCallArgument {
-    readonly parameterName: string;
-    readonly argumentValue: string;
+  readonly parameterName: string;
+  readonly argumentValue: string;
 }

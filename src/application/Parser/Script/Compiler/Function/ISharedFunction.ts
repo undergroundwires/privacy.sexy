@@ -1,24 +1,24 @@
 import { IReadOnlyFunctionParameterCollection } from './Parameter/IFunctionParameterCollection';
-import { IFunctionCall } from '../Function/Call/IFunctionCall';
+import { IFunctionCall } from './Call/IFunctionCall';
 
 export interface ISharedFunction {
-    readonly name: string;
-    readonly parameters: IReadOnlyFunctionParameterCollection;
-    readonly body: ISharedFunctionBody;
+  readonly name: string;
+  readonly parameters: IReadOnlyFunctionParameterCollection;
+  readonly body: ISharedFunctionBody;
 }
 
 export interface ISharedFunctionBody {
-    readonly type: FunctionBodyType;
-    readonly code: IFunctionCode;
-    readonly calls: readonly IFunctionCall[];
+  readonly type: FunctionBodyType;
+  readonly code: IFunctionCode;
+  readonly calls: readonly IFunctionCall[];
 }
 
 export enum FunctionBodyType {
-    Code,
-    Calls,
+  Code,
+  Calls,
 }
 
 export interface IFunctionCode {
-    readonly do: string;
-    readonly revert?: string;
+  readonly do: string;
+  readonly revert?: string;
 }

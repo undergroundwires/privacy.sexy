@@ -1,26 +1,26 @@
 <template>
-    <div class="container" v-if="hasCode">
-        <IconButton
-            v-if="this.canRun"
-            text="Run"
-            v-on:click="executeCode"
-            icon-prefix="fas" icon-name="play">
-        </IconButton>
-        <IconButton
-            :text="this.isDesktopVersion ? 'Save' : 'Download'"
-            v-on:click="saveCode"
-            icon-prefix="fas" 
-            :icon-name="this.isDesktopVersion ? 'save' : 'file-download'">
-        </IconButton>
-        <IconButton
-            text="Copy"
-            v-on:click="copyCode"
-            icon-prefix="fas" icon-name="copy">
-        </IconButton>
-        <Dialog v-if="this.isMacOsCollection" ref="instructionsDialog">
-          <MacOsInstructions :fileName="this.fileName" />
-        </Dialog>
-    </div>
+  <div class="container" v-if="hasCode">
+    <IconButton
+      v-if="this.canRun"
+      text="Run"
+      v-on:click="executeCode"
+      icon-prefix="fas" icon-name="play">
+    </IconButton>
+    <IconButton
+      :text="this.isDesktopVersion ? 'Save' : 'Download'"
+      v-on:click="saveCode"
+      icon-prefix="fas"
+      :icon-name="this.isDesktopVersion ? 'save' : 'file-download'">
+    </IconButton>
+    <IconButton
+      text="Copy"
+      v-on:click="copyCode"
+      icon-prefix="fas" icon-name="copy">
+    </IconButton>
+    <Dialog v-if="this.isMacOsCollection" ref="instructionsDialog">
+      <MacOsInstructions :fileName="this.fileName" />
+    </Dialog>
+  </div>
 </template>
 
 <script lang="ts">
@@ -29,8 +29,6 @@ import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
 import { SaveFileDialog, FileType } from '@/infrastructure/SaveFileDialog';
 import { Clipboard } from '@/infrastructure/Clipboard';
 import Dialog from '@/presentation/components/Shared/Dialog.vue';
-import IconButton from './IconButton.vue';
-import MacOsInstructions from './MacOsInstructions.vue';
 import { Environment } from '@/application/Environment/Environment';
 import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
@@ -39,6 +37,8 @@ import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CodeRunner } from '@/infrastructure/CodeRunner';
 import { IReadOnlyApplicationContext } from '@/application/Context/IApplicationContext';
+import MacOsInstructions from './MacOsInstructions.vue';
+import IconButton from './IconButton.vue';
 
 @Component({
   components: {
@@ -49,39 +49,47 @@ import { IReadOnlyApplicationContext } from '@/application/Context/IApplicationC
 })
 export default class TheCodeButtons extends StatefulVue {
   public readonly isDesktopVersion = Environment.CurrentEnvironment.isDesktop;
+
   public canRun = false;
+
   public hasCode = false;
+
   public isMacOsCollection = false;
+
   public fileName = '';
 
   public async copyCode() {
     const code = await this.getCurrentCode();
     Clipboard.copyText(code.current);
   }
+
   public async saveCode() {
     const context = await this.getCurrentContext();
     saveCode(this.fileName, context.state);
     if (this.isMacOsCollection) {
-      (this.$refs.instructionsDialog as any).show();
+      (this.$refs.instructionsDialog as Dialog).show();
     }
   }
+
   public async executeCode() {
     const context = await this.getCurrentContext();
     await executeCode(context);
   }
 
   protected handleCollectionState(newState: IReadOnlyCategoryCollectionState): void {
-    this.canRun = this.isDesktopVersion && newState.collection.os === Environment.CurrentEnvironment.os;
-    this.isMacOsCollection = newState.collection.os === OperatingSystem.macOS;
+    const isNewOs = (test: OperatingSystem) => newState.collection.os === test;
+    this.canRun = this.isDesktopVersion && isNewOs(Environment.CurrentEnvironment.os);
+    this.isMacOsCollection = isNewOs(OperatingSystem.macOS);
     this.fileName = buildFileName(newState.collection.scripting);
     this.react(newState.code);
   }
 
   private async getCurrentCode(): Promise<IApplicationCode> {
     const context = await this.getCurrentContext();
-    const code = context.state.code;
+    const { code } = context.state;
     return code;
   }
+
   private async react(code: IApplicationCode) {
     this.hasCode = code.current && code.current.length > 0;
     this.events.unsubscribeAll();
@@ -118,9 +126,9 @@ function buildFileName(scripting: IScriptingDefinition) {
 async function executeCode(context: IReadOnlyApplicationContext) {
   const runner = new CodeRunner();
   await runner.runCode(
-    /*code*/ context.state.code.current,
-    /*appName*/ context.app.info.name,
-    /*fileExtension*/ context.state.collection.scripting.fileExtension,
+    /* code: */ context.state.code.current,
+    /* appName: */ context.app.info.name,
+    /* fileExtension: */ context.state.collection.scripting.fileExtension,
   );
 }
 
@@ -128,9 +136,9 @@ async function executeCode(context: IReadOnlyApplicationContext) {
 
 <style scoped lang="scss">
 .container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 .container > * + * {
   margin-left: 30px;

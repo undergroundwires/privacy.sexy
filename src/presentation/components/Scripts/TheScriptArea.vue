@@ -1,17 +1,17 @@
 <template>
-<div class="scripts">
+  <div class="scripts">
     <TheScriptsMenu v-on:viewChanged="currentView = $event" />
     <HorizontalResizeSlider class="row"
-        verticalMargin="15px" firstInitialWidth="55%"
-        firstMinWidth="20%" secondMinWidth="20%">
-        <template v-slot:first>
-            <TheScriptsView :currentView="currentView" />
-        </template>
-        <template v-slot:second>
-            <TheCodeArea theme="xcode" />
-        </template>
+      verticalMargin="15px" firstInitialWidth="55%"
+      firstMinWidth="20%" secondMinWidth="20%">
+      <template v-slot:first>
+        <TheScriptsView :currentView="currentView" />
+      </template>
+      <template v-slot:second>
+        <TheCodeArea theme="xcode" />
+      </template>
     </HorizontalResizeSlider>
-</div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -31,14 +31,14 @@ import { ViewType } from '@/presentation/components/Scripts/Menu/View/ViewType';
   },
 })
 export default class TheScriptArea extends Vue {
-    public currentView = ViewType.Cards;
+  public currentView = ViewType.Cards;
 }
 </script>
 
 <style scoped lang="scss">
 .scripts {
-    > * + * {
-        margin-top: 15px;
-    }
+  > * + * {
+    margin-top: 15px;
+  }
 }
 </style>

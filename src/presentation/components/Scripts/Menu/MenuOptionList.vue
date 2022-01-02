@@ -1,10 +1,10 @@
 <template>
-    <div class="list">
-        <div v-if="label">{{ label }}:</div>
-        <div class="items">
-            <slot />
-        </div>
+  <div class="list">
+    <div v-if="label">{{ label }}:</div>
+    <div class="items">
+      <slot />
     </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -26,9 +26,9 @@ $gap: 0.25rem;
   align-items: center;
   .items {
     * + *::before {
-        content: '|';
-        padding-right: $gap;
-        padding-left: $gap;
+      content: '|';
+      padding-right: $gap;
+      padding-left: $gap;
     }
   }
   > *:not(:last-child) {

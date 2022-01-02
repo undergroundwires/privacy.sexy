@@ -1,12 +1,12 @@
 <template>
-    <modal
-        :name="name"
-        :scrollable="true"
-        :adaptive="true"
-        height="auto">
+  <modal
+    :name="name"
+    :scrollable="true"
+    :adaptive="true"
+    height="auto">
     <div class="dialog">
       <div class="dialog__content">
-          <slot></slot>
+        <slot></slot>
       </div>
       <div class="dialog__close-button">
         <font-awesome-icon :icon="['fas', 'times']"  @click="$modal.hide(name)"/>

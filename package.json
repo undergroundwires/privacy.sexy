@@ -15,7 +15,7 @@
     "lint:md": "markdownlint **/*.md --ignore node_modules",
     "lint:md:consistency": "remark . --frail --use remark-preset-lint-consistent",
     "lint:md:relative-urls": "remark . --frail --use remark-validate-links",
-    "lint:eslint": "vue-cli-service lint --no-fix",
+    "lint:eslint": "vue-cli-service lint --no-fix --mode production",
     "lint:yaml": "yamllint **/*.yaml --ignore=node_modules/**/*.yaml",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",

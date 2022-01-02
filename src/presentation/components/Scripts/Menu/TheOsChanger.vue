@@ -1,11 +1,11 @@
 <template>
   <MenuOptionList>
-      <MenuOptionListItem
-        v-for="os in this.allOses" :key="os.name"
-        :enabled="currentOs !== os.os"
-        @click="changeOs(os.os)"
-        :label="os.name"
-        />
+    <MenuOptionListItem
+      v-for="os in this.allOses" :key="os.name"
+      :enabled="currentOs !== os.os"
+      @click="changeOs(os.os)"
+      :label="os.name"
+      />
   </MenuOptionList>
 </template>
 
@@ -26,6 +26,7 @@ import MenuOptionListItem from './MenuOptionListItem.vue';
 })
 export default class TheOsChanger extends StatefulVue {
   public allOses: Array<{ name: string, os: OperatingSystem }> = [];
+
   public currentOs?: OperatingSystem = null;
 
   public async created() {
@@ -33,6 +34,7 @@ export default class TheOsChanger extends StatefulVue {
     this.allOses = app.getSupportedOsList()
       .map((os) => ({ os, name: renderOsName(os) }));
   }
+
   public async changeOs(newOs: OperatingSystem) {
     const context = await this.getCurrentContext();
     context.changeContext(newOs);
@@ -45,11 +47,11 @@ export default class TheOsChanger extends StatefulVue {
 }
 
 function renderOsName(os: OperatingSystem): string {
-    switch (os) {
-      case OperatingSystem.Windows: return 'Windows';
-      case OperatingSystem.macOS: return 'macOS';
-      default: throw new RangeError(`Cannot render os name: ${OperatingSystem[os]}`);
-    }
+  switch (os) {
+    case OperatingSystem.Windows: return 'Windows';
+    case OperatingSystem.macOS: return 'macOS';
+    default: throw new RangeError(`Cannot render os name: ${OperatingSystem[os]}`);
+  }
 }
 </script>
 

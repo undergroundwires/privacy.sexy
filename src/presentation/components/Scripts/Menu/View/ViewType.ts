@@ -1,4 +1,4 @@
 export enum ViewType {
-    Cards = 1,
-    Tree = 0,
+  Cards = 1,
+  Tree = 0,
 }

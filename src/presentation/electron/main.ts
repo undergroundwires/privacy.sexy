@@ -1,17 +1,20 @@
-'use strict';
-
 // This is main process of Electron, started as first thing when app starts.
 // This script is running through entire life of the application.
 // It doesn't have any windows which you can see on screen, opens the main window from here.
 
-import { app, protocol, BrowserWindow, shell, screen } from 'electron';
+import path from 'path';
+import {
+  app, protocol, BrowserWindow, shell, screen,
+} from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
-import path from 'path';
 import log from 'electron-log';
 import { setupAutoUpdater } from './Update/Updater';
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
+
+// Path of static assets, magic variable populated by electron
+// eslint-disable-next-line no-underscore-dangle
 declare const __static: string; // https://github.com/electron-userland/electron-webpack/issues/172
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -25,7 +28,7 @@ protocol.registerSchemesAsPrivileged([
 
 log.transports.file.level = 'silly';
 if (!process.env.IS_TEST) {
-  Object.assign(console, log.functions);  // override console.log, console.warn etc.
+  Object.assign(console, log.functions); // override console.log, console.warn etc.
 }
 
 function createWindow() {
@@ -39,7 +42,7 @@ function createWindow() {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration
       nodeIntegration: (process.env
-          .ELECTRON_NODE_INTEGRATION as unknown) as boolean,
+        .ELECTRON_NODE_INTEGRATION as unknown) as boolean,
     },
     // https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/recipes.html#set-tray-icon
     icon: path.join(__static, 'icon.png'),
@@ -68,7 +71,8 @@ app.on('window-all-closed', () => {
 
 if (process.platform === 'darwin') {
   // On macOS we application quit is stopped if user does not Cmd + Q
-  // But we still want to be able to use app.quit() and quit the application on menu bar, after updates etc.
+  // But we still want to be able to use app.quit() and quit the application
+  // on menu bar, after updates etc.
   app.on('before-quit', () => {
     macOsQuit = true;
   });
@@ -91,6 +95,7 @@ app.on('ready', async () => {
     try {
       await installExtension(VUEJS_DEVTOOLS);
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.error('Vue Devtools failed to install:', e.toString());
     }
   }

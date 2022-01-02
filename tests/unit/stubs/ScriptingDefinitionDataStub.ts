@@ -2,28 +2,31 @@ import { ScriptingDefinitionData } from 'js-yaml-loader!@/*';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 
 export class ScriptingDefinitionDataStub implements ScriptingDefinitionData {
-    public language = ScriptingLanguage[ScriptingLanguage.batchfile];
-    public fileExtension = 'bat';
-    public startCode = 'startCode';
-    public endCode = 'endCode';
+  public language = ScriptingLanguage[ScriptingLanguage.batchfile];
 
-    public withLanguage(language: string): ScriptingDefinitionDataStub {
-        this.language = language;
-        return this;
-    }
+  public fileExtension = 'bat';
 
-    public withStartCode(startCode: string): ScriptingDefinitionDataStub {
-        this.startCode = startCode;
-        return this;
-    }
+  public startCode = 'startCode';
 
-    public withEndCode(endCode: string): ScriptingDefinitionDataStub {
-        this.endCode = endCode;
-        return this;
-    }
+  public endCode = 'endCode';
 
-    public withExtension(extension: string): ScriptingDefinitionDataStub {
-        this.fileExtension = extension;
-        return this;
-    }
+  public withLanguage(language: string): ScriptingDefinitionDataStub {
+    this.language = language;
+    return this;
+  }
+
+  public withStartCode(startCode: string): ScriptingDefinitionDataStub {
+    this.startCode = startCode;
+    return this;
+  }
+
+  public withEndCode(endCode: string): ScriptingDefinitionDataStub {
+    this.endCode = endCode;
+    return this;
+  }
+
+  public withExtension(extension: string): ScriptingDefinitionDataStub {
+    this.fileExtension = extension;
+    return this;
+  }
 }

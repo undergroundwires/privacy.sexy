@@ -1,7 +1,10 @@
 <template>
-  <span 
+  <span
     class="container"
-    v-bind:class="{ 'container-unsupported': !hasCurrentOsDesktopVersion, 'container-supported': hasCurrentOsDesktopVersion }">
+    v-bind:class="{
+      'container-unsupported': !hasCurrentOsDesktopVersion,
+      'container-supported': hasCurrentOsDesktopVersion
+    }">
     <span class="description">
       <font-awesome-icon class="description__icon" :icon="['fas', 'desktop']"  />
       <span class="description__text">For desktop:</span>
@@ -25,13 +28,15 @@ import DownloadUrlListItem from './DownloadUrlListItem.vue';
 })
 export default class DownloadUrlList extends Vue {
   public readonly supportedDesktops: ReadonlyArray<OperatingSystem>;
+
   public readonly hasCurrentOsDesktopVersion: boolean = false;
 
   constructor() {
     super();
-    const supportedOperativeSystems = [OperatingSystem.Windows, OperatingSystem.Linux, OperatingSystem.macOS];
+    const supportedOperativeSystems = [
+      OperatingSystem.Windows, OperatingSystem.Linux, OperatingSystem.macOS];
     const currentOs = Environment.CurrentEnvironment.os;
-    this.supportedDesktops = supportedOperativeSystems.sort((os) => os === currentOs ? 0 : 1);
+    this.supportedDesktops = supportedOperativeSystems.sort((os) => (os === currentOs ? 0 : 1));
     this.hasCurrentOsDesktopVersion = supportedOperativeSystems.includes(currentOs);
   }
 }

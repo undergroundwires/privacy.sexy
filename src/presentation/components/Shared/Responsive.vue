@@ -11,8 +11,11 @@ import { throttle } from './Throttle';
 @Component
 export default class Responsive extends Vue {
   private width: number;
+
   private height: number;
+
   private observer: ResizeObserver;
+
   private get container(): HTMLElement { return this.$refs.containerElement as HTMLElement; }
 
   public async mounted() {
@@ -29,6 +32,7 @@ export default class Responsive extends Vue {
     this.observer.observe(this.container);
     this.fireChangeEvents();
   }
+
   public updateSize() {
     let sizeChanged = false;
     if (this.isWidthChanged()) {
@@ -43,12 +47,15 @@ export default class Responsive extends Vue {
       this.$emit('sizeChanged');
     }
   }
+
   @Emit('widthChanged') public updateWidth(width: number) {
     this.width = width;
   }
+
   @Emit('heightChanged') public updateHeight(height: number) {
     this.height = height;
   }
+
   public destroyed() {
     if (this.observer) {
       this.observer.disconnect();
@@ -60,9 +67,11 @@ export default class Responsive extends Vue {
     this.updateHeight(this.container.offsetHeight);
     this.$emit('sizeChanged');
   }
+
   private isWidthChanged(): boolean {
     return this.width !== this.container.offsetWidth;
   }
+
   private isHeightChanged(): boolean {
     return this.height !== this.container.offsetHeight;
   }
@@ -77,4 +86,3 @@ export default class Responsive extends Vue {
   display: inline-block; // if inline then it has no height or weight
 }
 </style>
-

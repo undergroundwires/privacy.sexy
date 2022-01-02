@@ -3,9 +3,9 @@ import { IProjectInformation } from './IProjectInformation';
 import { OperatingSystem } from './OperatingSystem';
 
 export interface IApplication {
-    readonly info: IProjectInformation;
-    readonly collections: readonly ICategoryCollection[];
+  readonly info: IProjectInformation;
+  readonly collections: readonly ICategoryCollection[];
 
-    getSupportedOsList(): OperatingSystem[];
-    getCollection(operatingSystem: OperatingSystem): ICategoryCollection | undefined;
+  getSupportedOsList(): OperatingSystem[];
+  getCollection(operatingSystem: OperatingSystem): ICategoryCollection | undefined;
 }

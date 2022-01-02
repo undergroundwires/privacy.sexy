@@ -2,6 +2,6 @@ import { SelectedScript } from '@/application/Context/State/Selection/SelectedSc
 import { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
 
 export interface IUserScript {
-    code: string;
-    scriptPositions: Map<SelectedScript, ICodePosition>;
+  code: string;
+  scriptPositions: Map<SelectedScript, ICodePosition>;
 }

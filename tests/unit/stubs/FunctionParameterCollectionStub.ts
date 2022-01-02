@@ -3,25 +3,28 @@ import { IFunctionParameterCollection } from '@/application/Parser/Script/Compil
 import { FunctionParameterStub } from './FunctionParameterStub';
 
 export class FunctionParameterCollectionStub implements IFunctionParameterCollection {
-    private parameters = new Array<IFunctionParameter>();
+  private parameters = new Array<IFunctionParameter>();
 
-    public addParameter(parameter: IFunctionParameter): void {
-        this.parameters.push(parameter);
+  public addParameter(parameter: IFunctionParameter): void {
+    this.parameters.push(parameter);
+  }
+
+  public get all(): readonly IFunctionParameter[] {
+    return this.parameters;
+  }
+
+  public withParameterName(parameterName: string, isOptional = true) {
+    const parameter = new FunctionParameterStub()
+      .withName(parameterName)
+      .withOptionality(isOptional);
+    this.addParameter(parameter);
+    return this;
+  }
+
+  public withParameterNames(parameterNames: readonly string[], isOptional = true) {
+    for (const parameterName of parameterNames) {
+      this.withParameterName(parameterName, isOptional);
     }
-    public get all(): readonly IFunctionParameter[] {
-        return this.parameters;
-    }
-    public withParameterName(parameterName: string, isOptional = true) {
-        const parameter = new FunctionParameterStub()
-            .withName(parameterName)
-            .withOptionality(isOptional);
-        this.addParameter(parameter);
-        return this;
-    }
-    public withParameterNames(parameterNames: readonly string[], isOptional = true) {
-        for (const parameterName of parameterNames) {
-            this.withParameterName(parameterName, isOptional);
-        }
-        return this;
-    }
+    return this;
+  }
 }

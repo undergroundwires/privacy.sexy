@@ -5,9 +5,9 @@ import { CodeBuilderFactory } from '@/application/Context/State/Code/Generation/
 import { ScriptingLanguageFactoryTestRunner } from '@tests/unit/application/Common/ScriptingLanguage/ScriptingLanguageFactoryTestRunner';
 
 describe('CodeBuilderFactory', () => {
-    const sut = new CodeBuilderFactory();
-    const runner = new ScriptingLanguageFactoryTestRunner()
-        .expect(ScriptingLanguage.shellscript, ShellBuilder)
-        .expect(ScriptingLanguage.batchfile, BatchBuilder);
-    runner.testCreateMethod(sut);
+  const sut = new CodeBuilderFactory();
+  const runner = new ScriptingLanguageFactoryTestRunner()
+    .expect(ScriptingLanguage.shellscript, ShellBuilder)
+    .expect(ScriptingLanguage.batchfile, BatchBuilder);
+  runner.testCreateMethod(sut);
 });

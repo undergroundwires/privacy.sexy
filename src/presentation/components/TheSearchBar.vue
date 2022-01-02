@@ -1,11 +1,11 @@
 <template>
   <div class="search" v-non-collapsing>
-      <input type="search" class="search-term"
-        :placeholder="searchPlaceHolder"
-        v-model="searchQuery" >
-      <div class="icon-wrapper">
-          <font-awesome-icon :icon="['fas', 'search']" />
-      </div>
+    <input type="search" class="search-term"
+      :placeholder="searchPlaceHolder"
+      v-model="searchQuery" >
+    <div class="icon-wrapper">
+      <font-awesome-icon :icon="['fas', 'search']" />
+    </div>
   </div>
 </template>
 
@@ -17,18 +17,18 @@ import { IReadOnlyUserFilter } from '@/application/Context/State/Filter/IUserFil
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
 import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 
-@Component( {
-    directives: { NonCollapsing },
-  },
-)
+@Component({
+  directives: { NonCollapsing },
+})
 export default class TheSearchBar extends StatefulVue {
   public searchPlaceHolder = 'Search';
+
   public searchQuery = '';
 
   @Watch('searchQuery')
   public async updateFilter(newFilter: |string) {
     const context = await this.getCurrentContext();
-    const filter = context.state.filter;
+    const { filter } = context.state;
     if (!newFilter) {
       filter.removeFilter();
     } else {
@@ -37,7 +37,7 @@ export default class TheSearchBar extends StatefulVue {
   }
 
   protected handleCollectionState(newState: IReadOnlyCategoryCollectionState) {
-    const totalScripts = newState.collection.totalScripts;
+    const { totalScripts } = newState.collection;
     this.searchPlaceHolder = `Search in ${totalScripts} scripts`;
     this.searchQuery = newState.filter.currentFilter ? newState.filter.currentFilter.query : '';
     this.events.unsubscribeAll();
@@ -48,9 +48,11 @@ export default class TheSearchBar extends StatefulVue {
     this.events.register(filter.filtered.on((result) => this.handleFiltered(result)));
     this.events.register(filter.filterRemoved.on(() => this.handleFilterRemoved()));
   }
+
   private handleFiltered(result: IFilterResult) {
     this.searchQuery = result.query;
   }
+
   private handleFilterRemoved() {
     this.searchQuery = '';
   }

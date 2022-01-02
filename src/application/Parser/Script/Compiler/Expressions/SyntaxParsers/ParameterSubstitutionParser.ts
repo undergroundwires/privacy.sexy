@@ -1,28 +1,28 @@
-import { RegexParser, IPrimitiveExpression } from '../Parser/Regex/RegexParser';
 import { FunctionParameter } from '@/application/Parser/Script/Compiler/Function/Parameter/FunctionParameter';
+import { RegexParser, IPrimitiveExpression } from '../Parser/Regex/RegexParser';
 import { ExpressionRegexBuilder } from '../Parser/Regex/ExpressionRegexBuilder';
 
 export class ParameterSubstitutionParser extends RegexParser {
-    protected readonly regex = new ExpressionRegexBuilder()
-        .expectExpressionStart()
-        .expectCharacters('$')
-        .matchUntilFirstWhitespace()    // First match: Parameter name
-        .matchPipeline()                // Second match: Pipeline
-        .expectExpressionEnd()
-        .buildRegExp();
+  protected readonly regex = new ExpressionRegexBuilder()
+    .expectExpressionStart()
+    .expectCharacters('$')
+    .matchUntilFirstWhitespace() // First match: Parameter name
+    .matchPipeline() // Second match: Pipeline
+    .expectExpressionEnd()
+    .buildRegExp();
 
-    protected buildExpression(match: RegExpMatchArray): IPrimitiveExpression {
-        const parameterName = match[1];
-        const pipeline = match[2];
-        return {
-            parameters: [ new FunctionParameter(parameterName, false) ],
-            evaluator: (context) => {
-                const argumentValue = context.args.getArgument(parameterName).argumentValue;
-                if (!pipeline) {
-                    return argumentValue;
-                }
-                return context.pipelineCompiler.compile(argumentValue, pipeline);
-            },
-        };
-    }
+  protected buildExpression(match: RegExpMatchArray): IPrimitiveExpression {
+    const parameterName = match[1];
+    const pipeline = match[2];
+    return {
+      parameters: [new FunctionParameter(parameterName, false)],
+      evaluator: (context) => {
+        const { argumentValue } = context.args.getArgument(parameterName);
+        if (!pipeline) {
+          return argumentValue;
+        }
+        return context.pipelineCompiler.compile(argumentValue, pipeline);
+      },
+    };
+  }
 }

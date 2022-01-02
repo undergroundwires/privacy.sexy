@@ -1,17 +1,17 @@
 <template>
-    <span id="container">
-        <span v-if="nodes != null && nodes.length > 0">
-            <SelectableTree 
-                :initialNodes="nodes"
-                :selectedNodeIds="selectedNodeIds"
-                :filterPredicate="filterPredicate"
-                :filterText="filterText"
-                v-on:nodeSelected="toggleNodeSelection($event)"
-                >
-            </SelectableTree>
-        </span>
-        <span v-else>Nooo 😢</span>
+  <span id="container">
+    <span v-if="nodes != null && nodes.length > 0">
+      <SelectableTree
+        :initialNodes="nodes"
+        :selectedNodeIds="selectedNodeIds"
+        :filterPredicate="filterPredicate"
+        :filterText="filterText"
+        v-on:nodeSelected="toggleNodeSelection($event)"
+        >
+      </SelectableTree>
     </span>
+    <span v-else>Nooo 😢</span>
+  </span>
 </template>
 
 <script lang="ts">
@@ -21,11 +21,13 @@ import { IScript } from '@/domain/IScript';
 import { ICategory } from '@/domain/ICategory';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
-import {  parseAllCategories, parseSingleCategory, getScriptNodeId,
-          getCategoryNodeId, getCategoryId, getScriptId } from './ScriptNodeParser';
+import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
+import {
+  parseAllCategories, parseSingleCategory, getScriptNodeId, getCategoryNodeId, getCategoryId,
+  getScriptId,
+} from './ScriptNodeParser';
 import SelectableTree from './SelectableTree/SelectableTree.vue';
 import { INode, NodeType } from './SelectableTree/Node/INode';
-import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { INodeSelectedEvent } from './SelectableTree/INodeSelectedEvent';
 
 @Component({
@@ -37,24 +39,27 @@ export default class ScriptsTree extends StatefulVue {
   @Prop() public categoryId?: number;
 
   public nodes?: ReadonlyArray<INode> = null;
+
   public selectedNodeIds?: ReadonlyArray<string> = [];
+
   public filterText?: string = null;
 
   private filtered?: IFilterResult;
 
   public async toggleNodeSelection(event: INodeSelectedEvent) {
-      const context = await this.getCurrentContext();
-      switch (event.node.type) {
-        case NodeType.Category:
-          toggleCategoryNodeSelection(event, context.state);
-          break;
-        case NodeType.Script:
-          toggleScriptNodeSelection(event, context.state);
-          break;
-        default:
-          throw new Error(`Unknown node type: ${event.node.id}`);
-      }
+    const context = await this.getCurrentContext();
+    switch (event.node.type) {
+      case NodeType.Category:
+        toggleCategoryNodeSelection(event, context.state);
+        break;
+      case NodeType.Script:
+        toggleScriptNodeSelection(event, context.state);
+        break;
+      default:
+        throw new Error(`Unknown node type: ${event.node.id}`);
+    }
   }
+
   @Watch('categoryId', { immediate: true })
   public async setNodes(categoryId?: number) {
     const context = await this.getCurrentContext();
@@ -66,11 +71,12 @@ export default class ScriptsTree extends StatefulVue {
     this.selectedNodeIds = context.state.selection.selectedScripts
       .map((selected) => getScriptNodeId(selected.script));
   }
+
   public filterPredicate(node: INode): boolean {
-    return this.filtered.scriptMatches.some(
-      (script: IScript) => node.id === getScriptNodeId(script))
-      || this.filtered.categoryMatches.some(
-        (category: ICategory) => node.id === getCategoryNodeId(category));
+    return this.filtered.scriptMatches
+      .some((script: IScript) => node.id === getScriptNodeId(script))
+      || this.filtered.categoryMatches
+        .some((category: ICategory) => node.id === getCategoryNodeId(category));
   }
 
   protected async handleCollectionState(newState: ICategoryCollectionState) {
@@ -97,20 +103,26 @@ export default class ScriptsTree extends StatefulVue {
       this.handleFiltered(currentFilter);
     }
   }
+
   private handleSelectionChanged(selectedScripts: ReadonlyArray<SelectedScript>): void {
     this.selectedNodeIds = selectedScripts
-        .map((node) => node.id);
+      .map((node) => node.id);
   }
+
   private handleFilterRemoved() {
     this.filterText = '';
   }
+
   private handleFiltered(result: IFilterResult) {
     this.filterText = result.query;
     this.filtered = result;
   }
 }
 
-function toggleCategoryNodeSelection(event: INodeSelectedEvent, state: ICategoryCollectionState): void {
+function toggleCategoryNodeSelection(
+  event: INodeSelectedEvent,
+  state: ICategoryCollectionState,
+): void {
   const categoryId = getCategoryId(event.node.id);
   if (event.isSelected) {
     state.selection.addOrUpdateAllInCategory(categoryId, false);
@@ -118,7 +130,11 @@ function toggleCategoryNodeSelection(event: INodeSelectedEvent, state: ICategory
     state.selection.removeAllInCategory(categoryId);
   }
 }
-function toggleScriptNodeSelection(event: INodeSelectedEvent, state: ICategoryCollectionState): void {
+
+function toggleScriptNodeSelection(
+  event: INodeSelectedEvent,
+  state: ICategoryCollectionState,
+): void {
   const scriptId = getScriptId(event.node.id);
   const actualToggleState = state.selection.isSelected(scriptId);
   const targetToggleState = event.isSelected;

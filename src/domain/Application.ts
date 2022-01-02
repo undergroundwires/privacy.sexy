@@ -4,44 +4,47 @@ import { IProjectInformation } from './IProjectInformation';
 import { OperatingSystem } from './OperatingSystem';
 
 export class Application implements IApplication {
-    constructor(public info: IProjectInformation, public collections: readonly ICategoryCollection[]) {
-        validateInformation(info);
-        validateCollections(collections);
-    }
+  constructor(
+    public info: IProjectInformation,
+    public collections: readonly ICategoryCollection[],
+  ) {
+    validateInformation(info);
+    validateCollections(collections);
+  }
 
-    public getSupportedOsList(): OperatingSystem[] {
-        return this.collections.map((collection) => collection.os);
-    }
+  public getSupportedOsList(): OperatingSystem[] {
+    return this.collections.map((collection) => collection.os);
+  }
 
-    public getCollection(operatingSystem: OperatingSystem): ICategoryCollection | undefined {
-        return this.collections.find((collection) => collection.os === operatingSystem);
-    }
+  public getCollection(operatingSystem: OperatingSystem): ICategoryCollection | undefined {
+    return this.collections.find((collection) => collection.os === operatingSystem);
+  }
 }
 
 function validateInformation(info: IProjectInformation) {
-    if (!info) {
-        throw new Error('undefined project information');
-    }
+  if (!info) {
+    throw new Error('undefined project information');
+  }
 }
 
 function validateCollections(collections: readonly ICategoryCollection[]) {
-    if (!collections) {
-        throw new Error('undefined collections');
-    }
-    if (collections.length === 0) {
-        throw new Error('no collection in the list');
-    }
-    if (collections.filter((c) => !c).length > 0) {
-        throw new Error('undefined collection in the list');
-    }
-    const osList = collections.map((c) => c.os);
-    const duplicates = getDuplicates(osList);
-    if (duplicates.length > 0) {
-        throw new Error('multiple collections with same os: ' +
-            duplicates.map((os) => OperatingSystem[os].toLowerCase()).join('", "'));
-    }
+  if (!collections) {
+    throw new Error('undefined collections');
+  }
+  if (collections.length === 0) {
+    throw new Error('no collection in the list');
+  }
+  if (collections.filter((c) => !c).length > 0) {
+    throw new Error('undefined collection in the list');
+  }
+  const osList = collections.map((c) => c.os);
+  const duplicates = getDuplicates(osList);
+  if (duplicates.length > 0) {
+    throw new Error(`multiple collections with same os: ${
+      duplicates.map((os) => OperatingSystem[os].toLowerCase()).join('", "')}`);
+  }
 }
 
 function getDuplicates(list: readonly OperatingSystem[]): OperatingSystem[] {
-    return list.filter((os, index) => list.indexOf(os) !== index);
+  return list.filter((os, index) => list.indexOf(os) !== index);
 }

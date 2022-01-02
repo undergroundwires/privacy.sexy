@@ -1,17 +1,18 @@
 <template>
-    <div id="container">
-      <h1 class="child title" >{{ title }}</h1>
-      <h2 class="child subtitle">Enforce privacy &amp; security on Windows and macOS</h2>
-    </div>
+  <div id="container">
+    <h1 class="child title" >{{ title }}</h1>
+    <h2 class="child subtitle">Enforce privacy &amp; security on Windows and macOS</h2>
+  </div>
 </template>
 
 <script lang="ts">
-import { ApplicationFactory } from '@/application/ApplicationFactory';
 import { Component, Vue } from 'vue-property-decorator';
+import { ApplicationFactory } from '@/application/ApplicationFactory';
 
 @Component
 export default class TheHeader extends Vue {
   public title = '';
+
   public subtitle = '';
 
   public async created() {
@@ -50,5 +51,4 @@ export default class TheHeader extends Vue {
     line-height: 1.2;
   }
 }
- 
 </style>

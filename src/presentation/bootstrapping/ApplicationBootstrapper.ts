@@ -6,21 +6,20 @@ import { VueBootstrapper } from './Modules/VueBootstrapper';
 import { TooltipBootstrapper } from './Modules/TooltipBootstrapper';
 
 export class ApplicationBootstrapper implements IVueBootstrapper {
-    public bootstrap(vue: VueConstructor): void {
-        vue.config.productionTip = false;
-        const bootstrappers = this.getAllBootstrappers();
-        for (const bootstrapper of bootstrappers) {
-            bootstrapper.bootstrap(vue);
-        }
+  public bootstrap(vue: VueConstructor): void {
+    const bootstrappers = ApplicationBootstrapper.getAllBootstrappers();
+    for (const bootstrapper of bootstrappers) {
+      bootstrapper.bootstrap(vue);
     }
+  }
 
-    private getAllBootstrappers(): IVueBootstrapper[] {
-        return [
-            new IconBootstrapper(),
-            new TreeBootstrapper(),
-            new VueBootstrapper(),
-            new TooltipBootstrapper(),
-            new VModalBootstrapper(),
-        ];
-    }
+  private static getAllBootstrappers(): IVueBootstrapper[] {
+    return [
+      new IconBootstrapper(),
+      new TreeBootstrapper(),
+      new VueBootstrapper(),
+      new TooltipBootstrapper(),
+      new VModalBootstrapper(),
+    ];
+  }
 }
