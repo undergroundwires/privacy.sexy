@@ -52,7 +52,7 @@ function getOwnRules() {
   return {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    'linebreak-style': ['error', 'unix'], // Also enforced in .editorconfig
+    'linebreak-style': ['error', 'unix'], // This is also enforced in .editorconfig and .gitattributes files
     'import/order': [ // Enforce strict import order taking account into aliases
       'error',
       {

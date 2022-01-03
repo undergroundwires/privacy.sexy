@@ -1,0 +1,6 @@
+# Prevent Git from auto-converting to CRLF on Windows, and convert to LF on checkin.
+#   *           : All files
+#   text=auto   : If Git decides content it text, it converts CRLF to LF on checkin.
+#   eol=lf      : forces Git to normalize line endings to LF on checkin and prevents conversion
+#                 to CRLF when the file is checked out.
+* text=auto eol=lf
