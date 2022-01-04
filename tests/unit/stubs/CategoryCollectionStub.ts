@@ -61,46 +61,27 @@ export class CategoryCollectionStub implements ICategoryCollection {
   }
 
   public getAllScripts(): ReadonlyArray<IScript> {
-    const scripts = [];
-    for (const category of this.actions) {
-      const categoryScripts = getScriptsRecursively(category);
-      scripts.push(...categoryScripts);
-    }
-    return scripts;
+    return this.actions.flatMap((category) => getScriptsRecursively(category));
   }
 
   public getAllCategories(): ReadonlyArray<ICategory> {
-    const categories = [];
-    categories.push(...this.actions);
-    for (const category of this.actions) {
-      const subCategories = getSubCategoriesRecursively(category);
-      categories.push(...subCategories);
-    }
-    return categories;
+    return this.actions.flatMap(
+      (category) => [category, ...getSubCategoriesRecursively(category)],
+    );
   }
 }
 
 function getSubCategoriesRecursively(category: ICategory): ReadonlyArray<ICategory> {
-  const subCategories = [];
-  if (category.subCategories) {
-    for (const subCategory of category.subCategories) {
-      subCategories.push(subCategory);
-      subCategories.push(...getSubCategoriesRecursively(subCategory));
-    }
-  }
-  return subCategories;
+  return (category.subCategories || []).flatMap(
+    (subCategory) => [subCategory, ...getSubCategoriesRecursively(subCategory)],
+  );
 }
 
 function getScriptsRecursively(category: ICategory): ReadonlyArray<IScript> {
-  const categoryScripts = [];
-  if (category.scripts) {
-    categoryScripts.push(...category.scripts);
-  }
-  if (category.subCategories) {
-    for (const subCategory of category.subCategories) {
-      const subCategoryScripts = getScriptsRecursively(subCategory);
-      categoryScripts.push(...subCategoryScripts);
-    }
-  }
-  return categoryScripts;
+  return [
+    ...(category.scripts || []),
+    ...(category.subCategories || []).flatMap(
+      (subCategory) => getScriptsRecursively(subCategory),
+    ),
+  ];
 }

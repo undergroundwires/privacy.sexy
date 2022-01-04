@@ -17,10 +17,8 @@ export class UserSelection implements IUserSelection {
     selectedScripts: ReadonlyArray<SelectedScript>,
   ) {
     this.scripts = new InMemoryRepository<string, SelectedScript>();
-    if (selectedScripts && selectedScripts.length > 0) {
-      for (const script of selectedScripts) {
-        this.scripts.addItem(script);
-      }
+    for (const script of selectedScripts) {
+      this.scripts.addItem(script);
     }
   }
 
@@ -58,18 +56,19 @@ export class UserSelection implements IUserSelection {
   }
 
   public addOrUpdateAllInCategory(categoryId: number, revert = false): void {
-    const category = this.collection.findCategory(categoryId);
-    const scriptsToAddOrUpdate = category.getAllScriptsRecursively()
+    const scriptsToAddOrUpdate = this.collection
+      .findCategory(categoryId)
+      .getAllScriptsRecursively()
       .filter(
         (script) => !this.scripts.exists(script.id)
           || this.scripts.getById(script.id).revert !== revert,
-      );
+      )
+      .map((script) => new SelectedScript(script, revert));
     if (!scriptsToAddOrUpdate.length) {
       return;
     }
     for (const script of scriptsToAddOrUpdate) {
-      const selectedScript = new SelectedScript(script, revert);
-      this.scripts.addOrUpdateItem(selectedScript);
+      this.scripts.addOrUpdateItem(script);
     }
     this.changed.notify(this.scripts.getItems());
   }
@@ -106,11 +105,12 @@ export class UserSelection implements IUserSelection {
   }
 
   public selectAll(): void {
-    for (const script of this.collection.getAllScripts()) {
-      if (!this.scripts.exists(script.id)) {
-        const selection = new SelectedScript(script, false);
-        this.scripts.addItem(selection);
-      }
+    const scriptsToSelect = this.collection
+      .getAllScripts()
+      .filter((script) => !this.scripts.exists(script.id))
+      .map((script) => new SelectedScript(script, false));
+    for (const script of scriptsToSelect) {
+      this.scripts.addItem(script);
     }
     this.changed.notify(this.scripts.getItems());
   }
@@ -135,10 +135,11 @@ export class UserSelection implements IUserSelection {
         .forEach((scriptId) => this.scripts.removeItem(scriptId));
     }
     // Select from unselected scripts
-    const unselectedScripts = scripts.filter((script) => !this.scripts.exists(script.id));
+    const unselectedScripts = scripts
+      .filter((script) => !this.scripts.exists(script.id))
+      .map((script) => new SelectedScript(script, false));
     for (const toSelect of unselectedScripts) {
-      const selection = new SelectedScript(toSelect, false);
-      this.scripts.addItem(selection);
+      this.scripts.addItem(toSelect);
     }
     this.changed.notify(this.scripts.getItems());
   }

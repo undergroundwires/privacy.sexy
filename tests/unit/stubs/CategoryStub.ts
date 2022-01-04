@@ -27,10 +27,9 @@ export class CategoryStub extends BaseEntity<number> implements ICategory {
   }
 
   public withScriptIds(...scriptIds: string[]): CategoryStub {
-    for (const scriptId of scriptIds) {
-      this.withScript(new ScriptStub(scriptId));
-    }
-    return this;
+    return this.withScripts(
+      ...scriptIds.map((id) => new ScriptStub(id)),
+    );
   }
 
   public withScripts(...scripts: IScript[]): CategoryStub {

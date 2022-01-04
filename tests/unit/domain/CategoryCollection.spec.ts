@@ -121,24 +121,45 @@ describe('CategoryCollection', () => {
       expect(construct).to.throw('must consist of at least one script');
     });
     describe('cannot construct without any recommended scripts', () => {
-      // arrange
-      const recommendationLevels = getEnumValues(RecommendationLevel);
-      for (const missingLevel of recommendationLevels) {
-        it(`when "${RecommendationLevel[missingLevel]}" is missing`, () => {
-          const expectedError = `none of the scripts are recommended as ${RecommendationLevel[missingLevel]}`;
-          const otherLevels = recommendationLevels.filter((level) => level !== missingLevel);
-          const categories = otherLevels.map(
-            (level, index) => new CategoryStub(index)
-              .withScript(new ScriptStub(`Script${index}`).withLevel(level)),
-          );
-          // act
-          const construct = () => new CategoryCollectionBuilder()
-            .withActions(categories)
-            .construct();
-          // assert
-          expect(construct).to.throw(expectedError);
-        });
-      }
+      describe('single missing', () => {
+        // arrange
+        const recommendationLevels = getEnumValues(RecommendationLevel);
+        for (const missingLevel of recommendationLevels) {
+          it(`when "${RecommendationLevel[missingLevel]}" is missing`, () => {
+            const expectedError = `none of the scripts are recommended as "${RecommendationLevel[missingLevel]}".`;
+            const otherLevels = recommendationLevels.filter((level) => level !== missingLevel);
+            const categories = otherLevels.map(
+              (level, index) => new CategoryStub(index)
+                .withScript(
+                  new ScriptStub(`Script${index}`).withLevel(level),
+                ),
+            );
+            // act
+            const construct = () => new CategoryCollectionBuilder()
+              .withActions(categories)
+              .construct();
+            // assert
+            expect(construct).to.throw(expectedError);
+          });
+        }
+      });
+      it('multiple are missing', () => {
+        // arrange
+        const expectedError = 'none of the scripts are recommended as '
+          + `"${RecommendationLevel[RecommendationLevel.Standard]}, "${RecommendationLevel[RecommendationLevel.Strict]}".`;
+        const categories = [
+          new CategoryStub(0)
+            .withScript(
+              new ScriptStub(`Script${0}`).withLevel(undefined),
+            ),
+        ];
+        // act
+        const construct = () => new CategoryCollectionBuilder()
+          .withActions(categories)
+          .construct();
+        // assert
+        expect(construct).to.throw(expectedError);
+      });
     });
   });
   describe('totalScripts', () => {

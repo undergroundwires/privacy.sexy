@@ -63,7 +63,6 @@ describe('ScriptNodeParser', () => {
       expectSameScript(nodes[2], scripts[2]);
     });
   });
-
   it('parseAllCategories parses as expected', () => {
     // arrange
     const collection = new CategoryCollectionStub()

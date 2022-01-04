@@ -8,11 +8,9 @@ export class PipelineCompiler implements IPipelineCompiler {
     ensureValidArguments(value, pipeline);
     const pipeNames = extractPipeNames(pipeline);
     const pipes = pipeNames.map((pipeName) => this.factory.get(pipeName));
-    let valueInCompilation = value;
-    for (const pipe of pipes) {
-      valueInCompilation = pipe.apply(valueInCompilation);
-    }
-    return valueInCompilation;
+    return pipes.reduce((previousValue, pipe) => {
+      return pipe.apply(previousValue);
+    }, value);
   }
 }
 

@@ -61,25 +61,24 @@ describe('ScriptCode', () => {
         },
       ];
       // act
-      const actions = [];
-      for (const testCase of testCases) {
-        actions.push(...[
-          {
-            act: () => new ScriptCodeBuilder()
-              .withExecute(testCase.code)
-              .build(),
-            testName: `execute: ${testCase.testName}`,
-            expectedMessage: testCase.expectedMessage,
-          },
-          {
-            act: () => new ScriptCodeBuilder()
-              .withRevert(testCase.code)
-              .build(),
-            testName: `revert: ${testCase.testName}`,
-            expectedMessage: `(revert): ${testCase.expectedMessage}`,
-          },
-        ]);
-      }
+      const actions = testCases.flatMap((testCase) => ([
+        {
+          act: () => new ScriptCodeBuilder()
+            .withExecute(testCase.code)
+            .build(),
+          testName: `execute: ${testCase.testName}`,
+          expectedMessage: testCase.expectedMessage,
+          code: testCase.code,
+        },
+        {
+          act: () => new ScriptCodeBuilder()
+            .withRevert(testCase.code)
+            .build(),
+          testName: `revert: ${testCase.testName}`,
+          expectedMessage: `(revert): ${testCase.expectedMessage}`,
+          code: testCase.code,
+        },
+      ]));
       // assert
       for (const action of actions) {
         it(action.testName, () => {
@@ -115,27 +114,24 @@ describe('ScriptCode', () => {
         },
       ];
       // act
-      const actions = [];
-      for (const testCase of testCases) {
-        actions.push(...[
-          {
-            testName: `execute: ${testCase.testName}`,
-            act: () => new ScriptCodeBuilder()
-              .withSyntax(syntax)
-              .withExecute(testCase.code)
-              .build(),
-            expect: (sut: IScriptCode) => sut.execute === testCase.code,
-          },
-          {
-            testName: `revert: ${testCase.testName}`,
-            act: () => new ScriptCodeBuilder()
-              .withSyntax(syntax)
-              .withRevert(testCase.code)
-              .build(),
-            expect: (sut: IScriptCode) => sut.revert === testCase.code,
-          },
-        ]);
-      }
+      const actions = testCases.flatMap((testCase) => ([
+        {
+          testName: `execute: ${testCase.testName}`,
+          act: () => new ScriptCodeBuilder()
+            .withSyntax(syntax)
+            .withExecute(testCase.code)
+            .build(),
+          expect: (sut: IScriptCode) => sut.execute === testCase.code,
+        },
+        {
+          testName: `revert: ${testCase.testName}`,
+          act: () => new ScriptCodeBuilder()
+            .withSyntax(syntax)
+            .withRevert(testCase.code)
+            .build(),
+          expect: (sut: IScriptCode) => sut.revert === testCase.code,
+        },
+      ]));
       // assert
       for (const action of actions) {
         it(action.testName, () => {

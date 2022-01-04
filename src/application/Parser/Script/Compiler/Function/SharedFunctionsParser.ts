@@ -20,11 +20,12 @@ export class SharedFunctionsParser implements ISharedFunctionsParser {
       return collection;
     }
     ensureValidFunctions(functions);
-    for (const func of functions) {
-      const sharedFunction = parseFunction(func);
-      collection.addFunction(sharedFunction);
-    }
-    return collection;
+    return functions
+      .map((func) => parseFunction(func))
+      .reduce((acc, func) => {
+        acc.addFunction(func);
+        return acc;
+      }, collection);
   }
 }
 
@@ -40,20 +41,21 @@ function parseFunction(data: FunctionData): ISharedFunction {
 }
 
 function parseParameters(data: FunctionData): IReadOnlyFunctionParameterCollection {
-  const parameters = new FunctionParameterCollection();
-  if (!data.parameters) {
-    return parameters;
-  }
-  for (const parameterData of data.parameters) {
-    const isOptional = parameterData.optional || false;
-    try {
-      const parameter = new FunctionParameter(parameterData.name, isOptional);
+  return (data.parameters || [])
+    .map((parameter) => {
+      try {
+        return new FunctionParameter(
+          parameter.name,
+          parameter.optional || false,
+        );
+      } catch (err) {
+        throw new Error(`"${data.name}": ${err.message}`);
+      }
+    })
+    .reduce((parameters, parameter) => {
       parameters.addParameter(parameter);
-    } catch (err) {
-      throw new Error(`"${data.name}": ${err.message}`);
-    }
-  }
-  return parameters;
+      return parameters;
+    }, new FunctionParameterCollection());
 }
 
 function hasCode(data: FunctionData): boolean {

@@ -18,35 +18,42 @@ export abstract class RegexParser implements IExpressionParser {
     if (!code) {
       throw new Error('undefined code');
     }
-    const matches = Array.from(code.matchAll(this.regex));
+    const matches = code.matchAll(this.regex);
     for (const match of matches) {
-      const startPos = match.index;
-      const endPos = startPos + match[0].length;
-      let position: ExpressionPosition;
-      try {
-        position = new ExpressionPosition(startPos, endPos);
-      } catch (error) {
-        throw new Error(`[${this.constructor.name}] invalid script position: ${error.message}\nRegex ${this.regex}\nCode: ${code}`);
-      }
       const primitiveExpression = this.buildExpression(match);
-      const parameters = getParameters(primitiveExpression);
+      const position = this.doOrRethrow(() => createPosition(match), 'invalid script position', code);
+      const parameters = createParameters(primitiveExpression);
       const expression = new Expression(position, primitiveExpression.evaluator, parameters);
       yield expression;
     }
   }
+
+  private doOrRethrow<T>(action: () => T, errorText: string, code: string): T {
+    try {
+      return action();
+    } catch (error) {
+      throw new Error(`[${this.constructor.name}] ${errorText}: ${error.message}\nRegex: ${this.regex}\nCode: ${code}`);
+    }
+  }
+}
+
+function createPosition(match: RegExpMatchArray): ExpressionPosition {
+  const startPos = match.index;
+  const endPos = startPos + match[0].length;
+  return new ExpressionPosition(startPos, endPos);
+}
+
+function createParameters(
+  expression: IPrimitiveExpression,
+): FunctionParameterCollection {
+  return (expression.parameters || [])
+    .reduce((parameters, parameter) => {
+      parameters.addParameter(parameter);
+      return parameters;
+    }, new FunctionParameterCollection());
 }
 
 export interface IPrimitiveExpression {
   evaluator: ExpressionEvaluator;
   parameters?: readonly IFunctionParameter[];
-}
-
-function getParameters(
-  expression: IPrimitiveExpression,
-): FunctionParameterCollection {
-  const parameters = new FunctionParameterCollection();
-  for (const parameter of expression.parameters || []) {
-    parameters.addParameter(parameter);
-  }
-  return parameters;
 }

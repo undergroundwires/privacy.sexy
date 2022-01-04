@@ -13,7 +13,7 @@ export class ScriptStub extends BaseEntity<string> implements IScript {
 
   public readonly documentationUrls = new Array<string>();
 
-  public level = RecommendationLevel.Standard;
+  public level? = RecommendationLevel.Standard;
 
   constructor(public readonly id: string) {
     super(id);
@@ -23,7 +23,7 @@ export class ScriptStub extends BaseEntity<string> implements IScript {
     return Boolean(this.code.revert);
   }
 
-  public withLevel(value: RecommendationLevel): ScriptStub {
+  public withLevel(value?: RecommendationLevel): ScriptStub {
     this.level = value;
     return this;
   }

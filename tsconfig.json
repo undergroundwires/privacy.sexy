@@ -10,6 +10,7 @@
     "module": "esnext",
     "jsx": "preserve",
     "importHelpers": true,
+    "downlevelIteration": true,
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "esModuleInterop": true,

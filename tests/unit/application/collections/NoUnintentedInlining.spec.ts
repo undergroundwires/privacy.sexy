@@ -49,15 +49,11 @@ async function findBadLineNumbers(fileContent: string): Promise<number[]> {
 
 function findLineNumbersEndingWith(content: string, ending: string): number[] {
   sanityCheck(content, ending);
-  const lines = content.split(/\r\n|\r|\n/);
-  const results = new Array<number>();
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    if (line.trim().endsWith(ending)) {
-      results.push((i + 1 /* first line is 1 not 0 */));
-    }
-  }
-  return results;
+  return content
+    .split(/\r\n|\r|\n/)
+    .map((line, index) => ({ text: line, index }))
+    .filter((line) => line.text.trim().endsWith(ending))
+    .map((line) => line.index + 1 /* first line is 1, not 0 */);
 }
 
 function sanityCheck(content: string, ending: string): void {

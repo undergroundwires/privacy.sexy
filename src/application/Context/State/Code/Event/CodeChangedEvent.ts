@@ -42,13 +42,12 @@ export class CodeChangedEvent implements ICodeChangedEvent {
 
 function ensureAllPositionsExist(script: string, positions: ReadonlyArray<ICodePosition>) {
   const totalLines = script.split(/\r\n|\r|\n/).length;
-  for (const position of positions) {
-    if (position.endLine > totalLines) {
-      throw new Error(
-        `script end line (${position.endLine}) is out of range.`
-          + `(total code lines: ${totalLines}`,
-      );
-    }
+  const missingPositions = positions.filter((position) => position.endLine > totalLines);
+  if (missingPositions.length > 0) {
+    throw new Error(
+      `Out of range script end line: "${missingPositions.map((pos) => pos.endLine).join('", "')}"`
+        + `(total code lines: ${totalLines}).`,
+    );
   }
 }
 

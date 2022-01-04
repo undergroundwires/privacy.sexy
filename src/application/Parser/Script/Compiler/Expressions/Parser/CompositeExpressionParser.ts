@@ -16,13 +16,8 @@ export class CompositeExpressionParser implements IExpressionParser {
   }
 
   public findExpressions(code: string): IExpression[] {
-    const expressions = new Array<IExpression>();
-    for (const parser of this.leafs) {
-      const newExpressions = parser.findExpressions(code);
-      if (newExpressions && newExpressions.length) {
-        expressions.push(...newExpressions);
-      }
-    }
-    return expressions;
+    return this.leafs.flatMap(
+      (parser) => parser.findExpressions(code) || [],
+    );
   }
 }

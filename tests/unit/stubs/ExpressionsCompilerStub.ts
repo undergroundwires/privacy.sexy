@@ -58,12 +58,9 @@ function deepEqual(
   if (!scrambledEqual(expectedParameterNames, actualParameterNames)) {
     return false;
   }
-  for (const parameterName of expectedParameterNames) {
+  return expectedParameterNames.every((parameterName) => {
     const expectedValue = expected.getArgument(parameterName).argumentValue;
     const actualValue = actual.getArgument(parameterName).argumentValue;
-    if (expectedValue !== actualValue) {
-      return false;
-    }
-  }
-  return true;
+    return expectedValue === actualValue;
+  });
 }

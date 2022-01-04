@@ -9,11 +9,6 @@ import { parseScript } from './Script/ScriptParser';
 
 let categoryIdCounter = 0;
 
-interface ICategoryChildren {
-  subCategories: Category[];
-  subScripts: Script[];
-}
-
 export function parseCategory(
   category: CategoryData,
   context: ICategoryCollectionParseContext,
@@ -46,6 +41,11 @@ function ensureValid(category: CategoryData) {
   if (!category.category || category.category.length === 0) {
     throw Error('category has no name');
   }
+}
+
+interface ICategoryChildren {
+  subCategories: Category[];
+  subScripts: Script[];
 }
 
 function parseCategoryChild(

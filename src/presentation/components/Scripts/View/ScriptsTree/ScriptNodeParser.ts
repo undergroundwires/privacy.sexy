@@ -3,12 +3,7 @@ import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { INode, NodeType } from './SelectableTree/Node/INode';
 
 export function parseAllCategories(collection: ICategoryCollection): INode[] | undefined {
-  const nodes = new Array<INode>();
-  for (const category of collection.actions) {
-    const children = parseCategoryRecursively(category);
-    nodes.push(convertCategoryToNode(category, children));
-  }
-  return nodes;
+  return createCategoryNodes(collection.actions);
 }
 
 export function parseSingleCategory(
@@ -43,31 +38,21 @@ function parseCategoryRecursively(
   if (!parentCategory) {
     throw new Error('parentCategory is undefined');
   }
-  let nodes = new Array<INode>();
-  nodes = addCategories(parentCategory.subCategories, nodes);
-  nodes = addScripts(parentCategory.scripts, nodes);
-  return nodes;
+  return [
+    ...createCategoryNodes(parentCategory.subCategories),
+    ...createScriptNodes(parentCategory.scripts),
+  ];
 }
 
-function addScripts(scripts: ReadonlyArray<IScript>, nodes: INode[]): INode[] {
-  if (!scripts || scripts.length === 0) {
-    return nodes;
-  }
-  for (const script of scripts) {
-    nodes.push(convertScriptToNode(script));
-  }
-  return nodes;
+function createScriptNodes(scripts: ReadonlyArray<IScript>): INode[] {
+  return (scripts || [])
+    .map((script) => convertScriptToNode(script));
 }
 
-function addCategories(categories: ReadonlyArray<ICategory>, nodes: INode[]): INode[] {
-  if (!categories || categories.length === 0) {
-    return nodes;
-  }
-  for (const category of categories) {
-    const subCategoryNodes = parseCategoryRecursively(category);
-    nodes.push(convertCategoryToNode(category, subCategoryNodes));
-  }
-  return nodes;
+function createCategoryNodes(categories: ReadonlyArray<ICategory>): INode[] {
+  return (categories || [])
+    .map((category) => ({ category, children: parseCategoryRecursively(category) }))
+    .map((data) => convertCategoryToNode(data.category, data.children));
 }
 
 function convertCategoryToNode(

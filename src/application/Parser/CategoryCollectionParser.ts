@@ -1,5 +1,4 @@
 import { CollectionData } from 'js-yaml-loader!@/*';
-import { Category } from '@/domain/Category';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { CategoryCollection } from '@/domain/CategoryCollection';
@@ -18,11 +17,7 @@ export function parseCategoryCollection(
   const scripting = new ScriptingDefinitionParser()
     .parse(content.scripting, info);
   const context = new CategoryCollectionParseContext(content.functions, scripting);
-  const categories = new Array<Category>();
-  for (const action of content.actions) {
-    const category = parseCategory(action, context);
-    categories.push(category);
-  }
+  const categories = content.actions.map((action) => parseCategory(action, context));
   const os = osParser.parseEnum(content.os, 'os');
   const collection = new CategoryCollection(
     os,

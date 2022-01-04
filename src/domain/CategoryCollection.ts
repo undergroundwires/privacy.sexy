@@ -1,4 +1,4 @@
-import { getEnumNames, getEnumValues, assertInRange } from '@/application/Common/Enum';
+import { getEnumValues, assertInRange } from '@/application/Common/Enum';
 import { IEntity } from '../infrastructure/Entity/IEntity';
 import { ICategory } from './ICategory';
 import { IScript } from './IScript';
@@ -57,16 +57,12 @@ export class CategoryCollection implements ICategoryCollection {
 }
 
 function ensureNoDuplicates<TKey>(entities: ReadonlyArray<IEntity<TKey>>) {
-  const totalOccurrencesById = new Map<TKey, number>();
-  for (const entity of entities) {
-    totalOccurrencesById.set(entity.id, (totalOccurrencesById.get(entity.id) || 0) + 1);
-  }
-  const duplicatedIds = new Array<TKey>();
-  totalOccurrencesById.forEach((index, id) => {
-    if (index > 1) {
-      duplicatedIds.push(id);
-    }
-  });
+  const isUniqueInArray = (id: TKey, index: number, array: readonly TKey[]) => array
+    .findIndex((otherId) => otherId === id) !== index;
+  const duplicatedIds = entities
+    .map((entity) => entity.id)
+    .filter((id, index, array) => !isUniqueInArray(id, index, array))
+    .filter(isUniqueInArray);
   if (duplicatedIds.length > 0) {
     const duplicatedIdsText = duplicatedIds.map((id) => `"${id}"`).join(',');
     throw new Error(
@@ -96,48 +92,37 @@ function ensureValidScripts(allScripts: readonly IScript[]) {
   if (!allScripts || allScripts.length === 0) {
     throw new Error('must consist of at least one script');
   }
-  for (const level of getEnumValues(RecommendationLevel)) {
-    if (allScripts.every((script) => script.level !== level)) {
-      throw new Error(`none of the scripts are recommended as ${RecommendationLevel[level]}`);
-    }
+  const missingRecommendationLevels = getEnumValues(RecommendationLevel)
+    .filter((level) => allScripts.every((script) => script.level !== level));
+  if (missingRecommendationLevels.length > 0) {
+    throw new Error('none of the scripts are recommended as'
+      + ` "${missingRecommendationLevels.map((level) => RecommendationLevel[level]).join(', "')}".`);
   }
 }
 
-function flattenApplication(categories: ReadonlyArray<ICategory>): [ICategory[], IScript[]] {
-  const allCategories = new Array<ICategory>();
-  const allScripts = new Array<IScript>();
-  flattenCategories(categories, allCategories, allScripts);
-  return [
-    allCategories,
-    allScripts,
-  ];
-}
-
-function flattenCategories(
+function flattenApplication(
   categories: ReadonlyArray<ICategory>,
-  allCategories: ICategory[],
-  allScripts: IScript[],
-): IQueryableCollection {
-  if (!categories || categories.length === 0) {
-    return;
-  }
-  for (const category of categories) {
-    allCategories.push(category);
-    flattenScripts(category.scripts, allScripts);
-    flattenCategories(category.subCategories, allCategories, allScripts);
-  }
-}
-
-function flattenScripts(
-  scripts: ReadonlyArray<IScript>,
-  allScripts: IScript[],
-): IScript[] {
-  if (!scripts) {
-    return;
-  }
-  for (const script of scripts) {
-    allScripts.push(script);
-  }
+): [ICategory[], IScript[]] {
+  const [subCategories, subScripts] = (categories || [])
+    // Parse children
+    .map((category) => flattenApplication(category.subCategories))
+    // Flatten results
+    .reduce(([previousCategories, previousScripts], [currentCategories, currentScripts]) => {
+      return [
+        [...previousCategories, ...currentCategories],
+        [...previousScripts, ...currentScripts],
+      ];
+    }, [new Array<ICategory>(), new Array<IScript>()]);
+  return [
+    [
+      ...(categories || []),
+      ...subCategories,
+    ],
+    [
+      ...(categories || []).flatMap((category) => category.scripts || []),
+      ...subScripts,
+    ],
+  ];
 }
 
 function makeQueryable(
@@ -154,13 +139,15 @@ function makeQueryable(
 function groupByLevel(
   allScripts: readonly IScript[],
 ): Map<RecommendationLevel, readonly IScript[]> {
-  const map = new Map<RecommendationLevel, readonly IScript[]>();
-  for (const levelName of getEnumNames(RecommendationLevel)) {
-    const level = RecommendationLevel[levelName];
-    const scripts = allScripts.filter(
-      (script) => script.level !== undefined && script.level <= level,
-    );
-    map.set(level, scripts);
-  }
-  return map;
+  return getEnumValues(RecommendationLevel)
+    .map((level) => ({
+      level,
+      scripts: allScripts.filter(
+        (script) => script.level !== undefined && script.level <= level,
+      ),
+    }))
+    .reduce((map, group) => {
+      map.set(group.level, group.scripts);
+      return map;
+    }, new Map<RecommendationLevel, readonly IScript[]>());
 }

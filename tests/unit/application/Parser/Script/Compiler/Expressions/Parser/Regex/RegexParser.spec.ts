@@ -31,6 +31,31 @@ describe('RegexParser', () => {
         });
       }
     });
+    it('throws when position is invalid', () => {
+      // arrange
+      const regexMatchingEmpty = /^/gm; /* expressions cannot be empty */
+      const code = 'unimportant';
+      const expectedErrorParts = [
+        `[${RegexParserConcrete.constructor.name}]`,
+        'invalid script position',
+        `Regex: ${regexMatchingEmpty}`,
+        `Code: ${code}`,
+      ];
+      const sut = new RegexParserConcrete(regexMatchingEmpty);
+      // act
+      let error: string;
+      try {
+        sut.findExpressions(code);
+      } catch (err) {
+        error = err.message;
+      }
+      // assert
+      expect(
+        expectedErrorParts.every((part) => error.includes(part)),
+        `Expected parts: ${expectedErrorParts.join(', ')}`
+          + `Actual error: ${error}`,
+      );
+    });
     describe('matches regex as expected', () => {
       // arrange
       const testCases = [

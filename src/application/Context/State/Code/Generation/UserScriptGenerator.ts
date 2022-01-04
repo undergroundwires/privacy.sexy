@@ -19,15 +19,14 @@ export class UserScriptGenerator implements IUserScriptGenerator {
   ): IUserScript {
     if (!selectedScripts) { throw new Error('undefined scripts'); }
     if (!scriptingDefinition) { throw new Error('undefined definition'); }
-    let scriptPositions = new Map<SelectedScript, ICodePosition>();
     if (!selectedScripts.length) {
-      return { code: '', scriptPositions };
+      return { code: '', scriptPositions: new Map<SelectedScript, ICodePosition>() };
     }
     let builder = this.codeBuilderFactory.create(scriptingDefinition.language);
     builder = initializeCode(scriptingDefinition.startCode, builder);
-    for (const selection of selectedScripts) {
-      scriptPositions = appendSelection(selection, scriptPositions, builder);
-    }
+    const scriptPositions = selectedScripts.reduce((result, selection) => {
+      return appendSelection(selection, result, builder);
+    }, new Map<SelectedScript, ICodePosition>());
     const code = finalizeCode(builder, scriptingDefinition.endCode);
     return { code, scriptPositions };
   }

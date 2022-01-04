@@ -1,4 +1,4 @@
-import { FunctionCallData, FunctionCallsData } from 'js-yaml-loader!@/*';
+import { FunctionCallData, FunctionCallsData, FunctionCallParametersData } from 'js-yaml-loader!@/*';
 import { IFunctionCall } from './IFunctionCall';
 import { FunctionCallArgumentCollection } from './Argument/FunctionCallArgumentCollection';
 import { FunctionCallArgument } from './Argument/FunctionCallArgument';
@@ -26,10 +26,17 @@ function parseFunctionCall(call: FunctionCallData): IFunctionCall {
   if (!call) {
     throw new Error('undefined function call');
   }
-  const args = new FunctionCallArgumentCollection();
-  for (const parameterName of Object.keys(call.parameters || {})) {
-    const arg = new FunctionCallArgument(parameterName, call.parameters[parameterName]);
-    args.addArgument(arg);
-  }
-  return new FunctionCall(call.function, args);
+  const callArgs = parseArgs(call.parameters);
+  return new FunctionCall(call.function, callArgs);
+}
+
+function parseArgs(
+  parameters: FunctionCallParametersData,
+): FunctionCallArgumentCollection {
+  return Object.keys(parameters || {})
+    .map((parameterName) => new FunctionCallArgument(parameterName, parameters[parameterName]))
+    .reduce((args, arg) => {
+      args.addArgument(arg);
+      return args;
+    }, new FunctionCallArgumentCollection());
 }

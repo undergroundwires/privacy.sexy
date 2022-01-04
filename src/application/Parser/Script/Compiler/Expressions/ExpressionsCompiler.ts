@@ -56,14 +56,13 @@ function compileExpressions(
 function extractRequiredParameterNames(
   expressions: readonly IExpression[],
 ): string[] {
-  const usedParameterNames = expressions
+  return expressions
     .map((e) => e.parameters.all
       .filter((p) => !p.isOptional)
       .map((p) => p.name))
-    .filter((p) => p)
-    .flat();
-  const uniqueParameterNames = Array.from(new Set(usedParameterNames));
-  return uniqueParameterNames;
+    .filter(Boolean) // Remove empty or undefined
+    .flat()
+    .filter((name, index, array) => array.indexOf(name) === index); // Remove duplicates
 }
 
 function ensureParamsUsedInCodeHasArgsProvided(

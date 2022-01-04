@@ -39,7 +39,7 @@ describe('ScriptingDefinition', () => {
         [ScriptingLanguage.batchfile, 'bat'],
         [ScriptingLanguage.shellscript, 'sh'],
       ]);
-      Array.from(testCases.entries()).forEach((test) => {
+      for (const test of testCases.entries()) {
         const language = test[0];
         const expectedExtension = test[1];
         it(`${ScriptingLanguage[language]} has ${expectedExtension}`, () => {
@@ -50,7 +50,7 @@ describe('ScriptingDefinition', () => {
           // assert
           expect(sut.fileExtension, expectedExtension);
         });
-      });
+      }
     });
   });
   describe('startCode', () => {

@@ -13,16 +13,23 @@ describe('CodeChangedEvent', () => {
       it('throws when code position is out of range', () => {
         // arrange
         const code = 'singleline code';
+        const nonExistingLine1 = 2;
+        const nonExistingLine2 = 31;
         const newScripts = new Map<SelectedScript, ICodePosition>([
-          [new SelectedScriptStub('1'), new CodePosition(0, 2 /* nonexisting line */)],
+          [new SelectedScriptStub('1'), new CodePosition(0, nonExistingLine1)],
+          [new SelectedScriptStub('2'), new CodePosition(0, nonExistingLine2)],
         ]);
         // act
-        const act = () => new CodeChangedEventBuilder()
-          .withCode(code)
-          .withNewScripts(newScripts)
-          .build();
+        let errorText = '';
+        try {
+          new CodeChangedEventBuilder()
+            .withCode(code)
+            .withNewScripts(newScripts)
+            .build();
+        } catch (error) { errorText = error.message; }
         // assert
-        expect(act).to.throw();
+        expect(errorText).to.include(nonExistingLine1);
+        expect(errorText).to.include(nonExistingLine2);
       });
       describe('does not throw with valid code position', () => {
         // arrange

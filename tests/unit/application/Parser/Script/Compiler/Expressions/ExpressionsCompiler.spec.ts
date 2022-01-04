@@ -151,6 +151,14 @@ describe('ExpressionsCompiler', () => {
             .withArgument('parameter2', 'value'),
           expectedError: 'parameter value(s) not provided for: "parameter1", "parameter3" but used in code',
         },
+        {
+          name: 'parameter names are not repeated in error message',
+          expressions: [
+            new ExpressionStub().withParameterNames(['parameter1', 'parameter1', 'parameter2', 'parameter2'], false),
+          ],
+          args: new FunctionCallArgumentCollectionStub(),
+          expectedError: 'parameter value(s) not provided for: "parameter1", "parameter2" but used in code',
+        },
       ];
       for (const testCase of testCases) {
         it(testCase.name, () => {

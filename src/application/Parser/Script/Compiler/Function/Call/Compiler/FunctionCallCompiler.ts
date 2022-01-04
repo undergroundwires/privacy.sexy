@@ -47,11 +47,8 @@ interface ICompiledFunctionCall {
 }
 
 function compileCallSequence(context: ICompilationContext): ICompiledFunctionCall {
-  const compiledFunctions = new Array<ICompiledFunctionCall>();
-  for (const call of context.callSequence) {
-    const compiledCode = compileSingleCall(call, context);
-    compiledFunctions.push(...compiledCode);
-  }
+  const compiledFunctions = context.callSequence
+    .flatMap((call) => compileSingleCall(call, context));
   return {
     code: merge(compiledFunctions.map((f) => f.code)),
     revertCode: merge(compiledFunctions.map((f) => f.revertCode)),
@@ -94,14 +91,17 @@ function compileArgs(
   args: IReadOnlyFunctionCallArgumentCollection,
   compiler: IExpressionsCompiler,
 ): IReadOnlyFunctionCallArgumentCollection {
-  const compiledArgs = new FunctionCallArgumentCollection();
-  for (const parameterName of argsToCompile.getAllParameterNames()) {
-    const { argumentValue } = argsToCompile.getArgument(parameterName);
-    const compiledValue = compiler.compileExpressions(argumentValue, args);
-    const newArgument = new FunctionCallArgument(parameterName, compiledValue);
-    compiledArgs.addArgument(newArgument);
-  }
-  return compiledArgs;
+  return argsToCompile
+    .getAllParameterNames()
+    .map((parameterName) => {
+      const { argumentValue } = argsToCompile.getArgument(parameterName);
+      const compiledValue = compiler.compileExpressions(argumentValue, args);
+      return new FunctionCallArgument(parameterName, compiledValue);
+    })
+    .reduce((compiledArgs, arg) => {
+      compiledArgs.addArgument(arg);
+      return compiledArgs;
+    }, new FunctionCallArgumentCollection());
 }
 
 function merge(codeParts: readonly string[]): string {

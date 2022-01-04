@@ -70,7 +70,7 @@ describe('FunctionCallCompiler', () => {
             },
             {
               name: 'provided: an unexpected parameter, when: none required',
-              functionParameters: undefined,
+              functionParameters: [],
               callParameters: ['unexpected-call-parameter'],
               expectedError:
                 `Function "${functionName}" has unexpected parameter(s) provided: "unexpected-call-parameter"`
@@ -90,10 +90,10 @@ describe('FunctionCallCompiler', () => {
               const func = new SharedFunctionStub(FunctionBodyType.Code)
                 .withName('test-function-name')
                 .withParameterNames(...testCase.functionParameters);
-              let params: FunctionCallParametersData = {};
-              for (const parameter of testCase.callParameters) {
-                params = { ...params, [parameter]: 'defined-parameter-value ' };
-              }
+              const params = testCase.callParameters
+                .reduce((result, parameter) => {
+                  return { ...result, [parameter]: 'defined-parameter-value ' };
+                }, {} as FunctionCallParametersData);
               const call = new FunctionCallStub()
                 .withFunctionName(func.name)
                 .withArguments(params);

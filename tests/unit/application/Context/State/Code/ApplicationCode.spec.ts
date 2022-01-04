@@ -197,7 +197,7 @@ class UserScriptGeneratorMock implements IUserScriptGenerator {
     selectedScripts: readonly SelectedScript[],
     scriptingDefinition: IScriptingDefinition,
   ): IUserScript {
-    for (const [parameters, result] of Array.from(this.prePlanned)) {
+    for (const [parameters, result] of this.prePlanned) {
       if (selectedScripts === parameters.scripts
         && scriptingDefinition === parameters.definition) {
         return result;

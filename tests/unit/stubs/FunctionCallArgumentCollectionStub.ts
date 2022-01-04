@@ -14,9 +14,8 @@ export class FunctionCallArgumentCollectionStub implements IFunctionCallArgument
   }
 
   public withArguments(args: { readonly [index: string]: string }) {
-    for (const parameterName of Object.keys(args)) {
-      const parameterValue = args[parameterName];
-      this.withArgument(parameterName, parameterValue);
+    for (const [name, value] of Object.entries(args)) {
+      this.withArgument(name, value);
     }
     return this;
   }

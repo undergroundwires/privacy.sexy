@@ -25,7 +25,7 @@ function testExpectedInstanceTypes<T>(
 ) {
   describe('create returns expected instances', () => {
     // arrange
-    for (const language of Array.from(expectedTypes.keys())) {
+    for (const language of expectedTypes.keys()) {
       it(ScriptingLanguage[language], () => {
         // act
         const expected = expectedTypes.get(language);

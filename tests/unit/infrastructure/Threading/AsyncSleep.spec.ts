@@ -52,14 +52,12 @@ class SchedulerMock {
 
   public tickNext(ms: number) {
     const newTime = this.currentTime + ms;
-    let newActions = this.scheduledActions;
-    for (const action of this.scheduledActions) {
-      if (newTime >= action.time) {
-        newActions = newActions.filter((a) => a !== action);
-        action.action();
-      }
+    const dueActions = this.scheduledActions
+      .filter((action) => newTime >= action.time);
+    for (const action of dueActions) {
+      action.action();
     }
-    this.scheduledActions = newActions;
+    this.scheduledActions = this.scheduledActions.filter((action) => !dueActions.includes(action));
   }
 }
 

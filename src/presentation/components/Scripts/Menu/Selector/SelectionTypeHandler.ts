@@ -26,7 +26,7 @@ export class SelectionTypeHandler {
   }
 
   public getCurrentSelectionType(): SelectionType {
-    for (const [type, selector] of Array.from(selectors.entries())) {
+    for (const [type, selector] of selectors.entries()) {
       if (selector.isSelected(this.state)) {
         return type;
       }

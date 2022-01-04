@@ -12,7 +12,7 @@ export class EventSource<T> implements IEventSource<T> {
   }
 
   public notify(data: T) {
-    for (const handler of Array.from(this.handlers.values())) {
+    for (const handler of this.handlers.values()) {
       handler(data);
     }
   }
