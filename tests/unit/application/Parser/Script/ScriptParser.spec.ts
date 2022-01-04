@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import type { ScriptData } from '@/application/collections/';
 import { parseScript, type ScriptFactoryType } from '@/application/Parser/Script/ScriptParser';
 import { parseDocs } from '@/application/Parser/DocumentationParser';
-import { RecommendationLevel } from '@/domain/RecommendationLevel';
-import type { ICategoryCollectionParseContext } from '@/application/Parser/Script/ICategoryCollectionParseContext';
+import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
+import { CategoryCollectionParseContext } from '@/application/Parser/Script/ICategoryCollectionParseContext';
 import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { ScriptCompilerStub } from '@tests/unit/shared/Stubs/ScriptCompilerStub';
 import { createScriptDataWithCall, createScriptDataWithCode, createScriptDataWithoutCallOrCodes } from '@tests/unit/shared/Stubs/ScriptDataStub';
@@ -12,9 +12,9 @@ import { ScriptCodeStub } from '@tests/unit/shared/Stubs/ScriptCodeStub';
 import { CategoryCollectionParseContextStub } from '@tests/unit/shared/Stubs/CategoryCollectionParseContextStub';
 import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
 import { NodeType } from '@/application/Parser/NodeValidation/NodeType';
-import { expectThrowsNodeError, type ITestScenario, NodeValidationTestRunner } from '@tests/unit/application/Parser/NodeValidation/NodeValidatorTestRunner';
-import { Script } from '@/domain/Script';
-import type { IEnumParser } from '@/application/Common/Enum';
+import { expectThrowsNodeError, NodeValidationTestScenario, NodeValidationTestRunner } from '@tests/unit/application/Parser/NodeValidation/NodeValidatorTestRunner';
+import { CollectionScript } from '@/domain/Executables/Script/CollectionScript';
+import { IEnumParser } from '@/application/Common/Enum';
 import { NoEmptyLines } from '@/application/Parser/Script/Validation/Rules/NoEmptyLines';
 import { NoDuplicatedLines } from '@/application/Parser/Script/Validation/Rules/NoDuplicatedLines';
 import { CodeValidatorStub } from '@tests/unit/shared/Stubs/CodeValidatorStub';
@@ -22,6 +22,18 @@ import type { ICodeValidator } from '@/application/Parser/Script/Validation/ICod
 
 describe('ScriptParser', () => {
   describe('parseScript', () => {
+    it('parses id as expected', () => {
+      // arrange
+      const expected = 'test-expected-id';
+      const script = createScriptDataWithCode()
+        .withId(expected);
+      // act
+      const actual = new TestBuilder()
+        .withData(script)
+        .parseScript();
+      // assert
+      expect(actual.executableId).to.equal(expected);
+    });
     it('parses name as expected', () => {
       // arrange
       const expected = 'test-expected-name';
@@ -191,7 +203,7 @@ describe('ScriptParser', () => {
     describe('invalid script data', () => {
       describe('validates script data', () => {
         // arrange
-        const createTest = (script: ScriptData): ITestScenario => ({
+        const createTest = (script: ScriptData): NodeValidationTestScenario => ({
           act: () => new TestBuilder()
             .withData(script)
             .parseScript(),
@@ -202,37 +214,42 @@ describe('ScriptParser', () => {
         });
         // act and assert
         new NodeValidationTestRunner()
-          .testInvalidNodeName((invalidName) => {
+          .testInvalidName((invalidName) => {
             return createTest(
               createScriptDataWithCall().withName(invalidName),
             );
           })
-          .testMissingNodeData((node) => {
+          .testInvalidId((invalidId) => {
+            return createTest(
+              createScriptDataWithCall().withId(invalidId),
+            );
+          })
+          .testMissingData((node) => {
             return createTest(node as ScriptData);
           })
           .runThrowingCase({
-            name: 'throws when both function call and code are defined',
+            description: 'throws when both function call and code are defined',
             scenario: createTest(
               createScriptDataWithCall().withCode('code'),
             ),
             expectedMessage: 'Both "call" and "code" are defined.',
           })
           .runThrowingCase({
-            name: 'throws when both function call and revertCode are defined',
+            description: 'throws when both function call and revertCode are defined',
             scenario: createTest(
               createScriptDataWithCall().withRevertCode('revert-code'),
             ),
             expectedMessage: 'Both "call" and "revertCode" are defined.',
           })
           .runThrowingCase({
-            name: 'throws when neither call or revertCode are defined',
+            description: 'throws when neither call or revertCode are defined',
             scenario: createTest(
               createScriptDataWithoutCallOrCodes(),
             ),
             expectedMessage: 'Neither "call" or "code" is defined.',
           });
       });
-      it(`rethrows exception if ${Script.name} cannot be constructed`, () => {
+      it(`rethrows exception if ${CollectionScript.name} cannot be constructed`, () => {
         // arrange
         const expectedError = 'script creation failed';
         const factoryMock: ScriptFactoryType = () => { throw new Error(expectedError); };
@@ -258,7 +275,7 @@ describe('ScriptParser', () => {
 class TestBuilder {
   private data: ScriptData = createScriptDataWithCode();
 
-  private context: ICategoryCollectionParseContext = new CategoryCollectionParseContextStub();
+  private context: CategoryCollectionParseContext = new CategoryCollectionParseContextStub();
 
   private parser: IEnumParser<RecommendationLevel> = new EnumParserStub<RecommendationLevel>()
     .setupDefaultValue(RecommendationLevel.Standard);
@@ -277,7 +294,7 @@ class TestBuilder {
     return this;
   }
 
-  public withContext(context: ICategoryCollectionParseContext) {
+  public withContext(context: CategoryCollectionParseContext) {
     this.context = context;
     return this;
   }
@@ -292,7 +309,7 @@ class TestBuilder {
     return this;
   }
 
-  public parseScript(): Script {
+  public parseScript(): CollectionScript {
     return parseScript(this.data, this.context, this.parser, this.factory, this.codeValidator);
   }
 }

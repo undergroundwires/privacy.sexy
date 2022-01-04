@@ -3,18 +3,18 @@ import { NodeType } from './NodeType';
 import type { NodeData } from './NodeData';
 
 export class NodeDataError extends CustomError {
-  constructor(message: string, public readonly context: INodeDataErrorContext) {
+  constructor(message: string, public readonly context: NodeDataErrorContext) {
     super(createMessage(message, context));
   }
 }
 
-export interface INodeDataErrorContext {
+export interface NodeDataErrorContext {
   readonly type?: NodeType;
   readonly selfNode: NodeData;
   readonly parentNode?: NodeData;
 }
 
-function createMessage(errorMessage: string, context: INodeDataErrorContext) {
+function createMessage(errorMessage: string, context: NodeDataErrorContext) {
   let message = '';
   if (context.type !== undefined) {
     message += `${NodeType[context.type]}: `;
@@ -24,7 +24,7 @@ function createMessage(errorMessage: string, context: INodeDataErrorContext) {
   return message;
 }
 
-function dump(context: INodeDataErrorContext): string {
+function dump(context: NodeDataErrorContext): string {
   const printJson = (obj: unknown) => JSON.stringify(obj, undefined, 2);
   let output = `Self: ${printJson(context.selfNode)}`;
   if (context.parentNode) {

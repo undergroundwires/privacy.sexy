@@ -1,40 +1,38 @@
 import type {
   CategoryData, ScriptData, CategoryOrScriptData,
 } from '@/application/collections/';
-import { Script } from '@/domain/Script';
-import { Category } from '@/domain/Category';
+import { CollectionScript } from '@/domain/Executables/Script/CollectionScript';
+import { CollectionCategory } from '@/domain/Executables/Category/CollectionCategory';
 import { NodeValidator } from '@/application/Parser/NodeValidation/NodeValidator';
 import { NodeType } from '@/application/Parser/NodeValidation/NodeType';
 import { parseDocs } from './DocumentationParser';
 import { parseScript } from './Script/ScriptParser';
-import type { ICategoryCollectionParseContext } from './Script/ICategoryCollectionParseContext';
-
-let categoryIdCounter = 0;
+import type { CategoryCollectionParseContext } from './Script/CategoryCollectionParseContext';
 
 export function parseCategory(
   category: CategoryData,
-  context: ICategoryCollectionParseContext,
+  context: CategoryCollectionParseContext,
   factory: CategoryFactoryType = CategoryFactory,
-): Category {
+): CollectionCategory {
   return parseCategoryRecursively({
     categoryData: category,
-    context,
+    collectionContext: context,
     factory,
   });
 }
 
-interface ICategoryParseContext {
+interface CategoryParseContext {
   readonly categoryData: CategoryData,
-  readonly context: ICategoryCollectionParseContext,
+  readonly collectionContext: CategoryCollectionParseContext,
   readonly factory: CategoryFactoryType,
   readonly parentCategory?: CategoryData,
 }
 
-function parseCategoryRecursively(context: ICategoryParseContext): Category | never {
+function parseCategoryRecursively(context: CategoryParseContext): CollectionCategory | never {
   ensureValidCategory(context.categoryData, context.parentCategory);
-  const children: ICategoryChildren = {
-    subCategories: new Array<Category>(),
-    subScripts: new Array<Script>(),
+  const children: CategoryChildren = {
+    subCategories: new Array<CollectionCategory>(),
+    subScripts: new Array<CollectionScript>(),
   };
   for (const data of context.categoryData.children) {
     parseNode({
@@ -42,12 +40,12 @@ function parseCategoryRecursively(context: ICategoryParseContext): Category | ne
       children,
       parent: context.categoryData,
       factory: context.factory,
-      context: context.context,
+      context: context.collectionContext,
     });
   }
   try {
     return context.factory(
-      /* id: */ categoryIdCounter++,
+      /* id: */ context.collectionContext.keyFactory.createExecutableKey(context.categoryData.id),
       /* name: */ context.categoryData.category,
       /* docs: */ parseDocs(context.categoryData),
       /* categories: */ children.subCategories,
@@ -69,6 +67,7 @@ function ensureValidCategory(category: CategoryData, parentCategory?: CategoryDa
     parentNode: parentCategory,
   })
     .assertDefined(category)
+    .assertExecutableId(category.id) // TODO: Unit test this
     .assertValidName(category.category)
     .assert(
       () => category.children.length > 0,
@@ -76,25 +75,25 @@ function ensureValidCategory(category: CategoryData, parentCategory?: CategoryDa
     );
 }
 
-interface ICategoryChildren {
-  subCategories: Category[];
-  subScripts: Script[];
+interface CategoryChildren {
+  readonly subCategories: CollectionCategory[];
+  readonly subScripts: CollectionScript[];
 }
 
-interface INodeParseContext {
+interface NodeParseContext {
   readonly nodeData: CategoryOrScriptData;
-  readonly children: ICategoryChildren;
+  readonly children: CategoryChildren;
   readonly parent: CategoryData;
   readonly factory: CategoryFactoryType;
-  readonly context: ICategoryCollectionParseContext;
+  readonly context: CategoryCollectionParseContext;
 }
-function parseNode(context: INodeParseContext) {
+function parseNode(context: NodeParseContext) {
   const validator = new NodeValidator({ selfNode: context.nodeData, parentNode: context.parent });
   validator.assertDefined(context.nodeData);
   if (isCategory(context.nodeData)) {
     const subCategory = parseCategoryRecursively({
       categoryData: context.nodeData,
-      context: context.context,
+      collectionContext: context.context,
       factory: context.factory,
       parentCategory: context.parent,
     });
@@ -128,6 +127,8 @@ function hasProperty(object: unknown, propertyName: string) {
 }
 
 export type CategoryFactoryType = (
-  ...parameters: ConstructorParameters<typeof Category>) => Category;
+  ...parameters: ConstructorParameters<typeof CollectionCategory>) => CollectionCategory;
 
-const CategoryFactory: CategoryFactoryType = (...parameters) => new Category(...parameters);
+const CategoryFactory: CategoryFactoryType = (
+  ...parameters
+) => new CollectionCategory(...parameters);

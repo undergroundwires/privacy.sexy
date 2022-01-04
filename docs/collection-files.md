@@ -34,6 +34,8 @@ Represents a logical group of scripts and subcategories.
 
 #### `Category` syntax
 
+- `id:`: *string* **(required)** # TODO: Revise this docs
+  - Executable ID, unique across all categories and scripts in same category collection (for same operating system).
 - `category:` *`string`*  **(required)**
   - Name of the category.
   - ❗ Must be unique throughout the [collection](#collection).
@@ -45,7 +47,7 @@ Represents a logical group of scripts and subcategories.
 
 ### `Script`
 
-Represents an individual tweak.
+Represents an independently executable and reversible tweak.
 
 Types (like [functions](#function)):
 
@@ -60,6 +62,8 @@ Types (like [functions](#function)):
 
 #### `Script` syntax
 
+- `id:`: *string* **(required)** # TODO: Revise this docs
+  - Executable ID, unique across all categories and scripts in same category collection (for same operating system).
 - `name`: *`string`* **(required)**
   - Script name.
   - ❗ Must be unique throughout the [Collection](#collection).

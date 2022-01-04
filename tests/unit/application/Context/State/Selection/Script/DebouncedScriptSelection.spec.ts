@@ -4,12 +4,12 @@ import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
-import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import { CategoryCollection } from '@/domain/Collection/CategoryCollection';
+import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { BatchedDebounceStub } from '@tests/unit/shared/Stubs/BatchedDebounceStub';
 import type { ScriptSelectionChange, ScriptSelectionChangeCommand } from '@/application/Context/State/Selection/Script/ScriptSelectionChange';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
-import type { IScript } from '@/domain/IScript';
+import { Script } from '@/domain/Executables/Script/Script';
 import { expectEqualSelectedScripts } from './ExpectEqualSelectedScripts';
 
 type DebounceArg = ScriptSelectionChangeCommand;
@@ -104,7 +104,7 @@ describe('DebouncedScriptSelection', () => {
       const { scriptSelection, unselectedScripts } = setupTestWithPreselectedScripts({
         preselect: (allScripts) => [allScripts[0]],
       });
-      const scriptIdToCheck = unselectedScripts[0].id;
+      const scriptIdToCheck = unselectedScripts[0].key;
       // act
       const actual = scriptSelection.isSelected(scriptIdToCheck);
       // assert
@@ -116,7 +116,7 @@ describe('DebouncedScriptSelection', () => {
       const { scriptSelection, preselectedScripts } = setupTestWithPreselectedScripts({
         preselect: (allScripts) => [allScripts[0]],
       });
-      const scriptIdToCheck = preselectedScripts[0].id;
+      const scriptIdToCheck = preselectedScripts[0].key;
       // act
       const actual = scriptSelection.isSelected(scriptIdToCheck);
       // assert
@@ -300,7 +300,7 @@ describe('DebouncedScriptSelection', () => {
           preselect: (allScripts) => [allScripts[0], allScripts[1]]
             .map((s) => s.toSelectedScript()),
           getChanges: (allScripts) => [
-            { scriptId: allScripts[2].id, newStatus: { isReverted: true, isSelected: true } },
+            { scriptKey: allScripts[2].key, newStatus: { isReverted: true, isSelected: true } },
           ],
           getExpectedFinalSelection: (allScripts) => [
             allScripts[0].toSelectedScript(),
@@ -313,7 +313,7 @@ describe('DebouncedScriptSelection', () => {
           preselect: (allScripts) => [allScripts[0], allScripts[1]]
             .map((s) => s.toSelectedScript()),
           getChanges: (allScripts) => [
-            { scriptId: allScripts[2].id, newStatus: { isReverted: false, isSelected: true } },
+            { scriptKey: allScripts[2].key, newStatus: { isReverted: false, isSelected: true } },
           ],
           getExpectedFinalSelection: (allScripts) => [
             allScripts[0].toSelectedScript(),
@@ -326,7 +326,7 @@ describe('DebouncedScriptSelection', () => {
           preselect: (allScripts) => [allScripts[0], allScripts[1]]
             .map((s) => s.toSelectedScript()),
           getChanges: (allScripts) => [
-            { scriptId: allScripts[0].id, newStatus: { isSelected: false } },
+            { scriptKey: allScripts[0].key, newStatus: { isSelected: false } },
           ],
           getExpectedFinalSelection: (allScripts) => [
             allScripts[1].toSelectedScript(),
@@ -339,7 +339,7 @@ describe('DebouncedScriptSelection', () => {
             allScripts[1].toSelectedScript(),
           ],
           getChanges: (allScripts) => [
-            { scriptId: allScripts[0].id, newStatus: { isSelected: true, isReverted: true } },
+            { scriptKey: allScripts[0].key, newStatus: { isSelected: true, isReverted: true } },
           ],
           getExpectedFinalSelection: (allScripts) => [
             allScripts[0].toSelectedScript().withRevert(true),
@@ -353,7 +353,7 @@ describe('DebouncedScriptSelection', () => {
             allScripts[1].toSelectedScript(),
           ],
           getChanges: (allScripts) => [
-            { scriptId: allScripts[0].id, newStatus: { isSelected: true, isReverted: false } },
+            { scriptKey: allScripts[0].key, newStatus: { isSelected: true, isReverted: false } },
           ],
           getExpectedFinalSelection: (allScripts) => [
             allScripts[0].toSelectedScript().withRevert(false),
@@ -367,9 +367,9 @@ describe('DebouncedScriptSelection', () => {
             allScripts[2].toSelectedScript(), // remove
           ],
           getChanges: (allScripts) => [
-            { scriptId: allScripts[0].id, newStatus: { isSelected: true, isReverted: false } },
-            { scriptId: allScripts[1].id, newStatus: { isSelected: true, isReverted: true } },
-            { scriptId: allScripts[2].id, newStatus: { isSelected: false } },
+            { scriptKey: allScripts[0].key, newStatus: { isSelected: true, isReverted: false } },
+            { scriptKey: allScripts[1].key, newStatus: { isSelected: true, isReverted: true } },
+            { scriptKey: allScripts[2].key, newStatus: { isSelected: false } },
           ],
           getExpectedFinalSelection: (allScripts) => [
             allScripts[0].toSelectedScript().withRevert(false),
@@ -408,7 +408,7 @@ describe('DebouncedScriptSelection', () => {
           description: 'does not change selection for an already selected script',
           preselect: (allScripts) => [allScripts[0].toSelectedScript().withRevert(true)],
           getChanges: (allScripts) => [
-            { scriptId: allScripts[0].id, newStatus: { isReverted: true, isSelected: true } },
+            { scriptKey: allScripts[0].key, newStatus: { isReverted: true, isSelected: true } },
           ],
         },
         {
@@ -416,15 +416,15 @@ describe('DebouncedScriptSelection', () => {
           preselect: (allScripts) => [allScripts[0], allScripts[1]]
             .map((s) => s.toSelectedScript()),
           getChanges: (allScripts) => [
-            { scriptId: allScripts[2].id, newStatus: { isSelected: false } },
+            { scriptKey: allScripts[2].key, newStatus: { isSelected: false } },
           ],
         },
         {
           description: 'handles no mutations for mixed unchanged operations',
           preselect: (allScripts) => [allScripts[0].toSelectedScript().withRevert(false)],
           getChanges: (allScripts) => [
-            { scriptId: allScripts[0].id, newStatus: { isSelected: true, isReverted: false } },
-            { scriptId: allScripts[1].id, newStatus: { isSelected: false } },
+            { scriptKey: allScripts[0].key, newStatus: { isSelected: true, isReverted: false } },
+            { scriptKey: allScripts[1].key, newStatus: { isSelected: false } },
           ],
         },
       ];
@@ -459,7 +459,7 @@ describe('DebouncedScriptSelection', () => {
           .build();
         const expectedCommand: ScriptSelectionChangeCommand = {
           changes: [
-            { scriptId: script.id, newStatus: { isReverted: true, isSelected: true } },
+            { scriptKey: script.key, newStatus: { isReverted: true, isSelected: true } },
           ],
         };
         // act
@@ -481,7 +481,7 @@ describe('DebouncedScriptSelection', () => {
         // act
         selection.processChanges({
           changes: [
-            { scriptId: script.id, newStatus: { isReverted: true, isSelected: true } },
+            { scriptKey: script.key, newStatus: { isReverted: true, isSelected: true } },
           ],
         });
         // assert
@@ -502,7 +502,7 @@ describe('DebouncedScriptSelection', () => {
         // act
         selection.processChanges({
           changes: [
-            { scriptId: script.id, newStatus: { isReverted: true, isSelected: true } },
+            { scriptKey: script.key, newStatus: { isReverted: true, isSelected: true } },
           ],
         });
         debounceStub.execute();
@@ -525,7 +525,7 @@ describe('DebouncedScriptSelection', () => {
         for (const script of scripts) {
           selection.processChanges({
             changes: [
-              { scriptId: script.id, newStatus: { isReverted: true, isSelected: true } },
+              { scriptKey: script.key, newStatus: { isReverted: true, isSelected: true } },
             ],
           });
         }
@@ -538,7 +538,7 @@ describe('DebouncedScriptSelection', () => {
   });
 });
 
-function createCollectionWithScripts(...scripts: IScript[]): CategoryCollectionStub {
+function createCollectionWithScripts(...scripts: Script[]): CategoryCollectionStub {
   const category = new CategoryStub(1).withScripts(...scripts);
   const collection = new CategoryCollectionStub().withAction(category);
   return collection;
@@ -572,7 +572,7 @@ function setupTestWithPreselectedScripts(options: {
     return initialSelection;
   })();
   const unselectedScripts = allScripts.filter(
-    (s) => !preselectedScripts.map((selected) => selected.id).includes(s.id),
+    (s) => !preselectedScripts.map((selected) => selected.key).includes(s.key),
   );
   const collection = createCollectionWithScripts(...allScripts);
   const scriptSelection = new DebouncedScriptSelectionBuilder()
@@ -594,7 +594,7 @@ function isScriptStubArray(obj: readonly unknown[]): obj is readonly ScriptStub[
 }
 
 class DebouncedScriptSelectionBuilder {
-  private collection: ICategoryCollection = new CategoryCollectionStub()
+  private collection: CategoryCollection = new CategoryCollectionStub()
     .withSomeActions();
 
   private selectedScripts: readonly SelectedScript[] = [];
@@ -613,7 +613,7 @@ class DebouncedScriptSelectionBuilder {
     return this;
   }
 
-  public withCollection(collection: ICategoryCollection) {
+  public withCollection(collection: CategoryCollection) {
     this.collection = collection;
     return this;
   }

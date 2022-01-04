@@ -1,8 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { ScriptCode } from '@/domain/ScriptCode';
 import { getAbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
+import { DistinctReversibleScriptCode } from '@/domain/Executables/Script/Code/DistinctReversibleScriptCode';
+import { ScriptCode } from '@/domain/Executables/Script/Code/ScriptCode';
 
-describe('ScriptCode', () => {
+describe('DistinctReversibleScriptCode', () => {
   describe('code', () => {
     describe('throws with invalid code', () => {
       // arrange
@@ -97,7 +98,7 @@ class ScriptCodeBuilder {
   }
 
   public build(): ScriptCode {
-    return new ScriptCode(
+    return new DistinctReversibleScriptCode(
       this.execute,
       this.revert,
     );

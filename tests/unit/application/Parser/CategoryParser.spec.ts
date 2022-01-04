@@ -9,9 +9,9 @@ import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub'
 import { CategoryDataStub } from '@tests/unit/shared/Stubs/CategoryDataStub';
 import { itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { NodeType } from '@/application/Parser/NodeValidation/NodeType';
-import { expectThrowsNodeError, type ITestScenario, NodeValidationTestRunner } from '@tests/unit/application/Parser/NodeValidation/NodeValidatorTestRunner';
-import type { ICategoryCollectionParseContext } from '@/application/Parser/Script/ICategoryCollectionParseContext';
-import { Category } from '@/domain/Category';
+import { expectThrowsNodeError, NodeValidationTestScenario, NodeValidationTestRunner } from '@tests/unit/application/Parser/NodeValidation/NodeValidatorTestRunner';
+import { CategoryCollectionParseContext } from '@/application/Parser/Script/ICategoryCollectionParseContext';
+import { CollectionCategory } from '@/domain/Executables/Category/CollectionCategory';
 import { createScriptDataWithCall, createScriptDataWithCode, createScriptDataWithoutCallOrCodes } from '@tests/unit/shared/Stubs/ScriptDataStub';
 
 describe('CategoryParser', () => {
@@ -20,12 +20,12 @@ describe('CategoryParser', () => {
       describe('validates script data', () => {
         describe('satisfies shared node tests', () => {
           new NodeValidationTestRunner()
-            .testInvalidNodeName((invalidName) => {
+            .testInvalidName((invalidName) => {
               return createTest(
                 new CategoryDataStub().withName(invalidName),
               );
             })
-            .testMissingNodeData((node) => {
+            .testMissingData((node) => {
               return createTest(node as CategoryData);
             });
         });
@@ -45,7 +45,7 @@ describe('CategoryParser', () => {
         });
         describe('throws when category child is missing', () => {
           new NodeValidationTestRunner()
-            .testMissingNodeData((missingNode) => {
+            .testMissingData((missingNode) => {
               // arrange
               const invalidChildNode = missingNode;
               const parent = new CategoryDataStub()
@@ -72,7 +72,7 @@ describe('CategoryParser', () => {
             .withName('parent')
             .withChildren([new CategoryDataStub().withName('valid child'), invalidChildNode]);
           // act
-          const test: ITestScenario = {
+          const test: NodeValidationTestScenario = {
             // act
             act: () => new TestBuilder()
               .withData(parent)
@@ -87,7 +87,7 @@ describe('CategoryParser', () => {
           expectThrowsNodeError(test, expectedError);
         });
         describe('throws when category child is invalid category', () => {
-          new NodeValidationTestRunner().testInvalidNodeName((invalidName) => {
+          new NodeValidationTestRunner().testInvalidName((invalidName) => {
             // arrange
             const invalidChildNode = new CategoryDataStub()
               .withName(invalidName);
@@ -108,7 +108,7 @@ describe('CategoryParser', () => {
             });
           });
         });
-        function createTest(category: CategoryData): ITestScenario {
+        function createTest(category: CategoryData): NodeValidationTestScenario {
           return {
             act: () => new TestBuilder()
               .withData(category)
@@ -120,7 +120,7 @@ describe('CategoryParser', () => {
           };
         }
       });
-      it(`rethrows exception if ${Category.name} cannot be constructed`, () => {
+      it(`rethrows exception if ${CollectionCategory.name} cannot be constructed`, () => {
         // arrange
         const expectedError = 'category creation failed';
         const factoryMock: CategoryFactoryType = () => { throw new Error(expectedError); };
@@ -260,7 +260,7 @@ describe('CategoryParser', () => {
 class TestBuilder {
   private data: CategoryData = new CategoryDataStub();
 
-  private context: ICategoryCollectionParseContext = new CategoryCollectionParseContextStub();
+  private context: CategoryCollectionParseContext = new CategoryCollectionParseContextStub();
 
   private factory?: CategoryFactoryType = undefined;
 
@@ -269,7 +269,7 @@ class TestBuilder {
     return this;
   }
 
-  public withContext(context: ICategoryCollectionParseContext) {
+  public withContext(context: CategoryCollectionParseContext) {
     this.context = context;
     return this;
   }

@@ -1,12 +1,86 @@
 import { describe, it, expect } from 'vitest';
 import { getEnumValues } from '@/application/Common/Enum';
-import { Script } from '@/domain/Script';
-import { RecommendationLevel } from '@/domain/RecommendationLevel';
-import type { IScriptCode } from '@/domain/IScriptCode';
+import { CollectionScript } from '@/domain/Executables/Script/CollectionScript';
+import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
+import { ScriptCode } from '@/domain/Executables/Script/Code/ScriptCode';
 import { ScriptCodeStub } from '@tests/unit/shared/Stubs/ScriptCodeStub';
+import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
-describe('Script', () => {
+describe('CollectionScript', () => {
   describe('ctor', () => {
+    describe('id', () => {
+      it('sets as expected', () => {
+        // arrange
+        const expected = '3e172d73';
+        const sut = new ScriptBuilder()
+          .withId(expected)
+          .build();
+        // act
+        const actual = sut.executableId;
+        // assert
+        expect(actual).to.deep.equal(expected);
+      });
+      describe('throws when missing', () => {
+        itEachAbsentStringValue((absentValue) => {
+          // arrange
+          const expectedError = 'missing ID';
+          const id = absentValue;
+          // act
+          const construct = () => new ScriptBuilder()
+            .withId(id)
+            .build();
+          // assert
+          expect(construct).to.throw(expectedError);
+        }, { excludeNull: true, excludeUndefined: true });
+      });
+      describe('throws when not partial UUID', () => {
+        const badPartialUuidValues = [
+          '25f48eb1-d77f-44c4-9abd-87a9bf18ac4d', // Full GUID
+          '1234567', // boundary test: 7 characters
+          '123456789', //  boundary test: 9 characters
+        ];
+        badPartialUuidValues.forEach((badUuid) => {
+          it(`given ${badUuid}`, () => {
+            // arrange
+            const scriptName = 'script-with-bad-id';
+            const expectedError = `ID ("${badUuid}") is not a valid partial UUID (script: ${scriptName})`;
+            // act
+            const act = () => new ScriptBuilder()
+              .withName(scriptName)
+              .withId(badUuid)
+              .build();
+            // assert
+            expect(act).to.throw(expectedError);
+          });
+        });
+      });
+    });
+    describe('name', () => {
+      it('sets as expected', () => {
+        // arrange
+        const expected = 'Disable some telemetry';
+        const sut = new ScriptBuilder()
+          .withName(expected)
+          .build();
+        // act
+        const actual = sut.name;
+        // assert
+        expect(actual).to.deep.equal(expected);
+      });
+      describe('throws when missing', () => {
+        itEachAbsentStringValue((absentValue) => {
+          // arrange
+          const expectedError = 'missing name';
+          const name = absentValue;
+          // act
+          const construct = () => new ScriptBuilder()
+            .withName(name)
+            .build();
+          // assert
+          expect(construct).to.throw(expectedError);
+        }, { excludeUndefined: true, excludeNull: true });
+      });
+    });
     describe('scriptCode', () => {
       it('sets as expected', () => {
         // arrange
@@ -96,20 +170,27 @@ describe('Script', () => {
 class ScriptBuilder {
   private name = 'test-script';
 
-  private code: IScriptCode = new ScriptCodeStub();
+  private code: ScriptCode = new ScriptCodeStub();
 
   private level? = RecommendationLevel.Standard;
 
   private docs: readonly string[] = [];
 
-  public withCodes(code: string, revertCode = ''): this {
+  private id = 'cda7a415';
+
+  public withCodes(code: string, revertCode = ''): ScriptBuilder {
     this.code = new ScriptCodeStub()
       .withExecute(code)
       .withRevert(revertCode);
     return this;
   }
 
-  public withCode(code: IScriptCode): this {
+  public withId(id: string) {
+    this.id = id;
+    return this;
+  }
+
+  public withCode(code: ScriptCode): ScriptBuilder {
     this.code = code;
     return this;
   }
@@ -129,8 +210,9 @@ class ScriptBuilder {
     return this;
   }
 
-  public build(): Script {
-    return new Script(
+  public build(): CollectionScript {
+    return new CollectionScript(
+      this.id,
       this.name,
       this.code,
       this.docs,

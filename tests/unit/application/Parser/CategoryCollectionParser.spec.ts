@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import type { IEntity } from '@/infrastructure/Entity/IEntity';
+import { Identifiable } from '@/domain/Identifiable/Identifiable';
 import { parseCategoryCollection } from '@/application/Parser/CategoryCollectionParser';
 import { parseCategory } from '@/application/Parser/CategoryParser';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { RecommendationLevel } from '@/domain/RecommendationLevel';
+import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import { ScriptingDefinitionParser } from '@/application/Parser/ScriptingDefinition/ScriptingDefinitionParser';
 import { EnumParserStub } from '@tests/unit/shared/Stubs/EnumParserStub';
 import { ProjectDetailsStub } from '@tests/unit/shared/Stubs/ProjectDetailsStub';
@@ -44,10 +44,10 @@ describe('CategoryCollectionParser', () => {
         const actual = parseCategoryCollection(collection, projectDetails).actions;
         // assert
         expect(excludingId(actual)).to.be.deep.equal(excludingId(expected));
-        function excludingId<TId>(array: ReadonlyArray<IEntity<TId>>) {
+        function excludingId<TId>(array: ReadonlyArray<Identifiable<TId>>) {
           return array.map((obj) => {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { id: omitted, ...rest } = obj;
+            const { key: omitted, ...rest } = obj;
             return rest;
           });
         }

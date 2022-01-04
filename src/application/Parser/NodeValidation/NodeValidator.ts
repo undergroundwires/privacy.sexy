@@ -1,9 +1,9 @@
 import { isString } from '@/TypeHelpers';
-import { type INodeDataErrorContext, NodeDataError } from './NodeDataError';
+import { type NodeDataErrorContext, NodeDataError } from './NodeDataError';
 import type { NodeData } from './NodeData';
 
 export class NodeValidator {
-  constructor(private readonly context: INodeDataErrorContext) {
+  constructor(private readonly context: NodeDataErrorContext) {
 
   }
 
@@ -16,6 +16,18 @@ export class NodeValidator {
       .assert(
         () => isString(nameValue),
         `Name (${JSON.stringify(nameValue)}) is not a string but ${typeof nameValue}.`,
+      );
+  }
+
+  public assertExecutableId(idValue: string) { // TODO: Unit test this
+    return this
+      .assert(
+        () => Boolean(idValue),
+        getMessageWithIdSuggestion('missing ID'),
+      )
+      .assert(
+        () => isString(idValue),
+        getMessageWithIdSuggestion(`ID "${idValue}" is not a string but ${typeof idValue}`),
       );
   }
 
@@ -36,4 +48,20 @@ export class NodeValidator {
   public throw(errorMessage: string): never {
     throw new NodeDataError(errorMessage, this.context);
   }
+}
+
+function getMessageWithIdSuggestion(message: string) {
+  return `${message}. How about using "${suggestId()}"?`;
+}
+
+function suggestId(): string {
+  const partialGuid = crypto.randomUUID().split('-')[0];
+  if (isAllDigits(partialGuid)) {
+    return suggestId(); // Numeric-only IDs in YAML without quotes are interpreted as numbers
+  }
+  return partialGuid;
+}
+
+function isAllDigits(text: string): boolean {
+  return /^\d+$/.test(text);
 }

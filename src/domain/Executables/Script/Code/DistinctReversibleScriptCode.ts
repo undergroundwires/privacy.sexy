@@ -1,6 +1,6 @@
-import type { IScriptCode } from './IScriptCode';
+import type { ScriptCode } from './ScriptCode';
 
-export class ScriptCode implements IScriptCode {
+export class DistinctReversibleScriptCode implements ScriptCode {
   constructor(
     public readonly execute: string,
     public readonly revert: string | undefined,

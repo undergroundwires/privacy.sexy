@@ -1,17 +1,18 @@
-import type { IEntity } from '@/infrastructure/Entity/IEntity';
+import type { Identifiable } from '@/domain/Identifiable/Identifiable';
+import type { Key } from '@/domain/Identifiable/Key';
 
-export interface ReadonlyRepository<TKey, TEntity extends IEntity<TKey>> {
+export interface ReadonlyRepository<TKey extends Key, TEntity extends Identifiable<TKey>> {
   readonly length: number;
   getItems(predicate?: (entity: TEntity) => boolean): readonly TEntity[];
-  getById(id: TKey): TEntity;
-  exists(id: TKey): boolean;
+  getById(key: TKey): TEntity;
+  exists(key: TKey): boolean;
 }
 
-export interface MutableRepository<TKey, TEntity extends IEntity<TKey>> {
+export interface MutableRepository<TKey extends Key, TEntity extends Identifiable<TKey>> {
   addItem(item: TEntity): void;
   addOrUpdateItem(item: TEntity): void;
-  removeItem(id: TKey): void;
+  removeItem(key: TKey): void;
 }
 
-export interface Repository<TKey, TEntity extends IEntity<TKey>>
+export interface Repository<TKey extends Key, TEntity extends Identifiable<TKey>>
   extends ReadonlyRepository<TKey, TEntity>, MutableRepository<TKey, TEntity> { }

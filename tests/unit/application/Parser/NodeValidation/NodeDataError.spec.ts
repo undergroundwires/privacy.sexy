@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { type INodeDataErrorContext, NodeDataError } from '@/application/Parser/NodeValidation/NodeDataError';
+import { NodeDataErrorContext, NodeDataError } from '@/application/Parser/NodeValidation/NodeDataError';
 import { NodeDataErrorContextStub } from '@tests/unit/shared/Stubs/NodeDataErrorContextStub';
 import { NodeType } from '@/application/Parser/NodeValidation/NodeType';
 import { CustomError } from '@/application/Common/CustomError';
@@ -42,9 +42,9 @@ describe('NodeDataError', () => {
 class NodeDataErrorBuilder {
   private message = 'error';
 
-  private context: INodeDataErrorContext = new NodeDataErrorContextStub();
+  private context: NodeDataErrorContext = new NodeDataErrorContextStub();
 
-  public withContext(context: INodeDataErrorContext) {
+  public withContext(context: NodeDataErrorContext) {
     this.context = context;
     return this;
   }

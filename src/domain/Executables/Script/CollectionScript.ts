@@ -1,16 +1,18 @@
-import { BaseEntity } from '@/infrastructure/Entity/BaseEntity';
 import { RecommendationLevel } from './RecommendationLevel';
-import type { IScript } from './IScript';
-import type { IScriptCode } from './IScriptCode';
+import type { ExecutableKey } from '../ExecutableKey/ExecutableKey';
+import type { Script } from './Script';
+import type { ScriptCode } from './Code/ScriptCode';
 
-export class Script extends BaseEntity<string> implements IScript {
+// TODO: Unit tests not done
+
+export class CollectionScript implements Script {
   constructor(
+    public readonly key: ExecutableKey,
     public readonly name: string,
-    public readonly code: IScriptCode,
+    public readonly code: ScriptCode,
     public readonly docs: ReadonlyArray<string>,
     public readonly level?: RecommendationLevel,
   ) {
-    super(name);
     validateLevel(level);
   }
 

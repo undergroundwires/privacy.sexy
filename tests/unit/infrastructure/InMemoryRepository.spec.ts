@@ -1,31 +1,31 @@
 import { describe, it, expect } from 'vitest';
-import { NumericEntityStub } from '@tests/unit/shared/Stubs/NumericEntityStub';
+import { StringIdentifiableStub, StringKeyStub } from '@tests/unit/shared/Stubs/StringIdentifiableStub';
 import { InMemoryRepository } from '@/infrastructure/Repository/InMemoryRepository';
 
 describe('InMemoryRepository', () => {
   describe('exists', () => {
-    const sut = new InMemoryRepository<number, NumericEntityStub>(
-      [new NumericEntityStub(1), new NumericEntityStub(2), new NumericEntityStub(3)],
+    const sut = new InMemoryRepository<StringKeyStub, StringIdentifiableStub>(
+      [new StringIdentifiableStub('1'), new StringIdentifiableStub('2'), new StringIdentifiableStub('3')],
     );
 
     describe('item exists', () => {
-      const actual = sut.exists(1);
+      const actual = sut.exists('1');
       it('returns true', () => expect(actual).to.be.true);
     });
     describe('item does not exist', () => {
-      const actual = sut.exists(99);
+      const actual = sut.exists('99');
       it('returns false', () => expect(actual).to.be.false);
     });
   });
   it('getItems gets initial items', () => {
     // arrange
     const expected = [
-      new NumericEntityStub(1), new NumericEntityStub(2),
-      new NumericEntityStub(3), new NumericEntityStub(4),
+      new StringIdentifiableStub('1'), new StringIdentifiableStub('2'),
+      new StringIdentifiableStub('3'), new StringIdentifiableStub('4'),
     ];
 
     // act
-    const sut = new InMemoryRepository<number, NumericEntityStub>(expected);
+    const sut = new InMemoryRepository<StringKeyStub, StringIdentifiableStub>(expected);
     const actual = sut.getItems();
 
     // assert
@@ -34,10 +34,10 @@ describe('InMemoryRepository', () => {
   describe('addItem', () => {
     it('adds', () => {
       // arrange
-      const sut = new InMemoryRepository<number, NumericEntityStub>();
+      const sut = new InMemoryRepository<StringKeyStub, StringIdentifiableStub>();
       const expected = {
         length: 1,
-        item: new NumericEntityStub(1),
+        item: new StringIdentifiableStub('1'),
       };
 
       // act
@@ -54,16 +54,20 @@ describe('InMemoryRepository', () => {
   });
   it('removeItem removes', () => {
     // arrange
+    const idToDelete = 'id-to-delete';
     const initialItems = [
-      new NumericEntityStub(1), new NumericEntityStub(2),
-      new NumericEntityStub(3), new NumericEntityStub(4),
+      new StringIdentifiableStub('initial-entity-1'), new StringIdentifiableStub('initial-entity-2'),
+      new StringIdentifiableStub(idToDelete), new StringIdentifiableStub('initial-entity-3'),
     ];
-    const idToDelete = 3;
     const expected = {
       length: 3,
-      items: [new NumericEntityStub(1), new NumericEntityStub(2), new NumericEntityStub(4)],
+      items: [
+        new StringIdentifiableStub('initial-entity-1'),
+        new StringIdentifiableStub('initial-entity-2'),
+        new StringIdentifiableStub('initial-entity-3'),
+      ],
     };
-    const sut = new InMemoryRepository<number, NumericEntityStub>(initialItems);
+    const sut = new InMemoryRepository<StringKeyStub, StringIdentifiableStub>(initialItems);
 
     // act
     sut.removeItem(idToDelete);
@@ -79,10 +83,13 @@ describe('InMemoryRepository', () => {
   describe('addOrUpdateItem', () => {
     it('adds when item does not exist', () => {
       // arrange
-      const initialItems = [new NumericEntityStub(1), new NumericEntityStub(2)];
-      const newItem = new NumericEntityStub(3);
+      const initialItems = [
+        new StringIdentifiableStub('initial-item-1'),
+        new StringIdentifiableStub('initial-item-2'),
+      ];
+      const newItem = new StringIdentifiableStub('new-item');
       const expected = [...initialItems, newItem];
-      const sut = new InMemoryRepository<number, NumericEntityStub>(initialItems);
+      const sut = new InMemoryRepository<StringKeyStub, StringIdentifiableStub>(initialItems);
       // act
       sut.addOrUpdateItem(newItem);
       // assert
@@ -91,10 +98,11 @@ describe('InMemoryRepository', () => {
     });
     it('updates when item exists', () => {
       // arrange
-      const initialItems = [new NumericEntityStub(1).withCustomProperty('bca')];
-      const updatedItem = new NumericEntityStub(1).withCustomProperty('abc');
+      const entityId = 'common-entity-id';
+      const initialItems = [new StringIdentifiableStub(entityId).withCustomProperty('bca')];
+      const updatedItem = new StringIdentifiableStub(entityId).withCustomProperty('abc');
       const expected = [updatedItem];
-      const sut = new InMemoryRepository<number, NumericEntityStub>(initialItems);
+      const sut = new InMemoryRepository<StringKeyStub, StringIdentifiableStub>(initialItems);
       // act
       sut.addOrUpdateItem(updatedItem);
       // assert
@@ -105,23 +113,26 @@ describe('InMemoryRepository', () => {
   describe('getById', () => {
     it('returns entity if it exists', () => {
       // arrange
-      const expected = new NumericEntityStub(1).withCustomProperty('bca');
-      const sut = new InMemoryRepository<number, NumericEntityStub>([
-        expected, new NumericEntityStub(2).withCustomProperty('bca'),
-        new NumericEntityStub(3).withCustomProperty('bca'), new NumericEntityStub(4).withCustomProperty('bca'),
+      const entityId = 'expected-entity-id';
+      const expected = new StringIdentifiableStub(entityId).withCustomProperty('bca');
+      const sut = new InMemoryRepository<StringKeyStub, StringIdentifiableStub>([
+        expected, new StringIdentifiableStub('2').withCustomProperty('bca'),
+        new StringIdentifiableStub('3').withCustomProperty('bca'),
+        new StringIdentifiableStub('4').withCustomProperty('bca'),
       ]);
       // act
-      const actual = sut.getById(expected.id);
+      const actual = sut.getById(entityId);
       // assert
       expect(actual).to.deep.equal(expected);
     });
     it('throws if item does not exist', () => {
       // arrange
-      const id = 31;
+      const id = 'non-existing-id';
       const expectedError = `missing item: ${id}`;
-      const sut = new InMemoryRepository<number, NumericEntityStub>([]);
+      const sut = new InMemoryRepository<StringKeyStub, StringIdentifiableStub>([]);
+      const key = new StringKeyStub(id);
       // act
-      const act = () => sut.getById(id);
+      const act = () => sut.getById(key);
       // assert
       expect(act).to.throw(expectedError);
     });

@@ -7,8 +7,7 @@ import { AdaptiveFilterContext } from '@/application/Context/State/Filter/Adapti
 import { FilterResultStub } from '@tests/unit/shared/Stubs/FilterResultStub';
 import { FilterStrategyStub } from '@tests/unit/shared/Stubs/FilterStrategyStub';
 import type { FilterStrategy } from '@/application/Context/State/Filter/Strategy/FilterStrategy';
-import type { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
 
 describe('AdaptiveFilterContext', () => {
   describe('clearFilter', () => {
@@ -107,7 +106,7 @@ describe('AdaptiveFilterContext', () => {
 });
 
 class ContextBuilder {
-  private categoryCollection: ICategoryCollection = new CategoryCollectionStub();
+  private categoryCollection: CategoryCollection = new CategoryCollectionStub();
 
   private filterStrategy: FilterStrategy = new FilterStrategyStub();
 
@@ -123,7 +122,7 @@ class ContextBuilder {
     return this;
   }
 
-  public withCategoryCollection(categoryCollection: ICategoryCollection): this {
+  public withCategoryCollection(categoryCollection: CategoryCollection): this {
     this.categoryCollection = categoryCollection;
     return this;
   }

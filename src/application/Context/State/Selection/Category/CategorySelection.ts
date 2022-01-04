@@ -1,9 +1,9 @@
-import type { ICategory } from '@/domain/ICategory';
+import type { Category } from '@/domain/Executables/Category/Category';
 import type { CategorySelectionChangeCommand } from './CategorySelectionChange';
 
 export interface ReadonlyCategorySelection {
-  areAllScriptsSelected(category: ICategory): boolean;
-  isAnyScriptSelected(category: ICategory): boolean;
+  areAllScriptsSelected(category: Category): boolean;
+  isAnyScriptSelected(category: Category): boolean;
 }
 
 export interface CategorySelection extends ReadonlyCategorySelection {

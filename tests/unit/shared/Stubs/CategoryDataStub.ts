@@ -4,9 +4,16 @@ import { createScriptDataWithCode } from '@tests/unit/shared/Stubs/ScriptDataStu
 export class CategoryDataStub implements CategoryData {
   public children: readonly CategoryOrScriptData[] = [createScriptDataWithCode()];
 
+  public id = `[${CategoryDataStub.name}]id`;
+
   public category = 'category name';
 
   public docs?: DocumentationData;
+
+  public withId(id: string) {
+    this.id = id;
+    return this;
+  }
 
   public withChildren(children: readonly CategoryOrScriptData[]) {
     this.children = children;

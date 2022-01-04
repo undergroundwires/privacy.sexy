@@ -1,7 +1,7 @@
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
+import type { CategorySelection } from './Category/CategorySelection';
 import { ScriptToCategorySelectionMapper } from './Category/ScriptToCategorySelectionMapper';
 import { DebouncedScriptSelection } from './Script/DebouncedScriptSelection';
-import type { CategorySelection } from './Category/CategorySelection';
 import type { ScriptSelection } from './Script/ScriptSelection';
 import type { UserSelection } from './UserSelection';
 import type { SelectedScript } from './Script/SelectedScript';
@@ -12,7 +12,7 @@ export class UserSelectionFacade implements UserSelection {
   public readonly scripts: ScriptSelection;
 
   constructor(
-    collection: ICategoryCollection,
+    collection: CategoryCollection,
     selectedScripts: readonly SelectedScript[],
     scriptsFactory = DefaultScriptsFactory,
     categoriesFactory = DefaultCategoriesFactory,

@@ -111,7 +111,7 @@ describe('ScriptReverter', () => {
         // act
         sut.selectWithRevertState(revertState, userSelection);
         // assert
-        expect(scriptSelection.isScriptSelected(script.id, expectedRevert)).to.equal(true);
+        expect(scriptSelection.isScriptSelected(script.key, expectedRevert)).to.equal(true);
       });
     });
   });

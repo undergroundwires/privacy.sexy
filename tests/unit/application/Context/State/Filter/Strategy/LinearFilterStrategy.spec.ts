@@ -2,11 +2,11 @@ import { describe, it, expect } from 'vitest';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
-import type { ICategory } from '@/domain/ICategory';
-import type { IScript } from '@/domain/IScript';
-import type { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
+import { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
 import { LinearFilterStrategy } from '@/application/Context/State/Filter/Strategy/LinearFilterStrategy';
+import { Script } from '@/domain/Executables/Script/Script';
+import { Category } from '@/domain/Executables/Category/Category';
+import { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 
 describe('LinearFilterStrategy', () => {
   describe('applyFilter', () => {
@@ -37,7 +37,8 @@ describe('LinearFilterStrategy', () => {
         // arrange
         const matchingFilter = 'matching filter';
         const collection = new CategoryCollectionStub()
-          .withAction(new CategoryStub(2).withScript(createMatchingScript(matchingFilter)));
+          .withAction(new CategoryStub('matching-script-parent-category')
+            .withScript(createMatchingScript(matchingFilter)));
         const strategy = new FilterStrategyTestBuilder()
           .withFilter(matchingFilter)
           .withCollection(collection);
@@ -64,7 +65,8 @@ describe('LinearFilterStrategy', () => {
         const matchingFilter = 'matching filter';
         const collection = new CategoryCollectionStub()
           .withAction(createMatchingCategory(matchingFilter))
-          .withAction(new CategoryStub(2).withScript(createMatchingScript(matchingFilter)));
+          .withAction(new CategoryStub('matching-script-parent-category')
+            .withScript(createMatchingScript(matchingFilter)));
         const strategy = new FilterStrategyTestBuilder()
           .withFilter(matchingFilter)
           .withCollection(collection);
@@ -89,7 +91,7 @@ describe('LinearFilterStrategy', () => {
         interface ScriptMatchTestScenario {
           readonly description: string;
           readonly filter: string;
-          readonly matchingScript: IScript;
+          readonly matchingScript: Script;
         }
         const testScenarios: readonly ScriptMatchTestScenario[] = [
           {
@@ -120,7 +122,8 @@ describe('LinearFilterStrategy', () => {
             // arrange
             const expectedMatches = [matchingScript];
             const collection = new CategoryCollectionStub()
-              .withAction(new CategoryStub(33).withScript(matchingScript));
+              .withAction(new CategoryStub('matching-script-parent-category')
+                .withScript(matchingScript));
             const strategy = new FilterStrategyTestBuilder()
               .withFilter(filter)
               .withCollection(collection);
@@ -134,13 +137,14 @@ describe('LinearFilterStrategy', () => {
       it('returns multiple matching scripts', () => {
         // arrange
         const filter = 'matching filter';
-        const matchingScripts: readonly IScript[] = [
+        const matchingScripts: readonly Script[] = [
           createMatchingScript(filter),
           createMatchingScript(filter),
         ];
         const expectedMatches = [...matchingScripts];
         const collection = new CategoryCollectionStub()
-          .withAction(new CategoryStub(0).withScripts(...matchingScripts));
+          .withAction(new CategoryStub('matching-script-parent-category')
+            .withScripts(...matchingScripts));
         const strategy = new FilterStrategyTestBuilder()
           .withFilter(filter)
           .withCollection(collection);
@@ -165,18 +169,20 @@ describe('LinearFilterStrategy', () => {
         interface CategoryMatchTestScenario {
           readonly description: string;
           readonly filter: string;
-          readonly matchingCategory: ICategory;
+          readonly matchingCategory: Category;
         }
         const testScenarios: readonly CategoryMatchTestScenario[] = [
           {
             description: 'match with case-insensitive name',
             filter: 'Hello WoRLD',
-            matchingCategory: new CategoryStub(55).withName('HELLO world'),
+            matchingCategory: new CategoryStub('matching-category')
+              .withName('HELLO world'),
           },
           {
             description: 'case-sensitive documentation',
             filter: 'Hello WoRLD',
-            matchingCategory: new CategoryStub(55).withDocs(['unrelated-docs', 'HELLO world']),
+            matchingCategory: new CategoryStub('matching-category')
+              .withDocs(['unrelated-docs', 'HELLO world']),
           },
         ];
         testScenarios.forEach(({
@@ -200,7 +206,7 @@ describe('LinearFilterStrategy', () => {
       it('returns multiple matching categories', () => {
         // arrange
         const filter = 'matching filter';
-        const matchingCategories: readonly ICategory[] = [
+        const matchingCategories: readonly Category[] = [
           createMatchingCategory(filter),
           createMatchingCategory(filter),
         ];
@@ -230,14 +236,14 @@ function createMatchingScript(
 function createMatchingCategory(
   matchingFilter: string,
 ): CategoryStub {
-  return new CategoryStub(1)
+  return new CategoryStub('matching-category')
     .withName(matchingFilter)
     .withDocs([matchingFilter]);
 }
 
 function expectCategoryMatches(
   actualFilter: FilterResult,
-  expectedMatches: readonly ICategory[],
+  expectedMatches: readonly Category[],
 ): void {
   expect(actualFilter.hasAnyMatches()).be.equal(true);
   expect(actualFilter.categoryMatches).to.have.lengthOf(expectedMatches.length);
@@ -246,7 +252,7 @@ function expectCategoryMatches(
 
 function expectScriptMatches(
   actualFilter: FilterResult,
-  expectedMatches: readonly IScript[],
+  expectedMatches: readonly Script[],
 ): void {
   expect(actualFilter.hasAnyMatches()).be.equal(true);
   expect(actualFilter.scriptMatches).to.have.lengthOf(expectedMatches.length);
@@ -256,9 +262,9 @@ function expectScriptMatches(
 class FilterStrategyTestBuilder {
   private filter: string = `[${FilterStrategyTestBuilder.name}]filter`;
 
-  private collection: ICategoryCollection = new CategoryCollectionStub();
+  private collection: CategoryCollection = new CategoryCollectionStub();
 
-  public withCollection(collection: ICategoryCollection): this {
+  public withCollection(collection: CategoryCollection): this {
     this.collection = collection;
     return this;
   }

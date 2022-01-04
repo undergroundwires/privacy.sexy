@@ -2,7 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { AppliedFilterResult } from '@/application/Context/State/Filter/Result/AppliedFilterResult';
-import type { ICategory, IScript } from '@/domain/ICategory';
+import { Script } from '@/domain/Executables/Script/Script';
+import { Category } from '@/domain/Executables/Category/Category';
 
 describe('AppliedFilterResult', () => {
   describe('constructor', () => {
@@ -47,7 +48,7 @@ describe('AppliedFilterResult', () => {
       const expected = true;
       const result = new ResultBuilder()
         .withScriptMatches([])
-        .withCategoryMatches([new CategoryStub(5)])
+        .withCategoryMatches([new CategoryStub('matching-category')])
         .build();
       // act
       const actual = result.hasAnyMatches();
@@ -57,8 +58,8 @@ describe('AppliedFilterResult', () => {
       // arrange
       const expected = true;
       const result = new ResultBuilder()
-        .withScriptMatches([new ScriptStub('id')])
-        .withCategoryMatches([new CategoryStub(5)])
+        .withScriptMatches([new ScriptStub('matching-script')])
+        .withCategoryMatches([new CategoryStub('matching-category')])
         .build();
       // act
       const actual = result.hasAnyMatches();
@@ -68,18 +69,22 @@ describe('AppliedFilterResult', () => {
 });
 
 class ResultBuilder {
-  private scriptMatches: readonly IScript[] = [new ScriptStub('id')];
+  private scriptMatches: readonly Script[] = [
+    new ScriptStub(`[${ResultBuilder.name}]matching-script`),
+  ];
 
-  private categoryMatches: readonly ICategory[] = [new CategoryStub(5)];
+  private categoryMatches: readonly Category[] = [
+    new CategoryStub(`[${ResultBuilder.name}]matching-category`),
+  ];
 
   private query: string = `[${ResultBuilder.name}]query`;
 
-  public withScriptMatches(scriptMatches: readonly IScript[]): this {
+  public withScriptMatches(scriptMatches: readonly Script[]): this {
     this.scriptMatches = scriptMatches;
     return this;
   }
 
-  public withCategoryMatches(categoryMatches: readonly ICategory[]): this {
+  public withCategoryMatches(categoryMatches: readonly Category[]): this {
     this.categoryMatches = categoryMatches;
     return this;
   }

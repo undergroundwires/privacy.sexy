@@ -465,7 +465,7 @@
 * rework Cortana scripts to remove duplicates, better document and support Windows version 2004/2009 #43 | [7cc161c](https://github.com/undergroundwires/privacy.sexy/commit/7cc161c828a3fa49f6f254e31834a95a502b7aa2)
 * rename Application to CategoryCollection #40 | [6fe858d](https://github.com/undergroundwires/privacy.sexy/commit/6fe858d86aeb0f8b6d5ae5c2a5e3c25ff32e5f6f)
 * add script to clean previous windows installation #35 | [3455a2c](https://github.com/undergroundwires/privacy.sexy/commit/3455a2ca6ce13f9b0e866d88532a5c3d6de30d4d)
-* refactor to allow switching ICategoryCollection context #40 | [2e40605](https://github.com/undergroundwires/privacy.sexy/commit/2e40605d59eb764768457c6af561487e7ff09777)
+* refactor to allow switching CategoryCollection context #40 | [2e40605](https://github.com/undergroundwires/privacy.sexy/commit/2e40605d59eb764768457c6af561487e7ff09777)
 * fix typo causing uninstalling capabilities to fail #51 | [c299e95](https://github.com/undergroundwires/privacy.sexy/commit/c299e95bc6d588317b69a9efcf5752ff5c9c3926)
 * improve uninstalling apps to show errors and exit if taking ownership fails #51 | [72e925f](https://github.com/undergroundwires/privacy.sexy/commit/72e925fb6f908cd58fb50618f29726b3fb54a7f1)
 * move application.yaml to collections/windows.yaml #40 | [6b83dcb](https://github.com/undergroundwires/privacy.sexy/commit/6b83dcbf8fa08b4efe9974c7d7a667458f7c595c)

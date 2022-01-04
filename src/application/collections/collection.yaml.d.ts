@@ -6,7 +6,11 @@ declare module '@/application/collections/*' {
     readonly functions?: ReadonlyArray<FunctionData>;
   }
 
-  export interface CategoryData extends DocumentableData {
+  export interface Identifiable {
+    readonly id: string;
+  }
+
+  export interface CategoryData extends DocumentableData, Identifiable {
     readonly children: ReadonlyArray<CategoryOrScriptData>;
     readonly category: string;
   }
@@ -56,7 +60,7 @@ declare module '@/application/collections/*' {
 
   export type FunctionCallsData = readonly FunctionCallData[] | FunctionCallData | undefined;
 
-  export type ScriptDefinition = DocumentableData & {
+  export type ScriptDefinition = DocumentableData & Identifiable & {
     readonly name: string;
     readonly recommend?: string;
   };

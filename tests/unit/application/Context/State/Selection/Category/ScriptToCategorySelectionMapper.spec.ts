@@ -1,14 +1,15 @@
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
-import type { ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import { ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
+import { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import { ScriptToCategorySelectionMapper } from '@/application/Context/State/Selection/Category/ScriptToCategorySelectionMapper';
 import { ScriptSelectionStub } from '@tests/unit/shared/Stubs/ScriptSelectionStub';
 import type { CategorySelectionChange } from '@/application/Context/State/Selection/Category/CategorySelectionChange';
 import type { ScriptSelectionChange, ScriptSelectionChangeCommand } from '@/application/Context/State/Selection/Script/ScriptSelectionChange';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
-import type { ICategory, IScript } from '@/domain/ICategory';
+import { Category } from '@/domain/Executables/Category/Category';
+import { Script } from '@/domain/Executables/Script/Script';
 
 describe('ScriptToCategorySelectionMapper', () => {
   describe('areAllScriptsSelected', () => {
@@ -64,8 +65,8 @@ describe('ScriptToCategorySelectionMapper', () => {
       readonly description: string;
       readonly changes: readonly CategorySelectionChange[];
       readonly categories: ReadonlyArray<{
-        readonly categoryId: ICategory['id'],
-        readonly scriptIds: readonly IScript['id'][],
+        readonly categoryId: Category['id'],
+        readonly scriptIds: readonly Script['id'][],
       }>;
       readonly expected: readonly ScriptSelectionChange[],
     }> = [
@@ -75,10 +76,10 @@ describe('ScriptToCategorySelectionMapper', () => {
           { categoryId: 1, scriptIds: ['single-script'] },
         ],
         changes: [
-          { categoryId: 1, newStatus: { isSelected: true, isReverted: false } },
+          { categoryKey: 1, newStatus: { isSelected: true, isReverted: false } },
         ],
         expected: [
-          { scriptId: 'single-script', newStatus: { isSelected: true, isReverted: false } },
+          { scriptKey: 'single-script', newStatus: { isSelected: true, isReverted: false } },
         ],
       },
       {
@@ -88,13 +89,13 @@ describe('ScriptToCategorySelectionMapper', () => {
           { categoryId: 2, scriptIds: ['script3-cat2'] },
         ],
         changes: [
-          { categoryId: 1, newStatus: { isSelected: true, isReverted: false } },
-          { categoryId: 2, newStatus: { isSelected: true, isReverted: false } },
+          { categoryKey: 1, newStatus: { isSelected: true, isReverted: false } },
+          { categoryKey: 2, newStatus: { isSelected: true, isReverted: false } },
         ],
         expected: [
-          { scriptId: 'script1-cat1', newStatus: { isSelected: true, isReverted: false } },
-          { scriptId: 'script2-cat1', newStatus: { isSelected: true, isReverted: false } },
-          { scriptId: 'script3-cat2', newStatus: { isSelected: true, isReverted: false } },
+          { scriptKey: 'script1-cat1', newStatus: { isSelected: true, isReverted: false } },
+          { scriptKey: 'script2-cat1', newStatus: { isSelected: true, isReverted: false } },
+          { scriptKey: 'script3-cat2', newStatus: { isSelected: true, isReverted: false } },
         ],
       },
       {
@@ -103,10 +104,10 @@ describe('ScriptToCategorySelectionMapper', () => {
           { categoryId: 1, scriptIds: ['single-script'] },
         ],
         changes: [
-          { categoryId: 1, newStatus: { isSelected: true, isReverted: true } },
+          { categoryKey: 1, newStatus: { isSelected: true, isReverted: true } },
         ],
         expected: [
-          { scriptId: 'single-script', newStatus: { isSelected: true, isReverted: true } },
+          { scriptKey: 'single-script', newStatus: { isSelected: true, isReverted: true } },
         ],
       },
       {
@@ -117,14 +118,14 @@ describe('ScriptToCategorySelectionMapper', () => {
           { categoryId: 3, scriptIds: ['script-3-cat-3'] },
         ],
         changes: [
-          { categoryId: 1, newStatus: { isSelected: true, isReverted: true } },
-          { categoryId: 2, newStatus: { isSelected: true, isReverted: true } },
-          { categoryId: 3, newStatus: { isSelected: true, isReverted: true } },
+          { categoryKey: 1, newStatus: { isSelected: true, isReverted: true } },
+          { categoryKey: 2, newStatus: { isSelected: true, isReverted: true } },
+          { categoryKey: 3, newStatus: { isSelected: true, isReverted: true } },
         ],
         expected: [
-          { scriptId: 'script-1-cat-1', newStatus: { isSelected: true, isReverted: true } },
-          { scriptId: 'script-2-cat-2', newStatus: { isSelected: true, isReverted: true } },
-          { scriptId: 'script-3-cat-3', newStatus: { isSelected: true, isReverted: true } },
+          { scriptKey: 'script-1-cat-1', newStatus: { isSelected: true, isReverted: true } },
+          { scriptKey: 'script-2-cat-2', newStatus: { isSelected: true, isReverted: true } },
+          { scriptKey: 'script-3-cat-3', newStatus: { isSelected: true, isReverted: true } },
         ],
       },
       {
@@ -133,10 +134,10 @@ describe('ScriptToCategorySelectionMapper', () => {
           { categoryId: 1, scriptIds: ['single-script'] },
         ],
         changes: [
-          { categoryId: 1, newStatus: { isSelected: false } },
+          { categoryKey: 1, newStatus: { isSelected: false } },
         ],
         expected: [
-          { scriptId: 'single-script', newStatus: { isSelected: false } },
+          { scriptKey: 'single-script', newStatus: { isSelected: false } },
         ],
       },
       {
@@ -146,12 +147,12 @@ describe('ScriptToCategorySelectionMapper', () => {
           { categoryId: 2, scriptIds: ['script-2-cat2'] },
         ],
         changes: [
-          { categoryId: 1, newStatus: { isSelected: false } },
-          { categoryId: 2, newStatus: { isSelected: false } },
+          { categoryKey: 1, newStatus: { isSelected: false } },
+          { categoryKey: 2, newStatus: { isSelected: false } },
         ],
         expected: [
-          { scriptId: 'script-1-cat1', newStatus: { isSelected: false } },
-          { scriptId: 'script-2-cat2', newStatus: { isSelected: false } },
+          { scriptKey: 'script-1-cat1', newStatus: { isSelected: false } },
+          { scriptKey: 'script-2-cat2', newStatus: { isSelected: false } },
         ],
       },
       {
@@ -162,14 +163,14 @@ describe('ScriptToCategorySelectionMapper', () => {
           { categoryId: 3, scriptIds: ['to-deselect'] },
         ],
         changes: [
-          { categoryId: 1, newStatus: { isSelected: true, isReverted: true } },
-          { categoryId: 2, newStatus: { isSelected: true, isReverted: false } },
-          { categoryId: 3, newStatus: { isSelected: false } },
+          { categoryKey: 1, newStatus: { isSelected: true, isReverted: true } },
+          { categoryKey: 2, newStatus: { isSelected: true, isReverted: false } },
+          { categoryKey: 3, newStatus: { isSelected: false } },
         ],
         expected: [
-          { scriptId: 'to-revert', newStatus: { isSelected: true, isReverted: true } },
-          { scriptId: 'not-revert', newStatus: { isSelected: true, isReverted: false } },
-          { scriptId: 'to-deselect', newStatus: { isSelected: false } },
+          { scriptKey: 'to-revert', newStatus: { isSelected: true, isReverted: true } },
+          { scriptKey: 'not-revert', newStatus: { isSelected: true, isReverted: false } },
+          { scriptKey: 'to-deselect', newStatus: { isSelected: false } },
         ],
       },
       {
@@ -180,11 +181,11 @@ describe('ScriptToCategorySelectionMapper', () => {
           { categoryId: 3, scriptIds: ['not-relevant-3', 'not-relevant-4'] },
         ],
         changes: [
-          { categoryId: 1, newStatus: { isSelected: true, isReverted: true } },
+          { categoryKey: 1, newStatus: { isSelected: true, isReverted: true } },
         ],
         expected: [
-          { scriptId: 'relevant-1', newStatus: { isSelected: true, isReverted: true } },
-          { scriptId: 'relevant-2', newStatus: { isSelected: true, isReverted: true } },
+          { scriptKey: 'relevant-1', newStatus: { isSelected: true, isReverted: true } },
+          { scriptKey: 'relevant-2', newStatus: { isSelected: true, isReverted: true } },
         ],
       },
     ];
@@ -197,7 +198,7 @@ describe('ScriptToCategorySelectionMapper', () => {
         const sut = new ScriptToCategorySelectionMapperBuilder()
           .withScriptSelection(scriptSelectionStub)
           .withCollection(new CategoryCollectionStub().withAction(
-            new CategoryStub(99)
+            new CategoryStub('category-with-all-scripts')
               // Register scripts to test for nested items
               .withAllScriptIdsRecursively(...categories.flatMap((c) => c.scriptIds))
               .withCategories(...categories.map(
@@ -225,14 +226,14 @@ describe('ScriptToCategorySelectionMapper', () => {
 class ScriptToCategorySelectionMapperBuilder {
   private scriptSelection: ScriptSelection = new ScriptSelectionStub();
 
-  private collection: ICategoryCollection = new CategoryCollectionStub();
+  private collection: CategoryCollection = new CategoryCollectionStub();
 
   public withScriptSelection(scriptSelection: ScriptSelection): this {
     this.scriptSelection = scriptSelection;
     return this;
   }
 
-  public withCollection(collection: ICategoryCollection): this {
+  public withCollection(collection: CategoryCollection): this {
     this.collection = collection;
     return this;
   }
@@ -255,7 +256,7 @@ function setupTestWithPreselectedScripts(options: {
     new ScriptStub('third-script'),
   ];
   const preselectedScripts = options.preselect(allScripts);
-  const category = new CategoryStub(1)
+  const category = new CategoryStub('category-with-all-scripts')
     .withAllScriptsRecursively(...allScripts); // Register scripts to test for nested items
   const collection = new CategoryCollectionStub().withAction(category);
   const sut = new ScriptToCategorySelectionMapperBuilder()

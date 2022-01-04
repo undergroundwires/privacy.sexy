@@ -1,9 +1,9 @@
 import type { IApplicationCode } from '@/application/Context/State/Code/IApplicationCode';
 import type { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import type { IScript } from '@/domain/IScript';
+import type { Script } from '@/domain/Executables/Script/Script';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import type { UserSelection } from '@/application/Context/State/Selection/UserSelection';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import type { FilterContext } from '@/application/Context/State/Filter/FilterContext';
@@ -23,11 +23,11 @@ export class CategoryCollectionStateStub implements ICategoryCollectionState {
     return this.collection.os;
   }
 
-  public collection: ICategoryCollection = new CategoryCollectionStub().withSomeActions();
+  public collection: CategoryCollection = new CategoryCollectionStub().withSomeActions();
 
   public selection: UserSelection = new UserSelectionStub();
 
-  constructor(readonly allScripts: IScript[] = [new ScriptStub('script-id')]) {
+  constructor(readonly allScripts: Script[] = [new ScriptStub('script-id')]) {
     this.selection = new UserSelectionStub()
       .withScripts(new ScriptSelectionStub());
     this.collection = new CategoryCollectionStub()
@@ -36,7 +36,7 @@ export class CategoryCollectionStateStub implements ICategoryCollectionState {
       .withAction(new CategoryStub(0).withScripts(...allScripts));
   }
 
-  public withCollection(collection: ICategoryCollection): this {
+  public withCollection(collection: CategoryCollection): this {
     this.collection = collection;
     return this;
   }

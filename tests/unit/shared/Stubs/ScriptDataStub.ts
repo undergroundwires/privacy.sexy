@@ -1,7 +1,7 @@
 import type {
   FunctionCallData, CallScriptData, CodeScriptData,
 } from '@/application/collections/';
-import { RecommendationLevel } from '@/domain/RecommendationLevel';
+import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import { FunctionCallDataStub } from '@tests/unit/shared/Stubs/FunctionCallDataStub';
 
 export function createScriptDataWithCode(): ScriptDataStub & CodeScriptData {
@@ -27,6 +27,8 @@ export function createScriptDataWithoutCallOrCodes(): ScriptDataStub {
 }
 
 class ScriptDataStub implements CallScriptData, CodeScriptData {
+  public id = `[${ScriptDataStub.name}]id`;
+
   public name = 'valid-name';
 
   public code: string;
@@ -39,6 +41,11 @@ class ScriptDataStub implements CallScriptData, CodeScriptData {
   string | undefined = RecommendationLevel[RecommendationLevel.Standard].toLowerCase();
 
   public docs?: readonly string[] = ['hello.com'];
+
+  public withId(id: string): this {
+    this.id = id;
+    return this;
+  }
 
   public withName(name: string): this {
     this.name = name;

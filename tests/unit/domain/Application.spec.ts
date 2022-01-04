@@ -3,8 +3,8 @@ import { Application } from '@/domain/Application';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { ProjectDetailsStub } from '@tests/unit/shared/Stubs/ProjectDetailsStub';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { getAbsentCollectionTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
+import { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 
 describe('Application', () => {
   describe('getCollection', () => {
@@ -51,9 +51,9 @@ describe('Application', () => {
         const testCases: readonly {
           readonly name: string,
           readonly expectedError: string,
-          readonly value: readonly ICategoryCollection[],
+          readonly value: readonly CategoryCollection[],
         }[] = [
-          ...getAbsentCollectionTestCases<ICategoryCollection>(
+          ...getAbsentCollectionTestCases<CategoryCollection>(
             {
               excludeUndefined: true,
               excludeNull: true,

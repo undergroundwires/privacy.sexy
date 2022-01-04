@@ -1,38 +1,58 @@
-import type { ICategory, IScript } from '@/domain/ICategory';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ExecutableId, ExecutableKey } from '@/domain/Executables/ExecutableKey/ExecutableKey';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
+import type { Category } from '@/domain/Executables/Category/Category';
+import type { Script } from '@/domain/Executables/Script/Script';
 import { type NodeMetadata, NodeType } from '../NodeContent/NodeMetadata';
 
-export function parseAllCategories(collection: ICategoryCollection): NodeMetadata[] {
+export function parseAllCategories(collection: CategoryCollection): NodeMetadata[] {
   return createCategoryNodes(collection.actions);
 }
 
 export function parseSingleCategory(
-  categoryId: number,
-  collection: ICategoryCollection,
+  categoryId: ExecutableId,
+  collection: CategoryCollection,
 ): NodeMetadata[] {
   const category = collection.getCategory(categoryId);
   const tree = parseCategoryRecursively(category);
   return tree;
 }
 
-export function getScriptNodeId(script: IScript): string {
-  return script.id;
+export function getScriptNodeId(script: Script): string {
+  return convertExecutableIdToNodeId(script.key.executableId);
 }
 
-export function getScriptId(nodeId: string): string {
+export function getScriptKey(
+  nodeId: string,
+  collection: CategoryCollection,
+): ExecutableKey {
+  const executableId = convertNodeIdToExecutableId(nodeId);
+  const script = collection.getScript(executableId);
+  return script.key;
+}
+
+export function getCategoryKey(
+  nodeId: string,
+  collection: CategoryCollection,
+): ExecutableKey {
+  const executableId = convertNodeIdToExecutableId(nodeId);
+  const category = collection.getCategory(executableId);
+  return category.key;
+}
+
+export function getCategoryNodeId(category: Category): string {
+  return convertExecutableIdToNodeId(category.key.executableId);
+}
+
+function convertNodeIdToExecutableId(nodeId: string): ExecutableId {
   return nodeId;
 }
 
-export function getCategoryId(nodeId: string): number {
-  return +nodeId;
-}
-
-export function getCategoryNodeId(category: ICategory): string {
-  return `${category.id}`;
+function convertExecutableIdToNodeId(executableId: ExecutableId): string {
+  return executableId;
 }
 
 function parseCategoryRecursively(
-  parentCategory: ICategory,
+  parentCategory: Category,
 ): NodeMetadata[] {
   return [
     ...createCategoryNodes(parentCategory.subCategories),
@@ -40,19 +60,19 @@ function parseCategoryRecursively(
   ];
 }
 
-function createScriptNodes(scripts: ReadonlyArray<IScript>): NodeMetadata[] {
+function createScriptNodes(scripts: ReadonlyArray<Script>): NodeMetadata[] {
   return (scripts || [])
     .map((script) => convertScriptToNode(script));
 }
 
-function createCategoryNodes(categories: ReadonlyArray<ICategory>): NodeMetadata[] {
+function createCategoryNodes(categories: ReadonlyArray<Category>): NodeMetadata[] {
   return (categories || [])
     .map((category) => ({ category, children: parseCategoryRecursively(category) }))
     .map((data) => convertCategoryToNode(data.category, data.children));
 }
 
 function convertCategoryToNode(
-  category: ICategory,
+  category: Category,
   children: readonly NodeMetadata[],
 ): NodeMetadata {
   return {
@@ -65,7 +85,7 @@ function convertCategoryToNode(
   };
 }
 
-function convertScriptToNode(script: IScript): NodeMetadata {
+function convertScriptToNode(script: Script): NodeMetadata {
   return {
     id: getScriptNodeId(script),
     type: NodeType.Script,

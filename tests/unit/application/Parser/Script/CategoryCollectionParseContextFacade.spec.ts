@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import type { ISyntaxFactory } from '@/application/Parser/Script/Validation/Syntax/ISyntaxFactory';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
-import { CategoryCollectionParseContext } from '@/application/Parser/Script/CategoryCollectionParseContext';
+import { CategoryCollectionParseContextFacade } from '@/application/Parser/Script/CategoryCollectionParseContextFacade';
 import { ScriptCompiler } from '@/application/Parser/Script/Compiler/ScriptCompiler';
 import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
 import { ScriptingDefinitionStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionStub';
@@ -10,7 +10,7 @@ import { itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/Absent
 import type { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
 import { createFunctionDataWithCode } from '@tests/unit/shared/Stubs/FunctionDataStub';
 
-describe('CategoryCollectionParseContext', () => {
+describe('CategoryCollectionParseContextFacade', () => {
   describe('ctor', () => {
     describe('functionsData', () => {
       describe('can create with absent data', () => {
@@ -18,7 +18,7 @@ describe('CategoryCollectionParseContext', () => {
           // arrange
           const scripting = new ScriptingDefinitionStub();
           // act
-          const act = () => new CategoryCollectionParseContext(absentValue, scripting);
+          const act = () => new CategoryCollectionParseContextFacade(absentValue, scripting);
           // assert
           expect(act).to.not.throw();
         }, { excludeNull: true });
@@ -36,7 +36,7 @@ describe('CategoryCollectionParseContext', () => {
       const definition = new ScriptingDefinitionStub()
         .withLanguage(language);
       // act
-      const sut = new CategoryCollectionParseContext(functionsData, definition, factoryMock);
+      const sut = new CategoryCollectionParseContextFacade(functionsData, definition, factoryMock);
       const actual = sut.compiler;
       // assert
       expect(actual).to.deep.equal(expected);
@@ -51,7 +51,7 @@ describe('CategoryCollectionParseContext', () => {
       const definition = new ScriptingDefinitionStub()
         .withLanguage(language);
       // act
-      const sut = new CategoryCollectionParseContext([], definition, factoryMock);
+      const sut = new CategoryCollectionParseContextFacade([], definition, factoryMock);
       const actual = sut.syntax;
       // assert
       expect(actual).to.equal(expected);

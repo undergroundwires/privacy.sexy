@@ -1,17 +1,18 @@
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
-import type { IScript } from '@/domain/IScript';
+import type { ExecutableKey } from '@/domain/Executables/ExecutableKey/ExecutableKey';
+import type { Script } from '@/domain/Executables/Script/Script';
 
 export class SelectedScriptStub implements SelectedScript {
-  public readonly script: IScript;
-
-  public readonly id: string;
+  public readonly script: Script;
 
   public revert: boolean;
 
+  public key: ExecutableKey;
+
   constructor(
-    script: IScript,
+    script: Script,
   ) {
-    this.id = script.id;
+    this.key = script.key;
     this.script = script;
   }
 

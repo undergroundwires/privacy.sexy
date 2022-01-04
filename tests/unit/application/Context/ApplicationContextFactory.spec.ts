@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import { buildContext } from '@/application/Context/ApplicationContextFactory';
 import type { IApplicationFactory } from '@/application/IApplicationFactory';
 import type { IApplication } from '@/domain/IApplication';
@@ -91,7 +91,7 @@ describe('ApplicationContextFactory', () => {
   });
 });
 
-function mockFactoryWithCollection(result: ICategoryCollection): IApplicationFactory {
+function mockFactoryWithCollection(result: CategoryCollection): IApplicationFactory {
   return mockFactoryWithApp(new ApplicationStub().withCollection(result));
 }
 

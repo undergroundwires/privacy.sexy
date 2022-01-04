@@ -13,8 +13,8 @@ function expectSameScriptIds(
   actual: readonly SelectedScript[],
   expected: readonly SelectedScript[],
 ) {
-  const existingScriptIds = expected.map((script) => script.id).sort();
-  const expectedScriptIds = actual.map((script) => script.id).sort();
+  const existingScriptIds = expected.map((script) => script.key).sort();
+  const expectedScriptIds = actual.map((script) => script.key).sort();
   expect(existingScriptIds).to.deep.equal(expectedScriptIds, formatAssertionMessage([
     'Unexpected script IDs.',
     `Expected: ${expectedScriptIds.join(', ')}`,
@@ -28,9 +28,9 @@ function expectSameRevertStates(
 ) {
   const scriptsWithDifferentRevertStates = actual
     .filter((script) => {
-      const other = expected.find((existing) => existing.id === script.id);
+      const other = expected.find((existing) => existing.key === script.key);
       if (!other) {
-        throw new Error(`Script "${script.id}" does not exist in expected scripts: ${JSON.stringify(expected, null, '\t')}`);
+        throw new Error(`Script "${script.key}" does not exist in expected scripts: ${JSON.stringify(expected, null, '\t')}`);
       }
       return script.revert !== other.revert;
     });
@@ -38,9 +38,9 @@ function expectSameRevertStates(
     'Scripts with different revert states:',
     scriptsWithDifferentRevertStates
       .map((s) => [
-        `Script ID: "${s.id}"`,
+        `Script ID: "${s.key}"`,
         `Actual revert state: "${s.revert}"`,
-        `Expected revert state: "${expected.find((existing) => existing.id === s.id)?.revert ?? 'unknown'}"`,
+        `Expected revert state: "${expected.find((existing) => existing.key === s.key)?.revert ?? 'unknown'}"`,
       ].map((line) => `\t${line}`).join('\n'))
       .join('\n---\n'),
   ]));

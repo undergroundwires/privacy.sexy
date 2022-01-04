@@ -1,7 +1,7 @@
-import type { IScript } from '@/domain/IScript';
-import { RecommendationLevel } from '@/domain/RecommendationLevel';
+import type { Script } from '@/domain/Executables/Script/Script';
+import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import { scrambledEqual } from '@/application/Common/Array';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import type { ReadonlyScriptSelection, ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { RecommendationStatusType } from './RecommendationStatusType';
@@ -33,12 +33,12 @@ export function getCurrentRecommendationStatus(
 
 export interface SelectionCheckContext {
   readonly selection: ReadonlyScriptSelection;
-  readonly collection: ICategoryCollection;
+  readonly collection: CategoryCollection;
 }
 
 export interface SelectionMutationContext {
   readonly selection: ScriptSelection,
-  readonly collection: ICategoryCollection,
+  readonly collection: CategoryCollection,
 }
 
 interface RecommendationStatusTypeHandler {
@@ -90,15 +90,15 @@ function selectOnly(
 }
 
 function areAllSelected(
-  expectedScripts: ReadonlyArray<IScript>,
+  expectedScripts: ReadonlyArray<Script>,
   selection: ReadonlyArray<SelectedScript>,
 ): boolean {
   const selectedScriptIds = selection
     .filter((selected) => !selected.revert)
-    .map((script) => script.id);
+    .map((script) => script.key);
   if (expectedScripts.length < selectedScriptIds.length) {
     return false;
   }
-  const expectedScriptIds = expectedScripts.map((script) => script.id);
+  const expectedScriptIds = expectedScripts.map((script) => script.key);
   return scrambledEqual(selectedScriptIds, expectedScriptIds);
 }

@@ -1,18 +1,18 @@
 import type { FunctionData, ScriptData, CallInstruction } from '@/application/collections/';
-import type { IScriptCode } from '@/domain/IScriptCode';
-import { ScriptCode } from '@/domain/ScriptCode';
+import type { ScriptCode } from '@/domain/Executables/Script/Code/ScriptCode';
 import type { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
 import { CodeValidator } from '@/application/Parser/Script/Validation/CodeValidator';
 import { NoEmptyLines } from '@/application/Parser/Script/Validation/Rules/NoEmptyLines';
 import type { ICodeValidator } from '@/application/Parser/Script/Validation/ICodeValidator';
-import { SharedFunctionsParser } from './Function/SharedFunctionsParser';
+import { DistinctReversibleScriptCode } from '@/domain/Executables/Script/Code/DistinctReversibleScriptCode';
 import { FunctionCallSequenceCompiler } from './Function/Call/Compiler/FunctionCallSequenceCompiler';
+import { SharedFunctionsParser } from './Function/SharedFunctionsParser';
 import { parseFunctionCalls } from './Function/Call/FunctionCallParser';
-import type { CompiledCode } from './Function/Call/Compiler/CompiledCode';
 import type { IScriptCompiler } from './IScriptCompiler';
 import type { ISharedFunctionCollection } from './Function/ISharedFunctionCollection';
 import type { FunctionCallCompiler } from './Function/Call/Compiler/FunctionCallCompiler';
 import type { ISharedFunctionsParser } from './Function/ISharedFunctionsParser';
+import type { CompiledCode } from './Function/Call/Compiler/CompiledCode';
 
 export class ScriptCompiler implements IScriptCompiler {
   private readonly functions: ISharedFunctionCollection;
@@ -31,7 +31,7 @@ export class ScriptCompiler implements IScriptCompiler {
     return hasCall(script);
   }
 
-  public compile(script: ScriptData): IScriptCode {
+  public compile(script: ScriptData): ScriptCode {
     try {
       if (!hasCall(script)) {
         throw new Error('Script does include any calls.');
@@ -39,7 +39,7 @@ export class ScriptCompiler implements IScriptCompiler {
       const calls = parseFunctionCalls(script.call);
       const compiledCode = this.callCompiler.compileFunctionCalls(calls, this.functions);
       validateCompiledCode(compiledCode, this.codeValidator);
-      return new ScriptCode(
+      return new DistinctReversibleScriptCode(
         compiledCode.code,
         compiledCode.revertCode,
       );

@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { Category } from '@/domain/Category';
+import { CollectionCategory } from '@/domain/Executables/Category/CollectionCategory';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
-describe('Category', () => {
+describe('CollectionCategory', () => {
   describe('ctor', () => {
     describe('throws when name is absent', () => {
       itEachAbsentStringValue((absentValue) => {
@@ -12,14 +12,14 @@ describe('Category', () => {
         const expectedError = 'missing name';
         const name = absentValue;
         // act
-        const construct = () => new Category(5, name, [], [new CategoryStub(5)], []);
+        const construct = () => new CollectionCategory(5, name, [], [new CategoryStub(5)], []);
         // assert
         expect(construct).to.throw(expectedError);
       }, { excludeNull: true, excludeUndefined: true });
     });
     it('throws when has no children', () => {
       const expectedError = 'A category must have at least one sub-category or script';
-      const construct = () => new Category(5, 'category', [], [], []);
+      const construct = () => new CollectionCategory(5, 'category', [], [], []);
       expect(construct).to.throw(expectedError);
     });
   });
@@ -27,7 +27,7 @@ describe('Category', () => {
     it('gets child scripts', () => {
       // arrange
       const expected = [new ScriptStub('1'), new ScriptStub('2')];
-      const sut = new Category(0, 'category', [], [], expected);
+      const sut = new CollectionCategory(0, 'category', [], [], expected);
       // act
       const actual = sut.getAllScriptsRecursively();
       // assert
@@ -40,9 +40,9 @@ describe('Category', () => {
         new CategoryStub(31).withScriptIds('1', '2'),
         new CategoryStub(32).withScriptIds('3', '4'),
       ];
-      const sut = new Category(0, 'category', [], categories, []);
+      const sut = new CollectionCategory(0, 'category', [], categories, []);
       // act
-      const actualIds = sut.getAllScriptsRecursively().map((s) => s.id);
+      const actualIds = sut.getAllScriptsRecursively().map((s) => s.key);
       // assert
       expect(actualIds).to.have.deep.members(expectedScriptIds);
     });
@@ -54,9 +54,9 @@ describe('Category', () => {
         new CategoryStub(32).withScriptIds('3', '4'),
       ];
       const scripts = [new ScriptStub('5'), new ScriptStub('6')];
-      const sut = new Category(0, 'category', [], categories, scripts);
+      const sut = new CollectionCategory(0, 'category', [], categories, scripts);
       // act
-      const actualIds = sut.getAllScriptsRecursively().map((s) => s.id);
+      const actualIds = sut.getAllScriptsRecursively().map((s) => s.key);
       // assert
       expect(actualIds).to.have.deep.members(expectedScriptIds);
     });
@@ -83,9 +83,9 @@ describe('Category', () => {
           ),
       ];
       // assert
-      const sut = new Category(0, 'category', [], categories, []);
+      const sut = new CollectionCategory(0, 'category', [], categories, []);
       // act
-      const actualIds = sut.getAllScriptsRecursively().map((s) => s.id);
+      const actualIds = sut.getAllScriptsRecursively().map((s) => s.key);
       // assert
       expect(actualIds).to.have.deep.members(expectedScriptIds);
     });
@@ -94,7 +94,7 @@ describe('Category', () => {
     it('return false when does not include', () => {
       // assert
       const script = new ScriptStub('3');
-      const sut = new Category(0, 'category', [], [new CategoryStub(33).withScriptIds('1', '2')], []);
+      const sut = new CollectionCategory(0, 'category', [], [new CategoryStub(33).withScriptIds('1', '2')], []);
       // act
       const actual = sut.includes(script);
       // assert
@@ -103,7 +103,7 @@ describe('Category', () => {
     it('return true when includes as subscript', () => {
       // assert
       const script = new ScriptStub('3');
-      const sut = new Category(0, 'category', [], [
+      const sut = new CollectionCategory(0, 'category', [], [
         new CategoryStub(33).withScript(script).withScriptIds('non-related'),
       ], []);
       // act
@@ -117,7 +117,7 @@ describe('Category', () => {
       const innerCategory = new CategoryStub(22)
         .withScriptIds('non-related')
         .withCategory(new CategoryStub(33).withScript(script));
-      const sut = new Category(11, 'category', [], [innerCategory], []);
+      const sut = new CollectionCategory(11, 'category', [], [innerCategory], []);
       // act
       const actual = sut.includes(script);
       // assert

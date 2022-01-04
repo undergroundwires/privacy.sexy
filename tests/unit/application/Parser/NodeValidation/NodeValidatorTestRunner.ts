@@ -1,34 +1,38 @@
 import { describe, it } from 'vitest';
-import { NodeDataError, type INodeDataErrorContext } from '@/application/Parser/NodeValidation/NodeDataError';
-import type { NodeData } from '@/application/Parser/NodeValidation/NodeData';
+import { NodeDataError, NodeDataErrorContext } from '@/application/Parser/NodeValidation/NodeDataError';
+import { NodeData } from '@/application/Parser/NodeValidation/NodeData';
 import { getAbsentObjectTestCases, getAbsentStringTestCases, itEachAbsentTestCase } from '@tests/unit/shared/TestCases/AbsentTests';
 import { expectDeepThrowsError } from '@tests/shared/Assertions/ExpectDeepThrowsError';
 
-export interface ITestScenario {
+export interface NodeValidationTestScenario {
   readonly act: () => void;
-  readonly expectedContext: INodeDataErrorContext;
+  readonly expectedContext: NodeDataErrorContext;
 }
 
 export class NodeValidationTestRunner {
-  public testInvalidNodeName(
-    testBuildPredicate: (invalidName: string) => ITestScenario,
-  ) {
+  public testInvalidName(
+    testBuildPredicate: (invalidName: string) => NodeValidationTestScenario,
+  ): this {
     describe('throws given invalid names', () => {
       // arrange
-      const testCases = [
+      const testCases: ReadonlyArray<{
+        readonly description: string;
+        readonly nameValue: unknown;
+        readonly expectedMessage: string;
+      }> = [
         ...getAbsentStringTestCases().map((testCase) => ({
-          testName: `missing name (${testCase.valueName})`,
+          description: `missing name (${testCase.valueName})`,
           nameValue: testCase.absentValue,
           expectedMessage: 'missing name',
         })),
         {
-          testName: 'invalid type',
+          description: 'invalid type',
           nameValue: 33,
           expectedMessage: 'Name (33) is not a string but number.',
         },
       ];
       for (const testCase of testCases) {
-        it(`given "${testCase.testName}"`, () => {
+        it(`given "${testCase.description}"`, () => {
           const test = testBuildPredicate(testCase.nameValue as never);
           expectThrowsNodeError(test, testCase.expectedMessage);
         });
@@ -37,9 +41,40 @@ export class NodeValidationTestRunner {
     return this;
   }
 
-  public testMissingNodeData(
-    testBuildPredicate: (missingNode: NodeData) => ITestScenario,
-  ) {
+  public testInvalidId(
+    testBuildPredicate: (invalidName: string) => NodeValidationTestScenario,
+  ): this {
+    describe('throws given invalid IDs', () => {
+      // arrange
+      const testCases: ReadonlyArray<{
+        readonly description: string;
+        readonly idValue: unknown;
+        readonly expectedMessage: string;
+      }> = [
+        ...getAbsentStringTestCases().map((testCase) => ({
+          description: `missing id (${testCase.valueName})`,
+          idValue: testCase.absentValue,
+          expectedMessage: 'missing id',
+        })),
+        {
+          description: 'invalid type',
+          idValue: 33,
+          expectedMessage: 'ID (33) is not a string but number.',
+        },
+      ];
+      for (const testCase of testCases) {
+        it(`given "${testCase.description}"`, () => {
+          const test = testBuildPredicate(testCase.idValue as never);
+          expectThrowsNodeError(test, testCase.expectedMessage);
+        });
+      }
+    });
+    return this;
+  }
+
+  public testMissingData(
+    testBuildPredicate: (missingNode: NodeData) => NodeValidationTestScenario,
+  ): this {
     describe('throws given missing node data', () => {
       itEachAbsentTestCase([
         ...getAbsentObjectTestCases(),
@@ -61,12 +96,12 @@ export class NodeValidationTestRunner {
 
   public runThrowingCase(
     testCase: {
-      readonly name: string,
-      readonly scenario: ITestScenario,
+      readonly description: string,
+      readonly scenario: NodeValidationTestScenario,
       readonly expectedMessage: string
     },
-  ) {
-    it(testCase.name, () => {
+  ): this {
+    it(testCase.description, () => {
       expectThrowsNodeError(testCase.scenario, testCase.expectedMessage);
     });
     return this;
@@ -74,7 +109,7 @@ export class NodeValidationTestRunner {
 }
 
 export function expectThrowsNodeError(
-  test: ITestScenario,
+  test: NodeValidationTestScenario,
   expectedMessage: string,
 ) {
   // arrange

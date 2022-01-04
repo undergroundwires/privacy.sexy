@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { FunctionData } from '@/application/collections/';
-import { ScriptCode } from '@/domain/ScriptCode';
+import { ScriptCode } from '@/domain/Executables/Script/Code/ScriptCode';
 import { ScriptCompiler } from '@/application/Parser/Script/Compiler/ScriptCompiler';
 import type { ISharedFunctionsParser } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionsParser';
 import type { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';

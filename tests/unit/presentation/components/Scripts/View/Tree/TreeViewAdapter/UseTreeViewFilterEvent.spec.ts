@@ -11,9 +11,9 @@ import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { TreeNodeStub } from '@tests/unit/shared/Stubs/TreeNodeStub';
 import { HierarchyAccessStub } from '@tests/unit/shared/Stubs/HierarchyAccessStub';
-import type { IScript } from '@/domain/IScript';
-import type { ICategory } from '@/domain/ICategory';
-import type { TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
+import { Script } from '@/domain/Executables/Script/Script';
+import { Category } from '@/domain/Executables/Category/Category';
+import { TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
 import { FilterChangeDetailsStub } from '@tests/unit/shared/Stubs/FilterChangeDetailsStub';
 import type { FilterChangeDetails } from '@/application/Context/State/Filter/Event/FilterChangeDetails';
 import { CategoryCollectionStateStub } from '@tests/unit/shared/Stubs/CategoryCollectionStateStub';
@@ -208,8 +208,8 @@ function itExpectedFilterTriggeredEvent(
 ) {
   const testScenarios: ReadonlyArray<{
     readonly description: string;
-    readonly scriptMatches: IScript[],
-    readonly categoryMatches: ICategory[],
+    readonly scriptMatches: Script[],
+    readonly categoryMatches: Category[],
     readonly givenNode: TreeNode,
     readonly expectedPredicateResult: boolean;
   }> = [
@@ -261,8 +261,8 @@ function itExpectedFilterTriggeredEvent(
       expect(event.value.predicate).toBeDefined();
       const actualPredicateResult = event.value.predicate(givenNode);
       expect(actualPredicateResult).to.equal(expectedPredicateResult, formatAssertionMessage([
-        `Script matches (${scriptMatches.length}): [${scriptMatches.map((s) => s.id).join(', ')}]`,
-        `Category matches (${categoryMatches.length}): [${categoryMatches.map((s) => s.id).join(', ')}]`,
+        `Script matches (${scriptMatches.length}): [${scriptMatches.map((s) => s.key).join(', ')}]`,
+        `Category matches (${categoryMatches.length}): [${categoryMatches.map((s) => s.key).join(', ')}]`,
         `Expected node: "${givenNode.id}"`,
       ]));
     });

@@ -12,11 +12,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, type PropType } from 'vue';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import { injectKey } from '@/presentation/injectionSymbols';
-import type { ICategory } from '@/domain/ICategory';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { Category } from '@/domain/Executables/Category/Category';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
+import type { ExecutableId } from '@/domain/Executables/ExecutableKey/ExecutableKey';
 
 export default defineComponent({
   components: {
@@ -24,16 +25,16 @@ export default defineComponent({
   },
   props: {
     categoryId: {
-      type: Number,
+      type: String as PropType<ExecutableId>,
       required: true,
     },
   },
   setup(props) {
     const { currentState } = injectKey((keys) => keys.useCollectionState);
     const { currentSelection } = injectKey((keys) => keys.useUserSelectionState);
-    const currentCollection = computed<ICategoryCollection>(() => currentState.value.collection);
+    const currentCollection = computed<CategoryCollection>(() => currentState.value.collection);
 
-    const currentCategory = computed<ICategory>(
+    const currentCategory = computed<Category>(
       () => currentCollection.value.getCategory(props.categoryId),
     );
 

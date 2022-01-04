@@ -4,8 +4,8 @@ import { NodeValidator } from '@/application/Parser/NodeValidation/NodeValidator
 import { expectDeepThrowsError } from '@tests/shared/Assertions/ExpectDeepThrowsError';
 import { CategoryDataStub } from '@tests/unit/shared/Stubs/CategoryDataStub';
 import { NodeDataErrorContextStub } from '@tests/unit/shared/Stubs/NodeDataErrorContextStub';
-import type { NodeData } from '@/application/Parser/NodeValidation/NodeData';
-import { NodeValidationTestRunner } from './NodeValidatorTestRunner';
+import { NodeData } from '@/application/Parser/NodeValidation/NodeData';
+import { NodeValidationTestRunner } from '@tests/unit/application/Parser/NodeValidation/NodeValidatorTestRunner';
 
 describe('NodeValidator', () => {
   describe('assertValidName', () => {
@@ -17,7 +17,7 @@ describe('NodeValidator', () => {
       const act = (invalidName: string) => sut.assertValidName(invalidName);
       // assert
       new NodeValidationTestRunner()
-        .testInvalidNodeName((invalidName) => ({
+        .testInvalidName((invalidName) => ({
           act: () => act(invalidName),
           expectedContext: context,
         }));
@@ -41,17 +41,41 @@ describe('NodeValidator', () => {
       const act = (undefinedNode: NodeData) => sut.assertDefined(undefinedNode);
       // assert
       new NodeValidationTestRunner()
-        .testMissingNodeData((invalidName) => ({
+        .testMissingData((invalidName) => ({
           act: () => act(invalidName),
           expectedContext: context,
         }));
     });
     it('does not throw if defined', () => {
       // arrange
-      const definedNode = mockNode();
+      const definedNode = createNodeStub();
       const sut = new NodeValidator(new NodeDataErrorContextStub());
       // act
       const act = () => sut.assertDefined(definedNode);
+      // assert
+      expect(act).to.not.throw();
+    });
+  });
+  describe('assertId', () => {
+    describe('throws if invalid', () => {
+      // arrange
+      const context = new NodeDataErrorContextStub();
+      const sut = new NodeValidator(context);
+      // act
+      const act = (invalidId: string) => sut.assertValidName(invalidId);
+      // assert
+      new NodeValidationTestRunner()
+        .testInvalidId((invalidId) => ({
+          act: () => act(invalidId),
+          expectedContext: context,
+        }));
+    });
+    it('does not throw if valid', () => {
+      // arrange
+      const validId = 'valid-id';
+      const sut = new NodeValidator(new NodeDataErrorContextStub());
+      // act
+      const act = () => sut.assertValidName(validId);
       // assert
       expect(act).to.not.throw();
     });
@@ -94,6 +118,6 @@ describe('NodeValidator', () => {
   });
 });
 
-function mockNode() {
+function createNodeStub() {
   return new CategoryDataStub();
 }

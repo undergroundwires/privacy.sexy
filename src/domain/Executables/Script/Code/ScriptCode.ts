@@ -1,4 +1,4 @@
-export interface IScriptCode {
+export interface ScriptCode {
   readonly execute: string;
   readonly revert?: string;
 }

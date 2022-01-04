@@ -1,19 +1,19 @@
-import type { ICategory } from '@/domain/ICategory';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
-import type { CategorySelectionChange, CategorySelectionChangeCommand } from './CategorySelectionChange';
-import type { CategorySelection } from './CategorySelection';
+import type { Category } from '@/domain/Executables/Category/Category';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import type { ScriptSelection } from '../Script/ScriptSelection';
 import type { ScriptSelectionChange } from '../Script/ScriptSelectionChange';
+import type { CategorySelection } from './CategorySelection';
+import type { CategorySelectionChange, CategorySelectionChangeCommand } from './CategorySelectionChange';
 
 export class ScriptToCategorySelectionMapper implements CategorySelection {
   constructor(
     private readonly scriptSelection: ScriptSelection,
-    private readonly collection: ICategoryCollection,
+    private readonly collection: CategoryCollection,
   ) {
 
   }
 
-  public areAllScriptsSelected(category: ICategory): boolean {
+  public areAllScriptsSelected(category: Category): boolean {
     const { selectedScripts } = this.scriptSelection;
     if (selectedScripts.length === 0) {
       return false;
@@ -23,11 +23,11 @@ export class ScriptToCategorySelectionMapper implements CategorySelection {
       return false;
     }
     return scripts.every(
-      (script) => selectedScripts.some((selected) => selected.id === script.id),
+      (script) => selectedScripts.some((selected) => selected.key === script.key),
     );
   }
 
-  public isAnyScriptSelected(category: ICategory): boolean {
+  public isAnyScriptSelected(category: Category): boolean {
     const { selectedScripts } = this.scriptSelection;
     if (selectedScripts.length === 0) {
       return false;
@@ -46,11 +46,11 @@ export class ScriptToCategorySelectionMapper implements CategorySelection {
   }
 
   private collectScriptChanges(change: CategorySelectionChange): ScriptSelectionChange[] {
-    const category = this.collection.getCategory(change.categoryId);
+    const category = this.collection.getCategory(change.categoryKey.executableId);
     const scripts = category.getAllScriptsRecursively();
     const scriptsChangesInCategory = scripts
       .map((script): ScriptSelectionChange => ({
-        scriptId: script.id,
+        scriptKey: script.key,
         newStatus: {
           ...change.newStatus,
         },

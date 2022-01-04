@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import type { IScript } from '@/domain/IScript';
-import type { ICategory } from '@/domain/ICategory';
+import { Script } from '@/domain/Executables/Script/Script';
+import { Category } from '@/domain/Executables/Category/Category';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import {
-  getCategoryId, getCategoryNodeId, getScriptId,
+  getCategoryKey, getCategoryNodeId, getScriptKey,
   getScriptNodeId, parseAllCategories, parseSingleCategory,
 } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/CategoryNodeMetadataConverter';
 import { NodeType } from '@/application/Parser/NodeValidation/NodeType';
@@ -18,18 +18,18 @@ describe('CategoryNodeMetadataConverter', () => {
     const script = new ScriptStub('test');
     // act
     const nodeId = getScriptNodeId(script);
-    const scriptId = getScriptId(nodeId);
+    const scriptId = getScriptKey(nodeId);
     // assert
-    expect(scriptId).to.equal(script.id);
+    expect(scriptId).to.equal(script.key);
   });
   it('can convert category id and back', () => {
     // arrange
     const category = new CategoryStub(55);
     // act
     const nodeId = getCategoryNodeId(category);
-    const scriptId = getCategoryId(nodeId);
+    const scriptId = getCategoryKey(nodeId);
     // assert
-    expect(scriptId).to.equal(category.id);
+    expect(scriptId).to.equal(category.key);
   });
   describe('parseSingleCategory', () => {
     it('throws error if parent category cannot be retrieved', () => {
@@ -94,7 +94,7 @@ describe('CategoryNodeMetadataConverter', () => {
   });
 });
 
-function isReversible(category: ICategory): boolean {
+function isReversible(category: Category): boolean {
   if (category.scripts) {
     if (category.scripts.some((s) => !s.canRevert())) {
       return false;
@@ -108,7 +108,7 @@ function isReversible(category: ICategory): boolean {
   return true;
 }
 
-function expectSameCategory(node: NodeMetadata, category: ICategory): void {
+function expectSameCategory(node: NodeMetadata, category: Category): void {
   expect(node.type).to.equal(NodeType.Category, getErrorMessage('type'));
   expect(node.id).to.equal(getCategoryNodeId(category), getErrorMessage('id'));
   expect(node.docs).to.equal(category.docs, getErrorMessage('docs'));
@@ -135,7 +135,7 @@ function expectSameCategory(node: NodeMetadata, category: ICategory): void {
   }
 }
 
-function expectSameScript(node: NodeMetadata, script: IScript): void {
+function expectSameScript(node: NodeMetadata, script: Script): void {
   expect(node.type).to.equal(NodeType.Script, getErrorMessage('type'));
   expect(node.id).to.equal(getScriptNodeId(script), getErrorMessage('id'));
   expect(node.docs).to.equal(script.docs, getErrorMessage('docs'));

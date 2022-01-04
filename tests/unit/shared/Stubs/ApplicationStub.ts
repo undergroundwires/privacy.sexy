@@ -1,5 +1,5 @@
 import type { IApplication } from '@/domain/IApplication';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
 import { ProjectDetailsStub } from './ProjectDetailsStub';
@@ -8,9 +8,9 @@ import { CategoryCollectionStub } from './CategoryCollectionStub';
 export class ApplicationStub implements IApplication {
   public projectDetails: ProjectDetails = new ProjectDetailsStub();
 
-  public collections: ICategoryCollection[] = [];
+  public collections: CategoryCollection[] = [];
 
-  public getCollection(operatingSystem: OperatingSystem): ICategoryCollection {
+  public getCollection(operatingSystem: OperatingSystem): CategoryCollection {
     const collection = this.collections.find((c) => c.os === operatingSystem);
     return collection ?? new CategoryCollectionStub();
   }
@@ -19,7 +19,7 @@ export class ApplicationStub implements IApplication {
     return this.collections.map((collection) => collection.os);
   }
 
-  public withCollection(collection: ICategoryCollection): this {
+  public withCollection(collection: CategoryCollection): this {
     this.collections.push(collection);
     return this;
   }
@@ -29,7 +29,7 @@ export class ApplicationStub implements IApplication {
     return this;
   }
 
-  public withCollections(...collections: readonly ICategoryCollection[]): this {
+  public withCollections(...collections: readonly CategoryCollection[]): this {
     this.collections.push(...collections);
     return this;
   }
