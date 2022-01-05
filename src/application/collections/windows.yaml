@@ -4604,9 +4604,54 @@ actions:
                         serviceName: DoSvc # Check: (Get-Service -Name 'DoSvc').StartType
                         defaultStartupMode: Automatic # Allowed values: Automatic | Manual
             -
-                name: Microsoft Windows Live ID Service
-                recommend: standard
-                docs: http://batcmd.com/windows/10/services/wlidsvc/
+                name: Microsoft Account Sign-in Assistant (breaks Microsoft Store and Microsoft Account sign-in)
+                recommend: strict
+                docs:
+                    # **Summary**
+                    # This script gives you more privacy by preventing OS access to Azure AD to store your personal
+                    # and computer information that can be used to identify you and your computer.
+                    # However it breaks many OS features so you should make a decision based on how you'd like to use
+                    # your Windows. You can also apply and revert it once you need the broken functionality.
+                    # **Service**
+                    # This service communicates with Microsoft Account cloud authentication service
+                    # Many apps and system components that depend on Microsoft Account authentication may lose functionality.
+                    - https://docs.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#12-microsoft-account
+                    # It includes following description:
+                    # > Enables user sign-in through Microsoft account identity services.
+                    # > If this service is stopped, users will not be able to logon to the computer with their Microsoft account.
+                    # Microsoft states it's OK to disable
+                    - https://docs.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server#microsoft-account-sign-in-assistant
+                    # Formerly it was known as "Microsoft Windows Live ID Service"
+                    # And used only for applications like Office and Windows Live Messenger
+                    - https://www.howtogeek.com/howto/30348/what-are-wlidsvc.exe-and-wlidsvcm.exe-and-why-are-they-running/
+                    # It's part of OS and used for Microsoft account (MSA) that's used to identify your computer
+                    - https://docs.microsoft.com/en-us/windows/deployment/update/update-compliance-configuration-manual#required-endpoints
+                    - https://docs.microsoft.com/en-us/troubleshoot/mem/intune/windows-feature-updates-never-offered
+                    # **Breaks**
+                    # ❗️ Breaks Azure AD sign-in
+                    #   It may enrollment scenarios that rely on users to complete the enrollment.
+                    #   E.g. typically, users are shown an Azure AD sign in window.
+                    #   When set to Disable, the Azure AD sign in option may not show.
+                    #   Instead, users are asked to accept the EULA, and create a local account, which may not be what you want.
+                    - https://docs.microsoft.com/en-us/mem/intune/configuration/device-restrictions-windows-10#cloud-and-storage
+                    - https://docs.microsoft.com/en-us/mem/autopilot/pre-provision#user-flow
+                    #   ❗️ Breaks Windows Autopilot
+                    - https://docs.microsoft.com/en-us/mem/autopilot/windows-autopilot
+                    #       This service is required by Windows Autopilot to obtain the Windows Autopilot profile
+                    - https://docs.microsoft.com/en-us/mem/autopilot/policy-conflicts
+                    # ❗️ Breaks Microsoft Store
+                    #   On Windows 11 it fails with `PUR-AuthenticationFailure v3ZtcNH7IECS00iL.36.1``
+                    #   On Windows 10 it fails with `0x800706d9` and `0x800704cf``
+                    - https://github.com/undergroundwires/privacy.sexy/issues/100
+                    # ❗️ Breaks feature updates (but other features are still offered)
+                    #   Because it breaks Subscription Activation feature (license authentication)
+                    - https://docs.microsoft.com/en-us/mem/intune/protect/windows-10-feature-updates
+                    - https://docs.microsoft.com/en-us/windows/deployment/update/windows-update-troubleshooting#feature-updates-are-not-being-offered-while-other-updates-are
+                    - https://docs.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#12-microsoft-account
+                    - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-accounts#accounts-allowmicrosoftaccountsigninassistant
+                    #   Feature updates are released annually. Feature updates add new features and functionality to Windows.
+                    #   Because they are delivered frequently (rather than every 3-5 years), they are easier to manage.
+                    - https://docs.microsoft.com/en-us/windows/deployment/update/get-started-updates-channels-tools#types-of-updates
                 call:
                     function: DisableService
                     parameters:
