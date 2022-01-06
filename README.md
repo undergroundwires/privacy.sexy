@@ -99,7 +99,7 @@
 
 - Online version at [https://privacy.sexy](https://privacy.sexy)
   - 💡 No need to run any compiled software on your computer.
-- Alternatively download offline version for [Windows](https://github.com/undergroundwires/privacy.sexy/releases/download/0.11.2/privacy.sexy-Setup-0.11.2.exe), [macOS](https://github.com/undergroundwires/privacy.sexy/releases/download/0.11.2/privacy.sexy-0.11.2.dmg) or [Linux](https://github.com/undergroundwires/privacy.sexy/releases/download/0.11.2/privacy.sexy-0.11.2.AppImage).
+- Alternatively download offline version for [Windows](https://github.com/undergroundwires/privacy.sexy/releases/download/0.11.3/privacy.sexy-Setup-0.11.3.exe), [macOS](https://github.com/undergroundwires/privacy.sexy/releases/download/0.11.3/privacy.sexy-0.11.3.dmg) or [Linux](https://github.com/undergroundwires/privacy.sexy/releases/download/0.11.3/privacy.sexy-0.11.3.AppImage).
   - 💡 Single click to execute your script.
 - ❗ Come back regularly to apply latest version for stronger privacy and security.
 
@@ -143,8 +143,8 @@
   - Development: `npm run serve` to compile & hot-reload for development.
   - Production: `npm run build` to prepare files for distribution.
   - Or run using Docker:
-    1. Build: `docker build -t undergroundwires/privacy.sexy:0.11.2 .`
-    2. Run: `docker run -it -p 8080:80 --rm --name privacy.sexy-0.11.2 undergroundwires/privacy.sexy:0.11.2`
+    1. Build: `docker build -t undergroundwires/privacy.sexy:0.11.3 .`
+    2. Run: `docker run -it -p 8080:80 --rm --name privacy.sexy-0.11.3 undergroundwires/privacy.sexy:0.11.3`
 
 ## Architecture overview
 

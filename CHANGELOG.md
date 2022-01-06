@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.11.3 (2022-01-05)
+
+* Fix double backlashes in Windows vscode scripts | [5f091bb](https://github.com/undergroundwires/privacy.sexy/commit/5f091bb6abed878271e2321cd784f34436c677bd)
+* Fix OS desktop detection tests and edge cases | [a8358b8](https://github.com/undergroundwires/privacy.sexy/commit/a8358b8e7a93214f3d22a4488007ded5f623d845)
+* Fix clearing Windows product key showing dialog | [9b6636e](https://github.com/undergroundwires/privacy.sexy/commit/9b6636e21a922a4750dc19f4854f8ae679187926)
+* Document and unrecommend Cloud Experience Host | [9b5e0b0](https://github.com/undergroundwires/privacy.sexy/commit/9b5e0b0591fee56af52d83334a1f19180a49516f)
+* Add initial e2e testing with cypress | [ddd2e70](https://github.com/undergroundwires/privacy.sexy/commit/ddd2e704dbd361cbd219f3dfe644b983ad254095)
+* Restructure pipelines and badges | [5a2c263](https://github.com/undergroundwires/privacy.sexy/commit/5a2c263af35b8785e75ead6c43c3f17186dc15c8)
+* Fix failing of functions without revert code | [87de017](https://github.com/undergroundwires/privacy.sexy/commit/87de017afd6e08acbd2deea150c6af9c7ee778fc)
+* Fix typos in privacy modal #109 | [a1871a2](https://github.com/undergroundwires/privacy.sexy/commit/a1871a2982c9e3192193f836b97b1a6ccda5a2ab)
+* Refactor to add readonly interfaces | [c3c5b89](https://github.com/undergroundwires/privacy.sexy/commit/c3c5b897f308f613c252182a02cdd4cfa7150fa3)
+* Document and unrecommend AAD app removal #24, #54 | [455084c](https://github.com/undergroundwires/privacy.sexy/commit/455084c17b32d11d046515e8dc1447adf4bea4c3)
+* Migrate from TSLint to ESLint | [61b475f](https://github.com/undergroundwires/privacy.sexy/commit/61b475fa8de433cdada2efa7eac197683aacd956)
+* Add build checks and improve existing CI/CD checks | [17298f0](https://github.com/undergroundwires/privacy.sexy/commit/17298f0b2c51cb9becc0eb2ffe0d93d6a4c503a6)
+* Upgrade to Vue CLI 5 (and webpack 5) | [96265b7](https://github.com/undergroundwires/privacy.sexy/commit/96265b75deafb85978b16460138fb4a814c07cfe)
+* Refactor code to comply with ESLint rules | [5b1fbe1](https://github.com/undergroundwires/privacy.sexy/commit/5b1fbe1e2fb1354a5f060f8c8e3794ce756e16a7)
+* Fix mutated line endings on Windows | [bd23faa](https://github.com/undergroundwires/privacy.sexy/commit/bd23faa28f6d781581a33d5b780f4b33f7e2cd8b)
+* Refactor to improve iterations | [31f7091](https://github.com/undergroundwires/privacy.sexy/commit/31f70913a2f30baf5a9d6690f192e6a63da50114)
+* win: unrecommend and document Live ID service #100 | [d11a674](https://github.com/undergroundwires/privacy.sexy/commit/d11a674a3c4ad8f4972a870c2f0977ac53297273)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.11.2...0.11.3)
+
 ## 0.11.2 (2021-12-03)
 
 * Fix Windows TrustedInstaller session errors | [20a0071](https://github.com/undergroundwires/privacy.sexy/commit/20a0071c0d3d769a8f31218abdbfc4cafa25c6ff)
