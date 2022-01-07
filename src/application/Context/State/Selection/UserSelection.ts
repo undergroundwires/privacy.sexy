@@ -109,6 +109,9 @@ export class UserSelection implements IUserSelection {
       .getAllScripts()
       .filter((script) => !this.scripts.exists(script.id))
       .map((script) => new SelectedScript(script, false));
+    if (scriptsToSelect.length === 0) {
+      return;
+    }
     for (const script of scriptsToSelect) {
       this.scripts.addItem(script);
     }
@@ -116,6 +119,9 @@ export class UserSelection implements IUserSelection {
   }
 
   public deselectAll(): void {
+    if (this.scripts.length === 0) {
+      return;
+    }
     const selectedScriptIds = this.scripts.getItems().map((script) => script.id);
     for (const scriptId of selectedScriptIds) {
       this.scripts.removeItem(scriptId);
@@ -127,20 +133,35 @@ export class UserSelection implements IUserSelection {
     if (!scripts || scripts.length === 0) {
       throw new Error('Scripts are empty. Use deselectAll() if you want to deselect everything');
     }
-    // Unselect from selected scripts
-    if (this.scripts.length !== 0) {
-      this.scripts.getItems()
-        .filter((existing) => !scripts.some((script) => existing.id === script.id))
-        .map((script) => script.id)
-        .forEach((scriptId) => this.scripts.removeItem(scriptId));
+    let totalChanged = 0;
+    totalChanged += this.unselectMissingWithoutNotifying(scripts);
+    totalChanged += this.selectNewWithoutNotifying(scripts);
+    if (totalChanged > 0) {
+      this.changed.notify(this.scripts.getItems());
     }
-    // Select from unselected scripts
+  }
+
+  private unselectMissingWithoutNotifying(scripts: readonly IScript[]): number {
+    if (this.scripts.length === 0 || scripts.length === 0) {
+      return 0;
+    }
+    const existingItems = this.scripts.getItems();
+    const missingIds = existingItems
+      .filter((existing) => !scripts.some((script) => existing.id === script.id))
+      .map((script) => script.id);
+    for (const id of missingIds) {
+      this.scripts.removeItem(id);
+    }
+    return missingIds.length;
+  }
+
+  private selectNewWithoutNotifying(scripts: readonly IScript[]): number {
     const unselectedScripts = scripts
       .filter((script) => !this.scripts.exists(script.id))
       .map((script) => new SelectedScript(script, false));
-    for (const toSelect of unselectedScripts) {
-      this.scripts.addItem(toSelect);
+    for (const newScript of unselectedScripts) {
+      this.scripts.addItem(newScript);
     }
-    this.changed.notify(this.scripts.getItems());
+    return unselectedScripts.length;
   }
 }

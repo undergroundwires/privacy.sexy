@@ -38,72 +38,134 @@ describe('UserSelection', () => {
         .expectFinalScripts(scripts);
     });
   });
-  describe('deselectAll removes all items', () => {
-    // arrange
-    const allScripts = [
-      new SelectedScriptStub('s1', false),
-      new SelectedScriptStub('s2', false),
-      new SelectedScriptStub('s3', false),
-      new SelectedScriptStub('s4', false),
-    ];
-    const selectedScripts = allScripts.filter(
-      (s) => ['s1', 's2', 's3'].includes(s.id),
-    );
-    new UserSelectionTestRunner()
-      .withSelectedScripts(selectedScripts)
-      .withCategory(1, allScripts.map((s) => s.script))
-    // act
-      .run((sut) => {
-        sut.deselectAll();
-      })
-    // assert
-      .expectTotalFiredEvents(1)
-      .expectFinalScripts([])
-      .expectFinalScriptsInEvent(0, []);
+  describe('deselectAll', () => {
+    describe('removes existing items', () => {
+      // arrange
+      const allScripts = [
+        new SelectedScriptStub('s1', false),
+        new SelectedScriptStub('s2', false),
+        new SelectedScriptStub('s3', false),
+        new SelectedScriptStub('s4', false),
+      ];
+      const selectedScripts = allScripts.filter(
+        (s) => ['s1', 's2', 's3'].includes(s.id),
+      );
+      new UserSelectionTestRunner()
+        .withSelectedScripts(selectedScripts)
+        .withCategory(1, allScripts.map((s) => s.script))
+      // act
+        .run((sut) => {
+          sut.deselectAll();
+        })
+      // assert
+        .expectTotalFiredEvents(1)
+        .expectFinalScripts([])
+        .expectFinalScriptsInEvent(0, []);
+    });
+    describe('does not notify if nothing is selected', () => {
+      new UserSelectionTestRunner()
+      // arrange
+        .withSelectedScripts([])
+      // act
+        .run((sut) => {
+          sut.deselectAll();
+        })
+      // assert
+        .expectTotalFiredEvents(0);
+    });
   });
-  describe('selectOnly selects expected', () => {
-    // arrange
-    const allScripts = [
-      new SelectedScriptStub('s1', false),
-      new SelectedScriptStub('s2', false),
-      new SelectedScriptStub('s3', false),
-      new SelectedScriptStub('s4', false),
-    ];
-    const selectedScripts = allScripts.filter(
-      (s) => ['s1', 's2', 's3'].includes(s.id),
-    );
-    const scriptsToSelect = allScripts.filter(
-      (s) => ['s2', 's3', 's4'].includes(s.id),
-    );
-    new UserSelectionTestRunner()
-      .withSelectedScripts(selectedScripts)
-      .withCategory(1, allScripts.map((s) => s.script))
-    // act
-      .run((sut) => {
-        sut.selectOnly(scriptsToSelect.map((s) => s.script));
-      })
-    // assert
-      .expectTotalFiredEvents(1)
-      .expectFinalScripts(scriptsToSelect)
-      .expectFinalScriptsInEvent(0, scriptsToSelect);
+  describe('selectAll', () => {
+    describe('selects as expected', () => {
+      // arrange
+      const expected = [
+        new SelectedScriptStub('s1', false),
+        new SelectedScriptStub('s2', false),
+      ];
+      new UserSelectionTestRunner()
+        .withSelectedScripts([])
+        .withCategory(1, expected.map((s) => s.script))
+      // act
+        .run((sut) => {
+          sut.selectAll();
+        })
+      // assert
+        .expectTotalFiredEvents(1)
+        .expectFinalScripts(expected)
+        .expectFinalScriptsInEvent(0, expected);
+    });
+    describe('does not notify if nothing new is selected', () => {
+      const allScripts = [new ScriptStub('s1'), new ScriptStub('s2')];
+      const selectedScripts = allScripts.map((s) => s.toSelectedScript(false));
+      new UserSelectionTestRunner()
+      // arrange
+        .withSelectedScripts(selectedScripts)
+        .withCategory(0, allScripts)
+      // act
+        .run((sut) => {
+          sut.selectAll();
+        })
+      // assert
+        .expectTotalFiredEvents(0);
+    });
   });
-  describe('selectAll selects as expected', () => {
-    // arrange
-    const expected = [
-      new SelectedScriptStub('s1', false),
-      new SelectedScriptStub('s2', false),
-    ];
-    new UserSelectionTestRunner()
-      .withSelectedScripts([])
-      .withCategory(1, expected.map((s) => s.script))
-    // act
-      .run((sut) => {
-        sut.selectAll();
-      })
-    // assert
-      .expectTotalFiredEvents(1)
-      .expectFinalScripts(expected)
-      .expectFinalScriptsInEvent(0, expected);
+  describe('selectOnly', () => {
+    describe('selects as expected', () => {
+      // arrange
+      const allScripts = [
+        new SelectedScriptStub('s1', false),
+        new SelectedScriptStub('s2', false),
+        new SelectedScriptStub('s3', false),
+        new SelectedScriptStub('s4', false),
+      ];
+      const getScripts = (...ids: string[]) => allScripts.filter((s) => ids.includes(s.id));
+      const testCases = [
+        {
+          name: 'adds as expected',
+          preSelected: getScripts('s1'),
+          toSelect: getScripts('s1', 's2'),
+        },
+        {
+          name: 'removes as expected',
+          preSelected: getScripts('s1', 's2', 's3'),
+          toSelect: getScripts('s1'),
+        },
+        {
+          name: 'adds and removes as expected',
+          preSelected: getScripts('s1', 's2', 's3'),
+          toSelect: getScripts('s2', 's3', 's4'),
+        },
+      ];
+      for (const testCase of testCases) {
+        describe(testCase.name, () => {
+          new UserSelectionTestRunner()
+            .withSelectedScripts(testCase.preSelected)
+            .withCategory(1, testCase.toSelect.map((s) => s.script))
+          // act
+            .run((sut) => {
+              sut.selectOnly(testCase.toSelect.map((s) => s.script));
+            })
+          // assert
+            .expectTotalFiredEvents(1)
+            .expectFinalScripts(testCase.toSelect)
+            .expectFinalScriptsInEvent(0, testCase.toSelect);
+        });
+      }
+    });
+    describe('does not notify if selection does not change', () => {
+      const allScripts = [new ScriptStub('s1'), new ScriptStub('s2'), new ScriptStub('s3')];
+      const toSelect = [allScripts[0], allScripts[1]];
+      const preSelected = toSelect.map((s) => s.toSelectedScript(false));
+      new UserSelectionTestRunner()
+      // arrange
+        .withSelectedScripts(preSelected)
+        .withCategory(0, allScripts)
+      // act
+        .run((sut) => {
+          sut.selectOnly(toSelect);
+        })
+      // assert
+        .expectTotalFiredEvents(0);
+    });
   });
   describe('addOrUpdateSelectedScript', () => {
     describe('adds when item does not exist', () => {
