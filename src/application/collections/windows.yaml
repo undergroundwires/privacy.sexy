@@ -1745,20 +1745,31 @@ actions:
                     -
                         name: Opt out from NVIDIA telemetry
                         recommend: standard
-                        code: |-
-                            reg add "HKLM\SOFTWARE\NVIDIA Corporation\NvControlPanel2\Client" /v "OptInOrOutPreference" /t REG_DWORD /d 0 /f 
-                            reg add "HKLM\SOFTWARE\NVIDIA Corporation\Global\FTS" /v "EnableRID44231" /t REG_DWORD /d 0 /f 
-                            reg add "HKLM\SOFTWARE\NVIDIA Corporation\Global\FTS" /v "EnableRID64640" /t REG_DWORD /d 0 /f 
-                            reg add "HKLM\SOFTWARE\NVIDIA Corporation\Global\FTS" /v "EnableRID66610" /t REG_DWORD /d 0 /f 
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\Global\Startup" /v "SendTelemetryData" /t REG_DWORD /d 0 /f
-                            reg add "HKLM\SYSTEM\CurrentControlSet\services\NvTelemetryContainer" /v "Start" /t REG_DWORD /d 4 /f
-                        revertCode: |-
-                            reg delete "HKLM\SOFTWARE\NVIDIA Corporation\NvControlPanel2\Client" /v "OptInOrOutPreference" /f 
-                            reg delete "HKLM\SOFTWARE\NVIDIA Corporation\Global\FTS" /v "EnableRID44231" /f 
-                            reg delete "HKLM\SOFTWARE\NVIDIA Corporation\Global\FTS" /v "EnableRID64640" /f 
-                            reg delete "HKLM\SOFTWARE\NVIDIA Corporation\Global\FTS" /v "EnableRID66610" /f 
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\Global\Startup" /v "SendTelemetryData" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\services\NvTelemetryContainer" /f
+                        call:
+                            function: RunInlineCode
+                            parameters:
+                                code: |-
+                                    reg add "HKLM\SOFTWARE\NVIDIA Corporation\NvControlPanel2\Client" /v "OptInOrOutPreference" /t REG_DWORD /d 0 /f 
+                                    reg add "HKLM\SOFTWARE\NVIDIA Corporation\Global\FTS" /v "EnableRID44231" /t REG_DWORD /d 0 /f 
+                                    reg add "HKLM\SOFTWARE\NVIDIA Corporation\Global\FTS" /v "EnableRID64640" /t REG_DWORD /d 0 /f 
+                                    reg add "HKLM\SOFTWARE\NVIDIA Corporation\Global\FTS" /v "EnableRID66610" /t REG_DWORD /d 0 /f 
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\Global\Startup" /v "SendTelemetryData" /t REG_DWORD /d 0 /f
+                                revertCode: |-
+                                    reg delete "HKLM\SOFTWARE\NVIDIA Corporation\NvControlPanel2\Client" /v "OptInOrOutPreference" /f 
+                                    reg delete "HKLM\SOFTWARE\NVIDIA Corporation\Global\FTS" /v "EnableRID44231" /f 
+                                    reg delete "HKLM\SOFTWARE\NVIDIA Corporation\Global\FTS" /v "EnableRID64640" /f 
+                                    reg delete "HKLM\SOFTWARE\NVIDIA Corporation\Global\FTS" /v "EnableRID66610" /f 
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\Global\Startup" /v "SendTelemetryData" /f
+                    -
+                        name: Disable Nvidia Telemetry Container service
+                        docs: https://www.ghacks.net/2016/11/07/nvidia-telemetry-tracking/
+                        call:
+                            function: DisableService
+                            parameters:
+                                serviceName: NvTelemetryContainer
+                                # Display name: "NVIDIA Telemetry Container"
+                                # Description: "Container service for NVIDIA Telemetry"
+                                defaultStartupMode: Automatic
                     -
                         name: Disable NVIDIA telemetry services
                         recommend: standard
@@ -6902,7 +6913,7 @@ functions:
                         exit 1
     -
         name: DisableService
-        parameters: 
+        parameters:
             - name: serviceName
             - name: defaultStartupMode # Allowed values: Automatic | Manual
         call:
