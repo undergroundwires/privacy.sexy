@@ -10,8 +10,8 @@ export interface IReadOnlyApplicationContext {
 }
 
 export interface IApplicationContext extends IReadOnlyApplicationContext {
-    readonly state: ICategoryCollectionState;
-    changeContext(os: OperatingSystem): void;
+  readonly state: ICategoryCollectionState;
+  changeContext(os: OperatingSystem): void;
 }
 
 export interface IApplicationContextChangedEvent {

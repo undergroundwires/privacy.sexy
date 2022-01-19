@@ -14,7 +14,7 @@ import { setupAutoUpdater } from './Update/Updater';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 // Path of static assets, magic variable populated by electron
-// eslint-disable-next-line no-underscore-dangle
+// eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle
 declare const __static: string; // https://github.com/electron-userland/electron-webpack/issues/172
 
 // Keep a global reference of the window object, if you don't, the window will

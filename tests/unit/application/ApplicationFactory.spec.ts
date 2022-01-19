@@ -1,6 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
-import { ApplicationFactory, ApplicationGetter } from '@/application/ApplicationFactory';
+import { ApplicationFactory, ApplicationGetterType } from '@/application/ApplicationFactory';
 import { ApplicationStub } from '@tests/unit/stubs/ApplicationStub';
 
 describe('ApplicationFactory', () => {
@@ -19,7 +19,7 @@ describe('ApplicationFactory', () => {
     it('returns result from the getter', async () => {
       // arrange
       const expected = new ApplicationStub();
-      const getter: ApplicationGetter = () => expected;
+      const getter: ApplicationGetterType = () => expected;
       const sut = new SystemUnderTest(getter);
       // act
       const actual = await Promise.all([
@@ -35,7 +35,7 @@ describe('ApplicationFactory', () => {
       // arrange
       let totalExecution = 0;
       const expected = new ApplicationStub();
-      const getter: ApplicationGetter = () => {
+      const getter: ApplicationGetterType = () => {
         totalExecution++;
         return expected;
       };
@@ -54,7 +54,7 @@ describe('ApplicationFactory', () => {
 });
 
 class SystemUnderTest extends ApplicationFactory {
-  public constructor(costlyGetter: ApplicationGetter) {
+  public constructor(costlyGetter: ApplicationGetterType) {
     super(costlyGetter);
   }
 }

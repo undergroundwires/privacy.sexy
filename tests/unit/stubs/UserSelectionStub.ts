@@ -6,7 +6,7 @@ import { EventSource } from '@/infrastructure/Events/EventSource';
 
 export class UserSelectionStub implements IUserSelection {
   public readonly changed: IEventSource<readonly SelectedScript[]> =
-    new EventSource<readonly SelectedScript[]>();
+  new EventSource<readonly SelectedScript[]>();
 
   public selectedScripts: readonly SelectedScript[] = [];
 

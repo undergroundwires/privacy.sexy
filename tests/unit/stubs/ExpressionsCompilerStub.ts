@@ -6,7 +6,7 @@ import { FunctionCallArgumentCollectionStub } from '@tests/unit/stubs/FunctionCa
 
 export class ExpressionsCompilerStub implements IExpressionsCompiler {
   public readonly callHistory =
-    new Array<{ code: string, parameters: IReadOnlyFunctionCallArgumentCollection }>();
+  new Array<{ code: string, parameters: IReadOnlyFunctionCallArgumentCollection }>();
 
   private readonly scenarios = new Array<ITestScenario>();
 

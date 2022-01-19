@@ -12,7 +12,7 @@ export class Expression implements IExpression {
     public readonly position: ExpressionPosition,
     public readonly evaluator: ExpressionEvaluator,
     public readonly parameters
-      : IReadOnlyFunctionParameterCollection = new FunctionParameterCollection(),
+    : IReadOnlyFunctionParameterCollection = new FunctionParameterCollection(),
   ) {
     if (!position) {
       throw new Error('undefined position');

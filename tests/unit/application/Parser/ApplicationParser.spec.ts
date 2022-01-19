@@ -138,8 +138,8 @@ describe('ApplicationParser', () => {
 
 class CategoryCollectionParserSpy {
   public arguments = new Array<{
-      data: CollectionData,
-      info: ProjectInformation,
+    data: CollectionData,
+    info: ProjectInformation,
   }>();
 
   private returnValues = new Map<CollectionData, ICategoryCollection>();

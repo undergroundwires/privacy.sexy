@@ -42,7 +42,7 @@ class SchedulerMock {
 
   private currentTime = 0;
 
-  private scheduledActions = new Array<{time: number, action: SchedulerCallbackType}>();
+  private scheduledActions = new Array<{ time: number, action: SchedulerCallbackType }>();
 
   constructor() {
     this.mock = (callback: SchedulerCallbackType, ms: number) => {

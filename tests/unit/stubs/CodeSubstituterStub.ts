@@ -3,7 +3,7 @@ import { ICodeSubstituter } from '@/application/Parser/ScriptingDefinition/ICode
 
 export class CodeSubstituterStub implements ICodeSubstituter {
   private readonly scenarios =
-    new Array<{ code: string, info: IProjectInformation, result: string}>();
+  new Array<{ code: string, info: IProjectInformation, result: string }>();
 
   public substitute(code: string, info: IProjectInformation): string {
     const scenario = this.scenarios.find((s) => s.code === code && s.info === info);
