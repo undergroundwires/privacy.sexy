@@ -5,6 +5,7 @@ const packageJson = require('./package.json');
 loadVueAppRuntimeVariables();
 
 module.exports = defineConfig({
+  transpileDependencies: true,
   chainWebpack: (config) => {
     changeAppEntryPoint('./src/presentation/main.ts', config);
   },
