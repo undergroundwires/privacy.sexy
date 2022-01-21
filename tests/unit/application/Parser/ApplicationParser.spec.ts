@@ -13,6 +13,7 @@ import { getEnumValues } from '@/application/Common/Enum';
 import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
 import { getProcessEnvironmentStub } from '@tests/unit/stubs/ProcessEnvironmentStub';
 import { CollectionDataStub } from '@tests/unit/stubs/CollectionDataStub';
+import { getAbsentCollectionTestCases, AbsentObjectTestCases } from '@tests/unit/common/AbsentTests';
 
 describe('ApplicationParser', () => {
   describe('parseApplication', () => {
@@ -112,21 +113,23 @@ describe('ApplicationParser', () => {
       describe('throws when data is invalid', () => {
         // arrange
         const testCases = [
-          {
-            expectedError: 'no collection provided',
-            data: [],
-          },
-          {
+          ...getAbsentCollectionTestCases<CollectionData>().map((testCase) => ({
+            name: `given absent collection "${testCase.valueName}"`,
+            value: testCase.absentValue,
+            expectedError: 'missing collections',
+          })).filter((test) => test.value !== undefined /* the default value is set */),
+          ...AbsentObjectTestCases.map((testCase) => ({
+            name: `given absent item "${testCase.valueName}"`,
+            value: [testCase.absentValue],
             expectedError: 'undefined collection provided',
-            data: [new CollectionDataStub(), undefined],
-          },
+          })),
         ];
         for (const testCase of testCases) {
-          it(testCase.expectedError, () => {
+          it(testCase.name, () => {
             const parserMock = new CategoryCollectionParserSpy().mockParser();
             const env = getProcessEnvironmentStub();
             // act
-            const act = () => parseApplication(parserMock, env, testCase.data);
+            const act = () => parseApplication(parserMock, env, testCase.value);
             // assert
             expect(act).to.throw(testCase.expectedError);
           });

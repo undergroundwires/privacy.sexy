@@ -4,6 +4,7 @@ import {
   getEnumNames, getEnumValues, createEnumParser, assertInRange,
 } from '@/application/Common/Enum';
 import { scrambledEqual } from '@/application/Common/Array';
+import { AbsentStringTestCases } from '@tests/unit/common/AbsentTests';
 import { EnumRangeTestRunner } from './EnumRangeTestRunner';
 
 describe('Enum', () => {
@@ -37,16 +38,11 @@ describe('Enum', () => {
       // arrange
       const enumName = 'ParsableEnum';
       const testCases = [
-        {
-          name: 'undefined',
-          value: undefined,
-          expectedError: `undefined ${enumName}`,
-        },
-        {
-          name: 'empty',
-          value: '',
-          expectedError: `undefined ${enumName}`,
-        },
+        ...AbsentStringTestCases.map((test) => ({
+          name: test.valueName,
+          value: test.absentValue,
+          expectedError: `missing ${enumName}`,
+        })),
         {
           name: 'out of range',
           value: 'value3',
@@ -105,7 +101,7 @@ describe('Enum', () => {
     // assert
     new EnumRangeTestRunner(act)
       .testOutOfRangeThrows()
-      .testUndefinedValueThrows()
+      .testAbsentValueThrows()
       .testValidValueDoesNotThrow(validValue);
   });
 });

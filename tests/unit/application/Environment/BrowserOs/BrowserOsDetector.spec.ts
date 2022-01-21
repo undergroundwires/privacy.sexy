@@ -2,17 +2,21 @@ import 'mocha';
 import { expect } from 'chai';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { BrowserOsDetector } from '@/application/Environment/BrowserOs/BrowserOsDetector';
+import { itEachAbsentStringValue } from '@tests/unit/common/AbsentTests';
 import { BrowserOsTestCases } from './BrowserOsTestCases';
 
 describe('BrowserOsDetector', () => {
-  it('returns undefined when user agent is undefined', () => {
-    // arrange
-    const expected = undefined;
-    const sut = new BrowserOsDetector();
-    // act
-    const actual = sut.detect(undefined);
-    // assert
-    expect(actual).to.equal(expected);
+  describe('returns undefined when user agent is absent', () => {
+    itEachAbsentStringValue((absentValue) => {
+      // arrange
+      const expected = undefined;
+      const userAgent = absentValue;
+      const sut = new BrowserOsDetector();
+      // act
+      const actual = sut.detect(userAgent);
+      // assert
+      expect(actual).to.equal(expected);
+    });
   });
   it('detects as expected', () => {
     BrowserOsTestCases.forEach((testCase) => {

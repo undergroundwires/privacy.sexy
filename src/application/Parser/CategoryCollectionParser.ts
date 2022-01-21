@@ -29,7 +29,7 @@ export function parseCategoryCollection(
 
 function validate(content: CollectionData): void {
   if (!content) {
-    throw new Error('content is null or undefined');
+    throw new Error('content is absent.');
   }
   if (!content.actions || content.actions.length <= 0) {
     throw new Error('content does not define any action');

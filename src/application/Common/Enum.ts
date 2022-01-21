@@ -21,7 +21,7 @@ function parseEnumValue<T extends EnumType, TEnumValue extends EnumType>(
   enumVariable: EnumVariable<T, TEnumValue>,
 ): TEnumValue {
   if (!value) {
-    throw new Error(`undefined ${enumName}`);
+    throw new Error(`missing ${enumName}`);
   }
   if (typeof value !== 'string') {
     throw new Error(`unexpected type of ${enumName}: "${typeof value}"`);
@@ -54,8 +54,8 @@ export function assertInRange<T extends EnumType, TEnumValue extends EnumType>(
   value: TEnumValue,
   enumVariable: EnumVariable<T, TEnumValue>,
 ) {
-  if (value === undefined) {
-    throw new Error('undefined enum value');
+  if (value === undefined || value === null) {
+    throw new Error('absent enum value');
   }
   if (!(value in enumVariable)) {
     throw new RangeError(`enum value "${value}" is out of range`);

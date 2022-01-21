@@ -2,17 +2,20 @@ import 'mocha';
 import { expect } from 'chai';
 import { parseFunctionCalls } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCallParser';
 import { FunctionCallDataStub } from '@tests/unit/stubs/FunctionCallDataStub';
+import { itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/common/AbsentTests';
 
 describe('FunctionCallParser', () => {
   describe('parseFunctionCalls', () => {
-    it('throws with undefined call', () => {
-      // arrange
-      const expectedError = 'undefined call data';
-      const call = undefined;
-      // act
-      const act = () => parseFunctionCalls(call);
-      // assert
-      expect(act).to.throw(expectedError);
+    describe('throws with missing call data', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing call data';
+        const call = absentValue;
+        // act
+        const act = () => parseFunctionCalls(call);
+        // assert
+        expect(act).to.throw(expectedError);
+      });
     });
     it('throws if call is not an object', () => {
       // arrange
@@ -25,29 +28,33 @@ describe('FunctionCallParser', () => {
         expect(act).to.throw(expectedError);
       });
     });
-    it('throws if call sequence has undefined call', () => {
-      // arrange
-      const expectedError = 'undefined function call';
-      const data = [
-        new FunctionCallDataStub(),
-        undefined,
-      ];
-      // act
-      const act = () => parseFunctionCalls(data);
-      // assert
-      expect(act).to.throw(expectedError);
+    describe('throws if call sequence has undefined call', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing call data';
+        const data = [
+          new FunctionCallDataStub(),
+          absentValue,
+        ];
+        // act
+        const act = () => parseFunctionCalls(data);
+        // assert
+        expect(act).to.throw(expectedError);
+      });
     });
-    it('throws if call sequence has undefined function name', () => {
-      // arrange
-      const expectedError = 'empty function name in function call';
-      const data = [
-        new FunctionCallDataStub().withName('function-name'),
-        new FunctionCallDataStub().withName(undefined),
-      ];
-      // act
-      const act = () => parseFunctionCalls(data);
-      // assert
-      expect(act).to.throw(expectedError);
+    describe('throws if call sequence has undefined function name', () => {
+      itEachAbsentStringValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing function name in function call';
+        const data = [
+          new FunctionCallDataStub().withName('function-name'),
+          new FunctionCallDataStub().withName(absentValue),
+        ];
+        // act
+        const act = () => parseFunctionCalls(data);
+        // assert
+        expect(act).to.throw(expectedError);
+      });
     });
     it('parses single call as expected', () => {
       // arrange

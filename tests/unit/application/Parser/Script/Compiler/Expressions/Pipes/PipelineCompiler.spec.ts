@@ -5,6 +5,7 @@ import { IPipelineCompiler } from '@/application/Parser/Script/Compiler/Expressi
 import { IPipeFactory } from '@/application/Parser/Script/Compiler/Expressions/Pipes/PipeFactory';
 import { PipeStub } from '@tests/unit/stubs/PipeStub';
 import { PipeFactoryStub } from '@tests/unit/stubs/PipeFactoryStub';
+import { AbsentStringTestCases } from '@tests/unit/common/AbsentTests';
 
 describe('PipelineCompiler', () => {
   describe('compile', () => {
@@ -15,26 +16,16 @@ describe('PipelineCompiler', () => {
         expectedError: string;
       }
       const testCases: ITestCase[] = [
-        {
-          name: '"value" is empty',
-          act: (test) => test.withValue(''),
-          expectedError: 'undefined value',
-        },
-        {
-          name: '"value" is undefined',
-          act: (test) => test.withValue(undefined),
-          expectedError: 'undefined value',
-        },
-        {
-          name: '"pipeline" is empty',
-          act: (test) => test.withPipeline(''),
-          expectedError: 'undefined pipeline',
-        },
-        {
-          name: '"pipeline" is undefined',
-          act: (test) => test.withPipeline(undefined),
-          expectedError: 'undefined pipeline',
-        },
+        ...AbsentStringTestCases.map((testCase) => ({
+          name: `"value" is ${testCase.valueName}`,
+          act: (test) => test.withValue(testCase.absentValue),
+          expectedError: 'missing value',
+        })),
+        ...AbsentStringTestCases.map((testCase) => ({
+          name: `"pipeline" is ${testCase.valueName}`,
+          act: (test) => test.withPipeline(testCase.absentValue),
+          expectedError: 'missing pipeline',
+        })),
         {
           name: '"pipeline" does not start with pipe',
           act: (test) => test.withPipeline('pipeline |'),

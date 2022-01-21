@@ -4,6 +4,8 @@ import { Application } from '@/domain/Application';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
 import { ProjectInformationStub } from '@tests/unit/stubs/ProjectInformationStub';
+import { AbsentObjectTestCases, getAbsentCollectionTestCases, itEachAbsentObjectValue } from '@tests/unit/common/AbsentTests';
+import { ICategoryCollection } from '@/domain/ICategoryCollection';
 
 describe('Application', () => {
   describe('getCollection', () => {
@@ -33,15 +35,17 @@ describe('Application', () => {
   });
   describe('ctor', () => {
     describe('info', () => {
-      it('throws if undefined', () => {
-        // arrange
-        const expectedError = 'undefined project information';
-        const info = undefined;
-        const collections = [new CategoryCollectionStub()];
-        // act
-        const act = () => new Application(info, collections);
-        // assert
-        expect(act).to.throw(expectedError);
+      describe('throws if missing', () => {
+        itEachAbsentObjectValue((absentValue) => {
+          // arrange
+          const expectedError = 'missing project information';
+          const info = absentValue;
+          const collections = [new CategoryCollectionStub()];
+          // act
+          const act = () => new Application(info, collections);
+          // assert
+          expect(act).to.throw(expectedError);
+        });
       });
       it('sets as expected', () => {
         // arrange
@@ -56,22 +60,21 @@ describe('Application', () => {
     describe('collections', () => {
       describe('throws on invalid value', () => {
         // arrange
-        const testCases = [
-          {
-            name: 'undefined',
-            expectedError: 'undefined collections',
-            value: undefined,
-          },
-          {
-            name: 'empty',
-            expectedError: 'no collection in the list',
-            value: [],
-          },
-          {
-            name: 'undefined value in list',
+        const testCases: readonly {
+          name: string,
+          expectedError: string,
+          value: readonly ICategoryCollection[],
+        }[] = [
+          ...getAbsentCollectionTestCases<ICategoryCollection>().map((testCase) => ({
+            name: testCase.valueName,
+            expectedError: 'missing collections',
+            value: testCase.absentValue,
+          })),
+          ...AbsentObjectTestCases.map((testCase) => ({
+            name: `${testCase.valueName} value in list`,
             expectedError: 'undefined collection in the list',
-            value: [new CategoryCollectionStub(), undefined],
-          },
+            value: [new CategoryCollectionStub(), testCase.absentValue],
+          })),
           {
             name: 'two collections with same OS',
             expectedError: 'multiple collections with same os: windows',
@@ -83,12 +86,14 @@ describe('Application', () => {
           },
         ];
         for (const testCase of testCases) {
-          const info = new ProjectInformationStub();
-          const collections = testCase.value;
-          // act
-          const act = () => new Application(info, collections);
-          // assert
-          expect(act).to.throw(testCase.expectedError);
+          it(testCase.name, () => {
+            const info = new ProjectInformationStub();
+            const collections = testCase.value;
+            // act
+            const act = () => new Application(info, collections);
+            // assert
+            expect(act).to.throw(testCase.expectedError);
+          });
         }
       });
       it('sets as expected', () => {

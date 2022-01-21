@@ -9,30 +9,37 @@ import { ProjectInformationStub } from '@tests/unit/stubs/ProjectInformationStub
 import { EnumParserStub } from '@tests/unit/stubs/EnumParserStub';
 import { ScriptingDefinitionDataStub } from '@tests/unit/stubs/ScriptingDefinitionDataStub';
 import { CodeSubstituterStub } from '@tests/unit/stubs/CodeSubstituterStub';
+import { itEachAbsentObjectValue } from '@tests/unit/common/AbsentTests';
 
 describe('ScriptingDefinitionParser', () => {
   describe('parseScriptingDefinition', () => {
-    it('throws when info is undefined', () => {
-      // arrange
-      const info = undefined;
-      const definition = new ScriptingDefinitionDataStub();
-      const sut = new ScriptingDefinitionParserBuilder()
-        .build();
-      // act
-      const act = () => sut.parse(definition, info);
-      // assert
-      expect(act).to.throw('undefined info');
+    describe('throws when info is missing', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing info';
+        const info = absentValue;
+        const definition = new ScriptingDefinitionDataStub();
+        const sut = new ScriptingDefinitionParserBuilder()
+          .build();
+        // act
+        const act = () => sut.parse(definition, info);
+        // assert
+        expect(act).to.throw(expectedError);
+      });
     });
-    it('throws when definition is undefined', () => {
-      // arrange
-      const info = new ProjectInformationStub();
-      const definition = undefined;
-      const sut = new ScriptingDefinitionParserBuilder()
-        .build();
-      // act
-      const act = () => sut.parse(definition, info);
-      // assert
-      expect(act).to.throw('undefined definition');
+    describe('throws when definition is missing', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing definition';
+        const info = new ProjectInformationStub();
+        const definition = absentValue;
+        const sut = new ScriptingDefinitionParserBuilder()
+          .build();
+        // act
+        const act = () => sut.parse(definition, info);
+        // assert
+        expect(act).to.throw(expectedError);
+      });
     });
     describe('language', () => {
       it('parses as expected', () => {

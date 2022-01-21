@@ -20,7 +20,7 @@ export abstract class ScriptingLanguageFactory<T> implements IScriptingLanguageF
   protected registerGetter(language: ScriptingLanguage, getter: Getter<T>) {
     assertInRange(language, ScriptingLanguage);
     if (!getter) {
-      throw new Error('undefined getter');
+      throw new Error('missing getter');
     }
     if (this.getters.has(language)) {
       throw new Error(`${ScriptingLanguage[language]} is already registered`);

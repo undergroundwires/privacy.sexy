@@ -2,11 +2,19 @@ import 'mocha';
 import { expect } from 'chai';
 import { DocumentableData } from 'js-yaml-loader!@/*';
 import { parseDocUrls } from '@/application/Parser/DocumentationParser';
+import { itEachAbsentObjectValue } from '@tests/unit/common/AbsentTests';
 
 describe('DocumentationParser', () => {
   describe('parseDocUrls', () => {
-    it('throws when undefined', () => {
-      expect(() => parseDocUrls(undefined)).to.throw('documentable is null or undefined');
+    describe('throws when absent', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing documentable';
+        // act
+        const act = () => parseDocUrls(absentValue);
+        // assert
+        expect(act).to.throw(expectedError);
+      });
     });
     it('returns empty when empty', () => {
       // arrange

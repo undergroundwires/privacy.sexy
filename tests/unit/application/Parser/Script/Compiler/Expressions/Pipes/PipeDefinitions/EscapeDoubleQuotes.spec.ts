@@ -1,5 +1,6 @@
 import 'mocha';
 import { EscapeDoubleQuotes } from '@/application/Parser/Script/Compiler/Expressions/Pipes/PipeDefinitions/EscapeDoubleQuotes';
+import { AbsentStringTestCases } from '@tests/unit/common/AbsentTests';
 import { runPipeTests } from './PipeTestRunner';
 
 describe('EscapeDoubleQuotes', () => {
@@ -22,10 +23,10 @@ describe('EscapeDoubleQuotes', () => {
       input: '""hello world""',
       expectedOutput: '"^"""^""hello world"^"""^""',
     },
-    {
-      name: 'returns undefined when if input is undefined',
-      input: undefined,
-      expectedOutput: undefined,
-    },
+    ...AbsentStringTestCases.map((testCase) => ({
+      name: 'returns as it is when if input is missing',
+      input: testCase.absentValue,
+      expectedOutput: testCase.absentValue,
+    })),
   ]);
 });

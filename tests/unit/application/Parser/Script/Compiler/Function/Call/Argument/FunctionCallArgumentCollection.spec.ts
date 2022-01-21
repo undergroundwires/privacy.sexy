@@ -2,18 +2,21 @@ import 'mocha';
 import { expect } from 'chai';
 import { FunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/Function/Call/Argument/FunctionCallArgumentCollection';
 import { FunctionCallArgumentStub } from '@tests/unit/stubs/FunctionCallArgumentStub';
+import { itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/common/AbsentTests';
 
 describe('FunctionCallArgumentCollection', () => {
   describe('addArgument', () => {
-    it('throws if argument is undefined', () => {
-      // arrange
-      const errorMessage = 'undefined argument';
-      const arg = undefined;
-      const sut = new FunctionCallArgumentCollection();
-      // act
-      const act = () => sut.addArgument(arg);
-      // assert
-      expect(act).to.throw(errorMessage);
+    describe('throws if argument is missing', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const errorMessage = 'missing argument';
+        const arg = absentValue;
+        const sut = new FunctionCallArgumentCollection();
+        // act
+        const act = () => sut.addArgument(arg);
+        // assert
+        expect(act).to.throw(errorMessage);
+      });
     });
     it('throws if parameter value is already provided', () => {
       // arrange
@@ -58,17 +61,17 @@ describe('FunctionCallArgumentCollection', () => {
     });
   });
   describe('getArgument', () => {
-    it('throws if parameter name is undefined', () => {
-      // arrange
-      const expectedError = 'undefined parameter name';
-      const undefinedValues = ['', undefined];
-      for (const undefinedValue of undefinedValues) {
+    describe('throws if parameter name is absent', () => {
+      itEachAbsentStringValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing parameter name';
         const sut = new FunctionCallArgumentCollection();
+        const parameterName = absentValue;
         // act
-        const act = () => sut.getArgument(undefinedValue);
+        const act = () => sut.getArgument(parameterName);
         // assert
         expect(act).to.throw(expectedError);
-      }
+      });
     });
     it('throws if argument does not exist', () => {
       // arrange
@@ -94,17 +97,17 @@ describe('FunctionCallArgumentCollection', () => {
     });
   });
   describe('hasArgument', () => {
-    it('throws if parameter name is undefined', () => {
-      // arrange
-      const expectedError = 'undefined parameter name';
-      const undefinedValues = ['', undefined];
-      for (const undefinedValue of undefinedValues) {
+    describe('throws if parameter name is missing', () => {
+      itEachAbsentStringValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing parameter name';
+        const parameterName = absentValue;
         const sut = new FunctionCallArgumentCollection();
         // act
-        const act = () => sut.hasArgument(undefinedValue);
+        const act = () => sut.hasArgument(parameterName);
         // assert
         expect(act).to.throw(expectedError);
-      }
+      });
     });
     describe('returns as expected', () => {
       // arrange

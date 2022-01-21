@@ -4,18 +4,21 @@ import { SharedFunctionCollection } from '@/application/Parser/Script/Compiler/F
 import { SharedFunctionStub } from '@tests/unit/stubs/SharedFunctionStub';
 import { FunctionBodyType } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
 import { FunctionCallStub } from '@tests/unit/stubs/FunctionCallStub';
+import { itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/common/AbsentTests';
 
 describe('SharedFunctionCollection', () => {
   describe('addFunction', () => {
-    it('throws if function is undefined', () => {
-      // arrange
-      const expectedError = 'undefined function';
-      const func = undefined;
-      const sut = new SharedFunctionCollection();
-      // act
-      const act = () => sut.addFunction(func);
-      // assert
-      expect(act).to.throw(expectedError);
+    describe('throws if function is missing', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing function';
+        const func = absentValue;
+        const sut = new SharedFunctionCollection();
+        // act
+        const act = () => sut.addFunction(func);
+        // assert
+        expect(act).to.throw(expectedError);
+      });
     });
     it('throws if function with same name already exists', () => {
       // arrange
@@ -32,18 +35,16 @@ describe('SharedFunctionCollection', () => {
     });
   });
   describe('getFunctionByName', () => {
-    it('throws if name is undefined', () => {
-      // arrange
-      const expectedError = 'undefined function name';
-      const invalidValues = [undefined, ''];
-      const sut = new SharedFunctionCollection();
-      for (const invalidValue of invalidValues) {
-        const name = invalidValue;
+    describe('throws if name is absent', () => {
+      itEachAbsentStringValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing function name';
+        const sut = new SharedFunctionCollection();
         // act
-        const act = () => sut.getFunctionByName(name);
+        const act = () => sut.getFunctionByName(absentValue);
         // assert
         expect(act).to.throw(expectedError);
-      }
+      });
     });
     it('throws if function does not exist', () => {
       // arrange

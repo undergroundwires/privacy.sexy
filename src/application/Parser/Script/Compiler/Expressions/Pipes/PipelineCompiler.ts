@@ -23,8 +23,8 @@ function extractPipeNames(pipeline: string): string[] {
 }
 
 function ensureValidArguments(value: string, pipeline: string) {
-  if (!value) { throw new Error('undefined value'); }
-  if (!pipeline) { throw new Error('undefined pipeline'); }
+  if (!value) { throw new Error('missing value'); }
+  if (!pipeline) { throw new Error('missing pipeline'); }
   if (!pipeline.trimStart().startsWith('|')) {
     throw new Error('pipeline does not start with pipe');
   }

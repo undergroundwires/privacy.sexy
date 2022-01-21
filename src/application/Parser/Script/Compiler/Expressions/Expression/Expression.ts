@@ -8,23 +8,25 @@ import { ExpressionEvaluationContext, IExpressionEvaluationContext } from './Exp
 
 export type ExpressionEvaluator = (context: IExpressionEvaluationContext) => string;
 export class Expression implements IExpression {
+  public readonly parameters: IReadOnlyFunctionParameterCollection;
+
   constructor(
     public readonly position: ExpressionPosition,
     public readonly evaluator: ExpressionEvaluator,
-    public readonly parameters
-    : IReadOnlyFunctionParameterCollection = new FunctionParameterCollection(),
+    parameters?: IReadOnlyFunctionParameterCollection,
   ) {
     if (!position) {
-      throw new Error('undefined position');
+      throw new Error('missing position');
     }
     if (!evaluator) {
-      throw new Error('undefined evaluator');
+      throw new Error('missing evaluator');
     }
+    this.parameters = parameters ?? new FunctionParameterCollection();
   }
 
   public evaluate(context: IExpressionEvaluationContext): string {
     if (!context) {
-      throw new Error('undefined context');
+      throw new Error('missing context');
     }
     validateThatAllRequiredParametersAreSatisfied(this.parameters, context.args);
     const args = filterUnusedArguments(this.parameters, context.args);

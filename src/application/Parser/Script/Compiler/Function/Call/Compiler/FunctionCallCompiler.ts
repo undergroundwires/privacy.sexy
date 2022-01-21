@@ -22,9 +22,9 @@ export class FunctionCallCompiler implements IFunctionCallCompiler {
     calls: IFunctionCall[],
     functions: ISharedFunctionCollection,
   ): ICompiledCode {
-    if (!functions) { throw new Error('undefined functions'); }
-    if (!calls) { throw new Error('undefined calls'); }
-    if (calls.some((f) => !f)) { throw new Error('undefined function call'); }
+    if (!functions) { throw new Error('missing functions'); }
+    if (!calls) { throw new Error('missing calls'); }
+    if (calls.some((f) => !f)) { throw new Error('missing function call'); }
     const context: ICompilationContext = {
       allFunctions: functions,
       callSequence: calls,

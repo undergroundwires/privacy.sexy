@@ -4,17 +4,20 @@ import { IExpression } from '@/application/Parser/Script/Compiler/Expressions/Ex
 import { IExpressionParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/IExpressionParser';
 import { CompositeExpressionParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/CompositeExpressionParser';
 import { ExpressionStub } from '@tests/unit/stubs/ExpressionStub';
+import { itEachAbsentObjectValue } from '@tests/unit/common/AbsentTests';
 
 describe('CompositeExpressionParser', () => {
   describe('ctor', () => {
-    it('throws if one of the parsers is undefined', () => {
-      // arrange
-      const expectedError = 'undefined leaf';
-      const parsers: readonly IExpressionParser[] = [undefined, mockParser()];
-      // act
-      const act = () => new CompositeExpressionParser(parsers);
-      // assert
-      expect(act).to.throw(expectedError);
+    describe('throws if one of the parsers is undefined', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const expectedError = 'undefined leaf';
+        const parsers: readonly IExpressionParser[] = [absentValue, mockParser()];
+        // act
+        const act = () => new CompositeExpressionParser(parsers);
+        // assert
+        expect(act).to.throw(expectedError);
+      });
     });
   });
   describe('findExpressions', () => {

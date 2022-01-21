@@ -12,7 +12,7 @@ export class Script extends BaseEntity<string> implements IScript {
   ) {
     super(name);
     if (!code) {
-      throw new Error(`undefined code (script: ${name})`);
+      throw new Error(`missing code (script: ${name})`);
     }
     validateLevel(level);
   }

@@ -14,7 +14,7 @@ export enum SelectionType {
 
 export class SelectionTypeHandler {
   constructor(private readonly state: ICategoryCollectionState) {
-    if (!state) { throw new Error('undefined state'); }
+    if (!state) { throw new Error('missing state'); }
   }
 
   public selectType(type: SelectionType) {

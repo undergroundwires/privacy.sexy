@@ -3,18 +3,21 @@ import { expect } from 'chai';
 import { SelectionType, SelectionTypeHandler } from '@/presentation/components/Scripts/Menu/Selector/SelectionTypeHandler';
 import { scrambledEqual } from '@/application/Common/Array';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
+import { itEachAbsentObjectValue } from '@tests/unit/common/AbsentTests';
 import { SelectionStateTestScenario } from './SelectionStateTestScenario';
 
 describe('SelectionTypeHandler', () => {
   describe('ctor', () => {
-    it('throws when state is undefined', () => {
-      // arrange
-      const expectedError = 'undefined state';
-      const state = undefined;
-      // act
-      const sut = () => new SelectionTypeHandler(state);
-      // assert
-      expect(sut).to.throw(expectedError);
+    describe('throws when state is missing', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing state';
+        const state = absentValue;
+        // act
+        const sut = () => new SelectionTypeHandler(state);
+        // assert
+        expect(sut).to.throw(expectedError);
+      });
     });
   });
   describe('selectType', () => {

@@ -6,7 +6,7 @@ export class ScriptCode implements IScriptCode {
     public readonly revert: string,
     syntax: ILanguageSyntax,
   ) {
-    if (!syntax) { throw new Error('undefined syntax'); }
+    if (!syntax) { throw new Error('missing syntax'); }
     validateCode(execute, syntax);
     validateRevertCode(revert, execute, syntax);
   }
@@ -33,7 +33,7 @@ function validateRevertCode(revertCode: string, execute: string, syntax: ILangua
 
 function validateCode(code: string, syntax: ILanguageSyntax): void {
   if (!code || code.length === 0) {
-    throw new Error('code is empty or undefined');
+    throw new Error('missing code');
   }
   ensureNoEmptyLines(code);
   ensureCodeHasUniqueLines(code, syntax);

@@ -2,6 +2,7 @@ import 'mocha';
 import { expect } from 'chai';
 import { PipeFactory } from '@/application/Parser/Script/Compiler/Expressions/Pipes/PipeFactory';
 import { PipeStub } from '@tests/unit/stubs/PipeStub';
+import { AbsentStringTestCases, itEachAbsentObjectValue } from '@tests/unit/common/AbsentTests';
 
 describe('PipeFactory', () => {
   describe('ctor', () => {
@@ -19,14 +20,16 @@ describe('PipeFactory', () => {
       // expect
       expect(act).to.throw(expectedError);
     });
-    it('throws when a pipe is undefined', () => {
-      // arrange
-      const expectedError = 'undefined pipe in list';
-      const pipes = [new PipeStub(), undefined];
-      // act
-      const act = () => new PipeFactory(pipes);
-      // expect
-      expect(act).to.throw(expectedError);
+    describe('throws when a pipe is undefined', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const expectedError = 'undefined pipe in list';
+        const pipes = [new PipeStub(), absentValue];
+        // act
+        const act = () => new PipeFactory(pipes);
+        // expect
+        expect(act).to.throw(expectedError);
+      });
     });
     describe('throws when name is invalid', () => {
       // act
@@ -72,7 +75,7 @@ function testPipeNameValidation(testRunner: (invalidName: string) => void) {
   const testCases = [
     {
       exceptionBuilder: () => 'empty pipe name',
-      values: [null, undefined, ''],
+      values: AbsentStringTestCases.map((testCase) => testCase.absentValue),
     },
     {
       exceptionBuilder: (name: string) => `Pipe name should be camelCase: "${name}"`,

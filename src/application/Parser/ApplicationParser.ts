@@ -32,8 +32,8 @@ const PreParsedCollections: readonly CollectionData [] = [
 ];
 
 function validateCollectionsData(collections: readonly CollectionData[]) {
-  if (!collections.length) {
-    throw new Error('no collection provided');
+  if (!collections || !collections.length) {
+    throw new Error('missing collections');
   }
   if (collections.some((collection) => !collection)) {
     throw new Error('undefined collection provided');

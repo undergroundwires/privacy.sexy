@@ -10,35 +10,40 @@ import { SharedFunctionStub } from '@tests/unit/stubs/SharedFunctionStub';
 import { FunctionCallArgumentCollectionStub } from '@tests/unit/stubs/FunctionCallArgumentCollectionStub';
 import { FunctionCallStub } from '@tests/unit/stubs/FunctionCallStub';
 import { ExpressionsCompilerStub } from '@tests/unit/stubs/ExpressionsCompilerStub';
+import { itEachAbsentObjectValue } from '@tests/unit/common/AbsentTests';
 
 describe('FunctionCallCompiler', () => {
   describe('compileCall', () => {
     describe('parameter validation', () => {
       describe('call', () => {
-        it('throws with undefined call', () => {
-          // arrange
-          const expectedError = 'undefined calls';
-          const call = undefined;
-          const functions = new SharedFunctionCollectionStub();
-          const sut = new MockableFunctionCallCompiler();
-          // act
-          const act = () => sut.compileCall(call, functions);
-          // assert
-          expect(act).to.throw(expectedError);
+        describe('throws with missing call', () => {
+          itEachAbsentObjectValue((absentValue) => {
+            // arrange
+            const expectedError = 'missing calls';
+            const call = absentValue;
+            const functions = new SharedFunctionCollectionStub();
+            const sut = new MockableFunctionCallCompiler();
+            // act
+            const act = () => sut.compileCall(call, functions);
+            // assert
+            expect(act).to.throw(expectedError);
+          });
         });
-        it('throws if call sequence has undefined call', () => {
-          // arrange
-          const expectedError = 'undefined function call';
-          const call = [
-            new FunctionCallStub(),
-            undefined,
-          ];
-          const functions = new SharedFunctionCollectionStub();
-          const sut = new MockableFunctionCallCompiler();
-          // act
-          const act = () => sut.compileCall(call, functions);
-          // assert
-          expect(act).to.throw(expectedError);
+        describe('throws if call sequence has absent call', () => {
+          itEachAbsentObjectValue((absentValue) => {
+            // arrange
+            const expectedError = 'missing function call';
+            const call = [
+              new FunctionCallStub(),
+              absentValue,
+            ];
+            const functions = new SharedFunctionCollectionStub();
+            const sut = new MockableFunctionCallCompiler();
+            // act
+            const act = () => sut.compileCall(call, functions);
+            // assert
+            expect(act).to.throw(expectedError);
+          });
         });
         describe('throws if call parameters does not match function parameters', () => {
           // arrange
@@ -109,16 +114,18 @@ describe('FunctionCallCompiler', () => {
         });
       });
       describe('functions', () => {
-        it('throws with undefined functions', () => {
-          // arrange
-          const expectedError = 'undefined functions';
-          const call = new FunctionCallStub();
-          const functions = undefined;
-          const sut = new MockableFunctionCallCompiler();
-          // act
-          const act = () => sut.compileCall([call], functions);
-          // assert
-          expect(act).to.throw(expectedError);
+        describe('throws with missing functions', () => {
+          itEachAbsentObjectValue((absentValue) => {
+            // arrange
+            const expectedError = 'missing functions';
+            const call = new FunctionCallStub();
+            const functions = absentValue;
+            const sut = new MockableFunctionCallCompiler();
+            // act
+            const act = () => sut.compileCall([call], functions);
+            // assert
+            expect(act).to.throw(expectedError);
+          });
         });
         it('throws if function does not exist', () => {
           // arrange

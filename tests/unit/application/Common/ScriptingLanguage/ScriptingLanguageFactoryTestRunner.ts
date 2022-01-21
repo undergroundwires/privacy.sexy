@@ -13,7 +13,7 @@ export class ScriptingLanguageFactoryTestRunner<T> {
   }
 
   public testCreateMethod(sut: IScriptingLanguageFactory<T>) {
-    if (!sut) { throw new Error('undefined sut'); }
+    if (!sut) { throw new Error('missing sut'); }
     testLanguageValidation(sut);
     testExpectedInstanceTypes(sut, this.expectedTypes);
   }
@@ -46,7 +46,7 @@ function testLanguageValidation<T>(sut: IScriptingLanguageFactory<T>) {
     // assert
     new EnumRangeTestRunner(act)
       .testOutOfRangeThrows()
-      .testUndefinedValueThrows()
+      .testAbsentValueThrows()
       .testValidValueDoesNotThrow(validValue);
   });
 }

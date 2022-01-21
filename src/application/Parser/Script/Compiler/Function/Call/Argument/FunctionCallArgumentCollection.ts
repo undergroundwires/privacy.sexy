@@ -6,7 +6,7 @@ export class FunctionCallArgumentCollection implements IFunctionCallArgumentColl
 
   public addArgument(argument: IFunctionCallArgument): void {
     if (!argument) {
-      throw new Error('undefined argument');
+      throw new Error('missing argument');
     }
     if (this.hasArgument(argument.parameterName)) {
       throw new Error(`argument value for parameter ${argument.parameterName} is already provided`);
@@ -20,14 +20,14 @@ export class FunctionCallArgumentCollection implements IFunctionCallArgumentColl
 
   public hasArgument(parameterName: string): boolean {
     if (!parameterName) {
-      throw new Error('undefined parameter name');
+      throw new Error('missing parameter name');
     }
     return this.arguments.has(parameterName);
   }
 
   public getArgument(parameterName: string): IFunctionCallArgument {
     if (!parameterName) {
-      throw new Error('undefined parameter name');
+      throw new Error('missing parameter name');
     }
     const arg = this.arguments.get(parameterName);
     if (!arg) {

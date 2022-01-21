@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import { ScriptCode, ILanguageSyntax } from '@/domain/ScriptCode';
 import { IScriptCode } from '@/domain/IScriptCode';
 import { LanguageSyntaxStub } from '@tests/unit/stubs/LanguageSyntaxStub';
+import { AbsentStringTestCases, itEachAbsentObjectValue } from '@tests/unit/common/AbsentTests';
 
 describe('ScriptCode', () => {
   describe('code', () => {
@@ -17,22 +18,14 @@ describe('ScriptCode', () => {
           },
           expectedError: '(revert): Code itself and its reverting code cannot be the same',
         },
-        {
-          name: 'cannot construct with undefined "execute"',
+        ...AbsentStringTestCases.map((testCase) => ({
+          name: `cannot construct with ${testCase.valueName} "execute"`,
           code: {
-            execute: undefined,
+            execute: testCase.absentValue,
             revert: 'code',
           },
-          expectedError: 'code is empty or undefined',
-        },
-        {
-          name: 'cannot construct with empty "execute"',
-          code: {
-            execute: '',
-            revert: 'code',
-          },
-          expectedError: 'code is empty or undefined',
-        },
+          expectedError: 'missing code',
+        })),
       ];
       for (const testCase of testCases) {
         it(testCase.name, () => {
@@ -142,16 +135,18 @@ describe('ScriptCode', () => {
     });
   });
   describe('syntax', () => {
-    it('throws if undefined', () => {
-      // arrange
-      const expectedError = 'undefined syntax';
-      const syntax = undefined;
-      // act
-      const act = () => new ScriptCodeBuilder()
-        .withSyntax(syntax)
-        .build();
-      // assert
-      expect(act).to.throw(expectedError);
+    describe('throws if missing', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing syntax';
+        const syntax = absentValue;
+        // act
+        const act = () => new ScriptCodeBuilder()
+          .withSyntax(syntax)
+          .build();
+        // assert
+        expect(act).to.throw(expectedError);
+      });
     });
   });
 });

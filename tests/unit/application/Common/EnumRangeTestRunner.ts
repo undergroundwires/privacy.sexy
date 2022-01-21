@@ -1,6 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import { EnumType } from '@/application/Common/Enum';
+import { itEachAbsentObjectValue } from '@tests/unit/common/AbsentTests';
 
 export class EnumRangeTestRunner<TEnumValue extends EnumType> {
   constructor(private readonly runner: (value: TEnumValue) => void) {
@@ -19,15 +20,17 @@ export class EnumRangeTestRunner<TEnumValue extends EnumType> {
     return this;
   }
 
-  public testUndefinedValueThrows() {
-    it('throws when value is undefined', () => {
-      // arrange
-      const value = undefined;
-      const expectedError = 'undefined enum value';
-      // act
-      const act = () => this.runner(value);
-      // assert
-      expect(act).to.throw(expectedError);
+  public testAbsentValueThrows() {
+    describe('throws when value is absent', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const value = absentValue;
+        const expectedError = 'absent enum value';
+        // act
+        const act = () => this.runner(value);
+        // assert
+        expect(act).to.throw(expectedError);
+      });
     });
     return this;
   }
@@ -45,7 +48,7 @@ export class EnumRangeTestRunner<TEnumValue extends EnumType> {
   }
 
   public testValidValueDoesNotThrow(validValue: TEnumValue) {
-    it('throws when value is undefined', () => {
+    it('does not throw with valid value', () => {
       // arrange
       const value = validValue;
       // act

@@ -7,10 +7,10 @@ export class FunctionCall implements IFunctionCall {
     public readonly args: IReadOnlyFunctionCallArgumentCollection,
   ) {
     if (!functionName) {
-      throw new Error('empty function name in function call');
+      throw new Error('missing function name in function call');
     }
     if (!args) {
-      throw new Error('undefined args');
+      throw new Error('missing args');
     }
   }
 }

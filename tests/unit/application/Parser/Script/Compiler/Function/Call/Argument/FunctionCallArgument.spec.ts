@@ -1,6 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import { FunctionCallArgument } from '@/application/Parser/Script/Compiler/Function/Call/Argument/FunctionCallArgument';
+import { itEachAbsentStringValue } from '@tests/unit/common/AbsentTests';
 import { testParameterName } from '../../../ParameterNameTestRunner';
 
 describe('FunctionCallArgument', () => {
@@ -13,18 +14,20 @@ describe('FunctionCallArgument', () => {
           .parameterName,
       );
     });
-    it('throws if argument value is undefined', () => {
-      // arrange
-      const parameterName = 'paramName';
-      const expectedError = `undefined argument value for "${parameterName}"`;
-      const argumentValue = undefined;
-      // act
-      const act = () => new FunctionCallArgumentBuilder()
-        .withParameterName(parameterName)
-        .withArgumentValue(argumentValue)
-        .build();
-      // assert
-      expect(act).to.throw(expectedError);
+    describe('throws if argument value is absent', () => {
+      itEachAbsentStringValue((absentValue) => {
+        // arrange
+        const parameterName = 'paramName';
+        const expectedError = `missing argument value for "${parameterName}"`;
+        const argumentValue = absentValue;
+        // act
+        const act = () => new FunctionCallArgumentBuilder()
+          .withParameterName(parameterName)
+          .withArgumentValue(argumentValue)
+          .build();
+        // assert
+        expect(act).to.throw(expectedError);
+      });
     });
   });
 });

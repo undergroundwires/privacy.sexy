@@ -13,7 +13,7 @@ export class ApplicationFactory implements IApplicationFactory {
 
   protected constructor(costlyGetter: ApplicationGetterType) {
     if (!costlyGetter) {
-      throw new Error('undefined getter');
+      throw new Error('missing getter');
     }
     this.getter = new AsyncLazy<IApplication>(() => Promise.resolve(costlyGetter()));
   }

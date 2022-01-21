@@ -1,6 +1,5 @@
 import 'mocha';
 import { expect } from 'chai';
-import { FunctionData } from 'js-yaml-loader!@/*';
 import { ISyntaxFactory } from '@/application/Parser/Script/Syntax/ISyntaxFactory';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { CategoryCollectionParseContext } from '@/application/Parser/Script/CategoryCollectionParseContext';
@@ -9,31 +8,35 @@ import { ScriptCompiler } from '@/application/Parser/Script/Compiler/ScriptCompi
 import { LanguageSyntaxStub } from '@tests/unit/stubs/LanguageSyntaxStub';
 import { ScriptingDefinitionStub } from '@tests/unit/stubs/ScriptingDefinitionStub';
 import { FunctionDataStub } from '@tests/unit/stubs/FunctionDataStub';
+import { itEachAbsentCollectionValue, itEachAbsentObjectValue } from '@tests/unit/common/AbsentTests';
 
 describe('CategoryCollectionParseContext', () => {
   describe('ctor', () => {
     describe('functionsData', () => {
-      it('can create with empty values', () => {
-        // arrange
-        const testData: FunctionData[][] = [undefined, []];
-        const scripting = new ScriptingDefinitionStub();
-        for (const functionsData of testData) {
+      describe('can create with absent data', () => {
+        itEachAbsentCollectionValue((absentValue) => {
+          // arrange
+          const scripting = new ScriptingDefinitionStub();
+          // act
+          const act = () => new CategoryCollectionParseContext(absentValue, scripting);
+          // assert
+          expect(act).to.not.throw();
+        });
+      });
+    });
+    describe('scripting', () => {
+      describe('throws when missing', () => {
+        itEachAbsentObjectValue((absentValue) => {
+          // arrange
+          const expectedError = 'undefined scripting';
+          const scripting = absentValue;
+          const functionsData = [FunctionDataStub.createWithCode()];
           // act
           const act = () => new CategoryCollectionParseContext(functionsData, scripting);
           // assert
-          expect(act).to.not.throw();
-        }
+          expect(act).to.throw(expectedError);
+        });
       });
-    });
-    it('scripting', () => {
-      // arrange
-      const expectedError = 'undefined scripting';
-      const scripting = undefined;
-      const functionsData = [FunctionDataStub.createWithCode()];
-      // act
-      const act = () => new CategoryCollectionParseContext(functionsData, scripting);
-      // assert
-      expect(act).to.throw(expectedError);
     });
   });
   describe('compiler', () => {

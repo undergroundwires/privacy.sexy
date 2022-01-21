@@ -124,7 +124,7 @@ describe('ProjectInformation', () => {
       // assert
       new EnumRangeTestRunner(act)
         .testOutOfRangeThrows()
-        .testUndefinedValueThrows()
+        .testAbsentValueThrows()
         .testInvalidValueThrows(OperatingSystem.KaiOS, `Unsupported os: ${OperatingSystem[OperatingSystem.KaiOS]}`);
     });
   });

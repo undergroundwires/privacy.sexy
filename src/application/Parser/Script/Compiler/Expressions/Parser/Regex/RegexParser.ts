@@ -16,7 +16,7 @@ export abstract class RegexParser implements IExpressionParser {
 
   private* findRegexExpressions(code: string): Iterable<IExpression> {
     if (!code) {
-      throw new Error('undefined code');
+      throw new Error('missing code');
     }
     const matches = code.matchAll(this.regex);
     for (const match of matches) {

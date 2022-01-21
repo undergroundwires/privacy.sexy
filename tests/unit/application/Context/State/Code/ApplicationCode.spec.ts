@@ -13,6 +13,8 @@ import { ScriptingDefinitionStub } from '@tests/unit/stubs/ScriptingDefinitionSt
 import { CategoryStub } from '@tests/unit/stubs/CategoryStub';
 import { ScriptStub } from '@tests/unit/stubs/ScriptStub';
 import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
+import { itEachAbsentObjectValue } from '@tests/unit/common/AbsentTests';
+import { UserSelectionStub } from '@tests/unit/stubs/UserSelectionStub';
 
 describe('ApplicationCode', () => {
   describe('ctor', () => {
@@ -45,6 +47,41 @@ describe('ApplicationCode', () => {
       const actual = sut.current;
       // assert
       expect(actual).to.equal(expected.code);
+    });
+    describe('throws when userSelection is missing', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing userSelection';
+        const userSelection = absentValue;
+        const definition = new ScriptingDefinitionStub();
+        // act
+        const act = () => new ApplicationCode(userSelection, definition);
+        // assert
+        expect(act).to.throw(expectedError);
+      });
+    });
+    describe('throws when scriptingDefinition is missing', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing scriptingDefinition';
+        const userSelection = new UserSelectionStub([]);
+        const definition = absentValue;
+        // act
+        const act = () => new ApplicationCode(userSelection, definition);
+        // assert
+        expect(act).to.throw(expectedError);
+      });
+    });
+    it('throws when generator is missing', () => {
+      // arrange
+      const expectedError = 'missing generator';
+      const userSelection = new UserSelectionStub([]);
+      const definition = new ScriptingDefinitionStub();
+      const generator = null;
+      // act
+      const act = () => new ApplicationCode(userSelection, definition, generator);
+      // assert
+      expect(act).to.throw(expectedError);
     });
   });
   describe('changed event', () => {

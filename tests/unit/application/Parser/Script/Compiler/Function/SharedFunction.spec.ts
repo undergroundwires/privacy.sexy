@@ -6,6 +6,10 @@ import { createCallerFunction, createFunctionWithInlineCode } from '@/applicatio
 import { IFunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/IFunctionCall';
 import { FunctionCallStub } from '@tests/unit/stubs/FunctionCallStub';
 import { FunctionBodyType, ISharedFunction } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
+import {
+  AbsentStringTestCases, itEachAbsentCollectionValue, itEachAbsentObjectValue,
+  itEachAbsentStringValue,
+} from '@tests/unit/common/AbsentTests';
 
 describe('SharedFunction', () => {
   describe('name', () => {
@@ -20,18 +24,17 @@ describe('SharedFunction', () => {
         // assert
         expect(sut.name).equal(expected);
       });
-      it('throws if empty or undefined', () => {
-        // arrange
-        const expectedError = 'undefined function name';
-        const invalidValues = [undefined, ''];
-        for (const invalidValue of invalidValues) {
+      it('throws when absent', () => {
+        itEachAbsentStringValue((absentValue) => {
+          // arrange
+          const expectedError = 'missing function name';
           const builder = new SharedFunctionBuilder()
-            .withName(invalidValue);
+            .withName(absentValue);
           // act
           const act = () => build(builder);
           // assert
           expect(act).to.throw(expectedError);
-        }
+        });
       });
     });
   });
@@ -48,16 +51,18 @@ describe('SharedFunction', () => {
         // assert
         expect(sut.parameters).equal(expected);
       });
-      it('throws if undefined', () => {
-        // arrange
-        const expectedError = 'undefined parameters';
-        const parameters = undefined;
-        const builder = new SharedFunctionBuilder()
-          .withParameters(parameters);
-        // act
-        const act = () => build(builder);
-        // assert
-        expect(act).to.throw(expectedError);
+      describe('throws if missing', () => {
+        itEachAbsentObjectValue((absentValue) => {
+          // arrange
+          const expectedError = 'missing parameters';
+          const parameters = absentValue;
+          const builder = new SharedFunctionBuilder()
+            .withParameters(parameters);
+          // act
+          const act = () => build(builder);
+          // assert
+          expect(act).to.throw(expectedError);
+        });
       });
     });
   });
@@ -74,12 +79,12 @@ describe('SharedFunction', () => {
           // assert
           expect(sut.body.code.do).equal(expected);
         });
-        it('throws if empty or undefined', () => {
-          // arrange
-          const functionName = 'expected-function-name';
-          const expectedError = `undefined code in function "${functionName}"`;
-          const invalidValues = [undefined, ''];
-          for (const invalidValue of invalidValues) {
+        describe('throws if absent', () => {
+          itEachAbsentStringValue((absentValue) => {
+            // arrange
+            const functionName = 'expected-function-name';
+            const expectedError = `undefined code in function "${functionName}"`;
+            const invalidValue = absentValue;
             // act
             const act = () => new SharedFunctionBuilder()
               .withName(functionName)
@@ -87,13 +92,16 @@ describe('SharedFunction', () => {
               .createFunctionWithInlineCode();
             // assert
             expect(act).to.throw(expectedError);
-          }
+          });
         });
       });
       describe('revertCode', () => {
         it('sets as expected', () => {
           // arrange
-          const testData = ['expected-revert-code', undefined, ''];
+          const testData = [
+            'expected-revert-code',
+            ...AbsentStringTestCases.map((testCase) => testCase.absentValue),
+          ];
           for (const data of testData) {
             // act
             const sut = new SharedFunctionBuilder()
@@ -138,31 +146,20 @@ describe('SharedFunction', () => {
           // assert
           expect(sut.body.calls).equal(expected);
         });
-        it('throws if undefined', () => {
-          // arrange
-          const functionName = 'invalidFunction';
-          const callSequence = undefined;
-          const expectedError = `undefined call sequence in function "${functionName}"`;
-          // act
-          const act = () => new SharedFunctionBuilder()
-            .withName(functionName)
-            .withCallSequence(callSequence)
-            .createCallerFunction();
-          // assert
-          expect(act).to.throw(expectedError);
-        });
-        it('throws if empty', () => {
-          // arrange
-          const functionName = 'invalidFunction';
-          const callSequence = [];
-          const expectedError = `empty call sequence in function "${functionName}"`;
-          // act
-          const act = () => new SharedFunctionBuilder()
-            .withName(functionName)
-            .withCallSequence(callSequence)
-            .createCallerFunction();
-          // assert
-          expect(act).to.throw(expectedError);
+        describe('throws if missing', () => {
+          itEachAbsentCollectionValue((absentValue) => {
+            // arrange
+            const functionName = 'invalidFunction';
+            const callSequence = absentValue;
+            const expectedError = `missing call sequence in function "${functionName}"`;
+            // act
+            const act = () => new SharedFunctionBuilder()
+              .withName(functionName)
+              .withCallSequence(callSequence)
+              .createCallerFunction();
+            // assert
+            expect(act).to.throw(expectedError);
+          });
         });
       });
       it('sets type as expected', () => {
