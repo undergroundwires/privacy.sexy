@@ -4,7 +4,10 @@ export class EscapeDoubleQuotes implements IPipe {
   public readonly name: string = 'escapeDoubleQuotes';
 
   public apply(raw: string): string {
-    return raw?.replaceAll('"', '"^""');
+    if (!raw) {
+      return raw;
+    }
+    return raw.replaceAll('"', '"^""');
     /* eslint-disable max-len */
     /*
       "^"" is the most robust and stable choice.

@@ -10,20 +10,24 @@ import { ExpressionEvaluationContextStub } from '@tests/unit/stubs/ExpressionEva
 import { IPipelineCompiler } from '@/application/Parser/Script/Compiler/Expressions/Pipes/IPipelineCompiler';
 import { PipelineCompilerStub } from '@tests/unit/stubs/PipelineCompilerStub';
 import { IReadOnlyFunctionParameterCollection } from '@/application/Parser/Script/Compiler/Function/Parameter/IFunctionParameterCollection';
+import { AbsentObjectTestCases, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { IExpressionEvaluationContext } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionEvaluationContext';
 
 describe('Expression', () => {
   describe('ctor', () => {
     describe('position', () => {
-      it('throws if undefined', () => {
-        // arrange
-        const expectedError = 'undefined position';
-        const position = undefined;
-        // act
-        const act = () => new ExpressionBuilder()
-          .withPosition(position)
-          .build();
-        // assert
-        expect(act).to.throw(expectedError);
+      describe('throws when missing', () => {
+        itEachAbsentObjectValue((absentValue) => {
+          // arrange
+          const expectedError = 'missing position';
+          const position = absentValue;
+          // act
+          const act = () => new ExpressionBuilder()
+            .withPosition(position)
+            .build();
+          // assert
+          expect(act).to.throw(expectedError);
+        });
       });
       it('sets as expected', () => {
         // arrange
@@ -37,17 +41,19 @@ describe('Expression', () => {
       });
     });
     describe('parameters', () => {
-      it('defaults to empty array if undefined', () => {
-        // arrange
-        const parameters = undefined;
-        // act
-        const actual = new ExpressionBuilder()
-          .withParameters(parameters)
-          .build();
-        // assert
-        expect(actual.parameters);
-        expect(actual.parameters.all);
-        expect(actual.parameters.all.length).to.equal(0);
+      describe('defaults to empty array if absent', () => {
+        itEachAbsentObjectValue((absentValue) => {
+          // arrange
+          const parameters = absentValue;
+          // act
+          const actual = new ExpressionBuilder()
+            .withParameters(parameters)
+            .build();
+          // assert
+          expect(actual.parameters);
+          expect(actual.parameters.all);
+          expect(actual.parameters.all.length).to.equal(0);
+        });
       });
       it('sets as expected', () => {
         // arrange
@@ -63,37 +69,44 @@ describe('Expression', () => {
       });
     });
     describe('evaluator', () => {
-      it('throws if undefined', () => {
-        // arrange
-        const expectedError = 'undefined evaluator';
-        const evaluator = undefined;
-        // act
-        const act = () => new ExpressionBuilder()
-          .withEvaluator(evaluator)
-          .build();
-        // assert
-        expect(act).to.throw(expectedError);
+      describe('throws if missing', () => {
+        itEachAbsentObjectValue((absentValue) => {
+          // arrange
+          const expectedError = 'missing evaluator';
+          const evaluator = absentValue;
+          // act
+          const act = () => new ExpressionBuilder()
+            .withEvaluator(evaluator)
+            .build();
+          // assert
+          expect(act).to.throw(expectedError);
+        });
       });
     });
   });
   describe('evaluate', () => {
     describe('throws with invalid arguments', () => {
-      const testCases = [
-        {
-          name: 'throws if arguments is undefined',
-          context: undefined,
-          expectedError: 'undefined context',
-        },
+      const testCases: readonly {
+        name: string,
+        context: IExpressionEvaluationContext,
+        expectedError: string,
+        sutBuilder?: (builder: ExpressionBuilder) => ExpressionBuilder,
+      }[] = [
+        ...AbsentObjectTestCases.map((testCase) => ({
+          name: `throws if arguments is ${testCase.valueName}`,
+          context: testCase.absentValue,
+          expectedError: 'missing context',
+        })),
         {
           name: 'throws when some of the required args are not provided',
-          sut: (i: ExpressionBuilder) => i.withParameterNames(['a', 'b', 'c'], false),
+          sutBuilder: (i: ExpressionBuilder) => i.withParameterNames(['a', 'b', 'c'], false),
           context: new ExpressionEvaluationContextStub()
             .withArgs(new FunctionCallArgumentCollectionStub().withArgument('b', 'provided')),
           expectedError: 'argument values are provided for required parameters: "a", "c"',
         },
         {
           name: 'throws when none of the required args are not provided',
-          sut: (i: ExpressionBuilder) => i.withParameterNames(['a', 'b'], false),
+          sutBuilder: (i: ExpressionBuilder) => i.withParameterNames(['a', 'b'], false),
           context: new ExpressionEvaluationContextStub()
             .withArgs(new FunctionCallArgumentCollectionStub().withArgument('c', 'unrelated')),
           expectedError: 'argument values are provided for required parameters: "a", "b"',
@@ -103,8 +116,8 @@ describe('Expression', () => {
         it(testCase.name, () => {
           // arrange
           const sutBuilder = new ExpressionBuilder();
-          if (testCase.sut) {
-            testCase.sut(sutBuilder);
+          if (testCase.sutBuilder) {
+            testCase.sutBuilder(sutBuilder);
           }
           const sut = sutBuilder.build();
           // act

@@ -16,8 +16,8 @@ export class CodeSubstituter implements ICodeSubstituter {
   }
 
   public substitute(code: string, info: IProjectInformation): string {
-    if (!code) { throw new Error('undefined code'); }
-    if (!info) { throw new Error('undefined info'); }
+    if (!code) { throw new Error('missing code'); }
+    if (!info) { throw new Error('missing info'); }
     const args = new FunctionCallArgumentCollection();
     const substitute = (name: string, value: string) => args
       .addArgument(new FunctionCallArgument(name, value));

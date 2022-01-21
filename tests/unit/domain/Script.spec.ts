@@ -5,6 +5,7 @@ import { Script } from '@/domain/Script';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { IScriptCode } from '@/domain/IScriptCode';
 import { ScriptCodeStub } from '@tests/unit/stubs/ScriptCodeStub';
+import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('Script', () => {
   describe('ctor', () => {
@@ -20,18 +21,20 @@ describe('Script', () => {
         // assert
         expect(actual).to.deep.equal(expected);
       });
-      it('throws if undefined', () => {
-        // arrange
-        const name = 'script-name';
-        const expectedError = `undefined code (script: ${name})`;
-        const code: IScriptCode = undefined;
-        // act
-        const construct = () => new ScriptBuilder()
-          .withName(name)
-          .withCode(code)
-          .build();
-        // assert
-        expect(construct).to.throw(expectedError);
+      describe('throws when missing', () => {
+        itEachAbsentObjectValue((absentValue) => {
+          // arrange
+          const name = 'script-name';
+          const expectedError = `missing code (script: ${name})`;
+          const code: IScriptCode = absentValue;
+          // act
+          const construct = () => new ScriptBuilder()
+            .withName(name)
+            .withCode(code)
+            .build();
+          // assert
+          expect(construct).to.throw(expectedError);
+        });
       });
     });
     describe('canRevert', () => {
@@ -114,7 +117,7 @@ class ScriptBuilder {
 
   private level = RecommendationLevel.Standard;
 
-  private documentationUrls: readonly string[] = undefined;
+  private documentationUrls: readonly string[];
 
   public withCodes(code: string, revertCode = ''): ScriptBuilder {
     this.code = new ScriptCodeStub()

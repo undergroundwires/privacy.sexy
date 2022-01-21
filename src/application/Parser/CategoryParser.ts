@@ -13,7 +13,7 @@ export function parseCategory(
   category: CategoryData,
   context: ICategoryCollectionParseContext,
 ): Category {
-  if (!context) { throw new Error('undefined context'); }
+  if (!context) { throw new Error('missing context'); }
   ensureValid(category);
   const children: ICategoryChildren = {
     subCategories: new Array<Category>(),
@@ -33,7 +33,7 @@ export function parseCategory(
 
 function ensureValid(category: CategoryData) {
   if (!category) {
-    throw Error('category is null or undefined');
+    throw Error('missing category');
   }
   if (!category.children || category.children.length === 0) {
     throw Error(`category has no children: "${category.category}"`);

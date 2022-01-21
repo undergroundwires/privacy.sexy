@@ -10,6 +10,7 @@ import { EnumParserStub } from '@tests/unit/stubs/EnumParserStub';
 import { ScriptCodeStub } from '@tests/unit/stubs/ScriptCodeStub';
 import { CategoryCollectionParseContextStub } from '@tests/unit/stubs/CategoryCollectionParseContextStub';
 import { LanguageSyntaxStub } from '@tests/unit/stubs/LanguageSyntaxStub';
+import { itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('ScriptParser', () => {
   describe('parseScript', () => {
@@ -37,15 +38,17 @@ describe('ScriptParser', () => {
       expect(actual.documentationUrls).to.deep.equal(expected);
     });
     describe('invalid script', () => {
-      it('throws when script is undefined', () => {
-        // arrange
-        const expectedError = 'undefined script';
-        const parseContext = new CategoryCollectionParseContextStub();
-        const script = undefined;
-        // act
-        const act = () => parseScript(script, parseContext);
-        // assert
-        expect(act).to.throw(expectedError);
+      describe('throws when script is absent', () => {
+        itEachAbsentObjectValue((absentValue) => {
+          // arrange
+          const expectedError = 'missing script';
+          const parseContext = new CategoryCollectionParseContextStub();
+          const script = absentValue;
+          // act
+          const act = () => parseScript(script, parseContext);
+          // assert
+          expect(act).to.throw(expectedError);
+        });
       });
       it('throws when both function call and code are defined', () => {
         // arrange
@@ -83,13 +86,12 @@ describe('ScriptParser', () => {
       });
     });
     describe('level', () => {
-      it('accepts undefined level', () => {
-        const undefinedLevels: string[] = ['', undefined];
-        undefinedLevels.forEach((undefinedLevel) => {
+      describe('accepts absent level', () => {
+        itEachAbsentStringValue((absentValue) => {
           // arrange
           const parseContext = new CategoryCollectionParseContextStub();
           const script = ScriptDataStub.createWithCode()
-            .withRecommend(undefinedLevel);
+            .withRecommend(absentValue);
           // act
           const actual = parseScript(script, parseContext);
           // assert
@@ -140,15 +142,17 @@ describe('ScriptParser', () => {
         expect(actual).to.equal(expected);
       });
       describe('compiler', () => {
-        it('throws when context is not defined', () => {
-          // arrange
-          const expectedMessage = 'undefined context';
-          const script = ScriptDataStub.createWithCode();
-          const context: ICategoryCollectionParseContext = undefined;
-          // act
-          const act = () => parseScript(script, context);
-          // assert
-          expect(act).to.throw(expectedMessage);
+        describe('throws when context is not defined', () => {
+          itEachAbsentObjectValue((absentValue) => {
+            // arrange
+            const expectedMessage = 'missing context';
+            const script = ScriptDataStub.createWithCode();
+            const context: ICategoryCollectionParseContext = absentValue;
+            // act
+            const act = () => parseScript(script, context);
+            // assert
+            expect(act).to.throw(expectedMessage);
+          });
         });
         it('gets code from compiler', () => {
           // arrange

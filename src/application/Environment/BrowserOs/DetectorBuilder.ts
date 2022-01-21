@@ -27,7 +27,7 @@ export class DetectorBuilder {
 
   private detect(userAgent: string): OperatingSystem {
     if (!userAgent) {
-      throw new Error('User agent is null or undefined');
+      throw new Error('missing userAgent');
     }
     if (this.existingPartsInUserAgent.some((part) => !userAgent.includes(part))) {
       return undefined;

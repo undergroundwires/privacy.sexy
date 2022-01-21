@@ -3,33 +3,62 @@ import { expect } from 'chai';
 import { throttle, ITimer, TimeoutType } from '@/presentation/components/Shared/Throttle';
 import { EventSource } from '@/infrastructure/Events/EventSource';
 import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
+import { AbsentObjectTestCases, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('throttle', () => {
-  it('throws if callback is undefined', () => {
-    // arrange
-    const expectedError = 'undefined callback';
-    const callback = undefined;
-    // act
-    const act = () => throttle(callback, 500);
-    // assert
-    expect(act).to.throw(expectedError);
-  });
-  describe('throws if waitInMs is negative or zero', () => {
-    // arrange
-    const testCases = [
-      { value: 0, expectedError: 'no delay to throttle' },
-      { value: -2, expectedError: 'negative delay' },
-    ];
-    const noopCallback = () => { /* do nothing */ };
-    for (const testCase of testCases) {
-      it(`"${testCase.value}" throws "${testCase.expectedError}"`, () => {
+  describe('validates parameters', () => {
+    describe('throws if callback is absent', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing callback';
+        const callback = absentValue;
         // act
-        const waitInMs = testCase.value;
-        const act = () => throttle(noopCallback, waitInMs);
+        const act = () => throttle(callback, 500);
         // assert
-        expect(act).to.throw(testCase.expectedError);
+        expect(act).to.throw(expectedError);
       });
-    }
+    });
+    describe('throws if waitInMs is negative or zero', () => {
+      // arrange
+      const testCases = [
+        {
+          name: 'given zero',
+          value: 0,
+          expectedError: 'missing delay',
+        },
+        {
+          name: 'given negative',
+          value: -2,
+          expectedError: 'negative delay',
+        },
+        ...AbsentObjectTestCases.map((testCase) => ({
+          name: `when absent (given ${testCase.valueName})`,
+          value: testCase.absentValue,
+          expectedError: 'missing delay',
+        })),
+      ];
+      const noopCallback = () => { /* do nothing */ };
+      for (const testCase of testCases) {
+        it(`"${testCase.name}" throws "${testCase.expectedError}"`, () => {
+          // act
+          const waitInMs = testCase.value;
+          const act = () => throttle(noopCallback, waitInMs);
+          // assert
+          expect(act).to.throw(testCase.expectedError);
+        });
+      }
+    });
+    it('throws if timer is null', () => {
+      // arrange
+      const expectedError = 'missing timer';
+      const timer = null;
+      const noopCallback = () => { /* do nothing */ };
+      const waitInMs = 1;
+      // act
+      const act = () => throttle(noopCallback, waitInMs, timer);
+      // assert
+      expect(act).to.throw(expectedError);
+    });
   });
   it('should call the callback immediately', () => {
     // arrange

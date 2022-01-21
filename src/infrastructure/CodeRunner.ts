@@ -34,7 +34,7 @@ function getExecuteCommand(scriptPath: string, environment: Environment): string
     case OperatingSystem.Windows:
       return scriptPath;
     default:
-      throw Error('undefined os');
+      throw Error(`unsupported os: ${OperatingSystem[environment.os]}`);
   }
 }
 

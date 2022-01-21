@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import { EnvironmentStub } from '@tests/unit/stubs/EnvironmentStub';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CodeRunner } from '@/infrastructure/CodeRunner';
+import { expectThrowsAsync } from '@tests/unit/shared/Assertions/ExpectThrowsAsync';
 
 describe('CodeRunner', () => {
   describe('runCode', () => {
@@ -115,6 +116,17 @@ describe('CodeRunner', () => {
       const actualOrder = context.mocks.commandHistory
         .filter((command) => expectedOrder.includes(command));
       expect(expectedOrder).to.deep.equal(actualOrder);
+    });
+    it('throws with unsupported os', async () => {
+      // arrange
+      const unknownOs = OperatingSystem.Android;
+      const expectedError = `unsupported os: ${OperatingSystem[unknownOs]}`;
+      const context = new TestContext()
+        .withOs(unknownOs);
+      // act
+      const act = async () => { await context.runCode(); };
+      // assert
+      expectThrowsAsync(act, expectedError);
     });
   });
 });

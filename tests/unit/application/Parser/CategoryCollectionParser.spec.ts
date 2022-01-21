@@ -15,29 +15,34 @@ import { CategoryDataStub } from '@tests/unit/stubs/CategoryDataStub';
 import { ScriptDataStub } from '@tests/unit/stubs/ScriptDataStub';
 import { FunctionDataStub } from '@tests/unit/stubs/FunctionDataStub';
 import { FunctionCallDataStub } from '@tests/unit/stubs/FunctionCallDataStub';
+import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('CategoryCollectionParser', () => {
   describe('parseCategoryCollection', () => {
-    it('throws when undefined', () => {
-      // arrange
-      const expectedError = 'content is null or undefined';
-      const info = new ProjectInformationStub();
-      // act
-      const act = () => parseCategoryCollection(undefined, info);
-      // assert
-      expect(act).to.throw(expectedError);
-    });
-    describe('actions', () => {
-      it('throws when undefined actions', () => {
+    describe('throws with absent content', () => {
+      itEachAbsentObjectValue((absentValue) => {
         // arrange
-        const expectedError = 'content does not define any action';
-        const collection = new CollectionDataStub()
-          .withActions(undefined);
+        const expectedError = 'missing content';
         const info = new ProjectInformationStub();
         // act
-        const act = () => parseCategoryCollection(collection, info);
+        const act = () => parseCategoryCollection(absentValue, info);
         // assert
         expect(act).to.throw(expectedError);
+      });
+    });
+    describe('actions', () => {
+      describe('throws with absent actions', () => {
+        itEachAbsentObjectValue((absentValue) => {
+          // arrange
+          const expectedError = 'content does not define any action';
+          const collection = new CollectionDataStub()
+            .withActions(absentValue);
+          const info = new ProjectInformationStub();
+          // act
+          const act = () => parseCategoryCollection(collection, info);
+          // assert
+          expect(act).to.throw(expectedError);
+        });
       });
       it('throws when has no actions', () => {
         // arrange

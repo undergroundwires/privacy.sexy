@@ -19,7 +19,7 @@ export class FunctionParameterCollection implements IFunctionParameterCollection
 
   private ensureValidParameter(parameter: IFunctionParameter) {
     if (!parameter) {
-      throw new Error('undefined parameter');
+      throw new Error('missing parameter');
     }
     if (this.includesName(parameter.name)) {
       throw new Error(`duplicate parameter name: "${parameter.name}"`);

@@ -18,12 +18,12 @@ export class ScriptCompiler implements IScriptCompiler {
     private readonly callCompiler: IFunctionCallCompiler = FunctionCallCompiler.instance,
     sharedFunctionsParser: ISharedFunctionsParser = SharedFunctionsParser.instance,
   ) {
-    if (!syntax) { throw new Error('undefined syntax'); }
+    if (!syntax) { throw new Error('missing syntax'); }
     this.functions = sharedFunctionsParser.parseFunctions(functions);
   }
 
   public canCompile(script: ScriptData): boolean {
-    if (!script) { throw new Error('undefined script'); }
+    if (!script) { throw new Error('missing script'); }
     if (!script.call) {
       return false;
     }
@@ -31,7 +31,7 @@ export class ScriptCompiler implements IScriptCompiler {
   }
 
   public compile(script: ScriptData): IScriptCode {
-    if (!script) { throw new Error('undefined script'); }
+    if (!script) { throw new Error('missing script'); }
     try {
       const calls = parseFunctionCalls(script.call);
       const compiledCode = this.callCompiler.compileCall(calls, this.functions);

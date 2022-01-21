@@ -1,20 +1,35 @@
 import 'mocha';
 import { expect } from 'chai';
 import { scrambledEqual, sequenceEqual } from '@/application/Common/Array';
+import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { ComparerTestScenario } from './Array.ComparerTestScenario';
 
 describe('Array', () => {
   describe('scrambledEqual', () => {
-    describe('throws if arguments are undefined', () => {
-      it('first argument is undefined', () => {
-        const expectedError = 'undefined first array';
-        const act = () => scrambledEqual(undefined, []);
-        expect(act).to.throw(expectedError);
+    describe('throws if arguments are absent', () => {
+      describe('first argument is absent', () => {
+        itEachAbsentObjectValue((absentValue) => {
+          // arrange
+          const expectedError = 'missing first array';
+          const firstArray = absentValue;
+          const secondArray = [];
+          // act
+          const act = () => scrambledEqual(firstArray, secondArray);
+          // assert
+          expect(act).to.throw(expectedError);
+        });
       });
-      it('second arguments is undefined', () => {
-        const expectedError = 'undefined second array';
-        const act = () => scrambledEqual([], undefined);
-        expect(act).to.throw(expectedError);
+      describe('second argument is absent', () => {
+        itEachAbsentObjectValue((absentValue) => {
+          // arrange
+          const expectedError = 'missing second array';
+          const firstArray = [];
+          const secondArray = absentValue;
+          // act
+          const act = () => scrambledEqual(firstArray, secondArray);
+          // assert
+          expect(act).to.throw(expectedError);
+        });
       });
     });
     describe('returns as expected', () => {
@@ -35,16 +50,30 @@ describe('Array', () => {
     });
   });
   describe('sequenceEqual', () => {
-    describe('throws if arguments are undefined', () => {
-      it('first argument is undefined', () => {
-        const expectedError = 'undefined first array';
-        const act = () => sequenceEqual(undefined, []);
-        expect(act).to.throw(expectedError);
+    describe('throws if arguments are absent', () => {
+      describe('first argument is absent', () => {
+        itEachAbsentObjectValue((absentValue) => {
+          // arrange
+          const expectedError = 'missing first array';
+          const firstArray = absentValue;
+          const secondArray = [];
+          // act
+          const act = () => sequenceEqual(firstArray, secondArray);
+          // assert
+          expect(act).to.throw(expectedError);
+        });
       });
-      it('second arguments is undefined', () => {
-        const expectedError = 'undefined second array';
-        const act = () => sequenceEqual([], undefined);
-        expect(act).to.throw(expectedError);
+      describe('second argument is absent', () => {
+        itEachAbsentObjectValue((absentValue) => {
+          // arrange
+          const expectedError = 'missing second array';
+          const firstArray = [];
+          const secondArray = absentValue;
+          // act
+          const act = () => sequenceEqual(firstArray, secondArray);
+          // assert
+          expect(act).to.throw(expectedError);
+        });
       });
     });
     describe('returns as expected', () => {

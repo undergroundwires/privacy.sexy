@@ -4,32 +4,20 @@ import { ExpressionEvaluator } from '@/application/Parser/Script/Compiler/Expres
 import { IPrimitiveExpression, RegexParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/Regex/RegexParser';
 import { ExpressionPosition } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionPosition';
 import { FunctionParameterStub } from '@tests/unit/stubs/FunctionParameterStub';
+import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('RegexParser', () => {
   describe('findExpressions', () => {
-    describe('throws when code is unexpected', () => {
-      // arrange
-      const testCases = [
-        {
-          name: 'undefined',
-          value: undefined,
-          expectedError: 'undefined code',
-        },
-        {
-          name: 'empty',
-          value: '',
-          expectedError: 'undefined code',
-        },
-      ];
-      for (const testCase of testCases) {
-        it(`given ${testCase.name}`, () => {
-          const sut = new RegexParserConcrete(/unimportant/);
-          // act
-          const act = () => sut.findExpressions(testCase.value);
-          // assert
-          expect(act).to.throw(testCase.expectedError);
-        });
-      }
+    describe('throws when code is absent', () => {
+      itEachAbsentStringValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing code';
+        const sut = new RegexParserConcrete(/unimportant/);
+        // act
+        const act = () => sut.findExpressions(absentValue);
+        // assert
+        expect(act).to.throw(expectedError);
+      });
     });
     it('throws when position is invalid', () => {
       // arrange

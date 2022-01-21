@@ -28,6 +28,6 @@ function findExtension(language: ScriptingLanguage): string {
 
 function validateCode(code: string, name: string) {
   if (!code) {
-    throw new Error(`undefined ${name}`);
+    throw new Error(`missing ${name}`);
   }
 }

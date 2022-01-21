@@ -7,19 +7,22 @@ import { FunctionDataStub } from '@tests/unit/stubs/FunctionDataStub';
 import { ParameterDefinitionDataStub } from '@tests/unit/stubs/ParameterDefinitionDataStub';
 import { FunctionParameter } from '@/application/Parser/Script/Compiler/Function/Parameter/FunctionParameter';
 import { FunctionCallDataStub } from '@tests/unit/stubs/FunctionCallDataStub';
+import { itEachAbsentCollectionValue, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('SharedFunctionsParser', () => {
   describe('parseFunctions', () => {
     describe('validates functions', () => {
-      it('throws if one of the functions is undefined', () => {
-        // arrange
-        const expectedError = 'some functions are undefined';
-        const functions = [FunctionDataStub.createWithCode(), undefined];
-        const sut = new SharedFunctionsParser();
-        // act
-        const act = () => sut.parseFunctions(functions);
-        // assert
-        expect(act).to.throw(expectedError);
+      describe('throws if one of the functions is undefined', () => {
+        itEachAbsentObjectValue((absentValue) => {
+          // arrange
+          const expectedError = 'some functions are undefined';
+          const functions = [FunctionDataStub.createWithCode(), absentValue];
+          const sut = new SharedFunctionsParser();
+          // act
+          const act = () => sut.parseFunctions(functions);
+          // assert
+          expect(act).to.throw(expectedError);
+        });
       });
       it('throws when functions have same names', () => {
         // arrange
@@ -143,17 +146,14 @@ describe('SharedFunctionsParser', () => {
         expect(act).to.throw(expectedError);
       });
     });
-    describe('empty functions', () => {
-      it('returns empty collection', () => {
+    describe('given empty functions, returns empty collection', () => {
+      itEachAbsentCollectionValue((absentValue) => {
         // arrange
-        const emptyValues = [[], undefined];
         const sut = new SharedFunctionsParser();
-        for (const emptyFunctions of emptyValues) {
-          // act
-          const actual = sut.parseFunctions(emptyFunctions);
-          // assert
-          expect(actual).to.not.equal(undefined);
-        }
+        // act
+        const actual = sut.parseFunctions(absentValue);
+        // assert
+        expect(actual).to.not.equal(undefined);
       });
     });
     describe('function with inline code', () => {

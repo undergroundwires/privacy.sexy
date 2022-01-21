@@ -15,7 +15,7 @@ export class ExpressionsCompiler implements IExpressionsCompiler {
     args: IReadOnlyFunctionCallArgumentCollection,
   ): string {
     if (!args) {
-      throw new Error('undefined args, send empty collection instead');
+      throw new Error('missing args, send empty collection instead.');
     }
     if (!code) {
       return code;

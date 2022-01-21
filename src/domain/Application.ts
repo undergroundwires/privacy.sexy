@@ -23,19 +23,16 @@ export class Application implements IApplication {
 
 function validateInformation(info: IProjectInformation) {
   if (!info) {
-    throw new Error('undefined project information');
+    throw new Error('missing project information');
   }
 }
 
 function validateCollections(collections: readonly ICategoryCollection[]) {
-  if (!collections) {
-    throw new Error('undefined collections');
-  }
-  if (collections.length === 0) {
-    throw new Error('no collection in the list');
+  if (!collections || !collections.length) {
+    throw new Error('missing collections');
   }
   if (collections.filter((c) => !c).length > 0) {
-    throw new Error('undefined collection in the list');
+    throw new Error('missing collection in the list');
   }
   const osList = collections.map((c) => c.os);
   const duplicates = getDuplicates(osList);

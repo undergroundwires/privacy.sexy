@@ -4,29 +4,36 @@ import { CodeSubstituter } from '@/application/Parser/ScriptingDefinition/CodeSu
 import { IExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/IExpressionsCompiler';
 import { ProjectInformationStub } from '@tests/unit/stubs/ProjectInformationStub';
 import { ExpressionsCompilerStub } from '@tests/unit/stubs/ExpressionsCompilerStub';
+import { AbsentObjectTestCases, AbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('CodeSubstituter', () => {
   describe('throws with invalid parameters', () => {
     // arrange
-    const testCases = [{
-      expectedError: 'undefined code',
-      parameters: {
-        code: undefined,
-        info: new ProjectInformationStub(),
-      },
-    },
-    {
-      expectedError: 'undefined info',
-      parameters: {
-        code: 'non empty code',
-        info: undefined,
-      },
-    }];
+    const testCases = [
+      ...AbsentStringTestCases.map((testCase) => ({
+        name: `given code: ${testCase.valueName}`,
+        expectedError: 'missing code',
+        parameters: {
+          code: testCase.absentValue,
+          info: new ProjectInformationStub(),
+        },
+      })),
+      ...AbsentObjectTestCases.map((testCase) => ({
+        name: `given info: ${testCase.valueName}`,
+        expectedError: 'missing info',
+        parameters: {
+          code: 'non empty code',
+          info: testCase.absentValue,
+        },
+      })),
+    ];
     for (const testCase of testCases) {
-      it(`throws "${testCase.expectedError}" as expected`, () => {
+      it(`${testCase.name} throws "${testCase.expectedError}"`, () => {
+        // arrange
         const sut = new CodeSubstituterBuilder().build();
+        const { code, info } = testCase.parameters;
         // act
-        const act = () => sut.substitute(testCase.parameters.code, testCase.parameters.info);
+        const act = () => sut.substitute(code, info);
         // assert
         expect(act).to.throw(testCase.expectedError);
       });

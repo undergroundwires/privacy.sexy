@@ -67,7 +67,7 @@ export default class SelectableTree extends Vue { // Stateless to make it easier
   @Watch('initialNodes', { immediate: true })
   public async updateNodes(nodes: readonly INode[]) {
     if (!nodes) {
-      throw new Error('undefined initial nodes');
+      throw new Error('missing initial nodes');
     }
     const initialNodes = nodes.map((node) => toNewLiquorTreeNode(node));
     if (this.selectedNodeIds) {

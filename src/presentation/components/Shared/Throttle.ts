@@ -38,10 +38,10 @@ class Throttler implements IThrottler {
     private readonly waitInMs: number,
     private readonly callback: CallbackType,
   ) {
-    if (!timer) { throw new Error('undefined timer'); }
-    if (!waitInMs) { throw new Error('no delay to throttle'); }
+    if (!timer) { throw new Error('missing timer'); }
+    if (!waitInMs) { throw new Error('missing delay'); }
     if (waitInMs < 0) { throw new Error('negative delay'); }
-    if (!callback) { throw new Error('undefined callback'); }
+    if (!callback) { throw new Error('missing callback'); }
   }
 
   public invoke(...args: unknown[]): void {

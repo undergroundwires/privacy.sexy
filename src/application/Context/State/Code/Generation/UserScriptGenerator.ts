@@ -17,8 +17,8 @@ export class UserScriptGenerator implements IUserScriptGenerator {
     selectedScripts: ReadonlyArray<SelectedScript>,
     scriptingDefinition: IScriptingDefinition,
   ): IUserScript {
-    if (!selectedScripts) { throw new Error('undefined scripts'); }
-    if (!scriptingDefinition) { throw new Error('undefined definition'); }
+    if (!selectedScripts) { throw new Error('missing scripts'); }
+    if (!scriptingDefinition) { throw new Error('missing definition'); }
     if (!selectedScripts.length) {
       return { code: '', scriptPositions: new Map<SelectedScript, ICodePosition>() };
     }

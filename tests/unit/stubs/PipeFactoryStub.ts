@@ -14,7 +14,7 @@ export class PipeFactoryStub implements IPipeFactory {
 
   public withPipe(pipe: IPipe) {
     if (!pipe) {
-      throw new Error('undefined pipe');
+      throw new Error('missing pipe');
     }
     this.pipes.push(pipe);
     return this;

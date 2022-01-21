@@ -11,8 +11,8 @@ export async function buildContext(
   factory: IApplicationFactory = ApplicationFactory.Current,
   environment = Environment.CurrentEnvironment,
 ): Promise<IApplicationContext> {
-  if (!factory) { throw new Error('undefined factory'); }
-  if (!environment) { throw new Error('undefined environment'); }
+  if (!factory) { throw new Error('missing factory'); }
+  if (!environment) { throw new Error('missing environment'); }
   const app = await factory.getApp();
   const os = getInitialOs(app, environment);
   return new ApplicationContext(app, os);

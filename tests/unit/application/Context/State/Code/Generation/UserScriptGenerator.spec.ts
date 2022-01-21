@@ -6,6 +6,8 @@ import { ICodeBuilderFactory } from '@/application/Context/State/Code/Generation
 import { ICodeBuilder } from '@/application/Context/State/Code/Generation/ICodeBuilder';
 import { ScriptStub } from '@tests/unit/stubs/ScriptStub';
 import { ScriptingDefinitionStub } from '@tests/unit/stubs/ScriptingDefinitionStub';
+import { itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { SelectedScriptStub } from '@tests/unit/stubs/SelectedScriptStub';
 
 describe('UserScriptGenerator', () => {
   describe('scriptingDefinition', () => {
@@ -18,8 +20,7 @@ describe('UserScriptGenerator', () => {
           .withCode('code\nmulti-lined')
           .toSelectedScript();
         const definition = new ScriptingDefinitionStub()
-          .withStartCode(startCode)
-          .withEndCode(undefined);
+          .withStartCode(startCode);
         const expectedStart = `${startCode}\n`;
         // act
         const code = sut.buildCode([script], definition);
@@ -27,24 +28,25 @@ describe('UserScriptGenerator', () => {
         const actual = code.code;
         expect(actual.startsWith(expectedStart));
       });
-      it('is not prepended if empty', () => {
-        // arrange
-        const codeBuilderStub = new CodeBuilderStub();
-        const sut = new UserScriptGenerator(mockCodeBuilderFactory(codeBuilderStub));
-        const script = new ScriptStub('id')
-          .withCode('code\nmulti-lined')
-          .toSelectedScript();
-        const definition = new ScriptingDefinitionStub()
-          .withStartCode(undefined)
-          .withEndCode(undefined);
-        const expectedStart = codeBuilderStub
-          .appendFunction(script.script.name, script.script.code.execute)
-          .toString();
-        // act
-        const code = sut.buildCode([script], definition);
-        // assert
-        const actual = code.code;
-        expect(actual.startsWith(expectedStart));
+      describe('is not prepended if empty', () => {
+        itEachAbsentStringValue((absentValue) => {
+          // arrange
+          const codeBuilderStub = new CodeBuilderStub();
+          const sut = new UserScriptGenerator(mockCodeBuilderFactory(codeBuilderStub));
+          const script = new ScriptStub('id')
+            .withCode('code\nmulti-lined')
+            .toSelectedScript();
+          const definition = new ScriptingDefinitionStub()
+            .withStartCode(absentValue);
+          const expectedStart = codeBuilderStub
+            .appendFunction(script.script.name, script.script.code.execute)
+            .toString();
+          // act
+          const code = sut.buildCode([script], definition);
+          // assert
+          const actual = code.code;
+          expect(actual.startsWith(expectedStart));
+        });
       });
     });
     describe('endCode', () => {
@@ -64,23 +66,38 @@ describe('UserScriptGenerator', () => {
         const actual = code.code;
         expect(actual.endsWith(expectedEnd));
       });
-      it('is not appended if empty', () => {
+      describe('is not appended if empty', () => {
+        itEachAbsentStringValue((absentValue) => {
+          // arrange
+          const codeBuilderStub = new CodeBuilderStub();
+          const sut = new UserScriptGenerator(mockCodeBuilderFactory(codeBuilderStub));
+          const script = new ScriptStub('id')
+            .withCode('code\nmulti-lined')
+            .toSelectedScript();
+          const expectedEnd = codeBuilderStub
+            .appendFunction(script.script.name, script.script.code.execute)
+            .toString();
+          const definition = new ScriptingDefinitionStub()
+            .withEndCode(absentValue);
+          // act
+          const code = sut.buildCode([script], definition);
+          // assert
+          const actual = code.code;
+          expect(actual.endsWith(expectedEnd));
+        });
+      });
+    });
+    describe('throws when absent', () => {
+      itEachAbsentObjectValue((absentValue) => {
         // arrange
-        const codeBuilderStub = new CodeBuilderStub();
-        const sut = new UserScriptGenerator(mockCodeBuilderFactory(codeBuilderStub));
-        const script = new ScriptStub('id')
-          .withCode('code\nmulti-lined')
-          .toSelectedScript();
-        const expectedEnd = codeBuilderStub
-          .appendFunction(script.script.name, script.script.code.execute)
-          .toString();
-        const definition = new ScriptingDefinitionStub()
-          .withEndCode(undefined);
+        const expectedError = 'missing definition';
+        const sut = new UserScriptGenerator();
+        const scriptingDefinition = absentValue;
+        const selectedScripts = [new SelectedScriptStub('a')];
         // act
-        const code = sut.buildCode([script], definition);
+        const act = () => sut.buildCode(selectedScripts, scriptingDefinition);
         // assert
-        const actual = code.code;
-        expect(actual.endsWith(expectedEnd));
+        expect(act).to.throw(expectedError);
       });
     });
   });
@@ -197,6 +214,21 @@ describe('UserScriptGenerator', () => {
         expect(expectedFirstScriptEnd).to.equal(firstPosition.endLine, 'Unexpected end line position (first script)');
         expect(expectedSecondScriptStart).to.equal(secondPosition.startLine, 'Unexpected start line position (second script)');
         expect(expectedSecondScriptEnd).to.equal(secondPosition.endLine, 'Unexpected end line position (second script)');
+      });
+    });
+  });
+  describe('selectedScripts', () => {
+    describe('throws when absent', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing scripts';
+        const sut = new UserScriptGenerator();
+        const scriptingDefinition = new ScriptingDefinitionStub();
+        const selectedScripts = absentValue;
+        // act
+        const act = () => sut.buildCode(selectedScripts, scriptingDefinition);
+        // assert
+        expect(act).to.throw(expectedError);
       });
     });
   });

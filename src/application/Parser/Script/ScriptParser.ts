@@ -13,7 +13,7 @@ export function parseScript(
   levelParser = createEnumParser(RecommendationLevel),
 ): Script {
   validateScript(data);
-  if (!context) { throw new Error('undefined context'); }
+  if (!context) { throw new Error('missing context'); }
   const script = new Script(
     /* name: */ data.name,
     /* code: */ parseCode(data, context),
@@ -51,7 +51,7 @@ function ensureNotBothCallAndCode(script: ScriptData) {
 
 function validateScript(script: ScriptData) {
   if (!script) {
-    throw new Error('undefined script');
+    throw new Error('missing script');
   }
   if (!script.code && !script.call) {
     throw new Error('must define either "call" or "code"');

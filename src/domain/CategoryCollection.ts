@@ -20,7 +20,7 @@ export class CategoryCollection implements ICategoryCollection {
     public readonly scripting: IScriptingDefinition,
   ) {
     if (!scripting) {
-      throw new Error('undefined scripting definition');
+      throw new Error('missing scripting definition');
     }
     this.queryable = makeQueryable(actions);
     assertInRange(os, OperatingSystem);
@@ -34,12 +34,7 @@ export class CategoryCollection implements ICategoryCollection {
   }
 
   public getScriptsByLevel(level: RecommendationLevel): readonly IScript[] {
-    if (level === undefined) {
-      throw new Error('undefined level');
-    }
-    if (!(level in RecommendationLevel)) {
-      throw new Error(`invalid level: ${level}`);
-    }
+    assertInRange(level, RecommendationLevel);
     return this.queryable.scriptsByLevel.get(level);
   }
 

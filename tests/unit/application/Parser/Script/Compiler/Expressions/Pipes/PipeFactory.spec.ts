@@ -2,6 +2,7 @@ import 'mocha';
 import { expect } from 'chai';
 import { PipeFactory } from '@/application/Parser/Script/Compiler/Expressions/Pipes/PipeFactory';
 import { PipeStub } from '@tests/unit/stubs/PipeStub';
+import { AbsentStringTestCases, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('PipeFactory', () => {
   describe('ctor', () => {
@@ -19,10 +20,21 @@ describe('PipeFactory', () => {
       // expect
       expect(act).to.throw(expectedError);
     });
-    it('throws when a pipe is undefined', () => {
+    describe('throws when a pipe is missing', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing pipe in list';
+        const pipes = [new PipeStub(), absentValue];
+        // act
+        const act = () => new PipeFactory(pipes);
+        // expect
+        expect(act).to.throw(expectedError);
+      });
+    });
+    it('throws when pipes are null', () => {
       // arrange
-      const expectedError = 'undefined pipe in list';
-      const pipes = [new PipeStub(), undefined];
+      const expectedError = 'missing pipes';
+      const pipes = null;
       // act
       const act = () => new PipeFactory(pipes);
       // expect
@@ -70,44 +82,34 @@ describe('PipeFactory', () => {
 
 function testPipeNameValidation(testRunner: (invalidName: string) => void) {
   const testCases = [
-    {
-      exceptionBuilder: () => 'empty pipe name',
-      values: [null, undefined, ''],
-    },
-    {
-      exceptionBuilder: (name: string) => `Pipe name should be camelCase: "${name}"`,
-      values: [
-        'PascalCase',
-        'snake-case',
-        'includesNumb3rs',
-        'includes Whitespace',
-        'noSpec\'ial',
-      ],
-    },
+    // Validate missing value
+    ...AbsentStringTestCases.map((testCase) => ({
+      name: `empty pipe name (${testCase.valueName})`,
+      value: testCase.absentValue,
+      expectedError: 'empty pipe name',
+    })),
+    // Validate camelCase
+    ...[
+      'PascalCase',
+      'snake-case',
+      'includesNumb3rs',
+      'includes Whitespace',
+      'noSpec\'ial',
+    ].map((nonCamelCaseValue) => ({
+      name: `non camel case value (${nonCamelCaseValue})`,
+      value: nonCamelCaseValue,
+      expectedError: `Pipe name should be camelCase: "${nonCamelCaseValue}"`,
+    })),
   ];
   for (const testCase of testCases) {
-    for (const invalidName of testCase.values) {
-      it(`invalid name (${printValue(invalidName)}) throws`, () => {
-        // arrange
-        const expectedError = testCase.exceptionBuilder(invalidName);
-        // act
-        const act = () => testRunner(invalidName);
-        // expect
-        expect(act).to.throw(expectedError);
-      });
-    }
-  }
-}
-
-function printValue(value: string) {
-  switch (value) {
-    case undefined:
-      return 'undefined';
-    case null:
-      return 'null';
-    case '':
-      return 'empty';
-    default:
-      return value;
+    it(testCase.name, () => {
+      // arrange
+      const invalidName = testCase.value;
+      const { expectedError } = testCase;
+      // act
+      const act = () => testRunner(invalidName);
+      // expect
+      expect(act).to.throw(expectedError);
+    });
   }
 }

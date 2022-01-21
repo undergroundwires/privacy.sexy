@@ -3,20 +3,23 @@ import { expect } from 'chai';
 import { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
 import { IReadOnlyFunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/Function/Call/Argument/IFunctionCallArgumentCollection';
 import { FunctionCallArgumentCollectionStub } from '@tests/unit/stubs/FunctionCallArgumentCollectionStub';
+import { itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('FunctionCall', () => {
   describe('ctor', () => {
     describe('args', () => {
-      it('throws when args is undefined', () => {
-        // arrange
-        const expectedError = 'undefined args';
-        const args = undefined;
-        // act
-        const act = () => new FunctionCallBuilder()
-          .withArgs(args)
-          .build();
-        // assert
-        expect(act).to.throw(expectedError);
+      describe('throws when args is missing', () => {
+        itEachAbsentObjectValue((absentValue) => {
+          // arrange
+          const expectedError = 'missing args';
+          const args = absentValue;
+          // act
+          const act = () => new FunctionCallBuilder()
+            .withArgs(args)
+            .build();
+          // assert
+          expect(act).to.throw(expectedError);
+        });
       });
       it('sets args as expected', () => {
         // arrange
@@ -31,16 +34,18 @@ describe('FunctionCall', () => {
       });
     });
     describe('functionName', () => {
-      it('throws when function name is undefined', () => {
-        // arrange
-        const expectedError = 'empty function name in function call';
-        const functionName = undefined;
-        // act
-        const act = () => new FunctionCallBuilder()
-          .withFunctionName(functionName)
-          .build();
-        // assert
-        expect(act).to.throw(expectedError);
+      describe('throws when function name is missing', () => {
+        itEachAbsentStringValue((absentValue) => {
+          // arrange
+          const expectedError = 'missing function name in function call';
+          const functionName = absentValue;
+          // act
+          const act = () => new FunctionCallBuilder()
+            .withFunctionName(functionName)
+            .build();
+          // assert
+          expect(act).to.throw(expectedError);
+        });
       });
       it('sets function name as expected', () => {
         // arrange

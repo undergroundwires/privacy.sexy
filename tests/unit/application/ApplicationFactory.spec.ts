@@ -2,17 +2,20 @@ import 'mocha';
 import { expect } from 'chai';
 import { ApplicationFactory, ApplicationGetterType } from '@/application/ApplicationFactory';
 import { ApplicationStub } from '@tests/unit/stubs/ApplicationStub';
+import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('ApplicationFactory', () => {
   describe('ctor', () => {
-    it('throws if getter is undefined', () => {
-      // arrange
-      const expectedError = 'undefined getter';
-      const getter = undefined;
-      // act
-      const act = () => new SystemUnderTest(getter);
-      // assert
-      expect(act).to.throw(expectedError);
+    describe('throws if getter is absent', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing getter';
+        const getter: ApplicationGetterType = absentValue;
+        // act
+        const act = () => new SystemUnderTest(getter);
+        // assert
+        expect(act).to.throw(expectedError);
+      });
     });
   });
   describe('getApp', () => {

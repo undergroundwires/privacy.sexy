@@ -8,6 +8,7 @@ import { IApplication } from '@/domain/IApplication';
 import { EnvironmentStub } from '@tests/unit/stubs/EnvironmentStub';
 import { ApplicationStub } from '@tests/unit/stubs/ApplicationStub';
 import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
+import { expectThrowsAsync } from '@tests/unit/shared/Assertions/ExpectThrowsAsync';
 
 describe('ApplicationContextFactory', () => {
   describe('buildContext', () => {
@@ -22,6 +23,15 @@ describe('ApplicationContextFactory', () => {
         const context = await buildContext(factoryMock);
         // assert
         expect(expected).to.equal(context.app);
+      });
+      it('throws when null', async () => {
+        // arrange
+        const expectedError = 'missing factory';
+        const factory = null;
+        // act
+        const act = async () => { await buildContext(factory); };
+        // assert
+        expectThrowsAsync(act, expectedError);
       });
     });
     describe('environment', () => {
@@ -68,6 +78,16 @@ describe('ApplicationContextFactory', () => {
           const actual = context.state.os;
           expect(expectedOs).to.equal(actual, `Expected: ${OperatingSystem[expectedOs]}, actual: ${OperatingSystem[actual]}`);
         });
+      });
+      it('throws when null', async () => {
+        // arrange
+        const expectedError = 'missing environment';
+        const factory = mockFactoryWithApp(undefined);
+        const environment = null;
+        // act
+        const act = async () => { await buildContext(factory, environment); };
+        // assert
+        expectThrowsAsync(act, expectedError);
       });
     });
   });

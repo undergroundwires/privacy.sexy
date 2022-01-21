@@ -9,11 +9,8 @@ export function createCallerFunction(
   parameters: IReadOnlyFunctionParameterCollection,
   callSequence: readonly IFunctionCall[],
 ): ISharedFunction {
-  if (!callSequence) {
-    throw new Error(`undefined call sequence in function "${name}"`);
-  }
-  if (!callSequence.length) {
-    throw new Error(`empty call sequence in function "${name}"`);
+  if (!callSequence || !callSequence.length) {
+    throw new Error(`missing call sequence in function "${name}"`);
   }
   return new SharedFunction(name, parameters, callSequence, FunctionBodyType.Calls);
 }
@@ -43,8 +40,8 @@ class SharedFunction implements ISharedFunction {
     content: IFunctionCode | readonly IFunctionCall[],
     bodyType: FunctionBodyType,
   ) {
-    if (!name) { throw new Error('undefined function name'); }
-    if (!parameters) { throw new Error('undefined parameters'); }
+    if (!name) { throw new Error('missing function name'); }
+    if (!parameters) { throw new Error('missing parameters'); }
     this.body = {
       type: bodyType,
       code: bodyType === FunctionBodyType.Code ? content as IFunctionCode : undefined,

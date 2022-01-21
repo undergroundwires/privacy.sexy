@@ -5,30 +5,21 @@ import { IExpressionParser } from '@/application/Parser/Script/Compiler/Expressi
 import { ExpressionStub } from '@tests/unit/stubs/ExpressionStub';
 import { ExpressionParserStub } from '@tests/unit/stubs/ExpressionParserStub';
 import { FunctionCallArgumentCollectionStub } from '@tests/unit/stubs/FunctionCallArgumentCollectionStub';
+import { itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('ExpressionsCompiler', () => {
   describe('compileExpressions', () => {
-    describe('returns code when it is empty or undefined', () => {
-      // arrange
-      const testCases = [{
-        name: 'empty',
-        value: '',
-      }, {
-        name: 'undefined',
-        value: undefined,
-      },
-      ];
-      for (const test of testCases) {
-        it(`given ${test.name}`, () => {
-          const expected = test.value;
-          const sut = new SystemUnderTest();
-          const args = new FunctionCallArgumentCollectionStub();
-          // act
-          const value = sut.compileExpressions(test.value, args);
-          // assert
-          expect(value).to.equal(expected);
-        });
-      }
+    describe('returns code when it is absent', () => {
+      itEachAbsentStringValue((absentValue) => {
+        // arrange
+        const expected = absentValue;
+        const sut = new SystemUnderTest();
+        const args = new FunctionCallArgumentCollectionStub();
+        // act
+        const value = sut.compileExpressions(absentValue, args);
+        // assert
+        expect(value).to.equal(expected);
+      });
     });
     describe('combines expressions as expected', () => {
       // arrange
@@ -100,16 +91,18 @@ describe('ExpressionsCompiler', () => {
         expect(expressions[1].callHistory).to.have.lengthOf(1);
         expect(expressions[1].callHistory[0].args).to.equal(expected);
       });
-      it('throws if arguments is undefined', () => {
-        // arrange
-        const expectedError = 'undefined args, send empty collection instead';
-        const args = undefined;
-        const expressionParserMock = new ExpressionParserStub();
-        const sut = new SystemUnderTest(expressionParserMock);
-        // act
-        const act = () => sut.compileExpressions('code', args);
-        // assert
-        expect(act).to.throw(expectedError);
+      describe('throws if arguments is missing', () => {
+        itEachAbsentObjectValue((absentValue) => {
+          // arrange
+          const expectedError = 'missing args, send empty collection instead.';
+          const args = absentValue;
+          const expressionParserMock = new ExpressionParserStub();
+          const sut = new SystemUnderTest(expressionParserMock);
+          // act
+          const act = () => sut.compileExpressions('code', args);
+          // assert
+          expect(act).to.throw(expectedError);
+        });
       });
     });
     describe('throws when expected argument is not provided but used in code', () => {

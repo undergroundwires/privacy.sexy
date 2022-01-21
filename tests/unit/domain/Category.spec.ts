@@ -3,13 +3,20 @@ import { expect } from 'chai';
 import { Category } from '@/domain/Category';
 import { CategoryStub } from '@tests/unit/stubs/CategoryStub';
 import { ScriptStub } from '@tests/unit/stubs/ScriptStub';
+import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('Category', () => {
   describe('ctor', () => {
-    it('throws when name is empty', () => {
-      const expectedError = 'undefined or empty name';
-      const construct = () => new Category(5, '', [], [new CategoryStub(5)], []);
-      expect(construct).to.throw(expectedError);
+    describe('throws when name is absent', () => {
+      itEachAbsentStringValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing name';
+        const name = absentValue;
+        // act
+        const construct = () => new Category(5, name, [], [new CategoryStub(5)], []);
+        // assert
+        expect(construct).to.throw(expectedError);
+      });
     });
     it('throws when has no children', () => {
       const expectedError = 'A category must have at least one sub-category or script';

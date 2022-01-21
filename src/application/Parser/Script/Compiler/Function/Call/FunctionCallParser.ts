@@ -6,7 +6,7 @@ import { FunctionCall } from './FunctionCall';
 
 export function parseFunctionCalls(calls: FunctionCallsData): IFunctionCall[] {
   if (calls === undefined) {
-    throw new Error('undefined call data');
+    throw new Error('missing call data');
   }
   const sequence = getCallSequence(calls);
   return sequence.map((call) => parseFunctionCall(call));
@@ -24,7 +24,7 @@ function getCallSequence(calls: FunctionCallsData): FunctionCallData[] {
 
 function parseFunctionCall(call: FunctionCallData): IFunctionCall {
   if (!call) {
-    throw new Error('undefined function call');
+    throw new Error('missing call data');
   }
   const callArgs = parseArgs(call.parameters);
   return new FunctionCall(call.function, callArgs);

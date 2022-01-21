@@ -2,7 +2,7 @@ import { DocumentableData, DocumentationUrlsData } from 'js-yaml-loader!@/*';
 
 export function parseDocUrls(documentable: DocumentableData): ReadonlyArray<string> {
   if (!documentable) {
-    throw new Error('documentable is null or undefined');
+    throw new Error('missing documentable');
   }
   const { docs } = documentable;
   if (!docs || !docs.length) {

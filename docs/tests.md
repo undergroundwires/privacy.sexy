@@ -13,9 +13,29 @@
 
 - Tests each component in isolation.
 - Defined in [`./tests/unit`](./../tests/unit).
-- They follow same folder structure as [`./src`](./../src).
 
-### Naming
+### Unit tests structure
+
+- [`./src/`](./../src/)
+  - Includes code that will be tested tested.
+- [`./tests/unit/`](./../tests/unit/)
+  - Includes test code.
+  - Tests follow same folder structure as [`./src/`](./../src).
+    - E.g. if system under test lies in [`./src/application/ApplicationFactory.ts`](./../src/application/ApplicationFactory.ts) then its tests would be in test would be at [`./tests/unit/application/ApplicationFactory.spec.ts`](./../tests/unit/application/ApplicationFactory.spec.ts).
+  - [`shared/`](./../tests/unit/shared/)
+    - Includes common functionality that's shared across unit tests.
+    - [`Assertions/`](./../tests/unit/shared/Assertions):
+      - Common assertions that extend [Chai Assertion Library](https://www.chaijs.com/).
+      - Asserting functions should start with `expect` prefix.
+    - [`TestCases/`](./../tests/unit/shared/TestCases/)
+      - Shared test cases.
+      - Test runner functions that uses `it()` from Mocha test [Mocha test framework](https://mochajs.org/) should be prefixed with `it.`
+        - E.g. `itEachAbsentCollectionValue()`.
+  - [`stubs/`](./../tests/unit/stubs)
+    - Includes stubs to be able to test classes in isolation.
+    - They implement dummy behavior to be functional with optionally spying or mocking functions.
+
+### Unit tests naming
 
 - Each test suite first describe the system under test.
   - E.g. tests for class `Application` is categorized under `Application`.
@@ -34,11 +54,6 @@
 - **Assert**
   - Should elicit some sort of response.
   - Starts with comment line `// assert`.
-
-### Stubs
-
-- Stubs are defined in [`./tests/stubs`](./../tests/unit/stubs).
-- They implement dummy behavior to be functional.
 
 ## Integration tests
 

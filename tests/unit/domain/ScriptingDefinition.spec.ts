@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import { ScriptingDefinition } from '@/domain/ScriptingDefinition';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { getEnumValues } from '@/application/Common/Enum';
+import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('ScriptingDefinition', () => {
   describe('language', () => {
@@ -64,18 +65,18 @@ describe('ScriptingDefinition', () => {
       // assert
       expect(sut.startCode).to.equal(expected);
     });
-    it('throws when undefined', () => {
-      // arrange
-      const expectedError = 'undefined start code';
-      const undefinedValues = ['', undefined];
-      for (const undefinedValue of undefinedValues) {
+    describe('throws when absent', () => {
+      itEachAbsentStringValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing start code';
+        const undefinedValue = absentValue;
         // act
         const act = () => new ScriptingDefinitionBuilder()
           .withStartCode(undefinedValue)
           .build();
         // assert
         expect(act).to.throw(expectedError);
-      }
+      });
     });
   });
   describe('endCode', () => {
@@ -89,18 +90,18 @@ describe('ScriptingDefinition', () => {
       // assert
       expect(sut.endCode).to.equal(expected);
     });
-    it('throws when undefined', () => {
-      // arrange
-      const expectedError = 'undefined end code';
-      const undefinedValues = ['', undefined];
-      for (const undefinedValue of undefinedValues) {
+    describe('throws when undefined', () => {
+      itEachAbsentStringValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing end code';
+        const undefinedValue = absentValue;
         // act
         const act = () => new ScriptingDefinitionBuilder()
           .withEndCode(undefinedValue)
           .build();
         // assert
         expect(act).to.throw(expectedError);
-      }
+      });
     });
   });
 });

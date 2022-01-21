@@ -10,6 +10,7 @@ import { CategoryCollection } from '@/domain/CategoryCollection';
 import { ScriptStub } from '@tests/unit/stubs/ScriptStub';
 import { CategoryStub } from '@tests/unit/stubs/CategoryStub';
 import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
+import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('CategoryCollection', () => {
   describe('getScriptsByLevel', () => {
@@ -72,24 +73,18 @@ describe('CategoryCollection', () => {
       // assert
       expect(expected).to.deep.equal(actual);
     });
-    it('throws when level is undefined', () => {
-      // arrange
-      const sut = new CategoryCollectionBuilder()
-        .construct();
-      // act
-      const act = () => sut.getScriptsByLevel(undefined);
+    describe('throws when given invalid level', () => {
+      new EnumRangeTestRunner<RecommendationLevel>((level) => {
+        // arrange
+        const sut = new CategoryCollectionBuilder()
+          .construct();
+        // act
+        sut.getScriptsByLevel(level);
+      })
       // assert
-      expect(act).to.throw('undefined level');
-    });
-    it('throws when level is out of range', () => {
-      // arrange
-      const invalidValue = 66;
-      const sut = new CategoryCollectionBuilder()
-        .construct();
-      // act
-      const act = () => sut.getScriptsByLevel(invalidValue);
-      // assert
-      expect(act).to.throw(`invalid level: ${invalidValue}`);
+        .testAbsentValueThrows()
+        .testOutOfRangeThrows()
+        .testValidValueDoesNotThrow(RecommendationLevel.Standard);
     });
   });
   describe('actions', () => {
@@ -221,7 +216,7 @@ describe('CategoryCollection', () => {
       // assert
       new EnumRangeTestRunner(act)
         .testOutOfRangeThrows()
-        .testUndefinedValueThrows();
+        .testAbsentValueThrows();
     });
   });
   describe('scriptingDefinition', () => {
@@ -235,17 +230,20 @@ describe('CategoryCollection', () => {
       // assert
       expect(sut.scripting).to.deep.equal(expected);
     });
-    it('cannot construct without initial script', () => {
-      // arrange
-      const scriptingDefinition = undefined;
-      // act
-      function construct() {
-        return new CategoryCollectionBuilder()
-          .withScripting(scriptingDefinition)
-          .construct();
-      }
-      // assert
-      expect(construct).to.throw('undefined scripting definition');
+    describe('cannot construct without initial script', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing scripting definition';
+        const scriptingDefinition = absentValue;
+        // act
+        function construct() {
+          return new CategoryCollectionBuilder()
+            .withScripting(scriptingDefinition)
+            .construct();
+        }
+        // assert
+        expect(construct).to.throw(expectedError);
+      });
     });
   });
 });

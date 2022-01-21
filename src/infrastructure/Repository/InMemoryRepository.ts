@@ -27,7 +27,7 @@ implements IRepository<TKey, TEntity> {
 
   public addItem(item: TEntity): void {
     if (!item) {
-      throw new Error('item is null or undefined');
+      throw new Error('missing item');
     }
     if (this.exists(item.id)) {
       throw new Error(`Cannot add (id: ${item.id}) as it is already exists`);
@@ -37,7 +37,7 @@ implements IRepository<TKey, TEntity> {
 
   public addOrUpdateItem(item: TEntity): void {
     if (!item) {
-      throw new Error('item is null or undefined');
+      throw new Error('missing item');
     }
     if (this.exists(item.id)) {
       this.removeItem(item.id);

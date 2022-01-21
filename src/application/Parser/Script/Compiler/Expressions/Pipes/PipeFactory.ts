@@ -15,8 +15,11 @@ export class PipeFactory implements IPipeFactory {
   private readonly pipes = new Map<string, IPipe>();
 
   constructor(pipes: readonly IPipe[] = RegisteredPipes) {
+    if (!pipes) {
+      throw new Error('missing pipes');
+    }
     if (pipes.some((pipe) => !pipe)) {
-      throw new Error('undefined pipe in list');
+      throw new Error('missing pipe in list');
     }
     for (const pipe of pipes) {
       this.registerPipe(pipe);

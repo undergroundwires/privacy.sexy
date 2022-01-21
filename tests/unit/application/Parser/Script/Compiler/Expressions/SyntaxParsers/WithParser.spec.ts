@@ -1,6 +1,7 @@
 import 'mocha';
 import { ExpressionPosition } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionPosition';
 import { WithParser } from '@/application/Parser/Script/Compiler/Expressions/SyntaxParsers/WithParser';
+import { AbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 import { SyntaxParserTestsRunner } from './SyntaxParserTestsRunner';
 
 describe('WithParser', () => {
@@ -84,20 +85,13 @@ describe('WithParser', () => {
   describe('renders scope conditionally', () => {
     describe('does not render scope if argument is undefined', () => {
       runner.expectResults(
-        {
-          name: 'does not render when value is undefined',
+        ...AbsentStringTestCases.map((testCase) => ({
+          name: `does not render when value is "${testCase.valueName}"`,
           code: '{{ with $parameter }}dark{{ end }} ',
           args: (args) => args
-            .withArgument('parameter', undefined),
+            .withArgument('parameter', testCase.absentValue),
           expected: [''],
-        },
-        {
-          name: 'does not render when value is empty',
-          code: '{{ with $parameter }}dark {{.}}{{ end }}',
-          args: (args) => args
-            .withArgument('parameter', ''),
-          expected: [''],
-        },
+        })),
         {
           name: 'does not render when argument is not provided',
           code: '{{ with $parameter }}dark{{ end }}',

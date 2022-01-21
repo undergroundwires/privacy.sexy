@@ -27,12 +27,12 @@ export class ApplicationContext implements IApplicationContext {
     initialContext: OperatingSystem,
   ) {
     validateApp(app);
-    assertInRange(initialContext, OperatingSystem);
     this.states = initializeStates(app);
     this.changeContext(initialContext);
   }
 
   public changeContext(os: OperatingSystem): void {
+    assertInRange(os, OperatingSystem);
     if (this.currentOs === os) {
       return;
     }
@@ -51,7 +51,7 @@ export class ApplicationContext implements IApplicationContext {
 
 function validateApp(app: IApplication) {
   if (!app) {
-    throw new Error('undefined app');
+    throw new Error('missing app');
   }
 }
 

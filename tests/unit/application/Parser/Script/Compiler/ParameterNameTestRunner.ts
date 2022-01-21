@@ -1,5 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
+import { AbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 
 export function testParameterName(action: (parameterName: string) => string) {
   describe('name', () => {
@@ -22,16 +23,11 @@ export function testParameterName(action: (parameterName: string) => string) {
     describe('throws if invalid', () => {
       // arrange
       const testCases = [
-        {
-          name: 'undefined',
-          value: undefined,
-          expectedError: 'undefined parameter name',
-        },
-        {
-          name: 'empty',
-          value: '',
-          expectedError: 'undefined parameter name',
-        },
+        ...AbsentStringTestCases.map((test) => ({
+          name: test.valueName,
+          value: test.absentValue,
+          expectedError: 'missing parameter name',
+        })),
         {
           name: 'has @',
           value: 'b@d',

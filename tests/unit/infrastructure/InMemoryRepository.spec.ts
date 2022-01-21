@@ -2,6 +2,7 @@ import 'mocha';
 import { expect } from 'chai';
 import { NumericEntityStub } from '@tests/unit/stubs/NumericEntityStub';
 import { InMemoryRepository } from '@/infrastructure/Repository/InMemoryRepository';
+import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('InMemoryRepository', () => {
   describe('exists', () => {
@@ -32,24 +33,40 @@ describe('InMemoryRepository', () => {
     // assert
     expect(actual).to.deep.equal(expected);
   });
-  it('addItem adds', () => {
-    // arrange
-    const sut = new InMemoryRepository<number, NumericEntityStub>();
-    const expected = {
-      length: 1,
-      item: new NumericEntityStub(1),
-    };
+  describe('addItem', () => {
+    it('adds', () => {
+      // arrange
+      const sut = new InMemoryRepository<number, NumericEntityStub>();
+      const expected = {
+        length: 1,
+        item: new NumericEntityStub(1),
+      };
 
-    // act
-    sut.addItem(expected.item);
-    const actual = {
-      length: sut.length,
-      item: sut.getItems()[0],
-    };
+      // act
+      sut.addItem(expected.item);
+      const actual = {
+        length: sut.length,
+        item: sut.getItems()[0],
+      };
 
-    // assert
-    expect(actual.length).to.equal(expected.length);
-    expect(actual.item).to.deep.equal(expected.item);
+      // assert
+      expect(actual.length).to.equal(expected.length);
+      expect(actual.item).to.deep.equal(expected.item);
+    });
+    describe('throws when item is absent', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing item';
+        const sut = new InMemoryRepository<number, NumericEntityStub>();
+        const item = absentValue;
+
+        // act
+        const act = () => sut.addItem(item);
+
+        // assert
+        expect(act).to.throw(expectedError);
+      });
+    });
   });
   it('removeItem removes', () => {
     // arrange
@@ -100,9 +117,23 @@ describe('InMemoryRepository', () => {
       const actual = sut.getItems();
       expect(actual).to.deep.equal(expected);
     });
+    describe('throws when item is absent', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing item';
+        const sut = new InMemoryRepository<number, NumericEntityStub>();
+        const item = absentValue;
+
+        // act
+        const act = () => sut.addOrUpdateItem(item);
+
+        // assert
+        expect(act).to.throw(expectedError);
+      });
+    });
   });
   describe('getById', () => {
-    it('gets entity if it exists', () => {
+    it('returns entity if it exists', () => {
       // arrange
       const expected = new NumericEntityStub(1).withCustomProperty('bca');
       const sut = new InMemoryRepository<number, NumericEntityStub>([
@@ -114,7 +145,7 @@ describe('InMemoryRepository', () => {
       // assert
       expect(actual).to.deep.equal(expected);
     });
-    it('gets undefined if it does not exist', () => {
+    it('returns undefined if it does not exist', () => {
       // arrange
       const sut = new InMemoryRepository<number, NumericEntityStub>([]);
       // act

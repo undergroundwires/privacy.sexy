@@ -8,6 +8,7 @@ import { IApplication } from '@/domain/IApplication';
 import { ApplicationStub } from '@tests/unit/stubs/ApplicationStub';
 import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
 import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
+import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('ApplicationContext', () => {
   describe('changeContext', () => {
@@ -125,18 +126,33 @@ describe('ApplicationContext', () => {
         expect(duplicates.length).to.be.equal(0);
       });
     });
+    describe('throws with invalid os', () => {
+      new EnumRangeTestRunner((os: OperatingSystem) => {
+        // arrange
+        const sut = new ObservableApplicationContextFactory()
+          .construct();
+        // act
+        sut.changeContext(os);
+      })
+      // assert
+        .testOutOfRangeThrows()
+        .testAbsentValueThrows()
+        .testInvalidValueThrows(OperatingSystem.Android, 'os "Android" is not defined in application');
+    });
   });
   describe('ctor', () => {
     describe('app', () => {
-      it('throw when app is undefined', () => {
-        // arrange
-        const expectedError = 'undefined app';
-        const app = undefined;
-        const os = OperatingSystem.Windows;
-        // act
-        const act = () => new ApplicationContext(app, os);
-        // assert
-        expect(act).to.throw(expectedError);
+      describe('throw when app is missing', () => {
+        itEachAbsentObjectValue((absentValue) => {
+          // arrange
+          const expectedError = 'missing app';
+          const app = absentValue;
+          const os = OperatingSystem.Windows;
+          // act
+          const act = () => new ApplicationContext(app, os);
+          // assert
+          expect(act).to.throw(expectedError);
+        });
       });
     });
     describe('collection', () => {
@@ -188,7 +204,7 @@ describe('ApplicationContext', () => {
         // assert
         new EnumRangeTestRunner(act)
           .testOutOfRangeThrows()
-          .testUndefinedValueThrows()
+          .testAbsentValueThrows()
           .testInvalidValueThrows(OperatingSystem.Android, 'os "Android" is not defined in application');
       });
     });

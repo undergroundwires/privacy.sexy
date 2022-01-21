@@ -37,7 +37,7 @@ function parseScriptsRecursively(category: ICategory): ReadonlyArray<IScript> {
 
 function validateCategory(category: ICategory) {
   if (!category.name) {
-    throw new Error('undefined or empty name');
+    throw new Error('missing name');
   }
   if (
     (!category.subCategories || category.subCategories.length === 0)

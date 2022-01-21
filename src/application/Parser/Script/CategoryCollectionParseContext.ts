@@ -17,7 +17,7 @@ export class CategoryCollectionParseContext implements ICategoryCollectionParseC
     scripting: IScriptingDefinition,
     syntaxFactory: ISyntaxFactory = new SyntaxFactory(),
   ) {
-    if (!scripting) { throw new Error('undefined scripting'); }
+    if (!scripting) { throw new Error('missing scripting'); }
     this.syntax = syntaxFactory.create(scripting.language);
     this.compiler = new ScriptCompiler(functionsData, this.syntax);
   }

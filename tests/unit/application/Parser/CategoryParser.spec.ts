@@ -8,53 +8,44 @@ import { ScriptDataStub } from '@tests/unit/stubs/ScriptDataStub';
 import { CategoryCollectionParseContextStub } from '@tests/unit/stubs/CategoryCollectionParseContextStub';
 import { LanguageSyntaxStub } from '@tests/unit/stubs/LanguageSyntaxStub';
 import { CategoryDataStub } from '@tests/unit/stubs/CategoryDataStub';
+import { itEachAbsentCollectionValue, itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('CategoryParser', () => {
   describe('parseCategory', () => {
     describe('invalid category', () => {
-      it('throws when undefined', () => {
-        // arrange
-        const expectedMessage = 'category is null or undefined';
-        const category = undefined;
-        const context = new CategoryCollectionParseContextStub();
-        // act
-        const act = () => parseCategory(category, context);
-        // assert
-        expect(act).to.throw(expectedMessage);
+      describe('throws when category data is absent', () => {
+        itEachAbsentObjectValue((absentValue) => {
+          // arrange
+          const expectedMessage = 'missing category';
+          const category = absentValue;
+          const context = new CategoryCollectionParseContextStub();
+          // act
+          const act = () => parseCategory(category, context);
+          // assert
+          expect(act).to.throw(expectedMessage);
+        });
       });
-      it('throws when children are empty', () => {
-        // arrange
-        const categoryName = 'test';
-        const expectedMessage = `category has no children: "${categoryName}"`;
-        const category = new CategoryDataStub()
-          .withName(categoryName)
-          .withChildren([]);
-        const context = new CategoryCollectionParseContextStub();
-        // act
-        const act = () => parseCategory(category, context);
-        // assert
-        expect(act).to.throw(expectedMessage);
-      });
-      it('throws when children are undefined', () => {
-        // arrange
-        const categoryName = 'test';
-        const expectedMessage = `category has no children: "${categoryName}"`;
-        const category = new CategoryDataStub()
-          .withName(categoryName)
-          .withChildren(undefined);
-        const context = new CategoryCollectionParseContextStub();
-        // act
-        const act = () => parseCategory(category, context);
-        // assert
-        expect(act).to.throw(expectedMessage);
-      });
-      it('throws when name is empty or undefined', () => {
-        // arrange
-        const expectedMessage = 'category has no name';
-        const invalidNames = ['', undefined];
-        invalidNames.forEach((invalidName) => {
+      describe('throws when category children is absent', () => {
+        itEachAbsentCollectionValue((absentValue) => {
+          // arrange
+          const categoryName = 'test';
+          const expectedMessage = `category has no children: "${categoryName}"`;
           const category = new CategoryDataStub()
-            .withName(invalidName);
+            .withName(categoryName)
+            .withChildren(absentValue);
+          const context = new CategoryCollectionParseContextStub();
+          // act
+          const act = () => parseCategory(category, context);
+          // assert
+          expect(act).to.throw(expectedMessage);
+        });
+      });
+      describe('throws when name is absent', () => {
+        itEachAbsentStringValue((absentValue) => {
+          // arrange
+          const expectedMessage = 'category has no name';
+          const category = new CategoryDataStub()
+            .withName(absentValue);
           const context = new CategoryCollectionParseContextStub();
           // act
           const act = () => parseCategory(category, context);
@@ -63,15 +54,17 @@ describe('CategoryParser', () => {
         });
       });
     });
-    it('throws when context is undefined', () => {
-      // arrange
-      const expectedError = 'undefined context';
-      const context = undefined;
-      const category = new CategoryDataStub();
-      // act
-      const act = () => parseCategory(category, context);
-      // assert
-      expect(act).to.throw(expectedError);
+    describe('throws when context is absent', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing context';
+        const context = absentValue;
+        const category = new CategoryDataStub();
+        // act
+        const act = () => parseCategory(category, context);
+        // assert
+        expect(act).to.throw(expectedError);
+      });
     });
     it('returns expected docs', () => {
       // arrange

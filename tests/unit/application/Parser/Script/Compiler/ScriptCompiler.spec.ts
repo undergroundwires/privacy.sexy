@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import { FunctionData } from 'js-yaml-loader!@/*';
-import { ILanguageSyntax } from '@/domain/ScriptCode';
+import { ILanguageSyntax, ScriptCode } from '@/domain/ScriptCode';
 import { ScriptCompiler } from '@/application/Parser/Script/Compiler/ScriptCompiler';
 import { ISharedFunctionsParser } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionsParser';
 import { ICompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/ICompiledCode';
@@ -14,33 +14,39 @@ import { SharedFunctionsParserStub } from '@tests/unit/stubs/SharedFunctionsPars
 import { SharedFunctionCollectionStub } from '@tests/unit/stubs/SharedFunctionCollectionStub';
 import { parseFunctionCalls } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCallParser';
 import { FunctionCallDataStub } from '@tests/unit/stubs/FunctionCallDataStub';
+import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('ScriptCompiler', () => {
   describe('ctor', () => {
-    it('throws if syntax is undefined', () => {
-      // arrange
-      const expectedError = 'undefined syntax';
-      // act
-      const act = () => new ScriptCompilerBuilder()
-        .withSomeFunctions()
-        .withSyntax(undefined)
-        .build();
-      // assert
-      expect(act).to.throw(expectedError);
+    describe('throws if syntax is missing', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing syntax';
+        const syntax = absentValue;
+        // act
+        const act = () => new ScriptCompilerBuilder()
+          .withSomeFunctions()
+          .withSyntax(syntax)
+          .build();
+        // assert
+        expect(act).to.throw(expectedError);
+      });
     });
   });
   describe('canCompile', () => {
-    it('throws if script is undefined', () => {
-      // arrange
-      const expectedError = 'undefined script';
-      const argument = undefined;
-      const builder = new ScriptCompilerBuilder()
-        .withEmptyFunctions()
-        .build();
-      // act
-      const act = () => builder.canCompile(argument);
-      // assert
-      expect(act).to.throw(expectedError);
+    describe('throws if script is missing', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing script';
+        const argument = absentValue;
+        const builder = new ScriptCompilerBuilder()
+          .withEmptyFunctions()
+          .build();
+        // act
+        const act = () => builder.canCompile(argument);
+        // assert
+        expect(act).to.throw(expectedError);
+      });
     });
     it('returns true if "call" is defined', () => {
       // arrange
@@ -66,17 +72,19 @@ describe('ScriptCompiler', () => {
     });
   });
   describe('compile', () => {
-    it('throws if script is undefined', () => {
-      // arrange
-      const expectedError = 'undefined script';
-      const argument = undefined;
-      const builder = new ScriptCompilerBuilder()
-        .withEmptyFunctions()
-        .build();
-      // act
-      const act = () => builder.compile(argument);
-      // assert
-      expect(act).to.throw(expectedError);
+    describe('throws if script is missing', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing script';
+        const argument = absentValue;
+        const builder = new ScriptCompilerBuilder()
+          .withEmptyFunctions()
+          .build();
+        // act
+        const act = () => builder.compile(argument);
+        // assert
+        expect(act).to.throw(expectedError);
+      });
     });
     it('returns code as expected', () => {
       // arrange
@@ -148,15 +156,21 @@ describe('ScriptCompiler', () => {
     it('rethrows error from ScriptCode with script name', () => {
       // arrange
       const scriptName = 'scriptName';
-      const expectedError = `Script "${scriptName}" code is empty or undefined`;
+      const syntax = new LanguageSyntaxStub();
+      const invalidCode: ICompiledCode = { code: undefined, revertCode: undefined };
+      const realExceptionMessage = collectExceptionMessage(
+        () => new ScriptCode(invalidCode.code, invalidCode.revertCode, syntax),
+      );
+      const expectedError = `Script "${scriptName}" ${realExceptionMessage}`;
       const callCompiler: IFunctionCallCompiler = {
-        compileCall: () => ({ code: undefined, revertCode: undefined }),
+        compileCall: () => invalidCode,
       };
       const scriptData = ScriptDataStub.createWithCall()
         .withName(scriptName);
       const sut = new ScriptCompilerBuilder()
         .withSomeFunctions()
         .withFunctionCallCompiler(callCompiler)
+        .withSyntax(syntax)
         .build();
       // act
       const act = () => sut.compile(scriptData);
@@ -229,4 +243,14 @@ class ScriptCompilerBuilder {
       this.sharedFunctionsParser,
     );
   }
+}
+
+function collectExceptionMessage(action: () => unknown) {
+  let message = '';
+  try {
+    action();
+  } catch (e) {
+    message = e.message;
+  }
+  return message;
 }
