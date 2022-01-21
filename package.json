@@ -31,7 +31,7 @@
     "@juggle/resize-observer": "^3.3.1",
     "ace-builds": "^1.4.13",
     "core-js": "^3.18.3",
-    "cross-fetch": "^3.1.4",
+    "cross-fetch": "^3.1.5",
     "electron-progressbar": "^2.0.1",
     "file-saver": "^2.0.5",
     "install": "^0.13.0",
