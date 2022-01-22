@@ -4608,9 +4608,19 @@ actions:
             -
                 name: Delivery Optimization (P2P Windows Updates)
                 recommend: standard
-                docs: http://batcmd.com/windows/10/services/dosvc/
+                docs:
+                    # Delivery Optimization is a cloud-managed solution to offer Windows updates through
+                    # other users' network (peer-to-peer).
+                    - https://docs.microsoft.com/en-us/windows/deployment/update/waas-delivery-optimization
+                    # Delivery Optimization service performs content delivery optimization tasks.
+                    - http://batcmd.com/windows/10/services/dosvc/
+                    # Connects to various Microsoft service endpoints to get metadata, policies, content, device information
+                    # and information of other peers (Windows users).
+                    - https://docs.microsoft.com/en-us/windows/deployment/update/delivery-optimization-workflow
                 call:
-                    function: DisableService
+                    function: DisableServiceInRegistry
+                    # Using registry way because because other options such as "sc config" or
+                    # "Set-Service" returns "Access is denied" since Windows 10 1809.
                     parameters:
                         serviceName: DoSvc # Check: (Get-Service -Name 'DoSvc').StartType
                         defaultStartupMode: Automatic # Allowed values: Automatic | Manual
