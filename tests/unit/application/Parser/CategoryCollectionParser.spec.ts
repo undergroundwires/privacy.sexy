@@ -7,14 +7,14 @@ import { parseProjectInformation } from '@/application/Parser/ProjectInformation
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { ScriptingDefinitionParser } from '@/application/Parser/ScriptingDefinition/ScriptingDefinitionParser';
-import { EnumParserStub } from '@tests/unit/stubs/EnumParserStub';
-import { ProjectInformationStub } from '@tests/unit/stubs/ProjectInformationStub';
-import { getCategoryStub, CollectionDataStub } from '@tests/unit/stubs/CollectionDataStub';
-import { CategoryCollectionParseContextStub } from '@tests/unit/stubs/CategoryCollectionParseContextStub';
-import { CategoryDataStub } from '@tests/unit/stubs/CategoryDataStub';
-import { ScriptDataStub } from '@tests/unit/stubs/ScriptDataStub';
-import { FunctionDataStub } from '@tests/unit/stubs/FunctionDataStub';
-import { FunctionCallDataStub } from '@tests/unit/stubs/FunctionCallDataStub';
+import { EnumParserStub } from '@tests/unit/shared/Stubs/EnumParserStub';
+import { ProjectInformationStub } from '@tests/unit/shared/Stubs/ProjectInformationStub';
+import { getCategoryStub, CollectionDataStub } from '@tests/unit/shared/Stubs/CollectionDataStub';
+import { CategoryCollectionParseContextStub } from '@tests/unit/shared/Stubs/CategoryCollectionParseContextStub';
+import { CategoryDataStub } from '@tests/unit/shared/Stubs/CategoryDataStub';
+import { ScriptDataStub } from '@tests/unit/shared/Stubs/ScriptDataStub';
+import { FunctionDataStub } from '@tests/unit/shared/Stubs/FunctionDataStub';
+import { FunctionCallDataStub } from '@tests/unit/shared/Stubs/FunctionCallDataStub';
 import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('CategoryCollectionParser', () => {

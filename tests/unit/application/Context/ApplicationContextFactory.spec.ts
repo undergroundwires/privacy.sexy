@@ -5,9 +5,9 @@ import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { buildContext } from '@/application/Context/ApplicationContextFactory';
 import { IApplicationFactory } from '@/application/IApplicationFactory';
 import { IApplication } from '@/domain/IApplication';
-import { EnvironmentStub } from '@tests/unit/stubs/EnvironmentStub';
-import { ApplicationStub } from '@tests/unit/stubs/ApplicationStub';
-import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
+import { EnvironmentStub } from '@tests/unit/shared/Stubs/EnvironmentStub';
+import { ApplicationStub } from '@tests/unit/shared/Stubs/ApplicationStub';
+import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { expectThrowsAsync } from '@tests/unit/shared/Assertions/ExpectThrowsAsync';
 
 describe('ApplicationContextFactory', () => {

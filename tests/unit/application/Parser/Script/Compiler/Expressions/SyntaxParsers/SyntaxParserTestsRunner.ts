@@ -2,9 +2,9 @@ import 'mocha';
 import { expect } from 'chai';
 import { ExpressionPosition } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionPosition';
 import { IExpressionParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/IExpressionParser';
-import { FunctionCallArgumentCollectionStub } from '@tests/unit/stubs/FunctionCallArgumentCollectionStub';
-import { ExpressionEvaluationContextStub } from '@tests/unit/stubs/ExpressionEvaluationContextStub';
-import { PipelineCompilerStub } from '@tests/unit/stubs/PipelineCompilerStub';
+import { FunctionCallArgumentCollectionStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentCollectionStub';
+import { ExpressionEvaluationContextStub } from '@tests/unit/shared/Stubs/ExpressionEvaluationContextStub';
+import { PipelineCompilerStub } from '@tests/unit/shared/Stubs/PipelineCompilerStub';
 
 export class SyntaxParserTestsRunner {
   constructor(private readonly sut: IExpressionParser) {

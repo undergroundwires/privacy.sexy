@@ -4,10 +4,10 @@ import { UserScriptGenerator } from '@/application/Context/State/Code/Generation
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { ICodeBuilderFactory } from '@/application/Context/State/Code/Generation/ICodeBuilderFactory';
 import { ICodeBuilder } from '@/application/Context/State/Code/Generation/ICodeBuilder';
-import { ScriptStub } from '@tests/unit/stubs/ScriptStub';
-import { ScriptingDefinitionStub } from '@tests/unit/stubs/ScriptingDefinitionStub';
+import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
+import { ScriptingDefinitionStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionStub';
 import { itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
-import { SelectedScriptStub } from '@tests/unit/stubs/SelectedScriptStub';
+import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
 
 describe('UserScriptGenerator', () => {
   describe('scriptingDefinition', () => {

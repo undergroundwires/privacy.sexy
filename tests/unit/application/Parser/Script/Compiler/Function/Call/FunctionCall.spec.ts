@@ -2,7 +2,7 @@ import 'mocha';
 import { expect } from 'chai';
 import { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
 import { IReadOnlyFunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/Function/Call/Argument/IFunctionCallArgumentCollection';
-import { FunctionCallArgumentCollectionStub } from '@tests/unit/stubs/FunctionCallArgumentCollectionStub';
+import { FunctionCallArgumentCollectionStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentCollectionStub';
 import { itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('FunctionCall', () => {

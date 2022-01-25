@@ -1,10 +1,10 @@
 import 'mocha';
 import { expect } from 'chai';
 import { IReadOnlyFunctionParameterCollection } from '@/application/Parser/Script/Compiler/Function/Parameter/IFunctionParameterCollection';
-import { FunctionParameterCollectionStub } from '@tests/unit/stubs/FunctionParameterCollectionStub';
+import { FunctionParameterCollectionStub } from '@tests/unit/shared/Stubs/FunctionParameterCollectionStub';
 import { createCallerFunction, createFunctionWithInlineCode } from '@/application/Parser/Script/Compiler/Function/SharedFunction';
 import { IFunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/IFunctionCall';
-import { FunctionCallStub } from '@tests/unit/stubs/FunctionCallStub';
+import { FunctionCallStub } from '@tests/unit/shared/Stubs/FunctionCallStub';
 import { FunctionBodyType, ISharedFunction } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
 import {
   AbsentStringTestCases, itEachAbsentCollectionValue, itEachAbsentObjectValue,

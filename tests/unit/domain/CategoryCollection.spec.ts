@@ -7,8 +7,8 @@ import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { getEnumValues } from '@/application/Common/Enum';
 import { CategoryCollection } from '@/domain/CategoryCollection';
-import { ScriptStub } from '@tests/unit/stubs/ScriptStub';
-import { CategoryStub } from '@tests/unit/stubs/CategoryStub';
+import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
+import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
 import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 

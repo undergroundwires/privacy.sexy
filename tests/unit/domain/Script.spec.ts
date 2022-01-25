@@ -4,7 +4,7 @@ import { getEnumValues } from '@/application/Common/Enum';
 import { Script } from '@/domain/Script';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { IScriptCode } from '@/domain/IScriptCode';
-import { ScriptCodeStub } from '@tests/unit/stubs/ScriptCodeStub';
+import { ScriptCodeStub } from '@tests/unit/shared/Stubs/ScriptCodeStub';
 import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('Script', () => {

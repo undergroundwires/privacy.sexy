@@ -4,10 +4,10 @@ import { ScriptReverter } from '@/presentation/components/Scripts/View/ScriptsTr
 import { getScriptNodeId } from '@/presentation/components/Scripts/View/ScriptsTree/ScriptNodeParser';
 import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
-import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
-import { CategoryStub } from '@tests/unit/stubs/CategoryStub';
-import { ScriptStub } from '@tests/unit/stubs/ScriptStub';
-import { SelectedScriptStub } from '@tests/unit/stubs/SelectedScriptStub';
+import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
+import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
+import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
+import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
 
 describe('ScriptReverter', () => {
   describe('getState', () => {

@@ -2,7 +2,7 @@ import 'mocha';
 import { expect } from 'chai';
 import { ScriptCode, ILanguageSyntax } from '@/domain/ScriptCode';
 import { IScriptCode } from '@/domain/IScriptCode';
-import { LanguageSyntaxStub } from '@tests/unit/stubs/LanguageSyntaxStub';
+import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
 import { AbsentStringTestCases, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('ScriptCode', () => {

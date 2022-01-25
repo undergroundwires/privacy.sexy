@@ -3,10 +3,10 @@ import { expect } from 'chai';
 import { FunctionData } from 'js-yaml-loader!@/*';
 import { ISharedFunction } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
 import { SharedFunctionsParser } from '@/application/Parser/Script/Compiler/Function/SharedFunctionsParser';
-import { FunctionDataStub } from '@tests/unit/stubs/FunctionDataStub';
-import { ParameterDefinitionDataStub } from '@tests/unit/stubs/ParameterDefinitionDataStub';
+import { FunctionDataStub } from '@tests/unit/shared/Stubs/FunctionDataStub';
+import { ParameterDefinitionDataStub } from '@tests/unit/shared/Stubs/ParameterDefinitionDataStub';
 import { FunctionParameter } from '@/application/Parser/Script/Compiler/Function/Parameter/FunctionParameter';
-import { FunctionCallDataStub } from '@tests/unit/stubs/FunctionCallDataStub';
+import { FunctionCallDataStub } from '@tests/unit/shared/Stubs/FunctionCallDataStub';
 import { itEachAbsentCollectionValue, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('SharedFunctionsParser', () => {

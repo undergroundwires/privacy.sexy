@@ -3,8 +3,8 @@ import { expect } from 'chai';
 import { ExpressionEvaluationContext, IExpressionEvaluationContext } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionEvaluationContext';
 import { IReadOnlyFunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/Function/Call/Argument/IFunctionCallArgumentCollection';
 import { IPipelineCompiler } from '@/application/Parser/Script/Compiler/Expressions/Pipes/IPipelineCompiler';
-import { FunctionCallArgumentCollectionStub } from '@tests/unit/stubs/FunctionCallArgumentCollectionStub';
-import { PipelineCompilerStub } from '@tests/unit/stubs/PipelineCompilerStub';
+import { FunctionCallArgumentCollectionStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentCollectionStub';
+import { PipelineCompilerStub } from '@tests/unit/shared/Stubs/PipelineCompilerStub';
 import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('ExpressionEvaluationContext', () => {

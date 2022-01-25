@@ -2,8 +2,8 @@ import 'mocha';
 import { expect } from 'chai';
 import { CodeSubstituter } from '@/application/Parser/ScriptingDefinition/CodeSubstituter';
 import { IExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/IExpressionsCompiler';
-import { ProjectInformationStub } from '@tests/unit/stubs/ProjectInformationStub';
-import { ExpressionsCompilerStub } from '@tests/unit/stubs/ExpressionsCompilerStub';
+import { ProjectInformationStub } from '@tests/unit/shared/Stubs/ProjectInformationStub';
+import { ExpressionsCompilerStub } from '@tests/unit/shared/Stubs/ExpressionsCompilerStub';
 import { AbsentObjectTestCases, AbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('CodeSubstituter', () => {

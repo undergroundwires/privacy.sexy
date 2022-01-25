@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import { PipeFactory } from '@/application/Parser/Script/Compiler/Expressions/Pipes/PipeFactory';
-import { PipeStub } from '@tests/unit/stubs/PipeStub';
+import { PipeStub } from '@tests/unit/shared/Stubs/PipeStub';
 import { AbsentStringTestCases, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('PipeFactory', () => {

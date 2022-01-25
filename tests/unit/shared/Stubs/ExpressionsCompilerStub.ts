@@ -2,7 +2,7 @@ import { IExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expre
 import { IReadOnlyFunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/Function/Call/Argument/IFunctionCallArgumentCollection';
 import { scrambledEqual } from '@/application/Common/Array';
 import { ISharedFunction } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
-import { FunctionCallArgumentCollectionStub } from '@tests/unit/stubs/FunctionCallArgumentCollectionStub';
+import { FunctionCallArgumentCollectionStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentCollectionStub';
 
 export class ExpressionsCompilerStub implements IExpressionsCompiler {
   public readonly callHistory =

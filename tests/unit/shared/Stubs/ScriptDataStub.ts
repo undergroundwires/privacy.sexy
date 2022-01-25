@@ -1,6 +1,6 @@
 import { FunctionCallData, ScriptData } from 'js-yaml-loader!@/*';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
-import { FunctionCallDataStub } from '@tests/unit/stubs/FunctionCallDataStub';
+import { FunctionCallDataStub } from '@tests/unit/shared/Stubs/FunctionCallDataStub';
 
 export class ScriptDataStub implements ScriptData {
   public static createWithCode(): ScriptDataStub {

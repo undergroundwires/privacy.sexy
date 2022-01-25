@@ -2,9 +2,9 @@ import 'mocha';
 import { expect } from 'chai';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
 import { UserFilter } from '@/application/Context/State/Filter/UserFilter';
-import { CategoryStub } from '@tests/unit/stubs/CategoryStub';
-import { ScriptStub } from '@tests/unit/stubs/ScriptStub';
-import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
+import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
+import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
+import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 
 describe('UserFilter', () => {
   describe('removeFilter', () => {

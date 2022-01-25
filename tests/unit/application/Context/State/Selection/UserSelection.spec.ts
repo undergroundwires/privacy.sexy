@@ -2,10 +2,10 @@ import 'mocha';
 import { expect } from 'chai';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
-import { CategoryStub } from '@tests/unit/stubs/CategoryStub';
-import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
-import { SelectedScriptStub } from '@tests/unit/stubs/SelectedScriptStub';
-import { ScriptStub } from '@tests/unit/stubs/ScriptStub';
+import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
+import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
+import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
+import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { UserSelectionTestRunner } from './UserSelectionTestRunner';
 
 describe('UserSelection', () => {

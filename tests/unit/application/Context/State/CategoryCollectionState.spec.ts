@@ -5,9 +5,9 @@ import { ApplicationCode } from '@/application/Context/State/Code/ApplicationCod
 import { CategoryCollectionState } from '@/application/Context/State/CategoryCollectionState';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { IScript } from '@/domain/IScript';
-import { ScriptStub } from '@tests/unit/stubs/ScriptStub';
-import { CategoryStub } from '@tests/unit/stubs/CategoryStub';
-import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
+import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
+import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
+import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 
 describe('CategoryCollectionState', () => {
   describe('code', () => {

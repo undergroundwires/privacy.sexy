@@ -1,6 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
-import { EnvironmentStub } from '@tests/unit/stubs/EnvironmentStub';
+import { EnvironmentStub } from '@tests/unit/shared/Stubs/EnvironmentStub';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CodeRunner } from '@/infrastructure/CodeRunner';
 import { expectThrowsAsync } from '@tests/unit/shared/Assertions/ExpectThrowsAsync';

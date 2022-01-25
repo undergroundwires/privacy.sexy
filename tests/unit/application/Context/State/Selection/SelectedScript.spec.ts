@@ -1,6 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
-import { ScriptStub } from '@tests/unit/stubs/ScriptStub';
+import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 
 describe('SelectedScript', () => {

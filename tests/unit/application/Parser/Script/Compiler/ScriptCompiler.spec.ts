@@ -6,14 +6,14 @@ import { ScriptCompiler } from '@/application/Parser/Script/Compiler/ScriptCompi
 import { ISharedFunctionsParser } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionsParser';
 import { ICompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/ICompiledCode';
 import { IFunctionCallCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/IFunctionCallCompiler';
-import { LanguageSyntaxStub } from '@tests/unit/stubs/LanguageSyntaxStub';
-import { ScriptDataStub } from '@tests/unit/stubs/ScriptDataStub';
-import { FunctionDataStub } from '@tests/unit/stubs/FunctionDataStub';
-import { FunctionCallCompilerStub } from '@tests/unit/stubs/FunctionCallCompilerStub';
-import { SharedFunctionsParserStub } from '@tests/unit/stubs/SharedFunctionsParserStub';
-import { SharedFunctionCollectionStub } from '@tests/unit/stubs/SharedFunctionCollectionStub';
+import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
+import { ScriptDataStub } from '@tests/unit/shared/Stubs/ScriptDataStub';
+import { FunctionDataStub } from '@tests/unit/shared/Stubs/FunctionDataStub';
+import { FunctionCallCompilerStub } from '@tests/unit/shared/Stubs/FunctionCallCompilerStub';
+import { SharedFunctionsParserStub } from '@tests/unit/shared/Stubs/SharedFunctionsParserStub';
+import { SharedFunctionCollectionStub } from '@tests/unit/shared/Stubs/SharedFunctionCollectionStub';
 import { parseFunctionCalls } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCallParser';
-import { FunctionCallDataStub } from '@tests/unit/stubs/FunctionCallDataStub';
+import { FunctionCallDataStub } from '@tests/unit/shared/Stubs/FunctionCallDataStub';
 import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('ScriptCompiler', () => {

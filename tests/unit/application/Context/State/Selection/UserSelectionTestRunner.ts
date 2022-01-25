@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import 'mocha';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
-import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
-import { CategoryStub } from '@tests/unit/stubs/CategoryStub';
+import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
+import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
 import { IScript } from '@/domain/IScript';
 

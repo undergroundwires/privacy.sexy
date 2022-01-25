@@ -1,9 +1,9 @@
 import 'mocha';
 import { expect } from 'chai';
 import { SharedFunctionCollection } from '@/application/Parser/Script/Compiler/Function/SharedFunctionCollection';
-import { SharedFunctionStub } from '@tests/unit/stubs/SharedFunctionStub';
+import { SharedFunctionStub } from '@tests/unit/shared/Stubs/SharedFunctionStub';
 import { FunctionBodyType } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
-import { FunctionCallStub } from '@tests/unit/stubs/FunctionCallStub';
+import { FunctionCallStub } from '@tests/unit/shared/Stubs/FunctionCallStub';
 import { itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('SharedFunctionCollection', () => {

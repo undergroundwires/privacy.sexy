@@ -31,9 +31,9 @@
       - Shared test cases.
       - Test runner functions that uses `it()` from Mocha test [Mocha test framework](https://mochajs.org/) should be prefixed with `it.`
         - E.g. `itEachAbsentCollectionValue()`.
-  - [`stubs/`](./../tests/unit/stubs)
-    - Includes stubs to be able to test classes in isolation.
-    - They implement dummy behavior to be functional with optionally spying or mocking functions.
+    - [`Stubs/`](./../tests/unit/shared/Stubs)
+      - Includes stubs to be able to test components in isolation.
+      - Stubs have minimal and dummy behavior to be functional, they may also have spying or mocking functions.
 
 ### Unit tests naming
 

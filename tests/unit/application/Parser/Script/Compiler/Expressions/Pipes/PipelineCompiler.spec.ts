@@ -3,8 +3,8 @@ import { expect } from 'chai';
 import { PipelineCompiler } from '@/application/Parser/Script/Compiler/Expressions/Pipes/PipelineCompiler';
 import { IPipelineCompiler } from '@/application/Parser/Script/Compiler/Expressions/Pipes/IPipelineCompiler';
 import { IPipeFactory } from '@/application/Parser/Script/Compiler/Expressions/Pipes/PipeFactory';
-import { PipeStub } from '@tests/unit/stubs/PipeStub';
-import { PipeFactoryStub } from '@tests/unit/stubs/PipeFactoryStub';
+import { PipeStub } from '@tests/unit/shared/Stubs/PipeStub';
+import { PipeFactoryStub } from '@tests/unit/shared/Stubs/PipeFactoryStub';
 import { AbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('PipelineCompiler', () => {

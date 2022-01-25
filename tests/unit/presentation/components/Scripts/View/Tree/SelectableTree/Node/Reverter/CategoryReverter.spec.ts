@@ -4,9 +4,9 @@ import { CategoryReverter } from '@/presentation/components/Scripts/View/Scripts
 import { getCategoryNodeId } from '@/presentation/components/Scripts/View/ScriptsTree/ScriptNodeParser';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
-import { CategoryStub } from '@tests/unit/stubs/CategoryStub';
-import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
-import { ScriptStub } from '@tests/unit/stubs/ScriptStub';
+import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
+import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
+import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 
 describe('CategoryReverter', () => {
   describe('getState', () => {

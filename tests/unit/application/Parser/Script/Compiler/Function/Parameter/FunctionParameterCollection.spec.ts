@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import { FunctionParameterCollection } from '@/application/Parser/Script/Compiler/Function/Parameter/FunctionParameterCollection';
-import { FunctionParameterStub } from '@tests/unit/stubs/FunctionParameterStub';
+import { FunctionParameterStub } from '@tests/unit/shared/Stubs/FunctionParameterStub';
 import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('FunctionParameterCollection', () => {

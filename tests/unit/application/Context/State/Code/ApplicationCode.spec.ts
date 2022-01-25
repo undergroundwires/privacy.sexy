@@ -9,12 +9,12 @@ import { CodePosition } from '@/application/Context/State/Code/Position/CodePosi
 import { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { IUserScript } from '@/application/Context/State/Code/Generation/IUserScript';
-import { ScriptingDefinitionStub } from '@tests/unit/stubs/ScriptingDefinitionStub';
-import { CategoryStub } from '@tests/unit/stubs/CategoryStub';
-import { ScriptStub } from '@tests/unit/stubs/ScriptStub';
-import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
+import { ScriptingDefinitionStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionStub';
+import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
+import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
+import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
-import { UserSelectionStub } from '@tests/unit/stubs/UserSelectionStub';
+import { UserSelectionStub } from '@tests/unit/shared/Stubs/UserSelectionStub';
 
 describe('ApplicationCode', () => {
   describe('ctor', () => {

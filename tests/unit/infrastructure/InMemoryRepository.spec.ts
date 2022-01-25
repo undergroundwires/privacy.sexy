@@ -1,6 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
-import { NumericEntityStub } from '@tests/unit/stubs/NumericEntityStub';
+import { NumericEntityStub } from '@tests/unit/shared/Stubs/NumericEntityStub';
 import { InMemoryRepository } from '@/infrastructure/Repository/InMemoryRepository';
 import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 

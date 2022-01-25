@@ -2,8 +2,8 @@ import 'mocha';
 import { expect } from 'chai';
 import { Application } from '@/domain/Application';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
-import { ProjectInformationStub } from '@tests/unit/stubs/ProjectInformationStub';
+import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
+import { ProjectInformationStub } from '@tests/unit/shared/Stubs/ProjectInformationStub';
 import { AbsentObjectTestCases, getAbsentCollectionTestCases, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
 

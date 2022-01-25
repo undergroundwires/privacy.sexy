@@ -2,9 +2,9 @@ import 'mocha';
 import { expect } from 'chai';
 import { ExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/ExpressionsCompiler';
 import { IExpressionParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/IExpressionParser';
-import { ExpressionStub } from '@tests/unit/stubs/ExpressionStub';
-import { ExpressionParserStub } from '@tests/unit/stubs/ExpressionParserStub';
-import { FunctionCallArgumentCollectionStub } from '@tests/unit/stubs/FunctionCallArgumentCollectionStub';
+import { ExpressionStub } from '@tests/unit/shared/Stubs/ExpressionStub';
+import { ExpressionParserStub } from '@tests/unit/shared/Stubs/ExpressionParserStub';
+import { FunctionCallArgumentCollectionStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentCollectionStub';
 import { itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('ExpressionsCompiler', () => {

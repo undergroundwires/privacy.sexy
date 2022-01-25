@@ -5,9 +5,9 @@ import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { CategoryCollectionParseContext } from '@/application/Parser/Script/CategoryCollectionParseContext';
 import { ILanguageSyntax } from '@/domain/ScriptCode';
 import { ScriptCompiler } from '@/application/Parser/Script/Compiler/ScriptCompiler';
-import { LanguageSyntaxStub } from '@tests/unit/stubs/LanguageSyntaxStub';
-import { ScriptingDefinitionStub } from '@tests/unit/stubs/ScriptingDefinitionStub';
-import { FunctionDataStub } from '@tests/unit/stubs/FunctionDataStub';
+import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
+import { ScriptingDefinitionStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionStub';
+import { FunctionDataStub } from '@tests/unit/shared/Stubs/FunctionDataStub';
 import { itEachAbsentCollectionValue, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('CategoryCollectionParseContext', () => {

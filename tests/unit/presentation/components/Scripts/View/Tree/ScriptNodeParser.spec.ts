@@ -7,9 +7,9 @@ import {
 import { INode, NodeType } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/Node/INode';
 import { IScript } from '@/domain/IScript';
 import { ICategory } from '@/domain/ICategory';
-import { CategoryStub } from '@tests/unit/stubs/CategoryStub';
-import { ScriptStub } from '@tests/unit/stubs/ScriptStub';
-import { CategoryCollectionStub } from '@tests/unit/stubs/CategoryCollectionStub';
+import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
+import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
+import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 
 describe('ScriptNodeParser', () => {
   it('can convert script id and back', () => {

@@ -4,12 +4,12 @@ import { FunctionCallParametersData } from 'js-yaml-loader!@/*';
 import { FunctionCallCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/FunctionCallCompiler';
 import { ISharedFunctionCollection } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionCollection';
 import { IExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/IExpressionsCompiler';
-import { SharedFunctionCollectionStub } from '@tests/unit/stubs/SharedFunctionCollectionStub';
+import { SharedFunctionCollectionStub } from '@tests/unit/shared/Stubs/SharedFunctionCollectionStub';
 import { FunctionBodyType } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
-import { SharedFunctionStub } from '@tests/unit/stubs/SharedFunctionStub';
-import { FunctionCallArgumentCollectionStub } from '@tests/unit/stubs/FunctionCallArgumentCollectionStub';
-import { FunctionCallStub } from '@tests/unit/stubs/FunctionCallStub';
-import { ExpressionsCompilerStub } from '@tests/unit/stubs/ExpressionsCompilerStub';
+import { SharedFunctionStub } from '@tests/unit/shared/Stubs/SharedFunctionStub';
+import { FunctionCallArgumentCollectionStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentCollectionStub';
+import { FunctionCallStub } from '@tests/unit/shared/Stubs/FunctionCallStub';
+import { ExpressionsCompilerStub } from '@tests/unit/shared/Stubs/ExpressionsCompilerStub';
 import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('FunctionCallCompiler', () => {

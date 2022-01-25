@@ -4,12 +4,12 @@ import { parseScript } from '@/application/Parser/Script/ScriptParser';
 import { parseDocUrls } from '@/application/Parser/DocumentationParser';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { ICategoryCollectionParseContext } from '@/application/Parser/Script/ICategoryCollectionParseContext';
-import { ScriptCompilerStub } from '@tests/unit/stubs/ScriptCompilerStub';
-import { ScriptDataStub } from '@tests/unit/stubs/ScriptDataStub';
-import { EnumParserStub } from '@tests/unit/stubs/EnumParserStub';
-import { ScriptCodeStub } from '@tests/unit/stubs/ScriptCodeStub';
-import { CategoryCollectionParseContextStub } from '@tests/unit/stubs/CategoryCollectionParseContextStub';
-import { LanguageSyntaxStub } from '@tests/unit/stubs/LanguageSyntaxStub';
+import { ScriptCompilerStub } from '@tests/unit/shared/Stubs/ScriptCompilerStub';
+import { ScriptDataStub } from '@tests/unit/shared/Stubs/ScriptDataStub';
+import { EnumParserStub } from '@tests/unit/shared/Stubs/EnumParserStub';
+import { ScriptCodeStub } from '@tests/unit/shared/Stubs/ScriptCodeStub';
+import { CategoryCollectionParseContextStub } from '@tests/unit/shared/Stubs/CategoryCollectionParseContextStub';
+import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
 import { itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('ScriptParser', () => {

@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import { ExpressionEvaluator } from '@/application/Parser/Script/Compiler/Expressions/Expression/Expression';
 import { IPrimitiveExpression, RegexParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/Regex/RegexParser';
 import { ExpressionPosition } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionPosition';
-import { FunctionParameterStub } from '@tests/unit/stubs/FunctionParameterStub';
+import { FunctionParameterStub } from '@tests/unit/shared/Stubs/FunctionParameterStub';
 import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('RegexParser', () => {

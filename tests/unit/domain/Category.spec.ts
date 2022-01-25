@@ -1,8 +1,8 @@
 import 'mocha';
 import { expect } from 'chai';
 import { Category } from '@/domain/Category';
-import { CategoryStub } from '@tests/unit/stubs/CategoryStub';
-import { ScriptStub } from '@tests/unit/stubs/ScriptStub';
+import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
+import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('Category', () => {

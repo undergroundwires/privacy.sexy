@@ -1,7 +1,7 @@
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
-import { CategoryCollectionStateStub } from '@tests/unit/stubs/CategoryCollectionStateStub';
-import { ScriptStub } from '@tests/unit/stubs/ScriptStub';
+import { CategoryCollectionStateStub } from '@tests/unit/shared/Stubs/CategoryCollectionStateStub';
+import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 
 export class SelectionStateTestScenario {
   public readonly all: readonly SelectedScript[];

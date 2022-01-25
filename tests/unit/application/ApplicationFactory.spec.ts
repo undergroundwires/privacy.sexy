@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import { ApplicationFactory, ApplicationGetterType } from '@/application/ApplicationFactory';
-import { ApplicationStub } from '@tests/unit/stubs/ApplicationStub';
+import { ApplicationStub } from '@tests/unit/shared/Stubs/ApplicationStub';
 import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('ApplicationFactory', () => {
