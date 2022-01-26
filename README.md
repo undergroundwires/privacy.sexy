@@ -126,25 +126,9 @@
      - 🙏 For any new script, please add `revertCode` and `docs` values if possible.
   3. Send a pull request 👌
 
-## Commands
+## Development
 
-- Project setup: `npm install`
-- Testing
-  - Run unit tests: `npm run test:unit`
-  - Run integration tests: `npm run test:integration`
-  - Run e2e (end-to-end) tests
-    - Interactive mode with GUI: `npm run test:e2e`
-    - Headless mode without GUI: `npm run test:e2e -- --headless`
-  - Lint: `npm run lint`
-- **Desktop app**
-  - Development: `npm run electron:serve`
-  - Production: `npm run electron:build` to build an executable
-- **Webpage**
-  - Development: `npm run serve` to compile & hot-reload for development.
-  - Production: `npm run build` to prepare files for distribution.
-  - Or run using Docker:
-    1. Build: `docker build -t undergroundwires/privacy.sexy:0.11.3 .`
-    2. Run: `docker run -it -p 8080:80 --rm --name privacy.sexy-0.11.3 undergroundwires/privacy.sexy:0.11.3`
+See [docs/development.md](./docs/development.md) for Docker usage, running/building application, development best-practices along with other information related to development.
 
 ## Architecture overview
 

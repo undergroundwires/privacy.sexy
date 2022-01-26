@@ -1,0 +1,23 @@
+{
+  "recommendations": [
+    // Common
+    "editorconfig.editorconfig",        // Applies .editorconfig to follow project style.
+    "wengerk.highlight-bad-chars",      // Highlights bad chars.
+    "wayou.vscode-todo-highlight",      // Highlights TODO.
+    "wix.vscode-import-cost",           // Shows in KB how much a require include in code.
+    // Documentation
+    "davidanson.vscode-markdownlint",   // Lints markdown.
+    // TypeScript / JavaScript
+    "dbaeumer.vscode-eslint",           // Lints JavaScript/TypeScript.
+    "pmneo.tsimporter",                 // Provides better auto-complete for TypeScripts imports.
+    // Vue
+    "jcbuisson.vue",                    // Highlights syntax.
+    "octref.vetur",                     // Adds Vetur, Vue tooling support.
+    // Scripting
+    "timonwong.shellcheck",             // Lints bash files.
+    "ms-vscode.powershell",             // Lints PowerShell files.
+    "ms-python.python",                 // Lints Python files.
+    // Distribution
+    "ms-azuretools.vscode-docker"       // Adds Docker support.
+  ]
+}

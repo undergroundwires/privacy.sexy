@@ -1,7 +1,8 @@
 node_modules
 dist/
 .vs
-.vscode
+.vscode/**/*
+!.vscode/extensions.json
 #Electron-builder output
 /dist_electron
 # Cypress
