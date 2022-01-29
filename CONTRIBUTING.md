@@ -31,4 +31,4 @@ By contributing, you agree that your contributions will be licensed under its [G
 
 - See [tests](./docs/tests.md) for testing
 - See [extend script](./README.md#extend-scripts) for quick steps to extend scripts
-- See [architecture overview](./README.md#architecture-overview) to deep dive into privacy.sexy codebase
+- See [architecture overview](./docs/architecture.md) to deep dive into privacy.sexy codebase

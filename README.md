@@ -128,32 +128,8 @@
 
 ## Development
 
-See [docs/development.md](./docs/development.md) for Docker usage, running/building application, development best-practices along with other information related to development.
+See [development.md](./docs/development.md) for Docker usage, running/building application, development best-practices along with other information related to development of this project.
 
-## Architecture overview
+## Architecture
 
-### Application
-
-- Powered by **TypeScript**, **Vue.js** and **Electron** 💪
-  - and driven by **Domain-driven design**, **Event-driven architecture**, **Data-driven programming** concepts.
-- Application uses highly decoupled models & services in different DDD layers.
-- 📖 Read more on • [Presentation](./docs/presentation.md) • [Application](./docs/application.md)
-
-![DDD + vue.js](img/architecture/app-ddd.png)
-
-### AWS Infrastructure
-
-[![AWS solution](img/architecture/aws-solution.png)](https://github.com/undergroundwires/aws-static-site-with-cd)
-
-- It uses infrastructure from the following repository: [aws-static-site-with-cd](https://github.com/undergroundwires/aws-static-site-with-cd)
-  - Runs on AWS 100% serverless and automatically provisioned using [GitHub Actions](.github/workflows/).
-  - Maximum security & automation and minimum AWS costs are the highest priorities of the design.
-
-#### GitOps: CI/CD to AWS
-
-- CI/CD is fully automated for this repo using different GIT events & GitHub actions.
-  - Versioning, tagging, creation of `CHANGELOG.md` and releasing is automated using [bump-everywhere](https://github.com/undergroundwires/bump-everywhere) action
-- Everything that's merged in the master goes directly to production.
-- 📖 Read more on [CI/CD pipelines](./docs/ci-cd.md)
-
-[![CI/CD to AWS with GitHub Actions](img/architecture/gitops.png)](.github/workflows/)
+Check [architecture.md](./docs/architecture.md) for an overview of design and how different parts and layers work together. You can refer to [application.md](./docs/application.md) for a closer look at application layer codebase and [presentation.md](./docs/presentation.md) for code related to GUI layer. [collection-files.md](./docs/collection-files.md) explains the YAML files that are the core of the application and [templating.md](./docs/templating.md) documents how to use templating language in those files. In [ci-cd.md](./docs/ci-cd.md), you can read more about the pipelines that automates maintenance tasks and ensures you get what see.
