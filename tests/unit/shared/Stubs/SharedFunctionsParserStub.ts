@@ -1,4 +1,4 @@
-import { FunctionData } from 'js-yaml-loader!@/*';
+import type { FunctionData } from '@/application/collections/';
 import { sequenceEqual } from '@/application/Common/Array';
 import { ISharedFunctionCollection } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionCollection';
 import { ISharedFunctionsParser } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionsParser';

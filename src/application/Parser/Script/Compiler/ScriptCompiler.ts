@@ -1,4 +1,4 @@
-import { FunctionData, ScriptData } from 'js-yaml-loader!@/*';
+import type { FunctionData, ScriptData } from '@/application/collections/';
 import { IScriptCode } from '@/domain/IScriptCode';
 import { ScriptCode, ILanguageSyntax } from '@/domain/ScriptCode';
 import { IScriptCompiler } from './IScriptCompiler';

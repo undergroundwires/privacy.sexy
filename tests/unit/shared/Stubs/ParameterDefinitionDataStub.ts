@@ -1,4 +1,4 @@
-import { ParameterDefinitionData } from 'js-yaml-loader!@/*';
+import type { ParameterDefinitionData } from '@/application/collections/';
 
 export class ParameterDefinitionDataStub implements ParameterDefinitionData {
   public name: string;

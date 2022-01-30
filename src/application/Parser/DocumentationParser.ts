@@ -1,4 +1,4 @@
-import { DocumentableData, DocumentationUrlsData } from 'js-yaml-loader!@/*';
+import type { DocumentableData, DocumentationUrlsData } from '@/application/collections/';
 
 export function parseDocUrls(documentable: DocumentableData): ReadonlyArray<string> {
   if (!documentable) {

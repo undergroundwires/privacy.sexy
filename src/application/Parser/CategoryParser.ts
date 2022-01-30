@@ -1,6 +1,6 @@
-import {
+import type {
   CategoryData, ScriptData, CategoryOrScriptData, InstructionHolder,
-} from 'js-yaml-loader!@/*';
+} from '@/application/collections/';
 import { Script } from '@/domain/Script';
 import { Category } from '@/domain/Category';
 import { parseDocUrls } from './DocumentationParser';

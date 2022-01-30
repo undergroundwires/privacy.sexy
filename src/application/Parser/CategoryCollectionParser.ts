@@ -1,4 +1,4 @@
-import { CollectionData } from 'js-yaml-loader!@/*';
+import type { CollectionData } from '@/application/collections/';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { CategoryCollection } from '@/domain/CategoryCollection';

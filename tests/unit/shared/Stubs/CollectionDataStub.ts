@@ -1,6 +1,6 @@
-import {
+import type {
   CategoryData, ScriptData, CollectionData, ScriptingDefinitionData, FunctionData,
-} from 'js-yaml-loader!@/*';
+} from '@/application/collections/';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 

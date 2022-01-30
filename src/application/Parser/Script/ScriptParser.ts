@@ -1,4 +1,4 @@
-import { ScriptData } from 'js-yaml-loader!@/*';
+import type { ScriptData } from '@/application/collections/';
 import { Script } from '@/domain/Script';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { IScriptCode } from '@/domain/IScriptCode';

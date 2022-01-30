@@ -1,10 +1,10 @@
 import 'mocha';
 import { expect } from 'chai';
-import { CollectionData } from 'js-yaml-loader!@/*';
+import type { CollectionData } from '@/application/collections/';
 import { parseProjectInformation } from '@/application/Parser/ProjectInformationParser';
 import { CategoryCollectionParserType, parseApplication } from '@/application/Parser/ApplicationParser';
-import WindowsData from 'js-yaml-loader!@/application/collections/windows.yaml';
-import MacOsData from 'js-yaml-loader!@/application/collections/macos.yaml';
+import WindowsData from '@/application/collections/windows.yaml';
+import MacOsData from '@/application/collections/macos.yaml';
 import { IProjectInformation } from '@/domain/IProjectInformation';
 import { ProjectInformation } from '@/domain/ProjectInformation';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';

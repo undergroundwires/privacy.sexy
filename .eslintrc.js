@@ -88,10 +88,6 @@ function getOwnRules() {
 function getTodoRules() { // Should be worked on separate future commits
   return {
     'import/no-extraneous-dependencies': 'off',
-    // Requires webpack configuration change with import '..yaml' files.
-    'import/no-webpack-loader-syntax': 'off',
-    'import/extensions': 'off',
-    'import/no-unresolved': 'off',
     // Accessibility improvements:
     'vuejs-accessibility/form-control-has-label': 'off',
     'vuejs-accessibility/click-events-have-key-events': 'off',

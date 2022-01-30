@@ -1,4 +1,4 @@
-import { ScriptingDefinitionData } from 'js-yaml-loader!@/*';
+import type { ScriptingDefinitionData } from '@/application/collections/';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 
 export class ScriptingDefinitionDataStub implements ScriptingDefinitionData {

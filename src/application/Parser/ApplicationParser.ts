@@ -1,9 +1,9 @@
-import { CollectionData } from 'js-yaml-loader!@/*';
+import type { CollectionData } from '@/application/collections/';
 import { IApplication } from '@/domain/IApplication';
 import { IProjectInformation } from '@/domain/IProjectInformation';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
-import WindowsData from 'js-yaml-loader!@/application/collections/windows.yaml';
-import MacOsData from 'js-yaml-loader!@/application/collections/macos.yaml';
+import WindowsData from '@/application/collections/windows.yaml';
+import MacOsData from '@/application/collections/macos.yaml';
 import { parseProjectInformation } from '@/application/Parser/ProjectInformationParser';
 import { Application } from '@/domain/Application';
 import { parseCategoryCollection } from './CategoryCollectionParser';

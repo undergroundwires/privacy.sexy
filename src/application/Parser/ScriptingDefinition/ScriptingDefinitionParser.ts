@@ -1,4 +1,4 @@
-import { ScriptingDefinitionData } from 'js-yaml-loader!@/*';
+import type { ScriptingDefinitionData } from '@/application/collections/';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { ScriptingDefinition } from '@/domain/ScriptingDefinition';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';

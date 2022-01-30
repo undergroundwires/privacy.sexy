@@ -71,7 +71,6 @@
     "eslint-plugin-vuejs-accessibility": "^1.1.0",
     "js-yaml-loader": "^1.2.2",
     "markdownlint-cli": "^0.29.0",
-    "raw-loader": "^4.0.2",
     "remark-cli": "^10.0.0",
     "remark-lint-no-dead-urls": "^1.1.0",
     "remark-preset-lint-consistent": "^5.1.0",

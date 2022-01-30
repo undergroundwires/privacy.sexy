@@ -1,4 +1,4 @@
-import { FunctionCallData, ScriptData } from 'js-yaml-loader!@/*';
+import type { FunctionCallData, ScriptData } from '@/application/collections/';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { FunctionCallDataStub } from '@tests/unit/shared/Stubs/FunctionCallDataStub';
 

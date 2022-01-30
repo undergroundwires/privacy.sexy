@@ -1,4 +1,4 @@
-import { FunctionData } from 'js-yaml-loader!@/*';
+import type { FunctionData } from '@/application/collections/';
 import { ISharedFunctionCollection } from './ISharedFunctionCollection';
 
 export interface ISharedFunctionsParser {

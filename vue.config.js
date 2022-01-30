@@ -8,6 +8,7 @@ module.exports = defineConfig({
   transpileDependencies: true,
   chainWebpack: (config) => {
     changeAppEntryPoint('./src/presentation/main.ts', config);
+    addWebpackRule('yaml', /\.ya?ml$/, 'js-yaml-loader', config);
   },
   configureWebpack: {
     resolve: {
@@ -50,6 +51,15 @@ module.exports = defineConfig({
     },
   },
 });
+
+function addWebpackRule(name, test, loader, config) {
+  config.module
+    .rule(name)
+    .test(test)
+    .use(loader)
+    .loader(loader)
+    .end();
+}
 
 function changeAppEntryPoint(entryPath, config) {
   config.entry('app').clear().add(entryPath).end();

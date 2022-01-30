@@ -1,4 +1,4 @@
-import { FunctionCallData, FunctionCallsData, FunctionCallParametersData } from 'js-yaml-loader!@/*';
+import type { FunctionCallData, FunctionCallsData, FunctionCallParametersData } from '@/application/collections/';
 import { IFunctionCall } from './IFunctionCall';
 import { FunctionCallArgumentCollection } from './Argument/FunctionCallArgumentCollection';
 import { FunctionCallArgument } from './Argument/FunctionCallArgument';

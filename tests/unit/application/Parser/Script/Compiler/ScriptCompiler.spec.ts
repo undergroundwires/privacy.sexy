@@ -1,6 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
-import { FunctionData } from 'js-yaml-loader!@/*';
+import type { FunctionData } from '@/application/collections/';
 import { ILanguageSyntax, ScriptCode } from '@/domain/ScriptCode';
 import { ScriptCompiler } from '@/application/Parser/Script/Compiler/ScriptCompiler';
 import { ISharedFunctionsParser } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionsParser';

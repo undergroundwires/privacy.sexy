@@ -1,4 +1,4 @@
-import { ScriptData } from 'js-yaml-loader!@/*';
+import type { ScriptData } from '@/application/collections/';
 import { IScriptCode } from '@/domain/IScriptCode';
 
 export interface IScriptCompiler {

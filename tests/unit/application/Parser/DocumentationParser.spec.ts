@@ -1,6 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
-import { DocumentableData } from 'js-yaml-loader!@/*';
+import type { DocumentableData } from '@/application/collections/';
 import { parseDocUrls } from '@/application/Parser/DocumentationParser';
 import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 

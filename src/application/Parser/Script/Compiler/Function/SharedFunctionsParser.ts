@@ -1,4 +1,4 @@
-import { FunctionData, InstructionHolder } from 'js-yaml-loader!@/*';
+import type { FunctionData, InstructionHolder } from '@/application/collections/';
 import { createFunctionWithInlineCode, createCallerFunction } from './SharedFunction';
 import { SharedFunctionCollection } from './SharedFunctionCollection';
 import { ISharedFunctionCollection } from './ISharedFunctionCollection';

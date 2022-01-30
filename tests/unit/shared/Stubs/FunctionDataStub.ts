@@ -1,4 +1,4 @@
-import { FunctionData, ParameterDefinitionData, FunctionCallsData } from 'js-yaml-loader!@/*';
+import type { FunctionData, ParameterDefinitionData, FunctionCallsData } from '@/application/collections/';
 import { FunctionCallDataStub } from './FunctionCallDataStub';
 
 export class FunctionDataStub implements FunctionData {

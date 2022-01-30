@@ -1,4 +1,4 @@
-import { CategoryData, CategoryOrScriptData, DocumentationUrlsData } from 'js-yaml-loader!@/*';
+import type { CategoryData, CategoryOrScriptData, DocumentationUrlsData } from '@/application/collections/';
 import { ScriptDataStub } from './ScriptDataStub';
 
 export class CategoryDataStub implements CategoryData {
