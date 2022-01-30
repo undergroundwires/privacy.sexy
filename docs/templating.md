@@ -3,14 +3,15 @@
 ## Benefits of templating
 
 - Generating scripts by sharing code to increase best-practice usage and maintainability.
-- Creating self-contained scripts without depending on each other that can be easily shared.
+- Creating self-contained scripts without cross-dependencies.
 - Use of pipes for writing cleaner code and letting pipes do dirty work.
 
 ## Expressions
 
-- Expressions in the language are defined inside mustaches (double brackets, `{{` and `}}`).
-- Expression syntax is inspired mainly by [Go Templates](https://pkg.go.dev/text/template).
-- Expressions are used in and enabled by functions where they can be used.
+- Expressions start and end with mustaches (double brackets, `{{` and `}}`).
+  - E.g. `Hello {{ $name }} !`
+- Syntax is close to [Go Templates ❤️](https://pkg.go.dev/text/template) that has inspired this templating language.
+- Functions enables usage of expressions.
   - In script definition parts of a function, see [`Function`](./collection-files.md#Function).
   - When doing a call as argument values, see [`FunctionCall`](./collection-files.md#Function).
 
@@ -55,34 +56,36 @@ A function can call other functions such as:
 
 ### with
 
-- Skips the block if the variable is absent or empty.
-- Binds its context (`.`) value of provided argument for the parameter if provided one.
-- A block is defined as `{{ with $parameterName }} Parameter value is {{ . }} here {{ end }}`.
-- The parameters used for `with` condition should be declared as optional, otherwise `with` block becomes redundant.
-- Example:
+Skips its "block" if the variable is absent or empty. Its "block" is between `with` start (`{{ with .. }}`) and end (`{{ end }`}) expressions. E.g. `{{ with $parameterName }} Hi, I'm a block! {{ end }}`.
 
-  ```yaml
-    function: FunctionThatOutputsConditionally
-    parameters:
-      - name: 'argument'
-        optional: true
-    code: |- 
-      {{ with $argument }}
-        Value is: {{ . }}
-      {{ end }}
-  ```
+Binds its context (`.`) value of provided argument for the parameter if provided one. E.g. `{{ with $parameterName }} Parameter value is {{ . }} here {{ end }}`.
+
+💡 Declare parameters used for `with` condition as optional. Set `optional: true` for the argument if you use it like `{{ with $argument }} .. {{ end }}`.
+
+Example:
+
+```yaml
+  function: FunctionThatOutputsConditionally
+  parameters:
+    - name: 'argument'
+      optional: true
+  code: |- 
+    {{ with $argument }}
+      Value is: {{ . }}
+    {{ end }}
+```
 
 ### Pipes
 
-- Pipes are set of functions available for handling text in privacy.sexy.
+- Pipes are functions available for handling text.
 - Allows stacking actions one after another also known as "chaining".
-- Just like [Unix pipelines](https://en.wikipedia.org/wiki/Pipeline_(Unix)), the concept is simple: each pipeline's output becomes the input of the following pipe.
-- Pipes are provided and defined by the compiler and consumed by collection files.
-- Pipes can be combined with [parameter substitution](#parameter-substitution) and [with](#with).
+- Like [Unix pipelines](https://en.wikipedia.org/wiki/Pipeline_(Unix)), the concept is simple: each pipeline's output becomes the input of the following pipe.
+- You cannot create pipes. [A dedicated compiler](./application.md#parsing-and-compiling) provides pre-defined pipes to consume in collection files.
+- You can combine pipes with other expressions such as [parameter substitution](#parameter-substitution) and [with](#with) syntax.
 - ❗ Pipe names must be camelCase without any space or special characters.
 - **Existing pipes**
   - `inlinePowerShell`: Converts a multi-lined PowerShell script to a single line.
-  - `escapeDoubleQuotes`: Escapes `"` characters to be used inside double quotes (`"`)
+  - `escapeDoubleQuotes`: Escapes `"` characters, allows you to use them inside double quotes (`"`).
 - **Example usages**
   - `{{ with $code }} echo "{{ . | inlinePowerShell }}" {{ end }}`
   - `{{ with $code }} echo "{{ . | inlinePowerShell | escapeDoubleQuotes }}" {{ end }}`

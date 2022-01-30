@@ -97,39 +97,35 @@
 
 ## Get started
 
-- Online version at [https://privacy.sexy](https://privacy.sexy)
-  - 💡 No need to run any compiled software on your computer.
-- Alternatively download offline version for [Windows](https://github.com/undergroundwires/privacy.sexy/releases/download/0.11.3/privacy.sexy-Setup-0.11.3.exe), [macOS](https://github.com/undergroundwires/privacy.sexy/releases/download/0.11.3/privacy.sexy-0.11.3.dmg) or [Linux](https://github.com/undergroundwires/privacy.sexy/releases/download/0.11.3/privacy.sexy-0.11.3.AppImage).
-  - 💡 Single click to execute your script.
-- ❗ Come back regularly to apply latest version for stronger privacy and security.
+- 🌍️ **Online**: [https://privacy.sexy](https://privacy.sexy).
+- 🖥️ **Offline**: Check [releases page](https://github.com/undergroundwires/privacy.sexy/releases), or download directly for: [Windows](https://github.com/undergroundwires/privacy.sexy/releases/download/0.11.2/privacy.sexy-Setup-0.11.2.exe), [macOS](https://github.com/undergroundwires/privacy.sexy/releases/download/0.11.2/privacy.sexy-0.11.2.dmg), [Linux](https://github.com/undergroundwires/pr.vacy.sexy/releases/download/0.11.2/privacy.sexy-0.11.2.AppImage).
 
-[![privacy.sexy application](img/screenshot.png?raw=true)](https://privacy.sexy)
+Online version does not require to run any software on your computer. Offline version has more functions such as running the scripts directly.
 
-## Why
+💡 You should apply your configuration from time to time (more than once). It would strengthen your privacy and security control because privacy.sexy and its scripts get better and stronger in every new version.
 
-- Rich tweak pool to harden security & privacy of the OS and other software on it
-- Free (both free as in beer and free as in speech)
-- No need to run any compiled software that has access to your system, just run the generated scripts
-- Have full visibility into what the tweaks do as you enable them
-- Ability to revert (undo) applied scripts
-- Everything is transparent: both application and its infrastructure are open-source and automated
-- Easily extendable with [own powerful templating language](./docs/templating.md)
-- Each script is independently executable without cross-dependencies
+[![privacy.sexy application](img/screenshot.png?raw=true )](https://privacy.sexy)
 
-## Extend scripts
+## Features
 
-- You can either [create an issue](https://github.com/undergroundwires/privacy.sexy/issues/new/choose)
-- Or send a PR:
-  1. Fork the repository
-  2. Add more scripts in respective script collection in [collections](src/application/collections/) folder.
-     - 📖 If you're unsure about the syntax you can refer to the [collection files | documentation](docs/collection-files.md).
-     - 🙏 For any new script, please add `revertCode` and `docs` values if possible.
-  3. Send a pull request 👌
+- **Rich**: Hundreds of scripts that aims to give you control of your data.
+- **Free**: Both free as in "beer" and free as in "speech".
+- **Transparent**. Have full visibility into what the tweaks do as you enable them.
+- **Reversible**. Revert if something feels wrong.
+- **Accessible**. No need to run any compiled software on your computer with web version.
+- **Open**. What you see as code in this repository is what you get. The application itself, its infrastructure and deployments are open-source and automated thanks to [bump-everywhere](https://github.com/undergroundwires/bump-everywhere).
+- **Tested.** A lot of tests. Automated and manual. Community-testing and verification. Stability improvements comes before new features.
+- **Extensible**. Effortlessly [extend scripts](./CONTRIBUTING.md#extend-scripts) with a custom designed [templating language](./docs/templating.md).
+- **Portable and simple**. Every script is independently executable without cross-dependencies.
+
+## Contributing
+
+Contributions of any type are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) as starting point, it includes useful information like [how to add new scripts](./CONTRIBUTING.md#extend-scripts).
 
 ## Development
 
-See [development.md](./docs/development.md) for Docker usage, running/building application, development best-practices along with other information related to development of this project.
-
-## Architecture
+Refer to [development.md](./docs/development.md) for Docker usage and reading more about setting up your development environment.
 
 Check [architecture.md](./docs/architecture.md) for an overview of design and how different parts and layers work together. You can refer to [application.md](./docs/application.md) for a closer look at application layer codebase and [presentation.md](./docs/presentation.md) for code related to GUI layer. [collection-files.md](./docs/collection-files.md) explains the YAML files that are the core of the application and [templating.md](./docs/templating.md) documents how to use templating language in those files. In [ci-cd.md](./docs/ci-cd.md), you can read more about the pipelines that automates maintenance tasks and ensures you get what see.
+
+[docs/](./docs/) folder includes all other documentation.

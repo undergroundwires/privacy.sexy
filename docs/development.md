@@ -5,7 +5,7 @@ Before your commit, a good practice is to:
 1. [Run unit tests](#testing)
 2. [Lint your code](#linting)
 
-You could run other types of tests as well, but they may take longer time and overkill for your changes. All tests are executed inside a pull request.
+You could run other types of tests as well, but they may take longer time and overkill for your changes. Automated actions executes the tests for a pull request or change in the main branch. See [ci-cd.md](./ci-cd.md) for more information.
 
 ## Commands
 
@@ -21,6 +21,8 @@ You could run other types of tests as well, but they may take longer time and ov
 - Run e2e (end-to-end) tests
   - Interactive mode with GUI: `npm run test:e2e`
   - Headless mode without GUI: `npm run test:e2e -- --headless`
+
+📖 Read more about testing in [tests](./tests.md).
 
 ### Linting
 
@@ -48,4 +50,4 @@ You could run other types of tests as well, but they may take longer time and ov
 
 You should use EditorConfig to follow project style.
 
-For Visual Studio Code, recommended extensions are defined in [`.vscode/extensions.json`](./../.vscode/extensions.json).
+For Visual Studio Code, [`.vscode/extensions.json`](./../.vscode/extensions.json) includes list of recommended extensions.

@@ -59,10 +59,8 @@ This project includes [GitHub Actions](../.github/workflows/) to automatically p
 
 ## GitOps
 
-CI/CD is fully automated using different Git events and GitHub actions. This repository uses [bump-everywhere](https://github.com/undergroundwires/bump-everywhere) to automate versioning, tagging, creation of [`CHANGELOG.md`](./../CHANGELOG.md) and GitHub releases. A dedicated [workflow](./../.github/workflows/release.desktop.yaml) creates desktop installers and executables and attaches them into GitHub releases.
+CI/CD pipelines automate operational tasks based on different Git events. [bump-everywhere](https://github.com/undergroundwires/bump-everywhere) enables this automation.
 
-Everything that's merged in the master goes directly to production.
+📖 Read more in [`ci-cd.md`](./ci-cd.md#gitops).
 
-📖 Refer to [ci-cd.md](./ci-cd.md) to read more on CI/CD pipelines.
-
-[![CI/CD to AWS with GitHub Actions](../img/architecture/gitops.png)](../.github/workflows/)
+[![CI/CD using GitHub Actions](../img/architecture/gitops.png)](../.github/workflows/)
