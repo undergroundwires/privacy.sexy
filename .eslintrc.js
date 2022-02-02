@@ -4,6 +4,7 @@ const { rules: baseES6Rules } = require('eslint-config-airbnb-base/rules/es6');
 const { rules: baseImportsRules } = require('eslint-config-airbnb-base/rules/imports');
 const { rules: baseStyleRules } = require('eslint-config-airbnb-base/rules/style');
 const { rules: baseVariablesRules } = require('eslint-config-airbnb-base/rules/variables');
+const tsconfigJson = require('./tsconfig.json');
 
 module.exports = {
   root: true,
@@ -76,9 +77,8 @@ function getOwnRules() {
         groups: [ // Enforce more strict order than AirBnb
           'builtin', 'external', 'internal', 'parent', 'sibling', 'index', 'object', 'type'],
         pathGroups: [ // Fix manually configured paths being incorrectly grouped as "external"
-          '@/**', // @/..
-          '@tests/**', // @tests/.. (not matching anything after @** because there can be third parties as well)
-          'js-yaml-loader!@/**', // E.g. js-yaml-loader!@/..
+          ...getAliasesFromTsConfig(),
+          'js-yaml-loader!@/**',
         ].map((pattern) => ({ pattern, group: 'internal' })),
       },
     ],
@@ -283,4 +283,9 @@ function getTypeScriptOverrides() {
     //   },
     // ],
   };
+}
+
+function getAliasesFromTsConfig() {
+  return Object.keys(tsconfigJson.compilerOptions.paths)
+    .map((path) => `${path}*`);
 }

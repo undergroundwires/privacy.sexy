@@ -1,6 +1,7 @@
 const { resolve } = require('path');
 const { defineConfig } = require('@vue/cli-service');
 const packageJson = require('./package.json');
+const tsconfigJson = require('./tsconfig.json');
 
 loadVueAppRuntimeVariables();
 
@@ -12,8 +13,8 @@ module.exports = defineConfig({
   },
   configureWebpack: {
     resolve: {
-      alias: { // also requires path alias in tsconfig.json
-        '@tests': resolve(__dirname, 'tests/'),
+      alias: {
+        ...getAliasesFromTsConfig(),
       },
       fallback: {
         /* Tell webpack to ignore polyfilling them because Node core modules are never used
@@ -76,5 +77,17 @@ function ignorePolyfills(...moduleNames) {
   return moduleNames.reduce((obj, module) => {
     obj[module] = false;
     return obj;
+  }, {});
+}
+
+function getAliasesFromTsConfig() {
+  const { paths } = tsconfigJson.compilerOptions;
+  return Object.keys(paths).reduce((aliases, pathName) => {
+    const pathFolder = paths[pathName][0];
+    const aliasFolder = pathFolder.substring(0, pathFolder.length - 1); // trim * from end
+    const aliasName = pathName.substring(0, pathName.length - 2); // trim /* from end
+    const aliasPath = resolve(__dirname, aliasFolder);
+    aliases[aliasName] = aliasPath;
+    return aliases;
   }, {});
 }
