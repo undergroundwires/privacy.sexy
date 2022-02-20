@@ -4761,19 +4761,29 @@ actions:
                         serviceName: MessagingService
                         defaultStartupMode: Manual # Alowed values: Boot | System | Automatic | Manual
             -
-                name: Windows Push Notification Service
-                # Hosts Windows notification platform, which provides support for local and push notifications.
-                # While connected to a VPN that disallows Split Tunneling, the WpnUserService_[unique ID] process bypasses the tunnel
-                # connecting directly to Microsoft. This behavior will reveal the real IP address of the host. This can be observed with
-                # the Windows Resource Monitor. 
+                name: Windows Push Notification Service (breaks network settings view on Windows 10)
                 recommend: strict
                 docs:
+                    # It enables third-party developers to send toast, tile, badge, and raw updates from their own cloud service.
+                    # In the URL below you can read more about how it communicates with other sources.
+                    - https://docs.microsoft.com/en-us/windows/apps/design/shell/tiles-and-notifications/windows-push-notification-services--wns--overview
+                    # Hosts Windows notification platform, which provides support for local and push notifications.
+                    # According the uncited Wikipedia article, it bypasses VPN and connects directly to Microsoft.
+                    # It reveals real IP address of the host which circumvents the anonymity provided by VPN.
                     - https://en.wikipedia.org/w/index.php?title=Windows_Push_Notification_Service&oldid=1012335551#Privacy_Issue
                     # System-wide service:
                     - http://batcmd.com/windows/10/services/wpnservice/
                     # Per-user service:
                     - http://batcmd.com/windows/10/services/wpnuserservice/
+                    # Disabling system-wide user service "WpnUserService" breaks accessing access network settings on Windows 10.
+                    # It works fine on Windows 11.
+                    - https://github.com/undergroundwires/privacy.sexy/issues/110
                 call:
+                    -
+                        function: ShowWarning
+                        parameters:
+                            message: Disabling Network settings on Windows 10 is known to break Network settings.
+                            ignoreWindows11: true
                     - # Windows Push Notifications System Service
                         function: DisableService
                         parameters:
@@ -7021,3 +7031,26 @@ functions:
                             Write-Host "`"$serviceName`" is already running, no need to start."
                         }
                     }
+    -
+        name: ShowWarning
+        parameters:
+            - name: message
+            - name: ignoreWindows11 # Ignores warning message on Windows 11, allowed values: true | false, default: false
+            - name: ignoreWindows10 # Ignores warning message on Windows 10, allowed values: true | false, default: false
+        call:
+            function: RunPowerShell
+            parameters:
+                code: |-
+                    $warningMessage = '{{ $message }}'
+                    $ignoredMajorVersions = @(
+                        {{ with $ignoreWindows10 }}10{{ end }}
+                        {{ with $ignoreWindows11 }}11{{ end }}
+                    )
+
+                    $windowsVersion = [System.Environment]::OSVersion.Version.Major
+                    if ($ignoredMajorVersions -contains $windowsVersion) {
+                        exit 0 # Skip
+                    }
+
+                    Write-Warning "$warningMessage"
+                # revertCode: No warnings needed when reverting
