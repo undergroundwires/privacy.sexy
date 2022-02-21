@@ -6931,6 +6931,7 @@ functions:
                             Write-Error "Failed to set using $($command.Name): $_"
                         }
                         exit 1
+                    }
     -
         name: DisableService
         parameters:
