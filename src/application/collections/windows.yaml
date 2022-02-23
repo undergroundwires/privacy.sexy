@@ -6875,15 +6875,18 @@ functions:
                 #       - `setDefaultOnWindows11` parameter changes this behavior to set the default value using `Set-MpPreference`
                 #   On Windows 10:
                 #       - If `default` argument is is provided, it's set using `Set-MpPreference`
-                #       - `default` argument should not be provided if `Remove-MpPreference` is suppored in Windows 10,
+                #       - `default` argument should not be provided if `Remove-MpPreference` is supported in Windows 10.
                 revertCode: |-
                     $propertyName = '{{ $property }}'
                     {{ with $default }} $defaultValue = {{ . }} {{ end }}
                     $setDefaultOnWindows10 = {{ with $default }} $true # {{ end }} $false
                     $setDefaultOnWindows11 = {{ with $setDefaultOnWindows11 }} $true # {{ end }} $false
+
+                    $osVersion = [System.Environment]::OSVersion.Version
+                    function Test-IsWindows10 { ($osVersion.Major -eq 10) -and ($osVersion.Build -lt 22000) }
+                    function Test-IsWindows11 { ($osVersion.Major -gt 10) -or (($osVersion.Major -eq 10) -and ($osVersion.Build -ge 22000)) }
                     # ------ Set-MpPreference ------
-                    if(($setDefaultOnWindows10 -and [System.Environment]::OSVersion.Version.Major -lt 11) `
-                            -or ($setDefaultOnWindows11 -and [System.Environment]::OSVersion.Version.Major -eq 11)) {
+                    if(($setDefaultOnWindows10 -and (Test-IsWindows10)) -or ($setDefaultOnWindows11 -and (Test-IsWindows11))) {
                         if((Get-MpPreference -ErrorAction Ignore).$propertyName -eq $defaultValue) {
                             Write-Host "Skipping. `"$propertyName`" is already configured as desired `"$defaultValue`"."
                             exit 0
@@ -7043,13 +7046,15 @@ functions:
             parameters:
                 code: |-
                     $warningMessage = '{{ $message }}'
-                    $ignoredMajorVersions = @(
-                        {{ with $ignoreWindows10 }}10{{ end }}
-                        {{ with $ignoreWindows11 }}11{{ end }}
-                    )
 
-                    $windowsVersion = [System.Environment]::OSVersion.Version.Major
-                    if ($ignoredMajorVersions -contains $windowsVersion) {
+                    $ignoreWindows10 = {{ with $ignoreWindows10 }} $true # {{ end }} $false
+                    $ignoreWindows11 = {{ with $ignoreWindows11 }} $true # {{ end }} $false
+
+                    $osVersion = [System.Environment]::OSVersion.Version
+                    function Test-IsWindows10 { ($osVersion.Major -eq 10) -and ($osVersion.Build -lt 22000) }
+                    function Test-IsWindows11 { ($osVersion.Major -gt 10) -or (($osVersion.Major -eq 10) -and ($osVersion.Build -ge 22000)) }
+
+                    if (($ignoreWindows10 -and (Test-IsWindows10)) -or ($ignoreWindows11 -and (Test-IsWindows11))) {
                         exit 0 # Skip
                     }
 
