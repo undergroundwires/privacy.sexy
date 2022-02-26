@@ -1,8 +1,9 @@
-import { OperatingSystem } from './OperatingSystem';
+import { OperatingSystem } from '@/domain/OperatingSystem';
+import { Version } from '@/domain/Version';
 
 export interface IProjectInformation {
   readonly name: string;
-  readonly version: string;
+  readonly version: Version;
   readonly repositoryUrl: string;
   readonly homepage: string;
   readonly feedbackUrl: string;

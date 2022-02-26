@@ -77,7 +77,7 @@ export default class TheFooter extends Vue {
 
   private initialize(app: IApplication) {
     const { info } = app;
-    this.version = info.version;
+    this.version = info.version.toString();
     this.homepageUrl = info.homepage;
     this.repositoryUrl = info.repositoryWebUrl;
     this.releaseUrl = info.releaseUrl;

@@ -43,14 +43,14 @@ describe('CodeSubstituter', () => {
     // arrange
     const info = new ProjectInformationStub();
     const date = new Date();
-    const testCases = [
+    const testCases: Array<{ parameter: string, argument: string }> = [
       {
         parameter: 'homepage',
         argument: info.homepage,
       },
       {
         parameter: 'version',
-        argument: info.version,
+        argument: info.version.toString(),
       },
       {
         parameter: 'date',

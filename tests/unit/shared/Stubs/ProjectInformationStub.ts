@@ -1,9 +1,11 @@
 import { IProjectInformation } from '@/domain/IProjectInformation';
+import { Version } from '@/domain/Version';
+import { VersionStub } from './VersionStub';
 
 export class ProjectInformationStub implements IProjectInformation {
   public name = 'name';
 
-  public version = 'version';
+  public version = new VersionStub();
 
   public repositoryUrl = 'repositoryUrl';
 
@@ -22,7 +24,7 @@ export class ProjectInformationStub implements IProjectInformation {
     return this;
   }
 
-  public withVersion(version: string): ProjectInformationStub {
+  public withVersion(version: Version): ProjectInformationStub {
     this.version = version;
     return this;
   }

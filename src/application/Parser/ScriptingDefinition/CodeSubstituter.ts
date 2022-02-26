@@ -22,7 +22,7 @@ export class CodeSubstituter implements ICodeSubstituter {
     const substitute = (name: string, value: string) => args
       .addArgument(new FunctionCallArgument(name, value));
     substitute('homepage', info.homepage);
-    substitute('version', info.version);
+    substitute('version', info.version.toString());
     substitute('date', this.date.toUTCString());
     const compiledCode = this.compiler.compileExpressions(code, args);
     return compiledCode;

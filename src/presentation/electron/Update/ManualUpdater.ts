@@ -6,6 +6,8 @@ import log from 'electron-log';
 import fetch from 'cross-fetch';
 import { ProjectInformation } from '@/domain/ProjectInformation';
 import { OperatingSystem } from '@/domain/OperatingSystem';
+import { Version } from '@/domain/Version';
+import { parseProjectInformation } from '@/application/Parser/ProjectInformationParser';
 import { UpdateProgressBar } from './UpdateProgressBar';
 
 export function requiresManualUpdate(): boolean {
@@ -17,17 +19,23 @@ export async function handleManualUpdate(info: UpdateInfo) {
   if (result === ManualDownloadDialogResult.NoAction) {
     return;
   }
-  const project = new ProjectInformation(
-    process.env.VUE_APP_NAME,
-    info.version,
-    process.env.VUE_APP_REPOSITORY_URL,
-    process.env.VUE_APP_HOMEPAGE_URL,
-  );
+  const project = getTargetProject(info.version);
   if (result === ManualDownloadDialogResult.VisitReleasesPage) {
     await shell.openExternal(project.releaseUrl);
   } else if (result === ManualDownloadDialogResult.UpdateNow) {
     await download(info, project);
   }
+}
+
+function getTargetProject(targetVersion: string) {
+  const existingProject = parseProjectInformation(process.env);
+  const targetProject = new ProjectInformation(
+    existingProject.name,
+    new Version(targetVersion),
+    existingProject.repositoryUrl,
+    existingProject.homepage,
+  );
+  return targetProject;
 }
 
 enum ManualDownloadDialogResult {

@@ -1,21 +1,22 @@
 import { assertInRange } from '@/application/Common/Enum';
 import { IProjectInformation } from './IProjectInformation';
 import { OperatingSystem } from './OperatingSystem';
+import { Version } from './Version';
 
 export class ProjectInformation implements IProjectInformation {
   public readonly repositoryWebUrl: string;
 
   constructor(
     public readonly name: string,
-    public readonly version: string,
+    public readonly version: Version,
     public readonly repositoryUrl: string,
     public readonly homepage: string,
   ) {
     if (!name) {
       throw new Error('name is undefined');
     }
-    if (!version || +version <= 0) {
-      throw new Error('version should be higher than zero');
+    if (!version) {
+      throw new Error('undefined version');
     }
     if (!repositoryUrl) {
       throw new Error('repositoryUrl is undefined');
@@ -27,7 +28,8 @@ export class ProjectInformation implements IProjectInformation {
   }
 
   public getDownloadUrl(os: OperatingSystem): string {
-    return `${this.repositoryWebUrl}/releases/download/${this.version}/${getFileName(os, this.version)}`;
+    const fileName = getFileName(os, this.version.toString());
+    return `${this.repositoryWebUrl}/releases/download/${this.version}/${fileName}`;
   }
 
   public get feedbackUrl(): string {

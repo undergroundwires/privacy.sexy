@@ -7,13 +7,14 @@ describe('ProjectInformationParser', () => {
   describe('parseProjectInformation', () => {
     it('parses expected repository version', () => {
       // arrange
-      const expected = 'expected-version';
+      const expected = '0.11.3';
       const env = getProcessEnvironmentStub();
       env.VUE_APP_VERSION = expected;
       // act
       const info = parseProjectInformation(env);
       // assert
-      expect(info.version).to.be.equal(expected);
+      const actual = info.version.toString();
+      expect(actual).to.be.equal(expected);
     });
     it('parses expected repository url', () => {
       // arrange
