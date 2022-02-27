@@ -62,6 +62,7 @@
     "chai": "^4.3.4",
     "cypress": "^8.3.0",
     "electron": "^15.3.0",
+    "electron-builder": "^22.14.13",
     "electron-devtools-installer": "^3.2.0",
     "electron-log": "^4.4.1",
     "electron-updater": "^4.3.9",
