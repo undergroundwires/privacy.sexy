@@ -4,6 +4,12 @@
 
 <!-- markdownlint-disable MD033 -->
 <p align="center">
+  <a href="https://undergroundwires.dev/donate?project=privacy.sexy">
+    <img
+      alt="donation badge"
+      src="https://undergroundwires.dev/img/badges/donate/flat.svg"
+    />
+  </a>
   <a href="https://github.com/undergroundwires/privacy.sexy/blob/master/CONTRIBUTING.md">
     <img
       alt="contributions are welcome"
@@ -118,9 +124,13 @@ Online version does not require to run any software on your computer. Offline ve
 - **Extensible**. Effortlessly [extend scripts](./CONTRIBUTING.md#extend-scripts) with a custom designed [templating language](./docs/templating.md).
 - **Portable and simple**. Every script is independently executable without cross-dependencies.
 
-## Contributing
+## Support
 
-Contributions of any type are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) as starting point, it includes useful information like [how to add new scripts](./CONTRIBUTING.md#extend-scripts).
+**Sponsor 💕**. This project is free, and it might not be tempting to donate since you don't have to pay. But your donations will ensure that this project stays alive. A monthly coffee from you would make a difference. Recurring donations allow me to spend more time and resources on this project. Consider sponsoring on [GitHub Sponsors](https://github.com/sponsors/undergroundwires), or you can donate using [other ways such as crypto or a coffee](https://undergroundwires.dev/donate).
+
+**Star 🤩**. I know that not everyone can afford donating a coffee to show support. In this case, feel free to give it a star ⭐ . It helps me to see that you appreciate the project.
+
+**Contribute 👷**. Contributions of any type are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) as the starting point. It includes useful information like [how to add new scripts](./CONTRIBUTING.md#extend-scripts).
 
 ## Development
 
