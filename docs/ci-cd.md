@@ -12,9 +12,9 @@ Everything that's merged in the master goes directly to production.
 
 privacy.sexy uses [GitHub actions](https://github.com/features/actions) to define and run pipelines as code.
 
-GitHub workflows i.e. pipelines exist in [`/.github/.workflows/`](./../.github/workflows/) folder without any subfolders due to GitHub actions requirements [1] .
+GitHub workflows i.e. pipelines exist in [`/.github/workflows/`](./../.github/workflows/) folder without any subfolders due to GitHub actions requirements [1] .
 
-[1]: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#about-yaml-syntax-for-workflows
+Local GitHub actions are defined in [`/.github/actions/`](./../.github/actions/) and used to reuse same workflow steps.
 
 ## Pipeline types
 

@@ -1,8 +1,8 @@
 name: release-site
 
 on:
- release:
-   types: [created] # will be triggered when a NON-draft release is created and published.
+  release:
+    types: [created] # will be triggered when a NON-draft release is created and published.
 
 jobs:
   aws-deploy: # see: https://github.com/undergroundwires/aws-static-site-with-cd
@@ -77,30 +77,28 @@ jobs:
         name: "App: Checkout"
         uses: actions/checkout@v2
         with:
-          path: site
+          path: app
           ref: master # otherwise we don't get version bump commit
       -
         name: "App: Setup node"
-        uses: actions/setup-node@v1
-        with:
-          node-version: 15.x
+        uses: ./app/.github/actions/setup-node
       -
         name: "App: Install dependencies"
         run: npm ci
-        working-directory: site
+        working-directory: app
       -
         name: "App: Run unit tests"
         run: npm run test:unit
-        working-directory: site
+        working-directory: app
       - 
         name: "App: Build"
         run: npm run build
-        working-directory: site
+        working-directory: app
       -
         name: "App: Deploy to S3"
         run: >-
           bash "aws/scripts/deploy/deploy-to-s3.sh" \
-            --folder site/dist \
+            --folder app/dist \
             --web-stack-name privacysexy-web-stack --web-stack-s3-name-output-name S3BucketName \
             --storage-class ONEZONE_IA \
             --role-arn ${{secrets.AWS_S3_SITE_DEPLOYMENT_ROLE_ARN}} \

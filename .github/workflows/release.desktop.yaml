@@ -20,9 +20,7 @@ jobs:
       - name: Checkout to bump commit
         run: git checkout "$(git rev-list "${{ github.event.release.tag_name }}"..master | tail -1)"
       - name: Setup node
-        uses: actions/setup-node@v1
-        with:
-          node-version: 15.x
+        uses: ./.github/actions/setup-node
       - name: Install dependencies
         run: npm ci
       - name: Run unit tests

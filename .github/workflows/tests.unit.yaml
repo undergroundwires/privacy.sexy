@@ -16,10 +16,8 @@ jobs:
         name: Checkout
         uses: actions/checkout@v2
       -
-        name: Setup node
-        uses: actions/setup-node@v1
-        with:
-          node-version: 15.x
+        name: Set-up node
+        uses: ./.github/actions/setup-node
       -
         name: Install dependencies
         run: npm ci
