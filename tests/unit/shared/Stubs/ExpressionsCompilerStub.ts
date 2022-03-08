@@ -5,8 +5,8 @@ import { ISharedFunction } from '@/application/Parser/Script/Compiler/Function/I
 import { FunctionCallArgumentCollectionStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentCollectionStub';
 
 export class ExpressionsCompilerStub implements IExpressionsCompiler {
-  public readonly callHistory =
-  new Array<{ code: string, parameters: IReadOnlyFunctionCallArgumentCollection }>();
+  public readonly callHistory = new Array<{
+    code: string, parameters: IReadOnlyFunctionCallArgumentCollection }>();
 
   private readonly scenarios = new Array<ITestScenario>();
 

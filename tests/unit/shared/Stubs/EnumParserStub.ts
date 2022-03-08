@@ -1,8 +1,8 @@
 import { IEnumParser } from '@/application/Common/Enum';
 
 export class EnumParserStub<T> implements IEnumParser<T> {
-  private readonly scenarios =
-  new Array<{ inputName: string, inputValue: string, outputValue: T }>();
+  private readonly scenarios = new Array<{
+    inputName: string, inputValue: string, outputValue: T }>();
 
   private defaultValue: T;
 
