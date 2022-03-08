@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.11.4 (2022-03-08)
+
+* Improve performance of selecting scripts | [8e96c19](https://github.com/undergroundwires/privacy.sexy/commit/8e96c19126aa4cba6418de5ccaa9e2dcf8faab78)
+* Fix reverting of Windows NVIDIA telemetry service | [2354f0b](https://github.com/undergroundwires/privacy.sexy/commit/2354f0ba9fed3aa23569b5ea6391a7119fe1ab53)
+* Add AirBnb TypeScript overrides for linting | [834ce8c](https://github.com/undergroundwires/privacy.sexy/commit/834ce8cf9e8e46934dfa604526360870d109765b)
+* Transpile dependencies for wider browser support | [0e52a99](https://github.com/undergroundwires/privacy.sexy/commit/0e52a99efa2b02d1aba10885a76e03aa6f9be7f8)
+* Add more and unify tests for absent object cases | [44d79e2](https://github.com/undergroundwires/privacy.sexy/commit/44d79e2c9a97639bbd188a8fdfd740f1a5a1d6ee)
+* Fix Windows DoSvc not being disabled #115 | [43ce834](https://github.com/undergroundwires/privacy.sexy/commit/43ce834750ddf471636d1ece4324d02357947f9f)
+* Move stubs from `./stubs` to `./shared/Stubs` | [803ef2b](https://github.com/undergroundwires/privacy.sexy/commit/803ef2bb3eea68306377e40e326c791402998650)
+* Improve documentation for developing | [3c3ec80](https://github.com/undergroundwires/privacy.sexy/commit/3c3ec80525b97e8a24db4c44bbf42a7b4e089056)
+* Improve documentation for architecture | [1bcc6c8](https://github.com/undergroundwires/privacy.sexy/commit/1bcc6c8b2b923b4d4b1662f990d86b190ce73342)
+* Improve existing documentation | [db47440](https://github.com/undergroundwires/privacy.sexy/commit/db47440d470ea6a6e100b620b10d078c01314992)
+* Refactor to remove code coupling with Webpack | [5bbbb9c](https://github.com/undergroundwires/privacy.sexy/commit/5bbbb9cecca0a3828036e7fc34dcd66970ce334a)
+* Refactor to remove hardcoding of aliases | [481a02a](https://github.com/undergroundwires/privacy.sexy/commit/481a02afd5190eb77a37fa450e50816b2268e99c)
+* Document WpnService breaking on Windows 10 #110 | [3785e41](https://github.com/undergroundwires/privacy.sexy/commit/3785e410db461f667a834e0b388d81e4baa028e4)
+* Fix error when reverting Windows Defender setting | [956052c](https://github.com/undergroundwires/privacy.sexy/commit/956052c8fff042812fe84fe4d7fa5c579365ff9b)
+* Fix Windows 11 being detected as Windows 10 | [d6bc33e](https://github.com/undergroundwires/privacy.sexy/commit/d6bc33ec865d50efc6b8d4ccc2f789edd874fcee)
+* Refactor to use version object #59 | [eeb1d5b](https://github.com/undergroundwires/privacy.sexy/commit/eeb1d5b0c40a55675921af3f67f366b2ff658acf)
+* Fix Microsoft Defender alert for uninstaller #114 | [112e79a](https://github.com/undergroundwires/privacy.sexy/commit/112e79a64c6153f4ce3b48c27a09639e7647aebc)
+* Add donation information | [05a6a84](https://github.com/undergroundwires/privacy.sexy/commit/05a6a84c3739ec900343591ac1f7a9f310cd73f2)
+* Bump node environment to 16.x | [242a497](https://github.com/undergroundwires/privacy.sexy/commit/242a497e7debb351da19b20b63a3554f0cca4b5c)
+* Bump dependencies to latest | [efd63ff](https://github.com/undergroundwires/privacy.sexy/commit/efd63ff85dea4c9a9c033c54bc1be378742de351)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.11.3...0.11.4)
+
 ## 0.11.3 (2022-01-05)
 
 * Fix double backlashes in Windows vscode scripts | [5f091bb](https://github.com/undergroundwires/privacy.sexy/commit/5f091bb6abed878271e2321cd784f34436c677bd)
