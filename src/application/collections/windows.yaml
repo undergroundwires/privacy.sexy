@@ -5459,6 +5459,17 @@ actions:
                     reg add "HKLM\Software\Piriform\CCleaner" /v "(Cfg)GetIpmForTrial" /t REG_DWORD /d 1 /f
                     reg add "HKLM\Software\Piriform\CCleaner" /v "(Cfg)SoftwareUpdater" /t REG_DWORD /d 1 /f
                     reg add "HKLM\Software\Piriform\CCleaner" /v "(Cfg)SoftwareUpdaterIpm" /t REG_DWORD /d 1 /f
+            -
+                name: Block Dropbox Telemetry
+                call:
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            url: telemetry.dropbox.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            url: telemetry.v.dropbox.com
     -
         category: Security improvements
         docs: |-
@@ -17017,3 +17028,13 @@ functions:
                 parameters:
                     message: For the changes to fully take effect, please restart your computer.
                     showOnRevert: 'true'
+                    Write-Warning "$warningMessage"
+                # revertCode: No warnings needed when reverting
+    -
+        name: BlockViaHostsFile
+        parameters:
+            - name: url
+        code: find /c "{{ $url }}" "%WINDIR%\System32\drivers\etc\hosts" || ( echo ◙127.0.0.1 {{ $url }}>> "%WINDIR%\System32\drivers\etc\hosts" )
+        revertCode: |-
+            copy /y %WINDIR%\System32\drivers\etc\hosts %WINDIR%\System32\drivers\etc\hosts.bak
+            powershell -Command "(Get-Content -path %WINDIR%\System32\drivers\etc\hosts -Raw).replace('127.0.0.1 {{ $url }}','') | Set-Content %WINDIR%\System32\drivers\etc\hosts"
