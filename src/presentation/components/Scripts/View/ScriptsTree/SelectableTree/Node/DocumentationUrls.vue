@@ -35,7 +35,7 @@ export default class DocumentationUrls extends Vue {
   color: $color-primary;
   cursor: pointer;
   vertical-align: middle;
-  &:hover {
+  @include hover-or-touch {
     color: $color-primary-darker;
   }
   &:not(:first-child) {

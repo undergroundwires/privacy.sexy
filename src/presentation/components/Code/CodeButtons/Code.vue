@@ -43,8 +43,8 @@ export default class Code extends Vue {
   .copy-button {
     margin-left: 1rem;
     cursor: pointer;
-    &:hover {
-        color: $color-primary;
+    @include hover-or-touch {
+      color: $color-primary;
     }
   }
   code {

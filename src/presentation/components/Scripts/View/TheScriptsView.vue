@@ -140,7 +140,7 @@ $margin-inner: 4px;
       cursor: pointer;
       font-size: 1.25em;
       margin-left: 0.25rem;
-      &:hover {
+      @include hover-or-touch {
         color: $color-primary-dark;
       }
     }

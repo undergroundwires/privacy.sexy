@@ -4,7 +4,7 @@
 
 @use "@/presentation/assets/styles/colors" as *;
 @use "@/presentation/assets/styles/fonts" as *;
-
+@use "@/presentation/assets/styles/mixins" as *;
 
 * {
     box-sizing: border-box;
@@ -14,7 +14,7 @@ a {
     color:inherit;
     text-decoration: underline;
     cursor: pointer;
-    &:hover {
+    @include hover-or-touch {
         color: $color-primary;
     }
 }

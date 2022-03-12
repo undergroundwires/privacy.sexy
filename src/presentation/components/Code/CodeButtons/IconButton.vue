@@ -45,14 +45,14 @@ export default class IconButton extends Vue {
   cursor: pointer;
   width: 10%;
   min-width: 90px;
-  &:hover {
+  @include hover-or-touch {
     background: $color-surface;
     box-shadow: 0px 2px 10px 5px $color-secondary;
   }
-  &:hover>&__text {
+  @include hover-or-touch('>&__text') {
     display: block;
   }
-  &:hover>&__icon {
+  @include hover-or-touch('>&__icon') {
     display: none;
   }
   &__text {
@@ -62,6 +62,9 @@ export default class IconButton extends Vue {
     color: $color-primary;
     font-weight: 500;
     line-height: 1.1;
+    @include hover-or-touch {
+      display: block;
+    }
   }
 }
 </style>

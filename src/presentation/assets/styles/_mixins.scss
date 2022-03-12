@@ -1,0 +1,16 @@
+@mixin hover-or-touch($selector-suffix: '', $selector-prefix: '&') {
+    @media (hover: hover) { 
+        /*  We only do this if hover is truly supported; otherwise the emulator in mobile
+            keeps hovered style in-place even after touching, making it sticky.  */
+        #{$selector-prefix}:hover #{$selector-suffix} {
+            @content;
+        }
+    }
+    @media (hover: none) {
+        /*  We only do this if hover is not supported,otherwise the desktop behavior is not
+            as desired; it does not get activated on hover but only during click/touch.  */
+        #{$selector-prefix}:active #{$selector-suffix} {
+            @content;
+        }
+    }
+}

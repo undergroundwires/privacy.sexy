@@ -1,5 +1,6 @@
 // Overrides base styling for LiquorTree
 @use "@/presentation/assets/styles/colors" as *;
+@use "@/presentation/assets/styles/mixins" as *;
 
 $color-tree-bg                          : $color-primary-darker;
 $color-node-arrow                       : $color-on-primary;
@@ -23,9 +24,10 @@ $color-node-checkbox-tick-checked       : $color-on-secondary;
                 text-transform: uppercase;
                 font-size: 1.5em;
             }
-            &:hover {
+            @include hover-or-touch {
                 background: $color-node-hover-bg !important;
             }
+            background: $color-tree-bg !important; // If not styled, it gets white background on mobile.
         }
         &.selected { // When using keyboard navigation it highlights current item and its child items
             background: $color-node-keyboard-bg;

@@ -56,7 +56,7 @@ $color-hover    : $color-primary;
   display: flex;
   flex-direction: column;
   align-items: center;
-  &:hover {
+  @include hover-or-touch {
     .line {
       background: $color-hover;
     }

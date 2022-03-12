@@ -144,7 +144,7 @@ $card-horizontal-gap    : $card-gap;
     flex-direction: column;
     justify-content: center;
 
-    &:hover {
+    @include hover-or-touch {
       background-color: $color-secondary;
       color: $color-on-secondary;
       transform: scale(1.05);
@@ -189,7 +189,7 @@ $card-horizontal-gap    : $card-gap;
       margin-right: 0.25em;
       cursor: pointer;
       color: $color-primary-light;
-      &:hover {
+      @include hover-or-touch {
         color: $color-primary;
       }
     }
@@ -236,7 +236,7 @@ $card-horizontal-gap    : $card-gap;
       opacity: 1;
     }
 
-    &:hover {
+    @include hover-or-touch {
       .card__inner {
         transform: scale(1);
       }
@@ -251,7 +251,7 @@ $card-horizontal-gap    : $card-gap;
       transform: scale(0.95);
     }
 
-    &:hover {
+    @include hover-or-touch {
       .card__inner {
         background-color: $color-primary;
         transform: scale(1);
