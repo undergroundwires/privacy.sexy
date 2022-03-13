@@ -33,8 +33,8 @@ export default class DocumentationUrls extends Vue {
 .documentationUrl {
   display: flex;
   color: $color-primary;
-  cursor: pointer;
   vertical-align: middle;
+  @include clickable;
   @include hover-or-touch {
     color: $color-primary-darker;
   }

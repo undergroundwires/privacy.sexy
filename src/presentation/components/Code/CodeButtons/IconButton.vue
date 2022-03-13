@@ -42,7 +42,8 @@ export default class IconButton extends Vue {
   box-shadow: 0 3px 9px $color-primary-darkest;
   border-radius: 4px;
 
-  cursor: pointer;
+  @include clickable;
+
   width: 10%;
   min-width: 90px;
   @include hover-or-touch {

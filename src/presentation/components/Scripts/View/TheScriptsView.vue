@@ -137,7 +137,7 @@ $margin-inner: 4px;
     margin-top: 1em;
     color: $color-primary;
     &__close-button {
-      cursor: pointer;
+      @include clickable;
       font-size: 1.25em;
       margin-left: 0.25rem;
       @include hover-or-touch {

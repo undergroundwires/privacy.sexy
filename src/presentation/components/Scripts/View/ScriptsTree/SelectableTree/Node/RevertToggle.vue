@@ -65,7 +65,6 @@ $size-height            : 30px;
 
 // https://www.designlabthemes.com/css-toggle-switch/
 .checkbox-switch {
-  cursor: pointer;
   display: inline-block;
   overflow: hidden;
   position: relative;
@@ -87,7 +86,7 @@ $size-height            : 30px;
     margin: 0;
     opacity: 0;
     z-index: 2;
-    cursor: pointer;
+    @include clickable;
   }
 
   .checkbox-animate {

@@ -29,7 +29,7 @@ export default class MenuOptionListItem extends Vue {
 @use "@/presentation/assets/styles/main" as *;
 
 .enabled {
-  cursor: pointer;
+  @include clickable;
   @include hover-or-touch {
     font-weight:bold;
     text-decoration:underline;

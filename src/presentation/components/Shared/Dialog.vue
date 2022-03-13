@@ -52,7 +52,7 @@ export default class Dialog extends Vue {
     font-size: 1.5em;
     margin-right: 0.25em;
     align-self: flex-start;
-    cursor: pointer;
+    @include clickable;
     @include hover-or-touch {
       color: $color-primary;
     }

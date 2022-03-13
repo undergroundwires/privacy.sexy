@@ -130,7 +130,7 @@ $card-horizontal-gap    : $card-gap;
     padding-bottom: 0;
     padding-left: $card-inner-padding;
     position: relative;
-    cursor: pointer;
+    @include clickable;
     background-color: $color-primary;
     color: $color-on-primary;
     font-size: 1.5em;
@@ -187,7 +187,7 @@ $card-horizontal-gap    : $card-gap;
       font-size: 1.5em;
       align-self: flex-start;
       margin-right: 0.25em;
-      cursor: pointer;
+      @include clickable;
       color: $color-primary-light;
       @include hover-or-touch {
         color: $color-primary;

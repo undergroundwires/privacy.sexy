@@ -14,3 +14,16 @@
         }
     }
 }
+
+@mixin clickable($cursor: 'pointer') {
+    cursor: #{$cursor};
+    user-select: none;
+    /*
+        It removes (blue) background during touch as seen in mobile webkit browsers (Chrome, Safari, Edge).
+        The default behavior is that any element (or containing element) that has cursor:pointer
+        explicitly set and is clicked will flash blue momentarily.
+        Removing it could have accessibility issue since that hides an interactive cue. But as we still provide
+        response to user actions through :active by `hover-or-touch` mixin.
+    */
+    -webkit-tap-highlight-color: transparent;
+}

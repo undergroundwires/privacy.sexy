@@ -69,12 +69,14 @@ function getOperatingSystemName(os: OperatingSystem): string {
 </script>
 
 <style scoped lang="scss">
+@use "@/presentation/assets/styles/main" as *;
 .url {
+  @include clickable;
   &__active {
-      font-size: 1em;
+    font-size: 1em;
   }
   &__inactive {
-      font-size: 0.70em;
+    font-size: 0.70em;
   }
 }
 </style>

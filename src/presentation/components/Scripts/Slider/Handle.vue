@@ -52,7 +52,7 @@ $color          : $color-primary-dark;
 $color-hover    : $color-primary;
 
 .handle {
-  user-select: none;
+  @include clickable($cursor: 'ew-resize');
   display: flex;
   flex-direction: column;
   align-items: center;
