@@ -8,7 +8,10 @@
     }"
     ref="cardElement">
       <div class="card__inner">
-        <span v-if="cardTitle && cardTitle.length > 0">
+        <!-- Title -->
+        <span
+          class="card__inner__title"
+          v-if="cardTitle && cardTitle.length > 0">
           <span>{{cardTitle}}</span>
         </span>
         <span v-else>Oh no 😢</span>
@@ -152,7 +155,12 @@ $card-horizontal-gap    : $card-gap;
     &:after {
       transition: all 0.3s ease-in-out;
     }
-
+    &__title {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: center;
+    }
     &__state-icons {
       height: $card-inner-padding;
       margin-right: -$card-inner-padding;
