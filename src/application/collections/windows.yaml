@@ -61,7 +61,7 @@ actions:
                         children:
                             -
                                 category: Clear Quick Access (jump) lists
-                                docs: https://cyberforensicator.com/wp-content/uploads/2017/01/1-s2.0-S1742287616300202-main.2-14.pdf
+                                docs: https://web.archive.org/web/20210205154335/https://cyberforensicator.com/wp-content/uploads/2017/01/1-s2.0-S1742287616300202-main.2-14.pdf
                                 children:
                                     -
                                         name: Clear recently accessed files
