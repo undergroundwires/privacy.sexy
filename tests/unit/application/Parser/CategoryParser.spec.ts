@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import type { CategoryData, CategoryOrScriptData } from '@/application/collections/';
 import { CategoryFactoryType, parseCategory } from '@/application/Parser/CategoryParser';
 import { parseScript } from '@/application/Parser/Script/ScriptParser';
-import { parseDocUrls } from '@/application/Parser/DocumentationParser';
+import { parseDocs } from '@/application/Parser/DocumentationParser';
 import { ScriptCompilerStub } from '@tests/unit/shared/Stubs/ScriptCompilerStub';
 import { ScriptDataStub } from '@tests/unit/shared/Stubs/ScriptDataStub';
 import { CategoryCollectionParseContextStub } from '@tests/unit/shared/Stubs/CategoryCollectionParseContextStub';
@@ -157,14 +157,14 @@ describe('CategoryParser', () => {
     it('returns expected docs', () => {
       // arrange
       const url = 'https://privacy.sexy';
-      const expected = parseDocUrls({ docs: url });
+      const expected = parseDocs({ docs: url });
       const category = new CategoryDataStub()
         .withDocs(url);
       // act
       const actual = new TestBuilder()
         .withData(category)
         .parseCategory()
-        .documentationUrls;
+        .docs;
       // assert
       expect(actual).to.deep.equal(expected);
     });

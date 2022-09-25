@@ -36,6 +36,7 @@
     "file-saver": "^2.0.5",
     "install": "^0.13.0",
     "liquor-tree": "^0.2.70",
+    "markdown-it": "^13.0.1",
     "npm": "^8.5.3",
     "v-tooltip": "2.1.3",
     "vue": "^2.6.14",

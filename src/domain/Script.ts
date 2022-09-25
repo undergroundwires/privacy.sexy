@@ -7,7 +7,7 @@ export class Script extends BaseEntity<string> implements IScript {
   constructor(
     public readonly name: string,
     public readonly code: IScriptCode,
-    public readonly documentationUrls: ReadonlyArray<string>,
+    public readonly docs: ReadonlyArray<string>,
     public readonly level?: RecommendationLevel,
   ) {
     super(name);

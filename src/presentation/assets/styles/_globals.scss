@@ -10,12 +10,13 @@
     box-sizing: border-box;
 }
 
+$globals-color-hover: $color-primary;
 a {
     color:inherit;
     text-decoration: underline;
     cursor: pointer;
     @include hover-or-touch {
-        color: $color-primary;
+        color: $globals-color-hover;
     }
 }
 

@@ -8,7 +8,7 @@ export class Category extends BaseEntity<number> implements ICategory {
   constructor(
     id: number,
     public readonly name: string,
-    public readonly documentationUrls: ReadonlyArray<string>,
+    public readonly docs: ReadonlyArray<string>,
     public readonly subCategories?: ReadonlyArray<ICategory>,
     public readonly scripts?: ReadonlyArray<IScript>,
   ) {

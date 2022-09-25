@@ -90,7 +90,7 @@ function isReversible(category: ICategory): boolean {
 function expectSameCategory(node: INode, category: ICategory): void {
   expect(node.type).to.equal(NodeType.Category, getErrorMessage('type'));
   expect(node.id).to.equal(getCategoryNodeId(category), getErrorMessage('id'));
-  expect(node.documentationUrls).to.equal(category.documentationUrls, getErrorMessage('documentationUrls'));
+  expect(node.docs).to.equal(category.docs, getErrorMessage('docs'));
   expect(node.text).to.equal(category.name, getErrorMessage('name'));
   expect(node.isReversible).to.equal(isReversible(category), getErrorMessage('isReversible'));
   expect(node.children).to.have.lengthOf(category.scripts.length || category.subCategories.length, getErrorMessage('name'));
@@ -110,7 +110,7 @@ function expectSameCategory(node: INode, category: ICategory): void {
 function expectSameScript(node: INode, script: IScript): void {
   expect(node.type).to.equal(NodeType.Script, getErrorMessage('type'));
   expect(node.id).to.equal(getScriptNodeId(script), getErrorMessage('id'));
-  expect(node.documentationUrls).to.equal(script.documentationUrls, getErrorMessage('documentationUrls'));
+  expect(node.docs).to.equal(script.docs, getErrorMessage('docs'));
   expect(node.text).to.equal(script.name, getErrorMessage('name'));
   expect(node.isReversible).to.equal(script.canRevert(), getErrorMessage('canRevert'));
   expect(node.children).to.equal(undefined);

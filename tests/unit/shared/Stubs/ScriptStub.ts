@@ -11,7 +11,7 @@ export class ScriptStub extends BaseEntity<string> implements IScript {
     revert: `REM revert-code (${this.id})`,
   };
 
-  public readonly documentationUrls = new Array<string>();
+  public readonly docs = new Array<string>();
 
   public level? = RecommendationLevel.Standard;
 

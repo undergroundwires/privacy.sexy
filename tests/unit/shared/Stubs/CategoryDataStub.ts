@@ -1,4 +1,4 @@
-import type { CategoryData, CategoryOrScriptData, DocumentationUrlsData } from '@/application/collections/';
+import type { CategoryData, CategoryOrScriptData, DocumentationData } from '@/application/collections/';
 import { ScriptDataStub } from './ScriptDataStub';
 
 export class CategoryDataStub implements CategoryData {
@@ -6,7 +6,7 @@ export class CategoryDataStub implements CategoryData {
 
   public category = 'category name';
 
-  public docs?: DocumentationUrlsData;
+  public docs?: DocumentationData;
 
   public withChildren(children: readonly CategoryOrScriptData[]) {
     this.children = children;
@@ -18,7 +18,7 @@ export class CategoryDataStub implements CategoryData {
     return this;
   }
 
-  public withDocs(docs: DocumentationUrlsData) {
+  public withDocs(docs: DocumentationData) {
     this.docs = docs;
     return this;
   }

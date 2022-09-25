@@ -12,7 +12,7 @@ describe('NodePredicateFilter', () => {
       data: {
         text: 'script-text',
         type: NodeType.Script,
-        documentationUrls: [],
+        docs: [],
         isReversible: false,
       },
       states: undefined,
@@ -22,7 +22,7 @@ describe('NodePredicateFilter', () => {
       id: 'script',
       text: 'script-text',
       isReversible: false,
-      documentationUrls: [],
+      docs: [],
       children: [],
       type: NodeType.Script,
     };
@@ -54,7 +54,7 @@ function getExistingNode(): ILiquorTreeExistingNode {
     data: {
       text: 'script-text',
       type: NodeType.Script,
-      documentationUrls: [],
+      docs: [],
       isReversible: false,
     },
     states: undefined,

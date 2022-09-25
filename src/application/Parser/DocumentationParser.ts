@@ -1,64 +1,58 @@
-import type { DocumentableData, DocumentationUrlsData } from '@/application/collections/';
+import type { DocumentableData, DocumentationData } from '@/application/collections/';
 
-export function parseDocUrls(documentable: DocumentableData): ReadonlyArray<string> {
+export function parseDocs(documentable: DocumentableData): readonly string[] {
   if (!documentable) {
     throw new Error('missing documentable');
   }
   const { docs } = documentable;
-  if (!docs || !docs.length) {
+  if (!docs) {
     return [];
   }
-  let result = new DocumentationUrlContainer();
+  let result = new DocumentationContainer();
   result = addDocs(docs, result);
   return result.getAll();
 }
 
 function addDocs(
-  docs: DocumentationUrlsData,
-  urls: DocumentationUrlContainer,
-): DocumentationUrlContainer {
+  docs: DocumentationData,
+  container: DocumentationContainer,
+): DocumentationContainer {
   if (docs instanceof Array) {
-    urls.addUrls(docs);
+    if (docs.length > 0) {
+      container.addParts(docs);
+    }
   } else if (typeof docs === 'string') {
-    urls.addUrl(docs);
+    container.addPart(docs);
   } else {
-    throw new Error('Docs field (documentation url) must a string or array of strings');
+    throwInvalidType();
   }
-  return urls;
+  return container;
 }
 
-class DocumentationUrlContainer {
-  private readonly urls = new Array<string>();
+class DocumentationContainer {
+  private readonly parts = new Array<string>();
 
-  public addUrl(url: string) {
-    validateUrl(url);
-    this.urls.push(url);
+  public addPart(documentation: string) {
+    if (!documentation) {
+      throw Error('missing documentation');
+    }
+    if (typeof documentation !== 'string') {
+      throwInvalidType();
+    }
+    this.parts.push(documentation);
   }
 
-  public addUrls(urls: readonly string[]) {
-    for (const url of urls) {
-      if (typeof url !== 'string') {
-        throw new Error('Docs field (documentation url) must be an array of strings');
-      }
-      this.addUrl(url);
+  public addParts(parts: readonly string[]) {
+    for (const part of parts) {
+      this.addPart(part);
     }
   }
 
   public getAll(): ReadonlyArray<string> {
-    return this.urls;
+    return this.parts;
   }
 }
 
-function validateUrl(docUrl: string): void {
-  if (!docUrl) {
-    throw new Error('Documentation url is null or empty');
-  }
-  if (docUrl.includes('\n')) {
-    throw new Error('Documentation url cannot be multi-lined.');
-  }
-  const validUrlRegex = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g;
-  const res = docUrl.match(validUrlRegex);
-  if (res == null) {
-    throw new Error(`Invalid documentation url: ${docUrl}`);
-  }
+function throwInvalidType() {
+  throw new Error('docs field (documentation) must be an array of strings');
 }

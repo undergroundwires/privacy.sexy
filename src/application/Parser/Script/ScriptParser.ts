@@ -3,7 +3,7 @@ import { Script } from '@/domain/Script';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { IScriptCode } from '@/domain/IScriptCode';
 import { ScriptCode } from '@/domain/ScriptCode';
-import { parseDocUrls } from '../DocumentationParser';
+import { parseDocs } from '../DocumentationParser';
 import { createEnumParser, IEnumParser } from '../../Common/Enum';
 import { NodeType } from '../NodeValidation/NodeType';
 import { NodeValidator } from '../NodeValidation/NodeValidator';
@@ -23,7 +23,7 @@ export function parseScript(
     const script = scriptFactory(
       /* name: */ data.name,
       /* code: */ parseCode(data, context),
-      /* docs: */ parseDocUrls(data),
+      /* docs: */ parseDocs(data),
       /* level: */ parseLevel(data.recommend, levelParser),
     );
     return script;

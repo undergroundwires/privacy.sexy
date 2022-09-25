@@ -13,7 +13,7 @@ declare module 'liquor-tree' {
   }
   export interface ICustomLiquorTreeData {
     type: number;
-    documentationUrls: ReadonlyArray<string>;
+    docs: ReadonlyArray<string>;
     isReversible: boolean;
   }
   // https://github.com/amsik/liquor-tree/blob/master/src/lib/Node.js

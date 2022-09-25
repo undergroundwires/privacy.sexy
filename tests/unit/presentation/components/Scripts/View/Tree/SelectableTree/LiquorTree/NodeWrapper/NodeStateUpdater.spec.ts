@@ -32,16 +32,16 @@ describe('NodeStateUpdater', () => {
           // arrange
           const node = {
             id: '1',
-            data: { type: NodeType.Category, documentationUrls: [], isReversible: false },
+            data: { type: NodeType.Category, docs: [], isReversible: false },
             children: [
               {
                 id: '2',
-                data: { type: NodeType.Category, documentationUrls: [], isReversible: false },
+                data: { type: NodeType.Category, docs: [], isReversible: false },
                 children: [getScriptNode('a'), getScriptNode('b')],
               },
               {
                 id: '3',
-                data: { type: NodeType.Category, documentationUrls: [], isReversible: false },
+                data: { type: NodeType.Category, docs: [], isReversible: false },
                 children: [getScriptNode('c')],
               },
             ],
@@ -56,16 +56,16 @@ describe('NodeStateUpdater', () => {
           // arrange
           const node = {
             id: '1',
-            data: { type: NodeType.Category, documentationUrls: [], isReversible: false },
+            data: { type: NodeType.Category, docs: [], isReversible: false },
             children: [
               {
                 id: '2',
-                data: { type: NodeType.Category, documentationUrls: [], isReversible: false },
+                data: { type: NodeType.Category, docs: [], isReversible: false },
                 children: [getScriptNode('a'), getScriptNode('b')],
               },
               {
                 id: '3',
-                data: { type: NodeType.Category, documentationUrls: [], isReversible: false },
+                data: { type: NodeType.Category, docs: [], isReversible: false },
                 children: [getScriptNode('c')],
               },
             ],
@@ -80,16 +80,16 @@ describe('NodeStateUpdater', () => {
           // arrange
           const node = {
             id: '1',
-            data: { type: NodeType.Category, documentationUrls: [], isReversible: false },
+            data: { type: NodeType.Category, docs: [], isReversible: false },
             children: [
               {
                 id: '2',
-                data: { type: NodeType.Category, documentationUrls: [], isReversible: false },
+                data: { type: NodeType.Category, docs: [], isReversible: false },
                 children: [getScriptNode('a'), getScriptNode('b')],
               },
               {
                 id: '3',
-                data: { type: NodeType.Category, documentationUrls: [], isReversible: false },
+                data: { type: NodeType.Category, docs: [], isReversible: false },
                 children: [getScriptNode('c')],
               },
             ],
@@ -128,16 +128,16 @@ describe('NodeStateUpdater', () => {
           // arrange
           const node = {
             id: '1',
-            data: { type: NodeType.Category, documentationUrls: [], isReversible: false },
+            data: { type: NodeType.Category, docs: [], isReversible: false },
             children: [
               {
                 id: '2',
-                data: { type: NodeType.Category, documentationUrls: [], isReversible: false },
+                data: { type: NodeType.Category, docs: [], isReversible: false },
                 children: [getScriptNode('a'), getScriptNode('b')],
               },
               {
                 id: '3',
-                data: { type: NodeType.Category, documentationUrls: [], isReversible: false },
+                data: { type: NodeType.Category, docs: [], isReversible: false },
                 children: [getScriptNode('c')],
               },
             ],
@@ -152,16 +152,16 @@ describe('NodeStateUpdater', () => {
           // arrange
           const node = {
             id: '1',
-            data: { type: NodeType.Category, documentationUrls: [], isReversible: false },
+            data: { type: NodeType.Category, docs: [], isReversible: false },
             children: [
               {
                 id: '2',
-                data: { type: NodeType.Category, documentationUrls: [], isReversible: false },
+                data: { type: NodeType.Category, docs: [], isReversible: false },
                 children: [getScriptNode('a'), getScriptNode('b')],
               },
               {
                 id: '3',
-                data: { type: NodeType.Category, documentationUrls: [], isReversible: false },
+                data: { type: NodeType.Category, docs: [], isReversible: false },
                 children: [getScriptNode('c')],
               },
             ],
@@ -176,16 +176,16 @@ describe('NodeStateUpdater', () => {
           // arrange
           const node = {
             id: '1',
-            data: { type: NodeType.Category, documentationUrls: [], isReversible: false },
+            data: { type: NodeType.Category, docs: [], isReversible: false },
             children: [
               {
                 id: '2',
-                data: { type: NodeType.Category, documentationUrls: [], isReversible: false },
+                data: { type: NodeType.Category, docs: [], isReversible: false },
                 children: [getScriptNode('a'), getScriptNode('b')],
               },
               {
                 id: '3',
-                data: { type: NodeType.Category, documentationUrls: [], isReversible: false },
+                data: { type: NodeType.Category, docs: [], isReversible: false },
                 children: [getScriptNode('c')],
               },
             ],
@@ -204,7 +204,7 @@ describe('NodeStateUpdater', () => {
       id: scriptNodeId,
       data: {
         type: NodeType.Script,
-        documentationUrls: [],
+        docs: [],
         isReversible: false,
       },
       children: [],

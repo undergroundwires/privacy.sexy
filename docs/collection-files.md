@@ -41,6 +41,9 @@
 - `children: [` ***[`Category`](#Category)*** `|` [***`Script`***](#Script) `, ... ]`  (**required**)
   - ❗ Category must consist of at least one subcategory or script.
   - Children can be combination of scripts and subcategories.
+- `docs`: *`string`* | `[`*`string`*`, ... ]`
+  - Documentation pieces related to the category.
+  - Rendered as markdown.
 
 ### `Script`
 
@@ -71,8 +74,8 @@
   - A shared function or sequence of functions to call (called in order)
   - ❗ If not defined `code` must be defined
 - `docs`: *`string`* | `[`*`string`*`, ... ]`
-  - Single documentation URL or list of URLs for those who wants to learn more about the script
-  - E.g. `https://docs.microsoft.com/en-us/windows-server/`
+  - Documentation pieces related to the script.
+  - Rendered as markdown.
 - `recommend`: `"standard"` | `"strict"` | `undefined` (default)
   - If not defined then the script will not be recommended
   - If defined it can be either

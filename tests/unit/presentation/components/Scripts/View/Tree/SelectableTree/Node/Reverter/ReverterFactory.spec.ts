@@ -39,7 +39,7 @@ describe('ReverterFactory', () => {
       id: nodeId,
       text: 'text',
       isReversible: false,
-      documentationUrls: [],
+      docs: [],
       children: [],
       type,
     };

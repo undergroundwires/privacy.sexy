@@ -11,7 +11,7 @@ export function convertExistingToNode(liquorTreeNode: ILiquorTreeExistingNode): 
     text: liquorTreeNode.data.text,
     // selected: liquorTreeNode.states && liquorTreeNode.states.checked,
     children: convertChildren(liquorTreeNode.children, convertExistingToNode),
-    documentationUrls: liquorTreeNode.data.documentationUrls,
+    docs: liquorTreeNode.data.docs,
     isReversible: liquorTreeNode.data.isReversible,
   };
 }
@@ -27,7 +27,7 @@ export function toNewLiquorTreeNode(node: INode): ILiquorTreeNewNode {
     },
     children: convertChildren(node.children, toNewLiquorTreeNode),
     data: {
-      documentationUrls: node.documentationUrls,
+      docs: node.docs,
       isReversible: node.isReversible,
       type: node.type,
     },

@@ -12,10 +12,10 @@ declare module '@/application/collections/*' {
   }
 
   export type CategoryOrScriptData = CategoryData | ScriptData;
-  export type DocumentationUrlsData = ReadonlyArray<string> | string;
+  export type DocumentationData = ReadonlyArray<string> | string;
 
   export interface DocumentableData {
-    readonly docs?: DocumentationUrlsData;
+    readonly docs?: DocumentationData;
   }
 
   export interface InstructionHolder {

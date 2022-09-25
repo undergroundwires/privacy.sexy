@@ -36,8 +36,12 @@ function collectUniqueUrls(app: IApplication): string[] {
   return app
     .collections
     .flatMap((a) => a.getAllScripts())
-    .flatMap((script) => script.documentationUrls)
+    .flatMap((script) => script.docs?.flatMap((doc) => parseUrls(doc)))
     .filter((url, index, array) => array.indexOf(url) === index);
+}
+
+function parseUrls(text: string): string[] {
+  return text?.match(/\bhttps?:\/\/\S+/gi) ?? [];
 }
 
 function printUrls(statuses: IUrlStatus[]): string {

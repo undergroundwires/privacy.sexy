@@ -33,7 +33,7 @@ export class ScriptDataStub implements ScriptData {
 
   public recommend = RecommendationLevel[RecommendationLevel.Standard].toLowerCase();
 
-  public docs = ['hello.com'];
+  public docs?: readonly string[] = ['hello.com'];
 
   private constructor() { /* use static methods for constructing */ }
 
@@ -42,7 +42,7 @@ export class ScriptDataStub implements ScriptData {
     return this;
   }
 
-  public withDocs(docs: string[]): ScriptDataStub {
+  public withDocs(docs: readonly string[]): ScriptDataStub {
     this.docs = docs;
     return this;
   }

@@ -9,7 +9,7 @@ export class CategoryStub extends BaseEntity<number> implements ICategory {
 
   public readonly scripts = new Array<IScript>();
 
-  public readonly documentationUrls = new Array<string>();
+  public readonly docs = new Array<string>();
 
   public constructor(id: number) {
     super(id);

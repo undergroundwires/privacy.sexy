@@ -33,20 +33,20 @@ function getNode(): INode {
     text: 'parentcategory',
     isReversible: true,
     type: NodeType.Category,
-    documentationUrls: ['parentcategory-url1', 'parentcategory-url2'],
+    docs: ['parentcategory-doc1', 'parentcategory-doc2'],
     children: [
       {
         id: '2',
         text: 'subcategory',
         isReversible: true,
-        documentationUrls: ['subcategory-url1', 'subcategory-url2'],
+        docs: ['subcategory-doc1', 'subcategory-doc2'],
         type: NodeType.Category,
         children: [
           {
             id: 'script1',
             text: 'cool script 1',
             isReversible: true,
-            documentationUrls: ['script1url1', 'script1url2'],
+            docs: ['script1-doc1', 'script1-doc2'],
             children: [],
             type: NodeType.Script,
           },
@@ -54,7 +54,7 @@ function getNode(): INode {
             id: 'script2',
             text: 'cool script 2',
             isReversible: true,
-            documentationUrls: ['script2url1', 'script2url2'],
+            docs: ['script2-doc1', 'script2-doc2'],
             children: [],
             type: NodeType.Script,
           }],
@@ -66,7 +66,7 @@ function getExpectedExistingNodeData(node: INode): ILiquorTreeNodeData {
   return {
     text: node.text,
     type: node.type,
-    documentationUrls: node.documentationUrls,
+    docs: node.docs,
     isReversible: node.isReversible,
   };
 }
@@ -74,7 +74,7 @@ function getExpectedExistingNodeData(node: INode): ILiquorTreeNodeData {
 function getExpectedNewNodeData(node: INode): ICustomLiquorTreeData {
   return {
     type: node.type,
-    documentationUrls: node.documentationUrls,
+    docs: node.docs,
     isReversible: node.isReversible,
   };
 }

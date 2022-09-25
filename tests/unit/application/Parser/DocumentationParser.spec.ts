@@ -1,26 +1,60 @@
 import 'mocha';
 import { expect } from 'chai';
 import type { DocumentableData } from '@/application/collections/';
-import { parseDocUrls } from '@/application/Parser/DocumentationParser';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { parseDocs } from '@/application/Parser/DocumentationParser';
+import { itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('DocumentationParser', () => {
-  describe('parseDocUrls', () => {
-    describe('throws when absent', () => {
+  describe('parseDocs', () => {
+    describe('throws when node is missing', () => {
       itEachAbsentObjectValue((absentValue) => {
         // arrange
         const expectedError = 'missing documentable';
         // act
-        const act = () => parseDocUrls(absentValue);
+        const act = () => parseDocs(absentValue);
         // assert
         expect(act).to.throw(expectedError);
       });
+    });
+    describe('throws when single documentation is missing', () => {
+      itEachAbsentStringValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing documentation';
+        const node: DocumentableData = { docs: ['non empty doc 1', absentValue] };
+        // act
+        const act = () => parseDocs(node);
+        // assert
+        expect(act).to.throw(expectedError);
+      });
+    });
+    describe('throws when type is unexpected', () => {
+      // arrange
+      const expectedTypeError = 'docs field (documentation) must be an array of strings';
+      const wrongTypedValue = 22 as never;
+      const testCases: ReadonlyArray<{ name: string, node: DocumentableData }> = [
+        {
+          name: 'given docs',
+          node: { docs: wrongTypedValue },
+        },
+        {
+          name: 'single doc',
+          node: { docs: ['non empty doc 1', wrongTypedValue] },
+        },
+      ];
+      for (const testCase of testCases) {
+        it(testCase.name, () => {
+          // act
+          const act = () => parseDocs(testCase.node);
+          // assert
+          expect(act).to.throw(expectedTypeError);
+        });
+      }
     });
     it('returns empty when empty', () => {
       // arrange
       const empty: DocumentableData = { };
       // act
-      const actual = parseDocUrls(empty);
+      const actual = parseDocs(empty);
       // assert
       expect(actual).to.have.lengthOf(0);
     });
@@ -30,7 +64,7 @@ describe('DocumentationParser', () => {
       const expected = [url];
       const sut: DocumentableData = { docs: url };
       // act
-      const actual = parseDocUrls(sut);
+      const actual = parseDocs(sut);
       // assert
       expect(actual).to.deep.equal(expected);
     });
@@ -39,7 +73,7 @@ describe('DocumentationParser', () => {
       const expected = ['https://privacy.sexy', 'https://github.com/undergroundwires/privacy.sexy'];
       const sut: DocumentableData = { docs: expected };
       // act
-      const actual = parseDocUrls(sut);
+      const actual = parseDocs(sut);
       // assert
       expect(actual).to.deep.equal(expected);
     });

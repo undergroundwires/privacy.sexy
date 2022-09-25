@@ -1,3 +1,3 @@
 export interface IDocumentable {
-  readonly documentationUrls: ReadonlyArray<string>;
+  readonly docs: ReadonlyArray<string>;
 }

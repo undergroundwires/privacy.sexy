@@ -2,7 +2,7 @@ import 'mocha';
 import { expect } from 'chai';
 import type { ScriptData } from '@/application/collections/';
 import { parseScript, ScriptFactoryType } from '@/application/Parser/Script/ScriptParser';
-import { parseDocUrls } from '@/application/Parser/DocumentationParser';
+import { parseDocs } from '@/application/Parser/DocumentationParser';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { ICategoryCollectionParseContext } from '@/application/Parser/Script/ICategoryCollectionParseContext';
 import { itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
@@ -36,13 +36,13 @@ describe('ScriptParser', () => {
       const docs = ['https://expected-doc1.com', 'https://expected-doc2.com'];
       const script = ScriptDataStub.createWithCode()
         .withDocs(docs);
-      const expected = parseDocUrls(script);
+      const expected = parseDocs(script);
       // act
       const actual = new TestBuilder()
         .withData(script)
         .parseScript();
       // assert
-      expect(actual.documentationUrls).to.deep.equal(expected);
+      expect(actual.docs).to.deep.equal(expected);
     });
     describe('level', () => {
       describe('accepts absent level', () => {

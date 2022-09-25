@@ -5,7 +5,7 @@ import { Script } from '@/domain/Script';
 import { Category } from '@/domain/Category';
 import { NodeValidator } from '@/application/Parser/NodeValidation/NodeValidator';
 import { NodeType } from '@/application/Parser/NodeValidation/NodeType';
-import { parseDocUrls } from './DocumentationParser';
+import { parseDocs } from './DocumentationParser';
 import { ICategoryCollectionParseContext } from './Script/ICategoryCollectionParseContext';
 import { parseScript } from './Script/ScriptParser';
 
@@ -50,7 +50,7 @@ function parseCategoryRecursively(context: ICategoryParseContext): Category {
     return context.factory(
       /* id: */ categoryIdCounter++,
       /* name: */ context.categoryData.category,
-      /* docs: */ parseDocUrls(context.categoryData),
+      /* docs: */ parseDocs(context.categoryData),
       /* categories: */ children.subCategories,
       /* scripts: */ children.subScripts,
     );

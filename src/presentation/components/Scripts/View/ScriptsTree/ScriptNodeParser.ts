@@ -64,7 +64,7 @@ function convertCategoryToNode(
     type: NodeType.Category,
     text: category.name,
     children,
-    documentationUrls: category.documentationUrls,
+    docs: category.docs,
     isReversible: children && children.every((child) => child.isReversible),
   };
 }
@@ -75,7 +75,7 @@ function convertScriptToNode(script: IScript): INode {
     type: NodeType.Script,
     text: script.name,
     children: undefined,
-    documentationUrls: script.documentationUrls,
+    docs: script.docs,
     isReversible: script.canRevert(),
   };
 }
