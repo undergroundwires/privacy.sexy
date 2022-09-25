@@ -6569,6 +6569,56 @@ actions:
                                     parameters:
                                         capabilityName: XPS.Viewer
             -
+                category: Remove Widgets
+                docs: |-
+                    Windows 11 adds a new taskbar flyout named "Widgets", which displays a panel with Microsoft Start, a news aggregator
+                    with personalized stories and content (expanding upon the "news and interests" panel introduced in later builds of Windows 10) [1]. 
+                    It's rebranding/future version of older "Windows 10 News and Interests" feature [2].
+                    The user can customize the panel by adding or removing widgets, rearranging, resizing, and personalizing the content [1].
+
+                    It has privacy implications as it collects data about your usage of the computer such as diagnostics data [3]. 
+
+                    [1]: https://en.wikipedia.org/wiki/Features_new_to_Windows_11#Windows_shell "Features new to Windows 11 | Wikipedia"
+                    [2]: https://www.bleepingcomputer.com/news/microsoft/windows-10-news-and-interests-enabled-for-everyone-in-latest-update/ "Windows 10 News and Interests enabled for everyone in latest update | Bleeping Computer"
+                    [3]: https://support.microsoft.com/en-us/windows/stay-up-to-date-with-widgets-7ba79aaa-dac6-4687-b460-ad16a06be6e4 "What data does Microsoft collect? | Widgets | Microsoft"
+                children:
+                    -
+                        name: Unpin Widgets from taskbar
+                        docs: |-
+                            To control whether the Widgets button is visible on the taskbar, Microsoft introduced `TaskbarDa` registry value [1].
+                            Possible `DWORD` 32-bit settings for the `TaskbarDa` value are [1] [2]:
+
+                            1. 0 = Hidden
+                            2. 1 = Visible
+
+                            This registry key does not exist in Windows 11 installations by default.
+
+                            [1]: https://www.elevenforum.com/t/add-or-remove-widgets-button-on-taskbar-in-windows-11.32/ " Add or Remove Widgets Button on Taskbar in Windows 11 | Windows Eleven Forum"
+                            [2]: https://www.bleepingcomputer.com/news/microsoft/new-windows-11-registry-hacks-to-customize-your-device/ "New Windows 11 registry hacks to customize your device | Bleeping Computer"
+                        recommend: strict
+                        code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarDa" /t REG_DWORD /d "0" /f
+                        revertCode: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarDa" /f 2>nul
+                    -
+                        name: Uninstall Windows Web Experience Pack (breaks Widgets)
+                        recommend: strict
+                        docs: |-
+                            Windows Web Experience Pack is a store app that enables Widgets feature [1].
+                            The app is not needed and not known to break other OS functionality if you do not wish to use Widgets feature.
+
+                            This app is known to collect diagnostics data, individual widgets might also collect data [2].
+
+                            See its [Windows Store Page](https://apps.microsoft.com/store/detail/windows-web-experience-pack/9MSSGKG348SP).
+                            It requires you to agree with Microsoft's general privacy terms, see [privacy agreement](http://go.microsoft.com/fwlink/?LinkID=521839) [3].
+                            The agreement allows Microsoft to collect your personal data [3].
+
+                            [1]: https://support.microsoft.com/en-us/windows/how-to-update-the-windows-web-experience-pack-in-the-microsoft-store-a16c9bf1-f042-4dc9-a523-740cca1e1e60 "How to update the Windows Web Experience Pack in the Microsoft Store | support.microsoft.com"
+                            [2]: https://apps.microsoft.com/store/detail/windows-web-experience-pack/9MSSGKG348SP "Windows Web Experience Pack - Microsoft Store Apps | apps.microsoft.com/store"
+                            [3]: https://support.microsoft.com/en-us/windows/stay-up-to-date-with-widgets-7ba79aaa-dac6-4687-b460-ad16a06be6e4 "Stay up to date with widgets | support.microsoft.com"
+                        call:
+                            function: UninstallStoreApp
+                            parameters:
+                                packageName: MicrosoftWindows.Client.WebExperience
+            -
                 name: Remove Meet Now icon from taskbar
                 recommend: strict
                 docs: # Skype feature, introduced in 20H2, KB4580364 update
