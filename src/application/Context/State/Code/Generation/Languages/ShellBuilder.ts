@@ -8,6 +8,10 @@ export class ShellBuilder extends CodeBuilder {
   protected writeStandardOut(text: string): string {
     return `echo '${escapeForEcho(text)}'`;
   }
+
+  protected getNewLineTerminator(): string {
+    return '\n';
+  }
 }
 
 function escapeForEcho(text: string) {

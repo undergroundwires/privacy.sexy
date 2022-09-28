@@ -11,6 +11,10 @@ describe('BatchBuilder', () => {
     public writeStandardOut(text: string): string {
       return super.writeStandardOut(text);
     }
+
+    public getNewLineTerminator(): string {
+      return super.getNewLineTerminator();
+    }
   }
   describe('getCommentDelimiter', () => {
     it('returns expected', () => {
@@ -56,5 +60,16 @@ describe('BatchBuilder', () => {
         expect(test.expected).to.equal(actual);
       });
     }
+  });
+  describe('getNewLineTerminator', () => {
+    it('returns expected', () => {
+      // arrange
+      const expected = '\r\n';
+      const sut = new BatchBuilderRevealer();
+      // act
+      const actual = sut.getNewLineTerminator();
+      // assert
+      expect(expected).to.equal(actual);
+    });
   });
 });

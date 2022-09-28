@@ -8,6 +8,10 @@ export class BatchBuilder extends CodeBuilder {
   protected writeStandardOut(text: string): string {
     return `echo ${escapeForEcho(text)}`;
   }
+
+  protected getNewLineTerminator(): string {
+    return '\r\n';
+  }
 }
 
 function escapeForEcho(text: string) {

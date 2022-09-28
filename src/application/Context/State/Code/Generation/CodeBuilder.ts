@@ -1,6 +1,5 @@
 import { ICodeBuilder } from './ICodeBuilder';
 
-const NewLine = '\n';
 const TotalFunctionSeparatorChars = 58;
 
 export abstract class CodeBuilder implements ICodeBuilder {
@@ -59,10 +58,12 @@ export abstract class CodeBuilder implements ICodeBuilder {
   }
 
   public toString(): string {
-    return this.lines.join(NewLine);
+    return this.lines.join(this.getNewLineTerminator());
   }
 
   protected abstract getCommentDelimiter(): string;
 
   protected abstract writeStandardOut(text: string): string;
+
+  protected abstract getNewLineTerminator(): string;
 }

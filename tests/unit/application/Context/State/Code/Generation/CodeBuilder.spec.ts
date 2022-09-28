@@ -6,8 +6,15 @@ describe('CodeBuilder', () => {
   class CodeBuilderConcrete extends CodeBuilder {
     private commentDelimiter = '//';
 
+    private newLineTerminator = '\n';
+
     public withCommentDelimiter(delimiter: string): CodeBuilderConcrete {
       this.commentDelimiter = delimiter;
+      return this;
+    }
+
+    public withNewLineTerminator(terminator: string): CodeBuilderConcrete {
+      this.newLineTerminator = terminator;
       return this;
     }
 
@@ -17,6 +24,10 @@ describe('CodeBuilder', () => {
 
     protected writeStandardOut(text: string): string {
       return text;
+    }
+
+    protected getNewLineTerminator(): string {
+      return this.newLineTerminator;
     }
   }
   describe('appendLine', () => {
@@ -39,6 +50,43 @@ describe('CodeBuilder', () => {
       const result = sut.toString();
       const lines = getLines(result);
       expect(lines[1]).to.equal('str');
+    });
+    describe('append multi-line string as multiple lines', () => {
+      describe('recognizes different line terminators', () => {
+        const delimiters = ['\n', '\r\n', '\r'];
+        for (const delimiter of delimiters) {
+          it(`using "${JSON.stringify(delimiter)}"`, () => {
+            // arrange
+            const line1 = 'line1';
+            const line2 = 'line2';
+            const code = `${line1}${delimiter}${line2}`;
+            const sut = new CodeBuilderConcrete();
+            // act
+            sut.appendLine(code);
+            // assert
+            const result = sut.toString();
+            const lines = getLines(result);
+            expect(lines).to.have.lengthOf(2);
+            expect(lines[0]).to.equal(line1);
+            expect(lines[1]).to.equal(line2);
+          });
+        }
+      });
+      it('normalizes different line terminators', () => {
+        // arrange
+        const lineTerminator = 'ðŸ’';
+        const lines = ['line1', 'line2', 'line3', 'line4'];
+        const code = `${lines[0]}\n${lines[1]}\r\n${lines[2]}\r${lines[3]}`;
+        const expected = `${lines[0]}${lineTerminator}${lines[1]}${lineTerminator}${lines[2]}${lineTerminator}${lines[3]}`;
+        const sut = new CodeBuilderConcrete()
+          .withNewLineTerminator(lineTerminator);
+        // act
+        const actual = sut
+          .appendLine(code)
+          .toString();
+        // assert
+        expect(actual).to.equal(expected);
+      });
     });
   });
   it('appendFunction', () => {
