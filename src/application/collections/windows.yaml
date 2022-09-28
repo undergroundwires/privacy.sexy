@@ -367,7 +367,33 @@ actions:
                             function: ClearDirectoryContents
                             parameters:
                                 directoryGlob: '%USERPROFILE%\.dotnet\TelemetryStorageService'
-            -
+                    -
+                        category: Clear Microsoft Teams data
+                        children:
+                            -
+                                name: Clear Microsoft Teams logs
+                                recommend: standard
+                                docs: |-
+                                    Microsoft Teams logs are stored in [1]:
+
+                                    - `%LocalAppData%\SquirrelTemp\SquirrelSetup.log`
+                                    - `%AppData%\Microsoft\Teams\logs.txt`
+
+                                    [1]: https://learn.microsoft.com/en-us/microsoftteams/troubleshoot-installation#troubleshoot-update-issues  "Troubleshoot Microsoft Teams installation and update issues on Windows - Microsoft Teams | Microsoft Learn"
+                                code: |-
+                                    del /f /q %LocalAppData%\SquirrelTemp\SquirrelSetup.log
+                                    del /f /q %AppData%\Microsoft\Teams\logs.txt
+                            -
+                                name: Clear temporary Teams installation files
+                                recommend: standard
+                                docs: |-
+                                    `%LocalAppData%\SquirrelTemp` is a temporary directory used by Teams installer
+                                    during installation phase [1].
+
+                                    [1]: https://learn.microsoft.com/en-us/microsoftteams/troubleshoot-installation#troubleshoot-update-issues  "Troubleshoot Microsoft Teams installation and update issues on Windows - Microsoft Teams | Microsoft Learn"
+                                code: |-
+                                    rmdir /s /q "%LocalAppData%\SquirrelTemp" 2>nul
+            - 
                 category: Clear browser history
                 children:
                     -
@@ -10083,6 +10109,168 @@ actions:
                                     parameters:
                                         capabilityName: XPS.Viewer
             -
+                category: Remove Chat (Microsoft Teams)
+                docs: |-
+                    Chat from Microsoft Teams is installed and pinned to the Taskbar at Windows 11 startup [1].
+                    Teams app powers Chat [1].
+
+                    This application collects required data such as:
+                    - Software/hardware device, type and version [2],
+                    - Users location, country, and other connectivity data [2],
+                    - Your meetings and conversations chats [3],
+                    - Your profile data e.g. e-mail address, profile picture [3],
+                    - Call history, call quality data [3],
+                    - Support/feedback data [3],
+                    - Diagnostic and service data to determine usage [3],
+                    - Message sent and calendar created events [2],
+                    - Video calls, documents stored [2],
+                    - Errors with details [2].
+
+                    After opt-in it also collects [2]:
+                    - Device configuration and its network capabilities,
+                    - Health and performance of device and service,
+                    - Data about OS, device, applications and services,
+                    - Installed software and update information.
+
+                    It also synchronizes chat data with cloud servers [2]
+
+                    [1]: https://techcommunity.microsoft.com/t5/microsoft-teams-blog/introducing-chat-from-microsoft-teams-on-windows-11-for-your/ba-p/2809877 "Introducing Chat from Microsoft Teams on Windows 11, for your personal accounts - Microsoft Tech Community | techcommunity.microsoft.com"
+                    [2]: https://privacy.microsoft.com/en-us/data-collection-teams "Data collection summary for Teams | privacy.microsoft.com"
+                    [3]: https://learn.microsoft.com/en-us/microsoftteams/teams-privacy "Microsoft Teams Privacy - Microsoft Teams | Microsoft Learn | learn.microsoft.com"
+                children:
+                    -
+                        name: Kill Teams process
+                        docs: |-
+                            It stops the execution of Teams.
+                            Main OneDrive process is `Teams.exe` and it is installed in `<local-app-data>\Microsoft\Teams\Current\Teams.exe` [1] [2] [3].
+
+                            [1]: https://docs.microsoft.com/en-us/MicrosoftTeams/scripts/powershell-script-teams-reset-autostart "PowerShell script sample - Reset the autostart setting in Teams - Microsoft Teams | Microsoft Learn | docs.microsoft.com"
+                            [2]: https://learn.microsoft.com/en-us/microsoftteams/client-firewall-script "Sample script - Microsoft Teams firewall PowerShell script - Microsoft Teams | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://learn.microsoft.com/en-us/microsoftteams/troubleshoot/teams-administration/include-exclude-teams-from-antivirus-dlp "How to include or exclude Teams from antivirus or DLP applications - Microsoft Teams | Microsoft Learn | learn.microsoft.com"
+                        call:
+                            function: KillProcess
+                            parameters:
+                                processName: Teams.exe
+                                processStartPath: '%LOCALAPPDATA%\Microsoft\Teams\Current\Teams.exe'
+                    -
+                        name: Unpin Chat from taskbar
+                        recommend: strict
+                        docs: |-
+                            To control visibility of Chat in taskbar can be controlled by setting `TaskbarMn` two values [1] [2]:
+                            1. 0 = Hidden
+                            2. 1 = Visible
+
+                            Windows 11 (tested since 21H2) comes with `1` as default value after default installation.
+
+                            The visibility can further be controlled using group policy. In this case `ChatIcon` value can be set accordingly [3]:
+
+                            1. Show: The Chat icon will be hidden by default. Users can show or hide it in Settings.
+                            2. Hide: The Chat icon will be hidden by default. Users can show or hide it in Settings.
+                            3. Disabled: The Chat icon will not be displayed, and users cannot show or hide it in Settings.
+
+                            Setting value `2` on the group policy does not hide it as the default user choice is set as "Visible" after
+                            the installation. Setting `3` works after reboot. This key does not exist after fresh Windows installation by
+                            default.
+
+                            [1]: https://gal.vin/posts/2021/w11-21h2-customisation#disable-chat-in-the-taskbar "Windows 11 21H2 Customisation - Mike Galvin - Technical Consultant | gal.vin"
+                            [2]: https://www.ghacks.net/2021/10/22/how-to-remove-chat-in-windows-11/ "How to remove Chat in Windows 11 and its slider button - gHacks Tech News | ghacks.net"
+                            [3]: https://admx.help/?Category=Windows_11_2022&Policy=Microsoft.Policies.TaskBar2::ConfigureChatIcon "Configures the Chat icon on the taskbar | admx.help"
+                        code: |-
+                            reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarMn" /t "REG_DWORD" /d "0" /f
+                            :: Using GPO (2: Hide, 1: Show, 3: Disabled)
+                            reg add "HKLM\Software\Policies\Microsoft\Windows\Windows Chat" /v "ChatIcon" /t "REG_DWORD" /d "3" /f
+                        revertCode: |-
+                            reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarMn" /t "REG_DWORD" /d "1" /f
+                            :: Using GPO (2: Hide, 1: Show, 3: Disabled)
+                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Chat" /v "ChatIcon" /f 2>nul
+                    -
+                        name: Remove Teams from auto-running on system startup
+                        docs: |-
+                            Default Teams installation start team on system startup [1].
+                            This is achieved through `com.squirrel.Teams.Teams` registry key that will be deleted by this script [1].
+                            The default value is: `<TeamsUpdatePath> --processStart "Teams.exe" --process-start-args "--system-initiated"` [1].
+
+                            [1]: https://docs.microsoft.com/en-us/MicrosoftTeams/scripts/powershell-script-teams-reset-autostart "PowerShell script sample - Reset the autostart setting in Teams - Microsoft Teams | Microsoft Learn | docs.microsoft.com"
+                        code: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "com.squirrel.Teams.Teams" /f 2>nul
+                        revertCode: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "com.squirrel.Teams.Teams" /t REG_SZ /d "%LocalAppData%\Microsoft\Teams\Update.exe --processStart \"Teams.exe\" --process-start-args \"--system-initiated\"" /f
+                    -
+                        name: Uninstall Microsoft Teams store app
+                        docs: |-
+                            Since Windows 10 21H2 for Windows 10 and 22H2 for Windows 11, Microsoft does not include this
+                            store app in the default installation.
+
+                            Deleting the application does not guarantee that Teams app for personal use is deleted, because
+                            it is not installed as store app but through another installer [1].
+                            On Windows 10, store Teams app are used for personal or work and school accounts [1].
+                            On Windows 11, store Teams app is only used for work and school accounts [1].
+
+                            See also: [Microsoft Teams | Microsoft Store page](https://apps.microsoft.com/store/detail/microsoft-teams/XP8BT8DW290MPQ)
+
+                            [1]: https://apps.microsoft.com/store/detail/microsoft-teams/XP8BT8DW290MPQ "Microsoft Teams - Microsoft Store Apps | apps.microsoft.com"
+                        call:
+                            parameters:
+                                # Existence     : Windows 10 (≥ 22H2): ❌ Missing | Windows 11 (≥ 22H2): ✅ Exists
+                                # More info     : Get-AppxPackage MicrosoftWindows.Client.WebExperience
+                                packageName: MicrosoftTeams
+                                publisherId: 8wekyb3d8bbwe
+                    -
+                        name: Uninstall Teams through updater
+                        docs: |-
+                            Teams updater (`Update.exe`) is Microsoft Teams updater that handles update tasks such as
+                            downloading, extracting and installing packages [1]. It is stored in
+                            `%LocalAppData%\Microsoft\Teams` folder [1].
+
+                            [1]: https://learn.microsoft.com/en-us/microsoftteams/troubleshoot-installation#troubleshoot-update-issues "Troubleshoot Microsoft Teams installation and update issues on Windows - Microsoft Teams | Microsoft Learn"
+                        code: |-
+                            if exist "%LocalAppData%\Microsoft\Teams\Update.exe" (
+                                "%LocalAppData%\Microsoft\Teams\Update.exe" --uninstall
+                            ) else (
+                                echo Updater cannot be found, Teams may already have been uninstalled or never installed.
+                            )
+                        revertCode: |-
+                            if exist "%LocalAppData%\Microsoft\Teams\Update.exe" (
+                                "%LocalAppData%\Microsoft\Teams\Update.exe"
+                            ) else (
+                                echo Failed to run updater because it is missing 2>nul
+                            )
+                    -
+                        name: Delete Teams application data
+                        docs: |-
+                            This script clears all application folders related to Teams:
+
+                            - `%LocalAppData%\SquirrelTemp\` [1],
+                            - `%AppData%\Microsoft\Teams\` [1],
+                            - `%LocalAppData%\Microsoft\Teams` [1],
+                            - `%LocalAppData%\Microsoft\TeamsMeetingAddin` [2].
+
+                            It also clears registry keys used by Teams [3]:
+
+                            - `HKCU\Software\Microsoft\Office\Teams`,
+                            - `HKCU\Software\Microsoft\Office\Outlook\Addins\TeamsAddin.FastConnect`.
+
+                            [1]: https://learn.microsoft.com/en-us/microsoftteams/troubleshoot-installation#troubleshoot-update-issues "Troubleshoot Microsoft Teams installation and update issues on Windows - Microsoft Teams | Microsoft Learn"
+                            [2]: https://learn.microsoft.com/en-us/microsoftteams/get-clients?tabs=Windows "Get clients for Microsoft Teams - Microsoft Teams | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://docs.microsoft.com/en-us/MicrosoftTeams/scripts/powershell-script-teams-reset-autostart "PowerShell script sample - Reset the autostart setting in Teams - Microsoft Teams | Microsoft Learn | docs.microsoft.com"
+                        code: |-
+                            :: Clear folders
+                            if exist "%LocalAppData%\SquirrelTemp" (
+                                rd "%LocalAppData%\SquirrelTemp" /q /s
+                            )
+                            if exist "%AppData%\Microsoft\Teams" (
+                                rd "%AppData%\Microsoft\Teams" /q /s
+                            )
+                            if exist "%LocalAppData%\Microsoft\Teams" (
+                                rd "%LocalAppData%\Microsoft\Teams" /q /s
+                            )
+                            :: Clear registry keys
+                            reg delete "HKCU\Software\Microsoft\Office\Teams" /f 2>nul
+                            reg delete "HKCU\Software\Microsoft\Office\Outlook\Addins\TeamsAddin.FastConnect" /f 2>nul
+                    -
+                        name: Set this
+                        code: >
+                            HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Communications', value: 'ConfigureChatAutoInstall
+                            https://github.com/Atlas-OS/Atlas/blob/5560cbdee805b5a5374364fa8d02bf6924f9679d/src/playbook/Configuration/tweaks/qol/windows-update/disable-auto-updates.yml#L2
+            -
                 category: Remove Widgets
                 docs: |-
                     Windows 11 adds a new taskbar flyout named "Widgets", which displays a panel with Microsoft Start, a news aggregator
@@ -10138,7 +10326,9 @@ actions:
             -
                 name: Remove Meet Now icon from taskbar
                 recommend: strict
-                docs: # Skype feature, introduced in 20H2, KB4580364 update
+                docs:
+                    # Skype feature, introduced in 20H2, KB4580364 update
+                    # Dropped since Windows 11 (21H2)
                     - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.TaskBar2::HideSCAMeetNow
                     - https://www.windowscentral.com/how-disable-meet-now-feature-windows-10
                 code: reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "HideSCAMeetNow" /t REG_DWORD /d 1 /f
