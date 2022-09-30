@@ -22,7 +22,6 @@ $color-node-checkbox-tick-checked       : $color-on-secondary;
             > .tree-anchor {
                 > span {
                     color: $color-node-fg;
-                    text-transform: uppercase;
                     font-size: 1.5em;
                 }
                 display: block; // so it takes full width to allow aligning items inside

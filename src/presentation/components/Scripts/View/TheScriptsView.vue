@@ -149,7 +149,6 @@ $margin-inner: 4px;
     display:flex;
     flex-direction: column;
     word-break:break-word;
-    text-transform: uppercase;
     color: $color-on-primary;
     font-size: 1.5em;
     padding:10px;

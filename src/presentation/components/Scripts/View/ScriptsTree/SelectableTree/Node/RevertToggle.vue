@@ -136,9 +136,10 @@ $size-height            : 30px;
   }
 
   .checkbox-off, .checkbox-on {
+    text-transform: uppercase;
     float: left;
     font-weight: 700;
-        -webkit-transition: all 0.3s ease-out 0s;
+    -webkit-transition: all 0.3s ease-out 0s;
     transition: all 0.3s ease-out 0s;
   }
 
