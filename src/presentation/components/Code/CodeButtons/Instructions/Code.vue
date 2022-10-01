@@ -28,13 +28,14 @@ export default class Code extends Vue {
 @use "@/presentation/assets/styles/main" as *;
 
 .code-wrapper {
+  display:flex;
   white-space: nowrap;
   justify-content: space-between;
   font-family: $font-normal;
   background-color: $color-primary-darker;
   color: $color-on-primary;
-  padding-left: 0.3rem;
-  padding-right: 0.3rem;
+  align-items: center;
+  padding: 0.2rem;
   .dollar {
     margin-right: 0.5rem;
     font-size: 0.8rem;
@@ -48,7 +49,7 @@ export default class Code extends Vue {
     }
   }
   code {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 }
 </style>

@@ -17,8 +17,8 @@
       v-on:click="copyCode"
       icon-prefix="fas" icon-name="copy">
     </IconButton>
-    <Dialog v-if="this.isMacOsCollection" ref="instructionsDialog">
-      <MacOsInstructions :fileName="this.fileName" />
+    <Dialog v-if="this.hasInstructions" ref="instructionsDialog">
+      <InstructionList :data="this.instructions" />
     </Dialog>
   </div>
 </template>
@@ -35,15 +35,18 @@ import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { IApplicationCode } from '@/application/Context/State/Code/IApplicationCode';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { OperatingSystem } from '@/domain/OperatingSystem';
+import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { CodeRunner } from '@/infrastructure/CodeRunner';
 import { IReadOnlyApplicationContext } from '@/application/Context/IApplicationContext';
-import MacOsInstructions from './MacOsInstructions.vue';
+import InstructionList from './Instructions/InstructionList.vue';
 import IconButton from './IconButton.vue';
+import { IInstructionListData } from './Instructions/InstructionListData';
+import { getInstructions, hasInstructions } from './Instructions/InstructionListDataFactory';
 
 @Component({
   components: {
     IconButton,
-    MacOsInstructions,
+    InstructionList,
     Dialog,
   },
 })
@@ -54,7 +57,9 @@ export default class TheCodeButtons extends StatefulVue {
 
   public hasCode = false;
 
-  public isMacOsCollection = false;
+  public instructions: IInstructionListData | undefined;
+
+  public hasInstructions = false;
 
   public fileName = '';
 
@@ -66,7 +71,7 @@ export default class TheCodeButtons extends StatefulVue {
   public async saveCode() {
     const context = await this.getCurrentContext();
     saveCode(this.fileName, context.state);
-    if (this.isMacOsCollection) {
+    if (this.hasInstructions) {
       (this.$refs.instructionsDialog as Dialog).show();
     }
   }
@@ -77,11 +82,9 @@ export default class TheCodeButtons extends StatefulVue {
   }
 
   protected handleCollectionState(newState: IReadOnlyCategoryCollectionState): void {
-    const isNewOs = (test: OperatingSystem) => newState.collection.os === test;
-    this.canRun = this.isDesktopVersion && isNewOs(Environment.CurrentEnvironment.os);
-    this.isMacOsCollection = isNewOs(OperatingSystem.macOS);
-    this.fileName = buildFileName(newState.collection.scripting);
-    this.react(newState.code);
+    this.updateRunState(newState.os);
+    this.updateDownloadState(newState.collection);
+    this.updateCodeState(newState.code);
   }
 
   private async getCurrentCode(): Promise<IApplicationCode> {
@@ -90,7 +93,20 @@ export default class TheCodeButtons extends StatefulVue {
     return code;
   }
 
-  private async react(code: IApplicationCode) {
+  private updateRunState(selectedOs: OperatingSystem) {
+    const isRunningOnSelectedOs = selectedOs === Environment.CurrentEnvironment.os;
+    this.canRun = this.isDesktopVersion && isRunningOnSelectedOs;
+  }
+
+  private updateDownloadState(collection: ICategoryCollection) {
+    this.fileName = buildFileName(collection.scripting);
+    this.hasInstructions = hasInstructions(collection.os);
+    if (this.hasInstructions) {
+      this.instructions = getInstructions(collection.os, this.fileName);
+    }
+  }
+
+  private updateCodeState(code: IApplicationCode) {
     this.hasCode = code.current && code.current.length > 0;
     this.events.unsubscribeAll();
     this.events.register(code.changed.on((newCode) => {
@@ -131,7 +147,6 @@ async function executeCode(context: IReadOnlyApplicationContext) {
     /* fileExtension: */ context.state.collection.scripting.fileExtension,
   );
 }
-
 </script>
 
 <style scoped lang="scss">

@@ -1,7 +1,6 @@
 <template>
   <modal
     :name="name"
-    :scrollable="true"
     :adaptive="true"
     height="auto">
     <div class="dialog">
@@ -33,12 +32,18 @@ export default class Dialog extends Vue {
 <style scoped lang="scss">
 @use "@/presentation/assets/styles/main" as *;
 
+@mixin scrollable() {
+  overflow-y: auto;
+  max-height: 100vh;
+}
+
 .dialog {
   color: $color-surface;
   font-family: $font-normal;
   margin-bottom: 10px;
   display: flex;
   flex-direction: row;
+  @include scrollable;
 
   &__content {
     color: $color-on-surface;
