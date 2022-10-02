@@ -2670,6 +2670,22 @@ actions:
                             reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\KeyExchangeAlgorithms\Diffie-Hellman" /v "Enabled" /f
                     -
                         name: Increase RSA key exchange to 2048-bit
+                        docs: |-
+                            In 2012, Microsoft began transitioning minimum RSA key length across various applications from 1024 to 2048 bits.
+                            1024-Bit key exchange algorithms are still supported in Windows despite being considered deprecated for some time.
+                            NIST 800-131A Rev. 2 cites RSA Key Agreement and Key Transport schemes with len(n) < 2048 are disallowed. Generally,
+                            RSA 2048-bit+ key exchange algorithms are widely supported. While supported cipher suites remain a roundabout way to
+                            address supported key exchange algorithms, these can also be specified independently (although there are still constraints
+                            based on negotiated cipher suite) and provide a supplemental baseline to enforce using strong cryptography.
+                            This script works by creating the non-default key and value called PKCS at
+                            `HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\KeyExchangeAlgorithms\` with a name of `ClientMinKeyBitLength` and value
+                            of `0x00000800` (2048).
+
+                            The revert deletes the `ClientMinKeyBitLength` value.
+
+                            See also:
+                            - [Transport Layer Security (TLS) registry settings | learn.microsoft.com](https://learn.microsoft.com/en-us/windows-server/security/tls/tls-registry-settings#keyexchangealgorithm---client-rsa-key-sizes)
+                            - [Pull request by bricedobson | undergroundwires/privacy.sexy | GitHub.com](https://github.com/undergroundwires/privacy.sexy/pull/165)
                         code: |-
                             reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\KeyExchangeAlgorithms\PKCS" /f /v ClientMinKeyBitLength /t REG_DWORD /d 0x00000800
                         revertCode: |-
