@@ -1,4 +1,5 @@
 import 'mocha';
+import { randomUUID } from 'crypto';
 import { expect } from 'chai';
 import { ExpressionRegexBuilder } from '@/application/Parser/Script/Compiler/Expressions/Parser/Regex/ExpressionRegexBuilder';
 
@@ -8,7 +9,7 @@ describe('ExpressionRegexBuilder', () => {
       const charactersToEscape = ['.', '$'];
       for (const character of charactersToEscape) {
         it(character, () => {
-          runRegExTest(
+          expectRegex(
             // act
             (act) => act.expectCharacters(character),
             // assert
@@ -18,7 +19,7 @@ describe('ExpressionRegexBuilder', () => {
       }
     });
     it('escapes multiple as expected', () => {
-      runRegExTest(
+      expectRegex(
         // act
         (act) => act.expectCharacters('.I have no $$.'),
         // assert
@@ -26,7 +27,7 @@ describe('ExpressionRegexBuilder', () => {
       );
     });
     it('adds as expected', () => {
-      runRegExTest(
+      expectRegex(
         // act
         (act) => act.expectCharacters('return as it is'),
         // assert
@@ -35,7 +36,7 @@ describe('ExpressionRegexBuilder', () => {
     });
   });
   it('expectOneOrMoreWhitespaces', () => {
-    runRegExTest(
+    expectRegex(
       // act
       (act) => act.expectOneOrMoreWhitespaces(),
       // assert
@@ -43,7 +44,7 @@ describe('ExpressionRegexBuilder', () => {
     );
   });
   it('matchPipeline', () => {
-    runRegExTest(
+    expectRegex(
       // act
       (act) => act.matchPipeline(),
       // assert
@@ -51,23 +52,63 @@ describe('ExpressionRegexBuilder', () => {
     );
   });
   it('matchUntilFirstWhitespace', () => {
-    runRegExTest(
+    expectRegex(
       // act
       (act) => act.matchUntilFirstWhitespace(),
       // assert
       '([^|\\s]+)',
     );
-  });
-  it('matchAnythingExceptSurroundingWhitespaces', () => {
-    runRegExTest(
+    it('matches until first whitespace', () => expectMatch(
+      // arrange
+      'first second',
       // act
-      (act) => act.matchAnythingExceptSurroundingWhitespaces(),
+      (act) => act.matchUntilFirstWhitespace(),
       // assert
-      '\\s*(.+?)\\s*',
-    );
+      'first',
+    ));
+  });
+  describe('matchMultilineAnythingExceptSurroundingWhitespaces', () => {
+    it('returns expected regex', () => expectRegex(
+      // act
+      (act) => act.matchMultilineAnythingExceptSurroundingWhitespaces(),
+      // assert
+      '\\s*([\\S\\s]+?)\\s*',
+    ));
+    it('matches single line', () => expectMatch(
+      // arrange
+      'single line',
+      // act
+      (act) => act.matchMultilineAnythingExceptSurroundingWhitespaces(),
+      // assert
+      'single line',
+    ));
+    it('matches single line without surrounding whitespaces', () => expectMatch(
+      // arrange
+      '  single line\t',
+      // act
+      (act) => act.matchMultilineAnythingExceptSurroundingWhitespaces(),
+      // assert
+      'single line',
+    ));
+    it('matches multiple lines', () => expectMatch(
+      // arrange
+      'first line\nsecond line',
+      // act
+      (act) => act.matchMultilineAnythingExceptSurroundingWhitespaces(),
+      // assert
+      'first line\nsecond line',
+    ));
+    it('matches multiple lines without surrounding whitespaces', () => expectMatch(
+      // arrange
+      '  first line\nsecond line\t',
+      // act
+      (act) => act.matchMultilineAnythingExceptSurroundingWhitespaces(),
+      // assert
+      'first line\nsecond line',
+    ));
   });
   it('expectExpressionStart', () => {
-    runRegExTest(
+    expectRegex(
       // act
       (act) => act.expectExpressionStart(),
       // assert
@@ -75,7 +116,7 @@ describe('ExpressionRegexBuilder', () => {
     );
   });
   it('expectExpressionEnd', () => {
-    runRegExTest(
+    expectRegex(
       // act
       (act) => act.expectExpressionEnd(),
       // assert
@@ -95,10 +136,10 @@ describe('ExpressionRegexBuilder', () => {
     });
     describe('can combine multiple parts', () => {
       it('with', () => {
-        runRegExTest(
+        expectRegex(
           (sut) => sut
           // act
-            // {{ $with }}
+            // {{ with $variable }}
             .expectExpressionStart()
             .expectCharacters('with')
             .expectOneOrMoreWhitespaces()
@@ -106,17 +147,17 @@ describe('ExpressionRegexBuilder', () => {
             .matchUntilFirstWhitespace()
             .expectExpressionEnd()
             // scope
-            .matchAnythingExceptSurroundingWhitespaces()
+            .matchMultilineAnythingExceptSurroundingWhitespaces()
             // {{ end }}
             .expectExpressionStart()
             .expectCharacters('end')
             .expectExpressionEnd(),
           // assert
-          '{{\\s*with\\s+\\$([^|\\s]+)\\s*}}\\s*(.+?)\\s*{{\\s*end\\s*}}',
+          '{{\\s*with\\s+\\$([^|\\s]+)\\s*}}\\s*([\\S\\s]+?)\\s*{{\\s*end\\s*}}',
         );
       });
       it('scoped substitution', () => {
-        runRegExTest(
+        expectRegex(
           (sut) => sut
           // act
             .expectExpressionStart().expectCharacters('.')
@@ -127,7 +168,7 @@ describe('ExpressionRegexBuilder', () => {
         );
       });
       it('parameter substitution', () => {
-        runRegExTest(
+        expectRegex(
           (sut) => sut
           // act
             .expectExpressionStart().expectCharacters('$')
@@ -142,7 +183,7 @@ describe('ExpressionRegexBuilder', () => {
   });
 });
 
-function runRegExTest(
+function expectRegex(
   act: (sut: ExpressionRegexBuilder) => ExpressionRegexBuilder,
   expected: string,
 ) {
@@ -152,4 +193,26 @@ function runRegExTest(
   const actual = act(sut).buildRegExp().source;
   // assert
   expect(actual).to.equal(expected);
+}
+
+function expectMatch(
+  input: string,
+  act: (sut: ExpressionRegexBuilder) => ExpressionRegexBuilder,
+  expectedMatch: string,
+) {
+  // arrange
+  const [startMarker, endMarker] = [randomUUID(), randomUUID()];
+  const markedInput = `${startMarker}${input}${endMarker}`;
+  const builder = new ExpressionRegexBuilder()
+    .expectCharacters(startMarker);
+  act(builder);
+  const markedRegex = builder.expectCharacters(endMarker).buildRegExp();
+  // act
+  const match = Array.from(markedInput.matchAll(markedRegex))
+    .filter((matches) => matches.length > 1)
+    .map((matches) => matches[1])
+    .filter(Boolean)
+    .join();
+  // assert
+  expect(match).to.equal(expectedMatch);
 }

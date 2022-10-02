@@ -23,6 +23,14 @@ export class SyntaxParserTestsRunner {
     return this;
   }
 
+  public expectNoMatch(...testCases: INoMatchTestCase[]) {
+    this.expectPosition(...testCases.map((testCase) => ({
+      name: testCase.name,
+      code: testCase.code,
+      expected: [],
+    })));
+  }
+
   public expectResults(...testCases: IExpectResultTestCase[]) {
     for (const testCase of testCases) {
       it(testCase.name, () => {
@@ -102,6 +110,11 @@ interface IExpectPositionTestCase {
   name: string;
   code: string;
   expected: readonly ExpressionPosition[];
+}
+
+interface INoMatchTestCase {
+  name: string;
+  code: string;
 }
 
 interface IExpectPipeHitTestData {

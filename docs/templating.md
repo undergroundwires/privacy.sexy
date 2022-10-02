@@ -56,9 +56,23 @@ A function can call other functions such as:
 
 ### with
 
-Skips its "block" if the variable is absent or empty. Its "block" is between `with` start (`{{ with .. }}`) and end (`{{ end }`}) expressions. E.g. `{{ with $parameterName }} Hi, I'm a block! {{ end }}`.
+Skips its "block" if the variable is absent or empty. Its "block" is between `with` start (`{{ with .. }}`) and end (`{{ end }`}) expressions.
+E.g. `{{ with $parameterName }} Hi, I'm a block! {{ end }}` would only output `Hi, I'm a block!` if `parameterName` has any value..
 
-Binds its context (`.`) value of provided argument for the parameter if provided one. E.g. `{{ with $parameterName }} Parameter value is {{ . }} here {{ end }}`.
+It binds its context (value of the provided parameter value) as arbitrary `.` value. It allows you to use the argument value of the given parameter when it is provided and not empty such as:
+
+```go
+  {{ with $parameterName }}Parameter value is {{ . }} here {{ end }}
+```
+
+It supports multiline text inside the block. You can have something like:
+
+```go
+  {{ with $argument }}
+    First line
+    Second line
+  {{ end }}
+```
 
 💡 Declare parameters used for `with` condition as optional. Set `optional: true` for the argument if you use it like `{{ with $argument }} .. {{ end }}`.
 

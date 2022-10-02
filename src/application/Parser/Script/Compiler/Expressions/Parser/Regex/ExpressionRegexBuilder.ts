@@ -25,10 +25,10 @@ export class ExpressionRegexBuilder {
       .addRawRegex('([^|\\s]+)');
   }
 
-  public matchAnythingExceptSurroundingWhitespaces() {
+  public matchMultilineAnythingExceptSurroundingWhitespaces() {
     return this
       .expectZeroOrMoreWhitespaces()
-      .addRawRegex('(.+?)')
+      .addRawRegex('([\\S\\s]+?)')
       .expectZeroOrMoreWhitespaces();
   }
 

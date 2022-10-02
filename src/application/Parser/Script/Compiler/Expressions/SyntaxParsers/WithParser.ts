@@ -12,7 +12,7 @@ export class WithParser extends RegexParser {
     .matchUntilFirstWhitespace() // First match: parameter name
     .expectExpressionEnd()
   // ...
-    .matchAnythingExceptSurroundingWhitespaces() // Second match: Scope text
+    .matchMultilineAnythingExceptSurroundingWhitespaces() // Second match: Scope text
   // {{ end }}
     .expectExpressionStart()
     .expectCharacters('end')

@@ -29,30 +29,31 @@ describe('WithParser', () => {
         code: 'no whitespaces {{with $parameter}}value: {{ . }}{{end}}',
         expected: [new ExpressionPosition(15, 55)],
       },
+      {
+        name: 'match multiline text',
+        code: 'non related line\n{{ with $middleLine }}\nline before value\n{{ . }}\nline after value\n{{ end }}\nnon related line',
+        expected: [new ExpressionPosition(17, 92)],
+      },
     );
   });
   describe('ignores when syntax is wrong', () => {
     describe('ignores expression if "with" syntax is wrong', () => {
-      runner.expectPosition(
+      runner.expectNoMatch(
         {
           name: 'does not tolerate whitespace after with',
           code: '{{with $ parameter}}value: {{ . }}{{ end }}',
-          expected: [],
         },
         {
           name: 'does not tolerate whitespace before dollar',
           code: '{{ with$parameter}}value: {{ . }}{{ end }}',
-          expected: [],
         },
         {
           name: 'wrong text at scope end',
           code: '{{ with$parameter}}value: {{ . }}{{ fin }}',
-          expected: [],
         },
         {
           name: 'wrong text at expression start',
           code: '{{ when $parameter}}value: {{ . }}{{ end }}',
-          expected: [],
         },
       );
     });
@@ -129,6 +130,20 @@ describe('WithParser', () => {
           args: (args) => args
             .withArgument('letterL', 'l'),
           expected: ['Hello world!'],
+        },
+        {
+          name: 'renders value in multi-lined text',
+          code: '{{ with $middleLine }}line before value\n{{ . }}\nline after value{{ end }}',
+          args: (args) => args
+            .withArgument('middleLine', 'value line'),
+          expected: ['line before value\nvalue line\nline after value'],
+        },
+        {
+          name: 'renders value around whitespaces in multi-lined text',
+          code: '{{ with $middleLine }}\nline before value\n{{ . }}\nline after value\t {{ end }}',
+          args: (args) => args
+            .withArgument('middleLine', 'value line'),
+          expected: ['line before value\nvalue line\nline after value'],
         },
       );
     });
