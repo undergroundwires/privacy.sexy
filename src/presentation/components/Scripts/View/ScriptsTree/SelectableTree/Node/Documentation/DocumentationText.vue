@@ -53,6 +53,7 @@ $text-size: 0.75em; // Lower looks bad on Firefox
   font-size: $text-size;
   font-family: $font-main;
   code {
+    word-break: break-all; // Inline code should wrap with the line, or whole text overflows
     font-family: $font-normal;
     font-weight: 600;
   }
