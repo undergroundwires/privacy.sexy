@@ -4680,6 +4680,90 @@ actions:
                         parameters:
                             serviceName: UsoSvc # Check: (Get-Service -Name 'UsoSvc').StartType
                             defaultStartupMode: Automatic # Allowed values: Automatic | Manual
+            -
+                category: Configure handling of downloaded files
+                docs: |-
+                    These scripts configures Attachment Manager included in Windows that that takes further actions for
+                    files that you receive or download such as storing classification metadata and notfying other software [1].
+
+                    [1]: https://support.microsoft.com/en-us/topic/information-about-the-attachment-manager-in-microsoft-windows-c48a4dcd-8de5-2af5-ee9b-cd795ae42738  "Information about the Attachment Manager in Microsoft Windows | support.microsoft.com"
+                children:
+                    -
+                        name: Prevent saving zone information in downloaded files
+                        docs: |-
+                            This script disables marking file attachments by using their zone information.
+
+                            The default behavior is for Windows to mark file attachments with their zone information [1].
+                            The zone information of the origin describe whether the file was downloaded from internet,
+                            intranet, local, or restricted zone [1].
+
+                            It is used by Attachment Manager that is included in Windows to help protect the computer from
+                            unsafe attachments that can be recieved with e-mail message or downloaded from Internet [2].
+                            If the Attachment Manager identifies an attachment that might be unsafe, it prevents you from
+                            opening the file, or it warns you before you open the file [2].
+
+                            Preventing this information to be saved:
+                            - Increases privacy by no longer leaking information of source.
+                            - Decreases security by preventing Windows to determine risks and take risk-based actions [1].
+                            By not preserving the zone information, Windows cannot make proper risk assessments [3].
+                            Disabling it has **Significant** criticality as the configuration introduces additional attack
+                            surface according to US government [4].
+
+                            The Attachment Manager feature warns users when opening or executing files which are marked as
+                            being from an untrusted source, unless/until the file's zone information has been removed via
+                            the "Unblock" button on the file's properties or via a separate tool such as
+                            [Microsoft Sysinternals Streams](https://docs.microsoft.com/en-us/sysinternals/downloads/streams) [4].
+
+                            It is configured using `SaveZoneInformation` value in
+                            `\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments\` registry subkey [1] [2] [3] [4].
+
+                            The value is this setting is confusing, according to Microsoft documentation
+                            `1` turns it on [2] [3], `2` turns it off [2] [3]. However, according to STIG V-63841, `1` disables
+                            saving zone information and `2` enables it [3]. According to my tests, the STIG interprets it right
+                            and `1` disables this function off.
+
+                            In clean Windows 10 and 11 installations, this key by default is missing for both `HKCU` and `HKLM`.
+
+                            [1]: https://www.stigviewer.com/stig/windows_10/2019-09-25/finding/V-63841 "Zone information must be preserved when saving attachments. | stigviewer.com"
+                            [2]: https://support.microsoft.com/en-us/topic/information-about-the-attachment-manager-in-microsoft-windows-c48a4dcd-8de5-2af5-ee9b-cd795ae42738  "Information about the Attachment Manager in Microsoft Windows | support.microsoft.com"
+                            [3]: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.AttachmentManager::AM_MarkZoneOnSavedAtttachments "Do not preserve zone information in file attachments | admx.help"
+                            [4]: https://www.irs.gov/pub/irs-utl/safeguards-scsem-win-11-v1-1-033122.xlsx "Windows 11 SafeGuards | irs.gov"
+                        code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments" /v "SaveZoneInformation" /t REG_DWORD /d "1" /f
+                        revertCode: reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments" /v "SaveZoneInformation" /f 2>nul
+                    -
+                        name: Prevent notifying antivirus programs of downloaded files
+                        docs: |-
+                            Prevents Windows from calling the registered antivirus programs when file attachments are opened [1] [2].
+
+                            Windows registered antivirus programs for downloaded files from Internet or through e-mail attachments [1].
+                            If multiple programs are registered, they will all be notified [1] [3].
+                            This is disabled by default, so even if you do not configure run this script, Windows does not call the registered
+                            antivirus programs when file attachments are opened [1].
+
+                            If it is enabled, Windows blocks file from being opened when antivirus program fails [1]. It is the recommended setting
+                            by Microsoft [1].
+
+                            Preventing calling antivirus:
+                            - Increases privacy by not sharing your file data proactively with installed antiviruses.
+                            - Decreases by detecting and mitigating potential malicious software. Disabling it has **Moderate**
+                            criticality as it is not an appropriate antivirus configuration according to US government [4].
+                            
+                            An updated antivirus program must be installed for this policy setting to function properly [4].
+
+                            It is configured using `ScanWithAntiVirus` value in
+                            `\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments\` registry subkey [1] [2] [3] [4].
+                            `3` enables the scans [1] [2] [3], `1` disables it [1] [3], and `2` leaves it optional [1].
+
+                            In clean Windows 10 and 11 installations, this key by default comes with `3` value in
+                            `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments\ScanWithAntiVirus`,
+                            and key is missing for `HKCU`.
+
+                            [1]: https://support.microsoft.com/en-us/topic/information-about-the-attachment-manager-in-microsoft-windows-c48a4dcd-8de5-2af5-ee9b-cd795ae42738  "Information about the Attachment Manager in Microsoft Windows | support.microsoft.com"
+                            [2]: https://www.stigviewer.com/stig/windows_server_2008_r2_member_server/2015-09-02/finding/V-14270  "The system will notify antivirus when file attachments are opened. | stigviewer.com"
+                            [3]: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.AttachmentManager::AM_CallIOfficeAntiVirus "Notify antivirus programs when opening attachments | admx.help"
+                            [4]: https://www.irs.gov/pub/irs-utl/safeguards-scsem-win-11-v1-1-033122.xlsx "Windows 11 SafeGuards | irs.gov"
+                        code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments" /v "ScanWithAntiVirus" /t REG_DWORD /d "1" /f
+                        revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments" /v "ScanWithAntiVirus" /t REG_DWORD /d "3" /f
     -
         category: UI for privacy
         children:         
