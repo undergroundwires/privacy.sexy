@@ -4,15 +4,25 @@ import { IExpressionParser } from '@/application/Parser/Script/Compiler/Expressi
 export class ExpressionParserStub implements IExpressionParser {
   public callHistory = new Array<string>();
 
-  private result: IExpression[] = [];
+  private results = new Map<string, readonly IExpression[]>();
 
-  public withResult(result: IExpression[]) {
-    this.result = result;
+  public withResult(code: string, result: readonly IExpression[]) {
+    if (this.results.has(code)) {
+      throw new Error(
+        'Result for code is already registered.'
+        + `\nCode: ${code}`
+        + `\nResult: ${JSON.stringify(result)}`,
+      );
+    }
+    this.results.set(code, result);
     return this;
   }
 
   public findExpressions(code: string): IExpression[] {
     this.callHistory.push(code);
-    return this.result;
+    if (this.results.has(code)) {
+      return [...this.results.get(code)];
+    }
+    return [];
   }
 }

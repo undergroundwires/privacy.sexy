@@ -11,7 +11,7 @@ export class ExpressionStub implements IExpression {
 
   public parameters: IReadOnlyFunctionParameterCollection = new FunctionParameterCollectionStub();
 
-  private result: string;
+  private result: string = undefined;
 
   public withParameters(parameters: IReadOnlyFunctionParameterCollection) {
     this.parameters = parameters;
@@ -35,9 +35,11 @@ export class ExpressionStub implements IExpression {
   }
 
   public evaluate(context: IExpressionEvaluationContext): string {
-    const { args } = context;
     this.callHistory.push(context);
-    const result = this.result || `[expression-stub] args: ${args ? Object.keys(args).map((key) => `${key}: ${args[key]}`).join('", "') : 'none'}`;
-    return result;
+    if (this.result === undefined /* not empty string */) {
+      const { args } = context;
+      return `[expression-stub] args: ${args ? Object.keys(args).map((key) => `${key}: ${args[key]}`).join('", "') : 'none'}`;
+    }
+    return this.result;
   }
 }

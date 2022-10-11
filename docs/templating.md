@@ -10,10 +10,19 @@
 
 - Expressions start and end with mustaches (double brackets, `{{` and `}}`).
   - E.g. `Hello {{ $name }} !`
-- Syntax is close to [Go Templates ❤️](https://pkg.go.dev/text/template) that has inspired this templating language.
+- Syntax is close to [Go Templates ❤️](https://pkg.go.dev/text/template) but not the same.
 - Functions enables usage of expressions.
   - In script definition parts of a function, see [`Function`](./collection-files.md#Function).
   - When doing a call as argument values, see [`FunctionCall`](./collection-files.md#Function).
+- Expressions inside expressions (nested templates) are supported.
+  - An expression can output another expression that will also be compiled.
+  - E.g. following would compile first [with expression](#with), and then [parameter substitution](#parameter-substitution) in its output.
+
+    ```go
+      {{ with $condition }}
+        echo {{ $text }}
+      {{ end }}
+    ```
 
 ### Parameter substitution
 
@@ -71,6 +80,14 @@ It supports multiline text inside the block. You can have something like:
   {{ with $argument }}
     First line
     Second line
+  {{ end }}
+```
+
+You can also use other expressions inside its block, such as [parameter substitution](#parameter-substitution):
+
+```go
+  {{ with $condition }}
+    This is a different parameter: {{ $text }}
   {{ end }}
 ```
 

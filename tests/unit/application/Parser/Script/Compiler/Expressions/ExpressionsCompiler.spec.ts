@@ -6,10 +6,11 @@ import { ExpressionStub } from '@tests/unit/shared/Stubs/ExpressionStub';
 import { ExpressionParserStub } from '@tests/unit/shared/Stubs/ExpressionParserStub';
 import { FunctionCallArgumentCollectionStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentCollectionStub';
 import { itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { IExpression } from '@/application/Parser/Script/Compiler/Expressions/Expression/IExpression';
 
 describe('ExpressionsCompiler', () => {
   describe('compileExpressions', () => {
-    describe('returns code when it is absent', () => {
+    describe('returns code when code is absent', () => {
       itEachAbsentStringValue((absentValue) => {
         // arrange
         const expected = absentValue;
@@ -19,6 +20,99 @@ describe('ExpressionsCompiler', () => {
         const value = sut.compileExpressions(absentValue, args);
         // assert
         expect(value).to.equal(expected);
+      });
+    });
+    describe('can compile nested expressions', () => {
+      it('when one expression is evaluated to a text that contains another expression', () => {
+        // arrange
+        const expectedResult = 'hello world!';
+        const rawCode = 'hello {{ firstExpression }}!';
+        const outerExpressionResult = '{{ secondExpression }}';
+        const expectedCodeAfterFirstCompilationRound = 'hello {{ secondExpression }}!';
+        const innerExpressionResult = 'world';
+        const expressionParserMock = new ExpressionParserStub()
+          .withResult(rawCode, [
+            new ExpressionStub()
+              // {{ firstExpression }
+              .withPosition(6, 27)
+              // Parser would hit the outer expression
+              .withEvaluatedResult(outerExpressionResult),
+          ])
+          .withResult(expectedCodeAfterFirstCompilationRound, [
+            new ExpressionStub()
+              // {{ secondExpression }}
+              .withPosition(6, 28)
+              // once the outer expression parser, compiler now parses its evaluated result
+              .withEvaluatedResult(innerExpressionResult),
+          ]);
+        const sut = new SystemUnderTest(expressionParserMock);
+        const args = new FunctionCallArgumentCollectionStub();
+        // act
+        const actual = sut.compileExpressions(rawCode, args);
+        // assert
+        expect(actual).to.equal(expectedResult);
+      });
+      describe('when one expression contains another hardcoded expression', () => {
+        it('when hardcoded expression is does not contain the hardcoded expression', () => {
+          // arrange
+          const expectedResult = 'hi !';
+          const rawCode = 'hi {{ outerExpressionStart }}delete {{ innerExpression }} me{{ outerExpressionEnd }}!';
+          const outerExpressionResult = '';
+          const innerExpressionResult = 'should not be there';
+          const expressionParserMock = new ExpressionParserStub()
+            .withResult(rawCode, [
+              new ExpressionStub()
+                // {{ outerExpressionStart }}delete {{ innerExpression }} me{{ outerExpressionEnd }}
+                .withPosition(3, 84)
+                .withEvaluatedResult(outerExpressionResult),
+              new ExpressionStub()
+                // {{ innerExpression }}
+                .withPosition(36, 57)
+                // Parser would hit both expressions as one is hardcoded in other
+                .withEvaluatedResult(innerExpressionResult),
+            ])
+            .withResult(expectedResult, []);
+          const sut = new SystemUnderTest(expressionParserMock);
+          const args = new FunctionCallArgumentCollectionStub();
+          // act
+          const actual = sut.compileExpressions(rawCode, args);
+          // assert
+          expect(actual).to.equal(expectedResult);
+        });
+        it('when hardcoded expression contains the hardcoded expression', () => {
+          // arrange
+          const expectedResult = 'hi game of thrones!';
+          const rawCode = 'hi {{ outerExpressionStart }} game {{ innerExpression }} {{ outerExpressionEnd }}!';
+          const expectedCodeAfterFirstCompilationRound = 'hi game {{ innerExpression }}!'; // outer is compiled first
+          const outerExpressionResult = 'game {{ innerExpression }}';
+          const innerExpressionResult = 'of thrones';
+          const expressionParserMock = new ExpressionParserStub()
+            .withResult(rawCode, [
+              new ExpressionStub()
+                // {{ outerExpressionStart }} game {{ innerExpression }} {{ outerExpressionEnd }}
+                .withPosition(3, 81)
+                // Parser would hit the outer expression
+                .withEvaluatedResult(outerExpressionResult),
+              new ExpressionStub()
+                // {{ innerExpression }}
+                .withPosition(35, 57)
+                // Parser would hit both expressions as one is hardcoded in other
+                .withEvaluatedResult(innerExpressionResult),
+            ])
+            .withResult(expectedCodeAfterFirstCompilationRound, [
+              new ExpressionStub()
+                // {{ innerExpression }}
+                .withPosition(8, 29)
+                // once the outer expression parser, compiler now parses its evaluated result
+                .withEvaluatedResult(innerExpressionResult),
+            ]);
+          const sut = new SystemUnderTest(expressionParserMock);
+          const args = new FunctionCallArgumentCollectionStub();
+          // act
+          const actual = sut.compileExpressions(rawCode, args);
+          // assert
+          expect(actual).to.equal(expectedResult);
+        });
       });
     });
     describe('combines expressions as expected', () => {
@@ -60,7 +154,7 @@ describe('ExpressionsCompiler', () => {
       for (const testCase of testCases) {
         it(testCase.name, () => {
           const expressionParserMock = new ExpressionParserStub()
-            .withResult(testCase.expressions);
+            .withResult(code, testCase.expressions);
           const args = new FunctionCallArgumentCollectionStub();
           const sut = new SystemUnderTest(expressionParserMock);
           // act
@@ -75,21 +169,26 @@ describe('ExpressionsCompiler', () => {
         // arrange
         const expected = new FunctionCallArgumentCollectionStub()
           .withArgument('test-arg', 'test-value');
-        const code = 'non-important';
+        const code = 'longer than 6 characters';
         const expressions = [
-          new ExpressionStub(),
-          new ExpressionStub(),
+          new ExpressionStub().withPosition(0, 3),
+          new ExpressionStub().withPosition(3, 6),
         ];
         const expressionParserMock = new ExpressionParserStub()
-          .withResult(expressions);
+          .withResult(code, expressions);
         const sut = new SystemUnderTest(expressionParserMock);
         // act
         sut.compileExpressions(code, expected);
         // assert
-        expect(expressions[0].callHistory).to.have.lengthOf(1);
-        expect(expressions[0].callHistory[0].args).to.equal(expected);
-        expect(expressions[1].callHistory).to.have.lengthOf(1);
-        expect(expressions[1].callHistory[0].args).to.equal(expected);
+        const actualArgs = expressions
+          .flatMap((expression) => expression.callHistory)
+          .map((context) => context.args);
+        expect(
+          actualArgs.every((arg) => arg === expected),
+          `Expected: ${JSON.stringify(expected)}\n`
+          + `Actual: ${JSON.stringify(actualArgs)}\n`
+          + `Not equal: ${actualArgs.filter((arg) => arg !== expected)}`,
+        );
       });
       describe('throws if arguments is missing', () => {
         itEachAbsentObjectValue((absentValue) => {
@@ -105,66 +204,122 @@ describe('ExpressionsCompiler', () => {
         });
       });
     });
-    describe('throws when expected argument is not provided but used in code', () => {
-      // arrange
-      const testCases = [
-        {
-          name: 'empty parameters',
-          expressions: [
-            new ExpressionStub().withParameterNames(['parameter'], false),
-          ],
-          args: new FunctionCallArgumentCollectionStub(),
-          expectedError: 'parameter value(s) not provided for: "parameter" but used in code',
-        },
-        {
-          name: 'unnecessary parameter is provided',
-          expressions: [
-            new ExpressionStub().withParameterNames(['parameter'], false),
-          ],
-          args: new FunctionCallArgumentCollectionStub()
-            .withArgument('unnecessaryParameter', 'unnecessaryValue'),
-          expectedError: 'parameter value(s) not provided for: "parameter" but used in code',
-        },
-        {
-          name: 'multiple values are not provided',
-          expressions: [
-            new ExpressionStub().withParameterNames(['parameter1'], false),
-            new ExpressionStub().withParameterNames(['parameter2', 'parameter3'], false),
-          ],
-          args: new FunctionCallArgumentCollectionStub(),
-          expectedError: 'parameter value(s) not provided for: "parameter1", "parameter2", "parameter3" but used in code',
-        },
-        {
-          name: 'some values are provided',
-          expressions: [
-            new ExpressionStub().withParameterNames(['parameter1'], false),
-            new ExpressionStub().withParameterNames(['parameter2', 'parameter3'], false),
-          ],
-          args: new FunctionCallArgumentCollectionStub()
-            .withArgument('parameter2', 'value'),
-          expectedError: 'parameter value(s) not provided for: "parameter1", "parameter3" but used in code',
-        },
-        {
-          name: 'parameter names are not repeated in error message',
-          expressions: [
-            new ExpressionStub().withParameterNames(['parameter1', 'parameter1', 'parameter2', 'parameter2'], false),
-          ],
-          args: new FunctionCallArgumentCollectionStub(),
-          expectedError: 'parameter value(s) not provided for: "parameter1", "parameter2" but used in code',
-        },
-      ];
-      for (const testCase of testCases) {
-        it(testCase.name, () => {
-          const code = 'non-important-code';
-          const expressionParserMock = new ExpressionParserStub()
-            .withResult(testCase.expressions);
-          const sut = new SystemUnderTest(expressionParserMock);
-          // act
-          const act = () => sut.compileExpressions(code, testCase.args);
-          // assert
-          expect(act).to.throw(testCase.expectedError);
-        });
-      }
+    describe('throws when expressions are invalid', () => {
+      describe('throws when expected argument is not provided but used in code', () => {
+        // arrange
+        const testCases = [
+          {
+            name: 'empty parameters',
+            expressions: [
+              new ExpressionStub().withParameterNames(['parameter'], false),
+            ],
+            args: new FunctionCallArgumentCollectionStub(),
+            expectedError: 'parameter value(s) not provided for: "parameter" but used in code',
+          },
+          {
+            name: 'unnecessary parameter is provided',
+            expressions: [
+              new ExpressionStub().withParameterNames(['parameter'], false),
+            ],
+            args: new FunctionCallArgumentCollectionStub()
+              .withArgument('unnecessaryParameter', 'unnecessaryValue'),
+            expectedError: 'parameter value(s) not provided for: "parameter" but used in code',
+          },
+          {
+            name: 'multiple values are not provided',
+            expressions: [
+              new ExpressionStub().withParameterNames(['parameter1'], false),
+              new ExpressionStub().withParameterNames(['parameter2', 'parameter3'], false),
+            ],
+            args: new FunctionCallArgumentCollectionStub(),
+            expectedError: 'parameter value(s) not provided for: "parameter1", "parameter2", "parameter3" but used in code',
+          },
+          {
+            name: 'some values are provided',
+            expressions: [
+              new ExpressionStub().withParameterNames(['parameter1'], false),
+              new ExpressionStub().withParameterNames(['parameter2', 'parameter3'], false),
+            ],
+            args: new FunctionCallArgumentCollectionStub()
+              .withArgument('parameter2', 'value'),
+            expectedError: 'parameter value(s) not provided for: "parameter1", "parameter3" but used in code',
+          },
+          {
+            name: 'parameter names are not repeated in error message',
+            expressions: [
+              new ExpressionStub().withParameterNames(['parameter1', 'parameter1', 'parameter2', 'parameter2'], false),
+            ],
+            args: new FunctionCallArgumentCollectionStub(),
+            expectedError: 'parameter value(s) not provided for: "parameter1", "parameter2" but used in code',
+          },
+        ];
+        for (const testCase of testCases) {
+          it(testCase.name, () => {
+            const code = 'non-important-code';
+            const expressionParserMock = new ExpressionParserStub()
+              .withResult(code, testCase.expressions);
+            const sut = new SystemUnderTest(expressionParserMock);
+            // act
+            const act = () => sut.compileExpressions(code, testCase.args);
+            // assert
+            expect(act).to.throw(testCase.expectedError);
+          });
+        }
+      });
+      describe('throws when expression positions are unexpected', () => {
+        // arrange
+        const code = 'c'.repeat(30);
+        const testCases: readonly {
+          name: string,
+          expressions: readonly IExpression[],
+          expectedError: string,
+          expectedResult: boolean,
+        }[] = [
+          (() => {
+            const badExpression = new ExpressionStub().withPosition(0, code.length + 5);
+            const goodExpression = new ExpressionStub().withPosition(0, code.length - 1);
+            return {
+              name: 'an expression has out-of-range position',
+              expressions: [badExpression, goodExpression],
+              expectedError: `Expressions out of range:\n${JSON.stringify([badExpression])}`,
+              expectedResult: true,
+            };
+          })(),
+          (() => {
+            const duplicatedExpression = new ExpressionStub().withPosition(0, code.length - 1);
+            const uniqueExpression = new ExpressionStub().withPosition(0, code.length - 2);
+            return {
+              name: 'two expressions at the same position',
+              expressions: [duplicatedExpression, duplicatedExpression, uniqueExpression],
+              expectedError: `Instructions at same position:\n${JSON.stringify([duplicatedExpression, duplicatedExpression])}`,
+              expectedResult: true,
+            };
+          })(),
+          (() => {
+            const goodExpression = new ExpressionStub().withPosition(0, 5);
+            const intersectingExpression = new ExpressionStub().withPosition(5, 10);
+            const intersectingExpressionOther = new ExpressionStub().withPosition(7, 12);
+            return {
+              name: 'intersecting expressions',
+              expressions: [goodExpression, intersectingExpression, intersectingExpressionOther],
+              expectedError: `Instructions intersecting unexpectedly:\n${JSON.stringify([intersectingExpression, intersectingExpressionOther])}`,
+              expectedResult: true,
+            };
+          })(),
+        ];
+        for (const testCase of testCases) {
+          it(testCase.name, () => {
+            const expressionParserMock = new ExpressionParserStub()
+              .withResult(code, testCase.expressions);
+            const sut = new SystemUnderTest(expressionParserMock);
+            const args = new FunctionCallArgumentCollectionStub();
+            // act
+            const act = () => sut.compileExpressions(code, args);
+            // assert
+            expect(act).to.throw(testCase.expectedError);
+          });
+        }
+      });
     });
     it('calls parser with expected code', () => {
       // arrange
