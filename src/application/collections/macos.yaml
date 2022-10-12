@@ -509,6 +509,83 @@ actions:
                         function: PersistUserEnvironmentConfiguration
                         parameters:
                             configuration: export POWERSHELL_TELEMETRY_OPTOUT=1
+            -
+                category: Configure Parallels Desktop
+                docs: |-
+                    Parallels Desktop for Mac is software providing hardware virtualization for macOS [1].
+
+                    When you use it, it collects and share your personal data to third parties [2]. Personal
+                    data include IP address of your device, your broad geographical location (country, state
+                    (if applicable), and city) and used product [2].
+                    
+                    It includes third-party ads [3] and automatic check for updates [4] by default. Both of these
+                    behaviors communicate with online services that reveal data about you.
+
+                    [1]: https://web.archive.org/web/20221012155943/https://en.wikipedia.org/wiki/Parallels_Desktop_for_Mac "Parallels Desktop for Mac - Wikipedia | en.wikipedia.org"
+                    [2]: https://web.archive.org/web/20221012155829/https://www.parallels.com/about/legal/privacy/ "Privacy Statement | parallels.com"
+                    [3]: https://web.archive.org/web/20221012151800/https://kb.parallels.com/114422 "How do I turn off notifications in Parallels Desktop and Parallels Access? | Knowledge Base | parallels.com"
+                    [4]: https://web.archive.org/web/20221012151953/http://download.parallels.com/stm/docs/en/Parallels_Desktop_Users_Guide/22220.htm "Automatic Updating | Parallels Desktop Users Guide | download.parallels.com"
+                children:
+                    -
+                        name: Turn off ads in Parallels Desktop
+                        recommend: standard
+                        docs: |-
+                            Parallels Desktop in-product notifications to show ads from Parallels or other third
+                            party companies [1].
+
+                            The main setting is `ProductPromo.ForcePromoOff` [1] that you can check using:
+
+                            1. `defaults read 'com.parallels.Parallels Desktop' 'ProductPromo.ForcePromoOff'`
+                            2. `defaults read 'com.parallels.Parallels Desktop' 'WelcomeScreenPromo.PromoOff'`
+
+                            By default, on clean installations the value is `0` which is equivalent of `no`.
+
+                            There is also `WelcomeScreenPromo.PromoOff` setting that's pre-configured to `1` (`no` as
+                            default). It's undocumented but still kept disabled by this script.
+
+                            [1]: https://web.archive.org/save/https://forum.parallels.com/threads/unable-to-process-the-upgrade-request.345603/ "Unable to process the upgrade request | Parallels Forums | forum.parallels.com"
+                            [2]: https://web.archive.org/web/20221012151800/https://kb.parallels.com/114422  "How do I turn off notifications in Parallels Desktop and Parallels Access? | Knowledge Base | parallels.com"
+                        code: |-
+                            defaults write 'com.parallels.Parallels Desktop' 'ProductPromo.ForcePromoOff' -bool yes
+                            defaults write 'com.parallels.Parallels Desktop' 'WelcomeScreenPromo.PromoOff' -bool yes
+                        revertCode: |-
+                            defaults write 'com.parallels.Parallels Desktop' 'ProductPromo.ForcePromoOff' -bool no
+                            defaults write 'com.parallels.Parallels Desktop' 'WelcomeScreenPromo.PromoOff' -bool yes
+                    -
+                        category: Disable Parallels Desktop auto-updates
+                        docs: |-
+                            Parallels Desktop by default checks for updates frequently and automatically downloads them [1].
+                            This reveal personal data about [2] you without your control.
+
+                            [1]: https://web.archive.org/web/20221012151953/http://download.parallels.com/stm/docs/en/Parallels_Desktop_Users_Guide/22220.htm "Automatic Updating | Parallels Desktop Users Guide | download.parallels.com"
+                            [2]: https://web.archive.org/web/20221012155829/https://www.parallels.com/about/legal/privacy/ "Privacy Statement | parallels.com"
+                        children:
+                            -
+                                name: Disable automatically downloading Parallels Desktop updates
+                                docs: |-
+                                    Automatic downloads are enabled by default, and this script disables automatic downloads.
+
+                                    Automatic downloads are configured using the `Application preferences.Download updates automatically` property [1].
+
+                                    - Check: `defaults read 'com.parallels.Parallels Desktop' 'Application preferences.Download updates automatically'`
+                                    - Values: 0 - Disabled, 1 - Enabled (default)
+
+                                    [1]: https://web.archive.org/web/20221012153810/https://download.parallels.com/desktop/v18/docs/en_US/Parallels-Desktop-Business-Edition-Administrators-Guide/37744.htm  "Parallels Desktop Business Edition Administrator's Guide v18 - Configuring individual Macs | download.parallels.com"
+                                code: defaults write 'com.parallels.Parallels Desktop' 'Application preferences.Download updates automatically' -bool no
+                                revertCode: defaults write 'com.parallels.Parallels Desktop' 'Application preferences.Download updates automatically' -bool yes
+                            -
+                                name: Disable automatically checking for Parallels Desktop updates
+                                docs: |-
+                                    Automatic checks are weekly by default, and this script disables the checks completely.
+
+                                    Frequency to check for updates can be configured using `Application preferences.Check for updates` property [1].
+
+                                    - Check: `defaults read 'com.parallels.Parallels Desktop' 'Application preferences.Check for updates'`
+                                    - Values: 0 - Never, 1 - Once a day, 2 - Once a week (default), 3 - Once a month
+
+                                    [1]: https://web.archive.org/web/20221012153810/https://download.parallels.com/desktop/v18/docs/en_US/Parallels-Desktop-Business-Edition-Administrators-Guide/37744.htm "Parallels Desktop Business Edition Administrator's Guide v18 - Configuring individual Macs | download.parallels.com"
+                                code: defaults write 'com.parallels.Parallels Desktop' 'Application preferences.Check for updates' -int 0
+                                revertCode: defaults write 'com.parallels.Parallels Desktop' 'Application preferences.Check for updates' -int 2
     -
         category: Configure OS
         children:
