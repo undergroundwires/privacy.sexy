@@ -1,5 +1,5 @@
 # build
 
-- These are the file that are used by electron.
-- Logos are created by from the [PNG icon](./../public/icon.png)
-  - by running `npx electron-icon-builder --input=./public/icon.png --output=build --flatten`
+This folder contains files that are used by Electron to serve the desktop version.
+
+Icons are created from the main logo file and should not be changed manually, see [related documentation](./../img/README.md).

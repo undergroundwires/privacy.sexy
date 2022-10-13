@@ -45,6 +45,7 @@ You could run other types of tests as well, but they may take longer time and ov
 
 - Build web application: `npm run build`
 - Build desktop application: `npm run electron:build`
+- (Re)create icons (see [documentation](../img/README.md)): `npm run create-icons`
 
 ## Recommended extensions
 
