@@ -1,4 +1,4 @@
-import { ILanguageSyntax } from '@/domain/ScriptCode';
+import { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
 
 export class ShellScriptSyntax implements ILanguageSyntax {
   public readonly commentDelimiters = ['#'];

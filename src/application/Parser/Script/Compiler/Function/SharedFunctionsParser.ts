@@ -1,4 +1,9 @@
 import type { FunctionData, InstructionHolder } from '@/application/collections/';
+import { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
+import { CodeValidator } from '@/application/Parser/Script/Validation/CodeValidator';
+import { NoEmptyLines } from '@/application/Parser/Script/Validation/Rules/NoEmptyLines';
+import { NoDuplicatedLines } from '@/application/Parser/Script/Validation/Rules/NoDuplicatedLines';
+import { ICodeValidator } from '@/application/Parser/Script/Validation/ICodeValidator';
 import { createFunctionWithInlineCode, createCallerFunction } from './SharedFunction';
 import { SharedFunctionCollection } from './SharedFunctionCollection';
 import { ISharedFunctionCollection } from './ISharedFunctionCollection';
@@ -12,16 +17,20 @@ import { parseFunctionCalls } from './Call/FunctionCallParser';
 export class SharedFunctionsParser implements ISharedFunctionsParser {
   public static readonly instance: ISharedFunctionsParser = new SharedFunctionsParser();
 
+  constructor(private readonly codeValidator: ICodeValidator = CodeValidator.instance) { }
+
   public parseFunctions(
     functions: readonly FunctionData[],
+    syntax: ILanguageSyntax,
   ): ISharedFunctionCollection {
+    if (!syntax) { throw new Error('missing syntax'); }
     const collection = new SharedFunctionCollection();
     if (!functions || !functions.length) {
       return collection;
     }
     ensureValidFunctions(functions);
     return functions
-      .map((func) => parseFunction(func))
+      .map((func) => parseFunction(func, syntax, this.codeValidator))
       .reduce((acc, func) => {
         acc.addFunction(func);
         return acc;
@@ -29,15 +38,33 @@ export class SharedFunctionsParser implements ISharedFunctionsParser {
   }
 }
 
-function parseFunction(data: FunctionData): ISharedFunction {
+function parseFunction(
+  data: FunctionData,
+  syntax: ILanguageSyntax,
+  validator: ICodeValidator,
+): ISharedFunction {
   const { name } = data;
   const parameters = parseParameters(data);
   if (hasCode(data)) {
+    validateCode(data, syntax, validator);
     return createFunctionWithInlineCode(name, parameters, data.code, data.revertCode);
   }
   // Has call
   const calls = parseFunctionCalls(data.call);
   return createCallerFunction(name, parameters, calls);
+}
+
+function validateCode(
+  data: FunctionData,
+  syntax: ILanguageSyntax,
+  validator: ICodeValidator,
+): void {
+  [data.code, data.revertCode].forEach(
+    (code) => validator.throwIfInvalid(
+      code,
+      [new NoEmptyLines(), new NoDuplicatedLines(syntax)],
+    ),
+  );
 }
 
 function parseParameters(data: FunctionData): IReadOnlyFunctionParameterCollection {

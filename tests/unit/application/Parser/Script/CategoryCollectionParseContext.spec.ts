@@ -1,14 +1,14 @@
 import 'mocha';
 import { expect } from 'chai';
-import { ISyntaxFactory } from '@/application/Parser/Script/Syntax/ISyntaxFactory';
+import { ISyntaxFactory } from '@/application/Parser/Script/Validation/Syntax/ISyntaxFactory';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { CategoryCollectionParseContext } from '@/application/Parser/Script/CategoryCollectionParseContext';
-import { ILanguageSyntax } from '@/domain/ScriptCode';
 import { ScriptCompiler } from '@/application/Parser/Script/Compiler/ScriptCompiler';
 import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
 import { ScriptingDefinitionStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionStub';
 import { FunctionDataStub } from '@tests/unit/shared/Stubs/FunctionDataStub';
 import { itEachAbsentCollectionValue, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
 
 describe('CategoryCollectionParseContext', () => {
   describe('ctor', () => {

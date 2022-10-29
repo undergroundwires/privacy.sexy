@@ -11,8 +11,15 @@ import { FunctionCallArgumentCollectionStub } from '@tests/unit/shared/Stubs/Fun
 import { FunctionCallStub } from '@tests/unit/shared/Stubs/FunctionCallStub';
 import { ExpressionsCompilerStub } from '@tests/unit/shared/Stubs/ExpressionsCompilerStub';
 import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { itIsSingleton } from '@tests/unit/shared/TestCases/SingletonTests';
 
 describe('FunctionCallCompiler', () => {
+  describe('instance', () => {
+    itIsSingleton({
+      getter: () => FunctionCallCompiler.instance,
+      expectedType: FunctionCallCompiler,
+    });
+  });
   describe('compileCall', () => {
     describe('parameter validation', () => {
       describe('call', () => {
@@ -172,7 +179,7 @@ describe('FunctionCallCompiler', () => {
             const args = new FunctionCallArgumentCollectionStub().withArguments(testCase.callArgs);
             const { code } = func.body;
             const expressionsCompilerMock = new ExpressionsCompilerStub()
-              .setup({ givenCode: code.do, givenArgs: args, result: expected.execute })
+              .setup({ givenCode: code.execute, givenArgs: args, result: expected.execute })
               .setup({ givenCode: code.revert, givenArgs: args, result: expected.revert });
             const sut = new MockableFunctionCallCompiler(expressionsCompilerMock);
             // act
@@ -209,7 +216,7 @@ describe('FunctionCallCompiler', () => {
         const expressionsCompilerMock = new ExpressionsCompilerStub()
           .setupToReturnFunctionCode(firstFunction, firstFunctionCallArgs)
           .setupToReturnFunctionCode(secondFunction, secondFunctionCallArgs);
-        const expectedExecute = `${firstFunction.body.code.do}\n${secondFunction.body.code.do}`;
+        const expectedExecute = `${firstFunction.body.code.execute}\n${secondFunction.body.code.execute}`;
         const expectedRevert = `${firstFunction.body.code.revert}\n${secondFunction.body.code.revert}`;
         const functions = new SharedFunctionCollectionStub()
           .withFunction(firstFunction)
@@ -244,7 +251,7 @@ describe('FunctionCallCompiler', () => {
             };
             const expressionsCompilerMock = new ExpressionsCompilerStub()
               .setup({
-                givenCode: functions.deep.body.code.do,
+                givenCode: functions.deep.body.code.execute,
                 givenArgs: emptyArgs,
                 result: expected.code,
               })
@@ -312,7 +319,7 @@ describe('FunctionCallCompiler', () => {
               })
             // set-up compiling of deep, compiled argument should be sent
               .setup({
-                givenCode: scenario.deep.getFunction().body.code.do,
+                givenCode: scenario.deep.getFunction().body.code.execute,
                 givenArgs: scenario.front.callArgs.expectedCallDeep(),
                 result: expected.code,
               })
@@ -407,7 +414,7 @@ describe('FunctionCallCompiler', () => {
               })
             // Compiling of third functions code with expected arguments
               .setup({
-                givenCode: scenario.third.getFunction().body.code.do,
+                givenCode: scenario.third.getFunction().body.code.execute,
                 givenArgs: scenario.second.callArgs.expectedToThird(),
                 result: expected.code,
               })
@@ -491,7 +498,7 @@ describe('FunctionCallCompiler', () => {
               .setupToReturnFunctionCode(functions.call2.deep.getFunction(), emptyArgs);
             const sut = new MockableFunctionCallCompiler(expressionsCompilerMock);
             const expected = {
-              code: `${functions.call1.deep.getFunction().body.code.do}\n${functions.call2.deep.getFunction().body.code.do}`,
+              code: `${functions.call1.deep.getFunction().body.code.execute}\n${functions.call2.deep.getFunction().body.code.execute}`,
               revert: `${functions.call1.deep.getFunction().body.code.revert}\n${functions.call2.deep.getFunction().body.code.revert}`,
             };
             // act

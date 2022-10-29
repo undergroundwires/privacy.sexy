@@ -1,6 +1,6 @@
-import { ILanguageSyntax } from '@/domain/ScriptCode';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { ScriptingLanguageFactory } from '@/application/Common/ScriptingLanguage/ScriptingLanguageFactory';
+import { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
 import { BatchFileSyntax } from './BatchFileSyntax';
 import { ShellScriptSyntax } from './ShellScriptSyntax';
 import { ISyntaxFactory } from './ISyntaxFactory';

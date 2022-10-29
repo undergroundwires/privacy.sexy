@@ -26,7 +26,7 @@ export class SharedFunctionStub implements ISharedFunction {
     return {
       type: this.bodyType,
       code: this.bodyType === FunctionBodyType.Code ? {
-        do: this.code,
+        execute: this.code,
         revert: this.revertCode,
       } : undefined,
       calls: this.bodyType === FunctionBodyType.Calls ? this.calls : undefined,

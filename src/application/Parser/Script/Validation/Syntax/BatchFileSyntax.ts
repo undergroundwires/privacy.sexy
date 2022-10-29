@@ -1,4 +1,4 @@
-import { ILanguageSyntax } from '@/domain/ScriptCode';
+import { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
 
 const BatchFileCommonCodeParts = ['(', ')', 'else', '||'];
 const PowerShellCommonCodeParts = ['{', '}'];

@@ -12,174 +12,174 @@ import {
 } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('SharedFunction', () => {
-  describe('name', () => {
-    runForEachFactoryMethod((build) => {
-      it('sets as expected', () => {
-        // arrange
-        const expected = 'expected-function-name';
-        const builder = new SharedFunctionBuilder()
-          .withName(expected);
-        // act
-        const sut = build(builder);
-        // assert
-        expect(sut.name).equal(expected);
-      });
-      it('throws when absent', () => {
-        itEachAbsentStringValue((absentValue) => {
-          // arrange
-          const expectedError = 'missing function name';
-          const builder = new SharedFunctionBuilder()
-            .withName(absentValue);
-          // act
-          const act = () => build(builder);
-          // assert
-          expect(act).to.throw(expectedError);
-        });
-      });
-    });
-  });
-  describe('parameters', () => {
-    runForEachFactoryMethod((build) => {
-      it('sets as expected', () => {
-        // arrange
-        const expected = new FunctionParameterCollectionStub()
-          .withParameterName('test-parameter');
-        const builder = new SharedFunctionBuilder()
-          .withParameters(expected);
-        // act
-        const sut = build(builder);
-        // assert
-        expect(sut.parameters).equal(expected);
-      });
-      describe('throws if missing', () => {
-        itEachAbsentObjectValue((absentValue) => {
-          // arrange
-          const expectedError = 'missing parameters';
-          const parameters = absentValue;
-          const builder = new SharedFunctionBuilder()
-            .withParameters(parameters);
-          // act
-          const act = () => build(builder);
-          // assert
-          expect(act).to.throw(expectedError);
-        });
-      });
-    });
-  });
-  describe('body', () => {
-    describe('createFunctionWithInlineCode', () => {
-      describe('code', () => {
+  describe('SharedFunction', () => {
+    describe('name', () => {
+      runForEachFactoryMethod((build) => {
         it('sets as expected', () => {
           // arrange
-          const expected = 'expected-code';
+          const expected = 'expected-function-name';
+          const builder = new SharedFunctionBuilder()
+            .withName(expected);
           // act
-          const sut = new SharedFunctionBuilder()
-            .withCode(expected)
-            .createFunctionWithInlineCode();
+          const sut = build(builder);
           // assert
-          expect(sut.body.code.do).equal(expected);
+          expect(sut.name).equal(expected);
         });
-        describe('throws if absent', () => {
+        it('throws when absent', () => {
           itEachAbsentStringValue((absentValue) => {
             // arrange
-            const functionName = 'expected-function-name';
-            const expectedError = `undefined code in function "${functionName}"`;
-            const invalidValue = absentValue;
+            const expectedError = 'missing function name';
+            const builder = new SharedFunctionBuilder()
+              .withName(absentValue);
             // act
-            const act = () => new SharedFunctionBuilder()
-              .withName(functionName)
-              .withCode(invalidValue)
-              .createFunctionWithInlineCode();
+            const act = () => build(builder);
             // assert
             expect(act).to.throw(expectedError);
           });
         });
-      });
-      describe('revertCode', () => {
-        it('sets as expected', () => {
-          // arrange
-          const testData = [
-            'expected-revert-code',
-            ...AbsentStringTestCases.map((testCase) => testCase.absentValue),
-          ];
-          for (const data of testData) {
-            // act
-            const sut = new SharedFunctionBuilder()
-              .withRevertCode(data)
-              .createFunctionWithInlineCode();
-            // assert
-            expect(sut.body.code.revert).equal(data);
-          }
-        });
-      });
-      it('sets type as expected', () => {
-        // arrange
-        const expectedType = FunctionBodyType.Code;
-        // act
-        const sut = new SharedFunctionBuilder()
-          .createFunctionWithInlineCode();
-        // assert
-        expect(sut.body.type).equal(expectedType);
-      });
-      it('calls are undefined', () => {
-        // arrange
-        const expectedCalls = undefined;
-        // act
-        const sut = new SharedFunctionBuilder()
-          .createFunctionWithInlineCode();
-        // assert
-        expect(sut.body.calls).equal(expectedCalls);
       });
     });
-    describe('createCallerFunction', () => {
-      describe('callSequence', () => {
+    describe('parameters', () => {
+      runForEachFactoryMethod((build) => {
         it('sets as expected', () => {
           // arrange
-          const expected = [
-            new FunctionCallStub().withFunctionName('firstFunction'),
-            new FunctionCallStub().withFunctionName('secondFunction'),
-          ];
+          const expected = new FunctionParameterCollectionStub()
+            .withParameterName('test-parameter');
+          const builder = new SharedFunctionBuilder()
+            .withParameters(expected);
           // act
-          const sut = new SharedFunctionBuilder()
-            .withCallSequence(expected)
-            .createCallerFunction();
+          const sut = build(builder);
           // assert
-          expect(sut.body.calls).equal(expected);
+          expect(sut.parameters).equal(expected);
         });
         describe('throws if missing', () => {
-          itEachAbsentCollectionValue((absentValue) => {
+          itEachAbsentObjectValue((absentValue) => {
             // arrange
-            const functionName = 'invalidFunction';
-            const callSequence = absentValue;
-            const expectedError = `missing call sequence in function "${functionName}"`;
+            const expectedError = 'missing parameters';
+            const parameters = absentValue;
+            const builder = new SharedFunctionBuilder()
+              .withParameters(parameters);
             // act
-            const act = () => new SharedFunctionBuilder()
-              .withName(functionName)
-              .withCallSequence(callSequence)
-              .createCallerFunction();
+            const act = () => build(builder);
             // assert
             expect(act).to.throw(expectedError);
           });
         });
       });
-      it('sets type as expected', () => {
+    });
+  });
+  describe('createFunctionWithInlineCode', () => {
+    describe('code', () => {
+      it('sets as expected', () => {
         // arrange
-        const expectedType = FunctionBodyType.Calls;
+        const expected = 'expected-code';
         // act
         const sut = new SharedFunctionBuilder()
-          .createCallerFunction();
+          .withCode(expected)
+          .createFunctionWithInlineCode();
         // assert
-        expect(sut.body.type).equal(expectedType);
+        expect(sut.body.code.execute).equal(expected);
       });
-      it('code is undefined', () => {
+      describe('throws if absent', () => {
+        itEachAbsentStringValue((absentValue) => {
+          // arrange
+          const functionName = 'expected-function-name';
+          const expectedError = `undefined code in function "${functionName}"`;
+          const invalidValue = absentValue;
+          // act
+          const act = () => new SharedFunctionBuilder()
+            .withName(functionName)
+            .withCode(invalidValue)
+            .createFunctionWithInlineCode();
+          // assert
+          expect(act).to.throw(expectedError);
+        });
+      });
+    });
+    describe('revertCode', () => {
+      it('sets as expected', () => {
         // arrange
-        const expectedCode = undefined;
+        const testData = [
+          'expected-revert-code',
+          ...AbsentStringTestCases.map((testCase) => testCase.absentValue),
+        ];
+        for (const data of testData) {
+          // act
+          const sut = new SharedFunctionBuilder()
+            .withRevertCode(data)
+            .createFunctionWithInlineCode();
+          // assert
+          expect(sut.body.code.revert).equal(data);
+        }
+      });
+    });
+    it('sets type as expected', () => {
+      // arrange
+      const expectedType = FunctionBodyType.Code;
+      // act
+      const sut = new SharedFunctionBuilder()
+        .createFunctionWithInlineCode();
+      // assert
+      expect(sut.body.type).equal(expectedType);
+    });
+    it('calls are undefined', () => {
+      // arrange
+      const expectedCalls = undefined;
+      // act
+      const sut = new SharedFunctionBuilder()
+        .createFunctionWithInlineCode();
+      // assert
+      expect(sut.body.calls).equal(expectedCalls);
+    });
+  });
+  describe('createCallerFunction', () => {
+    describe('callSequence', () => {
+      it('sets as expected', () => {
+        // arrange
+        const expected = [
+          new FunctionCallStub().withFunctionName('firstFunction'),
+          new FunctionCallStub().withFunctionName('secondFunction'),
+        ];
         // act
         const sut = new SharedFunctionBuilder()
+          .withCallSequence(expected)
           .createCallerFunction();
         // assert
-        expect(sut.body.code).equal(expectedCode);
+        expect(sut.body.calls).equal(expected);
       });
+      describe('throws if missing', () => {
+        itEachAbsentCollectionValue((absentValue) => {
+          // arrange
+          const functionName = 'invalidFunction';
+          const callSequence = absentValue;
+          const expectedError = `missing call sequence in function "${functionName}"`;
+          // act
+          const act = () => new SharedFunctionBuilder()
+            .withName(functionName)
+            .withCallSequence(callSequence)
+            .createCallerFunction();
+          // assert
+          expect(act).to.throw(expectedError);
+        });
+      });
+    });
+    it('sets type as expected', () => {
+      // arrange
+      const expectedType = FunctionBodyType.Calls;
+      // act
+      const sut = new SharedFunctionBuilder()
+        .createCallerFunction();
+      // assert
+      expect(sut.body.type).equal(expectedType);
+    });
+    it('code is undefined', () => {
+      // arrange
+      const expectedCode = undefined;
+      // act
+      const sut = new SharedFunctionBuilder()
+        .createCallerFunction();
+      // assert
+      expect(sut.body.code).equal(expectedCode);
     });
   });
 });

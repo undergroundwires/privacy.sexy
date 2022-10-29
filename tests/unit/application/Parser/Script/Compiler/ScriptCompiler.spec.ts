@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import type { FunctionData } from '@/application/collections/';
-import { ILanguageSyntax, ScriptCode } from '@/domain/ScriptCode';
+import { ScriptCode } from '@/domain/ScriptCode';
 import { ScriptCompiler } from '@/application/Parser/Script/Compiler/ScriptCompiler';
 import { ISharedFunctionsParser } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionsParser';
 import { ICompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/ICompiledCode';
@@ -15,6 +15,10 @@ import { SharedFunctionCollectionStub } from '@tests/unit/shared/Stubs/SharedFun
 import { parseFunctionCalls } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCallParser';
 import { FunctionCallDataStub } from '@tests/unit/shared/Stubs/FunctionCallDataStub';
 import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
+import { ICodeValidator } from '@/application/Parser/Script/Validation/ICodeValidator';
+import { CodeValidatorStub } from '@tests/unit/shared/Stubs/CodeValidatorStub';
+import { NoEmptyLines } from '@/application/Parser/Script/Validation/Rules/NoEmptyLines';
 
 describe('ScriptCompiler', () => {
   describe('ctor', () => {
@@ -111,28 +115,38 @@ describe('ScriptCompiler', () => {
       expect(code.execute).to.equal(expected.code);
       expect(code.revert).to.equal(expected.revertCode);
     });
-    it('creates with expected syntax', () => {
-      // arrange
-      let isUsed = false;
-      const syntax: ILanguageSyntax = {
-        get commentDelimiters() {
-          isUsed = true;
-          return [];
-        },
-        get commonCodeParts() {
-          isUsed = true;
-          return [];
-        },
-      };
-      const sut = new ScriptCompilerBuilder()
-        .withSomeFunctions()
-        .withSyntax(syntax)
-        .build();
-      const scriptData = ScriptDataStub.createWithCall();
-      // act
-      sut.compile(scriptData);
-      // assert
-      expect(isUsed).to.equal(true);
+    describe('parses functions as expected', () => {
+      it('parses functions with expected syntax', () => {
+        // arrange
+        const expected: ILanguageSyntax = new LanguageSyntaxStub();
+        const parser = new SharedFunctionsParserStub();
+        const sut = new ScriptCompilerBuilder()
+          .withSomeFunctions()
+          .withSyntax(expected)
+          .withSharedFunctionsParser(parser)
+          .build();
+        const scriptData = ScriptDataStub.createWithCall();
+        // act
+        sut.compile(scriptData);
+        // assert
+        expect(parser.callHistory.length).to.equal(1);
+        expect(parser.callHistory[0].syntax).to.equal(expected);
+      });
+      it('parses given functions', () => {
+        // arrange
+        const expectedFunctions = [FunctionDataStub.createWithCode().withName('existing-func')];
+        const parser = new SharedFunctionsParserStub();
+        const sut = new ScriptCompilerBuilder()
+          .withFunctions(...expectedFunctions)
+          .withSharedFunctionsParser(parser)
+          .build();
+        const scriptData = ScriptDataStub.createWithCall();
+        // act
+        sut.compile(scriptData);
+        // assert
+        expect(parser.callHistory.length).to.equal(1);
+        expect(parser.callHistory[0].functions).to.deep.equal(expectedFunctions);
+      });
     });
     it('rethrows error with script name', () => {
       // arrange
@@ -159,7 +173,7 @@ describe('ScriptCompiler', () => {
       const syntax = new LanguageSyntaxStub();
       const invalidCode: ICompiledCode = { code: undefined, revertCode: undefined };
       const realExceptionMessage = collectExceptionMessage(
-        () => new ScriptCode(invalidCode.code, invalidCode.revertCode, syntax),
+        () => new ScriptCode(invalidCode.code, invalidCode.revertCode),
       );
       const expectedError = `Script "${scriptName}" ${realExceptionMessage}`;
       const callCompiler: IFunctionCallCompiler = {
@@ -176,6 +190,26 @@ describe('ScriptCompiler', () => {
       const act = () => sut.compile(scriptData);
       // assert
       expect(act).to.throw(expectedError);
+    });
+    it('validates compiled code as expected', () => {
+      // arrange
+      const expectedRules = [
+        NoEmptyLines,
+        // Allow duplicated lines to enable calling same function multiple times
+      ];
+      const scriptData = ScriptDataStub.createWithCall();
+      const validator = new CodeValidatorStub();
+      const sut = new ScriptCompilerBuilder()
+        .withSomeFunctions()
+        .withCodeValidator(validator)
+        .build();
+      // act
+      const compilationResult = sut.compile(scriptData);
+      // assert
+      validator.assertHistory({
+        validatedCodes: [compilationResult.execute, compilationResult.revert],
+        rules: expectedRules,
+      });
     });
   });
 });
@@ -194,6 +228,8 @@ class ScriptCompilerBuilder {
   private sharedFunctionsParser: ISharedFunctionsParser = new SharedFunctionsParserStub();
 
   private callCompiler: IFunctionCallCompiler = new FunctionCallCompilerStub();
+
+  private codeValidator: ICodeValidator = new CodeValidatorStub();
 
   public withFunctions(...functions: FunctionData[]): ScriptCompilerBuilder {
     this.functions = functions;
@@ -227,6 +263,13 @@ class ScriptCompilerBuilder {
     return this;
   }
 
+  public withCodeValidator(
+    codeValidator: ICodeValidator,
+  ): ScriptCompilerBuilder {
+    this.codeValidator = codeValidator;
+    return this;
+  }
+
   public withFunctionCallCompiler(callCompiler: IFunctionCallCompiler): ScriptCompilerBuilder {
     this.callCompiler = callCompiler;
     return this;
@@ -239,8 +282,9 @@ class ScriptCompilerBuilder {
     return new ScriptCompiler(
       this.functions,
       this.syntax,
-      this.callCompiler,
       this.sharedFunctionsParser,
+      this.callCompiler,
+      this.codeValidator,
     );
   }
 }

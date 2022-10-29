@@ -1,9 +1,9 @@
 import 'mocha';
-import { SyntaxFactory } from '@/application/Parser/Script/Syntax/SyntaxFactory';
+import { SyntaxFactory } from '@/application/Parser/Script/Validation/Syntax/SyntaxFactory';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
-import { ShellScriptSyntax } from '@/application/Parser/Script/Syntax/ShellScriptSyntax';
-import { BatchFileSyntax } from '@/application/Parser/Script/Syntax/BatchFileSyntax';
+import { ShellScriptSyntax } from '@/application/Parser/Script/Validation/Syntax/ShellScriptSyntax';
 import { ScriptingLanguageFactoryTestRunner } from '@tests/unit/application/Common/ScriptingLanguage/ScriptingLanguageFactoryTestRunner';
+import { BatchFileSyntax } from '@/application/Parser/Script/Validation/Syntax/BatchFileSyntax';
 
 describe('SyntaxFactory', () => {
   const sut = new SyntaxFactory();

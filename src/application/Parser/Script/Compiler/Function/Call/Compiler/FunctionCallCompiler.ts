@@ -81,7 +81,7 @@ function compileCode(
   compiler: IExpressionsCompiler,
 ): ICompiledFunctionCall {
   return {
-    code: compiler.compileExpressions(code.do, args),
+    code: compiler.compileExpressions(code.execute, args),
     revertCode: compiler.compileExpressions(code.revert, args),
   };
 }

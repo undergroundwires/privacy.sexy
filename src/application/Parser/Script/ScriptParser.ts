@@ -1,13 +1,18 @@
 import type { ScriptData } from '@/application/collections/';
+import { NoEmptyLines } from '@/application/Parser/Script/Validation/Rules/NoEmptyLines';
+import { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
 import { Script } from '@/domain/Script';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { IScriptCode } from '@/domain/IScriptCode';
 import { ScriptCode } from '@/domain/ScriptCode';
+import { ICodeValidator } from '@/application/Parser/Script/Validation/ICodeValidator';
 import { parseDocs } from '../DocumentationParser';
 import { createEnumParser, IEnumParser } from '../../Common/Enum';
 import { NodeType } from '../NodeValidation/NodeType';
 import { NodeValidator } from '../NodeValidation/NodeValidator';
 import { ICategoryCollectionParseContext } from './ICategoryCollectionParseContext';
+import { CodeValidator } from './Validation/CodeValidator';
+import { NoDuplicatedLines } from './Validation/Rules/NoDuplicatedLines';
 
 // eslint-disable-next-line consistent-return
 export function parseScript(
@@ -15,6 +20,7 @@ export function parseScript(
   context: ICategoryCollectionParseContext,
   levelParser = createEnumParser(RecommendationLevel),
   scriptFactory: ScriptFactoryType = ScriptFactory,
+  codeValidator: ICodeValidator = CodeValidator.instance,
 ): Script {
   const validator = new NodeValidator({ type: NodeType.Script, selfNode: data });
   validateScript(data, validator);
@@ -22,7 +28,7 @@ export function parseScript(
   try {
     const script = scriptFactory(
       /* name: */ data.name,
-      /* code: */ parseCode(data, context),
+      /* code: */ parseCode(data, context, codeValidator),
       /* docs: */ parseDocs(data),
       /* level: */ parseLevel(data.recommend, levelParser),
     );
@@ -42,11 +48,30 @@ function parseLevel(
   return parser.parseEnum(level, 'level');
 }
 
-function parseCode(script: ScriptData, context: ICategoryCollectionParseContext): IScriptCode {
+function parseCode(
+  script: ScriptData,
+  context: ICategoryCollectionParseContext,
+  codeValidator: ICodeValidator,
+): IScriptCode {
   if (context.compiler.canCompile(script)) {
     return context.compiler.compile(script);
   }
-  return new ScriptCode(script.code, script.revertCode, context.syntax);
+  const code = new ScriptCode(script.code, script.revertCode);
+  validateHardcodedCodeWithoutCalls(code, codeValidator, context.syntax);
+  return code;
+}
+
+function validateHardcodedCodeWithoutCalls(
+  scriptCode: ScriptCode,
+  codeValidator: ICodeValidator,
+  syntax: ILanguageSyntax,
+) {
+  [scriptCode.execute, scriptCode.revert].forEach(
+    (code) => codeValidator.throwIfInvalid(
+      code,
+      [new NoEmptyLines(), new NoDuplicatedLines(syntax)],
+    ),
+  );
 }
 
 function validateScript(script: ScriptData, validator: NodeValidator) {

@@ -1,4 +1,5 @@
 import { IFunctionCall } from './Call/IFunctionCall';
+
 import {
   FunctionBodyType, IFunctionCode, ISharedFunction, ISharedFunctionBody,
 } from './ISharedFunction';
@@ -25,7 +26,7 @@ export function createFunctionWithInlineCode(
     throw new Error(`undefined code in function "${name}"`);
   }
   const content: IFunctionCode = {
-    do: code,
+    execute: code,
     revert: revertCode,
   };
   return new SharedFunction(name, parameters, content, FunctionBodyType.Code);

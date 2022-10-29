@@ -1,6 +1,6 @@
 import { ICategoryCollectionParseContext } from '@/application/Parser/Script/ICategoryCollectionParseContext';
 import { IScriptCompiler } from '@/application/Parser/Script/Compiler/IScriptCompiler';
-import { ILanguageSyntax } from '@/domain/ScriptCode';
+import { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
 import { ScriptCompilerStub } from './ScriptCompilerStub';
 import { LanguageSyntaxStub } from './LanguageSyntaxStub';
 

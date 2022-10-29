@@ -8,18 +8,46 @@ import { ParameterDefinitionDataStub } from '@tests/unit/shared/Stubs/ParameterD
 import { FunctionParameter } from '@/application/Parser/Script/Compiler/Function/Parameter/FunctionParameter';
 import { FunctionCallDataStub } from '@tests/unit/shared/Stubs/FunctionCallDataStub';
 import { itEachAbsentCollectionValue, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
+import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
+import { itIsSingleton } from '@tests/unit/shared/TestCases/SingletonTests';
+import { CodeValidatorStub } from '@tests/unit/shared/Stubs/CodeValidatorStub';
+import { ICodeValidator } from '@/application/Parser/Script/Validation/ICodeValidator';
+import { NoEmptyLines } from '@/application/Parser/Script/Validation/Rules/NoEmptyLines';
+import { NoDuplicatedLines } from '@/application/Parser/Script/Validation/Rules/NoDuplicatedLines';
 
 describe('SharedFunctionsParser', () => {
+  describe('instance', () => {
+    itIsSingleton({
+      getter: () => SharedFunctionsParser.instance,
+      expectedType: SharedFunctionsParser,
+    });
+  });
   describe('parseFunctions', () => {
+    describe('throws if syntax is missing', () => {
+      itEachAbsentObjectValue((absentValue) => {
+        // arrange
+        const expectedError = 'missing syntax';
+        const syntax = absentValue;
+        // act
+        const act = () => new ParseFunctionsCallerWithDefaults()
+          .withSyntax(syntax)
+          .parseFunctions();
+        // assert
+        expect(act).to.throw(expectedError);
+      });
+    });
     describe('validates functions', () => {
       describe('throws if one of the functions is undefined', () => {
         itEachAbsentObjectValue((absentValue) => {
           // arrange
           const expectedError = 'some functions are undefined';
           const functions = [FunctionDataStub.createWithCode(), absentValue];
-          const sut = new SharedFunctionsParser();
+          const sut = new ParseFunctionsCallerWithDefaults();
           // act
-          const act = () => sut.parseFunctions(functions);
+          const act = () => sut
+            .withFunctions(functions)
+            .parseFunctions();
           // assert
           expect(act).to.throw(expectedError);
         });
@@ -32,9 +60,10 @@ describe('SharedFunctionsParser', () => {
           FunctionDataStub.createWithCode().withName(name),
           FunctionDataStub.createWithCode().withName(name),
         ];
-        const sut = new SharedFunctionsParser();
         // act
-        const act = () => sut.parseFunctions(functions);
+        const act = () => new ParseFunctionsCallerWithDefaults()
+          .withFunctions(functions)
+          .parseFunctions();
         // assert
         expect(act).to.throw(expectedError);
       });
@@ -47,9 +76,10 @@ describe('SharedFunctionsParser', () => {
             FunctionDataStub.createWithoutCallOrCodes().withName('func-1').withCode(code),
             FunctionDataStub.createWithoutCallOrCodes().withName('func-2').withCode(code),
           ];
-          const sut = new SharedFunctionsParser();
           // act
-          const act = () => sut.parseFunctions(functions);
+          const act = () => new ParseFunctionsCallerWithDefaults()
+            .withFunctions(functions)
+            .parseFunctions();
           // assert
           expect(act).to.throw(expectedError);
         });
@@ -63,9 +93,10 @@ describe('SharedFunctionsParser', () => {
             FunctionDataStub.createWithoutCallOrCodes()
               .withName('func-2').withCode('code-2').withRevertCode(revertCode),
           ];
-          const sut = new SharedFunctionsParser();
           // act
-          const act = () => sut.parseFunctions(functions);
+          const act = () => new ParseFunctionsCallerWithDefaults()
+            .withFunctions(functions)
+            .parseFunctions();
           // assert
           expect(act).to.throw(expectedError);
         });
@@ -79,9 +110,10 @@ describe('SharedFunctionsParser', () => {
             .withName(functionName)
             .withCode('code')
             .withMockCall();
-          const sut = new SharedFunctionsParser();
           // act
-          const act = () => sut.parseFunctions([invalidFunction]);
+          const act = () => new ParseFunctionsCallerWithDefaults()
+            .withFunctions([invalidFunction])
+            .parseFunctions();
           // assert
           expect(act).to.throw(expectedError);
         });
@@ -91,9 +123,10 @@ describe('SharedFunctionsParser', () => {
           const expectedError = `neither "code" or "call" is defined in "${functionName}"`;
           const invalidFunction = FunctionDataStub.createWithoutCallOrCodes()
             .withName(functionName);
-          const sut = new SharedFunctionsParser();
           // act
-          const act = () => sut.parseFunctions([invalidFunction]);
+          const act = () => new ParseFunctionsCallerWithDefaults()
+            .withFunctions([invalidFunction])
+            .parseFunctions();
           // assert
           expect(act).to.throw(expectedError);
         });
@@ -116,13 +149,33 @@ describe('SharedFunctionsParser', () => {
               .createWithCall()
               .withParametersObject(testCase.invalidType as never);
             const expectedError = `parameters must be an array of objects in function(s) "${func.name}"`;
-            const sut = new SharedFunctionsParser();
             // act
-            const act = () => sut.parseFunctions([func]);
+            const act = () => new ParseFunctionsCallerWithDefaults()
+              .withFunctions([func])
+              .parseFunctions();
             // assert
             expect(act).to.throw(expectedError);
           });
         }
+      });
+      it('validates function code as expected when code is defined', () => {
+        // arrange
+        const expectedRules = [NoEmptyLines, NoDuplicatedLines];
+        const functionData = FunctionDataStub
+          .createWithCode()
+          .withCode('expected code to be validated')
+          .withRevertCode('expected revert code to be validated');
+        const validator = new CodeValidatorStub();
+        // act
+        new ParseFunctionsCallerWithDefaults()
+          .withFunctions([functionData])
+          .withValidator(validator)
+          .parseFunctions();
+        // assert
+        validator.assertHistory({
+          validatedCodes: [functionData.code, functionData.revertCode],
+          rules: expectedRules,
+        });
       });
       it('rethrows including function name when FunctionParameter throws', () => {
         // arrange
@@ -139,8 +192,9 @@ describe('SharedFunctionsParser', () => {
           .withParameters(new ParameterDefinitionDataStub().withName(invalidParameterName));
 
         // act
-        const sut = new SharedFunctionsParser();
-        const act = () => sut.parseFunctions([functionData]);
+        const act = () => new ParseFunctionsCallerWithDefaults()
+          .withFunctions([functionData])
+          .parseFunctions();
 
         // assert
         expect(act).to.throw(expectedError);
@@ -148,10 +202,10 @@ describe('SharedFunctionsParser', () => {
     });
     describe('given empty functions, returns empty collection', () => {
       itEachAbsentCollectionValue((absentValue) => {
-        // arrange
-        const sut = new SharedFunctionsParser();
         // act
-        const actual = sut.parseFunctions(absentValue);
+        const actual = new ParseFunctionsCallerWithDefaults()
+          .withFunctions(absentValue)
+          .parseFunctions();
         // assert
         expect(actual).to.not.equal(undefined);
       });
@@ -169,9 +223,10 @@ describe('SharedFunctionsParser', () => {
             new ParameterDefinitionDataStub().withName('expectedParameter').withOptionality(true),
             new ParameterDefinitionDataStub().withName('expectedParameter2').withOptionality(false),
           );
-        const sut = new SharedFunctionsParser();
         // act
-        const collection = sut.parseFunctions([expected]);
+        const collection = new ParseFunctionsCallerWithDefaults()
+          .withFunctions([expected])
+          .parseFunctions();
         // expect
         const actual = collection.getFunctionByName(name);
         expectEqualName(expected, actual);
@@ -188,9 +243,10 @@ describe('SharedFunctionsParser', () => {
         const data = FunctionDataStub.createWithoutCallOrCodes()
           .withName('caller-function')
           .withCall(call);
-        const sut = new SharedFunctionsParser();
         // act
-        const collection = sut.parseFunctions([data]);
+        const collection = new ParseFunctionsCallerWithDefaults()
+          .withFunctions([data])
+          .parseFunctions();
         // expect
         const actual = collection.getFunctionByName(data.name);
         expectEqualName(data, actual);
@@ -211,9 +267,10 @@ describe('SharedFunctionsParser', () => {
         const caller2 = FunctionDataStub.createWithoutCallOrCodes()
           .withName('caller-function-2')
           .withCall([call1, call2]);
-        const sut = new SharedFunctionsParser();
         // act
-        const collection = sut.parseFunctions([caller1, caller2]);
+        const collection = new ParseFunctionsCallerWithDefaults()
+          .withFunctions([caller1, caller2])
+          .parseFunctions();
         // expect
         const compiledCaller1 = collection.getFunctionByName(caller1.name);
         expectEqualName(caller1, compiledCaller1);
@@ -227,6 +284,34 @@ describe('SharedFunctionsParser', () => {
     });
   });
 });
+
+class ParseFunctionsCallerWithDefaults {
+  private syntax: ILanguageSyntax = new LanguageSyntaxStub();
+
+  private codeValidator: ICodeValidator = new CodeValidatorStub();
+
+  private functions: readonly FunctionData[] = [FunctionDataStub.createWithCode()];
+
+  public withSyntax(syntax: ILanguageSyntax) {
+    this.syntax = syntax;
+    return this;
+  }
+
+  public withValidator(codeValidator: ICodeValidator) {
+    this.codeValidator = codeValidator;
+    return this;
+  }
+
+  public withFunctions(functions: readonly FunctionData[]) {
+    this.functions = functions;
+    return this;
+  }
+
+  public parseFunctions() {
+    const sut = new SharedFunctionsParser(this.codeValidator);
+    return sut.parseFunctions(this.functions, this.syntax);
+  }
+}
 
 function expectEqualName(expected: FunctionDataStub, actual: ISharedFunction): void {
   expect(actual.name).to.equal(expected.name);
@@ -250,7 +335,7 @@ function expectEqualFunctionWithInlineCode(
 ): void {
   expect(actual.body, `function "${actual.name}" has no body`);
   expect(actual.body.code, `function "${actual.name}" has no code`);
-  expect(actual.body.code.do).to.equal(expected.code);
+  expect(actual.body.code.execute).to.equal(expected.code);
   expect(actual.body.code.revert).to.equal(expected.revertCode);
 }
 

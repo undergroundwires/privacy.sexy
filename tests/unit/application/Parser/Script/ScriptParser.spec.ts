@@ -16,6 +16,10 @@ import { NodeType } from '@/application/Parser/NodeValidation/NodeType';
 import { expectThrowsNodeError, ITestScenario, NodeValidationTestRunner } from '@tests/unit/application/Parser/NodeValidation/NodeValidatorTestRunner';
 import { Script } from '@/domain/Script';
 import { IEnumParser } from '@/application/Common/Enum';
+import { NoEmptyLines } from '@/application/Parser/Script/Validation/Rules/NoEmptyLines';
+import { NoDuplicatedLines } from '@/application/Parser/Script/Validation/Rules/NoDuplicatedLines';
+import { CodeValidatorStub } from '@tests/unit/shared/Stubs/CodeValidatorStub';
+import { ICodeValidator } from '@/application/Parser/Script/Validation/ICodeValidator';
 
 describe('ScriptParser', () => {
   describe('parseScript', () => {
@@ -155,6 +159,53 @@ describe('ScriptParser', () => {
           expect(act).to.not.throw();
         });
       });
+      describe('validates a expected', () => {
+        it('validates script with inline code (that is not compiled)', () => {
+          // arrange
+          const expectedRules = [
+            NoEmptyLines,
+            NoDuplicatedLines,
+          ];
+          const validator = new CodeValidatorStub();
+          const script = ScriptDataStub
+            .createWithCode()
+            .withCode('expected code to be validated')
+            .withRevertCode('expected revert code to be validated');
+          // act
+          new TestBuilder()
+            .withData(script)
+            .withCodeValidator(validator)
+            .parseScript();
+          // assert
+          validator.assertHistory({
+            validatedCodes: [script.code, script.revertCode],
+            rules: expectedRules,
+          });
+        });
+        it('does not validate compiled code', () => {
+          // arrange
+          const expectedRules = [];
+          const expectedCodeCalls = [];
+          const validator = new CodeValidatorStub();
+          const script = ScriptDataStub
+            .createWithCall();
+          const compiler = new ScriptCompilerStub()
+            .withCompileAbility(script, new ScriptCodeStub());
+          const parseContext = new CategoryCollectionParseContextStub()
+            .withCompiler(compiler);
+          // act
+          new TestBuilder()
+            .withData(script)
+            .withCodeValidator(validator)
+            .withContext(parseContext)
+            .parseScript();
+          // assert
+          validator.assertHistory({
+            validatedCodes: expectedCodeCalls,
+            rules: expectedRules,
+          });
+        });
+      });
     });
     describe('invalid script data', () => {
       describe('validates script data', () => {
@@ -233,6 +284,13 @@ class TestBuilder {
 
   private factory: ScriptFactoryType = undefined;
 
+  private codeValidator: ICodeValidator = new CodeValidatorStub();
+
+  public withCodeValidator(codeValidator: ICodeValidator) {
+    this.codeValidator = codeValidator;
+    return this;
+  }
+
   public withData(data: ScriptData) {
     this.data = data;
     return this;
@@ -254,6 +312,6 @@ class TestBuilder {
   }
 
   public parseScript(): Script {
-    return parseScript(this.data, this.context, this.parser, this.factory);
+    return parseScript(this.data, this.context, this.parser, this.factory, this.codeValidator);
   }
 }

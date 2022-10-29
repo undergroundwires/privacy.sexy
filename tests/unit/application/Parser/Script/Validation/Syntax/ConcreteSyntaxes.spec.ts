@@ -1,8 +1,8 @@
 import 'mocha';
 import { expect } from 'chai';
-import { ILanguageSyntax } from '@/domain/ScriptCode';
-import { BatchFileSyntax } from '@/application/Parser/Script/Syntax/BatchFileSyntax';
-import { ShellScriptSyntax } from '@/application/Parser/Script/Syntax/ShellScriptSyntax';
+import { ShellScriptSyntax } from '@/application/Parser/Script/Validation/Syntax/ShellScriptSyntax';
+import { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
+import { BatchFileSyntax } from '@/application/Parser/Script/Validation/Syntax/BatchFileSyntax';
 
 function getSystemsUnderTest(): ILanguageSyntax[] {
   return [new BatchFileSyntax(), new ShellScriptSyntax()];

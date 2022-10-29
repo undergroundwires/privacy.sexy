@@ -20,7 +20,7 @@ export class ExpressionsCompilerStub implements IExpressionsCompiler {
     givenArgs: FunctionCallArgumentCollectionStub,
   ) {
     return this
-      .setup({ givenCode: func.body.code.do, givenArgs, result: func.body.code.do })
+      .setup({ givenCode: func.body.code.execute, givenArgs, result: func.body.code.execute })
       .setup({ givenCode: func.body.code.revert, givenArgs, result: func.body.code.revert });
   }
 

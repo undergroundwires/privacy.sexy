@@ -19,6 +19,6 @@ export enum FunctionBodyType {
 }
 
 export interface IFunctionCode {
-  readonly do: string;
+  readonly execute: string;
   readonly revert?: string;
 }
