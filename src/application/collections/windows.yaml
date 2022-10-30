@@ -581,8 +581,7 @@ actions:
                         recommend: standard
                         code: |-
                             del /f /q %localappdata%\Temp\*
-                            rd /s /q "%WINDIR%\Temp"
-                            rd /s /q "%TEMP%"
+                            del /s /q "%WINDIR%\Temp\*"
                     -
                         name: Clear main telemetry file
                         recommend: standard
