@@ -112,6 +112,16 @@ Online version does not require to run any software on your computer. Offline ve
 
 [![privacy.sexy application](img/screenshot.png?raw=true )](https://privacy.sexy)
 
+## Install using a package manager 
+Windows
+  * Install using [Scoop](https://scoop.sh/#/apps?q=privacy.sexy&s=2&d=1&o=true)
+    ```
+    scoop bucket add extras
+    ```
+    ```
+    scoop install privacy.sexy
+    ```
+
 ## Features
 
 - **Rich**: Hundreds of scripts that aims to give you control of your data.
