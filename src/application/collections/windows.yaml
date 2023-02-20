@@ -2913,6 +2913,68 @@ actions:
                         category: Disable Windows Defender Firewall # Also known as Windows Firewall, Microsoft Defender Firewall
                         children:
                             -
+                                category: Disable Windows Defender Firewall Services and Drivers (breaks Microsoft Store and `netsh advfirewall` CLI)
+                                children:
+                                    -
+                                        name: Disable Windows Defender Firewall Authorization Driver service
+                                        docs:
+                                            - http://batcmd.com/windows/10/services/mpsdrv/
+                                            # ❗️ Breaks: `netsh advfirewall set`
+                                            #   Disabling and stopping it breaks "netsh advfirewall set" commands such as
+                                            #   `netsh advfirewall set allprofiles state on`, `netsh advfirewall set allprofiles state off`.
+                                            #   More about `netsh firewall` context: https://docs.microsoft.com/en-us/troubleshoot/windows-server/networking/netsh-advfirewall-firewall-control-firewall-behavior
+                                            # ! Breaks: Windows Store
+                                            #   The Windows Defender Firewall service depends on this service.
+                                            #   Disabling this will also disable the Windows Defender Firewall service, breaking Microsoft Store.
+                                            #   https://i.imgur.com/zTmtSwT.png
+                                        call:
+                                            -
+                                                function: DisableServiceInRegistry # We must disable it on registry level, "Access is denied" for sc config
+                                                parameters:
+                                                    serviceName: mpsdrv # Check: (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\mpsdrv").Start
+                                                    defaultStartupMode: Manual # Alowed values: Boot | System | Automatic | Manual
+                                            -
+                                                function: RenameSystemFile
+                                                parameters:
+                                                    filePath: '%SystemRoot%\System32\drivers\mpsdrv.sys'
+                                    -
+                                        name: Disable Windows Defender Firewall service
+                                        docs:
+                                            - http://batcmd.com/windows/10/services/mpssvc/
+                                            - https://en.wikipedia.org/wiki/Windows_Firewall
+                                            # More information about MpsSvc:
+                                            - https://web.archive.org/web/20110203202612/http://technet.microsoft.com/en-us/library/dd364391(v=WS.10).aspx
+                                            # More information about boot time protection and stopping the firewall service:
+                                            - https://web.archive.org/web/20110131034058/http://blogs.technet.com:80/b/networking/archive/2009/03/24/stopping-the-windows-authenticating-firewall-service-and-the-boot-time-policy.aspx
+                                            # Stopping the service associated with Windows Firewall is not supported by Microsoft:
+                                            - https://web.archive.org/web/20121106033255/http://technet.microsoft.com/en-us/library/cc753180.aspx
+                                            # ❗️ Breaks Microsoft Store
+                                            #   Can no longer update nor install apps, they both fail with 0x80073D0A
+                                            #   Also breaks some of Store apps such as Photos:
+                                            #       - https://answers.microsoft.com/en-us/windows/forum/all/microsoft-store-windows-defender-windows-firewall/f2f68cd7-64ec-4fe1-ade4-9d12cde057f9
+                                            #       - https://github.com/undergroundwires/privacy.sexy/issues/104#issuecomment-962651791
+                                            #   > The MpsSvc service host much more functionality than just windows firewall. For instance, Windows
+                                            #     Service hardening which is a windows protection of system services. It also host network isolatio
+                                            #     which is a crucial part of the confidence model for Windows Store based applications. 3rd party firewalls
+                                            #     know this fact and instead of disabling the firewall service they coordinate through public APIs with Windows
+                                            #     Firewall so that they can have ownership of the firewall policies of the computer. Hence you do not have to do
+                                            #     anything special once you install a 3rd party security product.
+                                            #     Source: https://www.walkernews.net/2012/09/23/how-to-fix-windows-store-app-update-error-code-0x80073d0a/
+                                            # ❗️ Breaks: `netsh advfirewall set`
+                                            #   Disabling and stopping it breaks "netsh advfirewall set" commands such as
+                                            #   `netsh advfirewall set allprofiles state on`, `netsh advfirewall set allprofiles state off`.
+                                            #   More about `netsh firewall` context: https://docs.microsoft.com/en-us/troubleshoot/windows-server/networking/netsh-advfirewall-firewall-control-firewall-behavior
+                                        call:
+                                            -
+                                                function: DisableServiceInRegistry # We must disable it on registry level, "Access is denied" for sc config
+                                                parameters:
+                                                    serviceName: MpsSvc # Check: (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\MpsSvc").Start
+                                                    defaultStartupMode: Automatic # Alowed values: Boot | System | Automatic | Manual
+                                            -
+                                                function: RenameSystemFile
+                                                parameters:
+                                                    filePath: '%WinDir%\system32\mpssvc.dll'
+                            -
                                 name: Disable Firewall through command-line utility
                                 # ❗️ Following must be enabled and in running state:
                                 #   - mpsdrv (Windows Defender Firewall Authorization Driver)
@@ -4383,43 +4445,6 @@ actions:
                                 #   2. Some cannot be disabled even using DisableServiceInRegistry, must be disabled as TrustedInstaller using RunInlineCodeAsTrustedInstaller
                                 children:
                                     -
-                                        name: Disable Windows Defender Firewall service (breaks Microsoft Store and `netsh advfirewall` CLI)
-                                        docs:
-                                            - http://batcmd.com/windows/10/services/mpssvc/
-                                            - https://en.wikipedia.org/wiki/Windows_Firewall
-                                            # More information about MpsSvc:
-                                            - https://web.archive.org/web/20110203202612/http://technet.microsoft.com/en-us/library/dd364391(v=WS.10).aspx
-                                            # More information about boot time protection and stopping the firewall service:
-                                            - https://web.archive.org/web/20110131034058/http://blogs.technet.com:80/b/networking/archive/2009/03/24/stopping-the-windows-authenticating-firewall-service-and-the-boot-time-policy.aspx
-                                            # Stopping the service associated with Windows Firewall is not supported by Microsoft:
-                                            - https://web.archive.org/web/20121106033255/http://technet.microsoft.com/en-us/library/cc753180.aspx
-                                            # ❗️ Breaks Microsoft Store
-                                            #   Can no longer update nor install apps, they both fail with 0x80073D0A
-                                            #   Also breaks some of Store apps such as Photos:
-                                            #       - https://answers.microsoft.com/en-us/windows/forum/all/microsoft-store-windows-defender-windows-firewall/f2f68cd7-64ec-4fe1-ade4-9d12cde057f9
-                                            #       - https://github.com/undergroundwires/privacy.sexy/issues/104#issuecomment-962651791
-                                            #   > The MpsSvc service host much more functionality than just windows firewall. For instance, Windows
-                                            #     Service hardening which is a windows protection of system services. It also host network isolatio
-                                            #     which is a crucial part of the confidence model for Windows Store based applications. 3rd party firewalls
-                                            #     know this fact and instead of disabling the firewall service they coordinate through public APIs with Windows
-                                            #     Firewall so that they can have ownership of the firewall policies of the computer. Hence you do not have to do
-                                            #     anything special once you install a 3rd party security product.
-                                            #     Source: https://www.walkernews.net/2012/09/23/how-to-fix-windows-store-app-update-error-code-0x80073d0a/
-                                            # ❗️ Breaks: `netsh advfirewall set`
-                                            #   Disabling and stopping it breaks "netsh advfirewall set" commands such as
-                                            #   `netsh advfirewall set allprofiles state on`, `netsh advfirewall set allprofiles state off`.
-                                            #   More about `netsh firewall` context: https://docs.microsoft.com/en-us/troubleshoot/windows-server/networking/netsh-advfirewall-firewall-control-firewall-behavior
-                                        call:
-                                            -
-                                                function: DisableServiceInRegistry # We must disable it on registry level, "Access is denied" for sc config
-                                                parameters:
-                                                    serviceName: MpsSvc # Check: (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\MpsSvc").Start
-                                                    defaultStartupMode: Automatic # Alowed values: Boot | System | Automatic | Manual
-                                            -
-                                                function: RenameSystemFile
-                                                parameters:
-                                                    filePath: '%WinDir%\system32\mpssvc.dll'
-                                    -
                                         name: Disable Windows Defender Antivirus service
                                         # ❗️ Breaks `Set-MpPreference` PowerShell cmdlet that helps to manage Defender
                                         #   E.g. `Set-MpPreference -Force -MAPSReporting 0` throws:
@@ -4430,8 +4455,8 @@ actions:
                                             -
                                                 function: RunInlineCodeAsTrustedInstaller
                                                 parameters:
-                                                    code: sc stop "WinDefend" >nul & sc config "WinDefend" start=disabled
-                                                    revertCode: sc config "WinDefend" start=auto & sc start "WinDefend" >nul
+                                                    code: sc stop "WinDefend" >nul 2>&1 & reg add "HKLM\SYSTEM\CurrentControlSet\Services\WinDefend" /v "Start" /t REG_DWORD /d "4" /f
+                                                    revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WinDefend" /v "Start" /t REG_DWORD /d "2" /f & sc start "WinDefend" >nul 2>&1
                                             # - # "Access is denied" when renaming file
                                             #     function: RenameSystemFile
                                             #     parameters:
@@ -4439,24 +4464,6 @@ actions:
                                     -
                                         category: Disable kernel-level Windows Defender drivers
                                         children:
-                                            -
-                                                name: Disable Windows Defender Firewall Authorization Driver service (breaks `netsh advfirewall` CLI)
-                                                docs:
-                                                    - http://batcmd.com/windows/10/services/mpsdrv/
-                                                    # ❗️ Breaks: `netsh advfirewall set`
-                                                    #   Disabling and stopping it breaks "netsh advfirewall set" commands such as
-                                                    #   `netsh advfirewall set allprofiles state on`, `netsh advfirewall set allprofiles state off`.
-                                                    #   More about `netsh firewall` context: https://docs.microsoft.com/en-us/troubleshoot/windows-server/networking/netsh-advfirewall-firewall-control-firewall-behavior
-                                                call:
-                                                    -
-                                                        function: DisableServiceInRegistry # We must disable it on registry level, "Access is denied" for sc config
-                                                        parameters:
-                                                            serviceName: mpsdrv # Check: (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\mpsdrv").Start
-                                                            defaultStartupMode: Manual # Alowed values: Boot | System | Automatic | Manual
-                                                    -
-                                                        function: RenameSystemFile
-                                                        parameters:
-                                                            filePath: '%SystemRoot%\System32\drivers\mpsdrv.sys'
                                             # - Skipping wdnsfltr "Windows Defender Network Stream Filter Driver" as it's Windows 1709 only
                                             -
                                                 name: Disable Microsoft Defender Antivirus Network Inspection System Driver service
@@ -4466,8 +4473,8 @@ actions:
                                                         function: RunInlineCodeAsTrustedInstaller
                                                         parameters:
                                                             # "net stop" is used to stop dependend services as well, "sc stop" fails
-                                                            code: net stop "WdNisDrv" /yes >nul & sc config "WdNisDrv" start=disabled 
-                                                            revertCode: sc config "WdNisDrv" start=demand & sc start "WdNisDrv" >nul
+                                                            code: net stop "WdNisDrv" /yes >nul & reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisDrv" /v "Start" /t REG_DWORD /d "4" /f 
+                                                            revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisDrv" /v "Start" /t REG_DWORD /d "3" /f & sc start "WdNisDrv" >nul
                                                     -
                                                         function: RenameSystemFile
                                                         parameters:
@@ -4485,8 +4492,8 @@ actions:
                                                     -
                                                         function: RunInlineCodeAsTrustedInstaller
                                                         parameters:
-                                                            code: sc stop "WdFilter" >nul & sc config "WdFilter" start=disabled 
-                                                            revertCode: sc config "WdFilter" start=boot & sc start "WdFilter" >nul
+                                                            code: sc stop "WdFilter" >nul & reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdFilter" /v "Start" /t REG_DWORD /d "4" /f 
+                                                            revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdFilter" /v "Start" /t REG_DWORD /d "0" /f & sc start "WdFilter" >nul
                                                     -
                                                         function: RenameSystemFile
                                                         parameters:
@@ -4502,8 +4509,8 @@ actions:
                                                     -
                                                         function: RunInlineCodeAsTrustedInstaller
                                                         parameters:
-                                                            code: sc stop "WdBoot" >nul & sc config "WdBoot" start=disabled 
-                                                            revertCode: sc config "WdBoot" start=boot & sc start "WdBoot" >nul
+                                                            code: sc stop "WdBoot" >nul 2>&1 & reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdBoot" /v "Start" /t REG_DWORD /d "4" /f 
+                                                            revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdBoot" /v "Start" /t REG_DWORD /d "0" /f & sc start "WdBoot" >nul 2>&1
                                                     -
                                                         function: RenameSystemFile
                                                         parameters:
@@ -4521,8 +4528,8 @@ actions:
                                             -
                                                 function: RunInlineCodeAsTrustedInstaller
                                                 parameters:
-                                                    code: sc stop "WdNisSvc" >nul & sc config "WdNisSvc" start=disabled 
-                                                    revertCode: sc config "WdNisSvc" start=auto & sc start "WdNisSvc" >nul
+                                                    code: sc stop "WdNisSvc" >nul 2>&1 & reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisSvc" /v "Start" /t REG_DWORD /d "4" /f 
+                                                    revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisSvc" /v "Start" /t REG_DWORD /d "2" /f & sc start "WdNisSvc" >nul 2>&1
                                             # - # "Access is denied" when renaming file
                                             #     function: RenameSystemFile
                                             #     parameters:
@@ -4532,10 +4539,10 @@ actions:
                                         docs: http://batcmd.com/windows/10/services/sense/
                                         call:
                                             -
-                                                function: DisableServiceInRegistry # We must disable it on registry level, "Access is denied" for sc config
+                                                function: RunInlineCodeAsTrustedInstaller # We must disable it on registry level, "Access is denied" for sc config
                                                 parameters:
-                                                    serviceName: Sense # Check: (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Sense").Start
-                                                    defaultStartupMode: Manual # Alowed values: Boot | System | Automatic | Manual
+                                                    code: sc stop "Sense" >nul 2>&1 & reg add "HKLM\SYSTEM\CurrentControlSet\Services\Sense" /v "Start" /t REG_DWORD /d "4" /f 
+                                                    revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\Sense" /v "Start" /t REG_DWORD /d "3" /f & sc start "Sense" >nul 2>&1 # Alowed values: Boot | System | Automatic | Manual
                                             -
                                                 function: RenameSystemFile
                                                 parameters:
@@ -4555,8 +4562,8 @@ actions:
                                                 #   ✅  Can disable using registry as TrustedInstaller
                                                 function: RunInlineCodeAsTrustedInstaller
                                                 parameters:
-                                                    code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\SecurityHealthService" /v Start /t REG_DWORD /d 4 /f
-                                                    revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\SecurityHealthService" /v Start /t REG_DWORD /d 3 /f
+                                                    code: sc stop "SecurityHealthService" >nul 2>&1 & reg add "HKLM\SYSTEM\CurrentControlSet\Services\SecurityHealthService" /v Start /t REG_DWORD /d 4 /f
+                                                    revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\SecurityHealthService" /v Start /t REG_DWORD /d 3 /f & sc start "SecurityHealthService" >nul 2>&1
                                             -
                                                 function: RenameSystemFile
                                                 parameters:
