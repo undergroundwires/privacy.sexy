@@ -680,6 +680,17 @@ actions:
                     )  else (
                         echo No previous Windows installation has been found
                     )
+            -
+                name: Clear ShellBags
+                code: |-
+                    reg delete "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell\Bags" /va /f
+                    reg delete "HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell\BagMRU" /va /f
+                    reg delete "HKCU\Software\Microsoft\Windows\Shell\Bags" /va /f
+                    reg delete "HKCU\Software\Microsoft\Windows\Shell\BagMRU" /va /f
+            -
+                name: Clear UserAssist
+                code: |-
+                    reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\UserAssist" /va /f
     -
         category: Disable OS data collection
         children:
