@@ -2045,8 +2045,7 @@ actions:
                             function: SetVsCodeSetting
                             parameters:
                                 setting: update.mode
-                                powerShellValue: >-
-                                    'manual'
+                                powerShellValue: manual
                     -
                         name: Show Release Notes from Microsoft online service after an update
                         call:
