@@ -20,10 +20,13 @@ jobs:
         run: |
           echo "::set-output name=release_tag::Nightly_$(date +"%Y.%m.%d_%H-%M")"
 
-
-      - uses: softprops/action-gh-release@v1
+      - uses: ncipollo/release-action@v1
         with:
-          tag_name: ${{ steps.tag.outputs.release_tag }}
-          fail_on_unmatched_files: true
-          files: |
-            ./privacy.sexy.ps1
+          artifacts: "privacy.sexy.ps1"
+
+      # - uses: softprops/action-gh-release@v1
+      #   with:
+      #     tag_name: ${{ steps.tag.outputs.release_tag }}
+      #     fail_on_unmatched_files: true
+      #     files: |
+      #       ./privacy.sexy.ps1
