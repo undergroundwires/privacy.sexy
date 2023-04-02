@@ -22,6 +22,7 @@ jobs:
 
       - uses: ncipollo/release-action@v1
         with:
+          tag: ${{ steps.tag.outputs.release_tag }}
           artifacts: "privacy.sexy.ps1"
 
       # - uses: softprops/action-gh-release@v1
