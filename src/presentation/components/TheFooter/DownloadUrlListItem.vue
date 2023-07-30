@@ -56,7 +56,7 @@ function hasDesktopVersion(os: OperatingSystem): boolean {
 function getOperatingSystemName(os: OperatingSystem): string {
   switch (os) {
     case OperatingSystem.Linux:
-      return 'Linux';
+      return 'Linux (preview)';
     case OperatingSystem.macOS:
       return 'macOS';
     case OperatingSystem.Windows:

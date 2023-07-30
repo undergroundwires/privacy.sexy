@@ -3,5 +3,5 @@ import { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/I
 export class ShellScriptSyntax implements ILanguageSyntax {
   public readonly commentDelimiters = ['#'];
 
-  public readonly commonCodeParts = ['(', ')', 'else', 'fi'];
+  public readonly commonCodeParts = ['(', ')', 'else', 'fi', 'done'];
 }

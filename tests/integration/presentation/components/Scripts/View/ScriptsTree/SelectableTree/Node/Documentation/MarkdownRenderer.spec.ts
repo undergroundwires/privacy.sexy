@@ -12,16 +12,17 @@ describe('MarkdownRenderer', () => {
       it(`${node.nodeLabel}`, () => {
         // act
         const html = renderer.render(node.docs);
+        const result = validateHtml(html);
         // assert
-        expect(isValidHtml(html));
+        expect(result.isValid, result.generatedHtml);
       });
     }
   });
 });
 
 interface IDocumentableNode {
-  nodeLabel: string
-  docs: string
+  readonly nodeLabel: string
+  readonly docs: string
 }
 function* collectAllDocumentableNodes(): Generator<IDocumentableNode> {
   const app = parseApplication();
@@ -40,7 +41,16 @@ function* collectAllDocumentableNodes(): Generator<IDocumentableNode> {
   }
 }
 
-function isValidHtml(value: string): boolean {
-  const doc = new window.DOMParser().parseFromString(value, 'text/html');
-  return Array.from(doc.body.childNodes).some((node) => node.nodeType === 1);
+interface IHTMLValidationResult {
+  readonly isValid: boolean;
+  readonly generatedHtml: string;
+}
+
+function validateHtml(value: string): IHTMLValidationResult {
+  const doc = new window.DOMParser()
+    .parseFromString(value, 'text/html');
+  return {
+    isValid: Array.from(doc.body.childNodes).some((node) => node.nodeType === 1),
+    generatedHtml: doc.body.innerHTML,
+  };
 }

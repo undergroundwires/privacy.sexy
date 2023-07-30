@@ -1,7 +1,7 @@
 <template>
   <div id="container">
     <h1 class="child title" >{{ title }}</h1>
-    <h2 class="child subtitle">Enforce privacy &amp; security on Windows and macOS</h2>
+    <h2 class="child subtitle">Enforce privacy &amp; security on Windows, macOS and Linux</h2>
   </div>
 </template>
 

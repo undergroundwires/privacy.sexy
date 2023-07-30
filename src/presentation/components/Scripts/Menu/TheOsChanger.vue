@@ -50,6 +50,7 @@ function renderOsName(os: OperatingSystem): string {
   switch (os) {
     case OperatingSystem.Windows: return 'Windows';
     case OperatingSystem.macOS: return 'macOS';
+    case OperatingSystem.Linux: return 'Linux (preview)';
     default: throw new RangeError(`Cannot render os name: ${OperatingSystem[os]}`);
   }
 }

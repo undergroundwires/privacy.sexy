@@ -2,7 +2,7 @@
   "name": "privacy.sexy",
   "version": "0.11.4",
   "private": true,
-  "description": "Enforce privacy & security best-practices on Windows and macOS, because privacy is sexy 🍑🍆",
+  "description": "Enforce privacy & security best-practices on Windows, macOS and Linux, because privacy is sexy 🍑🍆",
   "author": "undergroundwires",
   "scripts": {
     "serve": "vue-cli-service serve",

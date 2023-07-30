@@ -24,7 +24,7 @@ function beatifyAutoLinks(content: string): string {
   if (!content) {
     return content;
   }
-  return content.replaceAll(/(?<!\]\(|\[\d+\]:\s+|https?\S+)((?:https?):\/\/[^\s\])]*)(?:[\])](?!\()|$|\s)/gm, (_$, urlMatch) => {
+  return content.replaceAll(/(?<!\]\(|\[\d+\]:\s+|https?\S+|`)((?:https?):\/\/[^\s\])]*)(?:[\])](?!\()|$|\s)/gm, (_$, urlMatch) => {
     return toReadableLink(urlMatch);
   });
 }

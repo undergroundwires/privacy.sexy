@@ -1,6 +1,6 @@
 # privacy.sexy
 
-> Enforce privacy & security best-practices on Windows and macOS, because privacy is sexy 🍑🍆
+> Enforce privacy & security best-practices on Windows, macOS and Linux, because privacy is sexy 🍑🍆
 
 <!-- markdownlint-disable MD033 -->
 <p align="center">
@@ -120,7 +120,7 @@ Online version does not require to run any software on your computer. Offline ve
 - **Reversible**. Revert if something feels wrong.
 - **Accessible**. No need to run any compiled software on your computer with web version.
 - **Open**. What you see as code in this repository is what you get. The application itself, its infrastructure and deployments are open-source and automated thanks to [bump-everywhere](https://github.com/undergroundwires/bump-everywhere).
-- **Tested.** A lot of tests. Automated and manual. Community-testing and verification. Stability improvements comes before new features.
+- **Tested**. A lot of tests. Automated and manual. Community-testing and verification. Stability improvements comes before new features.
 - **Extensible**. Effortlessly [extend scripts](./CONTRIBUTING.md#extend-scripts) with a custom designed [templating language](./docs/templating.md).
 - **Portable and simple**. Every script is independently executable without cross-dependencies.
 

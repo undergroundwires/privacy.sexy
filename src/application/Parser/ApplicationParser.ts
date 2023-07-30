@@ -4,6 +4,7 @@ import { IProjectInformation } from '@/domain/IProjectInformation';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import WindowsData from '@/application/collections/windows.yaml';
 import MacOsData from '@/application/collections/macos.yaml';
+import LinuxData from '@/application/collections/linux.yaml';
 import { parseProjectInformation } from '@/application/Parser/ProjectInformationParser';
 import { Application } from '@/domain/Application';
 import { parseCategoryCollection } from './CategoryCollectionParser';
@@ -28,7 +29,7 @@ const CategoryCollectionParser: CategoryCollectionParserType = (file, info) => {
 };
 
 const PreParsedCollections: readonly CollectionData [] = [
-  WindowsData, MacOsData,
+  WindowsData, MacOsData, LinuxData,
 ];
 
 function validateCollectionsData(collections: readonly CollectionData[]) {

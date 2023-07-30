@@ -14,7 +14,7 @@ You could alternatively send a PR directly (see CONTRIBUTING.md).
 
 <!--
 Which OS will the new script configure?
-Either "Windows" or "macOS".
+One of the supported OSes: "Windows", "macOS" or "Linux".
 -->
 
 ### Name
@@ -30,10 +30,12 @@ E.g. "Disable webcam telemetry"
 <!--
 Code that will be executed when script is selected.
 Try to keep it as simple and backwards-compatible as possible.
-Allowed languages: 
-  - macOS: bash (sh)
+Allowed languages:
   - Windows: PowerShell (ps1) or batchfile
     - 💡 Prioritize the one that's simpler, batchfile if similar.
+  - macOS: bash (sh)
+  - Linux: bash (sh) or Python 3
+    - 💡 Prioritize the one that's simpler, bash if similar.
 -->
 
 ### Revert code

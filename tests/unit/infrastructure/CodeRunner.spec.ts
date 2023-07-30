@@ -77,13 +77,20 @@ describe('CodeRunner', () => {
     describe('executes as expected', () => {
       // arrange
       const filePath = 'expected-file-path';
-      const testData = [{
-        os: OperatingSystem.Windows,
-        expected: filePath,
-      }, {
-        os: OperatingSystem.macOS,
-        expected: `open -a Terminal.app ${filePath}`,
-      }];
+      const testData = [
+        {
+          os: OperatingSystem.Windows,
+          expected: filePath,
+        },
+        {
+          os: OperatingSystem.macOS,
+          expected: `open -a Terminal.app ${filePath}`,
+        },
+        {
+          os: OperatingSystem.Linux,
+          expected: `x-terminal-emulator -e '${filePath}'`,
+        },
+      ];
       for (const data of testData) {
         it(`returns ${data.expected} on ${OperatingSystem[data.os]}`, async () => {
           const context = new TestContext();
