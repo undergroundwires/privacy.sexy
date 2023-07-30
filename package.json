@@ -87,6 +87,11 @@
     "vue-cli-plugin-electron-builder": "^3.0.0-alpha.4",
     "yaml-lint": "^1.7.0"
   },
+  "overrides": {
+    "vue-cli-plugin-electron-builder": {
+      "electron-builder": "^24.6.3"
+    }
+  },
   "//devDependencies": {
     "typescript": [
       "Cannot upgrade to 5.X.X due to unmaintained @vue/cli-plugin-typescript, https://github.com/vuejs/vue-cli/issues/7401",
