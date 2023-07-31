@@ -27,7 +27,14 @@ module.exports = {
     '@vue/typescript/recommended',
   ],
   parserOptions: {
-    ecmaVersion: 'latest',
+    ecmaVersion: 12, // ECMA 2021
+    /*
+      Having 'latest' leads to:
+      ```
+        Parsing error: ecmaVersion must be a number. Received value of type string instead
+      ```
+      For .js files in the project
+    */
   },
   rules: {
     ...getOwnRules(),

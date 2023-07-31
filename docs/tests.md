@@ -72,7 +72,7 @@ Common aspects for all tests:
 - Vue CLI plugin  [`e2e-cypress`](https://github.com/vuejs/vue-cli/tree/dev/packages/@vue/cli-plugin-e2e-cypress#readme) configures E2E tests.
 - Test names and folders have logical structure based on tests executed.
 - The structure is following:
-  - [`cypress.json`](./../cypress.json): Cypress configuration file.
+  - [`cypress.config.ts`](./../cypress.config.ts): Cypress configuration file.
   - [`./tests/e2e/`](./../tests/e2e/): Base Cypress folder.
     - [`/specs/`](./../tests/e2e/specs/): Test files named with `.spec.js` extension.
     - [`/plugins/index.js`](./../tests/e2e/plugins/index.js): Plugin file executed before loading project.

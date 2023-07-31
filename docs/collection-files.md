@@ -2,8 +2,8 @@
 
 - privacy.sexy is a data-driven application where it reads the necessary OS-specific logic from yaml files in [`application/collections`](./../src/application/collections/)
 - 💡 Best practices
-  - If you repeat yourself, try to utilize [YAML-defined functions](#Function)
-  - Always try to add documentation and a way to revert a tweak in [scripts](#Script)
+  - If you repeat yourself, try to utilize [YAML-defined functions](#function)
+  - Always try to add documentation and a way to revert a tweak in [scripts](#script)
 - 📖 Types in code: [`collection.yaml.d.ts`](./../src/application/collections/collection.yaml.d.ts)
 
 ## Objects
@@ -13,19 +13,19 @@
 - A collection simply defines:
   - different categories and their scripts in a tree structure
   - OS specific details
-- Also allows defining common [function](#Function)s to be used throughout the collection if you'd like different scripts to share same code.
+- Also allows defining common [function](#function)s to be used throughout the collection if you'd like different scripts to share same code.
 
 #### `Collection` syntax
 
 - `os:` *`string`*  (**required**)
   - Operating system that the [Collection](#collection) is written for.
   - 📖 See [OperatingSystem.ts](./../src/domain/OperatingSystem.ts) enumeration for allowed values.
-- `actions: [` ***[`Category`](#Category)*** `, ... ]` **(required)**
+- `actions: [` ***[`Category`](#category)*** `, ... ]` **(required)**
   - Each [category](#category) is rendered as different cards in card presentation.
   - ❗ A [Collection](#collection) must consist of at least one category.
-- `functions: [` ***[`Function`](#Function)*** `, ... ]`
+- `functions: [` ***[`Function`](#function)*** `, ... ]`
   - Functions are optionally defined to re-use the same code throughout different scripts.
-- `scripting:` ***[`ScriptingDefinition`](#ScriptingDefinition)*** **(required)**
+- `scripting:` ***[`ScriptingDefinition`](#scriptingdefinition)*** **(required)**
   - Defines the scripting language that the code of other action uses.
 
 ### `Category`
@@ -38,7 +38,7 @@
 - `category:` *`string`*  (**required**)
   - Name of the category
   - ❗ Must be unique throughout the [Collection](#collection)
-- `children: [` ***[`Category`](#Category)*** `|` [***`Script`***](#Script) `, ... ]`  (**required**)
+- `children: [` ***[`Category`](#category)*** `|` [***`Script`***](#script) `, ... ]`  (**required**)
   - ❗ Category must consist of at least one subcategory or script.
   - Children can be combination of scripts and subcategories.
 - `docs`: *`string`* | `[`*`string`*`, ... ]`
@@ -70,7 +70,7 @@
   - E.g. let's say `code` sets an environment variable as `setx POWERSHELL_TELEMETRY_OPTOUT 1`
     - then `revertCode` should be doing `setx POWERSHELL_TELEMETRY_OPTOUT 0`
   - ❗ Do not define if `call` is defined.
-- `call`: ***[`FunctionCall`](#FunctionCall)*** | `[` ***[`FunctionCall`](#FunctionCall)*** `, ... ]` (may be **required**)
+- `call`: ***[`FunctionCall`](#functioncall)*** | `[` ***[`FunctionCall`](#functioncall)*** `, ... ]` (may be **required**)
   - A shared function or sequence of functions to call (called in order)
   - ❗ If not defined `code` must be defined
 - `docs`: *`string`* | `[`*`string`*`, ... ]`
@@ -123,7 +123,7 @@
   - Convention is to use camelCase, and be verbs.
   - E.g. `uninstallStoreApp`
   - ❗ Function names must be unique
-- `parameters`: `[` ***[`FunctionParameter`](#FunctionParameter)*** `, ... ]`
+- `parameters`: `[` ***[`FunctionParameter`](#functionparameter)*** `, ... ]`
   - List of parameters that function code refers to.
   - ❗ Must be defined to be able use in [`FunctionCall`](#functioncall) or [expressions (templating)](./templating.md#expressions)
  `code`: *`string`* (**required** if `call` is undefined)
@@ -136,7 +136,7 @@
   - E.g. let's say `code` sets an environment variable as `setx POWERSHELL_TELEMETRY_OPTOUT 1`
     - then `revertCode` should be doing `setx POWERSHELL_TELEMETRY_OPTOUT 0`
   - 💡 [Expressions (templating)](./templating.md#expressions) can be used in code
-- `call`: ***[`FunctionCall`](#FunctionCall)*** | `[` ***[`FunctionCall`](#FunctionCall)*** `, ... ]` (may be **required**)
+- `call`: ***[`FunctionCall`](#functioncall)*** | `[` ***[`FunctionCall`](#functioncall)*** `, ... ]` (may be **required**)
   - A shared function or sequence of functions to call (called in order)
   - The parameter values that are sent can use [expressions (templating)](./templating.md#expressions)
   - ❗ If not defined `code` must be defined
@@ -144,7 +144,7 @@
 ### `FunctionParameter`
 
 - Defines a parameter that function requires optionally or mandatory.
-- Its arguments are provided by a [Script](#script) through a [FunctionCall](#FunctionCall).
+- Its arguments are provided by a [Script](#script) through a [FunctionCall](#functioncall).
 
 #### `FunctionParameter` syntax
 
