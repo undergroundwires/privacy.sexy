@@ -148,7 +148,8 @@ function getLanguage(language: ScriptingLanguage) {
 function getDefaultCode(language: ScriptingLanguage): string {
   return new CodeBuilderFactory()
     .create(language)
-    .appendCommentLine('privacy.sexy — 🔐 Enforce privacy & security best-practices on Windows and macOS')
+    .appendCommentLine('privacy.sexy — Now you have the choice.')
+    .appendCommentLine(' 🔐 Enforce privacy & security best-practices on Windows, macOS and Linux.')
     .appendLine()
     .appendCommentLine('-- 🤔 How to use')
     .appendCommentLine(' 📙 Start by exploring different categories and choosing different tweaks.')

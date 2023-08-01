@@ -1,7 +1,7 @@
 <template>
   <div id="container">
     <h1 class="child title" >{{ title }}</h1>
-    <h2 class="child subtitle">Enforce privacy &amp; security on Windows, macOS and Linux</h2>
+    <h2 class="child subtitle">Now you have the choice</h2>
   </div>
 </template>
 
@@ -18,6 +18,7 @@ export default class TheHeader extends Vue {
   public async created() {
     const app = await ApplicationFactory.Current.getApp();
     this.title = app.info.name;
+    this.subtitle = app.info.slogan;
   }
 }
 </script>

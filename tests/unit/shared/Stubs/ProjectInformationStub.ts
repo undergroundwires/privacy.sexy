@@ -3,21 +3,23 @@ import { Version } from '@/domain/Version';
 import { VersionStub } from './VersionStub';
 
 export class ProjectInformationStub implements IProjectInformation {
-  public name = 'name';
+  public name = 'stub-name';
 
   public version = new VersionStub();
 
-  public repositoryUrl = 'repositoryUrl';
+  public repositoryUrl = 'stub-repositoryUrl';
 
-  public homepage = 'homepage';
+  public homepage = 'stub-homepage';
 
-  public feedbackUrl = 'feedbackUrl';
+  public feedbackUrl = 'stub-feedbackUrl';
 
-  public releaseUrl = 'releaseUrl';
+  public releaseUrl = 'stub-releaseUrl';
 
-  public repositoryWebUrl = 'repositoryWebUrl';
+  public repositoryWebUrl = 'stub-repositoryWebUrl';
 
-  public downloadUrl = 'downloadUrl';
+  public downloadUrl = 'stub-downloadUrl';
+
+  public slogan = 'stub-slogan';
 
   public withName(name: string): ProjectInformationStub {
     this.name = name;

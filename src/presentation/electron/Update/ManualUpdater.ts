@@ -32,6 +32,7 @@ function getTargetProject(targetVersion: string) {
   const targetProject = new ProjectInformation(
     existingProject.name,
     new Version(targetVersion),
+    existingProject.slogan,
     existingProject.repositoryUrl,
     existingProject.homepage,
   );

@@ -71,6 +71,7 @@ function loadVueAppRuntimeVariables() {
   process.env.VUE_APP_NAME = packageJson.name;
   process.env.VUE_APP_REPOSITORY_URL = packageJson.repository.url;
   process.env.VUE_APP_HOMEPAGE_URL = packageJson.homepage;
+  process.env.VUE_APP_SLOGAN = packageJson.slogan;
 }
 
 function ignorePolyfills(...moduleNames) {

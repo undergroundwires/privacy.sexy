@@ -9,6 +9,7 @@ export class ProjectInformation implements IProjectInformation {
   constructor(
     public readonly name: string,
     public readonly version: Version,
+    public readonly slogan: string,
     public readonly repositoryUrl: string,
     public readonly homepage: string,
   ) {
@@ -17,6 +18,9 @@ export class ProjectInformation implements IProjectInformation {
     }
     if (!version) {
       throw new Error('undefined version');
+    }
+    if (!slogan) {
+      throw new Error('undefined slogan');
     }
     if (!repositoryUrl) {
       throw new Error('repositoryUrl is undefined');
