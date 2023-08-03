@@ -803,14 +803,241 @@ actions:
                                 code: schtasks /change /TN "Microsoft\Windows\Application Experience\StartupAppTask" /disable
                                 revertCode: schtasks /change /TN "Microsoft\Windows\Application Experience\StartupAppTask" /enable
                     -
-                        name: Disable telemetry in data collection policy
+                        category: Disable enterprise/business focused data collection
+                        docs: |-
+                            This category contains scripts to disable data collection capabilities focused on enterprise/business uses.
+                            
+                            The scripts target various Windows features like Desktop Analytics, Windows Update for Business, and Azure services.
+                            These capabilities are meant to provide insights for IT administrators but collect and transmit data from end user devices.
+                            
+                            By disabling these enterprise/business focused data collection features, you can increase privacy and reduce data sharing
+                            from your personal device. However, note that some functionality expected by business IT administrators may be reduced.
+
+                            These scripts can help limit enterprise/Microsoft visibility into your device, but may limit management capabilities on
+                            managed business devices.
+                        children:
+                            -
+                                category: Disable Desktop Analytics telemetry
+                                docs: |-
+                                    Desktop Analytics is a cloud-based service that provides insights about Windows devices in an organization.
+                                    The service provides insight and intelligence from user data [1].
+
+                                    Desktop Analytics collects diagnostic data from enrolled Windows devices and sends it to Microsoft cloud services [1].
+                                    It creates an inventory of apps running in an organization. This data provides insights about application compatibility
+                                    and pilot identification to help IT administrators in organizations evaluate the readiness and compatibility of devices
+                                    for Windows feature updates [1].
+
+                                    To enable data collection, Desktop Analytics configures settings on the device registry and group policies related
+                                    to commercial ID, telemetry levels, and data sharing [2].
+                                    
+                                    While this data sharing raises potential privacy concerns, Microsoft states that privacy controls allow organizations 
+                                    o limit data collection [1].
+
+                                    Desktop Analytics is retired since November 30, 2022 in favor of Microsoft Intune and Configuration Manager [3].
+
+                                    [1]: https://web.archive.org/web/20230528031527/https://learn.microsoft.com/en-us/mem/configmgr/desktop-analytics/overview "Desktop Analytics - Configuration Manager | Microsoft Learn"
+                                    [2]: https://web.archive.org/web/20230531234446/https://learn.microsoft.com/en-us/mem/configmgr/desktop-analytics/group-policy-settings "Group policy settings - Configuration Manager | Microsoft Learn"
+                                    [3]: https://web.archive.org/web/20230601065209/https://learn.microsoft.com/en-us/mem/configmgr/desktop-analytics/whats-new "What's new in Desktop Analytics - Configuration Manager | Microsoft Learn"
+                                children:
+                                    -
+                                        name: Disable Desktop Analytics Processing
+                                        recommend: strict
+                                        docs: |-
+                                            This script ensures that Microsoft does not process Windows diagnostic data from your device [1].
+
+                                            When activated, it modifies a setting known as the Group Policy object on your device. This object is a set of policies that determine how your system operates.
+                                            The script disables a policy related to Microsoft's Desktop Analytics service. This service is designed to provide insights into the health and usage of your
+                                            devices but may involve processing diagnostic data [2].
+
+                                            By disabling this policy, the script helps to enhance the privacy of your device by preventing the processing of its diagnostic data by Microsoft. This means
+                                            that information about the usage and performance of your device will not be sent to Microsoft's Desktop Analytics service [1][2].
+
+                                            [1]: https://web.archive.org/web/20220903042236/https://docs.microsoft.com/en-US/windows/client-management/mdm/policy-csp-system#system-allowdesktopanalyticsprocessing "Policy CSP - System - Windows Client Management | Microsoft Docs"
+                                            [2]: https://web.archive.org/web/20211127031547/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.DataCollection::AllowDesktopAnalyticsProcessing "Allow Desktop Analytics Processing""
+                                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowDesktopAnalyticsProcessing" /t REG_DWORD /d 0 /f
+                                        revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowDesktopAnalyticsProcessing" /f
+                                    -
+                                        name: Prevent device name to be sent in Windows diagnostic data
+                                        recommend: strict
+                                        docs: |-
+                                            This script enhances privacy by ensuring that the name of your device is anonymized in any diagnostic data collected by Microsoft Desktop Analytics [1].
+                                            In other words, instead of your actual device name, "Unknown" will appear in the data [1].
+
+                                            Since the release of Windows 10, version 1803, the device name is not included in the diagnostic data by default [1].
+                                            This script guarantees that this privacy-enhancing measure remains in place [1].
+
+                                            When implemented, it changes a specific registry setting, `AllowDeviceNameInTelemetry`, which controls whether the device name is included 
+                                            in Windows diagnostic data [2]. The script sets this value to `0`, thus disabling the inclusion of the device name in the data [2].
+
+                                            [1]: https://web.archive.org/web/20220903043346/https://docs.microsoft.com/en-US/mem/configmgr/desktop-analytics/enroll-devices#device-name "Enroll devices in Desktop Analytics - Configuration Manager | Microsoft Docs"
+                                            [2]: https://web.archive.org/web/20210228151919/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.DataCollection::AllowDeviceNameInDiagnosticData "Allow device name to be sent in Windows diagnostic data"
+                                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowDeviceNameInTelemetry" /t REG_DWORD /d 0 /f
+                                        revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowDeviceNameInTelemetry" /f
+                                    -
+                                        name: Disable collection of Edge browsing data for Desktop Analytics
+                                        recommend: strict
+                                        docs: |-
+                                            This script configures Microsoft Edge to prevent it from sending your browsing history data to Desktop Analytics [1].
+                                            This browsing data can include information from either your intranet or internet history, or both [1].
+                                            
+                                            When you use Microsoft Edge for browsing, it can collect and send your browsing history to Desktop Analytics, a Microsoft
+                                            service that helps enterprises to analyze and improve their IT environment. If this setting is disabled, Microsoft Edge
+                                            does not send any browsing history data, thereby enhancing your privacy.
+                                            
+                                            The script achieves this by modifying a specific value in the Windows Registry. The specific value that the script modifies
+                                            is `MicrosoftEdgeDataOptIn` located at `HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection`. The script sets this value
+                                            to `0`, which indicates to Microsoft Edge that it should not send browsing history data to Desktop Analytics [1].
+                                            
+                                            While enhancing privacy, this could limit the functionality of Desktop Analytics for enterprises that rely on this service
+                                            for IT insights. However, for individual users, this script can help prevent unwanted data collection and transmission,
+                                            contributing to an overall safer browsing experience [1].
+
+                                            [1]: https://web.archive.org/web/20220524020212/https://admx.help/?Category=Windows_11_2022&Policy=Microsoft.Policies.MicrosoftEdge::ConfigureTelemetryForMicrosoft365Analytics "Configure collection of browsing data for Desktop Analytics"
+                                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "MicrosoftEdgeDataOptIn" /t REG_DWORD /d 0 /f
+                                        revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "MicrosoftEdgeDataOptIn" /f
+                                    -
+                                        name: Disable diagnostics data processing for Business cloud
+                                        recommend: strict
+                                        docs: |-
+                                            This script controls whether diagnostic data from your device is processed by Windows Update for Business cloud [1] [2]. 
+
+                                            If enabled, the script can enhance privacy by ensuring that diagnostic data from your device is not processed by the
+                                            Windows Update for Business cloud (WufB) [1], an update management service provided by Microsoft [3]. This service
+                                            typically helps businesses manage updates on their devices efficiently. But if privacy is a concern, you can opt
+                                            to disable it [3].
+
+                                            The policy is applicable to devices joined to Azure Active Directory [1]. Azure Active Directory is a Microsoft cloud
+                                            service that provides identity and access capabilities.
+
+                                            Disabling this policy means that some features of the Windows Update for Business deployment service might not be
+                                            available. However, your device will gain an added layer of privacy as diagnostic data will not be processed by the
+                                            business cloud [1].
+
+                                            [1]: https://web.archive.org/web/20220903042236/https://docs.microsoft.com/en-US/windows/client-management/mdm/policy-csp-system#system-allowwufbcloudprocessing "Policy CSP - System - Windows Client Management | Microsoft Docs"
+                                            [2]: https://web.archive.org/web/20210307173837/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.DataCollection::AllowWUfBCloudProcessing "Allow WUfB Cloud Processing"
+                                            [3]: https://techcommunity.microsoft.com/t5/core-infrastructure-and-security/update-management-for-windows-on-a-windows-365-cloud-pc/ba-p/3452703
+                                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowWUfBCloudProcessing" /t REG_DWORD /d 0 /f
+                                        revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowWUfBCloudProcessing" /f
+                                    -
+                                        name: Disable Update Compliance processing of diagnostics data
+                                        recommend: standard
+                                        docs: |-
+                                            Update Compliance is a service provided by Microsoft hosted in Azure, which uses Windows diagnostic data [1].
+                                            This service doesn't meet the US Government community compliance (GCC) requirements [1], and is utilized by
+                                            both Desktop Analytics and Azure Update Management [1].
+                                            
+                                            This script is designed to disable the Update Compliance processing of diagnostic data on your device. When
+                                            this script is run, it modifies the system registry to prevent diagnostic data from your device being processed
+                                            by Update Compliance. This change in settings increases the privacy of your device by limiting the diagnostic data
+                                            that can be accessed and analyzed by Microsoft's services.
+                                            
+                                            Diagnostic data, in this context, includes information about device health, system events, and usage metrics. By
+                                            disabling the processing of this data, the script helps protect the privacy of your activities on your device [1].
+                                            
+                                            This script can be reversed at any time by using the provided `revertCode` if you decide to re-enable the processing
+                                            of diagnostic data by Update Compliance.
+                                            
+                                            In technical terms, the script sets the `AllowUpdateComplianceProcessing` value in the
+                                            `HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection` registry path to 0, which disables the processing of
+                                            diagnostic data by Update Compliance [2].
+
+                                            [1]: https://web.archive.org/web/20220703201221/https://docs.microsoft.com/en-us/windows/deployment/update/update-compliance-get-started "Get started with Update Compliance - Windows Deployment | Microsoft Docs"
+                                            [2]: https://web.archive.org/web/20220610123725/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.DataCollection::AllowUpdateComplianceProcessing "Allow Update Compliance Processing"
+                                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "MicrosoftEdgeDataOptIn" /t REG_DWORD /d 0 /f
+                                        revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "MicrosoftEdgeDataOptIn" /f
+                            -
+                                name: Disable commercial usage of collected data
+                                recommend: standard
+                                docs: |-
+                                    This protects your privacy by placing a limit on the commercial usage of your data. It manages
+                                    how Windows diagnostic data is handled by controlling whether Microsoft is a processor or controller
+                                    for Windows diagnostic data collected from your device [1] [2].
+
+                                    In the default setting, Microsoft operates as the controller of this diagnostic data, thus enabling it to use the data
+                                    for commercial purposes. This script alters that setting to limit the commercial usage of your data [1] [2].
+                                    
+                                    This script does not affect the operation of optional analytics processor services like Desktop Analytics and
+                                    Windows Update for Business reports. Moreover, it doesn't change whether diagnostic data is collected or the ability
+                                    of the user to change the level.
+
+                                    [1]: https://web.archive.org/web/20230803142206/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-system#allowcommercialdatapipeline "System Policy CSP - Windows Client Management | Microsoft Learn"
+                                    [2]: https://web.archive.org/web/20230330140620/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.DataCollection::AllowCommercialDataPipeline "Allow commercial data pipeline"
+                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowCommercialDataPipeline" /t REG_DWORD /d 0 /f
+                                revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowCommercialDataPipeline" /f
+                    -
+                        name: Disable diagnostic and usage telemetry data transmission
                         recommend: standard
+                        docs:  |-
+                            This script improves your privacy by blocking the transmission of diagnostic and usage telemetry data
+                            from your Windows device [1]. This includes data about your device's usage, app compatibility, and
+                            system performance, which can be sensitive in nature. By stopping this data from being sent, you reduce
+                            the amount of personal information that could potentially be accessed by third parties.
+
+                            The script works by configuring the Group Policy Object (GPO) and Local Policy preferences, which
+                            essentially govern your device's data sharing policies [2]. These modifications restrict the data that Windows
+                            and its built-in apps can collect and send.
+
+                            Upon executing this script, Desktop Analytics will be disabled, as it relies on basic diagnostic data to
+                            function [2]. Desktop Analytics is a cloud-based service provided by Microsoft [4]. It provides insights
+                            and intelligence for IT administrators [4]. It is deprecated Desktop Analytics and retired since November
+                            30, 2022.
+
+                            Once this script is executed, even if the policy permits a telemetry setting of Security or Basic, users
+                            will not have the capability to opt for a higher data sharing level [3]. This restriction is limited to the
+                            operating system and apps included with Windows, and does not pertain to third-party apps installed on your
+                            device [3].
+
+                            [1]: https://web.archive.org/web/20230731225232/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-system#allowtelemetry "System Policy CSP - Windows Client Management | Microsoft Learn"
+                            [2]: https://web.archive.org/web/20230731225319/https://learn.microsoft.com/en-us/mem/configmgr/desktop-analytics/group-policy-settings "Group policy settings - Configuration Manager | Microsoft Learn"
+                            [3]: https://web.archive.org/web/20211129155126/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.DataCollection%3A%3AAllowTelemetry "Allow Telemetry"
+                            [4]: https://web.archive.org/web/20230731225544/https://learn.microsoft.com/en-us/mem/configmgr/desktop-analytics/overview "Desktop Analytics - Configuration Manager | Microsoft Learn"
                         code: |-
-                            reg add "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v "AllowTelemetry" /d 0 /t REG_DWORD /f
+                            # Using Local policy preference
                             reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 0 /f
+                            # Using Group policy object (GPO)
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 0 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "LimitEnhancedDiagnosticDataWindowsAnalytics" /t REG_DWORD /d 0 /f
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 0 /f 
+                        revertCode: |-
+                            # Using Local policy preference
+                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v "AllowTelemetry" /t REG_DWORD /d 1 /f
+                            # Using Group policy object (GPO)
+                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\DataCollection" /v "AllowTelemetry" /f
+                    -
+                        name: Disable automatic cloud configuration downloads
+                        recommend: strict
+                        docs: |-
+                            This script turns off the OneSettings service, a feature from Microsoft that downloads configuration settings [1].
+                            This action can enhance the privacy and security of your Windows desktop environment by managing a feature called
+                            the Services Configuration [1].
+                            
+                            Services Configuration is a mechanism that various Windows components and apps use to update their settings dynamically [2] [3].
+                            By default, Windows periodically tries to connect with the OneSettings service to download configuration settings [1].
+                            This script turns off that function, reducing the chance of data being shared with third-party vendors [1]. 
+
+                            This script is recommended by CIS Microsoft Windows Desktop Benchmarks [1]. Please be aware that turning off this service might
+                            affect how certain apps that rely on this service work [3].
+
+                            The script changes a registry setting to disable OneSettings downloads [3] [1]. It also provides a revert code to undo this change,
+                            if needed, which returns the system to its previous state.
+
+                            If you want to limit how much data is sent to Microsoft, turning off the OneSettings service can help enhance your privacy [1].
+                            For more information about the impact of OneSettings on privacy, visit
+                            [docs.microsoft.com](https://web.archive.org/web/20230803030919/https://learn.microsoft.com/en-us/windows/privacy/basic-level-windows-diagnostic-events-and-fields-1809).
+    
+                            This script lets you manage your privacy by restricting the automatic configuration updates of Windows components and apps,
+                            including telemetry services, from the cloud [3] [1].
+
+                            By using this script, Windows will not connect to OneSettings to fetch any configuration settings [1].
+                            This reduces the amount of data sent to third-party vendors, which can help alleviate potential security concerns [1].
+
+                            However, please be aware that while this setting can enhance privacy, turning off this service could lead to some applications
+                            not working properly. These applications may depend on dynamic configuration updates that will be stopped when the service is
+                            disabled [3] [1].
+
+                            [1]: https://web.archive.org/web/20230803030428/https://www.tenable.com/audits/items/CIS_MS_Windows_10_Enterprise_Level_1_Bitlocker_v1.12.0.audit:b3aec171f406cbe87f37e57bc9dd1411 "18.9.17.3 Ensure 'Disable OneSettings Downloads' is set to 'En... | Tenable"
+                            [2]: https://web.archive.org/web/20230803024926/https://learn.microsoft.com/en-us/windows/win32/services/service-configuration "Service Configuration - Win32 apps | Microsoft Learn"
+                            [3]: https://web.archive.org/web/20230731230134/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#31-services-configuration "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
+                        code: reg add "HKLM\Software\Policies\Microsoft\Windows\DataCollection" /v "DisableOneSettingsDownloads" /t "REG_DWORD" /d "1" /f
+                        revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows\DataCollection" /v "DisableOneSettingsDownloads" /f
                     -
                         name: Disable license telemetry
                         recommend: standard
