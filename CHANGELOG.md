@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.12.0 (2023-08-03)
+
+* Improve script/category name validation | [b210aad](https://github.com/undergroundwires/privacy.sexy/commit/b210aaddf26629179f77fe19f62f65d8a0ca2b87)
+* Improve touch like hover on devices without mouse | [99e24b4](https://github.com/undergroundwires/privacy.sexy/commit/99e24b4134c461c336f6d08f49d193d853325d31)
+* Improve click/touch without unintended interaction | [3233d9b](https://github.com/undergroundwires/privacy.sexy/commit/3233d9b8024dd59600edddef6d017e0089f59a9d)
+* Align card icons vertically in cards view | [8608072](https://github.com/undergroundwires/privacy.sexy/commit/8608072bfb52d10a843a86d3d89b14e8b9776779)
+* Fix broken npm installation and builds | [924b326](https://github.com/undergroundwires/privacy.sexy/commit/924b326244a175428175e0df3a50685ee5ac2ec6)
+* Improve documentation support with markdown | [6067bdb](https://github.com/undergroundwires/privacy.sexy/commit/6067bdb24e6729d2249c9685f4f1c514c3167d91)
+* win: add more Visual Studio scripts, support 2022 | [df533ad](https://github.com/undergroundwires/privacy.sexy/commit/df533ad3b19cebdf3454895aa2182bd4184e0360)
+* win: add script to remove Widgets | [bbc6156](https://github.com/undergroundwires/privacy.sexy/commit/bbc6156281fb3fd4b66c63dec3f765780fafa855)
+* Use line endings based on script language #88 | [6b3f465](https://github.com/undergroundwires/privacy.sexy/commit/6b3f4659df0afe1c99a8af6598df44a33c1f863a)
+* win: improve OneDrive removal | [58ed7b4](https://github.com/undergroundwires/privacy.sexy/commit/58ed7b456b3cf11774c83c8c1c04db37ef3058c2)
+* Use lowercase in script names and search text | [430537f](https://github.com/undergroundwires/privacy.sexy/commit/430537f70411756bbcaae837964c0223f78581e8)
+* Improve manual execution instructions | [7d3670c](https://github.com/undergroundwires/privacy.sexy/commit/7d3670c26d0151ddc43303e8ed5e47715f0e0f00)
+* Add multiline support for with expression | [e8d06e0](https://github.com/undergroundwires/privacy.sexy/commit/e8d06e0f3e178a69861e0197f9d1cce9af3958f1)
+* Break line in inline codes in documentation | [c1c2f29](https://github.com/undergroundwires/privacy.sexy/commit/c1c2f2925fe88ec1f56bf7655b6b9a10aa3ea024)
+* win: add script to increase RSA key exchange #165 | [a2e0921](https://github.com/undergroundwires/privacy.sexy/commit/a2e092190d8eb0fc9ceb8533572f04fff52f097b)
+* win: add scripts to downloaded file handling #153 | [e7b816d](https://github.com/undergroundwires/privacy.sexy/commit/e7b816d1564afa98c63291f9d7fd6f3fee92f4ec)
+* Drop support for dead browsers | [bf0c55f](https://github.com/undergroundwires/privacy.sexy/commit/bf0c55fa60bf2be070678ba27db14baf13fec511)
+* Add support for nested templates | [68a5d69](https://github.com/undergroundwires/privacy.sexy/commit/68a5d698a2ce644ce25754016fb9e9bb642e41a7)
+* mac: add scripts to configure Parallels Desktop | [64cca1d](https://github.com/undergroundwires/privacy.sexy/commit/64cca1d9b8946b92e21e86deb6db5612570befb1)
+* Rework icon with higher quality and new color | [f4a7ca7](https://github.com/undergroundwires/privacy.sexy/commit/f4a7ca76b885b8346d8a9c32e6269eabc2d8139f)
+* Relax and improve code validation | [e819993](https://github.com/undergroundwires/privacy.sexy/commit/e8199932b462380741d9f2d8b6b55485ab16af02)
+* Add initial Linux support #150 | [c404dfe](https://github.com/undergroundwires/privacy.sexy/commit/c404dfebe2908bb165279f8279f3f5e805b647d7)
+* mac: add script to disable personalized ads | [8b374a3](https://github.com/undergroundwires/privacy.sexy/commit/8b374a37b401699d5056bfd6b735b6a26c395ae0)
+* Update dependencies and add npm setup script | [5721796](https://github.com/undergroundwires/privacy.sexy/commit/57217963787a8ab0c71d681c6b1673c484c88226)
+* Fix macOS desktop build failure in CI | [5901dc5](https://github.com/undergroundwires/privacy.sexy/commit/5901dc5f11dd29be14c2616fc0ceb45196a43224)
+* Change subtitle heading to new slogan | [1e80ee1](https://github.com/undergroundwires/privacy.sexy/commit/1e80ee1fb0208d92943619468dc427853cbe8de7)
+* win: add new scripts to disable more telemetry | [298b058](https://github.com/undergroundwires/privacy.sexy/commit/298b058e5c89397db6f759b275442ba05499ac8c)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.11.4...0.12.0)
+
 ## 0.11.4 (2022-03-08)
 
 * Improve performance of selecting scripts | [8e96c19](https://github.com/undergroundwires/privacy.sexy/commit/8e96c19126aa4cba6418de5ccaa9e2dcf8faab78)
