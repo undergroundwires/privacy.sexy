@@ -3,8 +3,7 @@
     class="documentation-text"
     v-html="renderedText"
     v-on:click.stop
-    >
-  </div>
+  />
 </template>
 
 <script lang="ts">

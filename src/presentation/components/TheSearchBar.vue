@@ -1,8 +1,11 @@
 <template>
   <div class="search" v-non-collapsing>
-    <input type="search" class="search-term"
+    <input
+      type="search"
+      class="search-term"
       :placeholder="searchPlaceHolder"
-      v-model="searchQuery" >
+      v-model="searchQuery"
+    >
     <div class="icon-wrapper">
       <font-awesome-icon :icon="['fas', 'search']" />
     </div>
@@ -26,7 +29,7 @@ export default class TheSearchBar extends StatefulVue {
   public searchQuery = '';
 
   @Watch('searchQuery')
-  public async updateFilter(newFilter: |string) {
+  public async updateFilter(newFilter?: string) {
     const context = await this.getCurrentContext();
     const { filter } = context.state;
     if (!newFilter) {

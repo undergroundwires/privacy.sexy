@@ -3,7 +3,7 @@
     <div class="footer">
       <div class="footer__section">
         <span v-if="isDesktop" class="footer__section__item">
-          <font-awesome-icon class="icon" :icon="['fas', 'globe']"  />
+          <font-awesome-icon class="icon" :icon="['fas', 'globe']" />
           <span>
             Online version at <a :href="homepageUrl" target="_blank">{{ homepageUrl }}</a>
           </span>
@@ -15,30 +15,30 @@
       <div class="footer__section">
         <div class="footer__section__item">
           <a :href="feedbackUrl" target="_blank">
-            <font-awesome-icon class="icon" :icon="['far', 'smile']"  />
+            <font-awesome-icon class="icon" :icon="['far', 'smile']" />
             <span>Feedback</span>
           </a>
         </div>
         <div class="footer__section__item">
           <a :href="repositoryUrl" target="_blank">
-            <font-awesome-icon class="icon" :icon="['fab', 'github']"  />
+            <font-awesome-icon class="icon" :icon="['fab', 'github']" />
             <span>Source Code</span>
           </a>
         </div>
         <div class="footer__section__item">
           <a :href="releaseUrl" target="_blank">
-            <font-awesome-icon class="icon" :icon="['fas', 'tag']"  />
+            <font-awesome-icon class="icon" :icon="['fas', 'tag']" />
             <span>v{{ version }}</span>
           </a>
         </div>
         <div class="footer__section__item">
-          <font-awesome-icon class="icon" :icon="['fas', 'user-secret']"  />
+          <font-awesome-icon class="icon" :icon="['fas', 'user-secret']" />
           <a @click="$refs.privacyDialog.show()">Privacy</a>
         </div>
       </div>
     </div>
     <Dialog ref="privacyDialog">
-        <PrivacyPolicy />
+      <PrivacyPolicy />
     </Dialog>
   </div>
 </template>

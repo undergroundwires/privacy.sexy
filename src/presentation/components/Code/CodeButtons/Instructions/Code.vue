@@ -1,7 +1,7 @@
 <template>
   <span class="code-wrapper">
     <span class="dollar">$</span>
-    <code><slot></slot></code>
+    <code><slot /></code>
     <font-awesome-icon
       class="copy-button"
       :icon="['fas', 'copy']"

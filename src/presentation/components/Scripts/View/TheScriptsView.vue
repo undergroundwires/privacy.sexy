@@ -1,7 +1,7 @@
 <template>
   <div class="scripts">
     <div v-if="!isSearching">
-      <CardList v-if="currentView === ViewType.Cards"/>
+      <CardList v-if="currentView === ViewType.Cards" />
       <div class="tree" v-else-if="currentView === ViewType.Tree">
         <ScriptsTree />
       </div>
@@ -9,18 +9,18 @@
     <div v-else> <!-- Searching -->
       <div class="search">
         <div class="search__query">
-          <div>Searching for "{{this.searchQuery | threeDotsTrim}}"</div>
+          <div>Searching for "{{this.searchQuery | threeDotsTrim }}"</div>
           <div class="search__query__close-button">
             <font-awesome-icon
               :icon="['fas', 'times']"
-              v-on:click="clearSearchQuery()"/>
+              v-on:click="clearSearchQuery()" />
           </div>
         </div>
         <div v-if="!searchHasMatches" class="search-no-matches">
-          <div>Sorry, no matches for "{{this.searchQuery | threeDotsTrim}}" 😞</div>
+          <div>Sorry, no matches for "{{this.searchQuery | threeDotsTrim }}" 😞</div>
           <div>
             Feel free to extend the scripts
-            <a :href="repositoryUrl" target="_blank" class="child github" >here</a> ✨
+            <a :href="repositoryUrl" target="_blank" class="child github">here</a> ✨
           </div>
         </div>
       </div>

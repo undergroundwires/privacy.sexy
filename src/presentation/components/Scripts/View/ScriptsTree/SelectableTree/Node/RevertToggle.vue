@@ -1,6 +1,8 @@
 <template>
-  <div class="checkbox-switch" >
-    <input type="checkbox" class="input-checkbox"
+  <div class="checkbox-switch">
+    <input
+      type="checkbox"
+      class="input-checkbox"
       v-model="isReverted"
       @change="onRevertToggled()"
       v-on:click.stop>

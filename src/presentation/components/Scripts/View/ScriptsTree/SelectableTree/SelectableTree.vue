@@ -1,13 +1,14 @@
 <template>
   <span>
     <span v-if="initialLiquorTreeNodes != null && initialLiquorTreeNodes.length > 0">
-      <tree :options="liquorTreeOptions"
+      <tree
+        :options="liquorTreeOptions"
         :data="initialLiquorTreeNodes"
         v-on:node:checked="nodeSelected($event)"
         v-on:node:unchecked="nodeSelected($event)"
         ref="treeElement"
       >
-        <span class="tree-text" slot-scope="{ node }" >
+        <span class="tree-text" slot-scope="{ node }">
           <Node :data="convertExistingToNode(node)" />
         </span>
       </tree>
@@ -86,7 +87,7 @@ export default class SelectableTree extends Vue { // Stateless to make it easier
   }
 
   @Watch('filterText', { immediate: true })
-  public async updateFilterText(filterText: |string) {
+  public async updateFilterText(filterText?: string) {
     const api = await this.getLiquorTreeApi();
     if (!filterText) {
       api.clearFilter();
@@ -111,7 +112,7 @@ export default class SelectableTree extends Vue { // Stateless to make it easier
   private async getLiquorTreeApi(): Promise<ILiquorTree> {
     const accessor = (): ILiquorTree => {
       const uiElement = this.$refs.treeElement;
-      type TreeElement = typeof uiElement & {tree: ILiquorTree};
+      type TreeElement = typeof uiElement & { tree: ILiquorTree };
       return uiElement ? (uiElement as TreeElement).tree : undefined;
     };
     const treeElement = await tryUntilDefined(accessor, 5, 20); // Wait for it to render

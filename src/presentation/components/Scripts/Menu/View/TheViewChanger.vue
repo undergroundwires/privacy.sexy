@@ -3,7 +3,8 @@
     label="View"
     class="part">
     <MenuOptionListItem
-      v-for="view in this.viewOptions" :key="view.type"
+      v-for="view in this.viewOptions"
+      :key="view.type"
       :label="view.displayName"
       :enabled="currentView !== view.type"
       @click="setView(view.type)"

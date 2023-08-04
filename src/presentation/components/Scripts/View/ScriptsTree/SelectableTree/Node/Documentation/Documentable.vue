@@ -13,10 +13,15 @@
     <div
       v-if="docs && docs.length > 0 && isExpanded"
       class="docs"
-      v-bind:class="{ 'docs-expanded': isExpanded, 'docs-collapsed': !isExpanded }" >
+      v-bind:class="{ 'docs-expanded': isExpanded, 'docs-collapsed': !isExpanded }"
+    >
       <DocumentationText
-        :docs="docs" class="text"
-        v-bind:class="{ 'expanded': isExpanded, 'collapsed': !isExpanded }" />
+        :docs="docs"
+        class="text"
+        v-bind:class="{
+          expanded: isExpanded,
+          collapsed: !isExpanded,
+        }" />
     </div>
   </div>
 </template>

@@ -5,7 +5,7 @@
     <div
       :id="editorId"
       class="code-area"
-    ></div>
+    />
   </Responsive>
 </template>
 

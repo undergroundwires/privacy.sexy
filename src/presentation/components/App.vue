@@ -1,13 +1,13 @@
 <template>
   <div id="app">
-      <div class="app__wrapper">
-        <TheHeader class="app__row" />
-        <TheSearchBar class="app__row" />
-        <TheScriptArea class="app__row" />
-        <TheCodeButtons class="app__row app__code-buttons" />
-        <TheFooter />
-      </div>
-   </div>
+    <div class="app__wrapper">
+      <TheHeader class="app__row" />
+      <TheSearchBar class="app__row" />
+      <TheScriptArea class="app__row" />
+      <TheCodeButtons class="app__row app__code-buttons" />
+      <TheFooter />
+    </div>
+  </div>
 </template>
 
 <script lang="ts">

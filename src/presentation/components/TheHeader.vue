@@ -1,6 +1,6 @@
 <template>
   <div id="container">
-    <h1 class="child title" >{{ title }}</h1>
+    <h1 class="child title">{{ title }}</h1>
     <h2 class="child subtitle">Now you have the choice</h2>
   </div>
 </template>

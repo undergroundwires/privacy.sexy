@@ -1,11 +1,12 @@
 <template>
   <MenuOptionList>
     <MenuOptionListItem
-      v-for="os in this.allOses" :key="os.name"
+      v-for="os in this.allOses"
+      :key="os.name"
       :enabled="currentOs !== os.os"
       @click="changeOs(os.os)"
       :label="os.name"
-      />
+    />
   </MenuOptionList>
 </template>
 

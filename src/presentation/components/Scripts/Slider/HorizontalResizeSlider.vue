@@ -1,16 +1,19 @@
 <template>
-  <div class="slider" v-bind:style="{
-    '--vertical-margin': this.verticalMargin,
-    '--first-min-width': this.firstMinWidth,
-    '--first-initial-width': this.firstInitialWidth,
-    '--second-min-width': this.secondMinWidth,
-    }">
+  <div
+    class="slider"
+    v-bind:style="{
+      '--vertical-margin': this.verticalMargin,
+      '--first-min-width': this.firstMinWidth,
+      '--first-initial-width': this.firstInitialWidth,
+      '--second-min-width': this.secondMinWidth,
+    }"
+  >
     <div class="first" ref="firstElement">
-      <slot name="first"></slot>
+      <slot name="first" />
     </div>
     <Handle class="handle" @resized="onResize($event)" />
     <div class="second">
-      <slot name="second"></slot>
+      <slot name="second" />
     </div>
   </div>
 </template>

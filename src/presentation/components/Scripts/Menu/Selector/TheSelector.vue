@@ -4,32 +4,39 @@
       label="None"
       :enabled="this.currentSelection !== SelectionType.None"
       @click="selectType(SelectionType.None)"
-      v-tooltip=" 'Deselect all selected scripts.<br/>' +
-                  '💡 Good start to dive deeper into tweaks and select only what you want.'"
-      />
+      v-tooltip="
+        'Deselect all selected scripts.<br/>'
+          + '💡 Good start to dive deeper into tweaks and select only what you want.'
+      "
+    />
     <MenuOptionListItem
       label="Standard"
       :enabled="this.currentSelection !== SelectionType.Standard"
       @click="selectType(SelectionType.Standard)"
-      v-tooltip=" '🛡️ Balanced for privacy and functionality.<br/>' +
-                  'OS and applications will function normally.<br/>' +
-                  '💡 Recommended for everyone'"
-      />
+      v-tooltip="
+        '🛡️ Balanced for privacy and functionality.<br/>'
+          + 'OS and applications will function normally.<br/>'
+          + '💡 Recommended for everyone'"
+    />
     <MenuOptionListItem
       label="Strict"
       :enabled="this.currentSelection !== SelectionType.Strict"
       @click="selectType(SelectionType.Strict)"
-      v-tooltip=" '🚫 Stronger privacy, disables risky functions that may leak your data.<br/>' +
-        + '⚠️ Double check to remove scripts where you would trade functionality for privacy<br/>'
-        + '💡 Recommended for daily users that prefers more privacy over non-essential functions'"
-      />
+      v-tooltip="
+        '🚫 Stronger privacy, disables risky functions that may leak your data.<br/>'
+          + '⚠️ Double check to remove scripts where you would trade functionality for privacy<br/>'
+          + '💡 Recommended for daily users that prefers more privacy over non-essential functions'
+      "
+    />
     <MenuOptionListItem
-        label="All"
-        :enabled="this.currentSelection !== SelectionType.All"
-        @click="selectType(SelectionType.All)"
-        v-tooltip=" '🔒 Strongest privacy, disabling any functionality that may leak your data.<br/>'
+      label="All"
+      :enabled="this.currentSelection !== SelectionType.All"
+      @click="selectType(SelectionType.All)"
+      v-tooltip="
+        '🔒 Strongest privacy, disabling any functionality that may leak your data.<br/>'
           + '🛑 Not designed for daily users, it will break important functionalities.<br/>'
-          + '💡 Only recommended for extreme use-cases like crime labs where no leak is acceptable'"
+          + '💡 Only recommended for extreme use-cases like crime labs where no leak is acceptable'
+      "
     />
   </MenuOptionList>
 </template>

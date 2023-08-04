@@ -3,10 +3,10 @@
     class="container"
     v-bind:class="{
       'container-unsupported': !hasCurrentOsDesktopVersion,
-      'container-supported': hasCurrentOsDesktopVersion
+      'container-supported': hasCurrentOsDesktopVersion,
     }">
     <span class="description">
-      <font-awesome-icon class="description__icon" :icon="['fas', 'desktop']"  />
+      <font-awesome-icon class="description__icon" :icon="['fas', 'desktop']" />
       <span class="description__text">For desktop:</span>
     </span>
     <span class="urls">

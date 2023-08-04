@@ -1,8 +1,14 @@
 <template>
-  <button class="button" @click="onClicked">
+  <button
+    class="button"
+    type="button"
+    @click="onClicked"
+  >
     <font-awesome-icon
       class="button__icon"
-      :icon="[iconPrefix, iconName]" size="2x"  />
+      :icon="[iconPrefix, iconName]"
+      size="2x"
+    />
     <div class="button__text">{{text}}</div>
   </button>
 </template>

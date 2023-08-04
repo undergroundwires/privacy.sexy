@@ -5,10 +5,13 @@
     height="auto">
     <div class="dialog">
       <div class="dialog__content">
-        <slot></slot>
+        <slot />
       </div>
       <div class="dialog__close-button">
-        <font-awesome-icon :icon="['fas', 'times']"  @click="$modal.hide(name)"/>
+        <font-awesome-icon
+          :icon="['fas', 'times']"
+          @click="$modal.hide(name)"
+        />
       </div>
     </div>
   </modal>

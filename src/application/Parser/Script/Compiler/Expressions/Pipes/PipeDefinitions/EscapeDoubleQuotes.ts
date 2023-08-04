@@ -8,7 +8,7 @@ export class EscapeDoubleQuotes implements IPipe {
       return raw;
     }
     return raw.replaceAll('"', '"^""');
-    /* eslint-disable max-len */
+    /* eslint-disable vue/max-len */
     /*
       "^"" is the most robust and stable choice.
       Other options:
@@ -28,6 +28,6 @@ export class EscapeDoubleQuotes implements IPipe {
           Works when using "^"": `PowerShell -Command ""^""a&  c"^"".length"`
       A good explanation: https://stackoverflow.com/a/31413730
     */
-    /* eslint-enable max-len */
+    /* eslint-enable vue/max-len */
   }
 }

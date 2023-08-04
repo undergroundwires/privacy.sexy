@@ -1,44 +1,48 @@
 <template>
-  <div class="card"
+  <div
+    class="card"
     v-on:click="onSelected(!isExpanded)"
     v-bind:class="{
       'is-collapsed': !isExpanded,
       'is-inactive': activeCategoryId && activeCategoryId != categoryId,
-      'is-expanded': isExpanded
+      'is-expanded': isExpanded,
     }"
     ref="cardElement">
-      <div class="card__inner">
-        <!-- Title -->
-        <span
-          class="card__inner__title"
-          v-if="cardTitle && cardTitle.length > 0">
-          <span>{{cardTitle}}</span>
-        </span>
-        <span v-else>Oh no 😢</span>
-        <!-- Expand icon -->
+    <div class="card__inner">
+      <!-- Title -->
+      <span
+        class="card__inner__title"
+        v-if="cardTitle && cardTitle.length > 0">
+        <span>{{cardTitle}}</span>
+      </span>
+      <span v-else>Oh no 😢</span>
+      <!-- Expand icon -->
+      <font-awesome-icon
+        class="card__inner__expand-icon"
+        :icon="['far', isExpanded ? 'folder-open' : 'folder']"
+      />
+      <!-- Indeterminate and full states -->
+      <div class="card__inner__state-icons">
         <font-awesome-icon
-          class="card__inner__expand-icon"
-          :icon="['far', isExpanded ? 'folder-open' : 'folder']"
+          :icon="['fa', 'battery-half']"
+          v-if="isAnyChildSelected && !areAllChildrenSelected"
         />
-        <!-- Indeterminate and full states -->
-        <div class="card__inner__state-icons">
-          <font-awesome-icon
-            :icon="['fa', 'battery-half']"
-            v-if="isAnyChildSelected && !areAllChildrenSelected"
-          />
-          <font-awesome-icon
-            :icon="['fa', 'battery-full']"
-            v-if="areAllChildrenSelected"
-          />
-        </div>
+        <font-awesome-icon
+          :icon="['fa', 'battery-full']"
+          v-if="areAllChildrenSelected"
+        />
       </div>
-      <div class="card__expander" v-on:click.stop>
-        <div class="card__expander__content">
-          <ScriptsTree :categoryId="categoryId"></ScriptsTree>
-        </div>
-        <div class="card__expander__close-button">
-          <font-awesome-icon :icon="['fas', 'times']"  v-on:click="onSelected(false)"/>
-        </div>
+    </div>
+    <div class="card__expander" v-on:click.stop>
+      <div class="card__expander__content">
+        <ScriptsTree :categoryId="categoryId" />
+      </div>
+      <div class="card__expander__close-button">
+        <font-awesome-icon
+          :icon="['fas', 'times']"
+          v-on:click="onSelected(false)"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -82,7 +86,7 @@ export default class CardListItem extends StatefulVue {
   }
 
   @Watch('activeCategoryId')
-  public async onActiveCategoryChanged(value: |number) {
+  public async onActiveCategoryChanged(value?: number) {
     this.isExpanded = value === this.categoryId;
   }
 
@@ -96,7 +100,7 @@ export default class CardListItem extends StatefulVue {
   }
 
   @Watch('categoryId')
-  public async updateState(value: |number) {
+  public async updateState(value?: number) {
     const context = await this.getCurrentContext();
     const category = !value ? undefined : context.state.collection.findCategory(value);
     this.cardTitle = category ? category.name : undefined;

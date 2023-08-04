@@ -5,8 +5,8 @@
     @mousedown="startResize">
     <div class="line" />
     <font-awesome-icon
-        class="icon"
-        :icon="['fas', 'arrows-alt-h']"
+      class="icon"
+      :icon="['fas', 'arrows-alt-h']"
     />
     <div class="line" />
   </div>

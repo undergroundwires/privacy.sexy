@@ -17,14 +17,18 @@
     </div>
     <div class="line">
       <div class="line__emoji">🤖</div>
-      <div>All transparent: Deployed automatically from the master branch
-      of the <a :href="repositoryUrl" target="_blank">source code</a> with no changes.</div>
+      <div>
+        All transparent: Deployed automatically from the master branch
+        of the <a :href="repositoryUrl" target="_blank">source code</a> with no changes.
+      </div>
     </div>
     <div v-if="!isDesktop" class="line">
       <div class="line__emoji">📈</div>
-      <div>Basic <a href="https://aws.amazon.com/cloudfront/reporting/" target="_blank">CDN statistics</a>
-      are collected by AWS but they cannot be traced to you or your behavior.
-      You can download the offline version if you don't want any CDN data collection.</div>
+      <div>
+        Basic <a href="https://aws.amazon.com/cloudfront/reporting/" target="_blank">CDN statistics</a>
+        are collected by AWS but they cannot be traced to you or your behavior.
+        You can download the offline version if you don't want any CDN data collection.
+      </div>
     </div>
     <div class="line">
       <div class="line__emoji">🎉</div>

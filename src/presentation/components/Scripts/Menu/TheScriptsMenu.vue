@@ -1,7 +1,7 @@
 <template>
   <div id="container">
     <TheSelector class="item" />
-    <TheOsChanger class="item"  />
+    <TheOsChanger class="item" />
     <TheViewChanger
       class="item"
       v-on:viewChanged="$emit('viewChanged', $event)"

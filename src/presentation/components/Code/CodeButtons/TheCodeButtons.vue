@@ -4,19 +4,21 @@
       v-if="this.canRun"
       text="Run"
       v-on:click="executeCode"
-      icon-prefix="fas" icon-name="play">
-    </IconButton>
+      icon-prefix="fas"
+      icon-name="play"
+    />
     <IconButton
       :text="this.isDesktopVersion ? 'Save' : 'Download'"
       v-on:click="saveCode"
       icon-prefix="fas"
-      :icon-name="this.isDesktopVersion ? 'save' : 'file-download'">
-    </IconButton>
+      :icon-name="this.isDesktopVersion ? 'save' : 'file-download'"
+    />
     <IconButton
       text="Copy"
       v-on:click="copyCode"
-      icon-prefix="fas" icon-name="copy">
-    </IconButton>
+      icon-prefix="fas"
+      icon-name="copy"
+    />
     <Dialog v-if="this.hasInstructions" ref="instructionsDialog">
       <InstructionList :data="this.instructions" />
     </Dialog>

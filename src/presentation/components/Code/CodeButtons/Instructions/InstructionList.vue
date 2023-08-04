@@ -7,8 +7,8 @@
     <p>
       <strong>1. The easy alternative</strong>. Run your script without any manual steps by
       <a :href="this.macOsDownloadUrl">downloading desktop version</a> of {{ this.appName }} on the
-       {{ this.osName }} system you wish to configure, and then click on the Run button. This is
-       recommended for most users.
+      {{ this.osName }} system you wish to configure, and then click on the Run button. This is
+      recommended for most users.
     </p>
     <hr />
     <p>

@@ -23,7 +23,7 @@ import Documentable from './Documentation/Documentable.vue';
   },
 })
 export default class Node extends Vue {
-    @Prop() public data: INode;
+  @Prop() public data: INode;
 }
 </script>
 

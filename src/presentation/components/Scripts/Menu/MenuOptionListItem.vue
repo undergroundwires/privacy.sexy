@@ -1,7 +1,10 @@
 <template>
   <span> <!-- Parent wrapper allows adding content inside with CSS without making it clickable -->
     <span
-      v-bind:class="{ 'disabled': !enabled, 'enabled': enabled}"
+      v-bind:class="{
+        disabled: !enabled,
+        enabled: enabled,
+      }"
       v-non-collapsing
       @click="enabled && onClicked()">{{label}}</span>
   </span>

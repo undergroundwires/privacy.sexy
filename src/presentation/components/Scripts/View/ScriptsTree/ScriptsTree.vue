@@ -7,8 +7,7 @@
         :filterPredicate="filterPredicate"
         :filterText="filterText"
         v-on:nodeSelected="toggleNodeSelection($event)"
-        >
-      </SelectableTree>
+      />
     </span>
     <span v-else>Nooo 😢</span>
   </span>

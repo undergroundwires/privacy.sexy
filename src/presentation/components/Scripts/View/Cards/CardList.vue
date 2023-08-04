@@ -9,21 +9,24 @@
           <span v-if="width >= 750">big</span>
       </div>
     -->
-    <div v-if="categoryIds != null && categoryIds.length > 0"  class="cards">
+    <div
+      v-if="categoryIds != null && categoryIds.length > 0"
+      class="cards"
+    >
       <CardListItem
         class="card"
         v-bind:class="{
           'small-screen': width <= 500,
           'medium-screen': width > 500 && width < 750,
-          'big-screen': width >= 750
+          'big-screen': width >= 750,
         }"
         v-for="categoryId of categoryIds"
         :data-category="categoryId"
         v-bind:key="categoryId"
         :categoryId="categoryId"
         :activeCategoryId="activeCategoryId"
-        v-on:selected="onSelected(categoryId, $event)">
-      </CardListItem>
+        v-on:selected="onSelected(categoryId, $event)"
+      />
     </div>
     <div v-else class="error">Something went bad 😢</div>
   </Responsive>

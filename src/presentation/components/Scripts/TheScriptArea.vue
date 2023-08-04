@@ -1,9 +1,13 @@
 <template>
   <div class="scripts">
     <TheScriptsMenu v-on:viewChanged="currentView = $event" />
-    <HorizontalResizeSlider class="row"
-      verticalMargin="15px" firstInitialWidth="55%"
-      firstMinWidth="20%" secondMinWidth="20%">
+    <HorizontalResizeSlider
+      class="row"
+      verticalMargin="15px"
+      firstInitialWidth="55%"
+      firstMinWidth="20%"
+      secondMinWidth="20%"
+    >
       <template v-slot:first>
         <TheScriptsView :currentView="currentView" />
       </template>

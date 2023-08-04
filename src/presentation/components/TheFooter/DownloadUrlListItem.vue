@@ -1,9 +1,10 @@
 <template>
   <span class="url">
-    <a :href="downloadUrl"
-        v-bind:class="{
-        'url__active': hasCurrentOsDesktopVersion && isCurrentOs,
-        'url__inactive': hasCurrentOsDesktopVersion && !isCurrentOs,
+    <a
+      :href="downloadUrl"
+      v-bind:class="{
+        url__active: hasCurrentOsDesktopVersion && isCurrentOs,
+        url__inactive: hasCurrentOsDesktopVersion && !isCurrentOs,
       }">{{ operatingSystemName }}</a>
   </span>
 </template>
