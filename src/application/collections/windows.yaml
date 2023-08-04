@@ -7359,10 +7359,44 @@ functions:
         call:
             function: RunPowerShell
             parameters:
-                code: Get-WindowsCapability -Online -Name '{{ $capabilityName }}*' | Remove-WindowsCapability -Online
+                code:  |-
+                    $capabilityName = '{{ $capabilityName }}'
+                    try {
+                        # Using wildcard for version number handling
+                        $capability = Get-WindowsCapability -Online -Name "$capabilityName*"
+                        if (!$capability) {
+                            Write-Host "Skipping. Capability `"$capabilityName`" is missing."
+                            exit 0
+                        }
+                        if ($capability.State -eq 'NotPresent') {
+                            Write-Host "Skipping. Capability `"$capabilityName`" is missing."
+                            exit 0
+                        }
+                        Write-Host "Removing capability `"$capabilityName`""
+                        Remove-WindowsCapability -Online -Name "$($capability.Name)" -ErrorAction Stop
+                        Write-Host "Successfully removed `"$CapabilityName`""
+                    }
+                    catch {
+                        Write-Error "Failed to remove `"$capabilityName`": $_"
+                    }
                 revertCode: |-
-                    $capability = Get-WindowsCapability -Online -Name '{{ $capabilityName }}*'
-                    Add-WindowsCapability -Name "$capability.Name" -Online
+                    $capabilityName = '{{ $capabilityName }}'
+                    try {
+                        # Using wildcard for version number handling
+                        $capability = Get-WindowsCapability -Online -Name "$capabilityName*"
+                        if (!$capability) {
+                            Write-Error "Failed to find `"$capabilityName`"."
+                            exit 1
+                        }
+                        $result = Add-WindowsCapability -Name $capability.Name -Online -ErrorAction Stop
+                        Write-Host "Successfully added `"$capabilityName`"."
+                        if ($result.RestartNeeded -eq 'Yes') {
+                            Write-Warning "A restart is needed to finish installing `"$capabilityName`"."
+                        }
+                    }
+                    catch {
+                        Write-Error "Failed to add  `"$capabilityName`": $_"
+                    }
     -
         name: RenameSystemFile
         parameters:
