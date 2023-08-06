@@ -5,7 +5,7 @@
         <span v-if="isDesktop" class="footer__section__item">
           <font-awesome-icon class="icon" :icon="['fas', 'globe']" />
           <span>
-            Online version at <a :href="homepageUrl" target="_blank">{{ homepageUrl }}</a>
+            Online version at <a :href="homepageUrl" target="_blank" rel="noopener noreferrer">{{ homepageUrl }}</a>
           </span>
         </span>
         <span v-else class="footer__section__item">
@@ -14,19 +14,19 @@
       </div>
       <div class="footer__section">
         <div class="footer__section__item">
-          <a :href="feedbackUrl" target="_blank">
+          <a :href="feedbackUrl" target="_blank" rel="noopener noreferrer">
             <font-awesome-icon class="icon" :icon="['far', 'smile']" />
             <span>Feedback</span>
           </a>
         </div>
         <div class="footer__section__item">
-          <a :href="repositoryUrl" target="_blank">
+          <a :href="repositoryUrl" target="_blank" rel="noopener noreferrer">
             <font-awesome-icon class="icon" :icon="['fab', 'github']" />
             <span>Source Code</span>
           </a>
         </div>
         <div class="footer__section__item">
-          <a :href="releaseUrl" target="_blank">
+          <a :href="releaseUrl" target="_blank" rel="noopener noreferrer">
             <font-awesome-icon class="icon" :icon="['fas', 'tag']" />
             <span>v{{ version }}</span>
           </a>

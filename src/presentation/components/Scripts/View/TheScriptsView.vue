@@ -20,7 +20,7 @@
           <div>Sorry, no matches for "{{this.searchQuery | threeDotsTrim }}" 😞</div>
           <div>
             Feel free to extend the scripts
-            <a :href="repositoryUrl" target="_blank" class="child github">here</a> ✨
+            <a :href="repositoryUrl" class="child github" target="_blank" rel="noopener noreferrer">here</a> ✨
           </div>
         </div>
       </div>

@@ -10,17 +10,53 @@ describe('MarkdownRenderer', () => {
       // assert
       expect(renderer !== undefined);
     });
-    it('opens URLs in new tab', () => {
-      // arrange
-      const renderer = createRenderer();
-      const markdown = '[undergroundwires.dev](https://undergroundwires.dev)';
-      // act
-      const htmlString = renderer.render(markdown);
-      // assert
-      const html = parseHtml(htmlString);
-      const aElement = html.getElementsByTagName('a')[0];
-      const href = aElement.getAttribute('target');
-      expect(href).to.equal('_blank');
+    describe('sets expected anchor attributes', () => {
+      const attributes: ReadonlyArray<{
+        readonly name: string,
+        readonly expectedValue: string,
+        readonly invalidMarkdown: string
+      }> = [
+        {
+          name: 'target',
+          expectedValue: '_blank',
+          invalidMarkdown: '<a href="https://undergroundwires.dev" target="_self">example</a>',
+        },
+        {
+          name: 'rel',
+          expectedValue: 'noopener noreferrer',
+          invalidMarkdown: '<a href="https://undergroundwires.dev" rel="nooverride">example</a>',
+        },
+      ];
+      for (const attribute of attributes) {
+        const { name, expectedValue, invalidMarkdown } = attribute;
+
+        it(`adds "${name}" attribute to anchor elements`, () => {
+          // arrange
+          const renderer = createRenderer();
+          const markdown = '[undergroundwires.dev](https://undergroundwires.dev)';
+
+          // act
+          const htmlString = renderer.render(markdown);
+
+          // assert
+          const html = parseHtml(htmlString);
+          const aElement = html.getElementsByTagName('a')[0];
+          expect(aElement.getAttribute(name)).to.equal(expectedValue);
+        });
+
+        it(`overrides existing "${name}" attribute`, () => {
+          // arrange
+          const renderer = createRenderer();
+
+          // act
+          const htmlString = renderer.render(invalidMarkdown);
+
+          // assert
+          const html = parseHtml(htmlString);
+          const aElement = html.getElementsByTagName('a')[0];
+          expect(aElement.getAttribute(name)).to.equal(expectedValue);
+        });
+      }
     });
     it('does not convert single linebreak to <br>', () => {
       // arrange

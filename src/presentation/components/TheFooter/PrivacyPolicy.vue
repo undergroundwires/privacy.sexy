@@ -19,13 +19,13 @@
       <div class="line__emoji">🤖</div>
       <div>
         All transparent: Deployed automatically from the master branch
-        of the <a :href="repositoryUrl" target="_blank">source code</a> with no changes.
+        of the <a :href="repositoryUrl" target="_blank" rel="noopener noreferrer">source code</a> with no changes.
       </div>
     </div>
     <div v-if="!isDesktop" class="line">
       <div class="line__emoji">📈</div>
       <div>
-        Basic <a href="https://aws.amazon.com/cloudfront/reporting/" target="_blank">CDN statistics</a>
+        Basic <a href="https://aws.amazon.com/cloudfront/reporting/" target="_blank" rel="noopener noreferrer">CDN statistics</a>
         are collected by AWS but they cannot be traced to you or your behavior.
         You can download the offline version if you don't want any CDN data collection.
       </div>
@@ -35,7 +35,7 @@
       <div>
         As almost no data is collected, the application gets better
         only with your active feedback.
-        Feel free to <a :href="feedbackUrl" target="_blank">create an issue</a> 😊</div>
+        Feel free to <a :href="feedbackUrl" target="_blank" rel="noopener noreferrer">create an issue</a> 😊</div>
     </div>
   </div>
 </template>
