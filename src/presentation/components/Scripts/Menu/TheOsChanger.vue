@@ -1,7 +1,7 @@
 <template>
   <MenuOptionList>
     <MenuOptionListItem
-      v-for="os in this.allOses"
+      v-for="os in allOses"
       :key="os.name"
       :enabled="currentOs !== os.os"
       @click="changeOs(os.os)"
@@ -11,41 +11,55 @@
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
+import {
+  defineComponent, computed,
+} from 'vue';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
-import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
-import { ApplicationFactory } from '@/application/ApplicationFactory';
+import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
+import { useApplication } from '@/presentation/components/Shared/Hooks/UseApplication';
 import MenuOptionList from './MenuOptionList.vue';
 import MenuOptionListItem from './MenuOptionListItem.vue';
 
-@Component({
+interface IOsViewModel {
+  readonly name: string;
+  readonly os: OperatingSystem;
+}
+
+export default defineComponent({
   components: {
     MenuOptionList,
     MenuOptionListItem,
   },
-})
-export default class TheOsChanger extends StatefulVue {
-  public allOses: Array<{ name: string, os: OperatingSystem }> = [];
+  setup() {
+    const { modifyCurrentContext, currentState } = useCollectionState();
+    const { application } = useApplication();
 
-  public currentOs?: OperatingSystem = null;
+    const allOses = computed<ReadonlyArray<IOsViewModel>>(() => (
+      application.getSupportedOsList() ?? [])
+      .map((os) : IOsViewModel => (
+        {
+          os,
+          name: renderOsName(os),
+        }
+      )));
 
-  public async created() {
-    const app = await ApplicationFactory.Current.getApp();
-    this.allOses = app.getSupportedOsList()
-      .map((os) => ({ os, name: renderOsName(os) }));
-  }
+    const currentOs = computed<OperatingSystem>(() => {
+      return currentState.value.os;
+    });
 
-  public async changeOs(newOs: OperatingSystem) {
-    const context = await this.getCurrentContext();
-    context.changeContext(newOs);
-  }
+    function changeOs(newOs: OperatingSystem) {
+      modifyCurrentContext((context) => {
+        context.changeContext(newOs);
+      });
+    }
 
-  protected handleCollectionState(newState: IReadOnlyCategoryCollectionState): void {
-    this.currentOs = newState.os;
-    this.$forceUpdate(); // v-bind:class is not updated otherwise
-  }
-}
+    return {
+      allOses,
+      currentOs,
+      changeOs,
+    };
+  },
+});
 
 function renderOsName(os: OperatingSystem): string {
   switch (os) {
@@ -56,7 +70,3 @@ function renderOsName(os: OperatingSystem): string {
   }
 }
 </script>
-
-<style scoped lang="scss">
-
-</style>

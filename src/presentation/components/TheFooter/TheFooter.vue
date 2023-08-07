@@ -33,57 +33,58 @@
         </div>
         <div class="footer__section__item">
           <font-awesome-icon class="icon" :icon="['fas', 'user-secret']" />
-          <a @click="$refs.privacyDialog.show()">Privacy</a>
+          <a @click="privacyDialog.show()">Privacy</a>
         </div>
       </div>
     </div>
-    <Dialog ref="privacyDialog">
+    <ModalDialog ref="privacyDialog">
       <PrivacyPolicy />
-    </Dialog>
+    </ModalDialog>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { defineComponent, ref, computed } from 'vue';
 import { Environment } from '@/application/Environment/Environment';
-import Dialog from '@/presentation/components/Shared/Dialog.vue';
-import { IApplication } from '@/domain/IApplication';
-import { ApplicationFactory } from '@/application/ApplicationFactory';
+import ModalDialog from '@/presentation/components/Shared/ModalDialog.vue';
+import { useApplication } from '@/presentation/components/Shared/Hooks/UseApplication';
 import DownloadUrlList from './DownloadUrlList.vue';
 import PrivacyPolicy from './PrivacyPolicy.vue';
 
-@Component({
+const { isDesktop } = Environment.CurrentEnvironment;
+
+export default defineComponent({
   components: {
-    Dialog, PrivacyPolicy, DownloadUrlList,
+    ModalDialog,
+    PrivacyPolicy,
+    DownloadUrlList,
   },
-})
-export default class TheFooter extends Vue {
-  public readonly isDesktop = Environment.CurrentEnvironment.isDesktop;
+  setup() {
+    const { info } = useApplication();
 
-  public version = '';
+    const privacyDialog = ref<typeof ModalDialog>();
 
-  public repositoryUrl = '';
+    const version = computed<string>(() => info.version.toString());
 
-  public releaseUrl = '';
+    const homepageUrl = computed<string>(() => info.homepage);
 
-  public feedbackUrl = '';
+    const repositoryUrl = computed<string>(() => info.repositoryWebUrl);
 
-  public homepageUrl = '';
+    const releaseUrl = computed<string>(() => info.releaseUrl);
 
-  public async created() {
-    const app = await ApplicationFactory.Current.getApp();
-    this.initialize(app);
-  }
+    const feedbackUrl = computed<string>(() => info.feedbackUrl);
 
-  private initialize(app: IApplication) {
-    const { info } = app;
-    this.version = info.version.toString();
-    this.homepageUrl = info.homepage;
-    this.repositoryUrl = info.repositoryWebUrl;
-    this.releaseUrl = info.releaseUrl;
-    this.feedbackUrl = info.feedbackUrl;
-  }
-}
+    return {
+      isDesktop,
+      privacyDialog,
+      version,
+      homepageUrl,
+      repositoryUrl,
+      releaseUrl,
+      feedbackUrl,
+    };
+  },
+});
 </script>
 
 <style scoped lang="scss">

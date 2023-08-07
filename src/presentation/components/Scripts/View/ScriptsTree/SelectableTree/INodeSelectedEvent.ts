@@ -1,6 +1,6 @@
-import { INode } from './Node/INode';
+import { INodeContent } from './Node/INodeContent';
 
 export interface INodeSelectedEvent {
   isSelected: boolean;
-  node: INode;
+  node: INodeContent;
 }

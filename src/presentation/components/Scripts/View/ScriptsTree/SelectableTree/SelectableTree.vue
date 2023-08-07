@@ -1,17 +1,17 @@
 <template>
   <span>
-    <span v-if="initialLiquorTreeNodes != null && initialLiquorTreeNodes.length > 0">
-      <tree
+    <span v-if="initialLiquorTreeNodes?.length > 0">
+      <LiquorTree
         :options="liquorTreeOptions"
         :data="initialLiquorTreeNodes"
-        v-on:node:checked="nodeSelected($event)"
-        v-on:node:unchecked="nodeSelected($event)"
-        ref="treeElement"
+        @node:checked="nodeSelected($event)"
+        @node:unchecked="nodeSelected($event)"
+        ref="liquorTree"
       >
         <span class="tree-text" slot-scope="{ node }">
-          <Node :data="convertExistingToNode(node)" />
+          <NodeContent :data="convertExistingToNode(node)" />
         </span>
-      </tree>
+      </LiquorTree>
     </span>
     <span v-else>Nooo 😢</span>
   </span>
@@ -19,109 +19,139 @@
 
 <script lang="ts">
 import {
-  Component, Prop, Vue, Watch,
-} from 'vue-property-decorator';
+  PropType, defineComponent, ref, watch,
+} from 'vue';
 import LiquorTree, {
   ILiquorTreeNewNode, ILiquorTreeExistingNode, ILiquorTree, ILiquorTreeNode, ILiquorTreeNodeState,
 } from 'liquor-tree';
 import { sleep } from '@/infrastructure/Threading/AsyncSleep';
-import Node from './Node/Node.vue';
-import { INode } from './Node/INode';
+import NodeContent from './Node/NodeContent.vue';
+import { INodeContent } from './Node/INodeContent';
 import { convertExistingToNode, toNewLiquorTreeNode } from './LiquorTree/NodeWrapper/NodeTranslator';
 import { INodeSelectedEvent } from './INodeSelectedEvent';
 import { getNewState } from './LiquorTree/NodeWrapper/NodeStateUpdater';
 import { LiquorTreeOptions } from './LiquorTree/LiquorTreeOptions';
 import { FilterPredicate, NodePredicateFilter } from './LiquorTree/NodeWrapper/NodePredicateFilter';
 
-/** Wrapper for Liquor Tree, reveals only abstracted INode for communication */
-@Component({
+/**
+ * Wrapper for Liquor Tree, reveals only abstracted INode for communication.
+ * Stateless to make it easier to switch out Liquor Tree to another component.
+*/
+export default defineComponent({
   components: {
     LiquorTree,
-    Node,
+    NodeContent,
   },
-})
-export default class SelectableTree extends Vue { // Stateless to make it easier to switch out
-  @Prop() public filterPredicate?: FilterPredicate;
+  props: {
+    filterPredicate: {
+      type: Function as PropType<FilterPredicate>,
+      default: undefined,
+    },
+    filterText: {
+      type: String,
+      default: undefined,
+    },
+    selectedNodeIds: {
+      type: Array as PropType<ReadonlyArray<string>>,
+      default: undefined,
+    },
+    initialNodes: {
+      type: Array as PropType<ReadonlyArray<INodeContent>>,
+      default: undefined,
+    },
+  },
+  setup(props, { emit }) {
+    const liquorTree = ref< { tree: ILiquorTree }>();
+    const initialLiquorTreeNodes = ref<ReadonlyArray<ILiquorTreeNewNode>>();
+    const liquorTreeOptions = new LiquorTreeOptions(
+      new NodePredicateFilter((node) => props.filterPredicate(node)),
+    );
 
-  @Prop() public filterText?: string;
-
-  @Prop() public selectedNodeIds?: ReadonlyArray<string>;
-
-  @Prop() public initialNodes?: ReadonlyArray<INode>;
-
-  public initialLiquorTreeNodes?: ILiquorTreeNewNode[] = null;
-
-  public liquorTreeOptions = new LiquorTreeOptions(
-    new NodePredicateFilter((node) => this.filterPredicate(node)),
-  );
-
-  public convertExistingToNode = convertExistingToNode;
-
-  public nodeSelected(node: ILiquorTreeExistingNode) {
-    const event: INodeSelectedEvent = {
-      node: convertExistingToNode(node),
-      isSelected: node.states.checked,
-    };
-    this.$emit('nodeSelected', event);
-  }
-
-  @Watch('initialNodes', { immediate: true })
-  public async updateNodes(nodes: readonly INode[]) {
-    if (!nodes) {
-      throw new Error('missing initial nodes');
+    function nodeSelected(node: ILiquorTreeExistingNode) {
+      const event: INodeSelectedEvent = {
+        node: convertExistingToNode(node),
+        isSelected: node.states.checked,
+      };
+      emit('nodeSelected', event);
     }
-    const initialNodes = nodes.map((node) => toNewLiquorTreeNode(node));
-    if (this.selectedNodeIds) {
-      recurseDown(
-        initialNodes,
+
+    watch(
+      () => props.initialNodes,
+      (nodes) => setInitialNodes(nodes),
+      { immediate: true },
+    );
+
+    watch(
+      () => props.filterText,
+      (filterText) => setFilterText(filterText),
+      { immediate: true },
+    );
+
+    watch(
+      () => props.selectedNodeIds,
+      (selectedNodeIds) => setSelectedStatus(selectedNodeIds),
+    );
+
+    async function setInitialNodes(nodes: readonly INodeContent[]) {
+      if (!nodes) {
+        throw new Error('missing initial nodes');
+      }
+      const initialNodes = nodes.map((node) => toNewLiquorTreeNode(node));
+      if (props.selectedNodeIds) {
+        recurseDown(
+          initialNodes,
+          (node) => {
+            node.state = updateState(node.state, node, props.selectedNodeIds);
+          },
+        );
+      }
+      initialLiquorTreeNodes.value = initialNodes;
+      const api = await getLiquorTreeApi();
+      api.setModel(initialLiquorTreeNodes.value);
+    }
+
+    async function setFilterText(filterText?: string) {
+      const api = await getLiquorTreeApi();
+      if (!filterText) {
+        api.clearFilter();
+      } else {
+        api.filter('filtered'); // text does not matter, it'll trigger the filterPredicate
+      }
+    }
+
+    async function setSelectedStatus(selectedNodeIds: ReadonlyArray<string>) {
+      if (!selectedNodeIds) {
+        throw new Error('Selected recurseDown nodes are undefined');
+      }
+      const tree = await getLiquorTreeApi();
+      tree.recurseDown(
         (node) => {
-          node.state = updateState(node.state, node, this.selectedNodeIds);
+          node.states = updateState(node.states, node, selectedNodeIds);
         },
       );
     }
-    this.initialLiquorTreeNodes = initialNodes;
-    const api = await this.getLiquorTreeApi();
-    // We need to set the model manually on each update because liquor tree is not reactive to data
-    // changes after its initialization.
-    api.setModel(this.initialLiquorTreeNodes);
-  }
 
-  @Watch('filterText', { immediate: true })
-  public async updateFilterText(filterText?: string) {
-    const api = await this.getLiquorTreeApi();
-    if (!filterText) {
-      api.clearFilter();
-    } else {
-      api.filter('filtered'); // text does not matter, it'll trigger the filterPredicate
+    async function getLiquorTreeApi(): Promise<ILiquorTree> {
+      const tree = await tryUntilDefined(
+        () => liquorTree.value?.tree,
+        5,
+        20,
+      );
+      if (!tree) {
+        throw Error('Referenced tree element cannot be found. Perhaps it\'s not yet rendered?');
+      }
+      return tree;
     }
-  }
 
-  @Watch('selectedNodeIds')
-  public async setSelectedStatus(selectedNodeIds: ReadonlyArray<string>) {
-    if (!selectedNodeIds) {
-      throw new Error('Selected recurseDown nodes are undefined');
-    }
-    const tree = await this.getLiquorTreeApi();
-    tree.recurseDown(
-      (node) => {
-        node.states = updateState(node.states, node, selectedNodeIds);
-      },
-    );
-  }
-
-  private async getLiquorTreeApi(): Promise<ILiquorTree> {
-    const accessor = (): ILiquorTree => {
-      const uiElement = this.$refs.treeElement;
-      type TreeElement = typeof uiElement & { tree: ILiquorTree };
-      return uiElement ? (uiElement as TreeElement).tree : undefined;
+    return {
+      liquorTreeOptions,
+      initialLiquorTreeNodes,
+      convertExistingToNode,
+      nodeSelected,
+      liquorTree,
     };
-    const treeElement = await tryUntilDefined(accessor, 5, 20); // Wait for it to render
-    if (!treeElement) {
-      throw Error('Referenced tree element cannot be found. Perhaps it\'s not yet rendered?');
-    }
-    return treeElement;
-  }
-}
+  },
+});
 
 function updateState(
   old: ILiquorTreeNodeState,
@@ -162,3 +192,4 @@ async function tryUntilDefined<T>(
   return value;
 }
 </script>
+./Node/INodeContent

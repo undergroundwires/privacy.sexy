@@ -11,14 +11,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { defineComponent } from 'vue';
 import TheHeader from '@/presentation/components/TheHeader.vue';
 import TheFooter from '@/presentation/components/TheFooter/TheFooter.vue';
 import TheCodeButtons from '@/presentation/components/Code/CodeButtons/TheCodeButtons.vue';
 import TheScriptArea from '@/presentation/components/Scripts/TheScriptArea.vue';
 import TheSearchBar from '@/presentation/components/TheSearchBar.vue';
 
-@Component({
+export default defineComponent({
   components: {
     TheHeader,
     TheCodeButtons,
@@ -26,10 +26,8 @@ import TheSearchBar from '@/presentation/components/TheSearchBar.vue';
     TheSearchBar,
     TheFooter,
   },
-})
-export default class App extends Vue {
+});
 
-}
 </script>
 
 <style lang="scss">

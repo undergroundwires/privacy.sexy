@@ -4,7 +4,7 @@ import {
   getScriptNodeId, getScriptId, getCategoryNodeId, getCategoryId, parseSingleCategory,
   parseAllCategories,
 } from '@/presentation/components/Scripts/View/ScriptsTree/ScriptNodeParser';
-import { INode, NodeType } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/Node/INode';
+import { INodeContent, NodeType } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/Node/INodeContent';
 import { IScript } from '@/domain/IScript';
 import { ICategory } from '@/domain/ICategory';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
@@ -87,7 +87,7 @@ function isReversible(category: ICategory): boolean {
   return category.subCategories.every((c) => isReversible(c));
 }
 
-function expectSameCategory(node: INode, category: ICategory): void {
+function expectSameCategory(node: INodeContent, category: ICategory): void {
   expect(node.type).to.equal(NodeType.Category, getErrorMessage('type'));
   expect(node.id).to.equal(getCategoryNodeId(category), getErrorMessage('id'));
   expect(node.docs).to.equal(category.docs, getErrorMessage('docs'));
@@ -107,7 +107,7 @@ function expectSameCategory(node: INode, category: ICategory): void {
   }
 }
 
-function expectSameScript(node: INode, script: IScript): void {
+function expectSameScript(node: INodeContent, script: IScript): void {
   expect(node.type).to.equal(NodeType.Script, getErrorMessage('type'));
   expect(node.id).to.equal(getScriptNodeId(script), getErrorMessage('id'));
   expect(node.docs).to.equal(script.docs, getErrorMessage('docs'));

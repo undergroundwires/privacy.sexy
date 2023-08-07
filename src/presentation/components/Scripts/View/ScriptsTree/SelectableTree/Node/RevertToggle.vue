@@ -4,7 +4,7 @@
       type="checkbox"
       class="input-checkbox"
       v-model="isReverted"
-      @change="onRevertToggled()"
+      @change="toggleRevert()"
       v-on:click.stop>
     <div class="checkbox-animate">
       <span class="checkbox-off">revert</span>
@@ -14,42 +14,64 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch } from 'vue-property-decorator';
-import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
+import {
+  PropType, defineComponent, ref, watch,
+} from 'vue';
+import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
-import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { IReverter } from './Reverter/IReverter';
-import { INode } from './INode';
+import { INodeContent } from './INodeContent';
 import { getReverter } from './Reverter/ReverterFactory';
 
-@Component
-export default class RevertToggle extends StatefulVue {
-  @Prop() public node: INode;
+export default defineComponent({
+  props: {
+    node: {
+      type: Object as PropType<INodeContent>,
+      required: true,
+    },
+  },
+  setup(props) {
+    const {
+      currentState, modifyCurrentState, onStateChange, events,
+    } = useCollectionState();
 
-  public isReverted = false;
+    const isReverted = ref(false);
 
-  private handler: IReverter;
+    let handler: IReverter | undefined;
 
-  @Watch('node', { immediate: true }) public async onNodeChanged(node: INode) {
-    const context = await this.getCurrentContext();
-    this.handler = getReverter(node, context.state.collection);
-  }
+    watch(
+      () => props.node,
+      async (node) => { await onNodeChanged(node); },
+      { immediate: true },
+    );
 
-  public async onRevertToggled() {
-    const context = await this.getCurrentContext();
-    this.handler.selectWithRevertState(this.isReverted, context.state.selection);
-  }
+    onStateChange((newState) => {
+      updateStatus(newState.selection.selectedScripts);
+      events.unsubscribeAll();
+      events.register(newState.selection.changed.on((scripts) => updateStatus(scripts)));
+    }, { immediate: true });
 
-  protected handleCollectionState(newState: IReadOnlyCategoryCollectionState): void {
-    this.updateStatus(newState.selection.selectedScripts);
-    this.events.unsubscribeAll();
-    this.events.register(newState.selection.changed.on((scripts) => this.updateStatus(scripts)));
-  }
+    async function onNodeChanged(node: INodeContent) {
+      handler = getReverter(node, currentState.value.collection);
+      updateStatus(currentState.value.selection.selectedScripts);
+    }
 
-  private updateStatus(scripts: ReadonlyArray<SelectedScript>) {
-    this.isReverted = this.handler.getState(scripts);
-  }
-}
+    function toggleRevert() {
+      modifyCurrentState((state) => {
+        handler.selectWithRevertState(isReverted.value, state.selection);
+      });
+    }
+
+    async function updateStatus(scripts: ReadonlyArray<SelectedScript>) {
+      isReverted.value = handler?.getState(scripts) ?? false;
+    }
+
+    return {
+      isReverted,
+      toggleRevert,
+    };
+  },
+});
 </script>
 
 <style scoped lang="scss">
@@ -76,7 +98,6 @@ $size-height            : 30px;
   border-radius: $size-height;
   line-height: $size-height;
   font-size: math.div($size-height, 2);
-  display: inline-block;
 
   input.input-checkbox {
     position: absolute;

@@ -7,27 +7,38 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator';
+import { defineComponent, PropType, computed } from 'vue';
 import { createRenderer } from './MarkdownRenderer';
 
-@Component
-export default class DocumentationText extends Vue {
-  @Prop() public docs: readonly string[];
+export default defineComponent({
+  props: {
+    docs: {
+      type: Array as PropType<ReadonlyArray<string>>,
+      default: () => [],
+    },
+  },
+  setup(props) {
+    const renderedText = computed<string>(() => renderText(props.docs));
 
-  private readonly renderer = createRenderer();
+    return {
+      renderedText,
+    };
+  },
+});
 
-  get renderedText(): string {
-    if (!this.docs || this.docs.length === 0) {
-      return '';
-    }
-    if (this.docs.length === 1) {
-      return this.renderer.render(this.docs[0]);
-    }
-    const bulletpoints = this.docs
-      .map((doc) => renderAsMarkdownListItem(doc))
-      .join('\n');
-    return this.renderer.render(bulletpoints);
+const renderer = createRenderer();
+
+function renderText(docs: readonly string[] | undefined): string {
+  if (!docs || docs.length === 0) {
+    return '';
   }
+  if (docs.length === 1) {
+    return renderer.render(docs[0]);
+  }
+  const bulletpoints = docs
+    .map((doc) => renderAsMarkdownListItem(doc))
+    .join('\n');
+  return renderer.render(bulletpoints);
 }
 
 function renderAsMarkdownListItem(content: string): string {
@@ -39,7 +50,6 @@ function renderAsMarkdownListItem(content: string): string {
     .map((line) => `\n  ${line}`)
     .join()}`;
 }
-
 </script>
 
 <style lang="scss"> /* Not scoped due to element styling such as "a". */
@@ -115,5 +125,4 @@ $text-size: 0.75em; // Lower looks bad on Firefox
     list-style: square;
   }
 }
-
 </style>

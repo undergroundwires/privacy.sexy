@@ -10,7 +10,7 @@
       <div class="dialog__close-button">
         <font-awesome-icon
           :icon="['fas', 'times']"
-          @click="$modal.hide(name)"
+          @click="hide"
         />
       </div>
     </div>
@@ -18,18 +18,41 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { defineComponent, onMounted } from 'vue';
 
-@Component
-export default class Dialog extends Vue {
-  private static idCounter = 0;
+let idCounter = 0;
 
-  public name = (++Dialog.idCounter).toString();
+export default defineComponent({
+  setup() {
+    const name = (++idCounter).toString();
 
-  public show(): void {
-    this.$modal.show(this.name);
-  }
-}
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let modal: any;
+
+    onMounted(async () => {
+      // Hack until Vue 3, so we can use vue-js-modal
+      const main = await import('@/presentation/main');
+      const { getVue } = main;
+      modal = getVue().$modal;
+    });
+
+    function show(): void {
+      modal.show(name);
+    }
+
+    function hide(): void {
+      modal.hide();
+    }
+
+    return {
+      name,
+      modal,
+      hide,
+      show,
+    };
+  },
+});
+
 </script>
 
 <style scoped lang="scss">

@@ -19,24 +19,26 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { defineComponent, ref } from 'vue';
 import TheCodeArea from '@/presentation/components/Code/TheCodeArea.vue';
 import TheScriptsView from '@/presentation/components/Scripts/View/TheScriptsView.vue';
 import TheScriptsMenu from '@/presentation/components/Scripts/Menu/TheScriptsMenu.vue';
 import HorizontalResizeSlider from '@/presentation/components/Scripts/Slider/HorizontalResizeSlider.vue';
 import { ViewType } from '@/presentation/components/Scripts/Menu/View/ViewType';
 
-@Component({
+export default defineComponent({
   components: {
     TheCodeArea,
     TheScriptsView,
     TheScriptsMenu,
     HorizontalResizeSlider,
   },
-})
-export default class TheScriptArea extends Vue {
-  public currentView = ViewType.Cards;
-}
+  setup() {
+    const currentView = ref(ViewType.Cards);
+
+    return { currentView };
+  },
+});
 </script>
 
 <style scoped lang="scss">

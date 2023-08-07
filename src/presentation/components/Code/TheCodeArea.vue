@@ -1,126 +1,138 @@
 <template>
-  <Responsive
+  <SizeObserver
     v-on:sizeChanged="sizeChanged()"
     v-non-collapsing>
     <div
       :id="editorId"
       class="code-area"
     />
-  </Responsive>
+  </SizeObserver>
 </template>
 
 <script lang="ts">
-import { Component, Prop } from 'vue-property-decorator';
-import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
+import { defineComponent, onUnmounted, onMounted } from 'vue';
+import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
 import { ICodeChangedEvent } from '@/application/Context/State/Code/Event/ICodeChangedEvent';
 import { IScript } from '@/domain/IScript';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { CodeBuilderFactory } from '@/application/Context/State/Code/Generation/CodeBuilderFactory';
-import Responsive from '@/presentation/components/Shared/Responsive.vue';
+import SizeObserver from '@/presentation/components/Shared/SizeObserver.vue';
 import { NonCollapsing } from '@/presentation/components/Scripts/View/Cards/NonCollapsingDirective';
 import ace from './ace-importer';
 
-@Component({
-  components: {
-    Responsive,
+export default defineComponent({
+  props: {
+    theme: {
+      type: String,
+      default: undefined,
+    },
   },
-  directives: { NonCollapsing },
-})
-export default class TheCodeArea extends StatefulVue {
-  public readonly editorId = 'codeEditor';
+  components: {
+    SizeObserver,
+  },
+  directives: {
+    NonCollapsing,
+  },
+  setup(props) {
+    const { onStateChange, currentState, events } = useCollectionState();
 
-  private editor!: ace.Ace.Editor;
+    const editorId = 'codeEditor';
+    let editor: ace.Ace.Editor | undefined;
+    let currentMarkerId: number | undefined;
 
-  private currentMarkerId?: number;
+    onUnmounted(() => {
+      destroyEditor();
+    });
 
-  @Prop() private theme!: string;
+    onMounted(() => { // allow editor HTML to render
+      onStateChange((newState) => {
+        handleNewState(newState);
+      }, { immediate: true });
+    });
 
-  public destroyed() {
-    this.destroyEditor();
-  }
-
-  public sizeChanged() {
-    if (this.editor) {
-      this.editor.resize();
+    function handleNewState(newState: IReadOnlyCategoryCollectionState) {
+      destroyEditor();
+      editor = initializeEditor(
+        props.theme,
+        editorId,
+        newState.collection.scripting.language,
+      );
+      const appCode = newState.code;
+      const innerCode = appCode.current || getDefaultCode(newState.collection.scripting.language);
+      editor.setValue(innerCode, 1);
+      events.unsubscribeAll();
+      events.register(appCode.changed.on((code) => updateCode(code)));
     }
-  }
 
-  protected handleCollectionState(newState: IReadOnlyCategoryCollectionState): void {
-    this.destroyEditor();
-    this.editor = initializeEditor(
-      this.theme,
-      this.editorId,
-      newState.collection.scripting.language,
-    );
-    const appCode = newState.code;
-    const innerCode = appCode.current || getDefaultCode(newState.collection.scripting.language);
-    this.editor.setValue(innerCode, 1);
-    this.events.unsubscribeAll();
-    this.events.register(appCode.changed.on((code) => this.updateCode(code)));
-  }
-
-  private async updateCode(event: ICodeChangedEvent) {
-    this.removeCurrentHighlighting();
-    if (event.isEmpty()) {
-      const context = await this.getCurrentContext();
-      const defaultCode = getDefaultCode(context.state.collection.scripting.language);
-      this.editor.setValue(defaultCode, 1);
-      return;
+    function updateCode(event: ICodeChangedEvent) {
+      removeCurrentHighlighting();
+      if (event.isEmpty()) {
+        const defaultCode = getDefaultCode(currentState.value.collection.scripting.language);
+        editor.setValue(defaultCode, 1);
+        return;
+      }
+      editor.setValue(event.code, 1);
+      if (event.addedScripts?.length > 0) {
+        reactToChanges(event, event.addedScripts);
+      } else if (event.changedScripts?.length > 0) {
+        reactToChanges(event, event.changedScripts);
+      }
     }
-    this.editor.setValue(event.code, 1);
-    if (event.addedScripts && event.addedScripts.length) {
-      this.reactToChanges(event, event.addedScripts);
-    } else if (event.changedScripts && event.changedScripts.length) {
-      this.reactToChanges(event, event.changedScripts);
+
+    function sizeChanged() {
+      editor?.resize();
     }
-  }
 
-  private reactToChanges(event: ICodeChangedEvent, scripts: ReadonlyArray<IScript>) {
-    const positions = scripts
-      .map((script) => event.getScriptPositionInCode(script));
-    const start = Math.min(
-      ...positions.map((position) => position.startLine),
-    );
-    const end = Math.max(
-      ...positions.map((position) => position.endLine),
-    );
-    this.scrollToLine(end + 2);
-    this.highlight(start, end);
-  }
-
-  private highlight(startRow: number, endRow: number) {
-    const AceRange = ace.require('ace/range').Range;
-    this.currentMarkerId = this.editor.session.addMarker(
-      new AceRange(startRow, 0, endRow, 0),
-      'code-area__highlight',
-      'fullLine',
-    );
-  }
-
-  private scrollToLine(row: number) {
-    const column = this.editor.session.getLine(row).length;
-    this.editor.gotoLine(row, column, true);
-  }
-
-  private removeCurrentHighlighting() {
-    if (!this.currentMarkerId) {
-      return;
+    function destroyEditor() {
+      editor?.destroy();
+      editor = undefined;
     }
-    this.editor.session.removeMarker(this.currentMarkerId);
-    this.currentMarkerId = undefined;
-  }
 
-  private destroyEditor() {
-    if (this.editor) {
-      this.editor.destroy();
-      this.editor = undefined;
+    function removeCurrentHighlighting() {
+      if (!currentMarkerId) {
+        return;
+      }
+      editor.session.removeMarker(currentMarkerId);
+      currentMarkerId = undefined;
     }
-  }
-}
+
+    function reactToChanges(event: ICodeChangedEvent, scripts: ReadonlyArray<IScript>) {
+      const positions = scripts
+        .map((script) => event.getScriptPositionInCode(script));
+      const start = Math.min(
+        ...positions.map((position) => position.startLine),
+      );
+      const end = Math.max(
+        ...positions.map((position) => position.endLine),
+      );
+      scrollToLine(end + 2);
+      highlight(start, end);
+    }
+
+    function highlight(startRow: number, endRow: number) {
+      const AceRange = ace.require('ace/range').Range;
+      currentMarkerId = editor.session.addMarker(
+        new AceRange(startRow, 0, endRow, 0),
+        'code-area__highlight',
+        'fullLine',
+      );
+    }
+
+    function scrollToLine(row: number) {
+      const column = editor.session.getLine(row).length;
+      editor.gotoLine(row, column, true);
+    }
+
+    return {
+      editorId,
+      sizeChanged,
+    };
+  },
+});
 
 function initializeEditor(
-  theme: string,
+  theme: string | undefined,
   editorId: string,
   language: ScriptingLanguage,
 ): ace.Ace.Editor {

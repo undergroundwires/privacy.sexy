@@ -2,7 +2,7 @@
   <MenuOptionList label="Select">
     <MenuOptionListItem
       label="None"
-      :enabled="this.currentSelection !== SelectionType.None"
+      :enabled="currentSelection !== SelectionType.None"
       @click="selectType(SelectionType.None)"
       v-tooltip="
         'Deselect all selected scripts.<br/>'
@@ -11,7 +11,7 @@
     />
     <MenuOptionListItem
       label="Standard"
-      :enabled="this.currentSelection !== SelectionType.Standard"
+      :enabled="currentSelection !== SelectionType.Standard"
       @click="selectType(SelectionType.Standard)"
       v-tooltip="
         '🛡️ Balanced for privacy and functionality.<br/>'
@@ -20,7 +20,7 @@
     />
     <MenuOptionListItem
       label="Strict"
-      :enabled="this.currentSelection !== SelectionType.Strict"
+      :enabled="currentSelection !== SelectionType.Strict"
       @click="selectType(SelectionType.Strict)"
       v-tooltip="
         '🚫 Stronger privacy, disables risky functions that may leak your data.<br/>'
@@ -30,7 +30,7 @@
     />
     <MenuOptionListItem
       label="All"
-      :enabled="this.currentSelection !== SelectionType.All"
+      :enabled="currentSelection !== SelectionType.All"
       @click="selectType(SelectionType.All)"
       v-tooltip="
         '🔒 Strongest privacy, disabling any functionality that may leak your data.<br/>'
@@ -42,47 +42,59 @@
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
-import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
+import { defineComponent, ref } from 'vue';
+import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import MenuOptionList from '../MenuOptionList.vue';
 import MenuOptionListItem from '../MenuOptionListItem.vue';
 import { SelectionType, SelectionTypeHandler } from './SelectionTypeHandler';
 
-@Component({
+export default defineComponent({
   components: {
     MenuOptionList,
     MenuOptionListItem,
   },
-})
-export default class TheSelector extends StatefulVue {
-  public SelectionType = SelectionType;
+  setup() {
+    const { modifyCurrentState, onStateChange, events } = useCollectionState();
 
-  public currentSelection = SelectionType.None;
+    const currentSelection = ref(SelectionType.None);
 
-  private selectionTypeHandler: SelectionTypeHandler;
+    let selectionTypeHandler: SelectionTypeHandler;
 
-  public async selectType(type: SelectionType) {
-    if (this.currentSelection === type) {
-      return;
+    onStateChange(() => {
+      unregisterMutators();
+
+      modifyCurrentState((state) => {
+        registerStateMutator(state);
+      });
+    }, { immediate: true });
+
+    function unregisterMutators() {
+      events.unsubscribeAll();
     }
-    this.selectionTypeHandler.selectType(type);
-  }
 
-  protected handleCollectionState(newState: ICategoryCollectionState): void {
-    this.events.unsubscribeAll();
-    this.selectionTypeHandler = new SelectionTypeHandler(newState);
-    this.updateSelections();
-    this.events.register(newState.selection.changed.on(() => this.updateSelections()));
-  }
+    function registerStateMutator(state: ICategoryCollectionState) {
+      selectionTypeHandler = new SelectionTypeHandler(state);
+      updateSelections();
+      events.register(state.selection.changed.on(() => updateSelections()));
+    }
 
-  private updateSelections() {
-    this.currentSelection = this.selectionTypeHandler.getCurrentSelectionType();
-  }
-}
+    function selectType(type: SelectionType) {
+      if (currentSelection.value === type) {
+        return;
+      }
+      selectionTypeHandler.selectType(type);
+    }
 
+    function updateSelections() {
+      currentSelection.value = selectionTypeHandler.getCurrentSelectionType();
+    }
+
+    return {
+      SelectionType,
+      currentSelection,
+      selectType,
+    };
+  },
+});
 </script>
-
-<style scoped lang="scss">
-
-</style>

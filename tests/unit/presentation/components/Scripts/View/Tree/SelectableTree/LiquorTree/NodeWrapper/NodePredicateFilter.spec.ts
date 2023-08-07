@@ -1,7 +1,7 @@
 import 'mocha';
 import { expect } from 'chai';
 import { ILiquorTreeExistingNode } from 'liquor-tree';
-import { NodeType, INode } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/Node/INode';
+import { NodeType, INodeContent } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/Node/INodeContent';
 import { NodePredicateFilter } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/LiquorTree/NodeWrapper/NodePredicateFilter';
 
 describe('NodePredicateFilter', () => {
@@ -18,7 +18,7 @@ describe('NodePredicateFilter', () => {
       states: undefined,
       children: [],
     };
-    const expected: INode = {
+    const expected: INodeContent = {
       id: 'script',
       text: 'script-text',
       isReversible: false,
@@ -26,8 +26,8 @@ describe('NodePredicateFilter', () => {
       children: [],
       type: NodeType.Script,
     };
-    let actual: INode;
-    const predicate = (node: INode) => { actual = node; return true; };
+    let actual: INodeContent;
+    const predicate = (node: INodeContent) => { actual = node; return true; };
     const sut = new NodePredicateFilter(predicate);
     // act
     sut.matcher('nop query', object);

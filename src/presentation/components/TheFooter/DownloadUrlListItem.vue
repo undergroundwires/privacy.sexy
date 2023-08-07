@@ -11,42 +11,48 @@
 
 <script lang="ts">
 import {
-  Component, Prop, Watch, Vue,
-} from 'vue-property-decorator';
+  defineComponent, PropType, computed,
+} from 'vue';
 import { Environment } from '@/application/Environment/Environment';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { ApplicationFactory } from '@/application/ApplicationFactory';
+import { useApplication } from '@/presentation/components/Shared/Hooks/UseApplication';
 
-@Component
-export default class DownloadUrlListItem extends Vue {
-  @Prop() public operatingSystem!: OperatingSystem;
+const currentOs = Environment.CurrentEnvironment.os;
 
-  public downloadUrl = '';
+export default defineComponent({
+  props: {
+    operatingSystem: {
+      type: Number as PropType<OperatingSystem>,
+      required: true,
+    },
+  },
+  setup(props) {
+    const { info } = useApplication();
 
-  public operatingSystemName = '';
+    const isCurrentOs = computed<boolean>(() => {
+      return currentOs === props.operatingSystem;
+    });
 
-  public isCurrentOs = false;
+    const operatingSystemName = computed<string>(() => {
+      return getOperatingSystemName(props.operatingSystem);
+    });
 
-  public hasCurrentOsDesktopVersion = false;
+    const hasCurrentOsDesktopVersion = computed<boolean>(() => {
+      return hasDesktopVersion(props.operatingSystem);
+    });
 
-  public async mounted() {
-    await this.onOperatingSystemChanged(this.operatingSystem);
-  }
+    const downloadUrl = computed<string | undefined>(() => {
+      return info.getDownloadUrl(props.operatingSystem);
+    });
 
-  @Watch('operatingSystem')
-  public async onOperatingSystemChanged(os: OperatingSystem) {
-    const currentOs = Environment.CurrentEnvironment.os;
-    this.isCurrentOs = os === currentOs;
-    this.downloadUrl = await getDownloadUrl(os);
-    this.operatingSystemName = getOperatingSystemName(os);
-    this.hasCurrentOsDesktopVersion = hasDesktopVersion(currentOs);
-  }
-}
-
-async function getDownloadUrl(os: OperatingSystem): Promise<string> {
-  const context = await ApplicationFactory.Current.getApp();
-  return context.info.getDownloadUrl(os);
-}
+    return {
+      downloadUrl,
+      operatingSystemName,
+      isCurrentOs,
+      hasCurrentOsDesktopVersion,
+    };
+  },
+});
 
 function hasDesktopVersion(os: OperatingSystem): boolean {
   return os === OperatingSystem.Windows

@@ -1,11 +1,11 @@
 import { ILiquorTreeFilter, ILiquorTreeExistingNode } from 'liquor-tree';
-import { INode } from '../../Node/INode';
+import { INodeContent } from '../../Node/INodeContent';
 import { convertExistingToNode } from './NodeTranslator';
 
-export type FilterPredicate = (node: INode) => boolean;
+export type FilterPredicate = (node: INodeContent) => boolean;
 
 export class NodePredicateFilter implements ILiquorTreeFilter {
-  public emptyText = ''; // Does not matter as a custom mesage is shown
+  public emptyText = ''; // Does not matter as a custom message is shown
 
   constructor(private readonly filterPredicate: FilterPredicate) {
     if (!filterPredicate) {

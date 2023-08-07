@@ -41,30 +41,26 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { defineComponent, computed } from 'vue';
 import { Environment } from '@/application/Environment/Environment';
-import { ApplicationFactory } from '@/application/ApplicationFactory';
-import { IApplication } from '@/domain/IApplication';
+import { useApplication } from '@/presentation/components/Shared/Hooks/UseApplication';
 
-@Component
-export default class PrivacyPolicy extends Vue {
-  public repositoryUrl = '';
+const { isDesktop } = Environment.CurrentEnvironment;
 
-  public feedbackUrl = '';
+export default defineComponent({
+  setup() {
+    const { info } = useApplication();
 
-  public isDesktop = Environment.CurrentEnvironment.isDesktop;
+    const repositoryUrl = computed<string>(() => info.repositoryUrl);
+    const feedbackUrl = computed<string>(() => info.feedbackUrl);
 
-  public async created() {
-    const app = await ApplicationFactory.Current.getApp();
-    this.initialize(app);
-  }
-
-  private initialize(app: IApplication) {
-    const { info } = app;
-    this.repositoryUrl = info.repositoryWebUrl;
-    this.feedbackUrl = info.feedbackUrl;
-  }
-}
+    return {
+      repositoryUrl,
+      feedbackUrl,
+      isDesktop,
+    };
+  },
+});
 </script>
 
 <style scoped lang="scss">

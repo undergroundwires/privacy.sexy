@@ -3,7 +3,7 @@
     label="View"
     class="part">
     <MenuOptionListItem
-      v-for="view in this.viewOptions"
+      v-for="view in viewOptions"
       :key="view.type"
       :label="view.displayName"
       :enabled="currentView !== view.type"
@@ -13,53 +13,54 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { defineComponent, ref } from 'vue';
 import MenuOptionList from '../MenuOptionList.vue';
 import MenuOptionListItem from '../MenuOptionListItem.vue';
 import { ViewType } from './ViewType';
 
 const DefaultView = ViewType.Cards;
+interface IViewOption {
+  readonly type: ViewType;
+  readonly displayName: string;
+}
+const viewOptions: readonly IViewOption[] = [
+  { type: ViewType.Cards, displayName: 'Cards' },
+  { type: ViewType.Tree, displayName: 'Tree' },
+];
 
-@Component({
+export default defineComponent({
   components: {
     MenuOptionList,
     MenuOptionListItem,
   },
-})
-export default class TheViewChanger extends Vue {
-  public readonly viewOptions: IViewOption[] = [
-    { type: ViewType.Cards, displayName: 'Cards' },
-    { type: ViewType.Tree, displayName: 'Tree' },
-  ];
+  emits: {
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+    viewChanged: (viewType: ViewType) => true,
+    /* eslint-enable @typescript-eslint/no-unused-vars */
+  },
+  setup(_, { emit }) {
+    const currentView = ref<ViewType>();
 
-  public ViewType = ViewType;
+    setView(DefaultView);
 
-  public currentView?: ViewType = null;
-
-  public mounted() {
-    this.setView(DefaultView);
-  }
-
-  public groupBy(type: ViewType) {
-    this.setView(type);
-  }
-
-  private setView(view: ViewType) {
-    if (this.currentView === view) {
-      throw new Error(`View is already "${ViewType[view]}"`);
+    function setView(view: ViewType) {
+      if (currentView.value === view) {
+        throw new Error(`View is already "${ViewType[view]}"`);
+      }
+      currentView.value = view;
+      emit('viewChanged', currentView.value);
     }
-    this.currentView = view;
-    this.$emit('viewChanged', this.currentView);
-  }
-}
+    return {
+      ViewType,
+      viewOptions,
+      currentView,
+      setView,
+    };
+  },
+});
 
 interface IViewOption {
   readonly type: ViewType;
   readonly displayName: string;
 }
-
 </script>
-
-<style scoped lang="scss">
-
-</style>

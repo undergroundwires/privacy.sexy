@@ -1,4 +1,4 @@
-import { DirectiveOptions } from 'vue';
+import { ObjectDirective } from 'vue';
 
 const attributeName = 'data-interaction-does-not-collapse';
 
@@ -10,8 +10,8 @@ export function hasDirective(el: Element): boolean {
   return !!parent;
 }
 
-export const NonCollapsing: DirectiveOptions = {
-  inserted(el: HTMLElement) {
+export const NonCollapsing: ObjectDirective<HTMLElement> = {
+  inserted(el: HTMLElement) { // In Vue 3, use "mounted"
     el.setAttribute(attributeName, '');
   },
 };

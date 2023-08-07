@@ -18,28 +18,35 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { defineComponent } from 'vue';
 import { Environment } from '@/application/Environment/Environment';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import DownloadUrlListItem from './DownloadUrlListItem.vue';
 
-@Component({
-  components: { DownloadUrlListItem },
-})
-export default class DownloadUrlList extends Vue {
-  public readonly supportedDesktops: ReadonlyArray<OperatingSystem>;
+const supportedOperativeSystems: readonly OperatingSystem[] = [
+  OperatingSystem.Windows,
+  OperatingSystem.Linux,
+  OperatingSystem.macOS,
+];
 
-  public readonly hasCurrentOsDesktopVersion: boolean = false;
-
-  constructor() {
-    super();
-    const supportedOperativeSystems = [
-      OperatingSystem.Windows, OperatingSystem.Linux, OperatingSystem.macOS];
+export default defineComponent({
+  components: {
+    DownloadUrlListItem,
+  },
+  setup() {
     const currentOs = Environment.CurrentEnvironment.os;
-    this.supportedDesktops = supportedOperativeSystems.sort((os) => (os === currentOs ? 0 : 1));
-    this.hasCurrentOsDesktopVersion = supportedOperativeSystems.includes(currentOs);
-  }
-}
+    const supportedDesktops = [
+      ...supportedOperativeSystems,
+    ].sort((os) => (os === currentOs ? 0 : 1));
+
+    const hasCurrentOsDesktopVersion = supportedOperativeSystems.includes(currentOs);
+
+    return {
+      supportedDesktops,
+      hasCurrentOsDesktopVersion,
+    };
+  },
+});
 </script>
 
 <style scoped lang="scss">

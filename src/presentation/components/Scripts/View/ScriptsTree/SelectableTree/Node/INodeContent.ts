@@ -3,11 +3,11 @@ export enum NodeType {
   Category,
 }
 
-export interface INode {
+export interface INodeContent {
   readonly id: string;
   readonly text: string;
   readonly isReversible: boolean;
   readonly docs: ReadonlyArray<string>;
-  readonly children?: ReadonlyArray<INode>;
+  readonly children?: ReadonlyArray<INodeContent>;
   readonly type: NodeType;
 }

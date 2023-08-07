@@ -1,8 +1,10 @@
 # Presentation layer
 
-Presentation layer consists of UI-related code. It uses Vue.js as JavaScript framework and includes Vue.js components. It also includes [Electron](https://www.electronjs.org/) to provide functionality to desktop application.
+The presentation layer handles UI concerns using Vue as JavaScript framework and Electron to provide desktop functionality.
 
-It's designed event-driven from bottom to top. It listens user events (from top) and state events (from bottom) to update state or the GUI.
+It reflects the [application state](./application.md#application-state) and allows user interactions to modify it. Components manage their own local UI state.
+
+The presentation layer uses an event-driven architecture for bidirectional reactivity between the application state and UI. State change events flow bottom-up to trigger UI updates, while user events flow top-down through components, some ultimately modifying the application state.
 
 📖 Refer to [architecture.md (Layered Application)](./architecture.md#layered-application) to read more about the layered architecture.
 
@@ -12,6 +14,7 @@ It's designed event-driven from bottom to top. It listens user events (from top)
   - [**`bootstrapping/`**](./../src/presentation/bootstrapping/): Registers Vue global objects including components and plugins.
   - [**`components/`**](./../src/presentation/components/): Contains all Vue components and their helper classes.
     - [**`Shared/`**](./../src/presentation/components/Shared): Contains Vue components and component helpers that other components share.
+      - [**`hooks`**](../src/presentation/components/Shared/Hooks): Shared hooks for state access
   - [**`assets/`**](./../src/presentation/assets/styles/): Contains assets that webpack will process.
     - [**`fonts/`**](./../src/presentation/assets/fonts/): Contains fonts
     - [**`styles/`**](./../src/presentation/assets/styles/): Contains shared styles used throughout different components.
@@ -32,7 +35,7 @@ Add visual clues for clickable items. It should be as clear as possible that the
 
 ## Application data
 
-Components (should) use [ApplicationFactory](./../src/application/ApplicationFactory.ts) singleton to reach the application domain to avoid [parsing and compiling](./application.md#parsing-and-compiling) the application again.
+Components (should) use [`UseApplication`](./../src/presentation/components/Shared/Hooks/UseApplication.ts) to reach the application domain to avoid [parsing and compiling](./application.md#parsing-and-compiling) the application again.
 
 [Application.ts](../src/domain/Application.ts) is an immutable domain model that represents application state. It includes:
 
@@ -43,32 +46,33 @@ You can read more about how application layer provides application data to he pr
 
 ## Application state
 
-Inheritance of a Vue components marks whether it uses application state . Components that does not handle application state extends `Vue`. Stateful components mutate or/and react to state changes (such as user selection or search queries) in [ApplicationContext](./../src/application/Context/ApplicationContext.ts) extend [`StatefulVue`](./../src/presentation/components/Shared/StatefulVue.ts) class to access the context / state.
+This project uses a singleton instance of the application state, making it available to all Vue components.
 
-[`StatefulVue`](./../src/presentation/components/Shared/StatefulVue.ts) functions include:
+The decision to not use third-party state management libraries like [`vuex`](https://web.archive.org/web/20230801191617/https://vuex.vuejs.org/) or [`pinia`](https://web.archive.org/web/20230801191743/https://pinia.vuejs.org/) was made to promote code independence and enhance portability.
 
-- Creating a singleton of the state and makes it available to presentation layer as single source of truth.
-- Providing virtual abstract `handleCollectionState` callback that it calls when
-  - the Vue loads the component,
-  - and also every time when state changes.
-- Providing `events` member to make lifecycling of state subscriptions events easier because it ensures that components unsubscribe from listening to state events when
-  - the component is no longer used (destroyed),
-  - an if [ApplicationContext](./../src/application/Context/ApplicationContext.ts) changes the active [collection](./collection-files.md) to a different one.
+Stateful components can mutate and/or react to state changes (e.g., user selection, search queries) in the [ApplicationContext](./../src/application/Context/ApplicationContext.ts). Vue components import [`CollectionState.ts`](./../src/presentation/components/Shared/CollectionState.ts) to access both the application context and the state.
 
-📖 Refer to [architecture.md | Application State](./architecture.md#application-state) to get an overview of event handling and [application.md | Application State](./presentation.md#application-state) for deeper look into how the application layer manages state.
+[`CollectionState.ts`](./../src/presentation/components/Shared/CollectionState.ts) provides several functionalities including:
+
+- **Singleton State Instance**: It creates a singleton instance of the state, which is shared across the presentation layer. The singleton instance ensures that there's a single source of truth for the application's state.
+- **State Change Callback and Lifecycle Management**: It offers a mechanism to register callbacks, which will be invoked when the state initializes or mutates. It ensures that components unsubscribe from state events when they are no longer in use or when [ApplicationContext](./../src/application/Context/ApplicationContext.ts) switches the active [collection](./collection-files.md).
+- **State Access and Modification**: It provides functions to read and mutate for accessing and modifying the state, encapsulating the details of these operations.
+- **Event Subscription Lifecycle Management**: Includes an `events` member that simplifies state subscription lifecycle events. This ensures that components unsubscribe from state events when they are no longer in use, or when [ApplicationContext](./../src/application/Context/ApplicationContext.ts) switches the active [collection](./collection-files.md).
+
+📖 Refer to [architecture.md | Application State](./architecture.md#application-state) for an overview of event handling and [application.md | Application State](./presentation.md#application-state) for an in-depth understanding of state management in the application layer.
 
 ## Modals
 
-[Dialog.vue](./../src/presentation/components/Shared/Dialog.vue) is a shared component that other components used to show modal windows.
+[ModalDialog.vue](./../src/presentation/components/Shared/ModalDialog.vue) is a shared component utilized for rendering modal windows.
 
-You can use it by wrapping the content inside of its `slot` and call `.show()` function on its reference. For example:
+Use the component by wrapping the desired content within its slot and calling the .show() function on its reference, as shown below:
 
-  ```html
-    <Dialog ref="testDialog">
-      <div>Hello world</div>
-    </Dialog>
-    <div @click="$refs.testDialog.show()">Show dialog</div>
-  ```
+```html
+  <ModalDialog ref="testDialog">
+    <div>Hello world</div>
+  </ModalDialog>
+  <div @click="$refs.testDialog.show()">Show dialog</div>
+```
 
 ## Sass naming convention
 

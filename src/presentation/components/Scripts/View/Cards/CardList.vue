@@ -1,5 +1,5 @@
 <template>
-  <Responsive v-on:widthChanged="width = $event">
+  <SizeObserver v-on:widthChanged="width = $event">
     <!--
       <div id="responsivity-debug">
         Width: {{ width || 'undefined' }}
@@ -25,86 +25,85 @@
         v-bind:key="categoryId"
         :categoryId="categoryId"
         :activeCategoryId="activeCategoryId"
-        v-on:selected="onSelected(categoryId, $event)"
+        v-on:cardExpansionChanged="onSelected(categoryId, $event)"
       />
     </div>
     <div v-else class="error">Something went bad 😢</div>
-  </Responsive>
+  </SizeObserver>
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
-import Responsive from '@/presentation/components/Shared/Responsive.vue';
-import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
-import { ICategory } from '@/domain/ICategory';
-import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import {
+  defineComponent, ref, onMounted, onUnmounted, computed,
+} from 'vue';
+import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
+import SizeObserver from '@/presentation/components/Shared/SizeObserver.vue';
 import { hasDirective } from './NonCollapsingDirective';
 import CardListItem from './CardListItem.vue';
 
-@Component({
+export default defineComponent({
   components: {
     CardListItem,
-    Responsive,
+    SizeObserver,
   },
-})
-export default class CardList extends StatefulVue {
-  public width = 0;
+  setup() {
+    const { currentState, onStateChange } = useCollectionState();
 
-  public categoryIds: number[] = [];
+    const width = ref<number>(0);
+    const categoryIds = computed<ReadonlyArray<number>>(() => currentState
+      .value.collection.actions.map((category) => category.id));
+    const activeCategoryId = ref<number | undefined>(undefined);
 
-  public activeCategoryId?: number = null;
-
-  public created() {
-    document.addEventListener('click', this.outsideClickListener);
-  }
-
-  public destroyed() {
-    document.removeEventListener('click', this.outsideClickListener);
-  }
-
-  public onSelected(categoryId: number, isExpanded: boolean) {
-    this.activeCategoryId = isExpanded ? categoryId : undefined;
-  }
-
-  protected handleCollectionState(newState: IReadOnlyCategoryCollectionState): void {
-    this.setCategories(newState.collection.actions);
-    this.activeCategoryId = undefined;
-  }
-
-  private setCategories(categories: ReadonlyArray<ICategory>): void {
-    this.categoryIds = categories.map((category) => category.id);
-  }
-
-  private onOutsideOfActiveCardClicked(clickedElement: Element): void {
-    if (isClickable(clickedElement) || hasDirective(clickedElement)) {
-      return;
+    function onSelected(categoryId: number, isExpanded: boolean) {
+      activeCategoryId.value = isExpanded ? categoryId : undefined;
     }
-    this.collapseAllCards();
-    if (hasDirective(clickedElement)) {
-      return;
-    }
-    this.activeCategoryId = null;
-  }
 
-  private outsideClickListener(event: PointerEvent) {
-    if (this.areAllCardsCollapsed()) {
-      return;
-    }
-    const element = document.querySelector(`[data-category="${this.activeCategoryId}"]`);
-    const target = event.target as Element;
-    if (element && !element.contains(target)) {
-      this.onOutsideOfActiveCardClicked(target);
-    }
-  }
+    onStateChange(() => {
+      collapseAllCards();
+    }, { immediate: true });
 
-  private collapseAllCards(): void {
-    this.activeCategoryId = undefined;
-  }
+    const outsideClickListener = (event: PointerEvent): void => {
+      if (areAllCardsCollapsed()) {
+        return;
+      }
+      const element = document.querySelector(`[data-category="${activeCategoryId.value}"]`);
+      const target = event.target as Element;
+      if (element && !element.contains(target)) {
+        onOutsideOfActiveCardClicked(target);
+      }
+    };
 
-  private areAllCardsCollapsed(): boolean {
-    return !this.activeCategoryId;
-  }
-}
+    onMounted(() => {
+      document.addEventListener('click', outsideClickListener);
+    });
+
+    onUnmounted(() => {
+      document.removeEventListener('click', outsideClickListener);
+    });
+
+    function onOutsideOfActiveCardClicked(clickedElement: Element): void {
+      if (isClickable(clickedElement) || hasDirective(clickedElement)) {
+        return;
+      }
+      collapseAllCards();
+    }
+
+    function areAllCardsCollapsed(): boolean {
+      return !activeCategoryId.value;
+    }
+
+    function collapseAllCards(): void {
+      activeCategoryId.value = undefined;
+    }
+
+    return {
+      width,
+      categoryIds,
+      activeCategoryId,
+      onSelected,
+    };
+  },
+});
 
 function isClickable(element: Element) {
   const cursorName = window.getComputedStyle(element).cursor;

@@ -12,16 +12,23 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { defineComponent, useSlots } from 'vue';
 import { Clipboard } from '@/infrastructure/Clipboard';
 
-@Component
-export default class Code extends Vue {
-  public copyCode(): void {
-    const code = this.$slots.default[0].text;
-    Clipboard.copyText(code);
-  }
-}
+export default defineComponent({
+  setup() {
+    const slots = useSlots();
+
+    function copyCode() {
+      const code = slots.default()[0].text;
+      Clipboard.copyText(code);
+    }
+
+    return {
+      copyCode,
+    };
+  },
+});
 </script>
 
 <style scoped lang="scss">
