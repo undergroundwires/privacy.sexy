@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import { INodeDataErrorContext, NodeDataError } from '@/application/Parser/NodeValidation/NodeDataError';
 import { NodeDataErrorContextStub } from '@tests/unit/shared/Stubs/NodeDataErrorContextStub';
 import { NodeType } from '@/application/Parser/NodeValidation/NodeType';
+import { CustomError } from '@/application/Common/CustomError';
 
 describe('NodeDataError', () => {
   it('sets message as expected', () => {
@@ -28,19 +29,12 @@ describe('NodeDataError', () => {
     // assert
     expect(sut.context).to.equal(expected);
   });
-  it('sets stack as expected', () => {
+  it('extends CustomError', () => {
     // arrange
+    const expected = CustomError;
     // act
     const sut = new NodeDataErrorBuilder()
       .build();
-    // assert
-    expect(sut.stack !== undefined);
-  });
-  it('extends Error', () => {
-    // arrange
-    const expected = Error;
-    // act
-    const sut = new NodeDataErrorBuilder().build();
     // assert
     expect(sut).to.be.an.instanceof(expected);
   });
