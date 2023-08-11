@@ -33,11 +33,11 @@
         </div>
         <div class="footer__section__item">
           <font-awesome-icon class="icon" :icon="['fas', 'user-secret']" />
-          <a @click="privacyDialog.show()">Privacy</a>
+          <a @click="showPrivacyDialog()">Privacy</a>
         </div>
       </div>
     </div>
-    <ModalDialog ref="privacyDialog">
+    <ModalDialog v-model="isPrivacyDialogVisible">
       <PrivacyPolicy />
     </ModalDialog>
   </div>
@@ -46,7 +46,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
 import { Environment } from '@/application/Environment/Environment';
-import ModalDialog from '@/presentation/components/Shared/ModalDialog.vue';
+import ModalDialog from '@/presentation/components/Shared/Modal/ModalDialog.vue';
 import { useApplication } from '@/presentation/components/Shared/Hooks/UseApplication';
 import DownloadUrlList from './DownloadUrlList.vue';
 import PrivacyPolicy from './PrivacyPolicy.vue';
@@ -62,7 +62,7 @@ export default defineComponent({
   setup() {
     const { info } = useApplication();
 
-    const privacyDialog = ref<typeof ModalDialog>();
+    const isPrivacyDialogVisible = ref(false);
 
     const version = computed<string>(() => info.version.toString());
 
@@ -74,9 +74,14 @@ export default defineComponent({
 
     const feedbackUrl = computed<string>(() => info.feedbackUrl);
 
+    function showPrivacyDialog() {
+      isPrivacyDialogVisible.value = true;
+    }
+
     return {
       isDesktop,
-      privacyDialog,
+      isPrivacyDialogVisible,
+      showPrivacyDialog,
       version,
       homepageUrl,
       repositoryUrl,

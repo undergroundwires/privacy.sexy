@@ -50,9 +50,9 @@ This project uses a singleton instance of the application state, making it avail
 
 The decision to not use third-party state management libraries like [`vuex`](https://web.archive.org/web/20230801191617/https://vuex.vuejs.org/) or [`pinia`](https://web.archive.org/web/20230801191743/https://pinia.vuejs.org/) was made to promote code independence and enhance portability.
 
-Stateful components can mutate and/or react to state changes (e.g., user selection, search queries) in the [ApplicationContext](./../src/application/Context/ApplicationContext.ts). Vue components import [`CollectionState.ts`](./../src/presentation/components/Shared/CollectionState.ts) to access both the application context and the state.
+Stateful components can mutate and/or react to state changes (e.g., user selection, search queries) in the [ApplicationContext](./../src/application/Context/ApplicationContext.ts). Vue components import [`CollectionState.ts`](./../src/presentation/components/Shared/Hooks/UseCollectionState.ts) to access both the application context and the state.
 
-[`CollectionState.ts`](./../src/presentation/components/Shared/CollectionState.ts) provides several functionalities including:
+[`UseCollectionState.ts`](./../src/presentation/components/Shared/Hooks/UseCollectionState.ts) provides several functionalities including:
 
 - **Singleton State Instance**: It creates a singleton instance of the state, which is shared across the presentation layer. The singleton instance ensures that there's a single source of truth for the application's state.
 - **State Change Callback and Lifecycle Management**: It offers a mechanism to register callbacks, which will be invoked when the state initializes or mutates. It ensures that components unsubscribe from state events when they are no longer in use or when [ApplicationContext](./../src/application/Context/ApplicationContext.ts) switches the active [collection](./collection-files.md).
@@ -63,16 +63,7 @@ Stateful components can mutate and/or react to state changes (e.g., user selecti
 
 ## Modals
 
-[ModalDialog.vue](./../src/presentation/components/Shared/ModalDialog.vue) is a shared component utilized for rendering modal windows.
-
-Use the component by wrapping the desired content within its slot and calling the .show() function on its reference, as shown below:
-
-```html
-  <ModalDialog ref="testDialog">
-    <div>Hello world</div>
-  </ModalDialog>
-  <div @click="$refs.testDialog.show()">Show dialog</div>
-```
+- [ModalDialog.vue](./../src/presentation/components/Shared/Modal/ModalDialog.vue) is a shared component utilized for rendering modal windows.
 
 ## Sass naming convention
 

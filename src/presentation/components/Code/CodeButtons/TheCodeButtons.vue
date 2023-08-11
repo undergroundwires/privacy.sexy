@@ -19,7 +19,7 @@
       icon-prefix="fas"
       icon-name="copy"
     />
-    <ModalDialog v-if="instructions" ref="instructionsDialog">
+    <ModalDialog v-if="instructions" v-model="areInstructionsVisible">
       <InstructionList :data="instructions" />
     </ModalDialog>
   </div>
@@ -30,7 +30,7 @@ import { defineComponent, ref, computed } from 'vue';
 import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
 import { SaveFileDialog, FileType } from '@/infrastructure/SaveFileDialog';
 import { Clipboard } from '@/infrastructure/Clipboard';
-import ModalDialog from '@/presentation/components/Shared/ModalDialog.vue';
+import ModalDialog from '@/presentation/components/Shared/Modal/ModalDialog.vue';
 import { Environment } from '@/application/Environment/Environment';
 import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
@@ -57,7 +57,7 @@ export default defineComponent({
       currentState, currentContext, onStateChange, events,
     } = useCollectionState();
 
-    const instructionsDialog = ref<typeof ModalDialog>();
+    const areInstructionsVisible = ref(false);
     const canRun = computed<boolean>(() => getCanRunState(currentState.value.os));
     const fileName = computed<string>(() => buildFileName(currentState.value.collection.scripting));
     const hasCode = ref(false);
@@ -73,7 +73,7 @@ export default defineComponent({
 
     function saveCode() {
       saveCodeToDisk(fileName.value, currentState.value);
-      instructionsDialog.value?.show();
+      areInstructionsVisible.value = true;
     }
 
     async function executeCode() {
@@ -103,7 +103,7 @@ export default defineComponent({
       hasCode,
       instructions,
       fileName,
-      instructionsDialog,
+      areInstructionsVisible,
       copyCode,
       saveCode,
       executeCode,
