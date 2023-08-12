@@ -134,11 +134,9 @@ function loadApplication(window: BrowserWindow) {
 }
 
 function configureExternalsUrlsOpenBrowser(window: BrowserWindow) {
-  window.webContents.on('new-window', (event, url) => { // handle redirect
-    if (url !== win.webContents.getURL()) {
-      event.preventDefault();
-      shell.openExternal(url);
-    }
+  window.webContents.setWindowOpenHandler(({ url }) => {
+    shell.openExternal(url);
+    return { action: 'deny' };
   });
 }
 

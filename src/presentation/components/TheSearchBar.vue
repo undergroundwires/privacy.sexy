@@ -1,8 +1,11 @@
 <template>
   <div class="search" v-non-collapsing>
-    <input type="search" class="search-term"
-      :placeholder="searchPlaceHolder"
-      v-model="searchQuery" >
+    <input
+      type="search"
+      class="search-term"
+      :placeholder="searchPlaceholder"
+      v-model="searchQuery"
+    >
     <div class="icon-wrapper">
       <font-awesome-icon :icon="['fas', 'search']" />
     </div>
@@ -10,53 +13,75 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch } from 'vue-property-decorator';
-import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
+import {
+  defineComponent, ref, watch, computed,
+} from 'vue';
+import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
 import { NonCollapsing } from '@/presentation/components/Scripts/View/Cards/NonCollapsingDirective';
 import { IReadOnlyUserFilter } from '@/application/Context/State/Filter/IUserFilter';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
 import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 
-@Component({
-  directives: { NonCollapsing },
-})
-export default class TheSearchBar extends StatefulVue {
-  public searchPlaceHolder = 'Search';
+export default defineComponent({
+  directives: {
+    NonCollapsing,
+  },
+  setup() {
+    const {
+      modifyCurrentState, onStateChange, events, currentState,
+    } = useCollectionState();
 
-  public searchQuery = '';
+    const searchPlaceholder = computed<string>(() => {
+      const { totalScripts } = currentState.value.collection;
+      return `Search in ${totalScripts} scripts`;
+    });
+    const searchQuery = ref<string>();
 
-  @Watch('searchQuery')
-  public async updateFilter(newFilter: |string) {
-    const context = await this.getCurrentContext();
-    const { filter } = context.state;
-    if (!newFilter) {
-      filter.removeFilter();
-    } else {
-      filter.setFilter(newFilter);
+    watch(searchQuery, (newFilter) => updateFilter(newFilter));
+
+    function updateFilter(newFilter: string) {
+      modifyCurrentState((state) => {
+        const { filter } = state;
+        if (!newFilter) {
+          filter.removeFilter();
+        } else {
+          filter.setFilter(newFilter);
+        }
+      });
     }
-  }
 
-  protected handleCollectionState(newState: IReadOnlyCategoryCollectionState) {
-    const { totalScripts } = newState.collection;
-    this.searchPlaceHolder = `Search in ${totalScripts} scripts`;
-    this.searchQuery = newState.filter.currentFilter ? newState.filter.currentFilter.query : '';
-    this.events.unsubscribeAll();
-    this.subscribeFilter(newState.filter);
-  }
+    onStateChange((newState) => {
+      events.unsubscribeAll();
+      subscribeSearchQuery(newState);
+    }, { immediate: true });
 
-  private subscribeFilter(filter: IReadOnlyUserFilter) {
-    this.events.register(filter.filtered.on((result) => this.handleFiltered(result)));
-    this.events.register(filter.filterRemoved.on(() => this.handleFilterRemoved()));
-  }
+    function subscribeSearchQuery(newState: IReadOnlyCategoryCollectionState) {
+      searchQuery.value = newState.filter.currentFilter ? newState.filter.currentFilter.query : '';
+      subscribeFilter(newState.filter);
+    }
 
-  private handleFiltered(result: IFilterResult) {
-    this.searchQuery = result.query;
-  }
+    function subscribeFilter(filter: IReadOnlyUserFilter) {
+      events.register(
+        filter.filtered.on((result) => handleFiltered(result)),
+        filter.filterRemoved.on(() => handleFilterRemoved()),
+      );
+    }
 
-  private handleFilterRemoved() {
-    this.searchQuery = '';
-  }
-}
+    function handleFilterRemoved() {
+      searchQuery.value = '';
+    }
+
+    function handleFiltered(result: IFilterResult) {
+      searchQuery.value = result.query;
+    }
+
+    return {
+      searchPlaceholder,
+      searchQuery,
+    };
+  },
+});
+
 </script>
 
 <style scoped lang="scss">

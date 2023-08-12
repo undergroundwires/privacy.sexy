@@ -1,6 +1,5 @@
 declare module 'liquor-tree' {
   import { PluginObject } from 'vue';
-  import { VueClass } from 'vue-class-component/lib/declarations';
 
   // https://github.com/amsik/liquor-tree/blob/master/src/lib/Tree.js
   export interface ILiquorTree {
@@ -70,6 +69,6 @@ declare module 'liquor-tree' {
     matcher(query: string, node: ILiquorTreeExistingNode): boolean;
   }
 
-  const LiquorTree: PluginObject<Vue> & VueClass<Vue>;
+  const LiquorTree: PluginObject<Vue>;
   export default LiquorTree;
 }

@@ -1,16 +1,16 @@
-# privacy.sexy
+# privacy.sexy — Now you have the choice
 
-> Enforce privacy & security best-practices on Windows and macOS, because privacy is sexy 🍑🍆
+> Enforce privacy & security best-practices on Windows, macOS and Linux, because privacy is sexy 🍑🍆
 
 <!-- markdownlint-disable MD033 -->
 <p align="center">
-  <a href="https://undergroundwires.dev/donate?project=privacy.sexy">
+  <a href="https://undergroundwires.dev/donate?project=privacy.sexy" target="_blank" rel="noopener noreferrer">
     <img
       alt="donation badge"
       src="https://undergroundwires.dev/img/badges/donate/flat.svg"
     />
   </a>
-  <a href="https://github.com/undergroundwires/privacy.sexy/blob/master/CONTRIBUTING.md">
+  <a href="https://github.com/undergroundwires/privacy.sexy/blob/master/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer">
     <img
       alt="contributions are welcome"
       src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat"
@@ -18,13 +18,13 @@
   </a>
   <!-- Code quality -->
   <br />
-  <a href="https://lgtm.com/projects/g/undergroundwires/privacy.sexy/context:javascript">
+  <a href="https://lgtm.com/projects/g/undergroundwires/privacy.sexy/context:javascript" target="_blank" rel="noopener noreferrer">
     <img
       alt="Language grade: JavaScript/TypeScript"
       src="https://img.shields.io/lgtm/grade/javascript/g/undergroundwires/privacy.sexy.svg?logo=lgtm&logoWidth=18"
     />
   </a>
-  <a href="https://codeclimate.com/github/undergroundwires/privacy.sexy/maintainability">
+  <a href="https://codeclimate.com/github/undergroundwires/privacy.sexy/maintainability" target="_blank" rel="noopener noreferrer">
     <img
       alt="Maintainability"
       src="https://api.codeclimate.com/v1/badges/3a70b7ef602e2264342c/maintainability"
@@ -32,19 +32,19 @@
   </a>
   <!-- Tests -->
   <br />
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/tests.unit.yaml">
+  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/tests.unit.yaml" target="_blank" rel="noopener noreferrer">
     <img
       alt="Unit tests status"
       src="https://github.com/undergroundwires/privacy.sexy/workflows/unit-tests/badge.svg"
     />
   </a>
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/tests.integration.yaml">
+  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/tests.integration.yaml" target="_blank" rel="noopener noreferrer">
     <img
       alt="Integration tests status"
       src="https://github.com/undergroundwires/privacy.sexy/workflows/integration-tests/badge.svg"
     />
   </a>
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/tests.e2e.yaml">
+  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/tests.e2e.yaml" target="_blank" rel="noopener noreferrer">
     <img
       alt="E2E tests status"
       src="https://github.com/undergroundwires/privacy.sexy/workflows/e2e-tests/badge.svg"
@@ -52,19 +52,19 @@
   </a>
   <!-- Checks -->
   <br />
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.quality.yaml">
+  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.quality.yaml" target="_blank" rel="noopener noreferrer">
     <img
       alt="Quality checks status"
       src="https://github.com/undergroundwires/privacy.sexy/workflows/quality-checks/badge.svg"
     />
   </a>
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.security.yaml">
+  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.security.yaml" target="_blank" rel="noopener noreferrer">
     <img
       alt="Security checks status"
       src="https://github.com/undergroundwires/privacy.sexy/workflows/security-checks/badge.svg"
     />
   </a>
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.build.yaml">
+  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.build.yaml" target="_blank" rel="noopener noreferrer">
     <img
       alt="Build checks status"
       src="https://github.com/undergroundwires/privacy.sexy/workflows/build-checks/badge.svg"
@@ -72,19 +72,19 @@
   </a>
   <!-- Release -->
   <br />
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/release.git.yaml">
+  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/release.git.yaml" target="_blank" rel="noopener noreferrer">
     <img
       alt="Git release status"
       src="https://github.com/undergroundwires/privacy.sexy/workflows/release-git/badge.svg"
     />
   </a>
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/release.site.yaml">
+  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/release.site.yaml" target="_blank" rel="noopener noreferrer">
     <img
       alt="Site release status"
       src="https://github.com/undergroundwires/privacy.sexy/workflows/release-site/badge.svg"
     />
   </a>
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/release.desktop.yaml">
+  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/release.desktop.yaml" target="_blank" rel="noopener noreferrer">
     <img
       alt="Desktop application release status"
       src="https://github.com/undergroundwires/privacy.sexy/workflows/release-desktop/badge.svg"
@@ -92,7 +92,7 @@
   </a>
   <!-- Others -->
   <br />
-  <a href="https://github.com/undergroundwires/bump-everywhere">
+  <a href="https://github.com/undergroundwires/bump-everywhere" target="_blank" rel="noopener noreferrer">
     <img
       alt="Auto-versioned by bump-everywhere"
       src="https://github.com/undergroundwires/bump-everywhere/blob/master/badge.svg?raw=true"
@@ -120,7 +120,7 @@ Online version does not require to run any software on your computer. Offline ve
 - **Reversible**. Revert if something feels wrong.
 - **Accessible**. No need to run any compiled software on your computer with web version.
 - **Open**. What you see as code in this repository is what you get. The application itself, its infrastructure and deployments are open-source and automated thanks to [bump-everywhere](https://github.com/undergroundwires/bump-everywhere).
-- **Tested.** A lot of tests. Automated and manual. Community-testing and verification. Stability improvements comes before new features.
+- **Tested**. A lot of tests. Automated and manual. Community-testing and verification. Stability improvements comes before new features.
 - **Extensible**. Effortlessly [extend scripts](./CONTRIBUTING.md#extend-scripts) with a custom designed [templating language](./docs/templating.md).
 - **Portable and simple**. Every script is independently executable without cross-dependencies.
 

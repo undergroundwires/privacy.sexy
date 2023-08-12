@@ -715,6 +715,58 @@ actions:
                 name: Disable Spotlight indexing 
                 code: sudo mdutil -i off -d /
                 revertCode: sudo mdutil -i on /
+            -
+                name: Disable Personalized advertisements and identifier collection
+                recommend: standard
+                docs: |-
+                    This script enhances your privacy by deactivating Personalized Ads and disabling the collection
+                    of identifiers related to your device. The process involves modifying certain key configurations,
+                    which prevents Apple's advertising platform from using your personal information to deliver targeted
+                    ads [1].
+
+                    When Personalized Ads is enabled, your information may be used to provide ads that closely align
+                    with your interests [1]. You might occasionally encounter such targeted ads in Apple News, Stocks,
+                    and the Mac App Store [2]. Disabling Personalized Ads will prevent Apple from using your data for
+                    ad targeting [2]. Although this does not necessarily decrease the quantity of ads you receive,
+                    it may result in the ads being less relevant to your interests [2].
+
+                    The primary keys to deactivating personalized ads are:
+
+                    - **`allowApplePersonalizedAdvertising`**: If set to false, this restricts Apple's personalized
+                    advertising [3]. This is applicable on macOS 12 and subsequent versions [3].
+                    - **`allowIdentifierForAdvertising`**: The `advertisingIdentifier` is a unique string assigned
+                    to each device [5]. Apple uses this identifier and recommends its use in third-party
+                    applications for tasks like frequency capping, attribution, conversion events, estimating the
+                    number of unique users, detecting advertising fraud, and debugging [5]. Although there is no
+                    official documentation on it, a discussion on JAMF.com corroborates its existence [6].
+
+                    My tests show that disabling any of the keys mentioned above results in the
+                    "System Preferences > Apple Advertising > Personalized ads" option being deactivated in the GUI,
+                    starting from macOS Monterey.
+
+                    Please note: The `forceLimitAdTracking` key limits ad tracking [3] [4] and is found in CIS
+                    benchmarks for macOS [4]. However, the official macOS documentation specifies that it is
+                    applicable only to iOS 7 and later versions, not to macOS [3]. The key does not exist on the OS
+                    by default.
+
+                    [1]: https://web.archive.org/web/20230731152633/https://www.apple.com/legal/privacy/data/en/apple-advertising/ "Legal - Apple Advertising & Privacy - Apple"
+                    [2]: https://web.archive.org/web/20220805052411/https://support.apple.com/en-sg/guide/mac-help/mh32356/mac: "Change Privacy preferences on Mac - Apple Support (SG)"
+                    [3]: https://web.archive.org/web/20230731155827/https://developer.apple.com/documentation/devicemanagement/restrictions "Restrictions | Apple Developer Documentation"
+                    [4]: https://web.archive.org/web/20230731155653/https://paper.bobylive.com/Security/CIS/CIS_Apple_macOS_11_0_Big_Sur_Benchmark_v2_0_0.pdf "CIS Apple macOS 11.0 Big Sur Benchmark"
+                    [5]: https://web.archive.org/web/20230731155131/https://developer.apple.com/documentation/adsupport/asidentifiermanager/1614151-advertisingidentifier "advertisingIdentifier | Apple Developer Documentation"
+                    [6]: https://web.archive.org/web/20230731154840/https://community.jamf.com/t5/jamf-pro/macos-quot-limit-ad-tracking-quot/td-p/217001 'Solved: macOS "Limit Ad Tracking" - Jamf Nation Community - 217001'
+                code: |-
+                    defaults write com.apple.AdLib allowIdentifierForAdvertising -bool false
+                    defaults write com.apple.AdLib allowApplePersonalizedAdvertising -bool false
+                    defaults write com.apple.AdLib forceLimitAdTracking -bool true
+                # Default: (`defaults read com.apple.AdLib`)
+                #   - `defaults read com.apple.AdLib allowApplePersonalizedAdvertising`: true (1)
+                #   - `defaults read com.apple.AdLib allowIdentifierForAdvertising`: true (1)
+                #   - `defaults read com.apple.AdLib forceLimitAdTracking`: non-existing
+                revertCode: |-
+                    defaults write com.apple.AdLib allowIdentifierForAdvertising -bool true
+                    defaults write com.apple.AdLib allowApplePersonalizedAdvertising -bool true
+                    sudo defaults delete com.apple.AdLib forceLimitAdTracking
     -
         category: Security improvements
         children:

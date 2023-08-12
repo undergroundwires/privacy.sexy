@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import {
   ILiquorTreeExistingNode, ILiquorTreeNewNode, ILiquorTreeNodeData, ICustomLiquorTreeData,
 } from 'liquor-tree';
-import { NodeType, INode } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/Node/INode';
+import { NodeType, INodeContent } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/Node/INodeContent';
 import { convertExistingToNode, toNewLiquorTreeNode } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/LiquorTree/NodeWrapper/NodeTranslator';
 
 describe('NodeTranslator', () => {
@@ -27,7 +27,7 @@ describe('NodeTranslator', () => {
   });
 });
 
-function getNode(): INode {
+function getNode(): INodeContent {
   return {
     id: '1',
     text: 'parentcategory',
@@ -62,7 +62,7 @@ function getNode(): INode {
   };
 }
 
-function getExpectedExistingNodeData(node: INode): ILiquorTreeNodeData {
+function getExpectedExistingNodeData(node: INodeContent): ILiquorTreeNodeData {
   return {
     text: node.text,
     type: node.type,
@@ -71,7 +71,7 @@ function getExpectedExistingNodeData(node: INode): ILiquorTreeNodeData {
   };
 }
 
-function getExpectedNewNodeData(node: INode): ICustomLiquorTreeData {
+function getExpectedNewNodeData(node: INodeContent): ICustomLiquorTreeData {
   return {
     type: node.type,
     docs: node.docs,

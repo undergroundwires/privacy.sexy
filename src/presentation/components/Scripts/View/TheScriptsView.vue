@@ -1,7 +1,7 @@
 <template>
   <div class="scripts">
     <div v-if="!isSearching">
-      <CardList v-if="currentView === ViewType.Cards"/>
+      <CardList v-if="currentView === ViewType.Cards" />
       <div class="tree" v-else-if="currentView === ViewType.Tree">
         <ScriptsTree />
       </div>
@@ -9,18 +9,18 @@
     <div v-else> <!-- Searching -->
       <div class="search">
         <div class="search__query">
-          <div>Searching for "{{this.searchQuery | threeDotsTrim}}"</div>
+          <div>Searching for "{{ trimmedSearchQuery }}"</div>
           <div class="search__query__close-button">
             <font-awesome-icon
               :icon="['fas', 'times']"
-              v-on:click="clearSearchQuery()"/>
+              v-on:click="clearSearchQuery()" />
           </div>
         </div>
         <div v-if="!searchHasMatches" class="search-no-matches">
-          <div>Sorry, no matches for "{{this.searchQuery | threeDotsTrim}}" 😞</div>
+          <div>Sorry, no matches for "{{ trimmedSearchQuery }}" 😞</div>
           <div>
             Feel free to extend the scripts
-            <a :href="repositoryUrl" target="_blank" class="child github" >here</a> ✨
+            <a :href="repositoryUrl" class="child github" target="_blank" rel="noopener noreferrer">here</a> ✨
           </div>
         </div>
       </div>
@@ -32,75 +32,81 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop } from 'vue-property-decorator';
-import TheGrouper from '@/presentation/components/Scripts/Menu/View/TheViewChanger.vue';
+import {
+  defineComponent, PropType, ref, computed,
+} from 'vue';
+import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
 import ScriptsTree from '@/presentation/components/Scripts/View/ScriptsTree/ScriptsTree.vue';
 import CardList from '@/presentation/components/Scripts/View/Cards/CardList.vue';
-import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
 import { ViewType } from '@/presentation/components/Scripts/Menu/View/ViewType';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
 import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
-import { ApplicationFactory } from '@/application/ApplicationFactory';
+import { useApplication } from '@/presentation/components/Shared/Hooks/UseApplication';
 
 /** Shows content of single category or many categories */
-@Component({
+export default defineComponent({
   components: {
-    TheGrouper,
     ScriptsTree,
     CardList,
   },
-  filters: {
-    threeDotsTrim(query: string) {
+  props: {
+    currentView: {
+      type: Number as PropType<ViewType>,
+      required: true,
+    },
+  },
+  setup() {
+    const { modifyCurrentState, onStateChange, events } = useCollectionState();
+    const { info } = useApplication();
+
+    const repositoryUrl = computed<string>(() => info.repositoryWebUrl);
+    const searchQuery = ref<string>();
+    const isSearching = ref(false);
+    const searchHasMatches = ref(false);
+    const trimmedSearchQuery = computed(() => {
+      const query = searchQuery.value;
       const threshold = 30;
       if (query.length <= threshold - 3) {
         return query;
       }
-      return `${query.substr(0, threshold)}...`;
-    },
+      return `${query.substring(0, threshold)}...`;
+    });
+
+    onStateChange((newState) => {
+      events.unsubscribeAll();
+      subscribeState(newState);
+    });
+
+    function clearSearchQuery() {
+      modifyCurrentState((state) => {
+        const { filter } = state;
+        filter.removeFilter();
+      });
+    }
+
+    function subscribeState(state: IReadOnlyCategoryCollectionState) {
+      events.register(
+        state.filter.filterRemoved.on(() => {
+          isSearching.value = false;
+        }),
+        state.filter.filtered.on((result: IFilterResult) => {
+          searchQuery.value = result.query;
+          isSearching.value = true;
+          searchHasMatches.value = result.hasAnyMatches();
+        }),
+      );
+    }
+
+    return {
+      repositoryUrl,
+      trimmedSearchQuery,
+      isSearching,
+      searchHasMatches,
+      clearSearchQuery,
+      ViewType,
+    };
   },
-})
-export default class TheScriptsView extends StatefulVue {
-  public repositoryUrl = '';
-
-  public searchQuery = '';
-
-  public isSearching = false;
-
-  public searchHasMatches = false;
-
-  @Prop() public currentView: ViewType;
-
-  public ViewType = ViewType; // Make it accessible from the view
-
-  public async created() {
-    const app = await ApplicationFactory.Current.getApp();
-    this.repositoryUrl = app.info.repositoryWebUrl;
-  }
-
-  public async clearSearchQuery() {
-    const context = await this.getCurrentContext();
-    const { filter } = context.state;
-    filter.removeFilter();
-  }
-
-  protected handleCollectionState(newState: IReadOnlyCategoryCollectionState): void {
-    this.events.unsubscribeAll();
-    this.subscribeState(newState);
-  }
-
-  private subscribeState(state: IReadOnlyCategoryCollectionState) {
-    this.events.register(
-      state.filter.filterRemoved.on(() => {
-        this.isSearching = false;
-      }),
-      state.filter.filtered.on((result: IFilterResult) => {
-        this.searchQuery = result.query;
-        this.isSearching = true;
-        this.searchHasMatches = result.hasAnyMatches();
-      }),
-    );
-  }
-}
+});
 </script>
 
 <style scoped lang="scss">
@@ -161,5 +167,4 @@ $margin-inner: 4px;
     }
   }
 }
-
 </style>

@@ -21,8 +21,9 @@ A clear and concise description of what the bug is.
 
 <!--
 Which OS are you using? What version of OS you were using?
-On Windows you can find it using "Start button" > "Settings" > "System" > "About".
-On macOS you can find it using "Apple menu (top left corner)" > "About This Mac".
+On Windows: Open "Start button" > "Settings" > "System" > "About".
+On macOS: Open "Apple menu (top left corner)" > "About This Mac".
+On Linux: Open terminal > type: lsb_release -a > copy paste the result.
 -->
 
 ### Reproduction steps

@@ -1,9 +1,9 @@
 import { ILiquorTreeNewNode, ILiquorTreeExistingNode } from 'liquor-tree';
-import { INode } from '../../Node/INode';
+import { INodeContent } from '../../Node/INodeContent';
 
 // Functions to translate INode to LiqourTree models and vice versa for anti-corruption
 
-export function convertExistingToNode(liquorTreeNode: ILiquorTreeExistingNode): INode {
+export function convertExistingToNode(liquorTreeNode: ILiquorTreeExistingNode): INodeContent {
   if (!liquorTreeNode) { throw new Error('liquorTreeNode is undefined'); }
   return {
     id: liquorTreeNode.id,
@@ -16,7 +16,7 @@ export function convertExistingToNode(liquorTreeNode: ILiquorTreeExistingNode): 
   };
 }
 
-export function toNewLiquorTreeNode(node: INode): ILiquorTreeNewNode {
+export function toNewLiquorTreeNode(node: INodeContent): ILiquorTreeNewNode {
   if (!node) { throw new Error('node is undefined'); }
   return {
     id: node.id,

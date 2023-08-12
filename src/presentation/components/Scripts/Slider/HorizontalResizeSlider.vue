@@ -1,45 +1,63 @@
 <template>
-  <div class="slider" v-bind:style="{
-    '--vertical-margin': this.verticalMargin,
-    '--first-min-width': this.firstMinWidth,
-    '--first-initial-width': this.firstInitialWidth,
-    '--second-min-width': this.secondMinWidth,
-    }">
+  <div
+    class="slider"
+    v-bind:style="{
+      '--vertical-margin': verticalMargin,
+      '--first-min-width': firstMinWidth,
+      '--first-initial-width': firstInitialWidth,
+      '--second-min-width': secondMinWidth,
+    }"
+  >
     <div class="first" ref="firstElement">
-      <slot name="first"></slot>
+      <slot name="first" />
     </div>
-    <Handle class="handle" @resized="onResize($event)" />
+    <SliderHandle class="handle" @resized="onResize($event)" />
     <div class="second">
-      <slot name="second"></slot>
+      <slot name="second" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator';
-import Handle from './Handle.vue';
+import { defineComponent, ref } from 'vue';
+import SliderHandle from './SliderHandle.vue';
 
-@Component({
+export default defineComponent({
   components: {
-    Handle,
+    SliderHandle,
   },
-})
-export default class HorizontalResizeSlider extends Vue {
-  @Prop() public verticalMargin: string;
+  props: {
+    verticalMargin: {
+      type: String,
+      required: true,
+    },
+    firstMinWidth: {
+      type: String,
+      required: true,
+    },
+    firstInitialWidth: {
+      type: String,
+      required: true,
+    },
+    secondMinWidth: {
+      type: String,
+      required: true,
+    },
+  },
+  setup() {
+    const firstElement = ref<HTMLElement>();
 
-  @Prop() public firstMinWidth: string;
+    function onResize(displacementX: number): void {
+      const leftWidth = firstElement.value.offsetWidth + displacementX;
+      firstElement.value.style.width = `${leftWidth}px`;
+    }
 
-  @Prop() public firstInitialWidth: string;
-
-  @Prop() public secondMinWidth: string;
-
-  private get left(): HTMLElement { return this.$refs.firstElement as HTMLElement; }
-
-  public onResize(displacementX: number): void {
-    const leftWidth = this.left.offsetWidth + displacementX;
-    this.left.style.width = `${leftWidth}px`;
-  }
-}
+    return {
+      firstElement,
+      onResize,
+    };
+  },
+});
 </script>
 
 <style lang="scss" scoped>

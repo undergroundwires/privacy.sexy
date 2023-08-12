@@ -1,25 +1,27 @@
 <template>
   <div id="container">
-    <h1 class="child title" >{{ title }}</h1>
-    <h2 class="child subtitle">Enforce privacy &amp; security on Windows and macOS</h2>
+    <h1 class="child title">{{ title }}</h1>
+    <h2 class="child subtitle">{{ subtitle }}</h2>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import { ApplicationFactory } from '@/application/ApplicationFactory';
+import { defineComponent, computed } from 'vue';
+import { useApplication } from '@/presentation/components/Shared/Hooks/UseApplication';
 
-@Component
-export default class TheHeader extends Vue {
-  public title = '';
+export default defineComponent({
+  setup() {
+    const { info } = useApplication();
 
-  public subtitle = '';
+    const title = computed(() => info.name);
+    const subtitle = computed(() => info.slogan);
 
-  public async created() {
-    const app = await ApplicationFactory.Current.getApp();
-    this.title = app.info.name;
-  }
-}
+    return {
+      title,
+      subtitle,
+    };
+  },
+});
 </script>
 
 <style scoped lang="scss">

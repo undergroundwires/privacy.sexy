@@ -1,50 +1,61 @@
 import 'mocha';
 import { expect } from 'chai';
-import { parseProjectInformation } from '@/application/Parser/ProjectInformationParser';
+import { VueAppEnvironmentKeys, parseProjectInformation } from '@/application/Parser/ProjectInformationParser';
 import { getProcessEnvironmentStub } from '@tests/unit/shared/Stubs/ProcessEnvironmentStub';
+import { IProjectInformation } from '@/domain/IProjectInformation';
 
 describe('ProjectInformationParser', () => {
   describe('parseProjectInformation', () => {
-    it('parses expected repository version', () => {
-      // arrange
-      const expected = '0.11.3';
-      const env = getProcessEnvironmentStub();
-      env.VUE_APP_VERSION = expected;
-      // act
-      const info = parseProjectInformation(env);
-      // assert
-      const actual = info.version.toString();
-      expect(actual).to.be.equal(expected);
-    });
-    it('parses expected repository url', () => {
-      // arrange
-      const expected = 'https://expected-repository.url';
-      const env = getProcessEnvironmentStub();
-      env.VUE_APP_REPOSITORY_URL = expected;
-      // act
-      const info = parseProjectInformation(env);
-      // assert
-      expect(info.repositoryUrl).to.be.equal(expected);
-    });
-    it('parses expected name', () => {
-      // arrange
-      const expected = 'expected-app-name';
-      const env = getProcessEnvironmentStub();
-      env.VUE_APP_NAME = expected;
-      // act
-      const info = parseProjectInformation(env);
-      // assert
-      expect(info.name).to.be.equal(expected);
-    });
-    it('parses expected homepage url', () => {
-      // arrange
-      const expected = 'https://expected.sexy';
-      const env = getProcessEnvironmentStub();
-      env.VUE_APP_HOMEPAGE_URL = expected;
-      // act
-      const info = parseProjectInformation(env);
-      // assert
-      expect(info.homepage).to.be.equal(expected);
-    });
+    interface IEnvironmentParsingTestCase {
+      readonly testCaseName: string;
+      readonly environmentVariableName: string;
+      readonly environmentVariableValue: string;
+      readonly getActualValue: (info: IProjectInformation) => string;
+    }
+    const testCases: readonly IEnvironmentParsingTestCase[] = [
+      {
+        testCaseName: 'version',
+        environmentVariableName: VueAppEnvironmentKeys.VUE_APP_VERSION,
+        environmentVariableValue: '0.11.3',
+        getActualValue: (info) => info.version.toString(),
+      },
+      {
+        testCaseName: 'name',
+        environmentVariableName: VueAppEnvironmentKeys.VUE_APP_NAME,
+        environmentVariableValue: 'expected-app-name',
+        getActualValue: (info) => info.name,
+      },
+      {
+        testCaseName: 'homepage',
+        environmentVariableName: VueAppEnvironmentKeys.VUE_APP_HOMEPAGE_URL,
+        environmentVariableValue: 'https://expected.sexy',
+        getActualValue: (info) => info.homepage,
+      },
+      {
+        testCaseName: 'repositoryUrl',
+        environmentVariableName: VueAppEnvironmentKeys.VUE_APP_REPOSITORY_URL,
+        environmentVariableValue: 'https://expected-repository.url',
+        getActualValue: (info) => info.repositoryUrl,
+      },
+      {
+        testCaseName: 'slogan',
+        environmentVariableName: VueAppEnvironmentKeys.VUE_APP_SLOGAN,
+        environmentVariableValue: 'expected-slogan',
+        getActualValue: (info) => info.slogan,
+      },
+    ];
+    for (const testCase of testCases) {
+      it(`${testCase.testCaseName}`, () => {
+        // act
+        const expected = testCase.environmentVariableValue;
+        const env = getProcessEnvironmentStub();
+        env[testCase.environmentVariableName] = testCase.environmentVariableValue;
+        // act
+        const info = parseProjectInformation(env);
+        // assert
+        const actual = testCase.getActualValue(info);
+        expect(actual).to.be.equal(expected);
+      });
+    }
   });
 });

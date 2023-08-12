@@ -1,28 +1,47 @@
 <template>
   <span> <!-- Parent wrapper allows adding content inside with CSS without making it clickable -->
     <span
-      v-bind:class="{ 'disabled': !enabled, 'enabled': enabled}"
+      v-bind:class="{
+        disabled: !enabled,
+        enabled: enabled,
+      }"
       v-non-collapsing
-      @click="enabled && onClicked()">{{label}}</span>
+      @click="onClicked()">{{label}}</span>
   </span>
 </template>
 
 <script lang="ts">
-import {
-  Component, Prop, Emit, Vue,
-} from 'vue-property-decorator';
+import { defineComponent } from 'vue';
 import { NonCollapsing } from '@/presentation/components/Scripts/View/Cards/NonCollapsingDirective';
 
-@Component({
+export default defineComponent({
   directives: { NonCollapsing },
-})
-export default class MenuOptionListItem extends Vue {
-  @Prop() public enabled: boolean;
+  props: {
+    enabled: {
+      type: Boolean,
+      required: true,
+    },
+    label: {
+      type: String,
+      required: true,
+    },
+  },
+  emits: [
+    'click',
+  ],
+  setup(props, { emit }) {
+    const onClicked = () => {
+      if (!props.enabled) {
+        return;
+      }
+      emit('click');
+    };
 
-  @Prop() public label: string;
-
-  @Emit('click') public onClicked() { /* do nothing except firing event */ }
-}
+    return {
+      onClicked,
+    };
+  },
+});
 </script>
 
 <style scoped lang="scss">

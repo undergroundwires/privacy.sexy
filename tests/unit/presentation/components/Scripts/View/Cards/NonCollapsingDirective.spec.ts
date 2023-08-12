@@ -8,17 +8,18 @@ describe('NonCollapsingDirective', () => {
   describe('NonCollapsing', () => {
     it('adds expected attribute to the element when inserted', () => {
       // arrange
-      const element = getElementMock();
+      const element = createElementMock();
       // act
       NonCollapsing.inserted(element, undefined, undefined, undefined);
       // assert
       expect(element.hasAttribute(expectedAttributeName));
     });
   });
+
   describe('hasDirective', () => {
     it('returns true if the element has expected attribute', () => {
       // arrange
-      const element = getElementMock();
+      const element = createElementMock();
       element.setAttribute(expectedAttributeName, undefined);
       // act
       const actual = hasDirective(element);
@@ -27,8 +28,8 @@ describe('NonCollapsingDirective', () => {
     });
     it('returns true if the element has a parent with expected attribute', () => {
       // arrange
-      const parent = getElementMock();
-      const element = getElementMock();
+      const parent = createElementMock();
+      const element = createElementMock();
       parent.appendChild(element);
       element.setAttribute(expectedAttributeName, undefined);
       // act
@@ -38,16 +39,15 @@ describe('NonCollapsingDirective', () => {
     });
     it('returns false if nor the element or its parent has expected attribute', () => {
       // arrange
-      const element = getElementMock();
+      const element = createElementMock();
       // act
       const actual = hasDirective(element);
       // assert
       expect(actual).to.equal(false);
     });
   });
-});
 
-function getElementMock(): HTMLElement {
-  const element = document.createElement('div');
-  return element;
-}
+  function createElementMock(): HTMLElement {
+    return document.createElement('div');
+  }
+});

@@ -1,6 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
-import { INode, NodeType } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/Node/INode';
+import { INodeContent, NodeType } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/Node/INodeContent';
 import { getReverter } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/Node/Reverter/ReverterFactory';
 import { ScriptReverter } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/Node/Reverter/ScriptReverter';
 import { CategoryReverter } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/Node/Reverter/CategoryReverter';
@@ -14,7 +14,7 @@ describe('ReverterFactory', () => {
     it('gets CategoryReverter for category node', () => {
       // arrange
       const category = new CategoryStub(0).withScriptIds('55');
-      const node = getNodeStub(getCategoryNodeId(category), NodeType.Category);
+      const node = getNodeContentStub(getCategoryNodeId(category), NodeType.Category);
       const collection = new CategoryCollectionStub()
         .withAction(category);
       // act
@@ -25,7 +25,7 @@ describe('ReverterFactory', () => {
     it('gets ScriptReverter for script node', () => {
       // arrange
       const script = new ScriptStub('test');
-      const node = getNodeStub(getScriptNodeId(script), NodeType.Script);
+      const node = getNodeContentStub(getScriptNodeId(script), NodeType.Script);
       const collection = new CategoryCollectionStub()
         .withAction(new CategoryStub(0).withScript(script));
       // act
@@ -34,7 +34,7 @@ describe('ReverterFactory', () => {
       expect(result instanceof ScriptReverter).to.equal(true);
     });
   });
-  function getNodeStub(nodeId: string, type: NodeType): INode {
+  function getNodeContentStub(nodeId: string, type: NodeType): INodeContent {
     return {
       id: nodeId,
       text: 'text',

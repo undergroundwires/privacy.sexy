@@ -1,118 +1,145 @@
 <template>
-  <div class="card"
-    v-on:click="onSelected(!isExpanded)"
+  <div
+    class="card"
+    v-on:click="isExpanded = !isExpanded"
     v-bind:class="{
       'is-collapsed': !isExpanded,
       'is-inactive': activeCategoryId && activeCategoryId != categoryId,
-      'is-expanded': isExpanded
+      'is-expanded': isExpanded,
     }"
     ref="cardElement">
-      <div class="card__inner">
-        <!-- Title -->
-        <span
-          class="card__inner__title"
-          v-if="cardTitle && cardTitle.length > 0">
-          <span>{{cardTitle}}</span>
-        </span>
-        <span v-else>Oh no 😢</span>
-        <!-- Expand icon -->
+    <div class="card__inner">
+      <!-- Title -->
+      <span
+        class="card__inner__title"
+        v-if="cardTitle && cardTitle.length > 0">
+        <span>{{cardTitle}}</span>
+      </span>
+      <span v-else>Oh no 😢</span>
+      <!-- Expand icon -->
+      <font-awesome-icon
+        class="card__inner__expand-icon"
+        :icon="['far', isExpanded ? 'folder-open' : 'folder']"
+      />
+      <!-- Indeterminate and full states -->
+      <div class="card__inner__state-icons">
         <font-awesome-icon
-          class="card__inner__expand-icon"
-          :icon="['far', isExpanded ? 'folder-open' : 'folder']"
+          :icon="['fa', 'battery-half']"
+          v-if="isAnyChildSelected && !areAllChildrenSelected"
         />
-        <!-- Indeterminate and full states -->
-        <div class="card__inner__state-icons">
-          <font-awesome-icon
-            :icon="['fa', 'battery-half']"
-            v-if="isAnyChildSelected && !areAllChildrenSelected"
-          />
-          <font-awesome-icon
-            :icon="['fa', 'battery-full']"
-            v-if="areAllChildrenSelected"
-          />
-        </div>
+        <font-awesome-icon
+          :icon="['fa', 'battery-full']"
+          v-if="areAllChildrenSelected"
+        />
       </div>
-      <div class="card__expander" v-on:click.stop>
-        <div class="card__expander__content">
-          <ScriptsTree :categoryId="categoryId"></ScriptsTree>
-        </div>
-        <div class="card__expander__close-button">
-          <font-awesome-icon :icon="['fas', 'times']"  v-on:click="onSelected(false)"/>
-        </div>
+    </div>
+    <div class="card__expander" v-on:click.stop>
+      <div class="card__expander__content">
+        <ScriptsTree :categoryId="categoryId" />
+      </div>
+      <div class="card__expander__close-button">
+        <font-awesome-icon
+          :icon="['fas', 'times']"
+          v-on:click="collapse()"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import {
-  Component, Prop, Watch, Emit,
-} from 'vue-property-decorator';
+  defineComponent, ref, watch, computed,
+} from 'vue';
+import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
 import ScriptsTree from '@/presentation/components/Scripts/View/ScriptsTree/ScriptsTree.vue';
-import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
+import { sleep } from '@/infrastructure/Threading/AsyncSleep';
 
-@Component({
+export default defineComponent({
   components: {
     ScriptsTree,
   },
-})
-export default class CardListItem extends StatefulVue {
-  @Prop() public categoryId!: number;
+  props: {
+    categoryId: {
+      type: Number,
+      required: true,
+    },
+    activeCategoryId: {
+      type: Number,
+      default: undefined,
+    },
+  },
+  emits: {
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+    cardExpansionChanged: (isExpanded: boolean) => true,
+    /* eslint-enable @typescript-eslint/no-unused-vars */
+  },
+  setup(props, { emit }) {
+    const { events, onStateChange, currentState } = useCollectionState();
 
-  @Prop() public activeCategoryId!: number;
+    const isExpanded = computed({
+      get: () => {
+        return props.activeCategoryId === props.categoryId;
+      },
+      set: (newValue) => {
+        if (newValue) {
+          scrollToCard();
+        }
+        emit('cardExpansionChanged', newValue);
+      },
+    });
 
-  public cardTitle = '';
+    const isAnyChildSelected = ref(false);
+    const areAllChildrenSelected = ref(false);
+    const cardElement = ref<HTMLElement>();
 
-  public isExpanded = false;
+    const cardTitle = computed<string | undefined>(() => {
+      if (!props.categoryId || !currentState.value) {
+        return undefined;
+      }
+      const category = currentState.value.collection.findCategory(props.categoryId);
+      return category?.name;
+    });
 
-  public isAnyChildSelected = false;
-
-  public areAllChildrenSelected = false;
-
-  public async mounted() {
-    const context = await this.getCurrentContext();
-    this.events.register(context.state.selection.changed.on(
-      () => this.updateSelectionIndicators(this.categoryId),
-    ));
-    await this.updateState(this.categoryId);
-  }
-
-  @Emit('selected')
-  public onSelected(isExpanded: boolean) {
-    this.isExpanded = isExpanded;
-  }
-
-  @Watch('activeCategoryId')
-  public async onActiveCategoryChanged(value: |number) {
-    this.isExpanded = value === this.categoryId;
-  }
-
-  @Watch('isExpanded')
-  public async onExpansionChanged(newValue: number, oldValue: number) {
-    if (!oldValue && newValue) {
-      await new Promise((resolve) => { setTimeout(resolve, 400); });
-      const focusElement = this.$refs.cardElement as HTMLElement;
-      focusElement.scrollIntoView({ behavior: 'smooth' });
+    function collapse() {
+      isExpanded.value = false;
     }
-  }
 
-  @Watch('categoryId')
-  public async updateState(value: |number) {
-    const context = await this.getCurrentContext();
-    const category = !value ? undefined : context.state.collection.findCategory(value);
-    this.cardTitle = category ? category.name : undefined;
-    await this.updateSelectionIndicators(value);
-  }
+    onStateChange(async (state) => {
+      events.unsubscribeAll();
+      events.register(state.selection.changed.on(
+        () => updateSelectionIndicators(props.categoryId),
+      ));
+      await updateSelectionIndicators(props.categoryId);
+    }, { immediate: true });
 
-  protected handleCollectionState(): void { /* do nothing */ }
+    watch(
+      () => props.categoryId,
+      (categoryId) => updateSelectionIndicators(categoryId),
+    );
 
-  private async updateSelectionIndicators(categoryId: number) {
-    const context = await this.getCurrentContext();
-    const { selection } = context.state;
-    const category = context.state.collection.findCategory(categoryId);
-    this.isAnyChildSelected = category ? selection.isAnySelected(category) : false;
-    this.areAllChildrenSelected = category ? selection.areAllSelected(category) : false;
-  }
-}
+    async function scrollToCard() {
+      await sleep(400); // wait a bit to allow GUI to render the expanded card
+      cardElement.value.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function updateSelectionIndicators(categoryId: number) {
+      const category = currentState.value.collection.findCategory(categoryId);
+      const { selection } = currentState.value;
+      isAnyChildSelected.value = category ? selection.isAnySelected(category) : false;
+      areAllChildrenSelected.value = category ? selection.areAllSelected(category) : false;
+    }
+
+    return {
+      cardTitle,
+      isExpanded,
+      isAnyChildSelected,
+      areAllChildrenSelected,
+      cardElement,
+      collapse,
+    };
+  },
+});
 
 </script>
 

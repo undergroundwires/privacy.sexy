@@ -33,15 +33,16 @@ describe('collections', () => {
 });
 
 function collectUniqueUrls(app: IApplication): string[] {
-  return app
-    .collections
-    .flatMap((a) => a.getAllScripts())
-    .flatMap((script) => script.docs?.flatMap((doc) => parseUrls(doc)))
+  return [ // Get all nodes
+    ...app.collections.flatMap((c) => c.getAllCategories()),
+    ...app.collections.flatMap((c) => c.getAllScripts()),
+  ]
+    // Get all docs
+    .flatMap((documentable) => documentable.docs)
+    // Parse all URLs
+    .flatMap((docString) => docString.match(/(https?:\/\/[^\s]+)/g) || [])
+    // Remove duplicates
     .filter((url, index, array) => array.indexOf(url) === index);
-}
-
-function parseUrls(text: string): string[] {
-  return text?.match(/\bhttps?:\/\/\S+/gi) ?? [];
 }
 
 function printUrls(statuses: IUrlStatus[]): string {

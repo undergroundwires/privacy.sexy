@@ -1,11 +1,10 @@
+import { CustomError } from '@/application/Common/CustomError';
 import { NodeType } from './NodeType';
 import { NodeData } from './NodeData';
 
-export class NodeDataError extends Error {
+export class NodeDataError extends CustomError {
   constructor(message: string, public readonly context: INodeDataErrorContext) {
     super(createMessage(message, context));
-    Object.setPrototypeOf(this, new.target.prototype); // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-2.html#support-for-newtarget
-    this.name = new.target.name;
   }
 }
 

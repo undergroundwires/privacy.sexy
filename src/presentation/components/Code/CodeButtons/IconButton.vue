@@ -1,27 +1,49 @@
 <template>
-  <button class="button" @click="onClicked">
+  <button
+    class="button"
+    type="button"
+    @click="onClicked"
+  >
     <font-awesome-icon
       class="button__icon"
-      :icon="[iconPrefix, iconName]" size="2x"  />
+      :icon="[iconPrefix, iconName]"
+      size="2x"
+    />
     <div class="button__text">{{text}}</div>
   </button>
 </template>
 
 <script lang="ts">
-import {
-  Component, Prop, Emit, Vue,
-} from 'vue-property-decorator';
+import { defineComponent } from 'vue';
 
-@Component
-export default class IconButton extends Vue {
-  @Prop() public text!: number;
+export default defineComponent({
+  props: {
+    text: {
+      type: String,
+      required: true,
+    },
+    iconPrefix: {
+      type: String,
+      required: true,
+    },
+    iconName: {
+      type: String,
+      required: true,
+    },
+  },
+  emits: [
+    'click',
+  ],
+  setup(_, { emit }) {
+    function onClicked() {
+      emit('click');
+    }
 
-  @Prop() public iconPrefix!: string;
-
-  @Prop() public iconName!: string;
-
-  @Emit('click') public onClicked() { /* do nothing except firing event */ }
-}
+    return {
+      onClicked,
+    };
+  },
+});
 </script>
 
 <style scoped lang="scss">

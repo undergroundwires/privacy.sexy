@@ -1,57 +1,59 @@
 <template>
   <div id="container">
     <TheSelector class="item" />
-    <TheOsChanger class="item"  />
+    <TheOsChanger class="item" />
     <TheViewChanger
       class="item"
       v-on:viewChanged="$emit('viewChanged', $event)"
-      v-if="!this.isSearching" />
+      v-if="!isSearching" />
   </div>
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator';
-import { StatefulVue } from '@/presentation/components/Shared/StatefulVue';
+import { defineComponent, ref, onUnmounted } from 'vue';
+import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
 import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
-import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 import TheOsChanger from './TheOsChanger.vue';
 import TheSelector from './Selector/TheSelector.vue';
 import TheViewChanger from './View/TheViewChanger.vue';
 
-@Component({
+export default defineComponent({
   components: {
     TheSelector,
     TheOsChanger,
     TheViewChanger,
   },
-})
-export default class TheScriptsMenu extends StatefulVue {
-  public isSearching = false;
+  setup() {
+    const { onStateChange, events } = useCollectionState();
 
-  private listeners = new Array<IEventSubscription>();
+    const isSearching = ref(false);
 
-  public destroyed() {
-    this.unsubscribeAll();
-  }
+    onStateChange((state) => {
+      subscribe(state);
+    }, { immediate: true });
 
-  protected handleCollectionState(newState: IReadOnlyCategoryCollectionState): void {
-    this.subscribe(newState);
-  }
-
-  private subscribe(state: IReadOnlyCategoryCollectionState) {
-    this.listeners.push(state.filter.filterRemoved.on(() => {
-      this.isSearching = false;
-    }));
-    state.filter.filtered.on(() => {
-      this.isSearching = true;
+    onUnmounted(() => {
+      unsubscribeAll();
     });
-  }
 
-  private unsubscribeAll() {
-    this.listeners.forEach((listener) => listener.unsubscribe());
-    this.listeners.splice(0, this.listeners.length);
-  }
-}
+    function subscribe(state: IReadOnlyCategoryCollectionState) {
+      events.register(state.filter.filterRemoved.on(() => {
+        isSearching.value = false;
+      }));
+      events.register(state.filter.filtered.on(() => {
+        isSearching.value = true;
+      }));
+    }
+
+    function unsubscribeAll() {
+      events.unsubscribeAll();
+    }
+
+    return {
+      isSearching,
+    };
+  },
+});
 </script>
 
 <style scoped lang="scss">

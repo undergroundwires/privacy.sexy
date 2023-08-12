@@ -6,9 +6,9 @@
     <hr />
     <p>
       <strong>1. The easy alternative</strong>. Run your script without any manual steps by
-      <a :href="this.macOsDownloadUrl">downloading desktop version</a> of {{ this.appName }} on the
-       {{ this.osName }} system you wish to configure, and then click on the Run button. This is
-       recommended for most users.
+      <a :href="macOsDownloadUrl">downloading desktop version</a> of {{ appName }} on the
+      {{ osName }} system you wish to configure, and then click on the Run button. This is
+      recommended for most users.
     </p>
     <hr />
     <p>
@@ -20,7 +20,7 @@
     <p>
       <ol>
         <li
-          v-for='(step, index) in this.data.steps'
+          v-for='(step, index) in data.steps'
           v-bind:key="index"
           class="step"
         >
@@ -34,7 +34,7 @@
             />
           </div>
           <div v-if="step.code" class="step__code">
-            <Code>{{ step.code.instruction }}</Code>
+            <CodeInstruction>{{ step.code.instruction }}</CodeInstruction>
             <font-awesome-icon
               v-if="step.code.details"
               class="explanation"
@@ -49,36 +49,47 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import {
+  defineComponent, PropType, computed,
+} from 'vue';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { ApplicationFactory } from '@/application/ApplicationFactory';
-import Code from './Code.vue';
+import { useApplication } from '@/presentation/components/Shared/Hooks/UseApplication';
+import CodeInstruction from './CodeInstruction.vue';
 import { IInstructionListData } from './InstructionListData';
 
-@Component({
+export default defineComponent({
   components: {
-    Code,
+    CodeInstruction,
   },
-})
-export default class InstructionList extends Vue {
-  public appName = '';
+  props: {
+    data: {
+      type: Object as PropType<IInstructionListData>,
+      required: true,
+    },
+  },
+  setup(props) {
+    const { info } = useApplication();
 
-  public macOsDownloadUrl = '';
+    const appName = computed<string>(() => info.name);
 
-  public osName = '';
+    const macOsDownloadUrl = computed<string>(
+      () => info.getDownloadUrl(OperatingSystem.macOS),
+    );
 
-  @Prop() public data: IInstructionListData;
+    const osName = computed<string>(() => {
+      if (!props.data) {
+        throw new Error('missing data');
+      }
+      return renderOsName(props.data.operatingSystem);
+    });
 
-  public async created() {
-    if (!this.data) {
-      throw new Error('missing data');
-    }
-    const app = await ApplicationFactory.Current.getApp();
-    this.appName = app.info.name;
-    this.macOsDownloadUrl = app.info.getDownloadUrl(OperatingSystem.macOS);
-    this.osName = renderOsName(this.data.operatingSystem);
-  }
-}
+    return {
+      appName,
+      macOsDownloadUrl,
+      osName,
+    };
+  },
+});
 
 function renderOsName(os: OperatingSystem): string {
   switch (os) {

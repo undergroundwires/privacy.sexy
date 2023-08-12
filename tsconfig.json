@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2017",
     "lib": [
       "esnext",
       "dom",
@@ -29,9 +29,6 @@
       ],
       "@tests/*": [
         "tests/*"
-      ],
-      "@fortawesome/fontawesome-common-types": [
-        "./node_modules/@fortawesome/fontawesome-common-types/index"
       ]
     }
   },

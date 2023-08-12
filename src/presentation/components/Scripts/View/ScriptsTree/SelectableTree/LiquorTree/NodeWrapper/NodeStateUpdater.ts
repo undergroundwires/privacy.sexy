@@ -1,5 +1,5 @@
 import { ILiquorTreeNode, ILiquorTreeNodeState } from 'liquor-tree';
-import { NodeType } from '../../Node/INode';
+import { NodeType } from '../../Node/INodeContent';
 
 export function getNewState(
   node: ILiquorTreeNode,

@@ -27,6 +27,8 @@ Application layer depends on and consumes domain layer. [Presentation layer](./p
 
 State handling uses an event-driven subscription model to signal state changes and special functions to register changes. It does not depend on third party packages.
 
+The presentation layer can read and modify state through the context. State changes trigger events that components can subscribe to for reactivity.
+
 Each layer treat application layer differently.
 
 ![State](./../img/architecture/app-state.png)
@@ -45,7 +47,7 @@ Each layer treat application layer differently.
 - So state is mutable, and fires related events when mutated.
 - 📖 Read more: [application.md | Application state](./application.md#application-state).
 
-It's comparable with flux ([`redux`](https://redux.js.org/)) or flux-like ([`vuex`](https://vuex.vuejs.org/)) patterns. Flux component "view" is [presentation layer](./presentation.md) in Vue. Flux functions "dispatcher", "store" and "action creation" functions lie in the [application layer](./application.md). A difference is that application state in privacy.sexy is mutable and lies in single flux "store" that holds app state and logic. The "actions" mutate the state directly which in turns act as dispatcher to notify its own event subscriptions (callbacks).
+It's comparable with `flux`, `vuex`, and `pinia`. A difference is that mutable application layer state in privacy.sexy is mutable and lies in single "store" that holds app state and logic. The "actions" mutate the state directly which in turns act as dispatcher to notify its own event subscriptions (callbacks).
 
 ## AWS infrastructure
 

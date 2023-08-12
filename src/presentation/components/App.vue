@@ -1,24 +1,24 @@
 <template>
   <div id="app">
-      <div class="app__wrapper">
-        <TheHeader class="app__row" />
-        <TheSearchBar class="app__row" />
-        <TheScriptArea class="app__row" />
-        <TheCodeButtons class="app__row app__code-buttons" />
-        <TheFooter />
-      </div>
-   </div>
+    <div class="app__wrapper">
+      <TheHeader class="app__row" />
+      <TheSearchBar class="app__row" />
+      <TheScriptArea class="app__row" />
+      <TheCodeButtons class="app__row app__code-buttons" />
+      <TheFooter />
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { defineComponent } from 'vue';
 import TheHeader from '@/presentation/components/TheHeader.vue';
 import TheFooter from '@/presentation/components/TheFooter/TheFooter.vue';
 import TheCodeButtons from '@/presentation/components/Code/CodeButtons/TheCodeButtons.vue';
 import TheScriptArea from '@/presentation/components/Scripts/TheScriptArea.vue';
 import TheSearchBar from '@/presentation/components/TheSearchBar.vue';
 
-@Component({
+export default defineComponent({
   components: {
     TheHeader,
     TheCodeButtons,
@@ -26,10 +26,8 @@ import TheSearchBar from '@/presentation/components/TheSearchBar.vue';
     TheSearchBar,
     TheFooter,
   },
-})
-export default class App extends Vue {
+});
 
-}
 </script>
 
 <style lang="scss">

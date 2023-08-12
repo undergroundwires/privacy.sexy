@@ -13,30 +13,43 @@
     <div
       v-if="docs && docs.length > 0 && isExpanded"
       class="docs"
-      v-bind:class="{ 'docs-expanded': isExpanded, 'docs-collapsed': !isExpanded }" >
+      v-bind:class="{ 'docs-expanded': isExpanded, 'docs-collapsed': !isExpanded }"
+    >
       <DocumentationText
-        :docs="docs" class="text"
-        v-bind:class="{ 'expanded': isExpanded, 'collapsed': !isExpanded }" />
+        :docs="docs"
+        class="text"
+        v-bind:class="{
+          expanded: isExpanded,
+          collapsed: !isExpanded,
+        }" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator';
+import { defineComponent, ref, PropType } from 'vue';
 import DocumentationText from './DocumentationText.vue';
 import ToggleDocumentationButton from './ToggleDocumentationButton.vue';
 
-@Component({
+export default defineComponent({
   components: {
     DocumentationText,
     ToggleDocumentationButton,
   },
-})
-export default class Documentation extends Vue {
-  @Prop() public docs!: readonly string[];
+  props: {
+    docs: {
+      type: Array as PropType<readonly string[]>,
+      required: true,
+    },
+  },
+  setup() {
+    const isExpanded = ref(false);
 
-  public isExpanded = false;
-}
+    return {
+      isExpanded,
+    };
+  },
+});
 </script>
 
 <style scoped lang="scss">

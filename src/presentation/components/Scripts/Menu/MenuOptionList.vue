@@ -8,12 +8,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator';
+import { defineComponent } from 'vue';
 
-@Component
-export default class MenuOptionList extends Vue {
-  @Prop() public label: string;
-}
+export default defineComponent({
+  props: {
+    label: {
+      type: String,
+      default: undefined,
+    },
+  },
+});
 </script>
 
 <style scoped lang="scss">

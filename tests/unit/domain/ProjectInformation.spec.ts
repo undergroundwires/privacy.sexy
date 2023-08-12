@@ -4,122 +4,141 @@ import { ProjectInformation } from '@/domain/ProjectInformation';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
 import { VersionStub } from '@tests/unit/shared/Stubs/VersionStub';
+import { Version } from '@/domain/Version';
 
 describe('ProjectInformation', () => {
-  it('sets name as expected', () => {
-    // arrange
-    const expected = 'expected-name';
-    const sut = new ProjectInformation(expected, new VersionStub('0.7.2'), 'repositoryUrl', 'homepage');
-    // act
-    const actual = sut.name;
-    // assert
-    expect(actual).to.equal(expected);
+  describe('retrieval of property values', () => {
+    interface IPropertyTestCase {
+      readonly testCaseName: string;
+      readonly expectedValue: string;
+      readonly buildWithExpectedValue: (
+        builder: ProjectInformationBuilder,
+        expected: string,
+      ) => ProjectInformationBuilder;
+      readonly getActualValue: (sut: ProjectInformation) => string;
+    }
+    const propertyTestCases: readonly IPropertyTestCase[] = [
+      {
+        testCaseName: 'name',
+        expectedValue: 'expected-name',
+        buildWithExpectedValue: (builder, expected) => builder
+          .withName(expected),
+        getActualValue: (sut) => sut.name,
+      },
+      {
+        testCaseName: 'version',
+        expectedValue: '0.11.3',
+        buildWithExpectedValue: (builder, expected) => builder
+          .withVersion(new VersionStub(expected)),
+        getActualValue: (sut) => sut.version.toString(),
+      },
+      {
+        testCaseName: 'repositoryWebUrl - not ending with .git',
+        expectedValue: 'expected-repository-url',
+        buildWithExpectedValue: (builder, expected) => builder
+          .withRepositoryUrl(expected),
+        getActualValue: (sut) => sut.repositoryWebUrl,
+      },
+      {
+        testCaseName: 'repositoryWebUrl - ending with .git',
+        expectedValue: 'expected-repository-url',
+        buildWithExpectedValue: (builder, expected) => builder
+          .withRepositoryUrl(`${expected}.git`),
+        getActualValue: (sut) => sut.repositoryWebUrl,
+      },
+      {
+        testCaseName: 'slogan',
+        expectedValue: 'expected-slogan',
+        buildWithExpectedValue: (builder, expected) => builder
+          .withSlogan(expected),
+        getActualValue: (sut) => sut.slogan,
+      },
+      {
+        testCaseName: 'homepage',
+        expectedValue: 'expected-homepage',
+        buildWithExpectedValue: (builder, expected) => builder
+          .withHomepage(expected),
+        getActualValue: (sut) => sut.homepage,
+      },
+      {
+        testCaseName: 'feedbackUrl',
+        expectedValue: 'https://github.com/undergroundwires/privacy.sexy/issues',
+        buildWithExpectedValue: (builder) => builder
+          .withRepositoryUrl('https://github.com/undergroundwires/privacy.sexy.git'),
+        getActualValue: (sut) => sut.feedbackUrl,
+      },
+      {
+        testCaseName: 'releaseUrl',
+        expectedValue: 'https://github.com/undergroundwires/privacy.sexy/releases/tag/0.7.2',
+        buildWithExpectedValue: (builder) => builder
+          .withRepositoryUrl('https://github.com/undergroundwires/privacy.sexy.git')
+          .withVersion(new VersionStub('0.7.2')),
+        getActualValue: (sut) => sut.releaseUrl,
+      },
+    ];
+    for (const testCase of propertyTestCases) {
+      it(`should return the expected ${testCase.testCaseName} value`, () => {
+        // arrange
+        const expected = testCase.expectedValue;
+        const builder = new ProjectInformationBuilder();
+        const sut = testCase
+          .buildWithExpectedValue(builder, expected)
+          .build();
+
+        // act
+        const actual = testCase.getActualValue(sut);
+
+        // assert
+        expect(actual).to.equal(expected);
+      });
+    }
   });
-  it('sets version as expected', () => {
-    // arrange
-    const expected = new VersionStub('0.11.3');
-    const sut = new ProjectInformation('name', expected, 'repositoryUrl', 'homepage');
-    // act
-    const actual = sut.version;
-    // assert
-    expect(actual).to.deep.equal(expected);
-  });
-  it('sets repositoryUrl as expected', () => {
-    // arrange
-    const expected = 'expected-repository-url';
-    const sut = new ProjectInformation('name', new VersionStub('0.7.2'), expected, 'homepage');
-    // act
-    const actual = sut.repositoryUrl;
-    // assert
-    expect(actual).to.equal(expected);
-  });
-  describe('sets repositoryWebUrl as expected', () => {
-    it('sets repositoryUrl when it does not end with .git', () => {
+  describe('correct retrieval of download URL per operating system', () => {
+    const testCases: ReadonlyArray<{
+      readonly os: OperatingSystem,
+      readonly expected: string,
+      readonly repositoryUrl: string,
+      readonly version: string,
+    }> = [
+      {
+        os: OperatingSystem.macOS,
+        expected: 'https://github.com/undergroundwires/privacy.sexy/releases/download/0.7.2/privacy.sexy-0.7.2.dmg',
+        repositoryUrl: 'https://github.com/undergroundwires/privacy.sexy.git',
+        version: '0.7.2',
+      },
+      {
+        os: OperatingSystem.Linux,
+        expected: 'https://github.com/undergroundwires/privacy.sexy/releases/download/0.7.2/privacy.sexy-0.7.2.AppImage',
+        repositoryUrl: 'https://github.com/undergroundwires/privacy.sexy.git',
+        version: '0.7.2',
+      },
+      {
+        os: OperatingSystem.Windows,
+        expected: 'https://github.com/undergroundwires/privacy.sexy/releases/download/0.7.2/privacy.sexy-Setup-0.7.2.exe',
+        repositoryUrl: 'https://github.com/undergroundwires/privacy.sexy.git',
+        version: '0.7.2',
+      },
+    ];
+    for (const testCase of testCases) {
+      it(`should return the expected download URL for ${OperatingSystem[testCase.os]}`, () => {
+        // arrange
+        const {
+          expected, version, repositoryUrl, os,
+        } = testCase;
+        const sut = new ProjectInformationBuilder()
+          .withVersion(new VersionStub(version))
+          .withRepositoryUrl(repositoryUrl)
+          .build();
+          // act
+        const actual = sut.getDownloadUrl(os);
+        // assert
+        expect(actual).to.equal(expected);
+      });
+    }
+    it('should throw an error when provided with an invalid operating system', () => {
       // arrange
-      const expected = 'expected-repository-url';
-      const sut = new ProjectInformation('name', new VersionStub('0.7.2'), expected, 'homepage');
-      // act
-      const actual = sut.repositoryWebUrl;
-      // assert
-      expect(actual).to.equal(expected);
-    });
-    it('removes ".git" from the end when it ends with ".git"', () => {
-      // arrange
-      const expected = 'expected-repository-url';
-      const sut = new ProjectInformation('name', new VersionStub('0.7.2'), `${expected}.git`, 'homepage');
-      // act
-      const actual = sut.repositoryWebUrl;
-      // assert
-      expect(actual).to.equal(expected);
-    });
-  });
-  it('sets homepage as expected', () => {
-    // arrange
-    const expected = 'expected-homepage';
-    const sut = new ProjectInformation('name', new VersionStub('0.7.2'), 'repositoryUrl', expected);
-    // act
-    const actual = sut.homepage;
-    // assert
-    expect(actual).to.equal(expected);
-  });
-  it('sets feedbackUrl to github issues page', () => {
-    // arrange
-    const repositoryUrl = 'https://github.com/undergroundwires/privacy.sexy.git';
-    const expected = 'https://github.com/undergroundwires/privacy.sexy/issues';
-    const sut = new ProjectInformation('name', new VersionStub('0.7.2'), repositoryUrl, 'homepage');
-    // act
-    const actual = sut.feedbackUrl;
-    // assert
-    expect(actual).to.equal(expected);
-  });
-  it('sets releaseUrl to github releases page', () => {
-    // arrange
-    const repositoryUrl = 'https://github.com/undergroundwires/privacy.sexy.git';
-    const version = new VersionStub('0.7.2');
-    const expected = 'https://github.com/undergroundwires/privacy.sexy/releases/tag/0.7.2';
-    const sut = new ProjectInformation('name', version, repositoryUrl, 'homepage');
-    // act
-    const actual = sut.releaseUrl;
-    // assert
-    expect(actual).to.equal(expected);
-  });
-  describe('getDownloadUrl', () => {
-    it('gets expected url for macOS', () => {
-      // arrange
-      const expected = 'https://github.com/undergroundwires/privacy.sexy/releases/download/0.7.2/privacy.sexy-0.7.2.dmg';
-      const repositoryUrl = 'https://github.com/undergroundwires/privacy.sexy.git';
-      const version = new VersionStub('0.7.2');
-      const sut = new ProjectInformation('name', version, repositoryUrl, 'homepage');
-      // act
-      const actual = sut.getDownloadUrl(OperatingSystem.macOS);
-      // assert
-      expect(actual).to.equal(expected);
-    });
-    it('gets expected url for Linux', () => {
-      // arrange
-      const expected = 'https://github.com/undergroundwires/privacy.sexy/releases/download/0.7.2/privacy.sexy-0.7.2.AppImage';
-      const repositoryUrl = 'https://github.com/undergroundwires/privacy.sexy.git';
-      const version = new VersionStub('0.7.2');
-      const sut = new ProjectInformation('name', version, repositoryUrl, 'homepage');
-      // act
-      const actual = sut.getDownloadUrl(OperatingSystem.Linux);
-      // assert
-      expect(actual).to.equal(expected);
-    });
-    it('gets expected url for Windows', () => {
-      // arrange
-      const expected = 'https://github.com/undergroundwires/privacy.sexy/releases/download/0.7.2/privacy.sexy-Setup-0.7.2.exe';
-      const repositoryUrl = 'https://github.com/undergroundwires/privacy.sexy.git';
-      const version = new VersionStub('0.7.2');
-      const sut = new ProjectInformation('name', version, repositoryUrl, 'homepage');
-      // act
-      const actual = sut.getDownloadUrl(OperatingSystem.Windows);
-      // assert
-      expect(actual).to.equal(expected);
-    });
-    describe('throws when os is invalid', () => {
-      // arrange
-      const sut = new ProjectInformation('name', new VersionStub(), 'repositoryUrl', 'homepage');
+      const sut = new ProjectInformationBuilder()
+        .build();
       // act
       const act = (os: OperatingSystem) => sut.getDownloadUrl(os);
       // assert
@@ -130,3 +149,50 @@ describe('ProjectInformation', () => {
     });
   });
 });
+
+class ProjectInformationBuilder {
+  private name = 'default-name';
+
+  private version: Version = new VersionStub();
+
+  private repositoryUrl = 'default-repository-url';
+
+  private homepage = 'default-homepage';
+
+  private slogan = 'default-slogan';
+
+  public withName(name: string): ProjectInformationBuilder {
+    this.name = name;
+    return this;
+  }
+
+  public withVersion(version: VersionStub): ProjectInformationBuilder {
+    this.version = version;
+    return this;
+  }
+
+  public withSlogan(slogan: string): ProjectInformationBuilder {
+    this.slogan = slogan;
+    return this;
+  }
+
+  public withRepositoryUrl(repositoryUrl: string): ProjectInformationBuilder {
+    this.repositoryUrl = repositoryUrl;
+    return this;
+  }
+
+  public withHomepage(homepage: string): ProjectInformationBuilder {
+    this.homepage = homepage;
+    return this;
+  }
+
+  public build(): ProjectInformation {
+    return new ProjectInformation(
+      this.name,
+      this.version,
+      this.slogan,
+      this.repositoryUrl,
+      this.homepage,
+    );
+  }
+}

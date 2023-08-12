@@ -17,50 +17,50 @@
     </div>
     <div class="line">
       <div class="line__emoji">🤖</div>
-      <div>All transparent: Deployed automatically from the master branch
-      of the <a :href="repositoryUrl" target="_blank">source code</a> with no changes.</div>
+      <div>
+        All transparent: Deployed automatically from the master branch
+        of the <a :href="repositoryUrl" target="_blank" rel="noopener noreferrer">source code</a> with no changes.
+      </div>
     </div>
     <div v-if="!isDesktop" class="line">
       <div class="line__emoji">📈</div>
-      <div>Basic <a href="https://aws.amazon.com/cloudfront/reporting/" target="_blank">CDN statistics</a>
-      are collected by AWS but they cannot be traced to you or your behavior.
-      You can download the offline version if you don't want any CDN data collection.</div>
+      <div>
+        Basic <a href="https://aws.amazon.com/cloudfront/reporting/" target="_blank" rel="noopener noreferrer">CDN statistics</a>
+        are collected by AWS but they cannot be traced to you or your behavior.
+        You can download the offline version if you don't want any CDN data collection.
+      </div>
     </div>
     <div class="line">
       <div class="line__emoji">🎉</div>
       <div>
         As almost no data is collected, the application gets better
         only with your active feedback.
-        Feel free to <a :href="feedbackUrl" target="_blank">create an issue</a> 😊</div>
+        Feel free to <a :href="feedbackUrl" target="_blank" rel="noopener noreferrer">create an issue</a> 😊</div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { defineComponent, computed } from 'vue';
 import { Environment } from '@/application/Environment/Environment';
-import { ApplicationFactory } from '@/application/ApplicationFactory';
-import { IApplication } from '@/domain/IApplication';
+import { useApplication } from '@/presentation/components/Shared/Hooks/UseApplication';
 
-@Component
-export default class PrivacyPolicy extends Vue {
-  public repositoryUrl = '';
+const { isDesktop } = Environment.CurrentEnvironment;
 
-  public feedbackUrl = '';
+export default defineComponent({
+  setup() {
+    const { info } = useApplication();
 
-  public isDesktop = Environment.CurrentEnvironment.isDesktop;
+    const repositoryUrl = computed<string>(() => info.repositoryUrl);
+    const feedbackUrl = computed<string>(() => info.feedbackUrl);
 
-  public async created() {
-    const app = await ApplicationFactory.Current.getApp();
-    this.initialize(app);
-  }
-
-  private initialize(app: IApplication) {
-    const { info } = app;
-    this.repositoryUrl = info.repositoryWebUrl;
-    this.feedbackUrl = info.feedbackUrl;
-  }
-}
+    return {
+      repositoryUrl,
+      feedbackUrl,
+      isDesktop,
+    };
+  },
+});
 </script>
 
 <style scoped lang="scss">

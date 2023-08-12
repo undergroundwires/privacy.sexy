@@ -24,6 +24,9 @@ module.exports = defineConfig({
     },
     // Fix compilation failing on macOS when running unit/integration tests
     externals: ['fsevents'],
+    // Use something other than default source mapper or babel cannot
+    // log stacks like `console.log(new Error().stack)`
+    devtool: 'eval-source-map',
   },
   pluginOptions: {
     // https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/guide.html#native-modules
@@ -71,6 +74,7 @@ function loadVueAppRuntimeVariables() {
   process.env.VUE_APP_NAME = packageJson.name;
   process.env.VUE_APP_REPOSITORY_URL = packageJson.repository.url;
   process.env.VUE_APP_HOMEPAGE_URL = packageJson.homepage;
+  process.env.VUE_APP_SLOGAN = packageJson.slogan;
 }
 
 function ignorePolyfills(...moduleNames) {

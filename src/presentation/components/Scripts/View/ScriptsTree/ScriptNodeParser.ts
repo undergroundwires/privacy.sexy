@@ -1,15 +1,15 @@
 import { ICategory, IScript } from '@/domain/ICategory';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
-import { INode, NodeType } from './SelectableTree/Node/INode';
+import { INodeContent, NodeType } from './SelectableTree/Node/INodeContent';
 
-export function parseAllCategories(collection: ICategoryCollection): INode[] | undefined {
+export function parseAllCategories(collection: ICategoryCollection): INodeContent[] | undefined {
   return createCategoryNodes(collection.actions);
 }
 
 export function parseSingleCategory(
   categoryId: number,
   collection: ICategoryCollection,
-): INode[] | undefined {
+): INodeContent[] | undefined {
   const category = collection.findCategory(categoryId);
   if (!category) {
     throw new Error(`Category with id ${categoryId} does not exist`);
@@ -34,7 +34,7 @@ export function getCategoryNodeId(category: ICategory): string {
 
 function parseCategoryRecursively(
   parentCategory: ICategory,
-): INode[] {
+): INodeContent[] {
   if (!parentCategory) {
     throw new Error('parentCategory is undefined');
   }
@@ -44,12 +44,12 @@ function parseCategoryRecursively(
   ];
 }
 
-function createScriptNodes(scripts: ReadonlyArray<IScript>): INode[] {
+function createScriptNodes(scripts: ReadonlyArray<IScript>): INodeContent[] {
   return (scripts || [])
     .map((script) => convertScriptToNode(script));
 }
 
-function createCategoryNodes(categories: ReadonlyArray<ICategory>): INode[] {
+function createCategoryNodes(categories: ReadonlyArray<ICategory>): INodeContent[] {
   return (categories || [])
     .map((category) => ({ category, children: parseCategoryRecursively(category) }))
     .map((data) => convertCategoryToNode(data.category, data.children));
@@ -57,8 +57,8 @@ function createCategoryNodes(categories: ReadonlyArray<ICategory>): INode[] {
 
 function convertCategoryToNode(
   category: ICategory,
-  children: readonly INode[],
-): INode {
+  children: readonly INodeContent[],
+): INodeContent {
   return {
     id: getCategoryNodeId(category),
     type: NodeType.Category,
@@ -69,7 +69,7 @@ function convertCategoryToNode(
   };
 }
 
-function convertScriptToNode(script: IScript): INode {
+function convertScriptToNode(script: IScript): INodeContent {
   return {
     id: getScriptNodeId(script),
     type: NodeType.Script,

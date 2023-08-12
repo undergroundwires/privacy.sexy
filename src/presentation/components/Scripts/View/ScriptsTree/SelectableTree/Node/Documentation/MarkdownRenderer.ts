@@ -24,7 +24,7 @@ function beatifyAutoLinks(content: string): string {
   if (!content) {
     return content;
   }
-  return content.replaceAll(/(?<!\]\(|\[\d+\]:\s+|https?\S+)((?:https?):\/\/[^\s\])]*)(?:[\])](?!\()|$|\s)/gm, (_$, urlMatch) => {
+  return content.replaceAll(/(?<!\]\(|\[\d+\]:\s+|https?\S+|`)((?:https?):\/\/[^\s\])]*)(?:[\])](?!\()|$|\s)/gm, (_$, urlMatch) => {
     return toReadableLink(urlMatch);
   });
 }
@@ -124,33 +124,50 @@ function isGoodPathPart(part: string): boolean {
     && !/^[0-9a-f]{40}$/.test(part); // Git SHA (e.g. GitHub links)
 }
 
+const ExternalAnchorElementAttributes: Record<string, string> = {
+  target: '_blank',
+  rel: 'noopener noreferrer',
+};
+
 function openUrlsInNewTab(md: MarkdownIt) {
   // https://github.com/markdown-it/markdown-it/blob/12.2.0/docs/architecture.md#renderer
-  const defaultRender = getDefaultRenderer(md, 'link_open');
+  const defaultRender = getOrDefaultRenderer(md, 'link_open');
   md.renderer.rules.link_open = (tokens, idx, options, env, self) => {
     const token = tokens[idx];
-    if (!getTokenAttributeValue(token, 'target')) {
-      token.attrPush(['target', '_blank']);
-    }
+
+    Object.entries(ExternalAnchorElementAttributes).forEach(([name, value]) => {
+      const currentValue = getAttribute(token, name);
+      if (!currentValue) {
+        token.attrPush([name, value]);
+      } else if (currentValue !== value) {
+        setAttribute(token, name, value);
+      }
+    });
     return defaultRender(tokens, idx, options, env, self);
   };
 }
 
-function getDefaultRenderer(md: MarkdownIt, ruleName: string): Renderer.RenderRule {
+function getOrDefaultRenderer(md: MarkdownIt, ruleName: string): Renderer.RenderRule {
   const renderer = md.renderer.rules[ruleName];
-  if (renderer) {
-    return renderer;
-  }
-  return (tokens, idx, options, _env, self) => {
+  return renderer || defaultRenderer;
+  function defaultRenderer(tokens, idx, options, _env, self) {
     return self.renderToken(tokens, idx, options);
-  };
+  }
 }
 
-function getTokenAttributeValue(token: Token, attributeName: string): string | undefined {
-  const attributeIndex = token.attrIndex(attributeName);
+function getAttribute(token: Token, name: string): string | undefined {
+  const attributeIndex = token.attrIndex(name);
   if (attributeIndex < 0) {
     return undefined;
   }
   const value = token.attrs[attributeIndex][1];
   return value;
+}
+
+function setAttribute(token: Token, name: string, value: string): void {
+  const attributeIndex = token.attrIndex(name);
+  if (attributeIndex < 0) {
+    throw new Error('Attribute does not exist');
+  }
+  token.attrs[attributeIndex][1] = value;
 }

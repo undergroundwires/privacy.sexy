@@ -1,30 +1,33 @@
 <template>
-  <Documentable :docs="this.data.docs">
+  <DocumentableNode :docs="data.docs">
     <div id="node">
-      <div class="item text">{{ this.data.text }}</div>
+      <div class="item text">{{ data.text }}</div>
       <RevertToggle
         class="item"
         v-if="data.isReversible"
         :node="data" />
     </div>
-  </Documentable>
+  </DocumentableNode>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import { INode } from './INode';
+import { defineComponent, PropType } from 'vue';
+import { INodeContent } from './INodeContent';
 import RevertToggle from './RevertToggle.vue';
-import Documentable from './Documentation/Documentable.vue';
+import DocumentableNode from './Documentation/DocumentableNode.vue';
 
-@Component({
+export default defineComponent({
   components: {
     RevertToggle,
-    Documentable,
+    DocumentableNode,
   },
-})
-export default class Node extends Vue {
-    @Prop() public data: INode;
-}
+  props: {
+    data: {
+      type: Object as PropType<INodeContent>,
+      required: true,
+    },
+  },
+});
 </script>
 
 <style scoped lang="scss">

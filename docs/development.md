@@ -47,6 +47,13 @@ You could run other types of tests as well, but they may take longer time and ov
 - Build desktop application: `npm run electron:build`
 - (Re)create icons (see [documentation](../img/README.md)): `npm run create-icons`
 
+### Utility Scripts
+
+- Run fresh NPM install: [`./scripts/fresh-npm-install.sh`](../scripts/fresh-npm-install.sh)
+  - This script provides a clean NPM install, removing existing node modules and optionally the package-lock.json (when run with -n), then installs dependencies and runs unit tests.
+- Configure VSCode: [`./scripts/configure-vscode.sh`](../scripts/configure-vscode.sh)
+  - This script checks and sets the necessary configurations for VSCode in `settings.json` file.
+
 ## Recommended extensions
 
 You should use EditorConfig to follow project style.

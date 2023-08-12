@@ -5,6 +5,7 @@ import { parseProjectInformation } from '@/application/Parser/ProjectInformation
 import { CategoryCollectionParserType, parseApplication } from '@/application/Parser/ApplicationParser';
 import WindowsData from '@/application/collections/windows.yaml';
 import MacOsData from '@/application/collections/macos.yaml';
+import LinuxData from '@/application/collections/linux.yaml';
 import { IProjectInformation } from '@/domain/IProjectInformation';
 import { ProjectInformation } from '@/domain/ProjectInformation';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
@@ -101,7 +102,7 @@ describe('ApplicationParser', () => {
       });
       it('defaults to expected data', () => {
         // arrange
-        const expected = [WindowsData, MacOsData];
+        const expected = [WindowsData, MacOsData, LinuxData];
         const parserSpy = new CategoryCollectionParserSpy();
         const parserMock = parserSpy.mockParser();
         // act

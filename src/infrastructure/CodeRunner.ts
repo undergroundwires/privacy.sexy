@@ -26,6 +26,8 @@ export class CodeRunner {
 
 function getExecuteCommand(scriptPath: string, environment: Environment): string {
   switch (environment.os) {
+    case OperatingSystem.Linux:
+      return `x-terminal-emulator -e '${scriptPath}'`;
     case OperatingSystem.macOS:
       return `open -a Terminal.app ${scriptPath}`;
     // Another option with graphical sudo would be

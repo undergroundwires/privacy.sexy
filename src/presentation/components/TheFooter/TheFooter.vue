@@ -3,9 +3,9 @@
     <div class="footer">
       <div class="footer__section">
         <span v-if="isDesktop" class="footer__section__item">
-          <font-awesome-icon class="icon" :icon="['fas', 'globe']"  />
+          <font-awesome-icon class="icon" :icon="['fas', 'globe']" />
           <span>
-            Online version at <a :href="homepageUrl" target="_blank">{{ homepageUrl }}</a>
+            Online version at <a :href="homepageUrl" target="_blank" rel="noopener noreferrer">{{ homepageUrl }}</a>
           </span>
         </span>
         <span v-else class="footer__section__item">
@@ -14,76 +14,82 @@
       </div>
       <div class="footer__section">
         <div class="footer__section__item">
-          <a :href="feedbackUrl" target="_blank">
-            <font-awesome-icon class="icon" :icon="['far', 'smile']"  />
+          <a :href="feedbackUrl" target="_blank" rel="noopener noreferrer">
+            <font-awesome-icon class="icon" :icon="['far', 'smile']" />
             <span>Feedback</span>
           </a>
         </div>
         <div class="footer__section__item">
-          <a :href="repositoryUrl" target="_blank">
-            <font-awesome-icon class="icon" :icon="['fab', 'github']"  />
+          <a :href="repositoryUrl" target="_blank" rel="noopener noreferrer">
+            <font-awesome-icon class="icon" :icon="['fab', 'github']" />
             <span>Source Code</span>
           </a>
         </div>
         <div class="footer__section__item">
-          <a :href="releaseUrl" target="_blank">
-            <font-awesome-icon class="icon" :icon="['fas', 'tag']"  />
+          <a :href="releaseUrl" target="_blank" rel="noopener noreferrer">
+            <font-awesome-icon class="icon" :icon="['fas', 'tag']" />
             <span>v{{ version }}</span>
           </a>
         </div>
         <div class="footer__section__item">
-          <font-awesome-icon class="icon" :icon="['fas', 'user-secret']"  />
-          <a @click="$refs.privacyDialog.show()">Privacy</a>
+          <font-awesome-icon class="icon" :icon="['fas', 'user-secret']" />
+          <a @click="showPrivacyDialog()">Privacy</a>
         </div>
       </div>
     </div>
-    <Dialog ref="privacyDialog">
-        <PrivacyPolicy />
-    </Dialog>
+    <ModalDialog v-model="isPrivacyDialogVisible">
+      <PrivacyPolicy />
+    </ModalDialog>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { defineComponent, ref, computed } from 'vue';
 import { Environment } from '@/application/Environment/Environment';
-import Dialog from '@/presentation/components/Shared/Dialog.vue';
-import { IApplication } from '@/domain/IApplication';
-import { ApplicationFactory } from '@/application/ApplicationFactory';
+import ModalDialog from '@/presentation/components/Shared/Modal/ModalDialog.vue';
+import { useApplication } from '@/presentation/components/Shared/Hooks/UseApplication';
 import DownloadUrlList from './DownloadUrlList.vue';
 import PrivacyPolicy from './PrivacyPolicy.vue';
 
-@Component({
+const { isDesktop } = Environment.CurrentEnvironment;
+
+export default defineComponent({
   components: {
-    Dialog, PrivacyPolicy, DownloadUrlList,
+    ModalDialog,
+    PrivacyPolicy,
+    DownloadUrlList,
   },
-})
-export default class TheFooter extends Vue {
-  public readonly isDesktop = Environment.CurrentEnvironment.isDesktop;
+  setup() {
+    const { info } = useApplication();
 
-  public version = '';
+    const isPrivacyDialogVisible = ref(false);
 
-  public repositoryUrl = '';
+    const version = computed<string>(() => info.version.toString());
 
-  public releaseUrl = '';
+    const homepageUrl = computed<string>(() => info.homepage);
 
-  public feedbackUrl = '';
+    const repositoryUrl = computed<string>(() => info.repositoryWebUrl);
 
-  public homepageUrl = '';
+    const releaseUrl = computed<string>(() => info.releaseUrl);
 
-  public async created() {
-    const app = await ApplicationFactory.Current.getApp();
-    this.initialize(app);
-  }
+    const feedbackUrl = computed<string>(() => info.feedbackUrl);
 
-  private initialize(app: IApplication) {
-    const { info } = app;
-    this.version = info.version.toString();
-    this.homepageUrl = info.homepage;
-    this.repositoryUrl = info.repositoryWebUrl;
-    this.releaseUrl = info.releaseUrl;
-    this.feedbackUrl = info.feedbackUrl;
-  }
-}
+    function showPrivacyDialog() {
+      isPrivacyDialogVisible.value = true;
+    }
+
+    return {
+      isDesktop,
+      isPrivacyDialogVisible,
+      showPrivacyDialog,
+      version,
+      homepageUrl,
+      repositoryUrl,
+      releaseUrl,
+      feedbackUrl,
+    };
+  },
+});
 </script>
 
 <style scoped lang="scss">
