@@ -2,20 +2,28 @@
   <span class="code-wrapper">
     <span class="dollar">$</span>
     <code><slot /></code>
-    <font-awesome-icon
-      class="copy-button"
-      :icon="['fas', 'copy']"
-      @click="copyCode"
-      v-tooltip.top-center="'Copy'"
-    />
+    <TooltipWrapper>
+      <font-awesome-icon
+        class="copy-button"
+        :icon="['fas', 'copy']"
+        @click="copyCode"
+      />
+      <template v-slot:tooltip>
+        Copy
+      </template>
+    </TooltipWrapper>
   </span>
 </template>
 
 <script lang="ts">
 import { defineComponent, useSlots } from 'vue';
 import { Clipboard } from '@/infrastructure/Clipboard';
+import TooltipWrapper from '@/presentation/components/Shared/TooltipWrapper.vue';
 
 export default defineComponent({
+  components: {
+    TooltipWrapper,
+  },
   setup() {
     const slots = useSlots();
 

@@ -61,9 +61,16 @@ Stateful components can mutate and/or react to state changes (e.g., user selecti
 
 📖 Refer to [architecture.md | Application State](./architecture.md#application-state) for an overview of event handling and [application.md | Application State](./presentation.md#application-state) for an in-depth understanding of state management in the application layer.
 
-## Modals
+## Shared UI components
 
-- [ModalDialog.vue](./../src/presentation/components/Shared/Modal/ModalDialog.vue) is a shared component utilized for rendering modal windows.
+Shared UI components promote consistency and simplifies the creation of the front-end.
+
+In order to maintain portability and easy maintainability, the preference is towards using homegrown components over third-party ones or comprehensive UI frameworks like Quasar.
+
+Shared components include:
+
+- [ModalDialog.vue](./../src/presentation/components/Shared/Modal/ModalDialog.vue) is utilized for rendering modal windows.
+- [TooltipWrapper.vue](./../src/presentation/components/Shared/TooltipWrapper.vue) acts as a wrapper for rendering tooltips.
 
 ## Sass naming convention
 

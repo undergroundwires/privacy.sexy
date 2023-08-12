@@ -1,49 +1,73 @@
 <template>
   <MenuOptionList label="Select">
-    <MenuOptionListItem
-      label="None"
-      :enabled="currentSelection !== SelectionType.None"
-      @click="selectType(SelectionType.None)"
-      v-tooltip="
-        'Deselect all selected scripts.<br/>'
-          + '💡 Good start to dive deeper into tweaks and select only what you want.'
-      "
-    />
-    <MenuOptionListItem
-      label="Standard"
-      :enabled="currentSelection !== SelectionType.Standard"
-      @click="selectType(SelectionType.Standard)"
-      v-tooltip="
-        '🛡️ Balanced for privacy and functionality.<br/>'
-          + 'OS and applications will function normally.<br/>'
-          + '💡 Recommended for everyone'"
-    />
-    <MenuOptionListItem
-      label="Strict"
-      :enabled="currentSelection !== SelectionType.Strict"
-      @click="selectType(SelectionType.Strict)"
-      v-tooltip="
-        '🚫 Stronger privacy, disables risky functions that may leak your data.<br/>'
-          + '⚠️ Double check to remove scripts where you would trade functionality for privacy<br/>'
-          + '💡 Recommended for daily users that prefers more privacy over non-essential functions'
-      "
-    />
-    <MenuOptionListItem
-      label="All"
-      :enabled="currentSelection !== SelectionType.All"
-      @click="selectType(SelectionType.All)"
-      v-tooltip="
-        '🔒 Strongest privacy, disabling any functionality that may leak your data.<br/>'
-          + '🛑 Not designed for daily users, it will break important functionalities.<br/>'
-          + '💡 Only recommended for extreme use-cases like crime labs where no leak is acceptable'
-      "
-    />
+    <TooltipWrapper>
+      <!-- None -->
+      <MenuOptionListItem
+        label="None"
+        :enabled="currentSelection !== SelectionType.None"
+        @click="selectType(SelectionType.None)"
+      />
+      <template v-slot:tooltip>
+        Deselect all selected scripts.
+        <br />
+        💡 Good start to dive deeper into tweaks and select only what you want.
+      </template>
+    </TooltipWrapper>
+
+    <!-- Standard -->
+    <TooltipWrapper>
+      <MenuOptionListItem
+        label="Standard"
+        :enabled="currentSelection !== SelectionType.Standard"
+        @click="selectType(SelectionType.Standard)"
+      />
+      <template v-slot:tooltip>
+        🛡️ Balanced for privacy and functionality.
+        <br />
+        OS and applications will function normally.
+        <br />
+        💡 Recommended for everyone
+      </template>
+    </TooltipWrapper>
+
+    <!-- Strict -->
+    <TooltipWrapper>
+      <MenuOptionListItem
+        label="Strict"
+        :enabled="currentSelection !== SelectionType.Strict"
+        @click="selectType(SelectionType.Strict)"
+      />
+      <template v-slot:tooltip>
+        🚫 Stronger privacy, disables risky functions that may leak your data.
+        <br />
+        ⚠️ Double check to remove scripts where you would trade functionality for privacy
+        <br />
+        💡 Recommended for daily users that prefers more privacy over non-essential functions
+      </template>
+    </TooltipWrapper>
+
+    <!-- All -->
+    <TooltipWrapper>
+      <MenuOptionListItem
+        label="All"
+        :enabled="currentSelection !== SelectionType.All"
+        @click="selectType(SelectionType.All)"
+      />
+      <template v-slot:tooltip>
+        🔒 Strongest privacy, disabling any functionality that may leak your data.
+        <br />
+        🛑 Not designed for daily users, it will break important functionalities.
+        <br />
+        💡 Only recommended for extreme use-cases like crime labs where no leak is acceptable
+      </template>
+    </TooltipWrapper>
   </MenuOptionList>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
+import TooltipWrapper from '@/presentation/components/Shared/TooltipWrapper.vue';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import MenuOptionList from '../MenuOptionList.vue';
 import MenuOptionListItem from '../MenuOptionListItem.vue';
@@ -53,6 +77,7 @@ export default defineComponent({
   components: {
     MenuOptionList,
     MenuOptionListItem,
+    TooltipWrapper,
   },
   setup() {
     const { modifyCurrentState, onStateChange, events } = useCollectionState();

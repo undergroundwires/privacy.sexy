@@ -26,21 +26,27 @@
         >
           <div class="step__action">
             <span>{{ step.action.instruction }}</span>
-            <font-awesome-icon
-              v-if="step.action.details"
-              class="explanation"
-              :icon="['fas', 'info-circle']"
-              v-tooltip.top-center="step.action.details"
-            />
+            <TooltipWrapper v-if="step.action.details">
+              <font-awesome-icon
+                class="explanation"
+                :icon="['fas', 'info-circle']"
+              />
+              <template v-slot:tooltip>
+                <div v-html="step.action.details" />
+              </template>
+            </TooltipWrapper>
           </div>
           <div v-if="step.code" class="step__code">
             <CodeInstruction>{{ step.code.instruction }}</CodeInstruction>
-            <font-awesome-icon
-              v-if="step.code.details"
-              class="explanation"
-              :icon="['fas', 'info-circle']"
-              v-tooltip.top-center="step.code.details"
-            />
+            <TooltipWrapper v-if="step.code.details">
+              <font-awesome-icon
+                class="explanation"
+                :icon="['fas', 'info-circle']"
+              />
+              <template v-slot:tooltip>
+                <div v-html="step.code.details" />
+              </template>
+            </TooltipWrapper>
           </div>
         </li>
       </ol>
@@ -53,6 +59,7 @@ import {
   defineComponent, PropType, computed,
 } from 'vue';
 import { OperatingSystem } from '@/domain/OperatingSystem';
+import TooltipWrapper from '@/presentation/components/Shared/TooltipWrapper.vue';
 import { useApplication } from '@/presentation/components/Shared/Hooks/UseApplication';
 import CodeInstruction from './CodeInstruction.vue';
 import { IInstructionListData } from './InstructionListData';
@@ -60,6 +67,7 @@ import { IInstructionListData } from './InstructionListData';
 export default defineComponent({
   components: {
     CodeInstruction,
+    TooltipWrapper,
   },
   props: {
     data: {
