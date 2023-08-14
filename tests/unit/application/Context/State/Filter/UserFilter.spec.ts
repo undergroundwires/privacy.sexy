@@ -5,173 +5,182 @@ import { UserFilter } from '@/application/Context/State/Filter/UserFilter';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
+import { FilterChange } from '@/application/Context/State/Filter/Event/FilterChange';
+import { IFilterChangeDetails } from '@/application/Context/State/Filter/Event/IFilterChangeDetails';
+import { ICategoryCollection } from '@/domain/ICategoryCollection';
 
 describe('UserFilter', () => {
-  describe('removeFilter', () => {
+  describe('clearFilter', () => {
     it('signals when removing filter', () => {
       // arrange
-      let isCalled = false;
+      const expectedChange = FilterChange.forClear();
+      let actualChange: IFilterChangeDetails;
       const sut = new UserFilter(new CategoryCollectionStub());
-      sut.filterRemoved.on(() => {
-        isCalled = true;
+      sut.filterChanged.on((change) => {
+        actualChange = change;
       });
       // act
-      sut.removeFilter();
+      sut.clearFilter();
       // assert
-      expect(isCalled).to.be.equal(true);
+      expect(actualChange).to.deep.equal(expectedChange);
     });
     it('sets currentFilter to undefined', () => {
       // arrange
       const sut = new UserFilter(new CategoryCollectionStub());
       // act
-      sut.setFilter('non-important');
-      sut.removeFilter();
+      sut.applyFilter('non-important');
+      sut.clearFilter();
       // assert
       expect(sut.currentFilter).to.be.equal(undefined);
     });
   });
-  describe('setFilter', () => {
-    it('signals when no matches', () => {
-      // arrange
-      let actual: IFilterResult;
-      const nonMatchingFilter = 'non matching filter';
-      const sut = new UserFilter(new CategoryCollectionStub());
-      sut.filtered.on((filterResult) => {
-        actual = filterResult;
-      });
-      // act
-      sut.setFilter(nonMatchingFilter);
-      // assert
-      expect(actual.hasAnyMatches()).be.equal(false);
-      expect(actual.query).to.equal(nonMatchingFilter);
-    });
-    it('sets currentFilter as expected when no matches', () => {
-      // arrange
-      const nonMatchingFilter = 'non matching filter';
-      const sut = new UserFilter(new CategoryCollectionStub());
-      // act
-      sut.setFilter(nonMatchingFilter);
-      // assert
-      const actual = sut.currentFilter;
-      expect(actual.hasAnyMatches()).be.equal(false);
-      expect(actual.query).to.equal(nonMatchingFilter);
-    });
-    describe('signals when matches', () => {
-      describe('signals when script matches', () => {
-        it('code matches', () => {
-          // arrange
-          const code = 'HELLO world';
-          const filter = 'Hello WoRLD';
-          let actual: IFilterResult;
-          const script = new ScriptStub('id').withCode(code);
-          const category = new CategoryStub(33).withScript(script);
-          const sut = new UserFilter(new CategoryCollectionStub()
-            .withAction(category));
-          sut.filtered.on((filterResult) => {
-            actual = filterResult;
-          });
-          // act
-          sut.setFilter(filter);
-          // assert
-          expect(actual.hasAnyMatches()).be.equal(true);
-          expect(actual.categoryMatches).to.have.lengthOf(0);
-          expect(actual.scriptMatches).to.have.lengthOf(1);
-          expect(actual.scriptMatches[0]).to.deep.equal(script);
-          expect(actual.query).to.equal(filter);
-          expect(sut.currentFilter).to.deep.equal(actual);
-        });
-        it('revertCode matches', () => {
-          // arrange
-          const revertCode = 'HELLO world';
-          const filter = 'Hello WoRLD';
-          let actual: IFilterResult;
-          const script = new ScriptStub('id').withRevertCode(revertCode);
-          const category = new CategoryStub(33).withScript(script);
-          const sut = new UserFilter(new CategoryCollectionStub()
-            .withAction(category));
-          sut.filtered.on((filterResult) => {
-            actual = filterResult;
-          });
-          // act
-          sut.setFilter(filter);
-          // assert
-          expect(actual.hasAnyMatches()).be.equal(true);
-          expect(actual.categoryMatches).to.have.lengthOf(0);
-          expect(actual.scriptMatches).to.have.lengthOf(1);
-          expect(actual.scriptMatches[0]).to.deep.equal(script);
-          expect(actual.query).to.equal(filter);
-          expect(sut.currentFilter).to.deep.equal(actual);
-        });
-        it('name matches', () => {
-          // arrange
-          const name = 'HELLO world';
-          const filter = 'Hello WoRLD';
-          let actual: IFilterResult;
-          const script = new ScriptStub('id').withName(name);
-          const category = new CategoryStub(33).withScript(script);
-          const sut = new UserFilter(new CategoryCollectionStub()
-            .withAction(category));
-          sut.filtered.on((filterResult) => {
-            actual = filterResult;
-          });
-          // act
-          sut.setFilter(filter);
-          // assert
-          expect(actual.hasAnyMatches()).be.equal(true);
-          expect(actual.categoryMatches).to.have.lengthOf(0);
-          expect(actual.scriptMatches).to.have.lengthOf(1);
-          expect(actual.scriptMatches[0]).to.deep.equal(script);
-          expect(actual.query).to.equal(filter);
-          expect(sut.currentFilter).to.deep.equal(actual);
-        });
-      });
-      it('signals when category matches', () => {
-        // arrange
+  describe('applyFilter', () => {
+    interface IApplyFilterTestCase {
+      readonly name: string;
+      readonly filter: string;
+      readonly collection: ICategoryCollection;
+      readonly assert: (result: IFilterResult) => void;
+    }
+    const testCases: readonly IApplyFilterTestCase[] = [
+      (() => {
+        const nonMatchingFilter = 'non matching filter';
+        return {
+          name: 'given no matches',
+          filter: nonMatchingFilter,
+          collection: new CategoryCollectionStub(),
+          assert: (filter) => {
+            expect(filter.hasAnyMatches()).be.equal(false);
+            expect(filter.query).to.equal(nonMatchingFilter);
+          },
+        };
+      })(),
+      (() => {
+        const code = 'HELLO world';
+        const matchingFilter = 'Hello WoRLD';
+        const script = new ScriptStub('id').withCode(code);
+        return {
+          name: 'given script match with case-insensitive code',
+          filter: matchingFilter,
+          collection: new CategoryCollectionStub()
+            .withAction(new CategoryStub(33).withScript(script)),
+          assert: (filter) => {
+            expect(filter.hasAnyMatches()).be.equal(true);
+            expect(filter.categoryMatches).to.have.lengthOf(0);
+            expect(filter.scriptMatches).to.have.lengthOf(1);
+            expect(filter.scriptMatches[0]).to.deep.equal(script);
+            expect(filter.query).to.equal(matchingFilter);
+          },
+        };
+      })(),
+      (() => {
+        const revertCode = 'HELLO world';
+        const matchingFilter = 'Hello WoRLD';
+        const script = new ScriptStub('id').withRevertCode(revertCode);
+        return {
+          name: 'given script match with case-insensitive revertCode',
+          filter: matchingFilter,
+          collection: new CategoryCollectionStub()
+            .withAction(new CategoryStub(33).withScript(script)),
+          assert: (filter) => {
+            expect(filter.hasAnyMatches()).be.equal(true);
+            expect(filter.categoryMatches).to.have.lengthOf(0);
+            expect(filter.scriptMatches).to.have.lengthOf(1);
+            expect(filter.scriptMatches[0]).to.deep.equal(script);
+            expect(filter.query).to.equal(matchingFilter);
+          },
+        };
+      })(),
+      (() => {
+        const name = 'HELLO world';
+        const matchingFilter = 'Hello WoRLD';
+        const script = new ScriptStub('id').withName(name);
+        return {
+          name: 'given script match with case-insensitive name',
+          filter: matchingFilter,
+          collection: new CategoryCollectionStub()
+            .withAction(new CategoryStub(33).withScript(script)),
+          assert: (filter) => {
+            expect(filter.hasAnyMatches()).be.equal(true);
+            expect(filter.categoryMatches).to.have.lengthOf(0);
+            expect(filter.scriptMatches).to.have.lengthOf(1);
+            expect(filter.scriptMatches[0]).to.deep.equal(script);
+            expect(filter.query).to.equal(matchingFilter);
+          },
+        };
+      })(),
+      (() => {
         const categoryName = 'HELLO world';
-        const filter = 'Hello WoRLD';
-        let actual: IFilterResult;
+        const matchingFilter = 'Hello WoRLD';
         const category = new CategoryStub(55).withName(categoryName);
-        const sut = new UserFilter(new CategoryCollectionStub()
-          .withAction(category));
-        sut.filtered.on((filterResult) => {
-          actual = filterResult;
-        });
-        // act
-        sut.setFilter(filter);
-        // assert
-        expect(actual.hasAnyMatches()).be.equal(true);
-        expect(actual.categoryMatches).to.have.lengthOf(1);
-        expect(actual.categoryMatches[0]).to.deep.equal(category);
-        expect(actual.scriptMatches).to.have.lengthOf(0);
-        expect(actual.query).to.equal(filter);
-        expect(sut.currentFilter).to.deep.equal(actual);
-      });
-      it('signals when category and script matches', () => {
-        // arrange
+        return {
+          name: 'given category match with case-insensitive name',
+          filter: matchingFilter,
+          collection: new CategoryCollectionStub()
+            .withAction(category),
+          assert: (filter) => {
+            expect(filter.hasAnyMatches()).be.equal(true);
+            expect(filter.categoryMatches).to.have.lengthOf(1);
+            expect(filter.categoryMatches[0]).to.deep.equal(category);
+            expect(filter.scriptMatches).to.have.lengthOf(0);
+            expect(filter.query).to.equal(matchingFilter);
+          },
+        };
+      })(),
+      (() => {
         const matchingText = 'HELLO world';
-        const filter = 'Hello WoRLD';
-        let actual: IFilterResult;
+        const matchingFilter = 'Hello WoRLD';
         const script = new ScriptStub('script')
           .withName(matchingText);
         const category = new CategoryStub(55)
           .withName(matchingText)
           .withScript(script);
-        const collection = new CategoryCollectionStub()
-          .withAction(category);
-        const sut = new UserFilter(collection);
-        sut.filtered.on((filterResult) => {
-          actual = filterResult;
+        return {
+          name: 'given category and script matches with case-insensitive names',
+          filter: matchingFilter,
+          collection: new CategoryCollectionStub()
+            .withAction(category),
+          assert: (filter) => {
+            expect(filter.hasAnyMatches()).be.equal(true);
+            expect(filter.categoryMatches).to.have.lengthOf(1);
+            expect(filter.categoryMatches[0]).to.deep.equal(category);
+            expect(filter.scriptMatches).to.have.lengthOf(1);
+            expect(filter.scriptMatches[0]).to.deep.equal(script);
+            expect(filter.query).to.equal(matchingFilter);
+          },
+        };
+      })(),
+    ];
+    describe('sets currentFilter as expected', () => {
+      testCases.forEach(({
+        name, filter, collection, assert,
+      }) => {
+        it(name, () => {
+          // arrange
+          const sut = new UserFilter(collection);
+          // act
+          sut.applyFilter(filter);
+          // assert
+          const actual = sut.currentFilter;
+          assert(actual);
         });
-        // act
-        sut.setFilter(filter);
-        // assert
-        expect(actual.hasAnyMatches()).be.equal(true);
-        expect(actual.categoryMatches).to.have.lengthOf(1);
-        expect(actual.categoryMatches[0]).to.deep.equal(category);
-        expect(actual.scriptMatches).to.have.lengthOf(1);
-        expect(actual.scriptMatches[0]).to.deep.equal(script);
-        expect(actual.query).to.equal(filter);
-        expect(sut.currentFilter).to.deep.equal(actual);
+      });
+    });
+    describe('signals as expected', () => {
+      testCases.forEach(({
+        name, filter, collection, assert,
+      }) => {
+        it(name, () => {
+          // arrange
+          const sut = new UserFilter(collection);
+          let actualFilterResult: IFilterResult;
+          sut.filterChanged.on((filterResult) => {
+            actualFilterResult = filterResult.filter;
+          });
+          // act
+          sut.applyFilter(filter);
+          // assert
+          assert(actualFilterResult);
+        });
       });
     });
   });

@@ -4,11 +4,11 @@ import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { FilterResult } from './FilterResult';
 import { IFilterResult } from './IFilterResult';
 import { IUserFilter } from './IUserFilter';
+import { IFilterChangeDetails } from './Event/IFilterChangeDetails';
+import { FilterChange } from './Event/FilterChange';
 
 export class UserFilter implements IUserFilter {
-  public readonly filtered = new EventSource<IFilterResult>();
-
-  public readonly filterRemoved = new EventSource<void>();
+  public readonly filterChanged = new EventSource<IFilterChangeDetails>();
 
   public currentFilter: IFilterResult | undefined;
 
@@ -16,9 +16,9 @@ export class UserFilter implements IUserFilter {
 
   }
 
-  public setFilter(filter: string): void {
+  public applyFilter(filter: string): void {
     if (!filter) {
-      throw new Error('Filter must be defined and not empty. Use removeFilter() to remove the filter');
+      throw new Error('Filter must be defined and not empty. Use clearFilter() to remove the filter');
     }
     const filterLowercase = filter.toLocaleLowerCase();
     const filteredScripts = this.collection.getAllScripts().filter(
@@ -33,12 +33,12 @@ export class UserFilter implements IUserFilter {
       filter,
     );
     this.currentFilter = matches;
-    this.filtered.notify(matches);
+    this.filterChanged.notify(FilterChange.forApply(this.currentFilter));
   }
 
-  public removeFilter(): void {
+  public clearFilter(): void {
     this.currentFilter = undefined;
-    this.filterRemoved.notify();
+    this.filterChanged.notify(FilterChange.forClear());
   }
 }
 

@@ -21,7 +21,6 @@ import { useCollectionStateKey } from '@/presentation/injectionSymbols';
 import { NonCollapsing } from '@/presentation/components/Scripts/View/Cards/NonCollapsingDirective';
 import { IReadOnlyUserFilter } from '@/application/Context/State/Filter/IUserFilter';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
-import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 
 export default defineComponent({
   directives: {
@@ -44,36 +43,36 @@ export default defineComponent({
       modifyCurrentState((state) => {
         const { filter } = state;
         if (!newFilter) {
-          filter.removeFilter();
+          filter.clearFilter();
         } else {
-          filter.setFilter(newFilter);
+          filter.applyFilter(newFilter);
         }
       });
     }
 
     onStateChange((newState) => {
       events.unsubscribeAll();
-      subscribeSearchQuery(newState);
+      updateFromInitialFilter(newState.filter.currentFilter);
+      subscribeToFilterChanges(newState.filter);
     }, { immediate: true });
 
-    function subscribeSearchQuery(newState: IReadOnlyCategoryCollectionState) {
-      searchQuery.value = newState.filter.currentFilter ? newState.filter.currentFilter.query : '';
-      subscribeFilter(newState.filter);
+    function updateFromInitialFilter(filter?: IFilterResult) {
+      searchQuery.value = filter?.query || '';
     }
 
-    function subscribeFilter(filter: IReadOnlyUserFilter) {
+    function subscribeToFilterChanges(filter: IReadOnlyUserFilter) {
       events.register(
-        filter.filtered.on((result) => handleFiltered(result)),
-        filter.filterRemoved.on(() => handleFilterRemoved()),
+        filter.filterChanged.on((event) => {
+          event.visit({
+            onApply: (result) => {
+              searchQuery.value = result.query;
+            },
+            onClear: () => {
+              searchQuery.value = '';
+            },
+          });
+        }),
       );
-    }
-
-    function handleFilterRemoved() {
-      searchQuery.value = '';
-    }
-
-    function handleFiltered(result: IFilterResult) {
-      searchQuery.value = result.query;
     }
 
     return {

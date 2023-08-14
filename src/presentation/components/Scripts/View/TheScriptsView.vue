@@ -40,10 +40,8 @@ import { useApplicationKey, useCollectionStateKey } from '@/presentation/injecti
 import ScriptsTree from '@/presentation/components/Scripts/View/ScriptsTree/ScriptsTree.vue';
 import CardList from '@/presentation/components/Scripts/View/Cards/CardList.vue';
 import { ViewType } from '@/presentation/components/Scripts/Menu/View/ViewType';
-import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
-import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { IReadOnlyUserFilter } from '@/application/Context/State/Filter/IUserFilter';
 
-/** Shows content of single category or many categories */
 export default defineComponent({
   components: {
     ScriptsTree,
@@ -74,25 +72,29 @@ export default defineComponent({
 
     onStateChange((newState) => {
       events.unsubscribeAll();
-      subscribeState(newState);
+      subscribeToFilterChanges(newState.filter);
     });
 
     function clearSearchQuery() {
       modifyCurrentState((state) => {
         const { filter } = state;
-        filter.removeFilter();
+        filter.clearFilter();
       });
     }
 
-    function subscribeState(state: IReadOnlyCategoryCollectionState) {
+    function subscribeToFilterChanges(filter: IReadOnlyUserFilter) {
       events.register(
-        state.filter.filterRemoved.on(() => {
-          isSearching.value = false;
-        }),
-        state.filter.filtered.on((result: IFilterResult) => {
-          searchQuery.value = result.query;
-          isSearching.value = true;
-          searchHasMatches.value = result.hasAnyMatches();
+        filter.filterChanged.on((event) => {
+          event.visit({
+            onApply: (newFilter) => {
+              searchQuery.value = newFilter.query;
+              isSearching.value = true;
+              searchHasMatches.value = newFilter.hasAnyMatches();
+            },
+            onClear: () => {
+              isSearching.value = false;
+            },
+          });
         }),
       );
     }

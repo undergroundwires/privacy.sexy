@@ -91,11 +91,11 @@ describe('CategoryCollectionState', () => {
         .withAction(new CategoryStub(0).withScript(expectedScript));
       const sut = new CategoryCollectionState(collection);
       // act
-      let actualScript: IScript;
-      sut.filter.filtered.on((result) => {
-        [actualScript] = result.scriptMatches;
+      let actualScript: IScript | undefined;
+      sut.filter.filterChanged.on((result) => {
+        [actualScript] = result.filter?.scriptMatches ?? [undefined];
       });
-      sut.filter.setFilter(scriptNameFilter);
+      sut.filter.applyFilter(scriptNameFilter);
       // assert
       expect(expectedScript).to.equal(actualScript);
     });

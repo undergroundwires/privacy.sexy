@@ -47,7 +47,7 @@ describe('ApplicationContext', () => {
         const sut = testContext
           .withInitialOs(OperatingSystem.Windows)
           .construct();
-        sut.state.filter.setFilter('filtered');
+        sut.state.filter.applyFilter('filtered');
         sut.changeContext(OperatingSystem.macOS);
         // assert
         expectEmptyState(sut.state);
@@ -65,10 +65,10 @@ describe('ApplicationContext', () => {
         .withInitialOs(os)
         .construct();
       const firstState = sut.state;
-      firstState.filter.setFilter(expectedFilter);
+      firstState.filter.applyFilter(expectedFilter);
       sut.changeContext(os);
       sut.changeContext(changedOs);
-      sut.state.filter.setFilter('second-state');
+      sut.state.filter.applyFilter('second-state');
       sut.changeContext(os);
       // assert
       const actualFilter = sut.state.filter.currentFilter.query;
@@ -103,7 +103,7 @@ describe('ApplicationContext', () => {
           .withInitialOs(os)
           .construct();
         const initialState = sut.state;
-        initialState.filter.setFilter('dirty-state');
+        initialState.filter.applyFilter('dirty-state');
         sut.changeContext(os);
         // assert
         expect(testContext.firedEvents.length).to.equal(0);

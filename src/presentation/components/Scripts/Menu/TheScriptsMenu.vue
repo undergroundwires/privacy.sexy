@@ -14,7 +14,7 @@ import {
   defineComponent, ref, onUnmounted, inject,
 } from 'vue';
 import { useCollectionStateKey } from '@/presentation/injectionSymbols';
-import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { IReadOnlyUserFilter } from '@/application/Context/State/Filter/IUserFilter';
 import TheOsChanger from './TheOsChanger.vue';
 import TheSelector from './Selector/TheSelector.vue';
 import TheViewChanger from './View/TheViewChanger.vue';
@@ -31,20 +31,22 @@ export default defineComponent({
     const isSearching = ref(false);
 
     onStateChange((state) => {
-      subscribe(state);
+      subscribeToFilterChanges(state.filter);
     }, { immediate: true });
 
     onUnmounted(() => {
       unsubscribeAll();
     });
 
-    function subscribe(state: IReadOnlyCategoryCollectionState) {
-      events.register(state.filter.filterRemoved.on(() => {
-        isSearching.value = false;
-      }));
-      events.register(state.filter.filtered.on(() => {
-        isSearching.value = true;
-      }));
+    function subscribeToFilterChanges(filter: IReadOnlyUserFilter) {
+      events.register(
+        filter.filterChanged.on((event) => {
+          event.visit({
+            onApply: () => { isSearching.value = true; },
+            onClear: () => { isSearching.value = false; },
+          });
+        }),
+      );
     }
 
     function unsubscribeAll() {
