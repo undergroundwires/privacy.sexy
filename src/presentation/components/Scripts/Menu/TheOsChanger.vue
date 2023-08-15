@@ -12,11 +12,10 @@
 
 <script lang="ts">
 import {
-  defineComponent, computed,
+  defineComponent, computed, inject,
 } from 'vue';
+import { useApplicationKey, useCollectionStateKey } from '@/presentation/injectionSymbols';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
-import { useApplication } from '@/presentation/components/Shared/Hooks/UseApplication';
 import MenuOptionList from './MenuOptionList.vue';
 import MenuOptionListItem from './MenuOptionListItem.vue';
 
@@ -31,8 +30,8 @@ export default defineComponent({
     MenuOptionListItem,
   },
   setup() {
-    const { modifyCurrentContext, currentState } = useCollectionState();
-    const { application } = useApplication();
+    const { modifyCurrentContext, currentState } = inject(useCollectionStateKey)();
+    const { application } = inject(useApplicationKey);
 
     const allOses = computed<ReadonlyArray<IOsViewModel>>(() => (
       application.getSupportedOsList() ?? [])

@@ -10,8 +10,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onUnmounted } from 'vue';
-import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
+import {
+  defineComponent, ref, onUnmounted, inject,
+} from 'vue';
+import { useCollectionStateKey } from '@/presentation/injectionSymbols';
 import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import TheOsChanger from './TheOsChanger.vue';
 import TheSelector from './Selector/TheSelector.vue';
@@ -24,7 +26,7 @@ export default defineComponent({
     TheViewChanger,
   },
   setup() {
-    const { onStateChange, events } = useCollectionState();
+    const { onStateChange, events } = inject(useCollectionStateKey)();
 
     const isSearching = ref(false);
 

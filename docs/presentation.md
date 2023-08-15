@@ -61,6 +61,20 @@ Stateful components can mutate and/or react to state changes (e.g., user selecti
 
 📖 Refer to [architecture.md | Application State](./architecture.md#application-state) for an overview of event handling and [application.md | Application State](./presentation.md#application-state) for an in-depth understanding of state management in the application layer.
 
+## Dependency injections
+
+The presentation layer uses Vue's native dependency injection system to increase testability and decouple components.
+
+To add a new dependency:
+
+1. **Define its symbol**: Define an associated symbol for every dependency in [`injectionSymbols.ts`](./../src/presentation/injectionSymbols.ts). Symbols are grouped into:
+   - **Singletons**: Shared across components, instantiated once.
+   - **Transients**: Factories yielding a new instance on every access.
+2. **Provide the dependency**: Modify the [`provideDependencies`](./../src/presentation/bootstrapping/DependencyProvider.ts) function to include the new dependency. [`App.vue`](./../src/presentation/components/App.vue) calls this function within its `setup()` hook to register the dependencies.
+3. **Inject the dependency**: Use Vue's `inject` method alongside the defined symbol to incorporate the dependency into components.
+   - For singletons, invoke the factory method: `inject(symbolKey)()`.
+   - For transients, directly inject: `inject(symbolKey)`.
+
 ## Shared UI components
 
 Shared UI components promote consistency and simplifies the creation of the front-end.

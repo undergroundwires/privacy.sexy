@@ -10,8 +10,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onUnmounted, onMounted } from 'vue';
-import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
+import {
+  defineComponent, onUnmounted, onMounted, inject,
+} from 'vue';
+import { useCollectionStateKey } from '@/presentation/injectionSymbols';
 import { ICodeChangedEvent } from '@/application/Context/State/Code/Event/ICodeChangedEvent';
 import { IScript } from '@/domain/IScript';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
@@ -35,7 +37,7 @@ export default defineComponent({
     NonCollapsing,
   },
   setup(props) {
-    const { onStateChange, currentState, events } = useCollectionState();
+    const { onStateChange, currentState, events } = inject(useCollectionStateKey)();
 
     const editorId = 'codeEditor';
     let editor: ace.Ace.Editor | undefined;

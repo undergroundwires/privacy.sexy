@@ -18,9 +18,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { Environment } from '@/application/Environment/Environment';
+import { defineComponent, inject } from 'vue';
 import { OperatingSystem } from '@/domain/OperatingSystem';
+import { useEnvironmentKey } from '@/presentation/injectionSymbols';
 import DownloadUrlListItem from './DownloadUrlListItem.vue';
 
 const supportedOperativeSystems: readonly OperatingSystem[] = [
@@ -34,7 +34,7 @@ export default defineComponent({
     DownloadUrlListItem,
   },
   setup() {
-    const currentOs = Environment.CurrentEnvironment.os;
+    const { os: currentOs } = inject(useEnvironmentKey);
     const supportedDesktops = [
       ...supportedOperativeSystems,
     ].sort((os) => (os === currentOs ? 0 : 1));

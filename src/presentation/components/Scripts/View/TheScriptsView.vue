@@ -34,14 +34,14 @@
 <script lang="ts">
 import {
   defineComponent, PropType, ref, computed,
+  inject,
 } from 'vue';
-import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
+import { useApplicationKey, useCollectionStateKey } from '@/presentation/injectionSymbols';
 import ScriptsTree from '@/presentation/components/Scripts/View/ScriptsTree/ScriptsTree.vue';
 import CardList from '@/presentation/components/Scripts/View/Cards/CardList.vue';
 import { ViewType } from '@/presentation/components/Scripts/Menu/View/ViewType';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
 import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
-import { useApplication } from '@/presentation/components/Shared/Hooks/UseApplication';
 
 /** Shows content of single category or many categories */
 export default defineComponent({
@@ -56,8 +56,8 @@ export default defineComponent({
     },
   },
   setup() {
-    const { modifyCurrentState, onStateChange, events } = useCollectionState();
-    const { info } = useApplication();
+    const { modifyCurrentState, onStateChange, events } = inject(useCollectionStateKey)();
+    const { info } = inject(useApplicationKey);
 
     const repositoryUrl = computed<string>(() => info.repositoryWebUrl);
     const searchQuery = ref<string>();

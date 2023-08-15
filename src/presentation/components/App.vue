@@ -17,6 +17,10 @@ import TheFooter from '@/presentation/components/TheFooter/TheFooter.vue';
 import TheCodeButtons from '@/presentation/components/Code/CodeButtons/TheCodeButtons.vue';
 import TheScriptArea from '@/presentation/components/Scripts/TheScriptArea.vue';
 import TheSearchBar from '@/presentation/components/TheSearchBar.vue';
+import { buildContext } from '@/application/Context/ApplicationContextFactory';
+import { provideDependencies } from '../bootstrapping/DependencyProvider';
+
+const singletonAppContext = await buildContext();
 
 export default defineComponent({
   components: {
@@ -26,8 +30,10 @@ export default defineComponent({
     TheSearchBar,
     TheFooter,
   },
+  setup() {
+    provideDependencies(singletonAppContext); // In Vue 3.0 we can move it to main.ts
+  },
 });
-
 </script>
 
 <style lang="scss">

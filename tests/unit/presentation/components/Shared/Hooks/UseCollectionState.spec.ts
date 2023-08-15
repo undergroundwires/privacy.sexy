@@ -9,6 +9,18 @@ import { OperatingSystem } from '@/domain/OperatingSystem';
 import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('UseCollectionState', () => {
+  describe('context is absent', () => {
+    itEachAbsentObjectValue((absentValue) => {
+      // arrange
+      const expectedError = 'missing context';
+      const contextValue = absentValue;
+      // act
+      const act = () => useCollectionState(contextValue);
+      // assert
+      expect(act).to.throw(expectedError);
+    });
+  });
+
   describe('currentContext', () => {
     it('returns current context', () => {
       // arrange

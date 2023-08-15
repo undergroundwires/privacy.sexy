@@ -44,14 +44,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
-import { Environment } from '@/application/Environment/Environment';
+import {
+  defineComponent, ref, computed, inject,
+} from 'vue';
 import ModalDialog from '@/presentation/components/Shared/Modal/ModalDialog.vue';
-import { useApplication } from '@/presentation/components/Shared/Hooks/UseApplication';
+import { useApplicationKey, useEnvironmentKey } from '@/presentation/injectionSymbols';
 import DownloadUrlList from './DownloadUrlList.vue';
 import PrivacyPolicy from './PrivacyPolicy.vue';
-
-const { isDesktop } = Environment.CurrentEnvironment;
 
 export default defineComponent({
   components: {
@@ -60,7 +59,8 @@ export default defineComponent({
     DownloadUrlList,
   },
   setup() {
-    const { info } = useApplication();
+    const { info } = inject(useApplicationKey);
+    const { isDesktop } = inject(useEnvironmentKey);
 
     const isPrivacyDialogVisible = ref(false);
 

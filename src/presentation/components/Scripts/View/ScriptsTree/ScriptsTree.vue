@@ -15,9 +15,9 @@
 
 <script lang="ts">
 import {
-  defineComponent, watch, ref,
+  defineComponent, watch, ref, inject,
 } from 'vue';
-import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
+import { useCollectionStateKey } from '@/presentation/injectionSymbols';
 import { IScript } from '@/domain/IScript';
 import { ICategory } from '@/domain/ICategory';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
@@ -44,7 +44,7 @@ export default defineComponent({
   setup(props) {
     const {
       modifyCurrentState, currentState, onStateChange, events,
-    } = useCollectionState();
+    } = inject(useCollectionStateKey)();
 
     const nodes = ref<ReadonlyArray<INodeContent>>([]);
     const selectedNodeIds = ref<ReadonlyArray<string>>([]);
