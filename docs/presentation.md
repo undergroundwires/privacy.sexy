@@ -25,9 +25,9 @@ The presentation layer uses an event-driven architecture for bidirectional react
   - [**`electron/`**](./../src/presentation/electron/): Electron configuration for the desktop application.
     - [**`main.ts`**](./../src/presentation/main.ts): Main process of Electron, started as first thing when app starts.
 - [**`/public/`**](./../public/): Contains static assets that are directly copied and do not go through webpack.
-- [**`/vue.config.js`**](./../vue.config.js): Global Vue CLI configurations loaded by `@vue/cli-service`.
-- [**`/postcss.config.js`**](./../postcss.config.js): PostCSS configurations used by Vue CLI internally.
-- [**`/babel.config.js`**](./../babel.config.js): Babel configurations for polyfills used by `@vue/cli-plugin-babel`.
+- [**`/vue.config.cjs`**](./../vue.config.cjs): Global Vue CLI configurations loaded by `@vue/cli-service`.
+- [**`/postcss.config.cjs`**](./../postcss.config.cjs): PostCSS configurations used by Vue CLI internally.
+- [**`/babel.config.cjs`**](./../babel.config.cjs): Babel configurations for polyfills used by `@vue/cli-plugin-babel`.
 
 ## Visual design best-practices
 

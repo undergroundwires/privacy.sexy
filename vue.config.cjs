@@ -4,6 +4,7 @@ const packageJson = require('./package.json');
 const tsconfigJson = require('./tsconfig.json');
 
 loadVueAppRuntimeVariables();
+fixMochaBuildWithModules();
 
 module.exports = defineConfig({
   transpileDependencies: true,
@@ -94,4 +95,16 @@ function getAliasesFromTsConfig() {
     aliases[aliasName] = aliasPath;
     return aliases;
   }, {});
+}
+
+function fixMochaBuildWithModules() {
+  /*
+    Workaround for Vue CLI issue during tests breaks projects that rely on ES6 modules and mocha.
+    Setting VUE_CLI_TEST to true prevents the Vue CLI from altering the module transpilation.
+    This fix ensures `npm run build -- --mode test` works successfully.
+    See: https://github.com/vuejs/vue-cli/issues/7417
+  */
+  if (process.env.NODE_ENV === 'test') {
+    process.env.VUE_CLI_TEST = true;
+  }
 }
