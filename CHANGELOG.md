@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.12.1 (2023-08-17)
+
+* Transition to eslint-config-airbnb-with-typescript | [ff84f56](https://github.com/undergroundwires/privacy.sexy/commit/ff84f5676e496dd7ec5b3599e34ec9627d181ea2)
+* Improve user privacy with secure outbound links | [3a594ac](https://github.com/undergroundwires/privacy.sexy/commit/3a594ac7fd708dc1e98155ffb9b21acd4e1fcf2d)
+* Refactor Vue components using Composition API #230 | [1b9be8f](https://github.com/undergroundwires/privacy.sexy/commit/1b9be8fe2d72d8fb5cf1fed6dcc0b9777171aa98)
+* Fix failing security tests | [3bc8da4](https://github.com/undergroundwires/privacy.sexy/commit/3bc8da4cbf1e2bd758dc3fffe4b1e62dc3beb7b3)
+* Improve Defender scripts #201 | [061afad](https://github.com/undergroundwires/privacy.sexy/commit/061afad9673a41454c2421c318898f2b4f4cf504)
+* Fix failing tests due to failed error logging | [986ba07](https://github.com/undergroundwires/privacy.sexy/commit/986ba078a643de6acbee50fff9cf77494ca7ea7f)
+* Implement custom lightweight modal #230 | [9e5491f](https://github.com/undergroundwires/privacy.sexy/commit/9e5491fdbf2d9d40d974f5ad0e879a6d5c6d1e55)
+* Refactor usage of tooltips for flexibility | [bc91237](https://github.com/undergroundwires/privacy.sexy/commit/bc91237d7c54bdcd15c5c39a55def50d172bb659)
+* Fix revert toggle partial rendering | [39e650c](https://github.com/undergroundwires/privacy.sexy/commit/39e650cf110bee6b1b21d9b2902b36b0e2568d54)
+* Increase testability through dependency injection | [ae75059](https://github.com/undergroundwires/privacy.sexy/commit/ae75059cc14db41f55dd2056f528442c7d319dd2)
+* Refactor filter (search query) event handling | [6a20d80](https://github.com/undergroundwires/privacy.sexy/commit/6a20d804dc365d22c1248d787f9912271f508eeb)
+* Migrate to ES6 modules | [a14929a](https://github.com/undergroundwires/privacy.sexy/commit/a14929a13cc6260b514692d9b4f1cdf5fb85d8b2)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.12.0...0.12.1)
+
 ## 0.12.0 (2023-08-03)
 
 * Improve script/category name validation | [b210aad](https://github.com/undergroundwires/privacy.sexy/commit/b210aaddf26629179f77fe19f62f65d8a0ca2b87)

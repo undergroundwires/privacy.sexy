@@ -1,18 +1,13 @@
 import { ref, computed, readonly } from 'vue';
 import { IApplicationContext, IReadOnlyApplicationContext } from '@/application/Context/IApplicationContext';
-import { buildContext } from '@/application/Context/ApplicationContextFactory';
 import { ICategoryCollectionState, IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { EventSubscriptionCollection } from '@/infrastructure/Events/EventSubscriptionCollection';
 
-let singletonContext: IApplicationContext;
+export function useCollectionState(context: IApplicationContext) {
+  if (!context) {
+    throw new Error('missing context');
+  }
 
-// Running tests through Vue CLI throws 'Top-level-await is only supported in EcmaScript Modules'
-// This is a temporary workaround until migrating to Vite
-buildContext().then((context) => {
-  singletonContext = context;
-});
-
-export function useCollectionState(context: IApplicationContext = singletonContext) {
   const events = new EventSubscriptionCollection();
   const ownEvents = new EventSubscriptionCollection();
 

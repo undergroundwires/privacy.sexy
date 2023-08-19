@@ -50,8 +50,9 @@
 <script lang="ts">
 import {
   defineComponent, ref, watch, computed,
+  inject,
 } from 'vue';
-import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
+import { useCollectionStateKey } from '@/presentation/injectionSymbols';
 import ScriptsTree from '@/presentation/components/Scripts/View/ScriptsTree/ScriptsTree.vue';
 import { sleep } from '@/infrastructure/Threading/AsyncSleep';
 
@@ -75,7 +76,7 @@ export default defineComponent({
     /* eslint-enable @typescript-eslint/no-unused-vars */
   },
   setup(props, { emit }) {
-    const { events, onStateChange, currentState } = useCollectionState();
+    const { events, onStateChange, currentState } = inject(useCollectionStateKey)();
 
     const isExpanded = computed({
       get: () => {

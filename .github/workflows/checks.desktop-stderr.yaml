@@ -1,0 +1,31 @@
+name: checks.desktop-stderr
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-desktop:
+    strategy:
+      matrix:
+        os: [ macos, ubuntu, windows ]
+      fail-fast: false # Allows to see results from other combinations
+    runs-on: ${{ matrix.os }}-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Setup node
+        uses: ./.github/actions/setup-node
+      -
+        name: Install dependencies
+        run: npm ci
+      -
+        name: Install libfuse2 (Ubuntu only)
+        if: matrix.os == 'ubuntu'
+        run: sudo apt install libfuse2
+      -
+        name: Test
+        run: |-  
+          node scripts/verify-desktop-build.js

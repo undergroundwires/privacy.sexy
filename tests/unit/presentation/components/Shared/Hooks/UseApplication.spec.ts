@@ -3,8 +3,21 @@ import { expect } from 'chai';
 import { useApplication } from '@/presentation/components/Shared/Hooks/UseApplication';
 import { ApplicationStub } from '@tests/unit/shared/Stubs/ApplicationStub';
 import { ProjectInformationStub } from '@tests/unit/shared/Stubs/ProjectInformationStub';
+import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('UseApplication', () => {
+  describe('application is absent', () => {
+    itEachAbsentObjectValue((absentValue) => {
+      // arrange
+      const expectedError = 'missing application';
+      const applicationValue = absentValue;
+      // act
+      const act = () => useApplication(applicationValue);
+      // assert
+      expect(act).to.throw(expectedError);
+    });
+  });
+
   it('should return expected info', () => {
     // arrange
     const expectedInfo = new ProjectInformationStub()

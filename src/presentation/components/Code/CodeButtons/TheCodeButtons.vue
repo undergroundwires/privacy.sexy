@@ -26,8 +26,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
-import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
+import {
+  defineComponent, ref, computed, inject,
+} from 'vue';
+import { useCollectionStateKey, useEnvironmentKey } from '@/presentation/injectionSymbols';
 import { SaveFileDialog, FileType } from '@/infrastructure/SaveFileDialog';
 import { Clipboard } from '@/infrastructure/Clipboard';
 import ModalDialog from '@/presentation/components/Shared/Modal/ModalDialog.vue';
@@ -44,8 +46,6 @@ import IconButton from './IconButton.vue';
 import { IInstructionListData } from './Instructions/InstructionListData';
 import { getInstructions, hasInstructions } from './Instructions/InstructionListDataFactory';
 
-const isDesktopVersion = Environment.CurrentEnvironment.isDesktop;
-
 export default defineComponent({
   components: {
     IconButton,
@@ -55,10 +55,11 @@ export default defineComponent({
   setup() {
     const {
       currentState, currentContext, onStateChange, events,
-    } = useCollectionState();
+    } = inject(useCollectionStateKey)();
+    const { isDesktop } = inject(useEnvironmentKey);
 
     const areInstructionsVisible = ref(false);
-    const canRun = computed<boolean>(() => getCanRunState(currentState.value.os));
+    const canRun = computed<boolean>(() => getCanRunState(currentState.value.os, isDesktop));
     const fileName = computed<string>(() => buildFileName(currentState.value.collection.scripting));
     const hasCode = ref(false);
     const instructions = computed<IInstructionListData | undefined>(() => getDownloadInstructions(
@@ -98,7 +99,7 @@ export default defineComponent({
     }
 
     return {
-      isDesktopVersion,
+      isDesktopVersion: isDesktop,
       canRun,
       hasCode,
       instructions,
@@ -121,7 +122,7 @@ function getDownloadInstructions(
   return getInstructions(os, fileName);
 }
 
-function getCanRunState(selectedOs: OperatingSystem): boolean {
+function getCanRunState(selectedOs: OperatingSystem, isDesktopVersion: boolean): boolean {
   const isRunningOnSelectedOs = selectedOs === Environment.CurrentEnvironment.os;
   return isDesktopVersion && isRunningOnSelectedOs;
 }

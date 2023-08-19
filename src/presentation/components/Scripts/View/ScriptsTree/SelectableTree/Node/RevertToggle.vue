@@ -9,10 +9,10 @@
 <script lang="ts">
 import {
   PropType, defineComponent, ref, watch,
-  computed,
+  computed, inject,
 } from 'vue';
-import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
+import { useCollectionStateKey } from '@/presentation/injectionSymbols';
 import { IReverter } from './Reverter/IReverter';
 import { INodeContent } from './INodeContent';
 import { getReverter } from './Reverter/ReverterFactory';
@@ -31,7 +31,7 @@ export default defineComponent({
   setup(props) {
     const {
       currentState, modifyCurrentState, onStateChange, events,
-    } = useCollectionState();
+    } = inject(useCollectionStateKey)();
 
     const isReverted = ref(false);
 

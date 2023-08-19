@@ -25,9 +25,9 @@ The presentation layer uses an event-driven architecture for bidirectional react
   - [**`electron/`**](./../src/presentation/electron/): Electron configuration for the desktop application.
     - [**`main.ts`**](./../src/presentation/main.ts): Main process of Electron, started as first thing when app starts.
 - [**`/public/`**](./../public/): Contains static assets that are directly copied and do not go through webpack.
-- [**`/vue.config.js`**](./../vue.config.js): Global Vue CLI configurations loaded by `@vue/cli-service`.
-- [**`/postcss.config.js`**](./../postcss.config.js): PostCSS configurations used by Vue CLI internally.
-- [**`/babel.config.js`**](./../babel.config.js): Babel configurations for polyfills used by `@vue/cli-plugin-babel`.
+- [**`/vue.config.cjs`**](./../vue.config.cjs): Global Vue CLI configurations loaded by `@vue/cli-service`.
+- [**`/postcss.config.cjs`**](./../postcss.config.cjs): PostCSS configurations used by Vue CLI internally.
+- [**`/babel.config.cjs`**](./../babel.config.cjs): Babel configurations for polyfills used by `@vue/cli-plugin-babel`.
 
 ## Visual design best-practices
 
@@ -60,6 +60,20 @@ Stateful components can mutate and/or react to state changes (e.g., user selecti
 - **Event Subscription Lifecycle Management**: Includes an `events` member that simplifies state subscription lifecycle events. This ensures that components unsubscribe from state events when they are no longer in use, or when [ApplicationContext](./../src/application/Context/ApplicationContext.ts) switches the active [collection](./collection-files.md).
 
 📖 Refer to [architecture.md | Application State](./architecture.md#application-state) for an overview of event handling and [application.md | Application State](./presentation.md#application-state) for an in-depth understanding of state management in the application layer.
+
+## Dependency injections
+
+The presentation layer uses Vue's native dependency injection system to increase testability and decouple components.
+
+To add a new dependency:
+
+1. **Define its symbol**: Define an associated symbol for every dependency in [`injectionSymbols.ts`](./../src/presentation/injectionSymbols.ts). Symbols are grouped into:
+   - **Singletons**: Shared across components, instantiated once.
+   - **Transients**: Factories yielding a new instance on every access.
+2. **Provide the dependency**: Modify the [`provideDependencies`](./../src/presentation/bootstrapping/DependencyProvider.ts) function to include the new dependency. [`App.vue`](./../src/presentation/components/App.vue) calls this function within its `setup()` hook to register the dependencies.
+3. **Inject the dependency**: Use Vue's `inject` method alongside the defined symbol to incorporate the dependency into components.
+   - For singletons, invoke the factory method: `inject(symbolKey)()`.
+   - For transients, directly inject: `inject(symbolKey)`.
 
 ## Shared UI components
 

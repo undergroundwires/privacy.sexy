@@ -12,12 +12,10 @@
 <script lang="ts">
 import {
   defineComponent, PropType, computed,
+  inject,
 } from 'vue';
-import { Environment } from '@/application/Environment/Environment';
+import { useApplicationKey, useEnvironmentKey } from '@/presentation/injectionSymbols';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { useApplication } from '@/presentation/components/Shared/Hooks/UseApplication';
-
-const currentOs = Environment.CurrentEnvironment.os;
 
 export default defineComponent({
   props: {
@@ -27,7 +25,8 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { info } = useApplication();
+    const { info } = inject(useApplicationKey);
+    const { os: currentOs } = inject(useEnvironmentKey);
 
     const isCurrentOs = computed<boolean>(() => {
       return currentOs === props.operatingSystem;

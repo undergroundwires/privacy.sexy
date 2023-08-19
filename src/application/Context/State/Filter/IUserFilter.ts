@@ -1,13 +1,13 @@
 import { IEventSource } from '@/infrastructure/Events/IEventSource';
 import { IFilterResult } from './IFilterResult';
+import { IFilterChangeDetails } from './Event/IFilterChangeDetails';
 
 export interface IReadOnlyUserFilter {
   readonly currentFilter: IFilterResult | undefined;
-  readonly filtered: IEventSource<IFilterResult>;
-  readonly filterRemoved: IEventSource<void>;
+  readonly filterChanged: IEventSource<IFilterChangeDetails>;
 }
 
 export interface IUserFilter extends IReadOnlyUserFilter {
-  setFilter(filter: string): void;
-  removeFilter(): void;
+  applyFilter(filter: string): void;
+  clearFilter(): void;
 }

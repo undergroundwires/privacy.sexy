@@ -65,8 +65,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
+import { defineComponent, ref, inject } from 'vue';
+import { useCollectionStateKey } from '@/presentation/injectionSymbols';
 import TooltipWrapper from '@/presentation/components/Shared/TooltipWrapper.vue';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import MenuOptionList from '../MenuOptionList.vue';
@@ -80,7 +80,7 @@ export default defineComponent({
     TooltipWrapper,
   },
   setup() {
-    const { modifyCurrentState, onStateChange, events } = useCollectionState();
+    const { modifyCurrentState, onStateChange, events } = inject(useCollectionStateKey)();
 
     const currentSelection = ref(SelectionType.None);
 

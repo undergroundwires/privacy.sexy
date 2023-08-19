@@ -15,12 +15,12 @@
 
 <script lang="ts">
 import {
-  defineComponent, watch, ref,
+  defineComponent, watch, ref, inject,
 } from 'vue';
-import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
+import { useCollectionStateKey } from '@/presentation/injectionSymbols';
 import { IScript } from '@/domain/IScript';
 import { ICategory } from '@/domain/ICategory';
-import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { ICategoryCollectionState, IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import {
@@ -44,7 +44,7 @@ export default defineComponent({
   setup(props) {
     const {
       modifyCurrentState, currentState, onStateChange, events,
-    } = useCollectionState();
+    } = inject(useCollectionStateKey)();
 
     const nodes = ref<ReadonlyArray<INodeContent>>([]);
     const selectedNodeIds = ref<ReadonlyArray<string>>([]);
@@ -64,9 +64,7 @@ export default defineComponent({
         nodes.value = parseAllCategories(state.collection);
       }
       events.unsubscribeAll();
-      modifyCurrentState((mutableState) => {
-        registerStateMutators(mutableState);
-      });
+      subscribeToState(state);
     }, { immediate: true });
 
     function toggleNodeSelection(event: INodeSelectedEvent) {
@@ -99,34 +97,31 @@ export default defineComponent({
         .map((selected) => getScriptNodeId(selected.script));
     }
 
-    function registerStateMutators(state: ICategoryCollectionState) {
+    function subscribeToState(state: IReadOnlyCategoryCollectionState) {
       events.register(
         state.selection.changed.on((scripts) => handleSelectionChanged(scripts)),
-        state.filter.filterRemoved.on(() => handleFilterRemoved()),
-        state.filter.filtered.on((filterResult) => handleFiltered(filterResult)),
+        state.filter.filterChanged.on((event) => {
+          event.visit({
+            onApply: (filter) => {
+              filterText.value = filter.query;
+              filtered = filter;
+            },
+            onClear: () => {
+              filterText.value = '';
+            },
+          });
+        }),
       );
     }
 
     function setCurrentFilter(currentFilter: IFilterResult | undefined) {
-      if (!currentFilter) {
-        handleFilterRemoved();
-      } else {
-        handleFiltered(currentFilter);
-      }
+      filtered = currentFilter;
+      filterText.value = currentFilter?.query || '';
     }
 
     function handleSelectionChanged(selectedScripts: ReadonlyArray<SelectedScript>): void {
       selectedNodeIds.value = selectedScripts
         .map((node) => node.id);
-    }
-
-    function handleFilterRemoved() {
-      filterText.value = '';
-    }
-
-    function handleFiltered(result: IFilterResult) {
-      filterText.value = result.query;
-      filtered = result;
     }
 
     return {

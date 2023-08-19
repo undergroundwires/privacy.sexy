@@ -1,10 +1,11 @@
 {
   "name": "privacy.sexy",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "private": true,
   "slogan": "Now you have the choice",
   "description": "Enforce privacy & security best-practices on Windows, macOS and Linux, because privacy is sexy 🍑🍆",
   "author": "undergroundwires",
+  "type": "module",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",

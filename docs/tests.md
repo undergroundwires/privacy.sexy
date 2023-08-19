@@ -18,6 +18,7 @@ Common aspects for all tests:
 - Unit tests test each component in isolation.
 - All unit tests goes under [`./tests/unit`](./../tests/unit).
 - They rely on [stubs](./../tests/unit/shared/Stubs) for isolation.
+- Unit tests include also Vue component tests using `@vue/test-utils`.
 
 ### Unit tests structure
 
