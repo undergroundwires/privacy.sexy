@@ -70,6 +70,12 @@
       src="https://github.com/undergroundwires/privacy.sexy/workflows/build-checks/badge.svg"
     />
   </a>
+  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.desktop-runtime-errors.yaml" target="_blank" rel="noopener noreferrer">
+    <img
+      alt="Status of runtime error checks for the desktop application"
+      src="https://github.com/undergroundwires/privacy.sexy/workflows/checks.desktop-runtime-errors/badge.svg"
+    />
+  </a>
   <!-- Release -->
   <br />
   <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/release.git.yaml" target="_blank" rel="noopener noreferrer">

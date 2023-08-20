@@ -21,7 +21,7 @@ module.exports = {
     '@vue/typescript/recommended',
   ],
   parserOptions: {
-    ecmaVersion: 12, // ECMA 2021
+    ecmaVersion: 2022, // So it allows top-level awaits
     /*
       Having 'latest' leads to:
       ```
