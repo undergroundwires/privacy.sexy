@@ -70,10 +70,10 @@
       src="https://github.com/undergroundwires/privacy.sexy/workflows/build-checks/badge.svg"
     />
   </a>
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.desktop-stderr.yaml" target="_blank" rel="noopener noreferrer">
+  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.desktop-runtime-errors.yaml" target="_blank" rel="noopener noreferrer">
     <img
-      alt="Desktop stderr checks status"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/checks.desktop-stderr/badge.svg"
+      alt="Status of runtime error checks for the desktop application"
+      src="https://github.com/undergroundwires/privacy.sexy/workflows/checks.desktop-runtime-errors/badge.svg"
     />
   </a>
   <!-- Release -->

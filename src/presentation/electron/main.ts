@@ -26,10 +26,7 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } },
 ]);
 
-log.transports.file.level = 'silly';
-if (!process.env.IS_TEST) {
-  Object.assign(console, log.functions); // override console.log, console.warn etc.
-}
+setupLogger();
 
 function createWindow() {
   // Create the browser window.
@@ -131,6 +128,9 @@ function loadApplication(window: BrowserWindow) {
     const updater = setupAutoUpdater();
     updater.checkForUpdates();
   }
+  // Do not remove [APP_INIT_SUCCESS]; it's a marker used in tests to verify
+  // app initialization.
+  log.info('[APP_INIT_SUCCESS] Main window initialized and content loading.');
 }
 
 function configureExternalsUrlsOpenBrowser(window: BrowserWindow) {
@@ -154,4 +154,11 @@ function getWindowSize(idealWidth: number, idealHeight: number) {
   width = Math.min(width, idealWidth);
   height = Math.min(height, idealHeight);
   return { width, height };
+}
+
+function setupLogger(): void {
+  log.transports.file.level = 'silly';
+  if (!process.env.IS_TEST) {
+    Object.assign(console, log.functions); // override console.log, console.warn etc.
+  }
 }

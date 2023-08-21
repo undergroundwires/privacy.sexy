@@ -1,0 +1,67 @@
+name: checks.desktop-runtime-errors
+# Verifies desktop builds for Electron applications across multiple OS platforms (macOS ,Ubuntu, and Windows).
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-desktop:
+    strategy:
+      matrix:
+        os: [ macos, ubuntu, windows ]
+      fail-fast: false # Allows to see results from other combinations
+    runs-on: ${{ matrix.os }}-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Setup node
+        uses: ./.github/actions/setup-node
+      -
+        name: Configure Ubuntu
+        if: matrix.os == 'ubuntu'
+        shell: bash
+        run: |-
+          sudo apt update
+
+          # Configure AppImage dependencies
+          sudo apt install -y libfuse2
+
+          # Configure DBUS (fixes `Failed to connect to the bus: Could not parse server address: Unknown address type`)
+           if ! command -v 'dbus-launch' &> /dev/null; then
+            echo 'DBUS does not exist, installing...'
+            sudo apt install -y dbus-x11 # Gives both dbus and dbus-launch utility
+          fi
+          sudo systemctl start dbus
+          DBUS_LAUNCH_OUTPUT=$(dbus-launch)
+          if [ $? -eq 0 ]; then
+            echo "${DBUS_LAUNCH_OUTPUT}" >> $GITHUB_ENV
+          else
+            echo 'Error: dbus-launch command did not execute successfully. Exiting.' >&2
+            echo "${DBUS_LAUNCH_OUTPUT}" >&2
+            exit 1
+          fi
+
+          # Configure fake (virtual) display
+          sudo apt install -y xvfb
+          sudo Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+          echo "DISPLAY=:99" >> $GITHUB_ENV
+
+          # Install ImageMagick for screenshots
+          sudo apt install -y imagemagick
+
+          # Install xdotool and xprop (from x11-utils) for window title capturing
+          sudo apt install -y xdotool x11-utils
+      -
+        name: Test
+        shell: bash
+        run: node scripts/check-desktop-runtime-errors --screenshot
+      -
+        name: Upload screenshot
+        if: always() # Run even if previous step fails
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshot-${{ matrix.os }}
+          path: screenshot.png
