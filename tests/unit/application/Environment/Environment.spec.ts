@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { IBrowserOsDetector } from '@/application/Environment/BrowserOs/IBrowserOsDetector';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { Environment, IEnvironmentVariables } from '@/application/Environment/Environment';

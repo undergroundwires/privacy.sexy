@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { CodeBuilder } from '@/application/Context/State/Code/Generation/CodeBuilder';
 
 describe('CodeBuilder', () => {

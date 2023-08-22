@@ -1,8 +1,6 @@
-// import * as assert from 'assert';
-import { expect } from 'chai';
+import { expect } from 'vitest';
 
-// Using manual checks because expect(act).to.throw(obj) does not work
-// chaijs/chai#1065, chaijs/chai#1405
+// `toThrowError` does not assert the error type (https://github.com/vitest-dev/vitest/blob/v0.34.2/docs/api/expect.md#tothrowerror)
 export function expectThrowsError<T extends Error>(delegate: () => void, expected: T) {
   // arrange
   if (!expected) {

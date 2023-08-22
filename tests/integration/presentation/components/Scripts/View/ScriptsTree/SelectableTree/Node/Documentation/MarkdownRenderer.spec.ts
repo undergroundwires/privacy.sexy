@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { parseApplication } from '@/application/Parser/ApplicationParser';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { createRenderer } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/Node/Documentation/MarkdownRenderer';

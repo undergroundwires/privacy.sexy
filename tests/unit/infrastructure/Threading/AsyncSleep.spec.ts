@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { sleep, SchedulerType, SchedulerCallbackType } from '@/infrastructure/Threading/AsyncSleep';
 
 describe('AsyncSleep', () => {

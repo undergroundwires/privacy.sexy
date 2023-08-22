@@ -1,4 +1,4 @@
-import 'mocha';
+import { describe } from 'vitest';
 import { ExpressionPosition } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionPosition';
 import { WithParser } from '@/application/Parser/Script/Compiler/Expressions/SyntaxParsers/WithParser';
 import { AbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';

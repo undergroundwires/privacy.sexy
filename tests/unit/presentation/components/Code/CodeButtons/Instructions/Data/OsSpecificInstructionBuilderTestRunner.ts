@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { it, expect } from 'vitest';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { InstructionsBuilder } from '@/presentation/components/Code/CodeButtons/Instructions/Data/InstructionsBuilder';
 

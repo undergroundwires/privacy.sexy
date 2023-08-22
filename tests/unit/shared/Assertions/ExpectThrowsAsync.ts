@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect } from 'vitest';
 
 export async function expectThrowsAsync(
   method: () => Promise<unknown>,

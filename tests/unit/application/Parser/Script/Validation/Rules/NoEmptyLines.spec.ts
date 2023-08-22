@@ -1,3 +1,4 @@
+import { describe } from 'vitest';
 import { NoEmptyLines } from '@/application/Parser/Script/Validation/Rules/NoEmptyLines';
 import { testCodeValidationRule } from './CodeValidationRuleTestRunner';
 

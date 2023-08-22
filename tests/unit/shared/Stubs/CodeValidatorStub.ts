@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect } from 'vitest';
 import { ICodeValidationRule } from '@/application/Parser/Script/Validation/ICodeValidationRule';
 import { ICodeValidator } from '@/application/Parser/Script/Validation/ICodeValidator';
 import { Type } from '../Type';

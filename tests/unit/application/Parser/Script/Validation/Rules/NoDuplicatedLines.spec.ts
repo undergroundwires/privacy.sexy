@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, expect } from 'vitest';
 import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { NoDuplicatedLines } from '@/application/Parser/Script/Validation/Rules/NoDuplicatedLines';
 import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';

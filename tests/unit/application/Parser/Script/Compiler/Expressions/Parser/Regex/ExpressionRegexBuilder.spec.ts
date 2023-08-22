@@ -1,6 +1,5 @@
-import 'mocha';
 import { randomUUID } from 'crypto';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { ExpressionRegexBuilder } from '@/application/Parser/Script/Compiler/Expressions/Parser/Regex/ExpressionRegexBuilder';
 
 describe('ExpressionRegexBuilder', () => {

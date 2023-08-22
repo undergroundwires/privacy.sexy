@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { VueAppEnvironmentKeys, parseProjectInformation } from '@/application/Parser/ProjectInformationParser';
 import { getProcessEnvironmentStub } from '@tests/unit/shared/Stubs/ProcessEnvironmentStub';
 import { IProjectInformation } from '@/domain/IProjectInformation';

@@ -1,6 +1,5 @@
-import 'mocha';
+import { describe, it, expect } from 'vitest';
 import { shallowMount } from '@vue/test-utils';
-import { expect } from 'chai';
 import ModalOverlay from '@/presentation/components/Shared/Modal/ModalOverlay.vue';
 
 const DOM_MODAL_OVERLAY_BACKGROUND_SELECTOR = '.modal-overlay-background';

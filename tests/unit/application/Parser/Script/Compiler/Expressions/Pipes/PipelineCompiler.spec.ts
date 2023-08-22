@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { PipelineCompiler } from '@/application/Parser/Script/Compiler/Expressions/Pipes/PipelineCompiler';
 import { IPipelineCompiler } from '@/application/Parser/Script/Compiler/Expressions/Pipes/IPipelineCompiler';
 import { IPipeFactory } from '@/application/Parser/Script/Compiler/Expressions/Pipes/PipeFactory';

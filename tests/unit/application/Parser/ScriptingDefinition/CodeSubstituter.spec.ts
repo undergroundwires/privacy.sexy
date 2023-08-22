@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { CodeSubstituter } from '@/application/Parser/ScriptingDefinition/CodeSubstituter';
 import { IExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/IExpressionsCompiler';
 import { ProjectInformationStub } from '@tests/unit/shared/Stubs/ProjectInformationStub';

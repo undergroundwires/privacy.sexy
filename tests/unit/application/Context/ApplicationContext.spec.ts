@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { ApplicationContext } from '@/application/Context/ApplicationContext';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';

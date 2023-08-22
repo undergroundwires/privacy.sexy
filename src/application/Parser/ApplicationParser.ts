@@ -10,7 +10,7 @@ import { Application } from '@/domain/Application';
 import { parseCategoryCollection } from './CategoryCollectionParser';
 
 export function parseApplication(
-  parser = CategoryCollectionParser,
+  parser: CategoryCollectionParserType = parseCategoryCollection,
   processEnv: NodeJS.ProcessEnv = process.env,
   collectionsData = PreParsedCollections,
 ): IApplication {
@@ -24,16 +24,12 @@ export function parseApplication(
 export type CategoryCollectionParserType
     = (file: CollectionData, info: IProjectInformation) => ICategoryCollection;
 
-const CategoryCollectionParser: CategoryCollectionParserType = (file, info) => {
-  return parseCategoryCollection(file, info);
-};
-
 const PreParsedCollections: readonly CollectionData [] = [
   WindowsData, MacOsData, LinuxData,
 ];
 
 function validateCollectionsData(collections: readonly CollectionData[]) {
-  if (!collections || !collections.length) {
+  if (!collections?.length) {
     throw new Error('missing collections');
   }
   if (collections.some((collection) => !collection)) {

@@ -1,5 +1,6 @@
-import 'mocha';
-import { expect } from 'chai';
+import {
+  describe, it, expect, beforeEach,
+} from 'vitest';
 import { AsyncLazy } from '@/infrastructure/Threading/AsyncLazy';
 import { sleep } from '@/infrastructure/Threading/AsyncSleep';
 

@@ -1,6 +1,5 @@
-import 'mocha';
+import { describe, it, expect } from 'vitest';
 import { shallowMount, mount } from '@vue/test-utils';
-import { expect } from 'chai';
 import ModalDialog from '@/presentation/components/Shared/Modal/ModalDialog.vue';
 import ModalContainer from '@/presentation/components/Shared/Modal/ModalContainer.vue';
 

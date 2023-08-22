@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { ProjectInformation } from '@/domain/ProjectInformation';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';

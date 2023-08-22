@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { ScriptingLanguageFactory } from '@/application/Common/ScriptingLanguage/ScriptingLanguageFactory';
 import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
@@ -58,8 +57,12 @@ describe('ScriptingLanguageFactory', () => {
     const sut = new ScriptingLanguageConcrete();
     const runner = new ScriptingLanguageFactoryTestRunner();
     // act
-    sut.registerGetter(ScriptingLanguage.batchfile, () => 1);
+    sut.registerGetter(ScriptingLanguage.batchfile, () => ScriptingLanguage.batchfile);
+    sut.registerGetter(ScriptingLanguage.shellscript, () => ScriptingLanguage.shellscript);
     // assert
-    runner.testCreateMethod(sut);
+    runner
+      .expectValue(ScriptingLanguage.shellscript, ScriptingLanguage.shellscript)
+      .expectValue(ScriptingLanguage.batchfile, ScriptingLanguage.batchfile)
+      .testCreateMethod(sut);
   });
 });

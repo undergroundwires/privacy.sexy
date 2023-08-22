@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { BatchBuilder } from '@/application/Context/State/Code/Generation/Languages/BatchBuilder';
 
 describe('BatchBuilder', () => {

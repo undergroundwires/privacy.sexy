@@ -1,9 +1,8 @@
-import 'mocha';
+import { describe, it, expect } from 'vitest';
 import {
   Wrapper, shallowMount,
   mount,
 } from '@vue/test-utils';
-import { expect } from 'chai';
 import { nextTick, defineComponent } from 'vue';
 import ToggleSwitch from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/Node/ToggleSwitch.vue';
 

@@ -1,4 +1,4 @@
-import 'mocha';
+import { describe } from 'vitest';
 import { ParameterSubstitutionParser } from '@/application/Parser/Script/Compiler/Expressions/SyntaxParsers/ParameterSubstitutionParser';
 import { ExpressionPosition } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionPosition';
 import { SyntaxParserTestsRunner } from './SyntaxParserTestsRunner';

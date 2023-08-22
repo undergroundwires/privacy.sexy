@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import type { FunctionData } from '@/application/collections/';
 import { ScriptCode } from '@/domain/ScriptCode';
 import { ScriptCompiler } from '@/application/Parser/Script/Compiler/ScriptCompiler';

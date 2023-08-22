@@ -1,4 +1,4 @@
-import 'mocha';
+import { describe } from 'vitest';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { MacOsInstructionsBuilder } from '@/presentation/components/Code/CodeButtons/Instructions/Data/MacOsInstructionsBuilder';
 import { runOsSpecificInstructionBuilderTests } from './OsSpecificInstructionBuilderTestRunner';

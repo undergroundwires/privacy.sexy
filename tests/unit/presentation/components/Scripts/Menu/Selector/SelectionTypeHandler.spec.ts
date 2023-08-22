@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { SelectionType, SelectionTypeHandler } from '@/presentation/components/Scripts/Menu/Selector/SelectionTypeHandler';
 import { scrambledEqual } from '@/application/Common/Array';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';

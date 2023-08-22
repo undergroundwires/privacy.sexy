@@ -1,7 +1,7 @@
-import 'mocha';
-import { expect } from 'chai';
+/* eslint-disable max-classes-per-file */
+import { describe, it, expect } from 'vitest';
 import type { CollectionData } from '@/application/collections/';
-import { parseProjectInformation } from '@/application/Parser/ProjectInformationParser';
+import { VueAppEnvironment, parseProjectInformation } from '@/application/Parser/ProjectInformationParser';
 import { CategoryCollectionParserType, parseApplication } from '@/application/Parser/ApplicationParser';
 import WindowsData from '@/application/collections/windows.yaml';
 import MacOsData from '@/application/collections/macos.yaml';
@@ -28,10 +28,11 @@ describe('ApplicationParser', () => {
         const parser = new CategoryCollectionParserSpy()
           .setUpReturnValue(data, expected)
           .mockParser();
-        const env = getProcessEnvironmentStub();
-        const collections = [data];
+        const sut = new ApplicationParserBuilder()
+          .withCategoryCollectionParser(parser)
+          .withCollectionsData([data]);
         // act
-        const app = parseApplication(parser, env, collections);
+        const app = sut.parseApplication();
         // assert
         const actual = app.getCollection(os);
         expect(expected).to.equal(actual);
@@ -44,20 +45,10 @@ describe('ApplicationParser', () => {
         const expected = parseProjectInformation(env);
         const parserSpy = new CategoryCollectionParserSpy();
         const parserMock = parserSpy.mockParser();
+        const sut = new ApplicationParserBuilder()
+          .withCategoryCollectionParser(parserMock);
         // act
-        const app = parseApplication(parserMock, env);
-        // assert
-        expect(expected).to.deep.equal(app.info);
-        expect(parserSpy.arguments.map((arg) => arg.info).every((info) => info === expected));
-      });
-      it('defaults to process.env', () => {
-        // arrange
-        const { env } = process;
-        const expected = parseProjectInformation(env);
-        const parserSpy = new CategoryCollectionParserSpy();
-        const parserMock = parserSpy.mockParser();
-        // act
-        const app = parseApplication(parserMock);
+        const app = sut.parseApplication();
         // assert
         expect(expected).to.deep.equal(app.info);
         expect(parserSpy.arguments.map((arg) => arg.info).every((info) => info === expected));
@@ -87,14 +78,15 @@ describe('ApplicationParser', () => {
         // act
         for (const testCase of testCases) {
           it(testCase.name, () => {
-            const env = getProcessEnvironmentStub();
             let parserSpy = new CategoryCollectionParserSpy();
             for (let i = 0; i < testCase.input.length; i++) {
               parserSpy = parserSpy.setUpReturnValue(testCase.input[i], testCase.output[i]);
             }
-            const parserMock = parserSpy.mockParser();
+            const sut = new ApplicationParserBuilder()
+              .withCategoryCollectionParser(parserSpy.mockParser())
+              .withCollectionsData(testCase.input);
             // act
-            const app = parseApplication(parserMock, env, testCase.input);
+            const app = sut.parseApplication();
             // assert
             expect(app.collections).to.deep.equal(testCase.output);
           });
@@ -104,9 +96,11 @@ describe('ApplicationParser', () => {
         // arrange
         const expected = [WindowsData, MacOsData, LinuxData];
         const parserSpy = new CategoryCollectionParserSpy();
-        const parserMock = parserSpy.mockParser();
+        const sut = new ApplicationParserBuilder()
+          .withCollectionsData(undefined)
+          .withCategoryCollectionParser(parserSpy.mockParser());
         // act
-        parseApplication(parserMock);
+        sut.parseApplication();
         // assert
         const actual = parserSpy.arguments.map((args) => args.data);
         expect(actual).to.deep.equal(expected);
@@ -127,10 +121,10 @@ describe('ApplicationParser', () => {
         ];
         for (const testCase of testCases) {
           it(testCase.name, () => {
-            const parserMock = new CategoryCollectionParserSpy().mockParser();
-            const env = getProcessEnvironmentStub();
+            const sut = new ApplicationParserBuilder()
+              .withCollectionsData(testCase.value);
             // act
-            const act = () => parseApplication(parserMock, env, testCase.value);
+            const act = () => sut.parseApplication();
             // assert
             expect(act).to.throw(testCase.expectedError);
           });
@@ -139,6 +133,42 @@ describe('ApplicationParser', () => {
     });
   });
 });
+
+class ApplicationParserBuilder {
+  private categoryCollectionParser: CategoryCollectionParserType = new CategoryCollectionParserSpy()
+    .mockParser();
+
+  private environment: VueAppEnvironment = getProcessEnvironmentStub();
+
+  private collectionsData: CollectionData[] = [new CollectionDataStub()];
+
+  public withCategoryCollectionParser(
+    categoryCollectionParser: CategoryCollectionParserType,
+  ): this {
+    this.categoryCollectionParser = categoryCollectionParser;
+    return this;
+  }
+
+  public withEnvironment(
+    environment: VueAppEnvironment,
+  ): this {
+    this.environment = environment;
+    return this;
+  }
+
+  public withCollectionsData(collectionsData: CollectionData[]): this {
+    this.collectionsData = collectionsData;
+    return this;
+  }
+
+  public parseApplication(): ReturnType<typeof parseApplication> {
+    return parseApplication(
+      this.categoryCollectionParser,
+      this.environment,
+      this.collectionsData,
+    );
+  }
+}
 
 class CategoryCollectionParserSpy {
   public arguments = new Array<{

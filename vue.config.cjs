@@ -4,7 +4,7 @@ const packageJson = require('./package.json');
 const tsconfigJson = require('./tsconfig.json');
 
 loadVueAppRuntimeVariables();
-fixMochaBuildWithModules();
+fixTestBuildWithModules();
 
 module.exports = defineConfig({
   transpileDependencies: true,
@@ -97,7 +97,7 @@ function getAliasesFromTsConfig() {
   }, {});
 }
 
-function fixMochaBuildWithModules() {
+function fixTestBuildWithModules() {
   /*
     Workaround for Vue CLI issue during tests breaks projects that rely on ES6 modules and mocha.
     Setting VUE_CLI_TEST to true prevents the Vue CLI from altering the module transpilation.

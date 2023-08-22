@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { it, expect } from 'vitest';
 import { IPipe } from '@/application/Parser/Script/Compiler/Expressions/Pipes/IPipe';
 
 export interface IPipeTestCase {

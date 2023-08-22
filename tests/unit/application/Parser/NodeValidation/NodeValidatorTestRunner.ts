@@ -1,4 +1,4 @@
-import 'mocha';
+import { describe, it } from 'vitest';
 import { NodeDataError, INodeDataErrorContext } from '@/application/Parser/NodeValidation/NodeDataError';
 import { NodeData } from '@/application/Parser/NodeValidation/NodeData';
 import { AbsentObjectTestCases, AbsentStringTestCases, itEachAbsentTestCase } from '@tests/unit/shared/TestCases/AbsentTests';

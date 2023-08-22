@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import type { CategoryData, CategoryOrScriptData } from '@/application/collections/';
 import { CategoryFactoryType, parseCategory } from '@/application/Parser/CategoryParser';
 import { parseScript } from '@/application/Parser/Script/ScriptParser';

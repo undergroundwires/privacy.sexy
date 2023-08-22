@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { it, expect } from 'vitest';
 import { ICodeValidationRule, IInvalidCodeLine } from '@/application/Parser/Script/Validation/ICodeValidationRule';
 import { ICodeLine } from '@/application/Parser/Script/Validation/ICodeLine';
 

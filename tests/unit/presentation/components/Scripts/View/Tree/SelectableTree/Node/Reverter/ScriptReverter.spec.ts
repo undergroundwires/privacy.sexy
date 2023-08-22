@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { ScriptReverter } from '@/presentation/components/Scripts/View/ScriptsTree/SelectableTree/Node/Reverter/ScriptReverter';
 import { getScriptNodeId } from '@/presentation/components/Scripts/View/ScriptsTree/ScriptNodeParser';
 import { UserSelection } from '@/application/Context/State/Selection/UserSelection';

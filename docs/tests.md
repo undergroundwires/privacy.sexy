@@ -5,74 +5,76 @@ There are different types of tests executed:
 1. [Unit tests](#unit-tests)
 2. [Integration tests](#integration-tests)
 3. [End-to-end (E2E) tests](#e2e-tests)
+4. [Automated checks](#automated-checks)
 
-Common aspects for all tests:
+## Unit and integration tests
 
-- They use [Mocha](https://mochajs.org/) and [Chai](https://www.chaijs.com/).
-- Their files end with `.spec.{ts|js}` suffix.
-
-💡 You can use path/module alias `@/tests` in import statements.
-
-## Unit tests
-
-- Unit tests test each component in isolation.
-- All unit tests goes under [`./tests/unit`](./../tests/unit).
-- They rely on [stubs](./../tests/unit/shared/Stubs) for isolation.
-- Unit tests include also Vue component tests using `@vue/test-utils`.
-
-### Unit tests structure
-
-- [`./src/`](./../src/)
-  - Includes source code that unit tests will test.
-- [`./tests/unit/`](./../tests/unit/)
-  - Includes test code.
-  - Tests follow same folder structure as [`./src/`](./../src).
-    - E.g. if system under test lies in [`./src/application/ApplicationFactory.ts`](./../src/application/ApplicationFactory.ts) then its tests would be in test would be at [`./tests/unit/application/ApplicationFactory.spec.ts`](./../tests/unit/application/ApplicationFactory.spec.ts).
-  - [`shared/`](./../tests/unit/shared/)
-    - Includes common functionality that's shared across unit tests.
-    - [`Assertions/`](./../tests/unit/shared/Assertions):
-      - Common assertions that extend [Chai Assertion Library](https://www.chaijs.com/).
-      - Asserting functions should start with `expect` prefix.
-    - [`TestCases/`](./../tests/unit/shared/TestCases/)
-      - Shared test cases.
-      - Functions that calls `it()` from [Mocha test framework](https://mochajs.org/) should have `it` prefix.
-        - E.g. `itEachAbsentCollectionValue()`.
-    - [`Stubs/`](./../tests/unit/shared/Stubs)
-      - Includes stubs to be able to test components in isolation.
-      - Stubs have minimal and dummy behavior to be functional, they may also have spying or mocking functions.
-
-### Unit tests naming
-
-- Each test suite first describe the system under test.
-  - E.g. tests for class `Application.ts` are all inside `Application.spec.ts`.
-- `describe` blocks tests for same function (if applicable).
-  - E.g. test for `run()` are inside `describe('run', () => ..)`.
+- They utilize [Vitest](https://vitest.dev/).
+- Test files are suffixed with `.spec.ts`.
 
 ### Act, arrange, assert
 
-- Tests use act, arrange and assert (AAA) pattern when applicable.
+- Tests implement the act, arrange, and assert (AAA) pattern.
 - **Arrange**
-  - Sets up the test case.
-  - Starts with comment line `// arrange`.
+  - Sets up the test scenario and environment.
+  - Begins with comment line `// arrange`.
 - **Act**
   - Executes the actual test.
-  - Starts with comment line `// act`.
+  - Begins with comment line `// act`.
 - **Assert**
-  - Elicit some sort of expectation.
-  - Starts with comment line `// assert`.
+  - Sets an expectation for the test's outcome.
+  - Begins with comment line `// assert`.
 
-## Integration tests
+### Unit tests
 
-- Tests functionality of a component in combination with others (not isolated).
-- Ensure dependencies to third parties work as expected.
-- Defined in [./tests/integration](./../tests/integration).
+- Evaluate individual components in isolation.
+- Located in [`./tests/unit`](./../tests/unit).
+- Achieve isolation using [stubs](./../tests/unit/shared/Stubs).
+- Include Vue component tests, enabled by `@vue/test-utils`.
+
+#### Unit tests naming
+
+- Test suites start with a description of the component or system under test.
+  - E.g., tests for `Application.ts` are contained in `Application.spec.ts`.
+- Whenever possible, `describe` blocks group tests of the same function.
+  - E.g., tests for `run()` are inside `describe('run', () => ...)`.
+
+### Integration tests
+
+- Assess the combined functionality of components.
+- They verify that third-party dependencies function as anticipated.
 
 ## E2E tests
 
-- Test the functionality and performance of a running application.
-- Vue CLI plugin  [`e2e-cypress`](https://github.com/vuejs/vue-cli/tree/dev/packages/@vue/cli-plugin-e2e-cypress#readme) configures E2E tests.
-- Test names and folders have logical structure based on tests executed.
-- The structure is following:
+- Examine the live web application's functionality and performance.
+- Configured with the Vue CLI plugin [`e2e-cypress`](https://github.com/vuejs/vue-cli/tree/dev/packages/@vue/cli-plugin-e2e-cypress#readme).
+
+## Automated checks
+
+These checks validate various qualities like runtime execution, building process, security testing, etc.
+
+- Use [various tools](./../package.json) and [scripts](./../scripts).
+- Are automatically executed as [GitHub workflows](./../.github/workflows).
+
+## Tests structure
+
+- [`package.json`](./../package.json): Defines test commands and includes tools used in tests.
+- [`vite.config.ts`](./../vite.config.ts): Configures `vitest` for unit and integration tests.
+- [`./src/`](./../src/): Contains the source code subject to testing.
+- **[`./tests/bootstrap/setup.ts`](./../tests/bootstrap/setup.ts)**: Initializes tests.
+- **[`./tests/unit/`](./../tests/unit/)**
+  - Stores unit test code.
+  - The directory structure mirrors [`./src/`](./../src).
+    - E.g., tests for [`./src/application/ApplicationFactory.ts`](./../src/application/ApplicationFactory.ts) reside in [`./tests/unit/application/ApplicationFactory.spec.ts`](./../tests/unit/application/ApplicationFactory.spec.ts).
+  - [`shared/`](./../tests/unit/shared/)
+    - Contains shared unit test functionalities.
+    - [`Assertions/`](./../tests/unit/shared/Assertions): Contains common assertion functions, prefixed with `expect`.
+    - [`TestCases/`](./../tests/unit/shared/TestCases/)
+      - Shared test cases.
+      - Functions that calls `it()` from [Vitest](https://vitest.dev/) should have `it` prefix.
+    - [`Stubs/`](./../tests/unit/shared/Stubs): Maintains stubs for component isolation, equipped with basic functionalities and, when necessary, spying or mocking capabilities.
+- **[`./tests/integration/`](./../tests/integration/)**: Contains integration test files.
+- **[`./tests/e2e/`](./../tests/e2e/)**
   - [`cypress.config.ts`](./../cypress.config.ts): Cypress configuration file.
   - [`./tests/e2e/`](./../tests/e2e/): Base Cypress folder.
     - [`/specs/`](./../tests/e2e/specs/): Test files named with `.spec.js` extension.

@@ -1,4 +1,4 @@
-import 'mocha';
+import { describe } from 'vitest';
 import { InlinePowerShell } from '@/application/Parser/Script/Compiler/Expressions/Pipes/PipeDefinitions/InlinePowerShell';
 import { IPipeTestCase, runPipeTests } from './PipeTestRunner';
 

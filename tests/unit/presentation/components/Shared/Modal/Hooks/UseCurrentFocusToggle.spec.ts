@@ -1,6 +1,5 @@
-import 'mocha';
+import { describe, it, expect } from 'vitest';
 import { ref, nextTick } from 'vue';
-import { expect } from 'chai';
 import { useCurrentFocusToggle } from '@/presentation/components/Shared/Modal/Hooks/UseCurrentFocusToggle';
 
 describe('useCurrentFocusToggle', () => {

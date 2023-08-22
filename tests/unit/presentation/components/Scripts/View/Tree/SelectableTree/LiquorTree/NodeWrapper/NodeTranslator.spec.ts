@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import {
   ILiquorTreeExistingNode, ILiquorTreeNewNode, ILiquorTreeNodeData, ICustomLiquorTreeData,
 } from 'liquor-tree';

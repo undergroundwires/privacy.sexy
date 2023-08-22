@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { ISyntaxFactory } from '@/application/Parser/Script/Validation/Syntax/ISyntaxFactory';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { CategoryCollectionParseContext } from '@/application/Parser/Script/CategoryCollectionParseContext';

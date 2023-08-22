@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { getInstructions, hasInstructions } from '@/presentation/components/Code/CodeButtons/Instructions/InstructionListDataFactory';
 import { getEnumValues } from '@/application/Common/Enum';

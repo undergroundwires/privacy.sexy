@@ -1,7 +1,6 @@
-import 'mocha';
-import { resolve, join, basename } from 'path';
 import { readdirSync, readFileSync } from 'fs';
-import { expect } from 'chai';
+import { resolve, join, basename } from 'path';
+import { describe, it, expect } from 'vitest';
 
 /*
   A common mistake when working with yaml files to forget mentioning that a value should

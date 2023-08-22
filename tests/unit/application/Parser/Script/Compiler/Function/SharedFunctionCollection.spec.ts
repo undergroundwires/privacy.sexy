@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { SharedFunctionCollection } from '@/application/Parser/Script/Compiler/Function/SharedFunctionCollection';
 import { SharedFunctionStub } from '@tests/unit/shared/Stubs/SharedFunctionStub';
 import { FunctionBodyType } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';

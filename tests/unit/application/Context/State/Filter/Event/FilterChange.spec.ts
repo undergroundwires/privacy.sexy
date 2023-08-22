@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { FilterChange } from '@/application/Context/State/Filter/Event/FilterChange';
 import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { FilterResultStub } from '@tests/unit/shared/Stubs/FilterResultStub';

@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { getEnumValues } from '@/application/Common/Enum';
 import { Script } from '@/domain/Script';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';

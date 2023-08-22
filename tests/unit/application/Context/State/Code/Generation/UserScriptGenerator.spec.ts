@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { UserScriptGenerator } from '@/application/Context/State/Code/Generation/UserScriptGenerator';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { ICodeBuilderFactory } from '@/application/Context/State/Code/Generation/ICodeBuilderFactory';

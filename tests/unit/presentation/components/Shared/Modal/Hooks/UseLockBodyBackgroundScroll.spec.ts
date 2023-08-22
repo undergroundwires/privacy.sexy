@@ -1,6 +1,7 @@
-import 'mocha';
+import {
+  describe, it, expect, afterEach,
+} from 'vitest';
 import { shallowMount } from '@vue/test-utils';
-import { expect } from 'chai';
 import { ref, nextTick, defineComponent } from 'vue';
 import { useLockBodyBackgroundScroll } from '@/presentation/components/Shared/Modal/Hooks/UseLockBodyBackgroundScroll';
 

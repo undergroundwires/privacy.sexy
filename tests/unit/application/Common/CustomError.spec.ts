@@ -1,6 +1,6 @@
-// eslint-disable-next-line max-classes-per-file
-import 'mocha';
-import { expect } from 'chai';
+import {
+  describe, it, afterEach, expect,
+} from 'vitest';
 import { CustomError, Environment } from '@/application/Common/CustomError';
 
 describe('CustomError', () => {

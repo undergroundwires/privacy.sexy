@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { it, expect } from 'vitest';
 import { Type } from '../Type';
 
 interface ISingletonTestData<T> {

@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { EnvironmentStub } from '@tests/unit/shared/Stubs/EnvironmentStub';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CodeRunner } from '@/infrastructure/CodeRunner';
@@ -193,7 +192,7 @@ function getNodeJsMocks() {
 }
 
 function mockOs(commandHistory: NodeJsCommand[]) {
-  let tmpDir: string;
+  let tmpDir = '/stub-temp-dir/';
   return {
     setupTmpdir: (value: string): void => {
       tmpDir = value;

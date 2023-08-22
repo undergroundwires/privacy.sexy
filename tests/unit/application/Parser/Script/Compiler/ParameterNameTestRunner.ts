@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { AbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 
 export function testParameterName(action: (parameterName: string) => string) {

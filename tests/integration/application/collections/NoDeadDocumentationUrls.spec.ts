@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { parseApplication } from '@/application/Parser/ApplicationParser';
 import { IApplication } from '@/domain/IApplication';
 import { IUrlStatus } from './StatusChecker/IUrlStatus';
@@ -29,7 +28,7 @@ describe('collections', () => {
     // assert
     const deadUrls = results.filter((r) => r.code !== 200);
     expect(deadUrls).to.have.lengthOf(0, printUrls(deadUrls));
-  }).timeout(testTimeoutInMs);
+  }, testTimeoutInMs);
 });
 
 function collectUniqueUrls(app: IApplication): string[] {

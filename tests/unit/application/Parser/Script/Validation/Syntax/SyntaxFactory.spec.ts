@@ -1,4 +1,4 @@
-import 'mocha';
+import { describe } from 'vitest';
 import { SyntaxFactory } from '@/application/Parser/Script/Validation/Syntax/SyntaxFactory';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { ShellScriptSyntax } from '@/application/Parser/Script/Validation/Syntax/ShellScriptSyntax';
@@ -8,7 +8,7 @@ import { BatchFileSyntax } from '@/application/Parser/Script/Validation/Syntax/B
 describe('SyntaxFactory', () => {
   const sut = new SyntaxFactory();
   const runner = new ScriptingLanguageFactoryTestRunner()
-    .expect(ScriptingLanguage.shellscript, ShellScriptSyntax)
-    .expect(ScriptingLanguage.batchfile, BatchFileSyntax);
+    .expectInstance(ScriptingLanguage.shellscript, ShellScriptSyntax)
+    .expectInstance(ScriptingLanguage.batchfile, BatchFileSyntax);
   runner.testCreateMethod(sut);
 });

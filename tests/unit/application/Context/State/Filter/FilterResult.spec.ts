@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { FilterResult } from '@/application/Context/State/Filter/FilterResult';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';

@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { useEnvironment } from '@/presentation/components/Shared/Hooks/UseEnvironment';
 import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { EnvironmentStub } from '@tests/unit/shared/Stubs/EnvironmentStub';

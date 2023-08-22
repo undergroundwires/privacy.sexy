@@ -1,4 +1,4 @@
-import 'mocha';
+import { describe } from 'vitest';
 import { EscapeDoubleQuotes } from '@/application/Parser/Script/Compiler/Expressions/Pipes/PipeDefinitions/EscapeDoubleQuotes';
 import { AbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 import { runPipeTests } from './PipeTestRunner';

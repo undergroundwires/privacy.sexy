@@ -1,3 +1,4 @@
+import { describe } from 'vitest';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { ShellBuilder } from '@/application/Context/State/Code/Generation/Languages/ShellBuilder';
 import { BatchBuilder } from '@/application/Context/State/Code/Generation/Languages/BatchBuilder';
@@ -7,7 +8,7 @@ import { ScriptingLanguageFactoryTestRunner } from '@tests/unit/application/Comm
 describe('CodeBuilderFactory', () => {
   const sut = new CodeBuilderFactory();
   const runner = new ScriptingLanguageFactoryTestRunner()
-    .expect(ScriptingLanguage.shellscript, ShellBuilder)
-    .expect(ScriptingLanguage.batchfile, BatchBuilder);
+    .expectInstance(ScriptingLanguage.shellscript, ShellBuilder)
+    .expectInstance(ScriptingLanguage.batchfile, BatchBuilder);
   runner.testCreateMethod(sut);
 });

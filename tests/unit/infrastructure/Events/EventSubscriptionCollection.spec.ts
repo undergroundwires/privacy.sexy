@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { EventSubscriptionCollection } from '@/infrastructure/Events/EventSubscriptionCollection';
 import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 

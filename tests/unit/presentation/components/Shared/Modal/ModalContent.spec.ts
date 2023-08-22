@@ -1,6 +1,5 @@
-import 'mocha';
+import { describe, it, expect } from 'vitest';
 import { shallowMount } from '@vue/test-utils';
-import { expect } from 'chai';
 import ModalContent from '@/presentation/components/Shared/Modal/ModalContent.vue';
 
 const DOM_MODAL_CONTENT_SELECTOR = '.modal-content-content';

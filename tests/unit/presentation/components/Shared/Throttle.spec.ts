@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { throttle, ITimer, TimeoutType } from '@/presentation/components/Shared/Throttle';
 import { EventSource } from '@/infrastructure/Events/EventSource';
 import { IEventSubscription } from '@/infrastructure/Events/IEventSource';

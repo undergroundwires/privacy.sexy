@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { NonCollapsing, hasDirective } from '@/presentation/components/Scripts/View/Cards/NonCollapsingDirective';
 
 const expectedAttributeName = 'data-interaction-does-not-collapse';

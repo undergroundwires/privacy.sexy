@@ -1,3 +1,5 @@
+import { it } from 'vitest';
+
 export function itEachAbsentStringValue(runner: (absentValue: string) => void): void {
   itEachAbsentTestCase(AbsentStringTestCases, runner);
 }

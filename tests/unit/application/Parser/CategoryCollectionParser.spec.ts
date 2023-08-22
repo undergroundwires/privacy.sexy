@@ -1,9 +1,7 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { IEntity } from '@/infrastructure/Entity/IEntity';
 import { parseCategoryCollection } from '@/application/Parser/CategoryCollectionParser';
 import { parseCategory } from '@/application/Parser/CategoryParser';
-import { parseProjectInformation } from '@/application/Parser/ProjectInformationParser';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { ScriptingDefinitionParser } from '@/application/Parser/ScriptingDefinition/ScriptingDefinitionParser';
@@ -80,7 +78,7 @@ describe('CategoryCollectionParser', () => {
       it('parses scripting definition as expected', () => {
         // arrange
         const collection = new CollectionDataStub();
-        const information = parseProjectInformation(process.env);
+        const information = new ProjectInformationStub();
         const expected = new ScriptingDefinitionParser()
           .parse(collection.scripting, information);
         // act

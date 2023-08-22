@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, expect } from 'vitest';
 import { FunctionCallArgument } from '@/application/Parser/Script/Compiler/Function/Call/Argument/FunctionCallArgument';
 import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { testParameterName } from '../../../ParameterNameTestRunner';

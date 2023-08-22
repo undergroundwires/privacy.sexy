@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { NodeDataError } from '@/application/Parser/NodeValidation/NodeDataError';
 import { NodeValidator } from '@/application/Parser/NodeValidation/NodeValidator';
 import { expectThrowsError } from '@tests/unit/shared/Assertions/ExpectThrowsError';

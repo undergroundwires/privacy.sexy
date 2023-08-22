@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { useApplication } from '@/presentation/components/Shared/Hooks/UseApplication';
 import { ApplicationStub } from '@tests/unit/shared/Stubs/ApplicationStub';
 import { ProjectInformationStub } from '@tests/unit/shared/Stubs/ProjectInformationStub';

@@ -1,5 +1,4 @@
-import 'mocha';
-import { expect } from 'chai';
+import { describe, it, expect } from 'vitest';
 import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
 import { ApplicationCode } from '@/application/Context/State/Code/ApplicationCode';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
