@@ -580,8 +580,8 @@ actions:
                         name: Clear Windows temp files
                         recommend: standard
                         code: |-
-                            del /f /q %localappdata%\Temp\*
-                            del /s /q "%WINDIR%\Temp\*"
+                            del /s /f /q %TEMP%*
+                            del /s /f /q "%WINDIR%\Temp\*"
                     -
                         name: Clear main telemetry file
                         recommend: standard
