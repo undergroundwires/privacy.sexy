@@ -9,7 +9,13 @@ jobs:
     strategy:
       matrix:
         os: [ macos, ubuntu, windows ]
-        mode: [ development, test, production ]
+        mode: [
+          # Vite mode: https://vitejs.dev/guide/env-and-mode.html
+          development,  # Used by `dev` command
+          production,   # Used by `build` command
+          # Vitest mode: https://vitest.dev/guide/cli.html
+          test,         # Used by Vitest
+        ]
       fail-fast: false # Allows to see results from other combinations
     runs-on: ${{ matrix.os }}-latest
     steps:
@@ -72,4 +78,4 @@ jobs:
         run: npm ci
       -
         name: Create icons
-        run: npm run create-icons
+        run: npm run icons:build

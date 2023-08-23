@@ -1,10 +1,11 @@
+/* Keeping here until Vitest migration */
+
 const { resolve } = require('path');
 const { defineConfig } = require('@vue/cli-service');
 const packageJson = require('./package.json');
 const tsconfigJson = require('./tsconfig.json');
 
 loadVueAppRuntimeVariables();
-fixTestBuildWithModules();
 
 module.exports = defineConfig({
   transpileDependencies: true,
@@ -28,32 +29,6 @@ module.exports = defineConfig({
     // Use something other than default source mapper or babel cannot
     // log stacks like `console.log(new Error().stack)`
     devtool: 'eval-source-map',
-  },
-  pluginOptions: {
-    // https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/guide.html#native-modules
-    electronBuilder: {
-      mainProcessFile: './src/presentation/electron/main.ts', // https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/configuration.html#webpack-configuration
-      nodeIntegration: true, // required to reach Node.js APIs for environment specific logic
-      // https://www.electron.build/configuration/configuration
-      builderOptions: {
-        publish: [{
-          // https://www.electron.build/configuration/publish#githuboptions
-          // https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/recipes.html#enable-publishing-to-github
-          provider: 'github',
-          vPrefixedTagName: false, // default: true
-          releaseType: 'release', // or "draft" (default), "prerelease"
-        }],
-        mac: { // https://www.electron.build/configuration/mac
-          target: 'dmg',
-        },
-        win: { // https://www.electron.build/configuration/win
-          target: 'nsis',
-        },
-        linux: { // https://www.electron.build/configuration/linux
-          target: 'AppImage',
-        },
-      },
-    },
   },
 });
 
@@ -95,16 +70,4 @@ function getAliasesFromTsConfig() {
     aliases[aliasName] = aliasPath;
     return aliases;
   }, {});
-}
-
-function fixTestBuildWithModules() {
-  /*
-    Workaround for Vue CLI issue during tests breaks projects that rely on ES6 modules and mocha.
-    Setting VUE_CLI_TEST to true prevents the Vue CLI from altering the module transpilation.
-    This fix ensures `npm run build -- --mode test` works successfully.
-    See: https://github.com/vuejs/vue-cli/issues/7417
-  */
-  if (process.env.NODE_ENV === 'test') {
-    process.env.VUE_CLI_TEST = true;
-  }
 }

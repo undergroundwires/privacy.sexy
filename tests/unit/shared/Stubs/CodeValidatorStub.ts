@@ -1,7 +1,7 @@
 import { expect } from 'vitest';
+import { Constructible } from '@tests/shared/TypeHelpers';
 import { ICodeValidationRule } from '@/application/Parser/Script/Validation/ICodeValidationRule';
 import { ICodeValidator } from '@/application/Parser/Script/Validation/ICodeValidator';
-import { Type } from '../Type';
 
 export class CodeValidatorStub implements ICodeValidator {
   public callHistory = new Array<{
@@ -21,7 +21,7 @@ export class CodeValidatorStub implements ICodeValidator {
 
   public assertHistory(expected: {
     validatedCodes: readonly string[],
-    rules: readonly Type<ICodeValidationRule>[],
+    rules: readonly Constructible<ICodeValidationRule>[],
   }) {
     expect(this.callHistory).to.have.lengthOf(expected.validatedCodes.length);
     const actualValidatedCodes = this.callHistory.map((args) => args.code);

@@ -10,24 +10,23 @@ The presentation layer uses an event-driven architecture for bidirectional react
 
 ## Structure
 
-- [`/src/` **`presentation/`**](./../src/presentation/): Contains all presentation related code including Vue and Electron configurations
-  - [**`bootstrapping/`**](./../src/presentation/bootstrapping/): Registers Vue global objects including components and plugins.
-  - [**`components/`**](./../src/presentation/components/): Contains all Vue components and their helper classes.
-    - [**`Shared/`**](./../src/presentation/components/Shared): Contains Vue components and component helpers that other components share.
-      - [**`hooks`**](../src/presentation/components/Shared/Hooks): Shared hooks for state access
-  - [**`assets/`**](./../src/presentation/assets/styles/): Contains assets that webpack will process.
-    - [**`fonts/`**](./../src/presentation/assets/fonts/): Contains fonts
-    - [**`styles/`**](./../src/presentation/assets/styles/): Contains shared styles used throughout different components.
-      - [**`components/`**](./../src/presentation/assets/styles/components): Contains reusable styles coupled to a Vue/HTML component.
-      - [**`vendors-extensions/`**](./../src/presentation/assets/styles/third-party-extensions): Contains styles that override third-party components used.
-      - [**`main.scss`**](./../src/presentation/assets/styles/main.scss): Primary Sass file, passes along all other styles, should be the single file used from other components.
-  - [**`main.ts`**](./../src/presentation/main.ts): Application entry point that mounts and starts Vue application.
-  - [**`electron/`**](./../src/presentation/electron/): Electron configuration for the desktop application.
-    - [**`main.ts`**](./../src/presentation/main.ts): Main process of Electron, started as first thing when app starts.
-- [**`/public/`**](./../public/): Contains static assets that are directly copied and do not go through webpack.
-- [**`/vue.config.cjs`**](./../vue.config.cjs): Global Vue CLI configurations loaded by `@vue/cli-service`.
-- [**`/postcss.config.cjs`**](./../postcss.config.cjs): PostCSS configurations used by Vue CLI internally.
-- [**`/babel.config.cjs`**](./../babel.config.cjs): Babel configurations for polyfills used by `@vue/cli-plugin-babel`.
+- [`/src/` **`presentation/`**](./../src/presentation/): Contains Vue and Electron code.
+  - [**`bootstrapping/`**](./../src/presentation/bootstrapping/): Registers Vue components and plugins.
+  - [**`components/`**](./../src/presentation/components/): Contains Vue components and helpers.
+    - [**`Shared/`**](./../src/presentation/components/Shared): Contains shared Vue components and helpers.
+      - [**`hooks`**](../src/presentation/components/Shared/Hooks): Hooks used by components through [dependency injection](#dependency-injections).
+  - [**`/public/`**](../src/presentation/public/): Contains static assets.
+  - [**`assets/`**](./../src/presentation/assets/styles/): Contains assets processed by Vite.
+    - [**`fonts/`**](./../src/presentation/assets/fonts/): Contains fonts.
+    - [**`styles/`**](./../src/presentation/assets/styles/): Contains shared styles.
+      - [**`components/`**](./../src/presentation/assets/styles/components): Contains styles for Vue components.
+      - [**`vendors-extensions/`**](./../src/presentation/assets/styles/third-party-extensions): Contains styles for third-party components.
+      - [**`main.scss`**](./../src/presentation/assets/styles/main.scss): Main Sass file, imported by other components as single entrypoint.
+  - [**`main.ts`**](./../src/presentation/main.ts): Starts Vue app.
+  - [**`electron/`**](./../src/presentation/electron/): Contains Electron code.
+    - [**`main.ts`**](./../src/presentation/main.ts): Starts Electron app.
+- [**`/vite.config.ts`**](./../vite.config.ts): Contains Vite configurations for building web application.
+- [**`/postcss.config.cjs`**](./../postcss.config.cjs): Contains PostCSS configurations for Vite.
 
 ## Visual design best-practices
 
@@ -85,6 +84,10 @@ Shared components include:
 
 - [ModalDialog.vue](./../src/presentation/components/Shared/Modal/ModalDialog.vue) is utilized for rendering modal windows.
 - [TooltipWrapper.vue](./../src/presentation/components/Shared/TooltipWrapper.vue) acts as a wrapper for rendering tooltips.
+
+## Desktop builds
+
+Desktop builds uses `electron-vite` to bundle the code, and `electron-builder` to build and publish the packages.
 
 ## Sass naming convention
 

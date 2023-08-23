@@ -1,8 +1,8 @@
 import ace from 'ace-builds';
 
 /*
-  Following is here because `import 'ace-builds/webpack-resolver';` does not work with webpack 5.
-  Related issue: https://github.com/ajaxorg/ace-builds/issues/211, PR: https://github.com/ajaxorg/ace-builds/pull/221
+  Following is here because `import 'ace-builds/esm-resolver' imports all unused functionality
+  when built with Vite (`npm run build`).
 */
 
 import 'ace-builds/src-noconflict/theme-github';

@@ -1,28 +1,19 @@
 import { IProjectInformation } from '@/domain/IProjectInformation';
 import { ProjectInformation } from '@/domain/ProjectInformation';
+import { IAppMetadata } from '@/infrastructure/Metadata/IAppMetadata';
 import { Version } from '@/domain/Version';
 
 export function parseProjectInformation(
-  environment: NodeJS.ProcessEnv | VueAppEnvironment,
+  metadata: IAppMetadata,
 ): IProjectInformation {
-  const version = new Version(environment[VueAppEnvironmentKeys.VUE_APP_VERSION]);
+  const version = new Version(
+    metadata.version,
+  );
   return new ProjectInformation(
-    environment[VueAppEnvironmentKeys.VUE_APP_NAME],
+    metadata.name,
     version,
-    environment[VueAppEnvironmentKeys.VUE_APP_SLOGAN],
-    environment[VueAppEnvironmentKeys.VUE_APP_REPOSITORY_URL],
-    environment[VueAppEnvironmentKeys.VUE_APP_HOMEPAGE_URL],
+    metadata.slogan,
+    metadata.repositoryUrl,
+    metadata.homepageUrl,
   );
 }
-
-export const VueAppEnvironmentKeys = {
-  VUE_APP_VERSION: 'VUE_APP_VERSION',
-  VUE_APP_NAME: 'VUE_APP_NAME',
-  VUE_APP_SLOGAN: 'VUE_APP_SLOGAN',
-  VUE_APP_REPOSITORY_URL: 'VUE_APP_REPOSITORY_URL',
-  VUE_APP_HOMEPAGE_URL: 'VUE_APP_HOMEPAGE_URL',
-} as const;
-
-export type VueAppEnvironment = {
-  [K in keyof typeof VueAppEnvironmentKeys]: string;
-};

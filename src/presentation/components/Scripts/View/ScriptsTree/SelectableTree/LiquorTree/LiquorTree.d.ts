@@ -69,6 +69,8 @@ declare module 'liquor-tree' {
     matcher(query: string, node: ILiquorTreeExistingNode): boolean;
   }
 
-  const LiquorTree: PluginObject<Vue>;
+  interface LiquorTreeVueComponent extends PluginObject<Vue> {
+    install(Vue: VueConstructor<Vue>, options?: unknown);
+  }
   export default LiquorTree;
 }

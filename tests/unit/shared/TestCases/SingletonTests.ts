@@ -1,9 +1,9 @@
 import { it, expect } from 'vitest';
-import { Type } from '../Type';
+import { Constructible } from '@tests/shared/TypeHelpers';
 
 interface ISingletonTestData<T> {
   getter: () => T;
-  expectedType: Type<T>;
+  expectedType: Constructible<T>;
 }
 
 export function itIsSingleton<T>(test: ISingletonTestData<T>): void {

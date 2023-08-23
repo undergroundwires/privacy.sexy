@@ -10,7 +10,6 @@ module.exports = {
   },
   extends: [
     // Vue specific rules, eslint-plugin-vue
-    // Added by Vue CLI
     'plugin:vue/essential',
 
     // Extends eslint-config-airbnb
@@ -18,7 +17,6 @@ module.exports = {
 
     // Extends @typescript-eslint/recommended
     // Uses the recommended rules from the @typescript-eslint/eslint-plugin
-    // Added by Vue CLI
     '@vue/typescript/recommended',
   ],
   rules: {

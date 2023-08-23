@@ -7,15 +7,17 @@ import MacOsData from '@/application/collections/macos.yaml';
 import LinuxData from '@/application/collections/linux.yaml';
 import { parseProjectInformation } from '@/application/Parser/ProjectInformationParser';
 import { Application } from '@/domain/Application';
+import { IAppMetadata } from '@/infrastructure/Metadata/IAppMetadata';
+import { ViteAppMetadata } from '@/infrastructure/Metadata/Vite/ViteAppMetadata';
 import { parseCategoryCollection } from './CategoryCollectionParser';
 
 export function parseApplication(
-  parser: CategoryCollectionParserType = parseCategoryCollection,
-  processEnv: NodeJS.ProcessEnv = process.env,
+  parser = parseCategoryCollection,
+  metadata: IAppMetadata = new ViteAppMetadata(),
   collectionsData = PreParsedCollections,
 ): IApplication {
   validateCollectionsData(collectionsData);
-  const information = parseProjectInformation(processEnv);
+  const information = parseProjectInformation(metadata);
   const collections = collectionsData.map((collection) => parser(collection, information));
   const app = new Application(information, collections);
   return app;

@@ -7,6 +7,7 @@ import fetch from 'cross-fetch';
 import { ProjectInformation } from '@/domain/ProjectInformation';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { Version } from '@/domain/Version';
+import { ViteAppMetadata } from '@/infrastructure/Metadata/Vite/ViteAppMetadata';
 import { parseProjectInformation } from '@/application/Parser/ProjectInformationParser';
 import { UpdateProgressBar } from './UpdateProgressBar';
 
@@ -28,7 +29,7 @@ export async function handleManualUpdate(info: UpdateInfo) {
 }
 
 function getTargetProject(targetVersion: string) {
-  const existingProject = parseProjectInformation(process.env);
+  const existingProject = parseProjectInformation(new ViteAppMetadata());
   const targetProject = new ProjectInformation(
     existingProject.name,
     new Version(targetVersion),

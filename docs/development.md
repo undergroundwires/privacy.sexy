@@ -35,11 +35,18 @@ You could run other types of tests as well, but they may take longer time and ov
 
 ### Running
 
-- Run in local server: `npm run serve`
+**Web:**
+
+- Run in local server: `npm run dev`
   - 💡 Meant for local development with features such as hot-reloading.
-- Run using Docker:
-  1. Build: `docker build -t undergroundwires/privacy.sexy:latest .`
-  2. Run: `docker run -it -p 8080:80 --rm --name privacy.sexy undergroundwires/privacy.sexy:latest`
+- Preview production build: `npm run preview`
+  - Start a local web server that serves the built solution from `./dist`.
+  - 💡 Run `npm run build` before `npm run preview`.
+
+**Docker:**
+
+1. Build: `docker build -t undergroundwires/privacy.sexy:latest .`
+2. Run: `docker run -it -p 8080:80 --rm --name privacy.sexy undergroundwires/privacy.sexy:latest`
 
 ### Building
 

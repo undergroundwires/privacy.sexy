@@ -1,8 +1,9 @@
 /* eslint-disable max-classes-per-file */
 import { describe, it, expect } from 'vitest';
 import type { CollectionData } from '@/application/collections/';
-import { VueAppEnvironment, parseProjectInformation } from '@/application/Parser/ProjectInformationParser';
+import { parseProjectInformation } from '@/application/Parser/ProjectInformationParser';
 import { CategoryCollectionParserType, parseApplication } from '@/application/Parser/ApplicationParser';
+import { IAppMetadata } from '@/infrastructure/Metadata/IAppMetadata';
 import WindowsData from '@/application/collections/windows.yaml';
 import MacOsData from '@/application/collections/macos.yaml';
 import LinuxData from '@/application/collections/linux.yaml';
@@ -12,9 +13,9 @@ import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { getEnumValues } from '@/application/Common/Enum';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
-import { getProcessEnvironmentStub } from '@tests/unit/shared/Stubs/ProcessEnvironmentStub';
 import { CollectionDataStub } from '@tests/unit/shared/Stubs/CollectionDataStub';
 import { getAbsentCollectionTestCases, AbsentObjectTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
+import { AppMetadataStub } from '@tests/unit/shared/Stubs/AppMetadataStub';
 
 describe('ApplicationParser', () => {
   describe('parseApplication', () => {
@@ -41,7 +42,7 @@ describe('ApplicationParser', () => {
     describe('processEnv', () => {
       it('used to parse expected project information', () => {
         // arrange
-        const env = getProcessEnvironmentStub();
+        const env = new AppMetadataStub();
         const expected = parseProjectInformation(env);
         const parserSpy = new CategoryCollectionParserSpy();
         const parserMock = parserSpy.mockParser();
@@ -138,7 +139,7 @@ class ApplicationParserBuilder {
   private categoryCollectionParser: CategoryCollectionParserType = new CategoryCollectionParserSpy()
     .mockParser();
 
-  private environment: VueAppEnvironment = getProcessEnvironmentStub();
+  private environment: IAppMetadata = new AppMetadataStub();
 
   private collectionsData: CollectionData[] = [new CollectionDataStub()];
 
@@ -150,7 +151,7 @@ class ApplicationParserBuilder {
   }
 
   public withEnvironment(
-    environment: VueAppEnvironment,
+    environment: IAppMetadata,
   ): this {
     this.environment = environment;
     return this;

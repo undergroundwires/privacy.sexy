@@ -8,9 +8,11 @@
         @node:unchecked="nodeSelected($event)"
         ref="liquorTree"
       >
-        <span class="tree-text" slot-scope="{ node }">
-          <NodeContent :data="convertExistingToNode(node)" />
-        </span>
+        <template v-slot:default="{ node }">
+          <span class="tree-text">
+            <NodeContent :data="convertExistingToNode(node)" />
+          </span>
+        </template>
       </LiquorTree>
     </span>
     <span v-else>Nooo 😢</span>
@@ -192,4 +194,3 @@ async function tryUntilDefined<T>(
   return value;
 }
 </script>
-./Node/INodeContent

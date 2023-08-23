@@ -8,7 +8,7 @@ class Paths {
   constructor(selfDirectory) {
     const projectRoot = resolve(selfDirectory, '../');
     this.sourceImage = join(projectRoot, 'img/logo.svg');
-    this.publicDirectory = join(projectRoot, 'public');
+    this.publicDirectory = join(projectRoot, 'src/presentation/public');
     this.electronBuildDirectory = join(projectRoot, 'build');
   }
 
@@ -61,7 +61,7 @@ async function updateDesktopIcons(sourceImage, electronIconsDir) {
   await ensureFolderExists(electronIconsDir);
   const temporaryDir = await mkdtemp('icon-');
   const temporaryPngFile = join(temporaryDir, 'icon.png');
-  console.log(`Converting from SVG (${sourceImage}) to PNG: ${temporaryPngFile}`) // required by icon-builder
+  console.log(`Converting from SVG (${sourceImage}) to PNG: ${temporaryPngFile}`); // required by `icon-builder`
   await runCommand(
     'npx',
     'svgexport',

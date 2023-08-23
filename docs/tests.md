@@ -60,9 +60,10 @@ These checks validate various qualities like runtime execution, building process
 
 - [`package.json`](./../package.json): Defines test commands and includes tools used in tests.
 - [`vite.config.ts`](./../vite.config.ts): Configures `vitest` for unit and integration tests.
-- [`./src/`](./../src/): Contains the source code subject to testing.
-- **[`./tests/bootstrap/setup.ts`](./../tests/bootstrap/setup.ts)**: Initializes tests.
-- **[`./tests/unit/`](./../tests/unit/)**
+- [`./src/`](./../src/): Contains the code subject to testing.
+- [`./tests/shared/`](./../tests/shared/): Contains code shared by different test categories.
+  - [`bootstrap/setup.ts`](./../tests/shared/bootstrap/setup.ts): Initializes unit and integration tests.
+- [`./tests/unit/`](./../tests/unit/)
   - Stores unit test code.
   - The directory structure mirrors [`./src/`](./../src).
     - E.g., tests for [`./src/application/ApplicationFactory.ts`](./../src/application/ApplicationFactory.ts) reside in [`./tests/unit/application/ApplicationFactory.spec.ts`](./../tests/unit/application/ApplicationFactory.spec.ts).
@@ -73,8 +74,8 @@ These checks validate various qualities like runtime execution, building process
       - Shared test cases.
       - Functions that calls `it()` from [Vitest](https://vitest.dev/) should have `it` prefix.
     - [`Stubs/`](./../tests/unit/shared/Stubs): Maintains stubs for component isolation, equipped with basic functionalities and, when necessary, spying or mocking capabilities.
-- **[`./tests/integration/`](./../tests/integration/)**: Contains integration test files.
-- **[`./tests/e2e/`](./../tests/e2e/)**
+- [`./tests/integration/`](./../tests/integration/): Contains integration test files.
+- [`./tests/e2e/`](./../tests/e2e/)
   - [`cypress.config.ts`](./../cypress.config.ts): Cypress configuration file.
   - [`./tests/e2e/`](./../tests/e2e/): Base Cypress folder.
     - [`/specs/`](./../tests/e2e/specs/): Test files named with `.spec.js` extension.

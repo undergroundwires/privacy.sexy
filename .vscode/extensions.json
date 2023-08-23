@@ -11,8 +11,8 @@
     "dbaeumer.vscode-eslint",           // Lints JavaScript/TypeScript.
     "pmneo.tsimporter",                 // Provides better auto-complete for TypeScripts imports.
     // Vue
-    "jcbuisson.vue",                    // Highlights syntax.
-    "octref.vetur",                     // Adds Vetur, Vue tooling support.
+    "Vue.volar",                        // Official Vue extensions
+    "Vue.vscode-typescript-vue-plugin", // Official TypeScript Vue Plugin
     // Scripting
     "timonwong.shellcheck",             // Lints bash files.
     "ms-vscode.powershell",             // Lints PowerShell files.

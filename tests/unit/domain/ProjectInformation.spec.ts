@@ -4,11 +4,12 @@ import { OperatingSystem } from '@/domain/OperatingSystem';
 import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
 import { VersionStub } from '@tests/unit/shared/Stubs/VersionStub';
 import { Version } from '@/domain/Version';
+import { PropertyKeys } from '@tests/shared/TypeHelpers';
 
 describe('ProjectInformation', () => {
   describe('retrieval of property values', () => {
-    interface IPropertyTestCase {
-      readonly testCaseName: string;
+    interface IInformationParsingTestCase {
+      readonly description?: string;
       readonly expectedValue: string;
       readonly buildWithExpectedValue: (
         builder: ProjectInformationBuilder,
@@ -16,81 +17,105 @@ describe('ProjectInformation', () => {
       ) => ProjectInformationBuilder;
       readonly getActualValue: (sut: ProjectInformation) => string;
     }
-    const propertyTestCases: readonly IPropertyTestCase[] = [
-      {
-        testCaseName: 'name',
-        expectedValue: 'expected-name',
+    const propertyTestCases: {
+      readonly [K in PropertyKeys<ProjectInformation>]: readonly IInformationParsingTestCase[];
+    } = {
+      name: [{
+        expectedValue: 'expected-app-name',
         buildWithExpectedValue: (builder, expected) => builder
           .withName(expected),
         getActualValue: (sut) => sut.name,
-      },
-      {
-        testCaseName: 'version',
+      }],
+      version: [{
         expectedValue: '0.11.3',
         buildWithExpectedValue: (builder, expected) => builder
           .withVersion(new VersionStub(expected)),
         getActualValue: (sut) => sut.version.toString(),
-      },
-      {
-        testCaseName: 'repositoryWebUrl - not ending with .git',
-        expectedValue: 'expected-repository-url',
-        buildWithExpectedValue: (builder, expected) => builder
-          .withRepositoryUrl(expected),
-        getActualValue: (sut) => sut.repositoryWebUrl,
-      },
-      {
-        testCaseName: 'repositoryWebUrl - ending with .git',
-        expectedValue: 'expected-repository-url',
-        buildWithExpectedValue: (builder, expected) => builder
-          .withRepositoryUrl(`${expected}.git`),
-        getActualValue: (sut) => sut.repositoryWebUrl,
-      },
-      {
-        testCaseName: 'slogan',
+      }],
+      slogan: [{
         expectedValue: 'expected-slogan',
         buildWithExpectedValue: (builder, expected) => builder
           .withSlogan(expected),
         getActualValue: (sut) => sut.slogan,
-      },
-      {
-        testCaseName: 'homepage',
+      }],
+      repositoryUrl: [{
+        description: 'without `.git` suffix',
+        expectedValue: 'expected-repository-url',
+        buildWithExpectedValue: (builder, expected) => builder
+          .withRepositoryUrl(expected),
+        getActualValue: (sut) => sut.repositoryUrl,
+      }, {
+        description: 'with `.git` suffix',
+        expectedValue: 'expected-repository-url',
+        buildWithExpectedValue: (builder, expected) => builder
+          .withRepositoryUrl(expected),
+        getActualValue: (sut) => sut.repositoryUrl,
+      }],
+      repositoryWebUrl: [{
+        description: 'without `.git` suffix',
+        expectedValue: 'expected-repository-url',
+        buildWithExpectedValue: (builder, expected) => builder
+          .withRepositoryUrl(expected),
+        getActualValue: (sut) => sut.repositoryWebUrl,
+      }, {
+        description: 'with `.git` suffix',
+        expectedValue: 'expected-repository-url',
+        buildWithExpectedValue: (builder, expected) => builder
+          .withRepositoryUrl(`${expected}.git`),
+        getActualValue: (sut) => sut.repositoryWebUrl,
+      }],
+      homepage: [{
         expectedValue: 'expected-homepage',
         buildWithExpectedValue: (builder, expected) => builder
           .withHomepage(expected),
         getActualValue: (sut) => sut.homepage,
-      },
-      {
-        testCaseName: 'feedbackUrl',
+      }],
+      feedbackUrl: [{
+        description: 'without `.git` suffix',
+        expectedValue: 'https://github.com/undergroundwires/privacy.sexy/issues',
+        buildWithExpectedValue: (builder) => builder
+          .withRepositoryUrl('https://github.com/undergroundwires/privacy.sexy'),
+        getActualValue: (sut) => sut.feedbackUrl,
+      }, {
+        description: 'with `.git` suffix',
         expectedValue: 'https://github.com/undergroundwires/privacy.sexy/issues',
         buildWithExpectedValue: (builder) => builder
           .withRepositoryUrl('https://github.com/undergroundwires/privacy.sexy.git'),
         getActualValue: (sut) => sut.feedbackUrl,
-      },
-      {
-        testCaseName: 'releaseUrl',
+      }],
+      releaseUrl: [{
+        description: 'without `.git` suffix',
+        expectedValue: 'https://github.com/undergroundwires/privacy.sexy/releases/tag/0.7.2',
+        buildWithExpectedValue: (builder) => builder
+          .withRepositoryUrl('https://github.com/undergroundwires/privacy.sexy')
+          .withVersion(new VersionStub('0.7.2')),
+        getActualValue: (sut) => sut.releaseUrl,
+      }, {
+        description: 'with `.git` suffix',
         expectedValue: 'https://github.com/undergroundwires/privacy.sexy/releases/tag/0.7.2',
         buildWithExpectedValue: (builder) => builder
           .withRepositoryUrl('https://github.com/undergroundwires/privacy.sexy.git')
           .withVersion(new VersionStub('0.7.2')),
         getActualValue: (sut) => sut.releaseUrl,
-      },
-    ];
-    for (const testCase of propertyTestCases) {
-      it(`should return the expected ${testCase.testCaseName} value`, () => {
-        // arrange
-        const expected = testCase.expectedValue;
-        const builder = new ProjectInformationBuilder();
-        const sut = testCase
-          .buildWithExpectedValue(builder, expected)
-          .build();
+      }],
+    };
+    Object.entries(propertyTestCases).forEach(([propertyName, testList]) => {
+      testList.forEach(({
+        description, buildWithExpectedValue, expectedValue, getActualValue,
+      }) => {
+        it(`${propertyName}${description ? ` (${description})` : ''}`, () => {
+          // arrange
+          const builder = new ProjectInformationBuilder();
+          const sut = buildWithExpectedValue(builder, expectedValue).build();
 
-        // act
-        const actual = testCase.getActualValue(sut);
+          // act
+          const actual = getActualValue(sut);
 
-        // assert
-        expect(actual).to.equal(expected);
+          // assert
+          expect(actual).to.equal(expectedValue);
+        });
       });
-    }
+    });
   });
   describe('correct retrieval of download URL per operating system', () => {
     const testCases: ReadonlyArray<{
@@ -128,7 +153,7 @@ describe('ProjectInformation', () => {
           .withVersion(new VersionStub(version))
           .withRepositoryUrl(repositoryUrl)
           .build();
-          // act
+        // act
         const actual = sut.getDownloadUrl(os);
         // assert
         expect(actual).to.equal(expected);

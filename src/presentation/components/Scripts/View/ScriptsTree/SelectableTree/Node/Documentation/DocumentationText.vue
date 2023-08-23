@@ -76,7 +76,7 @@ $text-size: 0.75em; // Lower looks bad on Firefox
           Use mask element instead of content/background-image etc.
           This way we can apply current font color to it to match the theme
         */
-        mask: url(~@/presentation/assets/icons/external-link.svg) no-repeat 50% 50%;
+        mask: url(@/presentation/assets/icons/external-link.svg) no-repeat 50% 50%;
         mask-size: cover;
         content: '';
 

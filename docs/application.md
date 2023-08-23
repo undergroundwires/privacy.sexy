@@ -35,7 +35,7 @@ Application layer enables [data-driven programming](https://en.wikipedia.org/wik
 
 Application layer parses the application data to compile the domain object [`Application.ts`](./../src/domain/Application.ts).
 
-A webpack loader loads (or injects) application data ([collection yaml files](./../src/application/collections/)) into the application layer in compile time. Application layer ([`ApplicationFactory.ts`](./../src/application/ApplicationFactory.ts)) parses and compiles this data in runtime.
+The build tool loads (or injects) application data ([collection yaml files](./../src/application/collections/)) into the application layer in compile time. Application layer ([`ApplicationFactory.ts`](./../src/application/ApplicationFactory.ts)) parses and compiles this data in runtime.
 
 Application layer compiles templating syntax during parsing to create the end scripts. You can read more about templating syntax in [templating.md](./templating.md) and how application data uses them through functions in [collection-files.md | Function](./collection-files.md#function).
 

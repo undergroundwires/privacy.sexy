@@ -1,7 +1,6 @@
 import os from 'os';
 import path from 'path';
 import fs from 'fs';
-// eslint-disable-next-line camelcase
 import child_process from 'child_process';
 import { Environment } from '@/application/Environment/Environment';
 import { OperatingSystem } from '@/domain/OperatingSystem';
