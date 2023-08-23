@@ -16,6 +16,6 @@ export default defineConfig({
     },
     setupFiles: [
       'tests/bootstrap/setup.ts',
-    ]
-  }
+    ],
+  },
 });

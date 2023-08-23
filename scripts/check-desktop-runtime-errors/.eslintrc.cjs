@@ -1,11 +1,10 @@
-const { rules: baseStyleRules } = require('eslint-config-airbnb-base/rules/style');
-require('@rushstack/eslint-patch/modern-module-resolution');
+require('@rushstack/eslint-patch/modern-module-resolution.js');
 
 module.exports = {
   env: {
     node: true,
   },
   rules: {
-    "import/extensions": ["error", "always"],
+    'import/extensions': ['error', 'always'],
   },
 };

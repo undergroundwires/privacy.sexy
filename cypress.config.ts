@@ -1,5 +1,5 @@
 import { defineConfig } from 'cypress';
-import setupPlugins from './tests/e2e/plugins/index.js';
+import setupPlugins from './tests/e2e/plugins/index';
 
 export default defineConfig({
   fixturesFolder: 'tests/e2e/fixtures',

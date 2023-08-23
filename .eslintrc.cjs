@@ -6,6 +6,7 @@ module.exports = {
   root: true,
   env: {
     node: true,
+    es2022: true, // add globals and sets parserOptions.ecmaVersion to 2022
   },
   extends: [
     // Vue specific rules, eslint-plugin-vue
@@ -20,36 +21,12 @@ module.exports = {
     // Added by Vue CLI
     '@vue/typescript/recommended',
   ],
-  parserOptions: {
-    ecmaVersion: 2022, // So it allows top-level awaits
-    /*
-      Having 'latest' leads to:
-      ```
-        Parsing error: ecmaVersion must be a number. Received value of type string instead
-      ```
-      For .js files in the project
-    */
-  },
   rules: {
     ...getOwnRules(),
     ...getTurnedOffBrokenRules(),
     ...getOpinionatedRuleOverrides(),
     ...getTodoRules(),
   },
-  overrides: [
-    {
-      files: [
-        '**/__tests__/*.{j,t}s?(x)',
-        '**/tests/unit/**/*.spec.{j,t}s?(x)',
-      ],
-    },
-    {
-      files: ['**/tests/**/*.{j,t}s?(x)'],
-      rules: {
-        'no-console': 'off',
-      },
-    },
-  ],
 };
 
 function getOwnRules() {

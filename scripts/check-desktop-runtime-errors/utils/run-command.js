@@ -1,5 +1,4 @@
 import { exec } from 'child_process';
-import { LOG_LEVELS, log } from './log.js';
 import { indentText } from './text.js';
 
 const TIMEOUT_IN_SECONDS = 180;

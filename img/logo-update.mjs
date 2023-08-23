@@ -61,7 +61,7 @@ async function updateDesktopIcons(sourceImage, electronIconsDir) {
   await ensureFolderExists(electronIconsDir);
   const temporaryDir = await mkdtemp('icon-');
   const temporaryPngFile = join(temporaryDir, 'icon.png');
-  console.log(`Converting from SVG (${sourceImage}) to PNG: ${temporaryPngFile}`); // required by icon-builder
+  console.log(`Converting from SVG (${sourceImage}) to PNG: ${temporaryPngFile}`) // required by icon-builder
   await runCommand(
     'npx',
     'svgexport',

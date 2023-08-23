@@ -56,7 +56,7 @@ async function captureTitlesOnLinux(processId) {
 
   const titles = await Promise.all(windowIds.map(async (windowId) => {
     const { stdout: titleOutput, error: titleError } = await runCommand(
-      `xprop -id ${windowId} | grep "WM_NAME(STRING)" | cut -d '=' -f 2 | sed 's/^[[:space:]]*"\\(.*\\)"[[:space:]]*$/\\1/'`
+      `xprop -id ${windowId} | grep "WM_NAME(STRING)" | cut -d '=' -f 2 | sed 's/^[[:space:]]*"\\(.*\\)"[[:space:]]*$/\\1/'`,
     );
     if (titleError || !titleOutput) {
       return undefined;
