@@ -1,7 +1,8 @@
-import { resolve } from 'path';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { VITE_ENVIRONMENT_KEYS } from './src/infrastructure/Metadata/Vite/ViteEnvironmentKeys';
-import tsconfigJson from './tsconfig.json';
-import packageJson from './package.json';
+import tsconfigJson from './tsconfig.json' assert { type: 'json' };
+import packageJson from './package.json' assert { type: 'json' };
 
 export function getAliasesFromTsConfig(): Record<string, string> {
   const { paths } = tsconfigJson.compilerOptions;
@@ -9,10 +10,16 @@ export function getAliasesFromTsConfig(): Record<string, string> {
     const pathFolder = paths[pathName][0];
     const aliasFolder = pathFolder.substring(0, pathFolder.length - 1); // trim * from end
     const aliasName = pathName.substring(0, pathName.length - 2); // trim /* from end
-    const aliasPath = resolve(__dirname, aliasFolder);
+    const aliasPath = resolve(getSelfDirectoryAbsolutePath(), aliasFolder);
     aliases[aliasName] = aliasPath;
     return aliases;
   }, {});
+}
+
+export function getSelfDirectoryAbsolutePath() {
+  const filePath = fileURLToPath(import.meta.url);
+  const directoryPath = dirname(filePath);
+  return directoryPath;
 }
 
 type ViteEnvironmentKeyValues = {

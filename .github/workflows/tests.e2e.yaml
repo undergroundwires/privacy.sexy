@@ -23,4 +23,4 @@ jobs:
         run: npm ci
       -
         name: Run e2e tests
-        run: npm run test:e2e -- --headless
+        run: npm run test:cy:run

@@ -18,9 +18,9 @@ You could run other types of tests as well, but they may take longer time and ov
 
 - Run unit tests: `npm run test:unit`
 - Run integration tests: `npm run test:integration`
-- Run e2e (end-to-end) tests
-  - Interactive mode with GUI: `npm run test:e2e`
-  - Headless mode without GUI: `npm run test:e2e -- --headless`
+- Run end-to-end (e2e) tests:
+  - `npm run test:cy:open`: Run tests interactively using the development server with hot-reloading.
+  - `npm run test:cy:run`: Run tests on the production build in a headless mode.
 
 📖 Read more about testing in [tests](./tests.md).
 

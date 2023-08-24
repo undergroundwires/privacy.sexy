@@ -47,7 +47,7 @@ There are different types of tests executed:
 ## E2E tests
 
 - Examine the live web application's functionality and performance.
-- Configured with the Vue CLI plugin [`e2e-cypress`](https://github.com/vuejs/vue-cli/tree/dev/packages/@vue/cli-plugin-e2e-cypress#readme).
+- Uses Cypress to run the tests.
 
 ## Automated checks
 
@@ -75,11 +75,9 @@ These checks validate various qualities like runtime execution, building process
       - Functions that calls `it()` from [Vitest](https://vitest.dev/) should have `it` prefix.
     - [`Stubs/`](./../tests/unit/shared/Stubs): Maintains stubs for component isolation, equipped with basic functionalities and, when necessary, spying or mocking capabilities.
 - [`./tests/integration/`](./../tests/integration/): Contains integration test files.
-- [`./tests/e2e/`](./../tests/e2e/)
-  - [`cypress.config.ts`](./../cypress.config.ts): Cypress configuration file.
-  - [`./tests/e2e/`](./../tests/e2e/): Base Cypress folder.
-    - [`/specs/`](./../tests/e2e/specs/): Test files named with `.spec.js` extension.
-    - [`/plugins/index.js`](./../tests/e2e/plugins/index.js): Plugin file executed before loading project.
-    - [`/support/index.js`](./../tests/e2e/support/index.js): Support file, runs before every single spec file.
-    - *(Ignored)* `/videos`: Asset folder for videos taken during tests.
-    - *(Ignored)* `/screenshots`: Asset folder for Screenshots taken during tests.
+- [`cypress.config.ts`](./../cypress.config.ts): Cypress (E2E tests) configuration file.
+- [`./tests/e2e/`](./../tests/e2e/): Base Cypress folder, includes tests with `.cy.ts` extension.
+  - [`/support/e2e.ts`](./../tests/e2e/support/e2e.ts): Support file, runs before every single spec file.
+  - [`/tsconfig.json`]: TypeScript configuration for file Cypress code, improves IDE support, recommended to have by official documentation.
+  - *(git ignored)* `/videos`: Asset folder for videos taken during tests.
+  - *(git ignored)* `/screenshots`: Asset folder for Screenshots taken during tests.

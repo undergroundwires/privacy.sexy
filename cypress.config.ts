@@ -1,15 +1,15 @@
 import { defineConfig } from 'cypress';
-import setupPlugins from './tests/e2e/plugins/index';
+import ViteConfig from './vite.config';
+
+const CYPRESS_BASE_DIR = 'tests/e2e/';
 
 export default defineConfig({
-  fixturesFolder: 'tests/e2e/fixtures',
-  screenshotsFolder: 'tests/e2e/screenshots',
-  videosFolder: 'tests/e2e/videos',
+  fixturesFolder: `${CYPRESS_BASE_DIR}/fixtures`,
+  screenshotsFolder: `${CYPRESS_BASE_DIR}/screenshots`,
+  videosFolder: `${CYPRESS_BASE_DIR}/videos`,
   e2e: {
-    setupNodeEvents(on, config) {
-      return setupPlugins(on, config);
-    },
-    specPattern: 'tests/e2e/specs/**/*.cy.{js,jsx,ts,tsx}',
-    supportFile: 'tests/e2e/support/index.js',
+    baseUrl: `http://localhost:${ViteConfig.server.port}/`,
+    specPattern: `${CYPRESS_BASE_DIR}/**/*.cy.{js,jsx,ts,tsx}`, // Default: cypress/e2e/**/*.cy.{js,jsx,ts,tsx}
+    supportFile: `${CYPRESS_BASE_DIR}/support/e2e.ts`,
   },
 });

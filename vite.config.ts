@@ -4,10 +4,10 @@ import { defineConfig } from 'vite';
 import legacy from '@vitejs/plugin-legacy';
 import vue from '@vitejs/plugin-vue2';
 import ViteYaml from '@modyfi/vite-plugin-yaml';
-import { getAliasesFromTsConfig, getClientEnvironmentVariables } from './vite-config-helper';
+import { getAliasesFromTsConfig, getClientEnvironmentVariables, getSelfDirectoryAbsolutePath } from './vite-config-helper';
 
-const WEB_DIRECTORY = resolve(__dirname, 'src/presentation');
-const TEST_INITIALIZATION_FILE = resolve(__dirname, 'tests/shared/bootstrap/setup.ts');
+const WEB_DIRECTORY = resolve(getSelfDirectoryAbsolutePath(), 'src/presentation');
+const TEST_INITIALIZATION_FILE = resolve(getSelfDirectoryAbsolutePath(), 'tests/shared/bootstrap/setup.ts');
 const NODE_CORE_MODULES = ['os', 'child_process', 'fs', 'path'];
 
 export default defineConfig({
