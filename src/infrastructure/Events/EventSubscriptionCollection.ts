@@ -1,6 +1,7 @@
 import { IEventSubscription } from './IEventSource';
+import { IEventSubscriptionCollection } from './IEventSubscriptionCollection';
 
-export class EventSubscriptionCollection {
+export class EventSubscriptionCollection implements IEventSubscriptionCollection {
   private readonly subscriptions = new Array<IEventSubscription>();
 
   public register(...subscriptions: IEventSubscription[]) {

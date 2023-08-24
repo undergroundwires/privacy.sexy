@@ -2,6 +2,7 @@ import { ref, computed, readonly } from 'vue';
 import { IApplicationContext, IReadOnlyApplicationContext } from '@/application/Context/IApplicationContext';
 import { ICategoryCollectionState, IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { EventSubscriptionCollection } from '@/infrastructure/Events/EventSubscriptionCollection';
+import { IEventSubscriptionCollection } from '@/infrastructure/Events/IEventSubscriptionCollection';
 
 export function useCollectionState(context: IApplicationContext) {
   if (!context) {
@@ -18,13 +19,6 @@ export function useCollectionState(context: IApplicationContext) {
     }),
   );
 
-  type NewStateEventHandler = (
-    newState: IReadOnlyCategoryCollectionState,
-    oldState: IReadOnlyCategoryCollectionState | undefined,
-  ) => void;
-  interface IStateCallbackSettings {
-    readonly immediate: boolean;
-  }
   const defaultSettings: IStateCallbackSettings = {
     immediate: false,
   };
@@ -49,9 +43,6 @@ export function useCollectionState(context: IApplicationContext) {
     }
   }
 
-  type StateModifier = (
-    state: ICategoryCollectionState,
-  ) => void;
   function modifyCurrentState(mutator: StateModifier) {
     if (!mutator) {
       throw new Error('missing state mutator');
@@ -59,9 +50,6 @@ export function useCollectionState(context: IApplicationContext) {
     mutator(context.state);
   }
 
-  type ContextModifier = (
-    state: IApplicationContext,
-  ) => void;
   function modifyCurrentContext(mutator: ContextModifier) {
     if (!mutator) {
       throw new Error('missing context mutator');
@@ -75,6 +63,23 @@ export function useCollectionState(context: IApplicationContext) {
     onStateChange,
     currentContext: context as IReadOnlyApplicationContext,
     currentState: readonly(computed<IReadOnlyCategoryCollectionState>(() => currentState.value)),
-    events,
+    events: events as IEventSubscriptionCollection,
   };
 }
+
+export type NewStateEventHandler = (
+  newState: IReadOnlyCategoryCollectionState,
+  oldState: IReadOnlyCategoryCollectionState | undefined,
+) => void;
+
+export interface IStateCallbackSettings {
+  readonly immediate: boolean;
+}
+
+export type StateModifier = (
+  state: ICategoryCollectionState,
+) => void;
+
+export type ContextModifier = (
+  state: IApplicationContext,
+) => void;

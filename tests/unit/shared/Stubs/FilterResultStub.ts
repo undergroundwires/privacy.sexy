@@ -33,6 +33,12 @@ export class FilterResultStub implements IFilterResult {
     return this;
   }
 
+  public withQueryAndSomeMatches() {
+    return this
+      .withQuery('non-empty query')
+      .withSomeMatches();
+  }
+
   public withQuery(query: string) {
     this.query = query;
     return this;

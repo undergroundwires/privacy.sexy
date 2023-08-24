@@ -17,7 +17,7 @@ export class CategoryCollectionStateStub implements ICategoryCollectionState {
 
   public readonly code: IApplicationCode = new ApplicationCodeStub();
 
-  public readonly filter: IUserFilter = new UserFilterStub();
+  public filter: IUserFilter = new UserFilterStub();
 
   public get os(): OperatingSystem {
     return this.collectionStub.os;
@@ -39,6 +39,11 @@ export class CategoryCollectionStateStub implements ICategoryCollectionState {
 
   public withOs(os: OperatingSystem) {
     this.collectionStub = this.collectionStub.withOs(os);
+    return this;
+  }
+
+  public withFilter(filter: IUserFilter) {
+    this.filter = filter;
     return this;
   }
 

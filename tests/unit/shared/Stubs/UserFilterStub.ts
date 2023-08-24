@@ -5,8 +5,15 @@ import { IFilterChangeDetails } from '@/application/Context/State/Filter/Event/I
 import { FilterResultStub } from './FilterResultStub';
 import { EventSourceStub } from './EventSourceStub';
 
+export enum UserFilterMethod {
+  ApplyFilter,
+  ClearFilter,
+}
+
 export class UserFilterStub implements IUserFilter {
   private readonly filterChangedSource = new EventSourceStub<IFilterChangeDetails>();
+
+  public readonly callHistory = new Array<UserFilterMethod>();
 
   public currentFilter: IFilterResult | undefined = new FilterResultStub();
 
@@ -26,7 +33,11 @@ export class UserFilterStub implements IUserFilter {
     return this;
   }
 
-  public applyFilter(): void { /* NO OP */ }
+  public applyFilter(): void {
+    this.callHistory.push(UserFilterMethod.ApplyFilter);
+  }
 
-  public clearFilter(): void { /* NO OP */ }
+  public clearFilter(): void {
+    this.callHistory.push(UserFilterMethod.ClearFilter);
+  }
 }

@@ -1,19 +1,24 @@
 <template>
   <div class="scripts">
     <div v-if="!isSearching">
-      <CardList v-if="currentView === ViewType.Cards" />
-      <div class="tree" v-else-if="currentView === ViewType.Tree">
-        <ScriptsTree />
-      </div>
+      <template v-if="currentView === ViewType.Cards">
+        <CardList />
+      </template>
+      <template v-else-if="currentView === ViewType.Tree">
+        <div class="tree">
+          <ScriptsTree />
+        </div>
+      </template>
     </div>
     <div v-else> <!-- Searching -->
       <div class="search">
         <div class="search__query">
           <div>Searching for "{{ trimmedSearchQuery }}"</div>
-          <div class="search__query__close-button">
-            <font-awesome-icon
-              :icon="['fas', 'times']"
-              v-on:click="clearSearchQuery()" />
+          <div
+            class="search__query__close-button"
+            v-on:click="clearSearchQuery()"
+          >
+            <font-awesome-icon :icon="['fas', 'times']" />
           </div>
         </div>
         <div v-if="!searchHasMatches" class="search-no-matches">
@@ -41,6 +46,7 @@ import ScriptsTree from '@/presentation/components/Scripts/View/ScriptsTree/Scri
 import CardList from '@/presentation/components/Scripts/View/Cards/CardList.vue';
 import { ViewType } from '@/presentation/components/Scripts/Menu/View/ViewType';
 import { IReadOnlyUserFilter } from '@/application/Context/State/Filter/IUserFilter';
+import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
 
 export default defineComponent({
   components: {
@@ -58,8 +64,8 @@ export default defineComponent({
     const { info } = inject(useApplicationKey);
 
     const repositoryUrl = computed<string>(() => info.repositoryWebUrl);
-    const searchQuery = ref<string>();
-    const isSearching = ref(false);
+    const searchQuery = ref<string | undefined>();
+    const isSearching = computed(() => Boolean(searchQuery.value));
     const searchHasMatches = ref(false);
     const trimmedSearchQuery = computed(() => {
       const query = searchQuery.value;
@@ -72,8 +78,9 @@ export default defineComponent({
 
     onStateChange((newState) => {
       events.unsubscribeAll();
+      updateFromInitialFilter(newState.filter.currentFilter);
       subscribeToFilterChanges(newState.filter);
-    });
+    }, { immediate: true });
 
     function clearSearchQuery() {
       modifyCurrentState((state) => {
@@ -82,17 +89,21 @@ export default defineComponent({
       });
     }
 
+    function updateFromInitialFilter(filter?: IFilterResult) {
+      searchQuery.value = filter?.query;
+      searchHasMatches.value = filter?.hasAnyMatches();
+    }
+
     function subscribeToFilterChanges(filter: IReadOnlyUserFilter) {
       events.register(
         filter.filterChanged.on((event) => {
           event.visit({
             onApply: (newFilter) => {
               searchQuery.value = newFilter.query;
-              isSearching.value = true;
               searchHasMatches.value = newFilter.hasAnyMatches();
             },
             onClear: () => {
-              isSearching.value = false;
+              searchQuery.value = undefined;
             },
           });
         }),
