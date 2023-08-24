@@ -6,3 +6,6 @@ export type Constructible<T, TArgs extends unknown[] = never> = {
 export type PropertyKeys<T> = {
   [K in keyof T]: T[K] extends (...args: unknown[]) => unknown ? never : K;
 }[keyof T];
+
+export type ConstructorArguments<T> =
+  T extends new (...args: infer U) => unknown ? U : never;

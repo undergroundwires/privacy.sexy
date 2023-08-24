@@ -1,5 +1,5 @@
 import { expect } from 'vitest';
-import { Constructible } from '@tests/shared/TypeHelpers';
+import { Constructible } from '@/TypeHelpers';
 import { ICodeValidationRule } from '@/application/Parser/Script/Validation/ICodeValidationRule';
 import { ICodeValidator } from '@/application/Parser/Script/Validation/ICodeValidator';
 

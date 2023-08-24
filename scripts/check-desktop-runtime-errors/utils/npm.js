@@ -15,7 +15,7 @@ export async function npmInstall(projectDir) {
   if (!projectDir) { throw new Error('missing project directory'); }
   const npmModulesPath = join(projectDir, 'node_modules');
   if (!await isDirMissingOrEmpty(npmModulesPath)) {
-    log(`Directory "${npmModulesPath}" exists and has content. Skipping 'npm install'.`);
+    log(`Directory "${npmModulesPath}" exists and has content. Skipping \`npm install\`.`);
     return;
   }
   log('Starting dependency installation...');

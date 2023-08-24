@@ -4,7 +4,7 @@ import { OperatingSystem } from '@/domain/OperatingSystem';
 import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
 import { VersionStub } from '@tests/unit/shared/Stubs/VersionStub';
 import { Version } from '@/domain/Version';
-import { PropertyKeys } from '@tests/shared/TypeHelpers';
+import { PropertyKeys } from '@/TypeHelpers';
 
 describe('ProjectInformation', () => {
   describe('retrieval of property values', () => {

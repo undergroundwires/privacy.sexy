@@ -32,12 +32,15 @@ jobs:
         name: Build
         run: npm run build -- --mode ${{ matrix.mode }}
 
-  # A new job is used due to environments/modes different from Vue CLI, https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/1626
   build-desktop:
     strategy:
       matrix:
         os: [ macos, ubuntu, windows ]
-        mode: [ development, production ] # "test" is not supported https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/1627
+        mode: [
+          # electron-vite modes: https://electron-vite.org/guide/env-and-mode.html#global-env-variables
+          development,  # Used by `dev` command
+          production,   # Used by `build` and `preview` commands
+        ]
       fail-fast: false # Allows to see results from other combinations
     runs-on: ${{ matrix.os }}-latest
     steps:
@@ -51,14 +54,11 @@ jobs:
         name: Install dependencies
         run: npm ci
       -
-        name: Install cross-env
-        # Used to set NODE_ENV due to https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/1626
-        run: npm install --global cross-env
+        name: Prebuild
+        run: npm run electron:prebuild -- --mode ${{ matrix.mode }}
       -
         name: Build
-        run: |-  
-          cross-env-shell NODE_ENV=${{ matrix.mode }}
-          npm run electron:build -- --publish never --mode ${{ matrix.mode }}
+        run: npm run electron:build -- --publish never
 
   create-icons:
     strategy:

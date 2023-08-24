@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 import { describe, it, expect } from 'vitest';
 import type { CollectionData } from '@/application/collections/';
 import { parseProjectInformation } from '@/application/Parser/ProjectInformationParser';
@@ -7,28 +6,28 @@ import { IAppMetadata } from '@/infrastructure/Metadata/IAppMetadata';
 import WindowsData from '@/application/collections/windows.yaml';
 import MacOsData from '@/application/collections/macos.yaml';
 import LinuxData from '@/application/collections/linux.yaml';
-import { IProjectInformation } from '@/domain/IProjectInformation';
-import { ProjectInformation } from '@/domain/ProjectInformation';
-import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { getEnumValues } from '@/application/Common/Enum';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { CollectionDataStub } from '@tests/unit/shared/Stubs/CollectionDataStub';
 import { getAbsentCollectionTestCases, AbsentObjectTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 import { AppMetadataStub } from '@tests/unit/shared/Stubs/AppMetadataStub';
+import { AppMetadataFactory } from '@/infrastructure/Metadata/AppMetadataFactory';
+import { CategoryCollectionParserStub } from '@tests/unit/shared/Stubs/CategoryCollectionParserStub';
+import { ProjectInformationParserStub } from '@tests/unit/shared/Stubs/ProjectInformationParserStub';
+import { ProjectInformationStub } from '@tests/unit/shared/Stubs/ProjectInformationStub';
 
 describe('ApplicationParser', () => {
   describe('parseApplication', () => {
-    describe('parser', () => {
+    describe('categoryParser', () => {
       it('returns result from the parser', () => {
         // arrange
         const os = OperatingSystem.macOS;
         const data = new CollectionDataStub();
         const expected = new CategoryCollectionStub()
           .withOs(os);
-        const parser = new CategoryCollectionParserSpy()
-          .setUpReturnValue(data, expected)
-          .mockParser();
+        const parser = new CategoryCollectionParserStub()
+          .withReturnValue(data, expected)
+          .getStub();
         const sut = new ApplicationParserBuilder()
           .withCategoryCollectionParser(parser)
           .withCollectionsData([data]);
@@ -39,20 +38,63 @@ describe('ApplicationParser', () => {
         expect(expected).to.equal(actual);
       });
     });
-    describe('processEnv', () => {
-      it('used to parse expected project information', () => {
+    describe('project information', () => {
+      it('informationParser is used to create application info', () => {
         // arrange
-        const env = new AppMetadataStub();
-        const expected = parseProjectInformation(env);
-        const parserSpy = new CategoryCollectionParserSpy();
-        const parserMock = parserSpy.mockParser();
+        const expectedInformation = new ProjectInformationStub();
+        const informationParserStub = new ProjectInformationParserStub()
+          .withReturnValue(expectedInformation);
         const sut = new ApplicationParserBuilder()
-          .withCategoryCollectionParser(parserMock);
+          .withProjectInformationParser(informationParserStub.getStub());
         // act
         const app = sut.parseApplication();
         // assert
-        expect(expected).to.deep.equal(app.info);
-        expect(parserSpy.arguments.map((arg) => arg.info).every((info) => info === expected));
+        const actualInformation = app.info;
+        expect(expectedInformation).to.deep.equal(actualInformation);
+      });
+      it('informationParser is used to parse collection info', () => {
+        // arrange
+        const expectedInformation = new ProjectInformationStub();
+        const informationParserStub = new ProjectInformationParserStub()
+          .withReturnValue(expectedInformation);
+        const collectionParserStub = new CategoryCollectionParserStub();
+        const sut = new ApplicationParserBuilder()
+          .withProjectInformationParser(informationParserStub.getStub())
+          .withCategoryCollectionParser(collectionParserStub.getStub());
+        // act
+        sut.parseApplication();
+        // assert
+        expect(collectionParserStub.arguments).to.have.length.above(0);
+        const actualyUsedInfos = collectionParserStub.arguments.map((arg) => arg.info);
+        expect(actualyUsedInfos.every((info) => info === expectedInformation));
+      });
+    });
+    describe('metadata', () => {
+      it('used to parse expected metadata', () => {
+        // arrange
+        const expectedMetadata = new AppMetadataStub();
+        const infoParserStub = new ProjectInformationParserStub();
+        // act
+        new ApplicationParserBuilder()
+          .withMetadata(expectedMetadata)
+          .withProjectInformationParser(infoParserStub.getStub())
+          .parseApplication();
+        // assert
+        expect(infoParserStub.arguments).to.have.lengthOf(1);
+        expect(infoParserStub.arguments[0]).to.equal(expectedMetadata);
+      });
+      it('defaults to metadata from factory', () => {
+        // arrange
+        const expectedMetadata = AppMetadataFactory.Current;
+        const infoParserStub = new ProjectInformationParserStub();
+        // act
+        new ApplicationParserBuilder()
+          .withMetadata(undefined) // force using default
+          .withProjectInformationParser(infoParserStub.getStub())
+          .parseApplication();
+        // assert
+        expect(infoParserStub.arguments).to.have.lengthOf(1);
+        expect(infoParserStub.arguments[0]).to.equal(expectedMetadata);
       });
     });
     describe('collectionsData', () => {
@@ -79,12 +121,13 @@ describe('ApplicationParser', () => {
         // act
         for (const testCase of testCases) {
           it(testCase.name, () => {
-            let parserSpy = new CategoryCollectionParserSpy();
+            let categoryParserStub = new CategoryCollectionParserStub();
             for (let i = 0; i < testCase.input.length; i++) {
-              parserSpy = parserSpy.setUpReturnValue(testCase.input[i], testCase.output[i]);
+              categoryParserStub = categoryParserStub
+                .withReturnValue(testCase.input[i], testCase.output[i]);
             }
             const sut = new ApplicationParserBuilder()
-              .withCategoryCollectionParser(parserSpy.mockParser())
+              .withCategoryCollectionParser(categoryParserStub.getStub())
               .withCollectionsData(testCase.input);
             // act
             const app = sut.parseApplication();
@@ -96,14 +139,14 @@ describe('ApplicationParser', () => {
       it('defaults to expected data', () => {
         // arrange
         const expected = [WindowsData, MacOsData, LinuxData];
-        const parserSpy = new CategoryCollectionParserSpy();
+        const categoryParserStub = new CategoryCollectionParserStub();
         const sut = new ApplicationParserBuilder()
           .withCollectionsData(undefined)
-          .withCategoryCollectionParser(parserSpy.mockParser());
+          .withCategoryCollectionParser(categoryParserStub.getStub());
         // act
         sut.parseApplication();
         // assert
-        const actual = parserSpy.arguments.map((args) => args.data);
+        const actual = categoryParserStub.arguments.map((args) => args.data);
         expect(actual).to.deep.equal(expected);
       });
       describe('throws when data is invalid', () => {
@@ -136,10 +179,13 @@ describe('ApplicationParser', () => {
 });
 
 class ApplicationParserBuilder {
-  private categoryCollectionParser: CategoryCollectionParserType = new CategoryCollectionParserSpy()
-    .mockParser();
+  private categoryCollectionParser
+  : CategoryCollectionParserType = new CategoryCollectionParserStub().getStub();
 
-  private environment: IAppMetadata = new AppMetadataStub();
+  private projectInformationParser
+  : typeof parseProjectInformation = new ProjectInformationParserStub().getStub();
+
+  private metadata: IAppMetadata = new AppMetadataStub();
 
   private collectionsData: CollectionData[] = [new CollectionDataStub()];
 
@@ -150,10 +196,17 @@ class ApplicationParserBuilder {
     return this;
   }
 
-  public withEnvironment(
+  public withProjectInformationParser(
+    projectInformationParser: typeof parseProjectInformation,
+  ): this {
+    this.projectInformationParser = projectInformationParser;
+    return this;
+  }
+
+  public withMetadata(
     environment: IAppMetadata,
   ): this {
-    this.environment = environment;
+    this.metadata = environment;
     return this;
   }
 
@@ -165,39 +218,9 @@ class ApplicationParserBuilder {
   public parseApplication(): ReturnType<typeof parseApplication> {
     return parseApplication(
       this.categoryCollectionParser,
-      this.environment,
+      this.projectInformationParser,
+      this.metadata,
       this.collectionsData,
     );
-  }
-}
-
-class CategoryCollectionParserSpy {
-  public arguments = new Array<{
-    data: CollectionData,
-    info: ProjectInformation,
-  }>();
-
-  private returnValues = new Map<CollectionData, ICategoryCollection>();
-
-  public setUpReturnValue(
-    data: CollectionData,
-    collection: ICategoryCollection,
-  ): CategoryCollectionParserSpy {
-    this.returnValues.set(data, collection);
-    return this;
-  }
-
-  public mockParser(): CategoryCollectionParserType {
-    return (data: CollectionData, info: IProjectInformation) => {
-      this.arguments.push({ data, info });
-      if (this.returnValues.has(data)) {
-        return this.returnValues.get(data);
-      }
-      // Get next OS with a unique OS so mock does not result in an invalid app due to duplicated OS
-      // collections.
-      const currentRun = this.arguments.length - 1;
-      const nextOs = getEnumValues(OperatingSystem)[currentRun];
-      return new CategoryCollectionStub().withOs(nextOs);
-    };
   }
 }

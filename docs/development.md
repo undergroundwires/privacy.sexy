@@ -43,6 +43,13 @@ You could run other types of tests as well, but they may take longer time and ov
   - Start a local web server that serves the built solution from `./dist`.
   - 💡 Run `npm run build` before `npm run preview`.
 
+**Desktop apps:**
+
+- `npm run electron:dev`: The command will build the main process and preload scripts source code, and start a dev server for the renderer, and start the Electron app.
+- `npm run electron:preview`: The command will build the main process, preload scripts and renderer source code, and start the Electron app to preview.
+- `npm run electron:prebuild`: The command will build the main process, preload scripts and renderer source code. Usually before packaging the Electron application, you need to execute this command.
+- `npm run electron:build`: Prebuilds the Electron application, packages and publishes it through `electron-builder`.
+
 **Docker:**
 
 1. Build: `docker build -t undergroundwires/privacy.sexy:latest .`

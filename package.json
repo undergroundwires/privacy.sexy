@@ -17,8 +17,10 @@
     "test:cy:open": "start-server-and-test \"vite --port 7070 --mode production\" http://localhost:7070 \"cypress open --config baseUrl=http://localhost:7070\"",
     "lint": "npm run lint:md && npm run lint:md:consistency && npm run lint:md:relative-urls && npm run lint:eslint && npm run lint:yaml",
     "icons:build": "node scripts/logo-update.js",
-    "electron:build": "vue-cli-service electron:build",
-    "electron:serve": "vue-cli-service electron:serve",
+    "electron:dev": "electron-vite dev",
+    "electron:preview": "electron-vite preview",
+    "electron:prebuild": "electron-vite build",
+    "electron:build": "electron-builder",
     "lint:eslint": "eslint .",
     "lint:md": "markdownlint **/*.md --ignore node_modules",
     "lint:md:consistency": "remark . --frail --use remark-preset-lint-consistent",
@@ -27,7 +29,7 @@
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
-  "main": "index.js",
+  "main": "./dist_electron/main/index.cjs",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
@@ -87,14 +89,8 @@
     "typescript": "~4.6.2",
     "vite": "^4.4.9",
     "vitest": "^0.34.2",
-    "vue-cli-plugin-electron-builder": "^3.0.0-alpha.4",
     "vue-tsc": "^1.8.8",
     "yaml-lint": "^1.7.0"
-  },
-  "overrides": {
-    "vue-cli-plugin-electron-builder": {
-      "electron-builder": "^24.6.3"
-    }
   },
   "//devDependencies": {
     "terser": "Used by @vitejs/plugin-legacy for minification",

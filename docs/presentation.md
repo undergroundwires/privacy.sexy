@@ -24,8 +24,10 @@ The presentation layer uses an event-driven architecture for bidirectional react
       - [**`main.scss`**](./../src/presentation/assets/styles/main.scss): Main Sass file, imported by other components as single entrypoint.
   - [**`main.ts`**](./../src/presentation/main.ts): Starts Vue app.
   - [**`electron/`**](./../src/presentation/electron/): Contains Electron code.
-    - [**`main.ts`**](./../src/presentation/main.ts): Starts Electron app.
+    - [`/main/` **`index.ts`**](./../src/presentation/main.ts): Main entry for Electron, managing application windows and lifecycle events.
+    - [`/preload/` **`index.ts`**](./../src/presentation/main.ts): Script executed before the renderer, securing Node.js features for renderer use.
 - [**`/vite.config.ts`**](./../vite.config.ts): Contains Vite configurations for building web application.
+- [**`/electron.vite.config.ts`**](./../electron.vite.config.ts): Contains Vite configurations for building desktop applications.
 - [**`/postcss.config.cjs`**](./../postcss.config.cjs): Contains PostCSS configurations for Vite.
 
 ## Visual design best-practices

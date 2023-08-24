@@ -2,9 +2,13 @@ import { splitTextIntoLines, indentText } from '../utils/text.js';
 import { die } from '../utils/log.js';
 import { readAppLogFile } from './app-logs.js';
 
-const LOG_ERROR_MARKER = '[error]'; // from electron-log
 const ELECTRON_CRASH_TITLE = 'Error'; // Used by electron for early crashes
-const APP_INITIALIZED_MARKER = '[APP_INIT_SUCCESS]'; // Logged by application on successful initialization
+const LOG_ERROR_MARKER = '[error]'; // from electron-log
+const EXPECTED_LOG_MARKERS = [
+  '[WINDOW_INIT]',
+  '[PRELOAD_INIT]',
+  '[APP_MOUNT_INIT]',
+];
 
 export async function checkForErrors(stderr, windowTitles, projectDir) {
   if (!projectDir) { throw new Error('missing project directory'); }
@@ -19,7 +23,8 @@ async function gatherErrors(stderr, windowTitles, projectDir) {
   const logContent = await readAppLogFile(projectDir);
   return [
     verifyStdErr(stderr),
-    verifyApplicationInitializationLog(logContent),
+    verifyApplicationLogsExist(logContent),
+    ...EXPECTED_LOG_MARKERS.map((marker) => verifyLogMarkerExistsInLogs(logContent, marker)),
     verifyWindowTitle(windowTitles),
     verifyErrorsInLogs(logContent),
   ].filter(Boolean);
@@ -45,17 +50,24 @@ function formatError(error) {
   return message;
 }
 
-function verifyApplicationInitializationLog(logContent) {
+function verifyApplicationLogsExist(logContent) {
   if (!logContent || !logContent.length) {
     return describeError(
       'Missing application logs',
       'Application logs are empty not were not found.',
     );
   }
-  if (!logContent.includes(APP_INITIALIZED_MARKER)) {
+  return undefined;
+}
+
+function verifyLogMarkerExistsInLogs(logContent, marker) {
+  if (!marker) {
+    throw new Error('missing marker');
+  }
+  if (!logContent?.includes(marker)) {
     return describeError(
-      'Unexpected application logs',
-      `Missing identifier "${APP_INITIALIZED_MARKER}" in application logs.`,
+      'Incomplete application logs',
+      `Missing identifier "${marker}" in application logs.`,
     );
   }
   return undefined;
@@ -104,7 +116,7 @@ function verifyErrorsInLogs(logContent) {
 function describeError(reason, description) {
   return {
     reason,
-    description: `${description}\nThis might indicate an early crash or significant runtime issue.`,
+    description: `${description}\n\nThis might indicate an early crash or significant runtime issue.`,
   };
 }
 

@@ -3,7 +3,7 @@ import {
 } from 'vitest';
 import { ViteAppMetadata } from '@/infrastructure/Metadata/Vite/ViteAppMetadata';
 import { VITE_ENVIRONMENT_KEYS } from '@/infrastructure/Metadata/Vite/ViteEnvironmentKeys';
-import { PropertyKeys } from '@tests/shared/TypeHelpers';
+import { PropertyKeys } from '@/TypeHelpers';
 
 describe('ViteAppMetadata', () => {
   describe('reads values from import.meta.env', () => {

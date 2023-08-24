@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { ViteAppMetadata } from '@/infrastructure/Metadata/Vite/ViteAppMetadata';
 import packageJson from '@/../package.json' assert { type: 'json' };
-import { PropertyKeys } from '@tests/shared/TypeHelpers';
+import { PropertyKeys } from '@/TypeHelpers';
 
 describe('ViteAppMetadata', () => {
   describe('populates from package.json', () => {

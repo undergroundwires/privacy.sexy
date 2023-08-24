@@ -1,21 +1,17 @@
-// This is main process of Electron, started as first thing when app starts.
-// This script is running through entire life of the application.
-// It doesn't have any windows which you can see on screen, opens the main window from here.
+// Initializes Electron's main process, always runs in the background, and manages the main window.
 
-import path from 'path';
 import {
   app, protocol, BrowserWindow, shell, screen,
 } from 'electron';
-import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import log from 'electron-log';
+import { validateRuntimeSanity } from '@/infrastructure/RuntimeSanity/SanityChecks';
 import { setupAutoUpdater } from './Update/Updater';
+import {
+  APP_ICON_PATH, PRELOADER_SCRIPT_PATH, RENDERER_HTML_PATH, RENDERER_URL,
+} from './ElectronConfig';
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
-
-// Path of static assets, magic variable populated by electron
-// eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle
-declare const __static: string; // https://github.com/electron-userland/electron-webpack/issues/172
+const isDevelopment = !app.isPackaged;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -27,6 +23,9 @@ protocol.registerSchemesAsPrivileged([
 ]);
 
 setupLogger();
+validateRuntimeSanity({
+  validateMetadata: true,
+});
 
 function createWindow() {
   // Create the browser window.
@@ -35,14 +34,11 @@ function createWindow() {
     width: size.width,
     height: size.height,
     webPreferences: {
-      contextIsolation: false, // To reach node https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/1285
-      // Use pluginOptions.nodeIntegration, leave this alone
-      // See https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration
-      nodeIntegration: (process.env
-        .ELECTRON_NODE_INTEGRATION as unknown) as boolean,
+      nodeIntegration: true,
+      contextIsolation: false,
+      preload: PRELOADER_SCRIPT_PATH,
     },
-    // https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/recipes.html#set-tray-icon
-    icon: path.join(__static, 'icon.png'),
+    icon: APP_ICON_PATH,
   });
 
   win.setMenuBarVisibility(false);
@@ -83,17 +79,12 @@ app.on('activate', () => {
   }
 });
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
-  if (isDevelopment && !process.env.IS_TEST) {
-    // Install Vue Devtools
+  if (isDevelopment) {
     try {
       await installExtension(VUEJS_DEVTOOLS);
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error('Vue Devtools failed to install:', e.toString());
+      log.error('Vue Devtools failed to install:', e.toString());
     }
   }
   createWindow();
@@ -115,22 +106,19 @@ if (isDevelopment) {
 }
 
 function loadApplication(window: BrowserWindow) {
-  if (process.env.WEBPACK_DEV_SERVER_URL) {
-    // Load the url of the dev server if in development mode
-    loadUrlWithNodeWorkaround(win, process.env.WEBPACK_DEV_SERVER_URL as string);
-    if (!process.env.IS_TEST) {
-      window.webContents.openDevTools();
-    }
+  if (RENDERER_URL) { // Populated in a dev server during development
+    loadUrlWithNodeWorkaround(win, RENDERER_URL);
   } else {
-    createProtocol('app');
-    // Load the index.html when not in development
-    loadUrlWithNodeWorkaround(win, 'app://./index.html');
+    loadUrlWithNodeWorkaround(win, RENDERER_HTML_PATH);
+  }
+  if (isDevelopment) {
+    window.webContents.openDevTools();
+  } else {
     const updater = setupAutoUpdater();
     updater.checkForUpdates();
   }
-  // Do not remove [APP_INIT_SUCCESS]; it's a marker used in tests to verify
-  // app initialization.
-  log.info('[APP_INIT_SUCCESS] Main window initialized and content loading.');
+  // Do not remove [WINDOW_INIT]; it's a marker used in tests.
+  log.info('[WINDOW_INIT] Main window initialized and content loading.');
 }
 
 function configureExternalsUrlsOpenBrowser(window: BrowserWindow) {
@@ -158,7 +146,7 @@ function getWindowSize(idealWidth: number, idealHeight: number) {
 
 function setupLogger(): void {
   log.transports.file.level = 'silly';
-  if (!process.env.IS_TEST) {
+  if (!isDevelopment) {
     Object.assign(console, log.functions); // override console.log, console.warn etc.
   }
 }

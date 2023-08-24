@@ -1,0 +1,31 @@
+# -------
+# Windows
+# -------
+win:
+  target: nsis
+nsis:
+  artifactName: ${name}-${version}-Setup.${ext}
+
+# -----
+# Linux
+# -----
+linux:
+  target: AppImage
+appImage:
+  artifactName: ${name}-${version}.${ext}
+
+# -----
+# macOS
+# -----
+mac:
+  target: dmg
+dmg:
+  artifactName: ${name}-${version}.${ext}
+
+# ----------------
+# Publish options
+# ----------------
+publish:
+  provider: 'github'
+  vPrefixedTagName: false # default: true
+  releaseType: release # default: draft

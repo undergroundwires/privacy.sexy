@@ -6,8 +6,8 @@ import log from 'electron-log';
 import fetch from 'cross-fetch';
 import { ProjectInformation } from '@/domain/ProjectInformation';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { Version } from '@/domain/Version';
 import { ViteAppMetadata } from '@/infrastructure/Metadata/Vite/ViteAppMetadata';
+import { Version } from '@/domain/Version';
 import { parseProjectInformation } from '@/application/Parser/ProjectInformationParser';
 import { UpdateProgressBar } from './UpdateProgressBar';
 

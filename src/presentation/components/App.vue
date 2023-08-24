@@ -18,6 +18,7 @@ import TheCodeButtons from '@/presentation/components/Code/CodeButtons/TheCodeBu
 import TheScriptArea from '@/presentation/components/Scripts/TheScriptArea.vue';
 import TheSearchBar from '@/presentation/components/TheSearchBar.vue';
 import { buildContext } from '@/application/Context/ApplicationContextFactory';
+import { validateRuntimeSanity } from '@/infrastructure/RuntimeSanity/SanityChecks';
 import { provideDependencies } from '../bootstrapping/DependencyProvider';
 
 const singletonAppContext = await buildContext();
@@ -32,6 +33,9 @@ export default defineComponent({
   },
   setup() {
     provideDependencies(singletonAppContext); // In Vue 3.0 we can move it to main.ts
+    validateRuntimeSanity({
+      validateMetadata: true,
+    });
   },
 });
 </script>

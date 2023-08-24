@@ -1,5 +1,5 @@
 import { it, expect } from 'vitest';
-import { Constructible } from '@tests/shared/TypeHelpers';
+import { Constructible } from '@/TypeHelpers';
 
 interface ISingletonTestData<T> {
   getter: () => T;

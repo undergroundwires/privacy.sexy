@@ -13,20 +13,29 @@ jobs:
       fail-fast: false # So publish runs for other OSes if one fails
     runs-on: ${{ matrix.os }}-latest
     steps:
-      - uses: actions/checkout@v2
+      -
+        uses: actions/checkout@v2
         with:
           ref: master # otherwise it defaults to the version tag missing bump commit
           fetch-depth: 0 # fetch all history
-      - name: Checkout to bump commit
+      -
+        name: Checkout to bump commit
         run: git checkout "$(git rev-list "${{ github.event.release.tag_name }}"..master | tail -1)"
-      - name: Setup node
+      -
+        name: Setup node
         uses: ./.github/actions/setup-node
-      - name: Install dependencies
+      -
+        name: Install dependencies
         run: npm ci
-      - name: Run unit tests
+      -
+        name: Run unit tests
         run: npm run test:unit
-      - name: Publish desktop app
-        run: npm run electron:build -- -p always # https://nklayman.github.io/vue-cli-plugin-electron-builder/guide/recipes.html#upload-release-to-github
+      -
+        name: Prebuild
+        run: npm run electron:prebuild
+      -
+        name: Build and publish
+        run: npm run electron:build -- --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           EP_GH_IGNORE_TIME: true # Otherwise publishing fails if GitHub release is more than 2 hours old https://github.com/electron-userland/electron-builder/issues/2074
