@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { ScriptCode } from '@/domain/ScriptCode';
-import { AbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
+import { getAbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('ScriptCode', () => {
   describe('code', () => {
@@ -15,7 +15,7 @@ describe('ScriptCode', () => {
           },
           expectedError: '(revert): Code itself and its reverting code cannot be the same',
         },
-        ...AbsentStringTestCases.map((testCase) => ({
+        ...getAbsentStringTestCases().map((testCase) => ({
           name: `cannot construct with ${testCase.valueName} "execute"`,
           code: {
             execute: testCase.absentValue,

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { BrowserOsDetector } from '@/application/Environment/BrowserOs/BrowserOsDetector';
+import { BrowserOsDetector } from '@/infrastructure/Environment/BrowserOs/BrowserOsDetector';
 import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { BrowserOsTestCases } from './BrowserOsTestCases';
 

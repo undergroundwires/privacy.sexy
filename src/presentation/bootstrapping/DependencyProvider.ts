@@ -5,7 +5,7 @@ import {
   useCollectionStateKey, useApplicationKey, useEnvironmentKey,
 } from '@/presentation/injectionSymbols';
 import { IApplicationContext } from '@/application/Context/IApplicationContext';
-import { Environment } from '@/application/Environment/Environment';
+import { Environment } from '@/infrastructure/Environment/Environment';
 
 export function provideDependencies(context: IApplicationContext) {
   registerSingleton(useApplicationKey, useApplication(context.app));

@@ -7,7 +7,7 @@ import { ConstructorArguments } from '@/TypeHelpers';
 
 export function
 parseProjectInformation(
-  metadata: IAppMetadata = AppMetadataFactory.Current,
+  metadata: IAppMetadata = AppMetadataFactory.Current.instance,
   createProjectInformation: ProjectInformationFactory = (
     ...args
   ) => new ProjectInformation(...args),

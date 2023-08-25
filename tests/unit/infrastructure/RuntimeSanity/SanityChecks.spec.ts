@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { validateRuntimeSanity } from '@/infrastructure/RuntimeSanity/SanityChecks';
-import { ISanityCheckOptions } from '@/infrastructure/RuntimeSanity/ISanityCheckOptions';
+import { ISanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/ISanityCheckOptions';
 import { SanityCheckOptionsStub } from '@tests/unit/shared/Stubs/SanityCheckOptionsStub';
-import { ISanityValidator } from '@/infrastructure/RuntimeSanity/ISanityValidator';
+import { ISanityValidator } from '@/infrastructure/RuntimeSanity/Common/ISanityValidator';
 import { SanityValidatorStub } from '@tests/unit/shared/Stubs/SanityValidatorStub';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { itEachAbsentCollectionValue, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('SanityChecks', () => {
   describe('validateRuntimeSanity', () => {
@@ -21,15 +21,31 @@ describe('SanityChecks', () => {
           expect(act).to.throw(expectedError);
         });
       });
-      it('throws when validators are empty', () => {
-        // arrange
-        const expectedError = 'missing validators';
-        const context = new TestContext()
-          .withValidators([]);
-        // act
-        const act = () => context.validateRuntimeSanity();
-        // assert
-        expect(act).to.throw(expectedError);
+      describe('throws when validators are empty', () => {
+        itEachAbsentCollectionValue((absentCollection) => {
+          // arrange
+          const expectedError = 'missing validators';
+          const validators = absentCollection;
+          const context = new TestContext()
+            .withValidators(validators);
+          // act
+          const act = () => context.validateRuntimeSanity();
+          // assert
+          expect(act).to.throw(expectedError);
+        }, { excludeUndefined: true });
+      });
+      describe('throws when single validator is absent', () => {
+        itEachAbsentObjectValue((absentValue) => {
+          // arrange
+          const expectedError = 'missing validator in validators';
+          const absentValidator = absentValue;
+          const context = new TestContext()
+            .withValidators([new SanityValidatorStub(), absentValidator]);
+          // act
+          const act = () => context.validateRuntimeSanity();
+          // assert
+          expect(act).to.throw(expectedError);
+        });
       });
     });
 
@@ -98,6 +114,35 @@ describe('SanityChecks', () => {
         expect(actualError).to.have.length.above(0);
         expect(actualError).to.include(firstError);
         expect(actualError).to.include(secondError);
+      });
+      it('throws with validators name', () => {
+        // arrange
+        const validatorWithErrors = 'validator-with-errors';
+        const validatorWithNoErrors = 'validator-with-no-errors';
+        let actualError = '';
+        const context = new TestContext()
+          .withValidators([
+            new SanityValidatorStub()
+              .withName(validatorWithErrors)
+              .withShouldValidateResult(true)
+              .withErrorsResult(['error']),
+            new SanityValidatorStub()
+              .withShouldValidateResult(true)
+              .withErrorsResult([]),
+            new SanityValidatorStub()
+              .withShouldValidateResult(true)
+              .withErrorsResult([]),
+          ]);
+        // act
+        try {
+          context.validateRuntimeSanity();
+        } catch (err) {
+          actualError = err.toString();
+        }
+        // assert
+        expect(actualError).to.have.length.above(0);
+        expect(actualError).to.include(validatorWithErrors);
+        expect(actualError).to.not.include(validatorWithNoErrors);
       });
       it('accumulates error messages from validators', () => {
         // arrange

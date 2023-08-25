@@ -9,3 +9,7 @@ export type PropertyKeys<T> = {
 
 export type ConstructorArguments<T> =
   T extends new (...args: infer U) => unknown ? U : never;
+
+export type FunctionKeys<T> = {
+  [K in keyof T]: T[K] extends (...args: unknown[]) => unknown ? K : never;
+}[keyof T];

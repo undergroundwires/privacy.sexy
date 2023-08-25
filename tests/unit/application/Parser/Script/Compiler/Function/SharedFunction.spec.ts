@@ -6,7 +6,7 @@ import { IFunctionCall } from '@/application/Parser/Script/Compiler/Function/Cal
 import { FunctionCallStub } from '@tests/unit/shared/Stubs/FunctionCallStub';
 import { FunctionBodyType, ISharedFunction } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
 import {
-  AbsentStringTestCases, itEachAbsentCollectionValue, itEachAbsentObjectValue,
+  getAbsentStringTestCases, itEachAbsentCollectionValue, itEachAbsentObjectValue,
   itEachAbsentStringValue,
 } from '@tests/unit/shared/TestCases/AbsentTests';
 
@@ -100,7 +100,7 @@ describe('SharedFunction', () => {
         // arrange
         const testData = [
           'expected-revert-code',
-          ...AbsentStringTestCases.map((testCase) => testCase.absentValue),
+          ...getAbsentStringTestCases().map((testCase) => testCase.absentValue),
         ];
         for (const data of testData) {
           // act

@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { throttle, ITimer, TimeoutType } from '@/presentation/components/Shared/Throttle';
 import { EventSource } from '@/infrastructure/Events/EventSource';
 import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
-import { AbsentObjectTestCases, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { getAbsentObjectTestCases, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('throttle', () => {
   describe('validates parameters', () => {
@@ -30,7 +30,7 @@ describe('throttle', () => {
           value: -2,
           expectedError: 'negative delay',
         },
-        ...AbsentObjectTestCases.map((testCase) => ({
+        ...getAbsentObjectTestCases().map((testCase) => ({
           name: `when absent (given ${testCase.valueName})`,
           value: testCase.absentValue,
           expectedError: 'missing delay',

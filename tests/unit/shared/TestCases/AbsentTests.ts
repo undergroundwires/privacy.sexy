@@ -1,17 +1,24 @@
 import { it } from 'vitest';
 
-export function itEachAbsentStringValue(runner: (absentValue: string) => void): void {
-  itEachAbsentTestCase(AbsentStringTestCases, runner);
+export function itEachAbsentStringValue(
+  runner: (absentValue: string) => void,
+  options: IAbsentTestCaseOptions = DefaultAbsentTestCaseOptions,
+): void {
+  itEachAbsentTestCase(getAbsentStringTestCases(options), runner);
 }
 
 export function itEachAbsentObjectValue(
   runner: (absentValue: AbsentObjectType) => void,
+  options: IAbsentTestCaseOptions = DefaultAbsentTestCaseOptions,
 ): void {
-  itEachAbsentTestCase(AbsentObjectTestCases, runner);
+  itEachAbsentTestCase(getAbsentObjectTestCases(options), runner);
 }
 
-export function itEachAbsentCollectionValue<T>(runner: (absentValue: []) => void): void {
-  itEachAbsentTestCase(getAbsentCollectionTestCases<T>(), runner);
+export function itEachAbsentCollectionValue<T>(
+  runner: (absentValue: []) => void,
+  options: IAbsentTestCaseOptions = DefaultAbsentTestCaseOptions,
+): void {
+  itEachAbsentTestCase(getAbsentCollectionTestCases<T>(options), runner);
 }
 
 export function itEachAbsentTestCase<T>(
@@ -25,33 +32,53 @@ export function itEachAbsentTestCase<T>(
   }
 }
 
-export const AbsentObjectTestCases: readonly IAbsentTestCase<AbsentObjectType>[] = [
-  {
-    valueName: 'undefined',
-    absentValue: undefined,
-  },
-  {
-    valueName: 'null',
-    absentValue: null,
-  },
-];
-
-export const AbsentStringTestCases: readonly IAbsentStringCase[] = [
-  {
-    valueName: 'empty',
-    absentValue: '',
-  },
-  ...AbsentObjectTestCases,
-];
-
-export function getAbsentCollectionTestCases<T>(): readonly IAbsentCollectionCase<T>[] {
+export function getAbsentObjectTestCases(
+  options: IAbsentTestCaseOptions = DefaultAbsentTestCaseOptions,
+): IAbsentTestCase<AbsentObjectType>[] {
   return [
-    ...AbsentObjectTestCases,
+    {
+      valueName: 'null',
+      absentValue: null,
+    },
+    ...(options.excludeUndefined ? [] : [
+      {
+        valueName: 'undefined',
+        absentValue: undefined,
+      },
+    ]),
+  ];
+}
+
+export function getAbsentStringTestCases(
+  options: IAbsentTestCaseOptions = DefaultAbsentTestCaseOptions,
+): IAbsentStringCase[] {
+  return [
+    {
+      valueName: 'empty',
+      absentValue: '',
+    },
+    ...getAbsentObjectTestCases(options),
+  ];
+}
+
+export function getAbsentCollectionTestCases<T>(
+  options: IAbsentTestCaseOptions = DefaultAbsentTestCaseOptions,
+): readonly IAbsentCollectionCase<T>[] {
+  return [
+    ...getAbsentObjectTestCases(options),
     {
       valueName: 'empty',
       absentValue: new Array<T>(),
     },
   ];
+}
+
+const DefaultAbsentTestCaseOptions: IAbsentTestCaseOptions = {
+  excludeUndefined: false,
+};
+
+interface IAbsentTestCaseOptions {
+  readonly excludeUndefined: boolean;
 }
 
 type AbsentObjectType = undefined | null;

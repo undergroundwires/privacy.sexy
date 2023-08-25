@@ -24,7 +24,12 @@ protocol.registerSchemesAsPrivileged([
 
 setupLogger();
 validateRuntimeSanity({
+  // Metadata is used by manual updates.
   validateMetadata: true,
+
+  // Environment is populated by the preload script and is in the renderer's context;
+  // it's not directly accessible from the main process.
+  validateEnvironment: false,
 });
 
 function createWindow() {
@@ -34,8 +39,8 @@ function createWindow() {
     width: size.width,
     height: size.height,
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
+      nodeIntegration: true, // disabling does not work with electron-vite, https://electron-vite.org/guide/dev.html#nodeintegration
+      contextIsolation: true,
       preload: PRELOADER_SCRIPT_PATH,
     },
     icon: APP_ICON_PATH,

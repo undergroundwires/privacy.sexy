@@ -57,7 +57,7 @@ jobs:
       -
         name: Test
         shell: bash
-        run: node scripts/check-desktop-runtime-errors --screenshot
+        run: node ./scripts/check-desktop-runtime-errors --screenshot
       -
         name: Upload screenshot
         if: always() # Run even if previous step fails

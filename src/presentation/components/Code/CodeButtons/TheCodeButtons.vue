@@ -33,7 +33,7 @@ import { useCollectionStateKey, useEnvironmentKey } from '@/presentation/injecti
 import { SaveFileDialog, FileType } from '@/infrastructure/SaveFileDialog';
 import { Clipboard } from '@/infrastructure/Clipboard';
 import ModalDialog from '@/presentation/components/Shared/Modal/ModalDialog.vue';
-import { Environment } from '@/application/Environment/Environment';
+import { Environment } from '@/infrastructure/Environment/Environment';
 import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { IApplicationCode } from '@/application/Context/State/Code/IApplicationCode';

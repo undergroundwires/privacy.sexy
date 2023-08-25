@@ -14,7 +14,7 @@ import { parseCategoryCollection } from './CategoryCollectionParser';
 export function parseApplication(
   categoryParser = parseCategoryCollection,
   informationParser = parseProjectInformation,
-  metadata: IAppMetadata = AppMetadataFactory.Current,
+  metadata: IAppMetadata = AppMetadataFactory.Current.instance,
   collectionsData = PreParsedCollections,
 ): IApplication {
   validateCollectionsData(collectionsData);

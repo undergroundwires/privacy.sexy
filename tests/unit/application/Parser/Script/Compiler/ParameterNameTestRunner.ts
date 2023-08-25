@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { AbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
+import { getAbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 
 export function testParameterName(action: (parameterName: string) => string) {
   describe('name', () => {
@@ -22,7 +22,7 @@ export function testParameterName(action: (parameterName: string) => string) {
     describe('throws if invalid', () => {
       // arrange
       const testCases = [
-        ...AbsentStringTestCases.map((test) => ({
+        ...getAbsentStringTestCases().map((test) => ({
           name: test.valueName,
           value: test.absentValue,
           expectedError: 'missing parameter name',

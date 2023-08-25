@@ -1,8 +1,8 @@
 import { IApplicationContext } from '@/application/Context/IApplicationContext';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { IApplication } from '@/domain/IApplication';
-import { Environment } from '../Environment/Environment';
-import { IEnvironment } from '../Environment/IEnvironment';
+import { Environment } from '@/infrastructure/Environment/Environment';
+import { IEnvironment } from '@/infrastructure/Environment/IEnvironment';
 import { IApplicationFactory } from '../IApplicationFactory';
 import { ApplicationFactory } from '../ApplicationFactory';
 import { ApplicationContext } from './ApplicationContext';

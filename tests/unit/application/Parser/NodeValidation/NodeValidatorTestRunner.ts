@@ -1,7 +1,7 @@
 import { describe, it } from 'vitest';
 import { NodeDataError, INodeDataErrorContext } from '@/application/Parser/NodeValidation/NodeDataError';
 import { NodeData } from '@/application/Parser/NodeValidation/NodeData';
-import { AbsentObjectTestCases, AbsentStringTestCases, itEachAbsentTestCase } from '@tests/unit/shared/TestCases/AbsentTests';
+import { getAbsentObjectTestCases, getAbsentStringTestCases, itEachAbsentTestCase } from '@tests/unit/shared/TestCases/AbsentTests';
 import { expectThrowsError } from '@tests/unit/shared/Assertions/ExpectThrowsError';
 
 export interface ITestScenario {
@@ -16,7 +16,7 @@ export class NodeValidationTestRunner {
     describe('throws given invalid names', () => {
       // arrange
       const testCases = [
-        ...AbsentStringTestCases.map((testCase) => ({
+        ...getAbsentStringTestCases().map((testCase) => ({
           testName: `missing name (${testCase.valueName})`,
           nameValue: testCase.absentValue,
           expectedMessage: 'missing name',
@@ -42,7 +42,7 @@ export class NodeValidationTestRunner {
   ) {
     describe('throws given missing node data', () => {
       itEachAbsentTestCase([
-        ...AbsentObjectTestCases,
+        ...getAbsentObjectTestCases(),
         {
           valueName: 'empty object',
           absentValue: {},

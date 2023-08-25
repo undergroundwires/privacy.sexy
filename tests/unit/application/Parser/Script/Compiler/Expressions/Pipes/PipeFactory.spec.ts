@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { PipeFactory } from '@/application/Parser/Script/Compiler/Expressions/Pipes/PipeFactory';
 import { PipeStub } from '@tests/unit/shared/Stubs/PipeStub';
-import { AbsentStringTestCases, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { getAbsentStringTestCases, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('PipeFactory', () => {
   describe('ctor', () => {
@@ -82,7 +82,7 @@ describe('PipeFactory', () => {
 function testPipeNameValidation(testRunner: (invalidName: string) => void) {
   const testCases = [
     // Validate missing value
-    ...AbsentStringTestCases.map((testCase) => ({
+    ...getAbsentStringTestCases().map((testCase) => ({
       name: `empty pipe name (${testCase.valueName})`,
       value: testCase.absentValue,
       expectedError: 'empty pipe name',

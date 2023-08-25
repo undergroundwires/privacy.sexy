@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { ExpressionPosition } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionPosition';
 import { WithParser } from '@/application/Parser/Script/Compiler/Expressions/SyntaxParsers/WithParser';
-import { AbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
+import { getAbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 import { SyntaxParserTestsRunner } from './SyntaxParserTestsRunner';
 
 describe('WithParser', () => {
@@ -86,7 +86,7 @@ describe('WithParser', () => {
   describe('renders scope conditionally', () => {
     describe('does not render scope if argument is undefined', () => {
       runner.expectResults(
-        ...AbsentStringTestCases.map((testCase) => ({
+        ...getAbsentStringTestCases().map((testCase) => ({
           name: `does not render when value is "${testCase.valueName}"`,
           code: '{{ with $parameter }}dark{{ end }} ',
           args: (args) => args

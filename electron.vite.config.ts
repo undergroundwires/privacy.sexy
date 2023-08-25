@@ -29,7 +29,6 @@ export default defineConfig({
           input: {
             index: WEB_INDEX_HTML_PATH,
           },
-          external: ['os', 'child_process', 'fs', 'path'],
         },
       },
     },

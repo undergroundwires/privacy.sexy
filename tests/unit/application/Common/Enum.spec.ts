@@ -3,7 +3,7 @@ import {
   getEnumNames, getEnumValues, createEnumParser, assertInRange,
 } from '@/application/Common/Enum';
 import { scrambledEqual } from '@/application/Common/Array';
-import { AbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
+import { getAbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 import { EnumRangeTestRunner } from './EnumRangeTestRunner';
 
 describe('Enum', () => {
@@ -37,7 +37,7 @@ describe('Enum', () => {
       // arrange
       const enumName = 'ParsableEnum';
       const testCases = [
-        ...AbsentStringTestCases.map((test) => ({
+        ...getAbsentStringTestCases().map((test) => ({
           name: test.valueName,
           value: test.absentValue,
           expectedError: `missing ${enumName}`,

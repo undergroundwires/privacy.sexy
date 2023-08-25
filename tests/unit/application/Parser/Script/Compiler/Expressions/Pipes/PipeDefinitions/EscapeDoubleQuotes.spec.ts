@@ -1,6 +1,6 @@
 import { describe } from 'vitest';
 import { EscapeDoubleQuotes } from '@/application/Parser/Script/Compiler/Expressions/Pipes/PipeDefinitions/EscapeDoubleQuotes';
-import { AbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
+import { getAbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 import { runPipeTests } from './PipeTestRunner';
 
 describe('EscapeDoubleQuotes', () => {
@@ -23,7 +23,7 @@ describe('EscapeDoubleQuotes', () => {
       input: '""hello world""',
       expectedOutput: '"^"""^""hello world"^"""^""',
     },
-    ...AbsentStringTestCases.map((testCase) => ({
+    ...getAbsentStringTestCases().map((testCase) => ({
       name: 'returns as it is when if input is missing',
       input: testCase.absentValue,
       expectedOutput: testCase.absentValue,

@@ -15,11 +15,23 @@ Application is
 
 Application uses highly decoupled models & services in different DDD layers:
 
-- presentation layer (see [presentation.md](./presentation.md)),
-- application layer (see [application.md](./application.md)),
-- and domain layer.
+**Application layer** (see [application.md](./application.md)):
 
-Application layer depends on and consumes domain layer. [Presentation layer](./presentation.md) consumes and depends on application layer along with domain layer. Application and presentation layers can communicate through domain model.
+- Coordinates application activities and consumes the domain layer.
+
+**Presentation layer** (see [presentation.md](./presentation.md)):
+
+- Handles UI/UX, consumes both the application and domain layers.
+- May communicate directly with the infrastructure layer for technical needs, but avoids domain logic.
+
+**Domain layer**:
+
+- Serves as the system's core and central truth.
+- Facilitates communication between the application and presentation layers through the domain model.
+
+**Infrastructure layer**:
+
+- Manages technical implementations without dependencies on other layers or domain knowledge.
 
 ![DDD + vue.js](./../img/architecture/app-ddd.png)
 

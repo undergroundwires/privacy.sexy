@@ -9,7 +9,7 @@ import LinuxData from '@/application/collections/linux.yaml';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { CollectionDataStub } from '@tests/unit/shared/Stubs/CollectionDataStub';
-import { getAbsentCollectionTestCases, AbsentObjectTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
+import { getAbsentCollectionTestCases, getAbsentObjectTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 import { AppMetadataStub } from '@tests/unit/shared/Stubs/AppMetadataStub';
 import { AppMetadataFactory } from '@/infrastructure/Metadata/AppMetadataFactory';
 import { CategoryCollectionParserStub } from '@tests/unit/shared/Stubs/CategoryCollectionParserStub';
@@ -85,7 +85,7 @@ describe('ApplicationParser', () => {
       });
       it('defaults to metadata from factory', () => {
         // arrange
-        const expectedMetadata = AppMetadataFactory.Current;
+        const expectedMetadata: IAppMetadata = AppMetadataFactory.Current.instance;
         const infoParserStub = new ProjectInformationParserStub();
         // act
         new ApplicationParserBuilder()
@@ -157,7 +157,7 @@ describe('ApplicationParser', () => {
             value: testCase.absentValue,
             expectedError: 'missing collections',
           })).filter((test) => test.value !== undefined /* the default value is set */),
-          ...AbsentObjectTestCases.map((testCase) => ({
+          ...getAbsentObjectTestCases().map((testCase) => ({
             name: `given absent item "${testCase.valueName}"`,
             value: [testCase.absentValue],
             expectedError: 'missing collection provided',

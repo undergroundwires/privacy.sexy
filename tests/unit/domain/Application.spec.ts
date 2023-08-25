@@ -3,7 +3,7 @@ import { Application } from '@/domain/Application';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { ProjectInformationStub } from '@tests/unit/shared/Stubs/ProjectInformationStub';
-import { AbsentObjectTestCases, getAbsentCollectionTestCases, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { getAbsentObjectTestCases, getAbsentCollectionTestCases, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
 
 describe('Application', () => {
@@ -69,7 +69,7 @@ describe('Application', () => {
             expectedError: 'missing collections',
             value: testCase.absentValue,
           })),
-          ...AbsentObjectTestCases.map((testCase) => ({
+          ...getAbsentObjectTestCases().map((testCase) => ({
             name: `${testCase.valueName} value in list`,
             expectedError: 'missing collection in the list',
             value: [new CategoryCollectionStub(), testCase.absentValue],

@@ -3,13 +3,13 @@ import { CodeSubstituter } from '@/application/Parser/ScriptingDefinition/CodeSu
 import { IExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/IExpressionsCompiler';
 import { ProjectInformationStub } from '@tests/unit/shared/Stubs/ProjectInformationStub';
 import { ExpressionsCompilerStub } from '@tests/unit/shared/Stubs/ExpressionsCompilerStub';
-import { AbsentObjectTestCases, AbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
+import { getAbsentObjectTestCases, getAbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('CodeSubstituter', () => {
   describe('throws with invalid parameters', () => {
     // arrange
     const testCases = [
-      ...AbsentStringTestCases.map((testCase) => ({
+      ...getAbsentStringTestCases().map((testCase) => ({
         name: `given code: ${testCase.valueName}`,
         expectedError: 'missing code',
         parameters: {
@@ -17,7 +17,7 @@ describe('CodeSubstituter', () => {
           info: new ProjectInformationStub(),
         },
       })),
-      ...AbsentObjectTestCases.map((testCase) => ({
+      ...getAbsentObjectTestCases().map((testCase) => ({
         name: `given info: ${testCase.valueName}`,
         expectedError: 'missing info',
         parameters: {

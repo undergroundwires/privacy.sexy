@@ -35,6 +35,7 @@ export default defineComponent({
     provideDependencies(singletonAppContext); // In Vue 3.0 we can move it to main.ts
     validateRuntimeSanity({
       validateMetadata: true,
+      validateEnvironment: true,
     });
   },
 });

@@ -9,7 +9,7 @@ import { ExpressionEvaluationContextStub } from '@tests/unit/shared/Stubs/Expres
 import { IPipelineCompiler } from '@/application/Parser/Script/Compiler/Expressions/Pipes/IPipelineCompiler';
 import { PipelineCompilerStub } from '@tests/unit/shared/Stubs/PipelineCompilerStub';
 import { IReadOnlyFunctionParameterCollection } from '@/application/Parser/Script/Compiler/Function/Parameter/IFunctionParameterCollection';
-import { AbsentObjectTestCases, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { getAbsentObjectTestCases, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { IExpressionEvaluationContext } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionEvaluationContext';
 
 describe('Expression', () => {
@@ -91,7 +91,7 @@ describe('Expression', () => {
         expectedError: string,
         sutBuilder?: (builder: ExpressionBuilder) => ExpressionBuilder,
       }[] = [
-        ...AbsentObjectTestCases.map((testCase) => ({
+        ...getAbsentObjectTestCases().map((testCase) => ({
           name: `throws if arguments is ${testCase.valueName}`,
           context: testCase.absentValue,
           expectedError: 'missing context',

@@ -21,7 +21,7 @@ describe('ViteAppMetadata', () => {
         keyof typeof VITE_ENVIRONMENT_KEYS];
       readonly expected: string;
     }
-    const testCases: { [K in PropertyKeys<ViteAppMetadata>]: ITestCase } = {
+    const testCases: { readonly [K in PropertyKeys<ViteAppMetadata>]: ITestCase } = {
       name: {
         environmentVariable: VITE_ENVIRONMENT_KEYS.NAME,
         expected: 'expected-name',

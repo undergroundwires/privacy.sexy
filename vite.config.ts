@@ -8,7 +8,6 @@ import { getAliasesFromTsConfig, getClientEnvironmentVariables, getSelfDirectory
 
 const WEB_DIRECTORY = resolve(getSelfDirectoryAbsolutePath(), 'src/presentation');
 const TEST_INITIALIZATION_FILE = resolve(getSelfDirectoryAbsolutePath(), 'tests/shared/bootstrap/setup.ts');
-const NODE_CORE_MODULES = ['os', 'child_process', 'fs', 'path'];
 
 export function createVueConfig(options?: {
   readonly supportLegacyBrowsers: boolean,
@@ -31,14 +30,6 @@ export function createVueConfig(options?: {
     resolve: {
       alias: {
         ...getAliasesFromTsConfig(),
-      },
-    },
-    build: {
-      rollupOptions: {
-        // Ensure Node core modules are externalized and don't trigger warnings in browser builds
-        external: {
-          ...NODE_CORE_MODULES,
-        },
       },
     },
     server: {
