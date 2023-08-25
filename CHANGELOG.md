@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.12.2 (2023-08-25)
+
+* Add automated checks for desktop app runtime #233 | [04b3133](https://github.com/undergroundwires/privacy.sexy/commit/04b3133500485d0d278a81a177a1677134131405)
+* win: fix automatic updates revert #234 | [0873769](https://github.com/undergroundwires/privacy.sexy/commit/08737698c2283bdf535d1611a730031ebfc7c0df)
+* Migrate unit/integration tests to Vitest with Vite | [5f11c8d](https://github.com/undergroundwires/privacy.sexy/commit/5f11c8d98f782dd7c77f27649a1685fb7bd06e13)
+* Remove Vue ESLint plugin for Vite compatibility | [6e40edd](https://github.com/undergroundwires/privacy.sexy/commit/6e40edd3f8a063c1b7482c27d8368e14c2fbcfbf)
+* Migrate web builds from Vue CLI to Vite | [7365905](https://github.com/undergroundwires/privacy.sexy/commit/736590558be51a09435bb87e78b6655e8533bc2e)
+* Migrate Cypress (E2E) tests to Vite and TypeScript | [ec98d84](https://github.com/undergroundwires/privacy.sexy/commit/ec98d8417f779fa818ccdda6bb90f521e1738002)
+* Migrate to `electron-vite` and `electron-builder` | [75c9b51](https://github.com/undergroundwires/privacy.sexy/commit/75c9b51bf2d1dc7269adfd7b5ed71acfb5031299)
+* Fix searching/filtering bugs #235 | [62f8bfa](https://github.com/undergroundwires/privacy.sexy/commit/62f8bfac2f481c93598fe19a51594769f522d684)
+* Improve desktop security by isolating Electron | [e9e0001](https://github.com/undergroundwires/privacy.sexy/commit/e9e0001ef845fa6935c59a4e20a89aac9e71756a)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.12.1...0.12.2)
+
 ## 0.12.1 (2023-08-17)
 
 * Transition to eslint-config-airbnb-with-typescript | [ff84f56](https://github.com/undergroundwires/privacy.sexy/commit/ff84f5676e496dd7ec5b3599e34ec9627d181ea2)
