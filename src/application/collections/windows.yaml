@@ -2415,21 +2415,25 @@ actions:
                                 category: Chromium Edge settings
                                 children:
                                     -
-                                        name: Disable Edge usage and crash-related data reporting (shows "Your browser is managed") # Obselete since Microsoft Edge version 89
-                                        recommend: standard
-                                        docs:
-                                            - https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::MetricsReportingEnabled
-                                            - https://docs.microsoft.com/en-us/DeployEdge/microsoft-edge-policies#metricsreportingenabled
-                                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "MetricsReportingEnabled" /t REG_DWORD /d 0 /f
-                                        revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "MetricsReportingEnabled" /f  
-                                    -
-                                        name: Disable sending site information (shows "Your browser is managed") # Obselete since Microsoft Edge version 89
+                                        name: Disable Edge diagnostic data sending (shows "Your browser is managed")
                                         recommend: standard
                                         docs: 
-                                            - https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::SendSiteInfoToImproveServices
-                                            - https://docs.microsoft.com/en-us/DeployEdge/microsoft-edge-policies#sendsiteinfotoimproveservices
-                                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "SendSiteInfoToImproveServices" /t REG_DWORD /d 0 /f
-                                        revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "SendSiteInfoToImproveServices" /f
+                                            - http://archive.today/2023.08.26-152941/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::DiagnosticData
+                                            - https://learn.microsoft.com/DeployEdge/microsoft-edge-policies#diagnosticdata
+                                            - http://archive.today/2023.08.26-152952/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::MetricsReportingEnabled
+                                            - https://learn.microsoft.com/en-gb/DeployEdge/microsoft-edge-policies#metricsreportingenabled
+                                            - http://archive.today/2023.08.26-153019/https://admx.help/?Category=EdgeChromium&Policy=Microsoft.Policies.Edge::SendSiteInfoToImproveServices
+                                            - https://learn.microsoft.com/DeployEdge/microsoft-edge-policies#sendsiteinfotoimproveservices
+                                        code:  |-
+                                            :: Disabling metrics and site info sending for Edge v88 ≥
+                                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "MetricsReportingEnabled" /t REG_DWORD /d 0 /f
+                                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "SendSiteInfoToImproveServices" /t REG_DWORD /d 0 /f
+                                            :: Disabling diagnostic data (replacing metrics and site info sending since Edge v89 ≤)
+                                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "DiagnosticData" /t REG_DWORD /d 0 /f
+                                        revertCode: |-
+                                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "MetricsReportingEnabled" /f 2>nul
+                                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "SendSiteInfoToImproveServices" /f 2>nul
+                                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Edge" /v "DiagnosticData" /f 2>nul
                                     -
                                         name: Disable Automatic Installation of Microsoft Edge Chromium
                                         docs:
