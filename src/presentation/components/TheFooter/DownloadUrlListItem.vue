@@ -14,7 +14,7 @@ import {
   defineComponent, PropType, computed,
   inject,
 } from 'vue';
-import { useApplicationKey, useEnvironmentKey } from '@/presentation/injectionSymbols';
+import { useApplicationKey, useRuntimeEnvironmentKey } from '@/presentation/injectionSymbols';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 
 export default defineComponent({
@@ -26,7 +26,7 @@ export default defineComponent({
   },
   setup(props) {
     const { info } = inject(useApplicationKey);
-    const { os: currentOs } = inject(useEnvironmentKey);
+    const { os: currentOs } = inject(useRuntimeEnvironmentKey);
 
     const isCurrentOs = computed<boolean>(() => {
       return currentOs === props.operatingSystem;

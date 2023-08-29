@@ -25,11 +25,11 @@ protocol.registerSchemesAsPrivileged([
 setupLogger();
 validateRuntimeSanity({
   // Metadata is used by manual updates.
-  validateMetadata: true,
+  validateEnvironmentVariables: true,
 
   // Environment is populated by the preload script and is in the renderer's context;
   // it's not directly accessible from the main process.
-  validateEnvironment: false,
+  validateWindowVariables: false,
 });
 
 function createWindow() {
@@ -151,7 +151,4 @@ function getWindowSize(idealWidth: number, idealHeight: number) {
 
 function setupLogger(): void {
   log.transports.file.level = 'silly';
-  if (!isDevelopment) {
-    Object.assign(console, log.functions); // override console.log, console.warn etc.
-  }
 }

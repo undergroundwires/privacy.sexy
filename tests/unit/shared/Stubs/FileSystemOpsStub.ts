@@ -1,4 +1,4 @@
-import { IFileSystemOps } from '@/infrastructure/Environment/SystemOperations/ISystemOperations';
+import { IFileSystemOps } from '@/infrastructure/SystemOperations/ISystemOperations';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class FileSystemOpsStub

@@ -48,7 +48,7 @@ import {
   defineComponent, ref, computed, inject,
 } from 'vue';
 import ModalDialog from '@/presentation/components/Shared/Modal/ModalDialog.vue';
-import { useApplicationKey, useEnvironmentKey } from '@/presentation/injectionSymbols';
+import { useApplicationKey, useRuntimeEnvironmentKey } from '@/presentation/injectionSymbols';
 import DownloadUrlList from './DownloadUrlList.vue';
 import PrivacyPolicy from './PrivacyPolicy.vue';
 
@@ -60,7 +60,7 @@ export default defineComponent({
   },
   setup() {
     const { info } = inject(useApplicationKey);
-    const { isDesktop } = inject(useEnvironmentKey);
+    const { isDesktop } = inject(useRuntimeEnvironmentKey);
 
     const isPrivacyDialogVisible = ref(false);
 

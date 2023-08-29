@@ -1,4 +1,4 @@
-import { ILocationOps } from '@/infrastructure/Environment/SystemOperations/ISystemOperations';
+import { ILocationOps } from '@/infrastructure/SystemOperations/ISystemOperations';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class LocationOpsStub

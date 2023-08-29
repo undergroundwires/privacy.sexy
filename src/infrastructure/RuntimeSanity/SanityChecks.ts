@@ -1,9 +1,9 @@
 import { ISanityCheckOptions } from './Common/ISanityCheckOptions';
 import { ISanityValidator } from './Common/ISanityValidator';
-import { MetadataValidator } from './Validators/MetadataValidator';
+import { EnvironmentVariablesValidator } from './Validators/EnvironmentVariablesValidator';
 
 const DefaultSanityValidators: ISanityValidator[] = [
-  new MetadataValidator(),
+  new EnvironmentVariablesValidator(),
 ];
 
 /* Helps to fail-fast on errors */

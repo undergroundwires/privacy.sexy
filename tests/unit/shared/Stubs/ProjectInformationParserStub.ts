@@ -1,5 +1,5 @@
 import { parseProjectInformation } from '@/application/Parser/ProjectInformationParser';
-import { IAppMetadata } from '@/infrastructure/Metadata/IAppMetadata';
+import { IAppMetadata } from '@/infrastructure/EnvironmentVariables/IAppMetadata';
 import { IProjectInformation } from '@/domain/IProjectInformation';
 import { ProjectInformationStub } from './ProjectInformationStub';
 

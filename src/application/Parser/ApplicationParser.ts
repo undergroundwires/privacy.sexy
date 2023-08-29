@@ -7,14 +7,14 @@ import MacOsData from '@/application/collections/macos.yaml';
 import LinuxData from '@/application/collections/linux.yaml';
 import { parseProjectInformation } from '@/application/Parser/ProjectInformationParser';
 import { Application } from '@/domain/Application';
-import { IAppMetadata } from '@/infrastructure/Metadata/IAppMetadata';
-import { AppMetadataFactory } from '@/infrastructure/Metadata/AppMetadataFactory';
+import { IAppMetadata } from '@/infrastructure/EnvironmentVariables/IAppMetadata';
+import { EnvironmentVariablesFactory } from '@/infrastructure/EnvironmentVariables/EnvironmentVariablesFactory';
 import { parseCategoryCollection } from './CategoryCollectionParser';
 
 export function parseApplication(
   categoryParser = parseCategoryCollection,
   informationParser = parseProjectInformation,
-  metadata: IAppMetadata = AppMetadataFactory.Current.instance,
+  metadata: IAppMetadata = EnvironmentVariablesFactory.Current.instance,
   collectionsData = PreParsedCollections,
 ): IApplication {
   validateCollectionsData(collectionsData);

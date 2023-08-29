@@ -1,32 +1,37 @@
-import { Environment } from '@/infrastructure/Environment/Environment';
+import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
 import { OperatingSystem } from '@/domain/OperatingSystem';
+import { getWindowInjectedSystemOperations } from './SystemOperations/WindowInjectedSystemOperations';
 
 export class CodeRunner {
   constructor(
-    private readonly environment = Environment.CurrentEnvironment,
+    private readonly system = getWindowInjectedSystemOperations(),
+    private readonly environment = RuntimeEnvironment.CurrentEnvironment,
   ) {
-    if (!environment.system) {
+    if (!system) {
       throw new Error('missing system operations');
     }
   }
 
   public async runCode(code: string, folderName: string, fileExtension: string): Promise<void> {
-    const { system } = this.environment;
-    const dir = system.location.combinePaths(
-      system.operatingSystem.getTempDirectory(),
+    const { os } = this.environment;
+    const dir = this.system.location.combinePaths(
+      this.system.operatingSystem.getTempDirectory(),
       folderName,
     );
-    await system.fileSystem.createDirectory(dir, true);
-    const filePath = system.location.combinePaths(dir, `run.${fileExtension}`);
-    await system.fileSystem.writeToFile(filePath, code);
-    await system.fileSystem.setFilePermissions(filePath, '755');
-    const command = getExecuteCommand(filePath, this.environment);
-    system.command.execute(command);
+    await this.system.fileSystem.createDirectory(dir, true);
+    const filePath = this.system.location.combinePaths(dir, `run.${fileExtension}`);
+    await this.system.fileSystem.writeToFile(filePath, code);
+    await this.system.fileSystem.setFilePermissions(filePath, '755');
+    const command = getExecuteCommand(filePath, os);
+    this.system.command.execute(command);
   }
 }
 
-function getExecuteCommand(scriptPath: string, environment: Environment): string {
-  switch (environment.os) {
+function getExecuteCommand(
+  scriptPath: string,
+  currentOperatingSystem: OperatingSystem,
+): string {
+  switch (currentOperatingSystem) {
     case OperatingSystem.Linux:
       return `x-terminal-emulator -e '${scriptPath}'`;
     case OperatingSystem.macOS:
@@ -37,6 +42,6 @@ function getExecuteCommand(scriptPath: string, environment: Environment): string
     case OperatingSystem.Windows:
       return scriptPath;
     default:
-      throw Error(`unsupported os: ${OperatingSystem[environment.os]}`);
+      throw Error(`unsupported os: ${OperatingSystem[currentOperatingSystem]}`);
   }
 }

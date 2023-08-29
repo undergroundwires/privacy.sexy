@@ -29,11 +29,10 @@
 import {
   defineComponent, ref, computed, inject,
 } from 'vue';
-import { useCollectionStateKey, useEnvironmentKey } from '@/presentation/injectionSymbols';
+import { useCollectionStateKey, useRuntimeEnvironmentKey } from '@/presentation/injectionSymbols';
 import { SaveFileDialog, FileType } from '@/infrastructure/SaveFileDialog';
 import { Clipboard } from '@/infrastructure/Clipboard';
 import ModalDialog from '@/presentation/components/Shared/Modal/ModalDialog.vue';
-import { Environment } from '@/infrastructure/Environment/Environment';
 import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { IApplicationCode } from '@/application/Context/State/Code/IApplicationCode';
@@ -56,10 +55,10 @@ export default defineComponent({
     const {
       currentState, currentContext, onStateChange, events,
     } = inject(useCollectionStateKey)();
-    const { isDesktop } = inject(useEnvironmentKey);
+    const { os, isDesktop } = inject(useRuntimeEnvironmentKey);
 
     const areInstructionsVisible = ref(false);
-    const canRun = computed<boolean>(() => getCanRunState(currentState.value.os, isDesktop));
+    const canRun = computed<boolean>(() => getCanRunState(currentState.value.os, isDesktop, os));
     const fileName = computed<string>(() => buildFileName(currentState.value.collection.scripting));
     const hasCode = ref(false);
     const instructions = computed<IInstructionListData | undefined>(() => getDownloadInstructions(
@@ -122,8 +121,12 @@ function getDownloadInstructions(
   return getInstructions(os, fileName);
 }
 
-function getCanRunState(selectedOs: OperatingSystem, isDesktopVersion: boolean): boolean {
-  const isRunningOnSelectedOs = selectedOs === Environment.CurrentEnvironment.os;
+function getCanRunState(
+  selectedOs: OperatingSystem,
+  isDesktopVersion: boolean,
+  hostOs: OperatingSystem,
+): boolean {
+  const isRunningOnSelectedOs = selectedOs === hostOs;
   return isDesktopVersion && isRunningOnSelectedOs;
 }
 

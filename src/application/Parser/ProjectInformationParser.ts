@@ -1,13 +1,13 @@
 import { IProjectInformation } from '@/domain/IProjectInformation';
 import { ProjectInformation } from '@/domain/ProjectInformation';
-import { IAppMetadata } from '@/infrastructure/Metadata/IAppMetadata';
+import { IAppMetadata } from '@/infrastructure/EnvironmentVariables/IAppMetadata';
 import { Version } from '@/domain/Version';
-import { AppMetadataFactory } from '@/infrastructure/Metadata/AppMetadataFactory';
+import { EnvironmentVariablesFactory } from '@/infrastructure/EnvironmentVariables/EnvironmentVariablesFactory';
 import { ConstructorArguments } from '@/TypeHelpers';
 
 export function
 parseProjectInformation(
-  metadata: IAppMetadata = AppMetadataFactory.Current.instance,
+  metadata: IAppMetadata = EnvironmentVariablesFactory.Current.instance,
   createProjectInformation: ProjectInformationFactory = (
     ...args
   ) => new ProjectInformation(...args),

@@ -1,6 +1,7 @@
 export type Constructible<T, TArgs extends unknown[] = never> = {
   prototype: T;
   apply: (this: unknown, args: TArgs) => void;
+  readonly name: string;
 };
 
 export type PropertyKeys<T> = {

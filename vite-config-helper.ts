@@ -1,6 +1,6 @@
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { VITE_ENVIRONMENT_KEYS } from './src/infrastructure/Metadata/Vite/ViteEnvironmentKeys';
+import { VITE_USER_DEFINED_ENVIRONMENT_KEYS } from './src/infrastructure/EnvironmentVariables/Vite/ViteEnvironmentKeys';
 import tsconfigJson from './tsconfig.json' assert { type: 'json' };
 import packageJson from './package.json' assert { type: 'json' };
 
@@ -23,16 +23,18 @@ export function getSelfDirectoryAbsolutePath() {
 }
 
 type ViteEnvironmentKeyValues = {
-  [K in typeof VITE_ENVIRONMENT_KEYS[keyof typeof VITE_ENVIRONMENT_KEYS]]: string
+  [K in
+    typeof VITE_USER_DEFINED_ENVIRONMENT_KEYS[keyof typeof VITE_USER_DEFINED_ENVIRONMENT_KEYS]
+  ]: string
 };
 
 export function getClientEnvironmentVariables(): Record<string, string> {
   const environmentVariables: ViteEnvironmentKeyValues = {
-    [VITE_ENVIRONMENT_KEYS.NAME]: packageJson.name,
-    [VITE_ENVIRONMENT_KEYS.VERSION]: packageJson.version,
-    [VITE_ENVIRONMENT_KEYS.REPOSITORY_URL]: packageJson.repository.url,
-    [VITE_ENVIRONMENT_KEYS.HOMEPAGE_URL]: packageJson.homepage,
-    [VITE_ENVIRONMENT_KEYS.SLOGAN]: packageJson.slogan,
+    [VITE_USER_DEFINED_ENVIRONMENT_KEYS.NAME]: packageJson.name,
+    [VITE_USER_DEFINED_ENVIRONMENT_KEYS.VERSION]: packageJson.version,
+    [VITE_USER_DEFINED_ENVIRONMENT_KEYS.REPOSITORY_URL]: packageJson.repository.url,
+    [VITE_USER_DEFINED_ENVIRONMENT_KEYS.HOMEPAGE_URL]: packageJson.homepage,
+    [VITE_USER_DEFINED_ENVIRONMENT_KEYS.SLOGAN]: packageJson.slogan,
   };
   return Object.entries(environmentVariables).reduce((acc, [key, value]) => {
     const newKey = `import.meta.env.${key}`;

@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import type { CollectionData } from '@/application/collections/';
 import { parseProjectInformation } from '@/application/Parser/ProjectInformationParser';
 import { CategoryCollectionParserType, parseApplication } from '@/application/Parser/ApplicationParser';
-import { IAppMetadata } from '@/infrastructure/Metadata/IAppMetadata';
+import { IAppMetadata } from '@/infrastructure/EnvironmentVariables/IAppMetadata';
 import WindowsData from '@/application/collections/windows.yaml';
 import MacOsData from '@/application/collections/macos.yaml';
 import LinuxData from '@/application/collections/linux.yaml';
@@ -11,7 +11,7 @@ import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollect
 import { CollectionDataStub } from '@tests/unit/shared/Stubs/CollectionDataStub';
 import { getAbsentCollectionTestCases, getAbsentObjectTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 import { AppMetadataStub } from '@tests/unit/shared/Stubs/AppMetadataStub';
-import { AppMetadataFactory } from '@/infrastructure/Metadata/AppMetadataFactory';
+import { EnvironmentVariablesFactory } from '@/infrastructure/EnvironmentVariables/EnvironmentVariablesFactory';
 import { CategoryCollectionParserStub } from '@tests/unit/shared/Stubs/CategoryCollectionParserStub';
 import { ProjectInformationParserStub } from '@tests/unit/shared/Stubs/ProjectInformationParserStub';
 import { ProjectInformationStub } from '@tests/unit/shared/Stubs/ProjectInformationStub';
@@ -85,7 +85,7 @@ describe('ApplicationParser', () => {
       });
       it('defaults to metadata from factory', () => {
         // arrange
-        const expectedMetadata: IAppMetadata = AppMetadataFactory.Current.instance;
+        const expectedMetadata: IAppMetadata = EnvironmentVariablesFactory.Current.instance;
         const infoParserStub = new ProjectInformationParserStub();
         // act
         new ApplicationParserBuilder()
@@ -204,9 +204,9 @@ class ApplicationParserBuilder {
   }
 
   public withMetadata(
-    environment: IAppMetadata,
+    metadata: IAppMetadata,
   ): this {
-    this.metadata = environment;
+    this.metadata = metadata;
     return this;
   }
 

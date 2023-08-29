@@ -16,12 +16,6 @@ It runs the application for a duration and detects runtime errors in the package
 
 Upon error, the script captures a screenshot (if `--screenshot` is provided) and terminates.
 
-## Usage
-
-```sh
-node ./scripts/check-desktop-runtime-errors
-```
-
 ## Options
 
 - `--build`: Clears the electron distribution directory and forces a rebuild of the Electron app.
@@ -32,4 +26,4 @@ It can be used to automate checking for runtime errors during development.
 
 ## Configs
 
-Configurations are defined in [`config.js`](./config.js).
+Configurations are defined in [`config.ts`](./config.ts).

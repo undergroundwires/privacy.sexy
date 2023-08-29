@@ -3,6 +3,8 @@ import { IconBootstrapper } from './Modules/IconBootstrapper';
 import { VueConstructor, IVueBootstrapper } from './IVueBootstrapper';
 import { VueBootstrapper } from './Modules/VueBootstrapper';
 import { TooltipBootstrapper } from './Modules/TooltipBootstrapper';
+import { RuntimeSanityValidator } from './Modules/RuntimeSanityValidator';
+import { AppInitializationLogger } from './Modules/AppInitializationLogger';
 
 export class ApplicationBootstrapper implements IVueBootstrapper {
   public bootstrap(vue: VueConstructor): void {
@@ -18,6 +20,8 @@ export class ApplicationBootstrapper implements IVueBootstrapper {
       new TreeBootstrapper(),
       new VueBootstrapper(),
       new TooltipBootstrapper(),
+      new RuntimeSanityValidator(),
+      new AppInitializationLogger(),
     ];
   }
 }

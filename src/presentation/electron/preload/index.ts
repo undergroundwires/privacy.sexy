@@ -8,10 +8,10 @@ import { provideWindowVariables } from './WindowVariablesProvider';
 validateRuntimeSanity({
   // Validate metadata as a preventive measure for fail-fast,
   // even if it's not currently used in the preload script.
-  validateMetadata: true,
+  validateEnvironmentVariables: true,
 
   // The preload script cannot access variables on the window object.
-  validateEnvironment: false,
+  validateWindowVariables: false,
 });
 
 const windowVariables = provideWindowVariables();

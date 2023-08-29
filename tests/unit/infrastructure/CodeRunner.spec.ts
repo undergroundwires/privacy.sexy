@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { EnvironmentStub } from '@tests/unit/shared/Stubs/EnvironmentStub';
+import { RuntimeEnvironmentStub } from '@tests/unit/shared/Stubs/RuntimeEnvironmentStub';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CodeRunner } from '@/infrastructure/CodeRunner';
 import { expectThrowsAsync } from '@tests/unit/shared/Assertions/ExpectThrowsAsync';
@@ -8,23 +8,10 @@ import { OperatingSystemOpsStub } from '@tests/unit/shared/Stubs/OperatingSystem
 import { LocationOpsStub } from '@tests/unit/shared/Stubs/LocationOpsStub';
 import { FileSystemOpsStub } from '@tests/unit/shared/Stubs/FileSystemOpsStub';
 import { CommandOpsStub } from '@tests/unit/shared/Stubs/CommandOpsStub';
-import { IFileSystemOps, ISystemOperations } from '@/infrastructure/Environment/SystemOperations/ISystemOperations';
+import { IFileSystemOps, ISystemOperations } from '@/infrastructure/SystemOperations/ISystemOperations';
 import { FunctionKeys } from '@/TypeHelpers';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('CodeRunner', () => {
-  describe('ctor throws if system is missing', () => {
-    itEachAbsentObjectValue((absentValue) => {
-      // arrange
-      const expectedError = 'missing system operations';
-      const environment = new EnvironmentStub()
-        .withSystemOperations(absentValue);
-      // act
-      const act = () => new CodeRunner(environment);
-      // assert
-      expect(act).to.throw(expectedError);
-    });
-  });
   describe('runCode', () => {
     it('creates temporary directory recursively', async () => {
       // arrange
@@ -222,10 +209,9 @@ class TestContext {
   private systemOperations: ISystemOperations = new SystemOperationsStub();
 
   public async runCode(): Promise<void> {
-    const environment = new EnvironmentStub()
-      .withOs(this.os)
-      .withSystemOperations(this.systemOperations);
-    const runner = new CodeRunner(environment);
+    const environment = new RuntimeEnvironmentStub()
+      .withOs(this.os);
+    const runner = new CodeRunner(this.systemOperations, environment);
     await runner.runCode(this.code, this.folderName, this.fileExtension);
   }
 

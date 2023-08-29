@@ -4,7 +4,7 @@ import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { buildContext } from '@/application/Context/ApplicationContextFactory';
 import { IApplicationFactory } from '@/application/IApplicationFactory';
 import { IApplication } from '@/domain/IApplication';
-import { EnvironmentStub } from '@tests/unit/shared/Stubs/EnvironmentStub';
+import { RuntimeEnvironmentStub } from '@tests/unit/shared/Stubs/RuntimeEnvironmentStub';
 import { ApplicationStub } from '@tests/unit/shared/Stubs/ApplicationStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { expectThrowsAsync } from '@tests/unit/shared/Assertions/ExpectThrowsAsync';
@@ -38,7 +38,7 @@ describe('ApplicationContextFactory', () => {
         it('returns currentOs if it is supported', async () => {
           // arrange
           const expected = OperatingSystem.Windows;
-          const environment = new EnvironmentStub().withOs(expected);
+          const environment = new RuntimeEnvironmentStub().withOs(expected);
           const collection = new CategoryCollectionStub().withOs(expected);
           const factoryMock = mockFactoryWithCollection(collection);
           // act
@@ -51,7 +51,7 @@ describe('ApplicationContextFactory', () => {
           // arrange
           const expected = OperatingSystem.Windows;
           const currentOs = OperatingSystem.macOS;
-          const environment = new EnvironmentStub().withOs(currentOs);
+          const environment = new RuntimeEnvironmentStub().withOs(currentOs);
           const collection = new CategoryCollectionStub().withOs(expected);
           const factoryMock = mockFactoryWithCollection(collection);
           // act
@@ -68,7 +68,7 @@ describe('ApplicationContextFactory', () => {
             new CategoryCollectionStub().withOs(expectedOs).withTotalScripts(5),
             new CategoryCollectionStub().withOs(OperatingSystem.Windows).withTotalScripts(4),
           ];
-          const environment = new EnvironmentStub().withOs(OperatingSystem.macOS);
+          const environment = new RuntimeEnvironmentStub().withOs(OperatingSystem.macOS);
           const app = new ApplicationStub().withCollections(...allCollections);
           const factoryMock = mockFactoryWithApp(app);
           // act

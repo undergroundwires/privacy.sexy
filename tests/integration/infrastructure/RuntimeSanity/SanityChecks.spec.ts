@@ -22,8 +22,8 @@ describe('SanityChecks', () => {
 
 function generateTestOptions(): ISanityCheckOptions[] {
   const defaultOptions: ISanityCheckOptions = {
-    validateMetadata: true,
-    validateEnvironment: true,
+    validateEnvironmentVariables: true,
+    validateWindowVariables: true,
   };
   return generateBooleanPermutations(defaultOptions);
 }

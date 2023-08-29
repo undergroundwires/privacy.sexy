@@ -4,7 +4,7 @@ import {
   IOperatingSystemOps,
   ILocationOps,
   ISystemOperations,
-} from '@/infrastructure/Environment/SystemOperations/ISystemOperations';
+} from '@/infrastructure/SystemOperations/ISystemOperations';
 import { CommandOpsStub } from './CommandOpsStub';
 import { FileSystemOpsStub } from './FileSystemOpsStub';
 import { LocationOpsStub } from './LocationOpsStub';

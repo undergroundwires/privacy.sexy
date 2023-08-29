@@ -1,17 +1,17 @@
 import { ISanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/ISanityCheckOptions';
 
 export class SanityCheckOptionsStub implements ISanityCheckOptions {
-  public validateEnvironment = false;
+  public validateWindowVariables = false;
 
-  public validateMetadata = false;
+  public validateEnvironmentVariables = false;
 
-  public withValidateMetadata(value: boolean): this {
-    this.validateMetadata = value;
+  public withvalidateEnvironmentVariables(value: boolean): this {
+    this.validateEnvironmentVariables = value;
     return this;
   }
 
   public withValidateEnvironment(value: boolean): this {
-    this.validateEnvironment = value;
+    this.validateWindowVariables = value;
     return this;
   }
 }

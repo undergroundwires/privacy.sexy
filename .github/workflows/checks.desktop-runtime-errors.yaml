@@ -20,6 +20,9 @@ jobs:
         name: Setup node
         uses: ./.github/actions/setup-node
       -
+        name: Install dependencies
+        run: npm ci
+      -
         name: Configure Ubuntu
         if: matrix.os == 'ubuntu'
         shell: bash
@@ -57,7 +60,7 @@ jobs:
       -
         name: Test
         shell: bash
-        run: node ./scripts/check-desktop-runtime-errors --screenshot
+        run: npm run check:desktop -- --screenshot
       -
         name: Upload screenshot
         if: always() # Run even if previous step fails
