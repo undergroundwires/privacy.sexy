@@ -64,15 +64,22 @@ export async function npmBuild(
   }
 }
 
+const appNameCache = new Map<string, string>();
+
 export async function getAppName(projectDir: string): Promise<string> {
   if (!projectDir) { throw new Error('missing project directory'); }
+  if (appNameCache.has(projectDir)) {
+    return appNameCache.get(projectDir);
+  }
   const packageData = await readPackageJsonContents(projectDir);
   try {
     const packageJson = JSON.parse(packageData);
-    if (!packageJson.name) {
+    const name = packageJson.name as string;
+    if (!name) {
       return die(`The \`package.json\` file doesn't specify a name: ${packageData}`);
     }
-    return packageJson.name;
+    appNameCache.set(projectDir, name);
+    return name;
   } catch (error) {
     return die(`Unable to parse \`package.json\`. Error: ${error}\nContent: ${packageData}`);
   }

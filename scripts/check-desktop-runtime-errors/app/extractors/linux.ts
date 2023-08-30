@@ -1,15 +1,18 @@
 import { access, chmod } from 'fs/promises';
 import { constants } from 'fs';
-import { findSingleFileByExtension } from '../../utils/io';
 import { log } from '../../utils/log';
-import { ExtractionResult } from './extraction-result';
+import { ExtractionResult } from './common/extraction-result';
+import { findByFilePattern } from './common/app-artifact-locator';
 
 export async function prepareLinuxApp(
   desktopDistPath: string,
+  projectRootDir: string,
 ): Promise<ExtractionResult> {
-  const { absolutePath: appFile } = await findSingleFileByExtension(
-    'AppImage',
+  const { absolutePath: appFile } = await findByFilePattern(
+    // eslint-disable-next-line no-template-curly-in-string
+    '${name}-${version}.AppImage',
     desktopDistPath,
+    projectRootDir,
   );
   await makeExecutable(appFile);
   return {

@@ -1,13 +1,20 @@
 import { runCommand } from '../../utils/run-command';
-import { findSingleFileByExtension, exists } from '../../utils/io';
+import { exists } from '../../utils/io';
 import { log, die, LogLevel } from '../../utils/log';
 import { sleep } from '../../utils/sleep';
-import { ExtractionResult } from './extraction-result';
+import { ExtractionResult } from './common/extraction-result';
+import { findByFilePattern } from './common/app-artifact-locator';
 
 export async function prepareMacOsApp(
   desktopDistPath: string,
+  projectRootDir: string,
 ): Promise<ExtractionResult> {
-  const { absolutePath: dmgPath } = await findSingleFileByExtension('dmg', desktopDistPath);
+  const { absolutePath: dmgPath } = await findByFilePattern(
+    // eslint-disable-next-line no-template-curly-in-string
+    '${name}-${version}.dmg',
+    desktopDistPath,
+    projectRootDir,
+  );
   const { mountPath } = await mountDmg(dmgPath);
   const appPath = await findMacAppExecutablePath(mountPath);
   return {

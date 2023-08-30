@@ -16,7 +16,7 @@ import {
   SCREENSHOT_PATH,
 } from './config';
 import { indentText } from './utils/text';
-import { ExtractionResult } from './app/extractors/extraction-result';
+import { ExtractionResult } from './app/extractors/common/extraction-result';
 
 export async function main(): Promise<void> {
   logCurrentArgs();
@@ -47,9 +47,9 @@ async function extractAndRun() {
   const extractors: {
     readonly [K in SupportedPlatform]: () => Promise<ExtractionResult>;
   } = {
-    [SupportedPlatform.macOS]: () => prepareMacOsApp(DESKTOP_DIST_PATH),
-    [SupportedPlatform.Linux]: () => prepareLinuxApp(DESKTOP_DIST_PATH),
-    [SupportedPlatform.Windows]: () => prepareWindowsApp(DESKTOP_DIST_PATH),
+    [SupportedPlatform.macOS]: () => prepareMacOsApp(DESKTOP_DIST_PATH, PROJECT_DIR),
+    [SupportedPlatform.Linux]: () => prepareLinuxApp(DESKTOP_DIST_PATH, PROJECT_DIR),
+    [SupportedPlatform.Windows]: () => prepareWindowsApp(DESKTOP_DIST_PATH, PROJECT_DIR),
   };
   const extractor = extractors[CURRENT_PLATFORM];
   if (!extractor) {
