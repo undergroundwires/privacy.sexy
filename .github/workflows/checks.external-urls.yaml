@@ -1,0 +1,19 @@
+name: checks.external-urls
+
+on:
+  push:
+  schedule:
+    - cron: '0 0 * * 0' # at 00:00 on every Sunday
+
+jobs:
+  run-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup node
+        uses: ./.github/actions/setup-node
+      - name: Install dependencies
+        run: npm ci
+      - name: Test
+        run: npm run check:external-urls

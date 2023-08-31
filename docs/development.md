@@ -21,7 +21,10 @@ You could run other types of tests as well, but they may take longer time and ov
 - Run end-to-end (e2e) tests:
   - `npm run test:cy:open`: Run tests interactively using the development server with hot-reloading.
   - `npm run test:cy:run`: Run tests on the production build in a headless mode.
-- Run runtime checks for packaged desktop applications: `npm run check:desktop`, see its [README.md](./../scripts/check-desktop-runtime-errors/README.md).
+- Run checks:
+  - `npm run check:desktop`: Run runtime checks for packaged desktop applications ([README.md](./../tests/checks/desktop-runtime-errors/check-desktop-runtime-errors/README.md)).
+    - You can set environment variables active its flags such as `BUILD=true SCREENSHOT=true npm run check:desktop`
+  - `npm run check:external-urls`: Test whether external URLs used in applications are alive.
 
 📖 Read more about testing in [tests](./tests.md).
 

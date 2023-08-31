@@ -76,6 +76,12 @@
       src="https://github.com/undergroundwires/privacy.sexy/workflows/checks.desktop-runtime-errors/badge.svg"
     />
   </a>
+  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.external-urls.yaml" target="_blank" rel="noopener noreferrer">
+    <img
+      alt="Status of external URL checks"
+      src="https://github.com/undergroundwires/privacy.sexy/workflows/checks.external-urls/badge.svg"
+    />
+  </a>
   <!-- Release -->
   <br />
   <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/release.git.yaml" target="_blank" rel="noopener noreferrer">
