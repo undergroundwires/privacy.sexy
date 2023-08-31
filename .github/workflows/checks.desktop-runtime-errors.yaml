@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  build-desktop:
+  run-check:
     strategy:
       matrix:
         os: [ macos, ubuntu, windows ]
@@ -60,7 +60,9 @@ jobs:
       -
         name: Test
         shell: bash
-        run: npm run check:desktop -- --screenshot
+        run: |-
+          export SCREENSHOT=true
+          npm run check:desktop
       -
         name: Upload screenshot
         if: always() # Run even if previous step fails

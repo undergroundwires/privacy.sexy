@@ -1,18 +1,20 @@
-import fetch from 'cross-fetch';
+import { fetchWithTimeout } from './FetchWithTimeout';
 
 export function fetchFollow(
   url: string,
+  timeoutInMs: number,
   fetchOptions: RequestInit,
   followOptions: IFollowOptions,
 ): Promise<Response> {
   followOptions = { ...DefaultOptions, ...followOptions };
   if (followRedirects(followOptions)) {
-    return fetch(url, fetchOptions);
+    return fetchWithTimeout(url, timeoutInMs, fetchOptions);
   }
   fetchOptions = { ...fetchOptions, redirect: 'manual' /* handled manually */ };
   const cookies = new CookieStorage(followOptions.enableCookies);
   return followRecursivelyWithCookies(
     url,
+    timeoutInMs,
     fetchOptions,
     followOptions.maximumRedirectFollowDepth,
     cookies,
@@ -33,12 +35,17 @@ const DefaultOptions: IFollowOptions = {
 
 async function followRecursivelyWithCookies(
   url: string,
+  timeoutInMs: number,
   options: RequestInit,
   followDepth: number,
   cookies: CookieStorage,
 ): Promise<Response> {
   options = updateCookieHeader(cookies, options);
-  const response = await fetch(url, options);
+  const response = await fetchWithTimeout(
+    url,
+    timeoutInMs,
+    options,
+  );
   if (!isRedirect(response.status)) {
     return response;
   }
@@ -49,7 +56,7 @@ async function followRecursivelyWithCookies(
   const cookieHeader = response.headers.get('set-cookie');
   cookies.addHeader(cookieHeader);
   const nextUrl = response.headers.get('location');
-  return followRecursivelyWithCookies(nextUrl, options, newFollowDepth, cookies);
+  return followRecursivelyWithCookies(nextUrl, timeoutInMs, options, newFollowDepth, cookies);
 }
 
 function isRedirect(code: number): boolean {

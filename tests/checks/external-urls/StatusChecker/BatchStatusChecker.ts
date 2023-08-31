@@ -32,6 +32,7 @@ const DefaultOptions: IBatchRequestOptions = {
   },
   requestOptions: {
     retryExponentialBaseInMs: 5 /* sec */ * 1000,
+    requestTimeoutInMs: 60 /* sec */ * 1000,
     additionalHeaders: {},
   },
 };
