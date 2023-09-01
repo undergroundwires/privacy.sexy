@@ -1,7 +1,9 @@
 import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 
 export interface IEventSubscriptionCollection {
-  register(...subscriptions: IEventSubscription[]);
+  readonly subscriptionCount: number;
 
-  unsubscribeAll();
+  register(subscriptions: IEventSubscription[]): void;
+  unsubscribeAll(): void;
+  unsubscribeAllAndRegister(subscriptions: IEventSubscription[]);
 }

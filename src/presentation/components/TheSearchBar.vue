@@ -17,10 +17,11 @@ import {
   defineComponent, ref, watch, computed,
   inject,
 } from 'vue';
-import { useCollectionStateKey } from '@/presentation/injectionSymbols';
+import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { NonCollapsing } from '@/presentation/components/Scripts/View/Cards/NonCollapsingDirective';
 import { IReadOnlyUserFilter } from '@/application/Context/State/Filter/IUserFilter';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
+import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 
 export default defineComponent({
   directives: {
@@ -28,8 +29,9 @@ export default defineComponent({
   },
   setup() {
     const {
-      modifyCurrentState, onStateChange, events, currentState,
-    } = inject(useCollectionStateKey)();
+      modifyCurrentState, onStateChange, currentState,
+    } = inject(InjectionKeys.useCollectionState)();
+    const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
 
     const searchPlaceholder = computed<string>(() => {
       const { totalScripts } = currentState.value.collection;
@@ -51,28 +53,29 @@ export default defineComponent({
     }
 
     onStateChange((newState) => {
-      events.unsubscribeAll();
       updateFromInitialFilter(newState.filter.currentFilter);
-      subscribeToFilterChanges(newState.filter);
+      events.unsubscribeAllAndRegister([
+        subscribeToFilterChanges(newState.filter),
+      ]);
     }, { immediate: true });
 
     function updateFromInitialFilter(filter?: IFilterResult) {
       searchQuery.value = filter?.query || '';
     }
 
-    function subscribeToFilterChanges(filter: IReadOnlyUserFilter) {
-      events.register(
-        filter.filterChanged.on((event) => {
-          event.visit({
-            onApply: (result) => {
-              searchQuery.value = result.query;
-            },
-            onClear: () => {
-              searchQuery.value = '';
-            },
-          });
-        }),
-      );
+    function subscribeToFilterChanges(
+      filter: IReadOnlyUserFilter,
+    ): IEventSubscription {
+      return filter.filterChanged.on((event) => {
+        event.visit({
+          onApply: (result) => {
+            searchQuery.value = result.query;
+          },
+          onClear: () => {
+            searchQuery.value = '';
+          },
+        });
+      });
     }
 
     return {

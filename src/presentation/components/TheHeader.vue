@@ -7,11 +7,11 @@
 
 <script lang="ts">
 import { defineComponent, computed, inject } from 'vue';
-import { useApplicationKey } from '@/presentation/injectionSymbols';
+import { InjectionKeys } from '@/presentation/injectionSymbols';
 
 export default defineComponent({
   setup() {
-    const { info } = inject(useApplicationKey);
+    const { info } = inject(InjectionKeys.useApplication);
 
     const title = computed(() => info.name);
     const subtitle = computed(() => info.slogan);

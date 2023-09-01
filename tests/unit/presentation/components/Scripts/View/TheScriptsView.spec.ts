@@ -6,13 +6,14 @@ import CardList from '@/presentation/components/Scripts/View/Cards/CardList.vue'
 import { ViewType } from '@/presentation/components/Scripts/Menu/View/ViewType';
 import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
 import { UseCollectionStateStub } from '@tests/unit/shared/Stubs/UseCollectionStateStub';
-import { useApplicationKey, useCollectionStateKey } from '@/presentation/injectionSymbols';
+import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { UseApplicationStub } from '@tests/unit/shared/Stubs/UseApplicationStub';
 import { UserFilterMethod, UserFilterStub } from '@tests/unit/shared/Stubs/UserFilterStub';
 import { FilterResultStub } from '@tests/unit/shared/Stubs/FilterResultStub';
 import { FilterChange } from '@/application/Context/State/Filter/Event/FilterChange';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
 import { IFilterChangeDetails } from '@/application/Context/State/Filter/Event/IFilterChangeDetails';
+import { UseAutoUnsubscribedEventsStub } from '@tests/unit/shared/Stubs/UseAutoUnsubscribedEventsStub';
 
 const DOM_SELECTOR_NO_MATCHES = '.search-no-matches';
 const DOM_SELECTOR_CLOSE_BUTTON = '.search__query__close-button';
@@ -404,10 +405,12 @@ function mountComponent(options?: {
 }) {
   return shallowMount(TheScriptsView, {
     provide: {
-      [useCollectionStateKey as symbol]:
+      [InjectionKeys.useCollectionState as symbol]:
         () => options?.useCollectionState ?? new UseCollectionStateStub().get(),
-      [useApplicationKey as symbol]:
+      [InjectionKeys.useApplication as symbol]:
         new UseApplicationStub().get(),
+      [InjectionKeys.useAutoUnsubscribedEvents as symbol]:
+        () => new UseAutoUnsubscribedEventsStub().get(),
     },
     propsData: {
       currentView: options?.viewType === undefined ? ViewType.Tree : options.viewType,

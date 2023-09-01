@@ -1,23 +1,27 @@
-import { ref, computed, readonly } from 'vue';
+import {
+  ref, computed, readonly,
+} from 'vue';
 import { IApplicationContext, IReadOnlyApplicationContext } from '@/application/Context/IApplicationContext';
 import { ICategoryCollectionState, IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
-import { EventSubscriptionCollection } from '@/infrastructure/Events/EventSubscriptionCollection';
 import { IEventSubscriptionCollection } from '@/infrastructure/Events/IEventSubscriptionCollection';
 
-export function useCollectionState(context: IApplicationContext) {
+export function useCollectionState(
+  context: IApplicationContext,
+  events: IEventSubscriptionCollection,
+) {
   if (!context) {
     throw new Error('missing context');
   }
-
-  const events = new EventSubscriptionCollection();
-  const ownEvents = new EventSubscriptionCollection();
+  if (!events) {
+    throw new Error('missing events');
+  }
 
   const currentState = ref<ICategoryCollectionState>(context.state);
-  ownEvents.register(
+  events.register([
     context.contextChanged.on((event) => {
       currentState.value = event.newState;
     }),
-  );
+  ]);
 
   const defaultSettings: IStateCallbackSettings = {
     immediate: false,
@@ -29,11 +33,11 @@ export function useCollectionState(context: IApplicationContext) {
     if (!handler) {
       throw new Error('missing state handler');
     }
-    ownEvents.register(
+    events.register([
       context.contextChanged.on((event) => {
         handler(event.newState, event.oldState);
       }),
-    );
+    ]);
     const defaultedSettings: IStateCallbackSettings = {
       ...defaultSettings,
       ...settings,

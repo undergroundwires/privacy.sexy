@@ -14,12 +14,12 @@ The presentation layer uses an event-driven architecture for bidirectional react
   - [**`bootstrapping/`**](./../src/presentation/bootstrapping/): Registers Vue components and plugins.
   - [**`components/`**](./../src/presentation/components/): Contains Vue components and helpers.
     - [**`Shared/`**](./../src/presentation/components/Shared): Contains shared Vue components and helpers.
-      - [**`hooks`**](../src/presentation/components/Shared/Hooks): Hooks used by components through [dependency injection](#dependency-injections).
+      - [**`Hooks`**](../src/presentation/components/Shared/Hooks): Hooks used by components through [dependency injection](#dependency-injections).
   - [**`/public/`**](../src/presentation/public/): Contains static assets.
   - [**`assets/`**](./../src/presentation/assets/styles/): Contains assets processed by Vite.
     - [**`fonts/`**](./../src/presentation/assets/fonts/): Contains fonts.
     - [**`styles/`**](./../src/presentation/assets/styles/): Contains shared styles.
-      - [**`components/`**](./../src/presentation/assets/styles/components): Contains styles for Vue components.
+      - [**`components/`**](./../src/presentation/assets/styles/components): Contains styles coupled to Vue components.
       - [**`vendors-extensions/`**](./../src/presentation/assets/styles/third-party-extensions): Contains styles for third-party components.
       - [**`main.scss`**](./../src/presentation/assets/styles/main.scss): Main Sass file, imported by other components as single entrypoint.
   - [**`main.ts`**](./../src/presentation/main.ts): Starts Vue app.

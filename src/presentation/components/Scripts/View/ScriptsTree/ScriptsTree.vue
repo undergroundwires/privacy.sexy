@@ -17,12 +17,13 @@
 import {
   defineComponent, watch, ref, inject,
 } from 'vue';
-import { useCollectionStateKey } from '@/presentation/injectionSymbols';
+import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { IScript } from '@/domain/IScript';
 import { ICategory } from '@/domain/ICategory';
 import { ICategoryCollectionState, IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
+import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 import {
   parseAllCategories, parseSingleCategory, getScriptNodeId, getCategoryNodeId, getCategoryId,
   getScriptId,
@@ -43,8 +44,9 @@ export default defineComponent({
   },
   setup(props) {
     const {
-      modifyCurrentState, currentState, onStateChange, events,
-    } = inject(useCollectionStateKey)();
+      modifyCurrentState, currentState, onStateChange,
+    } = inject(InjectionKeys.useCollectionState)();
+    const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
 
     const nodes = ref<ReadonlyArray<INodeContent>>([]);
     const selectedNodeIds = ref<ReadonlyArray<string>>([]);
@@ -54,7 +56,7 @@ export default defineComponent({
 
     watch(
       () => props.categoryId,
-      async (newCategoryId) => { await setNodes(newCategoryId); },
+      (newCategoryId) => setNodes(newCategoryId),
       { immediate: true },
     );
 
@@ -63,8 +65,7 @@ export default defineComponent({
       if (!props.categoryId) {
         nodes.value = parseAllCategories(state.collection);
       }
-      events.unsubscribeAll();
-      subscribeToState(state);
+      events.unsubscribeAllAndRegister(subscribeToState(state));
     }, { immediate: true });
 
     function toggleNodeSelection(event: INodeSelectedEvent) {
@@ -87,7 +88,7 @@ export default defineComponent({
         || containsCategory(node, filtered.categoryMatches);
     }
 
-    async function setNodes(categoryId?: number) {
+    function setNodes(categoryId?: number) {
       if (categoryId) {
         nodes.value = parseSingleCategory(categoryId, currentState.value.collection);
       } else {
@@ -97,8 +98,10 @@ export default defineComponent({
         .map((selected) => getScriptNodeId(selected.script));
     }
 
-    function subscribeToState(state: IReadOnlyCategoryCollectionState) {
-      events.register(
+    function subscribeToState(
+      state: IReadOnlyCategoryCollectionState,
+    ): IEventSubscription[] {
+      return [
         state.selection.changed.on((scripts) => handleSelectionChanged(scripts)),
         state.filter.filterChanged.on((event) => {
           event.visit({
@@ -111,7 +114,7 @@ export default defineComponent({
             },
           });
         }),
-      );
+      ];
     }
 
     function setCurrentFilter(currentFilter: IFilterResult | undefined) {

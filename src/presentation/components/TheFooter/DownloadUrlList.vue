@@ -20,7 +20,7 @@
 <script lang="ts">
 import { defineComponent, inject } from 'vue';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { useRuntimeEnvironmentKey } from '@/presentation/injectionSymbols';
+import { InjectionKeys } from '@/presentation/injectionSymbols';
 import DownloadUrlListItem from './DownloadUrlListItem.vue';
 
 const supportedOperativeSystems: readonly OperatingSystem[] = [
@@ -34,7 +34,7 @@ export default defineComponent({
     DownloadUrlListItem,
   },
   setup() {
-    const { os: currentOs } = inject(useRuntimeEnvironmentKey);
+    const { os: currentOs } = inject(InjectionKeys.useRuntimeEnvironment);
     const supportedDesktops = [
       ...supportedOperativeSystems,
     ].sort((os) => (os === currentOs ? 0 : 1));

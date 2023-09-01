@@ -12,7 +12,7 @@ import {
   computed, inject,
 } from 'vue';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
-import { useCollectionStateKey } from '@/presentation/injectionSymbols';
+import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { IReverter } from './Reverter/IReverter';
 import { INodeContent } from './INodeContent';
 import { getReverter } from './Reverter/ReverterFactory';
@@ -30,8 +30,9 @@ export default defineComponent({
   },
   setup(props) {
     const {
-      currentState, modifyCurrentState, onStateChange, events,
-    } = inject(useCollectionStateKey)();
+      currentState, modifyCurrentState, onStateChange,
+    } = inject(InjectionKeys.useCollectionState)();
+    const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
 
     const isReverted = ref(false);
 
@@ -39,24 +40,23 @@ export default defineComponent({
 
     watch(
       () => props.node,
-      async (node) => { await onNodeChanged(node); },
+      (node) => onNodeChanged(node),
       { immediate: true },
     );
 
     onStateChange((newState) => {
       updateRevertStatusFromState(newState.selection.selectedScripts);
-      events.unsubscribeAll();
-      events.register(
+      events.unsubscribeAllAndRegister([
         newState.selection.changed.on((scripts) => updateRevertStatusFromState(scripts)),
-      );
+      ]);
     }, { immediate: true });
 
-    async function onNodeChanged(node: INodeContent) {
+    function onNodeChanged(node: INodeContent) {
       handler = getReverter(node, currentState.value.collection);
       updateRevertStatusFromState(currentState.value.selection.selectedScripts);
     }
 
-    async function updateRevertStatusFromState(scripts: ReadonlyArray<SelectedScript>) {
+    function updateRevertStatusFromState(scripts: ReadonlyArray<SelectedScript>) {
       isReverted.value = handler?.getState(scripts) ?? false;
     }
 

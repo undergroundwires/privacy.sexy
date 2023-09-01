@@ -29,7 +29,7 @@
 import {
   defineComponent, ref, computed, inject,
 } from 'vue';
-import { useCollectionStateKey, useRuntimeEnvironmentKey } from '@/presentation/injectionSymbols';
+import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { SaveFileDialog, FileType } from '@/infrastructure/SaveFileDialog';
 import { Clipboard } from '@/infrastructure/Clipboard';
 import ModalDialog from '@/presentation/components/Shared/Modal/ModalDialog.vue';
@@ -53,9 +53,10 @@ export default defineComponent({
   },
   setup() {
     const {
-      currentState, currentContext, onStateChange, events,
-    } = inject(useCollectionStateKey)();
-    const { os, isDesktop } = inject(useRuntimeEnvironmentKey);
+      currentState, currentContext, onStateChange,
+    } = inject(InjectionKeys.useCollectionState)();
+    const { os, isDesktop } = inject(InjectionKeys.useRuntimeEnvironment);
+    const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
 
     const areInstructionsVisible = ref(false);
     const canRun = computed<boolean>(() => getCanRunState(currentState.value.os, isDesktop, os));
@@ -81,15 +82,18 @@ export default defineComponent({
     }
 
     onStateChange((newState) => {
+      updateCurrentCode(newState.code.current);
       subscribeToCodeChanges(newState.code);
     }, { immediate: true });
 
     function subscribeToCodeChanges(code: IApplicationCode) {
-      hasCode.value = code.current && code.current.length > 0;
-      events.unsubscribeAll();
-      events.register(code.changed.on((newCode) => {
-        hasCode.value = newCode && newCode.code.length > 0;
-      }));
+      events.unsubscribeAllAndRegister([
+        code.changed.on((newCode) => updateCurrentCode(newCode.code)),
+      ]);
+    }
+
+    function updateCurrentCode(code: string) {
+      hasCode.value = code && code.length > 0;
     }
 
     async function getCurrentCode(): Promise<IApplicationCode> {

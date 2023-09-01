@@ -37,7 +37,7 @@ import {
   defineComponent, ref, onMounted, onUnmounted, computed,
   inject,
 } from 'vue';
-import { useCollectionStateKey } from '@/presentation/injectionSymbols';
+import { InjectionKeys } from '@/presentation/injectionSymbols';
 import SizeObserver from '@/presentation/components/Shared/SizeObserver.vue';
 import { hasDirective } from './NonCollapsingDirective';
 import CardListItem from './CardListItem.vue';
@@ -48,7 +48,7 @@ export default defineComponent({
     SizeObserver,
   },
   setup() {
-    const { currentState, onStateChange } = inject(useCollectionStateKey)();
+    const { currentState, onStateChange } = inject(InjectionKeys.useCollectionState)();
 
     const width = ref<number>(0);
     const categoryIds = computed<ReadonlyArray<number>>(() => currentState

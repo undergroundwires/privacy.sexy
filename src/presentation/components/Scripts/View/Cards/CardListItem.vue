@@ -52,7 +52,7 @@ import {
   defineComponent, ref, watch, computed,
   inject,
 } from 'vue';
-import { useCollectionStateKey } from '@/presentation/injectionSymbols';
+import { InjectionKeys } from '@/presentation/injectionSymbols';
 import ScriptsTree from '@/presentation/components/Scripts/View/ScriptsTree/ScriptsTree.vue';
 import { sleep } from '@/infrastructure/Threading/AsyncSleep';
 
@@ -76,7 +76,8 @@ export default defineComponent({
     /* eslint-enable @typescript-eslint/no-unused-vars */
   },
   setup(props, { emit }) {
-    const { events, onStateChange, currentState } = inject(useCollectionStateKey)();
+    const { onStateChange, currentState } = inject(InjectionKeys.useCollectionState)();
+    const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
 
     const isExpanded = computed({
       get: () => {
@@ -106,12 +107,13 @@ export default defineComponent({
       isExpanded.value = false;
     }
 
-    onStateChange(async (state) => {
-      events.unsubscribeAll();
-      events.register(state.selection.changed.on(
-        () => updateSelectionIndicators(props.categoryId),
-      ));
-      await updateSelectionIndicators(props.categoryId);
+    onStateChange((state) => {
+      events.unsubscribeAllAndRegister([
+        state.selection.changed.on(
+          () => updateSelectionIndicators(props.categoryId),
+        ),
+      ]);
+      updateSelectionIndicators(props.categoryId);
     }, { immediate: true });
 
     watch(
@@ -124,7 +126,7 @@ export default defineComponent({
       cardElement.value.scrollIntoView({ behavior: 'smooth' });
     }
 
-    async function updateSelectionIndicators(categoryId: number) {
+    function updateSelectionIndicators(categoryId: number) {
       const category = currentState.value.collection.findCategory(categoryId);
       const { selection } = currentState.value;
       isAnyChildSelected.value = category ? selection.isAnySelected(category) : false;

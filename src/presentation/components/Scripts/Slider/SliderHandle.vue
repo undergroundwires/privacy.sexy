@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onUnmounted } from 'vue';
 
 export default defineComponent({
   emits: {
@@ -45,6 +45,10 @@ export default defineComponent({
       event.stopPropagation();
       event.preventDefault();
     }
+
+    onUnmounted(() => {
+      stopResize();
+    });
 
     return {
       cursorCssValue,

@@ -66,9 +66,10 @@
 
 <script lang="ts">
 import { defineComponent, ref, inject } from 'vue';
-import { useCollectionStateKey } from '@/presentation/injectionSymbols';
+import { InjectionKeys } from '@/presentation/injectionSymbols';
 import TooltipWrapper from '@/presentation/components/Shared/TooltipWrapper.vue';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 import MenuOptionList from '../MenuOptionList.vue';
 import MenuOptionListItem from '../MenuOptionListItem.vue';
 import { SelectionType, SelectionTypeHandler } from './SelectionTypeHandler';
@@ -80,28 +81,27 @@ export default defineComponent({
     TooltipWrapper,
   },
   setup() {
-    const { modifyCurrentState, onStateChange, events } = inject(useCollectionStateKey)();
+    const { modifyCurrentState, onStateChange } = inject(InjectionKeys.useCollectionState)();
+    const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
 
     const currentSelection = ref(SelectionType.None);
 
     let selectionTypeHandler: SelectionTypeHandler;
 
     onStateChange(() => {
-      unregisterMutators();
-
       modifyCurrentState((state) => {
-        registerStateMutator(state);
+        selectionTypeHandler = new SelectionTypeHandler(state);
+        updateSelections();
+        events.unsubscribeAllAndRegister([
+          subscribeAndUpdateSelections(state),
+        ]);
       });
     }, { immediate: true });
 
-    function unregisterMutators() {
-      events.unsubscribeAll();
-    }
-
-    function registerStateMutator(state: ICategoryCollectionState) {
-      selectionTypeHandler = new SelectionTypeHandler(state);
-      updateSelections();
-      events.register(state.selection.changed.on(() => updateSelections()));
+    function subscribeAndUpdateSelections(
+      state: ICategoryCollectionState,
+    ): IEventSubscription {
+      return state.selection.changed.on(() => updateSelections());
     }
 
     function selectType(type: SelectionType) {

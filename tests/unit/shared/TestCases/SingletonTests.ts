@@ -3,16 +3,18 @@ import { Constructible } from '@/TypeHelpers';
 
 interface ISingletonTestData<T> {
   getter: () => T;
-  expectedType: Constructible<T>;
+  expectedType?: Constructible<T>;
 }
 
 export function itIsSingleton<T>(test: ISingletonTestData<T>): void {
-  it('gets the expected type', () => {
-    // act
-    const instance = test.getter();
-    // assert
-    expect(instance).to.be.instanceOf(test.expectedType);
-  });
+  if (test.expectedType !== undefined) {
+    it('gets the expected type', () => {
+      // act
+      const instance = test.getter();
+      // assert
+      expect(instance).to.be.instanceOf(test.expectedType);
+    });
+  }
   it('multiple calls get the same instance', () => {
     // act
     const instance1 = test.getter();

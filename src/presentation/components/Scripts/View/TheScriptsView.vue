@@ -41,7 +41,7 @@ import {
   defineComponent, PropType, ref, computed,
   inject,
 } from 'vue';
-import { useApplicationKey, useCollectionStateKey } from '@/presentation/injectionSymbols';
+import { InjectionKeys } from '@/presentation/injectionSymbols';
 import ScriptsTree from '@/presentation/components/Scripts/View/ScriptsTree/ScriptsTree.vue';
 import CardList from '@/presentation/components/Scripts/View/Cards/CardList.vue';
 import { ViewType } from '@/presentation/components/Scripts/Menu/View/ViewType';
@@ -60,8 +60,9 @@ export default defineComponent({
     },
   },
   setup() {
-    const { modifyCurrentState, onStateChange, events } = inject(useCollectionStateKey)();
-    const { info } = inject(useApplicationKey);
+    const { modifyCurrentState, onStateChange } = inject(InjectionKeys.useCollectionState)();
+    const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
+    const { info } = inject(InjectionKeys.useApplication);
 
     const repositoryUrl = computed<string>(() => info.repositoryWebUrl);
     const searchQuery = ref<string | undefined>();
@@ -77,9 +78,10 @@ export default defineComponent({
     });
 
     onStateChange((newState) => {
-      events.unsubscribeAll();
       updateFromInitialFilter(newState.filter.currentFilter);
-      subscribeToFilterChanges(newState.filter);
+      events.unsubscribeAllAndRegister([
+        subscribeToFilterChanges(newState.filter),
+      ]);
     }, { immediate: true });
 
     function clearSearchQuery() {
@@ -95,19 +97,17 @@ export default defineComponent({
     }
 
     function subscribeToFilterChanges(filter: IReadOnlyUserFilter) {
-      events.register(
-        filter.filterChanged.on((event) => {
-          event.visit({
-            onApply: (newFilter) => {
-              searchQuery.value = newFilter.query;
-              searchHasMatches.value = newFilter.hasAnyMatches();
-            },
-            onClear: () => {
-              searchQuery.value = undefined;
-            },
-          });
-        }),
-      );
+      return filter.filterChanged.on((event) => {
+        event.visit({
+          onApply: (newFilter) => {
+            searchQuery.value = newFilter.query;
+            searchHasMatches.value = newFilter.hasAnyMatches();
+          },
+          onClear: () => {
+            searchQuery.value = undefined;
+          },
+        });
+      });
     }
 
     return {

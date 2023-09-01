@@ -59,7 +59,7 @@ import {
   defineComponent, PropType, computed,
   inject,
 } from 'vue';
-import { useApplicationKey } from '@/presentation/injectionSymbols';
+import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import TooltipWrapper from '@/presentation/components/Shared/TooltipWrapper.vue';
 import CodeInstruction from './CodeInstruction.vue';
@@ -77,7 +77,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { info } = inject(useApplicationKey);
+    const { info } = inject(InjectionKeys.useApplication);
 
     const appName = computed<string>(() => info.name);
 

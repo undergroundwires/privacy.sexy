@@ -42,12 +42,12 @@
 
 <script lang="ts">
 import { defineComponent, computed, inject } from 'vue';
-import { useApplicationKey, useRuntimeEnvironmentKey } from '@/presentation/injectionSymbols';
+import { InjectionKeys } from '@/presentation/injectionSymbols';
 
 export default defineComponent({
   setup() {
-    const { info } = inject(useApplicationKey);
-    const { isDesktop } = inject(useRuntimeEnvironmentKey);
+    const { info } = inject(InjectionKeys.useApplication);
+    const { isDesktop } = inject(InjectionKeys.useRuntimeEnvironment);
 
     const repositoryUrl = computed<string>(() => info.repositoryUrl);
     const feedbackUrl = computed<string>(() => info.feedbackUrl);

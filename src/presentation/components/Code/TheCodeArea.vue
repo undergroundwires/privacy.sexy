@@ -13,7 +13,7 @@
 import {
   defineComponent, onUnmounted, onMounted, inject,
 } from 'vue';
-import { useCollectionStateKey } from '@/presentation/injectionSymbols';
+import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { ICodeChangedEvent } from '@/application/Context/State/Code/Event/ICodeChangedEvent';
 import { IScript } from '@/domain/IScript';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
@@ -37,7 +37,8 @@ export default defineComponent({
     NonCollapsing,
   },
   setup(props) {
-    const { onStateChange, currentState, events } = inject(useCollectionStateKey)();
+    const { onStateChange, currentState } = inject(InjectionKeys.useCollectionState)();
+    const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
 
     const editorId = 'codeEditor';
     let editor: ace.Ace.Editor | undefined;
@@ -61,19 +62,20 @@ export default defineComponent({
         newState.collection.scripting.language,
       );
       const appCode = newState.code;
-      const innerCode = appCode.current || getDefaultCode(newState.collection.scripting.language);
-      editor.setValue(innerCode, 1);
-      events.unsubscribeAll();
-      events.register(appCode.changed.on((code) => updateCode(code)));
+      updateCode(appCode.current, newState.collection.scripting.language);
+      events.unsubscribeAllAndRegister([
+        appCode.changed.on((code) => handleCodeChange(code)),
+      ]);
     }
 
-    function updateCode(event: ICodeChangedEvent) {
+    function updateCode(code: string, language: ScriptingLanguage) {
+      const innerCode = code || getDefaultCode(language);
+      editor.setValue(innerCode, 1);
+    }
+
+    function handleCodeChange(event: ICodeChangedEvent) {
       removeCurrentHighlighting();
-      if (event.isEmpty()) {
-        const defaultCode = getDefaultCode(currentState.value.collection.scripting.language);
-        editor.setValue(defaultCode, 1);
-        return;
-      }
+      updateCode(event.code, currentState.value.collection.scripting.language);
       editor.setValue(event.code, 1);
       if (event.addedScripts?.length > 0) {
         reactToChanges(event, event.addedScripts);

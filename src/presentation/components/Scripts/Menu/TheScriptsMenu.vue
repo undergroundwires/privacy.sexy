@@ -11,10 +11,11 @@
 
 <script lang="ts">
 import {
-  defineComponent, ref, onUnmounted, inject,
+  defineComponent, ref, inject,
 } from 'vue';
-import { useCollectionStateKey } from '@/presentation/injectionSymbols';
+import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { IReadOnlyUserFilter } from '@/application/Context/State/Filter/IUserFilter';
+import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 import TheOsChanger from './TheOsChanger.vue';
 import TheSelector from './Selector/TheSelector.vue';
 import TheViewChanger from './View/TheViewChanger.vue';
@@ -26,31 +27,26 @@ export default defineComponent({
     TheViewChanger,
   },
   setup() {
-    const { onStateChange, events } = inject(useCollectionStateKey)();
+    const { onStateChange } = inject(InjectionKeys.useCollectionState)();
+    const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
 
     const isSearching = ref(false);
 
     onStateChange((state) => {
-      subscribeToFilterChanges(state.filter);
+      events.unsubscribeAllAndRegister([
+        subscribeToFilterChanges(state.filter),
+      ]);
     }, { immediate: true });
 
-    onUnmounted(() => {
-      unsubscribeAll();
-    });
-
-    function subscribeToFilterChanges(filter: IReadOnlyUserFilter) {
-      events.register(
-        filter.filterChanged.on((event) => {
-          event.visit({
-            onApply: () => { isSearching.value = true; },
-            onClear: () => { isSearching.value = false; },
-          });
-        }),
-      );
-    }
-
-    function unsubscribeAll() {
-      events.unsubscribeAll();
+    function subscribeToFilterChanges(
+      filter: IReadOnlyUserFilter,
+    ): IEventSubscription {
+      return filter.filterChanged.on((event) => {
+        event.visit({
+          onApply: () => { isSearching.value = true; },
+          onClear: () => { isSearching.value = false; },
+        });
+      });
     }
 
     return {
