@@ -1,7 +1,5 @@
 node_modules
-dist/
+/dist-*/
 .vs
 .vscode/**/*
 !.vscode/extensions.json
-#Electron-builder output
-/dist_electron

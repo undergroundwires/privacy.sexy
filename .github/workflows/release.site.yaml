@@ -95,10 +95,20 @@ jobs:
         run: npm run build
         working-directory: app
       -
+        name: "App: Verify web build artifacts"
+        run: npm run check:verify-build-artifacts -- --web
+        working-directory: app
+      -
         name: "App: Deploy to S3"
+        shell: bash
         run: >-
+          declare web_output_dir
+          if ! web_output_dir=$(cd app && node scripts/print-dist-dir.js --web); then
+            echo 'Error: Could not determine distribution directory.'
+            exit 1
+          fi
           bash "aws/scripts/deploy/deploy-to-s3.sh" \
-            --folder app/dist \
+            --folder "${web_output_dir}" \
             --web-stack-name privacysexy-web-stack --web-stack-s3-name-output-name S3BucketName \
             --storage-class ONEZONE_IA \
             --role-arn ${{secrets.AWS_S3_SITE_DEPLOYMENT_ROLE_ARN}} \

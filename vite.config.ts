@@ -4,6 +4,7 @@ import { defineConfig, UserConfig } from 'vite';
 import legacy from '@vitejs/plugin-legacy';
 import vue from '@vitejs/plugin-vue2';
 import ViteYaml from '@modyfi/vite-plugin-yaml';
+import distDirs from './dist-dirs.json' assert { type: 'json' };
 import { getAliasesFromTsConfig, getClientEnvironmentVariables, getSelfDirectoryAbsolutePath } from './vite-config-helper';
 
 const WEB_DIRECTORY = resolve(getSelfDirectoryAbsolutePath(), 'src/presentation');
@@ -14,6 +15,9 @@ export function createVueConfig(options?: {
 }): UserConfig {
   return {
     root: WEB_DIRECTORY,
+    build: {
+      outDir: resolve(getSelfDirectoryAbsolutePath(), distDirs.web),
+    },
     plugins: [
       vue(),
       ViteYaml(),

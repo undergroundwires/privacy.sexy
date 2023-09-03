@@ -60,7 +60,11 @@ export async function npmBuild(
     cwd: projectDir,
   });
   if (error) {
-    log(error, LogLevel.Warn); // Cannot disable Vue CLI errors, stderr contains false-positives.
+    die(error);
+  }
+
+  if (await isDirMissingOrEmpty(distDir)) {
+    die(`The desktop application build process did not produce the expected artifacts. The output directory "${distDir}" is empty or missing.`);
   }
 }
 

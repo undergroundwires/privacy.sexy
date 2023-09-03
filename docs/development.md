@@ -5,7 +5,9 @@ Before your commit, a good practice is to:
 1. [Run unit tests](#testing)
 2. [Lint your code](#linting)
 
-You could run other types of tests as well, but they may take longer time and overkill for your changes. Automated actions executes the tests for a pull request or change in the main branch. See [ci-cd.md](./ci-cd.md) for more information.
+You could run other types of tests as well, but they may take longer time and overkill for your changes.
+Automated actions are set up to execute these tests as necessary.
+See [ci-cd.md](./ci-cd.md) for more information.
 
 ## Commands
 
@@ -65,12 +67,25 @@ You could run other types of tests as well, but they may take longer time and ov
 - Build desktop application: `npm run electron:build`
 - (Re)create icons (see [documentation](../img/README.md)): `npm run create-icons`
 
-### Utility Scripts
+### Scripts
 
-- Run fresh NPM install: [`./scripts/fresh-npm-install.sh`](../scripts/fresh-npm-install.sh)
+📖 For detailed options and behavior for any of the following scripts, please refer to the script file itself.
+
+#### Utility scripts
+
+- [**`./scripts/fresh-npm-install.sh`**](../scripts/fresh-npm-install.sh):
+  - Run fresh NPM install.
   - This script provides a clean NPM install, removing existing node modules and optionally the package-lock.json (when run with -n), then installs dependencies and runs unit tests.
-- Configure VSCode: [`./scripts/configure-vscode.sh`](../scripts/configure-vscode.sh)
+- [**`./scripts/configure-vscode.sh`**](../scripts/configure-vscode.sh):
   - This script checks and sets the necessary configurations for VSCode in `settings.json` file.
+
+#### Automation scripts
+
+- [**`node scripts/print-dist-dir.js [-- <options>]`**](../scripts/print-dist-dir.js):
+  - Determines the absolute path of a distribution directory based on CLI arguments and outputs its absolute path.
+  - Primarily used by automation scripts.
+- [**`npm run check:verify-build-artifacts [-- <options>]`**](../scripts/verify-build-artifacts.js):
+  - Verifies the existence and content of build artifacts. Useful for ensuring that the build process is generating the expected output.
 
 ## Recommended extensions
 

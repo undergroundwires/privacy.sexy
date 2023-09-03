@@ -6,6 +6,7 @@
   "description": "Enforce privacy & security best-practices on Windows, macOS and Linux, because privacy is sexy 🍑🍆",
   "author": "undergroundwires",
   "type": "module",
+  "main": "./dist-electron-unbundled/main/index.cjs",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
@@ -18,11 +19,12 @@
     "icons:build": "node scripts/logo-update.js",
     "check:desktop": "vitest run --dir tests/checks/desktop-runtime-errors --environment node",
     "check:external-urls": "vitest run --dir tests/checks/external-urls --environment node",
+    "check:verify-build-artifacts": "node scripts/verify-build-artifacts",
     "electron:dev": "electron-vite dev",
     "electron:preview": "electron-vite preview",
     "electron:prebuild": "electron-vite build",
     "electron:build": "electron-builder",
-    "lint:eslint": "eslint .",
+    "lint:eslint": "eslint . --ignore-path .gitignore",
     "lint:md": "markdownlint **/*.md --ignore node_modules",
     "lint:md:consistency": "remark . --frail --use remark-preset-lint-consistent",
     "lint:md:relative-urls": "remark . --frail --use remark-validate-links",
@@ -30,7 +32,6 @@
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
-  "main": "./dist_electron/main/index.cjs",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
     "@fortawesome/free-brands-svg-icons": "^6.4.0",

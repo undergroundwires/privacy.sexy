@@ -3,11 +3,12 @@ import { mergeConfig, UserConfig } from 'vite';
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
 import { getAliasesFromTsConfig, getClientEnvironmentVariables } from './vite-config-helper';
 import { createVueConfig } from './vite.config';
+import distDirs from './dist-dirs.json' assert { type: 'json' };
 
 const MAIN_ENTRY_FILE = resolvePathFromProjectRoot('src/presentation/electron/main/index.ts');
 const PRELOAD_ENTRY_FILE = resolvePathFromProjectRoot('src/presentation/electron/preload/index.ts');
 const WEB_INDEX_HTML_PATH = resolvePathFromProjectRoot('src/presentation/index.html');
-const DIST_DIR = resolvePathFromProjectRoot('dist_electron/');
+const DIST_DIR = resolvePathFromProjectRoot(distDirs.electronUnbundled);
 
 export default defineConfig({
   main: getSharedElectronConfig({
