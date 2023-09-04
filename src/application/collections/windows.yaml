@@ -2889,12 +2889,14 @@ actions:
                     - https://github.com/undergroundwires/privacy.sexy/issues/247
                     - https://ghostvolt.com/blog/Is-the-Windows-Clipboard-Function-History-or-Sync-Secure.html
                 call:
+                -
                     function: DisablePerUserService
                     parameters:
                         # Check (system-wide):  (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\cbdhsvc").Start
                         # Check (per-user):     (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\cbdhsvc_*").Start
                         serviceName: cbdhsvc
                         defaultStartupMode: Automatic
+                -
                     function: RunInlineCode
                     parameters:
                         code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "AllowClipboardHistory" /t REG_DWORD /d 0 /f
