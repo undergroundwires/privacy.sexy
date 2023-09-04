@@ -2894,11 +2894,11 @@ actions:
                         # Check (system-wide):  (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\cbdhsvc").Start
                         # Check (per-user):     (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\cbdhsvc_*").Start
                         serviceName: cbdhsvc
-                        defaultStartupMode: Manual
-                code: |-
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "AllowClipboardHistory" /t REG_DWORD /d 0 /f
-                revertCode: -|
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "AllowClipboardHistory" /t REG_DWORD /d 1 /f
+                        defaultStartupMode: Automatic
+                    function: RunInlineCode
+                    parameters:
+                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "AllowClipboardHistory" /t REG_DWORD /d 0 /f
+                        revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "AllowClipboardHistory" /f
             -
                 category: Increase cryptography on ISS
                 children:
