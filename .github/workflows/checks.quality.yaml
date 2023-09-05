@@ -16,11 +16,15 @@ jobs:
         os: [ macos, ubuntu, windows ]
       fail-fast: false # Still interested to see results from other combinations
     steps:
-      - name: Checkout
+      -
+        name: Checkout
         uses: actions/checkout@v2
-      - name: Setup node
+      -
+        name: Setup node
         uses: ./.github/actions/setup-node
-      - name: Install dependencies
-        run: npm ci
-      - name: Lint
+      -
+        name: Install dependencies
+        uses: ./.github/actions/npm-install-dependencies
+      -
+        name: Lint
         run: ${{ matrix.lint-command }}

@@ -27,7 +27,7 @@ jobs:
         uses: ./.github/actions/setup-node
       -
         name: Install dependencies
-        run: npm ci
+        uses: ./.github/actions/npm-install-dependencies
       -
         name: Build web
         run: npm run build -- --mode ${{ matrix.mode }}
@@ -55,7 +55,7 @@ jobs:
         uses: ./.github/actions/setup-node
       -
         name: Install dependencies
-        run: npm ci
+        uses: ./.github/actions/npm-install-dependencies
       -
         name: Prebuild desktop
         run: npm run electron:prebuild -- --mode ${{ matrix.mode }}
@@ -68,23 +68,3 @@ jobs:
       -
         name: Verify bundled desktop build artifacts
         run: npm run check:verify-build-artifacts -- --electron-bundled
-
-  create-icons:
-    strategy:
-      matrix:
-        os: [ macos, ubuntu, windows ]
-      fail-fast: false # Allows to see results from other combinations
-    runs-on: ${{ matrix.os }}-latest
-    steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v2
-      -
-        name: Setup node
-        uses: ./.github/actions/setup-node
-      -
-        name: Install dependencies
-        run: npm ci
-      -
-        name: Create icons
-        run: npm run icons:build

@@ -84,8 +84,9 @@ jobs:
         uses: ./app/.github/actions/setup-node
       -
         name: "App: Install dependencies"
-        run: npm ci
-        working-directory: app
+        uses: ./.github/actions/npm-install-dependencies
+        with:
+          working-directory: app
       -
         name: "App: Run unit tests"
         run: npm run test:unit

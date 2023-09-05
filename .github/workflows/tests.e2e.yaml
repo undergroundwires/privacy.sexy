@@ -20,7 +20,7 @@ jobs:
         uses: ./.github/actions/setup-node
       -
         name: Install dependencies
-        run: npm ci
+        uses: ./.github/actions/npm-install-dependencies
       -
         name: Run e2e tests
         run: npm run test:cy:run

@@ -1,13 +1,8 @@
 import { join } from 'path';
 import { rm, readFile } from 'fs/promises';
 import { exists, isDirMissingOrEmpty } from './io';
-import { CommandResult, runCommand } from './run-command';
+import { runCommand } from './run-command';
 import { LogLevel, die, log } from './log';
-import { sleep } from './sleep';
-import type { ExecOptions } from 'child_process';
-
-const NPM_INSTALL_MAX_RETRIES = 3;
-const NPM_INSTALL_RETRY_DELAY_MS = 5 /* seconds */ * 1000;
 
 export async function ensureNpmProjectDir(projectDir: string): Promise<void> {
   if (!projectDir) { throw new Error('missing project directory'); }
@@ -20,13 +15,16 @@ export async function npmInstall(projectDir: string): Promise<void> {
   if (!projectDir) { throw new Error('missing project directory'); }
   const npmModulesPath = join(projectDir, 'node_modules');
   if (!await isDirMissingOrEmpty(npmModulesPath)) {
-    log(`Directory "${npmModulesPath}" exists and has content. Skipping \`npm install\`.`);
+    log(`Directory "${npmModulesPath}" exists and has content. Skipping installing dependencies.`);
     return;
   }
   log('Starting dependency installation...');
-  const { error } = await executeWithRetry('npm install --loglevel=error', {
-    cwd: projectDir,
-  }, NPM_INSTALL_MAX_RETRIES, NPM_INSTALL_RETRY_DELAY_MS);
+  const { error } = await runCommand(
+    `npm run install-deps -- --no-errors --root-directory ${projectDir}`,
+    {
+      cwd: projectDir,
+    },
+  );
   if (error) {
     die(error);
   }
@@ -102,30 +100,4 @@ async function readPackageJsonContents(projectDir: string): Promise<string> {
     log(`Error reading \`package.json\` from ${packagePath}.`, LogLevel.Error);
     return die(`Error detail: ${error}`);
   }
-}
-
-async function executeWithRetry(
-  command: string,
-  options: ExecOptions,
-  maxRetries: number,
-  retryDelayInMs: number,
-  currentAttempt = 1,
-): Promise<CommandResult> {
-  const result = await runCommand(command, options);
-
-  if (!result.error || currentAttempt >= maxRetries) {
-    return result;
-  }
-
-  log(`Attempt ${currentAttempt} failed. Retrying in ${retryDelayInMs / 1000} seconds...`);
-  await sleep(retryDelayInMs);
-
-  const retryResult = await executeWithRetry(
-    command,
-    options,
-    maxRetries,
-    retryDelayInMs,
-    currentAttempt + 1,
-  );
-  return retryResult;
 }

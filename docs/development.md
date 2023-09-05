@@ -13,8 +13,8 @@ See [ci-cd.md](./ci-cd.md) for more information.
 
 ### Prerequisites
 
-- Install node >15.x.
-- Install dependencies using `npm install`.
+- Install Node >16.x.
+- Install dependencies using `npm install` (or [`npm run install-deps`](#utility-scripts) for more options).
 
 ### Testing
 
@@ -73,9 +73,9 @@ See [ci-cd.md](./ci-cd.md) for more information.
 
 #### Utility scripts
 
-- [**`./scripts/fresh-npm-install.sh`**](../scripts/fresh-npm-install.sh):
-  - Run fresh NPM install.
-  - This script provides a clean NPM install, removing existing node modules and optionally the package-lock.json (when run with -n), then installs dependencies and runs unit tests.
+- [**`npm run install-deps [-- <options>]`**](../scripts/npm-install.js):
+  - Manages NPM dependency installation, it offers capabilities like doing a fresh install, retries on network errors, and other features.
+  - For example, you can run `npm run install-deps -- --fresh` to do clean installation of dependencies.
 - [**`./scripts/configure-vscode.sh`**](../scripts/configure-vscode.sh):
   - This script checks and sets the necessary configurations for VSCode in `settings.json` file.
 
