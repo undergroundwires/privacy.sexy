@@ -11,13 +11,13 @@ import { CategoryCollectionStateStub } from './CategoryCollectionStateStub';
 import { EventSubscriptionCollectionStub } from './EventSubscriptionCollectionStub';
 import { ApplicationContextStub } from './ApplicationContextStub';
 import { UserFilterStub } from './UserFilterStub';
+import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
-export class UseCollectionStateStub {
+export class UseCollectionStateStub
+  extends StubWithObservableMethodCalls<ReturnType<typeof useCollectionState>> {
   private currentContext: IApplicationContext = new ApplicationContextStub();
 
   private readonly currentState = ref<ICategoryCollectionState>(new CategoryCollectionStateStub());
-
-  private readonly onStateChangeHandlers = new Array<NewStateEventHandler>();
 
   public withFilter(filter: IUserFilter) {
     const state = new CategoryCollectionStateStub()
@@ -49,10 +49,18 @@ export class UseCollectionStateStub {
     return this.currentState.value;
   }
 
-  public triggerOnStateChange(newState: ICategoryCollectionState): void {
-    this.currentState.value = newState;
-    this.onStateChangeHandlers.forEach(
-      (handler) => handler(newState, undefined),
+  public triggerOnStateChange(scenario: {
+    readonly newState: ICategoryCollectionState,
+    readonly immediateOnly: boolean,
+  }): void {
+    this.currentState.value = scenario.newState;
+    let calls = this.callHistory.filter((call) => call.methodName === 'onStateChange');
+    if (scenario.immediateOnly) {
+      calls = calls.filter((call) => call.args[1].immediate === true);
+    }
+    const handlers = calls.map((call) => call.args[0] as NewStateEventHandler);
+    handlers.forEach(
+      (handler) => handler(scenario.newState, undefined),
     );
   }
 
@@ -63,15 +71,26 @@ export class UseCollectionStateStub {
     if (settings?.immediate) {
       handler(this.currentState.value, undefined);
     }
-    this.onStateChangeHandlers.push(handler);
+    this.registerMethodCall({
+      methodName: 'onStateChange',
+      args: [handler, settings],
+    });
   }
 
   private modifyCurrentState(mutator: StateModifier) {
     mutator(this.currentState.value);
+    this.registerMethodCall({
+      methodName: 'modifyCurrentState',
+      args: [mutator],
+    });
   }
 
   private modifyCurrentContext(mutator: ContextModifier) {
     mutator(this.currentContext);
+    this.registerMethodCall({
+      methodName: 'modifyCurrentContext',
+      args: [mutator],
+    });
   }
 
   public get(): ReturnType<typeof useCollectionState> {

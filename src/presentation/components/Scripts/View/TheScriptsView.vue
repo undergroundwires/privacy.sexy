@@ -42,7 +42,7 @@ import {
   inject,
 } from 'vue';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
-import ScriptsTree from '@/presentation/components/Scripts/View/ScriptsTree/ScriptsTree.vue';
+import ScriptsTree from '@/presentation/components/Scripts/View/Tree/ScriptsTree.vue';
 import CardList from '@/presentation/components/Scripts/View/Cards/CardList.vue';
 import { ViewType } from '@/presentation/components/Scripts/Menu/View/ViewType';
 import { IReadOnlyUserFilter } from '@/application/Context/State/Filter/IUserFilter';
@@ -139,7 +139,8 @@ $margin-inner: 4px;
     padding-top: 15px;
     padding-bottom: 15px;
     &--searching {
-        padding-top: 0px;
+      background-color: $color-primary-darker;
+      padding-top: 0px;
     }
   }
 }

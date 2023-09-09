@@ -91,7 +91,14 @@ Shared components include:
 
 Desktop builds uses `electron-vite` to bundle the code, and `electron-builder` to build and publish the packages.
 
-## Sass naming convention
+## Styles
+
+### Style location
+
+- **Global styles**: The [`assets/styles/`](#structure) directory is reserved for styles that have a broader scope, affecting multiple components or entire layouts. They are generic and should not be tightly coupled to a specific component's functionality.
+- **Component-specific styles**: Styles closely tied to a particular component's functionality or appearance should reside near the component they are used by. This makes it easier to locate and modify styles when working on a specific component.
+
+### Sass naming convention
 
 - Use lowercase for variables/functions/mixins, e.g.:
   - Variable: `$variable: value;`

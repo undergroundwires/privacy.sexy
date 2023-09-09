@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { Wrapper, shallowMount } from '@vue/test-utils';
 import TheScriptsView from '@/presentation/components/Scripts/View/TheScriptsView.vue';
-import ScriptsTree from '@/presentation/components/Scripts/View/ScriptsTree/ScriptsTree.vue';
+import ScriptsTree from '@/presentation/components/Scripts/View/Tree/ScriptsTree.vue';
 import CardList from '@/presentation/components/Scripts/View/Cards/CardList.vue';
 import { ViewType } from '@/presentation/components/Scripts/Menu/View/ViewType';
 import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';

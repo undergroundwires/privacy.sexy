@@ -76,7 +76,6 @@ export default defineComponent({
     function handleCodeChange(event: ICodeChangedEvent) {
       removeCurrentHighlighting();
       updateCode(event.code, currentState.value.collection.scripting.language);
-      editor.setValue(event.code, 1);
       if (event.addedScripts?.length > 0) {
         reactToChanges(event, event.addedScripts);
       } else if (event.changedScripts?.length > 0) {

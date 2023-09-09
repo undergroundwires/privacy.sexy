@@ -1,4 +1,3 @@
-import { TreeBootstrapper } from './Modules/TreeBootstrapper';
 import { IconBootstrapper } from './Modules/IconBootstrapper';
 import { VueConstructor, IVueBootstrapper } from './IVueBootstrapper';
 import { VueBootstrapper } from './Modules/VueBootstrapper';
@@ -17,7 +16,6 @@ export class ApplicationBootstrapper implements IVueBootstrapper {
   private static getAllBootstrappers(): IVueBootstrapper[] {
     return [
       new IconBootstrapper(),
-      new TreeBootstrapper(),
       new VueBootstrapper(),
       new TooltipBootstrapper(),
       new RuntimeSanityValidator(),

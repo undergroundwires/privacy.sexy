@@ -44,7 +44,6 @@
     "cross-fetch": "^4.0.0",
     "electron-progressbar": "^2.1.0",
     "file-saver": "^2.0.5",
-    "liquor-tree": "^0.2.70",
     "markdown-it": "^13.0.1",
     "npm": "^9.8.1",
     "v-tooltip": "2.1.3",

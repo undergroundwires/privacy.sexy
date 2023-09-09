@@ -1,0 +1,13 @@
+@use "@/presentation/assets/styles/main" as *;
+
+/* Tree colors, based on global colors */
+$color-tree-bg                              : $color-primary-darker;
+$color-node-arrow                           : $color-on-primary;
+$color-node-fg                              : $color-on-primary;
+$color-node-highlight-bg                    : $color-primary-dark;
+$color-node-checkbox-bg-checked             : $color-secondary;
+$color-node-checkbox-bg-unchecked           : $color-primary-darkest;
+$color-node-checkbox-border-checked         : $color-secondary;
+$color-node-checkbox-border-unchecked       : $color-on-primary;
+$color-node-checkbox-border-indeterminate   : $color-on-primary;
+$color-node-checkbox-tick-checked           : $color-on-secondary;

@@ -53,7 +53,7 @@ import {
   inject,
 } from 'vue';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
-import ScriptsTree from '@/presentation/components/Scripts/View/ScriptsTree/ScriptsTree.vue';
+import ScriptsTree from '@/presentation/components/Scripts/View/Tree/ScriptsTree.vue';
 import { sleep } from '@/infrastructure/Threading/AsyncSleep';
 
 export default defineComponent({

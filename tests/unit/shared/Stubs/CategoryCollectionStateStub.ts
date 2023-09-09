@@ -6,6 +6,7 @@ import { SelectedScript } from '@/application/Context/State/Selection/SelectedSc
 import { IScript } from '@/domain/IScript';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
+import { IUserSelection } from '@/application/Context/State/Selection/IUserSelection';
 import { CategoryCollectionStub } from './CategoryCollectionStub';
 import { UserSelectionStub } from './UserSelectionStub';
 import { UserFilterStub } from './UserFilterStub';
@@ -13,42 +14,53 @@ import { ApplicationCodeStub } from './ApplicationCodeStub';
 import { CategoryStub } from './CategoryStub';
 
 export class CategoryCollectionStateStub implements ICategoryCollectionState {
-  private collectionStub = new CategoryCollectionStub();
-
   public readonly code: IApplicationCode = new ApplicationCodeStub();
 
   public filter: IUserFilter = new UserFilterStub();
 
   public get os(): OperatingSystem {
-    return this.collectionStub.os;
+    return this.collection.os;
   }
 
-  public get collection(): ICategoryCollection {
-    return this.collectionStub;
-  }
+  public collection: ICategoryCollection = new CategoryCollectionStub();
 
-  public readonly selection: UserSelectionStub;
+  public selection: IUserSelection = new UserSelectionStub([]);
 
   constructor(readonly allScripts: IScript[] = [new ScriptStub('script-id')]) {
     this.selection = new UserSelectionStub(allScripts);
-    this.collectionStub = new CategoryCollectionStub()
+    this.collection = new CategoryCollectionStub()
       .withOs(this.os)
       .withTotalScripts(this.allScripts.length)
       .withAction(new CategoryStub(0).withScripts(...allScripts));
   }
 
-  public withOs(os: OperatingSystem) {
-    this.collectionStub = this.collectionStub.withOs(os);
+  public withCollection(collection: ICategoryCollection): this {
+    this.collection = collection;
     return this;
   }
 
-  public withFilter(filter: IUserFilter) {
+  public withOs(os: OperatingSystem): this {
+    if (this.collection instanceof CategoryCollectionStub) {
+      this.collection = this.collection.withOs(os);
+    } else {
+      this.collection = new CategoryCollectionStub().withOs(os);
+    }
+    return this;
+  }
+
+  public withFilter(filter: IUserFilter): this {
     this.filter = filter;
     return this;
   }
 
-  public withSelectedScripts(initialScripts: readonly SelectedScript[]) {
-    this.selection.withSelectedScripts(initialScripts);
+  public withSelectedScripts(initialScripts: readonly SelectedScript[]): this {
+    return this.withSelection(
+      new UserSelectionStub([]).withSelectedScripts(initialScripts),
+    );
+  }
+
+  public withSelection(selection: IUserSelection) {
+    this.selection = selection;
     return this;
   }
 }
