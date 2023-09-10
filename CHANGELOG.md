@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.12.3 (2023-09-09)
+
+* linux: use user.js over prefs.js for Firefox #232 | [dae6d11](https://github.com/undergroundwires/privacy.sexy/commit/dae6d114daab6857d773071211eb57619b136281)
+* win: fix typo in Defender retention script #213 | [35be05d](https://github.com/undergroundwires/privacy.sexy/commit/35be05df2094ea8bba4ee4725e6fa4956a79493d)
+* Improve desktop runtime execution tests | [ad0576a](https://github.com/undergroundwires/privacy.sexy/commit/ad0576a752f8fd6ea2f917a59173fe61f9951246)
+* Fix Windows artifact naming in desktop packaging | [f4d86fc](https://github.com/undergroundwires/privacy.sexy/commit/f4d86fccfd0e73e94c8c6e400a33514900bc5abe)
+* Refactor and improve external URL checks | [19e42c9](https://github.com/undergroundwires/privacy.sexy/commit/19e42c9c52a18c813ded4265e687e01032cdd4c8)
+* Fix memory leaks via auto-unsubscribing and DI | [eb096d0](https://github.com/undergroundwires/privacy.sexy/commit/eb096d07e276e1b4c8040220c47f186d02841e14)
+* Refactor build configs and improve CI/CD checks | [0a2a1a0](https://github.com/undergroundwires/privacy.sexy/commit/0a2a1a026b0efb29624be82b06536c518c1ea439)
+* Introduce retry mechanism for npm install in CI/CD | [4beb1bb](https://github.com/undergroundwires/privacy.sexy/commit/4beb1bb5748a60886210187ca3cdc7f4b41067c0)
+* win: fix disable recent apps revert #211, #248 | [4ce327e](https://github.com/undergroundwires/privacy.sexy/commit/4ce327eb6af542ed2916d649553e5e1ba5833882)
+* Change license to AGPLv3 | [821cc62](https://github.com/undergroundwires/privacy.sexy/commit/821cc62c4c8347cb76d041f82f574754e4d948c5)
+* Introduce new TreeView UI component | [65f121c](https://github.com/undergroundwires/privacy.sexy/commit/65f121c451af87315e1c91df4198562e0445b2c2)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.12.2...0.12.3)
+
 ## 0.12.2 (2023-08-25)
 
 * Add automated checks for desktop app runtime #233 | [04b3133](https://github.com/undergroundwires/privacy.sexy/commit/04b3133500485d0d278a81a177a1677134131405)
