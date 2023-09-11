@@ -1776,12 +1776,26 @@ actions:
                                 revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /v "DisableSoftLanding" /t REG_DWORD /d "0" /f
                             -
                                 name: Disable Windows Spotlight (random wallpaper on lock screen)
-                                recommend: standard
-                                docs:
-                                    - https://docs.microsoft.com/en-us/windows/configuration/windows-spotlight
-                                    - https://docs.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#25-windows-spotlight
+                                recommend: strict
+                                docs: |-
+                                    The script disables the Windows Spotlight feature. Windows Spotlight is a feature in Windows 10 and Windows 11 [1] that automatically downloads
+                                    and displays random wallpapers on the lock screen [1] [2]. These images are sourced from the internet [1] [2] [3]. At times, it might also promote
+                                    various Microsoft products, services [1] [2], or even third-party apps and content [4].
+
+                                    When the lock screen fetches images from the internet, there's a silent data exchange happening. This can inadvertently reveal details about the
+                                    user's device or their preferences.
+
+                                    To mitigate this potential privacy risk, the script makes a change to a key (`DisableWindowsSpotlightFeatures`) in the Windows operating system [3].
+                                    Originally, Windows Spotlight is turned on unless the user decides otherwise [2].
+                                    By applying this script, users can be sure their lock screen remains private and doesn't retrieve wallpapers from the internet, eliminating potential
+                                    data leaks.
+
+                                    [1]: https://web.archive.org/web/20230911110727/https://support.microsoft.com/en-us/windows/personalize-your-lock-screen-81dab9b0-35cf-887c-84a0-6de8ef72bea0 "Personalize your lock screen - Microsoft Support"
+                                    [2]: https://web.archive.org/web/20230911110748/https://learn.microsoft.com/en-us/windows/configuration/windows-spotlight "Configure Windows Spotlight on the lock screen - Configure Windows | Microsoft Learn"
+                                    [3]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#25-windows-spotlight "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
+                                    [4]: https://web.archive.org/web/20230911110921/https://download.microsoft.com/download/8/F/B/8FBD2E85-8852-45EC-8465-92756EBD9365/Windows10andWindowsServer2016PolicySettings.xlsx "Group Policy Settings Reference - Microsoft"
                                 code: reg add "HKLM\Software\Policies\Microsoft\Windows\CloudContent" /v "DisableWindowsSpotlightFeatures" /t "REG_DWORD" /d "1" /f
-                                revertCode: reg add "HKLM\Software\Policies\Microsoft\Windows\CloudContent" /v "DisableWindowsSpotlightFeatures" /t "REG_DWORD" /d "0" /f
+                                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows\CloudContent" /v "DisableWindowsSpotlightFeatures" /f 2>nul # Key does not exists since Windows 10 21H2, Windows 11 22H2
                             -
                                 name: Disable Microsoft consumer experiences
                                 recommend: standard
