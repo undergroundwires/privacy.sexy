@@ -4909,29 +4909,233 @@ actions:
                                             reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost" /v "EnableWebContentEvaluation" /t REG_DWORD /d "1" /f
                                             reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost" /v "EnableWebContentEvaluation" /f 2>nul
             -
-                name: Disable automatic updates
-                docs:
-                    - https://docs.microsoft.com/fr-fr/security-updates/windowsupdateservices/18127152
-                    - http://batcmd.com/windows/10/services/usosvc/
-                call:
+                category: Disable automatic updates
+                docs: |-
+                    Disabling automatic updates is often considered counterintuitive when it comes to securing your system. However, there are substantial arguments
+                    to consider this option if you're privacy-centric:
+
+                    1. **Patching and Pre-Approval**: Manual control over update deployment allows for pre-emptive approval of patches. This strategy is useful
+                    in environments requiring the highest level of security. For instance, military agencies frequently employ air-gapped systems that mandate
+                    careful review of each update to mitigate risks such as potential backdoors or data leaks. Similarly, financial institutions often
+                    resort to staged rollouts of updates, subjecting them to an in-depth analysis of their implications on security and privacy before broad
+                    implementation.
+
+                    2. **Telemetry and Data Transmission**: Automatic updates often come embedded with telemetry data collection mechanisms. Disabling these
+                    updates facilitates granular control over the data transmitted back to Microsoft servers. Thus, the decision to disable automatic updates
+                    allows you to control the timing and nature of information relayed to these servers.
+
+                    3. **Peer-to-Peer Data Exposure**: Windows employs a Peer-to-Peer (P2P) approach to facilitate update distribution, which can
+                    reveal your IP address and some system details to peer systems [1].
+
+                    4. **Configurational integrity**: Updates have the capacity to change pre-configured settings without explicit user consent. This could
+                    result in unintended alteration of your privacy settings, leaving you exposed until you realize the change.
+
+                    **Security implications**: While controlling updates enhances your privacy, it can leave your system vulnerable to unpatched exploits.
+                    Ensure that you manually review and apply updates on a regular basis. You're essentially trading off some security for a heightened level of
+                    privacy.
+
+                    [1]: https://web.archive.org/web/20230905120220/https://learn.microsoft.com/en-us/windows/deployment/do/waas-delivery-optimization-faq "Delivery Optimization Frequently Asked Questions - Windows Deployment | Microsoft Learn"
+                children:
                     -
-                        function: RunInlineCode
-                        parameters:
-                            code: |-
-                                reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "NoAutoUpdate" /t "REG_DWORD" /d "0" /f
-                                reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "AUOptions" /t "REG_DWORD" /d "2" /f
-                                reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallDay" /t "REG_DWORD" /d "0" /f
-                                reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallTime" /t "REG_DWORD" /d "3" /f
-                            revertCode: |-
-                                reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "NoAutoUpdate" /t "REG_DWORD" /d "1" /f
-                                reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "AUOptions" /t "REG_DWORD" /d "3" /f
-                                reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallDay" /f 2>nul
-                                reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallTime" /f 2>nul
+                        name: Disable Automatic Updates (AU) feature
+                        docs: |-
+                            This script deactivates the Automatic Updates feature in Windows. By disabling Automatic Updates,
+                            you gain control over when your system is updated, which may be preferable in specific
+                            privacy-sensitive environments.
+
+                            The script changes a specific setting in your computer's registry, with a key called `NoAutoUpdate`, which has
+                            two possible states [1] [2]:
+
+                            - `0`: Automatic Updates are enabled.
+                            - `1`: Automatic Updates are disabled.
+
+                            By default, Windows comes with Automatic Updates enabled, meaning the `NoAutoUpdate` is set to `0` [3].
+
+                            Running this script will set `NoAutoUpdate` to `1`, turning off Automatic Updates [1] [2] [3].
+                            In doing so, you prevent your computer from automatically receiving updates, which is a feature
+                            that could be considered intrusive or unwanted in some privacy-conscious settings.
+
+                            It configure your computer to not automatically download and install updates without your explicit permission.
+
+                            [1]: https://web.archive.org/web/20230807165936/https://learn.microsoft.com/de-de/security-updates/windowsupdateservices/18127499 "Configure Automatic Updates in a Non–Active Directory Environment | Microsoft Learn"
+                            [2]: https://web.archive.org/web/20221001051250/https://support.microsoft.com/en-us/topic/incorrect-automatic-updates-notification-is-received-even-though-au-options-are-disabled-in-windows-8-1-and-windows-server-2012-r2-18b4b73a-3910-9408-809c-7eaad0e1fbc7 "Incorrect Automatic Updates notification is received even though AU options are disabled in Windows 8.1 and Windows Server 2012 R2 - Microsoft Support"
+                            [3]: https://web.archive.org/web/20230711172555/https://learn.microsoft.com/en-us/windows/deployment/update/waas-wu-settings#configuring-automatic-updates-by-editing-the-registry "Manage additional Windows Update settings - Windows Deployment | Microsoft Learn"
+                        call:
+                            function: RunInlineCode
+                            parameters:
+                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "NoAutoUpdate" /t "REG_DWORD" /d "1" /f
+                                # Default value is `0` since Windows 10 21H2 and Windows 11 21H2
+                                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "NoAutoUpdate" /t "REG_DWORD" /d "0" /f
                     -
-                        function: DisableService
-                        parameters:
-                            serviceName: UsoSvc # Check: (Get-Service -Name 'UsoSvc').StartType
-                            defaultStartupMode: Automatic # Allowed values: Automatic | Manual
+                        name: Disable installing Windows updates without user approval
+                        docs: |-
+                            This script changes how your Windows computer handles automatic updates by modifying the `AUOptions` registry key.
+                            After running this script, your computer will notify you before downloading any updates [1] [2] [3].
+
+                            In the default setup, your Windows system is configured to download and install updates automatically without notifying you [4].
+                            This means that new updates could be installed on your system without your explicit approval.
+
+                            By forcing Windows to notify you before downloading updates, this script hands back control over your system to you.
+                            This feature enhances your privacy and minimizes risks because you get to manually review and approve each update before it's installed.
+
+                            To explain the technical aspect, the `AUOptions` registry key is a setting stored under
+                            `HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU` in your computer's registry [1] [3].
+                            A value of `2` for `AUOptions` means that you will be notified before any updates are downloaded and installed [1] [2].
+                            On older versions of Windows, setting this key to `1` would prevent the system from even checking for updates [5].
+                            However, starting from Windows 10, the key `1` has a different meaning [2][3].
+
+                            Running this script doesn't disable updates; it just ensures that you are informed and have the final say on
+                            whether to download them or not.
+
+                            [1]: https://web.archive.org/web/20230807165936/https://learn.microsoft.com/de-de/security-updates/windowsupdateservices/18127499 "Configure Automatic Updates in a Non–Active Directory Environment | Microsoft Learn"
+                            [2]: https://web.archive.org/web/20230711172555/https://learn.microsoft.com/en-us/windows/deployment/update/waas-wu-settings#configuring-automatic-updates-by-editing-the-registry "Manage additional Windows Update settings - Windows Deployment | Microsoft Learn"
+                            [3]: https://web.archive.org/web/20230815051303/https://learn.microsoft.com/en-us/windows/deployment/update/waas-restart#registry-keys-used-to-manage-restart "Manage device restarts after updates - Windows Deployment | Microsoft Learn"
+                            [4]: https://web.archive.org/web/20230826081345/https://learn.microsoft.com/en-US/troubleshoot/windows-client/deployment/update-windows-update-agent "Update Windows Update Agent to latest version - Windows Client | Microsoft Learn"
+                            [5]: https://web.archive.org/web/20221001051250/https://support.microsoft.com/en-us/topic/incorrect-automatic-updates-notification-is-received-even-though-au-options-are-disabled-in-windows-8-1-and-windows-server-2012-r2-18b4b73a-3910-9408-809c-7eaad0e1fbc7 "Incorrect Automatic Updates notification is received even though AU options are disabled in Windows 8.1 and Windows Server 2012 R2 - Microsoft Support"
+                        call:
+                            function: RunInlineCode
+                            parameters:
+                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "AUOptions" /t "REG_DWORD" /d "2" /f
+                                # Default value is `4` since Windows 10 21H2 and Windows 11 21H2
+                                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "AUOptions" /t "REG_DWORD" /d "4" /f
+                    -
+                        name: Disable automatic daily installation of Windows updates
+                        docs: |-
+                            This script stops Windows from automatically installing updates every day. By doing so, you gain control over when update
+                            happen on your computer [1] [2].
+
+                            By default, Windows is set to automatically update every day [2]. Having control over the update timing allows you to review
+                            what is being changed, thereby protecting your privacy and enhancing your system's security.
+
+                            Technically, what the script does is remove a specific setting in the computer's system registry, the `ScheduledInstallDay` key
+                            from `HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU` [1] [2].
+
+                            Disabling the scheduled install day ensures that updates won't be forcibly applied on a specific day of the week.
+
+                            [1]: https://web.archive.org/web/20230711172555/https://learn.microsoft.com/en-us/windows/deployment/update/waas-wu-settings#configuring-automatic-updates-by-editing-the-registry "Manage additional Windows Update settings - Windows Deployment | Microsoft Learn"
+                            [2]: https://web.archive.org/web/20230708165017/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-update#scheduledinstallday "Update Policy CSP - Windows Client Management | Microsoft Learn"
+                        call:
+                            function: RunInlineCode
+                            parameters:
+                                code: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallDay" /f 2>nul
+                                revertCode: >-
+                                    :: This key does not exist by default since Windows 10 21H2 and Windows 11 21H2
+                                    reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallDay" /f 2>nul
+                    -
+                        name: Disable scheduled automatic updates
+                        docs: |-
+                            This script turns off the automatic installation of Windows updates that are set to occur at a specific time.
+                            By doing this, you take back control over when your computer updates itself [1] [2] [3].
+                            The default behavior is to install updates at 3 AM [3].
+
+                            Windows updates can be important for system security, but automatic installation could occur at inconvenient times and may even
+                            restart your computer without prior warning. This could interrupt your tasks and may send data about your system to external servers.
+                            By disabling the automatic scheduled installation time, you can manually control when updates are installed [3], ensuring that you're
+                            aware of any changes to your system.
+
+                            The script works by removing a specific registry key called `ScheduledInstallTime` under
+                            `HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU` [2] [3]. This is the system setting that controls the scheduled update time.
+
+                            [1]: https://web.archive.org/web/20230813094618/https://learn.microsoft.com/fr-fr/security-updates/windowsupdateservices/18127152 "Configure Automatic Updates in a Non–Active Directory Environment | Microsoft Learn"
+                            [2]: https://web.archive.org/web/20230711172555/https://learn.microsoft.com/en-us/windows/deployment/update/waas-wu-settings#configuring-automatic-updates-by-editing-the-registry "Manage additional Windows Update settings - Windows Deployment | Microsoft Learn"
+                            [3]: https://web.archive.org/web/20230708165017/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-update#scheduledinstalltime "Update Policy CSP - Windows Client Management | Microsoft Learn"
+                        call:
+                            function: RunInlineCode
+                            parameters:
+                                code: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallTime" /f 2>nul
+                                revertCode: >-
+                                    :: This key does not exist by default since Windows 10 21H2 and Windows 11 21H2
+                                    reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v "ScheduledInstallTime" /f 2>nul
+                    -
+                        category: Disable Windows update services
+                        docs: |-
+                            The scripts in this category offer users the ability to control Windows services related to system updates.
+                            These services manage how and when your system receives updates from Microsoft. By limiting or disabling these services,
+                            users can decide when to update their system, reducing unexpected changes. Moreover, a system with fewer running
+                            services uses fewer resources, which can improve overall performance.
+
+                            Disabling these update services is also a privacy measure. Some updates can change privacy settings or add features that
+                            collect user data. By controlling update services, users can review and approve any changes before they take effect.
+                        children:
+                            -
+                                name: Disable "Windows Update" (`wuauserv`) service
+                                docs: |-
+                                    This script turns off the Windows Update service, which is technically known as Windows Update Agent [1] [2].
+                                    By disabling this service, the automatic detection, download, and installation of updates for both Windows and other
+                                    installed programs are halted [3] [4].
+
+                                    Update can often come bundled with changes that could affect your privacy settings or introduce features that collect
+                                    more of your data. Taking control of when and how updates are applied provides you with the opportunity to review any changes
+                                    before they take effect.
+
+                                    By default, the service is enabled and set to start up manually [5].
+
+                                    If you disable this service, you won't be able to use the Windows Update feature for automatic updates [5]. Additionally,
+                                    other software on your c                    omputer won't be able to access the functionalities provided by the Windows Update Agent,
+                                    commonly known as WUA API [5].
+
+                                    [1]: https://web.archive.org/web/20230902020255/https://learn.microsoft.com/en-us/troubleshoot/windows-client/deployment/additional-resources-for-windows-update "Additional resources for Windows Update - Windows Client | Microsoft Learn"
+                                    [2]: https://web.archive.org/web/20230711221240/https://learn.microsoft.com/en-us/troubleshoot/mem/configmgr/update-management/troubleshoot-software-update-scan-failures "Troubleshoot software update scan failures - Configuration Manager | Microsoft Learn"
+                                    [3]: https://web.archive.org/web/20230905120348/https://learn.microsoft.com/en-us/troubleshoot/windows-client/performance/windows-devices-fail-boot-after-installing-kb4041676-kb4041691 "Windows devices may fail to boot after installing October 10 version of KB 4041676 or 4041691 that contained a publishing issue - Windows Client | Microsoft Learn"
+                                    [4]: https://web.archive.org/web/20230905120345/https://learn.microsoft.com/en-us/windows-server/administration/server-core/server-core-servicing "Patching Server Core | Microsoft Learn"
+                                    [5]: https://web.archive.org/web/20230905120445/https://learn.microsoft.com/en-us/windows/deployment/update/prepare-deploy-windows "Security guidelines for system services in Windows Server 2016 | Microsoft Learn"
+                                call:
+                                    function: DisableService
+                                    parameters:
+                                        serviceName: wuauserv # Check: (Get-Service -Name 'wuauserv').StartType
+                                        defaultStartupMode: Manual # Allowed values: Automatic | Manual
+                            -
+                                name: Disable "Update Orchestrator Service" (`UsoSvc`)
+                                docs: |-
+                                    This script disables the Update Orchestrator Service, also known as "Update Orchestrator Service for Windows Update" [1].
+                                    This service is in charge of managing the download and installation of Windows updates [1] [2].
+
+                                    By default, the service is enabled and set to start up manually [1].
+
+                                    While updates can be crucial for the security of your system, this service can sometimes install them without your approval.
+                                    This lack of control can pose risks to your privacy, as data might be sent from your system without your knowledge.
+
+                                    Windows updates relies on this service [1] [3].
+                                    If stopped, your devices will not be able to download and install latest updates [1].
+
+                                    Turning off this service can affect the update process and might cause issues like freezing during update scanning [3].
+
+                                    [1]: https://web.archive.org/web/20230905120757/https://learn.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server "Security guidelines for system services in Windows Server 2016 | Microsoft Learn"
+                                    [2]: https://web.archive.org/web/20230905120348/https://learn.microsoft.com/en-us/troubleshoot/windows-client/performance/windows-devices-fail-boot-after-installing-kb4041676-kb4041691 "Windows devices may fail to boot after installing October 10 version of KB 4041676 or 4041691 that contained a publishing issue - Windows Client | Microsoft Learn"
+                                    [3]: https://web.archive.org/web/20230905120445/https://learn.microsoft.com/en-us/windows/deployment/update/prepare-deploy-windows "Security guidelines for system services in Windows Server 2016 | Microsoft Learn"
+                                call:
+                                    function: DisableService
+                                    parameters:
+                                        serviceName: UsoSvc # Check: (Get-Service -Name 'UsoSvc').StartType
+                                        defaultStartupMode: Automatic # Allowed values: Automatic | Manual
+                            -
+                                name: Disable "Windows Update Medic Service" (`WaaSMedicSvc`)
+                                docs: |-
+                                    This script disables the Windows Update Medic Service.  This service runs quietly in the background [1],
+                                    making sure that parts related to Windows updates are working as they should [1] [2].
+
+                                    By default, the service is enabled and its startup setting is set to manual [3].
+                                    
+                                    This service can undo any adjustments you've made to your Windows Update settings without your consent.
+                                    For example, it can re-enable automatic Windows updates [4].
+                                    That can interfere if you've tailored these settings for better privacy or security.
+
+                                    When you disable this service using our script, you're taking back control. You get to choose how your system
+                                    handles updates and data transfers, ensuring that your privacy settings stay as you intended. This is a reliable
+                                    way to strengthen both your privacy and your control over your computer.
+
+                                    [1]: https://web.archive.org/web/20230905120805/https://support.microsoft.com/en-us/topic/kb5005322-some-devices-cannot-install-new-updates-after-installing-kb5003214-may-25-2021-and-kb5003690-june-21-2021-66edf7cf-5d3c-401f-bd32-49865343144f "KB5005322—Some devices cannot install new updates after installing KB5003214 (May 25, 2021) and KB5003690 (June 21, 2021) - Microsoft Support"
+                                    [2]: https://web.archive.org/web/20230905120445/https://learn.microsoft.com/en-us/windows/deployment/update/prepare-deploy-windows "Security guidelines for system services in Windows Server 2016 | Microsoft Learn"
+                                    [3]: https://web.archive.org/web/20230905120815/https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services "Guidance on disabling system services on Windows IoT Enterprise | Microsoft Learn"
+                                    [4]: https://github.com/undergroundwires/privacy.sexy/issues/252
+                                call:
+                                    function: DisableServiceInRegistry
+                                    # Since Windows 10 21H2 and Windows 11 21H2:
+                                    #   - Using `sc config` resulsts in "Access in denied", so registry should be used to disable the service.
+                                    #   - Default startup mode is Manual
+                                    parameters:
+                                        serviceName: WaaSMedicSvc # Check: (Get-Service -Name 'WaaSMedicSvc').StartType
+                                        defaultStartupMode: Manual # Allowed values: Automatic | Manual
             -
                 category: Configure handling of downloaded files
                 docs: |-
