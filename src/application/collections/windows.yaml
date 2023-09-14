@@ -582,6 +582,7 @@ actions:
                         code: |-
                             del /s /f /q %TEMP%\*
                             del /s /f /q "%WINDIR%\Temp\*"
+                            del /s /f /q %WINDIR%\Prefetch\*
                     -
                         name: Clear main telemetry file
                         recommend: standard
