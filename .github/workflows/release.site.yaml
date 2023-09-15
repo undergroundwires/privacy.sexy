@@ -84,7 +84,7 @@ jobs:
         uses: ./app/.github/actions/setup-node
       -
         name: "App: Install dependencies"
-        uses: ./.github/actions/npm-install-dependencies
+        uses: ./app/.github/actions/npm-install-dependencies
         with:
           working-directory: app
       -
