@@ -3,8 +3,8 @@ import type { FunctionData } from '@/application/collections/';
 import { ScriptCode } from '@/domain/ScriptCode';
 import { ScriptCompiler } from '@/application/Parser/Script/Compiler/ScriptCompiler';
 import { ISharedFunctionsParser } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionsParser';
-import { ICompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/ICompiledCode';
-import { IFunctionCallCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/IFunctionCallCompiler';
+import { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
+import { FunctionCallCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/FunctionCallCompiler';
 import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
 import { ScriptDataStub } from '@tests/unit/shared/Stubs/ScriptDataStub';
 import { FunctionDataStub } from '@tests/unit/shared/Stubs/FunctionDataStub';
@@ -91,7 +91,7 @@ describe('ScriptCompiler', () => {
     });
     it('returns code as expected', () => {
       // arrange
-      const expected: ICompiledCode = {
+      const expected: CompiledCode = {
         code: 'expected-code',
         revertCode: 'expected-revert-code',
       };
@@ -152,8 +152,8 @@ describe('ScriptCompiler', () => {
       const scriptName = 'scriptName';
       const innerError = 'innerError';
       const expectedError = `Script "${scriptName}" ${innerError}`;
-      const callCompiler: IFunctionCallCompiler = {
-        compileCall: () => { throw new Error(innerError); },
+      const callCompiler: FunctionCallCompiler = {
+        compileFunctionCalls: () => { throw new Error(innerError); },
       };
       const scriptData = ScriptDataStub.createWithCall()
         .withName(scriptName);
@@ -170,13 +170,13 @@ describe('ScriptCompiler', () => {
       // arrange
       const scriptName = 'scriptName';
       const syntax = new LanguageSyntaxStub();
-      const invalidCode: ICompiledCode = { code: undefined, revertCode: undefined };
+      const invalidCode: CompiledCode = { code: undefined, revertCode: undefined };
       const realExceptionMessage = collectExceptionMessage(
         () => new ScriptCode(invalidCode.code, invalidCode.revertCode),
       );
       const expectedError = `Script "${scriptName}" ${realExceptionMessage}`;
-      const callCompiler: IFunctionCallCompiler = {
-        compileCall: () => invalidCode,
+      const callCompiler: FunctionCallCompiler = {
+        compileFunctionCalls: () => invalidCode,
       };
       const scriptData = ScriptDataStub.createWithCall()
         .withName(scriptName);
@@ -226,7 +226,7 @@ class ScriptCompilerBuilder {
 
   private sharedFunctionsParser: ISharedFunctionsParser = new SharedFunctionsParserStub();
 
-  private callCompiler: IFunctionCallCompiler = new FunctionCallCompilerStub();
+  private callCompiler: FunctionCallCompiler = new FunctionCallCompilerStub();
 
   private codeValidator: ICodeValidator = new CodeValidatorStub();
 
@@ -269,7 +269,7 @@ class ScriptCompilerBuilder {
     return this;
   }
 
-  public withFunctionCallCompiler(callCompiler: IFunctionCallCompiler): ScriptCompilerBuilder {
+  public withFunctionCallCompiler(callCompiler: FunctionCallCompiler): ScriptCompilerBuilder {
     this.callCompiler = callCompiler;
     return this;
   }

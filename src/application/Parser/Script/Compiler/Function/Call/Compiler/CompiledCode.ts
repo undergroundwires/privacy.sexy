@@ -1,4 +1,4 @@
-export interface ICompiledCode {
+export interface CompiledCode {
   readonly code: string;
   readonly revertCode?: string;
 }

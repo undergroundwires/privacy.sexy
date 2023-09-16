@@ -1,10 +1,10 @@
 import type { FunctionCallData, FunctionCallsData, FunctionCallParametersData } from '@/application/collections/';
-import { IFunctionCall } from './IFunctionCall';
+import { FunctionCall } from './FunctionCall';
 import { FunctionCallArgumentCollection } from './Argument/FunctionCallArgumentCollection';
 import { FunctionCallArgument } from './Argument/FunctionCallArgument';
-import { FunctionCall } from './FunctionCall';
+import { ParsedFunctionCall } from './ParsedFunctionCall';
 
-export function parseFunctionCalls(calls: FunctionCallsData): IFunctionCall[] {
+export function parseFunctionCalls(calls: FunctionCallsData): FunctionCall[] {
   if (calls === undefined) {
     throw new Error('missing call data');
   }
@@ -22,12 +22,12 @@ function getCallSequence(calls: FunctionCallsData): FunctionCallData[] {
   return [calls as FunctionCallData];
 }
 
-function parseFunctionCall(call: FunctionCallData): IFunctionCall {
+function parseFunctionCall(call: FunctionCallData): FunctionCall {
   if (!call) {
     throw new Error('missing call data');
   }
   const callArgs = parseArgs(call.parameters);
-  return new FunctionCall(call.function, callArgs);
+  return new ParsedFunctionCall(call.function, callArgs);
 }
 
 function parseArgs(

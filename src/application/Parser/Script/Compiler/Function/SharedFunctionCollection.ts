@@ -21,6 +21,15 @@ export class SharedFunctionCollection implements ISharedFunctionCollection {
     return func;
   }
 
+  public getRequiredParameterNames(functionName: string): string[] {
+    return this
+      .getFunctionByName(functionName)
+      .parameters
+      .all
+      .filter((parameter) => !parameter.isOptional)
+      .map((parameter) => parameter.name);
+  }
+
   private has(functionName: string) {
     return this.functionsByName.has(functionName);
   }

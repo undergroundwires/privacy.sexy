@@ -7,12 +7,12 @@ import { NoEmptyLines } from '@/application/Parser/Script/Validation/Rules/NoEmp
 import { ICodeValidator } from '@/application/Parser/Script/Validation/ICodeValidator';
 import { IScriptCompiler } from './IScriptCompiler';
 import { ISharedFunctionCollection } from './Function/ISharedFunctionCollection';
-import { IFunctionCallCompiler } from './Function/Call/Compiler/IFunctionCallCompiler';
+import { FunctionCallSequenceCompiler } from './Function/Call/Compiler/FunctionCallSequenceCompiler';
 import { FunctionCallCompiler } from './Function/Call/Compiler/FunctionCallCompiler';
 import { ISharedFunctionsParser } from './Function/ISharedFunctionsParser';
 import { SharedFunctionsParser } from './Function/SharedFunctionsParser';
 import { parseFunctionCalls } from './Function/Call/FunctionCallParser';
-import { ICompiledCode } from './Function/Call/Compiler/ICompiledCode';
+import { CompiledCode } from './Function/Call/Compiler/CompiledCode';
 
 export class ScriptCompiler implements IScriptCompiler {
   private readonly functions: ISharedFunctionCollection;
@@ -21,7 +21,7 @@ export class ScriptCompiler implements IScriptCompiler {
     functions: readonly FunctionData[] | undefined,
     syntax: ILanguageSyntax,
     sharedFunctionsParser: ISharedFunctionsParser = SharedFunctionsParser.instance,
-    private readonly callCompiler: IFunctionCallCompiler = FunctionCallCompiler.instance,
+    private readonly callCompiler: FunctionCallCompiler = FunctionCallSequenceCompiler.instance,
     private readonly codeValidator: ICodeValidator = CodeValidator.instance,
   ) {
     if (!syntax) { throw new Error('missing syntax'); }
@@ -40,7 +40,7 @@ export class ScriptCompiler implements IScriptCompiler {
     if (!script) { throw new Error('missing script'); }
     try {
       const calls = parseFunctionCalls(script.call);
-      const compiledCode = this.callCompiler.compileCall(calls, this.functions);
+      const compiledCode = this.callCompiler.compileFunctionCalls(calls, this.functions);
       validateCompiledCode(compiledCode, this.codeValidator);
       return new ScriptCode(
         compiledCode.code,
@@ -52,7 +52,7 @@ export class ScriptCompiler implements IScriptCompiler {
   }
 }
 
-function validateCompiledCode(compiledCode: ICompiledCode, validator: ICodeValidator): void {
+function validateCompiledCode(compiledCode: CompiledCode, validator: ICodeValidator): void {
   [compiledCode.code, compiledCode.revertCode].forEach(
     (code) => validator.throwIfInvalid(code, [new NoEmptyLines()]),
   );

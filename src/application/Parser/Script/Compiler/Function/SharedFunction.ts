@@ -1,4 +1,4 @@
-import { IFunctionCall } from './Call/IFunctionCall';
+import { FunctionCall } from './Call/FunctionCall';
 
 import {
   FunctionBodyType, IFunctionCode, ISharedFunction, ISharedFunctionBody,
@@ -8,7 +8,7 @@ import { IReadOnlyFunctionParameterCollection } from './Parameter/IFunctionParam
 export function createCallerFunction(
   name: string,
   parameters: IReadOnlyFunctionParameterCollection,
-  callSequence: readonly IFunctionCall[],
+  callSequence: readonly FunctionCall[],
 ): ISharedFunction {
   if (!callSequence || !callSequence.length) {
     throw new Error(`missing call sequence in function "${name}"`);
@@ -38,7 +38,7 @@ class SharedFunction implements ISharedFunction {
   constructor(
     public readonly name: string,
     public readonly parameters: IReadOnlyFunctionParameterCollection,
-    content: IFunctionCode | readonly IFunctionCall[],
+    content: IFunctionCode | readonly FunctionCall[],
     bodyType: FunctionBodyType,
   ) {
     if (!name) { throw new Error('missing function name'); }
@@ -46,7 +46,7 @@ class SharedFunction implements ISharedFunction {
     this.body = {
       type: bodyType,
       code: bodyType === FunctionBodyType.Code ? content as IFunctionCode : undefined,
-      calls: bodyType === FunctionBodyType.Calls ? content as readonly IFunctionCall[] : undefined,
+      calls: bodyType === FunctionBodyType.Calls ? content as readonly FunctionCall[] : undefined,
     };
   }
 }

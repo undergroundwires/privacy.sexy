@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { NodeDataError } from '@/application/Parser/NodeValidation/NodeDataError';
 import { NodeValidator } from '@/application/Parser/NodeValidation/NodeValidator';
-import { expectThrowsError } from '@tests/unit/shared/Assertions/ExpectThrowsError';
+import { expectDeepThrowsError } from '@tests/unit/shared/Assertions/ExpectDeepThrowsError';
 import { CategoryDataStub } from '@tests/unit/shared/Stubs/CategoryDataStub';
 import { NodeDataErrorContextStub } from '@tests/unit/shared/Stubs/NodeDataErrorContextStub';
 import { NodeData } from '@/application/Parser/NodeValidation/NodeData';
@@ -67,7 +67,7 @@ describe('NodeValidator', () => {
       // act
       const act = () => sut.assert(falsePredicate, message);
       // assert
-      expectThrowsError(act, expected);
+      expectDeepThrowsError(act, expected);
     });
     it('does not throw if condition is true', () => {
       // arrange
@@ -89,7 +89,7 @@ describe('NodeValidator', () => {
       // act
       const act = () => sut.throw(message);
       // assert
-      expectThrowsError(act, expected);
+      expectDeepThrowsError(act, expected);
     });
   });
 });

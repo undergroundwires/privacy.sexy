@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { IReadOnlyFunctionParameterCollection } from '@/application/Parser/Script/Compiler/Function/Parameter/IFunctionParameterCollection';
 import { FunctionParameterCollectionStub } from '@tests/unit/shared/Stubs/FunctionParameterCollectionStub';
 import { createCallerFunction, createFunctionWithInlineCode } from '@/application/Parser/Script/Compiler/Function/SharedFunction';
-import { IFunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/IFunctionCall';
+import { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
 import { FunctionCallStub } from '@tests/unit/shared/Stubs/FunctionCallStub';
 import { FunctionBodyType, ISharedFunction } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
 import {
@@ -132,7 +132,7 @@ describe('SharedFunction', () => {
     });
   });
   describe('createCallerFunction', () => {
-    describe('callSequence', () => {
+    describe('rootCallSequence', () => {
       it('sets as expected', () => {
         // arrange
         const expected = [
@@ -141,7 +141,7 @@ describe('SharedFunction', () => {
         ];
         // act
         const sut = new SharedFunctionBuilder()
-          .withCallSequence(expected)
+          .withRootCallSequence(expected)
           .createCallerFunction();
         // assert
         expect(sut.body.calls).equal(expected);
@@ -150,12 +150,12 @@ describe('SharedFunction', () => {
         itEachAbsentCollectionValue((absentValue) => {
           // arrange
           const functionName = 'invalidFunction';
-          const callSequence = absentValue;
+          const rootCallSequence = absentValue;
           const expectedError = `missing call sequence in function "${functionName}"`;
           // act
           const act = () => new SharedFunctionBuilder()
             .withName(functionName)
-            .withCallSequence(callSequence)
+            .withRootCallSequence(rootCallSequence)
             .createCallerFunction();
           // assert
           expect(act).to.throw(expectedError);
@@ -206,7 +206,7 @@ class SharedFunctionBuilder {
 
   private parameters: IReadOnlyFunctionParameterCollection = new FunctionParameterCollectionStub();
 
-  private callSequence: readonly IFunctionCall[] = [new FunctionCallStub()];
+  private callSequence: readonly FunctionCall[] = [new FunctionCallStub()];
 
   private code = 'code';
 
@@ -249,7 +249,7 @@ class SharedFunctionBuilder {
     return this;
   }
 
-  public withCallSequence(callSequence: readonly IFunctionCall[]) {
+  public withRootCallSequence(callSequence: readonly FunctionCall[]) {
     this.callSequence = callSequence;
     return this;
   }

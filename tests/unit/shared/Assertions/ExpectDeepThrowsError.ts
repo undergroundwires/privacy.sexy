@@ -1,7 +1,7 @@
 import { expect } from 'vitest';
 
 // `toThrowError` does not assert the error type (https://github.com/vitest-dev/vitest/blob/v0.34.2/docs/api/expect.md#tothrowerror)
-export function expectThrowsError<T extends Error>(delegate: () => void, expected: T) {
+export function expectDeepThrowsError<T extends Error>(delegate: () => void, expected: T) {
   // arrange
   if (!expected) {
     throw new Error('missing expected');

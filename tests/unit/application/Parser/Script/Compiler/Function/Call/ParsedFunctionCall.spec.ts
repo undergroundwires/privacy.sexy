@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
+import { ParsedFunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/ParsedFunctionCall';
 import { IReadOnlyFunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/Function/Call/Argument/IFunctionCallArgumentCollection';
 import { FunctionCallArgumentCollectionStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentCollectionStub';
 import { itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
-describe('FunctionCall', () => {
+describe('ParsedFunctionCall', () => {
   describe('ctor', () => {
     describe('args', () => {
       describe('throws when args is missing', () => {
@@ -76,6 +76,6 @@ class FunctionCallBuilder {
   }
 
   public build() {
-    return new FunctionCall(this.functionName, this.args);
+    return new ParsedFunctionCall(this.functionName, this.args);
   }
 }

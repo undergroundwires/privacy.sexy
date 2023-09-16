@@ -1,5 +1,5 @@
 import { IReadOnlyFunctionParameterCollection } from './Parameter/IFunctionParameterCollection';
-import { IFunctionCall } from './Call/IFunctionCall';
+import { FunctionCall } from './Call/FunctionCall';
 
 export interface ISharedFunction {
   readonly name: string;
@@ -9,8 +9,8 @@ export interface ISharedFunction {
 
 export interface ISharedFunctionBody {
   readonly type: FunctionBodyType;
-  readonly code: IFunctionCode;
-  readonly calls: readonly IFunctionCall[];
+  readonly code: IFunctionCode | undefined;
+  readonly calls: readonly FunctionCall[] | undefined;
 }
 
 export enum FunctionBodyType {

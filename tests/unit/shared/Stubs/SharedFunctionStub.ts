@@ -1,6 +1,6 @@
 import { ISharedFunction, ISharedFunctionBody, FunctionBodyType } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
 import { IReadOnlyFunctionParameterCollection } from '@/application/Parser/Script/Compiler/Function/Parameter/IFunctionParameterCollection';
-import { IFunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/IFunctionCall';
+import { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
 import { FunctionParameterCollectionStub } from './FunctionParameterCollectionStub';
 import { FunctionCallStub } from './FunctionCallStub';
 
@@ -16,7 +16,7 @@ export class SharedFunctionStub implements ISharedFunction {
 
   private bodyType: FunctionBodyType = FunctionBodyType.Code;
 
-  private calls: IFunctionCall[] = [new FunctionCallStub()];
+  private calls: FunctionCall[] = [new FunctionCallStub()];
 
   constructor(type: FunctionBodyType) {
     this.bodyType = type;
@@ -53,7 +53,11 @@ export class SharedFunctionStub implements ISharedFunction {
     return this;
   }
 
-  public withCalls(...calls: readonly IFunctionCall[]) {
+  public withSomeCalls() {
+    return this.withCalls(new FunctionCallStub(), new FunctionCallStub());
+  }
+
+  public withCalls(...calls: readonly FunctionCall[]) {
     this.calls = [...calls];
     return this;
   }
