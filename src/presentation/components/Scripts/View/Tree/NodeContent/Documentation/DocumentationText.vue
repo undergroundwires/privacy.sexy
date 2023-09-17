@@ -100,20 +100,27 @@ $text-size: 0.75em; // Lower looks bad on Firefox
       }
     }
   }
-  /*
-    Different browsers have different <p>, we should even this out.
-    See CSS 2.1 specification https://www.w3.org/TR/CSS21/sample.html.
-  */
-  p {
+  @mixin set-paragraph-vertical-gap($paragraph-vertical-gap) {
+    p {
+      /*
+        Remove default browser margin on paragraphs to ensure:
+          1. A markdown text represented as a list (e.g. <ul>, <ol>) has same vertical spacing as a standalone paragraph (</p>).
+          2. The first paragraph in a sequence (first `<p>` usage) does not introduce top spacing.
+          3. Uniformity, so margin can be set consistently across browsers.
+      */
+      margin: 0;
+    }
     /*
-      Remove surrounding padding so a markdown text that is a list (e.g. <ul>)
-      has same outer padding as a paragraph (</p>).
+      Introduce spacing between successive elements and paragraphs.
+      E.g., spacing between two paragraphs (`p`), paragraphs after lists (<ul>, <ol>)...
     */
-    margin: 0;
-    + p {
-      margin-top: 1em;
+    * {
+      + p {
+        margin-top: $paragraph-vertical-gap;
+      }
     }
   }
+  @include set-paragraph-vertical-gap($text-size);
   ul {
     // CSS default is 40px, if the text is a bulletpoint, it leads to unexpected padding.
     padding-inline-start: 1em;
