@@ -1,65 +1,166 @@
-<!--
-  This component acts as a wrapper for the v-tooltip to solve the following:
-    - Direct inclusion of inline HTML in tooltip components has challenges such as
-      - absence of linting or editor support,
-      - involves cumbersome string concatenation.
-      This component caters to these issues by permitting HTML usage in a slot.
-    - It provides an abstraction for a third-party component which simplifies
-      switching and acts as an anti-corruption layer.
--->
-
 <template>
-  <div class="tooltip-container" v-tooltip.top-center="tooltipHtml">
-    <slot />
-    <div class="tooltip-content" ref="tooltipWrapper">
-      <slot name="tooltip" />
+  <div class="tooltip">
+    <div
+      class="tooltip__trigger"
+      ref="triggeringElement">
+      <slot />
+    </div>
+    <div
+      class="tooltip__display"
+      ref="tooltipDisplayElement"
+      :style="displayStyles"
+    >
+      <div class="tooltip__content">
+        <slot name="tooltip" />
+      </div>
+      <div
+        ref="arrowElement"
+        class="tooltip__arrow"
+        :style="arrowStyles"
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import {
-  defineComponent, ref, onMounted, onUpdated, nextTick,
-} from 'vue';
+  useFloating, arrow, shift, flip, Placement, offset, Side, Coords,
+} from '@floating-ui/vue';
+import { defineComponent, ref, computed } from 'vue';
+import type { CSSProperties } from 'vue/types/jsx'; // In Vue 3.0 import from 'vue'
+
+const GAP_BETWEEN_TOOLTIP_AND_TRIGGER_IN_PX = 2;
+const ARROW_SIZE_IN_PX = 4;
+const MARGIN_FROM_DOCUMENT_EDGE_IN_PX = 2;
 
 export default defineComponent({
   setup() {
-    const tooltipWrapper = ref<HTMLElement | undefined>();
-    const tooltipHtml = ref<string | undefined>();
+    const tooltipDisplayElement = ref<HTMLElement | undefined>();
+    const triggeringElement = ref<HTMLElement | undefined>();
+    const arrowElement = ref<HTMLElement | undefined>();
+    const placement = ref<Placement>('top');
 
-    onMounted(() => updateTooltipHTML());
-
-    onUpdated(() => {
-      nextTick(() => {
-        updateTooltipHTML();
-      });
+    const { floatingStyles, middlewareData } = useFloating(
+      triggeringElement,
+      tooltipDisplayElement,
+      {
+        placement: ref(placement),
+        middleware: [
+          offset(ARROW_SIZE_IN_PX + GAP_BETWEEN_TOOLTIP_AND_TRIGGER_IN_PX),
+          /* Shifts the element along the specified axes in order to keep it in view. */
+          shift({
+            padding: MARGIN_FROM_DOCUMENT_EDGE_IN_PX,
+          }),
+          /*  Changes the placement of the floating element in order to keep it in view,
+              with the ability to flip to any placement. */
+          flip(),
+          arrow({ element: arrowElement }),
+        ],
+      },
+    );
+    const arrowStyles = computed<CSSProperties>(() => {
+      if (!middlewareData.value.arrow) {
+        return {
+          display: 'none',
+        };
+      }
+      return {
+        ...getArrowPositionStyles(middlewareData.value.arrow, placement.value),
+        ...getArrowAppearanceStyles(),
+      };
     });
 
-    function updateTooltipHTML() {
-      const newValue = tooltipWrapper.value?.innerHTML;
-      const oldValue = tooltipHtml.value;
-      if (newValue === oldValue) {
-        return;
-      }
-      tooltipHtml.value = newValue;
-    }
-
     return {
-      tooltipWrapper,
-      tooltipHtml,
+      tooltipDisplayElement,
+      triggeringElement,
+      displayStyles: floatingStyles,
+      arrowStyles,
+      arrowElement,
+      placement,
     };
   },
 });
+
+function getArrowAppearanceStyles(): CSSProperties {
+  return {
+    width: `${ARROW_SIZE_IN_PX * 2}px`,
+    height: `${ARROW_SIZE_IN_PX * 2}px`,
+    rotate: '45deg',
+  };
+}
+
+function getArrowPositionStyles(
+  coordinations: Partial<Coords>,
+  placement: Placement,
+): CSSProperties {
+  const style: CSSProperties = {};
+  style.position = 'absolute';
+  const { x, y } = coordinations;
+  if (x) {
+    style.left = `${x}px`;
+  } else if (y) { // either X or Y is calculated
+    style.top = `${y}px`;
+  }
+  const oppositeSide = getCounterpartBoxOffsetProperty(placement) as never;
+  // Cast to `never` due to ts(2590) from JSX import. Remove after migrating to Vue 3.0.
+  style[oppositeSide] = `-${ARROW_SIZE_IN_PX}px`;
+  return style;
+}
+
+function getCounterpartBoxOffsetProperty(placement: Placement): keyof CSSProperties {
+  const sideCounterparts: Record<Side, keyof CSSProperties> = {
+    top: 'bottom',
+    right: 'left',
+    bottom: 'top',
+    left: 'right',
+  };
+  const currentSide = placement.split('-')[0] as Side;
+  return sideCounterparts[currentSide];
+}
 </script>
 
 <style scoped lang="scss">
 @use "@/presentation/assets/styles/main" as *;
 
-.tooltip-container {
-  display: inline-block;
+$color-tooltip-background: $color-primary-darkest;
+
+@mixin set-visibility($isVisible: true) {
+  @if $isVisible {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity .15s;
+  } @else {
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity .15s, visibility .15s;
+  }
 }
 
-.tooltip-content {
-  display: none;
+.tooltip {
+  display: inline-flex;
+}
+
+.tooltip__display {
+  @include set-visibility(false);
+}
+
+.tooltip__trigger {
+  @include hover-or-touch {
+    + .tooltip__display {
+      @include set-visibility(true);
+      z-index: 10000;
+    }
+  }
+}
+
+.tooltip__content {
+  background: $color-tooltip-background;
+  color: $color-on-primary;
+  border-radius: 16px;
+  padding: 5px 10px 4px;
+}
+
+.tooltip__arrow {
+  background: $color-tooltip-background;
 }
 </style>

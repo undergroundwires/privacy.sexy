@@ -20,7 +20,6 @@ The presentation layer uses an event-driven architecture for bidirectional react
     - [**`fonts/`**](./../src/presentation/assets/fonts/): Contains fonts.
     - [**`styles/`**](./../src/presentation/assets/styles/): Contains shared styles.
       - [**`components/`**](./../src/presentation/assets/styles/components): Contains styles coupled to Vue components.
-      - [**`vendors-extensions/`**](./../src/presentation/assets/styles/third-party-extensions): Contains styles for third-party components.
       - [**`main.scss`**](./../src/presentation/assets/styles/main.scss): Main Sass file, imported by other components as single entrypoint.
   - [**`main.ts`**](./../src/presentation/main.ts): Starts Vue app.
   - [**`electron/`**](./../src/presentation/electron/): Contains Electron code.
