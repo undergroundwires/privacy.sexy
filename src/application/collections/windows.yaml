@@ -6834,16 +6834,75 @@ actions:
                     code: reg delete "HKCU\Environment" /v "OneDrive" /f 2>nul
             -
                 name: Uninstall Edge (chromium-based)
+                docs: |-
+                    This script automates the uninstallation of Microsoft Edge (also known as "Chromium Edge" or "New Edge" [1]), the web browser that comes
+                    pre-installed with many versions of Windows.
+
+                    Microsoft Edge collects various types of data, some of which pertain to your browsing habits, such as the websites you visit, your search
+                    queries, and the data you enter into forms [2]. Additionally, it tracks usage metrics and diagnostic data about your device data and
+                    how the browser is functioning [2]. These pieces of information could be used for targeted advertising or profiling. Removing Microsoft
+                    Edge ensures that it is not silently accumulating this data in the background, thereby improving your overall privacy.
+
+                    By default, Microsoft Edge doesn't allow easy uninstallation and has officially declared Microsoft Edge as uninstallable on Windows [3].
+
+                    This scripts uses two steps to achieve this:
+
+                    1. **Enable Uninstallation**: The script modifies a specific registry key to allow the uninstallation of Microsoft Edge. This step is crucial
+                    because, starting from version 116 of Edge, you cannot uninstall it unless this registry key is set.
+                    2. **Run Uninstaller**: The script then finds the Microsoft Edge installer (`setup.exe`) for every Microsoft Edge installation (it is possible
+                    to have multiple versions) and executes it to perform a system-level uninstall.
+
+                    There's no official documentation for the Edge installer or registry keys codes, which this script relies on. However, these have been verified
+                    through testing and community support to work as expected.
+
+                    [1]: https://en.wikipedia.org/w/index.php?title=Microsoft_Edge&oldid=1174053020#New_Edge_(2019%E2%80%93present) "Microsoft Edge - Wikipedia"
+                    [2]: https://web.archive.org/web/20230907002709/https://support.microsoft.com/en-us/microsoft-edge/learn-more-about-diagnostic-data-collection-in-microsoft-edge-7fcee15b-39f7-ba02-bc59-9eef622c1a9f "Learn more about diagnostic data collection in Microsoft Edge - Microsoft Support"
+                    [3]: https://web.archive.org/web/20230907002011/https://support.microsoft.com/en-us/microsoft-edge/why-can-t-i-uninstall-microsoft-edge-ee150b3b-7d7a-9984-6d83-eb36683d526d "Why can't I uninstall Microsoft Edge? - Microsoft Support"
                 call:
-                    function: RunPowerShell
-                    parameters:
-                        code: |-
-                            $installer = (Get-ChildItem "$env:ProgramFiles*\Microsoft\Edge\Application\*\Installer\setup.exe")
-                            if (!$installer) {
-                                Write-Host 'Could not find the installer'
-                            } else {
-                                & $installer.FullName -Uninstall -System-Level -Verbose-Logging -Force-Uninstall
-                            }
+                    -
+                        function: RunInlineCode
+                        parameters:
+                            code: reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdateDev" /v "AllowUninstall" /t REG_DWORD /d "1" /f
+                            revertCode: reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdateDev" /v "AllowUninstall" /f 2>nul # It does not exists since Windows 10 21H2 and Windows 11 21H2
+                    -
+                        function: RunPowerShell
+                        parameters:
+                            code: |-
+                                $installer = (Get-ChildItem "$($env:ProgramFiles)*\Microsoft\Edge\Application\*\Installer\setup.exe")
+                                if (!$installer) {
+                                    Write-Host 'Installer not found. Microsoft Edge may already be uninstalled.'
+                                } else {
+                                    $installer | ForEach-Object {
+                                        $uninstallerPath = $_.FullName
+                                        $installerArguments = @("--uninstall", "--system-level", "--verbose-logging", "--force-uninstall")
+                                        Write-Output "Uninstalling through uninstaller: $uninstallerPath"
+                                        $process = Start-Process -FilePath "$uninstallerPath" -ArgumentList $installerArguments -Wait -PassThru
+                                        if ($process.ExitCode -eq 0 -or $process.ExitCode -eq 19) {
+                                            Write-Host "Successfully uninstalled Edge."
+                                        } else {
+                                            Write-Error "Failed to uninstall, uninstaller failed with exit code $($process.ExitCode)."
+                                        }
+                                    }
+                                }
+                            revertCode: |-
+                                $edgeExePath = Get-ChildItem -Path "$($env:ProgramFiles)*\Microsoft\Edge\Application" -Filter 'msedge.exe' -Recurse
+                                if ($edgeExePath) {
+                                    Write-Host 'Microsoft Edge is already installed. Skipping reinstallation.'
+                                    Exit 0
+                                }
+                                Write-Host 'Downloading Microsoft Edge...'
+                                $edgeInstallerUrl = 'https://c2rsetup.officeapps.live.com/c2r/downloadEdge.aspx?platform=Default&Channel=Stable&language=en'
+                                $downloadPath = "$($env:TEMP)\MicrosoftEdgeSetup.exe"
+                                Invoke-WebRequest -Uri "$edgeInstallerUrl" -OutFile "$downloadPath"
+                                $installerArguments = @('/install', '/silent')
+                                Write-Host 'Installing Microsoft Edge...'
+                                $process = Start-Process -FilePath "$downloadPath" -ArgumentList "$installerArguments" -Wait -PassThru
+                                Remove-Item -Path $downloadPath -Force
+                                if ($process.ExitCode -eq 0) {
+                                    Write-Host 'Successfully reinstalled Microsoft Edge.'
+                                } else {
+                                    Write-Error "Failed to reinstall Microsoft Edge. Installer failed with exit code $($process.ExitCode)."
+                                }
             -
                 category: Disable built-in Windows features
                 children:
