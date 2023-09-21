@@ -1094,32 +1094,130 @@ actions:
                                     serviceName: wercplsupport # Check: (Get-Service -Name wercplsupport).StartType
                                     defaultStartupMode: Manual # Allowed values: Automatic | Manual
             -
-                category: Disable automatic driver updates by Windows Update
+                category: Disable Windows Update data collection
                 children:
-                    - 
-                        name: Disable device metadata retrieval (breaks auto updates)
-                        recommend: strict
-                        docs: 
-                            - https://www.stigviewer.com/stig/windows_server_2012_member_server/2014-01-07/finding/V-21964
-                            - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-deviceinstallation#deviceinstallation-preventdevicemetadatafromnetwork
-                        code: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 1 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 1 /f
-                        revertCode: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 0 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 0 /f
                     -
-                        name: Do not include drivers with Windows Updates
-                        docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsUpdate::ExcludeWUDriversInQualityUpdate
-                        recommend: strict
-                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "ExcludeWUDriversInQualityUpdate" /t REG_DWORD /d 1 /f
-                        revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "ExcludeWUDriversInQualityUpdate" /t REG_DWORD /d 0 /f
+                        category: Disable automatic driver updates by Windows Update
+                        children:
+                            -
+                                name: Disable device metadata retrieval (breaks auto updates)
+                                recommend: strict
+                                docs:
+                                    - https://www.stigviewer.com/stig/windows_server_2012_member_server/2014-01-07/finding/V-21964
+                                    - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-deviceinstallation#deviceinstallation-preventdevicemetadatafromnetwork
+                                code: |-
+                                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 1 /f
+                                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 1 /f
+                                revertCode: |-
+                                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 0 /f
+                                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Device Metadata" /v "PreventDeviceMetadataFromNetwork" /t REG_DWORD /d 0 /f
+                            -
+                                name: Do not include drivers with Windows Updates
+                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsUpdate::ExcludeWUDriversInQualityUpdate
+                                recommend: strict
+                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "ExcludeWUDriversInQualityUpdate" /t REG_DWORD /d 1 /f
+                                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "ExcludeWUDriversInQualityUpdate" /t REG_DWORD /d 0 /f
+                            -
+                                name: Prevent Windows Update for device driver search
+                                docs: https://www.stigviewer.com/stig/windows_7/2018-02-12/finding/V-21965
+                                recommend: strict
+                                code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching" /v "SearchOrderConfig" /t REG_DWORD /d 0 /f
+                                revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching" /v "SearchOrderConfig" /t REG_DWORD /d 1 /f
                     -
-                        name: Prevent Windows Update for device driver search
-                        docs: https://www.stigviewer.com/stig/windows_7/2018-02-12/finding/V-21965
-                        recommend: strict
-                        code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching" /v "SearchOrderConfig" /t REG_DWORD /d 0 /f
-                        revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching" /v "SearchOrderConfig" /t REG_DWORD /d 1 /f
+                        category: Disable obtaining updates from other PCs on the Internet (delivery optimization)
+                        docs: |-
+                            Windows Delivery Optimization is a feature introduced by Microsoft to facilitate a more efficient downloading process for Windows
+                            updates, upgrades, and applications [1] [2]. Instead of exclusively relying on Microsoft's servers, this feature identifies other
+                            PCs on a user's local network or even across the internet that already possess the desired updates or applications [2]. By breaking
+                            the download into smaller segments and fetching each from the fastest and most reliable source, which can include other PCs, the
+                            system ensures more efficient downloads [2]. To support this process, Delivery Optimization uses a local cache to temporarily store
+                            downloaded files [2].
+
+                            While Delivery Optimization is designed for speed and reliability, its operation raises privacy concerns. Specifically, when enabled,
+                            it can distribute updates and applications from one user's PC to others [2], sharing users' data such as their IP addresses [3].
+
+                            Benefits of disabling Delivery Optimization for privacy:
+
+                            - **Minimizing Data Sharing**: By turning off Delivery Optimization, users ensure that updates and apps are neither downloaded from nor sent
+                            to other devices [2]. This guarantees that all data remains strictly on the user's device [2] and the user IP is not shared [3].
+                            - **Storage Conservation**: Users can save storage space by eliminating the local cache utilized by Delivery Optimization.
+                            - **Guaranteed Source Authenticity**: Although Microsoft ensures the authenticity of updates and apps shared via Delivery Optimization [2],
+                            disabling the feature guarantees that all updates and apps come directly from Microsoft's servers, eliminating potential intermediaries.
+                            - **Bandwidth Conservation**: With the feature off, updates are restricted to direct downloads from Microsoft [1]. This is beneficial
+                            for users on metered or capped internet connections, as it allows for more effective bandwidth monitoring [2].
+                            - **Enhanced Security**: Devices using Delivery Optimization open port 7680 to accept peer requests [4]. Disabling the feature avoids this,
+                            ensuring users are not exposed to unwanted inbound traffic and enhancing security [5].
+                            - **VPN Protection**: Although Delivery Optimization attempts to detect VPNs and halts uploads when a VPN connection is detected [4], disabling
+                            it removes any risk of unintended data sharing over a VPN.
+
+                            Notably, the USA government [5] and Department of Defense (DoD) in the USA [6] recommends disabling this feature.
+
+                            [1]: https://web.archive.org/web/20230914164204/https://learn.microsoft.com/en-us/windows/deployment/do/waas-delivery-optimization "What is Delivery Optimization? - Windows Deployment | Microsoft Learn"
+                            [2]: https://web.archive.org/web/20230914164355/https://support.microsoft.com/en-us/windows/windows-update-delivery-optimization-and-privacy-bf86a244-8f26-a3c7-a137-a43bfbe688e8 "Windows Update Delivery Optimization and privacy - Microsoft Support"
+                            [3]: https://web.archive.org/web/20230914164646/https://learn.microsoft.com/en-us/windows/deployment/do/waas-delivery-optimization-monitor "Monitor Delivery Optimization - Windows Deployment | Microsoft Learn"
+                            [4]: https://web.archive.org/web/20230905120220/https://learn.microsoft.com/en-us/windows/deployment/do/waas-delivery-optimization-faq "Delivery Optimization Frequently Asked Questions - Windows Deployment | Microsoft Learn"
+                            [5]: https://web.archive.org/web/20230914171139/https://www.irs.gov/pub/irs-utl/win10.xlsx "Internal Revenue Service Office of Safeguards - Windows 10 | irs.gov"
+                            [6]: https://web.archive.org/web/20230914171410/https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-65681 "Windows Update must not obtain updates from other PCs on the Internet | stigviewer.com"
+                        children:
+                            -
+                                name: Disable peering download method for Windows Updates
+                                recommend: standard
+                                docs: |-
+                                    This script modifies Delivery Optimization's download method for Windows Updates [1] to disable peering. When this script is run, it sets the
+                                    download method to `0`, which means "HTTP only, no peering" [1] [2]. As a result, Windows Updates are downloaded solely from the internet and
+                                    not from other computers on the network (referred to as "peer-to-peer") [3].
+
+                                    Peer-to-peer is a method where multiple computers share data amongst themselves. For Windows Updates, the default setting is for computers
+                                    within a network to share updates (called LAN mode, represented by the value `1`) [1] [2].
+
+                                    Changing the setting to "HTTP only" reduces potential vulnerabilities [3]. When updates are fetched only from official servers, there's
+                                    less chance of unwanted or malicious data entering the system. This is why the Department of Defense (DoD) in the USA [4] and USA government [3]
+                                    recommends this setting. They assert that leaving it in its default configuration could expose the system to additional risks [3].
+
+                                    [1]: https://web.archive.org/web/20230914171524/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-deliveryoptimization "DeliveryOptimization Policy CSP - Windows Client Management | Microsoft Learn"
+                                    [2]: https://web.archive.org/web/20230914171842/https://learn.microsoft.com/en-us/windows/deployment/do/waas-delivery-optimization-reference "Delivery Optimization reference - Windows Deployment | Microsoft Learn"
+                                    [3]: https://web.archive.org/web/20230914171139/https://www.irs.gov/pub/irs-utl/win10.xlsx "Internal Revenue Service Office of Safeguards - Windows 10 | irs.gov"
+                                    [4]: https://web.archive.org/web/20230914171410/https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-65681 "Windows Update must not obtain updates from other PCs on the Internet | stigviewer.com"
+                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" /v "DODownloadMode" /t "REG_DWORD" /d 0 /f
+                                revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" /v "DODownloadMode" /f 2>nul # Key does not exists since Windows 10 21H2, Windows 11 22H2
+                            -
+                                name: Disable "Delivery Optimization" service (breaks Microsoft Store downloads)
+                                recommend: strict
+                                docs: |-
+                                    Delivery Optimization is a Windows feature that provides the Windows Updates through peer-to-peer sharing [1]. In simple terms, instead of solely
+                                    relying on Microsoft's servers for updates, your computer can also fetch them from other devices that already possess the necessary files.
+
+                                    The "Delivery Optimization" service manages these content delivery tasks [2] [3]. It orchestrates the retrieval of updates both from other Windows users [3].
+                                    In doing so, it connects to various Microsoft service points to collect data, such as policies, content details, device specifications, and information about
+                                    other Windows users [3]. This data sharing raises privacy concerns.
+
+                                    This service also logs IP addresses [4] of peers which can be considered personal data. It listens on port 7680 for TCP/UDP traffic [5] that may expose the user
+                                    to unwanted inbound traffic and enhancing security [6].
+
+                                    By default, the "Delivery Optimization" service is set to start automatically when Windows boots up [2]. This script alters that behavior, ensuring
+                                    it doesn't run unless explicitly started by the user.
+
+                                    Taking control of this service prevents Microsoft from activating peer-to-peer sharing, enhancing user privacy. It ensures your device doesn't share update data
+                                    or fetch it from arbitrary peers.
+
+                                    > **Caution**: Disabling this service affects the functionality of Windows Store. It plays a role not just in Windows Updates but also in Microsoft Store app
+                                    downloads, especially since Windows 11 [7]. There have been reported issues with some app downloads on Windows 10 [8].
+
+                                    [1]: https://web.archive.org/web/20230914164204/https://learn.microsoft.com/en-us/windows/deployment/do/waas-delivery-optimization "What is Delivery Optimization? - Windows Deployment | Microsoft Learn"
+                                    [2]: https://web.archive.org/web/20230905120815/https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services#delivery-optimization "Guidance on disabling system services on Windows IoT Enterprise | Microsoft Learn"
+                                    [3]: https://web.archive.org/web/20230914172129/https://learn.microsoft.com/en-us/windows/deployment/do/delivery-optimization-workflow "Delivery Optimization client-service communication explained - Windows Deployment | Microsoft Learn"
+                                    [4]: https://web.archive.org/web/20230914164646/https://learn.microsoft.com/en-us/windows/deployment/do/waas-delivery-optimization-monitor "Monitor Delivery Optimization - Windows Deployment | Microsoft Learn"
+                                    [5]: https://web.archive.org/web/20230914172319/https://learn.microsoft.com/en-us/security/privileged-access-workstations/privileged-access-deployment "Deploying a privileged access solution | Microsoft Learn"
+                                    [6]: https://web.archive.org/web/20230914171139/https://www.irs.gov/pub/irs-utl/win10.xlsx "Internal Revenue Service Office of Safeguards - Windows 10 | irs.gov"
+                                    [7]: https://web.archive.org/web/20230914164355/https://support.microsoft.com/en-us/windows/windows-update-delivery-optimization-and-privacy-bf86a244-8f26-a3c7-a137-a43bfbe688e8 "Windows Update Delivery Optimization and privacy - Microsoft Support"
+                                    [8]: https://github.com/undergroundwires/privacy.sexy/issues/173 "[BUG] Error 0x80004002 on Microsoft Store when attempting to download an app · Issue #173 · undergroundwires/privacy.sexy"
+                                call:
+                                    function: DisableServiceInRegistry
+                                    # Using registry way because because other options such as "sc config" or
+                                    # "Set-Service" returns "Access is denied" since Windows 10 1809.
+                                    parameters:
+                                        serviceName: DoSvc # Check: (Get-Service -Name 'DoSvc').StartType
+                                        defaultStartupMode: Automatic # Allowed values: Automatic | Manual
             -
                 name: Disable cloud speech recognition
                 recommend: standard
@@ -5390,25 +5488,6 @@ actions:
     -
         category: Disable OS services
         children:
-            -
-                name: Delivery Optimization (P2P Windows Updates)
-                recommend: standard
-                docs:
-                    # Delivery Optimization is a cloud-managed solution to offer Windows updates through
-                    # other users' network (peer-to-peer).
-                    - https://docs.microsoft.com/en-us/windows/deployment/update/waas-delivery-optimization
-                    # Delivery Optimization service performs content delivery optimization tasks.
-                    - http://batcmd.com/windows/10/services/dosvc/
-                    # Connects to various Microsoft service endpoints to get metadata, policies, content, device information
-                    # and information of other peers (Windows users).
-                    - https://docs.microsoft.com/en-us/windows/deployment/update/delivery-optimization-workflow
-                call:
-                    function: DisableServiceInRegistry
-                    # Using registry way because because other options such as "sc config" or
-                    # "Set-Service" returns "Access is denied" since Windows 10 1809.
-                    parameters:
-                        serviceName: DoSvc # Check: (Get-Service -Name 'DoSvc').StartType
-                        defaultStartupMode: Automatic # Allowed values: Automatic | Manual
             -
                 name: Microsoft Account Sign-in Assistant (breaks Microsoft Store and Microsoft Account sign-in)
                 recommend: strict
