@@ -606,9 +606,46 @@ actions:
                                 wevtutil.exe cl %1 "%%i"
                             )
                     -
-                        name: Clean Windows Defender scan history
-                        docs: https://www.thewindowsclub.com/clear-windows-defender-protection-history
-                        code: del "%ProgramData%\Microsoft\Windows Defender\Scans\History\" /s /f /q
+                        name: Clear Defender scan (protection) history
+                        docs: |-
+                            This script deletes the scan history kept by Windows Defender on your computer. Windows Defender logs detected threats but also gathers
+                            and stores data about various other files it scans [1] [2]. While removing this history enhances your privacy, it might decrease security,
+                            as these logs assist in monitoring threats. By eliminating traces of your system's files, activities and any threats detected, you ensure
+                            no residual data can be utilized to study or analyze your computer's activities, thus protecting your privacy.
+
+                            Defender keeps a log of various details whenever it scans your computer for threats. This includes [3] [4]:
+
+                            - **Time**: The moment the threat was discovered.
+                            - **Threat Status**: The action carried out against the threat.
+                            - **Virus Type**: The type or category of the virus.
+                            - **Threat ID**: A unique identifier for the threat.
+                            - **Virus Name**: The name of the virus.
+                            - **File Path**: The location of the threat on your computer.
+                            - **File Hash**: A unique code representing the file.
+                            - **Quarantine File Name (GUID)**: The name given to the quarantined threat.
+                            - **File Size**: The size of the file.
+
+                            When you first set up Windows, it conducts an initial scan [1]. This scan identifies system files that won't require future
+                            scans [1]. These 'safe' files are saved in a unique folder, which becomes a part of the scan history [1]. 
+
+                            If a threat is recognized, Windows Defender will notify you [4]. Regardless of whether you choose to run the file or not, a
+                            `DetectionHistory` file is created [2]. This file is stored in a specific folder
+                            (`%ProgramData%\Microsoft\Windows Defender\Scans\History\Service\DetectionHistory\[numbered folder]\`), and it contains a
+                            system-generated ID for the event [2].
+
+                            > **Caution**: Deleting these logs may decrease your security. These logs help in keeping track of potential threats and their sources,
+                            allowing for a more proactive response in future encounters. Without this history, Windows Defender might not recognize recurring threats
+                            as quickly, possibly leaving your system more vulnerable. It's essential to understand that you're making a trade-off between enhanced
+                            privacy and potentially reduced security.
+
+                            [1]: https://web.archive.org/web/20230829142700/https://download.microsoft.com/download/7/e/7/7e7662cf-cbea-470b-a97e-ce7ce0d98dc2/win7perf.docx "Performance Testing Guide for Windows | Microsoft"
+                            [2]: https://web.archive.org/web/20230829143754/https://www.sans.org/blog/uncovering-windows-defender-real-time-protection-history-with-dhparser/ "Uncovering Windows Defender Real-time Protection History with DHParser | SANS Alumni Blog"
+                            [3]: https://web.archive.org/web/20230829144957/https://learn.microsoft.com/en-us/previous-versions/windows/desktop/defender/msft-mpthreatdetection "MSFT\_MpThreatDetection class | Microsoft Learn"
+                            [4]: https://web.archive.org/web/20230829144434/https://forensafe.com/blogs/windows_defender.html "Windows Defender | Forensafe"
+                        call:
+                            function: RunInlineCodeAsTrustedInstaller  # Otherwise it cannot access/delete files under `Scans\History`, see https://github.com/undergroundwires/privacy.sexy/issues/246
+                            parameters:
+                                code: del "%ProgramData%\Microsoft\Windows Defender\Scans\History" /s /f /q
             -
                 name: Clear credentials from Windows Credential Manager
                 code: |-
@@ -7832,6 +7869,7 @@ functions:
         parameters:
             - name: code
             - name: revertCode
+              optional: true
         call:
             function: RunPowerShell
             parameters:
@@ -7899,7 +7937,8 @@ functions:
                         Remove-Item $streamOutFile, $batchFile
                     }
                 revertCode: |- # Duplicated until custom pipes are implemented
-                    $command = '{{ $revertCode }}'
+                    {{ with $revertCode }}
+                    $command = '{{ . }}'
                     $trustedInstallerSid = [System.Security.Principal.SecurityIdentifier]::new('S-1-5-80-956008885-3418522649-1831038044-1853292631-2271478464')
                     $trustedInstallerName = $trustedInstallerSid.Translate([System.Security.Principal.NTAccount])
                     $streamOutFile = New-TemporaryFile
@@ -7942,6 +7981,7 @@ functions:
                     } finally {
                         Remove-Item $streamOutFile, $batchFile
                     }
+                    {{ end }}
     -
         name: DisableServiceInRegistry
         parameters:
