@@ -122,7 +122,7 @@
 ## Get started
 
 - 🌍️ **Online**: [https://privacy.sexy](https://privacy.sexy).
-- 🖥️ **Offline**: Check [releases page](https://github.com/undergroundwires/privacy.sexy/releases), or download directly for: [Windows](https://github.com/undergroundwires/privacy.sexy/releases/download/0.11.2/privacy.sexy-Setup-0.11.2.exe), [macOS](https://github.com/undergroundwires/privacy.sexy/releases/download/0.11.2/privacy.sexy-0.11.2.dmg), [Linux](https://github.com/undergroundwires/pr.vacy.sexy/releases/download/0.11.2/privacy.sexy-0.11.2.AppImage).
+- 🖥️ **Offline**: Check [releases page](https://github.com/undergroundwires/privacy.sexy/releases), or download directly for: [Windows](https://github.com/undergroundwires/privacy.sexy/releases/download/0.12.3/privacy.sexy-Setup-0.12.3.exe), [macOS](https://github.com/undergroundwires/privacy.sexy/releases/download/0.12.3/privacy.sexy-0.12.3.dmg), [Linux](https://github.com/undergroundwires/privacy.sexy/releases/download/0.12.3/privacy.sexy-0.12.3.AppImage).
 
 Online version does not require to run any software on your computer. Offline version has more functions such as running the scripts directly.
 
