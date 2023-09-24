@@ -6,14 +6,15 @@ import { TreeNodeCheckState } from './Node/State/CheckState';
 
 export function useAutoUpdateChildrenCheckState(
   treeWatcher: WatchSource<TreeRoot>,
+  useChangeAggregator = useNodeStateChangeAggregator,
 ) {
-  const { onNodeStateChange } = useNodeStateChangeAggregator(treeWatcher);
+  const { onNodeStateChange } = useChangeAggregator(treeWatcher);
 
-  onNodeStateChange((node, change) => {
-    if (change.newState.checkState === change.oldState.checkState) {
+  onNodeStateChange((change) => {
+    if (change.newState.checkState === change.oldState?.checkState) {
       return;
     }
-    updateChildrenCheckedState(node.hierarchy, change.newState.checkState);
+    updateChildrenCheckedState(change.node.hierarchy, change.newState.checkState);
   });
 }
 

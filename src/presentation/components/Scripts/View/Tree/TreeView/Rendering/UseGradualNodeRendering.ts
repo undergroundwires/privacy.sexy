@@ -6,39 +6,37 @@ import { useNodeStateChangeAggregator } from '../UseNodeStateChangeAggregator';
 import { TreeRoot } from '../TreeRoot/TreeRoot';
 import { useCurrentTreeNodes } from '../UseCurrentTreeNodes';
 import { NodeRenderingStrategy } from './NodeRenderingStrategy';
+import { DelayScheduler } from './DelayScheduler';
+import { TimeoutDelayScheduler } from './TimeoutDelayScheduler';
 
 /**
  * Renders tree nodes gradually to prevent UI freeze when loading large amounts of nodes.
  */
 export function useGradualNodeRendering(
   treeWatcher: WatchSource<TreeRoot>,
+  useChangeAggregator = useNodeStateChangeAggregator,
+  useTreeNodes = useCurrentTreeNodes,
+  scheduler: DelayScheduler = new TimeoutDelayScheduler(),
+  initialBatchSize = 30,
+  subsequentBatchSize = 5,
 ): NodeRenderingStrategy {
   const nodesToRender = new Set<ReadOnlyTreeNode>();
   const nodesBeingRendered = shallowRef(new Set<ReadOnlyTreeNode>());
-  let isFirstRender = true;
   let isRenderingInProgress = false;
   const renderingDelayInMs = 50;
-  const initialBatchSize = 30;
-  const subsequentBatchSize = 5;
 
-  const { onNodeStateChange } = useNodeStateChangeAggregator(treeWatcher);
-  const { nodes } = useCurrentTreeNodes(treeWatcher);
+  const { onNodeStateChange } = useChangeAggregator(treeWatcher);
+  const { nodes } = useTreeNodes(treeWatcher);
 
   const orderedNodes = computed<readonly ReadOnlyTreeNode[]>(() => nodes.value.flattenedNodes);
 
-  watch(() => orderedNodes.value, (newNodes) => {
-    newNodes.forEach((node) => updateNodeRenderQueue(node));
-  }, { immediate: true });
-
-  function updateNodeRenderQueue(node: ReadOnlyTreeNode) {
-    if (node.state.current.isVisible
+  function updateNodeRenderQueue(node: ReadOnlyTreeNode, isVisible: boolean) {
+    if (isVisible
         && !nodesToRender.has(node)
         && !nodesBeingRendered.value.has(node)) {
       nodesToRender.add(node);
-      if (!isRenderingInProgress) {
-        scheduleRendering();
-      }
-    } else if (!node.state.current.isVisible) {
+      beginRendering();
+    } else if (!isVisible) {
       if (nodesToRender.has(node)) {
         nodesToRender.delete(node);
       }
@@ -49,69 +47,62 @@ export function useGradualNodeRendering(
     }
   }
 
-  onNodeStateChange((node, change) => {
-    if (change.newState.isVisible === change.oldState.isVisible) {
+  watch(() => orderedNodes.value, (newNodes) => {
+    nodesToRender.clear();
+    nodesBeingRendered.value.clear();
+    if (!newNodes?.length) {
+      triggerRef(nodesBeingRendered);
       return;
     }
-    updateNodeRenderQueue(node);
+    newNodes
+      .filter((node) => node.state.current.isVisible)
+      .forEach((node) => nodesToRender.add(node));
+    beginRendering();
+  }, { immediate: true });
+
+  onNodeStateChange((change) => {
+    if (change.newState.isVisible === change.oldState?.isVisible) {
+      return;
+    }
+    updateNodeRenderQueue(change.node, change.newState.isVisible);
   });
 
-  scheduleRendering();
-
-  function scheduleRendering() {
-    if (isFirstRender) {
-      renderNodeBatch();
-      isFirstRender = false;
-    } else {
-      const delayScheduler = new DelayScheduler(renderingDelayInMs);
-      delayScheduler.schedule(renderNodeBatch);
+  function beginRendering() {
+    if (isRenderingInProgress) {
+      return;
     }
+    renderNextBatch(initialBatchSize);
   }
 
-  function renderNodeBatch() {
+  function renderNextBatch(batchSize: number) {
     if (nodesToRender.size === 0) {
       isRenderingInProgress = false;
       return;
     }
     isRenderingInProgress = true;
-    const batchSize = isFirstRender ? initialBatchSize : subsequentBatchSize;
     const sortedNodes = Array.from(nodesToRender).sort(
       (a, b) => orderedNodes.value.indexOf(a) - orderedNodes.value.indexOf(b),
     );
     const currentBatch = sortedNodes.slice(0, batchSize);
+    if (currentBatch.length === 0) {
+      return;
+    }
     currentBatch.forEach((node) => {
       nodesToRender.delete(node);
       nodesBeingRendered.value.add(node);
     });
     triggerRef(nodesBeingRendered);
-    if (nodesToRender.size > 0) {
-      scheduleRendering();
-    }
+    scheduler.scheduleNext(
+      () => renderNextBatch(subsequentBatchSize),
+      renderingDelayInMs,
+    );
   }
 
-  function shouldNodeBeRendered(node: ReadOnlyTreeNode) {
+  function shouldNodeBeRendered(node: ReadOnlyTreeNode): boolean {
     return nodesBeingRendered.value.has(node);
   }
 
   return {
     shouldRender: shouldNodeBeRendered,
   };
-}
-
-class DelayScheduler {
-  private timeoutId: ReturnType<typeof setTimeout> = null;
-
-  constructor(private delay: number) {}
-
-  schedule(callback: () => void) {
-    this.clear();
-    this.timeoutId = setTimeout(callback, this.delay);
-  }
-
-  clear() {
-    if (this.timeoutId) {
-      clearTimeout(this.timeoutId);
-      this.timeoutId = null;
-    }
-  }
 }

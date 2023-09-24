@@ -8,7 +8,7 @@ import { QueryableNodes } from './TreeRoot/NodeCollection/Query/QueryableNodes';
 export function useCurrentTreeNodes(treeWatcher: WatchSource<TreeRoot>) {
   const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
 
-  const tree = ref<TreeRoot>();
+  const tree = ref<TreeRoot | undefined>();
   const nodes = ref<QueryableNodes | undefined>();
 
   watch(treeWatcher, (newTree) => {

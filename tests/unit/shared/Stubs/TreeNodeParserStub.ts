@@ -20,7 +20,8 @@ export function createTreeNodeParserStub() {
     if (result !== undefined) {
       return result.result;
     }
-    return data.map(() => new TreeNodeStub());
+    return data.map(() => new TreeNodeStub()
+      .withId(`[${createTreeNodeParserStub.name}] parsed-node-stub`));
   };
   return {
     registerScenario,

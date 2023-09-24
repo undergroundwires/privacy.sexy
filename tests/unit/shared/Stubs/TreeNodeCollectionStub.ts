@@ -1,9 +1,10 @@
 import { QueryableNodes } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/NodeCollection/Query/QueryableNodes';
 import { TreeNodeCollection } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/NodeCollection/TreeNodeCollection';
 import { EventSourceStub } from './EventSourceStub';
+import { QueryableNodesStub } from './QueryableNodesStub';
 
 export class TreeNodeCollectionStub implements TreeNodeCollection {
-  public nodes: QueryableNodes;
+  public nodes: QueryableNodes = new QueryableNodesStub();
 
   public nodesUpdated = new EventSourceStub<QueryableNodes>();
 

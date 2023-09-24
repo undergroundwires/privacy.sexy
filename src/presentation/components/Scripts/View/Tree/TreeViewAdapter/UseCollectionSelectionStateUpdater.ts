@@ -6,12 +6,12 @@ import { TreeNodeStateChangedEmittedEvent } from '../TreeView/Bindings/TreeNodeS
 export function useCollectionSelectionStateUpdater() {
   const { modifyCurrentState, currentState } = inject(InjectionKeys.useCollectionState)();
 
-  const updateNodeSelection = (event: TreeNodeStateChangedEmittedEvent) => {
-    const { node } = event;
+  function updateNodeSelection(change: TreeNodeStateChangedEmittedEvent) {
+    const { node } = change;
     if (node.hierarchy.isBranchNode) {
       return; // A category, let TreeView handle this
     }
-    if (event.change.oldState.checkState === event.change.newState.checkState) {
+    if (change.oldState?.checkState === change.newState.checkState) {
       return;
     }
     if (node.state.current.checkState === TreeNodeCheckState.Checked) {
@@ -30,7 +30,7 @@ export function useCollectionSelectionStateUpdater() {
         state.selection.removeSelectedScript(node.id);
       });
     }
-  };
+  }
 
   return {
     updateNodeSelection,

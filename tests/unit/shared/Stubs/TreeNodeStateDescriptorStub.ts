@@ -12,13 +12,18 @@ export class TreeNodeStateDescriptorStub implements TreeNodeStateDescriptor {
 
   public isFocused = false;
 
-  public withFocusState(isFocused: boolean): this {
+  public withFocus(isFocused: boolean): this {
     this.isFocused = isFocused;
     return this;
   }
 
   public withCheckState(checkState: TreeNodeCheckState): this {
     this.checkState = checkState;
+    return this;
+  }
+
+  public withVisibility(isVisible: boolean): this {
+    this.isVisible = isVisible;
     return this;
   }
 }

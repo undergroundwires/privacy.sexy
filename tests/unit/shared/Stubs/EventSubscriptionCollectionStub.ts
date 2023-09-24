@@ -44,7 +44,7 @@ export class EventSubscriptionCollectionStub
       methodName: 'unsubscribeAllAndRegister',
       args: [subscriptions],
     });
-    this.unsubscribeAll();
-    this.register(subscriptions);
+    // Not calling other methods to avoid registering method calls.
+    this.subscriptions.splice(0, this.subscriptions.length, ...subscriptions);
   }
 }

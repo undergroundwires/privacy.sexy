@@ -3,13 +3,24 @@ import { TreeNodeStateAccess } from '@/presentation/components/Scripts/View/Tree
 import { TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
 import { NodeMetadataStub } from './NodeMetadataStub';
 import { HierarchyAccessStub } from './HierarchyAccessStub';
+import { TreeNodeStateAccessStub } from './TreeNodeStateAccessStub';
 
 export class TreeNodeStub implements TreeNode {
-  public state: TreeNodeStateAccess;
+  public static fromStates(
+    states: readonly TreeNodeStateAccess[],
+  ): TreeNodeStub[] {
+    return states.map(
+      (state) => new TreeNodeStub()
+        .withId(`[${TreeNodeStub.fromStates.name}] node-stub`)
+        .withState(state),
+    );
+  }
+
+  public state: TreeNodeStateAccess = new TreeNodeStateAccessStub();
 
   public hierarchy: HierarchyAccess = new HierarchyAccessStub();
 
-  public id: string;
+  public id = 'tree-node-stub-id';
 
   public metadata?: object = new NodeMetadataStub();
 

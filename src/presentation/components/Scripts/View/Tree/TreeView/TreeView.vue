@@ -68,8 +68,13 @@ export default defineComponent({
     const nodeRenderingScheduler = useGradualNodeRendering(() => tree);
 
     const { onNodeStateChange } = useNodeStateChangeAggregator(() => tree);
-    onNodeStateChange((node, change) => {
-      emit('nodeStateChanged', { node, change });
+
+    onNodeStateChange((change) => {
+      emit('nodeStateChanged', {
+        node: change.node,
+        newState: change.newState,
+        oldState: change.oldState,
+      });
     });
 
     onMounted(() => {

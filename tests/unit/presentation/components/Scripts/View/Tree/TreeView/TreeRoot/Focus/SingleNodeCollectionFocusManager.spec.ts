@@ -87,6 +87,6 @@ describe('SingleNodeCollectionFocusManager', () => {
 function getNodeWithFocusState(isFocused: boolean): TreeNodeStub {
   return new TreeNodeStub()
     .withState(new TreeNodeStateAccessStub().withCurrent(
-      new TreeNodeStateDescriptorStub().withFocusState(isFocused),
+      new TreeNodeStateDescriptorStub().withFocus(isFocused),
     ));
 }

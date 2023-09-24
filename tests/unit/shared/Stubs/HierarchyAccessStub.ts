@@ -39,4 +39,9 @@ export class HierarchyAccessStub implements HierarchyAccess {
     this.isBranchNode = value;
     return this;
   }
+
+  public withIsLeafNode(value: boolean): this {
+    this.isLeafNode = value;
+    return this;
+  }
 }

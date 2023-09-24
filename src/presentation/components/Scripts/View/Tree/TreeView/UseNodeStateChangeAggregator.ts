@@ -1,35 +1,83 @@
-import { WatchSource, inject, watch } from 'vue';
+import {
+  WatchSource, inject, watch, ref,
+} from 'vue';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 import { TreeRoot } from './TreeRoot/TreeRoot';
 import { TreeNode } from './Node/TreeNode';
 import { useCurrentTreeNodes } from './UseCurrentTreeNodes';
-import { NodeStateChangedEvent } from './Node/State/StateAccess';
+import { TreeNodeStateDescriptor } from './Node/State/StateDescriptor';
 
-type NodeStateChangeEventCallback = (
-  node: TreeNode,
-  stateChange: NodeStateChangedEvent,
-) => void;
+export type NodeStateChangeEventCallback = (args: NodeStateChangeEventArgs) => void;
 
-export function useNodeStateChangeAggregator(treeWatcher: WatchSource<TreeRoot>) {
-  const { nodes } = useCurrentTreeNodes(treeWatcher);
+export function useNodeStateChangeAggregator(
+  treeWatcher: WatchSource<TreeRoot>,
+  useTreeNodes = useCurrentTreeNodes,
+) {
+  const { nodes } = useTreeNodes(treeWatcher);
   const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
 
-  const onNodeChangeCallbacks = new Array<NodeStateChangeEventCallback>();
+  const onNodeChangeCallback = ref<NodeStateChangeEventCallback>();
 
-  watch(() => nodes.value, (newNodes) => {
-    events.unsubscribeAll();
-    newNodes.flattenedNodes.forEach((node) => {
-      events.register([
-        node.state.changed.on((stateChange) => {
-          onNodeChangeCallbacks.forEach((callback) => callback(node, stateChange));
-        }),
-      ]);
-    });
+  watch([
+    () => nodes.value,
+    () => onNodeChangeCallback.value,
+  ], ([newNodes, callback]) => {
+    if (!callback) { // might not be registered yet
+      return;
+    }
+    if (!newNodes || newNodes.flattenedNodes.length === 0) {
+      events.unsubscribeAll();
+      return;
+    }
+    const allNodes = newNodes.flattenedNodes;
+    events.unsubscribeAllAndRegister(
+      subscribeToNotifyOnFutureNodeChanges(allNodes, callback),
+    );
+    notifyCurrentNodeState(allNodes, callback);
   });
 
+  function onNodeStateChange(
+    callback: NodeStateChangeEventCallback,
+  ): void {
+    if (!callback) {
+      throw new Error('missing callback');
+    }
+    onNodeChangeCallback.value = callback;
+  }
+
   return {
-    onNodeStateChange: (
-      callback: NodeStateChangeEventCallback,
-    ) => onNodeChangeCallbacks.push(callback),
+    onNodeStateChange,
   };
+}
+
+export interface NodeStateChangeEventArgs {
+  readonly node: TreeNode;
+  readonly newState: TreeNodeStateDescriptor;
+  readonly oldState?: TreeNodeStateDescriptor;
+}
+
+function notifyCurrentNodeState(
+  nodes: readonly TreeNode[],
+  callback: NodeStateChangeEventCallback,
+) {
+  nodes.forEach((node) => {
+    callback({
+      node,
+      newState: node.state.current,
+    });
+  });
+}
+
+function subscribeToNotifyOnFutureNodeChanges(
+  nodes: readonly TreeNode[],
+  callback: NodeStateChangeEventCallback,
+): IEventSubscription[] {
+  return nodes.map((node) => node.state.changed.on((stateChange) => {
+    callback({
+      node,
+      oldState: stateChange.oldState,
+      newState: stateChange.newState,
+    });
+  }));
 }

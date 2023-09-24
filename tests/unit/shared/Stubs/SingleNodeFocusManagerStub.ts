@@ -3,7 +3,8 @@ import { SingleNodeFocusManager } from '@/presentation/components/Scripts/View/T
 import { TreeNodeStub } from './TreeNodeStub';
 
 export class SingleNodeFocusManagerStub implements SingleNodeFocusManager {
-  public currentSingleFocusedNode: TreeNode = new TreeNodeStub();
+  public currentSingleFocusedNode: TreeNode = new TreeNodeStub()
+    .withId(`[${SingleNodeFocusManagerStub.name}] focused-node-stub`);
 
   setSingleFocus(): void { /* NOOP */ }
 }

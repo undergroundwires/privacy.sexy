@@ -7,14 +7,15 @@ import { ReadOnlyTreeNode } from './Node/TreeNode';
 
 export function useAutoUpdateParentCheckState(
   treeWatcher: WatchSource<TreeRoot>,
+  useChangeAggregator = useNodeStateChangeAggregator,
 ) {
-  const { onNodeStateChange } = useNodeStateChangeAggregator(treeWatcher);
+  const { onNodeStateChange } = useChangeAggregator(treeWatcher);
 
-  onNodeStateChange((node, change) => {
-    if (change.newState.checkState === change.oldState.checkState) {
+  onNodeStateChange((change) => {
+    if (change.newState.checkState === change.oldState?.checkState) {
       return;
     }
-    updateNodeParentCheckedState(node.hierarchy);
+    updateNodeParentCheckedState(change.node.hierarchy);
   });
 }
 

@@ -1,10 +1,13 @@
 import { NodeStateChangedEvent, TreeNodeStateAccess, TreeNodeStateTransaction } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateAccess';
 import { TreeNodeStateDescriptor } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateDescriptor';
+import { TreeNodeCheckState } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/CheckState';
 import { TreeNodeStateDescriptorStub } from './TreeNodeStateDescriptorStub';
 import { EventSourceStub } from './EventSourceStub';
 import { TreeNodeStateTransactionStub } from './TreeNodeStateTransactionStub';
 
 export class TreeNodeStateAccessStub implements TreeNodeStateAccess {
+  public isStateModificationRequested = false;
+
   public current: TreeNodeStateDescriptor = new TreeNodeStateDescriptorStub();
 
   public changed: EventSourceStub<NodeStateChangedEvent> = new EventSourceStub();
@@ -32,6 +35,7 @@ export class TreeNodeStateAccessStub implements TreeNodeStateAccess {
       oldState,
       newState,
     });
+    this.isStateModificationRequested = true;
   }
 
   public triggerStateChangedEvent(event: NodeStateChangedEvent) {
@@ -42,4 +46,26 @@ export class TreeNodeStateAccessStub implements TreeNodeStateAccess {
     this.current = state;
     return this;
   }
+
+  public withCurrentCheckState(checkState: TreeNodeCheckState): this {
+    return this.withCurrent(
+      new TreeNodeStateDescriptorStub()
+        .withCheckState(checkState),
+    );
+  }
+
+  public withCurrentVisibility(isVisible: boolean): this {
+    return this.withCurrent(
+      new TreeNodeStateDescriptorStub()
+        .withVisibility(isVisible),
+    );
+  }
+}
+
+export function createAccessStubsFromCheckStates(
+  states: readonly TreeNodeCheckState[],
+): TreeNodeStateAccessStub[] {
+  return states.map(
+    (checkState) => new TreeNodeStateAccessStub().withCurrentCheckState(checkState),
+  );
 }
