@@ -12,7 +12,9 @@ import { NodeStateChangeEventArgsStub } from '@tests/unit/shared/Stubs/NodeState
 import { TreeNodeStateDescriptorStub } from '@tests/unit/shared/Stubs/TreeNodeStateDescriptorStub';
 import { DelaySchedulerStub } from '@tests/unit/shared/Stubs/DelaySchedulerStub';
 import { DelayScheduler } from '@/presentation/components/Scripts/View/Tree/TreeView/Rendering/DelayScheduler';
-import { TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
+import { ReadOnlyTreeNode, TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
+import { RenderQueueOrdererStub } from '@tests/unit/shared/Stubs/RenderQueueOrdererStub';
+import { RenderQueueOrderer } from '@/presentation/components/Scripts/View/Tree/TreeView/Rendering/Ordering/RenderQueueOrderer';
 
 describe('useGradualNodeRendering', () => {
   it('watches nodes on specified tree', () => {
@@ -194,6 +196,42 @@ describe('useGradualNodeRendering', () => {
         });
       });
     });
+    it('orders nodes before rendering', async () => {
+      // arrange
+      const delaySchedulerStub = new DelaySchedulerStub();
+      const allNodes = Array.from({ length: 3 }).map(() => createNodeWithVisibility(true));
+      const expectedNodes = [
+        /* initial render */ [allNodes[2]],
+        /* first subsequent render */ [allNodes[1]],
+        /* second subsequent render */ [allNodes[0]],
+      ];
+      const ordererStub = new RenderQueueOrdererStub();
+      const nodesStub = new UseCurrentTreeNodesStub().withQueryableNodes(
+        new QueryableNodesStub().withFlattenedNodes(allNodes),
+      );
+      const builder = new UseGradualNodeRenderingBuilder()
+        .withCurrentTreeNodes(nodesStub)
+        .withInitialBatchSize(1)
+        .withSubsequentBatchSize(1)
+        .withDelayScheduler(delaySchedulerStub)
+        .withOrderer(ordererStub);
+      const actualOrder = new Set<ReadOnlyTreeNode>();
+      // act
+      ordererStub.orderNodes = () => expectedNodes[0];
+      const strategy = builder.call();
+      const updateOrder = () => allNodes
+        .filter((node) => strategy.shouldRender(node))
+        .forEach((node) => actualOrder.add(node));
+      updateOrder();
+      for (let i = 1; i < expectedNodes.length; i++) {
+        ordererStub.orderNodes = () => expectedNodes[i];
+        delaySchedulerStub.runNextScheduled();
+        updateOrder();
+      }
+      // assert
+      const expectedOrder = expectedNodes.flat();
+      expect([...actualOrder]).to.deep.equal(expectedOrder);
+    });
   });
   it('skips scheduling when no nodes to render', () => {
     // arrange
@@ -241,6 +279,8 @@ class UseGradualNodeRenderingBuilder {
 
   private subsequentBatchSize = 3;
 
+  private orderer: RenderQueueOrderer = new RenderQueueOrdererStub();
+
   public withChangeAggregator(changeAggregator: UseNodeStateChangeAggregatorStub): this {
     this.changeAggregator = changeAggregator;
     return this;
@@ -271,6 +311,11 @@ class UseGradualNodeRenderingBuilder {
     return this;
   }
 
+  public withOrderer(orderer: RenderQueueOrderer) {
+    this.orderer = orderer;
+    return this;
+  }
+
   public call(): ReturnType<typeof useGradualNodeRendering> {
     return useGradualNodeRendering(
       this.treeWatcher,
@@ -279,6 +324,7 @@ class UseGradualNodeRenderingBuilder {
       this.delayScheduler,
       this.initialBatchSize,
       this.subsequentBatchSize,
+      this.orderer,
     );
   }
 }

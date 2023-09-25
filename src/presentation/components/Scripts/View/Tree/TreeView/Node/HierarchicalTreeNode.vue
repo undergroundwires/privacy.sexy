@@ -51,7 +51,7 @@ import {
 } from 'vue';
 import { TreeRoot } from '../TreeRoot/TreeRoot';
 import { useCurrentTreeNodes } from '../UseCurrentTreeNodes';
-import { NodeRenderingStrategy } from '../Rendering/NodeRenderingStrategy';
+import { NodeRenderingStrategy } from '../Rendering/Scheduling/NodeRenderingStrategy';
 import { useNodeState } from './UseNodeState';
 import { TreeNode } from './TreeNode';
 import LeafTreeNode from './LeafTreeNode.vue';

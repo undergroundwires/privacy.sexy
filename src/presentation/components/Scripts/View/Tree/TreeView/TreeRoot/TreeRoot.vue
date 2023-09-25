@@ -22,7 +22,7 @@ import {
 } from 'vue';
 import HierarchicalTreeNode from '../Node/HierarchicalTreeNode.vue';
 import { useCurrentTreeNodes } from '../UseCurrentTreeNodes';
-import { NodeRenderingStrategy } from '../Rendering/NodeRenderingStrategy';
+import { NodeRenderingStrategy } from '../Rendering/Scheduling/NodeRenderingStrategy';
 import { TreeRoot } from './TreeRoot';
 
 export default defineComponent({

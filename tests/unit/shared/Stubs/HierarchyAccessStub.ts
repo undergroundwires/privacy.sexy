@@ -2,7 +2,7 @@ import { HierarchyAccess } from '@/presentation/components/Scripts/View/Tree/Tre
 import { TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
 
 export class HierarchyAccessStub implements HierarchyAccess {
-  public parent: TreeNode = undefined;
+  public parent: TreeNode | undefined = undefined;
 
   public children: readonly TreeNode[] = [];
 
@@ -20,7 +20,7 @@ export class HierarchyAccessStub implements HierarchyAccess {
     this.children = children;
   }
 
-  public withParent(parent: TreeNode): this {
+  public withParent(parent: TreeNode | undefined): this {
     this.parent = parent;
     return this;
   }

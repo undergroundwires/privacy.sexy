@@ -1,13 +1,15 @@
 import {
-  WatchSource, computed, shallowRef, triggerRef, watch,
+  WatchSource, shallowRef, triggerRef, watch,
 } from 'vue';
 import { ReadOnlyTreeNode } from '../Node/TreeNode';
 import { useNodeStateChangeAggregator } from '../UseNodeStateChangeAggregator';
 import { TreeRoot } from '../TreeRoot/TreeRoot';
 import { useCurrentTreeNodes } from '../UseCurrentTreeNodes';
-import { NodeRenderingStrategy } from './NodeRenderingStrategy';
+import { NodeRenderingStrategy } from './Scheduling/NodeRenderingStrategy';
 import { DelayScheduler } from './DelayScheduler';
-import { TimeoutDelayScheduler } from './TimeoutDelayScheduler';
+import { TimeoutDelayScheduler } from './Scheduling/TimeoutDelayScheduler';
+import { RenderQueueOrderer } from './Ordering/RenderQueueOrderer';
+import { CollapseDepthOrderer } from './Ordering/CollapseDepthOrderer';
 
 /**
  * Renders tree nodes gradually to prevent UI freeze when loading large amounts of nodes.
@@ -19,6 +21,7 @@ export function useGradualNodeRendering(
   scheduler: DelayScheduler = new TimeoutDelayScheduler(),
   initialBatchSize = 30,
   subsequentBatchSize = 5,
+  orderer: RenderQueueOrderer = new CollapseDepthOrderer(),
 ): NodeRenderingStrategy {
   const nodesToRender = new Set<ReadOnlyTreeNode>();
   const nodesBeingRendered = shallowRef(new Set<ReadOnlyTreeNode>());
@@ -27,8 +30,6 @@ export function useGradualNodeRendering(
 
   const { onNodeStateChange } = useChangeAggregator(treeWatcher);
   const { nodes } = useTreeNodes(treeWatcher);
-
-  const orderedNodes = computed<readonly ReadOnlyTreeNode[]>(() => nodes.value.flattenedNodes);
 
   function updateNodeRenderQueue(node: ReadOnlyTreeNode, isVisible: boolean) {
     if (isVisible
@@ -47,14 +48,15 @@ export function useGradualNodeRendering(
     }
   }
 
-  watch(() => orderedNodes.value, (newNodes) => {
+  watch(() => nodes.value, (newNodes) => {
     nodesToRender.clear();
     nodesBeingRendered.value.clear();
-    if (!newNodes?.length) {
+    if (!newNodes || newNodes.flattenedNodes.length === 0) {
       triggerRef(nodesBeingRendered);
       return;
     }
     newNodes
+      .flattenedNodes
       .filter((node) => node.state.current.isVisible)
       .forEach((node) => nodesToRender.add(node));
     beginRendering();
@@ -80,10 +82,8 @@ export function useGradualNodeRendering(
       return;
     }
     isRenderingInProgress = true;
-    const sortedNodes = Array.from(nodesToRender).sort(
-      (a, b) => orderedNodes.value.indexOf(a) - orderedNodes.value.indexOf(b),
-    );
-    const currentBatch = sortedNodes.slice(0, batchSize);
+    const orderedNodes = orderer.orderNodes(nodesToRender);
+    const currentBatch = orderedNodes.slice(0, batchSize);
     if (currentBatch.length === 0) {
       return;
     }

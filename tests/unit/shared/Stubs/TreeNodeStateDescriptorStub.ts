@@ -26,4 +26,9 @@ export class TreeNodeStateDescriptorStub implements TreeNodeStateDescriptor {
     this.isVisible = isVisible;
     return this;
   }
+
+  public withExpansion(isExpanded: boolean): this {
+    this.isExpanded = isExpanded;
+    return this;
+  }
 }

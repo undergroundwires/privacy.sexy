@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { TimeFunctions, TimeoutDelayScheduler } from '@/presentation/components/Scripts/View/Tree/TreeView/Rendering/TimeoutDelayScheduler';
+import { TimeFunctions, TimeoutDelayScheduler } from '@/presentation/components/Scripts/View/Tree/TreeView/Rendering/Scheduling/TimeoutDelayScheduler';
 import { StubWithObservableMethodCalls } from '@tests/unit/shared/Stubs/StubWithObservableMethodCalls';
 
 describe('TimeoutDelayScheduler', () => {

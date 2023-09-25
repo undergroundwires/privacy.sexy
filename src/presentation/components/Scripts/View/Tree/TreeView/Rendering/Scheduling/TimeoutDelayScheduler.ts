@@ -1,4 +1,4 @@
-import { DelayScheduler } from './DelayScheduler';
+import { DelayScheduler } from '../DelayScheduler';
 
 export class TimeoutDelayScheduler implements DelayScheduler {
   private timeoutId: ReturnType<typeof setTimeout> | undefined = undefined;
