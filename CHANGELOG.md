@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.12.4 (2023-09-25)
+
+* win: fix Windows spotlight revert, docs, recommend | [659fea7](https://github.com/undergroundwires/privacy.sexy/commit/659fea7afcabcd0ea273cfdcc8c4bae190c126f3)
+* win: fix Edge telemetry disabling for v116+ #242 | [6d301f9](https://github.com/undergroundwires/privacy.sexy/commit/6d301f99616ed49975876803d0098eafe4d3cb2e)
+* win: fix, improve disabling automatic updates #252 | [6e9b65d](https://github.com/undergroundwires/privacy.sexy/commit/6e9b65d8b1b481c1471dde90876c37838b4ac4e5)
+* win: refactor `update.mode` key for VSCode #215 | [c27172c](https://github.com/undergroundwires/privacy.sexy/commit/c27172c32e7c316b7cb0f44cab611eed89ca034e)
+* Fix wrong action path in website CI deployment | [a1f2497](https://github.com/undergroundwires/privacy.sexy/commit/a1f24973813ccbdd7e1f06c64e1912a991a6bb64)
+* Fix compiler bug with nested optional arguments | [53222fd](https://github.com/undergroundwires/privacy.sexy/commit/53222fd83c2846089746a217482195806f960d18)
+* Fix no spacing after lists in documentation text | [f810ed0](https://github.com/undergroundwires/privacy.sexy/commit/f810ed0c147c2a46cae3b70b635ed81128646fff)
+* Rewrite tooltip UI for efficiency and Vue 3.0 #230 | [8b930fc](https://github.com/undergroundwires/privacy.sexy/commit/8b930fc57c8ee6691ed6165bcb27d97e64a1a0c0)
+* win: fix uninstallation of newer Edge #236 | [60dde11](https://github.com/undergroundwires/privacy.sexy/commit/60dde11311a2409537f5965f370b0daaaec53339)
+* win: fix delivery optimization side-effects #173 | [203daeb](https://github.com/undergroundwires/privacy.sexy/commit/203daeb4a2fca0a0295cbc2a736394f9f87725e6)
+* win: fix Defender scan artifacts removal #246 | [cb21a97](https://github.com/undergroundwires/privacy.sexy/commit/cb21a970b6b867e1476a5eb8a72b9a7fdd53a744)
+* Fix outdated and broken links in README #161 | [0303ef2](https://github.com/undergroundwires/privacy.sexy/commit/0303ef2fd98b36306523e2a0c5f5ae812a4c6c99)
+* Fix loss of tree node state when switching views | [8f188ac](https://github.com/undergroundwires/privacy.sexy/commit/8f188acd3c2d93e40c89569c74bc5cff992f0052)
+* Fix slow appearance of nodes on tree view | [bd2082e](https://github.com/undergroundwires/privacy.sexy/commit/bd2082e8c574db065bb4462f30ea3ace2cb028cb)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.12.3...0.12.4)
+
 ## 0.12.3 (2023-09-09)
 
 * linux: use user.js over prefs.js for Firefox #232 | [dae6d11](https://github.com/undergroundwires/privacy.sexy/commit/dae6d114daab6857d773071211eb57619b136281)
