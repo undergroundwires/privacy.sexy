@@ -8,4 +8,5 @@ runs:
     -
       name: Run `npm ci` with retries
       shell: bash
-      run: npm run install-deps -- --ci --root-directory "${{ inputs.working-directory }}"
+      run: npm run install-deps -- --ci
+      working-directory: ${{ inputs.working-directory }}
