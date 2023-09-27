@@ -1,4 +1,4 @@
-name: build-checks
+name: checks.build
 
 on:
   push:
@@ -68,3 +68,33 @@ jobs:
       -
         name: Verify bundled desktop build artifacts
         run: npm run check:verify-build-artifacts -- --electron-bundled
+
+  build-docker:
+    strategy:
+      matrix:
+        os: [ macos, ubuntu ] # Windows runners do not support Linux containers
+      fail-fast: false # Allows to see results from other combinations
+    runs-on: ${{ matrix.os }}-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Install Docker on macOS
+        if: matrix.os == 'macos' # macOS runner is missing Docker
+        run: |-
+          # Install Docker
+          brew install docker
+          # Docker on macOS misses daemon due to licensing, so install colima as runtime
+          brew install colima
+          # Start the daemon
+          colima start
+      -
+        name: Build Docker image
+        run: docker build -t undergroundwires/privacy.sexy:latest .
+      -
+        name: Run Docker image on port 8080
+        run: docker run -d -p 8080:80 --rm --name privacy.sexy undergroundwires/privacy.sexy:latest
+      -
+        name: Check server is up and returns HTTP 200
+        run: node ./scripts/verify-web-server-status.js --url http://localhost:8080

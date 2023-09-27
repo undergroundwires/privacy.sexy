@@ -60,6 +60,7 @@ See [ci-cd.md](./ci-cd.md) for more information.
 
 1. Build: `docker build -t undergroundwires/privacy.sexy:latest .`
 2. Run: `docker run -it -p 8080:80 --rm --name privacy.sexy undergroundwires/privacy.sexy:latest`
+3. Application should be available at [`http://localhost:8080`](http://localhost:8080)
 
 ### Building
 
@@ -81,11 +82,12 @@ See [ci-cd.md](./ci-cd.md) for more information.
 
 #### Automation scripts
 
-- [**`node scripts/print-dist-dir.js [-- <options>]`**](../scripts/print-dist-dir.js):
+- [**`node scripts/print-dist-dir.js [<options>]`**](../scripts/print-dist-dir.js):
   - Determines the absolute path of a distribution directory based on CLI arguments and outputs its absolute path.
-  - Primarily used by automation scripts.
 - [**`npm run check:verify-build-artifacts [-- <options>]`**](../scripts/verify-build-artifacts.js):
   - Verifies the existence and content of build artifacts. Useful for ensuring that the build process is generating the expected output.
+- [**`node scripts/verify-web-server-status.js --url [URL]`**](../scripts/verify-web-server-status.js):
+  - Checks if a specified server is up with retries and returns an HTTP 200 status code.
 
 ## Recommended extensions
 

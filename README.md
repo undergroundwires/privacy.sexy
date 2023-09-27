@@ -66,8 +66,8 @@
   </a>
   <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.build.yaml" target="_blank" rel="noopener noreferrer">
     <img
-      alt="Build checks status"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/build-checks/badge.svg"
+      alt="Status of build checks"
+      src="https://github.com/undergroundwires/privacy.sexy/workflows/checks.build/badge.svg"
     />
   </a>
   <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.desktop-runtime-errors.yaml" target="_blank" rel="noopener noreferrer">
