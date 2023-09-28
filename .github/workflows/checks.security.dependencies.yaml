@@ -1,4 +1,4 @@
-name: security-checks
+name: checks.security.dependencies
 
 on:
   push:

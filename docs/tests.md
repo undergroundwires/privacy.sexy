@@ -56,6 +56,11 @@ These checks validate various qualities like runtime execution, building process
 - Use [various tools](./../package.json) and [scripts](./../scripts).
 - Are automatically executed as [GitHub workflows](./../.github/workflows).
 
+### Security checks
+
+- [`checks.security.sast`](./../.github/workflows/checks.security.sast.yaml): Utilizes CodeQL to conduct Static Analysis Security Testing (SAST) to ensure the secure integrity of the codebase.
+- [`checks.security.dependencies`](./../.github/workflows/checks.security.dependencies.yaml): Performs audits on third-party dependencies to identify and mitigate potential vulnerabilities, safeguarding the project from exploitable weaknesses.
+
 ## Tests structure
 
 - [`package.json`](./../package.json): Defines test commands and includes tools used in tests.

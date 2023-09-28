@@ -16,14 +16,6 @@
       src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat"
     />
   </a>
-  <!-- Code quality -->
-  <br />
-  <a href="https://lgtm.com/projects/g/undergroundwires/privacy.sexy/context:javascript" target="_blank" rel="noopener noreferrer">
-    <img
-      alt="Language grade: JavaScript/TypeScript"
-      src="https://img.shields.io/lgtm/grade/javascript/g/undergroundwires/privacy.sexy.svg?logo=lgtm&logoWidth=18"
-    />
-  </a>
   <a href="https://codeclimate.com/github/undergroundwires/privacy.sexy/maintainability" target="_blank" rel="noopener noreferrer">
     <img
       alt="Maintainability"
@@ -50,18 +42,26 @@
       src="https://github.com/undergroundwires/privacy.sexy/workflows/e2e-tests/badge.svg"
     />
   </a>
+  <!-- Security checks -->
+  <br />
+  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.security.sast.yaml" target="_blank" rel="noopener noreferrer">
+    <img
+      alt="Status of dependency security checks"
+      src="https://github.com/undergroundwires/privacy.sexy/workflows/checks.security.sast/badge.svg"
+    />
+  </a>
+  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.security.dependencies.yaml" target="_blank" rel="noopener noreferrer">
+    <img
+      alt="Status of Static Analysis Security Testing (SAST)"
+      src="https://github.com/undergroundwires/privacy.sexy/workflows/checks.security.dependencies/badge.svg"
+    />
+  </a>
   <!-- Checks -->
   <br />
   <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.quality.yaml" target="_blank" rel="noopener noreferrer">
     <img
       alt="Quality checks status"
       src="https://github.com/undergroundwires/privacy.sexy/workflows/quality-checks/badge.svg"
-    />
-  </a>
-  <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.security.yaml" target="_blank" rel="noopener noreferrer">
-    <img
-      alt="Security checks status"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/security-checks/badge.svg"
     />
   </a>
   <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.build.yaml" target="_blank" rel="noopener noreferrer">
@@ -157,3 +157,7 @@ Refer to [development.md](./docs/development.md) for Docker usage and reading mo
 Check [architecture.md](./docs/architecture.md) for an overview of design and how different parts and layers work together. You can refer to [application.md](./docs/application.md) for a closer look at application layer codebase and [presentation.md](./docs/presentation.md) for code related to GUI layer. [collection-files.md](./docs/collection-files.md) explains the YAML files that are the core of the application and [templating.md](./docs/templating.md) documents how to use templating language in those files. In [ci-cd.md](./docs/ci-cd.md), you can read more about the pipelines that automates maintenance tasks and ensures you get what see.
 
 [docs/](./docs/) folder includes all other documentation.
+
+## Security
+
+Security is a top priority at privacy.sexy. An extensive commitment to security verification ensures this priority. For any security concerns or vulnerabilities, please consult the [Security Policy](./SECURITY.md).
