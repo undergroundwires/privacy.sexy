@@ -122,7 +122,7 @@
 ## Get started
 
 - 🌍️ **Online**: [https://privacy.sexy](https://privacy.sexy).
-- 🖥️ **Offline**: Check [releases page](https://github.com/undergroundwires/privacy.sexy/releases), or download directly for: [Windows](https://github.com/undergroundwires/privacy.sexy/releases/download/0.12.4/privacy.sexy-Setup-0.12.4.exe), [macOS](https://github.com/undergroundwires/privacy.sexy/releases/download/0.12.4/privacy.sexy-0.12.4.dmg), [Linux](https://github.com/undergroundwires/privacy.sexy/releases/download/0.12.4/privacy.sexy-0.12.4.AppImage).
+- 🖥️ **Offline**: Download directly for: [Windows](https://github.com/undergroundwires/privacy.sexy/releases/download/0.12.4/privacy.sexy-Setup-0.12.4.exe), [macOS](https://github.com/undergroundwires/privacy.sexy/releases/download/0.12.4/privacy.sexy-0.12.4.dmg), [Linux](https://github.com/undergroundwires/privacy.sexy/releases/download/0.12.4/privacy.sexy-0.12.4.AppImage). For more options, see [here](#additional-install-options).
 
 Online version does not require to run any software on your computer. Offline version has more functions such as running the scripts directly.
 
@@ -149,6 +149,16 @@ Online version does not require to run any software on your computer. Offline ve
 **Star 🤩**. Feel free to give it a star ⭐ .
 
 **Contribute 👷**. Contributions of any type are welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) as the starting point. It includes useful information like [how to add new scripts](./CONTRIBUTING.md#extend-scripts).
+
+## Additional Install Options
+
+- Check the [releases page](https://github.com/undergroundwires/privacy.sexy/releases) for all available versions.
+- Using [Scoop](https://scoop.sh/#/apps?q=privacy.sexy&s=2&d=1&o=true) package manager on Windows:
+
+  ```powershell
+    scoop bucket add extras
+    scoop install privacy.sexy
+  ```
 
 ## Development
 
