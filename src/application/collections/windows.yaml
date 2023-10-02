@@ -7919,22 +7919,68 @@ functions:
             function: RunPowerShell
             parameters:
                 code: |-
-                    $jsonfile = "$env:APPDATA\Code\User\settings.json"
-                    if (!(Test-Path $jsonfile -PathType Leaf)) {
-                        Write-Host "No updates. Settings file was not at $jsonfile"
+                    $settingKey='{{ $setting }}'
+                    $settingValue={{ $powerShellValue }}
+                    $jsonFilePath = "$($env:APPDATA)\Code\User\settings.json"
+                    if (!(Test-Path $jsonFilePath -PathType Leaf)) {
+                        Write-Host "Skipping, no updates. Settings file was not at `"$jsonFilePath`"."
                         exit 0
                     }
-                    $json = Get-Content $jsonfile | Out-String | ConvertFrom-Json
-                    $json | Add-Member -Type NoteProperty -Name '{{ $setting }}' -Value {{ $powerShellValue }} -Force
-                    $json | ConvertTo-Json | Set-Content $jsonfile
-                revertCode: |-
-                    $jsonfile = "$env:APPDATA\Code\User\settings.json"
-                    if (!(Test-Path $jsonfile -PathType Leaf)) {
-                        Write-Error "Settings file could not be found at $jsonfile" -ErrorAction Stop
+                    try {
+                        $fileContent = Get-Content $jsonFilePath -ErrorAction Stop
+                    } catch {
+                        throw "Error, failed to read the settings file: `"$jsonFilePath`". Error: $_"
                     }
-                    $json = Get-Content $jsonfile | ConvertFrom-Json
-                    $json.PSObject.Properties.Remove('{{ $setting }}')
-                    $json | ConvertTo-Json | Set-Content $jsonfile
+                    if ([string]::IsNullOrWhiteSpace($fileContent)) {
+                        Write-Host "Settings file is empty. Treating it as default empty JSON object."
+                        $fileContent = "{}"
+                    }
+                    try {
+                        $json = $fileContent | ConvertFrom-Json
+                    } catch {
+                        throw "Error, invalid JSON format in the settings file: `"$jsonFilePath`". Error: $_"
+                    }
+                    $existingValue = $json.$settingKey
+                    if ($existingValue -eq $settingValue) {
+                        Write-Host "Skipping, `"$settingKey`" is already configured as `"$settingValue`"."
+                        exit 0
+                    }
+                    $json | Add-Member -Type NoteProperty -Name $settingKey -Value $settingValue -Force
+                    $json | ConvertTo-Json | Set-Content $jsonFilePath
+                    Write-Host "Successfully applied the setting to the file: `"$jsonFilePath`"."
+                revertCode: |-
+                    $settingKey='{{ $setting }}'
+                    $settingValue={{ $powerShellValue }}
+                    $jsonFilePath = "$($env:APPDATA)\Code\User\settings.json"
+                    if (!(Test-Path $jsonFilePath -PathType Leaf)) {
+                        Write-Host "Skipping, no need to revert because settings file is not found: `"$jsonFilePath`"."
+                        exit 0
+                    }
+                    try {
+                        $fileContent = Get-Content $jsonFilePath -ErrorAction Stop
+                    } catch {
+                        throw "Error, failed to read the settings file: `"$jsonFilePath`". Error: $_"
+                    }
+                    if ([string]::IsNullOrWhiteSpace($fileContent)) {
+                        Write-Host "Skipping, no need to revert because settings file is empty: `"$jsonFilePath`"."
+                        exit 0
+                    }
+                    try {
+                        $json = $fileContent | ConvertFrom-Json
+                    } catch {
+                        throw "Error, invalid JSON format in the settings file: `"$jsonFilePath`". Error: $_"
+                    }
+                    if (!$json.PSObject.Properties[$settingKey]) {
+                        Write-Host "Skipping, no need to revert because setting `"$settingKey`" does not exist."
+                        exit 0
+                    }
+                    if ($json.$settingKey -ne $settingValue) {
+                        Write-Host "Skipping, setting (`"$settingKey`") has different configuration than `"$settingValue`": `"$($json.$settingKey)`"."
+                        exit 0
+                    }
+                    $json.PSObject.Properties.Remove($settingKey)
+                    $json | ConvertTo-Json | Set-Content $jsonFilePath
+                    Write-Host "Successfully reverted the setting from file: `"$jsonFilePath`"."
     -
         name: RunPowerShell
         parameters:

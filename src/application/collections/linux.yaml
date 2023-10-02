@@ -3183,7 +3183,7 @@ functions:
       parameters:
         code: |-
           from pathlib import Path
-          import os, json
+          import os, json, sys
           property_name = '{{ $setting }}'
           target = json.loads('{{ $jsonValue }}')
           home_dir = f'/home/{os.getenv("SUDO_USER", os.getenv("USER"))}'
@@ -3200,7 +3200,15 @@ functions:
               continue
             print(f'Reading file at "{settings_file}".')
             file_content = file.read_text()
-            json_object = json.loads(file_content)
+            if not file_content.strip():
+              print('Settings file is empty. Treating it as default empty JSON object.')
+              file_content = '{}'
+            json_object = None
+            try:
+              json_object = json.loads(file_content)
+            except json.JSONDecodeError:
+              print(f'Error, invalid JSON format in the settings file: "{settings_file}".', file=sys.stderr)
+              continue
             if property_name not in json_object:
               print(f'Settings "{property_name}" is not configured.')
             else:
@@ -3215,7 +3223,7 @@ functions:
             print(f'Successfully configured "{property_name}" to {json.dumps(target)}.')
         revertCode: |-
           from pathlib import Path
-          import os, json
+          import os, json, sys
           property_name = '{{ $setting }}'
           target = json.loads('{{ $jsonValue }}')
           home_dir = f'/home/{os.getenv("SUDO_USER", os.getenv("USER"))}'
@@ -3232,7 +3240,14 @@ functions:
               continue
             print(f'Reading file at "{settings_file}".')
             file_content = file.read_text()
-            json_object = json.loads(file_content)
+            if not file_content.strip():
+              print(f'Skipping, no need to revert because settings file is empty: "{settings_file}".')
+              continue
+            try:
+              json_object = json.loads(file_content)
+            except json.JSONDecodeError:
+              print(f'Error, invalid JSON format in the settings file: "{settings_file}".', file=sys.stderr)
+              continue
             if property_name not in json_object:
               print(f'Skipping, "{property_name}" is not configured.')
               continue
