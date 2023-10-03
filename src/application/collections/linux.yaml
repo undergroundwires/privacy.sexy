@@ -2573,22 +2573,131 @@ actions:
               See also: [What is browser fingerprinting? | AmIUnique.org](https://web.archive.org/web/20221029223510/https://www.amiunique.org/faq)
             children:
               -
-                name: Enable Firefox First party isolation
-                recommend: strict
+                category: Enable Firefox state partitioning (Total Cookie Protection)
                 docs: |-
-                  First-party isolation (also known as "double keying") can prevent third parties from tracking
-                  users across multiple sites [1].
+                  Web browsers, including Firefox, save various data types such as cookies, cache, and site-specific details.
+                  While this data helps in providing a faster and personalized browsing experience, it can be exploited by websites to track
+                  your activities across the internet, potentially compromising your privacy.
 
-                  This script configures `privacy.firstparty.isolate` to be enabled, preventing third parties
-                  from tracking users across websites, also known as supercookies [2].
+                  State partitioning, also known as "Total Cookie Protection" [1], is a feature designed to enhance user privacy in Firefox.
+                  It works by allocating different, isolated storage spaces for every website you visit [2]. This means that each website has its own
+                  "compartment" where it saves its data, separate from other sites [2]. This structure limits websites' capabilities to track users
+                  across various domains.
 
-                  [1]: https://web.archive.org/web/20221025162743/https://wiki.archlinux.org/title/Firefox/Privacy#First_party_isolation "Firefox/Privacy - ArchWiki | wiki.archlinux.org"
-                  [2]: https://web.archive.org/web/20221025200527/https://bugzilla.mozilla.org/show_bug.cgi?id=1397624#c0
-                call:
-                  function: AddFirefoxPrefs
-                  parameters:
-                    prefName: privacy.firstparty.isolate
-                    jsonValue: 'true'
+                  The underlying technology for state partitioning in Firefox is termed "double-keying" [1]. In this method, when a website intends
+                  to store data, Firefox attaches an extra identifier tied to the site's origin, ensuring unique data storage for each site [1]. For
+                  example, if two different sites incorporate content from the same third-party source, each of these sites will have its own unique
+                  version of the third-party's data (like cookies) due to state partitioning [1]. This impedes the third-party's tracking ability
+                  between the sites.
+
+                  This protection isn't just against known trackers [1]. Firefox applies state partitioning to all third-party content on a site,
+                  ensuring a comprehensive privacy coverage, beyond just identifiable tracking sources [1] [3].
+
+                  A notable misuse by some trackers is the creation of "supercookies" [4]. Contrary to standard cookies, which users can delete easily,
+                  supercookies are harder to eliminate and block, posing a considerable privacy challenge. Through state partitioning, Firefox renders
+                  supercookies ineffective for tracking users across sites [4]. As a part of this feature, Firefox not only ensures site-specific data
+                  but also partitions multiple caches, such as HTTP cache, image cache, and favicon cache [4]. This partitioning prevents any potential
+                  cache exploitation for tracking purposes [4].
+
+                  In summary, enabling state partitioning in Firefox is a powerful privacy tool, helping to defend users from potential online tracking
+                  and offering a more private browsing experience.
+
+                  [1]: https://web.archive.org/web/20230918171957/https://hacks.mozilla.org/2021/02/introducing-state-partitioning/ "Introducing State Partitioning - Mozilla Hacks - the Web developer blog"
+                  [2]: https://web.archive.org/web/20230918172155/https://developer.mozilla.org/en-US/docs/Web/Privacy/State_Partitioning "State Partitioning - Privacy on the web | MDN"
+                  [3]: https://web.archive.org/web/20230918172352/https://blog.mozilla.org/security/2021/02/23/total-cookie-protection/ "Firefox 86 Introduces Total Cookie Protection - Mozilla Security Blog"
+                  [4]: https://web.archive.org/web/20230918172503/https://blog.mozilla.org/security/2021/01/26/supercookie-protections/ "Firefox 85 Cracks Down on Supercookies - Mozilla Security Blog"
+                children:
+                  -
+                    name: Enable dynamic First-Party Isolation (dFPI)
+                    recommend: standard
+                    docs: |-
+                      Dynamic First-Party Isolation, also known as dFPI, is an advanced privacy feature in Firefox. This feature commonly
+                      referred as:
+
+                      - Total Cookie Protection [1],
+                      - dFPI (dynamic First-Party Isolation) [2],
+                      - Dynamic storage partitioning [3].
+
+                      Essentially, dFPI is an enhanced version of a previous privacy tool known as First-Party Isolation (FPI) [4].
+
+                      The primary purpose of dFPI is to improve user privacy online. It accomplishes this by preventing third-party websites from
+                      accessing or tracking a user's data across different websites [1] [3].
+
+                      By default, this feature is activated for all Firefox desktop users [5].
+
+                      Within Firefox's settings, there's an option called `network.cookie.cookieBehavior` which governs how dFPI operates.
+                      This setting has three potential values [3]:
+
+                      - `5`: The browser will block known trackers and partition storage for third-party content.
+                      - `4`: Only known trackers will be blocked without any partitioning of third-party storage.
+                      - `0`: All trackers and third-party content are allowed.
+
+                      This script sets the value to `5`, ensuring the highest level of privacy by blocking trackers and partitioning third-party
+                      storage. This aligns with recommended privacy practices because even if you choose the `4` value, the older First-Party
+                      Isolation (FPI) will still be active [6].
+
+                      [1]: https://web.archive.org/web/20231003094145/https://support.mozilla.org/en-US/kb/total-cookie-protection-and-website-breakage-faq "Total Cookie Protection and website breakage FAQ | Firefox Help"
+                      [2]: https://web.archive.org/web/20231003094154/https://bugzilla.mozilla.org/show_bug.cgi?id=1746646 "1746646 - (tcp-mochitests) [meta] Make mochitests work with TCP enabled (cookieBehavior = 5) | bugzilla.mozilla.org"
+                      [3]: https://web.archive.org/web/20230918172155/https://developer.mozilla.org/en-US/docs/Web/Privacy/State_Partitioning#disable_dynamic_state_partitioning "State Partitioning - Privacy on the web | MDN"
+                      [4]: https://web.archive.org/web/20231003094207/https://bugzilla.mozilla.org/show_bug.cgi?id=1649876#c5 "1649876 - Migrate FPI users to dFPI | bugzilla.mozilla.org"
+                      [5]: https://blog.mozilla.org/en/products/firefox/firefox-rolls-out-total-cookie-protection-by-default-to-all-users-worldwide/ "Firefox Rolls Out Total Cookie Protection By Default"
+                      [6]: https://web.archive.org/web/20231003094350/https://bugzilla.mozilla.org/show_bug.cgi?id=1631676#c25 "1631676 - Disable dfpi when privacy.firstparty.isolate=true | bugzilla.mozilla.org"
+                    call:
+                      function: AddFirefoxPrefs
+                      parameters:
+                        prefName: network.cookie.cookieBehavior
+                        jsonValue: '5'
+                  -
+                    name: Enable Firefox network partitioning
+                    recommend: standard
+                    docs: |-
+                      Network partitioning is a method used by Firefox to enhance user privacy [1]. When enabled, each website you visit has its own
+                      isolated storage location, preventing it from accessing data from another website [1]. This limits the ability of websites to track
+                      users across multiple sites [1].
+
+                      Network Partitioning, formerly referred as *cache partitioning* [2], is a subset of state partitioning [1]. While state partitioning
+                      deals with data like cookies, network partitioning deals with networking-related components, such as caches and connection pools [1].
+                      It ensures that these components are isolated to each website, further enhancing user privacy [1].
+
+                      Firefox has enabled network partitioning by default since version 85 [1]. Once enabled, network partitioning becomes permanent,
+                      meaning websites cannot bypass or relax its restrictions [1].
+
+                      Network partitioning can be controlled with the `privacy.partition.network_state` preference [1].
+
+                      [1]: https://web.archive.org/web/20230918172155/https://developer.mozilla.org/en-US/docs/Web/Privacy/State_Partitioning "State Partitioning - Privacy on the web | MDN"
+                      [2]: https://web.archive.org/web/20231003094417/https://bugzilla.mozilla.org/show_bug.cgi?id=1687569 "1687569 - cache partitioning causes web page saving extensions to waste more time and data | bugzilla.mozilla.org"
+                    call:
+                      function: AddFirefoxPrefs
+                      parameters:
+                        prefName: privacy.partition.network_state
+                        jsonValue: 'true'
+                  -
+                    name: Disable depreciated Firefox First-Party Isolation (FPI)
+                    recommend: strict
+                    docs: |-
+                      First-party isolation (FPI) helps in preventing third parties from tracking users across multiple websites [1] [2]. This is sometimes
+                      referred to as "double keying" (double-keying) [1] or supercookies [1] [2].
+
+                      This script disables FPI in favor of a newer technology called dynamic First-Party Isolation (dFPI) for the following reasons:
+
+                      1. FPI and dFPI conflict with each other, and they cannot function simultaneously [3] [4]. Additionally, Mozilla doesn't plan to make
+                      them compatible [5].
+                      2. FPI has been marked as depreciated and is expected to be phased out [3], with dFPI set to become the standard in the future [6].
+                      3. dFPI, when combined with network partitioning, offers broader and more effective privacy coverage than FPI, being essentially a
+                      superset of FPI [3] [7].
+
+                      [1]: https://web.archive.org/web/20221025162743/https://wiki.archlinux.org/title/Firefox/Privacy#First_party_isolation "Firefox/Privacy - ArchWiki | wiki.archlinux.org"
+                      [2]: https://web.archive.org/web/20221025200527/https://bugzilla.mozilla.org/show_bug.cgi?id=1397624#c0 "1397624 - Provide an option for first-party isolation in Private Browsing Mode | bugzilla.mozilla.org"
+                      [3]: https://web.archive.org/web/20231003094207/https://bugzilla.mozilla.org/show_bug.cgi?id=1649876#c0 "1649876 - Migrate FPI users to dFPI | bugzilla.mozilla.org"
+                      [4]: https://web.archive.org/web/20231003094350/https://bugzilla.mozilla.org/show_bug.cgi?id=1631676#c25 "1631676 - Disable dfpi when privacy.firstparty.isolate=true | bugzilla.mozilla.org"
+                      [5]: https://web.archive.org/web/20231003094207/https://bugzilla.mozilla.org/show_bug.cgi?id=1649876#c3 "1649876 - Migrate FPI users to dFPI | bugzilla.mozilla.org"
+                      [6]: https://web.archive.org/web/20231003094207/https://bugzilla.mozilla.org/show_bug.cgi?id=1649876#c5 "1649876 - Migrate FPI users to dFPI | bugzilla.mozilla.org"
+                      [7]: https://web.archive.org/web/20231003094358/https://bugzilla.mozilla.org/show_bug.cgi?id=1637344#c2 "1637344 - Add message to show dFPI is incompatible with FPI | bugzilla.mozilla.org"
+                    call:
+                      function: AddFirefoxPrefs
+                      parameters:
+                        prefName: privacy.firstparty.isolate
+                        jsonValue: 'false'
               -
                 name: Enable Firefox tracking protection
                 recommend: standard
