@@ -7318,6 +7318,15 @@ actions:
                         category: Preinstalled
                         children:
                             -
+                                name: Windows Copilot on Windows 11
+                                docs: https://www.neowin.net/guides/how-to-turn-off-or-remove-windows-copilot-on-windows-11/
+                                code: |-
+                                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot" /v "TurnOffWindowsCopilot" /t "REG_DWORD" /d "1" /f
+                                    reg add "HKCU\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot" /v "TurnOffWindowsCopilot" /t "REG_DWORD" /d "1" /f
+                                revertCode: |-
+                                    reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot" /v "TurnOffWindowsCopilot" /f 2>nul
+                                    reg delete "HKCU\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot" /v "TurnOffWindowsCopilot" /f 2>nul
+                            -
                                 name: DirectX Configuration Database capability
                                 call:
                                     function: UninstallCapability
