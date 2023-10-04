@@ -7315,15 +7315,15 @@ actions:
                 docs: https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/features-on-demand-non-language-fod#fods-that-are-not-preinstalled-but-may-need-to-be-preinstalled
                 children:
                     -
+                        name: Disable Windows Copilot
+                        docs: https://web.archive.org/web/20231004134328/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsai#turnoffwindowscopilot
+                        code: |-
+                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot" /v "TurnOffWindowsCopilot" /t "REG_DWORD" /d "1" /f
+                        revertCode: |-
+                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot" /v "TurnOffWindowsCopilot" /f 2>nul
+                    -
                         category: Preinstalled
                         children:
-                            -
-                                name: Disable Windows Copilot
-                                docs: https://web.archive.org/web/20231004134328/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsai#turnoffwindowscopilot
-                                code: |-
-                                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot" /v "TurnOffWindowsCopilot" /t "REG_DWORD" /d "1" /f
-                                revertCode: |-
-                                    reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot" /v "TurnOffWindowsCopilot" /f 2>nul
                             -
                                 name: DirectX Configuration Database capability
                                 call:
