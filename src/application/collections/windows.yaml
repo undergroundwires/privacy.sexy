@@ -6499,20 +6499,105 @@ actions:
                                 category: Microsoft Edge
                                 children:
                                     -
-                                        name: Microsoft Edge (Legacy) app
-                                        recommend: strict
-                                        call:
-                                            function: UninstallSystemApp
-                                            parameters:
-                                                packageName: Microsoft.MicrosoftEdge
-                                    -
-                                        name: Microsoft Edge (Legacy) Dev Tools Client app
-                                        docs: https://docs.microsoft.com/en-us/microsoft-edge/devtools-guide
-                                        recommend: strict
-                                        call:
-                                            function: UninstallSystemApp
-                                            parameters:
-                                                packageName: Microsoft.MicrosoftEdgeDevToolsClient
+                                        category: Uninstall Microsoft Edge (Legacy)
+                                        docs: |-
+                                            This category aids in the removal of Microsoft Edge Legacy. Microsoft introduced the Legacy version based on the EdgeHTML engine [1].
+                                            However, as of March 9, 2021, they stopped supporting this version, implying it no longer gets security updates or patches [1].
+                                            Unsupported software can pose security vulnerabilities.
+
+                                            Initially, this version was the default browser on Windows 10 PCs [1]. Due to its tight integration with Windows, a simple uninstall
+                                            might not eliminate all related files.
+
+                                            One privacy concern with Microsoft Edge Legacy is how it handles your browsing history. When used, the browser integrates your browsing
+                                            history into your device's activity log that is sent to Microsoft [2]. But, even if disabled, the data remains on your device [2].
+                                            This local storage of data can be analyzed for your behavior, potentially compromising your privacy.
+
+                                            By utilizing this script, you ensure a comprehensive removal of the browser and its related components, thus enhancing your system's
+                                            privacy and security.
+
+                                            [1]: https://web.archive.org/web/20231004084011/https://support.microsoft.com/en-us/microsoft-edge/what-is-microsoft-edge-legacy-3e779e55-4c55-08e6-ecc8-2333768c0fb0 "What is Microsoft Edge Legacy? - Microsoft Support"
+                                            [2]: https://support.microsoft.com/en-us/windows/-windows-activity-history-and-your-privacy-2b279964-44ec-8c2f-e0c2-6779b07d2cbd "Windows activity history and your privacy - Microsoft Support"
+                                        children:
+                                            -
+                                                name: Microsoft Edge (Legacy) app
+                                                recommend: strict
+                                                docs: |-
+                                                    This script uninstalls the Microsoft Edge Legacy Windows app.
+
+                                                    As of March 9, 2021, this app stopped receiving any updates or security patches [1]. Such unsupported software can become a security
+                                                    risk. Furthermore, using this version means your browsing data gets integrated into your device's activity history [2]. Microsoft can
+                                                    access this data [2] and it remains stored locally, leaving traces of your behavior [2].
+
+                                                    Removing this software not only minimizes potential security threats but also improves your privacy by preventing data accumulation.
+
+                                                    [1]: https://web.archive.org/web/20231004085037/https://learn.microsoft.com/en-us/lifecycle/faq/internet-explorer-microsoft-edge "Lifecycle FAQ - Internet Explorer and Microsoft Edge | Microsoft Learn"
+                                                    [2]: https://support.microsoft.com/en-us/windows/-windows-activity-history-and-your-privacy-2b279964-44ec-8c2f-e0c2-6779b07d2cbd "Windows activity history and your privacy - Microsoft Support"
+                                                call:
+                                                    function: UninstallSystemApp
+                                                    parameters:
+                                                        packageName: Microsoft.MicrosoftEdge
+                                            -
+                                                name: Microsoft Edge (Legacy) Dev Tools Client app
+                                                recommend: strict
+                                                docs: |-
+                                                    This script removes the Developer Tools (DevTools) app that was paired with Microsoft Edge Legacy. These tools, now outdated, haven't
+                                                    received updates for a while [1] [2]. If the main Edge application is uninstalled, these tools lose their relevance and should be removed
+                                                    as well.
+
+                                                    Getting rid of such outdated software components helps to protect your security. They could have vulnerabilities waiting to be exploited. By uninstalling
+                                                    them, you're taking a step towards a more secure system.
+
+                                                    [1]: https://web.archive.org/web/20231004085037/https://learn.microsoft.com/en-us/lifecycle/faq/internet-explorer-microsoft-edge "Lifecycle FAQ - Internet Explorer and Microsoft Edge | Microsoft Learn"
+                                                    [2]: https://web.archive.org/web/20231004084959/https://learn.microsoft.com/en-us/archive/microsoft-edge/legacy/developer/ "Legacy Microsoft Edge developer documentation - Legacy Microsoft Edge developer docs | Microsoft Learn"
+                                                call:
+                                                    function: UninstallSystemApp
+                                                    parameters:
+                                                        packageName: Microsoft.MicrosoftEdgeDevToolsClient
+                                            -
+                                                name: Remove Microsoft Edge (legacy) file and URL associations
+                                                recommend: strict
+                                                docs: |-
+                                                    This script unlinks file and URL associations from the legacy Microsoft Edge, ensuring that it is not mistakenly recognized as
+                                                    the default browser on your system.
+
+                                                    When you remove Microsoft Edge and don't disconnect its associations as the default browser, certain Windows functionalities may
+                                                    malfunction, as reported by users [1]. The standard uninstallation method for Microsoft Edge does not unlink these associations,
+                                                    leading to possible issues.
+
+                                                    For newer versions of Windows (specifically, Windows 10 21H2 and Windows 11 21H2 and beyond), the Chromium-based Edge is associated
+                                                    with majority of default options (with ProgIDs `MSEdgePDF` and `MSEdgeHTM` [2]), however there are still associations for legacy Edge.
+
+                                                    The legacy Microsoft Edge is associated with several ProgIDs, such as `AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9` and `AppXd4nrz8ff68srnhf9t5a8sbjyar1cr723`,
+                                                    all prefixed with `AppX` [3].
+
+                                                    To check the specific file and URL associations handled by Edge, you can look under the following registry keys, although not
+                                                    all these keys are registered by the operating system:
+
+                                                    - `HKCU\SOFTWARE\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\Repository\Packages\Microsoft.MicrosoftEdge_{Version}\MicrosoftEdge\Capabilities\URLAssociations`
+                                                    - `HKCU\SOFTWARE\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\Repository\Packages\Microsoft.MicrosoftEdge_{Version}\MicrosoftEdge\Capabilities\FileAssociations`
+
+                                                    Within these keys:
+
+                                                    - URL associations include `http`, `https`, `microsoft-edge`, and others.
+                                                    - File associations include `.htm`, `.html`, `.pdf`, and `.svg`.
+
+                                                    By running this script, you help in enhancing your system's privacy and ensuring that no unintended associations remain that could potentially cause
+                                                    vulnerabilities or other issues.
+
+                                                    [1]: https://github.com/undergroundwires/privacy.sexy/issues/64 "[BUG]: can't sign in again · Issue #64 · undergroundwires/privacy.sexy"
+                                                    [2]: https://web.archive.org/web/20231001221635/https://learn.microsoft.com/en-us/deployedge/edge-default-browser "Set Microsoft Edge as the default browser on Windows and macOS | Microsoft Learn"
+                                                    [3]: https://web.archive.org/web/20231001223221/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-applicationdefaults#defaultassociationsconfiguration
+                                                call:
+                                                    function: RemoveBrowserAssociations
+                                                    parameters:
+                                                        progIdPattern: AppX*
+                                                        # List:
+                                                        #   $keywords = @('AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9', 'AppXd4nrz8ff68srnhf9t5a8sbjyar1cr723', 'AppXq0fevzme2pys62n3e0fbqa7peapykr8v', 'AppX90nv6nhay5n6a98fnetv7tpk64pp35es')
+                                                        #   Get-Item -Path 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts' | ForEach-Object { $_.Property } | Where-Object { $key = $_; $keywords | Where-Object { $key -match $_ } }
+                                                        toastAssociations: >-
+                                                            AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9_.htm AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9_.html
+                                                            AppXd4nrz8ff68srnhf9t5a8sbjyar1cr723_.pdf
+                                                            AppXq0fevzme2pys62n3e0fbqa7peapykr8v_http AppX90nv6nhay5n6a98fnetv7tpk64pp35es_https
                                     -
                                         name: Win32 Web View Host app / Desktop App Web Viewer
                                         recommend: strict
@@ -7065,9 +7150,9 @@ actions:
                         [2]: https://stackoverflow.com/questions/46744840/export-registry-value-to-file-and-then-set-a-variable-in-batch "Export registry value to file and then set a variable in Batch - Stack Overflow | stackoverflow.com"
                     code: reg delete "HKCU\Environment" /v "OneDrive" /f 2>nul
             -
-                name: Uninstall Edge (chromium-based)
+                category: Uninstall Edge (chromium-based)
                 docs: |-
-                    This script automates the uninstallation of Microsoft Edge (also known as "Chromium Edge" or "New Edge" [1]), the web browser that comes
+                    This category automates the uninstallation of Microsoft Edge (also known as "Chromium Edge" or "New Edge" [1]), the web browser that comes
                     pre-installed with many versions of Windows.
 
                     Microsoft Edge collects various types of data, some of which pertain to your browsing habits, such as the websites you visit, your search
@@ -7075,66 +7160,132 @@ actions:
                     how the browser is functioning [2]. These pieces of information could be used for targeted advertising or profiling. Removing Microsoft
                     Edge ensures that it is not silently accumulating this data in the background, thereby improving your overall privacy.
 
-                    By default, Microsoft Edge doesn't allow easy uninstallation and has officially declared Microsoft Edge as uninstallable on Windows [3].
-
-                    This scripts uses two steps to achieve this:
-
-                    1. **Enable Uninstallation**: The script modifies a specific registry key to allow the uninstallation of Microsoft Edge. This step is crucial
-                    because, starting from version 116 of Edge, you cannot uninstall it unless this registry key is set.
-                    2. **Run Uninstaller**: The script then finds the Microsoft Edge installer (`setup.exe`) for every Microsoft Edge installation (it is possible
-                    to have multiple versions) and executes it to perform a system-level uninstall.
-
-                    There's no official documentation for the Edge installer or registry keys codes, which this script relies on. However, these have been verified
-                    through testing and community support to work as expected.
+                    By default, Microsoft Edge doesn't allow uninstallation and has officially declared Microsoft Edge as uninstallable on Windows [3].
 
                     [1]: https://en.wikipedia.org/w/index.php?title=Microsoft_Edge&oldid=1174053020#New_Edge_(2019%E2%80%93present) "Microsoft Edge - Wikipedia"
                     [2]: https://web.archive.org/web/20230907002709/https://support.microsoft.com/en-us/microsoft-edge/learn-more-about-diagnostic-data-collection-in-microsoft-edge-7fcee15b-39f7-ba02-bc59-9eef622c1a9f "Learn more about diagnostic data collection in Microsoft Edge - Microsoft Support"
                     [3]: https://web.archive.org/web/20230907002011/https://support.microsoft.com/en-us/microsoft-edge/why-can-t-i-uninstall-microsoft-edge-ee150b3b-7d7a-9984-6d83-eb36683d526d "Why can't I uninstall Microsoft Edge? - Microsoft Support"
-                call:
+                children:
                     -
-                        function: RunInlineCode
-                        parameters:
-                            code: reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdateDev" /v "AllowUninstall" /t REG_DWORD /d "1" /f
-                            revertCode: reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdateDev" /v "AllowUninstall" /f 2>nul # It does not exists since Windows 10 21H2 and Windows 11 21H2
-                    -
-                        function: RunPowerShell
-                        parameters:
-                            code: |-
-                                $installer = (Get-ChildItem "$($env:ProgramFiles)*\Microsoft\Edge\Application\*\Installer\setup.exe")
-                                if (!$installer) {
-                                    Write-Host 'Installer not found. Microsoft Edge may already be uninstalled.'
-                                } else {
-                                    $installer | ForEach-Object {
-                                        $uninstallerPath = $_.FullName
-                                        $installerArguments = @("--uninstall", "--system-level", "--verbose-logging", "--force-uninstall")
-                                        Write-Output "Uninstalling through uninstaller: $uninstallerPath"
-                                        $process = Start-Process -FilePath "$uninstallerPath" -ArgumentList $installerArguments -Wait -PassThru
-                                        if ($process.ExitCode -eq 0 -or $process.ExitCode -eq 19) {
-                                            Write-Host "Successfully uninstalled Edge."
+                        name: Uninstall Edge through official installer
+                        docs: |-
+                            This script uninstalls Microsoft Edge using the official installer.
+
+                            1. **Enable Uninstallation**: The script modifies a specific registry key to allow the uninstallation of Microsoft Edge. This step is crucial
+                            because, starting from version 116 of Edge, you cannot uninstall it unless this registry key is set.
+                            2. **Run Uninstaller**: The script then finds the Microsoft Edge installer (`setup.exe`) for every Microsoft Edge installation (it is possible
+                            to have multiple versions) and executes it to perform a system-level uninstall.
+
+                            There's no official documentation for the Edge installer or registry keys codes, which this script relies on. However, these have been verified
+                            through testing and community support to work as expected.
+                        call:
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdateDev" /v "AllowUninstall" /t REG_DWORD /d "1" /f
+                                    revertCode: reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdateDev" /v "AllowUninstall" /f 2>nul # It does not exists since Windows 10 21H2 and Windows 11 21H2
+                            -
+                                function: RunPowerShell
+                                parameters:
+                                    code: |-
+                                        $installer = (Get-ChildItem "$($env:ProgramFiles)*\Microsoft\Edge\Application\*\Installer\setup.exe")
+                                        if (!$installer) {
+                                            Write-Host 'Installer not found. Microsoft Edge may already be uninstalled.'
                                         } else {
-                                            Write-Error "Failed to uninstall, uninstaller failed with exit code $($process.ExitCode)."
+                                            $installer | ForEach-Object {
+                                                $uninstallerPath = $_.FullName
+                                                $installerArguments = @("--uninstall", "--system-level", "--verbose-logging", "--force-uninstall")
+                                                Write-Output "Uninstalling through uninstaller: $uninstallerPath"
+                                                $process = Start-Process -FilePath "$uninstallerPath" -ArgumentList $installerArguments -Wait -PassThru
+                                                if ($process.ExitCode -eq 0 -or $process.ExitCode -eq 19) {
+                                                    Write-Host "Successfully uninstalled Edge."
+                                                } else {
+                                                    Write-Error "Failed to uninstall, uninstaller failed with exit code $($process.ExitCode)."
+                                                }
+                                            }
                                         }
-                                    }
-                                }
-                            revertCode: |-
-                                $edgeExePath = Get-ChildItem -Path "$($env:ProgramFiles)*\Microsoft\Edge\Application" -Filter 'msedge.exe' -Recurse
-                                if ($edgeExePath) {
-                                    Write-Host 'Microsoft Edge is already installed. Skipping reinstallation.'
-                                    Exit 0
-                                }
-                                Write-Host 'Downloading Microsoft Edge...'
-                                $edgeInstallerUrl = 'https://c2rsetup.officeapps.live.com/c2r/downloadEdge.aspx?platform=Default&Channel=Stable&language=en'
-                                $downloadPath = "$($env:TEMP)\MicrosoftEdgeSetup.exe"
-                                Invoke-WebRequest -Uri "$edgeInstallerUrl" -OutFile "$downloadPath"
-                                $installerArguments = @('/install', '/silent')
-                                Write-Host 'Installing Microsoft Edge...'
-                                $process = Start-Process -FilePath "$downloadPath" -ArgumentList "$installerArguments" -Wait -PassThru
-                                Remove-Item -Path $downloadPath -Force
-                                if ($process.ExitCode -eq 0) {
-                                    Write-Host 'Successfully reinstalled Microsoft Edge.'
-                                } else {
-                                    Write-Error "Failed to reinstall Microsoft Edge. Installer failed with exit code $($process.ExitCode)."
-                                }
+                                    revertCode: |-
+                                        $edgeExePath = Get-ChildItem -Path "$($env:ProgramFiles)*\Microsoft\Edge\Application" -Filter 'msedge.exe' -Recurse
+                                        if ($edgeExePath) {
+                                            Write-Host 'Microsoft Edge is already installed. Skipping reinstallation.'
+                                            Exit 0
+                                        }
+                                        Write-Host 'Downloading Microsoft Edge...'
+                                        $edgeInstallerUrl = 'https://c2rsetup.officeapps.live.com/c2r/downloadEdge.aspx?platform=Default&Channel=Stable&language=en'
+                                        $downloadPath = "$($env:TEMP)\MicrosoftEdgeSetup.exe"
+                                        Invoke-WebRequest -Uri "$edgeInstallerUrl" -OutFile "$downloadPath"
+                                        $installerArguments = @('/install', '/silent')
+                                        Write-Host 'Installing Microsoft Edge...'
+                                        $process = Start-Process -FilePath "$downloadPath" -ArgumentList "$installerArguments" -Wait -PassThru
+                                        Remove-Item -Path $downloadPath -Force
+                                        if ($process.ExitCode -eq 0) {
+                                            Write-Host 'Successfully reinstalled Microsoft Edge.'
+                                        } else {
+                                            Write-Error "Failed to reinstall Microsoft Edge. Installer failed with exit code $($process.ExitCode)."
+                                        }
+                    -
+                        name: Remove Edge (Chromium-based) file and URL associations
+                        docs: |-
+                            This script disconnects file and URL associations related to the Microsoft Edge browser on your computer. When you uninstall Edge, these
+                            associations remain intact, leading to potential unexpected behaviors [1] and vulnerabilities when opening specific file types or URLs.
+
+                            The script is recommended for enhancing the stability and privacy of your system by avoiding unintentional interactions with these leftover
+                            settings. It particularly addresses associations found under specific registry keys:
+
+                            - `HKLM\SOFTWARE\Clients\StartMenuInternet\Microsoft Edge\Capabilities\FileAssociations`
+                            - `HKLM\SOFTWARE\Clients\StartMenuInternet\Microsoft Edge\Capabilities\URLAssociations`
+
+                            Note that not all these associations are registered for Edge by the OS by default. Specifically, the removed associations have an `MSEdge` prefix,
+                            covering program IDs such as `MSEdgePDF` and `MSEdgeHTM` [2].
+
+                            Clearing these associations, which are not removed by the official Edge uninstaller, mitigates the risk of exposure to system vulnerabilities due to
+                            these lingering settings. Your system remains cleaner, more stable, and more private, ensuring a more secure user experience.
+
+                            [1]: https://github.com/undergroundwires/privacy.sexy/issues/64 "[BUG]: can't sign in again · Issue #64 · undergroundwires/privacy.sexy"
+                            [2]: https://web.archive.org/web/20231001221635/https://learn.microsoft.com/en-us/deployedge/edge-default-browser "Set Microsoft Edge as the default browser on Windows and macOS | Microsoft Learn"
+                        recommend: strict
+                        call:
+                            -
+                                function: RemoveBrowserAssociations # Deleting Edge through uninstaller does not remove these (tested on Windows 11 22H2 and Windows 10 21H1 using Edge v115).
+                                parameters:
+                                    progIdPattern: MSEdge* # MSEdgeHTM, MSEdgeMHT, MSEdgePDF
+                                    # List:
+                                    #   Get-Item -Path 'HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts' | ForEach-Object { $_.Property } | Where-Object { $_ -Match 'MSEdge' }
+                                    toastAssociations: >-
+                                        MSEdgeHTM_.webp MSEdgeHTM_http MSEdgeHTM_https MSEdgeHTM_.htm MSEdgeHTM_ftp MSEdgeHTM_.xml MSEdgeHTM_.html
+                                        MSEdgePDF_.pdf MSEdgeHTM_.svg MSEdgeHTM_mailto MSEdgeHTM_read MSEdgeHTM_.mht MSEdgeMHT_.mht
+                                        MSEdgeHTM_.mhtml MSEdgeMHT_.mhtml MSEdgeHTM_.xhtml MSEdgeHTM_.xht
+                            -
+                                function: RunInlineCode
+                                # Remove association from "Open With" context menu.
+                                # Deleting Edge through uninstaller does not remove these (tested on Windows 11 22H2 and Windows 10 21H1 using Edge v115).
+                                # This associations can be found at HKLM\SOFTWARE\Clients\StartMenuInternet\Microsoft Edge\Capabilities\FileAssociations.
+                                parameters:
+                                    code: |- # reg delete HKCR\{extension}\OpenWithProgIds\MSEdge{..}
+                                        for %%A in (
+                                            htm:MSEdgeHTM, html:MSEdgeHTM, shtml:MSEdgeHTM, 
+                                            pdf:MSEdgePDF, svg:MSEdgeHTM, xht:MSEdgeHTM, 
+                                            xhtml:MSEdgeHTM, webp:MSEdgeHTM, xml:MSEdgeHTM, 
+                                            mht:MSEdgeMHT, mhtml:MSEdgeMHT
+                                        ) do (
+                                            for /f "tokens=1,2 delims=:" %%B in ("%%A") do (
+                                                echo Removing OpenWith association for "%%C" from "%%B"...
+                                                reg delete "HKCR\.%%B\OpenWithProgIds" /v "%%C" /f 2>nul
+                                            )
+                                        )
+                                    revertCode: |- # Common defaults since Windows 10 21H2 and Windows 11 21H2
+                                        for %%A in (
+                                            htm:MSEdgeHTM, html:MSEdgeHTM, shtml:MSEdgeHTM, 
+                                            pdf:MSEdgePDF, svg:MSEdgeHTM, xht:MSEdgeHTM, 
+                                            xhtml:MSEdgeHTM, webp:MSEdgeHTM, mht:MSEdgeMHT, 
+                                            mhtml:MSEdgeMHT
+                                        ) do (
+                                            for /f "tokens=1,2 delims=:" %%B in ("%%A") do (
+                                                echo Restoring OpenWith for ".%%B" to "%%C"...
+                                                reg add "HKCR\.%%B\OpenWithProgids" /v "%%C" /t REG_SZ /f
+                                            )
+                                        )
+                            # - Exclude: Cleanup of keys under `HKLM\SOFTWARE\Clients\StartMenuInternet` as default uninstaller already cleans it.
             -
                 category: Disable built-in Windows features
                 children:
@@ -8497,3 +8648,206 @@ functions:
 
                     Write-Warning "$warningMessage"
                 # revertCode: No warnings needed when reverting
+    -
+        name: RemoveBrowserAssociations
+        parameters:
+            - name: progIdPattern
+            - name: toastAssociations
+        call:
+            -
+                function: RunPowerShell
+                # See all default OS assocations:
+                #   1. Open an elevated prompt
+                #   2. Run `dism /online /export-defaultappassociations:C:\appassoc.xml`
+                #   3. Inspect `C:\appassoc.xml`
+                # Registry locations:
+                #   - File associations:  `HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\{extension}\UserChoice`
+                #   - URL associations:   `HKCU\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\{url}\UserChoice`
+                parameters:
+                    # -
+                    #   This script uses WMI StdRegProv methods to modify the registry.
+                    #   Because deleting key with `Remove-Item -Path $path -Recurse -Force -ErrorAction Stop` fails with:
+                    #       Cannot delete a subkey tree because the subkey does not exist.
+                    #       CategoryInfo          : NotSpecified: (:) [Write-Error], WriteErrorException
+                    #       FullyQualifiedErrorId : Microsoft.PowerShell.Commands.WriteErrorException
+                    code: |-
+                        $programIdPattern = '{{ $progIdPattern }}'
+                        $defaultAssociations = @(
+                            @{ Type = 'File';   Ext = '.htm'; }
+                            @{ Type = 'File';   Ext = '.html'; }
+                            @{ Type = 'File';   Ext = '.pdf'; }
+                            @{ Type = 'File';   Ext = '.mht'; }
+                            @{ Type = 'File';   Ext = '.mhtml'; }
+                            @{ Type = 'File';   Ext = '.svg'; }
+                            @{ Type = 'File';   Ext = '.url'; }
+                            @{ Type = 'File';   Ext = '.website'; }
+                            @{ Type = 'File';   Ext = '.xht'; }
+                            @{ Type = 'File';   Ext = '.xhtml'; }
+                            @{ Type = 'URL';    Ext = 'ftp'; }
+                            @{ Type = 'URL';    Ext = 'http'; }
+                            @{ Type = 'URL';    Ext = 'https'; }
+                            @{ Type = 'URL';    Ext = 'microsoft-edge'; }
+                            @{ Type = 'URL';    Ext = 'microsoft-edge-holographic'; }
+                            @{ Type = 'URL';    Ext = 'ms-xbl-3d8b930f'; }
+                            @{ Type = 'URL';    Ext = 'read'; }
+                        )
+                        foreach ($assoc in $defaultAssociations) {
+                            $path = $null
+                            if ($assoc.Type -eq 'File') {
+                                $path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\$($assoc.Ext)\UserChoice"
+                            } elseif ($assoc.Type -eq 'URL') {
+                                $path = "HKCU:\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\$($assoc.Ext)\UserChoice"
+                            } else {
+                                throw "Error, unknown type: $($assoc.Type)"
+                            }
+                            $currentProgramId = Get-ItemProperty -Path $path -Name 'Progid' -ErrorAction Ignore | Select-Object -ExpandProperty Progid
+                            if (!$currentProgramId) {
+                                Write-Host "Skipping, no association found for `"$($assoc.Ext)`" in `"$path`" matching `"$programIdPattern`"."
+                                continue
+                            }
+                            if ($currentProgramId -notlike $programIdPattern) {
+                                Write-Host "Skipping, association found `"$currentProgramId`" in `"$path`" does not match pattern `"$programIdPattern`"."
+                                continue
+                            }
+                            $hkcuHiveId = 2147483649
+                            $pathWithoutHive = ($path -split ':\\')[1]
+                            $wmi = Get-WmiObject -List -Namespace root\default | Where-Object {$_.Name -eq 'StdRegProv'}
+                            $result = $wmi.DeleteKey($hkcuHiveId, $pathWithoutHive)
+                            if ($result.ReturnValue -ne 0) {
+                                Write-Error "Failed to delete `"$path`": Return code $($result.ReturnValue)"
+                                continue
+                            }
+                            Write-Host "Successfully removed `"$($assoc.Ext)`" association in `"$path`"."
+                        }
+                    # Differences in OS defaults:
+                    #   - `.url`    : `InternetShortcut` in Windows 11, and `IE.AssocFile.URL` in Windows 10
+                    #   - `.website`: N/A (missing) in Windows 11, `IE.AssocFile.WEBSITE` in Windows 10
+                    # Setting keys work fine on Windows 11 but fails with access error on Windows 10, so this script modifies ACLs.
+                    revertCode: |-
+                        $defaultAssociations = @(
+                            @{ Type = 'File';   Ext = '.htm';                           ProgId = 'MSEdgeHTM'; }
+                            @{ Type = 'File';   Ext = '.html';                          ProgId = 'MSEdgeHTM'; }
+                            @{ Type = 'File';   Ext = '.pdf';                           ProgId = 'MSEdgePDF'; }
+                            @{ Type = 'File';   Ext = '.mht';                           ProgId = 'MSEdgeMHT'; }
+                            @{ Type = 'File';   Ext = '.mhtml';                         ProgId = 'MSEdgeMHT'; }
+                            @{ Type = 'File';   Ext = '.svg';                           ProgId = 'MSEdgeHTM'; }
+                            @{ Type = 'File';   Ext = '.url';                           ProgId = 'InternetShortcut'; }
+                            @{ Type = 'File';   Ext = '.website';                       ProgId = 'IE.AssocFile.WEBSITE'; }
+                            @{ Type = 'File';   Ext = '.xht';                           ProgId = 'MSEdgeHTM'; }
+                            @{ Type = 'File';   Ext = '.xhtml';                         ProgId = 'MSEdgeHTM'; }
+                            @{ Type = 'URL';    Ext = 'ftp';                            ProgId = 'MSEdgeHTM'; }
+                            @{ Type = 'URL';    Ext = 'http';                           ProgId = 'MSEdgeHTM'; }
+                            @{ Type = 'URL';    Ext = 'https';                          ProgId = 'MSEdgeHTM'; }
+                            @{ Type = 'URL';    Ext = 'microsoft-edge';                 ProgId = 'MSEdgeHTM'; }
+                            @{ Type = 'URL';    Ext = 'microsoft-edge-holographic';     ProgId = 'MSEdgeHTM'; }
+                            @{ Type = 'URL';    Ext = 'ms-xbl-3d8b930f';                ProgId = 'MSEdgeHTM'; }
+                            @{ Type = 'URL';    Ext = 'read';                           ProgId = 'MSEdgeHTM'; }
+                        )
+                        foreach ($assoc in $defaultAssociations) {
+                            $path = $null
+                            if ($assoc.Type -eq 'File') {
+                                $path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\$($assoc.Ext)\UserChoice"
+                            } elseif ($assoc.Type -eq 'URL') {
+                                $path = "HKCU:\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\$($assoc.Ext)\UserChoice"
+                            } else {
+                                throw "Unknown type: $($assoc.Type)"
+                            }
+                            $currentValue = Get-ItemProperty -Path $path -Name 'Progid' -ErrorAction SilentlyContinue
+                            if ($currentValue -and ($currentValue.Progid -eq $assoc.ProgId)) {
+                                Write-Host "Skipping, `"$($assoc.Ext)`" association already has the desired value. No changes needed."
+                                continue
+                            }
+                            if ($currentValue -and $currentValue.Progid) {
+                                Write-Host "Updating existing `"$($currentValue.Progid)`" to `"$($assoc.ProgId)`"."
+                            } else {
+                                Write-Host "Adding new association `"$($assoc.ProgId)`"."
+                            }
+                            if (-Not (Test-Path $path)) {
+                                New-Item -Path $path -Force | Out-Null
+                                Write-Host "Successfully created missing `"$path`"."
+                            }
+                            # Remove deny access rules
+                            $pathWithoutHive = ($path -split ':\\')[1]
+                            $registrySubKey = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey($pathWithoutHive, [Microsoft.Win32.RegistryKeyPermissionCheck]::ReadWriteSubTree, [System.Security.AccessControl.RegistryRights]::ChangePermissions)
+                            $accessControlList = $registrySubKey.GetAccessControl()
+                            $denyAccessRules = @($accessControlList.Access.Where({ $_.AccessControlType -eq "Deny" }))
+                            foreach ($denyAccessRule in $denyAccessRules) {
+                                $accessControlList.RemoveAccessRule($denyAccessRule)
+                            }
+                            if ($denyAccessRules.Count -gt 0) {
+                                $registrySubKey.SetAccessControl($accessControlList)
+                                $registrySubKey.Close()
+                                Write-Host "Successfully removed deny access rules from `"$pathWithoutHive`"."
+                            }
+                            # Update registry key
+                            Set-ItemProperty -Path $path -Name 'Progid' -Value $assoc.ProgId -Force -ErrorAction Continue
+                            Write-Host "Successfully updated association for `"$($assoc.Ext)`""
+                            # Restore permissions
+                            if ($denyAccessRules.Count -gt 0) {
+                                foreach ($denyAccessRule in $denyAccessRules) {
+                                    $accessControlList.AddAccessRule($denyAccessRule)
+                                }
+                                $registrySubKey = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey($pathWithoutHive, [Microsoft.Win32.RegistryKeyPermissionCheck]::ReadWriteSubTree, [System.Security.AccessControl.RegistryRights]::ChangePermissions)
+                                $registrySubKey.SetAccessControl($accessControlList)
+                                $registrySubKey.Close()
+                                Write-Host "Successfully added back deny access rules to `"$pathWithoutHive`"."
+                            }
+                        }
+            -
+                # Remove association Open With context menu
+                # Edge uninstallers do not remove these associations
+                function: RunPowerShell  # When reverting, using batch (`reg add /t REG_NONE`) does not add the exactly same default value
+                # This associations can be found at:
+                #  - New, chromium  : HKLM\SOFTWARE\Clients\StartMenuInternet\Microsoft Edge\Capabilities\FileAssociations
+                #  - Legacy, store  : HKCU\SOFTWARE\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\Repository\Packages\Microsoft.MicrosoftEdge_{Version}\MicrosoftEdge\Capabilities\FileAssociations
+                #  - See Microsoft docs for default associations: https://github.com/MicrosoftDocs/windows-itpro-docs/blob/272f15b1d7ea4768e79eb74cfe24d584823970ef/windows/client-management/mdm/policy-csp-applicationdefaults.md?plain=1#L80-L87
+                parameters:
+                    code: |-
+                        $extensions = @('.htm', '.html', '.pdf', '.svg')
+                        foreach ($extension in $extensions) {
+                            $path = "HKCU:\Software\Classes\$extension\OpenWithProgids"
+                            Write-Host "Removing association for `"$extension`": `"$path`"..."
+                            Remove-Item -Path $path -Force -ErrorAction SilentlyContinue
+                        }
+                    revertCode: |- # Common defaults since Windows 10 21H2 and Windows 11 21H2
+                        $defaultContextMenuAssociations = @(
+                            @{  Extension='.htm';   Name='AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9'; }
+                            @{  Extension='.html';  Name='AppX4hxtad77fbk3jkkeerkrm0ze94wjf3s9'; }
+                            @{  Extension='.pdf';   Name='AppXd4nrz8ff68srnhf9t5a8sbjyar1cr723'; }
+                            @{  Extension='.svg';   Name='AppXde74bfzw9j31bzhcvsrxsyjnhhbq66cs'; }
+                        )
+                        foreach ($assoc in $defaultContextMenuAssociations) {
+                            $path = "HKCU:\Software\Classes\$($assoc.Extension)\OpenWithProgids"
+                            $value = Get-ItemProperty -Path $path -Name $assoc.Name -ErrorAction SilentlyContinue
+                            if ($value -and [System.BitConverter]::ToString($value.$($assoc.Name)) -eq '') {
+                                Write-Host "Skipping, no changes needed for `"$($assoc.Name)`" association."
+                                continue
+                            }
+                            if (-Not (Test-Path $path)) {
+                                New-Item -Path $path -Force | Out-Null
+                            }
+                            Set-ItemProperty -Path $path -Name $assoc.Name -Value ([byte[]]@()) -Type None -Force
+                            Write-Host "Successfully reverted association for `"$($assoc.Name)`"."
+                        }
+            -
+                function: RunInlineCode # Clean application toasts associations
+                # Description:
+                #   The HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts registry key in Windows stores user preferences for file type and application associations.
+                #   When a user opens a file with a non-default application, Windows may display a "toast" notification suggesting the use of the default application for that file type. The user's
+                #   response to this suggestion is recorded in the ApplicationAssociationToasts registry key. This allows Windows to remember the user's application preferences for specific file types
+                #   and determine whether to show the notification again in the future.
+                parameters:
+                    code: |-
+                        for %%a in (
+                            {{ $toastAssociations }}
+                        ) do (
+                            echo Removing association toast for "%%a"...
+                            reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" /v "%%a" /f 2>nul
+                        )
+                    revertCode: |-
+                        for %%a in (
+                            {{ $toastAssociations }}
+                        ) do (
+                            echo Restoring association toast for "%%a"...
+                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" /v "%%a" /t "REG_DWORD" /d "0" /f
+                        )
