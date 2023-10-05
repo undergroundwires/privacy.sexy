@@ -6834,7 +6834,7 @@ actions:
                 [2]: https://en.wikipedia.org/w/index.php?title=OneDrive&oldid=1111615560#Privacy_concerns "OneDrive | Privacy concerns | Wikipedia"
                 [3]: https://web.archive.org/web/20191002180755/https://www.intralinks.com/blog/2014/04/microsoft-onedrive-business-can-alter-files-syncs   "Microsoft OneDrive for Business can Alter Your Files as It Syncs | Intralinks"
                 [4]: https://thehackernews.com/2014/04/microsoft-onedrive-secretly-modifies.html "Microsoft OneDrive Secretly Modifies your BackUp Files | thehackernews.com"
-                [5]: https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#remove-onedrive-components "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn"
+                [5]: https://web.archive.org/web/20231002162808/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#remove-onedrive-components "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn"
               children:
                 -
                     name: Kill OneDrive process
@@ -6877,10 +6877,10 @@ actions:
                         Uninstalling OneDrive is recommended by Microsoft to optimize Windows VDIs [5].
                         
                         [1]: https://support.microsoft.com/en-us/office/turn-off-disable-or-uninstall-onedrive-f32a17ce-3336-40fe-9c38-6efb09f944b0 "Turn off, disable, or uninstall OneDrive | support.microsoft.com"
-                        [2]: https://learn.microsoft.com/en-us/sharepoint/troubleshoot/installation-and-setup/how-to-block-onedrive-from-being-advertised-after-install-office-2016#method-2-uninstall-onedriveexe "How to block OneDrive.exe from being advertised after you install Office 2016 - SharePoint | Microsoft Learn"
+                        [2]: https://web.archive.org/web/20231002162805/https://learn.microsoft.com/en-us/sharepoint/troubleshoot/installation-and-setup/how-to-block-onedrive-from-being-advertised-after-install-office-2016#method-2-uninstall-onedriveexe "How to block OneDrive.exe from being advertised after you install Office 2016 - SharePoint | Microsoft Learn"
                         [3]: https://learn.microsoft.com/en-us/sharepoint/troubleshoot/lists-and-libraries/cannot-open-onedrive-on-images-using-sysprep#how-to-correctly-deploy-onedrive-via-sysprep "Can't open OneDrive on images using Sysprep - SharePoint | Microsoft Learn"
                         [4]: https://answers.microsoft.com/en-us/windows/forum/all/onedrive-on-windows-11-does-not-appear-in-file/250c679b-9d02-410f-8c8f-41cca112ccfa "OneDrive on Windows 11 - Does Not Appear in File Explorer - Microsoft Community | answers.microsoft.com"
-                        [5]: https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#remove-onedrive-components "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn"
+                        [5]: https://web.archive.org/web/20231002162808/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#remove-onedrive-components "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn"
                     recommend: strict
                     code: |-
                         if exist "%SystemRoot%\System32\OneDriveSetup.exe" (
@@ -6939,39 +6939,46 @@ actions:
                             rd "%SystemDrive%\OneDriveTemp" /q /s
                         )
                 -
-                    name: Delete OneDrive shortcuts
+                    name: Remove OneDrive shortcuts
                     recommend: strict
                     docs: |-
-                        Even after uninstall or cleaning files there may be shortcuts that links to OneDrive. This script ensures
-                        that all the shortcuts are removed from the system. Shortcuts are saved in different locations such as:
+                        This script ensures the removal of all OneDrive shortcuts from your system, even after uninstallation or cleanup.
+
+                        Erasing these shortcuts improves the security and privacy of your computer system, lessening the potential access points for
+                        unwanted entities.
+
+                        Moreover, the removal of unused shortcuts results in a more organized and efficient system, enhancing your user experience by
+                        preventing any confusion from dead shortcuts.
+
+                        Shortcuts that link to OneDrive are stored in various locations, such as:
 
                         - `Start Menu\Programs\Microsoft OneDrive.lnk`, `Start Menu\Programs\OneDrive.lnk`, `Links\OneDrive.lnk` [1],
-                        - `ServiceProfiles\LocalService` and `ServiceProfiles\NetworkService` [2]
+                        - `ServiceProfiles\LocalService` and `ServiceProfiles\NetworkService` [1]
 
-                        Windows 10 and higher requires additional scripts to delete the OneDrive icon from the navigation pane in Windows Explorer [1].
+                        Below are the tested shortcut file locations on default installation (since Windows 10 22H2 and Windows 11 22H2):
 
-                        [1]: https://docs.microsoft.com/en-us/sharepoint/troubleshoot/installation-and-setup/how-to-block-onedrive.exe-from-being-advertised-after-install-office-2016 "How to block OneDrive.exe from being advertised after you install Office 2016 - SharePoint | Microsoft Learn"
-                        [2]: https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#remove-onedrive-components "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn"
+                        | Path | Windows 11 | Windows 10 |
+                        | ---- |:----------:|:----------:|
+                        | `%APPDATA%\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk` | ✅ Exists | ✅ Exists |
+                        | `%USERPROFILE%\Links\OneDrive.lnk` | ❌ Missing | ❌ Missing |
+                        | `%WINDIR%\ServiceProfiles\LocalService\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk` | ❌ Missing | ✅ Exists |
+                        | `%WINDIR%\ServiceProfiles\NetworkService\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk` | ❌ Missing | ✅ Exists |
+
+                        In Windows 10 and higher, additional steps are necessary to delete the OneDrive icon from the navigation pane in Windows
+                        Explorer [2], which is executed by this script.
+
+                        [1]: https://web.archive.org/web/20231002162808/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#remove-onedrive-components "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn"
+                        [2]: https://web.archive.org/web/20231002162805/https://learn.microsoft.com/en-us/sharepoint/troubleshoot/installation-and-setup/how-to-block-onedrive-from-being-advertised-after-install-office-2016 "How to block OneDrive.exe from being advertised after you install Office 2016 - SharePoint | Microsoft Learn"
                     call:
                         -
-                            function: RunInlineCode
+                            function: RemoveShortcutFiles
                             parameters:
-                                code: |-
-                                    if exist "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Microsoft OneDrive.lnk" (
-                                        del "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Microsoft OneDrive.lnk" /s /f /q
-                                    )
-                                    if exist "%APPDATA%\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk" (
-                                        del "%APPDATA%\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk" /s /f /q
-                                    )
-                                    if exist "%USERPROFILE%\Links\OneDrive.lnk" (
-                                        del "%USERPROFILE%\Links\OneDrive.lnk" /s /f /q
-                                    )
-                                    if exist "%SystemDrive%\Windows\ServiceProfiles\LocalService\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk" (
-                                        del "%SystemDrive%\Windows\ServiceProfiles\LocalService\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk" /s /f /q
-                                    )
-                                    if exist "%SystemDrive%\Windows\ServiceProfiles\NetworkService\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk" (
-                                        del "%SystemDrive%\Windows\ServiceProfiles\NetworkService\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk" /s /f /q
-                                    )
+                                targetFile: C:\Users\undergroundwires\AppData\Local\Microsoft\OneDrive\OneDrive.exe
+                                shortcutItems: |-
+                                    @{ Revert = $True;  Path = "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"; }
+                                    @{ Revert = $False; Path = "$env:USERPROFILE\Links\OneDrive.lnk"; }
+                                    @{ Revert = $False; Path = "$env:WINDIR\ServiceProfiles\LocalService\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"; }
+                                    @{ Revert = $False; Path = "$env:WINDIR\ServiceProfiles\NetworkService\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"; }
                         -
                             function: RunPowerShell
                             parameters:
@@ -7021,7 +7028,7 @@ actions:
                         `OneDriveSetup` is registered to reinstall OneDrive and can be removed using registry [1],
                         as recommended by Microsoft for optimizing Windows VDIs [1].
 
-                        [1]: https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#remove-onedrive-components "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn"
+                        [1]: https://web.archive.org/web/20231002162808/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#remove-onedrive-components "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn"
                     recommend: strict
                     call:
                         function: RunPowerShell
@@ -7245,6 +7252,8 @@ actions:
                             [2]: https://web.archive.org/web/20231001221635/https://learn.microsoft.com/en-us/deployedge/edge-default-browser "Set Microsoft Edge as the default browser on Windows and macOS | Microsoft Learn"
                         recommend: strict
                         call:
+                            # Exclude:
+                            #   - Cleanup of keys under `HKLM\SOFTWARE\Clients\StartMenuInternet` as default uninstaller already cleans it.
                             -
                                 function: RemoveBrowserAssociations # Deleting Edge through uninstaller does not remove these (tested on Windows 11 22H2 and Windows 10 21H1 using Edge v115).
                                 parameters:
@@ -7285,7 +7294,47 @@ actions:
                                                 reg add "HKCR\.%%B\OpenWithProgids" /v "%%C" /t REG_SZ /f
                                             )
                                         )
-                            # - Exclude: Cleanup of keys under `HKLM\SOFTWARE\Clients\StartMenuInternet` as default uninstaller already cleans it.
+                    -
+                        name: Remove Edge shortcuts
+                        docs: |-
+                            This script removes Microsoft Edge shortcuts from specific locations on your computer, enhancing the privacy and
+                            integrity of your system.
+
+                            When installed, Microsoft Edge, places shortcuts in various locations on your computer. Even after uninstalling the
+                            Edge browser, some of these shortcuts may not be removed (tested since ≥ Edge v117). This script ensures the
+                            removal of these residual shortcuts.
+
+                            These shortcuts can serve as access points for malicious entities, potentially compromising your computer's security
+                            and privacy. By deleting these shortcuts, the script helps in reducing these vulnerabilities, thus contributing to
+                            a more secure and private computing environment.
+
+                            Besides contributing to privacy and security, removing these unused shortcuts also contributes to a cleaner and more
+                            organized computer system, providing an enhanced user experience.
+
+                            The script specifically targets and removes shortcuts from the following paths, which have been tested and verified to
+                            exist on default installations of Windows since Windows 10 22H2 and Windows 11 22H2:
+
+                            | Path | Windows 11 | Windows 10 |
+                            | ---- |:----------:|:----------:|
+                            | `%ProgramData%\Microsoft\Windows\Start Menu\Programs\Microsoft Edge.lnk` | ✅ Exists | ✅ Exists |
+                            | `%AppData%\Microsoft\Internet Explorer\Quick Launch\Microsoft Edge.lnk` | ✅ Exists | ✅ Exists |
+                            | `%AppData%\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\Microsoft Edge.lnk` | ✅ Exists | ✅ Exists |
+                            | `%Public%\Desktop\Microsoft Edge.lnk` | ✅ Exists | ✅ Exists |
+                            | `%SystemRoot%\System32\config\systemprofile\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\Microsoft Edge.lnk` | ✅ Exists | ✅ Exists |
+                            | `%UserProfile%\Desktop\Microsoft Edge.lnk` | ❌ Missing | ❌ Missing |
+                        call:
+                            # Exclude:
+                            #   - `DisableEdgeDesktopShortcutCreation` because it's highly documented and it does not really bring value since this script already deletes `Microsoft Edge.lnk` from public folder.
+                            function: RemoveShortcutFiles
+                            parameters:
+                                targetFile: C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe
+                                shortcutItems: |-
+                                    @{ Revert = $True;  Path = "$env:ProgramData\Microsoft\Windows\Start Menu\Programs\Microsoft Edge.lnk"; }
+                                    @{ Revert = $True;  Path = "$env:AppData\Microsoft\Internet Explorer\Quick Launch\Microsoft Edge.lnk"; }
+                                    @{ Revert = $True;  Path = "$env:AppData\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\Microsoft Edge.lnk"; }
+                                    @{ Revert = $True;  Path = "$env:Public\Desktop\Microsoft Edge.lnk"; }
+                                    @{ Revert = $True;  Path = "$env:SystemRoot\System32\config\systemprofile\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\Microsoft Edge.lnk"; }
+                                    @{ Revert = $False; Path = "$env:UserProfile\Desktop\Microsoft Edge.lnk"; }
             -
                 category: Disable built-in Windows features
                 children:
@@ -8851,3 +8900,59 @@ functions:
                             echo Restoring association toast for "%%a"...
                             reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" /v "%%a" /t "REG_DWORD" /d "0" /f
                         )
+    -
+        name: RemoveShortcutFiles
+        parameters:
+            - name: shortcutItems
+            - name: targetFile
+        call:
+            function: RunPowerShell
+            parameters:
+                code: |-
+                    $shortcuts = @(
+                        {{ $shortcutItems }}
+                    )
+                    foreach ($shortcut in $shortcuts) {
+                        if (-Not (Test-Path $shortcut.Path)) {
+                            Write-Host "Skipping, shortcut does not exist: `"$($shortcut.Path)`"."
+                            continue
+                        }
+                        try {
+                            Remove-Item -Path $shortcut.Path -Force -ErrorAction Stop
+                            Write-Output "Successfully removed shortcut: `"$($shortcut.Path)`"."
+                        } catch {
+                            Write-Error "Encountered an issue while attempting to remove shortcut at: `"$($shortcut.Path)`"."
+                        }
+                    }
+                revertCode: |-
+                    $targetFile = "{{ $targetFile }}"
+                    $shortcuts = @(
+                        {{ $shortcutItems }}
+                    )
+                    if (-Not (Test-Path $targetFile)) {
+                        Write-Warning "Target file `"$targetFile`" does not exist."
+                    }
+                    $wscriptShell = $null
+                    try {
+                        $wscriptShell = New-Object -ComObject WScript.Shell
+                    } catch {
+                        throw "Failed to create WScript.Shell object: $($_.Exception.Message)"
+                    }
+                    foreach ($shortcut in $shortcuts) {
+                        if (-Not $shortcut.Revert) {
+                            Write-Host "Skipping, revert operation is not needed for: `"$($shortcut.Path)`"."
+                            continue
+                        }
+                        if (Test-Path $shortcut.Path) {
+                            Write-Host "Shortcut already exists, skipping: `"$($shortcut.Path)`"."
+                            continue
+                        }
+                        try {
+                            $shellShortcut = $wscriptShell.CreateShortcut($shortcut.Path)
+                            $shellShortcut.TargetPath = $targetFile
+                            $shellShortcut.Save()
+                            Write-Output "Successfully created shortcut at `"$($shortcut.Path)`"."
+                        } catch {
+                            Write-Error "An error occurred while creating the shortcut at `"$($shortcut.Path)`"."
+                        }
+                    }
