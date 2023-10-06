@@ -5470,6 +5470,56 @@ actions:
                             [4]: https://www.irs.gov/pub/irs-utl/safeguards-scsem-win-11-v1-1-033122.xlsx "Windows 11 SafeGuards | irs.gov"
                         code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments" /v "ScanWithAntiVirus" /t REG_DWORD /d "1" /f
                         revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments" /v "ScanWithAntiVirus" /t REG_DWORD /d "3" /f
+            -
+                name: Remove "Windows Security app" (`SecHealthUI`) (breaks Windows Security user interface)
+                docs: |-
+                    This script uninstalls the "Windows Security app" [1], also known as `SecHealthUI` [1] [2] [3].
+
+                    The Windows Security app is a tool that aids users in safeguarding their computer systems [4]. It monitors the computer's health
+                    state and provides alerts and guidance to address vulnerabilities, making these alerts visible through the Action Center [4].
+
+                    While this enhances privacy, there's a trade-off with security. It can make the computer more vulnerable to threats, as it will no
+                    longer alert the user about existing vulnerabilities and will not communicate updates to Action Center, where they are displayed to
+                    the end user [4]. It will also break the user interface that allows you  to configure other Windows security features, such as
+                    Tamper Protection [5].
+
+                    Uninstalling the Windows Security app enhances privacy by reducing the digital footprints and amount of personal and system data collected and
+                    made visible:
+
+                    - **Reduced Digital Footprints**: Disabling the Windows Security app can minimize the amount of personal and system data that is collected, shown
+                    and sent to Microsoft, providing users with more control over their information. This reduces amount of data that can be used to study your
+                    behavior, such as by inspecting detected threats that are visibhle in your Windows Security app [6]. So the Windows Security app, the system
+                    leaves fewer digital traces that can be exploited to track user behavior or gather sensitive information.
+                    - **More control over security settings**: Removing the user interface enforces the system owner to do changes programetically, removing the
+                    risks for unintended misconfigurations, or restricting access to the users of the computer.
+                    - **Limited Notifications and Alerts:** Users gain freedom from incessant notifications and alerts, which may sometimes inadvertently share
+                    sensitive system or user data.
+                    - **User Autonomy Over System Security:**: Users have the autonomy to choose alternative security measures and software, potentially opting
+                    for solutions that prioritize privacy and have a more robust commitment to not sharing user data.
+                    - **Enhanced anonymity**: This application is under [Microsoft's privacy policy](https://web.archive.org/web/20231006114659/https://privacy.microsoft.com/en-us/privacystatement)
+                    which allows Microsoft to send your data remote entities, constantly comunicate with Microsoft servers.
+
+                    This is a separate app from each of the individual Defender features [7], and it is updated independently from the OS [8]. Even after
+                    uninstallation, Windows will continue to send security notifications unless those notifications are separately disabled [9]. In a similar manner,
+                    uninstalling the Windows Security app does not disable Microsoft Defender Antivirus or the Windows Defender Firewall [10].
+
+                    > **Caution:** Uninstalling the Windows Security app is a significant action that should be undertaken with a clear understanding of the implications for
+                    the security and operation of your computer system.
+
+                    [1]: https://web.archive.org/web/20231006113851/https://support.microsoft.com/en-us/topic/windows-security-update-a6ac7d2e-b1bf-44c0-a028-41720a242da3 "Windows Security Update - Microsoft Support"
+                    [2]: https://github.com/undergroundwires/privacy.sexy/issues/195 "[BUG]: Uninstalling the SecHealthUI fails, despite the app being installed. · Issue #195 · undergroundwires/privacy.sexy"
+                    [3]: https://web.archive.org/web/20231006113903/https://download.microsoft.com/download/e/1/0/e10a6884-2e7a-4d80-ac2f-884c39a2a1b2/5001337.csv "Services CSV file | microsoft.com"
+                    [4]: https://web.archive.org/web/20231006113932/https://learn.microsoft.com/en-us/windows/win32/devnotes/windows-security-center "The Windows Security app - Win32 apps | Microsoft Learn"
+                    [5]: https://web.archive.org/web/20231006115719/https://support.microsoft.com/en-us/windows/prevent-changes-to-security-settings-with-tamper-protection-31d51aaa-645d-408e-6ce7-8d7f8e593f87 "Prevent changes to security settings with Tamper Protection - Microsoft Support"
+                    [6]: https://web.archive.org/web/20231006115719/https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/microsoft-defender-antivirus-windows?view=o365-worldwide "Microsoft Defender Antivirus in Windows | Microsoft Learn"
+                    [7]: https://web.archive.org/web/20231006115745/https://learn.microsoft.com/en-us/windows/security/operating-system-security/system-security/windows-defender-security-center/windows-defender-security-center#how-windows-security-works-with-windows-security-features "Windows Security - Windows Security | Microsoft Learn"
+                    [8]: https://web.archive.org/web/20231006115836/https://support.microsoft.com/en-us/topic/kb5020779-the-vulnerable-driver-blocklist-after-the-october-2022-preview-release-3fcbe13a-6013-4118-b584-fcfbc6a09936 "KB5020779 The vulnerable driver blocklist after the October 2022 preview release - Microsoft Support"
+                    [9]: https://web.archive.org/web/20231006115826/https://support.microsoft.com/en-us/windows/windows-security-notifications-6a59ce6a-e1e0-4795-b080-ba92d49644b2 "Windows Security notifications - Microsoft Support"
+                    [10]: https://web.archive.org/web/20231006115845/https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/microsoft-defender-security-center-antivirus?view=o365-worldwide "Microsoft Defender Antivirus in the Windows Security app | Microsoft Learn"
+                call:
+                    function: UninstallSystemApp
+                    parameters:
+                        packageName: Microsoft.Windows.SecHealthUI
     -
         category: UI for privacy
         children:         
@@ -6740,12 +6790,6 @@ actions:
                                             function: UninstallSystemApp
                                             parameters:
                                                 packageName: Microsoft.Windows.PinningConfirmationDialog
-                                    -
-                                        name: Windows Security GUI (Sec Health UI) app
-                                        call:
-                                            function: UninstallSystemApp
-                                            parameters:
-                                                packageName: Microsoft.Windows.SecHealthUI
                                     -
                                         name: Secondary Tile Experience app
                                         docs: https://docs.microsoft.com/en-us/windows/uwp/design/shell/tiles-and-notifications/secondary-tiles
