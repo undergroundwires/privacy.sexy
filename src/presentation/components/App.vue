@@ -7,11 +7,12 @@
       <TheCodeButtons class="app__row app__code-buttons" />
       <TheFooter />
     </div>
+    <OptionalDevToolkit />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineAsyncComponent, defineComponent } from 'vue';
 import TheHeader from '@/presentation/components/TheHeader.vue';
 import TheFooter from '@/presentation/components/TheFooter/TheFooter.vue';
 import TheCodeButtons from '@/presentation/components/Code/CodeButtons/TheCodeButtons.vue';
@@ -22,6 +23,10 @@ import { provideDependencies } from '../bootstrapping/DependencyProvider';
 
 const singletonAppContext = await buildContext();
 
+const OptionalDevToolkit = process.env.NODE_ENV !== 'production'
+  ? defineAsyncComponent(() => import('@/presentation/components/DevToolkit/DevToolkit.vue'))
+  : null;
+
 export default defineComponent({
   components: {
     TheHeader,
@@ -29,6 +34,7 @@ export default defineComponent({
     TheScriptArea,
     TheSearchBar,
     TheFooter,
+    OptionalDevToolkit,
   },
   setup() {
     provideDependencies(singletonAppContext); // In Vue 3.0 we can move it to main.ts
@@ -59,5 +65,4 @@ export default defineComponent({
     }
   }
 }
-
 </style>
