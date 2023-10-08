@@ -807,21 +807,67 @@ actions:
                 recommend: standard
                 code: dism /online /Remove-DefaultAppAssociations
             -
-                name: Clear (Reset) Network Data Usage
+                name: Clear System Resource Usage Monitor (SRUM) data
                 recommend: standard
-                docs: https://www.windowslifestyle.com/reset-data-usage-tool-reset-network-data-usage-windows-10/
-                code: |- # `sc queryex` output is same in every OS language
-                    setlocal EnableDelayedExpansion 
-                        SET /A dps_service_running=0
-                        SC queryex "DPS"|Find "STATE"|Find /v "RUNNING">Nul||(
-                            SET /A dps_service_running=1
-                            net stop DPS
-                        )
-                        del /F /S /Q /A "%windir%\System32\sru*"
-                        IF !dps_service_running! == 1 (
-                            net start DPS
-                        )
-                    endlocal
+                docs: |-
+                    This script deletes the Windows System Resource Usage Monitor (SRUM) database file.
+
+                    SRUM tracks the usage of desktop applications, services, Windows applications, and network connections [1] [2] [3]. SRUM stores its file at
+                    `C:\Windows\System32\sru\SRUDB.dat` [1] [3] [4].
+
+                    Before deleting the file, the script temporarily stops the Diagnostic Policy Service (DPS). The DPS helps Windows detect and solve problems with its
+                    components [4]. Stopping this service is required as modifications to the SRUM file require it to be turned off [5].
+
+                    Deleting this file can enhance user privacy as it contains usage data and is often used for forensic analysis of user behavior [1] [6].
+
+                    [1]: https://web.archive.org/web/20231004161122/https://github.com/libyal/esedb-kb/blob/main/documentation/System%20Resource%20Usage%20Monitor%20%28SRUM%29.asciidoc "esedb-kb/documentation/System Resource Usage Monitor (SRUM).asciidoc at main · libyal/esedb-kb  | github.com"
+                    [2]: https://web.archive.org/web/20231004161112/https://learn.microsoft.com/en-us/windows/privacy/basic-level-windows-diagnostic-events-and-fields-1809 "Windows 10, version 1809 basic diagnostic events and fields (Windows 10) - Windows Privacy | Microsoft Learn"
+                    [3]: https://web.archive.org/web/20231004161132/https://security.opentext.com/appDetails/SRUM-Database-Parser "SRUM Database Parser | security.opentext.com"
+                    [4]: https://web.archive.org/web/20231004161147/https://learn.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server#diagnostic-policy-service "Security guidelines for system services in Windows Server 2016 | Microsoft Learn"
+                    [5]: https://web.archive.org/web/20231008135321/https://devblogs.microsoft.com/sustainable-software/measuring-your-application-power-and-carbon-impact-part-1/ "Measuring Your Application Power and Carbon Impact (Part 1) - Sustainable Software | devblogs.microsoft.com"
+                    [6]: https://web.archive.org/web/20231008135333/https://www.sciencedirect.com/science/article/abs/pii/S1742287615000031 "Forensic implications of System Resource Usage Monitor (SRUM) data in Windows 8 | Yogesh Khatri | sciencedirect.com"
+                call:
+                    function: RunPowerShell
+                    parameters:
+                        # If the service is not stopped, following error is thrown:
+                        #   Failed to delete SRUM database file at: "C:\Windows\System32\sru\SRUDB.dat". Error Details: The process cannot access
+                        #   the file 'C:\Windows\System32\sru\SRUDB.dat' because it is being used by another process.
+                        code: |-
+                            $srumDatabaseFilePath = "$env:WINDIR\System32\sru\SRUDB.dat"
+                            if (!(Test-Path -Path $srumDatabaseFilePath)) {
+                                Write-Output "Skipping, SRUM database file not found at `"$srumDatabaseFilePath`". No actions are required."
+                                exit 0
+                            }
+                            $dps = Get-Service -Name 'DPS' -ErrorAction Ignore
+                            $isDpsInitiallyRunning = $false
+                            if ($dps) {
+                                $isDpsInitiallyRunning = $dps.Status -eq [System.ServiceProcess.ServiceControllerStatus]::Running
+                                if ($isDpsInitiallyRunning) {
+                                    Write-Output "Stopping the Diagnostic Policy Service (DPS) to delete the SRUM database file."
+                                    $dps | Stop-Service -Force
+                                    $dps.WaitForStatus([System.ServiceProcess.ServiceControllerStatus]::Stopped)
+                                    Write-Output "Successfully stopped Diagnostic Policy Service (DPS)."
+                                }
+                            } else {
+                                Write-Output "Diagnostic Policy Service (DPS) not found. Proceeding without stopping the service."
+                            }
+                            try {
+                                Remove-Item -Path $srumDatabaseFilePath -Force -ErrorAction Stop
+                                Write-Output "Successfully deleted the SRUM database file at `"$srumDatabaseFilePath`"."
+                            } catch {
+                                throw "Failed to delete SRUM database file at: `"$srumDatabaseFilePath`". Error Details: $($_.Exception.Message)"
+                            } finally {
+                                if ($isDpsInitiallyRunning) {
+                                    try {
+                                        if ((Get-Service -Name 'DPS').Status -ne [System.ServiceProcess.ServiceControllerStatus]::Running) {
+                                            Write-Output "Restarting the Diagnostic Policy Service (DPS)."
+                                            $dps | Start-Service
+                                        }
+                                    } catch {
+                                        throw "Failed to restart the Diagnostic Policy Service (DPS). Error Details: $($_.Exception.Message)"
+                                    }
+                                }
+                            }
             -
                 name: Clear previous Windows installations
                 code: |-
@@ -5350,7 +5396,7 @@ actions:
 
                                     Turning off this service can affect the update process and might cause issues like freezing during update scanning [3].
 
-                                    [1]: https://web.archive.org/web/20230905120757/https://learn.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server "Security guidelines for system services in Windows Server 2016 | Microsoft Learn"
+                                    [1]: https://web.archive.org/web/20231004161147/https://learn.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server "Security guidelines for system services in Windows Server 2016 | Microsoft Learn"
                                     [2]: https://web.archive.org/web/20230905120348/https://learn.microsoft.com/en-us/troubleshoot/windows-client/performance/windows-devices-fail-boot-after-installing-kb4041676-kb4041691 "Windows devices may fail to boot after installing October 10 version of KB 4041676 or 4041691 that contained a publishing issue - Windows Client | Microsoft Learn"
                                     [3]: https://web.archive.org/web/20231001150100/https://learn.microsoft.com/en-us/windows/deployment/update/prepare-deploy-windows "Prepare to deploy Windows - Windows Deployment | Microsoft Learn"
                                 call:
