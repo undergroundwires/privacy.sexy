@@ -4,30 +4,30 @@
     type="button"
     @click="onClicked"
   >
-    <font-awesome-icon
+    <AppIcon
       class="button__icon"
-      :icon="[iconPrefix, iconName]"
-      size="2x"
+      :icon="iconName"
     />
     <div class="button__text">{{text}}</div>
   </button>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
+import { IconName } from '@/presentation/components/Shared/Icon/IconName';
+import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 
 export default defineComponent({
+  components: {
+    AppIcon,
+  },
   props: {
     text: {
       type: String,
       required: true,
     },
-    iconPrefix: {
-      type: String,
-      required: true,
-    },
     iconName: {
-      type: String,
+      type: String as PropType<IconName>,
       required: true,
     },
   },
@@ -63,6 +63,10 @@ export default defineComponent({
   overflow: hidden;
   box-shadow: 0 3px 9px $color-primary-darkest;
   border-radius: 4px;
+
+  &__icon {
+    font-size: 2em;
+  }
 
   @include clickable;
 

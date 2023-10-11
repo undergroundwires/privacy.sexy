@@ -10,9 +10,7 @@
         class="dialog__close-button"
         @click="hide"
       >
-        <font-awesome-icon
-          :icon="['fas', 'times']"
-        />
+        <AppIcon icon="xmark" />
       </div>
     </div>
   </ModalContainer>
@@ -20,11 +18,13 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
+import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import ModalContainer from './ModalContainer.vue';
 
 export default defineComponent({
   components: {
     ModalContainer,
+    AppIcon,
   },
   emits: {
     /* eslint-disable @typescript-eslint/no-unused-vars */

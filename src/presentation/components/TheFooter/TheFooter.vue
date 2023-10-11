@@ -3,7 +3,7 @@
     <div class="footer">
       <div class="footer__section">
         <span v-if="isDesktop" class="footer__section__item">
-          <font-awesome-icon class="icon" :icon="['fas', 'globe']" />
+          <AppIcon class="icon" icon="globe" />
           <span>
             Online version at <a :href="homepageUrl" target="_blank" rel="noopener noreferrer">{{ homepageUrl }}</a>
           </span>
@@ -15,24 +15,24 @@
       <div class="footer__section">
         <div class="footer__section__item">
           <a :href="feedbackUrl" target="_blank" rel="noopener noreferrer">
-            <font-awesome-icon class="icon" :icon="['far', 'smile']" />
+            <AppIcon class="icon" icon="face-smile" />
             <span>Feedback</span>
           </a>
         </div>
         <div class="footer__section__item">
           <a :href="repositoryUrl" target="_blank" rel="noopener noreferrer">
-            <font-awesome-icon class="icon" :icon="['fab', 'github']" />
+            <AppIcon class="icon" icon="github" />
             <span>Source Code</span>
           </a>
         </div>
         <div class="footer__section__item">
           <a :href="releaseUrl" target="_blank" rel="noopener noreferrer">
-            <font-awesome-icon class="icon" :icon="['fas', 'tag']" />
+            <AppIcon class="icon" icon="tag" />
             <span>v{{ version }}</span>
           </a>
         </div>
         <div class="footer__section__item">
-          <font-awesome-icon class="icon" :icon="['fas', 'user-secret']" />
+          <AppIcon class="icon" icon="user-secret" />
           <a @click="showPrivacyDialog()">Privacy</a>
         </div>
       </div>
@@ -48,6 +48,7 @@ import {
   defineComponent, ref, computed, inject,
 } from 'vue';
 import ModalDialog from '@/presentation/components/Shared/Modal/ModalDialog.vue';
+import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
 import DownloadUrlList from './DownloadUrlList.vue';
 import PrivacyPolicy from './PrivacyPolicy.vue';
@@ -57,6 +58,7 @@ export default defineComponent({
     ModalDialog,
     PrivacyPolicy,
     DownloadUrlList,
+    AppIcon,
   },
   setup() {
     const { info } = inject(InjectionKeys.useApplication);

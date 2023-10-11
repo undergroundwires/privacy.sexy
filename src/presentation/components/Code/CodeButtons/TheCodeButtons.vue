@@ -4,19 +4,16 @@
       v-if="canRun"
       text="Run"
       v-on:click="executeCode"
-      icon-prefix="fas"
       icon-name="play"
     />
     <IconButton
       :text="isDesktopVersion ? 'Save' : 'Download'"
       v-on:click="saveCode"
-      icon-prefix="fas"
-      :icon-name="isDesktopVersion ? 'save' : 'file-download'"
+      :icon-name="isDesktopVersion ? 'floppy-disk' : 'file-arrow-down'"
     />
     <IconButton
       text="Copy"
       v-on:click="copyCode"
-      icon-prefix="fas"
       icon-name="copy"
     />
     <ModalDialog v-if="instructions" v-model="areInstructionsVisible">

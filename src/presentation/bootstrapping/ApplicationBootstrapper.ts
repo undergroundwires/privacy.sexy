@@ -1,4 +1,3 @@
-import { IconBootstrapper } from './Modules/IconBootstrapper';
 import { VueConstructor, IVueBootstrapper } from './IVueBootstrapper';
 import { VueBootstrapper } from './Modules/VueBootstrapper';
 import { RuntimeSanityValidator } from './Modules/RuntimeSanityValidator';
@@ -14,7 +13,6 @@ export class ApplicationBootstrapper implements IVueBootstrapper {
 
   private static getAllBootstrappers(): IVueBootstrapper[] {
     return [
-      new IconBootstrapper(),
       new VueBootstrapper(),
       new RuntimeSanityValidator(),
       new AppInitializationLogger(),

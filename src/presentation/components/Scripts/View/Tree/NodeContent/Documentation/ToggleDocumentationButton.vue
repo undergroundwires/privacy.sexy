@@ -6,14 +6,18 @@
     v-on:click.stop
     v-on:click="toggle()"
   >
-    <font-awesome-icon :icon="['fas', 'info-circle']" />
+    <AppIcon icon="circle-info" />
   </a>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 
 export default defineComponent({
+  components: {
+    AppIcon,
+  },
   emits: [
     'show',
     'hide',
@@ -52,5 +56,4 @@ export default defineComponent({
     color: $color-primary-light;
   }
 }
-
 </style>

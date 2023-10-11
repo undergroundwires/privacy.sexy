@@ -6,7 +6,7 @@
       'container-supported': hasCurrentOsDesktopVersion,
     }">
     <span class="description">
-      <font-awesome-icon class="description__icon" :icon="['fas', 'desktop']" />
+      <AppIcon class="description__icon" icon="desktop" />
       <span class="description__text">For desktop:</span>
     </span>
     <span class="urls">
@@ -21,6 +21,7 @@
 import { defineComponent, inject } from 'vue';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
+import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import DownloadUrlListItem from './DownloadUrlListItem.vue';
 
 const supportedOperativeSystems: readonly OperatingSystem[] = [
@@ -32,6 +33,7 @@ const supportedOperativeSystems: readonly OperatingSystem[] = [
 export default defineComponent({
   components: {
     DownloadUrlListItem,
+    AppIcon,
   },
   setup() {
     const { os: currentOs } = inject(InjectionKeys.useRuntimeEnvironment);

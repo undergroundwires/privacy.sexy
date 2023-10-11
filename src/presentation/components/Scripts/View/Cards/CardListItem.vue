@@ -17,18 +17,18 @@
       </span>
       <span v-else>Oh no 😢</span>
       <!-- Expand icon -->
-      <font-awesome-icon
+      <AppIcon
         class="card__inner__expand-icon"
-        :icon="['far', isExpanded ? 'folder-open' : 'folder']"
+        :icon="isExpanded ? 'folder-open' : 'folder'"
       />
       <!-- Indeterminate and full states -->
       <div class="card__inner__state-icons">
-        <font-awesome-icon
-          :icon="['fa', 'battery-half']"
+        <AppIcon
+          icon="battery-half"
           v-if="isAnyChildSelected && !areAllChildrenSelected"
         />
-        <font-awesome-icon
-          :icon="['fa', 'battery-full']"
+        <AppIcon
+          icon="battery-full"
           v-if="areAllChildrenSelected"
         />
       </div>
@@ -38,8 +38,8 @@
         <ScriptsTree :categoryId="categoryId" />
       </div>
       <div class="card__expander__close-button">
-        <font-awesome-icon
-          :icon="['fas', 'times']"
+        <AppIcon
+          icon="xmark"
           v-on:click="collapse()"
         />
       </div>
@@ -52,6 +52,7 @@ import {
   defineComponent, ref, watch, computed,
   inject,
 } from 'vue';
+import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
 import ScriptsTree from '@/presentation/components/Scripts/View/Tree/ScriptsTree.vue';
 import { sleep } from '@/infrastructure/Threading/AsyncSleep';
@@ -59,6 +60,7 @@ import { sleep } from '@/infrastructure/Threading/AsyncSleep';
 export default defineComponent({
   components: {
     ScriptsTree,
+    AppIcon,
   },
   props: {
     categoryId: {

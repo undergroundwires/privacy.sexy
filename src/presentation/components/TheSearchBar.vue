@@ -7,7 +7,7 @@
       v-model="searchQuery"
     >
     <div class="icon-wrapper">
-      <font-awesome-icon :icon="['fas', 'search']" />
+      <AppIcon icon="magnifying-glass" />
     </div>
   </div>
 </template>
@@ -19,11 +19,13 @@ import {
 } from 'vue';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { NonCollapsing } from '@/presentation/components/Scripts/View/Cards/NonCollapsingDirective';
+import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import { IReadOnlyUserFilter } from '@/application/Context/State/Filter/IUserFilter';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
 import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 
 export default defineComponent({
+  components: { AppIcon },
   directives: {
     NonCollapsing,
   },

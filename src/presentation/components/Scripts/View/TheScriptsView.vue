@@ -18,7 +18,7 @@
             class="search__query__close-button"
             v-on:click="clearSearchQuery()"
           >
-            <font-awesome-icon :icon="['fas', 'times']" />
+            <AppIcon icon="xmark" />
           </div>
         </div>
         <div v-if="!searchHasMatches" class="search-no-matches">
@@ -41,6 +41,7 @@ import {
   defineComponent, PropType, ref, computed,
   inject,
 } from 'vue';
+import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
 import ScriptsTree from '@/presentation/components/Scripts/View/Tree/ScriptsTree.vue';
 import CardList from '@/presentation/components/Scripts/View/Cards/CardList.vue';
@@ -52,6 +53,7 @@ export default defineComponent({
   components: {
     ScriptsTree,
     CardList,
+    AppIcon,
   },
   props: {
     currentView: {

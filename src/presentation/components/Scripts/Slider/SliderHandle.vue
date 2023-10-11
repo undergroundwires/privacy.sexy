@@ -4,9 +4,9 @@
     :style="{ cursor: cursorCssValue }"
     @mousedown="startResize">
     <div class="line" />
-    <font-awesome-icon
+    <AppIcon
       class="icon"
-      :icon="['fas', 'arrows-alt-h']"
+      icon="left-right"
     />
     <div class="line" />
   </div>
@@ -14,8 +14,12 @@
 
 <script lang="ts">
 import { defineComponent, onUnmounted } from 'vue';
+import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 
 export default defineComponent({
+  components: {
+    AppIcon,
+  },
   emits: {
     /* eslint-disable @typescript-eslint/no-unused-vars */
     resized: (displacementX: number) => true,

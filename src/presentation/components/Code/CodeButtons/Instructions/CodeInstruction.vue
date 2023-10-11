@@ -3,9 +3,9 @@
     <span class="dollar">$</span>
     <code><slot /></code>
     <TooltipWrapper>
-      <font-awesome-icon
+      <AppIcon
         class="copy-button"
-        :icon="['fas', 'copy']"
+        icon="copy"
         @click="copyCode"
       />
       <template v-slot:tooltip>
@@ -19,10 +19,12 @@
 import { defineComponent, useSlots } from 'vue';
 import { Clipboard } from '@/infrastructure/Clipboard';
 import TooltipWrapper from '@/presentation/components/Shared/TooltipWrapper.vue';
+import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 
 export default defineComponent({
   components: {
     TooltipWrapper,
+    AppIcon,
   },
   setup() {
     const slots = useSlots();

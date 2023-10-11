@@ -14,7 +14,7 @@
     <p>
       <strong>2. The hard (manual) alternative</strong>. This requires you to do additional manual
       steps. If you are unsure how to follow the instructions, hover on information
-      (<font-awesome-icon :icon="['fas', 'info-circle']" />)
+      (<AppIcon icon="circle-info" />)
       icons near the steps, or follow the easy alternative described above.
     </p>
     <p>
@@ -27,9 +27,9 @@
           <div class="step__action">
             <span>{{ step.action.instruction }}</span>
             <TooltipWrapper v-if="step.action.details">
-              <font-awesome-icon
+              <AppIcon
                 class="explanation"
-                :icon="['fas', 'info-circle']"
+                icon="circle-info"
               />
               <template v-slot:tooltip>
                 <div v-html="step.action.details" />
@@ -39,9 +39,9 @@
           <div v-if="step.code" class="step__code">
             <CodeInstruction>{{ step.code.instruction }}</CodeInstruction>
             <TooltipWrapper v-if="step.code.details">
-              <font-awesome-icon
+              <AppIcon
                 class="explanation"
-                :icon="['fas', 'info-circle']"
+                icon="circle-info"
               />
               <template v-slot:tooltip>
                 <div v-html="step.code.details" />
@@ -62,6 +62,7 @@ import {
 import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import TooltipWrapper from '@/presentation/components/Shared/TooltipWrapper.vue';
+import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import CodeInstruction from './CodeInstruction.vue';
 import { IInstructionListData } from './InstructionListData';
 
@@ -69,6 +70,7 @@ export default defineComponent({
   components: {
     CodeInstruction,
     TooltipWrapper,
+    AppIcon,
   },
   props: {
     data: {

@@ -35,11 +35,6 @@
   },
   "dependencies": {
     "@floating-ui/vue": "^1.0.2",
-    "@fortawesome/fontawesome-svg-core": "^6.4.0",
-    "@fortawesome/free-brands-svg-icons": "^6.4.0",
-    "@fortawesome/free-regular-svg-icons": "^6.4.0",
-    "@fortawesome/free-solid-svg-icons": "^6.4.0",
-    "@fortawesome/vue-fontawesome": "^2.0.9",
     "@juggle/resize-observer": "^3.4.0",
     "ace-builds": "^1.23.4",
     "cross-fetch": "^4.0.0",
