@@ -882,6 +882,289 @@ actions:
     -
         category: Disable OS data collection
         children:
+            -    
+                category: Disable Application Compatibility framework
+                docs: |-
+                    This category disables the Application Compatibility (AppCompat) framework on Windows.
+
+                    The Application Compatibility (AppCompat) framework is a feature in Windows that collects data about application compatibility.
+                    This includes gathering information about application crashes, issues, and other operational details to help improve the
+                    compatibility of applications on Windows [1].
+
+                    It is controlled by a set of policies within the Microsoft Windows operating system aimed at enabling applications designed
+                    for older versions of Windows to function properly on newer versions [1]. 
+
+                    However, the Application Compatibility framework involves various forms of data collection that may be considered invasive from
+                    a privacy standpoint [1]. It can potentially be exploited to reveal more data about your application usage or to inject your
+                    computer with malware [2] [3] [4]. 
+
+                    By disabling the AppCompat framework, this script contributes to enhancing users' privacy by limiting potential data collection
+                    and exposure to malware exploitation.
+
+                    [1]: https://web.archive.org/web/20230924112733/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-appcompat "ADMX_AppCompat Policy CSP - Windows Client Management | Microsoft Learn"
+                    [2]: https://web.archive.org/web/20230927174707/https://docplayer.net/15700963-The-active-use-and-exploitation-of-microsoft-s-application-compatibility-framework-jon-erickson.html "'The active use and exploitation of Microsoft's Application Compatibility Framework' by Jon Erickson"
+                    [3]: https://web.archive.org/web/20230927174609/https://tzworks.com/prototype_page.php?proto_id=33 "Windows Shim Database (SDB) Parser | tzworks.com"
+                    [4]: https://web.archive.org/web/20230927174559/https://www.blackhat.com/docs/eu-15/materials/eu-15-Pierce-Defending-Against-Malicious-Application-Compatibility-Shims-wp.pdf "Malicious Application Compatibility Shims | blackhat.com"
+                children:
+                    # Excluding "Application Experience" service (`AeLookupSvc`) as it does not exists since Windows 10 21H1 and Windows 11 22H2
+                    -
+                        name: Disable Application Impact Telemetry (AIT)
+                        recommend: standard
+                        docs: |-
+                            This script disables Application Impact Telemetry (AIT).
+
+                            Application Impact Telemetry (AIT) is a function that tracks the usage of certain Windows system components by
+                            various applications [1]. Turning this feature off stops the collection of usage data [1], enhancing your privacy
+                            by ensuring that your usage patterns and behaviors are not sent to external servers.
+
+                            Disabling telemetry will take effect on any newly launched applications [1]. To ensure that telemetry collection has
+                            stopped for all applications, please reboot your machine [1].
+
+                            Note that if the Customer Experience Improvement Program (CEIP) is turned off, Application Telemetry will be disabled
+                            regardless of this setting [1].
+
+                            This script performs its function by modifying a specific registry key:
+                            `HKLM\Software\Policies\Microsoft\Windows\AppCompat!AITEnable`. This is the switch that controls the AIT setting
+                            within the operating system [1].
+
+                            [1]: https://web.archive.org/web/20230924112733/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-appcompat#appcompatturnoffapplicationimpacttelemetry "ADMX_AppCompat Policy CSP - Windows Client Management | Microsoft Learn"
+                        code: reg add "HKLM\Software\Policies\Microsoft\Windows\AppCompat" /v "AITEnable" /t REG_DWORD /d "0" /f
+                        revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows\AppCompat" /v "AITEnable" /f 2>nul # Missing key since Windows 10 21H1 and Windows 11 22H2
+                    -
+                        name: Disable Application Compatibility Engine
+                        recommend: standard
+                        docs: |-
+                            This script disables the Application Compatibility Engine on Windows systems.
+
+                            The Application Compatibility Engine examines a compatibility database every time an application starts [1]. If it finds a match
+                            for the application, it either applies compatibility fixes or displays a help message for known problems with the application [1].
+                            This process may inadvertently reveal data about the applications you run on your system, especially if the query functions are
+                            intercepted [2]. Moreover, this database can be utilized by malware creators to modify an application and make it perform unintended
+                            actions [3].
+
+                            Disabling the Application Compatibility Engine leads to enhanced system performance [1]. However, this might compromise the compatibility
+                            of many older, popular applications and permit the installation of known incompatible applications [1]. Additionally, certain Windows
+                            features like Windows Resource Protection and User Account Control use this engine to resolve application issues [1]. Without the engine,
+                            these solutions won't be applied, and applications may not install or run correctly [1].
+
+                            This option is suitable for users seeking faster performance who are knowledgeable about the compatibility of the applications they use [1].
+                            Keep in mind that any changes to this setting require a system reboot to take effect as many system processes cache this setting's value for
+                            performance reasons [1].
+
+                            The script achieves its goal by altering a specific registry key: `HKLM\Software\Policies\Microsoft\Windows\AppCompat!DisableEngine` [1].
+                            By disabling this engine, known to be a vulnerability exploited by malware [4], the script reduces the potential attack surface on the system,
+                            enhancing overall security.
+
+                            [1]: https://web.archive.org/web/20230924112733/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-appcompat#appcompatturnoffengine "ADMX_AppCompat Policy CSP - Windows Client Management | Microsoft Learn"
+                            [2]: https://web.archive.org/web/20230927174559/https://www.blackhat.com/docs/eu-15/materials/eu-15-Pierce-Defending-Against-Malicious-Application-Compatibility-Shims-wp.pdf "Malicious Application Compatibility Shims | blackhat.com"
+                            [3]: https://web.archive.org/web/20230927174609/https://tzworks.com/prototype_page.php?proto_id=33 "Windows Shim Database (SDB) Parser | tzworks.com"
+                            [4]: https://web.archive.org/web/20230927174707/https://docplayer.net/15700963-The-active-use-and-exploitation-of-microsoft-s-application-compatibility-framework-jon-erickson.html "'The active use and exploitation of Microsoft's Application Compatibility Framework' by Jon Erickson"
+                        code: reg add "HKLM\Software\Policies\Microsoft\Windows\AppCompat" /v "DisableEngine" /t REG_DWORD /d "1" /f
+                        revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows\AppCompat" /v "DisableEngine" /f 2>nul # Missing key since Windows 10 21H1 and Windows 11 22H2
+                    -
+                        name: Remove "Program Compatibility" tab from file properties (context menu)
+                        recommend: strict
+                        docs: |-
+                            This script removes the "Program Compatibility" tab from the file properties context menu. This tab is visible on the property context-m
+                            nu of any program shortcut or executable file, and displays options that can be applied to the application to solve common issues affecting
+                            older applications [1].
+
+                            When enabled, this script prevents the compatibility property page from appearing in the context menus, though it does not impact any prior
+                            compatibility settings applied to applications through this interface [1].
+                            
+                            This script achieves its functionality by modifying a specific registry key:
+                            `HKLM\Software\Policies\Microsoft\Windows\AppCompat!DisablePropPage` [1].
+
+                            This setting is often used in organizational environments to prevent end-users from modifying the compatibility settings of applications.
+                            It ensures that applications operate with the settings considered most suitable by the system administrator or IT department. This restriction
+                            aids in upholding system stability and security by ensuring users cannot run applications in modes recognized to be insecure or unstable.
+                            
+                            This script assists in upholding a more secure and stable environment by barring unauthorized changes to application compatibility settings.
+                            The security benefits include:
+
+                            - **Restricting User Actions**: By limiting the actions that a user can perform, administrators can prevent unintended security vulnerabilities.
+                            Users may inadvertently (or intentionally) choose settings that could expose the system to risks, and this script helps in preventing
+                            such scenarios.
+                            - **Maintaining Known Configurations**: By ensuring that applications can only run in certain compatibility modes, administrators can more
+                            effectively manage and secure their environments. They can thoroughly test and verify the security of the allowed configurations, leading to
+                            a more robust security posture.
+                            - **Preventing Exploitation of Vulnerabilities**: Some compatibility settings might make applications run in a less secure mode to maintain
+                            compatibility with older software or systems. Preventing users from enabling such settings can help in avoiding potential vulnerabilities
+                            associated with these modes.
+
+                            By preventing users from changing compatibility settings, you could prevent them from selecting settings that send additional data to
+                            software vendors (for example, certain compatibility modes might enable additional telemetry or error reporting). Though primarily aimed at
+                            control and stability, this restriction indirectly contributes to privacy protection by reducing potential unwanted data transmission.
+
+                            [1]: https://web.archive.org/web/20230924112733/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-appcompat#appcompatremoveprogramcompatproppage "ADMX_AppCompat Policy CSP - Windows Client Management | Microsoft Learn"
+                        code: reg add "HKLM\Software\Policies\Microsoft\Windows\AppCompat" /v "DisablePropPage" /t REG_DWORD /d "1" /f
+                        revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows\AppCompat" /v "DisablePropPage" /f 2>nul # Missing key since Windows 10 21H1 and Windows 11 22H2
+                    -
+                        name: Disable Steps Recorder (collects screenshots, mouse/keyboard input and UI data)
+                        recommend: standard
+                        docs: |-
+                            This script disables Steps Recorder on your device.
+
+                            Steps Recorder, formerly known as Problem Steps Recorder [1] [2], is a tool that records the actions taken on a computer, including keyboard and mouse inputs,
+                            user interface interactions, and screenshots with every click [2] [3].This tool is used to diagnose and troubleshoot problems by capturing the exact steps
+                            taken when an issue occurs [1]. The data collected by Steps Recorder can be sent to Microsoft or third-party developers [3] [4], potentially revealing sensitive
+                            user information.
+
+                            By running this script, the Steps Recorder functionality will be turned off by altering a specific registry key:
+                            `HKLM\Software\Policies\Microsoft\Windows\AppCompat!DisableUAR` [3]. This prevents the automatic recording and sharing of user action data, enhancing the
+                            privacy and security of the user's device.
+
+                            Not running this script leaves the Steps Recorder enabled by default on Windows [3], allowing it to record and potentially share user actions and information.
+
+                            Using this script enhances user privacy by ensuring that personal actions taken on a computer are not automatically recorded and shared without the
+                            user's knowledge or consent. It's a straightforward measure to increase your control over your own device and data. Additionally, disabling Steps Recorder
+                            is recommended by The Australian Signals Directorate's Australian Cyber Security Centre (ACSC) [5].
+
+                            While enhancing privacy, this script may complicate the troubleshooting process as Steps Recorder will not be available to easily record and share encountered
+                            issues.
+
+                            [1]: https://web.archive.org/web/20230927120359/https://support.microsoft.com/en-us/windows/record-steps-to-reproduce-a-problem-46582a9b-620f-2e36-00c9-04e25d784e47 "Record steps to reproduce a problem - Microsoft Support"
+                            [2]: https://web.archive.org/web/20230927120405/https://cloudblogs.microsoft.com/dynamics365/no-audience/2016/03/08/capturing-repro-scenarios-using-windows-steps-recorder/ "Capturing Repro Scenarios Using Windows Steps Recorder - Microsoft Dynamics 365 Blog"
+                            [3]: https://web.archive.org/web/20230924112733/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-appcompat#appcompatturnoffuseractionrecord "ADMX_AppCompat Policy CSP - Windows Client Management | Microsoft Learn"
+                            [4]: https://web.archive.org/web/20230927120745/https://learn.microsoft.com/en-us/windows/win32/win7appqual/windows-error-reporting-problem-steps-recorder "Windows Error Reporting Problem Steps Recorder - Win32 apps | Microsoft Learn"
+                            [5]: https://web.archive.org/web/20210729125842/https://www.cyber.gov.au/acsc/view-all-content/publications/hardening-microsoft-windows-10-version-1909-workstations "Hardening Microsoft Windows 10 version 1909 Workstations | Cyber.gov.au"
+                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisableUAR" /t REG_DWORD /d 1 /f
+                        revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows\AppCompat" /v "DisableUAR" /f 2>nul # Missing key since Windows 10 21H1 and Windows 11 22H2
+                    -
+                        name: Disable "Inventory Collector" task
+                        recommend: standard
+                        docs: |-
+                            This script disables the "Inventory Collector" task on your computer.
+
+                            The Inventory Collector is a feature in Windows that gathers data about the applications, files, devices, and drivers on your system and sends
+                            this information to Microsoft [1]. This process is used to help solve compatibility problems, ensuring that your software and hardware work
+                            together without issues [1].
+                            
+                            Running this script will turn off the Inventory Collector, ensuring no data is sent to Microsoft [1]. It also stops the collection of installation
+                            data through the Program Compatibility Assistant [1]. By disabling these features, you prevent potentially sensitive information from being shared
+                            and avoid uncontrolled updates to your system [2] [3]. If not disabled, the Inventory Collector remains active, continuing to send data [1].
+                            
+                            If the Customer Experience Improvement Program is turned off, the Inventory Collector will already be inactive, and running this script will have no
+                            effect [1].
+                            
+                            Disabling Inventory Collector is advised by several organizations and authorities for enhanced security:
+                            
+                            - The Australian Signals Directorate's Australian Cyber Security Centre (ACSC) [4]
+                            - The Department of Defense (DoD) information systems in the USA [2]
+                            - Microsoft, as part of Windows security baseline for Azure [3]
+                            - National Institute of Standards and Technology (NIST) in the USA [5]
+                            
+                            This advice is based on the principle of limiting the amount of data shared, contributing to better privacy and security.
+                            
+                            When you run this script, it modifies a specific registry key (`HKLM\Software\Policies\Microsoft\Windows\AppCompat!DisableInventory`) to turn off the
+                            Inventory Collector [1]. Note that disabling the Inventory Collector could impact the functionality of certain features that rely on system information
+                            and updates [2] [3].
+
+                            By running this script, the functionality will be turned off by altering a specific registry key:
+                            `HKLM\Software\Policies\Microsoft\Windows\AppCompat!DisableInventory` [1].
+
+                            [1]: https://web.archive.org/web/20230924112733/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-appcompat#appcompatturnoffprograminventory "ADMX_AppCompat Policy CSP - Windows Client Management | Microsoft Learn"
+                            [2]: https://web.archive.org/web/20230927174739/https://www.stigviewer.com/stig/windows_10/2018-04-06/finding/V-63663 "The Application Compatibility Program Inventory must be prevented from collecting data and sending the information to Microsoft | stigviewer.com"
+                            [3]: https://web.archive.org/web/20230927174824/https://learn.microsoft.com/en-us/azure/governance/policy/samples/guest-configuration-baseline-windows#windows-components "Reference - Azure Policy guest configuration baseline for Windows - Azure Policy | Microsoft Learn"
+                            [4]: https://web.archive.org/web/20210729125842/https://www.cyber.gov.au/acsc/view-all-content/publications/hardening-microsoft-windows-10-version-1909-workstations "Hardening Microsoft Windows 10 version 1909 Workstations | Cyber.gov.au"
+                            [5]: https://web.archive.org/web/20230927174843/https://csrc.nist.gov/CSRC/media/Projects/United-States-Government-Configuration-Baseline/data/documentation/USGCB-Windows-Settings.xls "USGCB Windows Settings | nist.gov"
+                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisableInventory" /t REG_DWORD /d 1 /f
+                        revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows\AppCompat" /v "DisableInventory" /f 2>nul # Missing key since Windows 10 21H1 and Windows 11 22H2
+                    -
+                        category: Disable Program Compatibility Assistant (PCA)
+                        docs: |-
+                            This category covers disabling the Program Compatibility Assistant (PCA) in Windows.
+                            
+                            The PCA is designed to help users run desktop applications created for earlier versions of Windows by tracking and identifying known compatibility
+                            issues [1]. When an issue is detected, PCA offers the user a recommended fix to help the app run better on Windows [1].
+
+                            **Privacy Implications:**
+
+                            1. **Tracking and Monitoring of Application Activities:** PCA tracks the activities and behaviors of applications to identify symptoms of compatibility
+                            issues [1]. Continuous monitoring could inadvertently collect user data, depending on the nature of the applications being monitored and the specifics
+                            of the compatibility issues. This persistent oversight could be seen as an invasion of privacy as users' application usage is consistently observed.
+                            2. **Application and System Data Access:** PCA accesses data about the application and system to determine appropriate compatibility modes and fixes [1].
+                            Access to application and system data might inadvertently lead to access to sensitive or personal information. The extent of PCA's access to such information
+                            is not clear from the official documentations, presenting a potential privacy concern.
+                            3. **Automatic Modifications and Permissions:** PCA automatically applies certain compatibility modes to resolve issues, such as giving applications
+                            administrative privileges or preventing an app from freeing a DLL from memory [1]. Automatic changes in application permissions or behavior could potentially
+                            introduce security risks, as apps might gain access to resources or data they would not normally have access to. Users may not be fully aware of the extent of
+                            the changes applied, leading to unintentional security or privacy vulnerabilities.
+                            4. **User Notification and Consent:** While PCA does notify users and often requires their input to apply recommended settings, some fixes are applied silently [1].
+                            Users might not be aware of all the changes PCA makes to application settings and system configurations, limiting their control over their own system and potential
+                            impacts on their privacy.
+                            5. **User Feedback and Data Sharing with Microsoft**: At the end of each scenario, after the app is run with recommended compatibility settings, the Program Compatibility
+                            Assistant (PCA) will ask the user a simple question to gather feedback on whether the app worked or failed with the compatibility setting [1]. This data is sent to
+                            Microsoft [1]. Users may have concerns about sending any kind of data to Microsoft. Some users might be wary of potential data mishandling or misuse. It's crucial
+                            to ensure that the data collected is securely stored and processed, and that users are adequately informed about what data is being collected and how it will be used.
+                            6. **Detection and Mitigation Measures by PCA**: The PCA automatically detects issues with applications and applies various mitigation measures [1]. The automatic
+                            detection and mitigation by PCA imply that the system is continuously monitoring application behavior, which might be seen as invasive by some users. There could be
+                            concerns regarding what kind of data is accessed by PCA during this monitoring and whether any sensitive data could potentially be exposed.
+                            7. **Downloading Missing Components for Apps:** PCA provides a recommendation to download missing components and install them after the app terminates [1].
+                            This could involve downloading software from the internet, which may introduce security and privacy risks [1]. Users might inadvertently download malicious software or
+                            software with privacy-invasive features if not adequately guided [1].
+                            8. **Handling of Administrative Privileges:** PCA handles various scenarios involving administrative privileges and User Account Control (UAC) dialogs, including applying
+                            the `RUNASADMIN` compatibility mode to certain installers and applets [1]. This handling of administrative privileges could potentially be exploited by malicious software
+                            to gain elevated privileges without adequate user knowledge or consent. It is important to ensure that the mechanisms for handling administrative privileges are secure and
+                            not prone to exploitation.
+                            9. **Using the Compatibility Troubleshooter**: The Compatibility Troubleshooter allows users to apply recommended fixes to get apps working properly [1]. Use of the
+                            Compatibility Troubleshooter involves sharing more data regarding app behavior and issues with Microsoft, raising similar concerns as mentioned above regarding data sharing.
+
+                            By disabling PCA, these potential privacy and security concerns can be mitigated, giving users more control over their data and application behavior, and reducing the risk
+                            of unintentional data collection and sharing.
+
+                            [1]: https://web.archive.org/web/20230928141226/https://learn.microsoft.com/en-us/windows/compatibility/pca-scenarios-for-windows-8 "Program Compatibility Assistant scenarios - Compatibility Cookbook | Microsoft Learn"
+                        children:
+                            -
+                                name: Disable "Program Compatibility Assistant (PCA)" feature
+                                recommend: standard
+                                docs: |-
+                                    This script disables the Program Compatibility Assistant (PCA) feature in Windows [1].
+
+                                    The purpose include:
+
+                                    - Enhances privacy by stopping the continuous monitoring and data collection by PCA. The PCA monitors applications run by the user [1].
+                                    - Users gain more control over their system by manually managing application compatibility issues. When a potential compatibility issue with an
+                                    application is detected, the PCA will prompt the user with recommended solutions [1].
+                                    - Potentially avoids the automatic changes made by PCA that might introduce security risks.
+                                    - It increases the system performance. Microsoft recommends turning off the PCA can be useful for those who require better performance and are
+                                    already aware of application compatibility issues [1].
+
+                                    This script modifies a specific registry key (`HKLM\Software\Policies\Microsoft\Windows\AppCompat!DisablePCA`) to turn off the PCA [1].
+                                    As a result, users will not receive automatic solutions to known compatibility issues when running applications [1], ensuring that they have
+                                    control over the solutions they apply.
+
+                                    By default, if you do not run this script or disable PCA manually, the PCA will be turned on [1].
+
+                                    Once this script is executed and PCA is turned off, the user won't be presented with solutions to known compatibility issues when running applications [1]
+
+                                    [1]: https://web.archive.org/web/20230924112733/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-appcompat#appcompatturnoffprogramcompatibilityassistant_2 "ADMX_AppCompat Policy CSP - Windows Client Management | Microsoft Learn"
+                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisablePCA" /t REG_DWORD /d 1 /f
+                                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows\AppCompat" /v "DisablePCA" /f 2>nul # Missing key since Windows 10 21H1 and Windows 11 22H2
+                            -
+                                name: Disable "Program Compatibility Assistant Service" (`PcaSvc`) service
+                                recommend: standard
+                                docs: |-
+                                    This script disables the "Program Compatibility Assistant Service" (`PcaSvc`) in Windows [1].
+
+                                    The `PcaSvc` assists the Program Compatibility Assistant (PCA) in monitoring programs installed and run by the user [1], detecting known compatibility problems [1],
+                                    and aiding in Windows appraiser data collection [2]. By disabling this service, the script prevents PCA from functioning [1], thereby halting application monitoring
+                                    and data collection, leading to enhanced user privacy.
+
+                                    This script turns off the `PcaSvc` which is, by default, automatically started in Windows [1].
+
+                                    Microsoft has clarified that disabling this service does not have a negative impact on the system's functionality, affirming that it's safe to execute this action [1].
+
+                                    By running this script, you prevent the continuous surveillance and data gathering activities conducted by PCA.
+
+                                    [1]: https://web.archive.org/web/20230905120815/https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services#program-compatibility-assistant-service "Guidance on disabling system services on Windows IoT Enterprise | Microsoft Learn"
+                                    [2]: https://web.archive.org/web/20230928142052/https://learn.microsoft.com/en-us/mem/configmgr/desktop-analytics/monitor-connection-health#appraiser-data-collection "Monitor connection health - Configuration Manager | Microsoft Learn"
+                                call:
+                                    function: DisableService
+                                    parameters:
+                                        serviceName: PcaSvc # Check: (Get-Service -Name 'PcaSvc').StartType
+                                        # Windows 10 21H1: Manual | Windows 11 22H2: Automatic
+                                        defaultStartupMode: Automatic # Allowed values: Automatic | Manual
             -
                 category: Disable Windows telemetry and data collection
                 children:
@@ -890,11 +1173,6 @@ actions:
                         docs: https://docs.microsoft.com/en-us/windows/win32/devnotes/ceipenable
                         recommend: standard
                         code: reg add "HKLM\Software\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d "0" /f
-                        revertCode: reg add "HKLM\Software\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d "1" /f
-                    -
-                        name: Disable Application Impact Telemetry (AIT)
-                        recommend: standard
-                        code: reg add "HKLM\Software\Policies\Microsoft\Windows\AppCompat" /v "AITEnable" /t REG_DWORD /d "0" /f
                         revertCode: reg add "HKLM\Software\Policies\Microsoft\SQMClient\Windows" /v "CEIPEnable" /t REG_DWORD /d "1" /f
                     -
                         category: Disable diagnostics telemetry services
@@ -2156,11 +2434,6 @@ actions:
                 code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /d 0 /t REG_DWORD /f
                 revertCode: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /d 1 /t REG_DWORD /f
             -
-                name: Disable Inventory Collector
-                recommend: standard
-                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisableInventory" /t REG_DWORD /d 1 /f
-                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisableInventory" /t REG_DWORD /d 0 /f
-            -
                 name: Disable Website Access of Language List
                 recommend: standard
                 docs: https://docs.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#181-general
@@ -2172,10 +2445,6 @@ actions:
                 code: |-
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Maps" /v "AllowUntriggeredNetworkTrafficOnSettingsPage" /t REG_DWORD /d 0 /f
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Maps" /v "AutoDownloadAndUpdateMapData" /t REG_DWORD /d 0 /f
-            -
-                name: Disable steps recorder
-                recommend: standard
-                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisableUAR" /t REG_DWORD /d 1 /f
             -
                 name: Disable game screen recording
                 recommend: standard
@@ -5797,15 +6066,6 @@ actions:
                     function: DisableService
                     parameters:
                         serviceName: wlidsvc # Check: (Get-Service -Name 'wlidsvc').StartType
-                        defaultStartupMode: Manual # Allowed values: Automatic | Manual
-            -
-                name: Program Compatibility Assistant Service
-                recommend: standard
-                docs: http://batcmd.com/windows/10/services/pcasvc/
-                call:
-                    function: DisableService
-                    parameters:
-                        serviceName: PcaSvc # Check: (Get-Service -Name 'PcaSvc').StartType
                         defaultStartupMode: Manual # Allowed values: Automatic | Manual
             -
                 name: Downloaded Maps Manager
