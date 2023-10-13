@@ -174,3 +174,19 @@
 - `endCode:` *`string`* (**required**)
   - Code that'll be inserted at the end of user created script.
   - Global variables such as `$homepage`, `$version`, `$date` can be used using [parameter substitution](./templating.md#parameter-substitution) code syntax such as `Welcome to {{ $homepage }}!`
+
+## Naming guidelines
+
+- Prioritize consistency throughout all names.
+- Use an instruction format like "do this, do that" for clear, direct guidance. This approach reduces potential confusion and offers easy-to-follow steps. It provides specific, unambiguous instructions.
+- Ensure brand names adhere to their official casing.
+- Choose clear and uncomplicated language.
+- Favor the terms:
+  - "Disable" over "Turn off"
+  - "Configure" over "Set up"
+  - "Clear" over "Erase" or "Clean"
+  - "Minimize" over "Limit" or "Reduce" (when it enhances clarity)
+  - "Remove" over "Uninstall"
+- Structure your phrases for clarity.
+  - For instance, "Disable XX telemetry" or "Clear XX data" are preferred over "Clear data from XX", "Disable telemetry in XX", or "Clear data of XX".
+- Use sentence case rather than Title Case.

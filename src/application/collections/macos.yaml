@@ -1,4 +1,4 @@
-# Structure documented in "docs/collection-files.md"
+# Structure is documented in "docs/collection-files.md"
 os: macos
 scripting:
     language: shellscript
@@ -21,7 +21,7 @@ actions:
     -
         category: Privacy cleanup
         children:
-            - 
+            -
                 category: Clear terminal history
                 children:
                     -
@@ -48,18 +48,18 @@ actions:
                     # on main HDD
                     sudo rm -rfv ~/.Trash/* &>/dev/null
             -
-                name: Clear system cache files
+                name: Clear system cache
                 recommend: strict
                 code: |-
                     sudo rm -rfv /Library/Caches/* &>/dev/null
                     sudo rm -rfv /System/Library/Caches/* &>/dev/null
                     sudo rm -rfv ~/Library/Caches/* &>/dev/null
             -
-                category: Clear OS logs
+                category: Clear operating system logs
                 recommend: strict
                 children:
                     -
-                        category: Clear unified logs (diagnostics)
+                        category: Clear unified diagnostic logs
                         docs: https://developer.apple.com/documentation/os/logging
                         children:
                             -
@@ -69,15 +69,15 @@ actions:
                                     sudo rm -rfv /private/var/db/diagnostics/*
                                     sudo rm -rfv /var/db/diagnostics/*
                             -
-                                name: Clear shared-cache strings data
-                                docs: 
+                                name: Clear shared cache strings data
+                                docs:
                                     - https://eclecticlight.co/2017/09/23/sierras-unified-log-evolves-more-persistent-and-a-valuable-log-log/
                                     - https://github.com/privacysexy-forks/dtformats/blob/main/documentation/Apple%20Unified%20Logging%20and%20Activity%20Tracing%20formats.asciidoc
                                 code: |-
                                     sudo rm -rfv /private/var/db/uuidtext/
                                     sudo rm -rfv /var/db/uuidtext/
                     -
-                        category: Clear system logs (/var/log/)
+                        category: Clear system logs
                         children:
                             -
                                 name: Clear Apple System Logs (ASL)
@@ -94,7 +94,7 @@ actions:
                                 docs: https://discussions.apple.com/thread/1829842
                                 code: sudo rm -fv /var/log/install.log
                             -
-                                name: Clear all system logs
+                                name: Clear all system logs in `/var/log/` directory
                                 docs: https://www.howtogeek.com/356942/how-to-view-the-system-log-on-a-mac/
                                 code: sudo rm -rfv /var/log/* # Clears including /var/log/system.log
                     -
@@ -105,7 +105,7 @@ actions:
                         name: Clear Mail logs
                         code: rm -rfv ~/Library/Containers/com.apple.mail/Data/Library/Logs/Mail/*
                     -
-                        name: Clear audit logs (login, logout, authentication and other user activity)
+                        name: Clear user activity audit logs (login, logout, authentication, etc.)
                         docs:
                             - https://papers.put.as/papers/macosx/2012/Mac_Log_Analysis_Sarah_Edwards_DFIRSummit2012.pdf
                             - http://macadmins.psu.edu/wp-content/uploads/sites/24696/2016/06/psumac2016-19-osxlogs_macadmins_2016.pdf
@@ -113,7 +113,7 @@ actions:
                             sudo rm -rfv /var/audit/*
                             sudo rm -rfv /private/var/audit/*
                     -
-                        name: Clear user logs (user reports)
+                        name: Clear user report logs
                         docs:
                             - https://www.howtogeek.com/356942/how-to-view-the-system-log-on-a-mac/
                             - https://apple.stackexchange.com/questions/272929/is-it-safe-to-delete-the-content-of-library-logs
@@ -134,15 +134,15 @@ actions:
                 category: Clear browser history
                 children:
                     -
-                        category: Clear Google Chrome history
+                        category: Clear Chrome history
                         children:
                             -
-                                name: Clear Google Chrome browsing history
+                                name: Clear Chrome browsing history
                                 code: |-
                                     rm -rfv ~/Library/Application\ Support/Google/Chrome/Default/History &>/dev/null
                                     rm -rfv ~/Library/Application\ Support/Google/Chrome/Default/History-journal &>/dev/null
                             -
-                                name: Google Chrome Cache Files
+                                name: Clear Chrome cache
                                 code: sudo rm -rfv ~/Library/Application\ Support/Google/Chrome/Default/Application\ Cache/* &>/dev/null
                     -
                         category: Clear Safari history
@@ -165,7 +165,7 @@ actions:
                                 docs: https://blog.d204n6.com/2020/09/macos-safari-preferences-and-privacy.html
                                 code: rm -f ~/Library/Safari/Downloads.plist
                             -
-                                name: Clear Safari top sites
+                                name: Clear Safari frequently visited sites
                                 docs: https://davidkoepi.wordpress.com/2013/04/20/safariforensic/
                                 code: rm -f ~/Library/Safari/TopSites.plist
                             -
@@ -182,7 +182,7 @@ actions:
                                         docs: https://davidkoepi.wordpress.com/2013/04/20/safariforensic/
                                         code: rm -f ~/Library/Caches/com.apple.Safari/Cache.db
                                     -
-                                        name: Clear Safari web page icons displayed on URL bar
+                                        name: Clear Safari URL bar web page icons
                                         docs:
                                           - https://davidkoepi.wordpress.com/2013/04/20/safariforensic/
                                           - https://lifehacker.com/safaris-private-browsing-mode-saves-urls-in-an-easily-a-1691944343
@@ -194,11 +194,11 @@ actions:
                                           - https://www.reddit.com/r/apple/comments/18lp92/your_apple_computer_keeps_a_screen_shot_of_nearly/
                                         code: rm -rfv ~/Library/Caches/com.apple.Safari/Webpage\ Previews
                             -
-                                name: Clear copy of the Safari history
+                                name: Clear Safari history copy
                                 docs: https://forensicsfromthesausagefactory.blogspot.com/2010/06/safari-history-spotlight-webhistory.html
                                 code: rm -rfv ~/Library/Caches/Metadata/Safari/History
                             -
-                                name: Clear search history embedded in Safari preferences
+                                name: Clear search term history embedded in Safari preferences
                                 docs: https://krypted.com/tag/recentsearchstrings/
                                 code: defaults write ~/Library/Preferences/com.apple.Safari RecentSearchStrings '( )'
                             -
@@ -215,11 +215,11 @@ actions:
                                 docs: https://blog.d204n6.com/2020/09/macos-safari-preferences-and-privacy.html
                                 code: rm -f ~/Library/Safari/PerSiteZoomPreferences.plist
                             -
-                                name: Clear URLs that are allowed to display notifications in Safari
+                                name: Clear allowed URLs for Safari notifications
                                 docs: https://blog.d204n6.com/2020/09/macos-safari-preferences-and-privacy.html
                                 code: rm -f ~/Library/Safari/UserNotificationPreferences.plist
                             -
-                                name: Clear Safari per-site preferences for Downloads, Geolocation, PopUps, and Autoplays
+                                name: Clear Safari preferences for downloads, geolocation, pop-ups, and autoplay per site
                                 docs: https://blog.d204n6.com/2020/09/macos-safari-preferences-and-privacy.html
                                 code: rm -f ~/Library/Safari/PerSitePreferences.db
                     -
@@ -231,15 +231,15 @@ actions:
                                     sudo rm -rf ~/Library/Caches/Mozilla/
                                     rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/netpredictions.sqlite
                             -
-                                name: Delete Firefox form history
+                                name: Clear Firefox form history
                                 code: |-
                                     rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/formhistory.sqlite
                                     rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/formhistory.dat
                             -
-                                name: Delete Firefox site preferences
+                                name: Clear Firefox site preferences
                                 code: rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/content-prefs.sqlite
                             -
-                                name: Delete Firefox session restore data (loads after the browser closes or crashes)
+                                name: Clear Firefox session restore data (loads after the browser closes or crashes)
                                 code: |-
                                     rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/sessionCheckpoints.json
                                     rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/sessionstore*.js*
@@ -250,7 +250,7 @@ actions:
                                     rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/sessionstore-backups/previous.bak*
                                     rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/sessionstore-backups/upgrade.js*-20*
                             -
-                                name: Delete Firefox passwords
+                                name: Clear Firefox passwords
                                 docs: https://web.archive.org/web/20210425202923/http://kb.mozillazine.org/Password_Manager
                                 code: |-
                                     rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/signons.txt
@@ -259,20 +259,20 @@ actions:
                                     rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/signons.sqlite
                                     rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/logins.json
                             -
-                                name: Delete Firefox HTML5 cookies
+                                name: Clear Firefox HTML5 cookies
                                 code: rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/webappsstore.sqlite
                             -
-                                name: Delete Firefox crash reports
+                                name: Clear Firefox crash reports
                                 code: |-
                                     rm -rfv ~/Library/Application\ Support/Firefox/Crash\ Reports/
                                     rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/minidumps/*.dmp
                             -
-                                name: Delete Firefox backup files
+                                name: Clear Firefox backup files
                                 code: |-
                                     rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/bookmarkbackups/*.json
                                     rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/bookmarkbackups/*.jsonlz4
                             -
-                                name: Delete Firefox cookies
+                                name: Clear Firefox cookies
                                 code: |-
                                     rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/cookies.txt
                                     rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/cookies.sqlite
@@ -280,7 +280,7 @@ actions:
                                     rm -fv ~/Library/Application\ Support/Firefox/Profiles/*/cookies.sqlite-wal
                                     rm -rfv ~/Library/Application\ Support/Firefox/Profiles/*/storage/default/http*
             -
-                category: Clear third party application data
+                category: Clear third-party application data
                 children:
                     -
                         name: Clear Adobe cache
@@ -290,18 +290,18 @@ actions:
                         name: Clear Gradle cache
                         recommend: strict
                         code: |-
-                            if [ -d "/Users/${HOST}/.gradle/caches" ]; then
+                            if [ -d "~/.gradle/caches" ]; then
                                 rm -rfv ~/.gradle/caches/ &> /dev/null
                             fi
                     -
                         name: Clear Dropbox cache
                         recommend: standard
                         code: |-
-                            if [ -d "/Users/${HOST}/Dropbox" ]; then
+                            if [ -d "~/Dropbox/.dropbox.cache" ]; then
                                 sudo rm -rfv ~/Dropbox/.dropbox.cache/* &>/dev/null
                             fi
                     -
-                        name: Clear Google Drive file stream cache
+                        name: Clear Google Drive File Stream cache
                         recommend: standard
                         code: |-
                             killall "Google Drive File Stream"
@@ -323,21 +323,54 @@ actions:
                                 brew tap --repair &>/dev/null
                             fi
                     -
-                        name: Clear any old versions of Ruby gems
+                        name: Clear old Ruby gem versions
                         recommend: strict
                         code: |-
                             if type "gem" &> /dev/null; then
                                 gem cleanup &>/dev/null
                             fi
                     -
-                        name: Clear Docker
+                        name: Clear unused Docker data
                         recommend: strict
+                        docs: |-
+                            This script frees up disk space, but also improves user privacy by:
+
+                            1. **Removal of stopped containers**: Containers often run applications or services that might process sensitive
+                            or personal data. Even if a container is stopped, its filesystem remains intact, and potentially sensitive data inside
+                            it can be accessed. By removing stopped containers, we eliminate this potential privacy risk.
+
+                            2. **Deletion of unused images**: Images can sometimes contain sensitive information, especially if they were built
+                            from `Dockerfile`s that copied local files or were used in scenarios where sensitive data was processed. Deleting unused
+                            images ensures that any inadvertent sensitive information embedded in those images is eradicated.
+
+                            3. **Cleanup of network configurations**: Networks, especially custom ones, can contain configurations that reveal details
+                            about system architecture, inter-container communication, or even hardcoded secrets. Removing unused networks mitigates
+                            risks associated with lingering, outdated, or insecure configurations.
+
+                            4. **Elimination of build cache**: The Docker build process uses a cache to speed up image creation. This cache can contain
+                            remnants of previous builds, including potentially sensitive data or files. Pruning the build cache ensures that these remnants
+                            are deleted, further safeguarding privacy.
+
+                            5. **Footprint reduction**: By consistently pruning unused Docker objects, the overall footprint of Docker on the system is
+                            reduced. This makes it harder for malicious actors to exploit any lingering or overlooked vulnerabilities in the system or Docker
+                            itself.
+
+                            This script runs `docker system prune -af` command to clean up unused Docker data [1].
+
+                            Specifically, the command will [1]:
+
+                            - Remove all stopped containers.
+                            - Remove all networks not used by at least one container.
+                            - Remove all images not used by any container.
+                            - Remove all build cache.
+
+                            [1]: https://web.archive.org/web/20230810171526/https://docs.docker.com/engine/reference/commandline/system_prune/ "docker system prune | Docker Documentation"
                         code: |-
                             if type "docker" &> /dev/null; then
                                 docker system prune -af
                             fi
                     -
-                        name: Clear Pyenv-VirtualEnv cache
+                        name: Clear Pyenv-Virtualenv cache
                         recommend: strict
                         code: |-
                             if [ "$PYENV_VIRTUALENV_CACHE_PATH" ]; then
@@ -359,22 +392,22 @@ actions:
                                 yarn cache clean --force
                             fi
             -
-                category: iOS Cleanup
+                category: Clear iOS usage data
                 children:
                     -
-                        name: Clear iOS applications
+                        name: Clear iOS app copies from iTunes
                         recommend: strict
                         code: rm -rfv ~/Music/iTunes/iTunes\ Media/Mobile\ Applications/* &>/dev/null
                     -
-                        name: Clear iOS photo caches
+                        name: Clear iOS photo cache
                         recommend: standard
                         code: rm -rf ~/Pictures/iPhoto\ Library/iPod\ Photo\ Cache/*
                     -
-                        name: Remove iOS Device Backups
+                        name: Clear iOS Device Backups
                         recommend: strict
                         code: rm -rfv ~/Library/Application\ Support/MobileSync/Backup/* &>/dev/null
                     -
-                        name: Clear iOS Simulators
+                        name: Clear iOS simulators
                         recommend: strict
                         code: |-
                             if type "xcrun" &>/dev/null; then
@@ -385,7 +418,7 @@ actions:
                                 xcrun simctl erase all
                             fi
                     -
-                        name: Clear the list of iOS devices connected
+                        name: Clear list of connected iOS devices
                         recommend: strict
                         code: |-
                             sudo defaults delete /Users/$USER/Library/Preferences/com.apple.iPod.plist "conn:128:Last Connect"
@@ -394,7 +427,7 @@ actions:
                             sudo defaults delete /Library/Preferences/com.apple.iPod.plist Devices
                             sudo rm -rfv /var/db/lockdown/*
             -
-                name: Clear XCode Derived Data and Archives
+                name: Clear Xcode's derived data and archives
                 recommend: strict
                 code: |-
                     rm -rfv ~/Library/Developer/Xcode/DerivedData/* &>/dev/null
@@ -407,51 +440,51 @@ actions:
                     sudo dscacheutil -flushcache
                     sudo killall -HUP mDNSResponder
             -
-                name: Purge inactive memory
+                name: Clear inactive memory
                 recommend: standard
                 code: sudo purge
             -
-                category: Reset privacy permissions for all applications
+                category: Clear all privacy permissions for applications
                 children:
                     -
-                        name: Reset camera permissions
+                        name: Clear "camera" permissions
                         code: tccutil reset Camera
                     -
-                        name: Reset microphone permissions
+                        name: Clear "microphone" permissions
                         code: tccutil reset Microphone
                     -
-                        name: Reset accessibility permissions
+                        name: Clear "accessibility" permissions
                         code: tccutil reset Accessibility
                     -
-                        name: Reset screen capture permissions
+                        name: Clear "screen capture" permissions
                         code: tccutil reset ScreenCapture
                     -
-                        name: Reset reminders permissions
+                        name: Clear "reminders" permissions
                         code: tccutil reset Reminders
                     -
-                        name: Reset photos permissions
+                        name: Clear "photos" permissions
                         code: tccutil reset Photos
                     -
-                        name: Reset calendar permissions
+                        name: Clear "calendar" permissions
                         code: tccutil reset Calendar
                     -
-                        name: Reset full disk access permissions
+                        name: Clear "full disk access" permissions
                         code: tccutil reset SystemPolicyAllFiles
                     -
-                        name: Reset contacts permissions
+                        name: Clear "contacts" permissions
                         code: tccutil reset SystemPolicyAllFiles
                     -
-                        name: Reset desktop folder permissions
+                        name: Clear "desktop folder" permissions
                         code: tccutil reset SystemPolicyDesktopFolder
                     -
-                        name: Reset documents folder permissions
+                        name: Clear "documents folder" permissions
                         code: tccutil reset SystemPolicyDocumentsFolder
                     -
-                        name: Reset downloads permissions
+                        name: Clear "downloads" permissions
                         code: tccutil reset SystemPolicyDownloadsFolder
                     -
-                        name: Reset all app permissions
-                        code: tccutil reset All 
+                        name: Clear all app permissions
+                        code: tccutil reset All
     -
         category: Configure programs
         children:
@@ -468,20 +501,20 @@ actions:
                     sudo defaults delete /Library/Preferences/org.mozilla.firefox EnterprisePoliciesEnabled
                     sudo defaults delete /Library/Preferences/org.mozilla.firefox DisableTelemetry
             -
-                name: Disable Microsoft Office diagnostics data sending
+                name: Disable Microsoft Office telemetry
                 recommend: standard
                 code: defaults write com.microsoft.office DiagnosticDataTypePreference -string ZeroDiagnosticData
                 revertCode: defaults delete com.microsoft.office DiagnosticDataTypePreference
             -
-                name: Uninstall Google update
+                name: Remove Google Software Update service
                 recommend: strict
                 code: |-
                     googleUpdateFile=~/Library/Google/GoogleSoftwareUpdate/GoogleSoftwareUpdate.bundle/Contents/Resources/ksinstall
                     if [ -f "$googleUpdateFile" ]; then
                         $googleUpdateFile --nuke
-                        echo Uninstalled google update
+                        echo 'Uninstalled Google update'
                     else
-                        echo Google update file does not exist
+                        echo 'Google update file does not exist'
                     fi
             -
                 name: Disable Homebrew user behavior analytics
@@ -514,12 +547,12 @@ actions:
                 docs: |-
                     Parallels Desktop for Mac is software providing hardware virtualization for macOS [1].
 
-                    When you use it, it collects and share your personal data to third parties [2]. Personal
+                    When you use it, it collects and shares your personal data to third parties [2]. Personal
                     data include IP address of your device, your broad geographical location (country, state
                     (if applicable), and city) and used product [2].
-                    
-                    It includes third-party ads [3] and automatic check for updates [4] by default. Both of these
-                    behaviors communicate with online services that reveal data about you.
+
+                    It includes third-party advertisements [3] and automatic check for updates [4] by default.
+                    Both of these behaviors communicate with online services that reveal personal data about you.
 
                     [1]: https://web.archive.org/web/20221012155943/https://en.wikipedia.org/wiki/Parallels_Desktop_for_Mac "Parallels Desktop for Mac - Wikipedia | en.wikipedia.org"
                     [2]: https://web.archive.org/web/20221012155829/https://www.parallels.com/about/legal/privacy/ "Privacy Statement | parallels.com"
@@ -527,7 +560,7 @@ actions:
                     [4]: https://web.archive.org/web/20221012151953/http://download.parallels.com/stm/docs/en/Parallels_Desktop_Users_Guide/22220.htm "Automatic Updating | Parallels Desktop Users Guide | download.parallels.com"
                 children:
                     -
-                        name: Turn off ads in Parallels Desktop
+                        name: Disable Parallels Desktop advertisements
                         recommend: standard
                         docs: |-
                             Parallels Desktop in-product notifications to show ads from Parallels or other third
@@ -544,7 +577,7 @@ actions:
                             default). It's undocumented but still kept disabled by this script.
 
                             [1]: https://web.archive.org/save/https://forum.parallels.com/threads/unable-to-process-the-upgrade-request.345603/ "Unable to process the upgrade request | Parallels Forums | forum.parallels.com"
-                            [2]: https://web.archive.org/web/20221012151800/https://kb.parallels.com/114422  "How do I turn off notifications in Parallels Desktop and Parallels Access? | Knowledge Base | parallels.com"
+                            [2]: https://web.archive.org/web/20221012151800/https://kb.parallels.com/114422 "How do I turn off notifications in Parallels Desktop and Parallels Access? | Knowledge Base | parallels.com"
                         code: |-
                             defaults write 'com.parallels.Parallels Desktop' 'ProductPromo.ForcePromoOff' -bool yes
                             defaults write 'com.parallels.Parallels Desktop' 'WelcomeScreenPromo.PromoOff' -bool yes
@@ -552,16 +585,16 @@ actions:
                             defaults write 'com.parallels.Parallels Desktop' 'ProductPromo.ForcePromoOff' -bool no
                             defaults write 'com.parallels.Parallels Desktop' 'WelcomeScreenPromo.PromoOff' -bool yes
                     -
-                        category: Disable Parallels Desktop auto-updates
+                        category: Disable Parallels Desktop automatic updates
                         docs: |-
                             Parallels Desktop by default checks for updates frequently and automatically downloads them [1].
-                            This reveal personal data about [2] you without your control.
+                            This reveal personal data about you [2] without your control.
 
                             [1]: https://web.archive.org/web/20221012151953/http://download.parallels.com/stm/docs/en/Parallels_Desktop_Users_Guide/22220.htm "Automatic Updating | Parallels Desktop Users Guide | download.parallels.com"
                             [2]: https://web.archive.org/web/20221012155829/https://www.parallels.com/about/legal/privacy/ "Privacy Statement | parallels.com"
                         children:
                             -
-                                name: Disable automatically downloading Parallels Desktop updates
+                                name: Disable automatic downloads for Parallels Desktop updates
                                 docs: |-
                                     Automatic downloads are enabled by default, and this script disables automatic downloads.
 
@@ -570,11 +603,11 @@ actions:
                                     - Check: `defaults read 'com.parallels.Parallels Desktop' 'Application preferences.Download updates automatically'`
                                     - Values: 0 - Disabled, 1 - Enabled (default)
 
-                                    [1]: https://web.archive.org/web/20221012153810/https://download.parallels.com/desktop/v18/docs/en_US/Parallels-Desktop-Business-Edition-Administrators-Guide/37744.htm  "Parallels Desktop Business Edition Administrator's Guide v18 - Configuring individual Macs | download.parallels.com"
+                                    [1]: https://web.archive.org/web/20221012153810/https://download.parallels.com/desktop/v18/docs/en_US/Parallels-Desktop-Business-Edition-Administrators-Guide/37744.htm "Parallels Desktop Business Edition Administrator's Guide v18 - Configuring individual Macs | download.parallels.com"
                                 code: defaults write 'com.parallels.Parallels Desktop' 'Application preferences.Download updates automatically' -bool no
                                 revertCode: defaults write 'com.parallels.Parallels Desktop' 'Application preferences.Download updates automatically' -bool yes
                             -
-                                name: Disable automatically checking for Parallels Desktop updates
+                                name: Disable automatic checks for Parallels Desktop updates
                                 docs: |-
                                     Automatic checks are weekly by default, and this script disables the checks completely.
 
@@ -593,7 +626,7 @@ actions:
                 category: Configure Apple Remote Desktop
                 children:
                     -
-                        name: Deactivate the Remote Management Service
+                        name: Disable remote management service
                         recommend: strict
                         code: sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -deactivate -stop
                         revertCode: sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -restart -agent -console
@@ -604,26 +637,26 @@ actions:
                             sudo rm -rf /var/db/RemoteManagement
                             sudo defaults delete /Library/Preferences/com.apple.RemoteDesktop.plist
                             defaults delete ~/Library/Preferences/com.apple.RemoteDesktop.plist
-                            sudo rm -r /Library/Application\ Support/Apple/Remote\ Desktop/ 
+                            sudo rm -rf /Library/Application\ Support/Apple/Remote\ Desktop/
                             rm -r ~/Library/Application\ Support/Remote\ Desktop/
                             rm -r ~/Library/Containers/com.apple.RemoteDesktop
             -
-                name: Disable Internet based spell correction
+                name: Disable online spell correction
                 code: defaults write NSGlobalDomain WebAutomaticSpellingCorrectionEnabled -bool false
                 revertCode: defaults delete NSGlobalDomain WebAutomaticSpellingCorrectionEnabled
             -
-                name: Disable Remote Apple Events
+                name: Disable remote Apple events
                 recommend: strict
                 code: sudo systemsetup -setremoteappleevents off
                 revertCode: sudo systemsetup -setremoteappleevents on
             -
-                name: Do not store documents to iCloud Drive by default
+                name: Disable automatic storage of documents in iCloud Drive
                 docs: https://macos-defaults.com/finder/nsdocumentsavenewdocumentstocloud.html
                 recommend: standard
                 code: defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
                 revertCode: defaults delete NSGlobalDomain NSDocumentSaveNewDocumentsToCloud
             -
-                name: Do not show recent items on dock
+                name: Disable display of recent applications on Dock
                 docs: https://developer.apple.com/documentation/devicemanagement/dock
                 code: defaults write com.apple.dock show-recents -bool false
                 revertCode: defaults delete com.apple.dock show-recents
@@ -636,7 +669,7 @@ actions:
                 category: Configure Siri
                 children:
                     -
-                        name: Opt-out from Siri data collection
+                        name: Disable participation in Siri data collection
                         recommend: standard
                         code: defaults write com.apple.assistant.support 'Siri Data Sharing Opt-In Status' -int 2
                         revertCode: defaults delete com.apple.assistant.support 'Siri Data Sharing Opt-In Status'
@@ -683,7 +716,7 @@ actions:
                                     launchctl enable "gui/$UID/com.apple.Siri.agent"
                                     sudo launchctl enable 'system/com.apple.Siri.agent'
                                     if [ $(/usr/bin/csrutil status | awk '/status/ {print $5}' | sed 's/\.$//') = "enabled" ]; then
-                                        >&2 echo 'This script requires SIP to be disabled. Read more: https://developer.apple.com/documentation/security/disabling_and_enabling_system_integrity_protection''
+                                        >&2 echo 'This script requires SIP to be disabled. Read more: https://developer.apple.com/documentation/security/disabling_and_enabling_system_integrity_protection'
                                     fi
                             -
                                 name: Disable "Do you want to enable Siri?" pop-up
@@ -694,15 +727,15 @@ actions:
                                 code: defaults write com.apple.SetupAssistant 'DidSeeSiriSetup' -bool True
                                 revertCode: defaults delete com.apple.SetupAssistant 'DidSeeSiriSetup'
                     -
-                        category: Hide Siri
+                        category: Remove Siri from user interface
                         children:
                             -
-                                name: Hide Siri from menu bar
+                                name: Remove Siri from menu bar
                                 recommend: strict
                                 code: defaults write com.apple.systemuiserver 'NSStatusItem Visible Siri' 0
                                 revertCode: defaults write com.apple.systemuiserver 'NSStatusItem Visible Siri' 1
                             -
-                                name: Hide Siri from status menu
+                                name: Remove Siri from status menu
                                 recommend: strict
                                 docs: https://derflounder.wordpress.com/2016/09/20/blocking-siri-on-macos-sierra/
                                 code: |-
@@ -712,11 +745,11 @@ actions:
                                     defaults delete com.apple.Siri 'StatusMenuVisible'
                                     defaults delete com.apple.Siri 'UserHasDeclinedEnable'
             -
-                name: Disable Spotlight indexing 
+                name: Disable Spotlight indexing
                 code: sudo mdutil -i off -d /
                 revertCode: sudo mdutil -i on /
             -
-                name: Disable Personalized advertisements and identifier collection
+                name: Disable personalized advertisements and identifier tracking
                 recommend: standard
                 docs: |-
                     This script enhances your privacy by deactivating Personalized Ads and disabling the collection
@@ -746,7 +779,7 @@ actions:
 
                     Please note: The `forceLimitAdTracking` key limits ad tracking [3] [4] and is found in CIS
                     benchmarks for macOS [4]. However, the official macOS documentation specifies that it is
-                    applicable only to iOS 7 and later versions, not to macOS [3]. The key does not exist on the OS
+                    applicable only to iOS 7 and newer versions, not to macOS [3]. The key does not exist on the OS
                     by default.
 
                     [1]: https://web.archive.org/web/20230731152633/https://www.apple.com/legal/privacy/data/en/apple-advertising/ "Legal - Apple Advertising & Privacy - Apple"
@@ -789,7 +822,7 @@ actions:
                             sudo defaults write /Library/Preferences/com.apple.alf globalstate -bool false
                             defaults write com.apple.security.firewall EnableFirewall -bool false
                     -
-                        name: Turn on firewall logging
+                        name: Enable firewall logging
                         recommend: standard
                         docs:
                             - https://www.stigviewer.com/stig/apple_os_x_10.13/2018-10-01/finding/V-81671
@@ -801,7 +834,7 @@ actions:
                             /usr/libexec/ApplicationFirewall/socketfilterfw --setloggingmode off
                             sudo defaults write /Library/Preferences/com.apple.alf loggingenabled -bool false
                     -
-                        name: Turn on stealth mode
+                        name: Enable stealth mode
                         recommend: standard
                         docs:
                             - https://www.stigviewer.com/stig/apple_os_x_10.8_mountain_lion_workstation/2015-02-10/finding/V-51327
@@ -816,16 +849,16 @@ actions:
                             sudo defaults write /Library/Preferences/com.apple.alf stealthenabled -bool false
                             defaults write com.apple.security.firewall EnableStealthMode -bool false
                     -
-                        category: Disable auto-permitting incoming traffic for apps
+                        category: Disable automatic permission for incoming traffic in applications
                         children:
                             -
-                                name: Prevent automatically allowing incoming connections to signed apps
+                                name: Disable automatic incoming connections for signed apps
                                 docs: https://daiderd.com/nix-darwin/manual/index.html
                                 recommend: strict
                                 code: sudo defaults write /Library/Preferences/com.apple.alf allowsignedenabled -bool false
                                 revertCode: sudo defaults write /Library/Preferences/com.apple.alf allowsignedenabled -bool true
                             -
-                                name: Prevent automatically allowing incoming connections to downloaded signed apps
+                                name: Disable automatic incoming connections for downloaded signed apps
                                 docs: https://daiderd.com/nix-darwin/manual/index.html
                                 recommend: strict
                                 code: sudo defaults write /Library/Preferences/com.apple.alf allowdownloadsignedenabled -bool false
@@ -845,18 +878,18 @@ actions:
                 code: sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.captive.control.plist Active -bool false
                 revertCode: sudo defaults delete /Library/Preferences/SystemConfiguration/com.apple.captive.control.plist Active
             -
-                category: Use screen saver for protection
+                category: Enable protective screen saver
                 children:
                     -
-                        name: Require a password to wake the computer from sleep or screen saver
+                        name: Enable password requirement for waking from sleep or screen saver
                         # The screen saver acts as a session lock and prevents unauthorized users from accessing the current user's account.
                         docs: https://www.stigviewer.com/stig/apple_macos_11_big_sur/2020-11-27/finding/V-230744
                         code: sudo defaults write /Library/Preferences/com.apple.screensaver askForPassword -bool true
                         revertCode: sudo defaults delete /Library/Preferences/com.apple.screensaver askForPassword
                     -
-                        name: Initiate session lock five seconds after screen saver is started
+                        name: Enable session lock five seconds after screen saver initiation
                         docs: https://www.stigviewer.com/stig/apple_macos_11_big_sur/2020-11-27/finding/V-230745
-                        # An unattended system with an excessive grace period is vulnerable to a malicious user. 
+                        # An unattended system with an excessive grace period is vulnerable to a malicious user.
                         code: sudo defaults write /Library/Preferences/com.apple.screensaver 'askForPasswordDelay' -int 5
                         revertCode: sudo defaults delete /Library/Preferences/com.apple.screensaver 'askForPasswordDelay'
             -
@@ -864,36 +897,36 @@ actions:
                 docs:
                     - https://www.stigviewer.com/stig/apple_macos_11_big_sur/2021-06-16/finding/V-230823
                     - https://www.stigviewer.com/stig/apple_os_x_10.13/2018-10-01/finding/V-81615
-                children: 
-                    - 
-                        name: Disables signing in as Guest from the login screen
-                        code: sudo defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -bool NO
-                        revetCode: sudo defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -bool YES
-                    -
-                        name: Disables Guest access to file shares over AF
-                        code: sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server AllowGuestAccess -bool NO
-                        revetCode: sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server AllowGuestAccess -bool YES
-                    -
-                        name: Disables Guest access to file shares over SMB
-                        code: sudo defaults write /Library/Preferences/com.apple.AppleFileServer guestAccess -bool NO
-                        revetCode: sudo defaults write /Library/Preferences/com.apple.AppleFileServer guestAccess -bool YES
-            -
-                category: Prevent unauthorized connections
                 children:
                     -
-                        name: Disable remote login (incoming SSH and SFTP connections)
+                        name: Disable guest sign-in from login screen
+                        code: sudo defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -bool NO
+                        revertCode: sudo defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -bool YES
+                    -
+                        name: Disable guest access to file shares over AF
+                        code: sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server AllowGuestAccess -bool NO
+                        revertCode: sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server AllowGuestAccess -bool YES
+                    -
+                        name: Disable guest access to file shares over SMB
+                        code: sudo defaults write /Library/Preferences/com.apple.AppleFileServer guestAccess -bool NO
+                        revertCode: sudo defaults write /Library/Preferences/com.apple.AppleFileServer guestAccess -bool YES
+            -
+                category: Disable unauthorized connections
+                children:
+                    -
+                        name: Disable incoming SSH and SFTP remote logins
                         recommend: standard
                         docs: https://osxdaily.com/2016/08/16/enable-ssh-mac-command-line/
                         # Check if enabled: sudo systemsetup -getremotelogin, returns "Remote Login: On" or "Off"
                         code: echo 'yes' | sudo systemsetup -setremotelogin off
                         revertCode: sudo systemsetup -setremotelogin on
                     -
-                        name: Disable insecure TFTP service
+                        name: Disable the insecure TFTP service
                         recommend: standard
                         # If the system does not require Trivial File Transfer Protocol (TFTP), then support for
                         # it is non-essential and should be disabled. The information system should be configured to
                         # provide only essential capabilities. Disabling TFTP helps prevent the unauthorized connection
-                        # of devices and the unauthorized transfer of information.  
+                        # of devices and the unauthorized transfer of information.
                         docs: https://www.stigviewer.com/stig/apple_macos_11_big_sur/2021-06-16/finding/V-230813
                         code: sudo launchctl disable 'system/com.apple.tftpd'
                         revertCode: sudo launchctl enable 'system/com.apple.tftpd'
@@ -921,13 +954,13 @@ actions:
                     - https://www.cups.org/doc/security.html # Security risks
                 children:
                     -
-                        name: Disable sharing of local printers with other computers
+                        name: Disable local printer sharing with other computers
                         recommend: standard
                         docs: https://www.cups.org/doc/man-cupsctl.html
                         code: cupsctl --no-share-printers
                         revertCode: cupsctl --share-printers
                     -
-                        name: Disable printing from any address including the Internet
+                        name: Disable printing from external addresses, including the internet
                         recommend: standard
                         docs: https://www.cups.org/doc/man-cupsctl.html
                         code: cupsctl --no-remote-any
@@ -952,7 +985,7 @@ actions:
                         category: Clean File Quarantine from downloaded files
                         children:
                             -
-                                name: Clear File Quarantine logs of all downloaded files
+                                name: Clear logs of all downloaded files from File Quarantine
                                 recommend: strict
                                 docs:
                                     - https://www.macobserver.com/tips/how-to/your-mac-remembers-everything-you-download-heres-how-to-clear-download-history/
@@ -969,7 +1002,7 @@ actions:
                                         if ls -lO "$db_file" | grep --silent 'schg'; then
                                             sudo chflags noschg "$db_file"
                                             echo "Found and removed system immutable flag"
-                                            has_sytem_immutable_flag=true
+                                            has_system_immutable_flag=true
                                         fi
                                         if ls -lO "$db_file" | grep --silent 'uchg'; then
                                             sudo chflags nouchg "$db_file"
@@ -978,7 +1011,7 @@ actions:
                                         fi
                                         sqlite3 "$db_file" "$db_query"
                                         echo "Executed the query \"$db_query\""
-                                        if [ "$has_sytem_immutable_flag" = true ] ; then
+                                        if [ "$has_system_immutable_flag" = true ] ; then
                                             sudo chflags schg "$db_file"
                                             echo "Added system immutable flag back"
                                         fi
@@ -1012,10 +1045,10 @@ actions:
                                                     '       \
                                                 {} \;
                     -
-                        category: Disable File Quarantine from tracking downloaded files
+                        category: Disable macOS File Quarantine tracking for downloaded files
                         children:
                             -
-                                name: Prevent quarantine from logging downloaded files
+                                name: Disable downloaded file logging in quarantine
                                 docs:
                                     - https://eclecticlight.co/2019/04/25/%F0%9F%8E%97-quarantine-apps/
                                     - https://eclecticlight.co/2017/12/11/xattr-com-apple-quarantine-the-quarantine-flag/
@@ -1038,7 +1071,7 @@ actions:
                                         >&2 echo "Cannot revert immutability, file does not exist at\"$file_to_lock\""
                                     fi
                             -
-                                name: Disable using extended quarantine attribute on downloaded files (disables warning)
+                                name: Disable extended quarantine attribute for downloaded files (disables warning)
                                 # Disables dialogs shown when opening an application for the first time
                                 # i.e. "Application Downloaded from Internet" quarantine warning.
                                 docs:
@@ -1054,7 +1087,7 @@ actions:
                 # Can protect against unknown threats.
                 children:
                     -
-                        name: Prevent Gatekeeper from automatically reactivating itself
+                        name: Disable Gatekeeper's automatic reactivation
                         docs:
                             - https://osxdaily.com/2015/11/05/stop-gatekeeper-auto-rearm-mac-os-x/
                             - https://www.cnet.com/tech/computing/how-to-disable-gatekeeper-permanently-on-os-x/
@@ -1071,8 +1104,8 @@ actions:
                         code: |-
                             os_major_ver=$(sw_vers -productVersion | awk -F "." '{print $1}')
                             os_minor_ver=$(sw_vers -productVersion | awk -F "." '{print $2}')
-                            if  [[  $os_major_ver -le 10 \
-                                    || ( $os_major_ver -eq 10 && $os_minor_ver -lt 7 )  \
+                            if [[ $os_major_ver -le 10 \
+                                    || ( $os_major_ver -eq 10 && $os_minor_ver -lt 7 ) \
                                 ]]; then
                                 echo "No action needed, Gatekeeper is not available this OS version"
                             else
@@ -1090,8 +1123,8 @@ actions:
                         revertCode: |-
                             os_major_ver=$(sw_vers -productVersion | awk -F "." '{print $1}')
                             os_minor_ver=$(sw_vers -productVersion | awk -F "." '{print $2}')
-                            if  [[  $os_major_ver -le 10 \
-                                    || ( $os_major_ver -eq 10 && $os_minor_ver -lt 7 )  \
+                            if [[ $os_major_ver -le 10 \
+                                    || ( $os_major_ver -eq 10 && $os_minor_ver -lt 7 ) \
                                 ]]; then
                                 >&2 echo "Gatekeeper is not available in this OS version"
                             else
@@ -1107,7 +1140,7 @@ actions:
                                 fi
                             fi
             -
-                name: Disable Library Validation Entitlement (checks signature of libraries)
+                name: Disable library validation entitlement (library signature validation)
                 docs:
                     - https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_cs_disable-library-validation
                     - https://www.macenhance.com/docs/general/sip-library-validation.html
@@ -1121,25 +1154,25 @@ actions:
                     - https://macadminsdoc.readthedocs.io/en/master/Profiles-and-Settings/OS-X-Updates.html
                 children:
                     -
-                        name: Disable automatically checking for updates
+                        name: Disable automatic checks for updates
                         docs: https://developer.apple.com/documentation/devicemanagement/softwareupdate
                         code: |-
-                            # For OS X Yosemite and later (>= 10.10)
+                            # For OS X Yosemite and newer (>= 10.10)
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AutomaticCheckEnabled' -bool false
                         revertCode: |-
-                            # For OS X Yosemite and later (>= 10.10)
+                            # For OS X Yosemite and newer (>= 10.10)
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AutomaticCheckEnabled' -bool true
                     -
-                        name: Disable automatically downloading new updates when available
+                        name: Disable automatic downloads for updates
                         docs: https://developer.apple.com/documentation/devicemanagement/softwareupdate
                         code: |-
-                            # For OS X Yosemite and later (>= 10.10)
+                            # For OS X Yosemite and newer (>= 10.10)
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AutomaticDownload' -bool false
                         revertCode: |-
-                            # For OS X Yosemite and later (>= 10.10)
+                            # For OS X Yosemite and newer (>= 10.10)
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AutomaticDownload' -bool true
                     -
-                        name: Disable automatically installing macOS updates
+                        name: Disable automatic installation of macOS updates
                         docs:
                             # References for AutoUpdateRestartRequired
                                 - https://kb.vmware.com/s/article/2960635
@@ -1149,48 +1182,48 @@ actions:
                         code: |-
                             # For OS X Yosemite through macOS High Sierra (>= 10.10 && < 10.14)
                             sudo defaults write /Library/Preferences/com.apple.commerce 'AutoUpdateRestartRequired' -bool false
-                            # For Mojave and later (>= 10.14)
+                            # For Mojave and newer (>= 10.14)
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AutomaticallyInstallMacOSUpdates' -bool false
                         revertCode: |-
                             # For OS X Yosemite through macOS High Sierra (>= 10.10 && < 10.14)
                             sudo defaults write /Library/Preferences/com.apple.commerce 'AutoUpdateRestartRequired' -bool true
-                            # For Mojave and later (>= 10.14)
+                            # For Mojave and newer (>= 10.14)
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AutomaticallyInstallMacOSUpdates' -bool true
                     -
-                        name: Disable automatically updating app from the App Store
+                        name: Disable automatic app updates from the App Store
                         docs:
                             - https://kb.vmware.com/s/article/2960635
                             - https://derflounder.wordpress.com/2018/12/28/enabling-automatic-macos-software-updates-for-os-x-yosemite-through-macos-mojave/
                         code: |-
-                            # For OS X Yosemite and later (>= 10.10)
+                            # For OS X Yosemite and newer (>= 10.10)
                             sudo defaults write /Library/Preferences/com.apple.commerce 'AutoUpdate' -bool false
-                            # For Mojave and later (>= 10.14)
+                            # For Mojave and newer (>= 10.14)
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AutomaticallyInstallAppUpdates' -bool false
                         revertCode: |-
-                            # For OS X Yosemite and later
+                            # For OS X Yosemite and newer
                             sudo defaults write /Library/Preferences/com.apple.commerce 'AutoUpdate' -bool true
-                            # For Mojave and later (>= 10.14)
+                            # For Mojave and newer (>= 10.14)
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AutomaticallyInstallAppUpdates' -bool true
                     -
-                        name: Disable installation of macOS beta releases
+                        name: Disable macOS beta release installation
                         docs: https://support.apple.com/en-gb/HT203018
                         code: |-
-                            # For OS X Yosemite and later (>= 10.10)
+                            # For OS X Yosemite and newer (>= 10.10)
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AllowPreReleaseInstallation' -bool false
                         revertCode: |-
-                            # For OS X Yosemite and later (>= 10.10)
+                            # For OS X Yosemite and newer (>= 10.10)
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AllowPreReleaseInstallation' -bool true
                     -
-                        name: Disable automatically installing configuration data (e.g. XProtect, Gatekeeper, MRT)
+                        name: Disable automatic installation for configuration data (e.g. XProtect, Gatekeeper, MRT)
                         docs: https://derflounder.wordpress.com/2018/12/28/enabling-automatic-macos-software-updates-for-os-x-yosemite-through-macos-mojave/
                         code: |-
-                            # For OS X Yosemite and later (>= 10.10)
+                            # For OS X Yosemite and newer (>= 10.10)
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'ConfigDataInstall' -bool false
                         revertCode: |-
-                            # For OS X Yosemite and later (>= 10.10)
+                            # For OS X Yosemite and newer (>= 10.10)
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'ConfigDataInstall' -bool true
                     -
-                        name: Disable automatically installing system data files and security updates
+                        name: Disable automatic installation for system data files and security updates
                         docs:
                             # References for CriticalUpdateInstall
                                 - https://derflounder.wordpress.com/2014/12/24/managing-os-xs-automatic-security-updates/
@@ -1198,10 +1231,10 @@ actions:
                             # References for softwareupdate --background-critical
                                 - https://managingosx.wordpress.com/2013/04/30/undocumented-options/
                         code: |-
-                            # For OS X Yosemite and later (>= 10.10)
+                            # For OS X Yosemite and newer (>= 10.10)
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'CriticalUpdateInstall' -bool false
                         revertCode: |-
-                            # For OS X Yosemite and later (>= 10.10)
+                            # For OS X Yosemite and newer (>= 10.10)
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'CriticalUpdateInstall' -bool true
                             # Trigger background check with normal scan (critical updates only)
                             sudo softwareupdate --background-critical

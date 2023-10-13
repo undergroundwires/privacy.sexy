@@ -1,4 +1,4 @@
-# Structure documented in "docs/collection-files.md"
+# Structure is documented in "docs/collection-files.md"
 os: linux
 scripting:
     language: shellscript
@@ -24,7 +24,7 @@ actions:
     docs: |-
       These scripts allow you to increase privacy by deleting collected data about you and your behavior.
     children:
-      - 
+      -
         category: Clear terminal history
         docs: |-
           Reading terminal history is one of the attack techniques.
@@ -52,7 +52,7 @@ actions:
                 Zsh is also known as Z-shell [1]. See its [homepage](https://web.archive.org/web/20221029211848/https://www.zsh.org/) for more information.
                 It is one of the most used shells and has been the default shell in Kali Linux since 2020.4 [2].
                 Arch Linux installer uses zsh [3] but sets bash on disk as default [4].
-                
+
                 [1]: https://web.archive.org/web/20221029134900/https://en.wikipedia.org/wiki/Z_shell "Z shell - Wikipedia | wikipedia.org"
                 [2]: https://web.archive.org/web/20221029134925/https://www.kali.org/blog/kali-linux-2020-4-release/ "Kali Linux 2020.4 Release (ZSH, Bash, CME, MOTD, AWS, Docs, Win-KeX & Vagrant) | Kali Linux Blog | kali.org"
                 [3]: https://web.archive.org/web/20221029181441/https://gitlab.archlinux.org/archlinux/archiso/-/blob/9f16862acd7e7be02da72f63a03b4c0e256dabff/configs/releng/packages.x86_64#L32 "configs/releng/packages.x86_64 · 9f16862acd7e7be02da72f63a03b4c0e256dabff · Arch Linux / archiso · GitLab"
@@ -108,7 +108,7 @@ actions:
                 The latest maintained version is `ksh93u+m`, see its [GitHub repository (ksh93/ksh)](https://web.archive.org/web/20221029212509/https://github.com/ksh93/ksh).
 
                 Its history file (histfile) is saved at `~/.sh_history` by default [1] [2].
-                
+
                 OpenBSD symlinks sh to ksh [3].
 
                 See also the [Wikipedia page](https://web.archive.org/web/20221029212931/https://en.wikipedia.org/wiki/KornShell) for more information.
@@ -120,7 +120,7 @@ actions:
                 function: DeleteFileFromUserAndRootHome
                 parameters:
                   file: .sh_history
-            # - 
+            # -
             #   Dash [1] (used by Debian, Ubuntu, Void Linux etc.) does not support history [2].
             #   [1]: https://web.archive.org/web/20221029135301/https://git.kernel.org/pub/scm/utils/dash/dash.git
             #   [2]: https://web.archive.org/web/20221029135344/https://unix.stackexchange.com/questions/271595/how-can-i-access-the-history-buffer-in-sh-not-in-bash
@@ -132,10 +132,10 @@ actions:
                 It's mainly a fork of dash (Debian Almquist shell) used in embedded Linux distributions such as DSLinux,
                 Alpine Linux, Tiny Core Linux and Linux-based router firmware such as OpenWrt, Tomato and DD-WRT [1].
                 It was also used by Android until Android 4.0 [2].
-                
+
                 It uses `~/.ash_history` as the history file [3].
 
-                [1]: https://web.archive.org/web/20221030142637/https://en.wikipedia.org/wiki/Almquist_shell#Embededed_Linux "Almquist shell - Wikipedia | wikipedia.org"
+                [1]: https://web.archive.org/web/20221030142637/https://en.wikipedia.org/wiki/Almquist_shell#Embedded_Linux "Almquist shell - Wikipedia | wikipedia.org"
                 [2]: https://web.archive.org/web/20221029135416/https://android.googlesource.com/platform/system/core/+/master/shell_and_utilities/README.md "Android's shell and utilities | android.googlesource.com"
                 [3]: https://web.archive.org/web/20221029135513/https://github.com/brgl/busybox/blob/abbf17abccbf832365d9acf1c280369ba7d5f8b2/shell/ash.c#L13626 "busybox/ash.c source code | github.com/brgl/busybox"
               call:
@@ -223,8 +223,8 @@ actions:
                   1. Temporary Windows files. Wine saves temporary Windows files at `<wine folder>/drive_c/windows/temp/` [1] [2].
                   2. Temporary Wine application cache [3] that is not connected to inner Windows files.
 
-                  [1]: https://web.archive.org/web/20180328090608/http://www.zdnet.com/article/keeping-temp-folders-clean/ "Keeping temp folders clean | ZDNet | dnet.com"
-                  [2]: https://web.archive.org/web/20221029135944/https://ubuntuforums.org/showthread.php?t=1006132 "Why does Wine have its own temp folders?  | UbuntuForums | ubuntuforums.org"
+                  [1]: https://web.archive.org/web/20180328090608/http://www.zdnet.com/article/keeping-temp-folders-clean/ "Keeping temp folders clean | ZDNet | zdnet.com"
+                  [2]: https://web.archive.org/web/20221029135944/https://ubuntuforums.org/showthread.php?t=1006132 "Why does Wine have its own temp folders? | UbuntuForums | ubuntuforums.org"
                   [3]: https://web.archive.org/web/20221029135955/https://wiki.debian.org/Wine#Mono_and_Gecko "Wine - Debian Wiki | wiki.debian.org"
                 code: |-
                   # Temporary Windows files for global prefix
@@ -232,7 +232,7 @@ actions:
                   # Wine cache:
                   rm -rfv ~/.cache/wine/
               -
-                name: Clear Winetricks downloads cache
+                name: Clear Winetricks cache
                 recommend: standard
                 docs: |-
                   Winetricks is a helper script to download and install various redistributable runtime libraries
@@ -254,7 +254,7 @@ actions:
             docs: |-
               LibreOffice is a free and open-source office productivity software suite, a project of The Document Foundation (TDF) [1].
 
-              `registrymodifications.xcu` is an XML file that  contains the user-specified settings [2].
+              `registrymodifications.xcu` is an XML file that contains the user-specified settings [2].
               It is found inside the user settings directory (`~/.config/libreoffice/4/user`) [2].
               It includes thumbnails generated [3], and a recent document list [4].
 
@@ -263,7 +263,7 @@ actions:
               [1]: https://web.archive.org/web/20221029140306/https://en.wikipedia.org/wiki/LibreOffice "LibreOffice | Wikipedia | en.wikipedia.org"
               [2]: https://web.archive.org/web/20221029140313/https://wiki.documentfoundation.org/images/b/b0/LibreOffice_config_extension_writing.pdf "Config specification | LibreOffice documentation | wiki.documentfoundation.org"
               [3]: https://web.archive.org/web/20221029140438/https://askubuntu.com/questions/996397/where-are-libre-office-thumbnails-stored/996528 "Where are Libre Office thumbnails stored? | Ask Ubuntu Forums | askubuntu.com"
-              [4]: https://web.archive.org/web/20221029140501/https://forum.openoffice.org/en/forum/viewtopic.php?f=6&t=102020 "Restoring Recent documents list < Apache OpenOffice Community Forum | forum.openoffice.org"
+              [4]: https://web.archive.org/web/20221029140501/https://forum.openoffice.org/en/forum/viewtopic.php?f=6&t=102020 "Restoring Recent documents list | Apache OpenOffice Community Forum | forum.openoffice.org"
             code: |-
               # Global installation
               rm -f ~/.config/libreoffice/4/user/registrymodifications.xcu
@@ -315,22 +315,22 @@ actions:
                     parameters:
                       file: cookies.sqlite-shm
               -
-                name: Clear Thunderbird session restore (open windows and tabs)
+                name: Clear Thunderbird session restoration data (open windows and tabs)
                 docs: |-
                   The default window layout is saved in the session file (`session.json`) [1].
                   It includes data on what tabs are open [1].
-                  
+
                   [1]: https://web.archive.org/web/20221029140819/https://kb.mozillazine.org/Files_and_folders_in_the_profile_-_Thunderbird "Files and folders in the profile | Thunderbird | kb.mozillazine.org"
                 call:
                   function: DeleteFileFromThunderbirdProfiles
                   parameters:
                     file: session.json
               -
-                name: Clear Thunderbird accounts
+                name: Clear Thunderbird passwords
                 docs: |-
                   `logins.json` stores encrypted passwords [1].
                   It replaces `signons.sqlite`, which had replaced `signons.txt` [1].
-                  
+
                   `logins-backup.json` is stored to recreate `logins.json` [2].
 
                   [1]: https://web.archive.org/web/20221029140819/https://kb.mozillazine.org/Files_and_folders_in_the_profile_-_Thunderbird "Files and folders in the profile | Thunderbird | kb.mozillazine.org"
@@ -369,10 +369,10 @@ actions:
                   Most users open the Thunderbird address book from within the email client, but it can also be launched separately [1].
 
                   Mozilla Thunderbird by default comes with two address books, even though more can be added [2]:
-                  
-                  1. **Personal book**: For the most frequently used contacts. 
+
+                  1. **Personal book**: For the most frequently used contacts.
                   2. **Collected book**: Collects addresses from email that you send.
-                  
+
                   [1]: https://web.archive.org/web/20221029141424/https://wiki.mozilla.org/Thunderbird:Help_Documentation:Using_the_Address_Book "Thunderbird:Help Documentation:Using the Address Book | MozillaWiki | wiki.mozilla.org"
                   [2]: https://web.archive.org/web/20221029141448/https://support.mozilla.org/en-US/questions/1038172 "WHAT ARE COLLECTED ADDRESSES VS, PERSONAL ADDRESS BOOK | Thunderbird Support Forum | Mozilla Support | support.mozilla.org"
                 children:
@@ -397,7 +397,7 @@ actions:
                       -
                         function: DeleteFileFromThunderbirdProfiles
                         parameters:
-                          file: abook.mab # Thunderbird < v78
+                          file: abook.mab # < Thunderbird v78
                   -
                     name: Clear Thunderbird collected address book
                     docs: |-
@@ -419,15 +419,15 @@ actions:
                       -
                         function: DeleteFileFromThunderbirdProfiles
                         parameters:
-                          file: history.mab # Thunderbird < v78
+                          file: history.mab # < Thunderbird v78
               -
-                name: Clear Thunderbird's history of clicked links
+                name: Clear clicked links history in Thunderbird
                 docs: |-
                   Thunderbird saves annotations, bookmarks, favorite icons, input history, keywords, and browsing history
                   (a list of pages visited) [1].
-                  
+
                   Data is saved at persistent `places.sqlite` [1] and temporary `places.sqlite-shm` and `places.sqlite.wal` [2].
-                  
+
                   [1]: https://web.archive.org/web/20221029141626/https://kb.mozillazine.org/Places.sqlite "Places.sqlite | MozillaZine Knowledge Base | kb.mozillazine.org"
                   [2]: https://web.archive.org/web/20221029141631/https://bugzilla.mozilla.org/show_bug.cgi?id=686237 "686237 - places.sqlite-wal and places.sqlite-shm not removed on exit | Mozilla Bugs | bugzilla.mozilla.org"
                 call:
@@ -444,11 +444,11 @@ actions:
                     parameters:
                       file: places.sqlite.wal
           -
-            category: Clear development tools data
+            category: Clear data from development tools
             docs: |-
               This category includes tools that are typically used by developers, also known as "developer tools".
               These tools allow a developer to create, test, and debug software.
-              Their data may leak data about the developer, his/her usage patterns, the environment used for development or the developed project.
+              Their data may leak data about the developer, their usage patterns, the environment used for development or the developed project.
             children:
               -
                 name: Clear Python history
@@ -456,9 +456,9 @@ actions:
                   Python is a high-level, general-purpose programming language [1]. Python comes preinstalled on most Linux distributions [2].
 
                   Since Python 3.4 the interactive mode does log all commands to `~/.python_history` [3].
-                  
+
                   See also:
-                  
+
                   - [Source code](https://web.archive.org/web/20221029214327/https://github.com/python/cpython/blob/b2499669ef2e6dc9a2cdb49b4dc498e078167e26/Lib/site.py#L430-L451) that
                   creates the file and registers it.
                   - [Python homepage](https://web.archive.org/web/20221029214344/https://www.python.org/)
@@ -479,7 +479,7 @@ actions:
                   [1]: https://web.archive.org/web/20221029142001/https://en.wikipedia.org/wiki/Visual_Studio_Code "Visual Studio Code | Wikipedia | en.wikipedia.org"
                 children:
                   -
-                    name: Clear Visual Studio Code Crash Reports
+                    name: Clear Visual Studio Code crash reports
                     recommend: standard
                     docs: |-
                       Visual Studio Code stores crash reports that later on are uploaded to Microsoft servers by default [1].
@@ -559,9 +559,9 @@ actions:
                   [1]: https://web.archive.org/web/20221029142932/https://learn.microsoft.com/en-us/cli/azure/ "Azure Command-Line Interface (CLI) - Overview | Microsoft Learn | learn.microsoft.com"
                 children:
                   -
-                    name: Clear Azure CLI telemetry
+                    name: Clear Azure CLI telemetry data
                     recommend: standard
-                    docs: |- 
+                    docs: |-
                       The Azure CLI stores telemetry in the `telemetry` directory and `telemetry.txt`, `logs/telemetry.txt` files [1].
 
                       [1]: https://web.archive.org/web/20221029142939/https://github.com/Azure/azure-cli/blob/29767d75d850ddc1c24cc85bd46d861b61d77a47/src/azure-cli-telemetry/azure/cli/telemetry/const.py "Azure CLI Source Code | GitHub | github.com"
@@ -583,7 +583,7 @@ actions:
                     docs: |-
                       This script deletes cached Azure CLI objects [1].
                       Cleaning cache does not remove your credentials, so you'll keep your session and be logged in.
-                      
+
                       [1]: https://web.archive.org/web/20221029143238/https://learn.microsoft.com/en-us/cli/azure/cache?view=azure-cli-latest#az_cache_purge "az cache | Microsoft Learn | learn.microsoft.com"
                     call:
                       function: RunIfCommandExists
@@ -591,7 +591,7 @@ actions:
                         command: az
                         code: az cache purge
                   -
-                    name: Clear Azure login data (logs out of the current session)
+                    name: Clear Azure login data (this will log you out of the current session)
                     recommend: strict
                     docs: |-
                       This script cleans the login data in three steps:
@@ -599,7 +599,7 @@ actions:
                       1. **`az logout`**:
                          It deletes the current authentication token and subscription ID [1].
                          It only logs out the selected/current user [1].
-                      
+
                       2. **`az account clear`**:
                          It clears all other subscriptions from the CLI's local cache [2].
                          It also logs out all users [2].
@@ -652,7 +652,7 @@ actions:
                   rm -rfv /.cache/epiphany/*
                   # Flatpak installation
                   rm -rfv ~/.var/app/org.gnome.Epiphany/cache/*
-                  # Snap insallation
+                  # Snap installation
                   rm -rfv ~/~/snap/epiphany/common/.cache/*
               -
                 name: Clear GNOME Web browsing history
@@ -710,7 +710,7 @@ actions:
               Mozilla Firefox, or simply Firefox, is a free and open-source web browser developed by the Mozilla Foundation and
               its subsidiary the Mozilla Corporation [1].
 
-              Firefox stores user-related data in user profiles [2]. 
+              Firefox stores user-related data in user profiles [2].
 
               See also [the Firefox homepage](https://web.archive.org/web/20221029214632/https://www.mozilla.org/en-US/firefox/).
 
@@ -722,7 +722,7 @@ actions:
                 recommend: standard
                 docs: |-
                   The cache gets stored `.cache` folder, which you can see when you navigate to `about:cache` [1] [2].
-                  
+
                   [1]: https://web.archive.org/web/20221029145216/https://support.mozilla.org/en-US/questions/1317032 "How to locate and change Firefox Cache storage location | Firefox Support Forum | Mozilla Support | support.mozilla.org"
                   [2]: https://web.archive.org/web/20221029145237/https://wiki.archlinux.org/title/Firefox/Profile_on_RAM "Firefox/Profile on RAM | ArchWiki | wiki.archlinux.org"
                 code: |-
@@ -733,7 +733,7 @@ actions:
                   # Snap installation
                   rm -rfv ~/snap/firefox/common/.cache/*
               -
-                name: Clear Firefox Crash Reports
+                name: Clear Firefox crash reports
                 recommend: standard
                 docs: |-
                   Firefox stores crash reports in `~/.mozilla/firefox/Crash Reports/` to submit them later [1].
@@ -769,7 +769,7 @@ actions:
                   parameters:
                     path: cookies.sqlite
               -
-                name: Clear Firefox URL history (downloads, bookmarks, website visits, annotations, icons, inputs, keywords)
+                name: Clear Firefox browsing history (URLs, downloads, bookmarks, visits, etc.)
                 docs: |-
                   The file "places.sqlite" stores the annotations, bookmarks, favorite icons, input history, keywords, and browsing history (a record of visited pages) [1].
                   The tables include [1]:
@@ -777,7 +777,7 @@ actions:
                   - `moz_annos`: Annotations
                   - `moz_bookmarks`: Bookmarks
                   - `moz_bookmarks_roots`: Bookmark roots i.e. places, menu, toolbar, tags, unfiled
-                  - `moz_favicons`: Favourite icons - including URL of icon
+                  - `moz_favicons`: Favorite icons - including URL of icon
                   - `moz_historyvisits`: A history of the number of times a site has been visited
                   - `moz_inputhistory`: A history of URLs typed by the user
                   - `moz_items_annos`: Item annotations
@@ -853,17 +853,17 @@ actions:
                 docs: |-
                   The `formhistory.sqlite` file remembers what you have searched for in the Firefox search bar
                   and what information you've entered into website forms [1].
-                  
+
                   [1]: https://web.archive.org/web/20221029145152/https://support.mozilla.org/en-US/kb/profiles-where-firefox-stores-user-data "Profiles - Where Firefox stores your bookmarks, passwords and other user data | Firefox Help | support.mozilla.org"
                 call:
                   function: DeleteFromFirefoxProfiles
                   parameters:
                     path: formhistory.sqlite
               -
-                name: Clear Firefox multi-account containers data
+                name: Clear Firefox "Multi-Account Containers" data
                 docs: |-
                   The `containers.json` file stores the details of containers used by the [Container Tabs](https://web.archive.org/web/20221029214648/https://support.mozilla.org/en-US/kb/containers) feature [1].
-                  
+
                   [1]: https://web.archive.org/web/20221029145152/https://support.mozilla.org/en-US/kb/profiles-where-firefox-stores-user-data "Profiles - Where Firefox stores your bookmarks, passwords and other user data | Firefox Help | support.mozilla.org"
                 call:
                     function: DeleteFromFirefoxProfiles
@@ -875,14 +875,14 @@ actions:
                   The `sessionstore.jsonlz4` file stores the currently open tabs and windows [1].
 
                   See ["Restore previous session - Configure when Firefox shows your most recent tabs and windows"](https://web.archive.org/web/20221029220311/https://support.mozilla.org/en-US/kb/restore-previous-session).
-                  
+
                   [1]: https://web.archive.org/web/20221029145152/https://support.mozilla.org/en-US/kb/profiles-where-firefox-stores-user-data "Profiles - Where Firefox stores your bookmarks, passwords and other user data | Firefox Help | support.mozilla.org"
                 call:
                     function: DeleteFromFirefoxProfiles
                     parameters:
                       path: sessionstore.jsonlz4
       -
-        category: Clear system and/or kernel data
+        category: Clear system and kernel usage data
         docs: |-
           Your system (operating system along with other software on it) and kernel store
           data that may reveal your behavior and can be considered sensitive. These scripts clean
@@ -916,7 +916,7 @@ actions:
               sudo rm -rfv /var/crash/*
               sudo rm -rfv /var/lib/systemd/coredump/
           -
-            name: Clear system (journald) logs
+            name: Clear system logs (`journald`)
             docs: |-
               journald is the part of systemd that captures, queries, and removes logs when needed [1].
               It allows removing logs by setting `--vacuum-time` [2].
@@ -974,7 +974,7 @@ actions:
               and acts like a database of all the recently used files [3].
 
               GTK is used by many GUI software. GNOME uses the GTK+ library [2], while KDE uses the QT library [4].
-              `recently-used.xbel` is also used by other third-party GTK 3 based applications such as Firefox,
+              `recently-used.xbel` is used by other third-party GTK 3 based applications such as Firefox,
               Visual Studio Code (and all other Electron applications [5]), Thunderbird…
               See also: ["List of GTK applications | Wikipedia"](https://web.archive.org/web/20221029221112/https://en.wikipedia.org/wiki/List_of_GTK_applications).
 
@@ -995,7 +995,7 @@ actions:
             name: Clear KDE-tracked recently used items list
             recommend: strict
             docs: |-
-              `.desktop` files are used by KDE to store recent documents and are exposed as an API [1].
+              `.desktop` files are used by KDE to store recent documents and are exposed through an API [1].
 
               They are not only specific to the desktop environment, but also used by applications.
               Likewise, they are used by the KDE implementation of QT components, such as [QFileDialog](https://web.archive.org/web/20221029221146/https://doc.qt.io/qt-5/qfiledialog.html)
@@ -1013,10 +1013,10 @@ actions:
               # From Flatpak packages
               rm -rfv ~/.var/app/*/data/*.desktop
       -
-        name: Clear trash
+        name: Empty trash
         docs: |-
           The trash location is standardized by ["The FreeDesktop.org Trash specification"](https://web.archive.org/web/20221029151648/https://specifications.freedesktop.org/trash-spec/trashspec-latest.html) [1].
-          It uses the `$XDG_DATA_HOME/Trash` directory, [1] which defaults to `$HOME/.local/share/Trash` [2].
+          It uses the `$XDG_DATA_HOME/Trash` directory [1], which defaults to `$HOME/.local/share/Trash` [2].
 
           Flatpak applications may use the same trash using special APIs [3]. However, Snap applications do not have an API to
           use the global trash [4].
@@ -1104,7 +1104,7 @@ actions:
               Snap is a software packaging and deployment system developed by Canonical [1].
               The packages are called snaps, and the tool for using them is called snapd [1].
               Snap is available on many distros and is supported out-of-the-box by distros
-              such as Ubuntu, Kubuntu, Xubuntu, Manjoro, Zorin OS, KDE Neon and Solus among
+              such as Ubuntu, Kubuntu, Xubuntu, Manjaro, Zorin OS, KDE Neon and Solus among
               others [1].
 
               [1]: https://web.archive.org/web/20221029152606/https://en.wikipedia.org/wiki/Snap_%28software%29 "Snap | Wikipedia | en.wikipedia.org"
@@ -1130,7 +1130,7 @@ actions:
                   multiple revisions of the same package [1].
                   Disabled state means that the binaries and services of the snap will no longer be available [2].
                   But all the data is still available, and the snap can easily be enabled again [2].
-                  
+
                   [1]: https://web.archive.org/web/20221029153110/https://forum.snapcraft.io/t/configure-number-of-old-revisions-to-keep/2337/7 "Configure number of old revisions to keep - snapd | forum.snapcraft.io"
                   [2]: https://web.archive.org/web/20221029153125/https://www.mankier.com/8/snap#Commands-disable "snap man page - snapd - System Administration | ManKier | www.mankier.com"
                 call:
@@ -1154,7 +1154,7 @@ actions:
               [1]: https://web.archive.org/web/20221029153354/https://en.wikipedia.org/wiki/Flatpak "Flatpak - Wikipedia | en.wikipedia.org"
             children:
               -
-                name: Uninstall orphaned Flatpak runtimes
+                name: Remove orphaned Flatpak runtimes
                 recommend: standard
                 docs: |-
                   This script removes runtimes and extensions that are not used by installed
@@ -1199,8 +1199,8 @@ actions:
           -
             category: Clear APT data
             docs: |-
-              Advanced Package Tool (or APT) is a free software user interface that works with
-              core libraries to handle the installation and removal of software on Debiana, and
+              Advanced Package Tool (APT) is a free software user interface that works with
+              core libraries to handle the installation and removal of software on Debian, and
               Debian-based Linux distributions [1].
 
               See also: ["APT | Debian Wiki"](https://web.archive.org/web/20221029221422/https://wiki.debian.org/Apt).
@@ -1222,14 +1222,14 @@ actions:
                     command: apt-get
                     code: sudo apt-get autoclean
               -
-                name: Clear APT package list
+                name: Clear APT package file lists
                 docs: |-
                   This script removes package file lists. APT stores a copy of those files (in `/var/lib/apt/lists/`)
                   and searches are done within those local files to avoid going through the network for every search [1].
 
                   An `apt-get update` will repopulate the necessary information and recreate the list file [2].
                   The list files should be recreated as they get lost over time [2].
-                  
+
                   [1]: https://web.archive.org/web/20221029153731/https://www.debian.org/doc/manuals/debian-handbook/sect.apt-cache.en.html "6.3. The apt-cache Command | Debian Handbook | www.debian.org"
                   [2]: https://web.archive.org/web/20221029154335/https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=775163 "#775163 - apt pigs out in /var, particularly with multi-arch - Debian Bug report logs | bugs.debian.org"
                 code: sudo rm -rfv /var/lib/apt/lists/*
@@ -1250,7 +1250,7 @@ actions:
                     command: apt-get
                     code: sudo apt-get -y autoremove --purge
               -
-                name: Clear APT package (.deb file) cache
+                name: Clear cache for APT packages
                 docs: |-
                   This script runs the `clean` command. It clears out the local repository of retrieved package files [1],
                   meaning that it deletes downloaded packages (`.deb`) already installed (and no longer needed) [2].
@@ -1265,8 +1265,8 @@ actions:
                   parameters:
                     command: apt-get
                     code: sudo apt-get clean
-      - 
-        category: Clear all cache
+      -
+        category: Clear shared caches
         docs: |-
           The scripts in this category bulk delete all cache entries for the given scope.
           These scripts are designed to affect more than a single application and do a wide range of cleaning.
@@ -1291,25 +1291,25 @@ actions:
               sudo rm -rfv root/.cache/*
           -
             name: Clear system-wide cache
-            docs: |-            
+            docs: |-
               The `/var/cache` directory contains cached files, i.e. files that were generated and can be
               re-generated at any time, but they are worth storing to save time recomputing them [1].
               The application must be able to regenerate or restore the data [2], so the system can delete
               the contents of /var/cache either periodically or when its contents get too large [1].
               However, there is no guarantee that applications will follow the specification, but this is
               very rare.
-              
+
               It's not only used by applications but also by the operating system. This may include OS folders
               such as [2]:
               - Locally-generated fonts (`/var/cache/fonts`)
               - Locally-formatted manual pages (`/var/cache/man`)
-              - WWW	proxy or cache data (`/var/cache/www`)
+              - WWW proxy or cache data (`/var/cache/www`)
 
               [1]: https://web.archive.org/web/20130511220135/http://www.lindevdoc.org/wiki//var/cache "/var/cache - Linux Developer's Documentation"
               [2]: https://web.archive.org/web/20221029154623/https://refspecs.linuxfoundation.org/FHS_3.0/fhs/ch05s05.html "5.5. /var/cache : Application cache data | refspecs.linuxfoundation.org"
             code: rm -rf /var/cache/*
           -
-            name: Clear cache from Flatpak applications
+            name: Clear Flatpak application cache
             docs: |-
               Non-essential user-specific data is stored in `~/.var/app/<app-id>/cache` by Flatpak applications [1].
               This directory points to `XDG_CACHE_HOME` [1] from the XDG base directory specification [2].
@@ -1318,7 +1318,7 @@ actions:
               [2]: https://web.archive.org/web/20221029151712/https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html "XDG Base Directory Specification | specifications.freedesktop.org"
             code: rm -rfv ~/.var/app/*/cache/*
           -
-            name: Clear cache from Snap applications
+            name: Clear Snap application cache
             docs: |-
               Application caches are isolated per application and stored in the `~/snaps/APP-NAME/VERSION/.cache`
               folders for Snap applications [1].
@@ -1332,7 +1332,7 @@ actions:
               them, serving the same role for images as a normal text index does for words [1].
 
               Depending on the program that processes the thumbnails, the "icons" are usually located either in the
-              `~/.cache/thumbnails/` folder (e.g., Nautilus from GNOME does this [2] [3]) or the `~/.thumbnails/` 
+              `~/.cache/thumbnails/` folder (e.g., Nautilus from GNOME does this [2] [3]) or the `~/.thumbnails/`
               directory [4].
 
               [1]: https://web.archive.org/web/20221029154942/https://en.wikipedia.org/wiki/Thumbnail "Thumbnail - Wikipedia | en.wikipedia.org"
@@ -1349,11 +1349,11 @@ actions:
           Flameshot also uses the same default folder as GNOME [2].
           Despite being GNOME-based, Ubuntu changes this default to `~/Pictures/` with files that
           look like "`Screenshot from ***.png`" [3].
-          
+
           KDE ([Spectacle](https://web.archive.org/web/20221029221516/https://apps.kde.org/spectacle/))
           saves screenshots in the `~/Pictures/` folder with the default name format of
           `Screenshot_%Y%M%D_%H%m%S.**` [4].
-          
+
           Other applications use different paths, e.g. ksnip uses `ksnip_$Y$M$D-$T.png` by
           default in the home folder [5].
 
@@ -1395,7 +1395,7 @@ actions:
         docs: |-
           Debian, also known as Debian GNU/Linux, is a Linux distribution composed of free and open-source
           software, developed by the community-supported Debian Project [1].
-          Debian-based distributions include Ubuntu, Kali Linux, MX Linux, Pardus, Parrot OS, PureOS, 
+          Debian-based distributions include Ubuntu, Kali Linux, MX Linux, Pardus, Parrot OS, PureOS,
           Raspberry Pi OS, TAILS, and others [2].
 
           Debian contains some telemetry client libraries, and some packages depend or build-depend on them [3].
@@ -1408,7 +1408,7 @@ actions:
           [4]: https://web.archive.org/web/20221030133248/https://www.debian.org/legal/privacy "Debian -- Privacy Policy | www.debian.org"
         children:
           -
-            category: Disable sending package statistics (popcon)
+            category: Disable sending of package statistics (popcon)
             docs: |-
               Popularity Contest (or popcon) collects statistical data to determine which packages are the most popular [1].
               It sends a list of packages installed and the access and change times of relevant files to the server via email
@@ -1433,11 +1433,11 @@ actions:
               [4]: https://web.archive.org/web/20221029160841/https://popcon.debian.org/FAQ "FAQ | popcon | popcon.debian.org"
             children:
               -
-                name: Opt-out of the popularity contest
+                name: Disable participation in Popularity Contest
                 recommend: standard
                 docs: |-
                   `popularity-contest` checks `/etc/popularity-contest.conf` for the value of `PARTICIPATE` to send data [1].
-                  Configuring this configuration allows you to opt-out of the submission of data [1].
+                  Configuring this configuration allows you to opt out of the submission of data [1].
 
                   [1]: https://web.archive.org/web/20221029161047/https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=172824 "#172824 - popularity-contest: dpkg-reconfigure popularity-contest does not include PARTICIPATE=yes - Debian Bug report logs | bugs.debian.org"
                 code: |-
@@ -1455,7 +1455,7 @@ actions:
                     echo "Skipping because configuration file ($config_file) is not found. Is popcon installed?"
                   fi
               -
-                name: Uninstall Popularity Contest (popcon)
+                name: Remove Popularity Contest (`popcon`) package
                 recommend: strict
                 docs: |-
                   This script deletes the `popularity-contest` package.
@@ -1501,7 +1501,7 @@ actions:
               [2]: https://web.archive.org/web/20221029161559/https://manpages.ubuntu.com/manpages/trusty/man1/reportbug.1.html "Ubuntu Manpage: reportbug - reports a bug to a debbugs server | manpages.ubuntu.com"
             children:
               -
-                name: Uninstall `reportbug` package
+                name: Remove `reportbug` package
                 recommend: strict
                 docs: |-
                   This script uninstalls `reportbug` package, which includes the tool itself.
@@ -1513,7 +1513,7 @@ actions:
                   parameters:
                     packageName: reportbug
               -
-                name: Uninstall Python modules for reportbug
+                name: Remove Python modules for `reportbug`
                 recommend: strict
                 docs: |-
                   This script uninstalls `python3-reportbug`.
@@ -1526,7 +1526,7 @@ actions:
                   parameters:
                     packageName: python3-reportbug
               -
-                name: Uninstall UI for reportbug (`reportbug-gtk` package)
+                name: Remove UI for reportbug (`reportbug-gtk` package)
                 recommend: strict
                 docs: |-
                   This script uninstalls `reportbug-gtk`. It consists of a desktop file and an icon, and it has dependencies to enable the
@@ -1551,7 +1551,7 @@ actions:
           -
             category: Disable `pkgstats` that collects installed package list (opt-in)
             docs: |-
-              `pkgstats` sends a list of all installed packages, the architecture, and the mirror you are using to 
+              `pkgstats` sends a list of all installed packages, the architecture, and the mirror you are using to
               the Arch Linux project [1]. It stores personally identifiable information such as IP addresses for
               one month [2] and then anonymizes and aggregates the data [1] [2].
 
@@ -1559,7 +1559,7 @@ actions:
               [2]: https://web.archive.org/web/20221029161821/https://pkgstats.archlinux.de/privacy-policy "Privacy policy | pkgstats | pkgstats.archlinux.de"
             children:
               -
-                name: Uninstall `pkgstats` package
+                name: Remove `pkgstats` package
                 recommend: strict
                 docs: |-
                   `pkgstats` package submits a list of installed packages to the Arch Linux project [1].
@@ -1573,7 +1573,7 @@ actions:
                   parameters:
                     packageName: pkgstats
               -
-                name: Disable weekly pkgstats submission
+                name: Disable weekly `pkgstats` submission
                 recommend: standard
                 docs: |-
                   `pkgstats` is set up to automatically run every week using systemd/timers [1]. Once disabled,
@@ -1604,12 +1604,12 @@ actions:
               [1]: https://web.archive.org/web/20221029162136/https://zorin.com/legal/privacy/ "Privacy Policy - Zorin | zorin.com"
               [2]: https://web.archive.org/web/20221029162148/https://launchpad.net/~zorinos/+archive/ubuntu/stable/+sourcepub/7408190/+listing-archive-extra "Zorin OS source code | launchpad.net"
               [3]: https://web.archive.org/web/20221029162231/https://launchpadlibrarian.net/425925849/zorin-os-census_1.1~zorinos15_1.2.diff.gz "Zorin OS source code | launchpad.net"
-            call: 
+            call:
               function: UninstallAptPackage
               parameters:
                 packageName: zorin-os-census
           -
-            name: Remove the Zorin OS census unique ID
+            name: Remove Zorin OS census unique ID
             docs: |-
               Census submits a unique ID associated with the installation when pings are sent [1].
               Removing the identifier reduces the risk of your computer being identified.
@@ -1634,7 +1634,7 @@ actions:
           [2]: https://web.archive.org/web/20221029160241/https://en.wikipedia.org/wiki/List_of_Linux_distributions#Ubuntu-based "List of Linux distributions - Wikipedia | en.wikipedia.org"
         children:
           -
-            name: Disable online search results (collects queries)
+            name: Disable online search result collection (collects queries)
             recommend: strict
             docs: |-
               Online search is introduced in Ubuntu Lens in Ubuntu 12.10 [1]. It has been known as "Shopping Lens",
@@ -1642,7 +1642,7 @@ actions:
 
               Online search results are considered a privacy concern by governments [2] and can be disabled using the
               `remote-content-search` option [2].
-              
+
               [1]: https://web.archive.org/web/20221029162420/https://help.ubuntu.com/community/UbuntuLens "UbuntuLens - Community Help Wiki | help.ubuntu.com"
               [2]: https://web.archive.org/web/20221029162443/https://www.gov.uk/government/publications/end-user-devices-security-guidance-ubuntu-1404-lts/end-user-devices-guidance-ubuntu-1404-lts "End User Devices Guidance: Ubuntu 14.04 LTS | gov.uk"
             call:
@@ -1652,7 +1652,7 @@ actions:
                 code: gsettings set com.canonical.Unity.Lenses remote-content-search none
                 revertCode: gsettings set com.canonical.Unity.Lenses remote-content-search all
           -
-            category: Disable Ubuntu reporting metrics
+            category: Disable metrics reporting in Ubuntu
             docs: |-
               `ubuntu-report` reports hardware and other collected metrics like installer or upgrade information [1].
 
@@ -1682,7 +1682,7 @@ actions:
               [2]: https://web.archive.org/web/20221029162538/https://github.com/ubuntu/ubuntu-report/blob/8e6030ff9bbeacacf41a9b58ea638a5c9a6f864d/README.md "More diagnostics data from desktop | lists.ubuntu.com"
             children:
               -
-                name: Opt-out of Ubuntu reporting metrics
+                name: Disable participation in metrics reporting in Ubuntu
                 recommend: standard
                 docs: |-
                   This script uses the `ubuntu-report` CLI to opt you out of data submission [1].
@@ -1708,7 +1708,7 @@ actions:
                         >&2 echo 'Failed to opt in.'
                       fi
               -
-                name: Uninstall Ubuntu Report tool (`ubuntu-report`)
+                name: Remove Ubuntu Report tool (`ubuntu-report`)
                 recommend: strict
                 docs: |-
                   `ubuntu-report` is installed as an apt package and can be uninstalled in this way [1].
@@ -1748,7 +1748,7 @@ actions:
                   Apport collects potentially sensitive data, such as core dumps, stack traces,
                   and log files [2]. It can contain passwords, credit card numbers, serial numbers,
                   and other private information [2].
-                  
+
                   Bug reports are shared with the [Ubuntu bug triaging team](https://web.archive.org/web/20221029222122/https://launchpad.net/~ubuntu-crashes-universe) [2].
 
                   Apport is disabled by default in stable releases due to the sensitive data it collects [2].
@@ -1762,7 +1762,7 @@ actions:
                   [4]: https://web.archive.org/web/20221029150025/https://support.starlabs.systems/kb/guides/disable-program-problem-reports "Disable program problem reports - Star Labs | support.starlabs.systems"
                 children:
                   -
-                    name: Uninstall `apport` package
+                    name: Remove `apport` package
                     recommend: strict
                     docs: |-
                       The `apport` package is responsible for automatically generating crash reports for debugging [1].
@@ -1777,7 +1777,7 @@ actions:
                       is not yet supported [3].
 
                       See also ["source code of apport | launchpad.net"](https://web.archive.org/web/20221029222108/https://code.launchpad.net/ubuntu/+source/apport).
-                      
+
                       [1]: https://web.archive.org/web/20221030194324/https://packages.ubuntu.com/bionic/apport "Ubuntu - Details of package apport in bionic | packages.ubuntu.com"
                       [2]: https://web.archive.org/web/20221029162934/https://bugs.launchpad.net/ubuntu/+source/xorg/+bug/1773087 "Bug #1773087 “Remove python3-apport as dependency of xserver-xor...” : Bugs : xorg package : Ubuntu | bugs.launchpad.net"
                       [3]: https://web.archive.org/web/20221029162946/https://bugs.launchpad.net/apport/+bug/1910304 "Issue showing that uninstallation support is undecided | Bug #1910304 “Add non-invasive option to disable python3-apport ...” : Bugs : Apport | bugs.launchpad.net"
@@ -1804,16 +1804,16 @@ actions:
                       parameters:
                         serviceName: apport
                   -
-                    name: Opt-out of Apport error messaging system
+                    name: Disable participation in Apport error messaging system
                     recommend: standard
                     docs: |-
                       Opting out of Apport prevents it from creating crash files after a crash [1].
                       It can be disabled by setting `enabled=0` in `/etc/default/apport` [1] [2].
-                      This setting comes enabled by default in a clean installation of Ubuntu and 
+                      This setting comes enabled by default in a clean installation of Ubuntu and
                       some of its derivatives (such as Pop!_OS).
 
                       This script is used as part of a post-installation script by the National Cyber Security Centre in the UK [1].
-                      
+
                       [1]: https://web.archive.org/web/20221029163213/https://help.ubuntu.com/community/ReportingBugs?action=recall&rev=321#Reporting_a_crash_when_no_message_shows_up_and_crash_files_not_created "ReportingBugs - Community Help Wiki | help.ubuntu.com"
                       [2]: https://web.archive.org/web/20221029163228/https://bugs.launchpad.net/ubuntu/+source/xorg/+bug/1773087/comments/1 "Comment #1 : Bug #1773087 : Bugs : xorg package : Ubuntu | help.ubuntu.com"
                       [3]: https://web.archive.org/web/20221029163054/https://www.ncsc.gov.uk/files/ubuntu1804_post_install.sh_.txt "ubuntu1804_post_install.sh_.txt | nscs.gov.uk"
@@ -1853,7 +1853,7 @@ actions:
                   [3]: https://web.archive.org/web/20221029162829/https://help.ubuntu.com/community/ReportingBugs#A4._Collect_information_about_the_bug "ReportingBugs - Community Help Wiki | help.ubuntu.com"
                 children:
                   -
-                    name: Uninstall `whoopsie` package
+                    name: Remove `whoopsie` package
                     docs: |-
                       This script uninstalls the `whoopsie` package.
                       This package is used for error tracker submission in Ubuntu [1].
@@ -1871,7 +1871,7 @@ actions:
                       This script disables this service to immobilize the main functionality of Whoopsie.
 
                       This script is used as part of a post-installation script by the National Cyber Security Centre in the UK [2].
-                      
+
                       [1]: https://web.archive.org/web/20221029163615/https://packages.ubuntu.com/focal/all/whoopsie/filelist "Ubuntu – File list of package whoopsie/focal/all | packages.ubuntu.com"
                       [2]: https://web.archive.org/web/20221029163054/https://www.ncsc.gov.uk/files/ubuntu1804_post_install.sh_.txt "ubuntu1804_post_install.sh_.txt | nscs.gov.uk"
                     call:
@@ -1879,7 +1879,7 @@ actions:
                       parameters:
                         serviceName: whoopsie
                   -
-                    name: Opt-out of reporting crashes
+                    name: Disable crash report submissions
                     recommend: standard
                     docs: |-
                       Once opted-out Whoopsie disables the related service [1].
@@ -1897,12 +1897,12 @@ actions:
                         sudo sed -i 's/report_crashes=false/report_crashes=true/' /etc/default/whoopsie
                       fi
       -
-        category: Disable Zeitgeist (activity logging framework)
+        category: Disable Zeitgeist activity logging
         docs: |-
           Zeitgeist logs files opened, websites visited, conversations, and emails and provides
-          this information over an API to applications [1]. 
+          this information over an API to applications [1].
           It serves as a comprehensive activity log and also makes it possible to determine
-          relationships between items based on usage patterns [1]. 
+          relationships between items based on usage patterns [1].
 
           It stores computer use actions such as files accessed, sites visited, and conversations held.
           The data is typically used to facilitate searches and "best-fit" to your local query only.
@@ -1912,7 +1912,7 @@ actions:
           usage information that can be used for further exploitation.
 
           It is primarily used by desktop environments such as GNOME [2], Pantheon [3], and Unity [4].
-          Furthermore, it is supported by applications (typically as optional functionality) such as 
+          Furthermore, it is supported by applications (typically as optional functionality) such as
           Gnome Rhythmbox (as a plugin) [5], catfish (optional support) [6], and synapse [7].
 
           Read more about Zeitgeist:
@@ -1931,7 +1931,7 @@ actions:
           [7]: https://web.archive.org/web/20221029164405/https://launchpad.net/synapse-project "Synapse in Launchpad | launchpad.net"
         children:
           -
-            name: Stop the Zeitgeist deamon
+            name: Kill Zeitgeist daemon process
             docs: |-
               `zeitgeist-daemon` is a daemon providing an activity log [1]. Activity logs consist of a central
               database for events such as file usage, browser history, and calendar entries [1].
@@ -1957,7 +1957,7 @@ actions:
                 # > used, zeitgeist-daemon will refuse to start if another running instance is found.
                 revertCode: zeitgeist-daemon --replace
           -
-            name: Prevent Zeitgeist from running on startup
+            name: Remove Zeitgeist startup entry
             docs: |-
               This script removes the Autostart entry that is used by the Zeitgeist package to start itself [1].
               [The XDG Autostart specification](https://web.archive.org/web/20221029223114/https://specifications.freedesktop.org/autostart-spec/autostart-spec-latest.html)
@@ -1989,7 +1989,7 @@ actions:
               if [ -f "$file" ]; then
                 chmod -rw "$file"
                 echo "Successfully disabled read/write access to $file."
-              else 
+              else
                 echo "Skipping, no action needed, file does not exist at $file."
               fi
             revertCode: |-
@@ -1997,11 +1997,11 @@ actions:
               if [ -f "$file" ]; then
                 chmod +rw "$file"
                 echo "Successfully restored read/write access to $file."
-              else 
+              else
                 >&2 echo "Failed to restore access, file does not exist at $file."
               fi
           -
-            name: Uninstall the Zeitgeist package (can break integrated software)
+            name: Remove Zeitgeist package (can break integrated software)
             docs: |-
               The main functionality for Zeitgeist is provided by the `zeitgeist` package in Fedora [1] and Arch Linux [2],
               and the `zeitgeist-core` package in Debian [3].
@@ -2026,7 +2026,7 @@ actions:
                 parameters:
                   packageName: zeitgeist-core
                   # Other related packages include (apt list *zeitgeist*):
-                  #  zeitgeist-core, zeitgeist-datahub, python3-zeitgeist among many others.
+                  #   zeitgeist-core, zeitgeist-datahub, python3-zeitgeist among many others.
                   # Packages that use it include e.g. activity-log-manager, activity-log-manager-control-center..
               -
                 function: UninstallPacmanPackage
@@ -2073,11 +2073,11 @@ actions:
                 echo "Skipping, connectivity checks are already disabled through $file."
               else
                 echo -n "$content" | sudo tee "$file" > /dev/null
-                echo 'Successfully disabled connectivity checks-'
+                echo 'Successfully disabled connectivity checks.'
               fi
               if command -v 'nmcli' &> /dev/null; then
                 sudo nmcli general reload
-                echo 'Successfuly reloaded configuration.'
+                echo 'Successfully reloaded configuration.'
               else
                 echo 'It will take effect after reboot.'
               fi
@@ -2086,11 +2086,11 @@ actions:
                 echo 'Skipping, connectivity checks are not disabled.'
               else
                 sudo rm -fv "$file"
-                echo 'Successfuly restored connectivity checks.'
+                echo 'Successfully restored connectivity checks.'
               fi
               if command -v 'nmcli' &> /dev/null; then
                 sudo nmcli general reload
-                echo 'Successfuly reloaded configuration.'
+                echo 'Successfully reloaded configuration.'
               else
                 echo 'It will take effect after reboot.'
               fi
@@ -2136,7 +2136,7 @@ actions:
         category: Disable Visual Studio Code data collection
         docs: |-
             Visual Studio Code, also commonly referred to as VS Code, is a source-code editor made by Microsoft [1].
-            
+
             Visual Studio Code makes outgoing network requests to collect data in the background without users invoking
             a feature that requires online access [2]. The requests include, but are not limited to, automatic extension
             update checks, querying settings for A/B experiments, and fetching online data for auto-completion [2].
@@ -2178,7 +2178,7 @@ actions:
                 [6]: https://web.archive.org/web/20221029171339/https://github.com/microsoft/vscode/blob/1dd67592e120d916a8963903babaf0fae74440c5/src/vs/code/electron-main/app.ts#L1259 "vscode/app.ts at 1dd67592e120d916a8963903babaf0fae74440c5 · microsoft/vscode · GitHub | github.com"
                 [7]: https://web.archive.org/web/20221029171353/https://github.com/microsoft/vscode/blob/17fc955b4ffb1f9a0097a561291aaa5c8918eee6/src/vs/workbench/electron-sandbox/desktop.contribution.ts#L253-L267 "vscode/desktop.contribution.ts at 17fc955b4ffb1f9a0097a561291aaa5c8918eee6 · microsoft/vscode · GitHub | github.com"
               call:
-                - 
+                -
                   function: SetVsCodeSetting
                   parameters:
                       setting: telemetry.telemetryLevel
@@ -2197,7 +2197,7 @@ actions:
                       jsonValue: >-
                         false
             -
-              name: Do not run Microsoft online experiments on Visual Studio Code
+              name: Disable online experiments by Microsoft in Visual Studio Code
               recommend: standard
               docs: |-
                 VS Code employs experiments to test new features or gradually roll them out [1].
@@ -2217,7 +2217,7 @@ actions:
                       jsonValue: >-
                         false
             -
-              name: Choose manual Visual Studio Code updates over automatic updates
+              name: Disable Visual Studio Code automatic updates in favor of manual updates
               docs: |-
                 By default, VS Code is configured to automatically update when new versions are released [1].
                 Automatic updates reduce your control over privacy by sending data to Microsoft servers.
@@ -2245,7 +2245,7 @@ actions:
                       jsonValue: >-
                           "none"
             -
-              name: Prevent fetching Visual Studio Code release notes from Microsoft servers
+              name: Disable fetching release notes from Microsoft servers after an update
               docs: |-
                 This script prevents Visual Studio Code from displaying release notes after an update [1].
 
@@ -2262,18 +2262,18 @@ actions:
                       jsonValue: >-
                         false
             -
-              category: Configure auto-updates from Visual Studio Code extensions
+              category: Configure auto-update settings for Visual Studio Code extensions
               docs: |-
                 These scripts control the automatic update behavior of extensions.
                 Updates are fetched from Microsoft servers [1] [2].
 
                 Use of online Microsoft services can disclose information about you and your behavior.
 
-                [1]: https://web.archive.org/web/20221029171704/https://github.com/microsoft/vscode/blob/b784e0514d4608cc20a0e7ce62baf7bc8131158c/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts#L135-L150 "vscode/extensions.contribution.ts at b784e0514d4608cc20a0e7ce62baf7bc8131158c · microsoft/vscode · GitHub | github.com" 
+                [1]: https://web.archive.org/web/20221029171704/https://github.com/microsoft/vscode/blob/b784e0514d4608cc20a0e7ce62baf7bc8131158c/src/vs/workbench/contrib/extensions/browser/extensions.contribution.ts#L135-L150 "vscode/extensions.contribution.ts at b784e0514d4608cc20a0e7ce62baf7bc8131158c · microsoft/vscode · GitHub | github.com"
                 [2]: https://web.archive.org/web/20221029171719/https://github.com/microsoft/vscode-docs/blob/9a900b380e11530376104ffc83a004b82553728e/docs/editor/extension-marketplace.md#extension-auto-update "vscode-docs/extension-marketplace.md at 9a900b380e11530376104ffc83a004b82553728e · microsoft/vscode-docs · GitHub | github.com"
               children:
                 -
-                  name: Prevent auto-updates of Visual Studio Code extensions
+                  name: Disable automatic Visual Studio Code extension updates
                   docs: |-
                     By default, Visual Studio Code automatically downloads and installs updates for all
                     extensions [1]. These updates are fetched from a Microsoft online service [1].
@@ -2290,7 +2290,7 @@ actions:
                           jsonValue: >-
                             false
                 -
-                  name: Prevent automatically checking Visual Studio Code extension updates from Microsoft servers
+                  name: Disable Visual Studio Code automatic extension update checks
                   docs: |-
                     By default, Visual Studio Code automatically checks extensions for updates [1].
                     If an update for an extension is available, it is marked as outdated in the Extensions view [1].
@@ -2308,7 +2308,7 @@ actions:
                           jsonValue: >-
                             false
                 -
-                  name: Disable auto-fetching Microsoft recommendations in Visual Studio Code
+                  name: Disable automatic fetching of Microsoft recommendations in Visual Studio Code
                   recommend: strict
                   docs: |-
                     Visual Studio Code, by default, fetches recommendations from online Microsoft servers [1].
@@ -2328,7 +2328,7 @@ actions:
                           jsonValue: >-
                             true
             -
-              name: Disable automatic fetching remote repository in Visual Studio Code
+              name: Disable automatic fetching of remote repositories in Visual Studio Code
               docs: |-
                 Visual Studio Code (VS Code) periodically fetches changes from remote repositories [1].
                 This feature lets VS Code display how many changes your local repository is ahead or behind the remote [1].
@@ -2353,7 +2353,7 @@ actions:
                       jsonValue: >-
                         false
             -
-              name: Prevent fetching package information from NPM and Bower in Visual Studio Code
+              name: Disable fetching package information from NPM and Bower in Visual Studio Code
               docs: |-
                 Visual Studio Code fetches data from NPM and Bower to provide autocompletion and hover information
                 for npm dependencies [1]. By default, this feature is enabled [2] and fetches data from
@@ -2381,7 +2381,7 @@ actions:
                 You can disable this feature by setting `enableNaturalLanguageSettingsSearch` to `false` [1].
 
                 For more information, see [Settings search | Feature announcement](https://web.archive.org/web/20221029223417/https://github.com/microsoft/vscode-docs/blob/8f6d43a3b24d8661f25f93d5e679c3e6ee1191b6/release-notes/v1_20.md#settings-search).
-                
+
                 [1]: https://web.archive.org/web/20221029172320/https://github.com/microsoft/vscode/blob/13ba7bb446a638d37ebccb1a7d74e31c32bb9790/src/vs/workbench/contrib/preferences/common/preferencesContribution.ts#L151-L157 "vscode/preferencesContribution.ts at 13ba7bb446a638d37ebccb1a7d74e31c32bb9790 · microsoft/vscode · GitHub | github.com"
               call:
                 function: SetVsCodeSetting
@@ -2445,7 +2445,7 @@ actions:
                     jsonValue: >-
                       false
             -
-              category: Disable Visual Studio Code Settings Sync data sharing
+              category: Disable data sharing for Visual Studio Code "Settings Sync"
               docs: |-
                 **Settings Sync** is a Visual Studio Code feature that synchronizes settings, keybindings,
                 and installed extensions across different machines [1]. This data is stored in the Microsoft
@@ -2454,7 +2454,7 @@ actions:
                 [1]: https://web.archive.org/web/20221029172856/https://github.com/microsoft/vscode-docs/blob/9a900b380e11530376104ffc83a004b82553728e/docs/editor/settings-sync.md "vscode-docs/settings-sync.md at main · microsoft/vscode-docs · GitHub | github.com"
               children:
                 -
-                  name: Disable synchronizing Visaul Studio Code keybindings
+                  name: Disable synchronization of Visual Studio Code keybindings
                   docs: |-
                     By default [1], Keyboard Shortcuts are synchronized across platforms [2].
                     You can disable this by setting `settingsSync.keybindingsPerPlatform` to `false` [1] [2].
@@ -2468,7 +2468,7 @@ actions:
                         jsonValue: >-
                           false
                 -
-                  name: Disable synchronizing Visual Studio Code extension
+                  name: Disable synchronization of Visual Studio Code extensions
                   docs: |-
                     Visual Studio Code synchronizes all built-in and installed extensions, along with their
                     global enablement state, by default [1] [2].
@@ -2487,8 +2487,8 @@ actions:
                         jsonValue: >-
                           ["*"]
                 -
-                  name: Disable synchronizing Visual Studio Code settings
-                  docs:  |-
+                  name: Disable synchronization of Visual Studio Code settings
+                  docs: |-
                     By default, Visual Studio Code synchronizes all settings, except for machine settings
                     (those with machine or machine-overridable scopes), as these are specific to a given machine [1] [2].
 
@@ -2612,7 +2612,7 @@ actions:
                     recommend: standard
                     docs: |-
                       Dynamic First-Party Isolation, also known as dFPI, is an advanced privacy feature in Firefox. This feature commonly
-                      referred as:
+                      referred to as:
 
                       - Total Cookie Protection [1],
                       - dFPI (dynamic First-Party Isolation) [2],
@@ -2655,12 +2655,12 @@ actions:
                       isolated storage location, preventing it from accessing data from another website [1]. This limits the ability of websites to track
                       users across multiple sites [1].
 
-                      Network Partitioning, formerly referred as *cache partitioning* [2], is a subset of state partitioning [1]. While state partitioning
+                      Network Partitioning, formerly referred to as *cache partitioning* [2], is a subset of state partitioning [1]. While state partitioning
                       deals with data like cookies, network partitioning deals with networking-related components, such as caches and connection pools [1].
                       It ensures that these components are isolated to each website, further enhancing user privacy [1].
 
                       Firefox has enabled network partitioning by default since version 85 [1]. Once enabled, network partitioning becomes permanent,
-                      meaning websites cannot bypass or relax its restrictions [1].
+                      meaning websites cannot bypass or weaken its restrictions [1].
 
                       Network partitioning can be controlled with the `privacy.partition.network_state` preference [1].
 
@@ -2672,7 +2672,7 @@ actions:
                         prefName: privacy.partition.network_state
                         jsonValue: 'true'
                   -
-                    name: Disable depreciated Firefox First-Party Isolation (FPI)
+                    name: Disable outdated Firefox First-Party Isolation (FPI)
                     recommend: strict
                     docs: |-
                       First-party isolation (FPI) helps in preventing third parties from tracking users across multiple websites [1] [2]. This is sometimes
@@ -2682,7 +2682,7 @@ actions:
 
                       1. FPI and dFPI conflict with each other, and they cannot function simultaneously [3] [4]. Additionally, Mozilla doesn't plan to make
                       them compatible [5].
-                      2. FPI has been marked as depreciated and is expected to be phased out [3], with dFPI set to become the standard in the future [6].
+                      2. FPI has been marked as deprecated and is expected to be phased out [3], with dFPI set to become the standard in the future [6].
                       3. dFPI, when combined with network partitioning, offers broader and more effective privacy coverage than FPI, being essentially a
                       superset of FPI [3] [7].
 
@@ -2710,7 +2710,7 @@ actions:
                   This script enables the `privacy.resistFingerprinting` preference,
                   activating anti-fingerprinting [1][2].
 
-                  Beyond privacy advantages, enabling tracking protection may reduce load time by 44% [3].
+                  Beyond privacy advantages; enabling tracking protection may reduce load time by 44% [3].
 
                   Note: If you are already using an ad blocker with the correct lists, tracking protection might
                   be redundant.
@@ -2727,9 +2727,9 @@ actions:
                 name: Enable Firefox anti-fingerprinting (may break some websites)
                 recommend: strict
                 docs: |-
-                  Fingerprinting Protection is a heavily developing experimental feature in Firefox [1].
-                  As part of a project to integrate features from the Tor Browser, Mozilla has launched an
-                  anti-fingerprinting  project in Firefox [2].
+                  Fingerprinting Protection is a heavily developed experimental feature in Firefox [1].
+                  As part of a project to integrate features from the Tor Browser, Mozilla launched an
+                  anti-fingerprinting project in Firefox [2].
 
                   This script enables the `privacy.resistFingerprinting` preference, activating
                   anti-fingerprinting [1][2].
@@ -2756,7 +2756,7 @@ actions:
                   WebRTC (Web Real-Time Communication) is a free and open-source project offering real-time
                   communication (RTC) via application programming interfaces (APIs) to web browsers and mobile
                   applications [2]. It enables audio and video communication to work inside web pages by facilitating
-                  direct peer-to-peer communication, thereby eliminating the need for plugin installations or native
+                  direct peer-to-peer communication, and thereby eliminating the need for plugin installations or native
                   app downloads [3]. Supported by Apple, Google, Microsoft, Mozilla, and Opera, WebRTC's
                   specifications have been published by the World Wide Web Consortium (W3C) and the Internet
                   Engineering Task Force (IETF) [2].
@@ -2774,9 +2774,9 @@ actions:
             docs: |-
               By default, Firefox collects telemetry data [1]. This data comprises two main categories:
               **interaction data** and **technical data** [1].
-              
+
               **Interaction data** includes metrics such as the number of open tabs and windows, the number of
-              webpages visited, the number  and type of installed Firefox Add-ons, session length, and
+              webpages visited, the number and type of installed Firefox Add-ons, session length, and
               interactions with features offered by Mozilla or third parties. These features may include
               Firefox search features and search partner referrals [1].
 
@@ -2789,14 +2789,14 @@ actions:
               [1]: https://web.archive.org/web/20220901045358/https://support.mozilla.org/en-US/kb/telemetry-clientid "Telemetry collection and deletion | Firefox Help | support.mozilla.org"
             children:
               -
-                name: Disable Firefox technical and interaction data collection
+                name: Disable collection of technical and interaction data in Firefox
                 recommend: standard
                 docs: |-
                   This script alters the `datareporting.healthreport.uploadEnabled` preference, effectively
                   disabling it. This preference regulates whether Firefox sends telemetry data [1].
 
                   The script halts all data transmitted from Firefox to Mozilla via Telemetry [2], preventing
-                  Firefox from sending technical  and interaction data to Mozilla [3].
+                  Firefox from sending technical and interaction data to Mozilla [3].
 
                   For reasons of military security, it's recommended by the U.S. government (NIST 800-53) that
                   this data collection is disabled [4].
@@ -2811,7 +2811,7 @@ actions:
                     prefName: datareporting.healthreport.uploadEnabled
                     jsonValue: 'false'
               -
-                name: Disable verbose Firefox telemetry collection
+                name: Disable detailed telemetry collection in Firefox
                 recommend: standard
                 docs: |-
                   This script disables the `toolkit.telemetry.enabled` preference, which controls whether the
@@ -2838,8 +2838,8 @@ actions:
                   parameters:
                     prefName: toolkit.telemetry.enabled
                     jsonValue: 'false'
-              - 
-                name: Disable Firefox telemetry archive
+              -
+                name: Disable archiving of Firefox telemetry
                 recommend: standard
                 docs: |-
                   This script configures the `toolkit.telemetry.archive.enabled` preference to be disabled, thus
@@ -2893,12 +2893,12 @@ actions:
                     docs: |-
                       This script sets the `toolkit.telemetry.log.level` preference to the least verbosity to minimize logs.
                       This preference adjusts the telemetry logging verbosity as per `Log.jsm` [1].
-                      By default, logging is restricted to the console service [1]
+                      By default, logging is restricted to the console service [1].
                       It displays telemetry information in the browser console [2] and can be used to monitor telemetry activity
                       in the JavaScript console [3]. This process is also referred to as telemetry tracing [4].
 
                       The output can be accessed via the DevTools console [4], navigable through the menu by selecting
-                      "Tools" => "Developer Tools" => "Error Console"  (CTRL+SHIFT+J).
+                      "Tools" => "Developer Tools" => "Error Console" (CTRL+SHIFT+J).
 
                       The available verbosity levels, in descending order, are `Trace`, `Debug`, `Config`, `Info`, `Warn` (default),
                       `Error`, and `Fatal` [1].
@@ -2913,10 +2913,10 @@ actions:
                         prefName: toolkit.telemetry.log.level
                         jsonValue: 'Fatal'
                   -
-                    name: Disable dumping Firefox Telemetry log messages to stdout
+                    name: Disable Firefox telemetry log output
                     recommend: standard
                     docs: |-
-                      This script deactivates `toolkit.telemetry.log.dump` as much as possible.
+                      This script adjusts the `toolkit.telemetry.log.dump` setting to its most restricted value.
                       This preference controls whether to dump telemetry log messages to `stdout` [1].
 
                       [1]: https://web.archive.org/web/20221015102124/https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/internals/preferences.html "Preferences and Defines — Firefox Source Docs documentation | firefox-source-docs.mozilla.org"
@@ -2949,7 +2949,7 @@ actions:
                   [1]: https://web.archive.org/web/20221025163526/https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/concepts/pings.html "Telemetry pings — Firefox Source Docs documentation | firefox-source-docs.mozilla.org"
                 children:
                   -
-                    name: Disable pinging to Firefox telemetry server
+                    name: Disable pings to Firefox telemetry server
                     recommend: standard
                     docs: |-
                       This script sets `toolkit.telemetry.server` to be empty.
@@ -3065,7 +3065,7 @@ actions:
               Firefox Pioneer is a system in Firefox to test new features and changes on a subset of Firefox users [1].
 
               Pioneer program sends private/sensitive data to Mozilla [2] [3].
-              
+
               [1]: https://web.archive.org/web/20221025161925/https://www.ghacks.net/2017/11/15/what-is-firefox-pioneer/ "What is Firefox Pioneer? - gHacks Tech News | ghacks.net"
               [2]: https://web.archive.org/web/20221025160326/https://support.mozilla.org/en-US/questions/1224660 "What is a firefox pioneer example of how data will be used and how can this lead to a better user experience? | Firefox Support Forum | Mozilla Support"
               [3]: https://web.archive.org/web/20221025162028/https://medium.com/firefox-context-graph/make-firefox-better-with-pioneer-10c82d0f9301 "Make Firefox Better With Pioneer. Data is the lifeblood of any product… | by Toby Elliott | Firefox Context Graph | Medium"
@@ -3074,7 +3074,7 @@ actions:
                 name: Disable Firefox Pioneer study monitoring
                 recommend: standard
                 docs: |-
-                  This script configures `toolkit.telemetry.pioneer-new-studies-available` to be disabled to opt-out from
+                  This script configures `toolkit.telemetry.pioneer-new-studies-available` to be disabled to opt out.
                   Firefox Pioneer program.
 
                   This setting disables availability check for Firefox Pioneer studies [1].
@@ -3105,7 +3105,7 @@ actions:
               This script turns off the Firefox Captive Portal detection feature.
 
               Firefox uses this feature to determine if a network connection requires a login, such as a
-              public Wi-Fi hotspot [1]. The test involves initiating an outgoing connection to Mozilla servers [1]. 
+              public Wi-Fi hotspot [1]. The test involves initiating an outgoing connection to Mozilla servers [1].
 
               By default, these connection attempts occur at regular intervals [2][3].
 
@@ -3129,7 +3129,7 @@ actions:
                 prefName: network.captive-portal-service.enabled
                 jsonValue: 'false'
           -
-            category: Disable Firefox Phishing Protection (decreases your security)
+            category: Disable Firefox Phishing Protection (Safe Browsing) (decreases security)
             docs: |-
               Firefox's Safe Browsing feature, now referred to as Phishing Protection, is still internally
               recognized as "Safe Browsing" [1].
@@ -3153,12 +3153,22 @@ actions:
               [3]: https://web.archive.org/web/20221025192516/https://www.usnews.com/opinion/articles/2016-06-22/google-is-the-worlds-biggest-censor-and-its-power-must-be-regulated "Google Is the World's Biggest Censor and Its Power Must Be Regulated | usnews.com"
             children:
               -
-                name: Disable Firefox plugin stability blocking
+                name: Disable blocking of unstable plugins in Firefox
                 docs: |-
                   This script sets `browser.safebrowsing.blockedURIs.enabled` to 'false', thereby disabling plugin
                   stability blocking [1].
 
+                  Disabling this feature might have mixed implications:
+
+                  - Disabling the blocking of unstable plugins can potentially expose the user to vulnerabilities associated with these plugins.
+                  These plugins may include malware, which would compromise user privacy and data.
+                  - It removes the need for data communication via Mozilla servers `addons.mozilla.org` for list retrieval [2]. This feature requires
+                  frequent requests to download large amount of data.
+
+                  If this blocking is removed, the user should be knowledgeable about the potential risks and will take precautions.
+
                   [1]: https://web.archive.org/web/20221025192643/https://wiki.mozilla.org/Security/Safe_Browsing#Prefs "Security/Safe Browsing - MozillaWiki | wiki.mozilla.org"
+                  [2]: https://web.archive.org/web/20230811024650/https://blog.mozilla.org/addons/2020/08/24/introducing-a-scalable-add-ons-blocklist/ "Introducing a scalable add-ons blocklist | Mozilla Add-ons Community Blog"
                 call:
                   function: AddFirefoxPrefs
                   parameters:
@@ -3168,7 +3178,7 @@ actions:
                 name: Disable Firefox application reputation checks for downloads
                 docs: |-
                   This script pertains to a feature that safeguards users from malware downloads [1].
-                  
+
                   This protective measure operates by transmitting downloaded URL and file data to
                   Google's servers [3].
 
@@ -3199,7 +3209,7 @@ actions:
                   Disabling it halts the downloading of malware blacklists and ceases checks on downloads [1].
                   It is active by default [1].
 
-                  Note that disabling this protection disrupts application reputation checks for downloaded files, 
+                  Note that disabling this protection disrupts application reputation checks for downloaded files,
                   since it relies on this feature [2].
 
                   [1]: https://web.archive.org/web/20221025211950/https://kb.mozillazine.org/Browser.safebrowsing.malware.enabled "Browser.safebrowsing.malware.enabled - MozillaZine Knowledge Base | kb.mozillazine.org"
@@ -3337,7 +3347,7 @@ functions:
           target = json.loads('{{ $jsonValue }}')
           home_dir = f'/home/{os.getenv("SUDO_USER", os.getenv("USER"))}'
           settings_files = [
-            # Global installation (also snap that installs with "--classic" flag)
+            # Global installation (also Snap that installs with "--classic" flag)
             f'{home_dir}/.config/Code/User/settings.json',
             # Flatpak installation
             f'{home_dir}/.var/app/com.visualstudio.code/config/Code/User/settings.json'
@@ -3451,17 +3461,17 @@ functions:
                 if ! sudo systemctl stop "$service"; then
                   >&2 echo "Could not stop $service."
                 else
-                  echo 'Successfuly stopped'
+                  echo 'Successfully stopped'
                 fi
               fi
               if sudo systemctl disable "$service"; then
-                echo "Successfuly disabled $service."
+                echo "Successfully disabled $service."
               else
                 >&2 echo "Failed to disable $service."
               fi
             else
               echo "Skipping, $service is already disabled."
-            fi 
+            fi
           else
             echo "Skipping, $service does not exist."
           fi
@@ -3472,7 +3482,7 @@ functions:
               echo "Skipping, $service is already enabled."
             else
               if sudo systemctl enable "$service"; then
-                echo "Successfuly enabled $service, it may require reboot to start."
+                echo "Successfully enabled $service, it may require reboot to start."
               else
                 >&2 echo "Failed to enable $service."
               fi
@@ -3634,7 +3644,7 @@ functions:
       if ! [ -f "$declaration_file" ]; then
         echo "Skipping, \"$declaration_file\" does not exist."
       else
-        assignment="$variable=$value"    
+        assignment="$variable=$value"
         if grep --quiet "^$assignment$" "${declaration_file}"; then
           if sudo sed --in-place "/^$assignment$/d" "$declaration_file"; then
             echo "Successfully deleted \"$variable\" with \"$value\"."
@@ -3650,7 +3660,7 @@ functions:
     parameters:
       - name: jobName
     # Cron is not restarted after changes because according to manpage:
-    # > …cron will then examine the modification time on all crontabs and reload those which have changed. 
+    # > …cron will then examine the modification time on all crontabs and reload those which have changed.
     # > Thus cron need not be restarted whenever a crontab file is modified.
     code: |-
       job_name='{{ $jobName }}'
@@ -3686,11 +3696,11 @@ functions:
       This script either creates or updates the `user.js` file to set specific Mozilla Firefox preferences.
 
       The `user.js` file can be found in a Firefox profile folder [1] and its location depends on the type of installation:
-    
+
       - Default: `~/.mozilla/firefox/<profile-name>/user.js`
       - Flatpak: `~/.var/app/org.mozilla.firefox/.mozilla/firefox/<profile-name>/user.js`
       - Snap: `~/snap/firefox/common/.mozilla/firefox/<profile-name>/user.js`
-    
+
       While the `user.js` file is optional [2], if it's present, the Firefox application will prioritize its settings over
       those in `prefs.js` upon startup [1][2]. To prevent potential profile corruption, Mozilla advises against editing
       `prefs.js` directly [2].
@@ -3799,7 +3809,7 @@ functions:
         echo "Succesfully restored."
       else
         >&2 echo "Failed to restore, backup file could not be found at $backup_file."
-        >&2 echo "Was it change initially applied by privacy.sexy?"
+        >&2 echo "Was the change initially applied by privacy.sexy?"
       fi
   -
     name: ReplaceFileContent
@@ -3826,5 +3836,5 @@ functions:
       else
         sudo rm -fv "$file"
         sudo mv "$file.backup" "$file"
-        echo "Successfuly restored from backup: $file"
+        echo "Successfully restored from backup: $file"
       fi
