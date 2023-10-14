@@ -102,7 +102,7 @@ jobs:
       -
         name: "App: Deploy to S3"
         shell: bash
-        run: >-
+        run: |-
           declare web_output_dir
           if ! web_output_dir=$(cd app && node scripts/print-dist-dir.js --web); then
             echo 'Error: Could not determine distribution directory.'
