@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.12.5 (2023-10-13)
+
+* Fix Docker build and improve checks #220 | [7669985](https://github.com/undergroundwires/privacy.sexy/commit/7669985f8e1446e726a95626ecf35b3ce6b60a16)
+* Add SAST security checks with SECURITY.md #178 | [3e5239f](https://github.com/undergroundwires/privacy.sexy/commit/3e5239f7d35e57749c01adf3dbbcd365aebb39c8)
+* Add Scoop download instructions #174 | [cf55ca9](https://github.com/undergroundwires/privacy.sexy/commit/cf55ca9e28b064fa7a516077a9da23e3a8e3f534)
+* win: fix and improve temp dir cleanup #176, #89 | [d457504](https://github.com/undergroundwires/privacy.sexy/commit/d45750428cca010daf2721b33a8ae3a01b28813b)
+* win, linux: improve VSCode setting robustness #196 | [e8a52f7](https://github.com/undergroundwires/privacy.sexy/commit/e8a52f717dc799b34ceeb1c27c2b8219391dff6a)
+* linux: fix obsolete Firefox DPI script #239 | [e5f6edf](https://github.com/undergroundwires/privacy.sexy/commit/e5f6edf405bcec7c29ea4d7932d1910620fa15f8)
+* win: add removal of Edge assocations #64 | [888c916](https://github.com/undergroundwires/privacy.sexy/commit/888c9166fc66a2094137fa8be739cc21bafef5f6)
+* win: improve Edge & OneDrive shortcut removal #73 | [8501495](https://github.com/undergroundwires/privacy.sexy/commit/8501495c170af61913288a63dbd369db5bbc5003)
+* win: relocate and document SecHealthUI #190 | [2862951](https://github.com/undergroundwires/privacy.sexy/commit/286295128d0179358e0c6b7b6415d752175a1aed)
+* Add developer toolkit UI component | [2147eae](https://github.com/undergroundwires/privacy.sexy/commit/2147eae687b82d05bc43bb4605d9068f148bb92a)
+* win: fix and improve network data usage reset #265 | [5e359c2](https://github.com/undergroundwires/privacy.sexy/commit/5e359c2fb82a08e6acf7159b70ca86a8234b359b)
+* win: improve app reversion and docs #260 | [a3f11df](https://github.com/undergroundwires/privacy.sexy/commit/a3f11dff187c821a00910c20dac05e285cda9073)
+* Fix working directory in CI/CD web release | [698b570](https://github.com/undergroundwires/privacy.sexy/commit/698b570ee6e300d6703015464f4345b5e706f1cb)
+* Implement new UI component for icons #230 | [48730bc](https://github.com/undergroundwires/privacy.sexy/commit/48730bca0506120bca4bf3a23545d59f2b1a9009)
+* win: fix and improve AppCompat disabling #255 | [bab6316](https://github.com/undergroundwires/privacy.sexy/commit/bab6316e7625230cf4a4cf67c3aca417347db75c)
+* win, linux, mac: fix typos and improve naming | [67c3677](https://github.com/undergroundwires/privacy.sexy/commit/67c3677621b201525a813e8a26f07d607176e89b)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.12.4...0.12.5)
+
 ## 0.12.4 (2023-09-25)
 
 * win: fix Windows spotlight revert, docs, recommend | [659fea7](https://github.com/undergroundwires/privacy.sexy/commit/659fea7afcabcd0ea273cfdcc8c4bae190c126f3)
