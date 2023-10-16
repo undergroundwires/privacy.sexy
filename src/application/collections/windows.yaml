@@ -9797,50 +9797,113 @@ functions:
         name: UninstallSystemApp
         parameters:
             - name: packageName
-        # It simply renames files
+        # It simply renames folders
         #   Because system apps are non removable (check: (Get-AppxPackage -AllUsers 'Windows.CBSPreview').NonRemovable)
         #   Otherwise they throw 0x80070032 when trying to uninstall them
+        # This script all files in three application folders to make them inaccessible for the operating system:
+        #   1. Installation
+        #       - Parent    : `%WINDIR%\SystemApps\{PackageFamilyName}` or `%WINDIR%\{AppName}`
+        #       - Example   : `C:\Windows\SystemApps\Windows.CBSPreview_cw5n1h2txyewy` or `C:\Windows\PrintDialog`
+        #       - Check     : `(Get-AppxPackage -AllUsers 'Windows.CBSPreview').InstallLocation` or `(Get-AppxPackage -AllUsers 'Windows.PrintDialog').InstallLocation`
+        #   2. User-specific data
+        #       - Parent    : %LOCALAPPDATA%\Packages\
+        #       - Example   : C:\Users\undergroundwires\AppData\Local\Packages\Windows.CBSPreview_cw5n1h2txyewy
+        #       - Check     : "$env:LOCALAPPDATA\Packages\$((Get-AppxPackage -AllUsers 'Windows.CBSPreview').PackageFamilyName)"
+        #   3. Metadata
+        #       - Parent    : `%PROGRAMDATA\Microsoft\Windows\AppRepository\Packages\${PackageFullName}`
+        #       - Example   : C:\ProgramData\Microsoft\Windows\AppRepository\Packages\Windows.CBSPreview_10.0.19580.1000_neutral_neutral_cw5n1h2txyewy
+        #       - Check     : "$env:PROGRAMDATA\Microsoft\Windows\AppRepository\Packages\$((Get-AppxPackage -AllUsers 'Windows.CBSPreview').PackageFullName)"
         call:
             function: RunPowerShell
             parameters:
                 code: |-
-                    $package = Get-AppxPackage -AllUsers '{{ $packageName }}'
-                    if (!$package) {
-                        Write-Host 'Not installed'
+                    $packageName = '{{ $packageName }}'
+                    Write-Host "Soft-deleting `"$packageName`" folders."
+                    $package = Get-AppxPackage -AllUsers $packageName
+                    if (!$package) { 
+                        Write-Host "Skipping, package `"$packageName`" is not installed."
                         exit 0
                     }
-                    $directories = @($package.InstallLocation, "$env:LOCALAPPDATA\Packages\$($package.PackageFamilyName)")
-                    foreach($dir in $directories) {
-                        if ( !$dir -Or !(Test-Path "$dir") ) { continue }
-                        cmd /c ('takeown /f "' + $dir + '" /r /d y 1> nul')
-                            if($LASTEXITCODE) { throw 'Failed to take ownership' }
-                        cmd /c ('icacls "' + $dir + '" /grant administrators:F /t 1> nul')
-                            if($LASTEXITCODE) { throw 'Failed to take ownership' }
-                        $files = Get-ChildItem -File -Path $dir -Recurse -Force
-                        foreach($file in $files) {
-                            if($file.Name.EndsWith('.OLD')) { continue }
-                            $newName = $file.FullName + '.OLD'
-                            Write-Host "Rename '$($file.FullName)' to '$newName'"
-                            Move-Item -LiteralPath "$($file.FullName)" -Destination "$newName" -Force
+                    $directories = @(
+                        @{ Name = 'Installation';           Path = $package.InstallLocation; }
+                        @{ Name = 'User-specific data';     Path = "$env:LOCALAPPDATA\Packages\$($package.PackageFamilyName)"; }
+                        @{ Name = 'Metadata';               Path = "$env:PROGRAMDATA\Microsoft\Windows\AppRepository\Packages\$($package.PackageFullName)"; }
+                    )
+                    foreach($directory in $directories) {
+                        Write-Host "Processing folder: `"$($directory.Name)`"..."
+                        if (!$directory.Path) {
+                            Write-Host 'Skipping, path not found.'
+                            continue
+                        }
+                        if (!(Test-Path $directory.Path)) {
+                            Write-Host "Skipping, directory `"$($directory.Path)`" does not exist."
+                            continue
+                        }
+                        cmd /c ("takeown /f `"$($directory.Path)`" /r /d y 1> nul")
+                        if ($LASTEXITCODE) {
+                            Write-Error "Failed to obtain ownership for `"$($directory.Path)`"."
+                            continue
+                        }
+                        cmd /c ("icacls `"$($directory.Path))`" /grant administrators:F /t 1> nul")
+                        if ($LASTEXITCODE) {
+                            Write-Error "Failed to assign permissions for `"$($directory.Path)`"."
+                            continue
+                        }
+                        $files = Get-ChildItem -File -Path $directory.Path -Recurse -Force
+                        foreach ($file in $files) {
+                            if($file.Name.EndsWith('.OLD')) {
+                                continue
+                            }
+                            $newName = "$($file.FullName).OLD"
+                            try {
+                                Move-Item -LiteralPath "$($file.FullName)" -Destination "$newName" -Force -ErrorAction Stop
+                                Write-Host "Successfully renamed `"$($file.FullName)`"."
+                            } catch {
+                                Write-Error "Failed to rename `"$($file.FullName)`" to `"$newName`": $($_.Exception.Message)"
+                            }
                         }
                     }
                 revertCode: |-
-                    $package = Get-AppxPackage -AllUsers '{{ $packageName }}'
-                    if (!$package) {
-                        Write-Error 'App could not be found' -ErrorAction Stop
+                    $packageName = '{{ $packageName }}'
+                    $package = Get-AppxPackage -AllUsers $packageName
+                    Write-Host "Restoring `"$packageName`" folders."
+                    if (!$package) { 
+                        throw "The package `"$packageName`" could not be found."
                     }
-                    $directories = @($package.InstallLocation, "$env:LOCALAPPDATA\Packages\$($package.PackageFamilyName)")
-                    foreach($dir in $directories) {
-                        if ( !$dir -Or !(Test-Path "$dir") ) { continue; }
-                        cmd /c ('takeown /f "' + $dir + '" /r /d y 1> nul')
-                            if($LASTEXITCODE) { throw 'Failed to take ownership' }
-                        cmd /c ('icacls "' + $dir + '" /grant administrators:F /t 1> nul')
-                            if($LASTEXITCODE) { throw 'Failed to take ownership' }
-                        $files = Get-ChildItem -File -Path "$dir\*.OLD" -Recurse -Force
-                        foreach($file in $files) {
+                    $directories = @(
+                        @{ Name = 'Installation';           Path = $package.InstallLocation; }
+                        @{ Name = 'User-specific data';     Path = "$env:LOCALAPPDATA\Packages\$($package.PackageFamilyName)"; }
+                        @{ Name = 'Metadata';               Path = "$env:PROGRAMDATA\Microsoft\Windows\AppRepository\Packages\$($package.PackageFullName)"; }
+                    )
+                    foreach ($directory in $directories) {
+                        Write-Host "Processing folder: `"$($directory.Name)`" directory..."
+                        if (!$directory.Path) {
+                            Write-Host "Skipping `"$($directory.Name)`" directory, path not found."
+                            continue
+                        }
+                        if (!(Test-Path $directory.Path)) {
+                            Write-Host "Skipping, directory `"$($directory.Path)`" does not exist."
+                            continue
+                        }
+                        cmd /c ("takeown /f `"$($directory.Path)`" /r /d y 1> nul")
+                        if ($LASTEXITCODE) {
+                            Write-Error "Failed to obtain ownership for `"$($directory.Path)`"."
+                            continue
+                        }
+                        cmd /c ("icacls `"$($directory.Path)`" /grant administrators:F /t 1> nul")
+                        if ($LASTEXITCODE) {
+                            Write-Error "Failed to assign permissions for `"$($directory.Path)`"."
+                            continue
+                        }
+                        $files = Get-ChildItem -File -Path "$($directory.Path)\*.OLD" -Recurse -Force
+                        foreach ($file in $files) {
                             $newName = $file.FullName.Substring(0, $file.FullName.Length - 4)
-                            Write-Host "Rename '$($file.FullName)' to '$newName'"
-                            Move-Item -LiteralPath "$($file.FullName)" -Destination "$newName" -Force
+                            try {
+                                Move-Item -LiteralPath "$($file.FullName)" -Destination "$newName" -Force -ErrorAction Stop
+                                Write-Host "Successfully renamed `"$($file.FullName)`" back to original."
+                            } catch {
+                                Write-Error "Failed to rename `"$($file.FullName)`" back to original `"$newName`": $($_.Exception.Message)"
+                            }
                         }
                     }
     -
