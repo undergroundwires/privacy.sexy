@@ -14,7 +14,7 @@ jobs:
     runs-on: ${{ matrix.os }}-latest
     steps:
       -
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           ref: master # otherwise it defaults to the version tag missing bump commit
           fetch-depth: 0 # fetch all history

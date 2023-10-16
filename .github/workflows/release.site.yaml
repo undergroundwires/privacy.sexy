@@ -10,7 +10,7 @@ jobs:
     steps:
       -
         name: "Infrastructure: Checkout"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           path: aws
           repository: undergroundwires/aws-static-site-with-cd
@@ -75,7 +75,7 @@ jobs:
         working-directory: aws
       -
         name: "App: Checkout"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           path: app
           ref: master # otherwise we don't get version bump commit

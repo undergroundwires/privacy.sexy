@@ -59,7 +59,7 @@ describe('Script', () => {
     describe('level', () => {
       it('cannot construct with invalid wrong value', () => {
         // arrange
-        const invalidValue: RecommendationLevel = 55;
+        const invalidValue: RecommendationLevel = 55 as never;
         const expectedError = 'invalid level';
         // act
         const construct = () => new ScriptBuilder()

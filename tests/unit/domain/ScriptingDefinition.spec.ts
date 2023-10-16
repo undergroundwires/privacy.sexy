@@ -22,7 +22,7 @@ describe('ScriptingDefinition', () => {
     });
     it('throws if unknown', () => {
       // arrange
-      const unknownValue: ScriptingLanguage = 666;
+      const unknownValue: ScriptingLanguage = 666 as never;
       const errorMessage = `unsupported language: ${unknownValue}`;
       // act
       const act = () => new ScriptingDefinitionBuilder()

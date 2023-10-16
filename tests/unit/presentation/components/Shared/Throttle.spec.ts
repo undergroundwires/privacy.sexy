@@ -3,6 +3,7 @@ import { throttle, ITimer, TimeoutType } from '@/presentation/components/Shared/
 import { EventSource } from '@/infrastructure/Events/EventSource';
 import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 import { getAbsentObjectTestCases, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { createMockTimeout } from '@tests/unit/shared/Stubs/TimeoutStub';
 
 describe('throttle', () => {
   describe('validates parameters', () => {
@@ -153,7 +154,7 @@ class TimerMock implements ITimer {
     });
     this.subscriptions.push(subscription);
     const id = this.subscriptions.length - 1;
-    return TimerMock.mockTimeout(id);
+    return createMockTimeout(id);
   }
 
   public clearTimeout(timeoutId: TimeoutType): void {
@@ -171,16 +172,5 @@ class TimerMock implements ITimer {
   public setCurrentTime(ms: number): void {
     this.currentTime = ms;
     this.timeChanged.notify(this.currentTime);
-  }
-
-  private static mockTimeout(subscriptionId: number): TimeoutType {
-    const throwNodeSpecificCode = () => { throw new Error('node specific code'); };
-    return {
-      [Symbol.toPrimitive]: () => subscriptionId,
-      hasRef: throwNodeSpecificCode,
-      refresh: throwNodeSpecificCode,
-      ref: throwNodeSpecificCode,
-      unref: throwNodeSpecificCode,
-    };
   }
 }

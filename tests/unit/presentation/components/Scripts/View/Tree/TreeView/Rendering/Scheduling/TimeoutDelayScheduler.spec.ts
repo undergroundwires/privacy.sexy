@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { TimeFunctions, TimeoutDelayScheduler } from '@/presentation/components/Scripts/View/Tree/TreeView/Rendering/Scheduling/TimeoutDelayScheduler';
 import { StubWithObservableMethodCalls } from '@tests/unit/shared/Stubs/StubWithObservableMethodCalls';
+import { createMockTimeout } from '@tests/unit/shared/Stubs/TimeoutStub';
 
 describe('TimeoutDelayScheduler', () => {
   describe('scheduleNext', () => {
@@ -56,7 +57,8 @@ describe('TimeoutDelayScheduler', () => {
         expect(setTimeoutCalls.length).toBe(2);
         const clearTimeoutCalls = timerStub.callHistory.filter((c) => c.methodName === 'clearTimeout');
         expect(clearTimeoutCalls.length).toBe(1);
-        const [actualId] = clearTimeoutCalls[0].args;
+        const [timeout] = clearTimeoutCalls[0].args;
+        const actualId = Number(timeout);
         expect(actualId).toBe(idOfFirstSetTimeoutCall);
       });
     });
@@ -78,6 +80,7 @@ class TimeFunctionsStub
       methodName: 'setTimeout',
       args: [callback, delayInMs],
     });
-    return this.callHistory.filter((c) => c.methodName === 'setTimeout').length as unknown as ReturnType<typeof setTimeout>;
+    const id = this.callHistory.filter((c) => c.methodName === 'setTimeout').length;
+    return createMockTimeout(id);
   }
 }
