@@ -5999,9 +5999,9 @@ actions:
                     function: UninstallSystemApp
                     parameters:
                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ❌ Missing
-                        # Publisher ID  : cw5n1h2txyewy
                         # More info     : Get-AppxPackage Microsoft.Windows.SecHealthUI
                         packageName: Microsoft.Windows.SecHealthUI
+                        publisherId: cw5n1h2txyewy
     -
         category: UI for privacy
         children:
@@ -7733,7 +7733,7 @@ actions:
                             This category includes scripts for uninstalling default system apps in Windows.
 
                             System apps are pre-installed [1] [2] applications located in the `C:\Windows*` directory [1] [2].
-                            These apps are typically found on `C:\Windows\SystemApps\{PackageFamilyName}` or `C:\Windows\{AppName}` folders.
+                            These apps are typically found on `C:\Windows\SystemApps\{PackageFamilyName}` or `C:\Windows\{ShortAppName}` folders.
 
                             To view all system apps:
 
@@ -7758,9 +7758,9 @@ actions:
                                     function: UninstallSystemApp
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                        # Publisher ID  : cw5n1h2txyewy
                                         # More info     : Get-AppxPackage 1527c705-839a-4832-9118-54d4Bd6a0c89
                                         packageName: 1527c705-839a-4832-9118-54d4Bd6a0c89
+                                        publisherId: cw5n1h2txyewy
                             -
                                 name: Remove "File Explorer" app
                                 docs: |
@@ -7772,9 +7772,9 @@ actions:
                                     function: UninstallSystemApp
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                        # Publisher ID  : cw5n1h2txyewy
                                         # More info     : Get-AppxPackage c5e2524a-ea46-4f67-841f-6a9465d9d515
                                         packageName: c5e2524a-ea46-4f67-841f-6a9465d9d515
+                                        publisherId: cw5n1h2txyewy
                             -
                                 name: Remove "App Resolver UX" app
                                 docs: |-
@@ -7786,9 +7786,9 @@ actions:
                                     function: UninstallSystemApp
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                        # Publisher ID  : cw5n1h2txyewy
                                         # More info     : Get-AppxPackage E2A4F912-2574-4A75-9BB0-0D023378592B
                                         packageName: E2A4F912-2574-4A75-9BB0-0D023378592B
+                                        publisherId: cw5n1h2txyewy
                             -
                                 name: Remove "Add Suggested Folders To Library" app
                                 docs: |-
@@ -7801,16 +7801,16 @@ actions:
                                         function: UninstallSystemApp
                                         parameters:
                                             # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                            # Publisher ID  : cw5n1h2txyewy
                                             # More info     : Get-AppxPackage F46D4000-FD22-4DB4-AC8E-4E1DDDE828FE
                                             packageName: F46D4000-FD22-4DB4-AC8E-4E1DDDE828FE
+                                            publisherId: cw5n1h2txyewy
                                     -
                                         function: UninstallSystemApp
                                         parameters:
                                             # Existence     : Windows 10 (≥ 22H2): ❌ Missing | Windows 11 (≥ 22H2): ❌ Missing
-                                            # Publisher ID  : cw5n1h2txyewy
                                             # More info     : Get-AppxPackage InputApp
                                             packageName: InputApp
+                                            publisherId: cw5n1h2txyewy
                             -
                                 name: Remove "Microsoft AAD Broker Plugin" app (breaks Night Light settings, taskbar keyboard selection and Office app authentication)
                                 # recommend: strict (Unrecommended due to too many side-effects)
@@ -7843,9 +7843,9 @@ actions:
                                     function: UninstallSystemApp
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                        # Publisher ID  : cw5n1h2txyewy
                                         # More info     : Get-AppxPackage Microsoft.AAD.BrokerPlugin
                                         packageName: Microsoft.AAD.BrokerPlugin # Offical docs point to wrong "Microsoft.AAD.Broker.Plugin"
+                                        publisherId: cw5n1h2txyewy
                             -
                                 name: Remove "Microsoft Accounts Control" app
                                 docs: |-
@@ -7860,9 +7860,9 @@ actions:
                                     function: UninstallSystemApp
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                        # Publisher ID  : cw5n1h2txyewy
                                         # More info     : Get-AppxPackage Microsoft.AccountsControl
                                         packageName: Microsoft.AccountsControl
+                                        publisherId: cw5n1h2txyewy
                             -
                                 name: Remove "Microsoft Async Text Service" app
                                 docs: |-
@@ -7874,9 +7874,9 @@ actions:
                                     function: UninstallSystemApp
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                        # Publisher ID  : 8wekyb3d8bbwe
                                         # More info     : Get-AppxPackage Microsoft.AsyncTextService
                                         packageName: Microsoft.AsyncTextService
+                                        publisherId: 8wekyb3d8bbwe
                             -
                                 category: Remove Windows Hello setup UI apps
                                 children:
@@ -7894,9 +7894,9 @@ actions:
                                             function: UninstallSystemApp
                                             parameters:
                                                 # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                                # Publisher ID  : cw5n1h2txyewy
                                                 # More info     : Get-AppxPackage Microsoft.BioEnrollment
                                                 packageName: Microsoft.BioEnrollment
+                                                publisherId: cw5n1h2txyewy
                                     -
                                         name: Remove "Credentials Dialog Host" app
                                         docs: |-
@@ -7909,9 +7909,9 @@ actions:
                                             function: UninstallSystemApp
                                             parameters:
                                                 # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                                # Publisher ID  : cw5n1h2txyewy
                                                 # More info     : Get-AppxPackage Microsoft.CredDialogHost
                                                 packageName: Microsoft.CredDialogHost
+                                                publisherId: cw5n1h2txyewy
                                     -
                                         name: Remove "EC" app
                                         docs: |-
@@ -7923,9 +7923,9 @@ actions:
                                             function: UninstallSystemApp
                                             parameters:
                                                 # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                                # Publisher ID  : 8wekyb3d8bbwe
                                                 # More info     : Get-AppxPackage Microsoft.ECApp
                                                 packageName: Microsoft.ECApp
+                                                publisherId: 8wekyb3d8bbwe
                                     -
                                         name: Remove "Lock" app (shows lock screen)
                                         docs: |-
@@ -7939,9 +7939,9 @@ actions:
                                             function: UninstallSystemApp
                                             parameters:
                                                 # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                                # Publisher ID  : cw5n1h2txyewy
                                                 # More info     : Get-AppxPackage Microsoft.LockApp
                                                 packageName: Microsoft.LockApp
+                                                publisherId: cw5n1h2txyewy
                             -
                                 category: Remove Edge apps
                                 docs: |-
@@ -7992,9 +7992,9 @@ actions:
                                                     function: UninstallSystemApp
                                                     parameters:
                                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                                        # Publisher ID  : 8wekyb3d8bbwe
                                                         # More info     : Get-AppxPackage Microsoft.MicrosoftEdge
                                                         packageName: Microsoft.MicrosoftEdge
+                                                        publisherId: 8wekyb3d8bbwe
                                             -
                                                 name: Remove "Microsoft Edge Dev Tools Client" app
                                                 recommend: strict
@@ -8018,9 +8018,9 @@ actions:
                                                     function: UninstallSystemApp
                                                     parameters:
                                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                                        # Publisher ID  : 8wekyb3d8bbwe
                                                         # More info     : Get-AppxPackage Microsoft.MicrosoftEdgeDevToolsClient
                                                         packageName: Microsoft.MicrosoftEdgeDevToolsClient
+                                                        publisherId: 8wekyb3d8bbwe
                                             -
                                                 name: Remove Edge (legacy) file and URL associations
                                                 recommend: strict
@@ -8078,9 +8078,9 @@ actions:
                                             function: UninstallSystemApp
                                             parameters:
                                                 # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                                # Publisher ID  : cw5n1h2txyewy
                                                 # More info     : Get-AppxPackage Microsoft.Win32WebViewHost
                                                 packageName: Microsoft.Win32WebViewHost
+                                                publisherId: cw5n1h2txyewy
                                     -
                                         name: Remove "Microsoft PPI Projection" app
                                         docs: |-
@@ -8095,9 +8095,9 @@ actions:
                                             function: UninstallSystemApp
                                             parameters:
                                                 # Existence     : Windows 10 (≥ 22H2): ❌ Missing | Windows 11 (≥ 22H2): ❌ Missing
-                                                # Publisher ID  : cw5n1h2txyewy
                                                 # More info     : Get-AppxPackage Microsoft.PPIProjection
                                                 packageName: Microsoft.PPIProjection
+                                                publisherId: cw5n1h2txyewy
                                     -
                                         name: Remove "ChxApp" app
                                         docs: |-
@@ -8109,9 +8109,9 @@ actions:
                                             function: UninstallSystemApp
                                             parameters:
                                                 # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                                # Publisher ID  : cw5n1h2txyewy
                                                 # More info     : Get-AppxPackage Microsoft.Windows.Apprep.ChxApp
                                                 packageName: Microsoft.Windows.Apprep.ChxApp
+                                                publisherId: cw5n1h2txyewy
                                     -
                                         name: Remove "Assigned Access Lock App" app
                                         docs: |-
@@ -8123,9 +8123,9 @@ actions:
                                             function: UninstallSystemApp
                                             parameters:
                                                 # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                                # Publisher ID  : cw5n1h2txyewy
                                                 # More info     : Get-AppxPackage Microsoft.Windows.AssignedAccessLockApp
                                                 packageName: Microsoft.Windows.AssignedAccessLockApp
+                                                publisherId: cw5n1h2txyewy
                                     -
                                         name: Remove "Capture Picker" app
                                         docs: |-
@@ -8137,9 +8137,9 @@ actions:
                                             function: UninstallSystemApp
                                             parameters:
                                                 # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                                # Publisher ID  : cw5n1h2txyewy
                                                 # More info     : Get-AppxPackage Microsoft.Windows.CapturePicker
                                                 packageName: Microsoft.Windows.CapturePicker
+                                                publisherId: cw5n1h2txyewy
                                     -
                                         name: Remove "Cloud Experience Host" app (breaks Windows Hello password/PIN sign-in options, and Microsoft cloud/corporate sign in)
                                         # recommend: strict (Unrecommended due to too many side-effects)
@@ -8180,9 +8180,9 @@ actions:
                                             function: UninstallSystemApp
                                             parameters:
                                                 # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                                # Publisher ID  : cw5n1h2txyewy
                                                 # More info     : Get-AppxPackage Microsoft.Windows.CloudExperienceHost
                                                 packageName: Microsoft.Windows.CloudExperienceHost
+                                                publisherId: cw5n1h2txyewy
                                     -
                                         name: Remove "Content Delivery Manager" app
                                         recommend: strict
@@ -8206,9 +8206,9 @@ actions:
                                             function: UninstallSystemApp
                                             parameters:
                                                 # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                                # Publisher ID  : cw5n1h2txyewy
                                                 # More info     : Get-AppxPackage Microsoft.Windows.ContentDeliveryManager
                                                 packageName: Microsoft.Windows.ContentDeliveryManager
+                                                publisherId: cw5n1h2txyewy
                             -
                                 category: Remove Cortana system apps
                                 children:
@@ -8238,9 +8238,9 @@ actions:
                                                 function: UninstallSystemApp
                                                 parameters:
                                                     # Existence     : Windows 10 (≥ 22H2): ❌ Missing | Windows 11 (≥ 22H2): ❌ Missing
-                                                    # Publisher ID  : cw5n1h2txyew
                                                     # More info     : Get-AppxPackage Microsoft.Windows.Cortana
                                                     packageName: Microsoft.Windows.Cortana # Removed since version 2004
+                                                    publisherId: cw5n1h2txyewy
                                             -
                                                 function: UninstallStoreApp
                                                 parameters:
@@ -8265,9 +8265,9 @@ actions:
                                             function: UninstallSystemApp
                                             parameters:
                                                 # Existence     : Windows 10 (≥ 22H2): ❌ Missing | Windows 11 (≥ 22H2): ❌ Missing
-                                                # Publisher ID  : cw5n1h2txyew
                                                 # More info     : Get-AppxPackage Microsoft.Windows.Holographic.FirstRun
                                                 packageName: Microsoft.Windows.Holographic.FirstRun
+                                                publisherId: cw5n1h2txyewy
                                     -
                                         category: Remove Out-of-Box Experience (OOBE) apps
                                         docs: |-
@@ -8296,9 +8296,9 @@ actions:
                                                     function: UninstallSystemApp
                                                     parameters:
                                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                                        # Publisher ID  : cw5n1h2txyewy
                                                         # More info     : Get-AppxPackage Microsoft.Windows.OOBENetworkCaptivePortal
                                                         packageName: Microsoft.Windows.OOBENetworkCaptivePortal # Offical docs point to wrong "Microsoft.Windows.OOBENetworkCaptivePort"
+                                                        publisherId: cw5n1h2txyewy
                                             -
                                                 name: Remove "OOBE Network Connection Flow" app
                                                 docs: |-
@@ -8324,9 +8324,9 @@ actions:
                                                     function: UninstallSystemApp
                                                     parameters:
                                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                                        # Publisher ID  : cw5n1h2txyewy
                                                         # More info     : Get-AppxPackage Microsoft.Windows.OOBENetworkConnectionFlow
                                                         packageName: Microsoft.Windows.OOBENetworkConnectionFlow
+                                                        publisherId: cw5n1h2txyewy
                                     -
                                         name: Remove "Microsoft Family Safety" / "Parental control" app
                                         recommend: standard
@@ -8358,9 +8358,9 @@ actions:
                                             function: UninstallSystemApp
                                             parameters:
                                                 # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                                # Publisher ID  : cw5n1h2txyewy
                                                 # More info     : Get-AppxPackage Microsoft.Windows.ParentalControls
                                                 packageName: Microsoft.Windows.ParentalControls
+                                                publisherId: cw5n1h2txyewy
                             -
                                 category: Remove People Hub apps
                                 children:
@@ -8389,9 +8389,9 @@ actions:
                                             function: UninstallSystemApp
                                             parameters:
                                                 # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                                # Publisher ID  : cw5n1h2txyewy
                                                 # More info     : Get-AppxPackage Microsoft.Windows.PeopleExperienceHost
                                                 packageName: Microsoft.Windows.PeopleExperienceHost
+                                                publisherId: cw5n1h2txyewy
                                     -
                                         name: Remove "Pinning Confirmation Dialog" app
                                         docs: |-
@@ -8403,9 +8403,9 @@ actions:
                                             function: UninstallSystemApp
                                             parameters:
                                                 # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                                # Publisher ID  : cw5n1h2txyewy
                                                 # More info     : Get-AppxPackage Microsoft.Windows.PinningConfirmationDialog
                                                 packageName: Microsoft.Windows.PinningConfirmationDialog
+                                                publisherId: cw5n1h2txyewy
                                     -
                                         name: Remove "Secondary Tile Experience" app
                                         recommend: strict
@@ -8427,9 +8427,9 @@ actions:
                                             function: UninstallSystemApp
                                             parameters:
                                                 # Existence     : Windows 10 (≥ 22H2): ❌ Missing | Windows 11 (≥ 22H2): ❌ Missing
-                                                # Publisher ID  : cw5n1h2txyewy
                                                 # More info     : Get-AppxPackage Microsoft.Windows.SecondaryTileExperience
                                                 packageName: Microsoft.Windows.SecondaryTileExperience
+                                                publisherId: cw5n1h2txyewy
                                     -
                                         name: Remove "Take a Test" app
                                         recommend: strict
@@ -8457,9 +8457,9 @@ actions:
                                             function: UninstallSystemApp
                                             parameters:
                                                 # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                                # Publisher ID  : cw5n1h2txyewy
                                                 # More info     : Get-AppxPackage Microsoft.Windows.SecureAssessmentBrowser
                                                 packageName: Microsoft.Windows.SecureAssessmentBrowser
+                                                publisherId: cw5n1h2txyewy
                             -
                                 category: Remove Windows Feedback apps
                                 children:
@@ -8474,9 +8474,9 @@ actions:
                                             function: UninstallSystemApp
                                             parameters:
                                                 # Existence     : Windows 10 (≥ 22H2): ❌ Missing | Windows 11 (≥ 22H2): ❌ Missing
-                                                # Publisher ID  : cw5n1h2txyewy
                                                 # More info     : Get-AppxPackage Microsoft.WindowsFeedback
                                                 packageName: Microsoft.WindowsFeedback
+                                                publisherId: cw5n1h2txyewy
                                     -
                                         name: Remove "Xbox Game Callable UI" app (breaks Xbox Live games)
                                         docs: |-
@@ -8497,9 +8497,9 @@ actions:
                                             function: UninstallSystemApp
                                             parameters:
                                                 # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                                # Publisher ID  : cw5n1h2txyewy
                                                 # More info     : Get-AppxPackage Microsoft.XboxGameCallableUI
                                                 packageName: Microsoft.XboxGameCallableUI
+                                                publisherId: cw5n1h2txyewy
                                     -
                                         name: Remove "CBS Preview" app
                                         recommend: standard
@@ -8512,9 +8512,9 @@ actions:
                                             function: UninstallSystemApp
                                             parameters:
                                                 # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                                # Publisher ID  : cw5n1h2txyewy
                                                 # More info     : Get-AppxPackage Windows.CBSPreview
                                                 packageName: Windows.CBSPreview
+                                                publisherId: cw5n1h2txyewy
                             -
                                 name: Remove "Contact Support" app
                                 docs: |-
@@ -8525,9 +8525,9 @@ actions:
                                     function: UninstallSystemApp
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ❌ Missing | Windows 11 (≥ 22H2): ❌ Missing
-                                        # Publisher ID  : cw5n1h2txyewy
                                         # More info     : Get-AppxPackage Windows.ContactSupport
                                         packageName: Windows.ContactSupport
+                                        publisherId: cw5n1h2txyewy
                             -
                                 name: Remove "Windows Print 3D" app
                                 docs: |-
@@ -8539,9 +8539,9 @@ actions:
                                     function: UninstallSystemApp
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ❌ Missing | Windows 11 (≥ 22H2): ❌ Missing
-                                        # Publisher ID  : cw5n1h2txyewy
                                         # More info     : Get-AppxPackage Windows.Print3D
                                         packageName: Windows.Print3D
+                                        publisherId: cw5n1h2txyewy
                             -
                                 name: Remove "Print UI" app
                                 docs: |-
@@ -8553,10 +8553,10 @@ actions:
                                     function: UninstallSystemApp
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
-                                        # Publisher ID  : cw5n1h2txyewy
                                         # More info     : Get-AppxPackage Windows.PrintDialog
                                         packageName: Windows.PrintDialog
-            -
+                                        publisherId: cw5n1h2txyewy
+            - 
               category: Remove OneDrive
               docs: |-
                 Microsoft OneDrive (formerly SkyDrive) is a file hosting service operated by Microsoft [1].
@@ -9797,14 +9797,17 @@ functions:
         name: UninstallSystemApp
         parameters:
             - name: packageName
-        # It simply renames folders
+            - name: publisherId
+        # It simply renames files in application folders.
         #   Because system apps are non removable (check: (Get-AppxPackage -AllUsers 'Windows.CBSPreview').NonRemovable)
         #   Otherwise they throw 0x80070032 when trying to uninstall them
         # This script all files in three application folders to make them inaccessible for the operating system:
         #   1. Installation
         #       - Parent    : `%WINDIR%\SystemApps\{PackageFamilyName}` or `%WINDIR%\{AppName}`
         #       - Example   : `C:\Windows\SystemApps\Windows.CBSPreview_cw5n1h2txyewy` or `C:\Windows\PrintDialog`
-        #       - Check     : `(Get-AppxPackage -AllUsers 'Windows.CBSPreview').InstallLocation` or `(Get-AppxPackage -AllUsers 'Windows.PrintDialog').InstallLocation`
+        #       - Check     :
+        #           - `(Get-AppxPackage -AllUsers 'Windows.CBSPreview').InstallLocation` or `(Get-AppxPackage -AllUsers 'Windows.PrintDialog').InstallLocation`
+        #           - `Get-AppxPackage -PackageTypeFilter Main | ? { $_.SignatureKind -eq "System" } | Sort Name | Format-Table Name, InstallLocation`
         #   2. User-specific data
         #       - Parent    : %LOCALAPPDATA%\Packages\
         #       - Example   : C:\Users\undergroundwires\AppData\Local\Packages\Windows.CBSPreview_cw5n1h2txyewy
@@ -9818,17 +9821,24 @@ functions:
             parameters:
                 code: |-
                     $packageName = '{{ $packageName }}'
+                    $publisherId='{{ $publisherId }}'
                     Write-Host "Soft-deleting `"$packageName`" folders."
-                    $package = Get-AppxPackage -AllUsers $packageName
-                    if (!$package) { 
-                        Write-Host "Skipping, package `"$packageName`" is not installed."
-                        exit 0
-                    }
                     $directories = @(
-                        @{ Name = 'Installation';           Path = $package.InstallLocation; }
                         @{ Name = 'User-specific data';     Path = "$env:LOCALAPPDATA\Packages\$($package.PackageFamilyName)"; }
                         @{ Name = 'Metadata';               Path = "$env:PROGRAMDATA\Microsoft\Windows\AppRepository\Packages\$($package.PackageFullName)"; }
                     )
+                    $package = Get-AppxPackage -AllUsers $packageName
+                    if ($package -and $package.InstallLocation) { 
+                        $directories += @{ Name = 'Installation';           Path = $package.InstallLocation; }
+                    } else {
+                        Write-Host "The package `"$packageName`" could not be found, residual files will still be handled."
+                        $packageFamilyName = "$($packageName)_$($publisherId)"
+                        $appShortName = ($packageName -Split '\.')[-1]
+                        $directories +=@(
+                            @{ Name = 'Installation (SystemApps)';  Path = "$env:WINDIR\SystemApps\$packageFamilyName"; }
+                            @{ Name = 'Installation (Root)';        Path = "$env:WINDIR\$appShortName"; }
+                        )
+                    }
                     foreach($directory in $directories) {
                         Write-Host "Processing folder: `"$($directory.Name)`"..."
                         if (!$directory.Path) {
@@ -9865,16 +9875,24 @@ functions:
                     }
                 revertCode: |-
                     $packageName = '{{ $packageName }}'
-                    $package = Get-AppxPackage -AllUsers $packageName
+                    $publisherId='{{ $publisherId }}'
                     Write-Host "Restoring `"$packageName`" folders."
-                    if (!$package) { 
-                        throw "The package `"$packageName`" could not be found."
-                    }
                     $directories = @(
-                        @{ Name = 'Installation';           Path = $package.InstallLocation; }
                         @{ Name = 'User-specific data';     Path = "$env:LOCALAPPDATA\Packages\$($package.PackageFamilyName)"; }
                         @{ Name = 'Metadata';               Path = "$env:PROGRAMDATA\Microsoft\Windows\AppRepository\Packages\$($package.PackageFullName)"; }
                     )
+                    $package = Get-AppxPackage -AllUsers $packageName
+                    if ($package -and $package.InstallLocation) { 
+                        $directories += @{ Name = 'Installation';           Path = $package.InstallLocation; }
+                    } else {
+                        Write-Warning "The package `"$packageName`" could not be found, its files will still be handled."
+                        $packageFamilyName = "$($packageName)_$($publisherId)"
+                        $appShortName = ($packageName -Split '\.')[-1]
+                        $directories +=@(
+                            @{ Name = 'Installation (SystemApps)';  Path = "$env:WINDIR\SystemApps\$packageFamilyName"; }
+                            @{ Name = 'Installation (Root)';        Path = "$env:WINDIR\$appShortName"; }
+                        )
+                    }
                     foreach ($directory in $directories) {
                         Write-Host "Processing folder: `"$($directory.Name)`" directory..."
                         if (!$directory.Path) {
