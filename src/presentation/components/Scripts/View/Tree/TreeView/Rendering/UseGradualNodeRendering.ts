@@ -9,7 +9,7 @@ import { NodeRenderingStrategy } from './Scheduling/NodeRenderingStrategy';
 import { DelayScheduler } from './DelayScheduler';
 import { TimeoutDelayScheduler } from './Scheduling/TimeoutDelayScheduler';
 import { RenderQueueOrderer } from './Ordering/RenderQueueOrderer';
-import { CollapseDepthOrderer } from './Ordering/CollapseDepthOrderer';
+import { CollapsedParentOrderer } from './Ordering/CollapsedParentOrderer';
 
 /**
  * Renders tree nodes gradually to prevent UI freeze when loading large amounts of nodes.
@@ -21,7 +21,7 @@ export function useGradualNodeRendering(
   scheduler: DelayScheduler = new TimeoutDelayScheduler(),
   initialBatchSize = 30,
   subsequentBatchSize = 5,
-  orderer: RenderQueueOrderer = new CollapseDepthOrderer(),
+  orderer: RenderQueueOrderer = new CollapsedParentOrderer(),
 ): NodeRenderingStrategy {
   const nodesToRender = new Set<ReadOnlyTreeNode>();
   const nodesBeingRendered = shallowRef(new Set<ReadOnlyTreeNode>());
