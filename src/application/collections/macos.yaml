@@ -1238,6 +1238,376 @@ actions:
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'CriticalUpdateInstall' -bool true
                             # Trigger background check with normal scan (critical updates only)
                             sudo softwareupdate --background-critical
+    -
+        category: Disable OS services
+        children:
+            # Get active services   : launchctl list | grep -v "\-\t0"
+            # Find a service        : sudo grep -lR [service] /System/Library/Launch* /Library/Launch* ~/Library/LaunchAgents
+            # Locate a service      : pgrep -fl [service]
+            # TODO: https://gist.github.com/ecompayment/b1054421eb90f296bbca226683c7ff7e
+            -
+                category: Disable continuously data-collecting services by default
+                children:
+                    -
+                        name: Disable diagnostics and usage data sender
+                        recommend: standard
+                        docs: https://apple.stackexchange.com/questions/66119/disable-submitdiaginfo
+                        call:
+                            function: DisableService
+                            parameters:
+                                name: com.apple.SubmitDiagInfo
+                                type: LaunchDaemons
+                    -
+                        name: Disable diagnostics and usage data sender
+                        recommend: standard
+                        call:
+                            -
+                                function: DisableService
+                                parameters:
+                                    name: com.apple.rtcreportingd.plist
+                                    type: LaunchDaemons
+                            -
+                                function: RenameSystemFile
+                                parameters:
+                                    filePath: /usr/libexec/rtcreportingd
+                    -
+                        name: Disable Family Circle Daemon for Family Sharing
+                        docs: https://support.apple.com/en-us/HT201060
+                        recommend: standard
+                        # Connects to setup.icloud.com HTTPS (TCP 443 )
+                        call:
+                            -
+                                function: DisableService
+                                parameters:
+                                    name: com.apple.familycircled
+                                    type: LaunchAgents
+                            -
+                                function: RenameSystemFile
+                                parameters:
+                                    filePath: /System/Library/PrivateFrameworks/FamilyCircle.framework/Versions/A/Resources/familycircled
+                    -
+                        name: Disable home sharing
+                        docs: https://discussions.apple.com/thread/7434075?answerId=29677460022#29677460022
+                        # Connects to apps.mzstatic.com and init.itunes.apple.com HTTPS (TCP 443 )
+                        recommend: strict
+                        call:
+                            -
+                                function: DisableService
+                                parameters:
+                                    name: com.apple.itunescloudd
+                                    type: LaunchAgents
+                            -
+                                function: RenameSystemFile
+                                parameters:
+                                    filePath: /usr/libexec/rtcreportingd # TODO: SIP required?
+                    -
+                        name: Disable CommerceKit handling purchases for Apple products
+                        # the Mac App Store, iTunes store, and Book Store
+                        # Connects to init.itunes.apple.com and xp.apple.com HTTPS (TCP 443 )
+                        recommend: strict
+                        call:
+                            -
+                                function: DisableService
+                                parameters:
+                                    name: com.apple.commerce.plist
+                                    type: LaunchAgents
+                            -
+                                function: RenameSystemFile
+                                parameters:
+                                    filePath: /System/Library/PrivateFrameworks/CommerceKit.framework/Versions/A/Resources/commerce
+                    -
+                        category: Disable Siri services # TODO: merge with other assistantd script
+                        children:
+                            -
+                                name: Disable Siri dictation service sending voice data
+                                recommend: strict
+                                docs: https://apple.stackexchange.com/questions/57514/what-is-assistantd
+                                # Connects to guzzoni.apple.com HTTPS (TCP 443 )
+                                call:
+                                    -
+                                        function: DisableService
+                                        parameters:
+                                            name: com.apple.assistantd
+                                            type: LaunchAgents
+                                    -
+                                        function: RenameSystemFile
+                                        parameters:
+                                            filePath: /System/Library/PrivateFrameworks/AssistantServices.framework/Versions/A/Support/assistantd
+                    -
+                        name: Disable Siri assistant service
+                        recommend: strict
+                        docs: https://www.howtogeek.com/354897/what-are-assistant_service-and-assistantd-and-why-are-they-running-on-my-mac/
+                        # Connects to radio.itunes.apple.com HTTPS (TCP 443 )
+                        call:
+                            -
+                                function: DisableService
+                                parameters:
+                                    name: com.apple.assistant_service.plist
+                                    type: LaunchAgents
+                            -
+                                function: RenameSystemFile
+                                parameters:
+                                    filePath: /System/Library/PrivateFrameworks/AssistantServices.framework/Versions/A/Support/assistant_service
+                    -
+                        category: Disable Messages services
+                        docs: https://blog.quarkslab.com/imessage-privacy.html
+                        children:
+                            -
+                                name: Disable Apple Push Service Daemon used for Notification Center and Messages
+                                # Connects to *-courier.push.apple.com (where * is a number) using HTTPS (TCP 443) and apple-push (TCP 5223)
+                                call:
+                                    -
+                                        function: DisableService
+                                        parameters:
+                                            name: com.apple.apsd
+                                            type: LaunchDaemons
+                                    -
+                                        function: RenameSystemFile
+                                        parameters:
+                                            filePath: /System/Library/PrivateFrameworks/ApplePushService.framework/apsd
+                            -
+                                name: Disable iMessage Agent in Messages app
+                                # Used for e.g. FaceTime invitations
+                                docs:
+                                    - https://apple.stackexchange.com/questions/86814/firewall-settings-with-imagent
+                                    - https://blog.quarkslab.com/imessage-privacy.html
+                                # Connects to  using HTTPS (TCP 443) and apple-push (TCP 5223)
+                                call:
+                                    -
+                                        function: DisableService
+                                        parameters:
+                                            name: com.apple.imagent
+                                            type: LaunchAgents
+                                    -
+                                        function: RenameSystemFile
+                                        parameters:
+                                            filePath: /System/Library/PrivateFrameworks/IMCore.framework/imagent.app/Contents/MacOS/imagent
+                    -
+                        name: Disable Address Book Source Sync (breaks Contacts data sync)
+                        # Synchronizes data data for the “Contacts” app with iCloud, CardDAV, and Exchange servers
+                        docs: https://apple.stackexchange.com/questions/219774/how-to-disable-addressbooksourcesync-in-el-capitan
+                        # Connects to p25-contacts.icloud.com using HTTPS (TCP 443) and apple-push (TCP 5223)
+                        recommend: strict
+                        call:
+                            -
+                                function: DisableService
+                                parameters:
+                                    name: com.apple.AddressBook.SourceSync
+                                    type: LaunchAgents
+                            -
+                                function: RenameSystemFile
+                                parameters:
+                                    filePath: /System/Library/Frameworks/AddressBook.framework/Versions/A/Helpers/AddressBookSourceSync.app/Contents/MacOS/AddressBookSourceSync
+                            -
+                                name: Disable usage tracking agent
+                                recommend: strict
+                                docs: https://www.unix.com/man-page/mojave/8/USAGETRACKINGAGENT/
+                                # Connects to itunes.apple.com using HTTPS 443 (TCP)
+                                call:
+                                    -
+                                        function: DisableService
+                                        parameters:
+                                            name: com.apple.UsageTrackingAgent
+                                            type: LaunchAgents
+                                    -
+                                        function: RenameSystemFile
+                                        parameters:
+                                            filePath: /System/Library/PrivateFrameworks/UsageTracking.framework/Versions/A/UsageTrackingAgent
+                    -
+                        name: Disable AMPLibraryAgent for Apple Music
+                        # Connects to buy.itunes.apple.com, init.itunes.apple.com, play.itunes.apple.com, xp.apple.com using HTTPS 443 (TCP)
+                        call:
+                            -
+                                function: DisableService
+                                parameters:
+                                    name: com.apple.AMPLibraryAgent
+                                    type: LaunchAgents
+                            -
+                                function: RenameSystemFile
+                                parameters:
+                                    filePath: System/Library/PrivateFrameworks/AMPLibrary.framework/Versions/A/Support/AMPLibraryAgent
+                    -
+                        category: Disable location services
+                        children:
+                            -
+                                name: Disable Maps push daemon
+                                docs:
+                                    - https://www.unix.com/man-page/mojave/8/MAPSPUSHD/
+                                    - https://discussions.apple.com/thread/7025815
+                                call:
+                                    function: DisableService
+                                    parameters:
+                                        name: com.apple.Maps.pushdaemon
+                                        type: LaunchAgents
+                            -
+                                name: Disable Geo Daemon / geolocation daemon used to show maps by apps e.g. Maps
+                                # Connects to Apple servers for loading map data on behalf of other apps and for resolving geographical coordinates to readable addresses.
+                                # Connects to gspe*-ssl.ls.apple.com (where * is a number from 1 to 100 ), sp-ssl.ls.apple.com, configuration.ls.apple.com using HTTPS 443 (TCP)
+                                call:
+                                    function: "RenameSystemFile (TODO: Just like Windows.yaml, requires SIP)"
+                                    parameters:
+                                        filePath: /System/Library/PrivateFrameworks/GeoServices.framework/Versions/A/XPCServices/com.apple.geod.xpc/Contents/MacOS/com.apple.geod
+                            -
+                                name: Disable Location-Based Suggestions for Siri, Spotlight and other places 
+                                # Used for suggestions in Spotlight, Messages, Lookup, Safari, Siri, and other place
+                                # Connects to api-glb-euc1b.smoot.apple.com, api.smoot.apple.com using HTTPS 443 (TCP)
+                                recommend: strict
+                                call:
+                                    -
+                                        function: DisableService
+                                        parameters:
+                                            name: com.apple.parsecd
+                                            type: LaunchAgents
+                                    -
+                                        function: "RenameSystemFile (TODO: Just like Windows.yaml, requires SIP)"
+                                        parameters:
+                                            filePath: /System/Library/PrivateFrameworks/CoreParsec.framework/parsecd
+                    -
+                        category: Disable iCloud services
+                        children:
+                            -
+                                name: Disable iCloud notification agent
+                                recommend: strict
+                                call:
+                                    function: DisableService
+                                    parameters:
+                                        name: com.apple.iCloudNotificationAgent
+                                        type: LaunchAgents
+                            -
+                                name: Disable Sync Defaults Daemon
+                                # Syncs user preferences or other configuration related data via iCloud
+                                docs: https://www.unix.com/man-page/mojave/8/syncdefaultsd
+                                # Connects to keyvalueservice.icloud.com and p*-keyvalueservice.icloud.com (where * is a number) using HTTPS 443 (TCP)
+                                recommend: strict
+                                call:
+                                    -
+                                        function: DisableService
+                                        parameters:
+                                            name: com.apple.syncdefaultsd
+                                            type: LaunchAgents
+                                    -
+                                        function: "RenameSystemFile (TODO: Just like Windows.yaml, requires SIP)"
+                                        parameters:
+                                            filePath: /System/Library/PrivateFrameworks/SyncedDefaults.framework/Support/syncdefaultsd
+                            -
+                                name: Disable Reminder Daemon that synchronizes the reminder list in "Reminders" with iCloud
+                                recommend: strict
+                                call:
+                                    -
+                                        function: DisableService
+                                        parameters:
+                                            name: com.apple.remindd
+                                            type: LaunchAgents
+                                    -
+                                        function: RenameSystemFile
+                                        parameters:
+                                            filePath: /usr/libexec/remindd #TODO: Mb don't require SIP
+                            -
+                                name: Disable Cloud Daemon used for iCloud syncing
+                                # Connects to gateway.icloud.com, metrics.icloud.com using HTTPS 443 (TCP)
+                                recommend: strict
+                                call:
+                                    -
+                                        function: DisableService
+                                        parameters:
+                                            name: com.apple.cloudd
+                                            type: LaunchAgents
+                                    -
+                                        function: DisableService
+                                        parameters:
+                                            name: com.apple.cloudd
+                                            type: LaunchDaemons
+                                    -
+                                        function: RenameSystemFile
+                                        parameters:
+                                            filePath: /System/Library/PrivateFrameworks/CloudKitDaemon.framework/Support/cloudd
+                    -
+                        name: Disable Help Daemon (breaks HelpViewer feature)
+                        recommend: strict
+                        docs: https://discussions.apple.com/thread/3930621
+                        # Connects to cds.apple.com, help.apple.com using HTTPS (TCP 443)
+                        call:
+                            -
+                                function: DisableService
+                                parameters:
+                                    name: com.apple.helpd
+                                    type: LaunchAgents
+                            -
+                                function: RenameSystemFile
+                                parameters:
+                                    filePath: /System/Library/PrivateFrameworks/HelpData.framework/Versions/A/Resources/helpd
+                    -
+                        name: Disable Rapport Daemon for communication between Apple devices
+                        # Rapport Daemon is a macOS system process that enables Phone Call Handoff and other communication features between Apple devices.
+                        # Connects to init.ess.apple.com using HTTPS (TCP 443)
+                        docs: https://apple.stackexchange.com/questions/308294/what-is-rapportd-and-why-does-it-want-incoming-network-connections
+                        call:
+                            -
+                                function: DisableService
+                                parameters:
+                                    name: com.apple.rapportd-user
+                                    type: LaunchAgents
+                            -
+                                function: DisableService
+                                parameters:
+                                    name: com.apple.rapportd
+                                    type: LaunchDaemons
+                            -
+                                function: RenameSystemFile
+                                parameters:
+                                    filePath: /usr/libexec/rapportd #TODO: No SIP required?
+                    -
+                        name: Disable App Tracking Transparency framework
+                        docs:
+                            - https://apple.stackexchange.com/questions/409349/what-is-the-transparencyd-daemon-for
+                            - https://developer.apple.com/documentation/apptrackingtransparency
+                        # Connects to server kt-prod.apple.com using HTTPS (TCP 443 )
+                        call:
+                            -
+                                function: DisableService
+                                parameters:
+                                    name: com.apple.transparencyd
+                                    type: LaunchAgents
+                            -
+                                function: RenameSystemFile
+                                parameters:
+                                    filePath: /usr/libexec/transparencyd #TODO: No need for SIP?
+                    -
+                        category: Disable Calendar Agent that sync Calender App to iCloud and other servers
+                        call:
+                            -
+                                function: DisableService
+                                parameters:
+                                    name: com.apple.CalendarAgent
+                                    type: LaunchAgents
+                            -
+                                function: RenameSystemFile
+                                parameters:
+                                    filePath: /System/Library/PrivateFrameworks/CalendarAgent.framework/Executables/CalendarAgent
+            -
+                name: Disable advertising services daemon 
+                recommend: strict
+                docs: https://www.unix.com/man-page/mojave/8/adservicesd
+                call:
+                    function: DisableService
+                    parameters:
+                        name: com.apple.ap.adservicesd
+                        type: LaunchAgents
+            -
+                name: Disable NetBIOS interactions (might break Microsoft services)
+                # Mostly used for mostly SMB network volumes
+                docs: https://www.manpagez.com/man/8/netbiosd/
+                call:
+                    -
+                        function: DisableService
+                        parameters:
+                            name: com.apple.netbiosd
+                            type: LaunchDaemons
+                        function: RenameSystemFile
+                        parameters:
+                            filePath: /usr/sbin/netbiosd
+                            requireSip: false # TODO: Test
+
 functions:
     -
         name: PersistUserEnvironmentConfiguration
@@ -1268,3 +1638,31 @@ functions:
                     echo "[$profile_file] No need for any action, configuration does not exist"
                 fi
             done
+    -
+        name: DisableService
+        parameters:
+            - name: name
+            - name: type
+        code: |-
+            original_file='/System/Library/{{ $type }}/{{ $name }}.plist'
+            backup_file="$original_file.disabled"
+            if [ -f "$original_file" ]; then
+                sudo launchctl unload -w "$original_file" 2> /dev/null
+                mv "$original_file" "$backup_file"
+                echo 'Disabled successfully'
+            else
+                echo 'Already disabled'
+            fi
+        revertCode: |-
+            original_file='/System/Library/{{ $type }}/{{ $name }}.plist'
+            backup_file="$original_file.disabled"
+            if [ -f "$original_file" ]; then
+                sudo launchctl unload -w "$original_file" 2> /dev/null
+                if mv "$original_file" "$backup_file"; then
+                    echo 'Disabled successfully'
+                else
+                    >&2 echo 'Failed to disable'
+                fi
+            else
+                echo 'Already disabled'
+            fi
