@@ -6419,17 +6419,31 @@ actions:
                     Windows apps were introduced with Windows 8 and are typically acquired and installed through the Store app [1].
                     Many of these apps come pre-installed on Windows by default [1].
 
+                    This category does not target framework apps. Framework apps are packages that get installed automatically if another application requires them [2]. If there are
+                    applications depending on these framework packages, you cannot delete the framework app individually [2]. However, if you remove those dependent applications, the
+                    associated framework package will be deleted [3]. To list all framework apps, you can use the following command:
+                    `Get-AppxPackage | Where-Object { $_.IsFramework -eq $true } | Select-Object -ExpandProperty Name`.
+
                     Uninstalling unused or unwanted apps contributes to privacy by reducing potential data collection points and minimizing your digital footprint.
 
                     [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
+                    [2]: https://web.archive.org/web/20231003110200/https://learn.microsoft.com/en-us/windows/uwp/monetize/install-the-microsoft-advertising-libraries "Install the Microsoft Advertising SDK - Microsoft Store | Microsoft Learn"
+                    [3]: https://github.com/undergroundwires/privacy.sexy/issues/200 "[BUG]: Microsoft Advertising app removal failure · Issue #200 · undergroundwires/privacy.sexy"
                 children:
-                # Good information for development:
-                #   - Find out package name from store ID: https://learn.microsoft.com/en-us/mem/configmgr/protect/deploy-use/find-a-pfn-for-per-app-vpn
-                # Excluded apps:
-                #  - Microsoft.Windows.ShellExperienceHost
-                #    "Start app", required for different setting windows such as WiFi and battery panes in action bar.
-                #  - Windows.immersivecontrolpanel
-                #    "Settings app", required for settings view.
+                    # Good information for development:
+                    #   - Find out package name from store ID: https://learn.microsoft.com/en-us/mem/configmgr/protect/deploy-use/find-a-pfn-for-per-app-vpn (https://archive.ph/U46lx)
+                    # Excluded apps:
+                    #  - Microsoft.Windows.ShellExperienceHost
+                    #    "Start app", required for different setting windows such as WiFi and battery panes in action bar.
+                    #  - Windows.immersivecontrolpanel
+                    #    "Settings app", required for settings view.
+                    #  - Exclude framework apps:
+                    #       List out framework packages:
+                    #           Get-AppxPackage | Where-Object { $_.IsFramework -eq $true } | Select-Object -ExpandProperty Name
+                    #           Windows 11 (22H2)   :   Microsoft.UI.Xaml.CBS, Microsoft.NET.Native.Framework.2.2, Microsoft.NET.Native.Runtime.2.2, Microsoft.VCLibs.140.00.UWPDesktop
+                    #                                   Microsoft.UI.Xaml.2.7, Microsoft.VCLibs.140.00, Microsoft.WindowsAppRuntime.1.2, Microsoft.UI.Xaml.2.4
+                    #           Windows 10 (22H2)   :   Microsoft.VCLibs.140.00.UWPDesktop, Microsoft.NET.Native.Framework.2.2, Microsoft.NET.Native.Runtime.2.2, Microsoft.VCLibs.140.00
+                    #                                   Microsoft.UI.Xaml.2.0, Microsoft.Advertising.Xaml, Microsoft.NET.Native.Framework.1.7, Microsoft.NET.Native.Runtime.1.7
                     -
                         category: Remove provisioned Windows apps
                         docs: |-
@@ -7496,19 +7510,6 @@ actions:
 
                             [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                         children:
-                            -
-                                name: Remove "Microsoft Advertising" app
-                                recommend: standard
-                                docs: |-
-                                    - [More about Microsoft Advertising SDK](https://web.archive.org/web/20231003190154/https://learn.microsoft.com/en-us/windows/uwp/monetize/install-the-microsoft-advertising-libraries)
-                                    - [News about Microsoft shutting down Microsoft Ad Monetization](https://web.archive.org/web/20231003190159/https://social.msdn.microsoft.com/Forums/windowsapps/en-US/db8d44cb-1381-47f7-94d3-c6ded3fea36f/microsoft-ad-monetization-platform-shut-down-as-of-june-1st?forum=aiamgr)
-                                call:
-                                    function: UninstallStoreApp
-                                    parameters:
-                                        # Existence     : Windows 10 (≥ 22H2): ❌ Missing | Windows 11 (≥ 22H2): ❌ Missing
-                                        # More info     : Get-AppxPackage Microsoft.Advertising.Xaml
-                                        packageName: Microsoft.Advertising.Xaml
-                                        publisherId: 8wekyb3d8bbwe
                             -
                                 name: Remove "Microsoft Remote Desktop" app
                                 docs: |-
