@@ -26,22 +26,48 @@ actions:
                 children:
                     -
                         name: Clear Listary search index
-                        code: del /f /s /q %appdata%\Listary\UserData > nul
+                        call:
+                            function: ClearDirectoryContents
+                            parameters:
+                                directoryGlob: '%APPDATA%\Listary\UserData'
                     -
                         name: Clear Java cache
                         recommend: strict
-                        code: rd /s /q "%APPDATA%\Sun\Java\Deployment\cache"
+                        call:
+                            function: ClearDirectoryContents
+                            parameters:
+                                directoryGlob: '%APPDATA%\Sun\Java\Deployment\cache'
                     -
                         name: Clear Flash Player traces
                         recommend: standard
-                        code: rd /s /q "%APPDATA%\Macromedia\Flash Player"
+                        call:
+                            function: ClearDirectoryContents
+                            parameters:
+                                directoryGlob: '%APPDATA%\Macromedia\Flash Player'
                     -
-                        name: Clear Steam dumps, logs, and traces
-                        recommend: standard
-                        code: |-
-                            del /f /q %ProgramFiles(x86)%\Steam\Dumps
-                            del /f /q %ProgramFiles(x86)%\Steam\Traces
-                            del /f /q %ProgramFiles(x86)%\Steam\appcache\*.log
+                        category: Clear Steam data
+                        children:
+                            -
+                                name: Clear Steam dumps
+                                recommend: standard
+                                call:
+                                    function: ClearDirectoryContents
+                                    parameters:
+                                        directoryGlob: '%PROGRAMFILES(X86)%\Steam\Dumps'
+                            -
+                                name: Clear Steam traces
+                                recommend: standard
+                                call:
+                                    function: ClearDirectoryContents
+                                    parameters:
+                                        directoryGlob: '%PROGRAMFILES(X86)%\Steam\Traces'
+                            -
+                                name: Clear Steam cache
+                                recommend: standard
+                                call:
+                                    function: ClearDirectoryContents
+                                    parameters:
+                                        directoryGlob: '%ProgramFiles(x86)%\Steam\appcache'
                     -
                         category: Clear Visual Studio usage data
                         docs: |-
@@ -75,11 +101,23 @@ actions:
 
                                             [1]: https://techshift.net/how-to-open-sqm-file/ "What is a .SQM File And How To Open It - Microsoft (Visual Guide) | TechShift.net"
                                             [2]: https://stackoverflow.com/a/38862596 "Process monitor - Slow Visual Studio, related to SQMClient? | Stack Overflow"
-                                        code: |-
-                                            rmdir /s /q %LOCALAPPDATA%\Microsoft\VSCommon\14.0\SQM
-                                            rmdir /s /q %LOCALAPPDATA%\Microsoft\VSCommon\15.0\SQM
-                                            rmdir /s /q %LOCALAPPDATA%\Microsoft\VSCommon\16.0\SQM
-                                            rmdir /s /q %LOCALAPPDATA%\Microsoft\VSCommon\17.0\SQM
+                                        call:
+                                            -
+                                                function: ClearDirectoryContents
+                                                parameters:
+                                                    directoryGlob: '%LOCALAPPDATA%\Microsoft\VSCommon\14.0\SQM'
+                                            -
+                                                function: ClearDirectoryContents
+                                                parameters:
+                                                    directoryGlob: '%LOCALAPPDATA%\Microsoft\VSCommon\15.0\SQM'
+                                            -
+                                                function: ClearDirectoryContents
+                                                parameters:
+                                                    directoryGlob: '%LOCALAPPDATA%\Microsoft\VSCommon\16.0\SQM'
+                                            -
+                                                function: ClearDirectoryContents
+                                                parameters:
+                                                    directoryGlob: '%LOCALAPPDATA%\Microsoft\VSCommon\17.0\SQM'
                                     -
                                         name: Clear Visual Studio Application Insights logs
                                         recommend: standard
@@ -91,10 +129,19 @@ actions:
                                             [1]: https://azuredevopslabs.com/labs/vsts/monitor/ "Monitoring Applications using Application Insights | Azure DevOps Hands-on-Labs"
                                             [2]: https://developercommunity.visualstudio.com/t/visual-studio-freezes-randomly/224181#T-N257722-N277241-N407607 "Visual Studio freezes randomly | Visual Studio Feedback"
                                             [3]: https://stackoverflow.com/a/53754481 "Visual Studio 2017 (15.3.1) keeps hanging/freezing | Stack Overflow"
-                                        code: |-
-                                            rmdir /s /q "%LOCALAPPDATA%\Microsoft\VSApplicationInsights" 2>nul
-                                            rmdir /s /q "%ProgramData%\Microsoft\VSApplicationInsights" 2>nul
-                                            rmdir /s /q "%Temp%\Microsoft\VSApplicationInsights" 2>nul
+                                        call:
+                                            -
+                                                function: ClearDirectoryContents
+                                                parameters:
+                                                    directoryGlob: '%LOCALAPPDATA%\Microsoft\VSApplicationInsights'
+                                            -
+                                                function: ClearDirectoryContents
+                                                parameters:
+                                                    directoryGlob: '%PROGRAMDATA%\Microsoft\VSApplicationInsights'
+                                            -
+                                                function: ClearDirectoryContents
+                                                parameters:
+                                                    directoryGlob: '%TEMP%\Microsoft\VSApplicationInsights'
                                     -
                                         name: Clear Visual Studio telemetry data
                                         recommend: standard
@@ -106,9 +153,15 @@ actions:
 
                                             [1]: http://processchecker.com/file/VsHub.exe.html "What is VsHub.exe ? VsHub.exe info | Processchecker.com"
                                             [2]: https://herolab.usd.de/en/security-advisories/usd-2020-0030/ "usd-2020-0030 - usd HeroLab"
-                                        code: |-
-                                            rmdir /s /q "%AppData%\vstelemetry" 2>nul
-                                            rmdir /s /q "%ProgramData%\vstelemetry" 2>nul
+                                        call:
+                                            -
+                                                function: ClearDirectoryContents
+                                                parameters:
+                                                    directoryGlob: '%APPDATA%\vstelemetry'
+                                            -
+                                                function: ClearDirectoryContents
+                                                parameters:
+                                                    directoryGlob: '%PROGRAMDATA%\vstelemetry'
                                     -
                                         name: Clear Visual Studio temporary telemetry and log data
                                         recommend: standard
@@ -131,15 +184,39 @@ actions:
                                             [5]: https://stackoverflow.com/q/60974427 "Reduce log and other temporary file creation in Visual Studio 2019 | Stack Overflow"
                                             [6]: https://stackoverflow.com/q/72341126 "Visual Studio 2022 - Telemetry | Stack Overflow"
                                             [7]: https://social.msdn.microsoft.com/Forums/vstudio/en-US/5b2a0baa-748f-40e0-b504-f6dfad9b7b4d/vstelem-folder-24000-files-2064kb?forum=msbuild "VSTELEM folder 24000 files 2064Kb | MSDN Forums"
-                                        code: |-
-                                            rmdir /s /q "%Temp%\VSFaultInfo" 2>nul
-                                            rmdir /s /q "%Temp%\VSFeedbackPerfWatsonData" 2>nul
-                                            rmdir /s /q "%Temp%\VSFeedbackVSRTCLogs" 2>nul
-                                            rmdir /s /q "%Temp%\VSFeedbackIntelliCodeLogs" 2>nul
-                                            rmdir /s /q "%Temp%\VSRemoteControl" 2>nul
-                                            rmdir /s /q "%Temp%\Microsoft\VSFeedbackCollector" 2>nul
-                                            rmdir /s /q "%Temp%\VSTelem" 2>nul
-                                            rmdir /s /q "%Temp%\VSTelem.Out" 2>nul
+                                        call:
+                                            -
+                                                function: ClearDirectoryContents
+                                                parameters:
+                                                    directoryGlob: '%TEMP%\VSFaultInfo'
+                                            -
+                                                function: ClearDirectoryContents
+                                                parameters:
+                                                    directoryGlob: '%TEMP%\VSFeedbackPerfWatsonData'
+                                            -
+                                                function: ClearDirectoryContents
+                                                parameters:
+                                                    directoryGlob: '%TEMP%\VSFeedbackVSRTCLogs'
+                                            -
+                                                function: ClearDirectoryContents
+                                                parameters:
+                                                    directoryGlob: '%TEMP%\VSFeedbackIntelliCodeLogs'
+                                            -
+                                                function: ClearDirectoryContents
+                                                parameters:
+                                                    directoryGlob: '%TEMP%\VSRemoteControl'
+                                            -
+                                                function: ClearDirectoryContents
+                                                parameters:
+                                                    directoryGlob: '%TEMP%\Microsoft\VSFeedbackCollector'
+                                            -
+                                                function: ClearDirectoryContents
+                                                parameters:
+                                                    directoryGlob: '%TEMP%\VSTelem'
+                                            -
+                                                function: ClearDirectoryContents
+                                                parameters:
+                                                    directoryGlob: '%TEMP%\VSTelem.Out'
                             -
                                 category: Clear Visual Studio licenses
                                 docs: |-
@@ -189,10 +266,16 @@ actions:
                                     -
                                         name: Clear recently accessed files list
                                         recommend: standard
-                                        code: del /f /q "%APPDATA%\Microsoft\Windows\Recent\AutomaticDestinations\*"
+                                        call:
+                                            function: ClearDirectoryContents
+                                            parameters:
+                                                directoryGlob: '%APPDATA%\Microsoft\Windows\Recent\AutomaticDestinations'
                                     -
                                         name: Clear pinned items for the user
-                                        code: del /f /q "%APPDATA%\Microsoft\Windows\Recent\CustomDestinations\*"
+                                        call:
+                                            function: ClearDirectoryContents
+                                            parameters:
+                                                directoryGlob: '%APPDATA%\Microsoft\Windows\Recent\CustomDestinations'
                             -
                                 category: Clear Windows Registry usage data
                                 docs: |-
@@ -274,7 +357,10 @@ actions:
                     -
                         name: Clear Dotnet CLI telemetry
                         recommend: standard
-                        code: rmdir /s /q "%USERPROFILE%\.dotnet\TelemetryStorageService" 2>nul
+                        call:
+                            function: ClearDirectoryContents
+                            parameters:
+                                directoryGlob: '%USERPROFILE%\.dotnet\TelemetryStorageService'
             -
                 category: Clear browser history
                 children:
@@ -290,9 +376,15 @@ actions:
                                         - https://docs.microsoft.com/en-us/troubleshoot/browsers/apps-access-admin-web-cache
                                     # WebCache
                                         - https://docs.microsoft.com/en-us/troubleshoot/browsers/apps-access-admin-web-cache
-                                code: |-
-                                    del /f /q "%LOCALAPPDATA%\Microsoft\Windows\INetCache\IE\*"
-                                    rd /s /q "%LOCALAPPDATA%\Microsoft\Windows\WebCache"
+                                call:
+                                    -
+                                        function: ClearDirectoryContents
+                                        parameters:
+                                            directoryGlob: '%LOCALAPPDATA%\Microsoft\Windows\INetCache\IE'
+                                    -
+                                        function: ClearDirectoryContents
+                                        parameters:
+                                            directoryGlob: '%LOCALAPPDATA%\Microsoft\Windows\WebCache'
                             -
                                 name: Clear Internet Explorer recent URLs
                                 recommend: strict
@@ -311,21 +403,41 @@ actions:
                                     - https://en.wikipedia.org/wiki/Temporary_Internet_Files
                                     - https://www.windows-commandline.com/delete-temporary-internet-files/ # %LOCALAPPDATA%\Temporary Internet Files
                                     - https://www.thewindowsclub.com/temporary-internet-files-folder-location # %LOCALAPPDATA%\Microsoft\Windows\Temporary Internet Files and INetCache
-                                code: |-
-                                    :: Windows XP
-                                    rd /s /q %userprofile%\Local Settings\Temporary Internet Files
-                                    :: Windows 7
-                                    rd /s /q "%LOCALAPPDATA%\Microsoft\Windows\Temporary Internet Files"
-                                    takeown /f "%LOCALAPPDATA%\Temporary Internet Files" /r /d y
-                                    icacls "%LOCALAPPDATA%\Temporary Internet Files" /grant administrators:F /t
-                                    rd /s /q "%LOCALAPPDATA%\Temporary Internet Files"
-                                    :: Windows 8 and above
-                                    rd /s /q "%LOCALAPPDATA%\Microsoft\Windows\INetCache"
+                                call:
+                                    -
+                                        function: ClearDirectoryContents
+                                        parameters:
+                                            directoryGlob: '%USERPROFILE%\Local Settings\Temporary Internet Files'
+                                            grantPermissions: true # 🔒️ On Windows 10, this folder (Local Settings) is protected 🔓️ On Windows 11 it's not
+                                    -
+                                        function: ClearDirectoryContents
+                                        parameters:
+                                            directoryGlob: '%LOCALAPPDATA%\Microsoft\Windows\Temporary Internet Files'
+                                            # This directory consists of 4 additional folders:
+                                            #  - C:\Users\undergroundwires\AppData\Local\Microsoft\Windows\Temporary Internet Files\Content.IE5
+                                            #  - C:\Users\undergroundwires\AppData\Local\Microsoft\Windows\Temporary Internet Files\IE
+                                            #  - C:\Users\undergroundwires\AppData\Local\Microsoft\Windows\Temporary Internet Files\Low
+                                            #  - C:\Users\undergroundwires\AppData\Local\Microsoft\Windows\Temporary Internet Files\Virtualized
+                                            # Since Windows 10 22H2 and Windows 11 22H2, data files are observed in this subdirectories but not on the parent.
+                                            # Especially in `IE` folder includes many files. These folders are protected and hidden by default.
+                                            grantPermissions: true # 🔒️ This folder is protected on both on Windows 10 and 11
+                                    -
+                                        function: ClearDirectoryContents
+                                        parameters:
+                                            directoryGlob: '%LOCALAPPDATA%\Microsoft\Windows\INetCache'
+                                    -
+                                        function: ClearDirectoryContents
+                                        parameters:
+                                            directoryGlob: '%LOCALAPPDATA%\Temporary Internet Files'
+                                            grantPermissions: true # 🔒️ This folder is protected on both on Windows 10 and 11
                             -
                                 name: Clear Internet Explorer feeds cache
                                 recommend: standard
                                 docs: https://kb.digital-detective.net/display/BF/Location+of+Internet+Explorer+11+Data
-                                code: rd /s /q "%LOCALAPPDATA%\Microsoft\Feeds Cache"
+                                call:
+                                    function: ClearDirectoryContents
+                                    parameters:
+                                        directoryGlob: '%LOCALAPPDATA%\Microsoft\Feeds Cache'
                             -
                                 name: Clear Internet Explorer cookies
                                 recommend: strict
@@ -333,16 +445,23 @@ actions:
                                     - https://docs.microsoft.com/en-us/windows/win32/wininet/managing-cookies
                                     - https://docs.microsoft.com/en-us/internet-explorer/kb-support/ie-edge-faqs
                                     - https://www.thewindowsclub.com/cookies-folder-location-windows
-                                code: |-
-                                    :: Windows 7 browsers
-                                    rd /s /q "%APPDATA%\Microsoft\Windows\Cookies"
-                                    :: Windows 8 and higher
-                                    rd /s /q "%LOCALAPPDATA%\Microsoft\Windows\INetCookies"
+                                call:
+                                    -
+                                        function: ClearDirectoryContents
+                                        parameters: # Windows 7 browsers
+                                            directoryGlob: '%APPDATA%\Microsoft\Windows\Cookies'
+                                    -
+                                        function: ClearDirectoryContents
+                                        parameters: # Windows 8 and higher
+                                            directoryGlob: '%LOCALAPPDATA%\Microsoft\Windows\INetCookies'
                             -
                                 name: Clear Internet Explorer DOMStore
                                 recommend: standard
                                 docs: https://web.archive.org/web/20100416135352/http://msdn.microsoft.com/en-us/library/cc197062(VS.85).aspx
-                                code: rd /s /q "%LOCALAPPDATA%\Microsoft\InternetExplorer\DOMStore"
+                                call:
+                                    function: ClearDirectoryContents
+                                    parameters:
+                                        directoryGlob: '%LOCALAPPDATA%\Microsoft\InternetExplorer\DOMStore'
                             -
                                 name: Clear Internet Explorer usage data
                                 docs:
@@ -356,7 +475,10 @@ actions:
                                 #           EUPP\, EmieUserList\, EmieSiteList\, EmieBrowserModeList\
                                 # Files:    brndlog.txt, brndlog.bak, ie4uinit-ClearIconCache.log, ie4uinit-UserConfig.log,
                                 #           MSIMGSIZ.DAT
-                                code: rd /s /q "%LOCALAPPDATA%\Microsoft\Internet Explorer"
+                                call:
+                                    function: ClearDirectoryContents
+                                    parameters:
+                                        directoryGlob: '%LOCALAPPDATA%\Microsoft\Internet Explorer'
                     -
                         category: Clear Chrome history
                         children:
@@ -364,9 +486,15 @@ actions:
                                 name: Clear Chrome crash reports
                                 recommend: standard
                                 docs: https://www.chromium.org/developers/crash-reports
-                                code: |-
-                                    rd /s /q "%LOCALAPPDATA%\Google\Chrome\User Data\Crashpad\reports\"
-                                    rd /s /q "%LOCALAPPDATA%\Google\CrashReports\"
+                                call:
+                                    -
+                                        function: ClearDirectoryContents
+                                        parameters:
+                                            directoryGlob: '%LOCALAPPDATA%\Google\Chrome\User Data\Crashpad\reports'
+                                    -
+                                        function: ClearDirectoryContents
+                                        parameters:
+                                            directoryGlob: '%LOCALAPPDATA%\Google\CrashReports'
                             -
                                 name: Clear Software Reporter Tool logs
                                 recommend: standard
@@ -375,11 +503,15 @@ actions:
                             -
                                 name: Clear Chrome user data
                                 docs: https://chromium.googlesource.com/chromium/src/+/HEAD/docs/user_data_dir.md
-                                code: |-
-                                    :: Windows XP
-                                    rd /s /q "%USERPROFILE%\Local Settings\Application Data\Google\Chrome\User Data"
-                                    :: Windows Vista and newer
-                                    rd /s /q "%LOCALAPPDATA%\Google\Chrome\User Data"
+                                call:
+                                    - # Windows XP
+                                        function: ClearDirectoryContents
+                                        parameters:
+                                            directoryGlob: '%USERPROFILE%\Local Settings\Application Data\Google\Chrome\User Data'
+                                    - # Windows Vista and newer
+                                        function: ClearDirectoryContents
+                                        parameters:
+                                            directoryGlob: '%LOCALAPPDATA%\Google\Chrome\User Data'
                     -
                         category: Clear Firefox history
                         children:
@@ -409,17 +541,30 @@ actions:
                                     )
                             -
                                 name: Clear Firefox user profiles, settings, and data
-                                code: |-
-                                    rd /s /q "%LOCALAPPDATA%\Mozilla\Firefox\Profiles"
-                                    rd /s /q "%APPDATA%\Mozilla\Firefox\Profiles"
+                                call:
+                                    -
+                                        function: ClearDirectoryContents
+                                        parameters:
+                                            directoryGlob: '%LOCALAPPDATA%\Mozilla\Firefox\Profiles'
+                                    -
+                                        function: ClearDirectoryContents
+                                        parameters:
+                                            directoryGlob: '%APPDATA%\Mozilla\Firefox\Profiles'
                     -
                         name: Clear Opera history (user profiles, settings, and data)
-                        code: |-
-                            :: Windows XP
-                            rd /s /q "%USERPROFILE%\Local Settings\Application Data\Opera\Opera"
-                            :: Windows Vista and newer
-                            rd /s /q "%LOCALAPPDATA%\Opera\Opera"
-                            rd /s /q "%APPDATA%\Opera\Opera"
+                        call:
+                            - # Windows XP
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: '%USERPROFILE%\Local Settings\Application Data\Opera\Opera'
+                            - # Windows Vista and newer
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: '%LOCALAPPDATA%\Opera\Opera'
+                            - # Windows Vista and newer
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: '%APPDATA%\Opera\Opera'
                     -
                         category: Clear Safari history
                         children:
@@ -456,11 +601,15 @@ actions:
                                     - https://kb.digital-detective.net/display/BF/Location+of+Safari+Data
                                     - https://forensicswiki.xyz/wiki/index.php?title=Apple_Safari
                                     - https://zerosecurity.org/2013/04/safari-forensic-tutorial
-                                code: |-
-                                    :: Windows XP
-                                    rd /s /q "%USERPROFILE%\Local Settings\Application Data\Apple Computer\Safari"
-                                    :: Windows Vista and newer
-                                    rd /s /q "%AppData%\Apple Computer\Safari"
+                                call:
+                                    - # Windows XP
+                                        function: ClearDirectoryContents
+                                        parameters:
+                                            directoryGlob: '%USERPROFILE%\Local Settings\Application Data\Apple Computer\Safari'
+                                    - # Windows Vista and newer
+                                        function: ClearDirectoryContents
+                                        parameters:
+                                            directoryGlob: '%APPDATA%\Apple Computer\Safari'
             -
                 category: Clear temporary Windows files
                 docs: |-
@@ -514,7 +663,10 @@ actions:
                             [10]: https://web.archive.org/web/20231001150233/https://learn.microsoft.com/en-us/exchange/troubleshoot/administration/unifiedcontent-folder-fills-up-drive "Exchange UnifiedContent folder fills up the drive - Exchange | Microsoft Learn"
                             [11]: https://github.com/undergroundwires/privacy.sexy/pull/176 "Do not delete temp dirs by iam-py-test · Pull Request #176 · undergroundwires/privacy.sexy"
                             [12]: https://github.com/undergroundwires/privacy.sexy/issues/89 "Some installer failed to installer · Issue #89 · undergroundwires/privacy.sexy"
-                        code: del /s /f /q "%WINDIR%\Temp\*"
+                        call:
+                            function: ClearDirectoryContents
+                            parameters:
+                                directoryGlob: '%WINDIR%\Temp'
                     -
                         name: Clear temporary user folder
                         recommend: standard
@@ -543,7 +695,10 @@ actions:
                             [7]: https://web.archive.org/web/20231001150053/https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/bb776892%28v=vs.85%29 "About User Profiles (Windows) | Microsoft Learn"
                             [8]: https://web.archive.org/save/https://learn.microsoft.com/en-us/troubleshoot/windows-server/shell-experience/temp-folder-with-logon-session-id-deleted "The %TEMP% folder with logon session ID is deleted - Windows Server | Microsoft Learn"
                             [9]: https://web.archive.org/web/20231001145035/https://devblogs.microsoft.com/scripting/weekend-scripter-use-powershell-to-clean-out-temp-folders/ "Weekend Scripter: Use PowerShell to Clean Out Temp Folders - Scripting Blog | microsoft.com"
-                        code: del /s /f /q "%TEMP%\*"
+                        call:
+                            function: ClearDirectoryContents
+                            parameters:
+                                directoryGlob: '%TEMP%'
                     -
                         name: Clear prefetch folder
                         recommend: standard
@@ -583,7 +738,10 @@ actions:
                             [4]: https://web.archive.org/web/20231001151107/https://ccsweb.lanl.gov/~kei/mypubbib/papers/TOS_13_diskseen.pdf "A Prefetching Scheme Exploiting both Data Layout and Access History on Disk | ccsweb.lanl.gov"
                             [5]: https://web.archive.org/web/20231001151150/https://www.justice.gov/sites/default/files/usao/legacy/2008/02/04/usab5601.pdf "Computer Forensics | justice.gov"
                             [6]: https://web.archive.org/web/20231001151207/https://par.nsf.gov/servlets/purl/10333089 "Malware Family Classification via Residual Prefetch Artifacts | par.nsf.gov"
-                        code: del /s /f /q "%WINDIR%\Prefetch\*"
+                        call:
+                            function: ClearDirectoryContents
+                            parameters:
+                                directoryGlob: '%WINDIR%\Prefetch'
             -
                 category: Clear Windows log and caches
                 children:
@@ -598,17 +756,20 @@ actions:
                                 children:
                                     -
                                         name: Clear Windows update and SFC scan logs
-                                        docs: https://answers.microsoft.com/en-us/windows/forum/all/cwindowslogscbs/fe4e359a-bcb9-4988-954d-563ef83bac1c
                                         recommend: standard
-                                        code: del /f /q %SystemRoot%\Temp\CBS\*
+                                        docs: https://answers.microsoft.com/en-us/windows/forum/all/cwindowslogscbs/fe4e359a-bcb9-4988-954d-563ef83bac1c
+                                        call:
+                                            function: ClearDirectoryContents
+                                            parameters:
+                                                directoryGlob: '%SYSTEMROOT%\Temp\CBS'
                                     -
                                         name: Clear Windows Update Medic Service logs
                                         recommend: standard
                                         docs: https://answers.microsoft.com/en-us/windows/forum/all/what-is-this-waasmedic-and-why-it-required-to/e5e55a95-d5bb-4bf4-a7ce-4783df371de4
-                                        code: |-
-                                            takeown /f %SystemRoot%\Logs\waasmedic /r /d y
-                                            icacls %SystemRoot%\Logs\waasmedic /grant administrators:F /t
-                                            rd /s /q %SystemRoot%\Logs\waasmedic
+                                        call:
+                                            function: ClearDirectoryContents
+                                            parameters:
+                                                directoryGlob: '%SYSTEMROOT%\Logs\waasmedic'
                                     -
                                         name: Clear Cryptographic Services diagnostic traces
                                         recommend: standard
@@ -620,11 +781,36 @@ actions:
                                             del /f /q %SystemRoot%\System32\catroot2.edb
                                             del /f /q %SystemRoot%\System32\catroot2.chk
                                     -
-                                        name: Clear Windows Update events logs
-                                        code: del /f /q "%SystemRoot%\Logs\SIH\*"
+                                        name: Clear Server-initiated Healing Events system logs
+                                        docs: |-
+                                            These are logs related to Windows Update [1] [2].
+
+                                            It stores event trace log (ETL) files [3].
+
+                                            While the logs are largely technical, like many diagnostic logs, there's a potential for some data that could be considered personally identifiable information
+                                            (PII), such as usernames or machine names, to be included.
+
+                                            From a forensic standpoint, they offer valuable data for reconstructing system events related to software updates [3] :
+
+                                            - **Update History**: The logs can provide a history of updates, including those that failed and required remediation. This could be used to establish a timeline of events on a system.
+                                            - **System Integrity**: In forensic scenarios where the integrity of the system is in question, the SIH logs could be used to determine if there were any issues with updates, including
+                                            any that were automatically remediated.
+                                            - **Behavior Analysis**: While the primary purpose of the logs is not to capture user behavior, they can be part of a broader set of logs and data used in behavioral analysis, especially
+                                            when reconstructing events leading up to a particular system state or incident.
+
+                                            [1]: https://web.archive.org/web/20231020011710/https://raw.githubusercontent.com/Azure/azure-diskinspect-service/master/docs/manifest_by_file.md "Official Microsoft Documentation | azure-diskinspect-service/docs/manifest_by_file.md at master · Azure/azure-diskinspect-service | github.com"
+                                            [2]: https://web.archive.org/web/20231020012236/https://answers.microsoft.com/es-es/windows/forum/all/windows-10-carpeta-y-archivos-sih/4d318121-fed6-4202-8b92-d4dc236b468e "Windows 10 | Carpeta y archivos SIH - Microsoft Community"
+                                            [3]: https://tzworks.com/prototypes/tela/tela.users.guide.pdf "TZWorks Shim Database Parser (shims) Users Guide"
+                                        call:
+                                            function: ClearDirectoryContents
+                                            parameters:
+                                                directoryGlob: '%SYSTEMROOT%\Logs\SIH'
                                     -
                                         name: Clear Windows Update logs
-                                        code: del /f /q "%SystemRoot%\Traces\WindowsUpdate\*"
+                                        call:
+                                            function: ClearDirectoryContents
+                                            parameters:
+                                                directoryGlob: '%SYSTEMROOT%\Traces\WindowsUpdate'
                             -
                                 name: Clear Optional Component Manager and COM+ components logs
                                 recommend: standard
@@ -656,15 +842,22 @@ actions:
                                     del /f /q %SystemRoot%\setupact.log
                                     del /f /q %SystemRoot%\setuperr.log
                             -
-                                name: Clear Windows setup Logs
+                                name: Clear Windows setup logs
                                 recommend: standard
                                 docs: https://support.microsoft.com/en-gb/help/927521/windows-vista-windows-7-windows-server-2008-r2-windows-8-1-and-windows
-                                code: |-
-                                    del /f /q %SystemRoot%\setupapi.log
-                                    del /f /q %SystemRoot%\Panther\*
-                                    del /f /q %SystemRoot%\inf\setupapi.app.log
-                                    del /f /q %SystemRoot%\inf\setupapi.dev.log
-                                    del /f /q %SystemRoot%\inf\setupapi.offline.log
+                                call:
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: |-
+                                                del /f /q %SYSTEMROOT%\setupapi.log
+                                                del /f /q %SYSTEMROOT%\inf\setupapi.app.log
+                                                del /f /q %SYSTEMROOT%\inf\setupapi.dev.log
+                                                del /f /q %SYSTEMROOT%\inf\setupapi.offline.log
+                                    -
+                                        function: ClearDirectoryContents
+                                        parameters:
+                                            directoryGlob: '%SYSTEMROOT%\Panther'
                             -
                                 name: Clear "Windows System Assessment Tool (`WinSAT`)" logs
                                 recommend: standard
@@ -678,11 +871,17 @@ actions:
                                 name: Clear user web cache database
                                 recommend: standard
                                 docs: https://support.microsoft.com/en-gb/help/4056823/performance-issue-with-custom-default-user-profile
-                                code: del /f /q %LOCALAPPDATA%\Microsoft\Windows\WebCache\*.*
+                                call:
+                                    function: ClearDirectoryContents
+                                    parameters:
+                                        directoryGlob: '%LOCALAPPDATA%\Microsoft\Windows\WebCache'
                             -
                                 name: Clear system temp folder when not logged in
                                 recommend: standard
-                                code: del /f /q %SystemRoot%\ServiceProfiles\LocalService\AppData\Local\Temp\*.*
+                                call:
+                                    function: ClearDirectoryContents
+                                    parameters:
+                                        directoryGlob: '%SYSTEMROOT%\ServiceProfiles\LocalService\AppData\Local\Temp'
                             -
                                 name: Clear DISM (Deployment Image Servicing and Management) system logs
                                 recommend: standard
@@ -700,24 +899,30 @@ actions:
                                             SET /A wuau_service_running=1
                                             net stop wuauserv
                                         )
-                                        del /q /s /f "%SystemRoot%\SoftwareDistribution"
+                                        del /q /s /f "%SYSTEMROOT%\SoftwareDistribution\*"
                                         IF !wuau_service_running! == 1 (
                                             net start wuauserv
                                         )
                                     endlocal
                             -
-                                name: Clear Server-initiated Healing Events system logs
-                                code: del /f /q "%SystemRoot%\Logs\SIH\*"
-                            -
                                 name: Clear Common Language Runtime system logs
                                 recommend: standard
-                                code: |-
-                                    del /f /q "%LOCALAPPDATA%\Microsoft\CLR_v4.0\UsageTraces\*"
-                                    del /f /q "%LOCALAPPDATA%\Microsoft\CLR_v4.0_32\UsageTraces\*"
+                                call:
+                                    -
+                                        function: ClearDirectoryContents
+                                        parameters:
+                                            directoryGlob: '%LOCALAPPDATA%\Microsoft\CLR_v4.0\UsageTraces'
+                                    -
+                                        function: ClearDirectoryContents
+                                        parameters:
+                                            directoryGlob: '%LOCALAPPDATA%\Microsoft\CLR_v4.0_32\UsageTraces'
                             -
                                 name: Clear Network Setup Service Events system logs
                                 recommend: standard
-                                code: del /f /q "%SystemRoot%\Logs\NetSetup\*"
+                                call:
+                                    function: ClearDirectoryContents
+                                    parameters:
+                                        directoryGlob: '%SYSTEMROOT%\Logs\NetSetup'
                             -
                                 name: Clear logs generated by Disk Cleanup Tool (`cleanmgr.exe`)
                                 docs: |-
@@ -730,7 +935,10 @@ actions:
 
                                     [1]: https://web.archive.org/web/20230806192546/https://ss64.com/nt/cleanmgr.html "Cleanmgr - Delete Junk and Temp files - Windows CMD - SS64.com"
                                     [2]: https://web.archive.org/web/20230806192800/https://www.hexacorn.com/blog/2018/09/02/beyond-good-ol-run-key-part-86/ "Beyond good ol’ Run key, Part 86 | Hexacorn"
-                                code: del /f /q "%SystemRoot%\System32\LogFiles\setupcln\*"
+                                call:
+                                    function: ClearDirectoryContents
+                                    parameters:
+                                        directoryGlob: '%SYSTEMROOT%\System32\LogFiles\setupcln'
                     -
                         name: Clear primary Windows telemetry file
                         recommend: standard
@@ -791,9 +999,10 @@ actions:
                             [3]: https://web.archive.org/web/20230829144957/https://learn.microsoft.com/en-us/previous-versions/windows/desktop/defender/msft-mpthreatdetection "MSFT\_MpThreatDetection class | Microsoft Learn"
                             [4]: https://web.archive.org/web/20230829144434/https://forensafe.com/blogs/windows_defender.html "Windows Defender | Forensafe"
                         call:
-                            function: RunInlineCodeAsTrustedInstaller # Otherwise it cannot access/delete files under `Scans\History`, see https://github.com/undergroundwires/privacy.sexy/issues/246
+                            function: ClearDirectoryContents # Otherwise it cannot access/delete files under `Scans\History`, see https://github.com/undergroundwires/privacy.sexy/issues/246
                             parameters:
-                                code: del "%ProgramData%\Microsoft\Windows Defender\Scans\History" /s /f /q
+                                directoryGlob: '%ProgramData%\Microsoft\Windows Defender\Scans\History'
+                                grantPermissions: true # Running as TrustedInstaller is not needed, and causes Defender to alarm https://github.com/undergroundwires/privacy.sexy/issues/264
             -
                 name: Clear credentials in Windows Credential Manager
                 code: |-
@@ -924,15 +1133,11 @@ actions:
                             }
             -
                 name: Clear previous Windows installations
-                code: |-
-                    if exist "%SystemDrive%\Windows.old" (
-                        takeown /f "%SystemDrive%\Windows.old" /a /r /d y
-                        icacls "%SystemDrive%\Windows.old" /grant administrators:F /t
-                        rd /s /q "%SystemDrive%\Windows.old"
-                        echo Deleted previous installation from "%SystemDrive%\Windows.old\"
-                    ) else (
-                        echo No previous Windows installation has been found
-                    )
+                call:   
+                    function: DeleteDirectory
+                    parameters:
+                        directoryGlob: '%SYSTEMDRIVE%\Windows.old'
+                        grantPermissions: true
     -
         category: Disable OS data collection
         children:
@@ -2823,10 +3028,19 @@ actions:
                     -
                         name: Clear Nvidia residual telemetry files
                         recommend: standard
-                        code: |-
-                            del /s %SystemRoot%\System32\DriverStore\FileRepository\NvTelemetry*.dll
-                            rmdir /s /q "%ProgramFiles(x86)%\NVIDIA Corporation\NvTelemetry" 2>nul
-                            rmdir /s /q "%ProgramFiles%\NVIDIA Corporation\NvTelemetry" 2>nul
+                        call:
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: del /s %SystemRoot%\System32\DriverStore\FileRepository\NvTelemetry*.dll
+                            -
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: '%PROGRAMFILES(X86)%\NVIDIA Corporation\NvTelemetry'
+                            -
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: '%PROGRAMFILES%\NVIDIA Corporation\NvTelemetry'
                     -
                         name: Disable participation in Nvidia telemetry
                         recommend: standard
@@ -10810,3 +11024,180 @@ functions:
                             Write-Error "An error occurred while creating the shortcut at `"$($shortcut.Path)`"."
                         }
                     }
+    -
+        name: CommentCode
+        # 💡 Purpose:
+        #   Adds a comment in the executed code for better readability and debugging.
+        #   This function does not affect the execution flow but helps in understanding the purpose of subsequent code.
+        parameters:
+            - name: comment
+        call:
+            function: RunInlineCode
+            parameters:
+                code: ':: {{ $comment }}'
+    -
+        name: DeleteGlob
+        # ℹ️ Behavior:
+        #   Deletes files and directories on Windows using Unix-style glob patterns.
+        #   Primarily supports the `*` wildcard; compatibility with other patterns is not tested.
+        # 💡 Usage:
+        #   This is a low-level function. Favor higher-level functions like `ClearDirectoryContents` and `DeleteDirectory`
+        #   for clearer intent and enhanced security when applicable.
+        parameters:
+            - name: pathGlob
+            - name: grantPermissions
+              optional: true
+        call:
+            function: RunPowerShell
+            parameters:
+                code: |-
+                    $pathGlobPattern = "{{ $pathGlob }}"
+                    $expandedPath = [System.Environment]::ExpandEnvironmentVariables($pathGlobPattern)
+                    Write-Host "Searching for items matching pattern: `"$($expandedPath)`"."
+                    $parentDirectory = Split-Path -Path $expandedPath -Parent
+                    {{ with $grantPermissions }} # Not using `Get-Acl`/`Set-Acl` to avoid adjusting token privileges
+                        $grantPermissions=$true
+                        if ($parentDirectory -like '*[*?]*') {
+                            throw "Unable to grant permissions to glob paths: `"$parentDirectory`", not supported by ``takeown`` and ``icacls``."
+                        } else {
+                            Write-Host "Taking ownership of `"$expandedPath`"."
+                            $cmdPath = $expandedPath
+                            if ($cmdPath.EndsWith('\')) {
+                                $cmdPath += '\' # Escape trailing backslash for correct handling in batch commands
+                            }
+                            $takeOwnershipCommand = "takeown /f `"$cmdPath`" /a" # `icacls /setowner` does not succeed, so use `takeown` instead.
+                            if (-not (Test-Path -Path "$expandedPath" -PathType Leaf)) {
+                                $takeOwnershipCommand += ' /r /d y'
+                            }
+                            cmd /c "$takeOwnershipCommand"
+                            if ($LASTEXITCODE -eq 0) {
+                                Write-Host "Successfully took ownership of `"$expandedPath`" (using ``$takeOwnershipCommand``)."
+                            } else {
+                                Write-Host "Failed to obtain ownership for `"$expandedPath`" using ``$takeOwnershipCommand``, status code: $LASTEXITCODE."
+                                # Do not write as error or warning, because this can be due to missing path, it's handled for next command.
+                                # `takeown` exits with status code `1`, making it hard to handle missing path here in .
+                            }
+                            Write-Host "Granting permissions for `"$expandedPath`"."
+                            $adminSid = New-Object System.Security.Principal.SecurityIdentifier 'S-1-5-32-544'
+                            $adminAccount = $adminSid.Translate([System.Security.Principal.NTAccount])
+                            $adminAccountName = $adminAccount.Value
+                            $grantPermissionsCommand = "icacls `"$cmdPath`" /grant `"$($adminAccountName):F`" /t"
+                            cmd /c "$grantPermissionsCommand"
+                            if ($LASTEXITCODE -eq 0) {
+                                Write-Host "Successfully granted permissions for `"$expandedPath`" (using ``$grantPermissionsCommand``)."
+                            } elseif ($LASTEXITCODE -eq 3) {
+                                Write-Host "Skipping, no items available for deletion according to: ``$grantPermissionsCommand``."
+                                exit 0
+                            } else {
+                                Write-Warning "Failed to assign permissions for `"$expandedPath`" using ``$grantPermissionsCommand``, status code: $LASTEXITCODE."
+                            }
+                        }
+                    {{ end }}
+                    $getChildItemParams = @{ Force = $true; }
+                    $filter = Split-Path -Path $expandedPath -Leaf
+                    $getChildItemParams['Filter'] = $filter
+                    if ($filter -like '*[*?]*') {
+                        # Recurse only on parent if filter contains glob pattern, otherwise it will unnecessarily try to match
+                        # every folder/file in parent, potentially leading to permission errors
+                        # Without recursion `Get-ChildItem` does not find subdirectories.
+                        $getChildItemParams['Recurse'] = $true
+                        # Append a backslash to the parent path during recursion. Without it, recursion will unintentionally
+                        # operate on the parent's parent directory.
+                        if (!$parentDirectory.EndsWith('/')) {
+                            $parentDirectory += '\'
+                        }
+                    }
+                    $getChildItemParams['Path'] = $parentDirectory
+                    try {
+                        $itemsToDelete = @(Get-ChildItem @getChildItemParams -ErrorAction Stop)
+                    }  catch [System.Management.Automation.ItemNotFoundException] { # Not run `Test-Path` before, it's unreliable for globs requiring extra permissions
+                        $itemsToDelete = @()
+                    }
+                    if (!$itemsToDelete) {
+                        $formattedParams = ($getChildItemParams.GetEnumerator() | ForEach-Object { "$($_.Key): `"$($_.Value)`"" }) -Join ', '
+                        Write-Host "Skipping, no items available for deletion with search parameters: $($formattedParams)."
+                        exit 0
+                    }
+                    Write-Host "Initiating deletion of $($itemsToDelete.Count) items from `"$expandedPath`"."
+                    $deletedCount = 0
+                    $failedCount = 0
+                    foreach ($item in $itemsToDelete) {
+                        if (-not (Test-Path $item.FullName)) { # Re-check existence as prior deletions might remove subsequent items (e.g., subdirectories).
+                            Write-Host "Successfully deleted: $($item.FullName) (already deleted)."
+                            $deletedCount++
+                            continue
+                        } 
+                        try {
+                            Remove-Item -Path $item.FullName -Force -Recurse -ErrorAction Stop
+                            $deletedCount++
+                            Write-Host "Successfully deleted: $($item.FullName)"
+                        } 
+                        catch {
+                            $failedCount++
+                            Write-Warning "Unable to delete $($item.FullName): $_"
+                        }
+                    }
+                    Write-Host "Successfully deleted $($deletedCount) items."
+                    if ($failedCount -gt 0) {
+                        Write-Warning "Failed to delete $($failedCount) items."
+                    }
+    -
+        name: ClearDirectoryContents
+        # 💡 Purpose:
+        #   Specifically designed to empty the contents of a directory while preserving the directory itself.
+        #   This is beneficial when other applications depend on the existence of the directory.
+        #   For directory deletion, use `DeleteDirectory`.
+        # 🤓 Implementation:
+        #   - Formats the provided glob pattern to ensure only contents are targeted, then delegates to `DeleteGlob`.
+        #   - Provides a user-friendly comment in code.
+        parameters:
+            - name: directoryGlob
+            - name: grantPermissions
+              optional: true
+        call:
+            -
+                function: CommentCode
+                parameters:
+                    comment: >-
+                        Clear directory contents
+                        {{ with $grantPermissions }}(with additional permissions){{ end }}
+                        : "{{ $directoryGlob }}"
+            -
+                function: DeleteGlob
+                parameters:
+                    # Ensure path ends with '\*':
+                    # - 'C:\'   becomes 'C:\*'
+                    # - 'C:'    becomes 'C:\*'
+                    # - 'C:\*'  remains 'C:\*'
+                    pathGlob: >-
+                        $($directoryGlob = '{{ $directoryGlob }}'; if ($directoryGlob.EndsWith('\*')) { $directoryGlob } elseif ($directoryGlob.EndsWith('\')) { "$($directoryGlob)*" } else { "$($directoryGlob)\*" } )
+                    grantPermissions: '{{ with $grantPermissions }}true{{ end }}'
+    -
+        name: DeleteDirectory
+        # 💡 Purpose:
+        #   Deletes an entire directory, including its contents.
+        #   ❗️ Use with caution; if you intend to preserve the directory and delete only its contents, use `ClearDirectoryContents`.
+        # 🤓 Implementation:
+        #   Formats the provided glob pattern to target the directory, then delegates to `DeleteGlob`.
+        #   - Provides a user-friendly comment in code.
+        parameters:
+            - name: directoryGlob
+            - name: grantPermissions
+              optional: true
+        call:
+            -
+                function: CommentCode
+                parameters:
+                    comment: >-
+                        Delete directory
+                        {{ with $grantPermissions }}(with additional permissions){{ end }}
+                        : "{{ $directoryGlob }}"
+            -
+                function: DeleteGlob
+                parameters:
+                    # Ensure path ends with '\':
+                    # - 'C:\'   remains 'C:\'
+                    # - 'C:'    becomes 'C:\'
+                    pathGlob: >-
+                        $($directoryGlob = '{{ $directoryGlob }}'; if (-Not $directoryGlob.EndsWith('\')) { $directoryGlob += '\' }; $directoryGlob )
+                    grantPermissions: '{{ with $grantPermissions }}true{{ end }}'

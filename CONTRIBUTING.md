@@ -43,6 +43,7 @@ You have two alternatives:
 
 1. [Create an issue](https://github.com/undergroundwires/privacy.sexy/issues/new/choose) and ask for someone else to add the script for you.
 2. Or send a PR yourself. This would make it faster to get your code into the project. You need to add scripts to related OS in [collections](src/application/collections/) folder. Then you'd sent a pull request, see [pull request process](#pull-request-process).
+   - 💡 You should use existing shared functions for most of the operations, like `DisableService` for disabling services, to maintain code consistency and efficiency.
    - 📖 If you're unsure about the syntax, check [collection-files.md](docs/collection-files.md).
    - 📖 If you wish to use templates, use [templating.md](./docs/templating.md).
 
