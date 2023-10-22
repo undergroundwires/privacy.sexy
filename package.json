@@ -6,7 +6,6 @@
   "description": "Enforce privacy & security best-practices on Windows, macOS and Linux, because privacy is sexy 🍑🍆",
   "author": "undergroundwires",
   "type": "module",
-  "main": "./dist-electron-unbundled/main/index.cjs",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
@@ -63,7 +62,7 @@
     "electron-builder": "^24.6.4",
     "electron-devtools-installer": "^3.2.0",
     "electron-icon-builder": "^2.0.1",
-    "electron-vite": "^1.0.27",
+    "electron-vite": "^1.0.28",
     "eslint": "^8.51.0",
     "eslint-plugin-cypress": "^2.15.1",
     "eslint-plugin-vue": "^9.17.0",

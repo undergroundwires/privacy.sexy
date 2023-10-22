@@ -8,15 +8,21 @@ import distDirs from './dist-dirs.json' assert { type: 'json' };
 const MAIN_ENTRY_FILE = resolvePathFromProjectRoot('src/presentation/electron/main/index.ts');
 const PRELOAD_ENTRY_FILE = resolvePathFromProjectRoot('src/presentation/electron/preload/index.ts');
 const WEB_INDEX_HTML_PATH = resolvePathFromProjectRoot('src/presentation/index.html');
-const DIST_DIR = resolvePathFromProjectRoot(distDirs.electronUnbundled);
+const ELECTRON_DIST_SUBDIRECTORIES = {
+  main: resolveElectronDistSubdirectory('main'),
+  preload: resolveElectronDistSubdirectory('preload'),
+  renderer: resolveElectronDistSubdirectory('renderer'),
+};
+
+process.env.ELECTRON_ENTRY = resolve(ELECTRON_DIST_SUBDIRECTORIES.main, 'index.cjs');
 
 export default defineConfig({
   main: getSharedElectronConfig({
-    distDirSubfolder: 'main',
+    distDirSubfolder: ELECTRON_DIST_SUBDIRECTORIES.main,
     entryFilePath: MAIN_ENTRY_FILE,
   }),
   preload: getSharedElectronConfig({
-    distDirSubfolder: 'preload',
+    distDirSubfolder: ELECTRON_DIST_SUBDIRECTORIES.preload,
     entryFilePath: PRELOAD_ENTRY_FILE,
   }),
   renderer: mergeConfig(
@@ -25,7 +31,7 @@ export default defineConfig({
     }),
     {
       build: {
-        outDir: resolve(DIST_DIR, 'renderer'),
+        outDir: ELECTRON_DIST_SUBDIRECTORIES.renderer,
         rollupOptions: {
           input: {
             index: WEB_INDEX_HTML_PATH,
@@ -42,7 +48,7 @@ function getSharedElectronConfig(options: {
 }): UserConfig {
   return {
     build: {
-      outDir: resolve(DIST_DIR, options.distDirSubfolder),
+      outDir: options.distDirSubfolder,
       lib: {
         entry: options.entryFilePath,
       },
@@ -64,6 +70,11 @@ function getSharedElectronConfig(options: {
   };
 }
 
-function resolvePathFromProjectRoot(pathSegment: string) {
+function resolvePathFromProjectRoot(pathSegment: string): string {
   return resolve(__dirname, pathSegment);
+}
+
+function resolveElectronDistSubdirectory(subDirectory: string): string {
+  const electronDistDir = resolvePathFromProjectRoot(distDirs.electronUnbundled);
+  return resolve(electronDistDir, subDirectory);
 }
