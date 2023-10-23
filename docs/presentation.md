@@ -11,6 +11,8 @@ The presentation layer uses an event-driven architecture for bidirectional react
 ## Structure
 
 - [`/src/` **`presentation/`**](./../src/presentation/): Contains Vue and Electron code.
+  - [**`main.ts`**](./../src/presentation/main.ts): Starts Vue app.
+  - [**`index.html`**](./../src/presentation/index.html): The `index.html` entry file, located at the root of the project as required by Vite
   - [**`bootstrapping/`**](./../src/presentation/bootstrapping/): Registers Vue components and plugins.
   - [**`components/`**](./../src/presentation/components/): Contains Vue components and helpers.
     - [**`Shared/`**](./../src/presentation/components/Shared): Contains shared Vue components and helpers.
@@ -20,8 +22,7 @@ The presentation layer uses an event-driven architecture for bidirectional react
     - [**`fonts/`**](./../src/presentation/assets/fonts/): Contains fonts.
     - [**`styles/`**](./../src/presentation/assets/styles/): Contains shared styles.
       - [**`components/`**](./../src/presentation/assets/styles/components): Contains styles coupled to Vue components.
-      - [**`main.scss`**](./../src/presentation/assets/styles/main.scss): Main Sass file, imported by other components as single entrypoint.
-  - [**`main.ts`**](./../src/presentation/main.ts): Starts Vue app.
+      - [**`main.scss`**](./../src/presentation/assets/styles/main.scss): Main Sass file, imported by other components as single entrypoint..
   - [**`electron/`**](./../src/presentation/electron/): Contains Electron code.
     - [`/main/` **`index.ts`**](./../src/presentation/main.ts): Main entry for Electron, managing application windows and lifecycle events.
     - [`/preload/` **`index.ts`**](./../src/presentation/main.ts): Script executed before the renderer, securing Node.js features for renderer use.
