@@ -14,8 +14,14 @@ scripting:
             )
             exit 0
         )
+        :: Initialize environment
+        setlocal EnableExtensions DisableDelayedExpansion
     endCode: |-
+        :: Pause the script to view the final state
         pause
+        :: Restore previous environment settings
+        endlocal
+        :: Exit the script successfully
         exit /b 0
 actions:
     -
