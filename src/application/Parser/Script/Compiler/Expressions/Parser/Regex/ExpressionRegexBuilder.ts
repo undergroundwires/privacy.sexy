@@ -14,43 +14,42 @@ export class ExpressionRegexBuilder {
       .addRawRegex('\\s+');
   }
 
-  public matchPipeline() {
+  public captureOptionalPipeline() {
     return this
-      .expectZeroOrMoreWhitespaces()
-      .addRawRegex('(\\|\\s*.+?)?');
+      .addRawRegex('((?:\\|\\s*\\b[a-zA-Z]+\\b\\s*)*)');
   }
 
-  public matchUntilFirstWhitespace() {
+  public captureUntilWhitespaceOrPipe() {
     return this
       .addRawRegex('([^|\\s]+)');
   }
 
-  public matchMultilineAnythingExceptSurroundingWhitespaces() {
+  public captureMultilineAnythingExceptSurroundingWhitespaces() {
     return this
-      .expectZeroOrMoreWhitespaces()
-      .addRawRegex('([\\S\\s]+?)')
-      .expectZeroOrMoreWhitespaces();
+      .expectOptionalWhitespaces()
+      .addRawRegex('([\\s\\S]*\\S)')
+      .expectOptionalWhitespaces();
   }
 
   public expectExpressionStart() {
     return this
       .expectCharacters('{{')
-      .expectZeroOrMoreWhitespaces();
+      .expectOptionalWhitespaces();
   }
 
   public expectExpressionEnd() {
     return this
-      .expectZeroOrMoreWhitespaces()
+      .expectOptionalWhitespaces()
       .expectCharacters('}}');
+  }
+
+  public expectOptionalWhitespaces() {
+    return this
+      .addRawRegex('\\s*');
   }
 
   public buildRegExp(): RegExp {
     return new RegExp(this.parts.join(''), 'g');
-  }
-
-  private expectZeroOrMoreWhitespaces() {
-    return this
-      .addRawRegex('\\s*');
   }
 
   private addRawRegex(regex: string) {

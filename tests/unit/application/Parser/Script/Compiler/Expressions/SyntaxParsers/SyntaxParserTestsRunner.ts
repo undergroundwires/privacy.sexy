@@ -4,25 +4,26 @@ import { IExpressionParser } from '@/application/Parser/Script/Compiler/Expressi
 import { FunctionCallArgumentCollectionStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentCollectionStub';
 import { ExpressionEvaluationContextStub } from '@tests/unit/shared/Stubs/ExpressionEvaluationContextStub';
 import { PipelineCompilerStub } from '@tests/unit/shared/Stubs/PipelineCompilerStub';
+import { scrambledEqual } from '@/application/Common/Array';
 
 export class SyntaxParserTestsRunner {
   constructor(private readonly sut: IExpressionParser) {
   }
 
-  public expectPosition(...testCases: IExpectPositionTestCase[]) {
+  public expectPosition(...testCases: ExpectPositionTestScenario[]) {
     for (const testCase of testCases) {
       it(testCase.name, () => {
         // act
         const expressions = this.sut.findExpressions(testCase.code);
         // assert
         const actual = expressions.map((e) => e.position);
-        expect(actual).to.deep.equal(testCase.expected);
+        expect(scrambledEqual(actual, testCase.expected));
       });
     }
     return this;
   }
 
-  public expectNoMatch(...testCases: INoMatchTestCase[]) {
+  public expectNoMatch(...testCases: NoMatchTestScenario[]) {
     this.expectPosition(...testCases.map((testCase) => ({
       name: testCase.name,
       code: testCase.code,
@@ -30,7 +31,7 @@ export class SyntaxParserTestsRunner {
     })));
   }
 
-  public expectResults(...testCases: IExpectResultTestCase[]) {
+  public expectResults(...testCases: ExpectResultTestScenario[]) {
     for (const testCase of testCases) {
       it(testCase.name, () => {
         // arrange
@@ -47,7 +48,21 @@ export class SyntaxParserTestsRunner {
     return this;
   }
 
-  public expectPipeHits(data: IExpectPipeHitTestData) {
+  public expectThrows(...testCases: ExpectThrowsTestScenario[]) {
+    for (const testCase of testCases) {
+      it(testCase.name, () => {
+        // arrange
+        const { expectedError } = testCase;
+        // act
+        const act = () => this.sut.findExpressions(testCase.code);
+        // assert
+        expect(act).to.throw(expectedError);
+      });
+    }
+    return this;
+  }
+
+  public expectPipeHits(data: ExpectPipeHitTestScenario) {
     for (const validPipePart of PipeTestCases.ValidValues) {
       this.expectHitPipePart(validPipePart, data);
     }
@@ -56,7 +71,7 @@ export class SyntaxParserTestsRunner {
     }
   }
 
-  private expectHitPipePart(pipeline: string, data: IExpectPipeHitTestData) {
+  private expectHitPipePart(pipeline: string, data: ExpectPipeHitTestScenario) {
     it(`"${pipeline}" hits`, () => {
       // arrange
       const expectedPipePart = pipeline.trim();
@@ -73,14 +88,14 @@ export class SyntaxParserTestsRunner {
       // assert
       expect(expressions).has.lengthOf(1);
       expect(pipelineCompiler.compileHistory).has.lengthOf(1);
-      const actualPipeNames = pipelineCompiler.compileHistory[0].pipeline;
+      const actualPipePart = pipelineCompiler.compileHistory[0].pipeline;
       const actualValue = pipelineCompiler.compileHistory[0].value;
-      expect(actualPipeNames).to.equal(expectedPipePart);
+      expect(actualPipePart).to.equal(expectedPipePart);
       expect(actualValue).to.equal(data.parameterValue);
     });
   }
 
-  private expectMissPipePart(pipeline: string, data: IExpectPipeHitTestData) {
+  private expectMissPipePart(pipeline: string, data: ExpectPipeHitTestScenario) {
     it(`"${pipeline}" misses`, () => {
       // arrange
       const args = new FunctionCallArgumentCollectionStub()
@@ -98,42 +113,51 @@ export class SyntaxParserTestsRunner {
     });
   }
 }
-interface IExpectResultTestCase {
-  name: string;
-  code: string;
-  args: (builder: FunctionCallArgumentCollectionStub) => FunctionCallArgumentCollectionStub;
-  expected: readonly string[];
+
+interface ExpectResultTestScenario {
+  readonly name: string;
+  readonly code: string;
+  readonly args: (
+    builder: FunctionCallArgumentCollectionStub,
+  ) => FunctionCallArgumentCollectionStub;
+  readonly expected: readonly string[];
 }
 
-interface IExpectPositionTestCase {
-  name: string;
-  code: string;
-  expected: readonly ExpressionPosition[];
+interface ExpectThrowsTestScenario {
+  readonly name: string;
+  readonly code: string;
+  readonly expectedError: string;
 }
 
-interface INoMatchTestCase {
-  name: string;
-  code: string;
+interface ExpectPositionTestScenario {
+  readonly name: string;
+  readonly code: string;
+  readonly expected: readonly ExpressionPosition[];
 }
 
-interface IExpectPipeHitTestData {
-  codeBuilder: (pipeline: string) => string;
-  parameterName: string;
-  parameterValue: string;
+interface NoMatchTestScenario {
+  readonly name: string;
+  readonly code: string;
+}
+
+interface ExpectPipeHitTestScenario {
+  readonly codeBuilder: (pipeline: string) => string;
+  readonly parameterName: string;
+  readonly parameterValue: string;
 }
 
 const PipeTestCases = {
   ValidValues: [
     // Single pipe with different whitespace combinations
-    ' | pipe1', ' |pipe1', '|pipe1', ' |pipe1', '   |   pipe1',
+    ' | pipe', ' |pipe', '|pipe', ' |pipe', '   |   pipe',
 
     // Double pipes with different whitespace combinations
-    ' | pipe1 | pipe2', '| pipe1|pipe2', '|pipe1|pipe2', ' |pipe1 |pipe2', '| pipe1 | pipe2| pipe3 |pipe4',
-
-    // Wrong cases, but should match anyway and let pipelineCompiler throw errors
-    '| pip€', '| pip{e} ',
+    ' | pipeFirst | pipeSecond', '| pipeFirst|pipeSecond', '|pipeFirst|pipeSecond', ' |pipeFirst |pipeSecond', '| pipeFirst | pipeSecond| pipeThird |pipeFourth',
   ],
   InvalidValues: [
-    ' pipe1  |pipe2', ' pipe1',
+    ' withoutPipeBefore  |pipe', ' withoutPipeBefore',
+
+    // It's OK to match them (move to valid values if needed) to let compiler throw instead.
+    '| pip€', '| pip{e} ', '| pipeWithNumber55', '| pipe with whitespace',
   ],
 };

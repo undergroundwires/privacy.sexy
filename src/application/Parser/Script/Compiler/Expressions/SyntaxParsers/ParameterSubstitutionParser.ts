@@ -6,8 +6,9 @@ export class ParameterSubstitutionParser extends RegexParser {
   protected readonly regex = new ExpressionRegexBuilder()
     .expectExpressionStart()
     .expectCharacters('$')
-    .matchUntilFirstWhitespace() // First match: Parameter name
-    .matchPipeline() // Second match: Pipeline
+    .captureUntilWhitespaceOrPipe() // First capture: Parameter name
+    .expectOptionalWhitespaces()
+    .captureOptionalPipeline() // Second capture: Pipeline
     .expectExpressionEnd()
     .buildRegExp();
 
