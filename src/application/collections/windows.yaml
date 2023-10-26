@@ -414,7 +414,7 @@ actions:
                                         function: ClearDirectoryContents
                                         parameters:
                                             directoryGlob: '%USERPROFILE%\Local Settings\Temporary Internet Files'
-                                            grantPermissions: true # 🔒️ On Windows 10, this folder (Local Settings) is protected 🔓️ On Windows 11 it's not
+                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 📂 Unprotected on Windows 11 since 22H2
                                     -
                                         function: ClearDirectoryContents
                                         parameters:
@@ -426,7 +426,7 @@ actions:
                                             #  - C:\Users\undergroundwires\AppData\Local\Microsoft\Windows\Temporary Internet Files\Virtualized
                                             # Since Windows 10 22H2 and Windows 11 22H2, data files are observed in this subdirectories but not on the parent.
                                             # Especially in `IE` folder includes many files. These folders are protected and hidden by default.
-                                            grantPermissions: true # 🔒️ This folder is protected on both on Windows 10 and 11
+                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                                     -
                                         function: ClearDirectoryContents
                                         parameters:
@@ -435,7 +435,7 @@ actions:
                                         function: ClearDirectoryContents
                                         parameters:
                                             directoryGlob: '%LOCALAPPDATA%\Temporary Internet Files'
-                                            grantPermissions: true # 🔒️ This folder is protected on both on Windows 10 and 11
+                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                             -
                                 name: Clear Internet Explorer feeds cache
                                 recommend: standard
@@ -4017,9 +4017,10 @@ actions:
                                                     serviceName: mpsdrv # Check: (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\mpsdrv").Start
                                                     defaultStartupMode: Manual # Alowed values: Boot | System | Automatic | Manual
                                             -
-                                                function: RenameSystemFile
+                                                function: SoftDeleteFiles
                                                 parameters:
-                                                    filePath: '%SystemRoot%\System32\drivers\mpsdrv.sys'
+                                                    fileGlob: '%SYSTEMROOT%\System32\drivers\mpsdrv.sys'
+                                                    grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                                     -
                                         name: Disable "Windows Defender Firewall" service
                                         docs:
@@ -4054,9 +4055,10 @@ actions:
                                                     serviceName: MpsSvc # Check: (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\MpsSvc").Start
                                                     defaultStartupMode: Automatic # Alowed values: Boot | System | Automatic | Manual
                                             -
-                                                function: RenameSystemFile
+                                                function: SoftDeleteFiles
                                                 parameters:
-                                                    filePath: '%WinDir%\system32\mpssvc.dll'
+                                                    fileGlob: '%WINDIR%\System32\mpssvc.dll'
+                                                    grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                             -
                                 name: Disable firewall via command-line utility
                                 # ❗️ Following must be enabled and in running state:
@@ -5634,10 +5636,11 @@ actions:
                                                 parameters:
                                                     code: sc stop "WinDefend" >nul 2>&1 & reg add "HKLM\SYSTEM\CurrentControlSet\Services\WinDefend" /v "Start" /t REG_DWORD /d "4" /f
                                                     revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WinDefend" /v "Start" /t REG_DWORD /d "2" /f & sc start "WinDefend" >nul 2>&1
-                                            # - # "Access is denied" when renaming file
-                                            #     function: RenameSystemFile
+                                            # - # ❌ "Access is denied" when renaming file, cannot grant permissions (Attempted to perform an unauthorized operation) since Windows 10 22H2 and Windows 11 22H2
+                                            #     function: SoftDeleteFiles
                                             #     parameters:
-                                            #         filePath: '%ProgramFiles%\Windows Defender\MsMpEng.exe' # Found also in C:\ProgramData\Microsoft\Windows Defender\Platform\4.18.2107.4-0 and \4.18.2103.7-0 ...
+                                            #         fileGlob: '%PROGRAMFILES%\Windows Defender\MsMpEng.exe' # Found also in C:\ProgramData\Microsoft\Windows Defender\Platform\4.18.2107.4-0 and \4.18.2103.7-0 ...
+                                            #         grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                                     -
                                         category: Disable Defender kernel-level drivers
                                         children:
@@ -5646,6 +5649,8 @@ actions:
                                                 name: Disable "Microsoft Defender Antivirus Network Inspection System Driver" service
                                                 docs: http://batcmd.com/windows/10/services/wdnisdrv/
                                                 call:
+                                                    # Excluding:
+                                                    #   - `%SYSTEMROOT%\System32\drivers\wd\WdNisDrv.sys`: Missing on Windows since Windows 10 22H2 and Windows 11 22H2
                                                     -
                                                         function: RunInlineCodeAsTrustedInstaller
                                                         parameters:
@@ -5653,49 +5658,44 @@ actions:
                                                             code: net stop "WdNisDrv" /yes >nul & reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisDrv" /v "Start" /t REG_DWORD /d "4" /f
                                                             revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisDrv" /v "Start" /t REG_DWORD /d "3" /f & sc start "WdNisDrv" >nul
                                                     -
-                                                        function: RenameSystemFile
+                                                        function: SoftDeleteFiles
                                                         parameters:
-                                                            filePath: '%SystemRoot%\System32\drivers\WdNisDrv.sys'
-                                                    # -  # "Access is denied" when renaming file
-                                                    #     function: RenameSystemFile
-                                                    #     parameters:
-                                                    #         filePath: '%SystemRoot%\System32\drivers\wd\WdNisDrv.sys'
+                                                            fileGlob: '%SYSTEMROOT%\System32\drivers\WdNisDrv.sys'
+                                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                                             -
                                                 name: Disable "Microsoft Defender Antivirus Mini-Filter Driver" service
                                                 docs:
                                                     - https://www.n4r1b.com/posts/2020/01/dissecting-the-windows-defender-driver-wdfilter-part-1/
                                                     - http://batcmd.com/windows/10/services/wdfilter/
                                                 call:
+                                                    # Excluding:
+                                                    #   - `%SYSTEMROOT%\System32\drivers\wd\WdFilter.sys`: Missing on Windows since Windows 10 22H2 and Windows 11 22H2
                                                     -
                                                         function: RunInlineCodeAsTrustedInstaller
                                                         parameters:
                                                             code: sc stop "WdFilter" >nul & reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdFilter" /v "Start" /t REG_DWORD /d "4" /f
                                                             revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdFilter" /v "Start" /t REG_DWORD /d "0" /f & sc start "WdFilter" >nul
                                                     -
-                                                        function: RenameSystemFile
+                                                        function: SoftDeleteFiles
                                                         parameters:
-                                                            filePath: '%SystemRoot%\System32\drivers\WdFilter.sys'
-                                                    # -  # "Access is denied" when renaming file
-                                                    #    function: RenameSystemFile
-                                                    #    parameters:
-                                                    #        filePath: '%SystemRoot%\System32\drivers\wd\WdFilter.sys'
+                                                            fileGlob: '%SYSTEMROOT%\System32\drivers\WdFilter.sys'
+                                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                                             -
                                                 name: Disable "Microsoft Defender Antivirus Boot Driver" service
                                                 docs: http://batcmd.com/windows/10/services/wdboot/
                                                 call:
+                                                    # Excluding:
+                                                    #   - `%SYSTEMROOT%\System32\drivers\wd\WdBoot.sys`: Missing on Windows since Windows 10 22H2 and Windows 11 22H2
                                                     -
                                                         function: RunInlineCodeAsTrustedInstaller
                                                         parameters:
                                                             code: sc stop "WdBoot" >nul 2>&1 & reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdBoot" /v "Start" /t REG_DWORD /d "4" /f
                                                             revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdBoot" /v "Start" /t REG_DWORD /d "0" /f & sc start "WdBoot" >nul 2>&1
                                                     -
-                                                        function: RenameSystemFile
+                                                        function: SoftDeleteFiles
                                                         parameters:
-                                                            filePath: '%SystemRoot%\System32\drivers\WdBoot.sys'
-                                                    # -  # "Access is denied" when renaming file
-                                                    #    function: RenameSystemFile
-                                                    #    parameters:
-                                                    #        filePath: '%SystemRoot%\System32\drivers\wd\WdBoot.sys'
+                                                            fileGlob: '%SYSTEMROOT%\System32\drivers\WdBoot.sys'
+                                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                                     -
                                         name: Disable "Microsoft Defender Antivirus Network Inspection" service
                                         docs:
@@ -5707,10 +5707,11 @@ actions:
                                                 parameters:
                                                     code: sc stop "WdNisSvc" >nul 2>&1 & reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisSvc" /v "Start" /t REG_DWORD /d "4" /f
                                                     revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisSvc" /v "Start" /t REG_DWORD /d "2" /f & sc start "WdNisSvc" >nul 2>&1
-                                            # - # "Access is denied" when renaming file
-                                            #     function: RenameSystemFile
+                                            # - # ❌ "Access is denied" when renaming file, cannot grant permissions (Attempted to perform an unauthorized operation) since Windows 10 22H2 and Windows 11 22H2
+                                            #     function: SoftDeleteFiles
                                             #     parameters:
-                                            #         filePath: '%ProgramFiles%\Windows Defender\NisSrv.exe' # Found also in C:\ProgramData\Microsoft\Windows Defender\Platform\4.18.2107.4-0 and \4.18.2103.7-0 ...
+                                            #       fileGlob: '%PROGRAMFILES%\Windows Defender\NisSrv.exe' # Found also in C:\ProgramData\Microsoft\Windows Defender\Platform\4.18.2107.4-0 and \4.18.2103.7-0 ...
+                                            #       grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                                     -
                                         name: Disable "Windows Defender Advanced Threat Protection Service" service
                                         docs: http://batcmd.com/windows/10/services/sense/
@@ -5721,9 +5722,10 @@ actions:
                                                     code: sc stop "Sense" >nul 2>&1 & reg add "HKLM\SYSTEM\CurrentControlSet\Services\Sense" /v "Start" /t REG_DWORD /d "4" /f
                                                     revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\Sense" /v "Start" /t REG_DWORD /d "3" /f & sc start "Sense" >nul 2>&1 # Alowed values: Boot | System | Automatic | Manual
                                             -
-                                                function: RenameSystemFile
+                                                function: SoftDeleteFiles
                                                 parameters:
-                                                    filePath: '%ProgramFiles%\Windows Defender Advanced Threat Protection\MsSense.exe'
+                                                    fileGlob: '%PROGRAMFILES%\Windows Defender Advanced Threat Protection\MsSense.exe'
+                                                    grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                                     -
                                         name: Disable "Windows Security Service" service
                                         docs: |-
@@ -5755,9 +5757,10 @@ actions:
                                                     code: sc stop "SecurityHealthService" >nul 2>&1 & reg add "HKLM\SYSTEM\CurrentControlSet\Services\SecurityHealthService" /v Start /t REG_DWORD /d 4 /f
                                                     revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\SecurityHealthService" /v Start /t REG_DWORD /d 3 /f & sc start "SecurityHealthService" >nul 2>&1
                                             -
-                                                function: RenameSystemFile
+                                                function: SoftDeleteFiles
                                                 parameters:
-                                                    filePath: '%WinDir%\system32\SecurityHealthService.exe'
+                                                    fileGlob: '%WINDIR%\System32\SecurityHealthService.exe'
+                                                    grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                     -
                         category: Disable SmartScreen
                         docs:
@@ -10045,122 +10048,45 @@ functions:
         #       - Check     :
         #           - `(Get-AppxPackage -AllUsers 'Windows.CBSPreview').InstallLocation` or `(Get-AppxPackage -AllUsers 'Windows.PrintDialog').InstallLocation`
         #           - `Get-AppxPackage -PackageTypeFilter Main | ? { $_.SignatureKind -eq "System" } | Sort Name | Format-Table Name, InstallLocation`
-        #   2. User-specific data
-        #       - Parent    : %LOCALAPPDATA%\Packages\
-        #       - Example   : C:\Users\undergroundwires\AppData\Local\Packages\Windows.CBSPreview_cw5n1h2txyewy
-        #       - Check     : "$env:LOCALAPPDATA\Packages\$((Get-AppxPackage -AllUsers 'Windows.CBSPreview').PackageFamilyName)"
-        #   3. Metadata
-        #       - Parent    : `%PROGRAMDATA\Microsoft\Windows\AppRepository\Packages\${PackageFullName}`
-        #       - Example   : C:\ProgramData\Microsoft\Windows\AppRepository\Packages\Windows.CBSPreview_10.0.19580.1000_neutral_neutral_cw5n1h2txyewy
-        #       - Check     : "$env:PROGRAMDATA\Microsoft\Windows\AppRepository\Packages\$((Get-AppxPackage -AllUsers 'Windows.CBSPreview').PackageFullName)"
         call:
-            function: RunPowerShell
-            parameters:
-                code: |-
-                    $packageName = '{{ $packageName }}'
-                    $publisherId='{{ $publisherId }}'
-                    Write-Host "Soft-deleting `"$packageName`" folders."
-                    $directories = @(
-                        @{ Name = 'User-specific data';     Path = "$env:LOCALAPPDATA\Packages\$($package.PackageFamilyName)"; }
-                        @{ Name = 'Metadata';               Path = "$env:PROGRAMDATA\Microsoft\Windows\AppRepository\Packages\$($package.PackageFullName)"; }
-                    )
-                    $package = Get-AppxPackage -AllUsers $packageName
-                    if ($package -and $package.InstallLocation) { 
-                        $directories += @{ Name = 'Installation';           Path = $package.InstallLocation; }
-                    } else {
-                        Write-Host "The package `"$packageName`" could not be found, residual files will still be handled."
-                        $packageFamilyName = "$($packageName)_$($publisherId)"
-                        $appShortName = ($packageName -Split '\.')[-1]
-                        $directories +=@(
-                            @{ Name = 'Installation (SystemApps)';  Path = "$env:WINDIR\SystemApps\$packageFamilyName"; }
-                            @{ Name = 'Installation (Root)';        Path = "$env:WINDIR\$appShortName"; }
-                        )
-                    }
-                    foreach($directory in $directories) {
-                        Write-Host "Processing folder: `"$($directory.Name)`"..."
-                        if (!$directory.Path) {
-                            Write-Host 'Skipping, path not found.'
-                            continue
-                        }
-                        if (!(Test-Path $directory.Path)) {
-                            Write-Host "Skipping, directory `"$($directory.Path)`" does not exist."
-                            continue
-                        }
-                        cmd /c ("takeown /f `"$($directory.Path)`" /r /d y 1> nul")
-                        if ($LASTEXITCODE) {
-                            Write-Error "Failed to obtain ownership for `"$($directory.Path)`"."
-                            continue
-                        }
-                        cmd /c ("icacls `"$($directory.Path))`" /grant administrators:F /t 1> nul")
-                        if ($LASTEXITCODE) {
-                            Write-Error "Failed to assign permissions for `"$($directory.Path)`"."
-                            continue
-                        }
-                        $files = Get-ChildItem -File -Path $directory.Path -Recurse -Force
-                        foreach ($file in $files) {
-                            if($file.Name.EndsWith('.OLD')) {
-                                continue
-                            }
-                            $newName = "$($file.FullName).OLD"
-                            try {
-                                Move-Item -LiteralPath "$($file.FullName)" -Destination "$newName" -Force -ErrorAction Stop
-                                Write-Host "Successfully renamed `"$($file.FullName)`"."
-                            } catch {
-                                Write-Error "Failed to rename `"$($file.FullName)`" to `"$newName`": $($_.Exception.Message)"
-                            }
-                        }
-                    }
-                revertCode: |-
-                    $packageName = '{{ $packageName }}'
-                    $publisherId='{{ $publisherId }}'
-                    Write-Host "Restoring `"$packageName`" folders."
-                    $directories = @(
-                        @{ Name = 'User-specific data';     Path = "$env:LOCALAPPDATA\Packages\$($package.PackageFamilyName)"; }
-                        @{ Name = 'Metadata';               Path = "$env:PROGRAMDATA\Microsoft\Windows\AppRepository\Packages\$($package.PackageFullName)"; }
-                    )
-                    $package = Get-AppxPackage -AllUsers $packageName
-                    if ($package -and $package.InstallLocation) { 
-                        $directories += @{ Name = 'Installation';           Path = $package.InstallLocation; }
-                    } else {
-                        Write-Warning "The package `"$packageName`" could not be found, its files will still be handled."
-                        $packageFamilyName = "$($packageName)_$($publisherId)"
-                        $appShortName = ($packageName -Split '\.')[-1]
-                        $directories +=@(
-                            @{ Name = 'Installation (SystemApps)';  Path = "$env:WINDIR\SystemApps\$packageFamilyName"; }
-                            @{ Name = 'Installation (Root)';        Path = "$env:WINDIR\$appShortName"; }
-                        )
-                    }
-                    foreach ($directory in $directories) {
-                        Write-Host "Processing folder: `"$($directory.Name)`" directory..."
-                        if (!$directory.Path) {
-                            Write-Host "Skipping `"$($directory.Name)`" directory, path not found."
-                            continue
-                        }
-                        if (!(Test-Path $directory.Path)) {
-                            Write-Host "Skipping, directory `"$($directory.Path)`" does not exist."
-                            continue
-                        }
-                        cmd /c ("takeown /f `"$($directory.Path)`" /r /d y 1> nul")
-                        if ($LASTEXITCODE) {
-                            Write-Error "Failed to obtain ownership for `"$($directory.Path)`"."
-                            continue
-                        }
-                        cmd /c ("icacls `"$($directory.Path)`" /grant administrators:F /t 1> nul")
-                        if ($LASTEXITCODE) {
-                            Write-Error "Failed to assign permissions for `"$($directory.Path)`"."
-                            continue
-                        }
-                        $files = Get-ChildItem -File -Path "$($directory.Path)\*.OLD" -Recurse -Force
-                        foreach ($file in $files) {
-                            $newName = $file.FullName.Substring(0, $file.FullName.Length - 4)
-                            try {
-                                Move-Item -LiteralPath "$($file.FullName)" -Destination "$newName" -Force -ErrorAction Stop
-                                Write-Host "Successfully renamed `"$($file.FullName)`" back to original."
-                            } catch {
-                                Write-Error "Failed to rename `"$($file.FullName)`" back to original `"$newName`": $($_.Exception.Message)"
-                            }
-                        }
-                    }
+            -
+                # User-specific data
+                #   - Parent    : %LOCALAPPDATA%\Packages\{PackageFamilyName}
+                #   - Example   : C:\Users\undergroundwires\AppData\Local\Packages\Windows.CBSPreview_cw5n1h2txyewy
+                #   - Check     : "$env:LOCALAPPDATA\Packages\$((Get-AppxPackage -AllUsers 'Windows.CBSPreview').PackageFamilyName)"
+                function: SoftDeleteFiles
+                parameters:
+                    fileGlob: '%LOCALAPPDATA%\Packages\{{ $packageName }}_{{ $publisherId }}\*'
+            -
+                # Metadata
+                #   - Parent    : %PROGRAMDATA%\Microsoft\Windows\AppRepository\Packages\{PackageFullName}
+                #   - Example   : C:\ProgramData\Microsoft\Windows\AppRepository\Packages\Windows.CBSPreview_10.0.19580.1000_neutral_neutral_cw5n1h2txyewy
+                #   - Check     : "$env:PROGRAMDATA\Microsoft\Windows\AppRepository\Packages\$((Get-AppxPackage -AllUsers 'Windows.CBSPreview').PackageFullName)"
+                function: SoftDeleteFiles
+                parameters:
+                    fileGlob: '%PROGRAMDATA%\Microsoft\Windows\AppRepository\Packages\{{ $packageName }}_*_{{ $publisherId }}\*'
+                    grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
+            -
+                # Installation (SystemApps)
+                #   - Parent    : %WINDIR%\SystemApps\{PackageFamilyName}
+                #   - Example   : C:\Windows\SystemApps\Windows.CBSPreview_cw5n1h2txyewy
+                #   - Check     : (Get-AppxPackage -AllUsers 'Windows.CBSPreview').InstallLocation
+                #   - Check all : Get-AppxPackage -PackageTypeFilter Main | ? { $_.SignatureKind -eq "System" } | Sort Name | Format-Table Name, InstallLocation
+                function: SoftDeleteFiles
+                parameters:
+                    fileGlob: '%WINDIR%\SystemApps\{{ $packageName }}_{{ $publisherId }}\*'
+                    grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
+            -
+                # Installation (Root)
+                #   - Parent    : %WINDIR%\{ShortAppName}
+                #   - Example   : C:\Windows\PrintDialog
+                #   - Check     : (Get-AppxPackage -AllUsers 'Windows.PrintDialog').InstallLocation
+                #   - Check all : Get-AppxPackage -PackageTypeFilter Main | ? { $_.SignatureKind -eq "System" } | Sort Name | Format-Table Name, InstallLocation
+                function: SoftDeleteFiles
+                parameters:
+                    fileGlob: >-
+                        %WINDIR%\$(("{{ $packageName }}" -Split '\.')[-1])\*
+                    grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
     -
         name: UninstallCapability
         parameters:
@@ -10173,33 +10099,200 @@ functions:
                     $capability = Get-WindowsCapability -Online -Name '{{ $capabilityName }}*'
                     Add-WindowsCapability -Name "$capability.Name" -Online
     -
-        name: RenameSystemFile
+        name: SoftDeleteFiles
+        # 💡 Purpose:
+        #   Renames files matching a given glob pattern by appending a `.OLD` extension, effectively "soft deleting" them.
+        #   This allows for easier restoration and less immediate disruption compared to permanent deletion.
+        # 🤓 Implementation:
+        #   - Utilizes the `IterateGlob` function to match and iterate over files.
+        #   - Optionally elevates script permissions to modify file privileges if required.
+        #   - Renames matched files and handles permission restoration after renaming.
+        #   - Provides detailed logs of actions taken and any issues encountered.
         parameters:
-            - name: filePath
-        code: |-
-            if exist "{{ $filePath }}" (
-                takeown /f "{{ $filePath }}"
-                icacls "{{ $filePath }}" /grant administrators:F
-                move "{{ $filePath }}" "{{ $filePath }}.OLD" && (
-                    echo Moved "{{ $filePath }}" to "{{ $filePath }}.OLD"
-                ) || (
-                    echo Could not move {{ $filePath }} 1>&2
-                )
-            ) else (
-                echo No action required: {{ $filePath }} is not found.
-            )
-        revertCode: |-
-            if exist "{{ $filePath }}.OLD" (
-                takeown /f "{{ $filePath }}.OLD"
-                icacls "{{ $filePath }}.OLD" /grant administrators:F
-                move "{{ $filePath }}.OLD" "{{ $filePath }}" && (
-                    echo Moved "{{ $filePath }}.OLD" to "{{ $filePath }}"
-                ) || (
-                    echo Could restore from backup file {{ $filePath }}.OLD 1>&2
-                )
-            ) else (
-                echo Could not find backup file "{{ $filePath }}.OLD" 1>&2
-            )
+            - name: fileGlob
+            - name: grantPermissions
+              optional: true
+        call:
+            -
+                function: CommentCode
+                parameters:
+                    comment: >-
+                        Soft deleting files matching pattern
+                        {{ with $grantPermissions }}(with additional permissions){{ end }}
+                        : "{{ $fileGlob }}"
+                    revertComment: >-
+                        Restoring files matching pattern
+                        {{ with $grantPermissions }}(with additional permissions){{ end }}
+                        : "{{ $fileGlob }}"
+            -
+                function: IterateGlob
+                parameters:
+                    pathGlob: '{{ $fileGlob }}'
+                    revertPathGlob: '{{ $fileGlob }}.OLD'
+                    # Search logic:
+                    #   It uses `.PSIsContainer` instead of `-File` otherwise wildcards in directories do not match i.e. pattern
+                    #   `C:\ProgramData\Microsoft\Windows\AppRepository\Packages\Microsoft.Windows.SecHealthUI_*_cw5n1h2txyewy` does not match any files.
+                    # Elevating privileges:
+                    #   Another (simpler) implementation would be:
+                    #       $setPrivilegeFunction = [System.Diagnostics.Process].GetMethods(42) | Where-Object { $_.Name -eq 'SetPrivilege' }
+                    #       $privileges = @('SeRestorePrivilege', 'SeTakeOwnershipPrivilege')
+                    #       foreach ($privilege in $privileges) {
+                    #           $setPrivilegeFunction.Invoke($null, @($privilege, 2))
+                    #       }
+                    beforeIteration: |-
+                        $renamedCount   = 0
+                        $skippedCount   = 0
+                        $failedCount    = 0
+                        {{ with $grantPermissions }}
+                        Add-Type -TypeDefinition @"
+                        using System;
+                        using System.Runtime.InteropServices;
+                        public class Privileges {
+                            [DllImport("advapi32.dll", ExactSpelling = true, SetLastError = true)]
+                            internal static extern bool AdjustTokenPrivileges(IntPtr htok, bool disall,
+                                ref TokPriv1Luid newst, int len, IntPtr prev, IntPtr relen);
+                            [DllImport("advapi32.dll", ExactSpelling = true, SetLastError = true)]
+                            internal static extern bool OpenProcessToken(IntPtr h, int acc, ref IntPtr phtok);
+                            [DllImport("advapi32.dll", SetLastError = true)]
+                            internal static extern bool LookupPrivilegeValue(string host, string name, ref long pluid);
+                            [StructLayout(LayoutKind.Sequential, Pack = 1)]
+                            internal struct TokPriv1Luid {
+                                public int Count;
+                                public long Luid;
+                                public int Attr;
+                            }
+                            internal const int SE_PRIVILEGE_ENABLED = 0x00000002;
+                            internal const int TOKEN_QUERY = 0x00000008;
+                            internal const int TOKEN_ADJUST_PRIVILEGES = 0x00000020;
+                            public static bool AddPrivilege(string privilege) {
+                                try {
+                                    bool retVal;
+                                    TokPriv1Luid tp;
+                                    IntPtr hproc = GetCurrentProcess();
+                                    IntPtr htok = IntPtr.Zero;
+                                    retVal = OpenProcessToken(hproc, TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, ref htok);
+                                    tp.Count = 1;
+                                    tp.Luid = 0;
+                                    tp.Attr = SE_PRIVILEGE_ENABLED;
+                                    retVal = LookupPrivilegeValue(null, privilege, ref tp.Luid);
+                                    retVal = AdjustTokenPrivileges(htok, false, ref tp, 0, IntPtr.Zero, IntPtr.Zero);
+                                    return retVal;
+                                } catch (Exception ex) {
+                                    throw new Exception("Failed to adjust token privileges", ex);
+                                }
+                            }
+                            public static bool RemovePrivilege(string privilege) {
+                                try {
+                                    bool retVal;
+                                    TokPriv1Luid tp;
+                                    IntPtr hproc = GetCurrentProcess();
+                                    IntPtr htok = IntPtr.Zero;
+                                    retVal = OpenProcessToken(hproc, TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, ref htok);
+                                    tp.Count = 1;
+                                    tp.Luid = 0;
+                                    tp.Attr = 0;  // This line is changed to revoke the privilege
+                                    retVal = LookupPrivilegeValue(null, privilege, ref tp.Luid);
+                                    retVal = AdjustTokenPrivileges(htok, false, ref tp, 0, IntPtr.Zero, IntPtr.Zero);
+                                    return retVal;
+                                } catch (Exception ex) {
+                                    throw new Exception("Failed to adjust token privileges", ex);
+                                }
+                            }
+                            [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+                            public static extern IntPtr GetCurrentProcess();
+                        }
+                        "@
+                        [Privileges]::AddPrivilege('SeRestorePrivilege') | Out-Null
+                        [Privileges]::AddPrivilege('SeTakeOwnershipPrivilege') | Out-Null
+                        $adminSid = New-Object System.Security.Principal.SecurityIdentifier 'S-1-5-32-544'
+                        $adminAccount = $adminSid.Translate([System.Security.Principal.NTAccount])
+                        $adminFullControlAccessRule = New-Object System.Security.AccessControl.FileSystemAccessRule( `
+                            $adminAccount, `
+                            [System.Security.AccessControl.FileSystemRights]::FullControl, `
+                            [System.Security.AccessControl.AccessControlType]::Allow `
+                        )
+                        {{ end }}
+                    duringIteration: |-
+                        if (Test-Path -Path $path -PathType Container) {
+                            Write-Host "Skipping folder (not its contents): `"$path`"."
+                            $skippedCount++
+                            continue
+                        }
+                        if($revert -eq $true) {
+                            if (-not $path.EndsWith('.OLD')) {
+                                Write-Host "Skipping non-backup file: `"$path`"."
+                                $skippedCount++
+                                continue
+                            }
+                        } else {
+                            if ($path.EndsWith('.OLD')) {
+                                Write-Host "Skipping backup file: `"$path`"."
+                                $skippedCount++
+                                continue
+                            }
+                        }
+                        $originalFilePath = $path
+                        Write-Host "Processing file: `"$originalFilePath`"."
+                        if (-Not (Test-Path $originalFilePath)) {
+                            Write-Host "Skipping, file `"$originalFilePath`" not found."
+                            $skippedCount++
+                            exit 0
+                        }
+                        {{ with $grantPermissions }}
+                            $originalAcl = Get-Acl -Path "$originalFilePath"
+                            $accessGranted = $false
+                            try {
+                                $acl = Get-Acl -Path "$originalFilePath"
+                                $acl.SetOwner($adminAccount) # Take Ownership (because file is owned by TrustedInstaller)
+                                $acl.AddAccessRule($adminFullControlAccessRule) # Grant rights to be able to move the file
+                                Set-Acl -Path $originalFilePath -AclObject $acl -ErrorAction Stop
+                                $accessGranted = $true
+                            } catch {
+                                Write-Warning "Failed to grant access to `"$originalFilePath`": $($_.Exception.Message)"
+                            }
+                        {{ end }}
+                        if ($revert -eq $true) {
+                            $newFilePath = $backupFilePath.Substring(0, $backupFilePath.Length - 4)
+                        } else {
+                            $newFilePath = "$($originalFilePath).OLD"
+                        }
+                        try {
+                            Move-Item -LiteralPath "$($originalFilePath)" -Destination "$newFilePath" -Force -ErrorAction Stop
+                            Write-Host "Successfully processed `"$originalFilePath`"."
+                            $renamedCount++
+                            {{ with $grantPermissions }}
+                                if ($accessGranted) {
+                                    try {
+                                        Set-Acl -Path $newFilePath -AclObject $originalAcl -ErrorAction Stop
+                                    } catch {
+                                        Write-Warning "Failed to restore access on `"$newFilePath`": $($_.Exception.Message)"
+                                    }
+                                }
+                            {{ end }}
+                        } catch {
+                            Write-Error "Failed to rename `"$originalFilePath`" to `"$newFilePath`": $($_.Exception.Message)"
+                            $failedCount++
+                            {{ with $grantPermissions }}
+                                if ($accessGranted) {
+                                    try {
+                                        Set-Acl -Path $originalFilePath -AclObject $originalAcl -ErrorAction Stop
+                                    } catch {
+                                        Write-Warning "Failed to restore access on `"$originalFilePath`": $($_.Exception.Message)"
+                                    }
+                                }
+                            {{ end }}
+                        }
+                    afterIteration: |-
+                        if (($renamedCount -gt 0) -or ($skippedCount -gt 0)) {
+                            Write-Host "Successfully processed $renamedCount items and skipped $skippedCount items."
+                        }
+                        if ($failedCount -gt 0) {
+                            Write-Warning "Failed to processed $($failedCount) items."
+                        }
+                        {{ with $grantPermissions }}
+                            [Privileges]::RemovePrivilege('SeRestorePrivilege') | Out-Null
+                            [Privileges]::RemovePrivilege('SeTakeOwnershipPrivilege') | Out-Null
+                        {{ end }}
     -
         name: SetVsCodeSetting
         parameters:
@@ -11053,21 +11146,31 @@ functions:
         #   This function does not affect the execution flow but helps in understanding the purpose of subsequent code.
         parameters:
             - name: comment
+            - name: revertComment
+              optional: true
         call:
             function: RunInlineCode
             parameters:
                 code: ':: {{ $comment }}'
+                revertCode: '{{ with $revertComment }}:: {{ . }}{{ end }}'
     -
-        name: DeleteGlob
         # ℹ️ Behavior:
-        #   Deletes files and directories on Windows using Unix-style glob patterns.
+        #   Searches for files and directories based on a Unix-style glob pattern and iterates over them.
         #   Primarily supports the `*` wildcard; compatibility with other patterns is not tested.
         # 💡 Usage:
-        #   This is a low-level function. Favor higher-level functions like `ClearDirectoryContents` and `DeleteDirectory`
-        #   for clearer intent and enhanced security when applicable.
+        #   This is a low-level function. Favor using other functions in script calls.
+        #   It provides following variables for the code in argument value:
+        #       - `$expandedPath`       : Expanded path glob pattern.
+        #       - `$path`               : Current iterated path (only available for `duringIteration`)
+        name: IterateGlob
         parameters:
             - name: pathGlob
-            - name: grantPermissions
+            - name: beforeIteration
+              optional: true
+            - name: duringIteration
+            - name: afterIteration
+              optional: true
+            - name: revertPathGlob
               optional: true
         call:
             function: RunPowerShell
@@ -11076,9 +11179,100 @@ functions:
                     $pathGlobPattern = "{{ $pathGlob }}"
                     $expandedPath = [System.Environment]::ExpandEnvironmentVariables($pathGlobPattern)
                     Write-Host "Searching for items matching pattern: `"$($expandedPath)`"."
-                    $parentDirectory = Split-Path -Path $expandedPath -Parent
-                    {{ with $grantPermissions }} # Not using `Get-Acl`/`Set-Acl` to avoid adjusting token privileges
-                        $grantPermissions=$true
+                    {{ with $beforeIteration }}
+                        {{ . }}
+                    {{ end }}
+                    $getChildItemParams = @{ Force = $true; }
+                    if ($expandedPath -like '*[*?]*') {
+                        # Recurse only on parent if the path contains glob pattern, otherwise it will unnecessarily try to match
+                        # every folder/file in parent, potentially leading to permission errors.
+                        # Without recursion `Get-ChildItem` does not find subdirectories.
+                        $getChildItemParams['Recurse'] = $true
+                    }
+                    $getChildItemParams['Path'] = $expandedPath
+                    try {
+                        $foundItems = @(Get-ChildItem @getChildItemParams -ErrorAction Stop)
+                    }  catch [System.Management.Automation.ItemNotFoundException] { # Do not run `Test-Path` before, it's unreliable for globs requiring extra permissions
+                        $foundItems = @()
+                    }
+                    if (!$foundItems) {
+                        $formattedParams = ($getChildItemParams.GetEnumerator() | ForEach-Object { "$($_.Key): `"$($_.Value)`"" }) -Join ', '
+                        Write-Host "Skipping, no items available with search parameters: $($formattedParams)."
+                        exit 0
+                    }
+                    Write-Host "Initiating processing of $($foundItems.Count) items from `"$expandedPath`"."
+                    foreach ($item in $foundItems) {
+                        $path = $item.FullName
+                        {{ $duringIteration }}
+                    }
+                    {{ with $afterIteration }}
+                        {{ . }}
+                    {{ end }}
+                # Marked: refactor-with-variables
+                #   Unfortunately a lot of duplication here as privacy.sexy compiler does not support better way for now.
+                #   The difference from this script and `code` is that:
+                #     - It sets `$revert` variable to `$true`.
+                #     - It uses `$revertPathGlob` instead of `$pathGlob`
+                revertCode: |- 
+                    {{ with $revertPathGlob }}
+                        $revert = true
+                        $pathGlobPattern = "{{ . }}"
+                        $expandedPath = [System.Environment]::ExpandEnvironmentVariables($pathGlobPattern)
+                        Write-Host "Searching for items matching pattern: `"$($expandedPath)`"."
+                        {{ with $beforeIteration }}
+                            {{ . }}
+                        {{ end }}
+                        $getChildItemParams = @{ Force = $true; }
+                        if ($expandedPath -like '*[*?]*') {
+                            # Recurse only on parent if the path contains glob pattern, otherwise it will unnecessarily try to match
+                            # every folder/file in parent, potentially leading to permission errors.
+                            # Without recursion `Get-ChildItem` does not find subdirectories.
+                            $getChildItemParams['Recurse'] = $true
+                        }
+                        $getChildItemParams['Path'] = $expandedPath
+                        try {
+                            $foundItems = @(Get-ChildItem @getChildItemParams -ErrorAction Stop)
+                        }  catch [System.Management.Automation.ItemNotFoundException] { # Do not run `Test-Path` before, it's unreliable for globs requiring extra permissions
+                            $foundItems = @()
+                        }
+                        if (!$foundItems) {
+                            $formattedParams = ($getChildItemParams.GetEnumerator() | ForEach-Object { "$($_.Key): `"$($_.Value)`"" }) -Join ', '
+                            Write-Host "Skipping, no items available with search parameters: $($formattedParams)."
+                            exit 0
+                        }
+                        Write-Host "Initiating processing of $($foundItems.Count) items from `"$expandedPath`"."
+                        foreach ($item in $foundItems) {
+                            $path = $item.FullName
+                            {{ $duringIteration }}
+                        }
+                        {{ with $afterIteration }}
+                            {{ . }}
+                        {{ end }}
+                    {{ end }}
+    -
+        name: DeleteGlob
+        # ℹ️ Behavior:
+        #   Deletes files and directories based on a Unix-style glob pattern.
+        #   Optionally, it can grant full permissions to the items before deletion.
+        # 💡 Usage:
+        #   This is a low-level function. Favor higher-level functions like `ClearDirectoryContents` and `DeleteDirectory`
+        #   for clearer intent and enhanced security when applicable.
+        # 🚫 **Limitations**: 
+        #   The function might not perform as expected if the current user lacks read permissions on the parent directory.
+        #   This specific use case is not addressed in the implementation because it has not been deemed necessary for the function's intended
+        #   applications.
+        parameters:
+            - name: pathGlob
+            - name: grantPermissions
+              optional: true
+        call:
+            function: IterateGlob
+            parameters:
+                pathGlob: '{{ $pathGlob }}'
+                beforeIteration: |-
+                    {{ with $grantPermissions }}
+                        # Not using `Get-Acl`/`Set-Acl` to avoid adjusting token privileges
+                        $parentDirectory = [System.IO.Path]::GetDirectoryName($parentDirectory)
                         if ($parentDirectory -like '*[*?]*') {
                             throw "Unable to grant permissions to glob paths: `"$parentDirectory`", not supported by ``takeown`` and ``icacls``."
                         } else {
@@ -11115,50 +11309,23 @@ functions:
                             }
                         }
                     {{ end }}
-                    $getChildItemParams = @{ Force = $true; }
-                    $filter = Split-Path -Path $expandedPath -Leaf
-                    $getChildItemParams['Filter'] = $filter
-                    if ($filter -like '*[*?]*') {
-                        # Recurse only on parent if filter contains glob pattern, otherwise it will unnecessarily try to match
-                        # every folder/file in parent, potentially leading to permission errors
-                        # Without recursion `Get-ChildItem` does not find subdirectories.
-                        $getChildItemParams['Recurse'] = $true
-                        # Append a backslash to the parent path during recursion. Without it, recursion will unintentionally
-                        # operate on the parent's parent directory.
-                        if (!$parentDirectory.EndsWith('/')) {
-                            $parentDirectory += '\'
-                        }
-                    }
-                    $getChildItemParams['Path'] = $parentDirectory
-                    try {
-                        $itemsToDelete = @(Get-ChildItem @getChildItemParams -ErrorAction Stop)
-                    }  catch [System.Management.Automation.ItemNotFoundException] { # Not run `Test-Path` before, it's unreliable for globs requiring extra permissions
-                        $itemsToDelete = @()
-                    }
-                    if (!$itemsToDelete) {
-                        $formattedParams = ($getChildItemParams.GetEnumerator() | ForEach-Object { "$($_.Key): `"$($_.Value)`"" }) -Join ', '
-                        Write-Host "Skipping, no items available for deletion with search parameters: $($formattedParams)."
-                        exit 0
-                    }
-                    Write-Host "Initiating deletion of $($itemsToDelete.Count) items from `"$expandedPath`"."
                     $deletedCount = 0
                     $failedCount = 0
-                    foreach ($item in $itemsToDelete) {
-                        if (-not (Test-Path $item.FullName)) { # Re-check existence as prior deletions might remove subsequent items (e.g., subdirectories).
-                            Write-Host "Successfully deleted: $($item.FullName) (already deleted)."
-                            $deletedCount++
-                            continue
-                        } 
-                        try {
-                            Remove-Item -Path $item.FullName -Force -Recurse -ErrorAction Stop
-                            $deletedCount++
-                            Write-Host "Successfully deleted: $($item.FullName)"
-                        } 
-                        catch {
-                            $failedCount++
-                            Write-Warning "Unable to delete $($item.FullName): $_"
-                        }
+                duringIteration: |-
+                    if (-not (Test-Path $path)) { # Re-check existence as prior deletions might remove subsequent items (e.g., subdirectories).
+                        Write-Host "Successfully deleted: $($path) (already deleted)."
+                        $deletedCount++
+                        continue
+                    } 
+                    try {
+                        Remove-Item -Path $path -Force -Recurse -ErrorAction Stop
+                        $deletedCount++
+                        Write-Host "Successfully deleted: $($path)"
+                    } catch {
+                        $failedCount++
+                        Write-Warning "Unable to delete $($path): $_"
                     }
+                afterIteration: |-
                     Write-Host "Successfully deleted $($deletedCount) items."
                     if ($failedCount -gt 0) {
                         Write-Warning "Failed to delete $($failedCount) items."
