@@ -8,6 +8,7 @@
 import {
   defineComponent, ref, onMounted, onBeforeUnmount,
 } from 'vue';
+import { useResizeObserverPolyfill } from '@/presentation/components/Shared/Hooks/UseResizeObserverPolyfill';
 
 export default defineComponent({
   emits: {
@@ -18,18 +19,22 @@ export default defineComponent({
     /* eslint-enable @typescript-eslint/no-unused-vars */
   },
   setup(_, { emit }) {
+    const { resizeObserverReady } = useResizeObserverPolyfill();
+
     const containerElement = ref<HTMLElement>();
 
     let width = 0;
     let height = 0;
     let observer: ResizeObserver;
 
-    onMounted(async () => {
+    onMounted(() => {
       width = containerElement.value.offsetWidth;
       height = containerElement.value.offsetHeight;
 
-      observer = await initializeResizeObserver(updateSize);
-      observer.observe(containerElement.value);
+      resizeObserverReady.then(() => {
+        observer = new ResizeObserver(updateSize);
+        observer.observe(containerElement.value);
+      });
 
       fireChangeEvents();
     });
@@ -37,16 +42,6 @@ export default defineComponent({
     onBeforeUnmount(() => {
       observer?.disconnect();
     });
-
-    async function initializeResizeObserver(
-      callback: ResizeObserverCallback,
-    ): Promise<ResizeObserver> {
-      if ('ResizeObserver' in window) {
-        return new window.ResizeObserver(callback);
-      }
-      const module = await import('@juggle/resize-observer');
-      return new module.ResizeObserver(callback);
-    }
 
     function updateSize() {
       let sizeChanged = false;
