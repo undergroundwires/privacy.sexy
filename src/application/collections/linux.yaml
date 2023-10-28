@@ -2911,7 +2911,8 @@ actions:
                       function: AddFirefoxPrefs
                       parameters:
                         prefName: toolkit.telemetry.log.level
-                        jsonValue: 'Fatal'
+                        jsonValue: >-
+                          "Fatal"
                   -
                     name: Disable Firefox telemetry log output
                     recommend: standard
@@ -2924,7 +2925,8 @@ actions:
                       function: AddFirefoxPrefs
                       parameters:
                         prefName: toolkit.telemetry.log.dump
-                        jsonValue: 'Fatal'
+                        jsonValue: >-
+                          "Fatal"
               -
                 name: Clear Firefox telemetry user ID
                 recommend: standard
