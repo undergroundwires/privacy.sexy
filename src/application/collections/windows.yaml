@@ -502,10 +502,13 @@ actions:
                                         parameters:
                                             directoryGlob: '%LOCALAPPDATA%\Google\CrashReports'
                             -
-                                name: Clear Software Reporter Tool logs
+                                name: Clear Google's "Software Reporter Tool" logs
                                 recommend: standard
                                 docs: https://support.google.com/chrome/forum/AAAAP1KN0B0T8qnffV5gwM/
-                                code: del /f /q "%LOCALAPPDATA%\Google\Software Reporter Tool\*.log"
+                                call:
+                                    function: DeleteFiles
+                                    parameters:
+                                        fileGlob: '%LOCALAPPDATA%\Google\Software Reporter Tool\*.log'
                             -
                                 name: Clear Chrome user data
                                 docs: https://chromium.googlesource.com/chromium/src/+/HEAD/docs/user_data_dir.md
@@ -578,29 +581,41 @@ actions:
                                 name: Clear Webpage Icons
                                 recommend: standard
                                 docs: https://www.sans.org/blog/safari-browser-forensics/
-                                code: |-
-                                    :: Windows XP
-                                    del /q /s /f "%USERPROFILE%\Local Settings\Application Data\Safari\WebpageIcons.db"
-                                    :: Windows Vista and newer
-                                    del /q /s /f "%LOCALAPPDATA%\Apple Computer\Safari\WebpageIcons.db"
+                                call:
+                                    - # Windows XP
+                                        function: DeleteFiles
+                                        parameters:
+                                            fileGlob: '%USERPROFILE%\Local Settings\Application Data\Safari\WebpageIcons.db'
+                                    - # Windows Vista and newer
+                                        function: DeleteFiles
+                                        parameters:
+                                            fileGlob: '%LOCALAPPDATA%\Apple Computer\Safari\WebpageIcons.db'
                             -
                                 name: Clear Safari cache
                                 recommend: standard
                                 docs: https://forensicswiki.xyz/wiki/index.php?title=Apple_Safari
-                                code: |-
-                                    :: Windows XP
-                                    del /q /s /f "%USERPROFILE%\Local Settings\Application Data\Apple Computer\Safari\Cache.db"
-                                    :: Windows Vista and newer
-                                    del /q /s /f "%LOCALAPPDATA%\Apple Computer\Safari\Cache.db"
+                                call:
+                                    - # Windows XP
+                                        function: DeleteFiles
+                                        parameters:
+                                            fileGlob: '%USERPROFILE%\Local Settings\Application Data\Apple Computer\Safari\Cache.db'
+                                    - # Windows Vista and newer
+                                        function: DeleteFiles
+                                        parameters:
+                                            fileGlob: '%LOCALAPPDATA%\Apple Computer\Safari\Cache.db'
                             -
                                 name: Clear Safari cookies
                                 recommend: strict
                                 docs: https://kb.digital-detective.net/display/BF/Location+of+Safari+Data
-                                code: |-
-                                    :: Windows XP
-                                    del /q /s /f "%USERPROFILE%\Local Settings\Application Data\Apple Computer\Safari\Cookies.db"
-                                    :: Windows Vista and newer
-                                    del /q /s /f "%LOCALAPPDATA%\Apple Computer\Safari\Cookies.db"
+                                call:
+                                    - # Windows XP
+                                        function: DeleteFiles
+                                        parameters:
+                                            fileGlob: '%USERPROFILE%\Local Settings\Application Data\Apple Computer\Safari\Cookies.db'
+                                    - # Windows Vista and newer
+                                        function: DeleteFiles
+                                        parameters:
+                                            fileGlob: '%LOCALAPPDATA%\Apple Computer\Safari\Cookies.db'
                             -
                                 name: Clear all Safari data (user profiles, settings, and data)
                                 docs:
@@ -753,7 +768,10 @@ actions:
                 children:
                     -
                         name: Clear thumbnail cache
-                        code: del /f /s /q /a %LOCALAPPDATA%\Microsoft\Windows\Explorer\*.db
+                        call:
+                            function: DeleteFiles
+                            parameters:
+                                fileGlob: '%LOCALAPPDATA%\Microsoft\Windows\Explorer\*.db'
                     -
                         category: Clear Windows system log files
                         children:
@@ -777,15 +795,61 @@ actions:
                                             parameters:
                                                 directoryGlob: '%SYSTEMROOT%\Logs\waasmedic'
                                     -
-                                        name: Clear Cryptographic Services diagnostic traces
+                                        name: Clear "Cryptographic Services" diagnostic traces
                                         recommend: standard
-                                        docs: https://www.thewindowsclub.com/catroot-catroot2-folder-reset-windows
-                                        code: |-
-                                            del /f /q %SystemRoot%\System32\catroot2\dberr.txt
-                                            del /f /q %SystemRoot%\System32\catroot2.log
-                                            del /f /q %SystemRoot%\System32\catroot2.jrs
-                                            del /f /q %SystemRoot%\System32\catroot2.edb
-                                            del /f /q %SystemRoot%\System32\catroot2.chk
+                                        docs: |-
+                                            This script removes specific files associated with the "Cryptographic Services".
+                                            The files include:
+
+                                            - `%SYSTEMROOT%\System32\catroot2\dberr.txt`
+                                            - `%SYSTEMROOT%\System32\catroot2.log`
+                                            - `%SYSTEMROOT%\System32\catroot2.jrs`
+                                            - `%SYSTEMROOT%\System32\catroot2.edb`
+                                            - `%SYSTEMROOT%\System32\catroot2.chk`
+
+                                            The "Cryptographic Services" (`CryptSvc`) service manages services such as key management for the computer [1] [2].
+                                            This service is used by different features, including Windows Updates [3] [4] [5].
+
+                                            There is no official documentation available for these files from Microsoft. However, after analyzing the internal workings of Windows, below
+                                            is a detailed explanation of the purpose, collected data, and privacy implications for each file:
+
+                                            | File name | Purpose | Data Collected | Privacy Implications |
+                                            | --------- | ------- | -------------- | -------------------- |
+                                            | `dberr.txt` | Logging database errors | Error messages and codes related to database operations | Potential system issues or vulnerabilities |
+                                            | `catroot2.log` | Logging activities, errors, or transactions related to cryptographic operations | Log data including status messages, error codes | System configurations and vulnerabilities |
+                                            | `catroot2.jrs` | Journal file for data integrity in cryptographic operations | Transaction logs or temporary cryptographic data | System's state and cryptographic operations |
+                                            | `catroot2.edb` | Storing certificate and signature data for Windows Update | Certificate and signature validation data, update details | Update history and security state |
+                                            | `catroot2.chk` | Ensuring data consistency in the ESE database | Information for database recovery | System state information |
+
+                                            This script deletes these files, improving user privacy by removing sensitive information related to system configurations, vulnerabilities, and
+                                            cryptographic operations is not readily available.
+
+                                            [1]: https://web.archive.org/web/20231025233132/https://www.windows-security.org/windows-service/cryptographic-services "Cryptographic Services | Windows security encyclopedia | windows-security.org"
+                                            [2]: https://web.archive.org/web/20231025233145/https://revertservice.com/10/cryptsvc/ "Cryptographic Services (CryptSvc) Defaults in Windows 10 | revertservice.com"
+                                            [3]: https://web.archive.org/web/20230902020255/https://learn.microsoft.com/en-us/troubleshoot/windows-client/deployment/additional-resources-for-windows-update "Additional resources for Windows Update - Windows Client | Microsoft Learn | learn.microsoft.com"
+                                            [4]: https://web.archive.org/web/20231025233228/https://support.microsoft.com/en-us/topic/claims-to-windows-token-service-c2wts-not-starting-after-rebooting-server-52a2d131-cb9d-bf28-77d4-1663a99d03b3 "Claims to Windows Token Service (c2WTS) not starting after rebooting server - Microsoft Support | support.microsoft.com"
+                                            [5]: https://web.archive.org/web/20231025233251/https://learn.microsoft.com/en-us/troubleshoot/windows-server/backup-and-storage/vss-error-8193-restart-cryptographic-services "VSS event 8193 when you restart the Cryptographic Services service after you install the DHCP role - Windows Server | Microsoft Learn | learn.microsoft.com"
+                                        call:
+                                            -
+                                                function: DeleteFiles
+                                                parameters:
+                                                    fileGlob: '%SYSTEMROOT%\System32\catroot2\dberr.txt'
+                                            -
+                                                function: DeleteFiles
+                                                parameters:
+                                                    fileGlob: '%SYSTEMROOT%\System32\catroot2.log'
+                                            -
+                                                function: DeleteFiles
+                                                parameters:
+                                                    fileGlob: '%SYSTEMROOT%\System32\catroot2.jrs'
+                                            -
+                                                function: DeleteFiles
+                                                parameters:
+                                                    fileGlob: '%SYSTEMROOT%\System32\catroot2.edb'
+                                            -
+                                                function: DeleteFiles
+                                                parameters:
+                                                    fileGlob: '%SYSTEMROOT%\System32\catroot2.chk'
                                     -
                                         name: Clear Server-initiated Healing Events system logs
                                         docs: |-
@@ -820,11 +884,17 @@ actions:
                             -
                                 name: Clear Optional Component Manager and COM+ components logs
                                 recommend: standard
-                                code: del /f /q %SystemRoot%\comsetup.log
+                                call:
+                                    function: DeleteFiles
+                                    parameters:
+                                        fileGlob: '%SYSTEMROOT%\comsetup.log'
                             -
-                                name: Clear "Distributed Transaction Coordinator (`Dtc`)" logs
+                                name: Clear "Distributed Transaction Coordinator (DTC)" logs
                                 recommend: standard
-                                code: del /f /q %SystemRoot%\DtcInstall.log
+                                call:
+                                    function: DeleteFiles
+                                    parameters:
+                                        fileGlob: '%SYSTEMROOT%\DtcInstall.log'
                             -
                                 name: Clear logs for pending/unsuccessful file rename operations
                                 docs: |-
@@ -833,7 +903,10 @@ actions:
                                     currently in use [1].
 
                                     [1]: https://web.archive.org/web/20230806191624/https://support.microsoft.com/en-us/topic/how-to-install-multiple-windows-updates-or-hotfixes-with-only-one-reboot-6247def4-7f39-c1a0-efe5-61f82849fb7c "How to install multiple Windows updates or hotfixes with only one reboot - Microsoft Support"
-                                code: del /f /q %SystemRoot%\PFRO.log
+                                call:
+                                    function: DeleteFiles
+                                    parameters:
+                                        fileGlob: '%SYSTEMROOT%\PFRO.log'
                             -
                                 name: Clear Windows update installation logs
                                 recommend: standard
@@ -844,22 +917,36 @@ actions:
                                     These files contains information about initializing setup and typically used if setup fails to launch [1].
 
                                     [1]: https://web.archive.org/web/20230806191844/https://learn.microsoft.com/en-us/windows/deployment/upgrade/log-files "Log files and resolving upgrade errors - Windows Deployment | Microsoft Learn"
-                                code: |-
-                                    del /f /q %SystemRoot%\setupact.log
-                                    del /f /q %SystemRoot%\setuperr.log
+                                call:
+                                    -
+                                        function: DeleteFiles
+                                        parameters:
+                                            fileGlob: '%SYSTEMROOT%\setupact.log'
+                                    -
+                                        function: DeleteFiles
+                                        parameters:
+                                            fileGlob: '%SYSTEMROOT%\setuperr.log'
                             -
                                 name: Clear Windows setup logs
                                 recommend: standard
                                 docs: https://support.microsoft.com/en-gb/help/927521/windows-vista-windows-7-windows-server-2008-r2-windows-8-1-and-windows
                                 call:
                                     -
-                                        function: RunInlineCode
+                                        function: DeleteFiles
                                         parameters:
-                                            code: |-
-                                                del /f /q %SYSTEMROOT%\setupapi.log
-                                                del /f /q %SYSTEMROOT%\inf\setupapi.app.log
-                                                del /f /q %SYSTEMROOT%\inf\setupapi.dev.log
-                                                del /f /q %SYSTEMROOT%\inf\setupapi.offline.log
+                                            fileGlob: '%SYSTEMROOT%\setupapi.log'
+                                    -
+                                        function: DeleteFiles
+                                        parameters:
+                                            fileGlob: '%SYSTEMROOT%\inf\setupapi.app.log'
+                                    -
+                                        function: DeleteFiles
+                                        parameters:
+                                            fileGlob: '%SYSTEMROOT%\inf\setupapi.dev.log'
+                                    -
+                                        function: DeleteFiles
+                                        parameters:
+                                            fileGlob: '%SYSTEMROOT%\inf\setupapi.offline.log'
                                     -
                                         function: ClearDirectoryContents
                                         parameters:
@@ -868,11 +955,17 @@ actions:
                                 name: Clear "Windows System Assessment Tool (`WinSAT`)" logs
                                 recommend: standard
                                 docs: https://docs.microsoft.com/en-us/windows/win32/winsat/windows-system-assessment-tool-portal
-                                code: del /f /q %SystemRoot%\Performance\WinSAT\winsat.log
+                                call:
+                                    function: DeleteFiles
+                                    parameters:
+                                        fileGlob: '%SYSTEMROOT%\Performance\WinSAT\winsat.log'
                             -
                                 name: Clear password change events
                                 recommend: standard
-                                code: del /f /q %SystemRoot%\debug\PASSWD.LOG
+                                call:
+                                    function: DeleteFiles
+                                    parameters:
+                                        fileGlob: '%SYSTEMROOT%\debug\PASSWD.LOG'
                             -
                                 name: Clear user web cache database
                                 recommend: standard
@@ -892,12 +985,45 @@ actions:
                                 name: Clear DISM (Deployment Image Servicing and Management) system logs
                                 recommend: standard
                                 docs: https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/deployment-troubleshooting-and-log-files
-                                code: |-
-                                    del /f /q %SystemRoot%\Logs\CBS\CBS.log
-                                    del /f /q %SystemRoot%\Logs\DISM\DISM.log
+                                call:
+                                    -
+                                        function: DeleteFiles
+                                        parameters:
+                                            fileGlob: '%SYSTEMROOT%\Logs\CBS\CBS.log'
+                                    -
+                                        function: DeleteFiles
+                                        parameters:
+                                            fileGlob: '%SYSTEMROOT%\Logs\DISM\DISM.log'
                             -
-                                name: Clear Windows Update History (`WUAgent`) system logs
-                                docs: https://social.technet.microsoft.com/Forums/ie/en-US/f5744a18-d4ca-4631-8324-878b9225251d/windowssoftwaredistribution-folder-cleanup-automation?forum=winserverwsus
+                                name: Clear Windows update files # Marked: stop-service-do-stuff-restart-service
+                                docs: |-
+                                    This script clears the contents of the `%SYSTEMROOT%\SoftwareDistribution\` directory.
+                                    This action is sometimes called *resetting the Windows Update Agent* or *resetting Windows Update components* by Microsoft [1].
+
+                                    This directory contains Windows Update files [2] [3].
+                                    It includes logs of Windows updates [2] [4], downloaded updates [5], and database files related to the updates [2].
+
+                                    Over time, the size of this folder can increase [5], leading to potential disk space issues. Clearing this directory can help free up disk space [5].
+
+                                    This folder is used by Windows Updates [1] [6].
+                                    The `wuauserv` service, also known as "Windows Update Service" [7], uses this folder for its operations [1] [8] [9].
+                                    This service manages the Windows Update Agent (WUA) functionality [7].
+
+                                    Clearing this directory is generally safe, and sometimes, Microsoft even recommends this action to troubleshoot and resolve update-related
+                                    errors [1] [5] [6] [9] [10].
+
+                                    This script contributes to users' privacy and system efficiency by cleaning up old and potentially unnecessary update files.
+
+                                    [1]: https://web.archive.org/web/20230902020255/https://learn.microsoft.com/en-us/troubleshoot/windows-client/deployment/additional-resources-for-windows-update#how-do-i-reset-windows-update-components "Additional resources for Windows Update - Windows Client | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20231027190239/https://support.microsoft.com/en-us/topic/virus-scanning-recommendations-for-enterprise-computers-that-are-running-windows-or-windows-server-kb822158-c067a732-f24a-9079-d240-3733e39b40bc "Virus scanning recommendations for Enterprise computers that are running Windows or Windows Server (KB822158) - Microsoft Support | support.microsoft.com"
+                                    [3]: https://web.archive.org/web/20231027190409/https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/configure-server-exclusions-microsoft-defender-antivirus?view=o365-worldwide#windows-update-files-or-automatic-update-files "Microsoft Defender Antivirus exclusions on Windows Server | Microsoft Learn | learn.microsoft.com"
+                                    [4]: https://web.archive.org/web/20231027190425/https://learn.microsoft.com/en-us/windows/deployment/update/windows-update-logs "Windows Update log files - Windows Deployment | Microsoft Learn | learn.microsoft.com"
+                                    [5]: https://web.archive.org/web/20231027190439/https://learn.microsoft.com/en-us/troubleshoot/windows-client/deployment/address-disk-space-issues-caused-by-winsxs "Large WinSxS directory causes disk space issues - Windows Client | Microsoft Learn | learn.microsoft.com"
+                                    [6]: https://web.archive.org/web/20231027190148/https://learn.microsoft.com/en-us/troubleshoot/windows-client/deployment/common-windows-update-errors "Common Windows Update errors - Windows Client | Microsoft Learn | learn.microsoft.com"
+                                    [7]: https://web.archive.org/web/20231027190357/https://revertservice.com/10/wuauserv/ "Windows Update (wuauserv) Service Defaults in Windows 10 | revertservice.com"
+                                    [8]: https://web.archive.org/web/20231027190213/https://support.microsoft.com/en-us/windows/troubleshoot-problems-updating-windows-188c2b0f-10a7-d72f-65b8-32d177eb136c#WindowsVersion=Windows_11 "Troubleshoot problems updating Windows - Microsoft Support | support.microsoft.com"
+                                    [9]: https://web.archive.org/web/20231027190503/https://learn.microsoft.com/en-us/troubleshoot/mem/configmgr/update-management/troubleshoot-software-update-scan-failures "Troubleshoot software update scan failures - Configuration Manager | Microsoft Learn | learn.microsoft.com"
+                                    [10]: https://web.archive.org/web/20231029172022/https://support.microsoft.com/en-us/topic/you-receive-an-administrators-only-error-message-in-windows-xp-when-you-try-to-visit-the-windows-update-web-site-or-the-microsoft-update-web-site-d2c732b6-21e0-a2ce-8d18-303ed71736c9 'You receive an "Administrators only" error message in Windows XP when you try to visit the Windows Update Web site or the Microsoft Update Web site - Microsoft Support | support.microsoft.com'
                                 code: |- # `sc queryex` output is the same in every OS language
                                     setlocal EnableDelayedExpansion
                                         SET /A wuau_service_running=0
@@ -946,17 +1072,51 @@ actions:
                                     parameters:
                                         directoryGlob: '%SYSTEMROOT%\System32\LogFiles\setupcln'
                     -
-                        name: Clear primary Windows telemetry file
+                        name: Clear diagnostics tracking logs # Marked: stop-service-do-stuff-restart-service ("DiagTrack")
                         recommend: standard
-                        code: |-
-                            if exist "%ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl" (
-                                takeown /f "%ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl" /r /d y
-                                icacls "%ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl" /grant administrators:F /t
-                                echo "" > "%ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl"
-                                echo Clear successful: "%ProgramData%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl"
-                            ) else (
-                                echo "Main telemetry file does not exist. Good!"
-                            )
+                        docs: |-
+                            This script deletes primary telemetry files in Windows.
+                            These files store event trace logs that are collected by the `DiagTrack` service [1] [2].
+                            This service is also known as "Diagnostics Tracking Service" [3] or "Connected User Experiences and Telemetry" service [4].
+
+                            These files are stored as Event Trace Log (`.etl`) files, also known as a trace logs [5].
+                            Contents of these files are transmitted to Microsoft servers [1] [2].
+
+                            This services uses *AutoLogger* logs.
+                            *AutoLogger* allows saving trace logs early in the operating system boot process before the user logs in [6].
+                            This data is collected during system boot and shut-down, and typically read and deleted at each system boot [3].
+
+                            The information collected is divided into two files:
+
+                            - `%PROGRAMDATA%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl` [1] [2]
+                            - `%PROGRAMDATA%\Microsoft\Diagnosis\ETLLogs\ShutdownLogger\AutoLogger-Diagtrack-Listener.etl` [1] [2]
+
+                            To modify or delete these files, `SYSTEM` rights are required [1], which this script provides.
+
+                            The collected data varies based on the telemetry level set [2] and may include information about websites visited, application
+                            and system performance, device activity, and memory dumps [7].
+
+                            By deleting these telemetry files, this script prevents the `DiagTrack` service from sending a specific set of diagnostic and
+                            usage data to Microsoft, enhancing user privacy by reducing data sharing.
+
+                            [1]: https://web.archive.org/web/20231027164549/https://it-forensik.fiw.hs-wismar.de/images/a/a3/MT_MReuter.pdf "Options for using Event Tracing for Windows (ETW) to support forensic analyzes of process behavior in Windows 10 | University of Wismar"
+                            [2]: https://web.archive.org/web/20230215084038/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Cyber-Sicherheit/SiSyPHus/Analyse_Telemetriekomponente_1_2.pdf?__blob=publicationFile&v=3 "Analyse der Telemetriekomponente in Windows 10 | The national cyber security authority in Germany | bsi.bund.de"
+                            [3]: https://web.archive.org/web/20231027164826/https://troopers.de/downloads/troopers19/TROOPERS19_DM_Telemetry.pdf "The Anatomy of Windows Telemetry | The national cyber security authority in Germany | troopers.de"
+                            [4]: https://web.archive.org/web/20231027165627/https://revertservice.com/10/diagtrack/ "Connected User Experiences and Telemetry (DiagTrack) Service Defaults in Windows 10 | revertservice.com"
+                            [5]: https://web.archive.org/web/20231027164529/https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/trace-log "Trace Log - Windows drivers | Microsoft Learn"
+                            [6]: https://web.archive.org/web/20231027164510/https://learn.microsoft.com/en-us/windows/win32/etw/configuring-and-starting-an-autologger-session "Configuring and Starting an AutoLogger Session - Win32 apps | Microsoft Learn | learn.microsoft.com"
+                            [7]: https://web.archive.org/web/20231027164821/https://learn.microsoft.com/en-us/windows/privacy/configure-windows-diagnostic-data-in-your-organization "Configure Windows diagnostic data in your organization (Windows 10 and Windows 11) - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                        call:
+                            -
+                                function: DeleteFiles
+                                parameters:
+                                    fileGlob: '%PROGRAMDATA%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl'
+                                    grantPermissions: true
+                            -
+                                function: DeleteFiles
+                                parameters:
+                                    fileGlob: '%PROGRAMDATA%\Microsoft\Diagnosis\ETLLogs\ShutdownLogger\AutoLogger-Diagtrack-Listener.etl'
+                                    grantPermissions: true
                     -
                         name: Clear event logs in Event Viewer application
                         docs: https://serverfault.com/questions/407838/do-windows-events-from-the-windows-event-log-have-sensitive-information
@@ -1011,12 +1171,49 @@ actions:
                                 grantPermissions: true # Running as TrustedInstaller is not needed, and causes Defender to alarm https://github.com/undergroundwires/privacy.sexy/issues/264
             -
                 name: Clear credentials in Windows Credential Manager
-                code: |-
-                    cmdkey.exe /list > "%TEMP%\List.txt"
-                    findstr.exe Target "%TEMP%\List.txt" > "%TEMP%\tokensonly.txt"
-                    FOR /F "tokens=1,2 delims= " %%G IN (%TEMP%\tokensonly.txt) DO cmdkey.exe /delete:%%H
-                    del "%TEMP%\List.txt" /s /f /q
-                    del "%TEMP%\tokensonly.txt" /s /f /q
+                call:
+                    function: RunPowerShell
+                    parameters:
+                        code: |-
+                            $cmdkeyPath = Get-Command cmdkey -ErrorAction SilentlyContinue
+                            if (-not $cmdkeyPath) {
+                                throw 'Failed to find the `cmdkey` utility on this system.'
+                            }
+                            $cmdkeyListOutput = & $cmdkeyPath /list
+                            if ($LASTEXITCODE -ne 0) {
+                                throw "Failed to execute `cmdkey /list`. Exit code: $LASTEXITCODE."
+                            }
+                            if (-not $cmdkeyListOutput) {
+                                throw 'Failed to retrieve credentials list. The output from `cmdkey /list` is empty.'
+                            }
+                            $credentialEntries = @($cmdkeyListOutput | Select-String 'Target')
+                            if (-not $credentialEntries) {
+                                Write-Host 'Skipping: No credentials found for deletion.'
+                                exit 0
+                            }
+                            $allCredentialsDeletedSuccessfully = $true
+                            Write-Host "Total of $($credentialEntries.Length) credential(s) found. Initiating deletion..."
+                            foreach ($credentialEntry in $credentialEntries) {
+                                if ($credentialEntry -notmatch 'Target:(.+)') {
+                                    Write-Error "Failed to parse credential from output: $credentialEntry"
+                                    $allCredentialsDeletedSuccessfully = $false
+                                    continue
+                                }
+                                $credentialTargetName = $matches[1].Trim()
+                                Write-Host "Deleting credential: `"$credentialTargetName`"..."
+                                & $cmdkeyPath /delete:$credentialTargetName
+                                if ($LASTEXITCODE -ne 0) {
+                                    Write-Error "Failed to delete credential '$credentialTargetName'. `cmdkey` returned exit code: $LASTEXITCODE."
+                                    $allCredentialsDeletedSuccessfully = $false
+                                } else {
+                                    Write-Host "Successfully deleted credential: `"$credentialTargetName`"."
+                                }
+                            }
+                            if (-not $allCredentialsDeletedSuccessfully) {
+                                Write-Warning 'Failed to delete some credentials. Please check the error messages above.'
+                            } else {
+                                Write-Host "Successfully deleted all $($credentialEntries.Length) credential(s)."
+                            }
             -
                 name: Remove the controversial `default0` user
                 docs: https://github.com/undergroundwires/privacy.sexy/issues/30
@@ -1076,7 +1273,7 @@ actions:
                 recommend: standard
                 code: dism /online /Remove-DefaultAppAssociations
             -
-                name: Clear System Resource Usage Monitor (SRUM) data
+                name: Clear System Resource Usage Monitor (SRUM) data # Marked: stop-service-do-stuff-restart-service
                 recommend: standard
                 docs: |-
                     This script deletes the Windows System Resource Usage Monitor (SRUM) database file.
@@ -3032,21 +3229,27 @@ actions:
                                 rundll32 "%PROGRAMFILES%\NVIDIA Corporation\Installer2\InstallerCore\NVI2.DLL",UninstallPackage NvTelemetry
                             )
                     -
-                        name: Clear Nvidia residual telemetry files
+                        name: Remove Nvidia telemetry components
                         recommend: standard
                         call:
                             -
-                                function: RunInlineCode
+                                function: SoftDeleteFiles
                                 parameters:
-                                    code: del /s %SystemRoot%\System32\DriverStore\FileRepository\NvTelemetry*.dll
+                                    fileGlob: '%PROGRAMFILES(X86)%\NVIDIA Corporation\NvTelemetry\*'
+                                    recurse: true
                             -
-                                function: ClearDirectoryContents
+                                function: SoftDeleteFiles
                                 parameters:
-                                    directoryGlob: '%PROGRAMFILES(X86)%\NVIDIA Corporation\NvTelemetry'
-                            -
-                                function: ClearDirectoryContents
-                                parameters:
-                                    directoryGlob: '%PROGRAMFILES%\NVIDIA Corporation\NvTelemetry'
+                                    fileGlob: '%PROGRAMFILES%\NVIDIA Corporation\NvTelemetry\*'
+                                    recurse: true
+                    -
+                        name: Disable Nvidia telemetry drivers
+                        recommend: standard
+                        call:
+                            function: SoftDeleteFiles
+                            parameters:
+                                fileGlob: '%SYSTEMROOT%\System32\DriverStore\FileRepository\NvTelemetry*.dll'
+                                recurse: true
                     -
                         name: Disable participation in Nvidia telemetry
                         recommend: standard
@@ -4676,16 +4879,21 @@ actions:
                             #             revertCode: |-
                             #                 reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" /v "ConfigureSystemGuardLaunch" /f 2>nul
                             #                 reg delete "HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\SystemGuard" /v "Enabled" /f 2>nul
-                            #         -
-                            #             name: Disable Windows Defender Application Control Code Integrity Policy
-                            #             docs:
-                            #                 - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Windows.DeviceGuard::ConfigCIPolicy
-                            #                 - https://docs.microsoft.com/en-us/windows/security/identity-protection/credential-guard/dg-readiness-tool
-                            #             code: |-
-                            #                 del "$env:windir\System32\CodeIntegrity\SIPolicy.p7b"
-                            #                 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" /v "DeployConfigCIPolicy" /t REG_DWORD /d 0 /f
-                            #             revertCode: |-
-                            #                 reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" /v "DeployConfigCIPolicy" /v "Enabled" /f 2>nul
+                            #        -
+                            #            name: Disable Windows Defender Application Control Code Integrity Policy
+                            #            docs:
+                            #                - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Windows.DeviceGuard::ConfigCIPolicy
+                            #                - https://docs.microsoft.com/en-us/windows/security/identity-protection/credential-guard/dg-readiness-tool
+                            #            call:
+                            #                -
+                            #                    function: RunInlineCode
+                            #                    parameters:
+                            #                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" /v "DeployConfigCIPolicy" /t REG_DWORD /d 0 /f
+                            #                        revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" /v "DeployConfigCIPolicy" /v "Enabled" /f 2>nul
+                            #                -
+                            #                    function: DeleteFiles
+                            #                    parameters:
+                            #                        fileGlob: '%WINDIR%\System32\CodeIntegrity\SIPolicy.p7b'
                             -
                                 name: Disable auto-exclusions
                                 docs:
@@ -6022,8 +6230,8 @@ actions:
                                     other software on your computer won't be able to access the functionalities provided by the Windows Update Agent,
                                     commonly known as WUA API [5].
 
-                                    [1]: https://web.archive.org/web/20230902020255/https://learn.microsoft.com/en-us/troubleshoot/windows-client/deployment/additional-resources-for-windows-update "Additional resources for Windows Update - Windows Client | Microsoft Learn"
-                                    [2]: https://web.archive.org/web/20230711221240/https://learn.microsoft.com/en-us/troubleshoot/mem/configmgr/update-management/troubleshoot-software-update-scan-failures "Troubleshoot software update scan failures - Configuration Manager | Microsoft Learn"
+                                    [1]: https://web.archive.org/web/20230902020255/https://learn.microsoft.com/en-us/troubleshoot/windows-client/deployment/additional-resources-for-windows-update "Additional resources for Windows Update - Windows Client | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20231027190503/https://learn.microsoft.com/en-us/troubleshoot/mem/configmgr/update-management/troubleshoot-software-update-scan-failures "Troubleshoot software update scan failures - Configuration Manager | Microsoft Learn | learn.microsoft.com"
                                     [3]: https://web.archive.org/web/20230905120348/https://learn.microsoft.com/en-us/troubleshoot/windows-client/performance/windows-devices-fail-boot-after-installing-kb4041676-kb4041691 "Windows devices may fail to boot after installing October 10 version of KB 4041676 or 4041691 that contained a publishing issue - Windows Client | Microsoft Learn"
                                     [4]: https://web.archive.org/web/20230905120345/https://learn.microsoft.com/en-us/windows-server/administration/server-core/server-core-servicing "Patching Server Core | Microsoft Learn"
                                     [5]: https://web.archive.org/web/20231001150100/https://learn.microsoft.com/en-us/windows/deployment/update/prepare-deploy-windows "Prepare to deploy Windows - Windows Deployment | Microsoft Learn"
@@ -8871,34 +9079,42 @@ actions:
                         and temporary files and cache.
 
                         - `C:\OneDriveCache`: Temporary cache location [1].
-                        - `C:\ProgramData\Microsoft OneDrive`: Program data, used during setup [2] [3], seen on both Windows 10 and 11.
-                        - `C:\Users\<username>\Microsoft OneDrive`: OneDrive root directory [4], seen on both Windows 10 and 11.
-                        - `C:\Users\<username>\AppData\Local\Microsoft\OneDrive`: OneDrive installation directory [5], seen on both Windows 10 and 11.
+                        - `C:\ProgramData\Microsoft OneDrive`: Program data, used during setup [2] [3].
+                        - `C:\Users\<username>\OneDrive`: OneDrive root directory [4].
+                        - `C:\Users\<username>\AppData\Local\Microsoft\OneDrive`: OneDrive installation directory [5].
 
-                        The folders are reported by the community [1].
+                        The folders are reported by the community [1]. According to the tests:
+
+                        | Directory | Windows 11 (since 22H2) | Windows 10 (since 22H2) |
+                        | --------- |:-----------------------:|:-----------------------:|
+                        | `%SYSTEMDRIVE%C:\OneDriveCache` | ❌ Missing | ❌ Missing |
+                        | `%PROGRAMDATA%\Microsoft OneDrive` | ✅ Exists | ✅ Exists |
+                        | `%LOCALAPPDATA%\Microsoft\OneDrive` | ✅ Exists | ✅ Exists |
+                        | `%USERPROFILE%\OneDrive` | ✅ Exists | ✅ Exists |
 
                         [1]: https://social.microsoft.com/Forums/en-US/53263a51-856f-4e64-bc0e-a689d4cc5a8b/release-notes-for-1907-build-29711727413?forum=FSLogix "Release Notes for 1907 - build 2.9.7117.27413 | social.microsoft.com"
                         [2]: https://techcommunity.microsoft.com/t5/sharepoint/onedrive-setup-fails-to-complete/m-p/2072446 "OneDrive setup fails to complete - Microsoft Tech Community"
                         [3]: https://answers.microsoft.com/en-us/msoffice/forum/all/why-does-onedrive-act-as-ransomware/288e5940-b92b-493c-91ff-dafd26279bee "Why does OneDrive act as Ransomware? - Microsoft Community"
                         [4]: https://techcommunity.microsoft.com/t5/onedrive-for-business/change-onedrive-installation-location/m-p/225064 "Change OneDrive installation location - Microsoft Tech Community | techcommunity.microsoft.com"
                         [5]: https://learn.microsoft.com/en-us/sharepoint/install/configure-syncing-with-the-onedrive-sync-app "Configure syncing with the new OneDrive sync app - SharePoint Server | Microsoft Learn | learn.microsoft.com"
-                    code: |-
-                        :: OneDrive root folder
-                        if exist "%UserProfile%\OneDrive" (
-                            rd "%UserProfile%\OneDrive" /q /s
-                        )
-                        :: OneDrive installation directory
-                        if exist "%LOCALAPPDATA%\Microsoft\OneDrive" (
-                            rd "%LOCALAPPDATA%\Microsoft\OneDrive" /q /s
-                        )
-                        :: OneDrive data
-                        if exist "%ProgramData%\Microsoft OneDrive" (
-                            rd "%ProgramData%\Microsoft OneDrive" /q /s
-                        )
-                        :: OneDrive cache
-                        if exist "%SystemDrive%\OneDriveTemp" (
-                            rd "%SystemDrive%\OneDriveTemp" /q /s
-                        )
+                    call:
+                        -
+                            function: DeleteDirectory
+                            parameters:
+                                directoryGlob: '%USERPROFILE%\OneDrive'
+                        -
+                            function: DeleteDirectory
+                            parameters:
+                                directoryGlob: '%LOCALAPPDATA%\Microsoft\OneDrive'
+                                grantPermissions: true
+                        -
+                            function: DeleteDirectory
+                            parameters:
+                                directoryGlob: '%PROGRAMDATA%\Microsoft OneDrive'
+                        -
+                            function: DeleteDirectory
+                            parameters:
+                                directoryGlob: '%SYSTEMDRIVE%\OneDriveTemp'
                 -
                     name: Remove OneDrive shortcuts
                     recommend: strict
@@ -9545,19 +9761,19 @@ actions:
                             #   2. Do not have known privacy issues
                             #   3. Make Windows more functional when running all scripts
                             # -
-                            #     name: WordPad capability
+                            #     name: Remove "WordPad" capability
                             #     call:
                             #         function: UninstallCapability
                             #         parameters:
                             #             capabilityName: Microsoft.Windows.WordPad
                             # -
-                            #     name: Paint capability
+                            #     name: Remove "Paint" capability
                             #     call:
                             #         function: UninstallCapability
                             #         parameters:
                             #             capabilityName: Microsoft.Windows.MSPaint
                             # -
-                            #     name: Notepad capability
+                            #     name: Remove "Notepad" capability
                             #     call:
                             #         function: UninstallCapability
                             #         parameters:
@@ -9882,7 +10098,7 @@ actions:
         category: Advanced settings
         children:
             -
-                name: Set NTP (time) server to `pool.ntp.org`
+                name: Set NTP (time) server to `pool.ntp.org` # Marked: stop-service-do-stuff-restart-service
                 docs: https://www.pool.ntp.org/en/use.html
                 recommend: strict
                  # `sc queryex` output is same in every OS language
@@ -9928,9 +10144,9 @@ actions:
             -
                 name: Run script on startup [EXPERIMENTAL]
                 code: |-
-                    del /f /q %AppData%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat
-                    copy "%~dpnx0" "%AppData%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat"
-                revertCode: del /f /q %AppData%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat
+                    del /f /q %APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat
+                    copy "%~dpnx0" "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat"
+                revertCode: del /f /q %APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat
 functions:
     -
         name: KillProcess
@@ -10057,6 +10273,7 @@ functions:
                 function: SoftDeleteFiles
                 parameters:
                     fileGlob: '%LOCALAPPDATA%\Packages\{{ $packageName }}_{{ $publisherId }}\*'
+                    recurse: 'true'
             -
                 # Metadata
                 #   - Parent    : %PROGRAMDATA%\Microsoft\Windows\AppRepository\Packages\{PackageFullName}
@@ -10066,6 +10283,7 @@ functions:
                 parameters:
                     fileGlob: '%PROGRAMDATA%\Microsoft\Windows\AppRepository\Packages\{{ $packageName }}_*_{{ $publisherId }}\*'
                     grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
+                    recurse: 'true'
             -
                 # Installation (SystemApps)
                 #   - Parent    : %WINDIR%\SystemApps\{PackageFamilyName}
@@ -10076,6 +10294,7 @@ functions:
                 parameters:
                     fileGlob: '%WINDIR%\SystemApps\{{ $packageName }}_{{ $publisherId }}\*'
                     grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
+                    recurse: 'true'
             -
                 # Installation (Root)
                 #   - Parent    : %WINDIR%\{ShortAppName}
@@ -10087,6 +10306,7 @@ functions:
                     fileGlob: >-
                         %WINDIR%\$(("{{ $packageName }}" -Split '\.')[-1])\*
                     grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
+                    recurse: 'true'
     -
         name: UninstallCapability
         parameters:
@@ -10102,26 +10322,31 @@ functions:
         name: SoftDeleteFiles
         # 💡 Purpose:
         #   Renames files matching a given glob pattern by appending a `.OLD` extension, effectively "soft deleting" them.
+        #   It does not touch any of the folders.
         #   This allows for easier restoration and less immediate disruption compared to permanent deletion.
         # 🤓 Implementation:
-        #   - Utilizes the `IterateGlob` function to match and iterate over files.
-        #   - Optionally elevates script permissions to modify file privileges if required.
-        #   - Renames matched files and handles permission restoration after renaming.
-        #   - Provides detailed logs of actions taken and any issues encountered.
+        #   1. (with `grantPermissions`:) Elevate script privileges.
+        #   2. Iterate every file in the given directory, and for each file:
+        #      - (with `grantPermissions`:) Grant permissions to file to be able to modify it.
+        #      - Rename the file.
+        #      - (with `grantPermissions`:) Restore permissions of the file to its original state
+        #   3. (with `grantPermissions`:) Remove elevated script privileges.
         parameters:
             - name: fileGlob
             - name: grantPermissions
+              optional: true
+            - name: recurse
               optional: true
         call:
             -
                 function: CommentCode
                 parameters:
                     comment: >-
-                        Soft deleting files matching pattern
+                        Soft delete files matching pattern
                         {{ with $grantPermissions }}(with additional permissions){{ end }}
                         : "{{ $fileGlob }}"
                     revertComment: >-
-                        Restoring files matching pattern
+                        Restore files matching pattern
                         {{ with $grantPermissions }}(with additional permissions){{ end }}
                         : "{{ $fileGlob }}"
             -
@@ -10129,16 +10354,16 @@ functions:
                 parameters:
                     pathGlob: '{{ $fileGlob }}'
                     revertPathGlob: '{{ $fileGlob }}.OLD'
-                    # Search logic:
-                    #   It uses `.PSIsContainer` instead of `-File` otherwise wildcards in directories do not match i.e. pattern
-                    #   `C:\ProgramData\Microsoft\Windows\AppRepository\Packages\Microsoft.Windows.SecHealthUI_*_cw5n1h2txyewy` does not match any files.
+                    recurse: '{{ with $recurse }}{{ . }}{{ end }}'
                     # Elevating privileges:
                     #   Another (simpler) implementation would be:
-                    #       $setPrivilegeFunction = [System.Diagnostics.Process].GetMethods(42) | Where-Object { $_.Name -eq 'SetPrivilege' }
-                    #       $privileges = @('SeRestorePrivilege', 'SeTakeOwnershipPrivilege')
-                    #       foreach ($privilege in $privileges) {
-                    #           $setPrivilegeFunction.Invoke($null, @($privilege, 2))
-                    #       }
+                    #       ```
+                    #           $setPrivilegeFunction = [System.Diagnostics.Process].GetMethods(42) | Where-Object { $_.Name -eq 'SetPrivilege' }
+                    #           $privileges = @('SeRestorePrivilege', 'SeTakeOwnershipPrivilege')
+                    #           foreach ($privilege in $privileges) {
+                    #               $setPrivilegeFunction.Invoke($null, @($privilege, 2))
+                    #           }
+                    #       ```
                     beforeIteration: |-
                         $renamedCount   = 0
                         $skippedCount   = 0
@@ -10252,7 +10477,7 @@ functions:
                             }
                         {{ end }}
                         if ($revert -eq $true) {
-                            $newFilePath = $backupFilePath.Substring(0, $backupFilePath.Length - 4)
+                            $newFilePath = $originalFilePath.Substring(0, $originalFilePath.Length - 4)
                         } else {
                             $newFilePath = "$($originalFilePath).OLD"
                         }
@@ -11156,6 +11381,7 @@ functions:
     -
         # ℹ️ Behavior:
         #   Searches for files and directories based on a Unix-style glob pattern and iterates over them.
+        #   Similar to the `ls` command.
         #   Primarily supports the `*` wildcard; compatibility with other patterns is not tested.
         # 💡 Usage:
         #   This is a low-level function. Favor using other functions in script calls.
@@ -11164,13 +11390,15 @@ functions:
         #       - `$path`               : Current iterated path (only available for `duringIteration`)
         name: IterateGlob
         parameters:
-            - name: pathGlob
-            - name: beforeIteration
+            - name: pathGlob              # Glob pattern for search.
+            - name: revertPathGlob        # Glob pattern for reverting changes.
               optional: true
-            - name: duringIteration
-            - name: afterIteration
+            - name: beforeIteration       # (Iteration callback) Code to run before iteration.
               optional: true
-            - name: revertPathGlob
+            - name: duringIteration       # (Iteration callback) Code to run for each found item.
+            - name: afterIteration        # (Iteration callback) Code to run after iteration.
+              optional: true
+            - name: recurse               # If set, includes all files and directories recursively.
               optional: true
         call:
             function: RunPowerShell
@@ -11182,27 +11410,33 @@ functions:
                     {{ with $beforeIteration }}
                         {{ . }}
                     {{ end }}
-                    $getChildItemParams = @{ Force = $true; }
-                    if ($expandedPath -like '*[*?]*') {
-                        # Recurse only on parent if the path contains glob pattern, otherwise it will unnecessarily try to match
-                        # every folder/file in parent, potentially leading to permission errors.
-                        # Without recursion `Get-ChildItem` does not find subdirectories.
-                        $getChildItemParams['Recurse'] = $true
-                    }
-                    $getChildItemParams['Path'] = $expandedPath
+                    $foundAbsolutePaths = @()
+                    {{ with $recurse }}
+                        Write-Host 'Iterating files and directories recursively.'
+                        try {
+                            $foundAbsolutePaths += @(
+                                Get-ChildItem -Path $expandedPath -Force -Recurse -ErrorAction Stop | Select-Object -ExpandProperty FullName
+                            )
+                        } catch [System.Management.Automation.ItemNotFoundException] {
+                            # Swallow, do not run `Test-Path` before, it's unreliable for globs requiring extra permissions
+                        }
+                    {{ end }}
                     try {
-                        $foundItems = @(Get-ChildItem @getChildItemParams -ErrorAction Stop)
-                    }  catch [System.Management.Automation.ItemNotFoundException] { # Do not run `Test-Path` before, it's unreliable for globs requiring extra permissions
-                        $foundItems = @()
+                        $foundAbsolutePaths += @(
+                            Get-Item -Path $expandedPath -ErrorAction Stop | Select-Object -ExpandProperty FullName
+                        )
+                    } catch [System.Management.Automation.ItemNotFoundException] {
+                        # Swallow, do not run `Test-Path` before, it's unreliable for globs requiring extra permissions
                     }
-                    if (!$foundItems) {
-                        $formattedParams = ($getChildItemParams.GetEnumerator() | ForEach-Object { "$($_.Key): `"$($_.Value)`"" }) -Join ', '
-                        Write-Host "Skipping, no items available with search parameters: $($formattedParams)."
+                    $foundAbsolutePaths = $foundAbsolutePaths   `
+                        | Select-Object -Unique                 `
+                        | Sort-Object -Property { $_.Length } -Descending
+                    if (!$foundAbsolutePaths) {
+                        Write-Host 'Skipping, no items available.'
                         exit 0
                     }
-                    Write-Host "Initiating processing of $($foundItems.Count) items from `"$expandedPath`"."
-                    foreach ($item in $foundItems) {
-                        $path = $item.FullName
+                    Write-Host "Initiating processing of $($foundAbsolutePaths.Count) items from `"$expandedPath`"."
+                    foreach ($path in $foundAbsolutePaths) {
                         {{ $duringIteration }}
                     }
                     {{ with $afterIteration }}
@@ -11215,34 +11449,40 @@ functions:
                 #     - It uses `$revertPathGlob` instead of `$pathGlob`
                 revertCode: |- 
                     {{ with $revertPathGlob }}
-                        $revert = true
+                        $revert = $true
                         $pathGlobPattern = "{{ . }}"
                         $expandedPath = [System.Environment]::ExpandEnvironmentVariables($pathGlobPattern)
                         Write-Host "Searching for items matching pattern: `"$($expandedPath)`"."
                         {{ with $beforeIteration }}
                             {{ . }}
                         {{ end }}
-                        $getChildItemParams = @{ Force = $true; }
-                        if ($expandedPath -like '*[*?]*') {
-                            # Recurse only on parent if the path contains glob pattern, otherwise it will unnecessarily try to match
-                            # every folder/file in parent, potentially leading to permission errors.
-                            # Without recursion `Get-ChildItem` does not find subdirectories.
-                            $getChildItemParams['Recurse'] = $true
-                        }
-                        $getChildItemParams['Path'] = $expandedPath
+                        $foundAbsolutePaths = @()
+                        {{ with $recurse }}
+                            Write-Host 'Iterating files and directories recursively.'
+                            try {
+                                $foundAbsolutePaths += @(
+                                    Get-ChildItem -Path $expandedPath -Force -Recurse -ErrorAction Stop | Select-Object -ExpandProperty FullName
+                                )
+                            } catch [System.Management.Automation.ItemNotFoundException] {
+                                # Swallow, do not run `Test-Path` before, it's unreliable for globs requiring extra permissions
+                            }
+                        {{ end }}
                         try {
-                            $foundItems = @(Get-ChildItem @getChildItemParams -ErrorAction Stop)
-                        }  catch [System.Management.Automation.ItemNotFoundException] { # Do not run `Test-Path` before, it's unreliable for globs requiring extra permissions
-                            $foundItems = @()
+                            $foundAbsolutePaths += @(
+                                Get-Item -Path $expandedPath -ErrorAction Stop | Select-Object -ExpandProperty FullName
+                            )
+                        } catch [System.Management.Automation.ItemNotFoundException] {
+                            # Swallow, do not run `Test-Path` before, it's unreliable for globs requiring extra permissions
                         }
-                        if (!$foundItems) {
-                            $formattedParams = ($getChildItemParams.GetEnumerator() | ForEach-Object { "$($_.Key): `"$($_.Value)`"" }) -Join ', '
-                            Write-Host "Skipping, no items available with search parameters: $($formattedParams)."
+                        $foundAbsolutePaths = $foundAbsolutePaths   `
+                            | Select-Object -Unique                 `
+                            | Sort-Object -Property { $_.Length } -Descending
+                        if (!$foundAbsolutePaths) {
+                            Write-Host 'Skipping, no items available.'
                             exit 0
                         }
-                        Write-Host "Initiating processing of $($foundItems.Count) items from `"$expandedPath`"."
-                        foreach ($item in $foundItems) {
-                            $path = $item.FullName
+                        Write-Host "Initiating processing of $($foundAbsolutePaths.Count) items from `"$expandedPath`"."
+                        foreach ($path in $foundAbsolutePaths) {
                             {{ $duringIteration }}
                         }
                         {{ with $afterIteration }}
@@ -11255,63 +11495,93 @@ functions:
         #   Deletes files and directories based on a Unix-style glob pattern.
         #   Optionally, it can grant full permissions to the items before deletion.
         # 💡 Usage:
-        #   This is a low-level function. Favor higher-level functions like `ClearDirectoryContents` and `DeleteDirectory`
+        #   This is a low-level function. Favor higher-level functions like `ClearDirectoryContents`, `DeleteDirectory`, and `DeleteFiles`
         #   for clearer intent and enhanced security when applicable.
-        # 🚫 **Limitations**: 
+        # 🚫 Limitations:
         #   The function might not perform as expected if the current user lacks read permissions on the parent directory.
         #   This specific use case is not addressed in the implementation because it has not been deemed necessary for the function's intended
         #   applications.
         parameters:
-            - name: pathGlob
-            - name: grantPermissions
+            - name: pathGlob            # Glob pattern for search.
+            - name: grantPermissions    # Grants permission on items of the parent directory recursively (including all files and directories) to be able to delete them.
+              optional: true
+            - name: beforeIteration     # (Iteration callback) Code to run before iteration.
+              optional: true
+            - name: duringIteration     # (Iteration callback) Code to run for each found item.
+              optional: true
+            - name: afterIteration      # (Iteration callback) Code to run after iteration.
+              optional: true
+            - name: recurse             # If set, deletes all files and directories recursively.
               optional: true
         call:
             function: IterateGlob
             parameters:
                 pathGlob: '{{ $pathGlob }}'
+                recurse: '{{ with $recurse }}{{ . }}{{ end }}'
+                # Granting permissions has limitations for wildcard due to `takeown` and `icacls`. These commands are used for their simplicity to avoid adjusting token privileges.
+                #   However, adjusting token privileges is already implemented by `SoftFileDelete`, when this kind of implementations are reusable, this script can be improved to
+                #   use `Get-Acl`, `Set-Acl` instead for better wildcards support.
+                #   Marked: refactor-with-variables
                 beforeIteration: |-
                     {{ with $grantPermissions }}
                         # Not using `Get-Acl`/`Set-Acl` to avoid adjusting token privileges
-                        $parentDirectory = [System.IO.Path]::GetDirectoryName($parentDirectory)
+                        $parentDirectory = [System.IO.Path]::GetDirectoryName($expandedPath)
+                        $fileName = [System.IO.Path]::GetFileName($expandedPath)
                         if ($parentDirectory -like '*[*?]*') {
-                            throw "Unable to grant permissions to glob paths: `"$parentDirectory`", not supported by ``takeown`` and ``icacls``."
+                            throw "Unable to grant permissions to glob path parent directory: `"$parentDirectory`", wildcards in parent directory are not supported by ``takeown`` and ``icacls``."
+                        }
+                        if (($fileName -ne '*') -and ($fileName -like '*[*?]*')) {
+                            throw "Unable to grant permissions to glob path file name: `"$fileName`", wildcards in file name is not supported by ``takeown`` and ``icacls``."
+                        }
+                        Write-Host "Taking ownership of `"$expandedPath`"."
+                        $cmdPath = $expandedPath
+                        if ($cmdPath.EndsWith('\')) {
+                            $cmdPath += '\' # Escape trailing backslash for correct handling in batch commands
+                        }
+                        $takeOwnershipCommand = "takeown /f `"$cmdPath`" /a" # `icacls /setowner` does not succeed, so use `takeown` instead.
+                        if (-not (Test-Path -Path "$expandedPath" -PathType Leaf)) {
+                            $takeOwnershipCommand += ' /r /d y'
+                        }
+                        $takeOwnershipOutput = cmd /c "$takeOwnershipCommand 2>&1" # `stderr` message is misleading, e.g. "ERROR: The system cannot find the file specified." is not an error.
+                        if ($LASTEXITCODE -eq 0) {
+                            Write-Host "Successfully took ownership of `"$expandedPath`" (using ``$takeOwnershipCommand``)."
                         } else {
-                            Write-Host "Taking ownership of `"$expandedPath`"."
-                            $cmdPath = $expandedPath
-                            if ($cmdPath.EndsWith('\')) {
-                                $cmdPath += '\' # Escape trailing backslash for correct handling in batch commands
-                            }
-                            $takeOwnershipCommand = "takeown /f `"$cmdPath`" /a" # `icacls /setowner` does not succeed, so use `takeown` instead.
-                            if (-not (Test-Path -Path "$expandedPath" -PathType Leaf)) {
-                                $takeOwnershipCommand += ' /r /d y'
-                            }
-                            cmd /c "$takeOwnershipCommand"
-                            if ($LASTEXITCODE -eq 0) {
-                                Write-Host "Successfully took ownership of `"$expandedPath`" (using ``$takeOwnershipCommand``)."
-                            } else {
-                                Write-Host "Failed to obtain ownership for `"$expandedPath`" using ``$takeOwnershipCommand``, status code: $LASTEXITCODE."
-                                # Do not write as error or warning, because this can be due to missing path, it's handled for next command.
-                                # `takeown` exits with status code `1`, making it hard to handle missing path here in .
-                            }
-                            Write-Host "Granting permissions for `"$expandedPath`"."
-                            $adminSid = New-Object System.Security.Principal.SecurityIdentifier 'S-1-5-32-544'
-                            $adminAccount = $adminSid.Translate([System.Security.Principal.NTAccount])
-                            $adminAccountName = $adminAccount.Value
-                            $grantPermissionsCommand = "icacls `"$cmdPath`" /grant `"$($adminAccountName):F`" /t"
-                            cmd /c "$grantPermissionsCommand"
-                            if ($LASTEXITCODE -eq 0) {
-                                Write-Host "Successfully granted permissions for `"$expandedPath`" (using ``$grantPermissionsCommand``)."
-                            } elseif ($LASTEXITCODE -eq 3) {
+                            Write-Host "Did not take ownership of `"$expandedPath`" using ``$takeOwnershipCommand``, status code: $LASTEXITCODE, message: $takeOwnershipOutput."
+                            # Do not write as error or warning, because this can be due to missing path, it's handled in next command.
+                            # `takeown` exits with status code `1`, making it hard to handle missing path here.
+                        }
+                        Write-Host "Granting permissions for `"$expandedPath`"."
+                        $adminSid = New-Object System.Security.Principal.SecurityIdentifier 'S-1-5-32-544'
+                        $adminAccount = $adminSid.Translate([System.Security.Principal.NTAccount])
+                        $adminAccountName = $adminAccount.Value
+                        $grantPermissionsCommand = "icacls `"$cmdPath`" /grant `"$($adminAccountName):F`" /t"
+                        $icaclsOutput = cmd /c "$grantPermissionsCommand"
+                        if ($LASTEXITCODE -eq 3) {
+                            Write-Host "Skipping, no items available for deletion according to: ``$grantPermissionsCommand``."
+                            exit 0
+                        } elseif ($LASTEXITCODE -ne 0) {
+                            Write-Host "Take ownership message:`n$takeOwnershipOutput"
+                            Write-Host "Grant permissions:`n$icaclsOutput"
+                            Write-Warning "Failed to assign permissions for `"$expandedPath`" using ``$grantPermissionsCommand``, status code: $LASTEXITCODE."
+                        } else {
+                            $fileStats = $icaclsOutput | ForEach-Object { $_ -match '\d+' | Out-Null; $matches[0] } | Where-Object { $_ -ne $null } | ForEach-Object { [int]$_ }
+                            if ($fileStats.Count -gt 0 -and ($fileStats | ForEach-Object { $_ -eq 0 } | Where-Object { $_ -eq $false }).Count -eq 0) {
                                 Write-Host "Skipping, no items available for deletion according to: ``$grantPermissionsCommand``."
                                 exit 0
                             } else {
-                                Write-Warning "Failed to assign permissions for `"$expandedPath`" using ``$grantPermissionsCommand``, status code: $LASTEXITCODE."
+                                Write-Host "Successfully granted permissions for `"$expandedPath`" (using ``$grantPermissionsCommand``)."
                             }
                         }
                     {{ end }}
                     $deletedCount = 0
                     $failedCount = 0
+                    {{ with $beforeIteration }}
+                        {{ . }}
+                    {{ end }}
                 duringIteration: |-
+                    {{ with $duringIteration }}
+                        {{ . }}
+                    {{ end }}
                     if (-not (Test-Path $path)) { # Re-check existence as prior deletions might remove subsequent items (e.g., subdirectories).
                         Write-Host "Successfully deleted: $($path) (already deleted)."
                         $deletedCount++
@@ -11326,6 +11596,9 @@ functions:
                         Write-Warning "Unable to delete $($path): $_"
                     }
                 afterIteration: |-
+                    {{ with $afterIteration }}
+                        {{ . }}
+                    {{ end }}
                     Write-Host "Successfully deleted $($deletedCount) items."
                     if ($failedCount -gt 0) {
                         Write-Warning "Failed to delete $($failedCount) items."
@@ -11333,9 +11606,10 @@ functions:
     -
         name: ClearDirectoryContents
         # 💡 Purpose:
-        #   Specifically designed to empty the contents of a directory while preserving the directory itself.
+        #   Empties the contents of a directory recursively (including all of its files and subfolders) while preserving
+        #   the directory itself.
         #   This is beneficial when other applications depend on the existence of the directory.
-        #   For directory deletion, use `DeleteDirectory`.
+        #   For deleting the directory itself too, use `DeleteDirectory`.
         # 🤓 Implementation:
         #   - Formats the provided glob pattern to ensure only contents are targeted, then delegates to `DeleteGlob`.
         #   - Provides a user-friendly comment in code.
@@ -11361,6 +11635,7 @@ functions:
                     pathGlob: >-
                         $($directoryGlob = '{{ $directoryGlob }}'; if ($directoryGlob.EndsWith('\*')) { $directoryGlob } elseif ($directoryGlob.EndsWith('\')) { "$($directoryGlob)*" } else { "$($directoryGlob)\*" } )
                     grantPermissions: '{{ with $grantPermissions }}true{{ end }}'
+                    recurse: 'true' # Logs every deleted file name
     -
         name: DeleteDirectory
         # 💡 Purpose:
@@ -11370,8 +11645,8 @@ functions:
         #   Formats the provided glob pattern to target the directory, then delegates to `DeleteGlob`.
         #   - Provides a user-friendly comment in code.
         parameters:
-            - name: directoryGlob
-            - name: grantPermissions
+            - name: directoryGlob       # The directory to delete along with its files and subdirectories
+            - name: grantPermissions    # Grants permission on the parent directory and its sub-items recursively (including all files and directories) to be able to delete them.
               optional: true
         call:
             -
@@ -11390,3 +11665,36 @@ functions:
                     pathGlob: >-
                         $($directoryGlob = '{{ $directoryGlob }}'; if (-Not $directoryGlob.EndsWith('\')) { $directoryGlob += '\' }; $directoryGlob )
                     grantPermissions: '{{ with $grantPermissions }}true{{ end }}'
+                    recurse: 'true' # Logs every deleted file name
+    -
+        name: DeleteFiles
+        # 💡 Purpose:
+        #   Deletes files but does not touch any directories.
+        #   Use `DeleteDirectory` or `ClearDirectoryContents` to delete directories.
+        parameters:
+            - name: fileGlob            # File glob pattern to delete.
+            - name: grantPermissions    # Grants permission on the files found to be able to delete them.
+              optional: true
+        call:
+            -
+                function: CommentCode
+                parameters:
+                    comment: >-
+                        Delete files matching pattern: "{{ $fileGlob }}"
+            -
+                function: DeleteGlob
+                parameters:
+                    pathGlob: '{{ $fileGlob }}'
+                    grantPermissions: '{{ with $grantPermissions }}true{{ end }}'
+                    beforeIteration: |-
+                        $skippedCount = 0
+                    duringIteration: |-
+                        if (Test-Path -Path $path -PathType Container) {
+                            Write-Host "Skipping, the path is not a file but a folder: $($path)."
+                            $skippedCount++
+                            continue
+                        }
+                    afterIteration: |-
+                        if ($skippedCount -gt 0) {
+                            Write-Host "Skipped $($skippedCount) items."
+                        }
