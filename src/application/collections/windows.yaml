@@ -10195,8 +10195,13 @@ functions:
             -
                 function: RunPowerShell
                 parameters:
+                    codeComment: Uninstall '{{ $packageName }}' Microsoft Store app.
                     code: Get-AppxPackage '{{ $packageName }}' | Remove-AppxPackage
-                    # Package Family Name is: `<name>_<publisherid>`, https://learn.microsoft.com/en-us/windows/apps/desktop/modernize/package-identity-overview#publisher-id
+                    # This script attempts to reinstall the app that was just uninstalled, if necessary.
+                    # The app's package family name is constructed using its name and publisher ID.
+                    #   Package Family Name is: `<name>_<publisherid>`
+                    #   Learn more about package identity: https://learn.microsoft.com/en-us/windows/apps/desktop/modernize/package-identity-overview#publisher-id (https://archive.ph/Sx4JC)
+                    revertCodeComment: Reinstall '{{ $packageName }}' if it was previously uninstalled.
                     revertCode: |-
                         $packageName='{{ $packageName }}'
                         $publisherId='{{ $publisherId }}'
@@ -10236,57 +10241,33 @@ functions:
                         throw "Unable to install `"$packageName`". Please check the provided details and try again."
             -
                 function: RunInlineCode
-                # Prevent applications from being reinstalled during a Windows update.
-                # For more information:
-                #   - https://learn.microsoft.com/en-us/windows/application-management/remove-provisioned-apps-during-update#create-registry-keys-for-deprovisioned-apps
-                #       - Archived: https://archive.ph/04108, https://web.archive.org/web/20231023131048/https://learn.microsoft.com/en-us/windows/application-management/remove-provisioned-apps-during-update#create-registry-keys-for-deprovisioned-apps
-                #   - https://learn.microsoft.com/en-us/mem/configmgr/osd/understand/in-place-upgrade-recommendations#remove-default-apps
-                #       - Archived: https://archive.ph/I7Dwc, https://web.archive.org/web/20231023132613/https://learn.microsoft.com/en-us/mem/configmgr/osd/understand/in-place-upgrade-recommendations#remove-default-apps
+                # This script prevents specified applications from being automatically reinstalled during Windows updates.
+                # Windows has a feature where certain pre-installed applications (also known as provisioned apps) are reinstalled
+                # when you perform a major update, even if they were previously uninstalled.
+                # For detailed information, refer to the following Microsoft documentation:
+                #   - Deprovisioning Apps: https://learn.microsoft.com/en-us/windows/application-management/remove-provisioned-apps-during-update#create-registry-keys-for-deprovisioned-apps
+                #       - Archived versions: https://archive.ph/04108, https://web.archive.org/web/20231023131048/https://learn.microsoft.com/en-us/windows/application-management/remove-provisioned-apps-during-update#create-registry-keys-for-deprovisioned-apps
+                #   - In-place Upgrade Recommendations: https://learn.microsoft.com/en-us/mem/configmgr/osd/understand/in-place-upgrade-recommendations#remove-default-apps
+                #       - Archived versions: https://archive.ph/I7Dwc, https://web.archive.org/web/20231023132613/https://learn.microsoft.com/en-us/mem/configmgr/osd/understand/in-place-upgrade-recommendations#remove-default-apps
                 parameters:
                     code: |-
-                        :: Mark the application as deprovisioned to prevent it from reinstalling during Windows updates.
+                        :: Mark '{{ $packageName }}' as deprovisioned to block reinstall during Windows updates.
                         reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned\{{ $packageName }}_{{ $publisherId }}" /f
                     revertCode: |-
-                        :: Remove the deprovisioned status to allow the application to reinstall during Windows updates.
+                        :: Remove '{{ $packageName }}' from deprovisioned list to allow reinstall during updates.
                         reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned\{{ $packageName }}_{{ $publisherId }}" /f 2>nul
     -
         name: UninstallSystemApp
         parameters:
             - name: packageName
             - name: publisherId
-        # It simply renames files in application folders.
-        #   Because system apps are non removable (check: (Get-AppxPackage -AllUsers 'Windows.CBSPreview').NonRemovable)
-        #   Otherwise they throw 0x80070032 when trying to uninstall them
-        # This script all files in three application folders to make them inaccessible for the operating system:
-        #   1. Installation
-        #       - Parent    : `%WINDIR%\SystemApps\{PackageFamilyName}` or `%WINDIR%\{AppName}`
-        #       - Example   : `C:\Windows\SystemApps\Windows.CBSPreview_cw5n1h2txyewy` or `C:\Windows\PrintDialog`
-        #       - Check     :
-        #           - `(Get-AppxPackage -AllUsers 'Windows.CBSPreview').InstallLocation` or `(Get-AppxPackage -AllUsers 'Windows.PrintDialog').InstallLocation`
-        #           - `Get-AppxPackage -PackageTypeFilter Main | ? { $_.SignatureKind -eq "System" } | Sort Name | Format-Table Name, InstallLocation`
         call:
-            -
-                # User-specific data
-                #   - Parent    : %LOCALAPPDATA%\Packages\{PackageFamilyName}
-                #   - Example   : C:\Users\undergroundwires\AppData\Local\Packages\Windows.CBSPreview_cw5n1h2txyewy
-                #   - Check     : "$env:LOCALAPPDATA\Packages\$((Get-AppxPackage -AllUsers 'Windows.CBSPreview').PackageFamilyName)"
-                function: SoftDeleteFiles
-                parameters:
-                    fileGlob: '%LOCALAPPDATA%\Packages\{{ $packageName }}_{{ $publisherId }}\*'
-                    recurse: 'true'
-            -
-                # Metadata
-                #   - Parent    : %PROGRAMDATA%\Microsoft\Windows\AppRepository\Packages\{PackageFullName}
-                #   - Example   : C:\ProgramData\Microsoft\Windows\AppRepository\Packages\Windows.CBSPreview_10.0.19580.1000_neutral_neutral_cw5n1h2txyewy
-                #   - Check     : "$env:PROGRAMDATA\Microsoft\Windows\AppRepository\Packages\$((Get-AppxPackage -AllUsers 'Windows.CBSPreview').PackageFullName)"
-                function: SoftDeleteFiles
-                parameters:
-                    fileGlob: '%PROGRAMDATA%\Microsoft\Windows\AppRepository\Packages\{{ $packageName }}_*_{{ $publisherId }}\*'
-                    grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
-                    recurse: 'true'
             -
                 # Installation (SystemApps)
                 #   - Parent    : %WINDIR%\SystemApps\{PackageFamilyName}
+                # -- ❗️ When reverting, this script must be executed before `UninstallStoreApp` as it holds manifest data to be able to reinstall the app ---
+                # Clear: Installation (SystemApps)
+                #   - Folder    : %WINDIR%\SystemApps\{PackageFamilyName}
                 #   - Example   : C:\Windows\SystemApps\Windows.CBSPreview_cw5n1h2txyewy
                 #   - Check     : (Get-AppxPackage -AllUsers 'Windows.CBSPreview').InstallLocation
                 #   - Check all : Get-AppxPackage -PackageTypeFilter Main | ? { $_.SignatureKind -eq "System" } | Sort Name | Format-Table Name, InstallLocation
@@ -10296,8 +10277,9 @@ functions:
                     grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                     recurse: 'true'
             -
-                # Installation (Root)
-                #   - Parent    : %WINDIR%\{ShortAppName}
+                # -- ❗️ When reverting, this script must be executed before `UninstallStoreApp` as it holds manifest data to be able to reinstall the app ---
+                # Clear: Installation (Root)
+                #   - Folder    : %WINDIR%\{ShortAppName}
                 #   - Example   : C:\Windows\PrintDialog
                 #   - Check     : (Get-AppxPackage -AllUsers 'Windows.PrintDialog').InstallLocation
                 #   - Check all : Get-AppxPackage -PackageTypeFilter Main | ? { $_.SignatureKind -eq "System" } | Sort Name | Format-Table Name, InstallLocation
@@ -10305,6 +10287,71 @@ functions:
                 parameters:
                     fileGlob: >-
                         %WINDIR%\$(("{{ $packageName }}" -Split '\.')[-1])\*
+                    grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
+                    recurse: 'true'
+            -
+                # -- ❗️ This script must be executed before `UninstallStoreApp` as it enables it for system app removal ---
+                function: RunPowerShell
+                parameters:
+                    # This script modifies the system registry to enable the uninstallation of a specified app.
+                    # Some apps (including system apps) are marked as non-removable, which prevents uninstallation and results in error 0x80070032 if an uninstall is attempted.
+                    # To bypass this, the script marks the app as 'EndOfLife' in the registry, tricking the system into allowing the uninstallation.
+                    codeComment: Enable removal of system app '{{ $packageName }}' by marking it as "EndOfLife" in the system registry
+                    code: |-
+                        $packageName='{{ $packageName }}'
+                        $publisherId='{{ $publisherId }}'
+                        $packageFamilyName = "$($packageName)_$($publisherId)"
+                        $sid = (New-Object System.Security.Principal.NTAccount($env:USERNAME)).Translate([Security.Principal.SecurityIdentifier]).Value
+                        $path = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\EndOfLife\$($sid)\$($packageFamilyName)"
+                        if (Test-Path $path) {
+                            Write-Host "Skipping, no action needed, path `"$path`" already exists."
+                            exit 0
+                        }
+                        try {
+                            New-Item -Path $path -Force -ErrorAction Stop | Out-Null
+                            Write-Host "Successfully created the registry key at path `"$path`"."
+                        } catch {
+                            Write-Error "Failed to create the registry key at path `"$path`": $($_.Exception.Message)"
+                        }
+                    revertCodeComment: Disable removal of system app '{{ $packageName }}' by removing the "EndOfLife" mark from the registry.
+                    revertCode: |-
+                        $packageName='{{ $packageName }}'
+                        $publisherId='{{ $publisherId }}'
+                        $packageFamilyName = "$($packageName)_$($publisherId)"
+                        $sid = (New-Object System.Security.Principal.NTAccount($env:USERNAME)).Translate([Security.Principal.SecurityIdentifier]).Value
+                        $path = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\EndOfLife\$($sid)\$($packageFamilyName)"
+                        if (-not (Test-Path $path)) {
+                            Write-Host "Skipping, no action needed, path `"$path`" does not exist."
+                            exit 0
+                        }
+                        try {
+                            Remove-Item -Path $path -Force -ErrorAction Stop | Out-Null
+                            Write-Host "Successfully removed the registry key at path `"$path`"."
+                        } catch {
+                            Write-Error "Failed to remove the registry key at path `"$path`": $($_.Exception.Message)"
+                        }
+            -
+                function: UninstallStoreApp
+                parameters:
+                    packageName: '{{ $packageName }}'
+                    publisherId: '{{ $publisherId }}'
+            -
+                # Clear: User-specific data
+                #   - Folder    : %LOCALAPPDATA%\Packages\{PackageFamilyName}
+                #   - Example   : C:\Users\undergroundwires\AppData\Local\Packages\Windows.CBSPreview_cw5n1h2txyewy
+                #   - Check     : "$env:LOCALAPPDATA\Packages\$((Get-AppxPackage -AllUsers 'Windows.CBSPreview').PackageFamilyName)"
+                function: SoftDeleteFiles
+                parameters:
+                    fileGlob: '%LOCALAPPDATA%\Packages\{{ $packageName }}_{{ $publisherId }}\*'
+                    recurse: 'true'
+            -
+                # Clear: Metadata
+                #   - Folder    : %PROGRAMDATA%\Microsoft\Windows\AppRepository\Packages\{PackageFullName}
+                #   - Example   : C:\ProgramData\Microsoft\Windows\AppRepository\Packages\Windows.CBSPreview_10.0.19580.1000_neutral_neutral_cw5n1h2txyewy
+                #   - Check     : "$env:PROGRAMDATA\Microsoft\Windows\AppRepository\Packages\$((Get-AppxPackage -AllUsers 'Windows.CBSPreview').PackageFullName)"
+                function: SoftDeleteFiles
+                parameters:
+                    fileGlob: '%PROGRAMDATA%\Microsoft\Windows\AppRepository\Packages\{{ $packageName }}_*_{{ $publisherId }}\*'
                     grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                     recurse: 'true'
     -
@@ -10339,13 +10386,13 @@ functions:
               optional: true
         call:
             -
-                function: CommentCode
+                function: Comment
                 parameters:
-                    comment: >-
+                    codeComment: >-
                         Soft delete files matching pattern
                         {{ with $grantPermissions }}(with additional permissions){{ end }}
                         : "{{ $fileGlob }}"
-                    revertComment: >-
+                    revertCodeComment: >-
                         Restore files matching pattern
                         {{ with $grantPermissions }}(with additional permissions){{ end }}
                         : "{{ $fileGlob }}"
@@ -10595,11 +10642,24 @@ functions:
             -   name: code
             -   name: revertCode
                 optional: true
-        code: PowerShell -ExecutionPolicy Unrestricted -Command "{{ $code | inlinePowerShell | escapeDoubleQuotes }}"
-        revertCode: |-
-            {{ with $revertCode }}
-                PowerShell -ExecutionPolicy Unrestricted -Command "{{ . | inlinePowerShell | escapeDoubleQuotes }}"
-            {{ end }}
+            -   name: codeComment
+                optional: true
+            -   name: revertCodeComment
+                optional: true
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: '{{ with $codeComment }}{{ . }}{{ end }}'
+                    revertCodeComment: '{{ with $revertCodeComment }}{{ . }}{{ end }}'
+            -
+                function: RunInlineCode
+                parameters:
+                    code: PowerShell -ExecutionPolicy Unrestricted -Command "{{ $code | inlinePowerShell | escapeDoubleQuotes }}"
+                    revertCode: |-
+                        {{ with $revertCode }}
+                            PowerShell -ExecutionPolicy Unrestricted -Command "{{ . | inlinePowerShell | escapeDoubleQuotes }}"
+                        {{ end }}
     -
         name: DisablePerUserService
         parameters:
@@ -10621,9 +10681,10 @@ functions:
         name: RunInlineCode
         parameters:
             - name: code
+              optional: true
             - name: revertCode
               optional: true
-        code: '{{ $code }}'
+        code: '{{ with $code }}{{ . }}{{ end }}'
         revertCode: '{{ with $revertCode }}{{ . }}{{ end }}'
     -
         name: RunPowerShellWithSameCodeAndRevertCode
@@ -11365,19 +11426,20 @@ functions:
                         }
                     }
     -
-        name: CommentCode
+        name: Comment
         # 💡 Purpose:
         #   Adds a comment in the executed code for better readability and debugging.
         #   This function does not affect the execution flow but helps in understanding the purpose of subsequent code.
         parameters:
-            - name: comment
-            - name: revertComment
+            - name: codeComment
+              optional: true
+            - name: revertCodeComment
               optional: true
         call:
             function: RunInlineCode
             parameters:
-                code: ':: {{ $comment }}'
-                revertCode: '{{ with $revertComment }}:: {{ . }}{{ end }}'
+                code: '{{ with $codeComment }}:: {{ . }}{{ end }}'
+                revertCode: '{{ with $revertCodeComment }}:: {{ . }}{{ end }}'
     -
         # ℹ️ Behavior:
         #   Searches for files and directories based on a Unix-style glob pattern and iterates over them.
@@ -11446,7 +11508,7 @@ functions:
                 #   Unfortunately a lot of duplication here as privacy.sexy compiler does not support better way for now.
                 #   The difference from this script and `code` is that:
                 #     - It sets `$revert` variable to `$true`.
-                #     - It uses `$revertPathGlob` instead of `$pathGlob`
+                #     - It uses value of `$revertPathGlob` instead of `$pathGlob`
                 revertCode: |- 
                     {{ with $revertPathGlob }}
                         $revert = $true
@@ -11619,9 +11681,9 @@ functions:
               optional: true
         call:
             -
-                function: CommentCode
+                function: Comment
                 parameters:
-                    comment: >-
+                    codeComment: >-
                         Clear directory contents
                         {{ with $grantPermissions }}(with additional permissions){{ end }}
                         : "{{ $directoryGlob }}"
@@ -11650,9 +11712,9 @@ functions:
               optional: true
         call:
             -
-                function: CommentCode
+                function: Comment
                 parameters:
-                    comment: >-
+                    codeComment: >-
                         Delete directory
                         {{ with $grantPermissions }}(with additional permissions){{ end }}
                         : "{{ $directoryGlob }}"
@@ -11677,9 +11739,9 @@ functions:
               optional: true
         call:
             -
-                function: CommentCode
+                function: Comment
                 parameters:
-                    comment: >-
+                    codeComment: >-
                         Delete files matching pattern: "{{ $fileGlob }}"
             -
                 function: DeleteGlob
