@@ -1,5 +1,5 @@
 import {
-  WatchSource, readonly, ref, watch,
+  WatchSource, shallowReadonly, ref, watch,
 } from 'vue';
 import { AsyncLazy } from '@/infrastructure/Threading/AsyncLazy';
 import { IconName } from './IconName';
@@ -15,7 +15,7 @@ export function useSvgLoader(
   }, { immediate: true });
 
   return {
-    svgContent: readonly(svgContent),
+    svgContent: shallowReadonly(svgContent),
   };
 }
 

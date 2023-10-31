@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, shallowRef } from 'vue';
 
 export default defineComponent({
   props: {
@@ -31,7 +31,7 @@ export default defineComponent({
     'transitionedOut',
   ],
   setup(_, { emit }) {
-    const modalElement = ref<HTMLElement>();
+    const modalElement = shallowRef<HTMLElement>();
 
     function onAfterTransitionLeave() {
       emit('transitionedOut');

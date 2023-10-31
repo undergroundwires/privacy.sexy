@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, shallowRef } from 'vue';
 import SliderHandle from './SliderHandle.vue';
 
 export default defineComponent({
@@ -45,7 +45,7 @@ export default defineComponent({
     },
   },
   setup() {
-    const firstElement = ref<HTMLElement>();
+    const firstElement = shallowRef<HTMLElement>();
 
     function onResize(displacementX: number): void {
       const leftWidth = firstElement.value.offsetWidth + displacementX;

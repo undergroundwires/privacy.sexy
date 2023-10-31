@@ -1,5 +1,5 @@
 import {
-  WatchSource, watch, inject, readonly, ref,
+  WatchSource, watch, inject, shallowReadonly, shallowRef,
 } from 'vue';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { TreeRoot } from './TreeRoot/TreeRoot';
@@ -8,8 +8,8 @@ import { QueryableNodes } from './TreeRoot/NodeCollection/Query/QueryableNodes';
 export function useCurrentTreeNodes(treeWatcher: WatchSource<TreeRoot>) {
   const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
 
-  const tree = ref<TreeRoot | undefined>();
-  const nodes = ref<QueryableNodes | undefined>();
+  const tree = shallowRef<TreeRoot | undefined>();
+  const nodes = shallowRef<QueryableNodes | undefined>();
 
   watch(treeWatcher, (newTree) => {
     tree.value = newTree;
@@ -22,6 +22,6 @@ export function useCurrentTreeNodes(treeWatcher: WatchSource<TreeRoot>) {
   }, { immediate: true });
 
   return {
-    nodes: readonly(nodes),
+    nodes: shallowReadonly(nodes),
   };
 }

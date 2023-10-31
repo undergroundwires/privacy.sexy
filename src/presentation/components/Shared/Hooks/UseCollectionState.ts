@@ -1,6 +1,4 @@
-import {
-  ref, computed, readonly,
-} from 'vue';
+import { shallowRef, shallowReadonly } from 'vue';
 import { IApplicationContext, IReadOnlyApplicationContext } from '@/application/Context/IApplicationContext';
 import { ICategoryCollectionState, IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { IEventSubscriptionCollection } from '@/infrastructure/Events/IEventSubscriptionCollection';
@@ -16,7 +14,7 @@ export function useCollectionState(
     throw new Error('missing events');
   }
 
-  const currentState = ref<ICategoryCollectionState>(context.state);
+  const currentState = shallowRef<IReadOnlyCategoryCollectionState>(context.state);
   events.register([
     context.contextChanged.on((event) => {
       currentState.value = event.newState;
@@ -66,8 +64,7 @@ export function useCollectionState(
     modifyCurrentContext,
     onStateChange,
     currentContext: context as IReadOnlyApplicationContext,
-    currentState: readonly(computed<IReadOnlyCategoryCollectionState>(() => currentState.value)),
-    events: events as IEventSubscriptionCollection,
+    currentState: shallowReadonly(currentState),
   };
 }
 

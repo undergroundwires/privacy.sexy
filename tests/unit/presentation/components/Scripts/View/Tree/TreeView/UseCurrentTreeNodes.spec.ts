@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
-  ref, defineComponent, WatchSource, nextTick,
+  shallowRef, defineComponent, WatchSource, nextTick,
 } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { TreeRoot } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/TreeRoot';
@@ -15,7 +15,7 @@ describe('useCurrentTreeNodes', () => {
   it('should set nodes on immediate invocation', () => {
     // arrange
     const expectedNodes = new QueryableNodesStub();
-    const treeWatcher = ref<TreeRoot>(new TreeRootStub().withCollection(
+    const treeWatcher = shallowRef<TreeRoot>(new TreeRootStub().withCollection(
       new TreeNodeCollectionStub().withNodes(expectedNodes),
     ));
     // act
@@ -27,7 +27,7 @@ describe('useCurrentTreeNodes', () => {
   it('should update nodes when treeWatcher changes', async () => {
     // arrange
     const initialNodes = new QueryableNodesStub();
-    const treeWatcher = ref(
+    const treeWatcher = shallowRef(
       new TreeRootStub().withCollection(new TreeNodeCollectionStub().withNodes(initialNodes)),
     );
     const { returnObject } = mountWrapperComponent(treeWatcher);
@@ -45,7 +45,7 @@ describe('useCurrentTreeNodes', () => {
     // arrange
     const initialNodes = new QueryableNodesStub();
     const treeCollectionStub = new TreeNodeCollectionStub().withNodes(initialNodes);
-    const treeWatcher = ref(new TreeRootStub().withCollection(treeCollectionStub));
+    const treeWatcher = shallowRef(new TreeRootStub().withCollection(treeCollectionStub));
 
     const { returnObject } = mountWrapperComponent(treeWatcher);
 

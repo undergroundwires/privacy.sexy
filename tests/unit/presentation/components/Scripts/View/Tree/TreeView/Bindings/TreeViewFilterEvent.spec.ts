@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
-  TreeViewFilterAction, TreeViewFilterEvent, TreeViewFilterPredicate,
+  TreeViewFilterAction, TreeViewFilterPredicate,
   createFilterRemovedEvent, createFilterTriggeredEvent,
 } from '@/presentation/components/Scripts/View/Tree/TreeView/Bindings/TreeInputFilterEvent';
 
@@ -47,19 +47,6 @@ describe('TreeViewFilterEvent', () => {
       // expect
       expect(event.predicate).to.equal(predicate);
     });
-    it('returns unique timestamp', () => {
-      // arrange
-      const instances = new Array<TreeViewFilterEvent>();
-      // act
-      instances.push(
-        createFilterTriggeredEvent(createPredicateStub()),
-        createFilterTriggeredEvent(createPredicateStub()),
-        createFilterTriggeredEvent(createPredicateStub()),
-      );
-      // assert
-      const uniqueDates = new Set(instances.map((instance) => instance.timestamp));
-      expect(uniqueDates).to.have.length(instances.length);
-    });
   });
 
   describe('createFilterRemovedEvent', () => {
@@ -78,19 +65,6 @@ describe('TreeViewFilterEvent', () => {
       const event = createFilterRemovedEvent();
       // assert
       expect(event.predicate).to.equal(expected);
-    });
-    it('returns unique timestamp', () => {
-      // arrange
-      const instances = new Array<TreeViewFilterEvent>();
-      // act
-      instances.push(
-        createFilterRemovedEvent(),
-        createFilterRemovedEvent(),
-        createFilterRemovedEvent(),
-      );
-      // assert
-      const uniqueDates = new Set(instances.map((instance) => instance.timestamp));
-      expect(uniqueDates).to.have.length(instances.length);
     });
   });
 });

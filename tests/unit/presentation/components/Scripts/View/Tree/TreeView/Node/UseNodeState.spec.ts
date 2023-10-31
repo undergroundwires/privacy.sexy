@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
-  ref, defineComponent, WatchSource, nextTick,
+  shallowRef, defineComponent, WatchSource, nextTick,
 } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { ReadOnlyTreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
@@ -16,7 +16,7 @@ describe('useNodeState', () => {
   it('should set state on immediate invocation if node exists', () => {
     // arrange
     const expectedState = new TreeNodeStateDescriptorStub();
-    const nodeWatcher = ref<ReadOnlyTreeNode | undefined>(undefined);
+    const nodeWatcher = shallowRef<ReadOnlyTreeNode | undefined>(undefined);
     nodeWatcher.value = new TreeNodeStub()
       .withState(new TreeNodeStateAccessStub().withCurrent(expectedState));
     // act
@@ -27,7 +27,7 @@ describe('useNodeState', () => {
 
   it('should not set state on immediate invocation if node is undefined', () => {
     // arrange
-    const nodeWatcher = ref<ReadOnlyTreeNode | undefined>(undefined);
+    const nodeWatcher = shallowRef<ReadOnlyTreeNode | undefined>(undefined);
     // act
     const { returnObject } = mountWrapperComponent(nodeWatcher);
     // assert
@@ -37,7 +37,7 @@ describe('useNodeState', () => {
   it('should update state when nodeWatcher changes', async () => {
     // arrange
     const expectedNewState = new TreeNodeStateDescriptorStub();
-    const nodeWatcher = ref<ReadOnlyTreeNode | undefined>(undefined);
+    const nodeWatcher = shallowRef<ReadOnlyTreeNode | undefined>(undefined);
     const { returnObject } = mountWrapperComponent(nodeWatcher);
     // act
     nodeWatcher.value = new TreeNodeStub()
@@ -49,7 +49,7 @@ describe('useNodeState', () => {
 
   it('should update state when node state changes', () => {
     // arrange
-    const nodeWatcher = ref<ReadOnlyTreeNode | undefined>(undefined);
+    const nodeWatcher = shallowRef<ReadOnlyTreeNode | undefined>(undefined);
     const stateAccessStub = new TreeNodeStateAccessStub();
     const expectedChangedState = new TreeNodeStateDescriptorStub();
     nodeWatcher.value = new TreeNodeStub()

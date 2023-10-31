@@ -1,5 +1,5 @@
 import {
-  WatchSource, inject, ref, watch,
+  WatchSource, inject, shallowRef, watch,
 } from 'vue';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { ReadOnlyTreeNode } from './TreeNode';
@@ -10,7 +10,7 @@ export function useNodeState(
 ) {
   const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
 
-  const state = ref<TreeNodeStateDescriptor>();
+  const state = shallowRef<TreeNodeStateDescriptor>();
 
   watch(nodeWatcher, (node: ReadOnlyTreeNode) => {
     if (!node) {

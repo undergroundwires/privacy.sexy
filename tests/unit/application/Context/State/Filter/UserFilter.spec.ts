@@ -3,8 +3,8 @@ import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult'
 import { UserFilter } from '@/application/Context/State/Filter/UserFilter';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
+import { FilterChangeDetailsStub } from '@tests/unit/shared/Stubs/FilterChangeDetailsStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
-import { FilterChange } from '@/application/Context/State/Filter/Event/FilterChange';
 import { IFilterChangeDetails } from '@/application/Context/State/Filter/Event/IFilterChangeDetails';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
 
@@ -12,7 +12,7 @@ describe('UserFilter', () => {
   describe('clearFilter', () => {
     it('signals when removing filter', () => {
       // arrange
-      const expectedChange = FilterChange.forClear();
+      const expectedChange = FilterChangeDetailsStub.forClear();
       let actualChange: IFilterChangeDetails;
       const sut = new UserFilter(new CategoryCollectionStub());
       sut.filterChanged.on((change) => {

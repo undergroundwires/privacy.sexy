@@ -10,10 +10,10 @@ import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { UseApplicationStub } from '@tests/unit/shared/Stubs/UseApplicationStub';
 import { UserFilterMethod, UserFilterStub } from '@tests/unit/shared/Stubs/UserFilterStub';
 import { FilterResultStub } from '@tests/unit/shared/Stubs/FilterResultStub';
-import { FilterChange } from '@/application/Context/State/Filter/Event/FilterChange';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
 import { IFilterChangeDetails } from '@/application/Context/State/Filter/Event/IFilterChangeDetails';
 import { UseAutoUnsubscribedEventsStub } from '@tests/unit/shared/Stubs/UseAutoUnsubscribedEventsStub';
+import { FilterChangeDetailsStub } from '@tests/unit/shared/Stubs/FilterChangeDetailsStub';
 
 const DOM_SELECTOR_NO_MATCHES = '.search-no-matches';
 const DOM_SELECTOR_CLOSE_BUTTON = '.search__query__close-button';
@@ -123,7 +123,7 @@ describe('TheScriptsView.vue', () => {
             new FilterResultStub().withQueryAndSomeMatches(),
           ),
         changeEvents: [
-          FilterChange.forClear(),
+          FilterChangeDetailsStub.forClear(),
         ],
         expectedComponent: CardList,
         componentsToDisappear: [ScriptsTree],
@@ -132,7 +132,7 @@ describe('TheScriptsView.vue', () => {
         name: 'tree on search',
         initialView: ViewType.Cards,
         changeEvents: [
-          FilterChange.forApply(
+          FilterChangeDetailsStub.forApply(
             new FilterResultStub().withQueryAndSomeMatches(),
           ),
         ],
@@ -143,10 +143,10 @@ describe('TheScriptsView.vue', () => {
         name: 'return to card after search',
         initialView: ViewType.Cards,
         changeEvents: [
-          FilterChange.forApply(
+          FilterChangeDetailsStub.forApply(
             new FilterResultStub().withQueryAndSomeMatches(),
           ),
-          FilterChange.forClear(),
+          FilterChangeDetailsStub.forClear(),
         ],
         expectedComponent: CardList,
         componentsToDisappear: [ScriptsTree],
@@ -155,10 +155,10 @@ describe('TheScriptsView.vue', () => {
         name: 'return to tree after search',
         initialView: ViewType.Tree,
         changeEvents: [
-          FilterChange.forApply(
+          FilterChangeDetailsStub.forApply(
             new FilterResultStub().withQueryAndSomeMatches(),
           ),
-          FilterChange.forClear(),
+          FilterChangeDetailsStub.forClear(),
         ],
         expectedComponent: ScriptsTree,
         componentsToDisappear: [CardList],
@@ -223,11 +223,11 @@ describe('TheScriptsView.vue', () => {
           });
 
           // act
-          filterStub.notifyFilterChange(FilterChange.forApply(
+          filterStub.notifyFilterChange(FilterChangeDetailsStub.forApply(
             new FilterResultStub().withQueryAndSomeMatches(),
           ));
           await wrapper.vm.$nextTick();
-          filterStub.notifyFilterChange(FilterChange.forClear());
+          filterStub.notifyFilterChange(FilterChangeDetailsStub.forClear());
           await wrapper.vm.$nextTick();
 
           // assert
@@ -264,7 +264,7 @@ describe('TheScriptsView.vue', () => {
           });
 
           // act
-          filterStub.notifyFilterChange(FilterChange.forApply(
+          filterStub.notifyFilterChange(FilterChangeDetailsStub.forApply(
             new FilterResultStub().withQueryAndSomeMatches(),
           ));
           await wrapper.vm.$nextTick();
@@ -283,7 +283,7 @@ describe('TheScriptsView.vue', () => {
       const wrapper = mountComponent({
         useCollectionState: stateStub.get(),
       });
-      filterStub.notifyFilterChange(FilterChange.forApply(
+      filterStub.notifyFilterChange(FilterChangeDetailsStub.forApply(
         new FilterResultStub().withQueryAndSomeMatches(),
       ));
       await wrapper.vm.$nextTick();
@@ -359,7 +359,7 @@ describe('TheScriptsView.vue', () => {
           });
 
           // act
-          filterStub.notifyFilterChange(FilterChange.forApply(
+          filterStub.notifyFilterChange(FilterChangeDetailsStub.forApply(
             filter,
           ));
           await wrapper.vm.$nextTick();
@@ -379,10 +379,10 @@ describe('TheScriptsView.vue', () => {
         });
 
         // act
-        filter.notifyFilterChange(FilterChange.forApply(
+        filter.notifyFilterChange(FilterChangeDetailsStub.forApply(
           new FilterResultStub().withSomeMatches(),
         ));
-        filter.notifyFilterChange(FilterChange.forClear());
+        filter.notifyFilterChange(FilterChangeDetailsStub.forClear());
         await wrapper.vm.$nextTick();
 
         // expect

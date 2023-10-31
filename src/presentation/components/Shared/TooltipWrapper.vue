@@ -26,7 +26,7 @@
 import {
   useFloating, arrow, shift, flip, Placement, offset, Side, Coords, autoUpdate,
 } from '@floating-ui/vue';
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, shallowRef, computed } from 'vue';
 import { useResizeObserverPolyfill } from '@/presentation/components/Shared/Hooks/UseResizeObserverPolyfill';
 import type { CSSProperties } from 'vue/types/jsx'; // In Vue 3.0 import from 'vue'
 
@@ -36,10 +36,10 @@ const MARGIN_FROM_DOCUMENT_EDGE_IN_PX = 2;
 
 export default defineComponent({
   setup() {
-    const tooltipDisplayElement = ref<HTMLElement | undefined>();
-    const triggeringElement = ref<HTMLElement | undefined>();
-    const arrowElement = ref<HTMLElement | undefined>();
-    const placement = ref<Placement>('top');
+    const tooltipDisplayElement = shallowRef<HTMLElement | undefined>();
+    const triggeringElement = shallowRef<HTMLElement | undefined>();
+    const arrowElement = shallowRef<HTMLElement | undefined>();
+    const placement = shallowRef<Placement>('top');
 
     useResizeObserverPolyfill();
 
@@ -47,7 +47,7 @@ export default defineComponent({
       triggeringElement,
       tooltipDisplayElement,
       {
-        placement: ref(placement),
+        placement,
         middleware: [
           offset(ARROW_SIZE_IN_PX + GAP_BETWEEN_TOOLTIP_AND_TRIGGER_IN_PX),
           /* Shifts the element along the specified axes in order to keep it in view. */

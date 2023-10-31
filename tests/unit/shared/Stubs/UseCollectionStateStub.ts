@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { shallowRef } from 'vue';
 import {
   ContextModifier, IStateCallbackSettings, NewStateEventHandler,
   StateModifier, useCollectionState,
@@ -8,7 +8,6 @@ import { IUserFilter } from '@/application/Context/State/Filter/IUserFilter';
 import { IApplicationContext } from '@/application/Context/IApplicationContext';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
 import { CategoryCollectionStateStub } from './CategoryCollectionStateStub';
-import { EventSubscriptionCollectionStub } from './EventSubscriptionCollectionStub';
 import { ApplicationContextStub } from './ApplicationContextStub';
 import { UserFilterStub } from './UserFilterStub';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
@@ -17,7 +16,9 @@ export class UseCollectionStateStub
   extends StubWithObservableMethodCalls<ReturnType<typeof useCollectionState>> {
   private currentContext: IApplicationContext = new ApplicationContextStub();
 
-  private readonly currentState = ref<ICategoryCollectionState>(new CategoryCollectionStateStub());
+  private readonly currentState = shallowRef<ICategoryCollectionState>(
+    new CategoryCollectionStateStub(),
+  );
 
   public withFilter(filter: IUserFilter) {
     const state = new CategoryCollectionStateStub()
@@ -100,7 +101,6 @@ export class UseCollectionStateStub
       onStateChange: this.onStateChange.bind(this),
       currentContext: this.currentContext,
       currentState: this.currentState,
-      events: new EventSubscriptionCollectionStub(),
     };
   }
 }

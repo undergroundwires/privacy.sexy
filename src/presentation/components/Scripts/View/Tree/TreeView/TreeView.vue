@@ -14,7 +14,7 @@
 <script lang="ts">
 import {
   defineComponent, onMounted, watch,
-  ref, PropType,
+  shallowRef, PropType,
 } from 'vue';
 import { TreeRootManager } from './TreeRoot/TreeRootManager';
 import TreeRoot from './TreeRoot/TreeRoot.vue';
@@ -53,7 +53,7 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    const treeContainerElement = ref<HTMLElement | undefined>();
+    const treeContainerElement = shallowRef<HTMLElement | undefined>();
 
     const tree = new TreeRootManager();
 

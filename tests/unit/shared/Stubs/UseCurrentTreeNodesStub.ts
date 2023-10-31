@@ -1,5 +1,5 @@
 import {
-  WatchSource, readonly, shallowRef, triggerRef,
+  WatchSource, shallowReadonly, shallowRef, triggerRef,
 } from 'vue';
 import { TreeRoot } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/TreeRoot';
 import { useCurrentTreeNodes } from '@/presentation/components/Scripts/View/Tree/TreeView/UseCurrentTreeNodes';
@@ -25,7 +25,7 @@ export class UseCurrentTreeNodesStub {
     return (treeWatcher: WatchSource<TreeRoot>) => {
       this.treeWatcher = treeWatcher;
       return {
-        nodes: readonly(this.nodes),
+        nodes: shallowReadonly(this.nodes),
       };
     };
   }

@@ -1,5 +1,5 @@
 import {
-  Ref, inject, readonly, ref,
+  Ref, inject, shallowReadonly, shallowRef,
 } from 'vue';
 import { IScript } from '@/domain/IScript';
 import { ICategory } from '@/domain/ICategory';
@@ -21,7 +21,7 @@ export function useTreeViewFilterEvent() {
   const { onStateChange } = inject(InjectionKeys.useCollectionState)();
   const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
 
-  const latestFilterEvent = ref<TreeViewFilterEvent | undefined>(undefined);
+  const latestFilterEvent = shallowRef<TreeViewFilterEvent | undefined>(undefined);
 
   const treeNodePredicate: TreeNodeFilterResultPredicate = (node, filterResult) => filterMatches(
     getNodeMetadata(node),
@@ -36,7 +36,7 @@ export function useTreeViewFilterEvent() {
   }, { immediate: true });
 
   return {
-    latestFilterEvent: readonly(latestFilterEvent),
+    latestFilterEvent: shallowReadonly(latestFilterEvent),
   };
 }
 

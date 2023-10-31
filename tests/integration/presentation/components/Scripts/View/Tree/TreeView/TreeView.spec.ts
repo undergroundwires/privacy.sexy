@@ -2,7 +2,7 @@ import {
   describe, it, expect,
 } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { defineComponent, ref } from 'vue';
+import { defineComponent, shallowRef } from 'vue';
 import TreeView from '@/presentation/components/Scripts/View/Tree/TreeView/TreeView.vue';
 import { TreeInputNodeData } from '@/presentation/components/Scripts/View/Tree/TreeView/Bindings/TreeInputNodeData';
 import { provideDependencies } from '@/presentation/bootstrapping/DependencyProvider';
@@ -33,8 +33,8 @@ function createTreeViewWrapper(initialNodeData: readonly TreeInputNodeData[]) {
     setup() {
       provideDependencies(new ApplicationContextStub());
 
-      const initialNodes = ref(initialNodeData);
-      const selectedLeafNodeIds = ref<readonly string[]>([]);
+      const initialNodes = shallowRef(initialNodeData);
+      const selectedLeafNodeIds = shallowRef<readonly string[]>([]);
       return {
         initialNodes,
         selectedLeafNodeIds,

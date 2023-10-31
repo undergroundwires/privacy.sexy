@@ -1,12 +1,12 @@
 <template>
   <div ref="containerElement" class="container">
-    <slot ref="containerElement" />
+    <slot />
   </div>
 </template>
 
 <script lang="ts">
 import {
-  defineComponent, ref, onMounted, onBeforeUnmount,
+  defineComponent, shallowRef, onMounted, onBeforeUnmount,
 } from 'vue';
 import { useResizeObserverPolyfill } from '@/presentation/components/Shared/Hooks/UseResizeObserverPolyfill';
 
@@ -21,7 +21,7 @@ export default defineComponent({
   setup(_, { emit }) {
     const { resizeObserverReady } = useResizeObserverPolyfill();
 
-    const containerElement = ref<HTMLElement>();
+    const containerElement = shallowRef<HTMLElement>();
 
     let width = 0;
     let height = 0;

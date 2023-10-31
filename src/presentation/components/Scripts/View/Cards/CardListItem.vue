@@ -50,7 +50,7 @@
 <script lang="ts">
 import {
   defineComponent, ref, watch, computed,
-  inject,
+  inject, shallowRef,
 } from 'vue';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
@@ -95,7 +95,7 @@ export default defineComponent({
 
     const isAnyChildSelected = ref(false);
     const areAllChildrenSelected = ref(false);
-    const cardElement = ref<HTMLElement>();
+    const cardElement = shallowRef<HTMLElement>();
 
     const cardTitle = computed<string | undefined>(() => {
       if (!props.categoryId || !currentState.value) {
