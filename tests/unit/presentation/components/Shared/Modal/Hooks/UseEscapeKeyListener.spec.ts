@@ -56,7 +56,7 @@ describe('useEscapeKeyListener', () => {
 
     // act
     const wrapper = createComponent();
-    wrapper.destroy();
+    wrapper.unmount();
     await nextTick();
 
     // assert

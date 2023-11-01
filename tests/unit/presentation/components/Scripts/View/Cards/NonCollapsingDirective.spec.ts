@@ -5,11 +5,11 @@ const expectedAttributeName = 'data-interaction-does-not-collapse';
 
 describe('NonCollapsingDirective', () => {
   describe('NonCollapsing', () => {
-    it('adds expected attribute to the element when inserted', () => {
+    it('adds expected attribute to the element when mounted', () => {
       // arrange
       const element = createElementMock();
       // act
-      NonCollapsing.inserted(element, undefined, undefined, undefined);
+      NonCollapsing.mounted(element, undefined, undefined, undefined);
       // assert
       expect(element.hasAttribute(expectedAttributeName));
     });

@@ -170,8 +170,10 @@ function mountWrapperComponent() {
     },
     template: '<div></div>',
   }, {
-    provide: {
-      [InjectionKeys.useCollectionState as symbol]: () => useStateStub.get(),
+    global: {
+      provide: {
+        [InjectionKeys.useCollectionState as symbol]: () => useStateStub.get(),
+      },
     },
   });
 

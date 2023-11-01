@@ -1,7 +1,7 @@
 <template>
   <span class="code-wrapper">
     <span class="dollar">$</span>
-    <code><slot /></code>
+    <code ref="codeElement"><slot /></code>
     <TooltipWrapper>
       <AppIcon
         class="copy-button"
@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useSlots } from 'vue';
+import { defineComponent, shallowRef } from 'vue';
 import { Clipboard } from '@/infrastructure/Clipboard';
 import TooltipWrapper from '@/presentation/components/Shared/TooltipWrapper.vue';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
@@ -27,15 +27,23 @@ export default defineComponent({
     AppIcon,
   },
   setup() {
-    const slots = useSlots();
+    const codeElement = shallowRef<HTMLElement | undefined>();
 
     function copyCode() {
-      const code = slots.default()[0].text;
+      const element = codeElement.value;
+      if (!element) {
+        throw new Error('Code element could not be found.');
+      }
+      const code = element.textContent;
+      if (!code) {
+        throw new Error('Code element does not contain any text.');
+      }
       Clipboard.copyText(code);
     }
 
     return {
       copyCode,
+      codeElement,
     };
   },
 });

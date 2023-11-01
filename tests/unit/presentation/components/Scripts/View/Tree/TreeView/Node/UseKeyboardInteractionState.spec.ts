@@ -64,7 +64,7 @@ describe('useKeyboardInteractionState', () => {
       const { listeners, windowStub } = createWindowStub();
       // act
       const { wrapper } = mountWrapperComponent(windowStub);
-      wrapper.destroy();
+      wrapper.unmount();
       await nextTick();
       // assert
       expect(listeners.keydown).to.have.lengthOf(0);

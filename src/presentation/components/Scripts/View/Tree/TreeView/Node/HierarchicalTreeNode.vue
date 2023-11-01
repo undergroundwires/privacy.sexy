@@ -184,10 +184,7 @@ export default defineComponent({
     transform: translateX(0);
   }
 
-  .#{$name}-enter,
-  // Vue 2.X compatibility
   .#{$name}-enter-from,
-  // Vue 3.X compatibility
   .#{$name}-leave-to {
     opacity: 0;
     transform: translateX(-2em);

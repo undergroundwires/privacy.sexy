@@ -1,5 +1,9 @@
 <template>
-  <span> <!-- Parent wrapper allows adding content inside with CSS without making it clickable -->
+  <span>
+    <!--
+      Parent wrapper allows `MenuOptionList` to safely add content inside
+      such as adding content in `::before` block without making it clickable.
+    -->
     <span
       v-bind:class="{
         disabled: !enabled,

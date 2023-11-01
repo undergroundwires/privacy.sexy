@@ -185,14 +185,16 @@ function getDefaultCode(language: ScriptingLanguage): string {
 <style scoped lang="scss">
 @use "@/presentation/assets/styles/main" as *;
 
-::v-deep .code-area {
-  min-height: 200px;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  &__highlight {
-    background-color: $color-secondary-light;
-    position: absolute;
+:deep() {
+  .code-area {
+    min-height: 200px;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    &__highlight {
+      background-color: $color-secondary-light;
+      position: absolute;
+    }
   }
 }
 </style>

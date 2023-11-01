@@ -334,9 +334,11 @@ class UseNodeStateChangeAggregatorBuilder {
         template: '<div></div>',
       }),
       {
-        provide: {
-          [InjectionKeys.useAutoUnsubscribedEvents as symbol]:
-            () => this.events.get(),
+        global: {
+          provide: {
+            [InjectionKeys.useAutoUnsubscribedEvents as symbol]:
+              () => this.events.get(),
+          },
         },
       },
     );

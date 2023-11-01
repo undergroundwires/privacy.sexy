@@ -42,7 +42,7 @@
     "electron-updater": "^6.1.4",
     "file-saver": "^2.0.5",
     "markdown-it": "^13.0.2",
-    "vue": "^2.7.14"
+    "vue": "^3.3.7"
   },
   "devDependencies": {
     "@modyfi/vite-plugin-yaml": "^1.0.4",
@@ -52,10 +52,10 @@
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "@vitejs/plugin-legacy": "^4.1.1",
-    "@vitejs/plugin-vue2": "^2.2.0",
+    "@vitejs/plugin-vue": "^4.4.0",
     "@vue/eslint-config-airbnb-with-typescript": "^7.0.0",
     "@vue/eslint-config-typescript": "^11.0.3",
-    "@vue/test-utils": "^1.3.6",
+    "@vue/test-utils": "^2.4.1",
     "autoprefixer": "^10.4.16",
     "cypress": "^13.3.1",
     "electron": "^27.0.0",
@@ -97,5 +97,11 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/undergroundwires/privacy.sexy.git"
+  },
+  "optionalDependencies": {
+    "dmg-license": "^1.0.11"
+  },
+  "//optionalDependencies": {
+    "dmg-license": "Required by `electron-builder` for DMG builds on macOS, https://github.com/electron-userland/electron-builder/issues/6489, https://github.com/electron-userland/electron-builder/issues/6520"
   }
 }

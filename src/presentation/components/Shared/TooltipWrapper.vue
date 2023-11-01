@@ -28,7 +28,7 @@ import {
 } from '@floating-ui/vue';
 import { defineComponent, shallowRef, computed } from 'vue';
 import { useResizeObserverPolyfill } from '@/presentation/components/Shared/Hooks/UseResizeObserverPolyfill';
-import type { CSSProperties } from 'vue/types/jsx'; // In Vue 3.0 import from 'vue'
+import type { CSSProperties } from 'vue';
 
 const GAP_BETWEEN_TOOLTIP_AND_TRIGGER_IN_PX = 2;
 const ARROW_SIZE_IN_PX = 4;
@@ -105,9 +105,8 @@ function getArrowPositionStyles(
   } else if (y) { // either X or Y is calculated
     style.top = `${y}px`;
   }
-  const oppositeSide = getCounterpartBoxOffsetProperty(placement) as never;
-  // Cast to `never` due to ts(2590) from JSX import. Remove after migrating to Vue 3.0.
-  style[oppositeSide] = `-${ARROW_SIZE_IN_PX}px`;
+  const oppositeSide = getCounterpartBoxOffsetProperty(placement);
+  style[oppositeSide.toString()] = `-${ARROW_SIZE_IN_PX}px`;
   return style;
 }
 

@@ -104,8 +104,10 @@ function mountWrapperComponent(categoryIdWatcher: WatchSource<number | undefined
     },
     template: '<div></div>',
   }, {
-    provide: {
-      [InjectionKeys.useCollectionState as symbol]: () => useStateStub.get(),
+    global: {
+      provide: {
+        [InjectionKeys.useCollectionState as symbol]: () => useStateStub.get(),
+      },
     },
   });
 

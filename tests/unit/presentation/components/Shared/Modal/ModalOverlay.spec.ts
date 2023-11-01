@@ -99,7 +99,7 @@ describe('ModalOverlay.vue', () => {
 });
 
 function mountComponent(options?: { readonly showProperty?: boolean }) {
-  return shallowMount(ModalOverlay as unknown, {
-    propsData: options?.showProperty !== undefined ? { show: options?.showProperty } : undefined,
+  return shallowMount(ModalOverlay, {
+    props: options?.showProperty !== undefined ? { show: options?.showProperty } : undefined,
   });
 }

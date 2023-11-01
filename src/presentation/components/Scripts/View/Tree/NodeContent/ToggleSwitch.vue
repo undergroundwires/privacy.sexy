@@ -20,7 +20,7 @@ import { defineComponent, computed } from 'vue';
 
 export default defineComponent({
   props: {
-    value: Boolean,
+    modelValue: Boolean,
     label: {
       type: String,
       required: true,
@@ -32,19 +32,19 @@ export default defineComponent({
   },
   emits: {
     /* eslint-disable @typescript-eslint/no-unused-vars */
-    input: (isChecked: boolean) => true,
+    'update:modelValue': (isChecked: boolean) => true,
     /* eslint-enable @typescript-eslint/no-unused-vars */
   },
   setup(props, { emit }) {
     const isChecked = computed({
       get() {
-        return props.value;
+        return props.modelValue;
       },
       set(value: boolean) {
-        if (value === props.value) {
+        if (value === props.modelValue) {
           return;
         }
-        emit('input', value);
+        emit('update:modelValue', value);
       },
     });
 

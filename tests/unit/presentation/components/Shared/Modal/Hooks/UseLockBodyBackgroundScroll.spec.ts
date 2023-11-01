@@ -79,7 +79,7 @@ describe('useLockBodyBackgroundScroll', () => {
 
       // act
       const { component } = createComponent(true);
-      component.destroy();
+      component.unmount();
       await nextTick();
 
       // assert
@@ -92,7 +92,7 @@ describe('useLockBodyBackgroundScroll', () => {
       const { component } = createComponent(true);
 
       // act
-      component.destroy();
+      component.unmount();
       await nextTick();
 
       // assert

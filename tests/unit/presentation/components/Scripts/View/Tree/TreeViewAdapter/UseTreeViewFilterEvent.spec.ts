@@ -146,11 +146,13 @@ function mountWrapperComponent(options?: {
     },
     template: '<div></div>',
   }, {
-    provide: {
-      [InjectionKeys.useCollectionState as symbol]:
-        () => useStateStub.get(),
-      [InjectionKeys.useAutoUnsubscribedEvents as symbol]:
-        () => new UseAutoUnsubscribedEventsStub().get(),
+    global: {
+      provide: {
+        [InjectionKeys.useCollectionState as symbol]:
+          () => useStateStub.get(),
+        [InjectionKeys.useAutoUnsubscribedEvents as symbol]:
+          () => new UseAutoUnsubscribedEventsStub().get(),
+      },
     },
   });
 

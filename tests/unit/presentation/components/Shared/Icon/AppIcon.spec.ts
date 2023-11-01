@@ -62,11 +62,13 @@ function mountComponent(options: {
   readonly loader: UseSvgLoaderStub,
 }) {
   return shallowMount(AppIcon, {
-    propsData: {
+    props: {
       icon: options.iconPropValue,
     },
-    provide: {
-      useSvgLoaderHook: options.loader.get(),
+    global: {
+      provide: {
+        useSvgLoaderHook: options.loader.get(),
+      },
     },
   });
 }

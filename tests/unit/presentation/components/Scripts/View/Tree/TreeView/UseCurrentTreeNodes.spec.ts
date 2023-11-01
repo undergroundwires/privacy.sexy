@@ -68,9 +68,11 @@ function mountWrapperComponent(treeWatcher: WatchSource<TreeRoot | undefined>) {
       template: '<div></div>',
     }),
     {
-      provide: {
-        [InjectionKeys.useAutoUnsubscribedEvents as symbol]:
-          () => new UseAutoUnsubscribedEventsStub().get(),
+      global: {
+        provide: {
+          [InjectionKeys.useAutoUnsubscribedEvents as symbol]:
+            () => new UseAutoUnsubscribedEventsStub().get(),
+        },
       },
     },
   );

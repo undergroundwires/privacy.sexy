@@ -16,3 +16,15 @@ export async function expectThrowsAsync(
     expect(error.message).to.equal(errorMessage);
   }
 }
+
+export async function expectDoesNotThrowAsync(
+  method: () => Promise<unknown>,
+) {
+  let error: Error | undefined;
+  try {
+    await method();
+  } catch (err) {
+    error = err;
+  }
+  expect(error).toBeUndefined();
+}

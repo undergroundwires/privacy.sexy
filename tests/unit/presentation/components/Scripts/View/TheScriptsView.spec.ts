@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Wrapper, shallowMount } from '@vue/test-utils';
+import { VueWrapper, shallowMount } from '@vue/test-utils';
 import TheScriptsView from '@/presentation/components/Scripts/View/TheScriptsView.vue';
 import ScriptsTree from '@/presentation/components/Scripts/View/Tree/ScriptsTree.vue';
 import CardList from '@/presentation/components/Scripts/View/Cards/CardList.vue';
@@ -392,7 +392,7 @@ describe('TheScriptsView.vue', () => {
   });
 });
 
-function expectComponentsToNotExist(wrapper: Wrapper<Vue>, components: readonly unknown[]) {
+function expectComponentsToNotExist(wrapper: VueWrapper, components: readonly unknown[]) {
   const existingUnexpectedComponents = components
     .map((component) => wrapper.findComponent(component))
     .filter((component) => component.exists());
@@ -404,15 +404,17 @@ function mountComponent(options?: {
   readonly viewType?: ViewType,
 }) {
   return shallowMount(TheScriptsView, {
-    provide: {
-      [InjectionKeys.useCollectionState as symbol]:
-        () => options?.useCollectionState ?? new UseCollectionStateStub().get(),
-      [InjectionKeys.useApplication as symbol]:
-        new UseApplicationStub().get(),
-      [InjectionKeys.useAutoUnsubscribedEvents as symbol]:
-        () => new UseAutoUnsubscribedEventsStub().get(),
+    global: {
+      provide: {
+        [InjectionKeys.useCollectionState as symbol]:
+          () => options?.useCollectionState ?? new UseCollectionStateStub().get(),
+        [InjectionKeys.useApplication as symbol]:
+          new UseApplicationStub().get(),
+        [InjectionKeys.useAutoUnsubscribedEvents as symbol]:
+          () => new UseAutoUnsubscribedEventsStub().get(),
+      },
     },
-    propsData: {
+    props: {
       currentView: options?.viewType === undefined ? ViewType.Tree : options.viewType,
     },
   });

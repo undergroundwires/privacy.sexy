@@ -28,21 +28,21 @@ export default defineComponent({
   },
   emits: {
     /* eslint-disable @typescript-eslint/no-unused-vars */
-    input: (isOpen: boolean) => true,
+    'update:modelValue': (isOpen: boolean) => true,
     /* eslint-enable @typescript-eslint/no-unused-vars */
   },
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
       required: true,
     },
   },
   setup(props, { emit }) {
     const showDialog = computed({
-      get: () => props.value,
+      get: () => props.modelValue,
       set: (value) => {
-        if (value !== props.value) {
-          emit('input', value);
+        if (value !== props.modelValue) {
+          emit('update:modelValue', value);
         }
       },
     });

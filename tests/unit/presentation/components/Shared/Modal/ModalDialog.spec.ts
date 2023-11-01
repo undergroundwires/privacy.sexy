@@ -23,7 +23,7 @@ describe('ModalDialog.vue', () => {
 
       // assert
       const modalContainerWrapper = wrapper.findComponent(ModalContainer);
-      expect(modalContainerWrapper.props('value')).to.equal(true);
+      expect(modalContainerWrapper.props('modelValue')).to.equal(true);
     });
     it('given false', () => {
       // arrange & act
@@ -31,7 +31,7 @@ describe('ModalDialog.vue', () => {
 
       // assert
       const modalContainerWrapper = wrapper.findComponent(ModalContainer);
-      expect(modalContainerWrapper.props('value')).to.equal(false);
+      expect(modalContainerWrapper.props('modelValue')).to.equal(false);
     });
   });
 
@@ -57,7 +57,7 @@ describe('ModalDialog.vue', () => {
       await wrapper.vm.$nextTick();
 
       // assert
-      expect(wrapper.emitted().input[0]).to.deep.equal([false]);
+      expect(wrapper.emitted('update:modelValue')).to.deep.equal([[false]]);
     });
   });
 });
@@ -68,13 +68,15 @@ function mountComponent(options?: {
   readonly deepMount?: boolean,
 }) {
   const mountFunction = options?.deepMount === true ? mount : shallowMount;
-  const wrapper = mountFunction(ModalDialog as unknown, {
-    propsData: options?.modelValue !== undefined ? { value: options?.modelValue } : undefined,
+  const wrapper = mountFunction(ModalDialog, {
+    props: options?.modelValue !== undefined ? { modelValue: options?.modelValue } : undefined,
     slots: options?.slotHtml !== undefined ? { default: options?.slotHtml } : undefined,
-    stubs: options?.deepMount === true ? undefined : {
-      [MODAL_CONTAINER_COMPONENT_NAME]: {
-        name: MODAL_CONTAINER_COMPONENT_NAME,
-        template: '<slot />',
+    global: {
+      stubs: options?.deepMount === true ? undefined : {
+        [MODAL_CONTAINER_COMPONENT_NAME]: {
+          name: MODAL_CONTAINER_COMPONENT_NAME,
+          template: '<slot />',
+        },
       },
     },
   });

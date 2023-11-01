@@ -62,7 +62,7 @@ const RawSvgLoaders = import.meta.glob('@/presentation/assets/icons/**/*.svg', {
 });
 
 function modifySvg(svgSource: string): string {
-  const parser = new DOMParser();
+  const parser = new window.DOMParser();
   const doc = parser.parseFromString(svgSource, 'image/svg+xml');
   let svgRoot = doc.documentElement;
   svgRoot = removeSvgComments(svgRoot);

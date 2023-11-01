@@ -28,8 +28,8 @@ $gap: 0.25rem;
   font-family: $font-normal;
   display: flex;
   align-items: center;
-  .items {
-    * + *::before {
+  :deep(.items) {
+    > * + *::before {
       content: '|';
       padding-right: $gap;
       padding-left: $gap;

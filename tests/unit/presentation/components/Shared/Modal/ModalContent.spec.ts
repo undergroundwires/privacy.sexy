@@ -96,8 +96,8 @@ function mountComponent(options?: {
   readonly showProperty?: boolean,
   readonly slotHtml?: string,
 }) {
-  return shallowMount(ModalContent as unknown, {
-    propsData: options?.showProperty !== undefined ? { show: options?.showProperty } : undefined,
+  return shallowMount(ModalContent, {
+    props: options?.showProperty !== undefined ? { show: options?.showProperty } : undefined,
     slots: options?.slotHtml !== undefined ? { default: options?.slotHtml } : undefined,
   });
 }

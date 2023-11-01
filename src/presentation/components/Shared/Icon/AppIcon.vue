@@ -30,7 +30,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .inline-icon {
   display: inline-block;
-  ::v-deep svg { // using ::v-deep because when v-html is used the content doesn't go through Vue's template compiler.
+  :deep(svg) { // using :deep because when v-html is used the content doesn't go through Vue's template compiler.
     display: inline-block;
     height: 1em;
     overflow: visible;

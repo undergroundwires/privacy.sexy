@@ -1,8 +1,8 @@
 /// <reference types="vitest" />
 import { resolve } from 'path';
 import { defineConfig, UserConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
 import legacy from '@vitejs/plugin-legacy';
-import vue from '@vitejs/plugin-vue2';
 import ViteYaml from '@modyfi/vite-plugin-yaml';
 import distDirs from './dist-dirs.json' assert { type: 'json' };
 import { getAliasesFromTsConfig, getClientEnvironmentVariables, getSelfDirectoryAbsolutePath } from './vite-config-helper';

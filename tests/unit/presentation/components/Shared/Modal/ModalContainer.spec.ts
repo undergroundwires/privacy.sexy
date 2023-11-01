@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import ModalContainer from '@/presentation/components/Shared/Modal/ModalContainer.vue';
 
 const DOM_MODAL_CONTAINER_SELECTOR = '.modal-container';
@@ -32,18 +33,27 @@ describe('ModalContainer.vue', () => {
   });
 
   describe('modal open/close', () => {
-    it('opens when model prop changes from false to true', async () => {
+    it('renders the model when prop changes from false to true', async () => {
       // arrange
       const wrapper = mountComponent({ modelValue: false });
 
       // act
-      await wrapper.setProps({ value: true });
+      await wrapper.setProps({ modelValue: true });
 
-      // assert after updating props
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      expect((wrapper.vm as any).isRendered).to.equal(true);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      expect((wrapper.vm as any).isOpen).to.equal(true);
+      // assert
+      expect(wrapper.vm.isRendered).to.equal(true);
+    });
+
+    it('opens the model when prop changes from false to true', async () => {
+      // arrange
+      const wrapper = mountComponent({ modelValue: false });
+
+      // act
+      await wrapper.setProps({ modelValue: true });
+      await nextTick();
+
+      // assert
+      expect(wrapper.vm.isOpen).to.equal(true);
     });
 
     it('closes when model prop changes from true to false', async () => {
@@ -51,11 +61,10 @@ describe('ModalContainer.vue', () => {
       const wrapper = mountComponent({ modelValue: true });
 
       // act
-      await wrapper.setProps({ value: false });
+      await wrapper.setProps({ modelValue: false });
 
-      // assert after updating props
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      expect((wrapper.vm as any).isOpen).to.equal(false);
+      // assert
+      expect(wrapper.vm.isOpen).to.equal(false);
       // isRendered will not be true directly due to transition
     });
 
@@ -70,7 +79,7 @@ describe('ModalContainer.vue', () => {
       await wrapper.vm.$nextTick();
 
       // assert
-      expect(wrapper.emitted().input[0]).to.deep.equal([false]);
+      expect(wrapper.emitted('update:modelValue')).to.deep.equal([[false]]);
       restore();
     });
 
@@ -86,7 +95,7 @@ describe('ModalContainer.vue', () => {
       await wrapper.vm.$nextTick();
 
       // assert
-      expect(wrapper.emitted().input[0]).to.deep.equal([false]);
+      expect(wrapper.emitted('update:modelValue')).to.deep.equal([[false]]);
     });
   });
 
@@ -118,7 +127,7 @@ describe('ModalContainer.vue', () => {
       await wrapper.vm.$nextTick();
 
       // assert
-      expect(wrapper.emitted().input).to.equal(undefined);
+      expect(wrapper.emitted('update:modelValue')).to.equal(undefined);
     });
 
     it('closes on overlay click if prop is true', async () => {
@@ -131,7 +140,7 @@ describe('ModalContainer.vue', () => {
       await wrapper.vm.$nextTick();
 
       // assert
-      expect(wrapper.emitted().input[0]).to.deep.equal([false]);
+      expect(wrapper.emitted('update:modelValue')).to.deep.equal([[false]]);
     });
   });
 });
@@ -142,22 +151,24 @@ function mountComponent(options: {
   readonly slotHtml?: string,
   readonly attachToDocument?: boolean,
 }) {
-  return shallowMount(ModalContainer as unknown, {
-    propsData: {
-      value: options.modelValue,
+  return shallowMount(ModalContainer, {
+    props: {
+      modelValue: options.modelValue,
       ...(options.closeOnOutsideClick !== undefined ? {
         closeOnOutsideClick: options.closeOnOutsideClick,
       } : {}),
     },
     slots: options.slotHtml !== undefined ? { default: options.slotHtml } : undefined,
-    stubs: {
-      [COMPONENT_MODAL_OVERLAY_NAME]: {
-        name: COMPONENT_MODAL_OVERLAY_NAME,
-        template: '<div />',
-      },
-      [COMPONENT_MODAL_CONTENT_NAME]: {
-        name: COMPONENT_MODAL_CONTENT_NAME,
-        template: '<slot />',
+    global: {
+      stubs: {
+        [COMPONENT_MODAL_OVERLAY_NAME]: {
+          name: COMPONENT_MODAL_OVERLAY_NAME,
+          template: '<div />',
+        },
+        [COMPONENT_MODAL_CONTENT_NAME]: {
+          name: COMPONENT_MODAL_CONTENT_NAME,
+          template: '<slot />',
+        },
       },
     },
   });

@@ -36,11 +36,11 @@ export default defineComponent({
   },
   emits: {
     /* eslint-disable @typescript-eslint/no-unused-vars */
-    input: (isOpen: boolean) => true,
+    'update:modelValue': (isOpen: boolean) => true,
     /* eslint-enable @typescript-eslint/no-unused-vars */
   },
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
       required: true,
     },
@@ -67,13 +67,13 @@ export default defineComponent({
     onModalFullyTransitionedOut(() => {
       isRendered.value = false;
       resetTransitionStatus();
-      if (props.value) {
-        emit('input', false);
+      if (props.modelValue) {
+        emit('update:modelValue', false);
       }
     });
 
     watchEffect(() => {
-      if (props.value) {
+      if (props.modelValue) {
         open();
       } else {
         close();
@@ -99,8 +99,8 @@ export default defineComponent({
 
       isOpen.value = false;
 
-      if (props.value) {
-        emit('input', false);
+      if (props.modelValue) {
+        emit('update:modelValue', false);
       }
     }
 
@@ -115,8 +115,8 @@ export default defineComponent({
         isOpen.value = true;
       });
 
-      if (!props.value) {
-        emit('input', true);
+      if (!props.modelValue) {
+        emit('update:modelValue', true);
       }
     }
 

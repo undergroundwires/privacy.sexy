@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
-  Wrapper, shallowMount,
+  VueWrapper, shallowMount,
   mount,
 } from '@vue/test-utils';
 import { nextTick, defineComponent } from 'vue';
@@ -92,11 +92,11 @@ describe('ToggleSwitch.vue', () => {
           const { checkboxWrapper } = getCheckboxElement(wrapper);
 
           // act
-          await checkboxWrapper.setChecked(newCheckValue);
+          await checkboxWrapper.setValue(newCheckValue);
           await nextTick();
 
           // assert
-          expect(wrapper.emitted().input).to.deep.equal([[newCheckValue]]);
+          expect(wrapper.emitted('update:modelValue')).to.deep.equal([[newCheckValue]]);
         });
       });
     });
@@ -122,11 +122,11 @@ describe('ToggleSwitch.vue', () => {
           const { checkboxWrapper } = getCheckboxElement(wrapper);
 
           // act
-          await checkboxWrapper.setChecked(value);
+          await checkboxWrapper.setValue(value);
           await nextTick();
 
           // assert
-          expect(wrapper.emitted().input).to.equal(undefined);
+          expect(wrapper.emitted('update:modelValue')).to.deep.equal(undefined);
         });
       });
     });
@@ -145,7 +145,6 @@ describe('ToggleSwitch.vue', () => {
       await nextTick();
 
       // assert
-      expect(switchWrapper.exists());
       const receivedEvents = parentWrapper.emitted(parentClickEventName);
       expect(receivedEvents).to.equal(undefined);
     });
@@ -161,14 +160,13 @@ describe('ToggleSwitch.vue', () => {
       await nextTick();
 
       // assert
-      expect(switchWrapper.exists());
       const receivedEvents = parentWrapper.emitted(parentClickEventName);
       expect(receivedEvents).to.have.lengthOf(1);
     });
   });
 });
 
-function getCheckboxElement(wrapper: Wrapper<Vue>) {
+function getCheckboxElement(wrapper: VueWrapper) {
   const checkboxWrapper = wrapper.find(DOM_INPUT_TOGGLE_CHECKBOX_SELECTOR);
   const checkboxElement = checkboxWrapper.element as HTMLInputElement;
   return {
@@ -184,9 +182,9 @@ function mountComponent(options?: {
     readonly stopClickPropagation?: boolean,
   }
 }) {
-  const wrapper = shallowMount(ToggleSwitch as unknown, {
-    propsData: {
-      value: options?.properties?.modelValue,
+  const wrapper = shallowMount(ToggleSwitch, {
+    props: {
+      modelValue: options?.properties?.modelValue,
       label: options?.properties?.label ?? 'test-label',
       stopClickPropagation: options?.properties?.stopClickPropagation,
     },
@@ -225,9 +223,11 @@ function mountToggleSwitchParent(options?: {
     },
   });
   const wrapper = mount(
-    parentComponent as unknown,
+    parentComponent,
     {
-      stubs: { ToggleSwitch: false },
+      global: {
+        stubs: { ToggleSwitch: false },
+      },
     },
   );
   return {

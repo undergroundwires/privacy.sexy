@@ -18,10 +18,6 @@ import TheFooter from '@/presentation/components/TheFooter/TheFooter.vue';
 import TheCodeButtons from '@/presentation/components/Code/CodeButtons/TheCodeButtons.vue';
 import TheScriptArea from '@/presentation/components/Scripts/TheScriptArea.vue';
 import TheSearchBar from '@/presentation/components/TheSearchBar.vue';
-import { buildContext } from '@/application/Context/ApplicationContextFactory';
-import { provideDependencies } from '../bootstrapping/DependencyProvider';
-
-const singletonAppContext = await buildContext();
 
 const OptionalDevToolkit = process.env.NODE_ENV !== 'production'
   ? defineAsyncComponent(() => import('@/presentation/components/DevToolkit/DevToolkit.vue'))
@@ -36,9 +32,7 @@ export default defineComponent({
     TheFooter,
     OptionalDevToolkit,
   },
-  setup() {
-    provideDependencies(singletonAppContext); // In Vue 3.0 we can move it to main.ts
-  },
+  setup() { },
 });
 </script>
 

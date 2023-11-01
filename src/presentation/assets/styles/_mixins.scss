@@ -35,8 +35,7 @@
     }
 
     .#{$name}-leave-active,
-    .#{$name}-enter, // Vue 2.X compatibility
-    .#{$name}-enter-from // Vue 3.X compatibility
+    .#{$name}-enter-from
     {
         opacity: 0;
 
