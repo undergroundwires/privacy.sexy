@@ -707,15 +707,9 @@ actions:
           -
             category: Clear Firefox history
             docs: |-
-              Mozilla Firefox, or simply Firefox, is a free and open-source web browser developed by the Mozilla Foundation and
-              its subsidiary the Mozilla Corporation [1].
+                This category encompasses a series of scripts aimed at helping users manage and delete their browsing history and related data in Mozilla Firefox.
 
-              Firefox stores user-related data in user profiles [2].
-
-              See also [the Firefox homepage](https://web.archive.org/web/20221029214632/https://www.mozilla.org/en-US/firefox/).
-
-              [1]: https://web.archive.org/web/20221029145113/https://en.wikipedia.org/wiki/Firefox "Firefox | Wikipedia | en.wikipedia.org"
-              [2]: https://web.archive.org/web/20221029145152/https://support.mozilla.org/en-US/kb/profiles-where-firefox-stores-user-data "Profiles - Where Firefox stores your bookmarks, passwords and other user data | Firefox Help | support.mozilla.org"
+                The scripts are designed to target different aspects of user data stored by Firefox, providing users options for maintaining privacy and freeing up disk space.
             children:
               -
                 name: Clear Firefox cache
@@ -755,9 +749,13 @@ actions:
                         # Snap installation
                         rm -rfv ~/snap/firefox/common/.mozilla/firefox/Crash\ Reports/*
                   -
-                    function: DeleteFromFirefoxProfiles
+                    function: DeleteFilesFromFirefoxProfiles
                     parameters:
-                      path: crashes/
+                      pathGlob: crashes/*
+                  -
+                    function: DeleteFilesFromFirefoxProfiles
+                    parameters:
+                      pathGlob: crashes/events/*
               -
                 name: Clear Firefox cookies
                 docs: |-
@@ -765,41 +763,37 @@ actions:
 
                   [1]: https://web.archive.org/web/20221029140816/https://kb.mozillazine.org/Cookies.sqlite "Cookies.sqlite - MozillaZine Knowledge Base | kb.mozillazine.org"
                 call:
-                  function: DeleteFromFirefoxProfiles
+                  function: DeleteFilesFromFirefoxProfiles
                   parameters:
-                    path: cookies.sqlite
+                    pathGlob: cookies.sqlite
               -
                 name: Clear Firefox browsing history (URLs, downloads, bookmarks, visits, etc.)
+                # This script (name, documentation and code) is same in Linux and Windows collections.
+                #   Changes should be done at both places.
+                #   Marked: refactor-with-partials
                 docs: |-
-                  The file "places.sqlite" stores the annotations, bookmarks, favorite icons, input history, keywords, and browsing history (a record of visited pages) [1].
-                  The tables include [1]:
-                  - `moz_anno_attributes`: Annotation Attributes
-                  - `moz_annos`: Annotations
-                  - `moz_bookmarks`: Bookmarks
-                  - `moz_bookmarks_roots`: Bookmark roots i.e. places, menu, toolbar, tags, unfiled
-                  - `moz_favicons`: Favorite icons - including URL of icon
-                  - `moz_historyvisits`: A history of the number of times a site has been visited
-                  - `moz_inputhistory`: A history of URLs typed by the user
-                  - `moz_items_annos`: Item annotations
-                  - `moz_keywords`: Keywords
-                  - `moz_places`: Places/Sites visited - referenced by `moz_historyvisits`
-                  URL data is stored in the `moz_places` table. However, this table is connected to `moz_annos`, `moz_bookmarks`, and `moz_inputhistory` and `moz_historyvisits`.
-                  As these entries are connected to each other, we'll delete all of them at the same time [2].
+                  This script targets the Firefox browsing history, including URLs, downloads, bookmarks, and site visits, by deleting specific database entries.
 
-                  **Bookmarks**:
-                  Firefox bookmarks are stored in tables such as `moz_bookmarks`, `moz_bookmarks_folders`, `moz_bookmarks_roots` [3].
-                  There are also not very well documented tables, such as `moz_bookmarks_deleted` [4].
+                  Firefox stores various user data in a file named `places.sqlite`. This file includes:
 
-                  **Downloads:**
-                  Firefox downloads are stored in the 'places.sqlite' database, within the 'moz_annos' table [5].
-                  The entries in `moz_annos` are linked to `moz_places` that store the actual history entry (`moz_places.id = moz_annos.place_id`) [6].
-                  Associated URL information is stored within the 'moz_places' table [5].
-                  Downloads have been historically stored in `downloads.rdf` for Firefox 2.x and below [7].
-                  Starting with Firefox 3.x they're stored in `downloads.sqlite` [7].
+                  - Annotations, bookmarks, and favorite icons (`moz_anno_attributes`, `moz_annos`, `moz_favicons`) [1]
+                  - Browsing history, a record of pages visited (`moz_places`, `moz_historyvisits`) [1]
+                  - Keywords and typed URLs (`moz_keywords`, `moz_inputhistory`) [1]
+                  - Item annotations (`moz_items_annos`) [1]
+                  - Bookmark roots such as places, menu, toolbar, tags, unfiled (`moz_bookmarks_roots`) [1]
 
-                  **Favicons:**
-                  Firefox favicons are stored in the `favicons.sqlite` database, within the `moz_icons` table [5].
-                  Older versions of Firefox stored Favicons in the 'places.sqlite' database, within the `moz_favicons` table [5].
+                  The `moz_places` table holds URL data, connecting to various other tables like `moz_annos`, `moz_bookmarks`, `moz_inputhistory`, and `moz_historyvisits` [2].
+                  Due to these connections, the script removes entries from all relevant tables simultaneously to maintain database integrity.
+                  
+                  **Bookmarks**: Stored across several tables (`moz_bookmarks`, `moz_bookmarks_folders`, `moz_bookmarks_roots`) [3], with additional undocumented tables like `moz_bookmarks_deleted` [4].
+
+                  **Downloads**: Stored in the 'places.sqlite' database, within the 'moz_annos' table [5]. The entries in `moz_annos` are linked to `moz_places` that store the actual history entry
+                  (`moz_places.id = moz_annos.place_id`) [6]. Associated URL information is stored within the 'moz_places' table [5]. Downloads have been historically stored in `downloads.rdf` for Firefox 2.x
+                  and below [7], and `downloads.sqlite` later on [7].
+
+                  **Favicons**: Older Firefox versions stored favicons in `places.sqlite` within the `moz_favicons` table [5], while newer versions use `favicons.sqlite` and the `moz_icons` table [5].
+
+                  By executing this script, users can ensure their Firefox browsing history, bookmarks, and downloads are thoroughly removed, contributing to a cleaner and more private browsing experience.
 
                   [1]: https://web.archive.org/web/20221029141626/https://kb.mozillazine.org/Places.sqlite "Places.sqlite - MozillaZine Knowledge Base | kb.mozillazine.org"
                   [2]: https://web.archive.org/web/20221030160803/https://wiki.mozilla.org/images/0/08/Places.sqlite.schema.pdf "Places.sqlite.schema.pdf | Mozilla Wiki"
@@ -810,21 +804,21 @@ actions:
                   [7]: https://web.archive.org/web/20221029145712/https://kb.mozillazine.org/Downloads.rdf "Downloads.rdf | MozillaZine Knowledge Base | kb.mozillazine.org"
                 call:
                   -
-                    function: DeleteFromFirefoxProfiles
+                    function: DeleteFilesFromFirefoxProfiles
                     parameters:
-                      path: downloads.rdf
+                      pathGlob: downloads.rdf
                   -
-                    function: DeleteFromFirefoxProfiles
+                    function: DeleteFilesFromFirefoxProfiles
                     parameters:
-                      path: downloads.sqlite
+                      pathGlob: downloads.sqlite
                   -
-                    function: DeleteFromFirefoxProfiles
+                    function: DeleteFilesFromFirefoxProfiles
                     parameters:
-                      path: places.sqlite
+                      pathGlob: places.sqlite
                   -
-                    function: DeleteFromFirefoxProfiles
+                    function: DeleteFilesFromFirefoxProfiles
                     parameters:
-                      path: favicons.sqlite
+                      pathGlob: favicons.sqlite
               -
                 name: Clear Firefox logins
                 docs: |-
@@ -837,17 +831,17 @@ actions:
                   [2]: https://web.archive.org/web/20221029145757/https://bugzilla.mozilla.org/show_bug.cgi?id=1593467 "1593467 - Automatically restore from logins-backup.json when logins.json is missing or corrupt | Bugzilla | mozilla.org | bugzilla.mozilla.org"
                 call:
                   -
-                    function: DeleteFromFirefoxProfiles
+                    function: DeleteFilesFromFirefoxProfiles
                     parameters:
-                      path: logins.json
+                      pathGlob: logins.json
                   -
-                    function: DeleteFromFirefoxProfiles
+                    function: DeleteFilesFromFirefoxProfiles
                     parameters:
-                      path: logins-backup.json
+                      pathGlob: logins-backup.json
                   -
-                    function: DeleteFromFirefoxProfiles
+                    function: DeleteFilesFromFirefoxProfiles
                     parameters:
-                      path: signons.sqlite
+                      pathGlob: signons.sqlite
               -
                 name: Clear Firefox autocomplete history
                 docs: |-
@@ -856,9 +850,9 @@ actions:
 
                   [1]: https://web.archive.org/web/20221029145152/https://support.mozilla.org/en-US/kb/profiles-where-firefox-stores-user-data "Profiles - Where Firefox stores your bookmarks, passwords and other user data | Firefox Help | support.mozilla.org"
                 call:
-                  function: DeleteFromFirefoxProfiles
+                  function: DeleteFilesFromFirefoxProfiles
                   parameters:
-                    path: formhistory.sqlite
+                    pathGlob: formhistory.sqlite
               -
                 name: Clear Firefox "Multi-Account Containers" data
                 docs: |-
@@ -866,9 +860,9 @@ actions:
 
                   [1]: https://web.archive.org/web/20221029145152/https://support.mozilla.org/en-US/kb/profiles-where-firefox-stores-user-data "Profiles - Where Firefox stores your bookmarks, passwords and other user data | Firefox Help | support.mozilla.org"
                 call:
-                    function: DeleteFromFirefoxProfiles
+                    function: DeleteFilesFromFirefoxProfiles
                     parameters:
-                      path: containers.json
+                      pathGlob: containers.json
               -
                 name: Clear Firefox open tabs and windows data
                 docs: |-
@@ -878,9 +872,9 @@ actions:
 
                   [1]: https://web.archive.org/web/20221029145152/https://support.mozilla.org/en-US/kb/profiles-where-firefox-stores-user-data "Profiles - Where Firefox stores your bookmarks, passwords and other user data | Firefox Help | support.mozilla.org"
                 call:
-                    function: DeleteFromFirefoxProfiles
+                    function: DeleteFilesFromFirefoxProfiles
                     parameters:
-                      path: sessionstore.jsonlz4
+                      pathGlob: sessionstore.jsonlz4
       -
         category: Clear system and kernel usage data
         docs: |-
@@ -3493,16 +3487,66 @@ functions:
             >&2 echo "Failed, $service does not exist."
           fi
   -
-    name: DeleteFromFirefoxProfiles
+    name: Comment
+    # 💡 Purpose:
+    #   Adds a comment in the executed code for better readability and debugging.
+    #   This function does not affect the execution flow but helps in understanding the purpose of subsequent code.
     parameters:
-      - name: path # file or folder in profile file
-    code: |-
-      # {{ $path }}: Global installation
-      rm -rfv ~/.mozilla/firefox/*/{{ $path }}
-      # {{ $path }}: Flatpak installation
-      rm -rfv ~/.var/app/org.mozilla.firefox/.mozilla/firefox/*/{{ $path }}
-      # {{ $path }}: Snap installation
-      rm -rfv ~/snap/firefox/common/.mozilla/firefox/*/{{ $path }}
+        - name: codeComment
+          optional: true
+        - name: revertCodeComment
+          optional: true
+    call:
+        function: RunInlineCode
+        parameters:
+            code: '{{ with $codeComment }}# {{ . }}{{ end }}'
+            revertCode: '{{ with $revertCodeComment }}# {{ . }}{{ end }}'
+  -
+    name: DeleteFiles
+    parameters:
+      - name: fileGlob
+    call:
+      -
+        function: Comment
+        parameters:
+          codeComment: >-
+            Delete files matching pattern: "{{ $fileGlob }}"
+      -
+        function: RunPython3Code
+        parameters:
+          code: |-
+            import glob
+            import os
+            path = '{{ $fileGlob }}'
+            expanded_path = os.path.expandvars(os.path.expanduser(path))
+            print(f'Deleting files matching pattern: {expanded_path}')
+            paths = glob.glob(expanded_path)
+            if not paths:
+              print('Skipping, no paths found.')
+            for path in paths:
+              if not os.path.isfile(path):
+                print(f'Skipping folder: "{path}".')
+                continue
+              os.remove(path)
+              print(f'Successfully delete file: "{path}".')
+            print(f'Successfully deleted {len(paths)} file(s).')
+  -
+    name: DeleteFilesFromFirefoxProfiles
+    parameters:
+      - name: pathGlob # file or folder in profile file
+    call:
+      - # Global installation
+          function: DeleteFiles
+          parameters:
+            fileGlob: ~/.mozilla/firefox/*/{{ $pathGlob }}
+      - # Flatpak installation
+          function: DeleteFiles
+          parameters:
+            fileGlob: ~/.var/app/org.mozilla.firefox/.mozilla/firefox/*/{{ $pathGlob }}
+      - # Snap installation
+          function: DeleteFiles
+          parameters:
+            fileGlob: ~/snap/firefox/common/.mozilla/firefox/*/{{ $pathGlob }}
   -
     name: CleanTableFromFirefoxProfileDatabase
     parameters:

@@ -523,39 +523,88 @@ actions:
                                             directoryGlob: '%LOCALAPPDATA%\Google\Chrome\User Data'
                     -
                         category: Clear Firefox history
+                        docs: |-
+                            This category encompasses a series of scripts aimed at helping users manage and delete their browsing history and related data in Mozilla Firefox.
+
+                            The scripts are designed to target different aspects of user data stored by Firefox, providing users options for maintaining privacy and freeing up disk space.
                         children:
                             -
-                                name: Clear browsing history and cache
-                                recommend: standard
-                                code: |-
-                                    set ignoreFiles="content-prefs.sqlite" "permissions.sqlite" "favicons.sqlite"
-                                    for %%d in ("%APPDATA%\Mozilla\Firefox\Profiles\"
-                                                "%USERPROFILE%\Local Settings\Application Data\Mozilla\Firefox\Profiles\"
-                                            ) do (
-                                        IF EXIST %%d (
-                                            FOR /d %%p IN (%%d*) DO (
-                                                for /f "delims=" %%f in ('dir /b /s "%%p\*.sqlite" 2^>nul') do (
-                                                    set "continue="
-                                                    for %%i in (%ignoreFiles%) do (
-                                                        if %%i == "%%~nxf" (
-                                                            set continue=1
-                                                        )
-                                                    )
-                                                    if not defined continue (
-                                                        del /q /s /f %%f
-                                                    )
-                                                )
-                                            )
-                                        )
-                                    )
-                            -
-                                name: Clear Firefox user profiles, settings, and data
+                                name: Clear Firefox browsing history (URLs, downloads, bookmarks, visits, etc.)
+                                # This script (name, documentation and code) is same in Linux and Windows collections.
+                                #   Changes should be done at both places.
+                                #   Marked: refactor-with-partials
+                                docs: |-
+                                    This script targets the Firefox browsing history, including URLs, downloads, bookmarks, and site visits, by deleting specific database entries.
+
+                                    Firefox stores various user data in a file named `places.sqlite`. This file includes:
+
+                                    - Annotations, bookmarks, and favorite icons (`moz_anno_attributes`, `moz_annos`, `moz_favicons`) [1]
+                                    - Browsing history, a record of pages visited (`moz_places`, `moz_historyvisits`) [1]
+                                    - Keywords and typed URLs (`moz_keywords`, `moz_inputhistory`) [1]
+                                    - Item annotations (`moz_items_annos`) [1]
+                                    - Bookmark roots such as places, menu, toolbar, tags, unfiled (`moz_bookmarks_roots`) [1]
+
+                                    The `moz_places` table holds URL data, connecting to various other tables like `moz_annos`, `moz_bookmarks`, `moz_inputhistory`, and `moz_historyvisits` [2].
+                                    Due to these connections, the script removes entries from all relevant tables simultaneously to maintain database integrity.
+                                    
+                                    **Bookmarks**: Stored across several tables (`moz_bookmarks`, `moz_bookmarks_folders`, `moz_bookmarks_roots`) [3], with additional undocumented tables like `moz_bookmarks_deleted` [4].
+
+                                    **Downloads**: Stored in the 'places.sqlite' database, within the 'moz_annos' table [5]. The entries in `moz_annos` are linked to `moz_places` that store the actual history entry
+                                    (`moz_places.id = moz_annos.place_id`) [6]. Associated URL information is stored within the 'moz_places' table [5]. Downloads have been historically stored in `downloads.rdf` for Firefox 2.x
+                                    and below [7], and `downloads.sqlite` later on [7].
+
+                                    **Favicons**: Older Firefox versions stored favicons in `places.sqlite` within the `moz_favicons` table [5], while newer versions use `favicons.sqlite` and the `moz_icons` table [5].
+
+                                    By executing this script, users can ensure their Firefox browsing history, bookmarks, and downloads are thoroughly removed, contributing to a cleaner and more private browsing experience.
+
+                                    [1]: https://web.archive.org/web/20221029141626/https://kb.mozillazine.org/Places.sqlite "Places.sqlite - MozillaZine Knowledge Base | kb.mozillazine.org"
+                                    [2]: https://web.archive.org/web/20221030160803/https://wiki.mozilla.org/images/0/08/Places.sqlite.schema.pdf "Places.sqlite.schema.pdf | Mozilla Wiki"
+                                    [3]: https://web.archive.org/web/20221029145432/https://wiki.mozilla.org/Places:BookmarksComments "Places:BookmarksComments | MozillaWiki | wiki.mozilla.org"
+                                    [4]: https://web.archive.org/web/20221029145447/https://github.com/mozilla/application-services/issues/514 "Add a `moz_bookmarks_deleted` table for tombstones · Issue #514 · mozilla/application-services | GitHub | github.com"
+                                    [5]: https://web.archive.org/web/20221029145535/https://www.foxtonforensics.com/browser-history-examiner/firefox-history-location "Mozilla Firefox History Location | Firefox History Viewer | foxtonforensics.com"
+                                    [6]: https://web.archive.org/web/20221029145550/https://support.mozilla.org/en-US/questions/1319253 "Where does Firefox store SQLITE download history | Firefox Support Forum | Mozilla Support | support.mozilla.org"
+                                    [7]: https://web.archive.org/web/20221029145712/https://kb.mozillazine.org/Downloads.rdf "Downloads.rdf | MozillaZine Knowledge Base | kb.mozillazine.org"
                                 call:
                                     -
+                                        function: DeleteFilesFromFirefoxProfiles
+                                        parameters:
+                                            pathGlob: downloads.rdf
+                                    -
+                                        function: DeleteFilesFromFirefoxProfiles
+                                        parameters:
+                                            pathGlob: downloads.sqlite
+                                    -
+                                        function: DeleteFilesFromFirefoxProfiles
+                                        parameters:
+                                            pathGlob: places.sqlite
+                                    -
+                                        function: DeleteFilesFromFirefoxProfiles
+                                        parameters:
+                                            pathGlob: favicons.sqlite
+                            -
+                                name: Clear all Firefox user information and preferences
+                                docs: |-
+                                    This script performs a reset of Mozilla Firefox, erasing all user profiles, settings, and personalized data to restore the
+                                    browser to its default state.
+                                    
+                                    Firefox user profiles, encompassing bookmarks, browsing history, passwords, extensions, themes, and preferences [1].
+                                    These folders are in:
+
+                                    - `C:\Documents and Settings\<Windows login/user name>\Application Data\Mozilla\Firefox\Profiles\<profile folder>` on Windows XP and earlier [1],
+                                    - `%APPDATA%\Mozilla\Firefox\Profiles\<profile folder>` on Windows 10 and later [1].
+
+                                    **Considerations**: 
+                                    - Using this script results in a total loss of all personalized Firefox data. 
+                                    - If your goal is solely to clear browsing data while retaining settings and extensions, this script is not recommended.
+                                    - Close Firefox before running this script to prevent potential issues.
+
+                                    [1]: https://web.archive.org/web/20231101125909/https://kb.mozillazine.org/Profile_folder_-_Firefox#Windows "Profile folder - Firefox - MozillaZine Knowledge Base | kb.mozillazine.org"
+                                call:
+                                    - # Windows XP
                                         function: ClearDirectoryContents
                                         parameters:
                                             directoryGlob: '%LOCALAPPDATA%\Mozilla\Firefox\Profiles'
-                                    -
+                                    - # Windows Vista and newer
                                         function: ClearDirectoryContents
                                         parameters:
                                             directoryGlob: '%APPDATA%\Mozilla\Firefox\Profiles'
@@ -11760,3 +11809,16 @@ functions:
                         if ($skippedCount -gt 0) {
                             Write-Host "Skipped $($skippedCount) items."
                         }
+    -
+        name: DeleteFilesFromFirefoxProfiles
+        parameters:
+            - name: pathGlob # File name inin profile file
+        call:
+            - # Windows XP
+                function: DeleteFiles
+                parameters:
+                    fileGlob: '%USERPROFILE%\Local Settings\Application Data\Mozilla\Firefox\Profiles\*\{{ $pathGlob }}'
+            - # Windows Vista and newer
+                function: DeleteFiles
+                parameters:
+                    fileGlob: '%APPDATA%\Mozilla\Firefox\Profiles\*\{{ $pathGlob }}'
