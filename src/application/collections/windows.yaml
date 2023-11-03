@@ -10247,24 +10247,55 @@ functions:
                     codeComment: Uninstall '{{ $packageName }}' Microsoft Store app.
                     code: Get-AppxPackage '{{ $packageName }}' | Remove-AppxPackage
                     # This script attempts to reinstall the app that was just uninstalled, if necessary.
-                    # The app's package family name is constructed using its name and publisher ID.
-                    #   Package Family Name is: `<name>_<publisherid>`
-                    #   Learn more about package identity: https://learn.microsoft.com/en-us/windows/apps/desktop/modernize/package-identity-overview#publisher-id (https://archive.ph/Sx4JC)
+                    # Re-installation strategy:
+                    #   1. Attempt to locate the package from another user's installation:
+                    #       - Utilizes the `Get-AppxPackage` command with the `-AllUsers` flag to search across all user installations.
+                    #       - Iterates through the results to locate the manifest file required for re-installation.
+                    #   2. Attempt to locate the package from the system installation:
+                    #       - Utilizes the `Get-AppxPackage` command with `-RegisterByFamilyName` to search for the manifest file in the system installation.
+                    #       - The app's package family name is constructed using its name and publisher ID.
+                    #         Package Family Name is: `<name>_<publisherid>`
+                    #         Learn more about package identity: https://learn.microsoft.com/en-us/windows/apps/desktop/modernize/package-identity-overview#publisher-id (https://archive.ph/Sx4JC)
+                    #       - Based on tests, Windows attempts to locate the file in the installation location of the package.
+                    #         This location can be identified using commands such as `(Get-AppxPackage -AllUsers 'Windows.PrintDialog').InstallLocation`.
+                    #         Possible installation locations include:
+                    #           - `%WINDIR%\SystemApps\{PackageFamilyName}` (for system apps)
+                    #           - `%WINDIR%\{ShortAppName}` (for system apps)
+                    #           - `%SYSTEMDRIVE%\Program Files\WindowsApps\{PackageName}` (for non-system apps)
+                    #         View all package locations: `Get-AppxPackage | Sort Name | Format-Table Name, InstallLocation`
                     revertCodeComment: Reinstall '{{ $packageName }}' if it was previously uninstalled.
                     revertCode: |-
                         $packageName='{{ $packageName }}'
                         $publisherId='{{ $publisherId }}'
+                        if (Get-AppxPackage -Name $packageName) {
+                            Write-Host "Skipping, `"$packageName`" is already installed for the current user."
+                            exit 0
+                        }
                         Write-Host "Starting the installation process for `"$packageName`"..."
-                        # Attempting installation using the manifest file
+                        # Attempt installation using the manifest file
                         Write-Host "Checking if `"$packageName`" is installed on another user profile..."
-                        $package = Get-AppxPackage -AllUsers $packageName
-                        if (!$package) {
+                        $packages = @(Get-AppxPackage -AllUsers $packageName)
+                        if (!$packages) {
                             Write-Host "`"$packageName`" is not installed on any other user profiles."
                         } else {
-                            Write-Host "Found package `"$($package.PackageFullName)`"."
-                            $manifestPath = "$($package.InstallLocation)AppxManifest.xml"
-                            if (Test-Path "$manifestPath") {
-                                Write-Host "Manifest file located. Trying to install using the manifest..."
+                            foreach ($package in $packages) {
+                                Write-Host "Found package `"$($package.PackageFullName)`"."
+                                $installationDir = $package.InstallLocation
+                                if ([string]::IsNullOrWhiteSpace($installationDir)) {
+                                    Write-Warning "Installation directory for `"$packageName`" is not found or invalid."
+                                    continue
+                                }
+                                $manifestPath = Join-Path -Path $installationDir -ChildPath 'AppxManifest.xml'
+                                try {
+                                    if (-Not (Test-Path "$manifestPath")) {
+                                        Write-Host "Manifest file not found for `"$packageName`" on another user profile: `"$manifestPath`"."
+                                        continue
+                                    }
+                                } catch {
+                                    Write-Warning "An error occurred while checking for the manifest file: $($_.Exception.Message)"
+                                    continue
+                                }
+                                Write-Host "Manifest file located. Trying to install using the manifest: `"$manifestPath`"..."
                                 try {
                                     Add-AppxPackage -DisableDevelopmentMode -Register "$manifestPath" -ErrorAction Stop
                                     Write-Host "Successfully installed `"$packageName`" using its manifest file."
@@ -10272,13 +10303,11 @@ functions:
                                 } catch {
                                     Write-Warning "Error installing from manifest: $($_.Exception.Message)"
                                 }
-                            } else {
-                                Write-Host "Manifest file not found for `"$packageName`"."
                             }
                         }
-                        # Attempting installation using the package family name
+                        # Attempt installation using the package family name
                         $packageFamilyName = "$($packageName)_$($publisherId)"
-                        Write-Host "Trying to install `"$packageName`" using its package family name: `"$packageFamilyName`"..."
+                        Write-Host "Trying to install `"$packageName`" using its package family name: `"$packageFamilyName`" from system installation..."
                         try {
                             Add-AppxPackage -RegisterByFamilyName -MainPackage $packageFamilyName -ErrorAction Stop
                             Write-Host "Successfully installed `"$packageName`" using its package family name."
@@ -10286,8 +10315,10 @@ functions:
                         } catch {
                             Write-Warning "Error installing using package family name: $($_.Exception.Message)"
                         }
-                        # If all methods fail
-                        throw "Unable to install `"$packageName`". Please check the provided details and try again."
+                        throw "Unable to reinstall the requested package ($packageName). " + `
+                            "It appears to no longer be included in this version of Windows. " + `
+                            "You may search for it or an alternative in the Microsoft Store or " + `
+                            "consider using an earlier version of Windows where this package was originally provided."
             -
                 function: RunInlineCode
                 # This script prevents specified applications from being automatically reinstalled during Windows updates.
