@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.12.6 (2023-11-03)
+
+* Bump dependencies to latest | [25d7f7b](https://github.com/undergroundwires/privacy.sexy/commit/25d7f7b2a479e51e092881cc2751e67a7d3f179f)
+* win: improve system app uninstall cleanup #73 | [dbe3c5c](https://github.com/undergroundwires/privacy.sexy/commit/dbe3c5cfb91ba8a1657838b69117858843c8fbc8)
+* win: improve system app uninstall /w fallback #260 | [98a26f9](https://github.com/undergroundwires/privacy.sexy/commit/98a26f9ae47af2668aa53f39d1768983036048ce)
+* Improve performance of rendering during search | [79b46bf](https://github.com/undergroundwires/privacy.sexy/commit/79b46bf21004d96d31551439e5db5d698a3f71f3)
+* Fix YAML error for site release in CI/CD | [237d994](https://github.com/undergroundwires/privacy.sexy/commit/237d9944f900f5172366868d75219224ff0542b0)
+* win: fix Microsoft Advertising app removal #200 | [e40b9a3](https://github.com/undergroundwires/privacy.sexy/commit/e40b9a3cf53c341f2e84023a9f0e9680ac08f3fa)
+* win: improve directory cleanup security | [060e789](https://github.com/undergroundwires/privacy.sexy/commit/060e7896624309aebd25e8b190c127282de177e8)
+* Centralize Electron entry file path configuration | [d6da406](https://github.com/undergroundwires/privacy.sexy/commit/d6da406c61e5b9f5408851d1302d6d7398157a2e)
+* win: prevent updates from reinstalling apps #260 | [8570b02](https://github.com/undergroundwires/privacy.sexy/commit/8570b02dde14ffad64863f614682c3fc1f87b6c2)
+* win: improve script environment robustness #221 | [dfd4451](https://github.com/undergroundwires/privacy.sexy/commit/dfd44515613f38abe5a806bda36f44e7b715b50b)
+* Fix compiler failing with nested `with` expression | [80821fc](https://github.com/undergroundwires/privacy.sexy/commit/80821fca0769e5fd2c6338918fbdcea12fbe83d2)
+* win: improve soft file/app delete security #260 | [f4a74f0](https://github.com/undergroundwires/privacy.sexy/commit/f4a74f058db9b5bcbcbe438785db5ec88ecc1657)
+* Fix incorrect tooltip position after window resize | [f8e5f1a](https://github.com/undergroundwires/privacy.sexy/commit/f8e5f1a5a2afa1f18567e6d965359b6a1f082367)
+* linux: fix string formatting of Firefox configs | [e775d68](https://github.com/undergroundwires/privacy.sexy/commit/e775d68a9b4a5f9e893ff0e3500dade036185193)
+* win: improve file delete | [e72c1c1](https://github.com/undergroundwires/privacy.sexy/commit/e72c1c13ea2d73ebfc7a8da5a21254fdfc0e5b59)
+* win: change system app removal to hard delete #260 | [77123d8](https://github.com/undergroundwires/privacy.sexy/commit/77123d8c929d23676a9cb21d7b697703fd1b6e82)
+* Improve UI performance by optimizing reactivity | [4995e49](https://github.com/undergroundwires/privacy.sexy/commit/4995e49c469211404dac9fcb79b75eb121f80bce)
+* Migrate to Vue 3.0 #230 | [ca81f68](https://github.com/undergroundwires/privacy.sexy/commit/ca81f68ff1c3bbe5b22981096ae9220b0b5851c7)
+* win, linux: unify & improve Firefox clean-up #273 | [0466b86](https://github.com/undergroundwires/privacy.sexy/commit/0466b86f1013341c966a9bbf6513990337b16598)
+* win: fix store revert for multiple installs #260 | [5bb13e3](https://github.com/undergroundwires/privacy.sexy/commit/5bb13e34f8de2e2a7ba943ff72b12c0569435e62)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.12.5...0.12.6)
+
 ## 0.12.5 (2023-10-13)
 
 * Fix Docker build and improve checks #220 | [7669985](https://github.com/undergroundwires/privacy.sexy/commit/7669985f8e1446e726a95626ecf35b3ce6b60a16)
