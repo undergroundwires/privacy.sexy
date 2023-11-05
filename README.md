@@ -153,12 +153,21 @@ Online version does not require to run any software on your computer. Offline ve
 ## Additional Install Options
 
 - Check the [releases page](https://github.com/undergroundwires/privacy.sexy/releases) for all available versions.
-- Using [Scoop](https://scoop.sh/#/apps?q=privacy.sexy&s=2&d=1&o=true) package manager on Windows:
+- Other unofficial channels (not maintained by privacy.sexy) for Windows include:
+  - [Scoop 🥄](https://scoop.sh/#/apps?q=privacy.sexy&s=2&d=1&o=true) (latest version):
 
-  ```powershell
-    scoop bucket add extras
-    scoop install privacy.sexy
-  ```
+    ```powershell
+      scoop bucket add extras
+      scoop install privacy.sexy
+    ```
+
+  - [winget 🪟](https://winget.run/pkg/undergroundwires/privacy.sexy) (may be outdated):
+
+    ```powershell
+      winget install -e --id undergroundwires.privacy.sexy
+    ```
+
+    With winget, updates require manual submission; the auto-update feature within privacy.sexy will notify you of new releases post-installation.
 
 ## Development
 
