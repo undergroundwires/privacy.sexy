@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { getInstructions, hasInstructions } from '@/presentation/components/Code/CodeButtons/Instructions/InstructionListDataFactory';
+import { getInstructions, hasInstructions } from '@/presentation/components/Code/CodeButtons/Save/Instructions/InstructionListDataFactory';
 import { getEnumValues } from '@/application/Common/Enum';
-import { InstructionsBuilder } from '@/presentation/components/Code/CodeButtons/Instructions/Data/InstructionsBuilder';
+import { InstructionsBuilder } from '@/presentation/components/Code/CodeButtons/Save/Instructions/Data/InstructionsBuilder';
 
 describe('InstructionListDataFactory', () => {
   const supportedOsList = [OperatingSystem.macOS];

@@ -1,5 +1,9 @@
 <template>
-  <div v-html="svgContent" class="inline-icon" />
+  <div
+    class="inline-icon"
+    v-html="svgContent"
+    @click="onClicked"
+  />
 </template>
 
 <script lang="ts">
@@ -18,10 +22,19 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  emits: [
+    'click',
+  ],
+  setup(props, { emit }) {
     const useSvgLoaderHook = inject('useSvgLoaderHook', useSvgLoader);
+
     const { svgContent } = useSvgLoaderHook(() => props.icon);
-    return { svgContent };
+
+    function onClicked() {
+      emit('click');
+    }
+
+    return { svgContent, onClicked };
   },
 });
 

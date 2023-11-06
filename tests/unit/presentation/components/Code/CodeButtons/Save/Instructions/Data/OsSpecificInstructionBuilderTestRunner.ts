@@ -1,6 +1,6 @@
 import { it, expect } from 'vitest';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { InstructionsBuilder } from '@/presentation/components/Code/CodeButtons/Instructions/Data/InstructionsBuilder';
+import { InstructionsBuilder } from '@/presentation/components/Code/CodeButtons/Save/Instructions/Data/InstructionsBuilder';
 
 interface ITestData {
   readonly factory: () => InstructionsBuilder;

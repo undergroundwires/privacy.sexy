@@ -5,6 +5,8 @@ import { useAutoUnsubscribedEvents } from '@/presentation/components/Shared/Hook
 import { IApplicationContext } from '@/application/Context/IApplicationContext';
 import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { useClipboard } from '../components/Shared/Hooks/Clipboard/UseClipboard';
+import { useCurrentCode } from '../components/Shared/Hooks/UseCurrentCode';
 
 export function provideDependencies(
   context: IApplicationContext,
@@ -22,6 +24,12 @@ export function provideDependencies(
   registerTransient(InjectionKeys.useCollectionState, () => {
     const { events } = api.inject(InjectionKeys.useAutoUnsubscribedEvents)();
     return useCollectionState(context, events);
+  });
+  registerTransient(InjectionKeys.useClipboard, () => useClipboard());
+  registerTransient(InjectionKeys.useCurrentCode, () => {
+    const { events } = api.inject(InjectionKeys.useAutoUnsubscribedEvents)();
+    const state = api.inject(InjectionKeys.useCollectionState)();
+    return useCurrentCode(state, events);
   });
 }
 

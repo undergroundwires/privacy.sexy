@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { IInstructionsBuilderData, InstructionsBuilder, InstructionStepBuilderType } from '@/presentation/components/Code/CodeButtons/Instructions/Data/InstructionsBuilder';
+import { IInstructionsBuilderData, InstructionsBuilder, InstructionStepBuilderType } from '@/presentation/components/Code/CodeButtons/Save/Instructions/Data/InstructionsBuilder';
 import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
-import { IInstructionInfo, IInstructionListStep } from '@/presentation/components/Code/CodeButtons/Instructions/InstructionListData';
+import { IInstructionInfo, IInstructionListStep } from '@/presentation/components/Code/CodeButtons/Save/Instructions/InstructionListData';
 
 describe('InstructionsBuilder', () => {
   describe('withStep', () => {

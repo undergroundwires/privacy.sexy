@@ -14,6 +14,8 @@ describe('DependencyProvider', () => {
       useApplication: createSingletonTests(),
       useRuntimeEnvironment: createSingletonTests(),
       useAutoUnsubscribedEvents: createTransientTests(),
+      useClipboard: createTransientTests(),
+      useCurrentCode: createTransientTests(),
     };
     Object.entries(testCases).forEach(([key, runTests]) => {
       describe(`Key: "${key}"`, () => {

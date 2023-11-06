@@ -14,7 +14,7 @@ import { ApplicationCodeStub } from './ApplicationCodeStub';
 import { CategoryStub } from './CategoryStub';
 
 export class CategoryCollectionStateStub implements ICategoryCollectionState {
-  public readonly code: IApplicationCode = new ApplicationCodeStub();
+  public code: IApplicationCode = new ApplicationCodeStub();
 
   public filter: IUserFilter = new UserFilterStub();
 
@@ -36,6 +36,11 @@ export class CategoryCollectionStateStub implements ICategoryCollectionState {
 
   public withCollection(collection: ICategoryCollection): this {
     this.collection = collection;
+    return this;
+  }
+
+  public withCode(code: IApplicationCode): this {
+    this.code = code;
     return this;
   }
 

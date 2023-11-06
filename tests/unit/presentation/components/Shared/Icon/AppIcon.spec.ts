@@ -55,19 +55,31 @@ describe('AppIcon.vue', () => {
       `Expected:\n\n${expectedSvg}\n\nActual:\n\n${actualSvg}`,
     );
   });
+  it('emits `click` event when clicked', async () => {
+    // arrange
+    const wrapper = mountComponent();
+
+    // act
+    await wrapper.trigger('click');
+
+    // assert
+    expect(wrapper.emitted().click).to.have.lengthOf(1);
+  });
 });
 
-function mountComponent(options: {
-  readonly iconPropValue: IconName,
-  readonly loader: UseSvgLoaderStub,
+function mountComponent(options?: {
+  readonly iconPropValue?: IconName,
+  readonly loader?: UseSvgLoaderStub,
 }) {
+  const iconName = options?.iconPropValue ?? 'globe';
+  const loaderStub = options?.loader ?? new UseSvgLoaderStub().withSvgIcon(iconName, '<svg />');
   return shallowMount(AppIcon, {
     props: {
-      icon: options.iconPropValue,
+      icon: iconName,
     },
     global: {
       provide: {
-        useSvgLoaderHook: options.loader.get(),
+        useSvgLoaderHook: loaderStub.get(),
       },
     },
   });

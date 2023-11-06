@@ -1,15 +1,17 @@
 <template>
-  <button
-    class="button"
-    type="button"
-    @click="onClicked"
-  >
-    <AppIcon
-      class="button__icon"
-      :icon="iconName"
-    />
-    <div class="button__text">{{text}}</div>
-  </button>
+  <div class="button-wrapper">
+    <button
+      class="button"
+      type="button"
+      @click="onClicked"
+    >
+      <AppIcon
+        class="button__icon"
+        :icon="iconName"
+      />
+      <div class="button__text">{{text}}</div>
+    </button>
+  </div>
 </template>
 
 <script lang="ts">
@@ -49,10 +51,20 @@ export default defineComponent({
 <style scoped lang="scss">
 @use "@/presentation/assets/styles/main" as *;
 
+.button-wrapper {
+  position: relative;
+  height: 70px;
+  .button {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+}
+
 .button {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
 
   background-color: $color-secondary;
   color: $color-on-secondary;
@@ -70,19 +82,17 @@ export default defineComponent({
 
   @include clickable;
 
-  width: 10%;
-  min-width: 90px;
   @include hover-or-touch {
     background: $color-surface;
     box-shadow: 0px 2px 10px 5px $color-secondary;
+    .button__text {
+      display: block;
+    }
+    .button__icon {
+      display: none;
+    }
   }
-  @include hover-or-touch('>&__text') {
-    display: block;
-  }
-  @include hover-or-touch('>&__icon') {
-    display: none;
-  }
-  &__text {
+  .button__text {
     display: none;
     font-family: $font-artistic;
     font-size: 1.5em;

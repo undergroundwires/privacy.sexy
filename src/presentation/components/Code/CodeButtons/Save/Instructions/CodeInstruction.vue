@@ -16,10 +16,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, shallowRef } from 'vue';
-import { Clipboard } from '@/infrastructure/Clipboard';
+import { defineComponent, shallowRef, inject } from 'vue';
 import TooltipWrapper from '@/presentation/components/Shared/TooltipWrapper.vue';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
+import { InjectionKeys } from '@/presentation/injectionSymbols';
 
 export default defineComponent({
   components: {
@@ -27,9 +27,11 @@ export default defineComponent({
     AppIcon,
   },
   setup() {
+    const { copyText } = inject(InjectionKeys.useClipboard)();
+
     const codeElement = shallowRef<HTMLElement | undefined>();
 
-    function copyCode() {
+    async function copyCode() {
       const element = codeElement.value;
       if (!element) {
         throw new Error('Code element could not be found.');
@@ -38,7 +40,7 @@ export default defineComponent({
       if (!code) {
         throw new Error('Code element does not contain any text.');
       }
-      Clipboard.copyText(code);
+      await copyText(code);
     }
 
     return {
