@@ -1,5 +1,5 @@
 import {
-  computed, inject, shallowReadonly, shallowRef,
+  computed, inject, shallowReadonly, shallowRef, triggerRef,
 } from 'vue';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
@@ -25,11 +25,21 @@ function useSelectedScripts() {
 
   const selectedScripts = shallowRef<readonly SelectedScript[]>([]);
 
+  function updateSelectedScripts(newReference: readonly SelectedScript[]) {
+    if (selectedScripts.value === newReference) {
+      // Manually trigger update if the array was mutated using the same reference.
+      // Array might have been mutated without changing the reference
+      triggerRef(selectedScripts);
+    } else {
+      selectedScripts.value = newReference;
+    }
+  }
+
   onStateChange((state) => {
-    selectedScripts.value = state.selection.selectedScripts;
+    updateSelectedScripts(state.selection.selectedScripts);
     events.unsubscribeAllAndRegister([
       state.selection.changed.on((scripts) => {
-        selectedScripts.value = scripts;
+        updateSelectedScripts(scripts);
       }),
     ]);
   }, { immediate: true });

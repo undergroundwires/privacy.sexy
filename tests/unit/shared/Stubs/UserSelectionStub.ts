@@ -1,15 +1,13 @@
 import { IUserSelection } from '@/application/Context/State/Selection/IUserSelection';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { IScript } from '@/domain/IScript';
-import { IEventSource } from '@/infrastructure/Events/IEventSource';
-import { EventSource } from '@/infrastructure/Events/EventSource';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
+import { EventSourceStub } from './EventSourceStub';
 
 export class UserSelectionStub
   extends StubWithObservableMethodCalls<IUserSelection>
   implements IUserSelection {
-  public readonly changed: IEventSource<readonly SelectedScript[]> = new EventSource<
-  readonly SelectedScript[]>();
+  public readonly changed = new EventSourceStub<readonly SelectedScript[]>();
 
   public selectedScripts: readonly SelectedScript[] = [];
 
@@ -19,6 +17,11 @@ export class UserSelectionStub
 
   public withSelectedScripts(selectedScripts: readonly SelectedScript[]): this {
     this.selectedScripts = selectedScripts;
+    return this;
+  }
+
+  public triggerSelectionChangedEvent(scripts: readonly SelectedScript[]): this {
+    this.changed.notify(scripts);
     return this;
   }
 
