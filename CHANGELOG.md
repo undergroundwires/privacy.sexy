@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.12.7 (2023-11-07)
+
+* Add winget download instructions | [b2ffc90](https://github.com/undergroundwires/privacy.sexy/commit/b2ffc90da70367b9e65c82556e8f440f865ceb98)
+* Fix unresponsive copy button on instructions modal | [8ccaec7](https://github.com/undergroundwires/privacy.sexy/commit/8ccaec7af6ea3ecfd46bab5c13b90f71d55e32c1)
+* Fix tree node check states not being updated | [af7219f](https://github.com/undergroundwires/privacy.sexy/commit/af7219f6e12ab4a65ce07190f691cf3234e87e35)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.12.6...0.12.7)
+
 ## 0.12.6 (2023-11-03)
 
 * Bump dependencies to latest | [25d7f7b](https://github.com/undergroundwires/privacy.sexy/commit/25d7f7b2a479e51e092881cc2751e67a7d3f179f)
