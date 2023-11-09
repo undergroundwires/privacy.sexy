@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { RuntimeEnvironmentStub } from '@tests/unit/shared/Stubs/RuntimeEnvironmentStub';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CodeRunner } from '@/infrastructure/CodeRunner';
-import { expectThrowsAsync } from '@tests/unit/shared/Assertions/ExpectThrowsAsync';
+import { expectThrowsAsync } from '@tests/shared/Assertions/ExpectThrowsAsync';
 import { SystemOperationsStub } from '@tests/unit/shared/Stubs/SystemOperationsStub';
 import { OperatingSystemOpsStub } from '@tests/unit/shared/Stubs/OperatingSystemOpsStub';
 import { LocationOpsStub } from '@tests/unit/shared/Stubs/LocationOpsStub';

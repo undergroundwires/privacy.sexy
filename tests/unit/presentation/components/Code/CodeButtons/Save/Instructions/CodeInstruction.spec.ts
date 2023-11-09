@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { shallowMount } from '@vue/test-utils';
 import CodeInstruction from '@/presentation/components/Code/CodeButtons/Save/Instructions/CodeInstruction.vue';
-import { expectThrowsAsync } from '@tests/unit/shared/Assertions/ExpectThrowsAsync';
+import { expectThrowsAsync } from '@tests/shared/Assertions/ExpectThrowsAsync';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { Clipboard } from '@/presentation/components/Shared/Hooks/Clipboard/Clipboard';
 import { UseClipboardStub } from '@tests/unit/shared/Stubs/UseClipboardStub';
@@ -74,7 +74,7 @@ function mountComponent(options?: {
   return shallowMount(CodeInstruction, {
     global: {
       provide: {
-        [InjectionKeys.useClipboard as symbol]:
+        [InjectionKeys.useClipboard.key]:
           () => {
             if (options?.clipboard) {
               return new UseClipboardStub(options.clipboard).get();

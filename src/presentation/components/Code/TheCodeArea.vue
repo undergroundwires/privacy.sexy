@@ -11,9 +11,9 @@
 
 <script lang="ts">
 import {
-  defineComponent, onUnmounted, onMounted, inject,
+  defineComponent, onUnmounted, onMounted,
 } from 'vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { injectKey } from '@/presentation/injectionSymbols';
 import { ICodeChangedEvent } from '@/application/Context/State/Code/Event/ICodeChangedEvent';
 import { IScript } from '@/domain/IScript';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
@@ -37,8 +37,8 @@ export default defineComponent({
     NonCollapsing,
   },
   setup(props) {
-    const { onStateChange, currentState } = inject(InjectionKeys.useCollectionState)();
-    const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
+    const { onStateChange, currentState } = injectKey((keys) => keys.useCollectionState);
+    const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
 
     const editorId = 'codeEditor';
     let editor: ace.Ace.Editor | undefined;

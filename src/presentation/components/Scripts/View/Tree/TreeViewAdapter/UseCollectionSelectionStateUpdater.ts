@@ -1,10 +1,9 @@
-import { inject } from 'vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { injectKey } from '@/presentation/injectionSymbols';
 import { TreeNodeCheckState } from '../TreeView/Node/State/CheckState';
 import { TreeNodeStateChangedEmittedEvent } from '../TreeView/Bindings/TreeNodeStateChangedEmittedEvent';
 
 export function useCollectionSelectionStateUpdater() {
-  const { modifyCurrentState, currentState } = inject(InjectionKeys.useCollectionState)();
+  const { modifyCurrentState, currentState } = injectKey((keys) => keys.useCollectionState);
 
   function updateNodeSelection(change: TreeNodeStateChangedEmittedEvent) {
     const { node } = change;

@@ -18,9 +18,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject } from 'vue';
+import { defineComponent } from 'vue';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { injectKey } from '@/presentation/injectionSymbols';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import DownloadUrlListItem from './DownloadUrlListItem.vue';
 
@@ -36,7 +36,7 @@ export default defineComponent({
     AppIcon,
   },
   setup() {
-    const { os: currentOs } = inject(InjectionKeys.useRuntimeEnvironment);
+    const { os: currentOs } = injectKey((keys) => keys.useRuntimeEnvironment);
     const supportedDesktops = [
       ...supportedOperativeSystems,
     ].sort((os) => (os === currentOs ? 0 : 1));

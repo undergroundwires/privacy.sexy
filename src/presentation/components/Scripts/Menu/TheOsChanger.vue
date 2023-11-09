@@ -11,10 +11,8 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent, computed, inject,
-} from 'vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { defineComponent, computed } from 'vue';
+import { injectKey } from '@/presentation/injectionSymbols';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import MenuOptionList from './MenuOptionList.vue';
 import MenuOptionListItem from './MenuOptionListItem.vue';
@@ -30,8 +28,8 @@ export default defineComponent({
     MenuOptionListItem,
   },
   setup() {
-    const { modifyCurrentContext, currentState } = inject(InjectionKeys.useCollectionState)();
-    const { application } = inject(InjectionKeys.useApplication);
+    const { modifyCurrentContext, currentState } = injectKey((keys) => keys.useCollectionState);
+    const { application } = injectKey((keys) => keys.useApplication);
 
     const allOses = computed<ReadonlyArray<IOsViewModel>>(() => (
       application.getSupportedOsList() ?? [])

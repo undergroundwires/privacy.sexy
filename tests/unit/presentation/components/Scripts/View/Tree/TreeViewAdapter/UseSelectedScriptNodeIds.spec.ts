@@ -239,9 +239,9 @@ function mountWrapperComponent(scenario?: {
   }, {
     global: {
       provide: {
-        [InjectionKeys.useCollectionState as symbol]:
+        [InjectionKeys.useCollectionState.key]:
           () => useStateStub.get(),
-        [InjectionKeys.useAutoUnsubscribedEvents as symbol]:
+        [InjectionKeys.useAutoUnsubscribedEvents.key]:
           () => (scenario?.useAutoUnsubscribedEvents ?? new UseAutoUnsubscribedEventsStub()).get(),
       },
     },

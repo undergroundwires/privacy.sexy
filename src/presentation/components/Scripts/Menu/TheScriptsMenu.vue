@@ -10,10 +10,8 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent, ref, inject,
-} from 'vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { defineComponent, ref } from 'vue';
+import { injectKey } from '@/presentation/injectionSymbols';
 import { IReadOnlyUserFilter } from '@/application/Context/State/Filter/IUserFilter';
 import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 import TheOsChanger from './TheOsChanger.vue';
@@ -27,8 +25,8 @@ export default defineComponent({
     TheViewChanger,
   },
   setup() {
-    const { onStateChange } = inject(InjectionKeys.useCollectionState)();
-    const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
+    const { onStateChange } = injectKey((keys) => keys.useCollectionState);
+    const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
 
     const isSearching = ref(false);
 

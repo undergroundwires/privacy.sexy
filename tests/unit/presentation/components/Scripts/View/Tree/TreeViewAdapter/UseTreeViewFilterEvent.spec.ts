@@ -148,9 +148,9 @@ function mountWrapperComponent(options?: {
   }, {
     global: {
       provide: {
-        [InjectionKeys.useCollectionState as symbol]:
+        [InjectionKeys.useCollectionState.key]:
           () => useStateStub.get(),
-        [InjectionKeys.useAutoUnsubscribedEvents as symbol]:
+        [InjectionKeys.useAutoUnsubscribedEvents.key]:
           () => new UseAutoUnsubscribedEventsStub().get(),
       },
     },

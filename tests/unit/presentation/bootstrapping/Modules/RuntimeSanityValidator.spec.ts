@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { ISanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/ISanityCheckOptions';
 import { RuntimeSanityValidator } from '@/presentation/bootstrapping/Modules/RuntimeSanityValidator';
-import { expectDoesNotThrowAsync, expectThrowsAsync } from '@tests/unit/shared/Assertions/ExpectThrowsAsync';
+import { expectDoesNotThrowAsync, expectThrowsAsync } from '@tests/shared/Assertions/ExpectThrowsAsync';
 
 describe('RuntimeSanityValidator', () => {
   it('calls validator with correct options upon bootstrap', async () => {

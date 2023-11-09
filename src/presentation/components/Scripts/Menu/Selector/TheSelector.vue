@@ -65,8 +65,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, inject } from 'vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { defineComponent, ref } from 'vue';
+import { injectKey } from '@/presentation/injectionSymbols';
 import TooltipWrapper from '@/presentation/components/Shared/TooltipWrapper.vue';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
@@ -81,8 +81,8 @@ export default defineComponent({
     TooltipWrapper,
   },
   setup() {
-    const { modifyCurrentState, onStateChange } = inject(InjectionKeys.useCollectionState)();
-    const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
+    const { modifyCurrentState, onStateChange } = injectKey((keys) => keys.useCollectionState);
+    const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
 
     const currentSelection = ref(SelectionType.None);
 

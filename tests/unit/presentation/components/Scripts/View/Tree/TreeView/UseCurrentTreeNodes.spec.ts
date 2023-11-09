@@ -70,7 +70,7 @@ function mountWrapperComponent(treeWatcher: WatchSource<TreeRoot | undefined>) {
     {
       global: {
         provide: {
-          [InjectionKeys.useAutoUnsubscribedEvents as symbol]:
+          [InjectionKeys.useAutoUnsubscribedEvents.key]:
             () => new UseAutoUnsubscribedEventsStub().get(),
         },
       },

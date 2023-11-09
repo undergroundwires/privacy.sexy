@@ -1,7 +1,7 @@
 import {
-  computed, inject, shallowReadonly, shallowRef, triggerRef,
+  computed, shallowReadonly, shallowRef, triggerRef,
 } from 'vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { injectKey } from '@/presentation/injectionSymbols';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { getScriptNodeId } from './CategoryNodeMetadataConverter';
 
@@ -20,8 +20,8 @@ export function useSelectedScriptNodeIds(scriptNodeIdParser = getScriptNodeId) {
 }
 
 function useSelectedScripts() {
-  const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
-  const { onStateChange } = inject(InjectionKeys.useCollectionState)();
+  const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
+  const { onStateChange } = injectKey((keys) => keys.useCollectionState);
 
   const selectedScripts = shallowRef<readonly SelectedScript[]>([]);
 

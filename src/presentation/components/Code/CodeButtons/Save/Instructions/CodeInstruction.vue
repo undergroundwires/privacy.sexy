@@ -16,10 +16,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, shallowRef, inject } from 'vue';
+import { defineComponent, shallowRef } from 'vue';
 import TooltipWrapper from '@/presentation/components/Shared/TooltipWrapper.vue';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { injectKey } from '@/presentation/injectionSymbols';
 
 export default defineComponent({
   components: {
@@ -27,7 +27,7 @@ export default defineComponent({
     AppIcon,
   },
   setup() {
-    const { copyText } = inject(InjectionKeys.useClipboard)();
+    const { copyText } = injectKey((keys) => keys.useClipboard);
 
     const codeElement = shallowRef<HTMLElement | undefined>();
 

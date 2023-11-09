@@ -1,7 +1,7 @@
 import {
-  WatchSource, inject, watch, shallowRef,
+  WatchSource, watch, shallowRef,
 } from 'vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { injectKey } from '@/presentation/injectionSymbols';
 import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 import { TreeRoot } from './TreeRoot/TreeRoot';
 import { TreeNode } from './Node/TreeNode';
@@ -15,7 +15,7 @@ export function useNodeStateChangeAggregator(
   useTreeNodes = useCurrentTreeNodes,
 ) {
   const { nodes } = useTreeNodes(treeWatcher);
-  const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
+  const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
 
   const onNodeChangeCallback = shallowRef<NodeStateChangeEventCallback>();
 

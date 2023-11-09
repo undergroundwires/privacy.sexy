@@ -1,9 +1,9 @@
 import {
-  WatchSource, computed, inject,
+  WatchSource, computed,
   ref, watch,
 } from 'vue';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { injectKey } from '@/presentation/injectionSymbols';
 import { TreeInputNodeData } from '../TreeView/Bindings/TreeInputNodeData';
 import { NodeMetadata } from '../NodeContent/NodeMetadata';
 import { convertToNodeInput } from './TreeNodeMetadataConverter';
@@ -17,7 +17,7 @@ export function useTreeViewNodeInput(
   },
   nodeConverter = convertToNodeInput,
 ) {
-  const { currentState } = inject(InjectionKeys.useCollectionState)();
+  const { currentState } = injectKey((keys) => keys.useCollectionState);
 
   const categoryId = ref<number | undefined>();
 

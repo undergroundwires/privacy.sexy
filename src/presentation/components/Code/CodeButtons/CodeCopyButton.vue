@@ -7,10 +7,8 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent, inject,
-} from 'vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { defineComponent } from 'vue';
+import { injectKey } from '@/presentation/injectionSymbols';
 import IconButton from './IconButton.vue';
 
 export default defineComponent({
@@ -18,8 +16,8 @@ export default defineComponent({
     IconButton,
   },
   setup() {
-    const { copyText } = inject(InjectionKeys.useClipboard)();
-    const { currentCode } = inject(InjectionKeys.useCurrentCode)();
+    const { copyText } = injectKey((keys) => keys.useClipboard);
+    const { currentCode } = injectKey((keys) => keys.useCurrentCode);
 
     async function copyCode() {
       await copyText(currentCode.value);

@@ -13,9 +13,9 @@
 
 <script lang="ts">
 import {
-  defineComponent, ref, computed, inject,
+  defineComponent, ref, computed,
 } from 'vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { injectKey } from '@/presentation/injectionSymbols';
 import { SaveFileDialog, FileType } from '@/infrastructure/SaveFileDialog';
 import ModalDialog from '@/presentation/components/Shared/Modal/ModalDialog.vue';
 import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
@@ -34,8 +34,8 @@ export default defineComponent({
     ModalDialog,
   },
   setup() {
-    const { currentState } = inject(InjectionKeys.useCollectionState)();
-    const { isDesktop } = inject(InjectionKeys.useRuntimeEnvironment);
+    const { currentState } = injectKey((keys) => keys.useCollectionState);
+    const { isDesktop } = injectKey((keys) => keys.useRuntimeEnvironment);
 
     const areInstructionsVisible = ref(false);
     const fileName = computed<string>(() => buildFileName(currentState.value.collection.scripting));

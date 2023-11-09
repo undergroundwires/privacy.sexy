@@ -8,11 +8,10 @@
 
 <script lang="ts">
 import {
-  PropType, defineComponent, ref, watch,
-  computed, inject,
+  PropType, defineComponent, ref, watch, computed,
 } from 'vue';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { injectKey } from '@/presentation/injectionSymbols';
 import { NodeMetadata } from '@/presentation/components/Scripts/View/Tree/NodeContent/NodeMetadata';
 import { IReverter } from './Reverter/IReverter';
 import { getReverter } from './Reverter/ReverterFactory';
@@ -31,8 +30,8 @@ export default defineComponent({
   setup(props) {
     const {
       currentState, modifyCurrentState, onStateChange,
-    } = inject(InjectionKeys.useCollectionState)();
-    const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
+    } = injectKey((keys) => keys.useCollectionState);
+    const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
 
     const isReverted = ref(false);
 

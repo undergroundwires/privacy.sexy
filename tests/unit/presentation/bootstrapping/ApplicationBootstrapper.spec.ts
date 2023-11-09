@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { BootstrapperStub } from '@tests/unit/shared/Stubs/BootstrapperStub';
 import { ApplicationBootstrapper } from '@/presentation/bootstrapping/ApplicationBootstrapper';
-import { expectThrowsAsync } from '@tests/unit/shared/Assertions/ExpectThrowsAsync';
+import { expectThrowsAsync } from '@tests/shared/Assertions/ExpectThrowsAsync';
 import type { App } from 'vue';
 
 describe('ApplicationBootstrapper', () => {

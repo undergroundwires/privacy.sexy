@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { BrowserClipboard, NavigatorClipboard } from '@/presentation/components/Shared/Hooks/Clipboard/BrowserClipboard';
 import { StubWithObservableMethodCalls } from '@tests/unit/shared/Stubs/StubWithObservableMethodCalls';
-import { expectThrowsAsync } from '@tests/unit/shared/Assertions/ExpectThrowsAsync';
+import { expectThrowsAsync } from '@tests/shared/Assertions/ExpectThrowsAsync';
 
 describe('BrowserClipboard', () => {
   describe('writeText', () => {

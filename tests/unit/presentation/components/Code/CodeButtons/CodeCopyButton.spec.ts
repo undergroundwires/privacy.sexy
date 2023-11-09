@@ -39,12 +39,12 @@ function mountComponent(options?: {
   return shallowMount(CodeCopyButton, {
     global: {
       provide: {
-        [InjectionKeys.useClipboard as symbol]: () => (
+        [InjectionKeys.useClipboard.key]: () => (
           options?.clipboard
             ? new UseClipboardStub(options.clipboard)
             : new UseClipboardStub()
         ).get(),
-        [InjectionKeys.useCurrentCode as symbol]: () => (
+        [InjectionKeys.useCurrentCode.key]: () => (
           options.currentCode === undefined
             ? new UseCurrentCodeStub()
             : new UseCurrentCodeStub().withCurrentCode(options.currentCode)

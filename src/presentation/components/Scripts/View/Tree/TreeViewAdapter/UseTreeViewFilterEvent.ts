@@ -1,9 +1,9 @@
 import {
-  Ref, inject, shallowReadonly, shallowRef,
+  Ref, shallowReadonly, shallowRef,
 } from 'vue';
 import { IScript } from '@/domain/IScript';
 import { ICategory } from '@/domain/ICategory';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { injectKey } from '@/presentation/injectionSymbols';
 import { IReadOnlyUserFilter } from '@/application/Context/State/Filter/IUserFilter';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
 import { TreeViewFilterEvent, createFilterRemovedEvent, createFilterTriggeredEvent } from '../TreeView/Bindings/TreeInputFilterEvent';
@@ -18,8 +18,8 @@ type TreeNodeFilterResultPredicate = (
 ) => boolean;
 
 export function useTreeViewFilterEvent() {
-  const { onStateChange } = inject(InjectionKeys.useCollectionState)();
-  const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
+  const { onStateChange } = injectKey((keys) => keys.useCollectionState);
+  const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
 
   const latestFilterEvent = shallowRef<TreeViewFilterEvent | undefined>(undefined);
 

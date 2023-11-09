@@ -2,38 +2,89 @@ import { InjectionKey, provide, inject } from 'vue';
 import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
 import { useApplication } from '@/presentation/components/Shared/Hooks/UseApplication';
 import { useAutoUnsubscribedEvents } from '@/presentation/components/Shared/Hooks/UseAutoUnsubscribedEvents';
+import { useClipboard } from '@/presentation/components/Shared/Hooks/Clipboard/UseClipboard';
+import { useCurrentCode } from '@/presentation/components/Shared/Hooks/UseCurrentCode';
 import { IApplicationContext } from '@/application/Context/IApplicationContext';
 import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
-import { useClipboard } from '../components/Shared/Hooks/Clipboard/UseClipboard';
-import { useCurrentCode } from '../components/Shared/Hooks/UseCurrentCode';
+import {
+  AnyLifetimeInjectionKey, InjectionKeySelector, InjectionKeys, SingletonKey,
+  TransientKey, injectKey,
+} from '@/presentation/injectionSymbols';
+import { PropertyKeys } from '@/TypeHelpers';
 
 export function provideDependencies(
   context: IApplicationContext,
   api: VueDependencyInjectionApi = { provide, inject },
 ) {
-  const registerSingleton = <T>(key: InjectionKey<T>, value: T) => api.provide(key, value);
-  const registerTransient = <T>(
-    key: InjectionKey<() => T>,
-    factory: () => T,
-  ) => api.provide(key, factory);
+  const resolvers: Record<PropertyKeys<typeof InjectionKeys>, (di: DependencyRegistrar) => void> = {
+    useCollectionState: (di) => di.provide(
+      InjectionKeys.useCollectionState,
+      () => {
+        const { events } = di.injectKey((keys) => keys.useAutoUnsubscribedEvents);
+        return useCollectionState(context, events);
+      },
+    ),
+    useApplication: (di) => di.provide(
+      InjectionKeys.useApplication,
+      useApplication(context.app),
+    ),
+    useRuntimeEnvironment: (di) => di.provide(
+      InjectionKeys.useRuntimeEnvironment,
+      RuntimeEnvironment.CurrentEnvironment,
+    ),
+    useAutoUnsubscribedEvents: (di) => di.provide(
+      InjectionKeys.useAutoUnsubscribedEvents,
+      useAutoUnsubscribedEvents,
+    ),
+    useClipboard: (di) => di.provide(
+      InjectionKeys.useClipboard,
+      useClipboard,
+    ),
+    useCurrentCode: (di) => di.provide(
+      InjectionKeys.useCurrentCode,
+      () => {
+        const { events } = di.injectKey((keys) => keys.useAutoUnsubscribedEvents);
+        const state = di.injectKey((keys) => keys.useCollectionState);
+        return useCurrentCode(state, events);
+      },
+    ),
+  };
+  registerAll(Object.values(resolvers), api);
+}
 
-  registerSingleton(InjectionKeys.useApplication, useApplication(context.app));
-  registerSingleton(InjectionKeys.useRuntimeEnvironment, RuntimeEnvironment.CurrentEnvironment);
-  registerTransient(InjectionKeys.useAutoUnsubscribedEvents, () => useAutoUnsubscribedEvents());
-  registerTransient(InjectionKeys.useCollectionState, () => {
-    const { events } = api.inject(InjectionKeys.useAutoUnsubscribedEvents)();
-    return useCollectionState(context, events);
-  });
-  registerTransient(InjectionKeys.useClipboard, () => useClipboard());
-  registerTransient(InjectionKeys.useCurrentCode, () => {
-    const { events } = api.inject(InjectionKeys.useAutoUnsubscribedEvents)();
-    const state = api.inject(InjectionKeys.useCollectionState)();
-    return useCurrentCode(state, events);
-  });
+function registerAll(
+  registrations: ReadonlyArray<(di: DependencyRegistrar) => void>,
+  api: VueDependencyInjectionApi,
+) {
+  const registrar = new DependencyRegistrar(api);
+  Object.values(registrations).forEach((register) => register(registrar));
 }
 
 export interface VueDependencyInjectionApi {
   provide<T>(key: InjectionKey<T>, value: T): void;
   inject<T>(key: InjectionKey<T>): T;
+}
+
+class DependencyRegistrar {
+  constructor(private api: VueDependencyInjectionApi) {}
+
+  public provide<T>(
+    key: TransientKey<T>,
+    resolver: () => T,
+  ): void;
+  public provide<T>(
+    key: SingletonKey<T>,
+    resolver: T,
+  ): void;
+  public provide<T>(
+    key: AnyLifetimeInjectionKey<T>,
+    resolver: T | (() => T),
+  ): void {
+    this.api.provide(key.key, resolver);
+  }
+
+  public injectKey<T>(key: InjectionKeySelector<T>): T {
+    const injector = this.api.inject.bind(this.api);
+    return injectKey(key, injector);
+  }
 }

@@ -49,11 +49,10 @@
 
 <script lang="ts">
 import {
-  defineComponent, ref, watch, computed,
-  inject, shallowRef,
+  defineComponent, ref, watch, computed, shallowRef,
 } from 'vue';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { injectKey } from '@/presentation/injectionSymbols';
 import ScriptsTree from '@/presentation/components/Scripts/View/Tree/ScriptsTree.vue';
 import { sleep } from '@/infrastructure/Threading/AsyncSleep';
 
@@ -78,8 +77,8 @@ export default defineComponent({
     /* eslint-enable @typescript-eslint/no-unused-vars */
   },
   setup(props, { emit }) {
-    const { onStateChange, currentState } = inject(InjectionKeys.useCollectionState)();
-    const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
+    const { onStateChange, currentState } = injectKey((keys) => keys.useCollectionState);
+    const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
 
     const isExpanded = computed({
       get: () => {

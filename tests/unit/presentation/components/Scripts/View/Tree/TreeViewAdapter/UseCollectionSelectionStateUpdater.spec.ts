@@ -172,7 +172,7 @@ function mountWrapperComponent() {
   }, {
     global: {
       provide: {
-        [InjectionKeys.useCollectionState as symbol]: () => useStateStub.get(),
+        [InjectionKeys.useCollectionState.key]: () => useStateStub.get(),
       },
     },
   });

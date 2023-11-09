@@ -41,13 +41,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, inject } from 'vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { defineComponent, computed } from 'vue';
+import { injectKey } from '@/presentation/injectionSymbols';
 
 export default defineComponent({
   setup() {
-    const { info } = inject(InjectionKeys.useApplication);
-    const { isDesktop } = inject(InjectionKeys.useRuntimeEnvironment);
+    const { info } = injectKey((keys) => keys.useApplication);
+    const { isDesktop } = injectKey((keys) => keys.useRuntimeEnvironment);
 
     const repositoryUrl = computed<string>(() => info.repositoryUrl);
     const feedbackUrl = computed<string>(() => info.feedbackUrl);

@@ -7,7 +7,7 @@ import { IApplication } from '@/domain/IApplication';
 import { RuntimeEnvironmentStub } from '@tests/unit/shared/Stubs/RuntimeEnvironmentStub';
 import { ApplicationStub } from '@tests/unit/shared/Stubs/ApplicationStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
-import { expectThrowsAsync } from '@tests/unit/shared/Assertions/ExpectThrowsAsync';
+import { expectThrowsAsync } from '@tests/shared/Assertions/ExpectThrowsAsync';
 
 describe('ApplicationContextFactory', () => {
   describe('buildContext', () => {

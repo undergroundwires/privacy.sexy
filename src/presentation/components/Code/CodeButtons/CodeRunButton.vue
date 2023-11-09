@@ -8,10 +8,8 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent, computed, inject,
-} from 'vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { defineComponent, computed } from 'vue';
+import { injectKey } from '@/presentation/injectionSymbols';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CodeRunner } from '@/infrastructure/CodeRunner';
 import { IReadOnlyApplicationContext } from '@/application/Context/IApplicationContext';
@@ -22,8 +20,8 @@ export default defineComponent({
     IconButton,
   },
   setup() {
-    const { currentState, currentContext } = inject(InjectionKeys.useCollectionState)();
-    const { os, isDesktop } = inject(InjectionKeys.useRuntimeEnvironment);
+    const { currentState, currentContext } = injectKey((keys) => keys.useCollectionState);
+    const { os, isDesktop } = injectKey((keys) => keys.useRuntimeEnvironment);
 
     const canRun = computed<boolean>(() => getCanRunState(currentState.value.os, isDesktop, os));
 

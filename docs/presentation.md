@@ -71,10 +71,11 @@ To add a new dependency:
 1. **Define its symbol**: Define an associated symbol for every dependency in [`injectionSymbols.ts`](./../src/presentation/injectionSymbols.ts). Symbols are grouped into:
    - **Singletons**: Shared across components, instantiated once.
    - **Transients**: Factories yielding a new instance on every access.
-2. **Provide the dependency**: Modify the [`provideDependencies`](./../src/presentation/bootstrapping/DependencyProvider.ts) function to include the new dependency. [`App.vue`](./../src/presentation/components/App.vue) calls this function within its `setup()` hook to register the dependencies.
-3. **Inject the dependency**: Use Vue's `inject` method alongside the defined symbol to incorporate the dependency into components.
-   - For singletons, invoke the factory method: `inject(symbolKey)()`.
-   - For transients, directly inject: `inject(symbolKey)`.
+2. **Provide the dependency**:
+  Modify the [`provideDependencies`](./../src/presentation/bootstrapping/DependencyProvider.ts) function to include the new dependency.
+  [`App.vue`](./../src/presentation/components/App.vue) calls this function within its `setup()` hook to register the dependencies.
+3. **Inject the dependency**: Use `injectKey` to inject a dependency. Pass a selector function to `injectKey` that retrieves the appropriate symbol from the provided dependencies.
+   - Example usage: `injectKey((keys) => keys.useCollectionState)`;
 
 ## Shared UI components
 

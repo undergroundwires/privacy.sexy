@@ -45,11 +45,11 @@
 
 <script lang="ts">
 import {
-  defineComponent, ref, computed, inject,
+  defineComponent, ref, computed,
 } from 'vue';
 import ModalDialog from '@/presentation/components/Shared/Modal/ModalDialog.vue';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { injectKey } from '@/presentation/injectionSymbols';
 import DownloadUrlList from './DownloadUrlList.vue';
 import PrivacyPolicy from './PrivacyPolicy.vue';
 
@@ -61,8 +61,8 @@ export default defineComponent({
     AppIcon,
   },
   setup() {
-    const { info } = inject(InjectionKeys.useApplication);
-    const { isDesktop } = inject(InjectionKeys.useRuntimeEnvironment);
+    const { info } = injectKey((keys) => keys.useApplication);
+    const { isDesktop } = injectKey((keys) => keys.useRuntimeEnvironment);
 
     const isPrivacyDialogVisible = ref(false);
 

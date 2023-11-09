@@ -406,11 +406,11 @@ function mountComponent(options?: {
   return shallowMount(TheScriptsView, {
     global: {
       provide: {
-        [InjectionKeys.useCollectionState as symbol]:
+        [InjectionKeys.useCollectionState.key]:
           () => options?.useCollectionState ?? new UseCollectionStateStub().get(),
-        [InjectionKeys.useApplication as symbol]:
+        [InjectionKeys.useApplication.key]:
           new UseApplicationStub().get(),
-        [InjectionKeys.useAutoUnsubscribedEvents as symbol]:
+        [InjectionKeys.useAutoUnsubscribedEvents.key]:
           () => new UseAutoUnsubscribedEventsStub().get(),
       },
     },

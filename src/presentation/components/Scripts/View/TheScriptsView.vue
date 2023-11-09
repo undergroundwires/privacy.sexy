@@ -39,10 +39,9 @@
 <script lang="ts">
 import {
   defineComponent, PropType, ref, computed,
-  inject,
 } from 'vue';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { injectKey } from '@/presentation/injectionSymbols';
 import ScriptsTree from '@/presentation/components/Scripts/View/Tree/ScriptsTree.vue';
 import CardList from '@/presentation/components/Scripts/View/Cards/CardList.vue';
 import { ViewType } from '@/presentation/components/Scripts/Menu/View/ViewType';
@@ -62,9 +61,9 @@ export default defineComponent({
     },
   },
   setup() {
-    const { modifyCurrentState, onStateChange } = inject(InjectionKeys.useCollectionState)();
-    const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
-    const { info } = inject(InjectionKeys.useApplication);
+    const { modifyCurrentState, onStateChange } = injectKey((keys) => keys.useCollectionState);
+    const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
+    const { info } = injectKey((keys) => keys.useApplication);
 
     const repositoryUrl = computed<string>(() => info.repositoryWebUrl);
     const searchQuery = ref<string | undefined>();

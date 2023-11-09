@@ -15,9 +15,8 @@
 <script lang="ts">
 import {
   defineComponent, ref, watch, computed,
-  inject,
 } from 'vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { injectKey } from '@/presentation/injectionSymbols';
 import { NonCollapsing } from '@/presentation/components/Scripts/View/Cards/NonCollapsingDirective';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import { IReadOnlyUserFilter } from '@/application/Context/State/Filter/IUserFilter';
@@ -32,8 +31,8 @@ export default defineComponent({
   setup() {
     const {
       modifyCurrentState, onStateChange, currentState,
-    } = inject(InjectionKeys.useCollectionState)();
-    const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
+    } = injectKey((keys) => keys.useCollectionState);
+    const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
 
     const searchPlaceholder = computed<string>(() => {
       const { totalScripts } = currentState.value.collection;

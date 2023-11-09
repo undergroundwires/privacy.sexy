@@ -79,7 +79,7 @@ function mountWrapperComponent(nodeWatcher: WatchSource<ReadOnlyTreeNode | undef
     {
       global: {
         provide: {
-          [InjectionKeys.useAutoUnsubscribedEvents as symbol]:
+          [InjectionKeys.useAutoUnsubscribedEvents.key]:
             () => new UseAutoUnsubscribedEventsStub().get(),
         },
       },

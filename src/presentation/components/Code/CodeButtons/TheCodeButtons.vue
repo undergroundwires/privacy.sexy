@@ -8,9 +8,9 @@
 
 <script lang="ts">
 import {
-  defineComponent, computed, inject,
+  defineComponent, computed,
 } from 'vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { injectKey } from '@/presentation/injectionSymbols';
 import CodeRunButton from './CodeRunButton.vue';
 import CodeCopyButton from './CodeCopyButton.vue';
 import CodeSaveButton from './Save/CodeSaveButton.vue';
@@ -22,7 +22,7 @@ export default defineComponent({
     CodeSaveButton,
   },
   setup() {
-    const { currentCode } = inject(InjectionKeys.useCurrentCode)();
+    const { currentCode } = injectKey((keys) => keys.useCurrentCode);
 
     const hasCode = computed<boolean>(() => currentCode.value.length > 0);
 
