@@ -18,6 +18,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { injectKey } from '@/presentation/injectionSymbols';
 import TreeView from './TreeView/TreeView.vue';
 import NodeContent from './NodeContent/NodeContent.vue';
 import { useTreeViewFilterEvent } from './TreeViewAdapter/UseTreeViewFilterEvent';
@@ -38,10 +39,11 @@ export default defineComponent({
     NodeContent,
   },
   setup(props) {
-    const { selectedScriptNodeIds } = useSelectedScriptNodeIds();
+    const useUserCollectionStateHook = injectKey((keys) => keys.useUserSelectionState);
+    const { selectedScriptNodeIds } = useSelectedScriptNodeIds(useUserCollectionStateHook);
     const { latestFilterEvent } = useTreeViewFilterEvent();
     const { treeViewInputNodes } = useTreeViewNodeInput(() => props.categoryId);
-    const { updateNodeSelection } = useCollectionSelectionStateUpdater();
+    const { updateNodeSelection } = useCollectionSelectionStateUpdater(useUserCollectionStateHook);
 
     function handleNodeChangedEvent(event: TreeNodeStateChangedEmittedEvent) {
       updateNodeSelection(event);

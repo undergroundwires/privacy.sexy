@@ -1,33 +1,22 @@
 import { describe, it, expect } from 'vitest';
-import { SelectionType, SelectionTypeHandler } from '@/presentation/components/Scripts/Menu/Selector/SelectionTypeHandler';
+import {
+  SelectionCheckContext, SelectionMutationContext, SelectionType,
+  getCurrentSelectionType, setCurrentSelectionType,
+} from '@/presentation/components/Scripts/Menu/Selector/SelectionTypeHandler';
 import { scrambledEqual } from '@/application/Common/Array';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { SelectionStateTestScenario } from './SelectionStateTestScenario';
 
 describe('SelectionTypeHandler', () => {
-  describe('ctor', () => {
-    describe('throws when state is missing', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing state';
-        const state = absentValue;
-        // act
-        const sut = () => new SelectionTypeHandler(state);
-        // assert
-        expect(sut).to.throw(expectedError);
-      });
-    });
-  });
-  describe('selectType', () => {
+  describe('setCurrentSelectionType', () => {
     it('throws when type is custom', () => {
       // arrange
       const expectedError = 'cannot select custom type';
       const scenario = new SelectionStateTestScenario();
       const state = scenario.generateState([]);
-      const sut = new SelectionTypeHandler(state);
       // act
-      const act = () => sut.selectType(SelectionType.Custom);
+      const act = () => setCurrentSelectionType(SelectionType.Custom, createMutationContext(state));
       // assert
       expect(act).to.throw(expectedError);
     });
@@ -47,7 +36,6 @@ describe('SelectionTypeHandler', () => {
       for (const initialScriptsCase of initialScriptsCases) {
         describe(initialScriptsCase.name, () => {
           const state = scenario.generateState(initialScriptsCase.initialScripts);
-          const sut = new SelectionTypeHandler(state);
           const typeExpectations = [{
             input: SelectionType.None,
             output: [],
@@ -64,7 +52,7 @@ describe('SelectionTypeHandler', () => {
           for (const expectation of typeExpectations) {
             // act
             it(`${SelectionType[expectation.input]} returns as expected`, () => {
-              sut.selectType(expectation.input);
+              setCurrentSelectionType(expectation.input, createMutationContext(state));
               // assert
               const actual = state.selection.selectedScripts;
               const expected = expectation.output;
@@ -114,9 +102,8 @@ describe('SelectionTypeHandler', () => {
     for (const testCase of testCases) {
       it(testCase.name, () => {
         const state = scenario.generateState(testCase.selection);
-        const sut = new SelectionTypeHandler(state);
         // act
-        const actual = sut.getCurrentSelectionType();
+        const actual = getCurrentSelectionType(createCheckContext(state));
         // assert
         expect(actual).to.deep.equal(
           testCase.expected,
@@ -135,3 +122,17 @@ describe('SelectionTypeHandler', () => {
     }
   });
 });
+
+function createMutationContext(state: ICategoryCollectionState): SelectionMutationContext {
+  return {
+    selection: state.selection,
+    collection: state.collection,
+  };
+}
+
+function createCheckContext(state: ICategoryCollectionState): SelectionCheckContext {
+  return {
+    selection: state.selection,
+    collection: state.collection,
+  };
+}

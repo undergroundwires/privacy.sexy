@@ -16,6 +16,7 @@ describe('DependencyProvider', () => {
       useAutoUnsubscribedEvents: createTransientTests(),
       useClipboard: createTransientTests(),
       useCurrentCode: createTransientTests(),
+      useUserSelectionState: createTransientTests(),
     };
     Object.entries(testCases).forEach(([key, runTests]) => {
       const registeredKey = InjectionKeys[key].key;

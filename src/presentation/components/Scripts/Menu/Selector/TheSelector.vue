@@ -65,14 +65,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import {
+  defineComponent, computed,
+} from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import TooltipWrapper from '@/presentation/components/Shared/TooltipWrapper.vue';
-import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
-import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
+import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import MenuOptionList from '../MenuOptionList.vue';
 import MenuOptionListItem from '../MenuOptionListItem.vue';
-import { SelectionType, SelectionTypeHandler } from './SelectionTypeHandler';
+import { SelectionType, setCurrentSelectionType, getCurrentSelectionType } from './SelectionTypeHandler';
 
 export default defineComponent({
   components: {
@@ -81,43 +82,38 @@ export default defineComponent({
     TooltipWrapper,
   },
   setup() {
-    const { modifyCurrentState, onStateChange } = injectKey((keys) => keys.useCollectionState);
-    const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
+    const {
+      currentSelection, modifyCurrentSelection,
+    } = injectKey((keys) => keys.useUserSelectionState);
+    const { currentState } = injectKey((keys) => keys.useCollectionState);
 
-    const currentSelection = ref(SelectionType.None);
+    const currentCollection = computed<ICategoryCollection>(() => currentState.value.collection);
 
-    let selectionTypeHandler: SelectionTypeHandler;
-
-    onStateChange(() => {
-      modifyCurrentState((state) => {
-        selectionTypeHandler = new SelectionTypeHandler(state);
-        updateSelections();
-        events.unsubscribeAllAndRegister([
-          subscribeAndUpdateSelections(state),
-        ]);
-      });
-    }, { immediate: true });
-
-    function subscribeAndUpdateSelections(
-      state: ICategoryCollectionState,
-    ): IEventSubscription {
-      return state.selection.changed.on(() => updateSelections());
-    }
+    const currentSelectionType = computed<SelectionType>({
+      get: () => getCurrentSelectionType({
+        selection: currentSelection.value,
+        collection: currentCollection.value,
+      }),
+      set: (type: SelectionType) => {
+        selectType(type);
+      },
+    });
 
     function selectType(type: SelectionType) {
-      if (currentSelection.value === type) {
+      if (currentSelectionType.value === type) {
         return;
       }
-      selectionTypeHandler.selectType(type);
-    }
-
-    function updateSelections() {
-      currentSelection.value = selectionTypeHandler.getCurrentSelectionType();
+      modifyCurrentSelection((mutableSelection) => {
+        setCurrentSelectionType(type, {
+          selection: mutableSelection,
+          collection: currentCollection.value,
+        });
+      });
     }
 
     return {
       SelectionType,
-      currentSelection,
+      currentSelection: currentSelectionType,
       selectType,
     };
   },

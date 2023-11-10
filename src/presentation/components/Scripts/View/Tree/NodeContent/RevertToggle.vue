@@ -1,6 +1,6 @@
 <template>
   <ToggleSwitch
-    v-model="isChecked"
+    v-model="isReverted"
     :stopClickPropagation="true"
     :label="'revert'"
   />
@@ -8,11 +8,11 @@
 
 <script lang="ts">
 import {
-  PropType, defineComponent, ref, watch, computed,
+  PropType, defineComponent, computed,
 } from 'vue';
-import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { injectKey } from '@/presentation/injectionSymbols';
 import { NodeMetadata } from '@/presentation/components/Scripts/View/Tree/NodeContent/NodeMetadata';
+import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { IReverter } from './Reverter/IReverter';
 import { getReverter } from './Reverter/ReverterFactory';
 import ToggleSwitch from './ToggleSwitch.vue';
@@ -29,56 +29,37 @@ export default defineComponent({
   },
   setup(props) {
     const {
-      currentState, modifyCurrentState, onStateChange,
-    } = injectKey((keys) => keys.useCollectionState);
-    const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
+      currentSelection, modifyCurrentSelection,
+    } = injectKey((keys) => keys.useUserSelectionState);
+    const { currentState } = injectKey((keys) => keys.useCollectionState);
 
-    const isReverted = ref(false);
+    const currentCollection = computed<ICategoryCollection>(() => currentState.value.collection);
 
-    let handler: IReverter | undefined;
-
-    watch(
-      () => props.node,
-      (node) => onNodeChanged(node),
-      { immediate: true },
+    const revertHandler = computed<IReverter>(
+      () => getReverter(props.node, currentCollection.value),
     );
 
-    onStateChange((newState) => {
-      updateRevertStatusFromState(newState.selection.selectedScripts);
-      events.unsubscribeAllAndRegister([
-        newState.selection.changed.on((scripts) => updateRevertStatusFromState(scripts)),
-      ]);
-    }, { immediate: true });
-
-    function onNodeChanged(node: NodeMetadata) {
-      handler = getReverter(node, currentState.value.collection);
-      updateRevertStatusFromState(currentState.value.selection.selectedScripts);
-    }
-
-    function updateRevertStatusFromState(scripts: ReadonlyArray<SelectedScript>) {
-      isReverted.value = handler?.getState(scripts) ?? false;
-    }
-
-    function syncReversionStatusWithState(value: boolean) {
-      if (value === isReverted.value) {
-        return;
-      }
-      modifyCurrentState((state) => {
-        handler.selectWithRevertState(value, state.selection);
-      });
-    }
-
-    const isChecked = computed({
+    const isReverted = computed<boolean>({
       get() {
-        return isReverted.value;
+        const { selectedScripts } = currentSelection.value;
+        return revertHandler.value.getState(selectedScripts);
       },
       set: (value: boolean) => {
         syncReversionStatusWithState(value);
       },
     });
 
+    function syncReversionStatusWithState(value: boolean) {
+      if (value === isReverted.value) {
+        return;
+      }
+      modifyCurrentSelection((mutableSelection) => {
+        revertHandler.value.selectWithRevertState(value, mutableSelection);
+      });
+    }
+
     return {
-      isChecked,
+      isReverted,
     };
   },
 });

@@ -25,6 +25,20 @@ export class UserSelectionStub
     return this;
   }
 
+  public isScriptAdded(scriptId: string): boolean {
+    const call = this.callHistory.find(
+      (c) => c.methodName === 'addSelectedScript' && c.args[0] === scriptId,
+    );
+    return call !== undefined;
+  }
+
+  public isScriptRemoved(scriptId: string): boolean {
+    const call = this.callHistory.find(
+      (c) => c.methodName === 'removeSelectedScript' && c.args[0] === scriptId,
+    );
+    return call !== undefined;
+  }
+
   public areAllSelected(): boolean {
     throw new Error('Method not implemented.');
   }

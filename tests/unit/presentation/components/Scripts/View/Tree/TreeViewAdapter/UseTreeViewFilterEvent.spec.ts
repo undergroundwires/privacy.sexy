@@ -66,7 +66,7 @@ describe('UseTreeViewFilterEvent', () => {
           .withFilter(filterStub);
         const { returnObject } = mountWrapperComponent({ useStateStub: stateStub });
         let totalFilterUpdates = 0;
-        watch(() => returnObject.latestFilterEvent.value, () => {
+        watch(returnObject.latestFilterEvent, () => {
           totalFilterUpdates++;
         });
         // act

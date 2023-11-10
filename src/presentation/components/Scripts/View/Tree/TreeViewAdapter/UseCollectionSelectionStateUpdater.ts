@@ -1,9 +1,11 @@
-import { injectKey } from '@/presentation/injectionSymbols';
+import { useUserSelectionState } from '@/presentation/components/Shared/Hooks/UseUserSelectionState';
 import { TreeNodeCheckState } from '../TreeView/Node/State/CheckState';
 import { TreeNodeStateChangedEmittedEvent } from '../TreeView/Bindings/TreeNodeStateChangedEmittedEvent';
 
-export function useCollectionSelectionStateUpdater() {
-  const { modifyCurrentState, currentState } = injectKey((keys) => keys.useCollectionState);
+export function useCollectionSelectionStateUpdater(
+  useSelectionStateHook: ReturnType<typeof useUserSelectionState>,
+) {
+  const { modifyCurrentSelection, currentSelection } = useSelectionStateHook;
 
   function updateNodeSelection(change: TreeNodeStateChangedEmittedEvent) {
     const { node } = change;
@@ -14,19 +16,19 @@ export function useCollectionSelectionStateUpdater() {
       return;
     }
     if (node.state.current.checkState === TreeNodeCheckState.Checked) {
-      if (currentState.value.selection.isSelected(node.id)) {
+      if (currentSelection.value.isSelected(node.id)) {
         return;
       }
-      modifyCurrentState((state) => {
-        state.selection.addSelectedScript(node.id, false);
+      modifyCurrentSelection((selection) => {
+        selection.addSelectedScript(node.id, false);
       });
     }
     if (node.state.current.checkState === TreeNodeCheckState.Unchecked) {
-      if (!currentState.value.selection.isSelected(node.id)) {
+      if (!currentSelection.value.isSelected(node.id)) {
         return;
       }
-      modifyCurrentState((state) => {
-        state.selection.removeSelectedScript(node.id);
+      modifyCurrentSelection((selection) => {
+        selection.removeSelectedScript(node.id);
       });
     }
   }

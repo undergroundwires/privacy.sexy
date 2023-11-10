@@ -5,5 +5,5 @@ export interface IEventSubscriptionCollection {
 
   register(subscriptions: IEventSubscription[]): void;
   unsubscribeAll(): void;
-  unsubscribeAllAndRegister(subscriptions: IEventSubscription[]);
+  unsubscribeAllAndRegister(subscriptions: IEventSubscription[]): void;
 }

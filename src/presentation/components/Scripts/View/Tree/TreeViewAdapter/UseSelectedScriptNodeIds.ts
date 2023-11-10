@@ -1,50 +1,23 @@
 import {
-  computed, shallowReadonly, shallowRef, triggerRef,
+  computed, shallowReadonly,
 } from 'vue';
-import { injectKey } from '@/presentation/injectionSymbols';
-import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
+import type { useUserSelectionState } from '@/presentation/components/Shared/Hooks/UseUserSelectionState';
 import { getScriptNodeId } from './CategoryNodeMetadataConverter';
 
-export function useSelectedScriptNodeIds(scriptNodeIdParser = getScriptNodeId) {
-  const { selectedScripts } = useSelectedScripts();
+export function useSelectedScriptNodeIds(
+  useSelectionStateHook: ReturnType<typeof useUserSelectionState>,
+  scriptNodeIdParser = getScriptNodeId,
+) {
+  const { currentSelection } = useSelectionStateHook;
 
   const selectedNodeIds = computed<readonly string[]>(() => {
-    return selectedScripts
+    return currentSelection
       .value
+      .selectedScripts
       .map((selected) => scriptNodeIdParser(selected.script));
   });
 
   return {
     selectedScriptNodeIds: shallowReadonly(selectedNodeIds),
-  };
-}
-
-function useSelectedScripts() {
-  const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
-  const { onStateChange } = injectKey((keys) => keys.useCollectionState);
-
-  const selectedScripts = shallowRef<readonly SelectedScript[]>([]);
-
-  function updateSelectedScripts(newReference: readonly SelectedScript[]) {
-    if (selectedScripts.value === newReference) {
-      // Manually trigger update if the array was mutated using the same reference.
-      // Array might have been mutated without changing the reference
-      triggerRef(selectedScripts);
-    } else {
-      selectedScripts.value = newReference;
-    }
-  }
-
-  onStateChange((state) => {
-    updateSelectedScripts(state.selection.selectedScripts);
-    events.unsubscribeAllAndRegister([
-      state.selection.changed.on((scripts) => {
-        updateSelectedScripts(scripts);
-      }),
-    ]);
-  }, { immediate: true });
-
-  return {
-    selectedScripts: shallowReadonly(selectedScripts),
   };
 }

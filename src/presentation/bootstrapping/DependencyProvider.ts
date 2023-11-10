@@ -11,6 +11,7 @@ import {
   TransientKey, injectKey,
 } from '@/presentation/injectionSymbols';
 import { PropertyKeys } from '@/TypeHelpers';
+import { useUserSelectionState } from '@/presentation/components/Shared/Hooks/UseUserSelectionState';
 
 export function provideDependencies(
   context: IApplicationContext,
@@ -46,6 +47,14 @@ export function provideDependencies(
         const { events } = di.injectKey((keys) => keys.useAutoUnsubscribedEvents);
         const state = di.injectKey((keys) => keys.useCollectionState);
         return useCurrentCode(state, events);
+      },
+    ),
+    useUserSelectionState: (di) => di.provide(
+      InjectionKeys.useUserSelectionState,
+      () => {
+        const events = di.injectKey((keys) => keys.useAutoUnsubscribedEvents);
+        const state = di.injectKey((keys) => keys.useCollectionState);
+        return useUserSelectionState(state, events);
       },
     ),
   };

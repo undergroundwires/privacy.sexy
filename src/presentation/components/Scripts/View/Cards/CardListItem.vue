@@ -22,16 +22,10 @@
         :icon="isExpanded ? 'folder-open' : 'folder'"
       />
       <!-- Indeterminate and full states -->
-      <div class="card__inner__state-icons">
-        <AppIcon
-          icon="battery-half"
-          v-if="isAnyChildSelected && !areAllChildrenSelected"
-        />
-        <AppIcon
-          icon="battery-full"
-          v-if="areAllChildrenSelected"
-        />
-      </div>
+      <CardSelectionIndicator
+        class="card__inner__selection_indicator"
+        :categoryId="categoryId"
+      />
     </div>
     <div class="card__expander" v-on:click.stop>
       <div class="card__expander__content">
@@ -49,17 +43,19 @@
 
 <script lang="ts">
 import {
-  defineComponent, ref, watch, computed, shallowRef,
+  defineComponent, computed, shallowRef,
 } from 'vue';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import ScriptsTree from '@/presentation/components/Scripts/View/Tree/ScriptsTree.vue';
 import { sleep } from '@/infrastructure/Threading/AsyncSleep';
+import CardSelectionIndicator from './CardSelectionIndicator.vue';
 
 export default defineComponent({
   components: {
     ScriptsTree,
     AppIcon,
+    CardSelectionIndicator,
   },
   props: {
     categoryId: {
@@ -77,8 +73,7 @@ export default defineComponent({
     /* eslint-enable @typescript-eslint/no-unused-vars */
   },
   setup(props, { emit }) {
-    const { onStateChange, currentState } = injectKey((keys) => keys.useCollectionState);
-    const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
+    const { currentState } = injectKey((keys) => keys.useCollectionState);
 
     const isExpanded = computed({
       get: () => {
@@ -92,8 +87,6 @@ export default defineComponent({
       },
     });
 
-    const isAnyChildSelected = ref(false);
-    const areAllChildrenSelected = ref(false);
     const cardElement = shallowRef<HTMLElement>();
 
     const cardTitle = computed<string | undefined>(() => {
@@ -108,37 +101,14 @@ export default defineComponent({
       isExpanded.value = false;
     }
 
-    onStateChange((state) => {
-      events.unsubscribeAllAndRegister([
-        state.selection.changed.on(
-          () => updateSelectionIndicators(props.categoryId),
-        ),
-      ]);
-      updateSelectionIndicators(props.categoryId);
-    }, { immediate: true });
-
-    watch(
-      () => props.categoryId,
-      (categoryId) => updateSelectionIndicators(categoryId),
-    );
-
     async function scrollToCard() {
       await sleep(400); // wait a bit to allow GUI to render the expanded card
       cardElement.value.scrollIntoView({ behavior: 'smooth' });
     }
 
-    function updateSelectionIndicators(categoryId: number) {
-      const category = currentState.value.collection.findCategory(categoryId);
-      const { selection } = currentState.value;
-      isAnyChildSelected.value = category ? selection.isAnySelected(category) : false;
-      areAllChildrenSelected.value = category ? selection.areAllSelected(category) : false;
-    }
-
     return {
       cardTitle,
       isExpanded,
-      isAnyChildSelected,
-      areAllChildrenSelected,
       cardElement,
       collapse,
     };
@@ -192,7 +162,7 @@ $card-horizontal-gap    : $card-gap;
       flex: 1;
       justify-content: center;
     }
-    &__state-icons {
+    &__selection_indicator {
       height: $card-inner-padding;
       margin-right: -$card-inner-padding;
       padding-right: 10px;

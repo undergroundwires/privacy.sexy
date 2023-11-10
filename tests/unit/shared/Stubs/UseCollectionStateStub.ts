@@ -50,19 +50,44 @@ export class UseCollectionStateStub
     return this.currentState.value;
   }
 
+  public isStateModified(): boolean {
+    const call = this.callHistory.find((c) => c.methodName === 'modifyCurrentState');
+    return call !== undefined;
+  }
+
+  public triggerImmediateStateChange(): void {
+    this.triggerOnStateChange({
+      newState: this.currentState.value,
+      immediateOnly: true,
+    });
+  }
+
   public triggerOnStateChange(scenario: {
     readonly newState: ICategoryCollectionState,
     readonly immediateOnly: boolean,
   }): void {
     this.currentState.value = scenario.newState;
-    let calls = this.callHistory.filter((call) => call.methodName === 'onStateChange');
+    let handlers = this.getRegisteredHandlers();
     if (scenario.immediateOnly) {
-      calls = calls.filter((call) => call.args[1].immediate === true);
+      handlers = handlers.filter((args) => args[1]?.immediate === true);
     }
-    const handlers = calls.map((call) => call.args[0] as NewStateEventHandler);
-    handlers.forEach(
+    const callbacks = handlers.map((args) => args[0] as NewStateEventHandler);
+    if (!callbacks.length) {
+      throw new Error('No handler callbacks are registered to handle state change');
+    }
+    callbacks.forEach(
       (handler) => handler(scenario.newState, undefined),
     );
+  }
+
+  public get(): ReturnType<typeof useCollectionState> {
+    return {
+      modifyCurrentState: this.modifyCurrentState.bind(this),
+      modifyCurrentContext: this.modifyCurrentContext.bind(this),
+      onStateChange: this.onStateChange.bind(this),
+      currentContext: this.currentContext,
+      currentState: this.currentState,
+    };
   }
 
   private onStateChange(
@@ -94,13 +119,14 @@ export class UseCollectionStateStub
     });
   }
 
-  public get(): ReturnType<typeof useCollectionState> {
-    return {
-      modifyCurrentState: this.modifyCurrentState.bind(this),
-      modifyCurrentContext: this.modifyCurrentContext.bind(this),
-      onStateChange: this.onStateChange.bind(this),
-      currentContext: this.currentContext,
-      currentState: this.currentState,
-    };
+  private getRegisteredHandlers(): readonly Parameters<ReturnType<typeof useCollectionState>['onStateChange']>[] {
+    const calls = this.callHistory.filter((call) => call.methodName === 'onStateChange');
+    return calls.map((handler) => {
+      const [callback, settings] = handler.args;
+      return [
+        callback as NewStateEventHandler,
+        settings as Partial<IStateCallbackSettings>,
+      ];
+    });
   }
 }
