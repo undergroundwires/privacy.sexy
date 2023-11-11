@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, toRef } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import TreeView from './TreeView/TreeView.vue';
 import NodeContent from './NodeContent/NodeContent.vue';
@@ -42,7 +42,7 @@ export default defineComponent({
     const useUserCollectionStateHook = injectKey((keys) => keys.useUserSelectionState);
     const { selectedScriptNodeIds } = useSelectedScriptNodeIds(useUserCollectionStateHook);
     const { latestFilterEvent } = useTreeViewFilterEvent();
-    const { treeViewInputNodes } = useTreeViewNodeInput(() => props.categoryId);
+    const { treeViewInputNodes } = useTreeViewNodeInput(toRef(props, 'categoryId'));
     const { updateNodeSelection } = useCollectionSelectionStateUpdater(useUserCollectionStateHook);
 
     function handleNodeChangedEvent(event: TreeNodeStateChangedEmittedEvent) {

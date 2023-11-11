@@ -1,5 +1,5 @@
 import {
-  WatchSource, shallowReadonly, shallowRef, triggerRef,
+  type Ref, shallowReadonly, shallowRef, triggerRef,
 } from 'vue';
 import { TreeRoot } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/TreeRoot';
 import { useCurrentTreeNodes } from '@/presentation/components/Scripts/View/Tree/TreeView/UseCurrentTreeNodes';
@@ -7,7 +7,7 @@ import { QueryableNodes } from '@/presentation/components/Scripts/View/Tree/Tree
 import { QueryableNodesStub } from './QueryableNodesStub';
 
 export class UseCurrentTreeNodesStub {
-  public treeWatcher: WatchSource<TreeRoot> | undefined;
+  public treeRootRef: Readonly<Ref<TreeRoot>> | undefined;
 
   private nodes = shallowRef<QueryableNodes>(new QueryableNodesStub());
 
@@ -22,8 +22,8 @@ export class UseCurrentTreeNodesStub {
   }
 
   public get(): typeof useCurrentTreeNodes {
-    return (treeWatcher: WatchSource<TreeRoot>) => {
-      this.treeWatcher = treeWatcher;
+    return (treeRootRef: Readonly<Ref<TreeRoot>>) => {
+      this.treeRootRef = treeRootRef;
       return {
         nodes: shallowReadonly(this.nodes),
       };

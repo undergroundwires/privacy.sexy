@@ -8,13 +8,15 @@ import { TreeNode } from './Node/TreeNode';
 type TreeNavigationKeyCodes = 'ArrowLeft' | 'ArrowUp' | 'ArrowRight' | 'ArrowDown' | ' ' | 'Enter';
 
 export function useTreeKeyboardNavigation(
-  treeRoot: TreeRoot,
-  treeElementRef: Ref<HTMLElement | undefined>,
+  treeRootRef: Readonly<Ref<TreeRoot>>,
+  treeElementRef: Readonly<Ref<HTMLElement | undefined>>,
 ) {
   useKeyboardListener(treeElementRef, (event) => {
     if (!treeElementRef.value) {
       return; // Not yet initialized?
     }
+
+    const treeRoot = treeRootRef.value;
 
     const keyCode = event.key as TreeNavigationKeyCodes;
 
@@ -39,7 +41,7 @@ export function useTreeKeyboardNavigation(
 }
 
 function useKeyboardListener(
-  elementRef: Ref<HTMLElement | undefined>,
+  elementRef: Readonly<Ref<HTMLElement | undefined>>,
   handleKeyboardEvent: (event: KeyboardEvent) => void,
 ) {
   onMounted(() => {

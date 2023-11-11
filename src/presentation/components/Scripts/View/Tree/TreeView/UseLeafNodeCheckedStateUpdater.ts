@@ -1,4 +1,4 @@
-import { WatchSource, watch } from 'vue';
+import { type Ref, watch } from 'vue';
 import { TreeRoot } from './TreeRoot/TreeRoot';
 import { TreeNode } from './Node/TreeNode';
 import { QueryableNodes } from './TreeRoot/NodeCollection/Query/QueryableNodes';
@@ -6,13 +6,13 @@ import { useCurrentTreeNodes } from './UseCurrentTreeNodes';
 import { TreeNodeCheckState } from './Node/State/CheckState';
 
 export function useLeafNodeCheckedStateUpdater(
-  treeWatcher: WatchSource<TreeRoot>,
-  leafNodeIdsWatcher: WatchSource<readonly string[]>,
+  treeRootRef: Readonly<Ref<TreeRoot>>,
+  leafNodeIdsRef: Readonly<Ref<readonly string[]>>,
 ) {
-  const { nodes } = useCurrentTreeNodes(treeWatcher);
+  const { nodes } = useCurrentTreeNodes(treeRootRef);
 
   watch(
-    [leafNodeIdsWatcher, () => nodes.value],
+    [leafNodeIdsRef, nodes],
     ([nodeIds, actualNodes]) => {
       updateNodeSelections(actualNodes, nodeIds);
     },

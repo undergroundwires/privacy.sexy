@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
-  shallowRef, defineComponent, WatchSource, nextTick,
+  shallowRef, defineComponent, nextTick, type Ref,
 } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { ReadOnlyTreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
@@ -16,31 +16,22 @@ describe('useNodeState', () => {
   it('should set state on immediate invocation if node exists', () => {
     // arrange
     const expectedState = new TreeNodeStateDescriptorStub();
-    const nodeWatcher = shallowRef<ReadOnlyTreeNode | undefined>(undefined);
-    nodeWatcher.value = new TreeNodeStub()
-      .withState(new TreeNodeStateAccessStub().withCurrent(expectedState));
+    const nodeRef = shallowRef<ReadOnlyTreeNode>(
+      new TreeNodeStub().withState(new TreeNodeStateAccessStub().withCurrent(expectedState)),
+    );
     // act
-    const { returnObject } = mountWrapperComponent(nodeWatcher);
+    const { returnObject } = mountWrapperComponent(nodeRef);
     // assert
     expect(returnObject.state.value).to.equal(expectedState);
   });
 
-  it('should not set state on immediate invocation if node is undefined', () => {
-    // arrange
-    const nodeWatcher = shallowRef<ReadOnlyTreeNode | undefined>(undefined);
-    // act
-    const { returnObject } = mountWrapperComponent(nodeWatcher);
-    // assert
-    expect(returnObject.state.value).toBeUndefined();
-  });
-
-  it('should update state when nodeWatcher changes', async () => {
+  it('should update state when node changes', async () => {
     // arrange
     const expectedNewState = new TreeNodeStateDescriptorStub();
-    const nodeWatcher = shallowRef<ReadOnlyTreeNode | undefined>(undefined);
-    const { returnObject } = mountWrapperComponent(nodeWatcher);
+    const nodeRef = shallowRef<ReadOnlyTreeNode>(new TreeNodeStub());
+    const { returnObject } = mountWrapperComponent(nodeRef);
     // act
-    nodeWatcher.value = new TreeNodeStub()
+    nodeRef.value = new TreeNodeStub()
       .withState(new TreeNodeStateAccessStub().withCurrent(expectedNewState));
     await nextTick();
     // assert
@@ -49,30 +40,28 @@ describe('useNodeState', () => {
 
   it('should update state when node state changes', () => {
     // arrange
-    const nodeWatcher = shallowRef<ReadOnlyTreeNode | undefined>(undefined);
     const stateAccessStub = new TreeNodeStateAccessStub();
+    const nodeRef = shallowRef<ReadOnlyTreeNode>(
+      new TreeNodeStub().withState(stateAccessStub),
+    );
     const expectedChangedState = new TreeNodeStateDescriptorStub();
-    nodeWatcher.value = new TreeNodeStub()
-      .withState(stateAccessStub);
-
     // act
-    const { returnObject } = mountWrapperComponent(nodeWatcher);
+    const { returnObject } = mountWrapperComponent(nodeRef);
     stateAccessStub.triggerStateChangedEvent(
       new NodeStateChangedEventStub()
         .withNewState(expectedChangedState),
     );
-
     // assert
     expect(returnObject.state.value).to.equal(expectedChangedState);
   });
 });
 
-function mountWrapperComponent(nodeWatcher: WatchSource<ReadOnlyTreeNode | undefined>) {
+function mountWrapperComponent(nodeRef: Readonly<Ref<ReadOnlyTreeNode>>) {
   let returnObject: ReturnType<typeof useNodeState>;
   const wrapper = shallowMount(
     defineComponent({
       setup() {
-        returnObject = useNodeState(nodeWatcher);
+        returnObject = useNodeState(nodeRef);
       },
       template: '<div></div>',
     }),

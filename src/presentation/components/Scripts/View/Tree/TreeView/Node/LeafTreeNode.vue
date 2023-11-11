@@ -1,6 +1,5 @@
 <template>
   <li
-    v-if="currentNode"
     class="wrapper"
     @click.stop="toggleCheckState"
   >
@@ -31,15 +30,14 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent, computed, PropType,
-} from 'vue';
+import { defineComponent, computed, toRef } from 'vue';
 import { TreeRoot } from '../TreeRoot/TreeRoot';
 import { useCurrentTreeNodes } from '../UseCurrentTreeNodes';
 import { useNodeState } from './UseNodeState';
 import { useKeyboardInteractionState } from './UseKeyboardInteractionState';
 import { TreeNode } from './TreeNode';
 import { TreeNodeCheckState } from './State/CheckState';
+import type { PropType } from 'vue';
 
 export default defineComponent({
   props: {
@@ -54,16 +52,16 @@ export default defineComponent({
   },
   setup(props) {
     const { isKeyboardBeingUsed } = useKeyboardInteractionState();
-    const { nodes } = useCurrentTreeNodes(() => props.treeRoot);
-    const currentNode = computed<TreeNode | undefined>(
-      () => nodes.value?.getNodeById(props.nodeId),
+    const { nodes } = useCurrentTreeNodes(toRef(props, 'treeRoot'));
+    const currentNode = computed<TreeNode>(
+      () => nodes.value.getNodeById(props.nodeId),
     );
-    const { state } = useNodeState(() => currentNode.value);
+    const { state } = useNodeState(currentNode);
 
-    const hasFocus = computed<boolean>(() => state.value?.isFocused ?? false);
-    const checked = computed<boolean>(() => state.value?.checkState === TreeNodeCheckState.Checked);
+    const hasFocus = computed<boolean>(() => state.value.isFocused);
+    const checked = computed<boolean>(() => state.value.checkState === TreeNodeCheckState.Checked);
     const indeterminate = computed<boolean>(
-      () => state.value?.checkState === TreeNodeCheckState.Indeterminate,
+      () => state.value.checkState === TreeNodeCheckState.Indeterminate,
     );
 
     const hasKeyboardFocus = computed<boolean>(() => {
@@ -74,14 +72,11 @@ export default defineComponent({
     });
 
     const onNodeFocus = () => {
-      if (!currentNode.value) {
-        return;
-      }
       props.treeRoot.focus.setSingleFocus(currentNode.value);
     };
 
     function toggleCheckState() {
-      currentNode.value?.state.toggleCheck();
+      currentNode.value.state.toggleCheck();
     }
 
     return {

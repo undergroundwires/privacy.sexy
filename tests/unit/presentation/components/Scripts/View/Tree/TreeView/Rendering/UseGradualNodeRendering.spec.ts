@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { WatchSource } from 'vue';
+import { type Ref, shallowRef } from 'vue';
 import { useGradualNodeRendering } from '@/presentation/components/Scripts/View/Tree/TreeView/Rendering/UseGradualNodeRendering';
 import { TreeRoot } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/TreeRoot';
 import { TreeRootStub } from '@tests/unit/shared/Stubs/TreeRootStub';
@@ -17,18 +17,18 @@ import { RenderQueueOrdererStub } from '@tests/unit/shared/Stubs/RenderQueueOrde
 import { RenderQueueOrderer } from '@/presentation/components/Scripts/View/Tree/TreeView/Rendering/Ordering/RenderQueueOrderer';
 
 describe('useGradualNodeRendering', () => {
-  it('watches nodes on specified tree', () => {
+  it('tracks nodes on specified tree', () => {
     // arrange
-    const expectedWatcher = () => new TreeRootStub();
+    const expectedTreeRootRef = shallowRef(new TreeRootStub());
     const currentTreeNodesStub = new UseCurrentTreeNodesStub();
     const builder = new UseGradualNodeRenderingBuilder()
       .withCurrentTreeNodes(currentTreeNodesStub)
-      .withTreeWatcher(expectedWatcher);
+      .withTreeRootRef(expectedTreeRootRef);
     // act
     builder.call();
     // assert
-    const actualWatcher = currentTreeNodesStub.treeWatcher;
-    expect(actualWatcher).to.equal(expectedWatcher);
+    const actualTreeRootRef = currentTreeNodesStub.treeRootRef;
+    expect(actualTreeRootRef).to.equal(expectedTreeRootRef);
   });
   describe('shouldRender', () => {
     describe('on visibility toggle', () => {
@@ -269,7 +269,7 @@ function createNodeWithVisibility(
 class UseGradualNodeRenderingBuilder {
   private changeAggregator = new UseNodeStateChangeAggregatorStub();
 
-  private treeWatcher: WatchSource<TreeRoot | undefined> = () => new TreeRootStub();
+  private treeRootRef: Readonly<Ref<TreeRoot>> = shallowRef(new TreeRootStub());
 
   private currentTreeNodes = new UseCurrentTreeNodesStub();
 
@@ -291,8 +291,8 @@ class UseGradualNodeRenderingBuilder {
     return this;
   }
 
-  public withTreeWatcher(treeWatcher: WatchSource<TreeRoot | undefined>): this {
-    this.treeWatcher = treeWatcher;
+  public withTreeRootRef(treeRootRef: Readonly<Ref<TreeRoot>>): this {
+    this.treeRootRef = treeRootRef;
     return this;
   }
 
@@ -318,7 +318,7 @@ class UseGradualNodeRenderingBuilder {
 
   public call(): ReturnType<typeof useGradualNodeRendering> {
     return useGradualNodeRendering(
-      this.treeWatcher,
+      this.treeRootRef,
       this.changeAggregator.get(),
       this.currentTreeNodes.get(),
       this.delayScheduler,

@@ -1,15 +1,15 @@
-import { WatchSource } from 'vue';
 import { TreeRoot } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/TreeRoot';
 import {
   NodeStateChangeEventArgs,
   NodeStateChangeEventCallback,
   useNodeStateChangeAggregator,
 } from '@/presentation/components/Scripts/View/Tree/TreeView/UseNodeStateChangeAggregator';
+import type { Ref } from 'vue';
 
 export class UseNodeStateChangeAggregatorStub {
   public callback: NodeStateChangeEventCallback | undefined;
 
-  public treeWatcher: WatchSource<TreeRoot> | undefined;
+  public treeRootRef: Readonly<Ref<TreeRoot>> | undefined;
 
   public onNodeStateChange(callback: NodeStateChangeEventCallback) {
     this.callback = callback;
@@ -23,8 +23,8 @@ export class UseNodeStateChangeAggregatorStub {
   }
 
   public get(): typeof useNodeStateChangeAggregator {
-    return (treeWatcher: WatchSource<TreeRoot>) => {
-      this.treeWatcher = treeWatcher;
+    return (treeRootRef: Readonly<Ref<TreeRoot>>) => {
+      this.treeRootRef = treeRootRef;
       return {
         onNodeStateChange: this.onNodeStateChange.bind(this),
       };

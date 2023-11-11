@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { WatchSource } from 'vue';
+import { type Ref, shallowRef } from 'vue';
 import { TreeRoot } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/TreeRoot';
 import { useAutoUpdateChildrenCheckState } from '@/presentation/components/Scripts/View/Tree/TreeView/UseAutoUpdateChildrenCheckState';
 import { TreeNodeCheckState } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/CheckState';
@@ -25,16 +25,16 @@ describe('useAutoUpdateChildrenCheckState', () => {
   });
   it('aggregate changes on specified tree', () => {
     // arrange
-    const expectedWatcher = () => new TreeRootStub();
+    const expectedTreeRoot = shallowRef(new TreeRootStub());
     const aggregatorStub = new UseNodeStateChangeAggregatorStub();
     const builder = new UseAutoUpdateChildrenCheckStateBuilder()
       .withChangeAggregator(aggregatorStub)
-      .withTreeWatcher(expectedWatcher);
+      .withTreeRoot(expectedTreeRoot);
     // act
     builder.call();
     // assert
-    const actualWatcher = aggregatorStub.treeWatcher;
-    expect(actualWatcher).to.equal(expectedWatcher);
+    const actualTreeRoot = aggregatorStub.treeRootRef;
+    expect(actualTreeRoot).to.equal(expectedTreeRoot);
   });
   describe('skips event handling', () => {
     const scenarios: ReadonlyArray<{
@@ -197,21 +197,21 @@ function getAllPossibleCheckStates() {
 class UseAutoUpdateChildrenCheckStateBuilder {
   private changeAggregator = new UseNodeStateChangeAggregatorStub();
 
-  private treeWatcher: WatchSource<TreeRoot | undefined> = () => new TreeRootStub();
+  private treeRoot: Readonly<Ref<TreeRoot>> = shallowRef(new TreeRootStub());
 
   public withChangeAggregator(changeAggregator: UseNodeStateChangeAggregatorStub): this {
     this.changeAggregator = changeAggregator;
     return this;
   }
 
-  public withTreeWatcher(treeWatcher: WatchSource<TreeRoot | undefined>): this {
-    this.treeWatcher = treeWatcher;
+  public withTreeRoot(treeRoot: Readonly<Ref<TreeRoot>>): this {
+    this.treeRoot = treeRoot;
     return this;
   }
 
   public call(): ReturnType<typeof useAutoUpdateChildrenCheckState> {
     return useAutoUpdateChildrenCheckState(
-      this.treeWatcher,
+      this.treeRoot,
       this.changeAggregator.get(),
     );
   }

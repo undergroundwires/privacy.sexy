@@ -1,14 +1,14 @@
-import { WatchSource } from 'vue';
 import { TreeRoot } from './TreeRoot/TreeRoot';
 import { useNodeStateChangeAggregator } from './UseNodeStateChangeAggregator';
 import { HierarchyAccess } from './Node/Hierarchy/HierarchyAccess';
 import { TreeNodeCheckState } from './Node/State/CheckState';
+import type { Ref } from 'vue';
 
 export function useAutoUpdateChildrenCheckState(
-  treeWatcher: WatchSource<TreeRoot>,
+  treeRootRef: Readonly<Ref<TreeRoot>>,
   useChangeAggregator = useNodeStateChangeAggregator,
 ) {
-  const { onNodeStateChange } = useChangeAggregator(treeWatcher);
+  const { onNodeStateChange } = useChangeAggregator(treeRootRef);
 
   onNodeStateChange((change) => {
     if (change.newState.checkState === change.oldState?.checkState) {

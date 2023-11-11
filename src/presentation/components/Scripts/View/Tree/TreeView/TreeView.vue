@@ -14,7 +14,7 @@
 <script lang="ts">
 import {
   defineComponent, onMounted, watch,
-  shallowRef, PropType,
+  shallowRef, toRef, shallowReadonly,
 } from 'vue';
 import { TreeRootManager } from './TreeRoot/TreeRootManager';
 import TreeRoot from './TreeRoot/TreeRoot.vue';
@@ -28,6 +28,7 @@ import { TreeNodeStateChangedEmittedEvent } from './Bindings/TreeNodeStateChange
 import { useAutoUpdateParentCheckState } from './UseAutoUpdateParentCheckState';
 import { useAutoUpdateChildrenCheckState } from './UseAutoUpdateChildrenCheckState';
 import { useGradualNodeRendering } from './Rendering/UseGradualNodeRendering';
+import type { PropType } from 'vue';
 
 export default defineComponent({
   components: {
@@ -57,17 +58,16 @@ export default defineComponent({
 
     const tree = new TreeRootManager();
 
-    useTreeKeyboardNavigation(tree, treeContainerElement);
-    useTreeQueryFilter(
-      () => props.latestFilterEvent,
-      () => tree,
-    );
-    useLeafNodeCheckedStateUpdater(() => tree, () => props.selectedLeafNodeIds);
-    useAutoUpdateParentCheckState(() => tree);
-    useAutoUpdateChildrenCheckState(() => tree);
-    const nodeRenderingScheduler = useGradualNodeRendering(() => tree);
+    const treeRef = shallowReadonly(shallowRef(tree));
 
-    const { onNodeStateChange } = useNodeStateChangeAggregator(() => tree);
+    useTreeKeyboardNavigation(treeRef, treeContainerElement);
+    useTreeQueryFilter(toRef(props, 'latestFilterEvent'), treeRef);
+    useLeafNodeCheckedStateUpdater(treeRef, toRef(props, 'selectedLeafNodeIds'));
+    useAutoUpdateParentCheckState(treeRef);
+    useAutoUpdateChildrenCheckState(treeRef);
+    const nodeRenderingScheduler = useGradualNodeRendering(treeRef);
+
+    const { onNodeStateChange } = useNodeStateChangeAggregator(treeRef);
 
     onNodeStateChange((change) => {
       emit('nodeStateChanged', {

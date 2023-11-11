@@ -18,12 +18,13 @@
 
 <script lang="ts">
 import {
-  defineComponent, computed, PropType,
+  defineComponent, computed, toRef,
 } from 'vue';
 import HierarchicalTreeNode from '../Node/HierarchicalTreeNode.vue';
 import { useCurrentTreeNodes } from '../UseCurrentTreeNodes';
 import { NodeRenderingStrategy } from '../Rendering/Scheduling/NodeRenderingStrategy';
 import { TreeRoot } from './TreeRoot';
+import type { PropType } from 'vue';
 
 export default defineComponent({
   components: {
@@ -40,7 +41,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { nodes } = useCurrentTreeNodes(() => props.treeRoot);
+    const { nodes } = useCurrentTreeNodes(toRef(props, 'treeRoot'));
 
     const renderedNodeIds = computed<string[]>(() => {
       return nodes

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { WatchSource, defineComponent, nextTick } from 'vue';
+import { defineComponent, nextTick, shallowRef } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { TreeRoot } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/TreeRoot';
 import { useCurrentTreeNodes } from '@/presentation/components/Scripts/View/Tree/TreeView/UseCurrentTreeNodes';
@@ -17,20 +17,21 @@ import { TreeNodeStateDescriptorStub } from '@tests/unit/shared/Stubs/TreeNodeSt
 import { TreeNodeStateAccessStub } from '@tests/unit/shared/Stubs/TreeNodeStateAccessStub';
 import { IEventSubscriptionCollection } from '@/infrastructure/Events/IEventSubscriptionCollection';
 import { FunctionKeys } from '@/TypeHelpers';
+import type { Ref } from 'vue';
 
 describe('useNodeStateChangeAggregator', () => {
-  it('watches nodes on specified tree', () => {
+  it('tracks nodes on specified tree', () => {
     // arrange
-    const expectedWatcher = () => new TreeRootStub();
+    const expectedTreeRootRef = shallowRef(new TreeRootStub());
     const currentTreeNodesStub = new UseCurrentTreeNodesStub();
     const builder = new UseNodeStateChangeAggregatorBuilder()
       .withCurrentTreeNodes(currentTreeNodesStub.get())
-      .withTreeWatcher(expectedWatcher);
+      .withTreeRootRef(expectedTreeRootRef);
     // act
     builder.mountWrapperComponent();
     // assert
-    const actualWatcher = currentTreeNodesStub.treeWatcher;
-    expect(actualWatcher).to.equal(expectedWatcher);
+    const actualTreeRootRef = currentTreeNodesStub.treeRootRef;
+    expect(actualTreeRootRef).to.equal(expectedTreeRootRef);
   });
   describe('onNodeStateChange', () => {
     describe('throws if callback is absent', () => {
@@ -302,14 +303,14 @@ function createFlatCollection(nodes: readonly TreeNode[]): QueryableNodesStub {
 }
 
 class UseNodeStateChangeAggregatorBuilder {
-  private treeWatcher: WatchSource<TreeRoot | undefined> = () => new TreeRootStub();
+  private treeRootRef: Readonly<Ref<TreeRoot>> = shallowRef(new TreeRootStub());
 
   private currentTreeNodes: typeof useCurrentTreeNodes = new UseCurrentTreeNodesStub().get();
 
   private events: UseAutoUnsubscribedEventsStub = new UseAutoUnsubscribedEventsStub();
 
-  public withTreeWatcher(treeWatcher: WatchSource<TreeRoot | undefined>): this {
-    this.treeWatcher = treeWatcher;
+  public withTreeRootRef(treeRootRef: Readonly<Ref<TreeRoot>>): this {
+    this.treeRootRef = treeRootRef;
     return this;
   }
 
@@ -325,11 +326,11 @@ class UseNodeStateChangeAggregatorBuilder {
 
   public mountWrapperComponent() {
     let returnObject: ReturnType<typeof useNodeStateChangeAggregator>;
-    const { treeWatcher, currentTreeNodes } = this;
+    const { treeRootRef, currentTreeNodes } = this;
     const wrapper = shallowMount(
       defineComponent({
         setup() {
-          returnObject = useNodeStateChangeAggregator(treeWatcher, currentTreeNodes);
+          returnObject = useNodeStateChangeAggregator(treeRootRef, currentTreeNodes);
         },
         template: '<div></div>',
       }),

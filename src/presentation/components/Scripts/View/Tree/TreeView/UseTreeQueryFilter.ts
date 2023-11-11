@@ -1,4 +1,4 @@
-import { WatchSource, watch } from 'vue';
+import { type Ref, watch } from 'vue';
 import { TreeViewFilterAction, TreeViewFilterEvent, TreeViewFilterPredicate } from './Bindings/TreeInputFilterEvent';
 import { ReadOnlyTreeNode, TreeNode } from './Node/TreeNode';
 import { TreeRoot } from './TreeRoot/TreeRoot';
@@ -8,18 +8,18 @@ import { TreeNodeStateTransaction } from './Node/State/StateAccess';
 import { TreeNodeStateDescriptor } from './Node/State/StateDescriptor';
 
 export function useTreeQueryFilter(
-  latestFilterEventWatcher: WatchSource<TreeViewFilterEvent | undefined>,
-  treeWatcher: WatchSource<TreeRoot>,
+  latestFilterEventRef: Readonly<Ref<TreeViewFilterEvent | undefined>>,
+  treeRootRef: Readonly<Ref<TreeRoot>>,
 ) {
-  const { nodes } = useCurrentTreeNodes(treeWatcher);
+  const { nodes } = useCurrentTreeNodes(treeRootRef);
 
   let isFiltering = false;
   const statesBeforeFiltering = new NodeStateRestorer();
   statesBeforeFiltering.saveStateBeforeFilter(nodes.value);
 
   setupWatchers({
-    filterEventWatcher: latestFilterEventWatcher,
-    nodesWatcher: () => nodes.value,
+    filterEventRef: latestFilterEventRef,
+    nodesRef: nodes,
     onFilterTrigger: (predicate, newNodes) => runFilter(
       newNodes,
       predicate,
@@ -171,18 +171,18 @@ class NodeStateRestorer {
 }
 
 function setupWatchers(options: {
-  filterEventWatcher: WatchSource<TreeViewFilterEvent | undefined>,
-  nodesWatcher: WatchSource<QueryableNodes>,
-  onFilterReset: () => void,
-  onFilterTrigger: (
+  readonly filterEventRef: Readonly<Ref<TreeViewFilterEvent | undefined>>,
+  readonly nodesRef: Readonly<Ref<QueryableNodes>>,
+  readonly onFilterReset: () => void,
+  readonly onFilterTrigger: (
     predicate: TreeViewFilterPredicate,
     nodes: QueryableNodes,
   ) => void,
 }) {
   watch(
     [
-      options.filterEventWatcher,
-      options.nodesWatcher,
+      options.filterEventRef,
+      options.nodesRef,
     ],
     ([filterEvent, nodes]) => {
       if (!filterEvent) {

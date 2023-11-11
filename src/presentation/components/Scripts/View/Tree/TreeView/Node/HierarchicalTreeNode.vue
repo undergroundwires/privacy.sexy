@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper" v-if="currentNode">
+  <div class="wrapper">
     <div
       class="expansible-node"
       @click="toggleCheck"
@@ -46,15 +46,14 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent, computed, PropType,
-} from 'vue';
+import { defineComponent, computed, toRef } from 'vue';
 import { TreeRoot } from '../TreeRoot/TreeRoot';
 import { useCurrentTreeNodes } from '../UseCurrentTreeNodes';
 import { NodeRenderingStrategy } from '../Rendering/Scheduling/NodeRenderingStrategy';
 import { useNodeState } from './UseNodeState';
 import { TreeNode } from './TreeNode';
 import LeafTreeNode from './LeafTreeNode.vue';
+import type { PropType } from 'vue';
 
 export default defineComponent({
   name: 'HierarchicalTreeNode', // Needed due to recursion
@@ -76,33 +75,32 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { nodes } = useCurrentTreeNodes(() => props.treeRoot);
-    const currentNode = computed<TreeNode | undefined>(
-      () => nodes.value?.getNodeById(props.nodeId),
+    const { nodes } = useCurrentTreeNodes(toRef(props, 'treeRoot'));
+    const currentNode = computed<TreeNode>(
+      () => nodes.value.getNodeById(props.nodeId),
     );
 
-    const { state } = useNodeState(() => currentNode.value);
-    const expanded = computed<boolean>(() => state.value?.isExpanded ?? false);
+    const { state } = useNodeState(currentNode);
+    const expanded = computed<boolean>(() => state.value.isExpanded);
 
     const renderedNodeIds = computed<readonly string[]>(
       () => currentNode.value
-        ?.hierarchy
+        .hierarchy
         .children
         .filter((child) => props.renderingStrategy.shouldRender(child))
-        .map((child) => child.id)
-        ?? [],
+        .map((child) => child.id),
     );
 
     function toggleExpand() {
-      currentNode.value?.state.toggleExpand();
+      currentNode.value.state.toggleExpand();
     }
 
     function toggleCheck() {
-      currentNode.value?.state.toggleCheck();
+      currentNode.value.state.toggleCheck();
     }
 
     const hasChildren = computed<boolean>(
-      () => currentNode.value?.hierarchy.isBranchNode,
+      () => currentNode.value.hierarchy.isBranchNode,
     );
 
     return {

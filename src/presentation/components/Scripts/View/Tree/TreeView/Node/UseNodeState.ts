@@ -1,21 +1,18 @@
 import {
-  WatchSource, shallowRef, watch,
+  type Ref, shallowRef, watch, shallowReadonly,
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import { ReadOnlyTreeNode } from './TreeNode';
 import { TreeNodeStateDescriptor } from './State/StateDescriptor';
 
 export function useNodeState(
-  nodeWatcher: WatchSource<ReadOnlyTreeNode | undefined>,
+  nodeRef: Readonly<Ref<ReadOnlyTreeNode>>,
 ) {
   const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
 
-  const state = shallowRef<TreeNodeStateDescriptor>();
+  const state = shallowRef<TreeNodeStateDescriptor>(nodeRef.value.state.current);
 
-  watch(nodeWatcher, (node: ReadOnlyTreeNode) => {
-    if (!node) {
-      return;
-    }
+  watch(nodeRef, (node: ReadOnlyTreeNode) => {
     state.value = node.state.current;
     events.unsubscribeAllAndRegister([
       node.state.changed.on((change) => {
@@ -25,6 +22,6 @@ export function useNodeState(
   }, { immediate: true });
 
   return {
-    state,
+    state: shallowReadonly(state),
   };
 }

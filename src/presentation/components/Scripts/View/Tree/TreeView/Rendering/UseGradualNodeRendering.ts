@@ -1,5 +1,5 @@
 import {
-  WatchSource, shallowRef, triggerRef, watch,
+  type Ref, shallowRef, triggerRef, watch,
 } from 'vue';
 import { ReadOnlyTreeNode } from '../Node/TreeNode';
 import { useNodeStateChangeAggregator } from '../UseNodeStateChangeAggregator';
@@ -15,7 +15,7 @@ import { CollapsedParentOrderer } from './Ordering/CollapsedParentOrderer';
  * Renders tree nodes gradually to prevent UI freeze when loading large amounts of nodes.
  */
 export function useGradualNodeRendering(
-  treeWatcher: WatchSource<TreeRoot>,
+  treeRootRef: Readonly<Ref<TreeRoot>>,
   useChangeAggregator = useNodeStateChangeAggregator,
   useTreeNodes = useCurrentTreeNodes,
   scheduler: DelayScheduler = new TimeoutDelayScheduler(),
@@ -28,8 +28,8 @@ export function useGradualNodeRendering(
   let isRenderingInProgress = false;
   const renderingDelayInMs = 50;
 
-  const { onNodeStateChange } = useChangeAggregator(treeWatcher);
-  const { nodes } = useTreeNodes(treeWatcher);
+  const { onNodeStateChange } = useChangeAggregator(treeRootRef);
+  const { nodes } = useTreeNodes(treeRootRef);
 
   function updateNodeRenderQueue(node: ReadOnlyTreeNode, isVisible: boolean) {
     if (isVisible
@@ -48,7 +48,7 @@ export function useGradualNodeRendering(
     }
   }
 
-  watch(() => nodes.value, (newNodes) => {
+  watch(nodes, (newNodes) => {
     nodesToRender.clear();
     nodesBeingRendered.value.clear();
     if (!newNodes || newNodes.flattenedNodes.length === 0) {

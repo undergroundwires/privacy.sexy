@@ -1,5 +1,5 @@
 import {
-  WatchSource, watch, shallowRef,
+  watch, shallowRef, type Ref,
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
@@ -11,31 +11,31 @@ import { TreeNodeStateDescriptor } from './Node/State/StateDescriptor';
 export type NodeStateChangeEventCallback = (args: NodeStateChangeEventArgs) => void;
 
 export function useNodeStateChangeAggregator(
-  treeWatcher: WatchSource<TreeRoot>,
+  treeRootRef: Readonly<Ref<TreeRoot>>,
   useTreeNodes = useCurrentTreeNodes,
 ) {
-  const { nodes } = useTreeNodes(treeWatcher);
+  const { nodes } = useTreeNodes(treeRootRef);
   const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
 
   const onNodeChangeCallback = shallowRef<NodeStateChangeEventCallback>();
 
-  watch([
-    () => nodes.value,
-    () => onNodeChangeCallback.value,
-  ], ([newNodes, callback]) => {
-    if (!callback) { // might not be registered yet
-      return;
-    }
-    if (!newNodes || newNodes.flattenedNodes.length === 0) {
-      events.unsubscribeAll();
-      return;
-    }
-    const allNodes = newNodes.flattenedNodes;
-    events.unsubscribeAllAndRegister(
-      subscribeToNotifyOnFutureNodeChanges(allNodes, callback),
-    );
-    notifyCurrentNodeState(allNodes, callback);
-  });
+  watch(
+    [nodes, onNodeChangeCallback],
+    ([newNodes, callback]) => {
+      if (!callback) { // may not be registered yet
+        return;
+      }
+      if (!newNodes || newNodes.flattenedNodes.length === 0) {
+        events.unsubscribeAll();
+        return;
+      }
+      const allNodes = newNodes.flattenedNodes;
+      events.unsubscribeAllAndRegister(
+        subscribeToNotifyOnFutureNodeChanges(allNodes, callback),
+      );
+      notifyCurrentNodeState(allNodes, callback);
+    },
+  );
 
   function onNodeStateChange(
     callback: NodeStateChangeEventCallback,

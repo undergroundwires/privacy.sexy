@@ -1,6 +1,5 @@
 import {
-  WatchSource, computed,
-  ref, watch,
+  type Ref, computed, shallowReadonly,
 } from 'vue';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { injectKey } from '@/presentation/injectionSymbols';
@@ -10,7 +9,7 @@ import { convertToNodeInput } from './TreeNodeMetadataConverter';
 import { parseSingleCategory, parseAllCategories } from './CategoryNodeMetadataConverter';
 
 export function useTreeViewNodeInput(
-  categoryIdWatcher: WatchSource<number | undefined>,
+  categoryIdRef: Readonly<Ref<number | undefined>>,
   parser: CategoryNodeParser = {
     parseSingle: parseSingleCategory,
     parseAll: parseAllCategories,
@@ -19,20 +18,14 @@ export function useTreeViewNodeInput(
 ) {
   const { currentState } = injectKey((keys) => keys.useCollectionState);
 
-  const categoryId = ref<number | undefined>();
-
-  watch(categoryIdWatcher, (newCategoryId) => {
-    categoryId.value = newCategoryId;
-  }, { immediate: true });
-
   const nodes = computed<readonly TreeInputNodeData[]>(() => {
-    const nodeMetadataList = parseNodes(categoryId.value, currentState.value.collection, parser);
+    const nodeMetadataList = parseNodes(categoryIdRef.value, currentState.value.collection, parser);
     const nodeInputs = nodeMetadataList.map((node) => nodeConverter(node));
     return nodeInputs;
   });
 
   return {
-    treeViewInputNodes: nodes,
+    treeViewInputNodes: shallowReadonly(nodes),
   };
 }
 

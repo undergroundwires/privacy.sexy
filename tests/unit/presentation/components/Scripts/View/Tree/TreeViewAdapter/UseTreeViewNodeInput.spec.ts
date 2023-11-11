@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { describe, it, expect } from 'vitest';
-import { WatchSource, ref, nextTick } from 'vue';
+import { ref, nextTick, type Ref } from 'vue';
 import { CategoryNodeParser, useTreeViewNodeInput } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/UseTreeViewNodeInput';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { CategoryCollectionStateStub } from '@tests/unit/shared/Stubs/CategoryCollectionStateStub';
@@ -17,12 +17,10 @@ describe('useTreeViewNodeInput', () => {
   describe('when given categoryId', () => {
     it('sets input nodes correctly', async () => {
       // arrange
-      const testCategoryId = ref<number | undefined>();
+      const testCategoryIdRef = ref<number | undefined>();
       const {
         useStateStub, returnObject, parserMock, converterMock,
-      } = mountWrapperComponent(
-        () => testCategoryId.value,
-      );
+      } = mountWrapperComponent(testCategoryIdRef);
       const expectedCategoryId = 123;
       const expectedCategoryCollection = new CategoryCollectionStub().withAction(
         new CategoryStub(expectedCategoryId),
@@ -45,7 +43,7 @@ describe('useTreeViewNodeInput', () => {
       );
       // act
       const { treeViewInputNodes } = returnObject;
-      testCategoryId.value = expectedCategoryId;
+      testCategoryIdRef.value = expectedCategoryId;
       await nextTick();
       // assert
       const actualInputNodes = treeViewInputNodes.value;
@@ -60,9 +58,7 @@ describe('useTreeViewNodeInput', () => {
       const testCategoryId = ref<number | undefined>();
       const {
         useStateStub, returnObject, parserMock, converterMock,
-      } = mountWrapperComponent(
-        () => testCategoryId.value,
-      );
+      } = mountWrapperComponent(testCategoryId);
       const expectedCategoryCollection = new CategoryCollectionStub().withAction(
         new CategoryStub(123),
       );
@@ -92,7 +88,7 @@ describe('useTreeViewNodeInput', () => {
   });
 });
 
-function mountWrapperComponent(categoryIdWatcher: WatchSource<number | undefined>) {
+function mountWrapperComponent(categoryIdRef: Ref<number | undefined>) {
   const useStateStub = new UseCollectionStateStub();
   const parserMock = mockCategoryNodeParser();
   const converterMock = mockConverter();
@@ -100,7 +96,7 @@ function mountWrapperComponent(categoryIdWatcher: WatchSource<number | undefined
 
   shallowMount({
     setup() {
-      returnObject = useTreeViewNodeInput(categoryIdWatcher, parserMock.mock, converterMock.mock);
+      returnObject = useTreeViewNodeInput(categoryIdRef, parserMock.mock, converterMock.mock);
     },
     template: '<div></div>',
   }, {

@@ -1,18 +1,16 @@
 import {
-  WatchSource, watch, shallowReadonly, shallowRef,
+  watch, shallowReadonly, shallowRef, type Ref,
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import { TreeRoot } from './TreeRoot/TreeRoot';
 import { QueryableNodes } from './TreeRoot/NodeCollection/Query/QueryableNodes';
 
-export function useCurrentTreeNodes(treeWatcher: WatchSource<TreeRoot>) {
+export function useCurrentTreeNodes(treeRef: Readonly<Ref<TreeRoot>>) {
   const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
 
-  const tree = shallowRef<TreeRoot | undefined>();
-  const nodes = shallowRef<QueryableNodes | undefined>();
+  const nodes = shallowRef<QueryableNodes>(treeRef.value.collection.nodes);
 
-  watch(treeWatcher, (newTree) => {
-    tree.value = newTree;
+  watch(treeRef, (newTree) => {
     nodes.value = newTree.collection.nodes;
     events.unsubscribeAllAndRegister([
       newTree.collection.nodesUpdated.on((newNodes) => {
