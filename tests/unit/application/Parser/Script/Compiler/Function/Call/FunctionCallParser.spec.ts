@@ -1,21 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { parseFunctionCalls } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCallParser';
 import { FunctionCallDataStub } from '@tests/unit/shared/Stubs/FunctionCallDataStub';
-import { itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('FunctionCallParser', () => {
   describe('parseFunctionCalls', () => {
-    describe('throws with missing call data', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing call data';
-        const call = absentValue;
-        // act
-        const act = () => parseFunctionCalls(call);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
     it('throws if call is not an object', () => {
       // arrange
       const expectedError = 'called function(s) must be an object';
@@ -23,20 +12,6 @@ describe('FunctionCallParser', () => {
       invalidCalls.forEach((invalidCall) => {
         // act
         const act = () => parseFunctionCalls(invalidCall as never);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
-    describe('throws if call sequence has undefined call', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing call data';
-        const data = [
-          new FunctionCallDataStub(),
-          absentValue,
-        ];
-        // act
-        const act = () => parseFunctionCalls(data);
         // assert
         expect(act).to.throw(expectedError);
       });
@@ -53,7 +28,7 @@ describe('FunctionCallParser', () => {
         const act = () => parseFunctionCalls(data);
         // assert
         expect(act).to.throw(expectedError);
-      });
+      }, { excludeNull: true, excludeUndefined: true });
     });
     it('parses single call as expected', () => {
       // arrange

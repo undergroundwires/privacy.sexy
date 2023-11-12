@@ -4,25 +4,14 @@ import { ISanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/ISani
 import { SanityCheckOptionsStub } from '@tests/unit/shared/Stubs/SanityCheckOptionsStub';
 import { ISanityValidator } from '@/infrastructure/RuntimeSanity/Common/ISanityValidator';
 import { SanityValidatorStub } from '@tests/unit/shared/Stubs/SanityValidatorStub';
-import { itEachAbsentCollectionValue, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { collectExceptionMessage } from '@tests/unit/shared/ExceptionCollector';
 
 describe('SanityChecks', () => {
   describe('validateRuntimeSanity', () => {
     describe('parameter validation', () => {
-      describe('options', () => {
-        itEachAbsentObjectValue((absentValue) => {
-          // arrange
-          const expectedError = 'missing options';
-          const context = new TestContext()
-            .withOptions(absentValue);
-          // act
-          const act = () => context.validateRuntimeSanity();
-          // assert
-          expect(act).to.throw(expectedError);
-        });
-      });
       describe('throws when validators are empty', () => {
-        itEachAbsentCollectionValue((absentCollection) => {
+        itEachAbsentCollectionValue<ISanityValidator>((absentCollection) => {
           // arrange
           const expectedError = 'missing validators';
           const validators = absentCollection;
@@ -32,20 +21,7 @@ describe('SanityChecks', () => {
           const act = () => context.validateRuntimeSanity();
           // assert
           expect(act).to.throw(expectedError);
-        }, { excludeUndefined: true });
-      });
-      describe('throws when single validator is absent', () => {
-        itEachAbsentObjectValue((absentValue) => {
-          // arrange
-          const expectedError = 'missing validator in validators';
-          const absentValidator = absentValue;
-          const context = new TestContext()
-            .withValidators([new SanityValidatorStub(), absentValidator]);
-          // act
-          const act = () => context.validateRuntimeSanity();
-          // assert
-          expect(act).to.throw(expectedError);
-        });
+        }, { excludeUndefined: true, excludeNull: true });
       });
     });
 
@@ -97,7 +73,6 @@ describe('SanityChecks', () => {
         // arrange
         const firstError = 'first-error';
         const secondError = 'second-error';
-        let actualError = '';
         const context = new TestContext()
           .withValidators([
             new SanityValidatorStub()
@@ -105,11 +80,8 @@ describe('SanityChecks', () => {
               .withErrorsResult([firstError, secondError]),
           ]);
         // act
-        try {
-          context.validateRuntimeSanity();
-        } catch (err) {
-          actualError = err.toString();
-        }
+        const act = () => context.validateRuntimeSanity();
+        const actualError = collectExceptionMessage(act);
         // assert
         expect(actualError).to.have.length.above(0);
         expect(actualError).to.include(firstError);
@@ -119,7 +91,6 @@ describe('SanityChecks', () => {
         // arrange
         const validatorWithErrors = 'validator-with-errors';
         const validatorWithNoErrors = 'validator-with-no-errors';
-        let actualError = '';
         const context = new TestContext()
           .withValidators([
             new SanityValidatorStub()
@@ -134,11 +105,8 @@ describe('SanityChecks', () => {
               .withErrorsResult([]),
           ]);
         // act
-        try {
-          context.validateRuntimeSanity();
-        } catch (err) {
-          actualError = err.toString();
-        }
+        const act = () => context.validateRuntimeSanity();
+        const actualError = collectExceptionMessage(act);
         // assert
         expect(actualError).to.have.length.above(0);
         expect(actualError).to.include(validatorWithErrors);
@@ -148,7 +116,6 @@ describe('SanityChecks', () => {
         // arrange
         const errorFromFirstValidator = 'first-error';
         const errorFromSecondValidator = 'second-error';
-        let actualError = '';
         const context = new TestContext()
           .withValidators([
             new SanityValidatorStub()
@@ -159,11 +126,8 @@ describe('SanityChecks', () => {
               .withErrorsResult([errorFromSecondValidator]),
           ]);
         // act
-        try {
-          context.validateRuntimeSanity();
-        } catch (err) {
-          actualError = err.toString();
-        }
+        const act = () => context.validateRuntimeSanity();
+        const actualError = collectExceptionMessage(act);
         // assert
         expect(actualError).to.have.length.above(0);
         expect(actualError).to.include(errorFromFirstValidator);

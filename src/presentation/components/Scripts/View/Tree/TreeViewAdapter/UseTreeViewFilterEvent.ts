@@ -42,7 +42,7 @@ export function useTreeViewFilterEvent() {
 
 function subscribeToFilterChanges(
   filter: IReadOnlyUserFilter,
-  latestFilterEvent: Ref<TreeViewFilterEvent>,
+  latestFilterEvent: Ref<TreeViewFilterEvent | undefined>,
   filterPredicate: TreeNodeFilterResultPredicate,
 ) {
   return filter.filterChanged.on((event) => {

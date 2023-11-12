@@ -7,13 +7,14 @@ import { FilterChangeDetailsStub } from '@tests/unit/shared/Stubs/FilterChangeDe
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { IFilterChangeDetails } from '@/application/Context/State/Filter/Event/IFilterChangeDetails';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
+import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 describe('UserFilter', () => {
   describe('clearFilter', () => {
     it('signals when removing filter', () => {
       // arrange
       const expectedChange = FilterChangeDetailsStub.forClear();
-      let actualChange: IFilterChangeDetails;
+      let actualChange: IFilterChangeDetails | undefined;
       const sut = new UserFilter(new CategoryCollectionStub());
       sut.filterChanged.on((change) => {
         actualChange = change;
@@ -21,6 +22,7 @@ describe('UserFilter', () => {
       // act
       sut.clearFilter();
       // assert
+      expectExists(actualChange);
       expect(actualChange).to.deep.equal(expectedChange);
     });
     it('sets currentFilter to undefined', () => {
@@ -160,6 +162,7 @@ describe('UserFilter', () => {
           sut.applyFilter(filter);
           // assert
           const actual = sut.currentFilter;
+          expectExists(actual);
           assert(actual);
         });
       });
@@ -171,13 +174,18 @@ describe('UserFilter', () => {
         it(name, () => {
           // arrange
           const sut = new UserFilter(collection);
-          let actualFilterResult: IFilterResult;
+          let actualFilterResult: IFilterResult | undefined;
           sut.filterChanged.on((filterResult) => {
-            actualFilterResult = filterResult.filter;
+            filterResult.visit({
+              onApply: (result) => {
+                actualFilterResult = result;
+              },
+            });
           });
           // act
           sut.applyFilter(filter);
           // assert
+          expectExists(actualFilterResult);
           assert(actualFilterResult);
         });
       });

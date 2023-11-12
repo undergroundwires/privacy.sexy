@@ -9,15 +9,11 @@ const builders = new Map<OperatingSystem, InstructionsBuilder>([
   [OperatingSystem.Linux, new LinuxInstructionsBuilder()],
 ]);
 
-export function hasInstructions(os: OperatingSystem) {
-  return builders.has(os);
-}
-
 export function getInstructions(
   os: OperatingSystem,
   fileName: string,
-): IInstructionListData {
+): IInstructionListData | undefined {
   return builders
     .get(os)
-    .build({ fileName });
+    ?.build({ fileName });
 }

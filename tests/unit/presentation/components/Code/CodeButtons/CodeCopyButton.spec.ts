@@ -6,6 +6,7 @@ import { ClipboardStub } from '@tests/unit/shared/Stubs/ClipboardStub';
 import { Clipboard } from '@/presentation/components/Shared/Hooks/Clipboard/Clipboard';
 import { UseClipboardStub } from '@tests/unit/shared/Stubs/UseClipboardStub';
 import { UseCurrentCodeStub } from '@tests/unit/shared/Stubs/UseCurrentCodeStub';
+import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 const COMPONENT_ICON_BUTTON_WRAPPER_NAME = 'IconButton';
 
@@ -26,7 +27,7 @@ describe('CodeCopyButton', () => {
     const calls = clipboard.callHistory;
     expect(calls).to.have.lengthOf(1);
     const call = calls.find((c) => c.methodName === 'copyText');
-    expect(call).toBeDefined();
+    expectExists(call);
     const [copiedText] = call.args;
     expect(copiedText).to.equal(expectedCode);
   });
@@ -45,7 +46,7 @@ function mountComponent(options?: {
             : new UseClipboardStub()
         ).get(),
         [InjectionKeys.useCurrentCode.key]: () => (
-          options.currentCode === undefined
+          options?.currentCode === undefined
             ? new UseCurrentCodeStub()
             : new UseCurrentCodeStub().withCurrentCode(options.currentCode)
         ).get(),

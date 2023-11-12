@@ -38,11 +38,12 @@ export default defineComponent({
       const { totalScripts } = currentState.value.collection;
       return `Search in ${totalScripts} scripts`;
     });
-    const searchQuery = ref<string>();
+
+    const searchQuery = ref<string | undefined>();
 
     watch(searchQuery, (newFilter) => updateFilter(newFilter));
 
-    function updateFilter(newFilter: string) {
+    function updateFilter(newFilter: string | undefined) {
       modifyCurrentState((state) => {
         const { filter } = state;
         if (!newFilter) {
@@ -61,7 +62,7 @@ export default defineComponent({
     }, { immediate: true });
 
     function updateFromInitialFilter(filter?: IFilterResult) {
-      searchQuery.value = filter?.query || '';
+      searchQuery.value = filter?.query;
     }
 
     function subscribeToFilterChanges(

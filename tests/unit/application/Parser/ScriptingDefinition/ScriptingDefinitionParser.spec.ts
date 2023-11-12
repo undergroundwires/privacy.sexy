@@ -8,38 +8,9 @@ import { ProjectInformationStub } from '@tests/unit/shared/Stubs/ProjectInformat
 import { EnumParserStub } from '@tests/unit/shared/Stubs/EnumParserStub';
 import { ScriptingDefinitionDataStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionDataStub';
 import { CodeSubstituterStub } from '@tests/unit/shared/Stubs/CodeSubstituterStub';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('ScriptingDefinitionParser', () => {
   describe('parseScriptingDefinition', () => {
-    describe('throws when info is missing', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing info';
-        const info = absentValue;
-        const definition = new ScriptingDefinitionDataStub();
-        const sut = new ScriptingDefinitionParserBuilder()
-          .build();
-        // act
-        const act = () => sut.parse(definition, info);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
-    describe('throws when definition is missing', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing definition';
-        const info = new ProjectInformationStub();
-        const definition = absentValue;
-        const sut = new ScriptingDefinitionParserBuilder()
-          .build();
-        // act
-        const act = () => sut.parse(definition, info);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
     describe('language', () => {
       it('parses as expected', () => {
         // arrange

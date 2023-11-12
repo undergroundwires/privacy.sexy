@@ -19,9 +19,6 @@ export class CategoryCollection implements ICategoryCollection {
     public readonly actions: ReadonlyArray<ICategory>,
     public readonly scripting: IScriptingDefinition,
   ) {
-    if (!scripting) {
-      throw new Error('missing scripting definition');
-    }
     this.queryable = makeQueryable(actions);
     assertInRange(os, OperatingSystem);
     ensureValid(this.queryable);
@@ -29,17 +26,26 @@ export class CategoryCollection implements ICategoryCollection {
     ensureNoDuplicates(this.queryable.allScripts);
   }
 
-  public findCategory(categoryId: number): ICategory | undefined {
-    return this.queryable.allCategories.find((category) => category.id === categoryId);
+  public getCategory(categoryId: number): ICategory {
+    const category = this.queryable.allCategories.find((c) => c.id === categoryId);
+    if (!category) {
+      throw new Error(`Missing category with ID: "${categoryId}"`);
+    }
+    return category;
   }
 
   public getScriptsByLevel(level: RecommendationLevel): readonly IScript[] {
     assertInRange(level, RecommendationLevel);
-    return this.queryable.scriptsByLevel.get(level);
+    const scripts = this.queryable.scriptsByLevel.get(level);
+    return scripts ?? [];
   }
 
-  public findScript(scriptId: string): IScript | undefined {
-    return this.queryable.allScripts.find((script) => script.id === scriptId);
+  public getScript(scriptId: string): IScript {
+    const script = this.queryable.allScripts.find((s) => s.id === scriptId);
+    if (!script) {
+      throw new Error(`missing script: ${scriptId}`);
+    }
+    return script;
   }
 
   public getAllScripts(): IScript[] {
@@ -78,13 +84,13 @@ function ensureValid(application: IQueryableCollection) {
 }
 
 function ensureValidCategories(allCategories: readonly ICategory[]) {
-  if (!allCategories || allCategories.length === 0) {
+  if (!allCategories.length) {
     throw new Error('must consist of at least one category');
   }
 }
 
 function ensureValidScripts(allScripts: readonly IScript[]) {
-  if (!allScripts || allScripts.length === 0) {
+  if (!allScripts.length) {
     throw new Error('must consist of at least one script');
   }
   const missingRecommendationLevels = getEnumValues(RecommendationLevel)

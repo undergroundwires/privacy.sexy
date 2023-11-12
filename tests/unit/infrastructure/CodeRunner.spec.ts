@@ -183,16 +183,37 @@ describe('CodeRunner', () => {
         .filter((command) => expectedOrder.includes(command));
       expect(expectedOrder).to.deep.equal(actualOrder);
     });
-    it('throws with unsupported os', async () => {
-      // arrange
-      const unknownOs = OperatingSystem.Android;
-      const expectedError = `unsupported os: ${OperatingSystem[unknownOs]}`;
-      const context = new TestContext()
-        .withOs(unknownOs);
-      // act
-      const act = async () => { await context.runCode(); };
-      // assert
-      expectThrowsAsync(act, expectedError);
+    describe('throws with invalid OS', () => {
+      const testScenarios: ReadonlyArray<{
+        readonly description: string;
+        readonly invalidOs: OperatingSystem | undefined;
+        readonly expectedError: string;
+      }> = [
+        (() => {
+          const unsupportedOs = OperatingSystem.Android;
+          return {
+            description: 'unsupported OS',
+            invalidOs: unsupportedOs,
+            expectedError: `unsupported os: ${OperatingSystem[unsupportedOs]}`,
+          };
+        })(),
+        {
+          description: 'unknown OS',
+          invalidOs: undefined,
+          expectedError: 'Unidentified operating system',
+        },
+      ];
+      testScenarios.forEach(({ description, invalidOs, expectedError }) => {
+        it(description, async () => {
+          // arrange
+          const context = new TestContext()
+            .withOs(invalidOs);
+          // act
+          const act = async () => { await context.runCode(); };
+          // assert
+          await expectThrowsAsync(act, expectedError);
+        });
+      });
     });
   });
 });
@@ -204,7 +225,7 @@ class TestContext {
 
   private fileExtension = 'fileExtension';
 
-  private os = OperatingSystem.Windows;
+  private os: OperatingSystem | undefined = OperatingSystem.Windows;
 
   private systemOperations: ISystemOperations = new SystemOperationsStub();
 
@@ -229,7 +250,7 @@ class TestContext {
     return this.withSystemOperations(stub);
   }
 
-  public withOs(os: OperatingSystem) {
+  public withOs(os: OperatingSystem | undefined) {
     this.os = os;
     return this;
   }

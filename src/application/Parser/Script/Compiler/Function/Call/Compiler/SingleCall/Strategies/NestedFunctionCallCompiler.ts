@@ -1,4 +1,4 @@
-import { ISharedFunction } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
+import { CallFunctionBody, FunctionBodyType, ISharedFunction } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
 import { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
 import { FunctionCallCompilationContext } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/FunctionCallCompilationContext';
 import { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
@@ -13,7 +13,7 @@ export class NestedFunctionCallCompiler implements SingleCallCompilerStrategy {
   }
 
   public canCompile(func: ISharedFunction): boolean {
-    return func.body.calls !== undefined;
+    return func.body.type === FunctionBodyType.Calls;
   }
 
   public compileFunction(
@@ -21,7 +21,7 @@ export class NestedFunctionCallCompiler implements SingleCallCompilerStrategy {
     callToFunction: FunctionCall,
     context: FunctionCallCompilationContext,
   ): CompiledCode[] {
-    const nestedCalls = calledFunction.body.calls;
+    const nestedCalls = (calledFunction.body as CallFunctionBody).calls;
     return nestedCalls.map((nestedCall) => {
       try {
         const compiledParentCall = this.argumentCompiler

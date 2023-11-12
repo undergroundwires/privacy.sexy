@@ -11,7 +11,7 @@ export class TreeNodeInitializerAndUpdater implements TreeNodeCollection {
   public nodesUpdated = new EventSource<QueryableNodes>();
 
   public updateRootNodes(rootNodesData: readonly TreeInputNodeData[]): void {
-    if (!rootNodesData?.length) {
+    if (!rootNodesData.length) {
       throw new Error('missing data');
     }
     const rootNodes = this.treeNodeParser(rootNodesData);

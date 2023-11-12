@@ -18,8 +18,6 @@ export class ScriptingDefinitionParser {
     definition: ScriptingDefinitionData,
     info: IProjectInformation,
   ): IScriptingDefinition {
-    if (!info) { throw new Error('missing info'); }
-    if (!definition) { throw new Error('missing definition'); }
     const language = this.languageParser.parseEnum(definition.language, 'language');
     const startCode = this.codeSubstituter.substitute(definition.startCode, info);
     const endCode = this.codeSubstituter.substitute(definition.endCode, info);

@@ -92,7 +92,7 @@ function mountWrapperComponent(categoryIdRef: Ref<number | undefined>) {
   const useStateStub = new UseCollectionStateStub();
   const parserMock = mockCategoryNodeParser();
   const converterMock = mockConverter();
-  let returnObject: ReturnType<typeof useTreeViewNodeInput>;
+  let returnObject: ReturnType<typeof useTreeViewNodeInput> | undefined;
 
   shallowMount({
     setup() {
@@ -106,6 +106,10 @@ function mountWrapperComponent(categoryIdRef: Ref<number | undefined>) {
       },
     },
   });
+
+  if (!returnObject) {
+    throw new Error('missing hook result');
+  }
 
   return {
     returnObject,

@@ -28,7 +28,7 @@ function hasLines(text: string) {
 */
 function inlineComments(code: string): string {
   const makeInlineComment = (comment: string) => {
-    const value = comment?.trim();
+    const value = comment.trim();
     if (!value) {
       return '<##>';
     }

@@ -1,6 +1,5 @@
 import { expect, describe, it } from 'vitest';
-import { FunctionBodyType } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
-import { SharedFunctionStub } from '@tests/unit/shared/Stubs/SharedFunctionStub';
+import { createSharedFunctionStubWithCode } from '@tests/unit/shared/Stubs/SharedFunctionStub';
 import type { FunctionCallParametersData } from '@/application/collections/';
 import { FunctionCallStub } from '@tests/unit/shared/Stubs/FunctionCallStub';
 import { SharedFunctionCollectionStub } from '@tests/unit/shared/Stubs/SharedFunctionCollectionStub';
@@ -70,7 +69,7 @@ describe('AdaptiveFunctionCallCompiler', () => {
       }) => {
         it(description, () => {
           // arrange
-          const func = new SharedFunctionStub(FunctionBodyType.Code)
+          const func = createSharedFunctionStubWithCode()
             .withName('test-function-name')
             .withParameterNames(...functionParameters);
           const params = callParameters
@@ -137,7 +136,7 @@ describe('AdaptiveFunctionCallCompiler', () => {
     describe('strategy invocation', () => {
       it('passes correct function for compilation ability check', () => {
         // arrange
-        const expectedFunction = new SharedFunctionStub(FunctionBodyType.Code);
+        const expectedFunction = createSharedFunctionStubWithCode();
         const strategy = new SingleCallCompilerStrategyStub()
           .withCanCompileResult(true);
         const builder = new AdaptiveFunctionCallCompilerBuilder()
@@ -157,7 +156,7 @@ describe('AdaptiveFunctionCallCompiler', () => {
       describe('compilation arguments', () => {
         it('uses correct function', () => {
           // arrange
-          const expectedFunction = new SharedFunctionStub(FunctionBodyType.Code);
+          const expectedFunction = createSharedFunctionStubWithCode();
           const strategy = new SingleCallCompilerStrategyStub()
             .withCanCompileResult(true);
           const builder = new AdaptiveFunctionCallCompilerBuilder()

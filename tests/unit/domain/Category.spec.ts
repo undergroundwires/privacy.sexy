@@ -15,7 +15,7 @@ describe('Category', () => {
         const construct = () => new Category(5, name, [], [new CategoryStub(5)], []);
         // assert
         expect(construct).to.throw(expectedError);
-      });
+      }, { excludeNull: true, excludeUndefined: true });
     });
     it('throws when has no children', () => {
       const expectedError = 'A category must have at least one sub-category or script';

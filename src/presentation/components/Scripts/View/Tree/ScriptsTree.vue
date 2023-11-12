@@ -30,7 +30,7 @@ import { useSelectedScriptNodeIds } from './TreeViewAdapter/UseSelectedScriptNod
 export default defineComponent({
   props: {
     categoryId: {
-      type: [Number, undefined],
+      type: [Number],
       default: undefined,
     },
   },

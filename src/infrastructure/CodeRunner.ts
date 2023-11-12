@@ -6,14 +6,13 @@ export class CodeRunner {
   constructor(
     private readonly system = getWindowInjectedSystemOperations(),
     private readonly environment = RuntimeEnvironment.CurrentEnvironment,
-  ) {
-    if (!system) {
-      throw new Error('missing system operations');
-    }
-  }
+  ) { }
 
   public async runCode(code: string, folderName: string, fileExtension: string): Promise<void> {
     const { os } = this.environment;
+    if (os === undefined) {
+      throw new Error('Unidentified operating system');
+    }
     const dir = this.system.location.combinePaths(
       this.system.operatingSystem.getTempDirectory(),
       folderName,

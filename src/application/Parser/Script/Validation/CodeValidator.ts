@@ -9,7 +9,7 @@ export class CodeValidator implements ICodeValidator {
     code: string,
     rules: readonly ICodeValidationRule[],
   ): void {
-    if (!rules || rules.length === 0) { throw new Error('missing rules'); }
+    if (rules.length === 0) { throw new Error('missing rules'); }
     if (!code) {
       return;
     }

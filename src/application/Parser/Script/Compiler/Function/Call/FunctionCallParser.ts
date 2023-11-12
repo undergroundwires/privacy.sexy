@@ -5,9 +5,6 @@ import { FunctionCallArgument } from './Argument/FunctionCallArgument';
 import { ParsedFunctionCall } from './ParsedFunctionCall';
 
 export function parseFunctionCalls(calls: FunctionCallsData): FunctionCall[] {
-  if (calls === undefined) {
-    throw new Error('missing call data');
-  }
   const sequence = getCallSequence(calls);
   return sequence.map((call) => parseFunctionCall(call));
 }
@@ -19,22 +16,21 @@ function getCallSequence(calls: FunctionCallsData): FunctionCallData[] {
   if (calls instanceof Array) {
     return calls as FunctionCallData[];
   }
-  return [calls as FunctionCallData];
+  const singleCall = calls;
+  return [singleCall];
 }
 
 function parseFunctionCall(call: FunctionCallData): FunctionCall {
-  if (!call) {
-    throw new Error('missing call data');
-  }
   const callArgs = parseArgs(call.parameters);
   return new ParsedFunctionCall(call.function, callArgs);
 }
 
 function parseArgs(
-  parameters: FunctionCallParametersData,
+  parameters: FunctionCallParametersData | undefined,
 ): FunctionCallArgumentCollection {
-  return Object.keys(parameters || {})
-    .map((parameterName) => new FunctionCallArgument(parameterName, parameters[parameterName]))
+  const parametersMap = parameters ?? {};
+  return Object.keys(parametersMap)
+    .map((parameterName) => new FunctionCallArgument(parameterName, parametersMap[parameterName]))
     .reduce((args, arg) => {
       args.addArgument(arg);
       return args;

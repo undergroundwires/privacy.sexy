@@ -10,7 +10,7 @@ describe('WindowInjectedSystemOperations', () => {
       itEachAbsentObjectValue((absentValue) => {
         // arrange
         const expectedError = 'missing window';
-        const window: WindowVariables = absentValue;
+        const window: WindowVariables = absentValue as never;
         // act
         const act = () => getWindowInjectedSystemOperations(window);
         // assert
@@ -23,7 +23,7 @@ describe('WindowInjectedSystemOperations', () => {
         const expectedError = 'missing system';
         const absentSystem = absentValue;
         const window: Partial<WindowVariables> = {
-          system: absentSystem,
+          system: absentSystem as never,
         };
         // act
         const act = () => getWindowInjectedSystemOperations(window);

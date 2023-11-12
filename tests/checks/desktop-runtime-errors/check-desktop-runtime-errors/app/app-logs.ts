@@ -63,9 +63,24 @@ async function determineLogPath(
   const logFilePaths: {
     readonly [K in SupportedPlatform]: () => string;
   } = {
-    [SupportedPlatform.macOS]: () => join(process.env.HOME, 'Library', 'Logs', appName, `${logFileName}.log`),
-    [SupportedPlatform.Linux]: () => join(process.env.HOME, '.config', appName, 'logs', `${logFileName}.log`),
-    [SupportedPlatform.Windows]: () => join(process.env.USERPROFILE, 'AppData', 'Roaming', appName, 'logs', `${logFileName}.log`),
+    [SupportedPlatform.macOS]: () => {
+      if (!process.env.HOME) {
+        throw new Error('HOME environment variable is not defined');
+      }
+      return join(process.env.HOME, 'Library', 'Logs', appName, `${logFileName}.log`);
+    },
+    [SupportedPlatform.Linux]: () => {
+      if (!process.env.HOME) {
+        throw new Error('HOME environment variable is not defined');
+      }
+      return join(process.env.HOME, '.config', appName, 'logs', `${logFileName}.log`);
+    },
+    [SupportedPlatform.Windows]: () => {
+      if (!process.env.USERPROFILE) {
+        throw new Error('USERPROFILE environment variable is not defined');
+      }
+      return join(process.env.USERPROFILE, 'AppData', 'Roaming', appName, 'logs', `${logFileName}.log`);
+    },
   };
   const logFilePath = logFilePaths[CURRENT_PLATFORM]?.();
   if (!logFilePath) {

@@ -26,6 +26,9 @@ function shouldRetry(status: IUrlStatus) {
   if (status.error) {
     return true;
   }
+  if (status.code === undefined) {
+    return true;
+  }
   return isTransientError(status.code)
     || status.code === 429; // Too Many Requests
 }

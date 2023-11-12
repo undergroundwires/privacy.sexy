@@ -23,7 +23,7 @@ export class NodeStateChangeEventArgsStub implements NodeStateChangeEventArgs {
     return this;
   }
 
-  public withOldState(oldState: TreeNodeStateDescriptor): this {
+  public withOldState(oldState: TreeNodeStateDescriptor | undefined): this {
     this.oldState = oldState;
     return this;
   }

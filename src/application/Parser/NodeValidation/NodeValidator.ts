@@ -32,7 +32,7 @@ export class NodeValidator {
     return this;
   }
 
-  public throw(errorMessage: string) {
+  public throw(errorMessage: string): never {
     throw new NodeDataError(errorMessage, this.context);
   }
 }

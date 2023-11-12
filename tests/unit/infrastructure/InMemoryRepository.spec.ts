@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { NumericEntityStub } from '@tests/unit/shared/Stubs/NumericEntityStub';
 import { InMemoryRepository } from '@/infrastructure/Repository/InMemoryRepository';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('InMemoryRepository', () => {
   describe('exists', () => {
@@ -51,20 +50,6 @@ describe('InMemoryRepository', () => {
       // assert
       expect(actual.length).to.equal(expected.length);
       expect(actual.item).to.deep.equal(expected.item);
-    });
-    describe('throws when item is absent', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing item';
-        const sut = new InMemoryRepository<number, NumericEntityStub>();
-        const item = absentValue;
-
-        // act
-        const act = () => sut.addItem(item);
-
-        // assert
-        expect(act).to.throw(expectedError);
-      });
     });
   });
   it('removeItem removes', () => {
@@ -116,20 +101,6 @@ describe('InMemoryRepository', () => {
       const actual = sut.getItems();
       expect(actual).to.deep.equal(expected);
     });
-    describe('throws when item is absent', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing item';
-        const sut = new InMemoryRepository<number, NumericEntityStub>();
-        const item = absentValue;
-
-        // act
-        const act = () => sut.addOrUpdateItem(item);
-
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
   });
   describe('getById', () => {
     it('returns entity if it exists', () => {
@@ -144,13 +115,15 @@ describe('InMemoryRepository', () => {
       // assert
       expect(actual).to.deep.equal(expected);
     });
-    it('returns undefined if it does not exist', () => {
+    it('throws if item does not exist', () => {
       // arrange
+      const id = 31;
+      const expectedError = `missing item: ${id}`;
       const sut = new InMemoryRepository<number, NumericEntityStub>([]);
       // act
-      const actual = sut.getById(31);
+      const act = () => sut.getById(id);
       // assert
-      expect(actual).to.equal(undefined);
+      expect(act).to.throw(expectedError);
     });
   });
 });

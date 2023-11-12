@@ -3,29 +3,20 @@ import { IExpression } from '@/application/Parser/Script/Compiler/Expressions/Ex
 import { IExpressionParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/IExpressionParser';
 import { CompositeExpressionParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/CompositeExpressionParser';
 import { ExpressionStub } from '@tests/unit/shared/Stubs/ExpressionStub';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('CompositeExpressionParser', () => {
   describe('ctor', () => {
-    it('throws if null parsers given', () => {
-      // arrange
-      const expectedError = 'missing leafs';
-      const parsers = null;
-      // act
-      const act = () => new CompositeExpressionParser(parsers);
-      // assert
-      expect(act).to.throw(expectedError);
-    });
-    describe('throws if one of the parsers is undefined', () => {
-      itEachAbsentObjectValue((absentValue) => {
+    describe('throws when parsers are missing', () => {
+      itEachAbsentCollectionValue<IExpressionParser>((absentCollection) => {
         // arrange
-        const expectedError = 'missing leaf';
-        const parsers: readonly IExpressionParser[] = [absentValue, mockParser()];
+        const expectedError = 'missing leafs';
+        const parsers = absentCollection;
         // act
         const act = () => new CompositeExpressionParser(parsers);
         // assert
         expect(act).to.throw(expectedError);
-      });
+      }, { excludeUndefined: true, excludeNull: true });
     });
   });
   describe('findExpressions', () => {

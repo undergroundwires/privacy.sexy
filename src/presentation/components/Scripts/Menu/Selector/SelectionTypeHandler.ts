@@ -15,9 +15,12 @@ export enum SelectionType {
 
 export function setCurrentSelectionType(type: SelectionType, context: SelectionMutationContext) {
   if (type === SelectionType.Custom) {
-    throw new Error('cannot select custom type');
+    throw new Error('Cannot select custom type.');
   }
   const selector = selectors.get(type);
+  if (!selector) {
+    throw new Error(`Cannot handle the type: ${SelectionType[type]}`);
+  }
   selector.select(context);
 }
 

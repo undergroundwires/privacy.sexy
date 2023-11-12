@@ -1,16 +1,17 @@
-import { describe, it, expect } from 'vitest';
+import { it, expect } from 'vitest';
 import { EnumType } from '@/application/Common/Enum';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 export class EnumRangeTestRunner<TEnumValue extends EnumType> {
   constructor(private readonly runner: (value: TEnumValue) => void) {
   }
 
-  public testOutOfRangeThrows() {
+  public testOutOfRangeThrows(errorMessageBuilder?: (outOfRangeValue: TEnumValue) => string) {
     it('throws when value is out of range', () => {
       // arrange
       const value = Number.MAX_SAFE_INTEGER as TEnumValue;
-      const expectedError = `enum value "${value}" is out of range`;
+      const expectedError = errorMessageBuilder
+        ? errorMessageBuilder(value)
+        : `enum value "${value}" is out of range`;
       // act
       const act = () => this.runner(value);
       // assert
@@ -19,23 +20,8 @@ export class EnumRangeTestRunner<TEnumValue extends EnumType> {
     return this;
   }
 
-  public testAbsentValueThrows() {
-    describe('throws when value is absent', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const value = absentValue;
-        const expectedError = 'absent enum value';
-        // act
-        const act = () => this.runner(value);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
-    return this;
-  }
-
   public testInvalidValueThrows(invalidValue: TEnumValue, expectedError: string) {
-    it(`throws ${expectedError}`, () => {
+    it(`throws: \`${expectedError}\``, () => {
       // arrange
       const value = invalidValue;
       // act

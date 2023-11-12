@@ -1,6 +1,5 @@
 import { expect, describe, it } from 'vitest';
-import { SharedFunctionStub } from '@tests/unit/shared/Stubs/SharedFunctionStub';
-import { FunctionBodyType } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
+import { createSharedFunctionStubWithCalls, createSharedFunctionStubWithCode } from '@tests/unit/shared/Stubs/SharedFunctionStub';
 import { NestedFunctionCallCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/SingleCall/Strategies/NestedFunctionCallCompiler';
 import { ArgumentCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/SingleCall/Strategies/Argument/ArgumentCompiler';
 import { ArgumentCompilerStub } from '@tests/unit/shared/Stubs/ArgumentCompilerStub';
@@ -10,14 +9,14 @@ import { SingleCallCompilerStub } from '@tests/unit/shared/Stubs/SingleCallCompi
 import { CompiledCodeStub } from '@tests/unit/shared/Stubs/CompiledCodeStub';
 import { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
 import { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
-import { expectDeepThrowsError } from '@tests/unit/shared/Assertions/ExpectDeepThrowsError';
+import { expectDeepThrowsError } from '@tests/shared/Assertions/ExpectDeepThrowsError';
 
 describe('NestedFunctionCallCompiler', () => {
   describe('canCompile', () => {
     it('returns `true` for code body function', () => {
       // arrange
       const expected = true;
-      const func = new SharedFunctionStub(FunctionBodyType.Calls)
+      const func = createSharedFunctionStubWithCalls()
         .withSomeCalls();
       const compiler = new NestedFunctionCallCompilerBuilder()
         .build();
@@ -29,7 +28,7 @@ describe('NestedFunctionCallCompiler', () => {
     it('returns `false` for non-code body function', () => {
       // arrange
       const expected = false;
-      const func = new SharedFunctionStub(FunctionBodyType.Code);
+      const func = createSharedFunctionStubWithCode();
       const compiler = new NestedFunctionCallCompilerBuilder()
         .build();
       // act
@@ -129,8 +128,8 @@ describe('NestedFunctionCallCompiler', () => {
     });
     it('flattens re-compiled functions', () => {
       // arrange
-      const deepFunc1 = new SharedFunctionStub(FunctionBodyType.Code);
-      const deepFunc2 = new SharedFunctionStub(FunctionBodyType.Code);
+      const deepFunc1 = createSharedFunctionStubWithCode();
+      const deepFunc2 = createSharedFunctionStubWithCalls();
       const callToDeepFunc1 = new FunctionCallStub().withFunctionName(deepFunc1.name);
       const callToDeepFunc2 = new FunctionCallStub().withFunctionName(deepFunc2.name);
       const singleCallCompilationScenario = new Map<FunctionCall, CompiledCode[]>([
@@ -141,7 +140,7 @@ describe('NestedFunctionCallCompiler', () => {
         .withScenario({ givenNestedFunctionCall: callToDeepFunc1, result: callToDeepFunc1 })
         .withScenario({ givenNestedFunctionCall: callToDeepFunc2, result: callToDeepFunc2 });
       const expectedFlattenedCodes = [...singleCallCompilationScenario.values()].flat();
-      const frontFunc = new SharedFunctionStub(FunctionBodyType.Calls)
+      const frontFunc = createSharedFunctionStubWithCalls()
         .withCalls(callToDeepFunc1, callToDeepFunc2);
       const callToFrontFunc = new FunctionCallStub().withFunctionName(frontFunc.name);
       const singleCallCompilerStub = new SingleCallCompilerStub()
@@ -212,9 +211,9 @@ describe('NestedFunctionCallCompiler', () => {
 });
 
 function createSingleFuncCallingAnotherFunc() {
-  const deepFunc = new SharedFunctionStub(FunctionBodyType.Code);
+  const deepFunc = createSharedFunctionStubWithCode();
   const callToDeepFunc = new FunctionCallStub().withFunctionName(deepFunc.name);
-  const frontFunc = new SharedFunctionStub(FunctionBodyType.Calls).withCalls(callToDeepFunc);
+  const frontFunc = createSharedFunctionStubWithCalls().withCalls(callToDeepFunc);
   const callToFrontFunc = new FunctionCallStub().withFunctionName(frontFunc.name);
   return {
     deepFunc,

@@ -36,7 +36,11 @@ export class CodeChangedEvent implements ICodeChangedEvent {
   }
 
   public getScriptPositionInCode(script: IScript): ICodePosition {
-    return this.scripts.get(script);
+    const position = this.scripts.get(script);
+    if (!position) {
+      throw new Error('Unknown script: Position could not be found for the script');
+    }
+    return position;
   }
 }
 

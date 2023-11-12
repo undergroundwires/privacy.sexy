@@ -1,9 +1,6 @@
 import type { DocumentableData, DocumentationData } from '@/application/collections/';
 
 export function parseDocs(documentable: DocumentableData): readonly string[] {
-  if (!documentable) {
-    throw new Error('missing documentable');
-  }
   const { docs } = documentable;
   if (!docs) {
     return [];

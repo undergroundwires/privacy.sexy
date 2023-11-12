@@ -1,20 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import type { DocumentableData } from '@/application/collections/';
 import { parseDocs } from '@/application/Parser/DocumentationParser';
-import { itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('DocumentationParser', () => {
   describe('parseDocs', () => {
-    describe('throws when node is missing', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing documentable';
-        // act
-        const act = () => parseDocs(absentValue);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
     describe('throws when single documentation is missing', () => {
       itEachAbsentStringValue((absentValue) => {
         // arrange
@@ -24,7 +14,7 @@ describe('DocumentationParser', () => {
         const act = () => parseDocs(node);
         // assert
         expect(act).to.throw(expectedError);
-      });
+      }, { excludeNull: true, excludeUndefined: true });
     });
     describe('throws when type is unexpected', () => {
       // arrange

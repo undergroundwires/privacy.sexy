@@ -104,10 +104,14 @@ async function downloadFileWithProgress(
   if (!response.ok) {
     throw Error(`Unable to download, server returned ${response.status} ${response.statusText}`);
   }
-  const contentLength = +response.headers.get('content-length');
+  const contentLengthString = response.headers.get('content-length');
+  if (contentLengthString === null || contentLengthString === undefined) {
+    log.error('Content-Length header is missing');
+  }
+  const contentLength = +(contentLengthString ?? 0);
   const writer = fs.createWriteStream(filePath);
   log.info(`Writing to ${filePath}, content length: ${contentLength}`);
-  if (!contentLength) {
+  if (Number.isNaN(contentLength) || contentLength <= 0) {
     log.error('Unknown content-length', Array.from(response.headers.entries()));
     progressHandler = () => { /* do nothing */ };
   }
@@ -138,7 +142,7 @@ async function streamWithProgress(
   log.info('Downloaded successfully');
 }
 
-function getReader(response: Response): NodeJS.ReadableStream {
+function getReader(response: Response): NodeJS.ReadableStream | undefined {
   // On browser, we could use browser API response.body.getReader()
   // But here, we use cross-fetch that gets node-fetch on a node application
   // This API is node-fetch specific, see https://github.com/node-fetch/node-fetch#streams

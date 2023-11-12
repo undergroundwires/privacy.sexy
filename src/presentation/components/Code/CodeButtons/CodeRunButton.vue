@@ -40,7 +40,7 @@ export default defineComponent({
 function getCanRunState(
   selectedOs: OperatingSystem,
   isDesktopVersion: boolean,
-  hostOs: OperatingSystem,
+  hostOs: OperatingSystem | undefined,
 ): boolean {
   const isRunningOnSelectedOs = selectedOs === hostOs;
   return isDesktopVersion && isRunningOnSelectedOs;

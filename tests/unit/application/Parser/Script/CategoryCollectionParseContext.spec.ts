@@ -5,43 +5,30 @@ import { CategoryCollectionParseContext } from '@/application/Parser/Script/Cate
 import { ScriptCompiler } from '@/application/Parser/Script/Compiler/ScriptCompiler';
 import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
 import { ScriptingDefinitionStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionStub';
-import { FunctionDataStub } from '@tests/unit/shared/Stubs/FunctionDataStub';
-import { itEachAbsentCollectionValue, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import type { FunctionData } from '@/application/collections/';
+import { itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
+import { createFunctionDataWithCode } from '@tests/unit/shared/Stubs/FunctionDataStub';
 
 describe('CategoryCollectionParseContext', () => {
   describe('ctor', () => {
     describe('functionsData', () => {
       describe('can create with absent data', () => {
-        itEachAbsentCollectionValue((absentValue) => {
+        itEachAbsentCollectionValue<FunctionData>((absentValue) => {
           // arrange
           const scripting = new ScriptingDefinitionStub();
           // act
           const act = () => new CategoryCollectionParseContext(absentValue, scripting);
           // assert
           expect(act).to.not.throw();
-        });
-      });
-    });
-    describe('scripting', () => {
-      describe('throws when missing', () => {
-        itEachAbsentObjectValue((absentValue) => {
-          // arrange
-          const expectedError = 'missing scripting';
-          const scripting = absentValue;
-          const functionsData = [FunctionDataStub.createWithCode()];
-          // act
-          const act = () => new CategoryCollectionParseContext(functionsData, scripting);
-          // assert
-          expect(act).to.throw(expectedError);
-        });
+        }, { excludeNull: true });
       });
     });
   });
   describe('compiler', () => {
     it('constructed as expected', () => {
       // arrange
-      const functionsData = [FunctionDataStub.createWithCode()];
+      const functionsData = [createFunctionDataWithCode()];
       const syntax = new LanguageSyntaxStub();
       const expected = new ScriptCompiler(functionsData, syntax);
       const language = ScriptingLanguage.shellscript;

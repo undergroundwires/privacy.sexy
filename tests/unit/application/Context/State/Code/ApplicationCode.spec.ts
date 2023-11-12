@@ -12,8 +12,7 @@ import { ScriptingDefinitionStub } from '@tests/unit/shared/Stubs/ScriptingDefin
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
-import { UserSelectionStub } from '@tests/unit/shared/Stubs/UserSelectionStub';
+import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 describe('ApplicationCode', () => {
   describe('ctor', () => {
@@ -47,47 +46,12 @@ describe('ApplicationCode', () => {
       // assert
       expect(actual).to.equal(expected.code);
     });
-    describe('throws when userSelection is missing', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing userSelection';
-        const userSelection = absentValue;
-        const definition = new ScriptingDefinitionStub();
-        // act
-        const act = () => new ApplicationCode(userSelection, definition);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
-    describe('throws when scriptingDefinition is missing', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing scriptingDefinition';
-        const userSelection = new UserSelectionStub([]);
-        const definition = absentValue;
-        // act
-        const act = () => new ApplicationCode(userSelection, definition);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
-    it('throws when generator is missing', () => {
-      // arrange
-      const expectedError = 'missing generator';
-      const userSelection = new UserSelectionStub([]);
-      const definition = new ScriptingDefinitionStub();
-      const generator = null;
-      // act
-      const act = () => new ApplicationCode(userSelection, definition, generator);
-      // assert
-      expect(act).to.throw(expectedError);
-    });
   });
   describe('changed event', () => {
     describe('code', () => {
       it('empty when nothing is selected', () => {
         // arrange
-        let signaled: ICodeChangedEvent;
+        let signaled: ICodeChangedEvent | undefined;
         const scripts = [new ScriptStub('first'), new ScriptStub('second')];
         const collection = new CategoryCollectionStub()
           .withAction(new CategoryStub(1).withScripts(...scripts));
@@ -101,12 +65,13 @@ describe('ApplicationCode', () => {
         // act
         selection.changed.notify([]);
         // assert
+        expectExists(signaled);
         expect(signaled.code).to.have.lengthOf(0);
         expect(signaled.code).to.equal(sut.current);
       });
       it('has code when some are selected', () => {
         // arrange
-        let signaled: ICodeChangedEvent;
+        let signaled: ICodeChangedEvent | undefined;
         const scripts = [new ScriptStub('first'), new ScriptStub('second')];
         const collection = new CategoryCollectionStub()
           .withAction(new CategoryStub(1).withScripts(...scripts));
@@ -120,6 +85,7 @@ describe('ApplicationCode', () => {
         // act
         selection.changed.notify(scripts.map((s) => new SelectedScript(s, false)));
         // assert
+        expectExists(signaled);
         expect(signaled.code).to.have.length.greaterThan(0);
         expect(signaled.code).to.equal(sut.current);
       });
@@ -131,12 +97,12 @@ describe('ApplicationCode', () => {
         const collection = new CategoryCollectionStub();
         const selection = new UserSelection(collection, []);
         const generatorMock: IUserScriptGenerator = {
-          buildCode: (selectedScripts, definition) => {
+          buildCode: (_, definition) => {
             if (definition !== expectedDefinition) {
               throw new Error('Unexpected scripting definition');
             }
             return {
-              code: '',
+              code: 'non-important-code',
               scriptPositions: new Map<SelectedScript, ICodePosition>(),
             };
           },
@@ -176,7 +142,7 @@ describe('ApplicationCode', () => {
       });
       it('sets positions from the generator', () => {
         // arrange
-        let signaled: ICodeChangedEvent;
+        let signaled: ICodeChangedEvent | undefined;
         const scripts = [new ScriptStub('first'), new ScriptStub('second')];
         const collection = new CategoryCollectionStub()
           .withAction(new CategoryStub(1).withScripts(...scripts));
@@ -205,6 +171,7 @@ describe('ApplicationCode', () => {
         // act
         selection.changed.notify(scriptsToSelect);
         // assert
+        expectExists(signaled);
         expect(signaled.getScriptPositionInCode(scripts[0]))
           .to.deep.equal(expected.get(scriptsToSelect[0]));
         expect(signaled.getScriptPositionInCode(scripts[1]))

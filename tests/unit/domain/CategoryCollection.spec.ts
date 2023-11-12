@@ -9,7 +9,6 @@ import { CategoryCollection } from '@/domain/CategoryCollection';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('CategoryCollection', () => {
   describe('getScriptsByLevel', () => {
@@ -81,7 +80,6 @@ describe('CategoryCollection', () => {
         sut.getScriptsByLevel(level);
       })
       // assert
-        .testAbsentValueThrows()
         .testOutOfRangeThrows()
         .testValidValueDoesNotThrow(RecommendationLevel.Standard);
     });
@@ -214,8 +212,7 @@ describe('CategoryCollection', () => {
         .construct();
       // assert
       new EnumRangeTestRunner(act)
-        .testOutOfRangeThrows()
-        .testAbsentValueThrows();
+        .testOutOfRangeThrows();
     });
   });
   describe('scriptingDefinition', () => {
@@ -229,20 +226,60 @@ describe('CategoryCollection', () => {
       // assert
       expect(sut.scripting).to.deep.equal(expected);
     });
-    describe('cannot construct without initial script', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing scripting definition';
-        const scriptingDefinition = absentValue;
-        // act
-        function construct() {
-          return new CategoryCollectionBuilder()
-            .withScripting(scriptingDefinition)
-            .construct();
-        }
-        // assert
-        expect(construct).to.throw(expectedError);
-      });
+  });
+  describe('getCategory', () => {
+    it('throws if category is not found', () => {
+      // arrange
+      const categoryId = 123;
+      const expectedError = `Missing category with ID: "${categoryId}"`;
+      const collection = new CategoryCollectionBuilder()
+        .withActions([new CategoryStub(456).withMandatoryScripts()])
+        .construct();
+      // act
+      const act = () => collection.getCategory(categoryId);
+      // assert
+      expect(act).to.throw(expectedError);
+    });
+    it('finds correct category', () => {
+      // arrange
+      const categoryId = 123;
+      const expectedCategory = new CategoryStub(categoryId).withMandatoryScripts();
+      const collection = new CategoryCollectionBuilder()
+        .withActions([expectedCategory])
+        .construct();
+      // act
+      const actualCategory = collection.getCategory(categoryId);
+      // assert
+      expect(actualCategory).to.equal(expectedCategory);
+    });
+  });
+  describe('getScript', () => {
+    it('throws if script is not found', () => {
+      // arrange
+      const scriptId = 'missingScript';
+      const expectedError = `missing script: ${scriptId}`;
+      const collection = new CategoryCollectionBuilder()
+        .withActions([new CategoryStub(456).withMandatoryScripts()])
+        .construct();
+      // act
+      const act = () => collection.getScript(scriptId);
+      // assert
+      expect(act).to.throw(expectedError);
+    });
+    it('finds correct script', () => {
+      // arrange
+      const scriptId = 'existingScript';
+      const expectedScript = new ScriptStub(scriptId);
+      const parentCategory = new CategoryStub(123)
+        .withMandatoryScripts()
+        .withScript(expectedScript);
+      const collection = new CategoryCollectionBuilder()
+        .withActions([parentCategory])
+        .construct();
+      // act
+      const actualScript = collection.getScript(scriptId);
+      // assert
+      expect(actualScript).to.equal(expectedScript);
     });
   });
 });
@@ -260,30 +297,27 @@ class CategoryCollectionBuilder {
   private os = OperatingSystem.Windows;
 
   private actions: readonly ICategory[] = [
-    new CategoryStub(1).withScripts(
-      new ScriptStub('S1').withLevel(RecommendationLevel.Standard),
-      new ScriptStub('S2').withLevel(RecommendationLevel.Strict),
-    ),
+    new CategoryStub(1).withMandatoryScripts(),
   ];
 
-  private script: IScriptingDefinition = getValidScriptingDefinition();
+  private scriptingDefinition: IScriptingDefinition = getValidScriptingDefinition();
 
-  public withOs(os: OperatingSystem): CategoryCollectionBuilder {
+  public withOs(os: OperatingSystem): this {
     this.os = os;
     return this;
   }
 
-  public withActions(actions: readonly ICategory[]): CategoryCollectionBuilder {
+  public withActions(actions: readonly ICategory[]): this {
     this.actions = actions;
     return this;
   }
 
-  public withScripting(script: IScriptingDefinition): CategoryCollectionBuilder {
-    this.script = script;
+  public withScripting(scriptingDefinition: IScriptingDefinition): this {
+    this.scriptingDefinition = scriptingDefinition;
     return this;
   }
 
   public construct(): CategoryCollection {
-    return new CategoryCollection(this.os, this.actions, this.script);
+    return new CategoryCollection(this.os, this.actions, this.scriptingDefinition);
   }
 }

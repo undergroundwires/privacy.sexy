@@ -37,7 +37,7 @@ export interface CommandResult {
 
 function formatError(
   command: string,
-  error: ExecException | undefined,
+  error: ExecException | null,
   stdout: string | undefined,
   stderr: string | undefined,
 ) {

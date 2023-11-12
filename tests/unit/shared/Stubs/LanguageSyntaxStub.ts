@@ -1,9 +1,9 @@
 import { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
 
 export class LanguageSyntaxStub implements ILanguageSyntax {
-  public commentDelimiters = [];
+  public commentDelimiters: string[] = [];
 
-  public commonCodeParts = [];
+  public commonCodeParts: string[] = [];
 
   public withCommentDelimiters(...delimiters: string[]) {
     this.commentDelimiters = delimiters;

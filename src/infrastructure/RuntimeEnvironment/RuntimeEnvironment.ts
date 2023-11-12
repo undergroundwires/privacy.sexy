@@ -37,7 +37,7 @@ export class RuntimeEnvironment implements IRuntimeEnvironment {
   }
 }
 
-function getUserAgent(window: Partial<Window>): string {
+function getUserAgent(window: Partial<Window>): string | undefined {
   return window?.navigator?.userAgent;
 }
 

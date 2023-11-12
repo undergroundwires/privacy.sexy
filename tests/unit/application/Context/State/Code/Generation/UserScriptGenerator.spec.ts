@@ -5,8 +5,8 @@ import { ICodeBuilderFactory } from '@/application/Context/State/Code/Generation
 import { ICodeBuilder } from '@/application/Context/State/Code/Generation/ICodeBuilder';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { ScriptingDefinitionStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionStub';
-import { itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
-import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
+import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 describe('UserScriptGenerator', () => {
   describe('scriptingDefinition', () => {
@@ -45,7 +45,7 @@ describe('UserScriptGenerator', () => {
           // assert
           const actual = code.code;
           expect(actual.startsWith(expectedStart));
-        });
+        }, { excludeNull: true, excludeUndefined: true });
       });
     });
     describe('endCode', () => {
@@ -83,53 +83,61 @@ describe('UserScriptGenerator', () => {
           // assert
           const actual = code.code;
           expect(actual.endsWith(expectedEnd));
-        });
+        }, { excludeNull: true, excludeUndefined: true });
       });
     });
-    describe('throws when absent', () => {
-      itEachAbsentObjectValue((absentValue) => {
+  });
+  describe('execute', () => {
+    it('appends non-revert script', () => {
+      const sut = new UserScriptGenerator();
+      // arrange
+      const scriptName = 'test non-revert script';
+      const scriptCode = 'REM nop';
+      const script = new ScriptStub('id').withName(scriptName).withCode(scriptCode);
+      const selectedScripts = [new SelectedScript(script, false)];
+      const definition = new ScriptingDefinitionStub();
+      // act
+      const actual = sut.buildCode(selectedScripts, definition);
+      // assert
+      expect(actual.code).to.include(scriptName);
+      expect(actual.code).to.not.include(`${scriptName} (revert)`);
+      expect(actual.code).to.include(scriptCode);
+    });
+  });
+  describe('revert', () => {
+    it('appends revert script', () => {
+      // arrange
+      const sut = new UserScriptGenerator();
+      const scriptName = 'test non-revert script';
+      const scriptCode = 'REM nop';
+      const script = new ScriptStub('id')
+        .withName(scriptName)
+        .withRevertCode(scriptCode)
+        .toSelectedScript(true);
+      const definition = new ScriptingDefinitionStub();
+      // act
+      const actual = sut.buildCode([script], definition);
+      // assert
+      expect(actual.code).to.include(`${scriptName} (revert)`);
+      expect(actual.code).to.include(scriptCode);
+    });
+    describe('throws if revert script lacks revert code', () => {
+      itEachAbsentStringValue((emptyRevertCode) => {
         // arrange
-        const expectedError = 'missing definition';
+        const expectedError = 'Reverted script lacks revert code.';
         const sut = new UserScriptGenerator();
-        const scriptingDefinition = absentValue;
-        const selectedScripts = [new SelectedScriptStub('a')];
+        const script = new ScriptStub('id')
+          .toSelectedScript(true);
+        // Hack until SelectedScript is interface:
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (script.script.code as any).revert = emptyRevertCode;
+        const definition = new ScriptingDefinitionStub();
         // act
-        const act = () => sut.buildCode(selectedScripts, scriptingDefinition);
+        const act = () => sut.buildCode([script], definition);
         // assert
         expect(act).to.throw(expectedError);
-      });
+      }, { excludeNull: true });
     });
-  });
-  it('appends revert script', () => {
-    // arrange
-    const sut = new UserScriptGenerator();
-    const scriptName = 'test non-revert script';
-    const scriptCode = 'REM nop';
-    const script = new ScriptStub('id')
-      .withName(scriptName)
-      .withRevertCode(scriptCode)
-      .toSelectedScript(true);
-    const definition = new ScriptingDefinitionStub();
-    // act
-    const actual = sut.buildCode([script], definition);
-    // assert
-    expect(actual.code).to.include(`${scriptName} (revert)`);
-    expect(actual.code).to.include(scriptCode);
-  });
-  it('appends non-revert script', () => {
-    const sut = new UserScriptGenerator();
-    // arrange
-    const scriptName = 'test non-revert script';
-    const scriptCode = 'REM nop';
-    const script = new ScriptStub('id').withName(scriptName).withCode(scriptCode);
-    const selectedScripts = [new SelectedScript(script, false)];
-    const definition = new ScriptingDefinitionStub();
-    // act
-    const actual = sut.buildCode(selectedScripts, definition);
-    // assert
-    expect(actual.code).to.include(scriptName);
-    expect(actual.code).to.not.include(`${scriptName} (revert)`);
-    expect(actual.code).to.include(scriptCode);
   });
   describe('scriptPositions', () => {
     it('without script; returns empty', () => {
@@ -179,6 +187,7 @@ describe('UserScriptGenerator', () => {
             // expect
             expect(1).to.equal(actual.scriptPositions.size);
             const position = actual.scriptPositions.get(selectedScript);
+            expectExists(position);
             expect(expectedStartLine).to.equal(position.startLine, 'Unexpected start line position');
             expect(expectedEndLine).to.equal(position.endLine, 'Unexpected end line position');
           });
@@ -209,25 +218,12 @@ describe('UserScriptGenerator', () => {
         const firstPosition = actual.scriptPositions.get(selectedScripts[0]);
         const secondPosition = actual.scriptPositions.get(selectedScripts[1]);
         expect(actual.scriptPositions.size).to.equal(2);
+        expectExists(firstPosition);
         expect(expectedFirstScriptStart).to.equal(firstPosition.startLine, 'Unexpected start line position (first script)');
         expect(expectedFirstScriptEnd).to.equal(firstPosition.endLine, 'Unexpected end line position (first script)');
+        expectExists(secondPosition);
         expect(expectedSecondScriptStart).to.equal(secondPosition.startLine, 'Unexpected start line position (second script)');
         expect(expectedSecondScriptEnd).to.equal(secondPosition.endLine, 'Unexpected end line position (second script)');
-      });
-    });
-  });
-  describe('selectedScripts', () => {
-    describe('throws when absent', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing scripts';
-        const sut = new UserScriptGenerator();
-        const scriptingDefinition = new ScriptingDefinitionStub();
-        const selectedScripts = absentValue;
-        // act
-        const act = () => sut.buildCode(selectedScripts, scriptingDefinition);
-        // assert
-        expect(act).to.throw(expectedError);
       });
     });
   });

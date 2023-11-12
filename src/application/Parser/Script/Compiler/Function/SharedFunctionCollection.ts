@@ -5,7 +5,6 @@ export class SharedFunctionCollection implements ISharedFunctionCollection {
   private readonly functionsByName = new Map<string, ISharedFunction>();
 
   public addFunction(func: ISharedFunction): void {
-    if (!func) { throw new Error('missing function'); }
     if (this.has(func.name)) {
       throw new Error(`function with name ${func.name} already exists`);
     }

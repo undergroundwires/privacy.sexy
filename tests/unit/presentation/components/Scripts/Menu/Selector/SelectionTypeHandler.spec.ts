@@ -6,19 +6,24 @@ import {
 import { scrambledEqual } from '@/application/Common/Array';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
 import { SelectionStateTestScenario } from './SelectionStateTestScenario';
 
 describe('SelectionTypeHandler', () => {
   describe('setCurrentSelectionType', () => {
-    it('throws when type is custom', () => {
+    describe('throws with invalid type', () => {
       // arrange
-      const expectedError = 'cannot select custom type';
       const scenario = new SelectionStateTestScenario();
       const state = scenario.generateState([]);
       // act
-      const act = () => setCurrentSelectionType(SelectionType.Custom, createMutationContext(state));
+      const act = (type: SelectionType) => setCurrentSelectionType(
+        type,
+        createMutationContext(state),
+      );
       // assert
-      expect(act).to.throw(expectedError);
+      new EnumRangeTestRunner(act)
+        .testInvalidValueThrows(SelectionType.Custom, 'Cannot select custom type.')
+        .testOutOfRangeThrows((value) => `Cannot handle the type: ${SelectionType[value]}`);
     });
     describe('select types as expected', () => {
       // arrange

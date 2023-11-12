@@ -4,22 +4,23 @@ import { IExpressionParser } from '@/application/Parser/Script/Compiler/Expressi
 import { ExpressionStub } from '@tests/unit/shared/Stubs/ExpressionStub';
 import { ExpressionParserStub } from '@tests/unit/shared/Stubs/ExpressionParserStub';
 import { FunctionCallArgumentCollectionStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentCollectionStub';
-import { itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { IExpression } from '@/application/Parser/Script/Compiler/Expressions/Expression/IExpression';
 
 describe('ExpressionsCompiler', () => {
   describe('compileExpressions', () => {
-    describe('returns code when code is absent', () => {
+    describe('returns empty string when code is absent', () => {
       itEachAbsentStringValue((absentValue) => {
         // arrange
-        const expected = absentValue;
+        const expected = '';
+        const code = absentValue;
         const sut = new SystemUnderTest();
         const args = new FunctionCallArgumentCollectionStub();
         // act
-        const value = sut.compileExpressions(absentValue, args);
+        const value = sut.compileExpressions(code, args);
         // assert
         expect(value).to.equal(expected);
-      });
+      }, { excludeNull: true, excludeUndefined: true });
     });
     describe('can compile nested expressions', () => {
       it('when one expression is evaluated to a text that contains another expression', () => {
@@ -188,19 +189,6 @@ describe('ExpressionsCompiler', () => {
           + `Actual: ${JSON.stringify(actualArgs)}\n`
           + `Not equal: ${actualArgs.filter((arg) => arg !== expected)}`,
         );
-      });
-      describe('throws if arguments is missing', () => {
-        itEachAbsentObjectValue((absentValue) => {
-          // arrange
-          const expectedError = 'missing args, send empty collection instead.';
-          const args = absentValue;
-          const expressionParserMock = new ExpressionParserStub();
-          const sut = new SystemUnderTest(expressionParserMock);
-          // act
-          const act = () => sut.compileExpressions('code', args);
-          // assert
-          expect(act).to.throw(expectedError);
-        });
       });
     });
     describe('throws when expressions are invalid', () => {

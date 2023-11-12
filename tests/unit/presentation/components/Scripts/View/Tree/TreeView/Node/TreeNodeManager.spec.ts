@@ -23,7 +23,7 @@ describe('TreeNodeManager', () => {
           const act = () => new TreeNodeManager(absentId);
           // assert
           expect(act).to.throw(expectedError);
-        });
+        }, { excludeNull: true, excludeUndefined: true });
       });
     });
 
@@ -37,14 +37,14 @@ describe('TreeNodeManager', () => {
         expect(node.metadata).to.equal(expectedMetadata);
       });
       describe('should accept absent metadata', () => {
-        itEachAbsentObjectValue((absentMetadata) => {
+        itEachAbsentObjectValue((absentValue) => {
           // arrange
-          const expectedMetadata = absentMetadata;
+          const expectedMetadata = absentValue;
           // act
           const node = new TreeNodeManager('id', expectedMetadata);
           // assert
-          expect(node.metadata).to.equal(absentMetadata);
-        });
+          expect(node.metadata).to.equal(undefined);
+        }, { excludeNull: true });
       });
     });
 

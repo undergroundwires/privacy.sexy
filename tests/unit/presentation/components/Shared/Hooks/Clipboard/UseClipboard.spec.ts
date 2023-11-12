@@ -3,6 +3,7 @@ import { useClipboard } from '@/presentation/components/Shared/Hooks/Clipboard/U
 import { BrowserClipboard } from '@/presentation/components/Shared/Hooks/Clipboard/BrowserClipboard';
 import { ClipboardStub } from '@tests/unit/shared/Stubs/ClipboardStub';
 import { FunctionKeys } from '@/TypeHelpers';
+import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 describe('useClipboard', () => {
   it(`returns an instance of ${BrowserClipboard.name}`, () => {
@@ -41,7 +42,7 @@ describe('useClipboard', () => {
           // assert
           testFunction(...expectedArgs);
           const call = clipboardStub.callHistory.find((c) => c.methodName === functionName);
-          expect(call).toBeDefined();
+          expectExists(call);
           expect(call.args).to.deep.equal(expectedArgs);
         });
         it('ensures method retains the clipboard instance context', () => {

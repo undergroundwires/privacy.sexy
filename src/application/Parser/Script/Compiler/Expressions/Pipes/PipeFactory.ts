@@ -15,12 +15,6 @@ export class PipeFactory implements IPipeFactory {
   private readonly pipes = new Map<string, IPipe>();
 
   constructor(pipes: readonly IPipe[] = RegisteredPipes) {
-    if (!pipes) {
-      throw new Error('missing pipes');
-    }
-    if (pipes.some((pipe) => !pipe)) {
-      throw new Error('missing pipe in list');
-    }
     for (const pipe of pipes) {
       this.registerPipe(pipe);
     }
@@ -28,10 +22,11 @@ export class PipeFactory implements IPipeFactory {
 
   public get(pipeName: string): IPipe {
     validatePipeName(pipeName);
-    if (!this.pipes.has(pipeName)) {
+    const pipe = this.pipes.get(pipeName);
+    if (!pipe) {
       throw new Error(`Unknown pipe: "${pipeName}"`);
     }
-    return this.pipes.get(pipeName);
+    return pipe;
   }
 
   private registerPipe(pipe: IPipe): void {

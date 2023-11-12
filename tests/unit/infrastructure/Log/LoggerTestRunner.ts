@@ -2,13 +2,15 @@ import { it } from 'vitest';
 import { FunctionKeys } from '@/TypeHelpers';
 import { ILogger } from '@/infrastructure/Log/ILogger';
 
+type TestParameters = [string, number, { some: string }];
+
 export function itEachLoggingMethod(
   handler: (
     functionName: keyof ILogger,
-    testParameters?: unknown[]
+    testParameters: TestParameters,
   ) => void,
 ) {
-  const testParameters = ['test', 123, { some: 'object' }];
+  const testParameters: TestParameters = ['test', 123, { some: 'object' }];
   const loggerMethods: Array<FunctionKeys<ILogger>> = [
     'info',
   ];

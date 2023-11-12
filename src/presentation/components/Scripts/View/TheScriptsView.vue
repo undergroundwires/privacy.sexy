@@ -71,6 +71,9 @@ export default defineComponent({
     const searchHasMatches = ref(false);
     const trimmedSearchQuery = computed(() => {
       const query = searchQuery.value;
+      if (!query) {
+        return '';
+      }
       const threshold = 30;
       if (query.length <= threshold - 3) {
         return query;
@@ -94,7 +97,7 @@ export default defineComponent({
 
     function updateFromInitialFilter(filter?: IFilterResult) {
       searchQuery.value = filter?.query;
-      searchHasMatches.value = filter?.hasAnyMatches();
+      searchHasMatches.value = filter?.hasAnyMatches() ?? false;
     }
 
     function subscribeToFilterChanges(filter: IReadOnlyUserFilter) {

@@ -9,8 +9,5 @@ export class ParsedFunctionCall implements FunctionCall {
     if (!functionName) {
       throw new Error('missing function name in function call');
     }
-    if (!args) {
-      throw new Error('missing args');
-    }
   }
 }

@@ -1,13 +1,9 @@
 import { EventSource } from '../Events/EventSource';
 
 export class AsyncLazy<T> {
-  private valueCreated = new EventSource();
+  private valueCreated = new EventSource<T>();
 
-  private isValueCreated = false;
-
-  private isCreatingValue = false;
-
-  private value: T | undefined;
+  private state: ValueState<T> = { status: ValueStatus.NotRequested };
 
   constructor(private valueFactory: () => Promise<T>) {}
 
@@ -15,23 +11,44 @@ export class AsyncLazy<T> {
     this.valueFactory = valueFactory;
   }
 
-  public async getValue(): Promise<T> {
-    // If value is already created, return the value directly
-    if (this.isValueCreated) {
-      return Promise.resolve(this.value);
+  public getValue(): Promise<T> {
+    if (this.state.status === ValueStatus.Created) {
+      return Promise.resolve(this.state.value);
     }
-    // If value is being created, wait until the value is created and then return it.
-    if (this.isCreatingValue) {
-      return new Promise<T>((resolve) => {
-        // Return/result when valueCreated event is triggered.
-        this.valueCreated.on(() => resolve(this.value));
-      });
+    if (this.state.status === ValueStatus.BeingCreated) {
+      return this.state.value;
     }
-    this.isCreatingValue = true;
-    this.value = await this.valueFactory();
-    this.isCreatingValue = false;
-    this.isValueCreated = true;
-    this.valueCreated.notify(null);
-    return Promise.resolve(this.value);
+    const valuePromise = this.valueFactory();
+    this.state = {
+      status: ValueStatus.BeingCreated,
+      value: valuePromise,
+    };
+    valuePromise.then((value) => {
+      this.state = {
+        status: ValueStatus.Created,
+        value,
+      };
+      this.valueCreated.notify(value);
+    });
+    return valuePromise;
   }
 }
+
+enum ValueStatus {
+  NotRequested,
+  BeingCreated,
+  Created,
+}
+
+type ValueState<T> =
+  | {
+    readonly status: ValueStatus.NotRequested;
+  }
+  | {
+    readonly status: ValueStatus.BeingCreated;
+    readonly value: Promise<T>;
+  }
+  | {
+    readonly status: ValueStatus.Created;
+    readonly value: T
+  };

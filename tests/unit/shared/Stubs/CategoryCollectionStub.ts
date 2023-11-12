@@ -6,6 +6,7 @@ import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { ScriptStub } from './ScriptStub';
 import { ScriptingDefinitionStub } from './ScriptingDefinitionStub';
+import { CategoryStub } from './CategoryStub';
 
 export class CategoryCollectionStub implements ICategoryCollection {
   public scripting: IScriptingDefinition = new ScriptingDefinitionStub();
@@ -20,34 +21,35 @@ export class CategoryCollectionStub implements ICategoryCollection {
 
   public readonly actions = new Array<ICategory>();
 
-  public withAction(category: ICategory): CategoryCollectionStub {
+  public withAction(category: ICategory): this {
     this.actions.push(category);
     return this;
   }
 
-  public withOs(os: OperatingSystem): CategoryCollectionStub {
+  public withOs(os: OperatingSystem): this {
     this.os = os;
     return this;
   }
 
-  public withScripting(scripting: IScriptingDefinition): CategoryCollectionStub {
+  public withScripting(scripting: IScriptingDefinition): this {
     this.scripting = scripting;
     return this;
   }
 
-  public withInitialScript(script: IScript): CategoryCollectionStub {
+  public withInitialScript(script: IScript): this {
     this.initialScript = script;
     return this;
   }
 
-  public withTotalScripts(totalScripts: number) {
+  public withTotalScripts(totalScripts: number): this {
     this.totalScripts = totalScripts;
     return this;
   }
 
-  public findCategory(categoryId: number): ICategory {
+  public getCategory(categoryId: number): ICategory {
     return this.getAllCategories()
-      .find((category) => category.id === categoryId);
+      .find((category) => category.id === categoryId)
+      ?? new CategoryStub(categoryId);
   }
 
   public getScriptsByLevel(level: RecommendationLevel): readonly IScript[] {
@@ -55,9 +57,10 @@ export class CategoryCollectionStub implements ICategoryCollection {
       .filter((script) => script.level !== undefined && script.level <= level);
   }
 
-  public findScript(scriptId: string): IScript {
+  public getScript(scriptId: string): IScript {
     return this.getAllScripts()
-      .find((script) => scriptId === script.id);
+      .find((script) => scriptId === script.id)
+      ?? new ScriptStub(scriptId);
   }
 
   public getAllScripts(): ReadonlyArray<IScript> {

@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { BrowserClipboard, NavigatorClipboard } from '@/presentation/components/Shared/Hooks/Clipboard/BrowserClipboard';
 import { StubWithObservableMethodCalls } from '@tests/unit/shared/Stubs/StubWithObservableMethodCalls';
 import { expectThrowsAsync } from '@tests/shared/Assertions/ExpectThrowsAsync';
+import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 describe('BrowserClipboard', () => {
   describe('writeText', () => {
@@ -16,7 +17,7 @@ describe('BrowserClipboard', () => {
       const calls = navigatorClipboard.callHistory;
       expect(calls).to.have.lengthOf(1);
       const call = calls.find((c) => c.methodName === 'writeText');
-      expect(call).toBeDefined();
+      expectExists(call);
       const [actualText] = call.args;
       expect(actualText).to.equal(expectedText);
     });

@@ -2,18 +2,15 @@ import { ICategory, IScript } from '@/domain/ICategory';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { NodeMetadata, NodeType } from '../NodeContent/NodeMetadata';
 
-export function parseAllCategories(collection: ICategoryCollection): NodeMetadata[] | undefined {
+export function parseAllCategories(collection: ICategoryCollection): NodeMetadata[] {
   return createCategoryNodes(collection.actions);
 }
 
 export function parseSingleCategory(
   categoryId: number,
   collection: ICategoryCollection,
-): NodeMetadata[] | undefined {
-  const category = collection.findCategory(categoryId);
-  if (!category) {
-    throw new Error(`Category with id ${categoryId} does not exist`);
-  }
+): NodeMetadata[] {
+  const category = collection.getCategory(categoryId);
   const tree = parseCategoryRecursively(category);
   return tree;
 }
@@ -73,7 +70,7 @@ function convertScriptToNode(script: IScript): NodeMetadata {
     id: getScriptNodeId(script),
     type: NodeType.Script,
     text: script.name,
-    children: undefined,
+    children: [],
     docs: script.docs,
     isReversible: script.canRevert(),
   };

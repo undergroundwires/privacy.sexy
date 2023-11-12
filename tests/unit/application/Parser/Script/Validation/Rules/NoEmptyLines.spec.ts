@@ -24,12 +24,6 @@ describe('NoEmptyLines', () => {
         sut: new NoEmptyLines(),
       },
       {
-        testName: 'shows error for undefined and null lines',
-        codeLines: ['first line', undefined, 'third line', null],
-        expected: [2, 4].map((index) => ({ index, error: 'Empty line' })),
-        sut: new NoEmptyLines(),
-      },
-      {
         testName: 'shows error for whitespace-only lines',
         codeLines: ['first line', '  ', 'third line'],
         expected: [{ index: 2, error: 'Empty line: "{whitespace}{whitespace}"' }],

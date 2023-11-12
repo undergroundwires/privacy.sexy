@@ -6,6 +6,7 @@ import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { Clipboard } from '@/presentation/components/Shared/Hooks/Clipboard/Clipboard';
 import { UseClipboardStub } from '@tests/unit/shared/Stubs/UseClipboardStub';
 import { ClipboardStub } from '@tests/unit/shared/Stubs/ClipboardStub';
+import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 const DOM_SELECTOR_CODE_SLOT = 'code';
 const DOM_SELECTOR_COPY_BUTTON = '.copy-button';
@@ -40,7 +41,7 @@ describe('CodeInstruction.vue', () => {
       const calls = clipboardStub.callHistory;
       expect(calls).to.have.lengthOf(1);
       const call = calls.find((c) => c.methodName === 'copyText');
-      expect(call).toBeDefined();
+      expectExists(call);
       const [actualCode] = call.args;
       expect(actualCode).to.equal(expectedCode);
     });

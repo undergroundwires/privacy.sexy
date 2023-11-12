@@ -9,19 +9,16 @@ export abstract class ScriptingLanguageFactory<T> implements IScriptingLanguageF
 
   public create(language: ScriptingLanguage): T {
     assertInRange(language, ScriptingLanguage);
-    if (!this.getters.has(language)) {
+    const getter = this.getters.get(language);
+    if (!getter) {
       throw new RangeError(`unknown language: "${ScriptingLanguage[language]}"`);
     }
-    const getter = this.getters.get(language);
     const instance = getter();
     return instance;
   }
 
   protected registerGetter(language: ScriptingLanguage, getter: Getter<T>) {
     assertInRange(language, ScriptingLanguage);
-    if (!getter) {
-      throw new Error('missing getter');
-    }
     if (this.getters.has(language)) {
       throw new Error(`${ScriptingLanguage[language]} is already registered`);
     }

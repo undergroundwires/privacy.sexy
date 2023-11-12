@@ -159,7 +159,7 @@ describe('ProjectInformation', () => {
         expect(actual).to.equal(expected);
       });
     }
-    it('should throw an error when provided with an invalid operating system', () => {
+    describe('should throw an error when provided with an invalid operating system', () => {
       // arrange
       const sut = new ProjectInformationBuilder()
         .build();
@@ -168,7 +168,6 @@ describe('ProjectInformation', () => {
       // assert
       new EnumRangeTestRunner(act)
         .testOutOfRangeThrows()
-        .testAbsentValueThrows()
         .testInvalidValueThrows(OperatingSystem.KaiOS, `Unsupported os: ${OperatingSystem[OperatingSystem.KaiOS]}`);
     });
   });

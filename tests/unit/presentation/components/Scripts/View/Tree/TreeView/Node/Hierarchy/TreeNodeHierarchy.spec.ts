@@ -75,7 +75,7 @@ describe('TreeNodeHierarchy', () => {
 
   describe('depthInTree', () => {
     interface DepthTestScenario {
-      readonly parentNode: TreeNode,
+      readonly parentNode: TreeNode | undefined,
       readonly expectedDepth: number;
     }
     const testCases: readonly DepthTestScenario[] = [

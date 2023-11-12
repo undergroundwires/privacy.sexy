@@ -1,21 +1,7 @@
 import { describe } from 'vitest';
 import { FactoryValidator, FactoryFunction } from '@/infrastructure/RuntimeSanity/Common/FactoryValidator';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('FactoryValidator', () => {
-  describe('ctor', () => {
-    describe('throws when factory is absent', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing factory';
-        const factory = absentValue;
-        // act
-        const act = () => new TestableFactoryValidator(factory);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
-  });
   describe('collectErrors', () => {
     it('reports error thrown by factory function', () => {
       // arrange

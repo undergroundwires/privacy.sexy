@@ -4,13 +4,13 @@ import { TreeRoot } from '@/presentation/components/Scripts/View/Tree/TreeView/T
 import { useAutoUpdateChildrenCheckState } from '@/presentation/components/Scripts/View/Tree/TreeView/UseAutoUpdateChildrenCheckState';
 import { TreeNodeCheckState } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/CheckState';
 import { UseNodeStateChangeAggregatorStub } from '@tests/unit/shared/Stubs/UseNodeStateChangeAggregatorStub';
-import { getAbsentObjectTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 import { TreeRootStub } from '@tests/unit/shared/Stubs/TreeRootStub';
 import { TreeNodeStateDescriptorStub } from '@tests/unit/shared/Stubs/TreeNodeStateDescriptorStub';
 import { TreeNodeStateAccessStub, createAccessStubsFromCheckStates } from '@tests/unit/shared/Stubs/TreeNodeStateAccessStub';
 import { TreeNodeStateDescriptor } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateDescriptor';
 import { createChangeEvent } from '@tests/unit/shared/Stubs/NodeStateChangeEventArgsStub';
 import { TreeNodeStub } from '@tests/unit/shared/Stubs/TreeNodeStub';
+import { getAbsentObjectTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('useAutoUpdateChildrenCheckState', () => {
   it('registers change handler', () => {
@@ -153,7 +153,7 @@ describe('useAutoUpdateChildrenCheckState', () => {
           .withCheckState(TreeNodeCheckState.Indeterminate),
         newState: new TreeNodeStateDescriptorStub().withCheckState(TreeNodeCheckState.Checked),
       },
-      ...getAbsentObjectTestCases().map((testCase) => ({
+      ...getAbsentObjectTestCases({ excludeNull: true }).map((testCase) => ({
         description: `absent old state: "${testCase.valueName}"`,
         oldState: testCase.absentValue,
         newState: new TreeNodeStateDescriptorStub().withCheckState(TreeNodeCheckState.Unchecked),

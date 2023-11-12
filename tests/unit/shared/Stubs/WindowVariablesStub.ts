@@ -6,30 +6,30 @@ import { SystemOperationsStub } from './SystemOperationsStub';
 import { LoggerStub } from './LoggerStub';
 
 export class WindowVariablesStub implements WindowVariables {
-  public system: ISystemOperations = new SystemOperationsStub();
+  public system?: ISystemOperations = new SystemOperationsStub();
 
-  public isDesktop = false;
+  public isDesktop? = false;
 
-  public os: OperatingSystem = OperatingSystem.BlackBerryOS;
+  public os?: OperatingSystem = OperatingSystem.BlackBerryOS;
 
-  public log: ILogger = new LoggerStub();
+  public log?: ILogger = new LoggerStub();
 
-  public withLog(log: ILogger): this {
+  public withLog(log?: ILogger): this {
     this.log = log;
     return this;
   }
 
-  public withIsDesktop(value: boolean): this {
+  public withIsDesktop(value?: boolean): this {
     this.isDesktop = value;
     return this;
   }
 
-  public withOs(value: OperatingSystem): this {
+  public withOs(value: OperatingSystem | undefined): this {
     this.os = value;
     return this;
   }
 
-  public withSystem(value: ISystemOperations): this {
+  public withSystem(value?: ISystemOperations): this {
     this.system = value;
     return this;
   }

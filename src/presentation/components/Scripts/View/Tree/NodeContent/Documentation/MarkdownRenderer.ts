@@ -85,7 +85,8 @@ function removeTrailingExtension(value: string): string {
   if (parts.length === 1) {
     return value;
   }
-  if (parts.at(-1).length > 9) {
+  const extension = parts[parts.length - 1];
+  if (extension.length > 9) {
     return value; // Heuristically web file extension is no longer than 9 chars (e.g. "html")
   }
   return parts.slice(0, -1).join('.');
@@ -115,9 +116,8 @@ function selectMostDescriptiveName(parts: readonly string[]): string | undefined
 }
 
 function isGoodPathPart(part: string): boolean {
-  return part
+  return part.length > 2 // This is often non-human categories like T5 etc.
     && !isDigit(part) // E.g. article numbers, issue numbers
-    && part.length > 2 // This is often non-human categories like T5 etc.
     && !/^index(?:\.\S{0,10}$|$)/.test(part) // E.g. index.html
     && !/^[A-Za-z]{2,4}([_-][A-Za-z]{4})?([_-]([A-Za-z]{2}|[0-9]{3}))$/.test(part) // Locale string e.g. fr-FR
     && !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(part) // GUID

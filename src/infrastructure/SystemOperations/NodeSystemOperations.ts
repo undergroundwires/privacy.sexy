@@ -17,10 +17,16 @@ export function createNodeSystemOperations(): ISystemOperations {
         filePath: string,
         mode: string | number,
       ) => chmod(filePath, mode),
-      createDirectory: (
+      createDirectory: async (
         directoryPath: string,
         isRecursive?: boolean,
-      ) => mkdir(directoryPath, { recursive: isRecursive }),
+      ) => {
+        await mkdir(directoryPath, { recursive: isRecursive });
+        // Ignoring the return value from `mkdir`, which is the first directory created
+        // when `recursive` is true. The function contract is to not return any value,
+        // and we avoid handling this inconsistent behavior.
+        // See https://github.com/nodejs/node/pull/31530
+      },
       writeToFile: (
         filePath: string,
         data: string,

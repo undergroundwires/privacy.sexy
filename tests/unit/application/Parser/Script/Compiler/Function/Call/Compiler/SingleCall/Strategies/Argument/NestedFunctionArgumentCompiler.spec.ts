@@ -7,12 +7,11 @@ import { IExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expre
 import { ExpressionsCompilerStub } from '@tests/unit/shared/Stubs/ExpressionsCompilerStub';
 import { FunctionCallCompilationContextStub } from '@tests/unit/shared/Stubs/FunctionCallCompilationContextStub';
 import { FunctionCallStub } from '@tests/unit/shared/Stubs/FunctionCallStub';
-import { expectDeepThrowsError } from '@tests/unit/shared/Assertions/ExpectDeepThrowsError';
+import { expectDeepThrowsError } from '@tests/shared/Assertions/ExpectDeepThrowsError';
 import { FunctionCallArgumentCollectionStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentCollectionStub';
-import { SharedFunctionStub } from '@tests/unit/shared/Stubs/SharedFunctionStub';
+import { createSharedFunctionStubWithCode } from '@tests/unit/shared/Stubs/SharedFunctionStub';
 import { FunctionParameterCollectionStub } from '@tests/unit/shared/Stubs/FunctionParameterCollectionStub';
 import { SharedFunctionCollectionStub } from '@tests/unit/shared/Stubs/SharedFunctionCollectionStub';
-import { FunctionBodyType } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
 
 describe('NestedFunctionArgumentCompiler', () => {
   describe('createCompiledNestedCall', () => {
@@ -132,7 +131,7 @@ describe('NestedFunctionArgumentCompiler', () => {
               givenArgs: parentCall.args,
               result: testParameterScenarios.find(
                 (r) => r.rawArgumentValue === rawArgumentValue,
-              ).compiledArgumentValue,
+              )?.compiledArgumentValue ?? 'unexpected arguments',
             });
           });
           const nestedCallArgs = new FunctionCallArgumentCollectionStub()
@@ -166,7 +165,7 @@ describe('NestedFunctionArgumentCompiler', () => {
             // arrange
             const parameterName = 'requiredParameter';
             const initialValue = 'initial-value';
-            const compiledValue = undefined;
+            const emptyCompiledExpression = '';
             const expectedError = `Compilation resulted in empty value for required parameter: "${parameterName}"`;
             const nestedCall = new FunctionCallStub()
               .withArgumentCollection(new FunctionCallArgumentCollectionStub()
@@ -183,7 +182,7 @@ describe('NestedFunctionArgumentCompiler', () => {
               .setup({
                 givenCode: initialValue,
                 givenArgs: parentCall.args,
-                result: compiledValue,
+                result: emptyCompiledExpression,
               });
             const builder = new NestedFunctionArgumentCompilerBuilder()
               .withExpressionsCompiler(expressionsCompilerStub)
@@ -199,7 +198,7 @@ describe('NestedFunctionArgumentCompiler', () => {
             // arrange
             const parameterName = 'optionalParameter';
             const initialValue = 'initial-value';
-            const compiledValue = undefined;
+            const emptyValue = '';
             const nestedCall = new FunctionCallStub()
               .withArgumentCollection(new FunctionCallArgumentCollectionStub()
                 .withArgument(parameterName, initialValue));
@@ -215,7 +214,7 @@ describe('NestedFunctionArgumentCompiler', () => {
               .setup({
                 givenCode: initialValue,
                 givenArgs: parentCall.args,
-                result: compiledValue,
+                result: emptyValue,
               });
             const builder = new NestedFunctionArgumentCompilerBuilder()
               .withExpressionsCompiler(expressionsCompilerStub)
@@ -240,7 +239,7 @@ function createContextWithParameter(options: {
 }): FunctionCallCompilationContext {
   const parameters = new FunctionParameterCollectionStub()
     .withParameterName(options.existingParameterName, options.isExistingParameterOptional);
-  const func = new SharedFunctionStub(FunctionBodyType.Code)
+  const func = createSharedFunctionStubWithCode()
     .withName(options.existingFunctionName)
     .withParameters(parameters);
   const functions = new SharedFunctionCollectionStub()

@@ -10,6 +10,7 @@ import {
 } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/CategoryNodeMetadataConverter';
 import { NodeType } from '@/application/Parser/NodeValidation/NodeType';
 import { NodeMetadata } from '@/presentation/components/Scripts/View/Tree/NodeContent/NodeMetadata';
+import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 describe('CategoryNodeMetadataConverter', () => {
   it('can convert script id and back', () => {
@@ -31,13 +32,13 @@ describe('CategoryNodeMetadataConverter', () => {
     expect(scriptId).to.equal(category.id);
   });
   describe('parseSingleCategory', () => {
-    it('throws error when parent category does not exist', () => {
+    it('throws error if parent category cannot be retrieved', () => {
       // arrange
-      const categoryId = 33;
-      const expectedError = `Category with id ${categoryId} does not exist`;
+      const expectedError = 'error from collection';
       const collection = new CategoryCollectionStub();
+      collection.getCategory = () => { throw new Error(expectedError); };
       // act
-      const act = () => parseSingleCategory(categoryId, collection);
+      const act = () => parseSingleCategory(31, collection);
       // assert
       expect(act).to.throw(expectedError);
     });
@@ -54,6 +55,7 @@ describe('CategoryNodeMetadataConverter', () => {
       // act
       const nodes = parseSingleCategory(categoryId, collection);
       // assert
+      expectExists(nodes);
       expect(nodes).to.have.lengthOf(2);
       expectSameCategory(nodes[0], firstSubCategory);
       expectSameCategory(nodes[1], secondSubCategory);
@@ -67,6 +69,7 @@ describe('CategoryNodeMetadataConverter', () => {
       // act
       const nodes = parseSingleCategory(categoryId, collection);
       // assert
+      expectExists(nodes);
       expect(nodes).to.have.lengthOf(3);
       expectSameScript(nodes[0], scripts[0]);
       expectSameScript(nodes[1], scripts[1]);
@@ -84,6 +87,7 @@ describe('CategoryNodeMetadataConverter', () => {
     // act
     const nodes = parseAllCategories(collection);
     // assert
+    expectExists(nodes);
     expect(nodes).to.have.lengthOf(2);
     expectSameCategory(nodes[0], collection.actions[0]);
     expectSameCategory(nodes[1], collection.actions[1]);
@@ -92,9 +96,16 @@ describe('CategoryNodeMetadataConverter', () => {
 
 function isReversible(category: ICategory): boolean {
   if (category.scripts) {
-    return category.scripts.every((s) => s.canRevert());
+    if (category.scripts.some((s) => !s.canRevert())) {
+      return false;
+    }
   }
-  return category.subCategories.every((c) => isReversible(c));
+  if (category.subCategories) {
+    if (category.subCategories.some((c) => !isReversible(c))) {
+      return false;
+    }
+  }
+  return true;
 }
 
 function expectSameCategory(node: NodeMetadata, category: ICategory): void {
@@ -103,12 +114,19 @@ function expectSameCategory(node: NodeMetadata, category: ICategory): void {
   expect(node.docs).to.equal(category.docs, getErrorMessage('docs'));
   expect(node.text).to.equal(category.name, getErrorMessage('name'));
   expect(node.isReversible).to.equal(isReversible(category), getErrorMessage('isReversible'));
-  expect(node.children).to.have.lengthOf(category.scripts.length || category.subCategories.length, getErrorMessage('name'));
-  for (let i = 0; i < category.subCategories.length; i++) {
-    expectSameCategory(node.children[i], category.subCategories[i]);
+  expect(node.children).to.have.lengthOf(
+    category.scripts.length + category.subCategories.length,
+    getErrorMessage('total children'),
+  );
+  if (category.subCategories) {
+    for (let i = 0; i < category.subCategories.length; i++) {
+      expectSameCategory(node.children[i], category.subCategories[i]);
+    }
   }
-  for (let i = 0; i < category.scripts.length; i++) {
-    expectSameScript(node.children[i], category.scripts[i]);
+  if (category.scripts) {
+    for (let i = 0; i < category.scripts.length; i++) {
+      expectSameScript(node.children[i], category.scripts[i]);
+    }
   }
   function getErrorMessage(field: string) {
     return `Unexpected node field: ${field}.\n`
@@ -123,7 +141,7 @@ function expectSameScript(node: NodeMetadata, script: IScript): void {
   expect(node.docs).to.equal(script.docs, getErrorMessage('docs'));
   expect(node.text).to.equal(script.name, getErrorMessage('name'));
   expect(node.isReversible).to.equal(script.canRevert(), getErrorMessage('canRevert'));
-  expect(node.children).to.equal(undefined);
+  expect(node.children).to.have.lengthOf(0);
   function getErrorMessage(field: string) {
     return `Unexpected node field: ${field}.`
       + `\nActual node:\n${print(node)}\n`

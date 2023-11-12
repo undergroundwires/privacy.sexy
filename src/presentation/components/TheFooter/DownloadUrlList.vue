@@ -41,7 +41,9 @@ export default defineComponent({
       ...supportedOperativeSystems,
     ].sort((os) => (os === currentOs ? 0 : 1));
 
-    const hasCurrentOsDesktopVersion = supportedOperativeSystems.includes(currentOs);
+    const hasCurrentOsDesktopVersion = currentOs === undefined
+      ? false
+      : supportedOperativeSystems.includes(currentOs);
 
     return {
       supportedDesktops,

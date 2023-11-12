@@ -92,7 +92,11 @@ describe('CategoryCollectionState', () => {
       // act
       let actualScript: IScript | undefined;
       sut.filter.filterChanged.on((result) => {
-        [actualScript] = result.filter?.scriptMatches ?? [undefined];
+        result.visit({
+          onApply: (filter) => {
+            [actualScript] = filter.scriptMatches;
+          },
+        });
       });
       sut.filter.applyFilter(scriptNameFilter);
       // assert

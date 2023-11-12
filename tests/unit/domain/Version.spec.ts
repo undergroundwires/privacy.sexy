@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { Version } from '@/domain/Version';
+import { itEachAbsentStringValue } from '../shared/TestCases/AbsentTests';
 
 describe('Version', () => {
   describe('invalid versions', () => {
@@ -19,20 +20,15 @@ describe('Version', () => {
       }
     });
     describe('throws with empty string', () => {
-      // arrange
-      const expectedError = 'empty version';
-      const testCases = [
-        { name: 'empty', value: '' },
-        { name: 'undefined', value: undefined },
-      ];
-      for (const testCase of testCases) {
-        it(`given ${testCase.name}`, () => {
-          // act
-          const act = () => new Version(testCase.value);
-          //
-          expect(act).to.throw(expectedError);
-        });
-      }
+      itEachAbsentStringValue((absentValue) => {
+        // arrange
+        const expectedError = 'empty version';
+        const value = absentValue;
+        // act
+        const act = () => new Version(value);
+        //
+        expect(act).to.throw(expectedError);
+      }, { excludeNull: true, excludeUndefined: true });
     });
   });
   describe('valid versions', () => {

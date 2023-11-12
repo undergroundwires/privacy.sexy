@@ -9,8 +9,6 @@ export class FilterResult implements IFilterResult {
     public readonly query: string,
   ) {
     if (!query) { throw new Error('Query is empty or undefined'); }
-    if (!scriptMatches) { throw new Error('Script matches is undefined'); }
-    if (!categoryMatches) { throw new Error('Category matches is undefined'); }
   }
 
   public hasAnyMatches(): boolean {

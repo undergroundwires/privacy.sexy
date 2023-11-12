@@ -10,7 +10,7 @@
       </div>
     -->
     <div
-      v-if="categoryIds != null && categoryIds.length > 0"
+      v-if="categoryIds.length > 0"
       class="cards"
     >
       <CardListItem
@@ -50,8 +50,9 @@ export default defineComponent({
     const { currentState, onStateChange } = injectKey((keys) => keys.useCollectionState);
 
     const width = ref<number>(0);
-    const categoryIds = computed<ReadonlyArray<number>>(() => currentState
-      .value.collection.actions.map((category) => category.id));
+    const categoryIds = computed<readonly number[]>(
+      () => currentState.value.collection.actions.map((category) => category.id),
+    );
     const activeCategoryId = ref<number | undefined>(undefined);
 
     function onSelected(categoryId: number, isExpanded: boolean) {

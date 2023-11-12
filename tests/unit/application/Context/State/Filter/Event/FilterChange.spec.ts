@@ -1,30 +1,19 @@
 import { describe, it, expect } from 'vitest';
 import { FilterChange } from '@/application/Context/State/Filter/Event/FilterChange';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { FilterResultStub } from '@tests/unit/shared/Stubs/FilterResultStub';
 import { FilterActionType } from '@/application/Context/State/Filter/Event/FilterActionType';
 import { FilterChangeDetailsVisitorStub } from '@tests/unit/shared/Stubs/FilterChangeDetailsVisitorStub';
+import { ApplyFilterAction } from '@/application/Context/State/Filter/Event/IFilterChangeDetails';
 
 describe('FilterChange', () => {
   describe('forApply', () => {
-    describe('throws when filter is absent', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing filter';
-        const filterValue = absentValue;
-        // act
-        const act = () => FilterChange.forApply(filterValue);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
     it('sets filter result', () => {
       // arrange
       const expectedFilter = new FilterResultStub();
       // act
       const sut = FilterChange.forApply(expectedFilter);
       // assert
-      const actualFilter = sut.filter;
+      const actualFilter = (sut.action as ApplyFilterAction).filter;
       expect(actualFilter).to.equal(expectedFilter);
     });
     it('sets action as expected', () => {
@@ -33,7 +22,7 @@ describe('FilterChange', () => {
       // act
       const sut = FilterChange.forApply(new FilterResultStub());
       // assert
-      const actualAction = sut.actionType;
+      const actualAction = sut.action.type;
       expect(actualAction).to.equal(expectedAction);
     });
   });
@@ -44,7 +33,7 @@ describe('FilterChange', () => {
       // act
       const sut = FilterChange.forClear();
       // assert
-      const actualFilter = sut.filter;
+      const actualFilter = (sut.action as ApplyFilterAction).filter;
       expect(actualFilter).to.equal(expectedFilter);
     });
     it('sets action as expected', () => {
@@ -53,23 +42,11 @@ describe('FilterChange', () => {
       // act
       const sut = FilterChange.forClear();
       // assert
-      const actualAction = sut.actionType;
+      const actualAction = sut.action.type;
       expect(actualAction).to.equal(expectedAction);
     });
   });
   describe('visit', () => {
-    describe('throws when visitor is absent', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing visitor';
-        const visitorValue = absentValue;
-        const sut = FilterChange.forClear();
-        // act
-        const act = () => sut.visit(visitorValue);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
     describe('onClear', () => {
       itVisitsOnce(
         () => FilterChange.forClear(),
@@ -99,7 +76,7 @@ function itVisitsOnce(sutFactory: () => FilterChange) {
   it('visits', () => {
     // arrange
     const sut = sutFactory();
-    const expectedType = sut.actionType;
+    const expectedType = sut.action.type;
     const visitor = new FilterChangeDetailsVisitorStub();
     // act
     sut.visit(visitor);
@@ -109,7 +86,7 @@ function itVisitsOnce(sutFactory: () => FilterChange) {
   it('visits once', () => {
     // arrange
     const sut = sutFactory();
-    const expectedType = sut.actionType;
+    const expectedType = sut.action.type;
     const visitor = new FilterChangeDetailsVisitorStub();
     // act
     sut.visit(visitor);

@@ -7,6 +7,11 @@ export function createElectronLogger(logger: Partial<ElectronLog>): ILogger {
     throw new Error('missing logger');
   }
   return {
-    info: (...params) => logger.info(...params),
+    info: (...params) => {
+      if (!logger.info) {
+        throw new Error('missing "info" function');
+      }
+      logger.info(...params);
+    },
   };
 }

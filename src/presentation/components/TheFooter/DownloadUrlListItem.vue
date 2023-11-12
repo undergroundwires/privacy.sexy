@@ -39,7 +39,7 @@ export default defineComponent({
       return hasDesktopVersion(props.operatingSystem);
     });
 
-    const downloadUrl = computed<string | undefined>(() => {
+    const downloadUrl = computed<string>(() => {
       return info.getDownloadUrl(props.operatingSystem);
     });
 

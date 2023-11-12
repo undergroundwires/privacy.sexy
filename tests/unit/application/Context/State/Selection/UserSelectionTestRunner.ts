@@ -80,7 +80,7 @@ function expectSameScripts(actual: readonly SelectedScript[], expected: readonly
       `Scripts with different statuses:\n${
         scriptsWithDifferentStatus
           .map((s) => `[id: ${s.id}, actual status: ${s.revert}, `
-            + `expected status: ${expected.find((existing) => existing.id === s.id).revert}]`)
+            + `expected status: ${expected.find((existing) => existing.id === s.id)?.revert ?? 'unknown'}]`)
           .join(' , ')
       }`,
     );

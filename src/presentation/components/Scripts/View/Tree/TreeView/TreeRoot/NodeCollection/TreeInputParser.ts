@@ -5,9 +5,6 @@ import { TreeNodeManager } from '../../Node/TreeNodeManager';
 export function parseTreeInput(
   input: readonly TreeInputNodeData[],
 ): TreeNode[] {
-  if (!input) {
-    throw new Error('missing input');
-  }
   if (!Array.isArray(input)) {
     throw new Error('input data must be an array');
   }

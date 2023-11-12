@@ -68,14 +68,13 @@ describe('ScriptingDefinition', () => {
       itEachAbsentStringValue((absentValue) => {
         // arrange
         const expectedError = 'missing start code';
-        const undefinedValue = absentValue;
         // act
         const act = () => new ScriptingDefinitionBuilder()
-          .withStartCode(undefinedValue)
+          .withStartCode(absentValue)
           .build();
         // assert
         expect(act).to.throw(expectedError);
-      });
+      }, { excludeNull: true, excludeUndefined: true });
     });
   });
   describe('endCode', () => {
@@ -89,18 +88,17 @@ describe('ScriptingDefinition', () => {
       // assert
       expect(sut.endCode).to.equal(expected);
     });
-    describe('throws when undefined', () => {
+    describe('throws when absent', () => {
       itEachAbsentStringValue((absentValue) => {
         // arrange
         const expectedError = 'missing end code';
-        const undefinedValue = absentValue;
         // act
         const act = () => new ScriptingDefinitionBuilder()
-          .withEndCode(undefinedValue)
+          .withEndCode(absentValue)
           .build();
         // assert
         expect(act).to.throw(expectedError);
-      });
+      }, { excludeNull: true, excludeUndefined: true });
     });
   });
 });
@@ -108,21 +106,21 @@ describe('ScriptingDefinition', () => {
 class ScriptingDefinitionBuilder {
   private language = ScriptingLanguage.shellscript;
 
-  private startCode = 'REM start-code';
+  private startCode = `# [${ScriptingDefinitionBuilder.name}]: start-code`;
 
-  private endCode = 'REM end-code';
+  private endCode = `# [${ScriptingDefinitionBuilder.name}]: end-code`;
 
-  public withLanguage(language: ScriptingLanguage): ScriptingDefinitionBuilder {
+  public withLanguage(language: ScriptingLanguage): this {
     this.language = language;
     return this;
   }
 
-  public withStartCode(startCode: string): ScriptingDefinitionBuilder {
+  public withStartCode(startCode: string): this {
     this.startCode = startCode;
     return this;
   }
 
-  public withEndCode(endCode: string): ScriptingDefinitionBuilder {
+  public withEndCode(endCode: string): this {
     this.endCode = endCode;
     return this;
   }

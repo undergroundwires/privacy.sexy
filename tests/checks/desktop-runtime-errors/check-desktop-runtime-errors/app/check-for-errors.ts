@@ -1,4 +1,4 @@
-import { splitTextIntoLines, indentText } from '../utils/text';
+import { splitTextIntoLines, indentText, filterEmpty } from '../utils/text';
 import { log, die } from '../utils/log';
 import { readAppLogFile } from './app-logs';
 import { STDERR_IGNORE_PATTERNS } from './error-ignore-patterns';
@@ -33,7 +33,7 @@ async function gatherErrors(
   if (!projectDir) { throw new Error('missing project directory'); }
   const { logFileContent: mainLogs, logFilePath: mainLogFile } = await readAppLogFile(projectDir, 'main');
   const { logFileContent: rendererLogs, logFilePath: rendererLogFile } = await readAppLogFile(projectDir, 'renderer');
-  const allLogs = [mainLogs, rendererLogs, stderr].filter(Boolean).join('\n');
+  const allLogs = filterEmpty([mainLogs, rendererLogs, stderr]).join('\n');
   return [
     verifyStdErr(stderr),
     verifyApplicationLogsExist('main', mainLogs, mainLogFile),
@@ -43,7 +43,7 @@ async function gatherErrors(
     ),
     verifyWindowTitle(windowTitles),
     verifyErrorsInLogs(allLogs),
-  ].filter(Boolean);
+  ].filter((error): error is ExecutionError => Boolean(error));
 }
 
 interface ExecutionError {

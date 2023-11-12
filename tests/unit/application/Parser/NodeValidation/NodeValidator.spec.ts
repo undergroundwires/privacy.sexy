@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { NodeDataError } from '@/application/Parser/NodeValidation/NodeDataError';
 import { NodeValidator } from '@/application/Parser/NodeValidation/NodeValidator';
-import { expectDeepThrowsError } from '@tests/unit/shared/Assertions/ExpectDeepThrowsError';
+import { expectDeepThrowsError } from '@tests/shared/Assertions/ExpectDeepThrowsError';
 import { CategoryDataStub } from '@tests/unit/shared/Stubs/CategoryDataStub';
 import { NodeDataErrorContextStub } from '@tests/unit/shared/Stubs/NodeDataErrorContextStub';
 import { NodeData } from '@/application/Parser/NodeValidation/NodeData';

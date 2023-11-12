@@ -2,11 +2,12 @@ import { expect, describe, it } from 'vitest';
 import { NewlineCodeSegmentMerger } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CodeSegmentJoin/NewlineCodeSegmentMerger';
 import { CompiledCodeStub } from '@tests/unit/shared/Stubs/CompiledCodeStub';
 import { getAbsentStringTestCases, itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
 
 describe('NewlineCodeSegmentMerger', () => {
   describe('mergeCodeParts', () => {
     describe('throws given empty segments', () => {
-      itEachAbsentCollectionValue((absentValue) => {
+      itEachAbsentCollectionValue<CompiledCode>((absentValue) => {
         // arrange
         const expectedError = 'missing segments';
         const segments = absentValue;
@@ -15,7 +16,7 @@ describe('NewlineCodeSegmentMerger', () => {
         const act = () => merger.mergeCodeParts(segments);
         // assert
         expect(act).to.throw(expectedError);
-      });
+      }, { excludeUndefined: true, excludeNull: true });
     });
     describe('merges correctly', () => {
       const testCases: ReadonlyArray<{
@@ -38,29 +39,31 @@ describe('NewlineCodeSegmentMerger', () => {
             revertCode: 'revert1\nrevert2\nrevert3',
           },
         },
-        ...getAbsentStringTestCases().map((absentTestCase) => ({
-          description: `filter out ${absentTestCase.valueName} \`revertCode\``,
-          segments: [
-            new CompiledCodeStub().withCode('code1').withRevertCode('revert1'),
-            new CompiledCodeStub().withCode('code2').withRevertCode(absentTestCase.absentValue),
-            new CompiledCodeStub().withCode('code3').withRevertCode('revert3'),
-          ],
-          expected: {
-            code: 'code1\ncode2\ncode3',
-            revertCode: 'revert1\nrevert3',
-          },
-        })),
-        {
-          description: 'given only `code` in segments',
-          segments: [
-            new CompiledCodeStub().withCode('code1').withRevertCode(''),
-            new CompiledCodeStub().withCode('code2').withRevertCode(''),
-          ],
-          expected: {
-            code: 'code1\ncode2',
-            revertCode: '',
-          },
-        },
+        ...getAbsentStringTestCases({ excludeNull: true, excludeUndefined: true })
+          .map((absentTestCase) => ({
+            description: `filter out ${absentTestCase.valueName} \`revertCode\``,
+            segments: [
+              new CompiledCodeStub().withCode('code1').withRevertCode('revert1'),
+              new CompiledCodeStub().withCode('code2').withRevertCode(absentTestCase.absentValue),
+              new CompiledCodeStub().withCode('code3').withRevertCode('revert3'),
+            ],
+            expected: {
+              code: 'code1\ncode2\ncode3',
+              revertCode: 'revert1\nrevert3',
+            },
+          })),
+        ...getAbsentStringTestCases({ excludeNull: true })
+          .map((emptyRevertCode) => ({
+            description: `given only \`code\` in segments with "${emptyRevertCode.valueName}" \`revertCode\``,
+            segments: [
+              new CompiledCodeStub().withCode('code1').withRevertCode(emptyRevertCode.absentValue),
+              new CompiledCodeStub().withCode('code2').withRevertCode(emptyRevertCode.absentValue),
+            ],
+            expected: {
+              code: 'code1\ncode2',
+              revertCode: '',
+            },
+          })),
         {
           description: 'given mix of segments with only `code` or `revertCode`',
           segments: [

@@ -16,7 +16,9 @@ export abstract class CodeBuilder implements ICodeBuilder {
       return this;
     }
     const lines = code.match(/[^\r\n]+/g);
-    this.lines.push(...lines);
+    if (lines) {
+      this.lines.push(...lines);
+    }
     return this;
   }
 

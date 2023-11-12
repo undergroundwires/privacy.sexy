@@ -24,14 +24,16 @@ export class LocationOpsStub
       methodName: 'combinePaths',
       args: pathSegments,
     });
-    if (this.sequence.length > 0) {
-      return this.sequence.pop();
+    const nextInSequence = this.sequence.pop();
+    if (nextInSequence) {
+      return nextInSequence;
     }
     const key = LocationOpsStub.getScenarioKey(pathSegments);
-    if (!this.scenarios.has(key)) {
-      return pathSegments.join('/PATH-SEGMENT-SEPARATOR/');
+    const foundScenario = this.scenarios.get(key);
+    if (foundScenario) {
+      return foundScenario;
     }
-    return this.scenarios.get(key);
+    return pathSegments.join('/PATH-SEGMENT-SEPARATOR/');
   }
 
   private static getScenarioKey(paths: string[]): string {

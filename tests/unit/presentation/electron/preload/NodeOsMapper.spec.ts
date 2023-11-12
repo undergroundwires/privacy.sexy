@@ -7,10 +7,10 @@ describe('NodeOsMapper', () => {
     describe('determines desktop OS', () => {
       // arrange
       interface IDesktopTestCase {
-        nodePlatform: NodeJS.Platform;
-        expectedOs: OperatingSystem;
+        readonly nodePlatform: NodeJS.Platform;
+        readonly expectedOs: ReturnType<typeof convertPlatformToOs>;
       }
-      const testCases: readonly IDesktopTestCase[] = [ // https://nodejs.org/api/process.html#process_process_platform
+      const testScenarios: readonly IDesktopTestCase[] = [ // https://nodejs.org/api/process.html#process_process_platform
         {
           nodePlatform: 'aix',
           expectedOs: undefined,
@@ -40,15 +40,18 @@ describe('NodeOsMapper', () => {
           expectedOs: OperatingSystem.Windows,
         },
       ];
-      testCases.forEach(({ nodePlatform, expectedOs }) => {
+      testScenarios.forEach(({ nodePlatform, expectedOs }) => {
         it(nodePlatform, () => {
           // act
           const actualOs = convertPlatformToOs(nodePlatform);
           // assert
           expect(actualOs).to.equal(expectedOs, printMessage());
+          function printResult(os: ReturnType<typeof convertPlatformToOs>): string {
+            return os === undefined ? 'undefined' : OperatingSystem[os];
+          }
           function printMessage(): string {
-            return `Expected: "${OperatingSystem[expectedOs]}"\n`
-              + `Actual: "${OperatingSystem[actualOs]}"\n`
+            return `Expected: "${printResult(expectedOs)}"\n`
+              + `Actual: "${printResult(actualOs)}"\n`
               + `Platform: "${nodePlatform}"`;
           }
         });

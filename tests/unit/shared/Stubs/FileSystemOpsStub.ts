@@ -12,12 +12,12 @@ export class FileSystemOpsStub
     return Promise.resolve();
   }
 
-  public createDirectory(directoryPath: string, isRecursive?: boolean): Promise<string> {
+  public createDirectory(directoryPath: string, isRecursive?: boolean): Promise<void> {
     this.registerMethodCall({
       methodName: 'createDirectory',
       args: [directoryPath, isRecursive],
     });
-    return Promise.resolve(directoryPath);
+    return Promise.resolve();
   }
 
   public writeToFile(filePath: string, data: string): Promise<void> {

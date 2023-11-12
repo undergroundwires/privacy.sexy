@@ -4,8 +4,8 @@ import { ILogger } from './ILogger';
 export class WindowInjectedLogger implements ILogger {
   private readonly logger: ILogger;
 
-  constructor(windowVariables: WindowVariables = window) {
-    if (!windowVariables) {
+  constructor(windowVariables: WindowVariables | undefined | null = window) {
+    if (!windowVariables) { // do not trust strict null checks for global objects
       throw new Error('missing window');
     }
     if (!windowVariables.log) {

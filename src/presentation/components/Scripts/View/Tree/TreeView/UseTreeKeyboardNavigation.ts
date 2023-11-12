@@ -71,8 +71,12 @@ TreeNavigationKeyCodes,
 };
 
 function focusPreviousVisibleNode(context: TreeNavigationContext): void {
+  const focusedNode = context.focus.currentSingleFocusedNode;
+  if (!focusedNode) {
+    return;
+  }
   const previousVisibleNode = findPreviousVisibleNode(
-    context.focus.currentSingleFocusedNode,
+    focusedNode,
     context.nodes,
   );
   if (!previousVisibleNode) {
@@ -83,6 +87,9 @@ function focusPreviousVisibleNode(context: TreeNavigationContext): void {
 
 function focusNextVisibleNode(context: TreeNavigationContext): void {
   const focusedNode = context.focus.currentSingleFocusedNode;
+  if (!focusedNode) {
+    return;
+  }
   const nextVisibleNode = findNextVisibleNode(focusedNode, context.nodes);
   if (!nextVisibleNode) {
     return;
@@ -92,6 +99,9 @@ function focusNextVisibleNode(context: TreeNavigationContext): void {
 
 function toggleTreeNodeCheckStatus(context: TreeNavigationContext): void {
   const focusedNode = context.focus.currentSingleFocusedNode;
+  if (!focusedNode) {
+    return;
+  }
   const nodeState = focusedNode.state;
   let transaction = nodeState.beginTransaction();
   if (nodeState.current.checkState === TreeNodeCheckState.Checked) {
@@ -104,19 +114,28 @@ function toggleTreeNodeCheckStatus(context: TreeNavigationContext): void {
 
 function collapseNodeOrFocusParent(context: TreeNavigationContext): void {
   const focusedNode = context.focus.currentSingleFocusedNode;
+  if (!focusedNode) {
+    return;
+  }
   const nodeState = focusedNode.state;
-  const parentNode = focusedNode.hierarchy.parent;
   if (focusedNode.hierarchy.isBranchNode && nodeState.current.isExpanded) {
     nodeState.commitTransaction(
       nodeState.beginTransaction().withExpansionState(false),
     );
   } else {
+    const parentNode = focusedNode.hierarchy.parent;
+    if (!parentNode) {
+      return;
+    }
     context.focus.setSingleFocus(parentNode);
   }
 }
 
 function expandNodeOrFocusFirstChild(context: TreeNavigationContext): void {
   const focusedNode = context.focus.currentSingleFocusedNode;
+  if (!focusedNode) {
+    return;
+  }
   const nodeState = focusedNode.state;
   if (focusedNode.hierarchy.isBranchNode && !nodeState.current.isExpanded) {
     nodeState.commitTransaction(
@@ -151,7 +170,10 @@ function findNextNode(node: TreeNode, nodes: QueryableNodes): TreeNode | undefin
   return nodes.flattenedNodes[index + 1] || undefined;
 }
 
-function findPreviousVisibleNode(node: TreeNode, nodes: QueryableNodes): TreeNode | undefined {
+function findPreviousVisibleNode(
+  node: TreeNode,
+  nodes: QueryableNodes,
+): TreeNode | undefined {
   const previousNode = findPreviousNode(node, nodes);
   if (!previousNode) {
     return node.hierarchy.parent;

@@ -9,7 +9,7 @@ describe('ConsoleLogger', () => {
     itEachAbsentObjectValue((absentValue) => {
       // arrange
       const expectedError = 'missing console';
-      const console = absentValue;
+      const console = absentValue as never;
       // act
       const act = () => new ConsoleLogger(console);
       // assert
@@ -32,10 +32,25 @@ describe('ConsoleLogger', () => {
       expect(consoleMock.callHistory[0].args).to.deep.equal(expectedParams);
     });
   });
+  describe('throws if log function is missing', () => {
+    itEachLoggingMethod((functionName, testParameters) => {
+      // arrange
+      const expectedError = `missing "${functionName}" function`;
+      const consoleMock = {} as Partial<Console>;
+      consoleMock[functionName] = undefined;
+      const logger = new ConsoleLogger(consoleMock);
+
+      // act
+      const act = () => logger[functionName](...testParameters);
+
+      // assert
+      expect(act).to.throw(expectedError);
+    });
+  });
 });
 
 class MockConsole
-  extends StubWithObservableMethodCalls<Partial<Console>>
+  extends StubWithObservableMethodCalls<Console>
   implements Partial<Console> {
   public info(...args: unknown[]) {
     this.registerMethodCall({

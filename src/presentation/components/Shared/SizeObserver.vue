@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import {
-  defineComponent, shallowRef, onMounted, onBeforeUnmount,
+  defineComponent, shallowRef, onMounted, onBeforeUnmount, watch,
 } from 'vue';
 import { useResizeObserverPolyfill } from '@/presentation/components/Shared/Hooks/UseResizeObserverPolyfill';
 
@@ -25,61 +25,63 @@ export default defineComponent({
 
     let width = 0;
     let height = 0;
-    let observer: ResizeObserver;
+    let observer: ResizeObserver | undefined;
 
     onMounted(() => {
-      width = containerElement.value.offsetWidth;
-      height = containerElement.value.offsetHeight;
-
-      resizeObserverReady.then(() => {
-        observer = new ResizeObserver(updateSize);
-        observer.observe(containerElement.value);
-      });
-
-      fireChangeEvents();
+      watch(() => containerElement.value, async (element) => {
+        if (!element) {
+          disposeObserver();
+          return;
+        }
+        resizeObserverReady.then(() => {
+          observer = new ResizeObserver(updateSize);
+          observer.observe(element);
+        });
+        updateSize();
+      }, { immediate: true });
     });
 
     onBeforeUnmount(() => {
-      observer?.disconnect();
+      disposeObserver();
     });
 
     function updateSize() {
-      let sizeChanged = false;
-      if (isWidthChanged()) {
-        updateWidth(containerElement.value.offsetWidth);
-        sizeChanged = true;
-      }
-      if (isHeightChanged()) {
-        updateHeight(containerElement.value.offsetHeight);
-        sizeChanged = true;
-      }
-      if (sizeChanged) {
+      const changes = [
+        updateWidth(),
+        updateHeight(),
+      ];
+      if (changes.some((c) => c.isChanged)) {
         emit('sizeChanged');
       }
     }
 
-    function updateWidth(newWidth: number) {
+    function updateWidth(): {
+      readonly isChanged: boolean;
+    } {
+      const newWidth = containerElement.value?.offsetWidth ?? 0;
+      if (newWidth === width) {
+        return { isChanged: false };
+      }
       width = newWidth;
       emit('widthChanged', newWidth);
+      return { isChanged: true };
     }
 
-    function updateHeight(newHeight: number) {
+    function updateHeight(): {
+      readonly isChanged: boolean;
+    } {
+      const newHeight = containerElement.value?.offsetHeight ?? 0;
+      if (newHeight === height) {
+        return { isChanged: false };
+      }
       height = newHeight;
       emit('heightChanged', newHeight);
+      return { isChanged: true };
     }
 
-    function fireChangeEvents() {
-      updateWidth(containerElement.value.offsetWidth);
-      updateHeight(containerElement.value.offsetHeight);
-      emit('sizeChanged');
-    }
-
-    function isWidthChanged(): boolean {
-      return width !== containerElement.value.offsetWidth;
-    }
-
-    function isHeightChanged(): boolean {
-      return height !== containerElement.value.offsetHeight;
+    function disposeObserver() {
+      observer?.disconnect();
+      observer = undefined;
     }
 
     return {

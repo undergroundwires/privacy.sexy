@@ -36,7 +36,10 @@ async function mountDmg(
     die(`Failed to mount DMG file at ${dmgFile}.\n${error}`);
   }
   const mountPathMatch = hdiutilOutput.match(/\/Volumes\/[^\n]+/);
-  const mountPath = mountPathMatch ? mountPathMatch[0] : null;
+  if (!mountPathMatch || mountPathMatch.length === 0) {
+    die(`Could not find mount path from \`hdiutil\` output:\n${hdiutilOutput}`);
+  }
+  const mountPath = mountPathMatch[0];
   return {
     mountPath,
   };
@@ -52,7 +55,10 @@ async function findMacAppExecutablePath(
     return die(`Failed to find executable path at mount path ${mountPath}\n${error}`);
   }
   const appFolder = findOutput.trim();
-  const appName = appFolder.split('/').pop().replace('.app', '');
+  const appName = appFolder.split('/').pop()?.replace('.app', '');
+  if (!appName) {
+    die(`Could not extract app path from \`find\` output: ${findOutput}`);
+  }
   const appPath = `${appFolder}/Contents/MacOS/${appName}`;
   if (await exists(appPath)) {
     log(`Application is located at ${appPath}`);

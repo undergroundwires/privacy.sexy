@@ -19,7 +19,7 @@ export abstract class StubWithObservableMethodCalls<T> {
 
 type MethodCall<T> = {
   [K in FunctionKeys<T>]: {
-    methodName: K;
-    args: T[K] extends (...args: infer A) => unknown ? A : never;
+    readonly methodName: K;
+    readonly args: T[K] extends (...args: infer A) => unknown ? A : never;
   }
 }[FunctionKeys<T>];

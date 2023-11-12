@@ -5,6 +5,7 @@ import { FunctionParameter } from '@/application/Parser/Script/Compiler/Function
 import { IExpression } from '../Expression/IExpression';
 import { ExpressionPosition } from '../Expression/ExpressionPosition';
 import { ExpressionRegexBuilder } from '../Parser/Regex/ExpressionRegexBuilder';
+import { createPositionFromRegexFullMatch } from '../Expression/ExpressionPositionFactory';
 
 export class WithParser implements IExpressionParser {
   public findExpressions(code: string): IExpression[] {
@@ -42,29 +43,23 @@ function parseAllWithExpressions(
     expressions.push({
       type: WithStatementType.Start,
       parameterName: match[1],
-      position: createPosition(match),
+      position: createPositionFromRegexFullMatch(match),
     });
   }
   for (const match of input.matchAll(WithStatementEndRegEx)) {
     expressions.push({
       type: WithStatementType.End,
-      position: createPosition(match),
+      position: createPositionFromRegexFullMatch(match),
     });
   }
   for (const match of input.matchAll(ContextVariableWithPipelineRegEx)) {
     expressions.push({
       type: WithStatementType.ContextVariable,
-      position: createPosition(match),
+      position: createPositionFromRegexFullMatch(match),
       pipeline: match[1],
     });
   }
   return expressions;
-}
-
-function createPosition(match: RegExpMatchArray): ExpressionPosition {
-  const startPos = match.index;
-  const endPos = startPos + match[0].length;
-  return new ExpressionPosition(startPos, endPos);
 }
 
 class WithStatementBuilder {
@@ -125,7 +120,7 @@ class WithStatementBuilder {
 
   private substituteContextVariables(
     scope: string,
-    substituter: (pipeline: string) => string,
+    substituter: (pipeline?: string) => string,
   ): string {
     if (!this.contextVariables.length) {
       return scope;
@@ -157,7 +152,7 @@ function parseWithExpressions(input: string): IExpression[] {
     .sort((a, b) => b.position.start - a.position.start);
   const expressions = new Array<IExpression>();
   const builders = new Array<WithStatementBuilder>();
-  const throwWithContext = (message: string) => {
+  const throwWithContext = (message: string): never => {
     throw new Error(`${message}\n${buildErrorContext(input, allStatements)}}`);
   };
   while (sortedStatements.length > 0) {
@@ -178,12 +173,15 @@ function parseWithExpressions(input: string): IExpression[] {
         }
         builders[builders.length - 1].addContextVariable(statement.position, statement.pipeline);
         break;
-      case WithStatementType.End:
-        if (builders.length === 0) {
+      case WithStatementType.End: {
+        const builder = builders.pop();
+        if (!builder) {
           throwWithContext('Redundant `end` statement, missing `with`?');
+          break;
         }
-        expressions.push(builders.pop().buildExpression(statement.position, input));
+        expressions.push(builder.buildExpression(statement.position, input));
         break;
+      }
     }
   }
   if (builders.length > 0) {

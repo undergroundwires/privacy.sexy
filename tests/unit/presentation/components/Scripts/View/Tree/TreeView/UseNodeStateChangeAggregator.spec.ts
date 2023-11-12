@@ -6,7 +6,6 @@ import { useCurrentTreeNodes } from '@/presentation/components/Scripts/View/Tree
 import { NodeStateChangeEventArgs, NodeStateChangeEventCallback, useNodeStateChangeAggregator } from '@/presentation/components/Scripts/View/Tree/TreeView/UseNodeStateChangeAggregator';
 import { TreeRootStub } from '@tests/unit/shared/Stubs/TreeRootStub';
 import { UseCurrentTreeNodesStub } from '@tests/unit/shared/Stubs/UseCurrentTreeNodesStub';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { UseAutoUnsubscribedEventsStub } from '@tests/unit/shared/Stubs/UseAutoUnsubscribedEventsStub';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { TreeNodeStub } from '@tests/unit/shared/Stubs/TreeNodeStub';
@@ -34,18 +33,6 @@ describe('useNodeStateChangeAggregator', () => {
     expect(actualTreeRootRef).to.equal(expectedTreeRootRef);
   });
   describe('onNodeStateChange', () => {
-    describe('throws if callback is absent', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing callback';
-        const { returnObject } = new UseNodeStateChangeAggregatorBuilder()
-          .mountWrapperComponent();
-        // act
-        const act = () => returnObject.onNodeStateChange(absentValue);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
     describe('notifies current node states', () => {
       const scenarios: ReadonlyArray<{
         readonly description: string;
@@ -325,7 +312,7 @@ class UseNodeStateChangeAggregatorBuilder {
   }
 
   public mountWrapperComponent() {
-    let returnObject: ReturnType<typeof useNodeStateChangeAggregator>;
+    let returnObject: ReturnType<typeof useNodeStateChangeAggregator> | undefined;
     const { treeRootRef, currentTreeNodes } = this;
     const wrapper = shallowMount(
       defineComponent({
@@ -343,6 +330,11 @@ class UseNodeStateChangeAggregatorBuilder {
         },
       },
     );
+
+    if (!returnObject) {
+      throw new Error('missing hook result');
+    }
+
     return {
       wrapper,
       returnObject,

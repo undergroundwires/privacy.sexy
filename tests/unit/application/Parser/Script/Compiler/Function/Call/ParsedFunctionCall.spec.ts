@@ -2,24 +2,11 @@ import { describe, it, expect } from 'vitest';
 import { ParsedFunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/ParsedFunctionCall';
 import { IReadOnlyFunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/Function/Call/Argument/IFunctionCallArgumentCollection';
 import { FunctionCallArgumentCollectionStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentCollectionStub';
-import { itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('ParsedFunctionCall', () => {
   describe('ctor', () => {
     describe('args', () => {
-      describe('throws when args is missing', () => {
-        itEachAbsentObjectValue((absentValue) => {
-          // arrange
-          const expectedError = 'missing args';
-          const args = absentValue;
-          // act
-          const act = () => new FunctionCallBuilder()
-            .withArgs(args)
-            .build();
-          // assert
-          expect(act).to.throw(expectedError);
-        });
-      });
       it('sets args as expected', () => {
         // arrange
         const expected = new FunctionCallArgumentCollectionStub()
@@ -44,7 +31,7 @@ describe('ParsedFunctionCall', () => {
             .build();
           // assert
           expect(act).to.throw(expectedError);
-        });
+        }, { excludeNull: true, excludeUndefined: true });
       });
       it('sets function name as expected', () => {
         // arrange

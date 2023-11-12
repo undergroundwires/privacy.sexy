@@ -1,26 +1,35 @@
 import { FilterActionType } from '@/application/Context/State/Filter/Event/FilterActionType';
-import { IFilterChangeDetails, IFilterChangeDetailsVisitor } from '@/application/Context/State/Filter/Event/IFilterChangeDetails';
+import { FilterAction, IFilterChangeDetails, IFilterChangeDetailsVisitor } from '@/application/Context/State/Filter/Event/IFilterChangeDetails';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
 
 export class FilterChangeDetailsStub implements IFilterChangeDetails {
   public static forApply(filter: IFilterResult) {
-    return new FilterChangeDetailsStub(FilterActionType.Apply, filter);
+    return new FilterChangeDetailsStub({
+      type: FilterActionType.Apply,
+      filter,
+    });
   }
 
   public static forClear() {
-    return new FilterChangeDetailsStub(FilterActionType.Clear);
+    return new FilterChangeDetailsStub({
+      type: FilterActionType.Clear,
+    });
   }
 
   private constructor(
-    public actionType: FilterActionType,
-    public filter?: IFilterResult,
+    public readonly action: FilterAction,
   ) { /* Private constructor to enforce factory methods */ }
 
   visit(visitor: IFilterChangeDetailsVisitor): void {
-    if (this.filter) {
-      visitor.onApply(this.filter);
-    } else {
-      visitor.onClear();
+    if (this.action.type === FilterActionType.Apply) {
+      if (visitor.onApply) {
+        visitor.onApply(this.action.filter);
+      }
+    }
+    if (this.action.type === FilterActionType.Clear) {
+      if (visitor.onClear) {
+        visitor.onClear();
+      }
     }
   }
 }

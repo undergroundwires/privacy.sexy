@@ -23,7 +23,7 @@ function checkAllowedType(value: unknown) {
   if (Array.isArray(value)) {
     return value.every(checkAllowedType);
   }
-  if (type === 'object' && value !== null) {
+  if (type === 'object' && value !== null && value !== undefined) {
     return (
       // Every key should be a string
       Object.keys(value).every((key) => typeof key === 'string')

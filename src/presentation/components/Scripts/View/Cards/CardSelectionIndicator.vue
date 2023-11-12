@@ -34,7 +34,7 @@ export default defineComponent({
     const currentCollection = computed<ICategoryCollection>(() => currentState.value.collection);
 
     const currentCategory = computed<ICategory>(
-      () => currentCollection.value.findCategory(props.categoryId),
+      () => currentCollection.value.getCategory(props.categoryId),
     );
 
     const isAnyChildSelected = computed<boolean>(

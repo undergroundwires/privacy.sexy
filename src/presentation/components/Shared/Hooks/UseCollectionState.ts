@@ -7,13 +7,6 @@ export function useCollectionState(
   context: IApplicationContext,
   events: IEventSubscriptionCollection,
 ) {
-  if (!context) {
-    throw new Error('missing context');
-  }
-  if (!events) {
-    throw new Error('missing events');
-  }
-
   const currentState = shallowRef<IReadOnlyCategoryCollectionState>(context.state);
   events.register([
     context.contextChanged.on((event) => {
@@ -28,9 +21,6 @@ export function useCollectionState(
     handler: NewStateEventHandler,
     settings: Partial<IStateCallbackSettings> = defaultSettings,
   ) {
-    if (!handler) {
-      throw new Error('missing state handler');
-    }
     events.register([
       context.contextChanged.on((event) => {
         handler(event.newState, event.oldState);
@@ -46,16 +36,10 @@ export function useCollectionState(
   }
 
   function modifyCurrentState(mutator: StateModifier) {
-    if (!mutator) {
-      throw new Error('missing state mutator');
-    }
     mutator(context.state);
   }
 
   function modifyCurrentContext(mutator: ContextModifier) {
-    if (!mutator) {
-      throw new Error('missing context mutator');
-    }
     mutator(context);
   }
 

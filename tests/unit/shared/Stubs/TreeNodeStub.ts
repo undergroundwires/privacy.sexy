@@ -24,7 +24,7 @@ export class TreeNodeStub implements TreeNode {
 
   public metadata?: object = new NodeMetadataStub();
 
-  public withMetadata(metadata: object): this {
+  public withMetadata(metadata: object | undefined): this {
     this.metadata = metadata;
     return this;
   }

@@ -9,7 +9,7 @@ import LinuxData from '@/application/collections/linux.yaml';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { CollectionDataStub } from '@tests/unit/shared/Stubs/CollectionDataStub';
-import { getAbsentCollectionTestCases, getAbsentObjectTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
+import { getAbsentCollectionTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 import { AppMetadataStub } from '@tests/unit/shared/Stubs/AppMetadataStub';
 import { EnvironmentVariablesFactory } from '@/infrastructure/EnvironmentVariables/EnvironmentVariablesFactory';
 import { CategoryCollectionParserStub } from '@tests/unit/shared/Stubs/CategoryCollectionParserStub';
@@ -65,8 +65,8 @@ describe('ApplicationParser', () => {
         sut.parseApplication();
         // assert
         expect(collectionParserStub.arguments).to.have.length.above(0);
-        const actualyUsedInfos = collectionParserStub.arguments.map((arg) => arg.info);
-        expect(actualyUsedInfos.every((info) => info === expectedInformation));
+        const actuallyUsedInfos = collectionParserStub.arguments.map((arg) => arg.info);
+        expect(actuallyUsedInfos.every((info) => info === expectedInformation));
       });
     });
     describe('metadata', () => {
@@ -152,15 +152,15 @@ describe('ApplicationParser', () => {
       describe('throws when data is invalid', () => {
         // arrange
         const testCases = [
-          ...getAbsentCollectionTestCases<CollectionData>().map((testCase) => ({
+          ...getAbsentCollectionTestCases<CollectionData>(
+            {
+              excludeUndefined: true,
+              excludeNull: true,
+            },
+          ).map((testCase) => ({
             name: `given absent collection "${testCase.valueName}"`,
             value: testCase.absentValue,
             expectedError: 'missing collections',
-          })).filter((test) => test.value !== undefined /* the default value is set */),
-          ...getAbsentObjectTestCases().map((testCase) => ({
-            name: `given absent item "${testCase.valueName}"`,
-            value: [testCase.absentValue],
-            expectedError: 'missing collection provided',
           })),
         ];
         for (const testCase of testCases) {
@@ -185,9 +185,9 @@ class ApplicationParserBuilder {
   private projectInformationParser
   : typeof parseProjectInformation = new ProjectInformationParserStub().getStub();
 
-  private metadata: IAppMetadata = new AppMetadataStub();
+  private metadata: IAppMetadata | undefined = new AppMetadataStub();
 
-  private collectionsData: CollectionData[] = [new CollectionDataStub()];
+  private collectionsData: CollectionData[] | undefined = [new CollectionDataStub()];
 
   public withCategoryCollectionParser(
     categoryCollectionParser: CategoryCollectionParserType,
@@ -204,13 +204,13 @@ class ApplicationParserBuilder {
   }
 
   public withMetadata(
-    metadata: IAppMetadata,
+    metadata: IAppMetadata | undefined,
   ): this {
     this.metadata = metadata;
     return this;
   }
 
-  public withCollectionsData(collectionsData: CollectionData[]): this {
+  public withCollectionsData(collectionsData: CollectionData[] | undefined): this {
     this.collectionsData = collectionsData;
     return this;
   }

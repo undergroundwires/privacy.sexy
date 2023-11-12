@@ -43,7 +43,7 @@ export class UserSelection implements IUserSelection {
   }
 
   public removeAllInCategory(categoryId: number): void {
-    const category = this.collection.findCategory(categoryId);
+    const category = this.collection.getCategory(categoryId);
     const scriptsToRemove = category.getAllScriptsRecursively()
       .filter((script) => this.scripts.exists(script.id));
     if (!scriptsToRemove.length) {
@@ -57,7 +57,7 @@ export class UserSelection implements IUserSelection {
 
   public addOrUpdateAllInCategory(categoryId: number, revert = false): void {
     const scriptsToAddOrUpdate = this.collection
-      .findCategory(categoryId)
+      .getCategory(categoryId)
       .getAllScriptsRecursively()
       .filter(
         (script) => !this.scripts.exists(script.id)
@@ -74,17 +74,14 @@ export class UserSelection implements IUserSelection {
   }
 
   public addSelectedScript(scriptId: string, revert: boolean): void {
-    const script = this.collection.findScript(scriptId);
-    if (!script) {
-      throw new Error(`Cannot add (id: ${scriptId}) as it is unknown`);
-    }
+    const script = this.collection.getScript(scriptId);
     const selectedScript = new SelectedScript(script, revert);
     this.scripts.addItem(selectedScript);
     this.changed.notify(this.scripts.getItems());
   }
 
   public addOrUpdateSelectedScript(scriptId: string, revert: boolean): void {
-    const script = this.collection.findScript(scriptId);
+    const script = this.collection.getScript(scriptId);
     const selectedScript = new SelectedScript(script, revert);
     this.scripts.addOrUpdateItem(selectedScript);
     this.changed.notify(this.scripts.getItems());
@@ -130,7 +127,7 @@ export class UserSelection implements IUserSelection {
   }
 
   public selectOnly(scripts: readonly IScript[]): void {
-    if (!scripts || scripts.length === 0) {
+    if (!scripts.length) {
       throw new Error('Scripts are empty. Use deselectAll() if you want to deselect everything');
     }
     let totalChanged = 0;

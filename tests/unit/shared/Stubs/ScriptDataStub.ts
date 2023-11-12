@@ -1,78 +1,81 @@
-import type { FunctionCallData, ScriptData } from '@/application/collections/';
+import type {
+  FunctionCallData, CallScriptData, CodeScriptData,
+} from '@/application/collections/';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { FunctionCallDataStub } from '@tests/unit/shared/Stubs/FunctionCallDataStub';
 
-export class ScriptDataStub implements ScriptData {
-  public static createWithCode(): ScriptDataStub {
-    return new ScriptDataStub()
-      .withCode('stub-code')
-      .withRevertCode('stub-revert-code');
-  }
+export function createScriptDataWithCode(): ScriptDataStub & CodeScriptData {
+  return new ScriptDataStub()
+    .withCode('stub-code')
+    .withRevertCode('stub-revert-code');
+}
 
-  public static createWithCall(call?: FunctionCallData): ScriptDataStub {
-    let instance = new ScriptDataStub();
-    if (call) {
-      instance = instance.withCall(call);
-    } else {
-      instance = instance.withMockCall();
-    }
-    return instance;
+export function createScriptDataWithCall(
+  call?: FunctionCallData,
+): ScriptDataStub & CallScriptData {
+  let instance = new ScriptDataStub();
+  if (call) {
+    instance = instance.withCall(call);
+  } else {
+    instance = instance.withMockCall();
   }
+  return instance;
+}
 
-  public static createWithoutCallOrCodes(): ScriptDataStub {
-    return new ScriptDataStub();
-  }
+export function createScriptDataWithoutCallOrCodes(): ScriptDataStub {
+  return new ScriptDataStub();
+}
 
+class ScriptDataStub implements CallScriptData, CodeScriptData {
   public name = 'valid-name';
 
-  public code = undefined;
+  public code: string;
 
-  public revertCode = undefined;
+  public revertCode: string | undefined = undefined;
 
-  public call = undefined;
+  public call: FunctionCallData | undefined = undefined;
 
-  public recommend = RecommendationLevel[RecommendationLevel.Standard].toLowerCase();
+  public recommend:
+  string | undefined = RecommendationLevel[RecommendationLevel.Standard].toLowerCase();
 
   public docs?: readonly string[] = ['hello.com'];
 
-  private constructor() { /* use static methods for constructing */ }
-
-  public withName(name: string): ScriptDataStub {
+  public withName(name: string): this {
     this.name = name;
     return this;
   }
 
-  public withDocs(docs: readonly string[]): ScriptDataStub {
+  public withDocs(docs: readonly string[]): this {
     this.docs = docs;
     return this;
   }
 
-  public withCode(code: string): ScriptDataStub {
+  public withCode(code: string): this {
     this.code = code;
     return this;
   }
 
-  public withRevertCode(revertCode: string): ScriptDataStub {
+  public withRevertCode(revertCode: string | undefined): this {
     this.revertCode = revertCode;
     return this;
   }
 
-  public withMockCall(): ScriptDataStub {
+  public withMockCall(): this {
     this.call = new FunctionCallDataStub();
     return this;
   }
 
-  public withCall(call: FunctionCallData): ScriptDataStub {
+  public withCall(call: FunctionCallData | undefined): this {
     this.call = call;
     return this;
   }
 
-  public withRecommend(recommend: string): ScriptDataStub {
+  public withRecommend(recommend: string | undefined): this {
     this.recommend = recommend;
     return this;
   }
 
-  public withRecommendationLevel(level: RecommendationLevel): ScriptDataStub {
+  public withRecommendationLevel(level: RecommendationLevel): this {
     this.recommend = RecommendationLevel[level].toLowerCase();
     return this;
   }

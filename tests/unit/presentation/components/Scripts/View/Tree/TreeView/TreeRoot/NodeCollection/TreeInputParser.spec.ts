@@ -3,7 +3,6 @@ import { parseTreeInput } from '@/presentation/components/Scripts/View/Tree/Tree
 import { TreeInputNodeData } from '@/presentation/components/Scripts/View/Tree/TreeView/Bindings/TreeInputNodeData';
 import { TreeNodeManager } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNodeManager';
 import { TreeInputNodeDataStub } from '@tests/unit/shared/Stubs/TreeInputNodeDataStub';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('parseTreeInput', () => {
   it('throws if input data is not an array', () => {
@@ -14,18 +13,6 @@ describe('parseTreeInput', () => {
     const act = () => parseTreeInput(invalidInput);
     // assert
     expect(act).to.throw(expectedError);
-  });
-
-  describe('throws if input data is absent', () => {
-    itEachAbsentObjectValue((absentValue) => {
-      // arrange
-      const expectedError = 'missing input';
-      const invalidInput = absentValue;
-      // act
-      const act = () => parseTreeInput(invalidInput);
-      // assert
-      expect(act).to.throw(expectedError);
-    });
   });
 
   it('returns an empty array if given an empty array', () => {

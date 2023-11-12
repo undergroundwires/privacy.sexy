@@ -71,7 +71,7 @@ export class UseCollectionStateStub
     if (scenario.immediateOnly) {
       handlers = handlers.filter((args) => args[1]?.immediate === true);
     }
-    const callbacks = handlers.map((args) => args[0] as NewStateEventHandler);
+    const callbacks = handlers.map((args) => args[0]);
     if (!callbacks.length) {
       throw new Error('No handler callbacks are registered to handle state change');
     }

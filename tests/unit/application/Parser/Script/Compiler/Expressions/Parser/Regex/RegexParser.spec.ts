@@ -4,6 +4,7 @@ import { IPrimitiveExpression, RegexParser } from '@/application/Parser/Script/C
 import { ExpressionPosition } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionPosition';
 import { FunctionParameterStub } from '@tests/unit/shared/Stubs/FunctionParameterStub';
 import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 describe('RegexParser', () => {
   describe('findExpressions', () => {
@@ -16,7 +17,7 @@ describe('RegexParser', () => {
         const act = () => sut.findExpressions(absentValue);
         // assert
         expect(act).to.throw(expectedError);
-      });
+      }, { excludeNull: true, excludeUndefined: true });
     });
     it('throws when position is invalid', () => {
       // arrange
@@ -30,17 +31,19 @@ describe('RegexParser', () => {
       ];
       const sut = new RegexParserConcrete(regexMatchingEmpty);
       // act
-      let error: string;
+      let errorMessage: string | undefined;
       try {
         sut.findExpressions(code);
       } catch (err) {
-        error = err.message;
+        errorMessage = err.message;
       }
       // assert
+      expectExists(errorMessage);
+      const error = errorMessage; // workaround for ts(18048): possibly 'undefined'
       expect(
         expectedErrorParts.every((part) => error.includes(part)),
         `Expected parts: ${expectedErrorParts.join(', ')}`
-          + `Actual error: ${error}`,
+          + `Actual error: ${errorMessage}`,
       );
     });
     describe('matches regex as expected', () => {
@@ -139,7 +142,7 @@ function mockBuilder(): (match: RegExpMatchArray) => IPrimitiveExpression {
   });
 }
 function getEvaluatorStub(): ExpressionEvaluator {
-  return () => undefined;
+  return () => `[${getEvaluatorStub.name}] evaluated code`;
 }
 
 function mockPrimitiveExpression(): IPrimitiveExpression {

@@ -1,4 +1,4 @@
-import type { ScriptData } from '@/application/collections/';
+import type { ScriptData, CodeScriptData, CallScriptData } from '@/application/collections/';
 import { NoEmptyLines } from '@/application/Parser/Script/Validation/Rules/NoEmptyLines';
 import { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
 import { Script } from '@/domain/Script';
@@ -14,7 +14,6 @@ import { ICategoryCollectionParseContext } from './ICategoryCollectionParseConte
 import { CodeValidator } from './Validation/CodeValidator';
 import { NoDuplicatedLines } from './Validation/Rules/NoDuplicatedLines';
 
-// eslint-disable-next-line consistent-return
 export function parseScript(
   data: ScriptData,
   context: ICategoryCollectionParseContext,
@@ -24,7 +23,6 @@ export function parseScript(
 ): Script {
   const validator = new NodeValidator({ type: NodeType.Script, selfNode: data });
   validateScript(data, validator);
-  if (!context) { throw new Error('missing context'); }
   try {
     const script = scriptFactory(
       /* name: */ data.name,
@@ -34,12 +32,12 @@ export function parseScript(
     );
     return script;
   } catch (err) {
-    validator.throw(err.message);
+    return validator.throw(err.message);
   }
 }
 
 function parseLevel(
-  level: string,
+  level: string | undefined,
   parser: IEnumParser<RecommendationLevel>,
 ): RecommendationLevel | undefined {
   if (!level) {
@@ -56,39 +54,45 @@ function parseCode(
   if (context.compiler.canCompile(script)) {
     return context.compiler.compile(script);
   }
-  const code = new ScriptCode(script.code, script.revertCode);
+  const codeScript = script as CodeScriptData; // Must be inline code if it cannot be compiled
+  const code = new ScriptCode(codeScript.code, codeScript.revertCode);
   validateHardcodedCodeWithoutCalls(code, codeValidator, context.syntax);
   return code;
 }
 
 function validateHardcodedCodeWithoutCalls(
   scriptCode: ScriptCode,
-  codeValidator: ICodeValidator,
+  validator: ICodeValidator,
   syntax: ILanguageSyntax,
 ) {
-  [scriptCode.execute, scriptCode.revert].forEach(
-    (code) => codeValidator.throwIfInvalid(
-      code,
-      [new NoEmptyLines(), new NoDuplicatedLines(syntax)],
-    ),
-  );
+  [scriptCode.execute, scriptCode.revert]
+    .filter((code): code is string => Boolean(code))
+    .forEach(
+      (code) => validator.throwIfInvalid(
+        code,
+        [new NoEmptyLines(), new NoDuplicatedLines(syntax)],
+      ),
+    );
 }
 
-function validateScript(script: ScriptData, validator: NodeValidator) {
+function validateScript(
+  script: ScriptData,
+  validator: NodeValidator,
+): asserts script is NonNullable<ScriptData> {
   validator
     .assertDefined(script)
     .assertValidName(script.name)
     .assert(
-      () => Boolean(script.code || script.call),
-      'Must define either "call" or "code".',
+      () => Boolean((script as CodeScriptData).code || (script as CallScriptData).call),
+      'Neither "call" or "code" is defined.',
     )
     .assert(
-      () => !(script.code && script.call),
-      'Cannot define both "call" and "code".',
+      () => !((script as CodeScriptData).code && (script as CallScriptData).call),
+      'Both "call" and "code" are defined.',
     )
     .assert(
-      () => !(script.revertCode && script.call),
-      'Cannot define "revertCode" if "call" is defined.',
+      () => !((script as CodeScriptData).revertCode && (script as CallScriptData).call),
+      'Both "call" and "revertCode" are defined.',
     );
 }
 

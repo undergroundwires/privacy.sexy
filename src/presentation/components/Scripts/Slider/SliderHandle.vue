@@ -29,7 +29,10 @@ export default defineComponent({
     const cursorCssValue = 'ew-resize';
     let initialX: number | undefined;
 
-    const resize = (event) => {
+    const resize = (event: MouseEvent) => {
+      if (initialX === undefined) {
+        throw new Error('Resize action started without an initial X coordinate.');
+      }
       const displacementX = event.clientX - initialX;
       emit('resized', displacementX);
       initialX = event.clientX;

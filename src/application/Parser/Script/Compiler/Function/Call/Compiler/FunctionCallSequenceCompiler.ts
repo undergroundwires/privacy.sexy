@@ -21,9 +21,7 @@ export class FunctionCallSequenceCompiler implements FunctionCallCompiler {
     calls: readonly FunctionCall[],
     functions: ISharedFunctionCollection,
   ): CompiledCode {
-    if (!functions) { throw new Error('missing functions'); }
-    if (!calls?.length) { throw new Error('missing calls'); }
-    if (calls.some((f) => !f)) { throw new Error('missing function call'); }
+    if (!calls.length) { throw new Error('missing calls'); }
     const context: FunctionCallCompilationContext = {
       allFunctions: functions,
       rootCallSequence: calls,

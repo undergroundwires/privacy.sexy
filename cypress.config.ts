@@ -11,8 +11,16 @@ export default defineConfig({
   videosFolder: `${CYPRESS_BASE_DIR}/videos`,
 
   e2e: {
-    baseUrl: `http://localhost:${ViteConfig.server.port}/`,
+    baseUrl: `http://localhost:${getApplicationPort()}/`,
     specPattern: `${CYPRESS_BASE_DIR}/**/*.cy.{js,jsx,ts,tsx}`, // Default: cypress/e2e/**/*.cy.{js,jsx,ts,tsx}
     supportFile: `${CYPRESS_BASE_DIR}/support/e2e.ts`,
   },
 });
+
+function getApplicationPort(): number {
+  const port = ViteConfig.server?.port;
+  if (port === undefined) {
+    throw new Error('Unknown application port');
+  }
+  return port;
+}

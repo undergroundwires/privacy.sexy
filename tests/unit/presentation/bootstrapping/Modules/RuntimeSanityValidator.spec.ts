@@ -10,7 +10,7 @@ describe('RuntimeSanityValidator', () => {
       validateEnvironmentVariables: true,
       validateWindowVariables: true,
     };
-    let actualOptions: ISanityCheckOptions;
+    let actualOptions: ISanityCheckOptions | undefined;
     const validatorMock = (options) => {
       actualOptions = options;
     };

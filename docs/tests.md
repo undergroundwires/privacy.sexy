@@ -68,13 +68,13 @@ These checks validate various qualities like runtime execution, building process
 - [`./src/`](./../src/): Contains the code subject to testing.
 - [`./tests/shared/`](./../tests/shared/): Contains code shared by different test categories.
   - [`bootstrap/setup.ts`](./../tests/shared/bootstrap/setup.ts): Initializes unit and integration tests.
+  - [`Assertions/`](./../tests/shared/Assertions/): Contains common assertion functions, prefixed with `expect`.
 - [`./tests/unit/`](./../tests/unit/)
   - Stores unit test code.
   - The directory structure mirrors [`./src/`](./../src).
     - E.g., tests for [`./src/application/ApplicationFactory.ts`](./../src/application/ApplicationFactory.ts) reside in [`./tests/unit/application/ApplicationFactory.spec.ts`](./../tests/unit/application/ApplicationFactory.spec.ts).
   - [`shared/`](./../tests/unit/shared/)
     - Contains shared unit test functionalities.
-    - [`Assertions/`](./../tests/unit/shared/Assertions): Contains common assertion functions, prefixed with `expect`.
     - [`TestCases/`](./../tests/unit/shared/TestCases/)
       - Shared test cases.
       - Functions that calls `it()` from [Vitest](https://vitest.dev/) should have `it` prefix.

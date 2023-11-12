@@ -70,7 +70,7 @@ export default defineComponent({
 
     function updateCode(code: string, language: ScriptingLanguage) {
       const innerCode = code || getDefaultCode(language);
-      editor.setValue(innerCode, 1);
+      editor?.setValue(innerCode, 1);
     }
 
     function handleCodeChange(event: ICodeChangedEvent) {
@@ -96,7 +96,7 @@ export default defineComponent({
       if (!currentMarkerId) {
         return;
       }
-      editor.session.removeMarker(currentMarkerId);
+      editor?.session.removeMarker(currentMarkerId);
       currentMarkerId = undefined;
     }
 
@@ -115,7 +115,7 @@ export default defineComponent({
 
     function highlight(startRow: number, endRow: number) {
       const AceRange = ace.require('ace/range').Range;
-      currentMarkerId = editor.session.addMarker(
+      currentMarkerId = editor?.session.addMarker(
         new AceRange(startRow, 0, endRow, 0),
         'code-area__highlight',
         'fullLine',
@@ -123,8 +123,11 @@ export default defineComponent({
     }
 
     function scrollToLine(row: number) {
-      const column = editor.session.getLine(row).length;
-      editor.gotoLine(row, column, true);
+      const column = editor?.session.getLine(row).length;
+      if (column === undefined) {
+        return;
+      }
+      editor?.gotoLine(row, column, true);
     }
 
     return {

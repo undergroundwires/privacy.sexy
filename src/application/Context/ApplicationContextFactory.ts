@@ -10,18 +10,23 @@ export async function buildContext(
   factory: IApplicationFactory = ApplicationFactory.Current,
   environment = RuntimeEnvironment.CurrentEnvironment,
 ): Promise<IApplicationContext> {
-  if (!factory) { throw new Error('missing factory'); }
-  if (!environment) { throw new Error('missing environment'); }
   const app = await factory.getApp();
   const os = getInitialOs(app, environment.os);
   return new ApplicationContext(app, os);
 }
 
-function getInitialOs(app: IApplication, currentOs: OperatingSystem): OperatingSystem {
+function getInitialOs(
+  app: IApplication,
+  currentOs: OperatingSystem | undefined,
+): OperatingSystem {
   const supportedOsList = app.getSupportedOsList();
-  if (supportedOsList.includes(currentOs)) {
+  if (currentOs !== undefined && supportedOsList.includes(currentOs)) {
     return currentOs;
   }
+  return getMostSupportedOs(supportedOsList, app);
+}
+
+function getMostSupportedOs(supportedOsList: OperatingSystem[], app: IApplication) {
   supportedOsList.sort((os1, os2) => {
     const getPriority = (os: OperatingSystem) => app.getCollection(os).totalScripts;
     return getPriority(os2) - getPriority(os1);

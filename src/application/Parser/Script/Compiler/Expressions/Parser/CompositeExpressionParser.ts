@@ -10,11 +10,8 @@ const Parsers = [
 
 export class CompositeExpressionParser implements IExpressionParser {
   public constructor(private readonly leafs: readonly IExpressionParser[] = Parsers) {
-    if (!leafs) {
+    if (!leafs.length) {
       throw new Error('missing leafs');
-    }
-    if (leafs.some((leaf) => !leaf)) {
-      throw new Error('missing leaf');
     }
   }
 

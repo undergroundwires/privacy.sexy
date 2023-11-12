@@ -7,21 +7,17 @@
       <TheCodeButtons class="app__row app__code-buttons" />
       <TheFooter />
     </div>
-    <OptionalDevToolkit />
+    <component v-if="devToolkitComponent" :is="devToolkitComponent" />
   </div>
 </template>
 
 <script lang="ts">
-import { defineAsyncComponent, defineComponent } from 'vue';
+import { defineAsyncComponent, defineComponent, Component } from 'vue';
 import TheHeader from '@/presentation/components/TheHeader.vue';
 import TheFooter from '@/presentation/components/TheFooter/TheFooter.vue';
 import TheCodeButtons from '@/presentation/components/Code/CodeButtons/TheCodeButtons.vue';
 import TheScriptArea from '@/presentation/components/Scripts/TheScriptArea.vue';
 import TheSearchBar from '@/presentation/components/TheSearchBar.vue';
-
-const OptionalDevToolkit = process.env.NODE_ENV !== 'production'
-  ? defineAsyncComponent(() => import('@/presentation/components/DevToolkit/DevToolkit.vue'))
-  : null;
 
 export default defineComponent({
   components: {
@@ -30,10 +26,23 @@ export default defineComponent({
     TheScriptArea,
     TheSearchBar,
     TheFooter,
-    OptionalDevToolkit,
   },
-  setup() { },
+  setup() {
+    const devToolkitComponent = getOptionalDevToolkitComponent();
+
+    return {
+      devToolkitComponent,
+    };
+  },
 });
+
+function getOptionalDevToolkitComponent(): Component | undefined {
+  const isDevelopment = process.env.NODE_ENV !== 'production';
+  if (!isDevelopment) {
+    return undefined;
+  }
+  return defineAsyncComponent(() => import('@/presentation/components/DevToolkit/DevToolkit.vue'));
+}
 </script>
 
 <style lang="scss">

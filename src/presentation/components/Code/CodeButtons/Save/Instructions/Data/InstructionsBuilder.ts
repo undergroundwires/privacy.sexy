@@ -15,13 +15,11 @@ export class InstructionsBuilder {
   }
 
   public withStep(stepBuilder: InstructionStepBuilderType) {
-    if (!stepBuilder) { throw new Error('missing stepBuilder'); }
     this.stepBuilders.push(stepBuilder);
     return this;
   }
 
   public build(data: IInstructionsBuilderData): IInstructionListData {
-    if (!data) { throw new Error('missing data'); }
     return {
       operatingSystem: this.os,
       steps: this.stepBuilders.map((stepBuilder) => stepBuilder(data)),

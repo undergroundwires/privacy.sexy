@@ -1,4 +1,5 @@
 import { expect } from 'vitest';
+import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 export async function expectThrowsAsync(
   method: () => Promise<unknown>,
@@ -10,11 +11,9 @@ export async function expectThrowsAsync(
   } catch (err) {
     error = err;
   }
-  expect(error).toBeDefined();
+  expectExists(error);
   expect(error).to.be.an(Error.name);
-  if (errorMessage) {
-    expect(error.message).to.equal(errorMessage);
-  }
+  expect(error.message).to.equal(errorMessage);
 }
 
 export async function expectDoesNotThrowAsync(

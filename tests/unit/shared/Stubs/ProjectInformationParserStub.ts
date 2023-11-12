@@ -4,7 +4,7 @@ import { IProjectInformation } from '@/domain/IProjectInformation';
 import { ProjectInformationStub } from './ProjectInformationStub';
 
 export class ProjectInformationParserStub {
-  public readonly arguments = new Array<IAppMetadata>();
+  public readonly arguments = new Array<IAppMetadata | undefined>();
 
   private returnValue: IProjectInformation = new ProjectInformationStub();
 

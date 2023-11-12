@@ -25,10 +25,7 @@ export class CategoryReverter implements IReverter {
 }
 
 function getAllSubScriptReverters(categoryId: number, collection: ICategoryCollection) {
-  const category = collection.findCategory(categoryId);
-  if (!category) {
-    throw new Error(`Category with id "${categoryId}" does not exist`);
-  }
+  const category = collection.getCategory(categoryId);
   const scripts = category.getAllScriptsRecursively();
   return scripts.map((script) => new ScriptReverter(script.id));
 }

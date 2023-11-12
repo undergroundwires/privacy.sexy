@@ -3,6 +3,7 @@ import type {
 } from '@/application/collections/';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+import { createScriptDataWithCode } from './ScriptDataStub';
 
 export class CollectionDataStub implements CollectionData {
   public os = 'windows';
@@ -13,17 +14,17 @@ export class CollectionDataStub implements CollectionData {
 
   public functions?: ReadonlyArray<FunctionData>;
 
-  public withActions(actions: readonly CategoryData[]): CollectionDataStub {
+  public withActions(actions: readonly CategoryData[]): this {
     this.actions = actions;
     return this;
   }
 
-  public withOs(os: string): CollectionDataStub {
+  public withOs(os: string): this {
     this.os = os;
     return this;
   }
 
-  public withScripting(scripting: ScriptingDefinitionData): CollectionDataStub {
+  public withScripting(scripting: ScriptingDefinitionData): this {
     this.scripting = scripting;
     return this;
   }
@@ -57,11 +58,7 @@ function getScriptStub(
   scriptName: string,
   level: RecommendationLevel = RecommendationLevel.Standard,
 ): ScriptData {
-  return {
-    name: scriptName,
-    code: 'script code',
-    revertCode: 'revert code',
-    recommend: RecommendationLevel[level].toLowerCase(),
-    call: undefined,
-  };
+  return createScriptDataWithCode()
+    .withName(scriptName)
+    .withRecommend(RecommendationLevel[level].toLowerCase());
 }

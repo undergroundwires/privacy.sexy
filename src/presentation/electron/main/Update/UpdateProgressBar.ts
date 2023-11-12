@@ -4,7 +4,7 @@ import { app, BrowserWindow } from 'electron';
 import log from 'electron-log';
 
 export class UpdateProgressBar {
-  private progressBar: ProgressBar;
+  private progressBar: ProgressBar | undefined;
 
   private get innerProgressBarWindow(): BrowserWindow {
     // eslint-disable-next-line no-underscore-dangle
@@ -39,16 +39,16 @@ export class UpdateProgressBar {
         + `\n${e && e.message ? e.message : e}`;
       this.innerProgressBarWindow.setClosable(true);
     };
-    if (this.progressBar.innerProgressBarWindow) {
+    if (this.progressBar?.innerProgressBarWindow) {
       reportUpdateError();
     } else {
-      this.progressBar.on('ready', () => reportUpdateError());
+      this.progressBar?.on('ready', () => reportUpdateError());
     }
   }
 
   public close() {
-    if (!this.progressBar.isCompleted()) {
-      this.progressBar.close();
+    if (!this.progressBar?.isCompleted()) {
+      this.progressBar?.close();
     }
   }
 }

@@ -28,7 +28,11 @@ function generateTestOptions(): ISanityCheckOptions[] {
   return generateBooleanPermutations(defaultOptions);
 }
 
-function generateBooleanPermutations<T>(object: T): T[] {
+function generateBooleanPermutations<T>(object: T | undefined): T[] {
+  if (!object) {
+    return [];
+  }
+
   const keys = Object.keys(object) as (keyof T)[];
 
   if (keys.length === 0) {
@@ -47,7 +51,7 @@ function generateBooleanPermutations<T>(object: T): T[] {
 
   const remainingKeys = Object.fromEntries(
     keys.slice(1).map((key) => [key, object[key]]),
-  ) as unknown as T;
+  ) as unknown as T | undefined;
 
   const subPermutations = generateBooleanPermutations(remainingKeys);
 

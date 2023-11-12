@@ -57,7 +57,7 @@ describe('useNodeState', () => {
 });
 
 function mountWrapperComponent(nodeRef: Readonly<Ref<ReadOnlyTreeNode>>) {
-  let returnObject: ReturnType<typeof useNodeState>;
+  let returnObject: ReturnType<typeof useNodeState> | undefined;
   const wrapper = shallowMount(
     defineComponent({
       setup() {
@@ -74,6 +74,9 @@ function mountWrapperComponent(nodeRef: Readonly<Ref<ReadOnlyTreeNode>>) {
       },
     },
   );
+  if (!returnObject) {
+    throw new Error('missing hook result');
+  }
   return {
     wrapper,
     returnObject,

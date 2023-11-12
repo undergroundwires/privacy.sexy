@@ -1,22 +1,18 @@
 import { describe, it, expect } from 'vitest';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { IInstructionsBuilderData, InstructionsBuilder, InstructionStepBuilderType } from '@/presentation/components/Code/CodeButtons/Save/Instructions/Data/InstructionsBuilder';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { IInstructionInfo, IInstructionListStep } from '@/presentation/components/Code/CodeButtons/Save/Instructions/InstructionListData';
 
 describe('InstructionsBuilder', () => {
   describe('withStep', () => {
-    describe('throws when step is missing', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing stepBuilder';
-        const data = absentValue;
-        const sut = new InstructionsBuilder(OperatingSystem.Linux);
-        // act
-        const act = () => sut.withStep(data);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
+    it('returns itself', () => {
+      // arrange
+      const expected = new InstructionsBuilder(OperatingSystem.Android);
+      const step = () => createMockStep();
+      // act
+      const actual = expected.withStep(step);
+      // assert
+      expect(actual).to.equal(expected);
     });
   });
   describe('build', () => {
@@ -65,18 +61,6 @@ describe('InstructionsBuilder', () => {
       // assert
       expect(true);
       expect(actual).to.equal(expected);
-    });
-    describe('throws when data is missing', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing data';
-        const data = absentValue;
-        const sut = new InstructionsBuilder(OperatingSystem.Linux);
-        // act
-        const act = () => sut.build(data);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
     });
   });
 });

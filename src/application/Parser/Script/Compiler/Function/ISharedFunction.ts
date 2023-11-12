@@ -4,14 +4,20 @@ import { FunctionCall } from './Call/FunctionCall';
 export interface ISharedFunction {
   readonly name: string;
   readonly parameters: IReadOnlyFunctionParameterCollection;
-  readonly body: ISharedFunctionBody;
+  readonly body: SharedFunctionBody;
 }
 
-export interface ISharedFunctionBody {
-  readonly type: FunctionBodyType;
-  readonly code: IFunctionCode | undefined;
-  readonly calls: readonly FunctionCall[] | undefined;
+export interface CallFunctionBody {
+  readonly type: FunctionBodyType.Calls,
+  readonly calls: readonly FunctionCall[],
 }
+
+export interface CodeFunctionBody {
+  readonly type: FunctionBodyType.Code;
+  readonly code: IFunctionCode,
+}
+
+export type SharedFunctionBody = CallFunctionBody | CodeFunctionBody;
 
 export enum FunctionBodyType {
   Code,

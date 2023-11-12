@@ -12,9 +12,6 @@ export class ApplicationFactory implements IApplicationFactory {
   private readonly getter: AsyncLazy<IApplication>;
 
   protected constructor(costlyGetter: ApplicationGetterType) {
-    if (!costlyGetter) {
-      throw new Error('missing getter');
-    }
     this.getter = new AsyncLazy<IApplication>(() => Promise.resolve(costlyGetter()));
   }
 

@@ -21,9 +21,6 @@ export class ApplicationCode implements IApplicationCode {
     private readonly scriptingDefinition: IScriptingDefinition,
     private readonly generator: IUserScriptGenerator = new UserScriptGenerator(),
   ) {
-    if (!userSelection) { throw new Error('missing userSelection'); }
-    if (!scriptingDefinition) { throw new Error('missing scriptingDefinition'); }
-    if (!generator) { throw new Error('missing generator'); }
     this.setCode(userSelection.selectedScripts);
     userSelection.changed.on((scripts) => {
       this.setCode(scripts);

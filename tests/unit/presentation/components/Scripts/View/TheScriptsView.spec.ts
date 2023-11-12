@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { VueWrapper, shallowMount } from '@vue/test-utils';
+import { Component } from 'vue';
 import TheScriptsView from '@/presentation/components/Scripts/View/TheScriptsView.vue';
 import ScriptsTree from '@/presentation/components/Scripts/View/Tree/ScriptsTree.vue';
 import CardList from '@/presentation/components/Scripts/View/Cards/CardList.vue';
@@ -23,8 +24,8 @@ describe('TheScriptsView.vue', () => {
     describe('initially', () => {
       interface IInitialViewTypeTestCase {
         readonly initialView: ViewType;
-        readonly expectedComponent: unknown;
-        readonly absentComponents: readonly unknown[];
+        readonly expectedComponent: Component;
+        readonly absentComponents: readonly Component[];
       }
       const testCases: readonly IInitialViewTypeTestCase[] = [
         {
@@ -56,8 +57,8 @@ describe('TheScriptsView.vue', () => {
       interface IToggleViewTypeTestCase {
         readonly originalView: ViewType;
         readonly newView: ViewType;
-        readonly absentComponents: readonly unknown[];
-        readonly expectedComponent: unknown;
+        readonly absentComponents: readonly Component[];
+        readonly expectedComponent: Component;
       }
 
       const toggleTestCases: IToggleViewTypeTestCase[] = [
@@ -99,8 +100,8 @@ describe('TheScriptsView.vue', () => {
       readonly name: string;
       readonly initialView: ViewType;
       readonly changeEvents: readonly IFilterChangeDetails[];
-      readonly componentsToDisappear: readonly unknown[];
-      readonly expectedComponent: unknown;
+      readonly componentsToDisappear: readonly Component[];
+      readonly expectedComponent: Component;
       readonly setupFilter?: (filter: UserFilterStub) => UserFilterStub;
     }
     const testCases: readonly ISwitchingViewTestCase[] = [
@@ -300,12 +301,12 @@ describe('TheScriptsView.vue', () => {
   });
 
   describe('no matches text', () => {
-    interface INoMatchesTextTestCase {
+    interface NoMatchesTextTestCase {
       readonly name: string;
       readonly filter: IFilterResult;
       readonly shouldNoMatchesExist: boolean;
     }
-    const commonTestCases: readonly INoMatchesTextTestCase[] = [
+    const commonTestCases: readonly NoMatchesTextTestCase[] = [
       {
         name: 'shows text given no matches',
         filter: new FilterResultStub()
@@ -320,7 +321,10 @@ describe('TheScriptsView.vue', () => {
       },
     ];
     describe('initial state', () => {
-      const initialStateTestCases: readonly INoMatchesTextTestCase[] = [
+      interface InitialStateTestCase extends Omit<NoMatchesTextTestCase, 'filter'> {
+        readonly filter?: IFilterResult;
+      }
+      const initialStateTestCases: readonly InitialStateTestCase[] = [
         ...commonTestCases,
         {
           name: 'does not show text given no filter',
@@ -392,7 +396,7 @@ describe('TheScriptsView.vue', () => {
   });
 });
 
-function expectComponentsToNotExist(wrapper: VueWrapper, components: readonly unknown[]) {
+function expectComponentsToNotExist(wrapper: VueWrapper, components: readonly Component[]) {
   const existingUnexpectedComponents = components
     .map((component) => wrapper.findComponent(component))
     .filter((component) => component.exists());

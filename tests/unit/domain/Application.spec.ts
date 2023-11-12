@@ -3,21 +3,22 @@ import { Application } from '@/domain/Application';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { ProjectInformationStub } from '@tests/unit/shared/Stubs/ProjectInformationStub';
-import { getAbsentObjectTestCases, getAbsentCollectionTestCases, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
+import { getAbsentCollectionTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('Application', () => {
   describe('getCollection', () => {
-    it('returns undefined if not found', () => {
+    it('throws if not found', () => {
       // arrange
-      const expected = undefined;
+      const missingOs = OperatingSystem.Android;
+      const expectedError = `Operating system "${OperatingSystem[missingOs]}" is not defined in application`;
       const info = new ProjectInformationStub();
       const collections = [new CategoryCollectionStub().withOs(OperatingSystem.Windows)];
       // act
       const sut = new Application(info, collections);
-      const actual = sut.getCollection(OperatingSystem.Android);
+      const act = () => sut.getCollection(missingOs);
       // assert
-      expect(actual).to.equals(expected);
+      expect(act).to.throw(expectedError);
     });
     it('returns expected when multiple collections exist', () => {
       // arrange
@@ -34,18 +35,6 @@ describe('Application', () => {
   });
   describe('ctor', () => {
     describe('info', () => {
-      describe('throws if missing', () => {
-        itEachAbsentObjectValue((absentValue) => {
-          // arrange
-          const expectedError = 'missing project information';
-          const info = absentValue;
-          const collections = [new CategoryCollectionStub()];
-          // act
-          const act = () => new Application(info, collections);
-          // assert
-          expect(act).to.throw(expectedError);
-        });
-      });
       it('sets as expected', () => {
         // arrange
         const expected = new ProjectInformationStub();
@@ -60,19 +49,19 @@ describe('Application', () => {
       describe('throws on invalid value', () => {
         // arrange
         const testCases: readonly {
-          name: string,
-          expectedError: string,
-          value: readonly ICategoryCollection[],
+          readonly name: string,
+          readonly expectedError: string,
+          readonly value: readonly ICategoryCollection[],
         }[] = [
-          ...getAbsentCollectionTestCases<ICategoryCollection>().map((testCase) => ({
-            name: testCase.valueName,
+          ...getAbsentCollectionTestCases<ICategoryCollection>(
+            {
+              excludeUndefined: true,
+              excludeNull: true,
+            },
+          ).map((testCase) => ({
+            name: `empty collection: ${testCase.valueName}`,
             expectedError: 'missing collections',
             value: testCase.absentValue,
-          })),
-          ...getAbsentObjectTestCases().map((testCase) => ({
-            name: `${testCase.valueName} value in list`,
-            expectedError: 'missing collection in the list',
-            value: [new CategoryCollectionStub(), testCase.absentValue],
           })),
           {
             name: 'two collections with same OS',

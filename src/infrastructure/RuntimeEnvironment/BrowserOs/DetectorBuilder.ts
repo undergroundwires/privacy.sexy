@@ -25,9 +25,9 @@ export class DetectorBuilder {
     };
   }
 
-  private detect(userAgent: string): OperatingSystem {
+  private detect(userAgent: string): OperatingSystem | undefined {
     if (!userAgent) {
-      throw new Error('missing userAgent');
+      return undefined;
     }
     if (this.existingPartsInUserAgent.some((part) => !userAgent.includes(part))) {
       return undefined;

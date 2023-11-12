@@ -12,7 +12,7 @@ describe('WindowVariablesValidator', () => {
       itEachInvalidObjectValue((invalidObjectValue) => {
         // arrange
         const expectedError = 'window is not an object';
-        const window: Partial<WindowVariables> = invalidObjectValue;
+        const window: Partial<WindowVariables> = invalidObjectValue as never;
         // act
         const act = () => validateWindowVariables(window);
         // assert

@@ -1,24 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { throttle, ITimer, TimeoutType } from '@/presentation/components/Shared/Throttle';
+import { throttle, ITimer, Timeout } from '@/presentation/components/Shared/Throttle';
 import { EventSource } from '@/infrastructure/Events/EventSource';
 import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
-import { getAbsentObjectTestCases, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { createMockTimeout } from '@tests/unit/shared/Stubs/TimeoutStub';
 
 describe('throttle', () => {
   describe('validates parameters', () => {
-    describe('throws if callback is absent', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing callback';
-        const callback = absentValue;
-        // act
-        const act = () => throttle(callback, 500);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
-    describe('throws if waitInMs is negative or zero', () => {
+    describe('throws if waitInMs is invalid', () => {
       // arrange
       const testCases = [
         {
@@ -31,11 +19,6 @@ describe('throttle', () => {
           value: -2,
           expectedError: 'negative delay',
         },
-        ...getAbsentObjectTestCases().map((testCase) => ({
-          name: `when absent (given ${testCase.valueName})`,
-          value: testCase.absentValue,
-          expectedError: 'missing delay',
-        })),
       ];
       const noopCallback = () => { /* do nothing */ };
       for (const testCase of testCases) {
@@ -47,17 +30,6 @@ describe('throttle', () => {
           expect(act).to.throw(testCase.expectedError);
         });
       }
-    });
-    it('throws if timer is null', () => {
-      // arrange
-      const expectedError = 'missing timer';
-      const timer = null;
-      const noopCallback = () => { /* do nothing */ };
-      const waitInMs = 1;
-      // act
-      const act = () => throttle(noopCallback, waitInMs, timer);
-      // assert
-      expect(act).to.throw(expectedError);
     });
   });
   it('should call the callback immediately', () => {
@@ -144,7 +116,7 @@ class TimerMock implements ITimer {
 
   private currentTime = 0;
 
-  public setTimeout(callback: () => void, ms: number): TimeoutType {
+  public setTimeout(callback: () => void, ms: number): Timeout {
     const runTime = this.currentTime + ms;
     const subscription = this.timeChanged.on((time) => {
       if (time >= runTime) {
@@ -157,7 +129,7 @@ class TimerMock implements ITimer {
     return createMockTimeout(id);
   }
 
-  public clearTimeout(timeoutId: TimeoutType): void {
+  public clearTimeout(timeoutId: Timeout): void {
     this.subscriptions[+timeoutId].unsubscribe();
   }
 

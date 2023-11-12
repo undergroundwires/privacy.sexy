@@ -16,7 +16,7 @@ describe('RuntimeEnvironment', () => {
         const absentWindow = absentValue;
         // act
         const act = () => createEnvironment({
-          window: absentWindow,
+          window: absentWindow as never,
         });
         // assert
         expect(act).to.throw(expectedError);
@@ -123,7 +123,7 @@ describe('RuntimeEnvironment', () => {
           // arrange
           const expectedValue = undefined;
           const windowWithAbsentOs = {
-            os: absentValue,
+            os: absentValue as never,
           };
           // act
           const sut = createEnvironment({

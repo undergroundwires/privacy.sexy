@@ -119,13 +119,14 @@ describe('WithParser', () => {
     describe('conditional rendering based on argument value', () => {
       describe('does not render scope', () => {
         runner.expectResults(
-          ...getAbsentStringTestCases().map((testCase) => ({
-            name: `does not render when value is "${testCase.valueName}"`,
-            code: '{{ with $parameter }}dark{{ end }} ',
-            args: (args) => args
-              .withArgument('parameter', testCase.absentValue),
-            expected: [''],
-          })),
+          ...getAbsentStringTestCases({ excludeNull: true, excludeUndefined: true })
+            .map((testCase) => ({
+              name: `does not render when value is "${testCase.valueName}"`,
+              code: '{{ with $parameter }}dark{{ end }} ',
+              args: (args) => args
+                .withArgument('parameter', testCase.absentValue),
+              expected: [''],
+            })),
           {
             name: 'does not render when argument is not provided',
             code: '{{ with $parameter }}dark{{ end }}',
@@ -136,13 +137,14 @@ describe('WithParser', () => {
       });
       describe('renders scope', () => {
         runner.expectResults(
-          ...getAbsentStringTestCases().map((testCase) => ({
-            name: `does not render when value is "${testCase.valueName}"`,
-            code: '{{ with $parameter }}dark{{ end }} ',
-            args: (args) => args
-              .withArgument('parameter', testCase.absentValue),
-            expected: [''],
-          })),
+          ...getAbsentStringTestCases({ excludeNull: true, excludeUndefined: true })
+            .map((testCase) => ({
+              name: `does not render when value is "${testCase.valueName}"`,
+              code: '{{ with $parameter }}dark{{ end }} ',
+              args: (args) => args
+                .withArgument('parameter', testCase.absentValue),
+              expected: [''],
+            })),
           {
             name: 'does not render when argument is not provided',
             code: '{{ with $parameter }}dark{{ end }}',

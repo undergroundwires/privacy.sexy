@@ -112,9 +112,9 @@ if (isDevelopment) {
 
 function loadApplication(window: BrowserWindow) {
   if (RENDERER_URL) { // Populated in a dev server during development
-    loadUrlWithNodeWorkaround(win, RENDERER_URL);
+    loadUrlWithNodeWorkaround(window, RENDERER_URL);
   } else {
-    loadUrlWithNodeWorkaround(win, RENDERER_HTML_PATH);
+    loadUrlWithNodeWorkaround(window, RENDERER_HTML_PATH);
   }
   if (isDevelopment) {
     window.webContents.openDevTools();

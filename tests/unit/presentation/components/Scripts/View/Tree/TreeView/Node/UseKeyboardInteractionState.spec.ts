@@ -74,13 +74,16 @@ describe('useKeyboardInteractionState', () => {
 });
 
 function mountWrapperComponent(window: WindowWithEventListeners) {
-  let returnObject: ReturnType<typeof useKeyboardInteractionState>;
+  let returnObject: ReturnType<typeof useKeyboardInteractionState> | undefined;
   const wrapper = shallowMount(defineComponent({
     setup() {
       returnObject = useKeyboardInteractionState(window);
     },
     template: '<div></div>',
   }));
+  if (!returnObject) {
+    throw new Error('missing hook result');
+  }
   return {
     returnObject,
     wrapper,

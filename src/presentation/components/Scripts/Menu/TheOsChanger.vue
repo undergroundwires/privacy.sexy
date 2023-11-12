@@ -31,14 +31,14 @@ export default defineComponent({
     const { modifyCurrentContext, currentState } = injectKey((keys) => keys.useCollectionState);
     const { application } = injectKey((keys) => keys.useApplication);
 
-    const allOses = computed<ReadonlyArray<IOsViewModel>>(() => (
-      application.getSupportedOsList() ?? [])
-      .map((os) : IOsViewModel => (
-        {
+    const allOses = computed<ReadonlyArray<IOsViewModel>>(
+      () => application
+        .getSupportedOsList()
+        .map((os) : IOsViewModel => ({
           os,
           name: renderOsName(os),
-        }
-      )));
+        })),
+    );
 
     const currentOs = computed<OperatingSystem>(() => {
       return currentState.value.os;

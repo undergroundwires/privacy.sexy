@@ -10,27 +10,17 @@ import { ProjectInformationStub } from '@tests/unit/shared/Stubs/ProjectInformat
 import { getCategoryStub, CollectionDataStub } from '@tests/unit/shared/Stubs/CollectionDataStub';
 import { CategoryCollectionParseContextStub } from '@tests/unit/shared/Stubs/CategoryCollectionParseContextStub';
 import { CategoryDataStub } from '@tests/unit/shared/Stubs/CategoryDataStub';
-import { ScriptDataStub } from '@tests/unit/shared/Stubs/ScriptDataStub';
-import { FunctionDataStub } from '@tests/unit/shared/Stubs/FunctionDataStub';
+import { createScriptDataWithCall, createScriptDataWithCode } from '@tests/unit/shared/Stubs/ScriptDataStub';
+import { createFunctionDataWithCode } from '@tests/unit/shared/Stubs/FunctionDataStub';
 import { FunctionCallDataStub } from '@tests/unit/shared/Stubs/FunctionCallDataStub';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import type { CategoryData } from '@/application/collections/';
 
 describe('CategoryCollectionParser', () => {
   describe('parseCategoryCollection', () => {
-    describe('throws with absent content', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing content';
-        const info = new ProjectInformationStub();
-        // act
-        const act = () => parseCategoryCollection(absentValue, info);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
     describe('actions', () => {
       describe('throws with absent actions', () => {
-        itEachAbsentObjectValue((absentValue) => {
+        itEachAbsentCollectionValue<CategoryData>((absentValue) => {
           // arrange
           const expectedError = 'content does not define any action';
           const collection = new CollectionDataStub()
@@ -40,18 +30,7 @@ describe('CategoryCollectionParser', () => {
           const act = () => parseCategoryCollection(collection, info);
           // assert
           expect(act).to.throw(expectedError);
-        });
-      });
-      it('throws when has no actions', () => {
-        // arrange
-        const expectedError = 'content does not define any action';
-        const collection = new CollectionDataStub()
-          .withActions([]);
-        const info = new ProjectInformationStub();
-        // act
-        const act = () => parseCategoryCollection(collection, info);
-        // assert
-        expect(act).to.throw(expectedError);
+        }, { excludeUndefined: true, excludeNull: true });
       });
       it('parses actions', () => {
         // arrange
@@ -110,17 +89,18 @@ describe('CategoryCollectionParser', () => {
         const expectedCode = 'code-from-the-function';
         const functionName = 'function-name';
         const scriptName = 'script-name';
-        const script = ScriptDataStub.createWithCall()
+        const script = createScriptDataWithCall()
           .withCall(new FunctionCallDataStub().withName(functionName).withParameters({}))
           .withName(scriptName);
-        const func = FunctionDataStub.createWithCode().withParametersObject([])
+        const func = createFunctionDataWithCode()
+          .withParametersObject([])
           .withName(functionName)
           .withCode(expectedCode);
         const category = new CategoryDataStub()
           .withChildren([script,
-            ScriptDataStub.createWithCode().withName('2')
+            createScriptDataWithCode().withName('2')
               .withRecommendationLevel(RecommendationLevel.Standard),
-            ScriptDataStub.createWithCode()
+            createScriptDataWithCode()
               .withName('3').withRecommendationLevel(RecommendationLevel.Strict),
           ]);
         const collection = new CollectionDataStub()
@@ -130,7 +110,7 @@ describe('CategoryCollectionParser', () => {
         // act
         const actual = parseCategoryCollection(collection, info);
         // assert
-        const actualScript = actual.findScript(scriptName);
+        const actualScript = actual.getScript(scriptName);
         const actualCode = actualScript.code.execute;
         expect(actualCode).to.equal(expectedCode);
       });

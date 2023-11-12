@@ -2,11 +2,12 @@ import { BaseEntity } from '@/infrastructure/Entity/BaseEntity';
 import { IScript } from '@/domain/IScript';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
+import { IScriptCode } from '@/domain/IScriptCode';
 
 export class ScriptStub extends BaseEntity<string> implements IScript {
   public name = `name${this.id}`;
 
-  public code = {
+  public code: IScriptCode = {
     execute: `REM execute-code (${this.id})`,
     revert: `REM revert-code (${this.id})`,
   };
@@ -23,23 +24,29 @@ export class ScriptStub extends BaseEntity<string> implements IScript {
     return Boolean(this.code.revert);
   }
 
-  public withLevel(value?: RecommendationLevel): ScriptStub {
+  public withLevel(value: RecommendationLevel | undefined): this {
     this.level = value;
     return this;
   }
 
-  public withCode(value: string): ScriptStub {
-    this.code.execute = value;
+  public withCode(value: string): this {
+    this.code = {
+      execute: value,
+      revert: this.code.revert,
+    };
     return this;
   }
 
-  public withName(name: string): ScriptStub {
+  public withName(name: string): this {
     this.name = name;
     return this;
   }
 
-  public withRevertCode(revertCode: string): ScriptStub {
-    this.code.revert = revertCode;
+  public withRevertCode(revertCode?: string): this {
+    this.code = {
+      execute: this.code.execute,
+      revert: revertCode,
+    };
     return this;
   }
 

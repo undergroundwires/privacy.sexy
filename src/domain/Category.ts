@@ -3,14 +3,14 @@ import { IScript } from './IScript';
 import { ICategory } from './ICategory';
 
 export class Category extends BaseEntity<number> implements ICategory {
-  private allSubScripts: ReadonlyArray<IScript> = undefined;
+  private allSubScripts?: ReadonlyArray<IScript> = undefined;
 
   constructor(
     id: number,
     public readonly name: string,
     public readonly docs: ReadonlyArray<string>,
-    public readonly subCategories?: ReadonlyArray<ICategory>,
-    public readonly scripts?: ReadonlyArray<IScript>,
+    public readonly subCategories: ReadonlyArray<ICategory>,
+    public readonly scripts: ReadonlyArray<IScript>,
   ) {
     super(id);
     validateCategory(this);
@@ -39,10 +39,7 @@ function validateCategory(category: ICategory) {
   if (!category.name) {
     throw new Error('missing name');
   }
-  if (
-    (!category.subCategories || category.subCategories.length === 0)
-      && (!category.scripts || category.scripts.length === 0)
-  ) {
+  if (category.subCategories.length === 0 && category.scripts.length === 0) {
     throw new Error('A category must have at least one sub-category or script');
   }
 }

@@ -11,7 +11,9 @@ export function validateRuntimeSanity(
   options: ISanityCheckOptions,
   validators: readonly ISanityValidator[] = DefaultSanityValidators,
 ): void {
-  validateContext(options, validators);
+  if (!validators.length) {
+    throw new Error('missing validators');
+  }
   const errorMessages = validators.reduce((errors, validator) => {
     if (validator.shouldValidate(options)) {
       const errorMessage = getErrorMessage(validator);
@@ -23,21 +25,6 @@ export function validateRuntimeSanity(
   }, new Array<string>());
   if (errorMessages.length > 0) {
     throw new Error(`Sanity check failed.\n${errorMessages.join('\n---\n')}`);
-  }
-}
-
-function validateContext(
-  options: ISanityCheckOptions,
-  validators: readonly ISanityValidator[],
-) {
-  if (!options) {
-    throw new Error('missing options');
-  }
-  if (!validators?.length) {
-    throw new Error('missing validators');
-  }
-  if (validators.some((validator) => !validator)) {
-    throw new Error('missing validator in validators');
   }
 }
 

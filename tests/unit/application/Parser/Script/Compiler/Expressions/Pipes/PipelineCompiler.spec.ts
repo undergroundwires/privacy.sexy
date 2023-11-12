@@ -10,21 +10,23 @@ describe('PipelineCompiler', () => {
   describe('compile', () => {
     describe('throws for invalid arguments', () => {
       interface ITestCase {
-        name: string;
-        act: (test: PipelineTestRunner) => PipelineTestRunner;
-        expectedError: string;
+        readonly name: string;
+        readonly act: (test: PipelineTestRunner) => PipelineTestRunner;
+        readonly expectedError: string;
       }
       const testCases: ITestCase[] = [
-        ...getAbsentStringTestCases().map((testCase) => ({
-          name: `"value" is ${testCase.valueName}`,
-          act: (test) => test.withValue(testCase.absentValue),
-          expectedError: 'missing value',
-        })),
-        ...getAbsentStringTestCases().map((testCase) => ({
-          name: `"pipeline" is ${testCase.valueName}`,
-          act: (test) => test.withPipeline(testCase.absentValue),
-          expectedError: 'missing pipeline',
-        })),
+        ...getAbsentStringTestCases({ excludeNull: true, excludeUndefined: true })
+          .map((testCase) => ({
+            name: `"value" is ${testCase.valueName}`,
+            act: (test) => test.withValue(testCase.absentValue),
+            expectedError: 'missing value',
+          })),
+        ...getAbsentStringTestCases({ excludeNull: true, excludeUndefined: true })
+          .map((testCase) => ({
+            name: `"pipeline" is ${testCase.valueName}`,
+            act: (test) => test.withPipeline(testCase.absentValue),
+            expectedError: 'missing pipeline',
+          })),
         {
           name: '"pipeline" does not start with pipe',
           act: (test) => test.withPipeline('pipeline |'),

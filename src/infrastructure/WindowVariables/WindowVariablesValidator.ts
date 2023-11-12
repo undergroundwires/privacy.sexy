@@ -17,7 +17,7 @@ export function validateWindowVariables(variables: Partial<WindowVariables>) {
 
 function* testEveryProperty(variables: Partial<WindowVariables>): Iterable<string> {
   const tests: {
-    [K in PropertyKeys<WindowVariables>]: boolean;
+    [K in PropertyKeys<Required<WindowVariables>>]: boolean;
   } = {
     os: testOperatingSystem(variables.os),
     isDesktop: testIsDesktop(variables.isDesktop),

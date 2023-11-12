@@ -1,7 +1,7 @@
 import { DelayScheduler } from '@/presentation/components/Scripts/View/Tree/TreeView/Rendering/DelayScheduler';
 
 export class DelaySchedulerStub implements DelayScheduler {
-  public nextCallback: () => void | undefined = undefined;
+  public nextCallback: (() => void) | undefined = undefined;
 
   public scheduleNext(callback: () => void): void {
     this.nextCallback = callback;

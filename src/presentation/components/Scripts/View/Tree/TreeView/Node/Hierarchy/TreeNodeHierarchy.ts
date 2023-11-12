@@ -25,7 +25,7 @@ export class TreeNodeHierarchy implements HierarchyAccess {
     this.children = children;
   }
 
-  public setParent(parent: TreeNode): void {
+  public setParent(parent: TreeNode | undefined): void {
     this.parent = parent;
   }
 }

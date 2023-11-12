@@ -2,7 +2,7 @@ import { describe, it } from 'vitest';
 import { NodeDataError, INodeDataErrorContext } from '@/application/Parser/NodeValidation/NodeDataError';
 import { NodeData } from '@/application/Parser/NodeValidation/NodeData';
 import { getAbsentObjectTestCases, getAbsentStringTestCases, itEachAbsentTestCase } from '@tests/unit/shared/TestCases/AbsentTests';
-import { expectDeepThrowsError } from '@tests/unit/shared/Assertions/ExpectDeepThrowsError';
+import { expectDeepThrowsError } from '@tests/shared/Assertions/ExpectDeepThrowsError';
 
 export interface ITestScenario {
   readonly act: () => void;

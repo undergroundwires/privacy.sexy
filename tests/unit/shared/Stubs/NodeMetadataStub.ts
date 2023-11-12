@@ -9,7 +9,7 @@ export class NodeMetadataStub implements NodeMetadata {
 
   public readonly docs: readonly string[] = [];
 
-  public children?: readonly NodeMetadata[] = [];
+  public children: readonly NodeMetadata[] = [];
 
   public readonly type: NodeType = NodeType.Category;
 

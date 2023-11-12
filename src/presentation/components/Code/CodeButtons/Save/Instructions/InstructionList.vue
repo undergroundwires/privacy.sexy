@@ -86,12 +86,9 @@ export default defineComponent({
       () => info.getDownloadUrl(OperatingSystem.macOS),
     );
 
-    const osName = computed<string>(() => {
-      if (!props.data) {
-        throw new Error('missing data');
-      }
-      return renderOsName(props.data.operatingSystem);
-    });
+    const osName = computed<string>(
+      () => renderOsName(props.data.operatingSystem),
+    );
 
     return {
       appName,

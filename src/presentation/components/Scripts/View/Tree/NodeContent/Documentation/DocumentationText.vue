@@ -42,7 +42,7 @@ function renderText(docs: readonly string[] | undefined): string {
 }
 
 function renderAsMarkdownListItem(content: string): string {
-  if (!content || content.length === 0) {
+  if (content.length === 0) {
     throw new Error('missing content');
   }
   const lines = content.split(/\r\n|\r|\n/);

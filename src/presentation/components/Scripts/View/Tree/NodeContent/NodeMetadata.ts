@@ -8,6 +8,6 @@ export interface NodeMetadata {
   readonly text: string;
   readonly isReversible: boolean;
   readonly docs: ReadonlyArray<string>;
-  readonly children?: ReadonlyArray<NodeMetadata>;
+  readonly children: ReadonlyArray<NodeMetadata>;
   readonly type: NodeType;
 }

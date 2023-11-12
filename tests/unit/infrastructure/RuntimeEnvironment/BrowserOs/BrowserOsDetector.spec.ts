@@ -15,7 +15,7 @@ describe('BrowserOsDetector', () => {
       const actual = sut.detect(userAgent);
       // assert
       expect(actual).to.equal(expected);
-    });
+    }, { excludeNull: true, excludeUndefined: true });
   });
   it('detects as expected', () => {
     BrowserOsTestCases.forEach((testCase) => {
@@ -27,7 +27,7 @@ describe('BrowserOsDetector', () => {
       expect(actual).to.equal(testCase.expectedOs, printMessage());
       function printMessage(): string {
         return `Expected: "${OperatingSystem[testCase.expectedOs]}"\n`
-          + `Actual: "${OperatingSystem[actual]}"\n`
+          + `Actual: "${actual === undefined ? 'undefined' : OperatingSystem[actual]}"\n`
           + `UserAgent: "${testCase.userAgent}"`;
       }
     });

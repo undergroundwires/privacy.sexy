@@ -70,13 +70,14 @@ const appNameCache = new Map<string, string>();
 
 export async function getAppName(projectDir: string): Promise<string> {
   if (!projectDir) { throw new Error('missing project directory'); }
-  if (appNameCache.has(projectDir)) {
-    return appNameCache.get(projectDir);
+  const cachedName = appNameCache.get(projectDir);
+  if (cachedName) {
+    return cachedName;
   }
   const packageData = await readPackageJsonContents(projectDir);
   try {
     const packageJson = JSON.parse(packageData);
-    const name = packageJson.name as string;
+    const name = packageJson.name as string | undefined;
     if (!name) {
       return die(`The \`package.json\` file doesn't specify a name: ${packageData}`);
     }

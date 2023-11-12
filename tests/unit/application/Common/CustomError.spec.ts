@@ -1,12 +1,12 @@
 import {
   describe, it, afterEach, expect,
 } from 'vitest';
-import { CustomError, Environment } from '@/application/Common/CustomError';
+import { CustomError, PlatformErrorPrototypeManipulation } from '@/application/Common/CustomError';
 
 describe('CustomError', () => {
   afterEach(() => {
-    Environment.getSetPrototypeOf = () => Object.setPrototypeOf;
-    Environment.getCaptureStackTrace = () => Error.captureStackTrace;
+    PlatformErrorPrototypeManipulation.getSetPrototypeOf = () => Object.setPrototypeOf;
+    PlatformErrorPrototypeManipulation.getCaptureStackTrace = () => Error.captureStackTrace;
   });
   describe('sets members as expected', () => {
     it('`name`', () => {
@@ -39,7 +39,7 @@ describe('CustomError', () => {
       it('sets using `getCaptureStackTrace` if available', () => {
         // arrange
         const mockStackTrace = 'mocked stack trace';
-        Environment.getCaptureStackTrace = () => (error) => {
+        PlatformErrorPrototypeManipulation.getCaptureStackTrace = () => (error) => {
           (error as Error).stack = mockStackTrace;
         };
         // act
@@ -102,7 +102,7 @@ describe('CustomError', () => {
     describe('Object.setPrototypeOf', () => {
       it('does not throw if unavailable', () => {
         // arrange
-        Environment.getSetPrototypeOf = () => undefined;
+        PlatformErrorPrototypeManipulation.getSetPrototypeOf = () => undefined;
 
         // act
         const act = () => new CustomErrorConcrete();
@@ -114,7 +114,7 @@ describe('CustomError', () => {
         // arrange
         let wasCalled = false;
         const setPrototypeOf = () => { wasCalled = true; };
-        Environment.getSetPrototypeOf = () => setPrototypeOf;
+        PlatformErrorPrototypeManipulation.getSetPrototypeOf = () => setPrototypeOf;
 
         // act
         // eslint-disable-next-line no-new
@@ -127,7 +127,7 @@ describe('CustomError', () => {
     describe('Error.captureStackTrace', () => {
       it('does not throw if unavailable', () => {
         // arrange
-        Environment.getCaptureStackTrace = () => undefined;
+        PlatformErrorPrototypeManipulation.getCaptureStackTrace = () => undefined;
 
         // act
         const act = () => new CustomErrorConcrete();
@@ -139,7 +139,7 @@ describe('CustomError', () => {
         // arrange
         let wasCalled = false;
         const captureStackTrace = () => { wasCalled = true; };
-        Environment.getCaptureStackTrace = () => captureStackTrace;
+        PlatformErrorPrototypeManipulation.getCaptureStackTrace = () => captureStackTrace;
 
         // act
         // eslint-disable-next-line no-new

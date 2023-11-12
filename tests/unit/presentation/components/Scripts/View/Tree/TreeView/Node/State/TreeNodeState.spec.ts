@@ -4,6 +4,7 @@ import { TreeNodeStateDescriptor } from '@/presentation/components/Scripts/View/
 import { TreeNodeCheckState } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/CheckState';
 import { NodeStateChangedEvent, TreeNodeStateTransaction } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateAccess';
 import { PropertyKeys } from '@/TypeHelpers';
+import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 describe('TreeNodeState', () => {
   describe('beginTransaction', () => {
@@ -37,14 +38,14 @@ describe('TreeNodeState', () => {
       const transaction = treeNodeState
         .beginTransaction()
         .withCheckState(TreeNodeCheckState.Checked);
-      let notifiedEvent: NodeStateChangedEvent;
+      let notifiedEvent: NodeStateChangedEvent | undefined;
       // act
       treeNodeState.changed.on((event) => {
         notifiedEvent = event;
       });
       treeNodeState.commitTransaction(transaction);
       // assert
-      expect(notifiedEvent).to.not.equal(undefined);
+      expectExists(notifiedEvent);
       expect(notifiedEvent.oldState.checkState).to.equal(TreeNodeCheckState.Unchecked);
       expect(notifiedEvent.newState.checkState).to.equal(TreeNodeCheckState.Checked);
     });

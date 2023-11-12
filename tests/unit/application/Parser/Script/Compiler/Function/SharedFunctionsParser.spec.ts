@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import type { FunctionData } from '@/application/collections/';
+import type { FunctionData, CodeInstruction } from '@/application/collections/';
 import { ISharedFunction } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
 import { SharedFunctionsParser } from '@/application/Parser/Script/Compiler/Function/SharedFunctionsParser';
-import { FunctionDataStub } from '@tests/unit/shared/Stubs/FunctionDataStub';
+import { createFunctionDataWithCode, createFunctionDataWithoutCallOrCode } from '@tests/unit/shared/Stubs/FunctionDataStub';
 import { ParameterDefinitionDataStub } from '@tests/unit/shared/Stubs/ParameterDefinitionDataStub';
 import { FunctionParameter } from '@/application/Parser/Script/Compiler/Function/Parameter/FunctionParameter';
 import { FunctionCallDataStub } from '@tests/unit/shared/Stubs/FunctionCallDataStub';
-import { itEachAbsentCollectionValue, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
 import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
 import { itIsSingleton } from '@tests/unit/shared/TestCases/SingletonTests';
@@ -14,6 +14,8 @@ import { CodeValidatorStub } from '@tests/unit/shared/Stubs/CodeValidatorStub';
 import { ICodeValidator } from '@/application/Parser/Script/Validation/ICodeValidator';
 import { NoEmptyLines } from '@/application/Parser/Script/Validation/Rules/NoEmptyLines';
 import { NoDuplicatedLines } from '@/application/Parser/Script/Validation/Rules/NoDuplicatedLines';
+import { collectExceptionMessage } from '@tests/unit/shared/ExceptionCollector';
+import { expectCallsFunctionBody, expectCodeFunctionBody } from './ExpectFunctionBodyType';
 
 describe('SharedFunctionsParser', () => {
   describe('instance', () => {
@@ -23,41 +25,14 @@ describe('SharedFunctionsParser', () => {
     });
   });
   describe('parseFunctions', () => {
-    describe('throws if syntax is missing', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing syntax';
-        const syntax = absentValue;
-        // act
-        const act = () => new ParseFunctionsCallerWithDefaults()
-          .withSyntax(syntax)
-          .parseFunctions();
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
     describe('validates functions', () => {
-      describe('throws if one of the functions is undefined', () => {
-        itEachAbsentObjectValue((absentValue) => {
-          // arrange
-          const expectedError = 'some functions are undefined';
-          const functions = [FunctionDataStub.createWithCode(), absentValue];
-          const sut = new ParseFunctionsCallerWithDefaults();
-          // act
-          const act = () => sut
-            .withFunctions(functions)
-            .parseFunctions();
-          // assert
-          expect(act).to.throw(expectedError);
-        });
-      });
       it('throws when functions have same names', () => {
         // arrange
         const name = 'same-func-name';
         const expectedError = `duplicate function name: "${name}"`;
         const functions = [
-          FunctionDataStub.createWithCode().withName(name),
-          FunctionDataStub.createWithCode().withName(name),
+          createFunctionDataWithCode().withName(name),
+          createFunctionDataWithCode().withName(name),
         ];
         // act
         const act = () => new ParseFunctionsCallerWithDefaults()
@@ -72,8 +47,8 @@ describe('SharedFunctionsParser', () => {
           const code = 'duplicate-code';
           const expectedError = `duplicate "code" in functions: "${code}"`;
           const functions = [
-            FunctionDataStub.createWithoutCallOrCodes().withName('func-1').withCode(code),
-            FunctionDataStub.createWithoutCallOrCodes().withName('func-2').withCode(code),
+            createFunctionDataWithoutCallOrCode().withName('func-1').withCode(code),
+            createFunctionDataWithoutCallOrCode().withName('func-2').withCode(code),
           ];
           // act
           const act = () => new ParseFunctionsCallerWithDefaults()
@@ -87,9 +62,9 @@ describe('SharedFunctionsParser', () => {
           const revertCode = 'duplicate-revert-code';
           const expectedError = `duplicate "revertCode" in functions: "${revertCode}"`;
           const functions = [
-            FunctionDataStub.createWithoutCallOrCodes()
+            createFunctionDataWithoutCallOrCode()
               .withName('func-1').withCode('code-1').withRevertCode(revertCode),
-            FunctionDataStub.createWithoutCallOrCodes()
+            createFunctionDataWithoutCallOrCode()
               .withName('func-2').withCode('code-2').withRevertCode(revertCode),
           ];
           // act
@@ -105,7 +80,7 @@ describe('SharedFunctionsParser', () => {
           // arrange
           const functionName = 'invalid-function';
           const expectedError = `both "code" and "call" are defined in "${functionName}"`;
-          const invalidFunction = FunctionDataStub.createWithoutCallOrCodes()
+          const invalidFunction = createFunctionDataWithoutCallOrCode()
             .withName(functionName)
             .withCode('code')
             .withMockCall();
@@ -120,7 +95,7 @@ describe('SharedFunctionsParser', () => {
           // arrange
           const functionName = 'invalid-function';
           const expectedError = `neither "code" or "call" is defined in "${functionName}"`;
-          const invalidFunction = FunctionDataStub.createWithoutCallOrCodes()
+          const invalidFunction = createFunctionDataWithoutCallOrCode()
             .withName(functionName);
           // act
           const act = () => new ParseFunctionsCallerWithDefaults()
@@ -144,8 +119,7 @@ describe('SharedFunctionsParser', () => {
         for (const testCase of testCases) {
           it(testCase.state, () => {
             // arrange
-            const func = FunctionDataStub
-              .createWithCall()
+            const func = createFunctionDataWithCode()
               .withParametersObject(testCase.invalidType as never);
             const expectedError = `parameters must be an array of objects in function(s) "${func.name}"`;
             // act
@@ -160,8 +134,7 @@ describe('SharedFunctionsParser', () => {
       it('validates function code as expected when code is defined', () => {
         // arrange
         const expectedRules = [NoEmptyLines, NoDuplicatedLines];
-        const functionData = FunctionDataStub
-          .createWithCode()
+        const functionData = createFunctionDataWithCode()
           .withCode('expected code to be validated')
           .withRevertCode('expected revert code to be validated');
         const validator = new CodeValidatorStub();
@@ -180,13 +153,11 @@ describe('SharedFunctionsParser', () => {
         // arrange
         const invalidParameterName = 'invalid function p@r4meter name';
         const functionName = 'functionName';
-        let parameterException: Error;
-        try {
-        // eslint-disable-next-line no-new
-          new FunctionParameter(invalidParameterName, false);
-        } catch (e) { parameterException = e; }
-        const expectedError = `"${functionName}": ${parameterException.message}`;
-        const functionData = FunctionDataStub.createWithCode()
+        const message = collectExceptionMessage(
+          () => new FunctionParameter(invalidParameterName, false),
+        );
+        const expectedError = `"${functionName}": ${message}`;
+        const functionData = createFunctionDataWithCode()
           .withName(functionName)
           .withParameters(new ParameterDefinitionDataStub().withName(invalidParameterName));
 
@@ -200,21 +171,20 @@ describe('SharedFunctionsParser', () => {
       });
     });
     describe('given empty functions, returns empty collection', () => {
-      itEachAbsentCollectionValue((absentValue) => {
+      itEachAbsentCollectionValue<FunctionData>((absentValue) => {
         // act
         const actual = new ParseFunctionsCallerWithDefaults()
           .withFunctions(absentValue)
           .parseFunctions();
         // assert
         expect(actual).to.not.equal(undefined);
-      });
+      }, { excludeUndefined: true, excludeNull: true });
     });
     describe('function with inline code', () => {
       it('parses single function with code as expected', () => {
         // arrange
         const name = 'function-name';
-        const expected = FunctionDataStub
-          .createWithoutCallOrCodes()
+        const expected = createFunctionDataWithoutCallOrCode()
           .withName(name)
           .withCode('expected-code')
           .withRevertCode('expected-revert-code')
@@ -239,7 +209,7 @@ describe('SharedFunctionsParser', () => {
         const call = new FunctionCallDataStub()
           .withName('calleeFunction')
           .withParameters({ test: 'value' });
-        const data = FunctionDataStub.createWithoutCallOrCodes()
+        const data = createFunctionDataWithoutCallOrCode()
           .withName('caller-function')
           .withCall(call);
         // act
@@ -260,10 +230,10 @@ describe('SharedFunctionsParser', () => {
         const call2 = new FunctionCallDataStub()
           .withName('calleeFunction2')
           .withParameters({ param2: 'value2' });
-        const caller1 = FunctionDataStub.createWithoutCallOrCodes()
+        const caller1 = createFunctionDataWithoutCallOrCode()
           .withName('caller-function')
           .withCall(call1);
-        const caller2 = FunctionDataStub.createWithoutCallOrCodes()
+        const caller2 = createFunctionDataWithoutCallOrCode()
           .withName('caller-function-2')
           .withCall([call1, call2]);
         // act
@@ -289,7 +259,7 @@ class ParseFunctionsCallerWithDefaults {
 
   private codeValidator: ICodeValidator = new CodeValidatorStub();
 
-  private functions: readonly FunctionData[] = [FunctionDataStub.createWithCode()];
+  private functions: readonly FunctionData[] = [createFunctionDataWithCode()];
 
   public withSyntax(syntax: ILanguageSyntax) {
     this.syntax = syntax;
@@ -312,11 +282,11 @@ class ParseFunctionsCallerWithDefaults {
   }
 }
 
-function expectEqualName(expected: FunctionDataStub, actual: ISharedFunction): void {
+function expectEqualName(expected: FunctionData, actual: ISharedFunction): void {
   expect(actual.name).to.equal(expected.name);
 }
 
-function expectEqualParameters(expected: FunctionDataStub, actual: ISharedFunction): void {
+function expectEqualParameters(expected: FunctionData, actual: ISharedFunction): void {
   const actualSimplifiedParameters = actual.parameters.all.map((parameter) => ({
     name: parameter.name,
     optional: parameter.isOptional,
@@ -329,10 +299,11 @@ function expectEqualParameters(expected: FunctionDataStub, actual: ISharedFuncti
 }
 
 function expectEqualFunctionWithInlineCode(
-  expected: FunctionData,
+  expected: CodeInstruction,
   actual: ISharedFunction,
 ): void {
   expect(actual.body, `function "${actual.name}" has no body`);
+  expectCodeFunctionBody(actual.body);
   expect(actual.body.code, `function "${actual.name}" has no code`);
   expect(actual.body.code.execute).to.equal(expected.code);
   expect(actual.body.code.revert).to.equal(expected.revertCode);
@@ -343,6 +314,7 @@ function expectEqualCalls(
   actual: ISharedFunction,
 ) {
   expect(actual.body, `function "${actual.name}" has no body`);
+  expectCallsFunctionBody(actual.body);
   expect(actual.body.calls, `function "${actual.name}" has no calls`);
   const actualSimplifiedCalls = actual.body.calls
     .map((call) => ({

@@ -10,11 +10,11 @@ export function throttle(
 }
 
 // Allows aligning with both NodeJs (NodeJs.Timeout) and Window type (number)
-export type TimeoutType = ReturnType<typeof setTimeout>;
+export type Timeout = ReturnType<typeof setTimeout>;
 
 export interface ITimer {
-  setTimeout: (callback: () => void, ms: number) => TimeoutType;
-  clearTimeout: (timeoutId: TimeoutType) => void;
+  setTimeout: (callback: () => void, ms: number) => Timeout;
+  clearTimeout: (timeoutId: Timeout) => void;
   dateNow(): number;
 }
 
@@ -29,7 +29,7 @@ interface IThrottler {
 }
 
 class Throttler implements IThrottler {
-  private queuedExecutionId: TimeoutType;
+  private queuedExecutionId: Timeout | undefined;
 
   private previouslyRun: number;
 
@@ -38,10 +38,8 @@ class Throttler implements IThrottler {
     private readonly waitInMs: number,
     private readonly callback: CallbackType,
   ) {
-    if (!timer) { throw new Error('missing timer'); }
     if (!waitInMs) { throw new Error('missing delay'); }
     if (waitInMs < 0) { throw new Error('negative delay'); }
-    if (!callback) { throw new Error('missing callback'); }
   }
 
   public invoke(...args: unknown[]): void {

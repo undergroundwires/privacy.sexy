@@ -7,9 +7,6 @@ export abstract class FactoryValidator<T> implements ISanityValidator {
   private readonly factory: FactoryFunction<T>;
 
   protected constructor(factory: FactoryFunction<T>) {
-    if (!factory) {
-      throw new Error('missing factory');
-    }
     this.factory = factory;
   }
 

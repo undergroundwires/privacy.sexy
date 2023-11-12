@@ -19,13 +19,15 @@ import { FilterChangeDetailsStub } from '@tests/unit/shared/Stubs/FilterChangeDe
 import { IFilterChangeDetails } from '@/application/Context/State/Filter/Event/IFilterChangeDetails';
 import { CategoryCollectionStateStub } from '@tests/unit/shared/Stubs/CategoryCollectionStateStub';
 import { NodeMetadataStub } from '@tests/unit/shared/Stubs/NodeMetadataStub';
+import { expectExists } from '@tests/shared/Assertions/ExpectExists';
+import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
 
 describe('UseTreeViewFilterEvent', () => {
   describe('initially', () => {
-    testFilterEvents((filterChange) => {
+    testFilterEvents((_, filterResult) => {
       // arrange
       const useCollectionStateStub = new UseCollectionStateStub()
-        .withFilterResult(filterChange.filter);
+        .withFilterResult(filterResult);
       // act
       const { returnObject } = mountWrapperComponent({
         useStateStub: useCollectionStateStub,
@@ -84,10 +86,10 @@ describe('UseTreeViewFilterEvent', () => {
   });
   describe('on collection state changed', () => {
     describe('sets initial filter from new collection state', () => {
-      testFilterEvents((filterChange) => {
+      testFilterEvents((_, filterResult) => {
         // arrange
         const newCollection = new CategoryCollectionStateStub()
-          .withFilter(new UserFilterStub().withCurrentFilterResult(filterChange.filter));
+          .withFilter(new UserFilterStub().withCurrentFilterResult(filterResult));
         const initialCollection = new CategoryCollectionStateStub();
         const useCollectionStateStub = new UseCollectionStateStub()
           .withState(initialCollection);
@@ -137,7 +139,7 @@ describe('UseTreeViewFilterEvent', () => {
 function mountWrapperComponent(options?: {
   readonly useStateStub?: UseCollectionStateStub,
 }) {
-  const useStateStub = options.useStateStub ?? new UseCollectionStateStub();
+  const useStateStub = options?.useStateStub ?? new UseCollectionStateStub();
   let returnObject: ReturnType<typeof useTreeViewFilterEvent> | undefined;
 
   shallowMount({
@@ -156,14 +158,21 @@ function mountWrapperComponent(options?: {
     },
   });
 
+  if (!returnObject) {
+    throw new Error('missing hook result');
+  }
+
   return {
     returnObject,
     useStateStub,
   };
 }
 
-type FilterChangeTestScenario = (result: IFilterChangeDetails) => Promise<{
-  readonly event: Ref<TreeViewFilterEvent>,
+type FilterChangeTestScenario = (
+  result: IFilterChangeDetails,
+  filter: IFilterResult | undefined,
+) => Promise<{
+  readonly event: Ref<TreeViewFilterEvent | undefined>,
 }>;
 
 function testFilterEvents(
@@ -184,10 +193,12 @@ function itExpectedFilterRemovedEvent(
     // arrange
     const newFilter = FilterChangeDetailsStub.forClear();
     // act
-    const { event } = await act(newFilter);
+    const { event } = await act(newFilter, undefined);
     // assert
-    expectFilterEventAction(event, TreeViewFilterAction.Removed);
-    expect(event.value.predicate).toBeUndefined();
+    expectExists(event.value);
+    if (event.value.action !== TreeViewFilterAction.Removed) {
+      throw new Error(`Unexpected action: ${TreeViewFilterAction[event.value.action]}.`);
+    }
   });
 }
 
@@ -240,9 +251,12 @@ function itExpectedFilterTriggeredEvent(
         .withCategoryMatches(categoryMatches);
       const filterChange = FilterChangeDetailsStub.forApply(filterResult);
       // act
-      const { event } = await act(filterChange);
+      const { event } = await act(filterChange, filterResult);
       // assert
-      expectFilterEventAction(event, TreeViewFilterAction.Triggered);
+      expectExists(event.value);
+      if (event.value.action !== TreeViewFilterAction.Triggered) {
+        throw new Error(`Unexpected action: ${TreeViewFilterAction[event.value.action]}.`);
+      }
       expect(event.value.predicate).toBeDefined();
       const actualPredicateResult = event.value.predicate(givenNode);
       expect(actualPredicateResult).to.equal(
@@ -269,13 +283,4 @@ function createNode(options: {
     .withHierarchy(options.hasParent
       ? new HierarchyAccessStub().withParent(new TreeNodeStub())
       : new HierarchyAccessStub());
-}
-
-function expectFilterEventAction(
-  event: Ref<TreeViewFilterEvent | undefined>,
-  expectedAction: TreeViewFilterAction,
-) {
-  expect(event).toBeDefined();
-  expect(event.value).toBeDefined();
-  expect(event.value.action).to.equal(expectedAction);
 }

@@ -54,9 +54,6 @@ export function assertInRange<T extends EnumType, TEnumValue extends EnumType>(
   value: TEnumValue,
   enumVariable: EnumVariable<T, TEnumValue>,
 ) {
-  if (value === undefined || value === null) {
-    throw new Error('absent enum value');
-  }
   if (!(value in enumVariable)) {
     throw new RangeError(`enum value "${value}" is out of range`);
   }

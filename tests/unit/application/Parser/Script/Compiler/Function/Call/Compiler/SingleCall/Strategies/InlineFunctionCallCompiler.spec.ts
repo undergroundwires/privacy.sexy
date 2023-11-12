@@ -1,7 +1,6 @@
 import { expect, describe, it } from 'vitest';
 import { InlineFunctionCallCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/SingleCall/Strategies/InlineFunctionCallCompiler';
-import { SharedFunctionStub } from '@tests/unit/shared/Stubs/SharedFunctionStub';
-import { FunctionBodyType } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
+import { createSharedFunctionStubWithCode, createSharedFunctionStubWithCalls } from '@tests/unit/shared/Stubs/SharedFunctionStub';
 import { ExpressionsCompilerStub } from '@tests/unit/shared/Stubs/ExpressionsCompilerStub';
 import { IExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/IExpressionsCompiler';
 import { FunctionCallStub } from '@tests/unit/shared/Stubs/FunctionCallStub';
@@ -12,7 +11,7 @@ describe('InlineFunctionCallCompiler', () => {
     it('returns `true` if function has code body', () => {
       // arrange
       const expected = true;
-      const func = new SharedFunctionStub(FunctionBodyType.Code);
+      const func = createSharedFunctionStubWithCode();
       const compiler = new InlineFunctionCallCompilerBuilder()
         .build();
       // act
@@ -23,7 +22,7 @@ describe('InlineFunctionCallCompiler', () => {
     it('returns `false` if function does not have code body', () => {
       // arrange
       const expected = false;
-      const func = new SharedFunctionStub(FunctionBodyType.Calls);
+      const func = createSharedFunctionStubWithCalls();
       const compiler = new InlineFunctionCallCompilerBuilder()
         .build();
       // act
@@ -33,6 +32,19 @@ describe('InlineFunctionCallCompiler', () => {
     });
   });
   describe('compile', () => {
+    it('throws if function body is not code', () => {
+      // arrange
+      const expectedError = 'Unexpected function body type.';
+      const compiler = new InlineFunctionCallCompilerBuilder()
+        .build();
+      // act
+      const act = () => compiler.compileFunction(
+        createSharedFunctionStubWithCalls(),
+        new FunctionCallStub(),
+      );
+      // assert
+      expect(act).to.throw(expectedError);
+    });
     it('compiles expressions with correct arguments', () => {
       // arrange
       const expressionsCompilerStub = new ExpressionsCompilerStub();
@@ -42,7 +54,7 @@ describe('InlineFunctionCallCompiler', () => {
         .build();
       // act
       compiler.compileFunction(
-        new SharedFunctionStub(FunctionBodyType.Code),
+        createSharedFunctionStubWithCode(),
         new FunctionCallStub()
           .withArgumentCollection(expectedArgs),
       );
@@ -50,49 +62,71 @@ describe('InlineFunctionCallCompiler', () => {
       const actualArgs = expressionsCompilerStub.callHistory.map((call) => call.args[1]);
       expect(actualArgs.every((arg) => arg === expectedArgs));
     });
-    it('creates compiled code with compiled `execute`', () => {
-      // arrange
-      const func = new SharedFunctionStub(FunctionBodyType.Code);
-      const args = new FunctionCallArgumentCollectionStub();
-      const expectedCode = 'expected-code';
-      const expressionsCompilerStub = new ExpressionsCompilerStub()
-        .setup({
-          givenCode: func.body.code.execute,
-          givenArgs: args,
-          result: expectedCode,
-        });
-      const compiler = new InlineFunctionCallCompilerBuilder()
-        .withExpressionsCompiler(expressionsCompilerStub)
-        .build();
-      // act
-      const compiledCodes = compiler
-        .compileFunction(func, new FunctionCallStub().withArgumentCollection(args));
-      // assert
-      expect(compiledCodes).to.have.lengthOf(1);
-      const actualCode = compiledCodes[0].code;
-      expect(actualCode).to.equal(expectedCode);
+    describe('execute', () => {
+      it('creates compiled code with compiled `execute`', () => {
+        // arrange
+        const func = createSharedFunctionStubWithCode();
+        const args = new FunctionCallArgumentCollectionStub();
+        const expectedCode = 'expected-code';
+        const expressionsCompilerStub = new ExpressionsCompilerStub()
+          .setup({
+            givenCode: func.body.code.execute,
+            givenArgs: args,
+            result: expectedCode,
+          });
+        const compiler = new InlineFunctionCallCompilerBuilder()
+          .withExpressionsCompiler(expressionsCompilerStub)
+          .build();
+        // act
+        const compiledCodes = compiler
+          .compileFunction(func, new FunctionCallStub().withArgumentCollection(args));
+        // assert
+        expect(compiledCodes).to.have.lengthOf(1);
+        const actualCode = compiledCodes[0].code;
+        expect(actualCode).to.equal(expectedCode);
+      });
     });
-    it('creates compiled revert code with compiled `revert`', () => {
-      // arrange
-      const func = new SharedFunctionStub(FunctionBodyType.Code);
-      const args = new FunctionCallArgumentCollectionStub();
-      const expectedRevertCode = 'expected-revert-code';
-      const expressionsCompilerStub = new ExpressionsCompilerStub()
-        .setup({
-          givenCode: func.body.code.revert,
-          givenArgs: args,
-          result: expectedRevertCode,
-        });
-      const compiler = new InlineFunctionCallCompilerBuilder()
-        .withExpressionsCompiler(expressionsCompilerStub)
-        .build();
-      // act
-      const compiledCodes = compiler
-        .compileFunction(func, new FunctionCallStub().withArgumentCollection(args));
-      // assert
-      expect(compiledCodes).to.have.lengthOf(1);
-      const actualRevertCode = compiledCodes[0].revertCode;
-      expect(actualRevertCode).to.equal(expectedRevertCode);
+    describe('revert', () => {
+      it('compiles to `undefined` when given `undefined`', () => {
+        // arrange
+        const expected = undefined;
+        const revertCode = undefined;
+        const func = createSharedFunctionStubWithCode()
+          .withRevertCode(revertCode);
+        const compiler = new InlineFunctionCallCompilerBuilder()
+          .build();
+        // act
+        const compiledCodes = compiler
+          .compileFunction(func, new FunctionCallStub());
+        // assert
+        expect(compiledCodes).to.have.lengthOf(1);
+        const actualRevertCode = compiledCodes[0].revertCode;
+        expect(actualRevertCode).to.equal(expected);
+      });
+      it('creates compiled revert code with compiled `revert`', () => {
+        // arrange
+        const revertCode = 'revert-code-input';
+        const func = createSharedFunctionStubWithCode()
+          .withRevertCode(revertCode);
+        const args = new FunctionCallArgumentCollectionStub();
+        const expectedRevertCode = 'expected-revert-code';
+        const expressionsCompilerStub = new ExpressionsCompilerStub()
+          .setup({
+            givenCode: revertCode,
+            givenArgs: args,
+            result: expectedRevertCode,
+          });
+        const compiler = new InlineFunctionCallCompilerBuilder()
+          .withExpressionsCompiler(expressionsCompilerStub)
+          .build();
+        // act
+        const compiledCodes = compiler
+          .compileFunction(func, new FunctionCallStub().withArgumentCollection(args));
+        // assert
+        expect(compiledCodes).to.have.lengthOf(1);
+        const actualRevertCode = compiledCodes[0].revertCode;
+        expect(actualRevertCode).to.equal(expectedRevertCode);
+      });
     });
   });
 });

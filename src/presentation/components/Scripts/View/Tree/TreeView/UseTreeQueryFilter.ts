@@ -14,6 +14,7 @@ export function useTreeQueryFilter(
   const { nodes } = useCurrentTreeNodes(treeRootRef);
 
   let isFiltering = false;
+
   const statesBeforeFiltering = new NodeStateRestorer();
   statesBeforeFiltering.saveStateBeforeFilter(nodes.value);
 
@@ -35,7 +36,7 @@ export function useTreeQueryFilter(
     currentNodes.flattenedNodes.forEach((node: TreeNode) => {
       let transaction = node.state.beginTransaction()
         .withMatchState(false);
-      transaction = statesBeforeFiltering.applyOriginalState(node, transaction);
+      transaction = statesBeforeFiltering.applyStateBeforeFilter(node, transaction);
       node.state.commitTransaction(transaction);
     });
     statesBeforeFiltering.clear();
@@ -150,18 +151,20 @@ class NodeStateRestorer {
       });
   }
 
-  public applyOriginalState(
+  public applyStateBeforeFilter(
     node: TreeNode,
     transaction: TreeNodeStateTransaction,
   ): TreeNodeStateTransaction {
-    if (!this.originalStates.has(node)) {
+    const originalState = this.originalStates.get(node);
+    if (!originalState) {
       return transaction;
     }
-    const originalState = this.originalStates.get(node);
     if (originalState.isExpanded !== undefined) {
       transaction = transaction.withExpansionState(originalState.isExpanded);
     }
-    transaction = transaction.withVisibilityState(originalState.isVisible);
+    if (originalState.isVisible !== undefined) {
+      transaction = transaction.withVisibilityState(originalState.isVisible);
+    }
     return transaction;
   }
 
@@ -185,18 +188,13 @@ function setupWatchers(options: {
       options.nodesRef,
     ],
     ([filterEvent, nodes]) => {
-      if (!filterEvent) {
+      if (filterEvent === undefined) {
         return;
       }
-      switch (filterEvent.action) {
-        case TreeViewFilterAction.Triggered:
-          options.onFilterTrigger(filterEvent.predicate, nodes);
-          break;
-        case TreeViewFilterAction.Removed:
-          options.onFilterReset();
-          break;
-        default:
-          throw new Error(`Unknown action: ${TreeViewFilterAction[filterEvent.action]}`);
+      if (filterEvent.action === TreeViewFilterAction.Triggered) {
+        options.onFilterTrigger(filterEvent.predicate, nodes);
+      } else {
+        options.onFilterReset();
       }
     },
     { immediate: true },

@@ -11,7 +11,7 @@ describe('WindowInjectedLogger', () => {
       // arrange
       const expectedError = 'missing log';
       const windowVariables = new WindowVariablesStub()
-        .withLog(absentValue);
+        .withLog(absentValue as never);
       // act
       const act = () => new WindowInjectedLogger(windowVariables);
       // assert

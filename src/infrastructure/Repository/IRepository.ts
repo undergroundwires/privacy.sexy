@@ -3,7 +3,7 @@ import { IEntity } from '../Entity/IEntity';
 export interface IRepository<TKey, TEntity extends IEntity<TKey>> {
   readonly length: number;
   getItems(predicate?: (entity: TEntity) => boolean): TEntity[];
-  getById(id: TKey): TEntity | undefined;
+  getById(id: TKey): TEntity;
   addItem(item: TEntity): void;
   addOrUpdateItem(item: TEntity): void;
   removeItem(id: TKey): void;

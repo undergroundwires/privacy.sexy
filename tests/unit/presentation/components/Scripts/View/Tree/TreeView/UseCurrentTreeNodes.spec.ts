@@ -59,7 +59,7 @@ describe('useCurrentTreeNodes', () => {
 });
 
 function mountWrapperComponent(treeRootRef: Ref<TreeRoot>) {
-  let returnObject: ReturnType<typeof useCurrentTreeNodes>;
+  let returnObject: ReturnType<typeof useCurrentTreeNodes> | undefined;
   const wrapper = shallowMount(
     defineComponent({
       setup() {
@@ -76,6 +76,9 @@ function mountWrapperComponent(treeRootRef: Ref<TreeRoot>) {
       },
     },
   );
+  if (!returnObject) {
+    throw new Error('missing hook result');
+  }
   return {
     wrapper,
     returnObject,

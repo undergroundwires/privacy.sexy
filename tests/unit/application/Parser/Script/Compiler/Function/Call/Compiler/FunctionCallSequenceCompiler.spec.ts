@@ -2,7 +2,7 @@
 import { describe, it, expect } from 'vitest';
 import { FunctionCallSequenceCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/FunctionCallSequenceCompiler';
 import { itIsSingleton } from '@tests/unit/shared/TestCases/SingletonTests';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { SingleCallCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/SingleCall/SingleCallCompiler';
 import { CodeSegmentMerger } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CodeSegmentJoin/CodeSegmentMerger';
 import { ISharedFunctionCollection } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionCollection';
@@ -13,6 +13,7 @@ import { SingleCallCompilerStub } from '@tests/unit/shared/Stubs/SingleCallCompi
 import { CodeSegmentMergerStub } from '@tests/unit/shared/Stubs/CodeSegmentMergerStub';
 import { CompiledCodeStub } from '@tests/unit/shared/Stubs/CompiledCodeStub';
 import { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
+import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 describe('FunctionCallSequenceCompiler', () => {
   describe('instance', () => {
@@ -25,7 +26,7 @@ describe('FunctionCallSequenceCompiler', () => {
     describe('parameter validation', () => {
       describe('calls', () => {
         describe('throws with missing call', () => {
-          itEachAbsentObjectValue((absentValue) => {
+          itEachAbsentCollectionValue<FunctionCall>((absentValue) => {
             // arrange
             const expectedError = 'missing calls';
             const calls = absentValue;
@@ -35,38 +36,7 @@ describe('FunctionCallSequenceCompiler', () => {
             const act = () => builder.compileFunctionCalls();
             // assert
             expect(act).to.throw(expectedError);
-          });
-        });
-        describe('throws if call sequence has absent call', () => {
-          itEachAbsentObjectValue((absentValue) => {
-            // arrange
-            const expectedError = 'missing function call';
-            const calls = [
-              new FunctionCallStub(),
-              absentValue,
-            ];
-            const builder = new FunctionCallSequenceCompilerBuilder()
-              .withCalls(calls);
-            // act
-            const act = () => builder.compileFunctionCalls();
-            // assert
-            expect(act).to.throw(expectedError);
-          });
-        });
-      });
-      describe('functions', () => {
-        describe('throws with missing functions', () => {
-          itEachAbsentObjectValue((absentValue) => {
-            // arrange
-            const expectedError = 'missing functions';
-            const functions = absentValue;
-            const builder = new FunctionCallSequenceCompilerBuilder()
-              .withFunctions(functions);
-            // act
-            const act = () => builder.compileFunctionCalls();
-            // assert
-            expect(act).to.throw(expectedError);
-          });
+          }, { excludeUndefined: true, excludeNull: true });
         });
       });
     });
@@ -84,7 +54,7 @@ describe('FunctionCallSequenceCompiler', () => {
           // assert
           expect(singleCallCompilerStub.callHistory).to.have.lengthOf(1);
           const calledMethod = singleCallCompilerStub.callHistory.find((m) => m.methodName === 'compileSingleCall');
-          expect(calledMethod).toBeDefined();
+          expectExists(calledMethod);
           expect(calledMethod.args[0]).to.equal(expectedCall);
         });
         it('with every call', () => {
@@ -118,7 +88,7 @@ describe('FunctionCallSequenceCompiler', () => {
           // assert
           expect(singleCallCompilerStub.callHistory).to.have.lengthOf(1);
           const calledMethod = singleCallCompilerStub.callHistory.find((m) => m.methodName === 'compileSingleCall');
-          expect(calledMethod).toBeDefined();
+          expectExists(calledMethod);
           const actualFunctions = calledMethod.args[1].allFunctions;
           expect(actualFunctions).to.equal(expectedFunctions);
         });
@@ -173,7 +143,9 @@ describe('FunctionCallSequenceCompiler', () => {
         // act
         builder.compileFunctionCalls();
         // assert
-        const [actualSegments] = codeSegmentMergerStub.callHistory.find((c) => c.methodName === 'mergeCodeParts').args;
+        const calledMethod = codeSegmentMergerStub.callHistory.find((c) => c.methodName === 'mergeCodeParts');
+        expectExists(calledMethod);
+        const [actualSegments] = calledMethod.args;
         expect(expectedFlattenedSegments).to.have.lengthOf(actualSegments.length);
         expect(expectedFlattenedSegments).to.have.deep.members(actualSegments);
       });

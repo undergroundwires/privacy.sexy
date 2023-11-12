@@ -5,41 +5,11 @@ import { ApplicationContextStub } from '@tests/unit/shared/Stubs/ApplicationCont
 import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { ApplicationContextChangedEventStub } from '@tests/unit/shared/Stubs/ApplicationContextChangedEventStub';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { IApplicationContext } from '@/application/Context/IApplicationContext';
 import { IEventSubscriptionCollection } from '@/infrastructure/Events/IEventSubscriptionCollection';
 import { EventSubscriptionCollectionStub } from '@tests/unit/shared/Stubs/EventSubscriptionCollectionStub';
 
 describe('UseCollectionState', () => {
-  describe('parameter validation', () => {
-    describe('absent context', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing context';
-        const contextValue = absentValue;
-        // act
-        const act = () => new UseCollectionStateBuilder()
-          .withContext(contextValue)
-          .build();
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
-    describe('absent events', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing events';
-        const eventsValue = absentValue;
-        // act
-        const act = () => new UseCollectionStateBuilder()
-          .withEvents(eventsValue)
-          .build();
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
-  });
-
   describe('listens to contextChanged event', () => {
     it('registers new event listener', () => {
       // arrange
@@ -67,12 +37,13 @@ describe('UseCollectionState', () => {
         .withEvents(events)
         .build();
       const stateModifierEvent = events.mostRecentSubscription;
-      stateModifierEvent.unsubscribe();
+      stateModifierEvent?.unsubscribe();
       context.dispatchContextChange(
         new ApplicationContextChangedEventStub().withNewState(newState),
       );
 
       // assert
+      expect(stateModifierEvent).toBeDefined();
       expect(currentState.value).to.equal(oldState);
     });
   });
@@ -126,17 +97,6 @@ describe('UseCollectionState', () => {
   });
 
   describe('onStateChange', () => {
-    describe('throws when callback is absent', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing state handler';
-        const { onStateChange } = new UseCollectionStateBuilder().build();
-        // act
-        const act = () => onStateChange(absentValue);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
     it('call handler when context state changes', () => {
       // arrange
       const expected = true;
@@ -206,7 +166,7 @@ describe('UseCollectionState', () => {
     it('call handler with new state after state changes', () => {
       // arrange
       const expected = new CategoryCollectionStateStub();
-      let actual: IReadOnlyCategoryCollectionState;
+      let actual: IReadOnlyCategoryCollectionState | undefined;
       const context = new ApplicationContextStub();
       const { onStateChange } = new UseCollectionStateBuilder()
         .withContext(context)
@@ -226,7 +186,7 @@ describe('UseCollectionState', () => {
     it('call handler with old state after state changes', () => {
       // arrange
       const expectedState = new CategoryCollectionStateStub();
-      let actualState: IReadOnlyCategoryCollectionState;
+      let actualState: IReadOnlyCategoryCollectionState | undefined;
       const context = new ApplicationContextStub();
       const { onStateChange } = new UseCollectionStateBuilder()
         .withContext(context)
@@ -271,31 +231,16 @@ describe('UseCollectionState', () => {
         // act
         onStateChange(callback);
         const stateChangeEvent = events.mostRecentSubscription;
-        stateChangeEvent.unsubscribe();
+        stateChangeEvent?.unsubscribe();
         context.dispatchContextChange();
         // assert
+        expect(stateChangeEvent).toBeDefined();
         expect(isCallbackCalled).to.equal(false);
       });
     });
   });
 
   describe('modifyCurrentState', () => {
-    describe('throws when callback is absent', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing state mutator';
-        const context = new ApplicationContextStub();
-        const { modifyCurrentState } = new UseCollectionStateBuilder()
-          .withContext(context)
-          .build();
-
-        // act
-        const act = () => modifyCurrentState(absentValue);
-
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
     it('modifies current collection state', () => {
       // arrange
       const oldOs = OperatingSystem.Windows;
@@ -321,17 +266,6 @@ describe('UseCollectionState', () => {
   });
 
   describe('modifyCurrentContext', () => {
-    describe('throws when callback is absent', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing context mutator';
-        const { modifyCurrentContext } = new UseCollectionStateBuilder().build();
-        // act
-        const act = () => modifyCurrentContext(absentValue);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
     it('modifies the current context', () => {
       // arrange
       const oldState = new CategoryCollectionStateStub()

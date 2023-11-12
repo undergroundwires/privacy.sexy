@@ -19,6 +19,6 @@ export interface ICommandOps {
 
 export interface IFileSystemOps {
   setFilePermissions(filePath: string, mode: string | number): Promise<void>;
-  createDirectory(directoryPath: string, isRecursive?: boolean): Promise<string>;
+  createDirectory(directoryPath: string, isRecursive?: boolean): Promise<void>;
   writeToFile(filePath: string, data: string): Promise<void>;
 }

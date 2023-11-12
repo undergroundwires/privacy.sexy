@@ -6,9 +6,9 @@ export class RuntimeEnvironmentStub implements IRuntimeEnvironment {
 
   public isDesktop = true;
 
-  public os = OperatingSystem.Windows;
+  public os: OperatingSystem | undefined = OperatingSystem.Windows;
 
-  public withOs(os: OperatingSystem): this {
+  public withOs(os: OperatingSystem | undefined): this {
     this.os = os;
     return this;
   }

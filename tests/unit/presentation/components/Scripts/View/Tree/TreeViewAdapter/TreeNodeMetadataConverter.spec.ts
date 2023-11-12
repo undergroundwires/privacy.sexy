@@ -3,8 +3,8 @@ import { getNodeMetadata, convertToNodeInput } from '@/presentation/components/S
 import { NodeMetadataStub } from '@tests/unit/shared/Stubs/NodeMetadataStub';
 import { TreeNodeStub } from '@tests/unit/shared/Stubs/TreeNodeStub';
 import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
-import { ReadOnlyTreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
 import { NodeMetadata } from '@/presentation/components/Scripts/View/Tree/NodeContent/NodeMetadata';
+import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 describe('TreeNodeMetadataConverter', () => {
   describe('getNodeMetadata', () => {
@@ -18,22 +18,11 @@ describe('TreeNodeMetadataConverter', () => {
       // assert
       expect(actual).to.equal(expectedMetadata);
     });
-    describe('throws when tree node is absent', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing tree node';
-        const absentTreeNode = absentValue as ReadOnlyTreeNode;
-        // act
-        const act = () => getNodeMetadata(absentTreeNode);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
     describe('throws when metadata is absent', () => {
       itEachAbsentObjectValue((absentValue) => {
         // arrange
         const expectedError = 'Provided node does not contain the expected metadata.';
-        const absentMetadata = absentValue as NodeMetadata;
+        const absentMetadata = absentValue as NodeMetadata | undefined;
         const treeNode = new TreeNodeStub()
           .withMetadata(absentMetadata);
         // act
@@ -51,17 +40,6 @@ describe('TreeNodeMetadataConverter', () => {
       const actual = convertToNodeInput(expectedMetadata);
       // assert
       expect(actual.data).to.equal(expectedMetadata);
-    });
-    describe('throws when metadata is missing', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing metadata';
-        const absentMetadata = absentValue as NodeMetadata;
-        // act
-        const act = () => convertToNodeInput(absentMetadata);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
     });
     describe('children conversion', () => {
       it('correctly converts metadata without children', () => {
@@ -81,6 +59,7 @@ describe('TreeNodeMetadataConverter', () => {
         // act
         const actual = convertToNodeInput(expected);
         // assert
+        expectExists(actual.children);
         expect(actual.children).to.have.lengthOf(expectedChildren.length);
         expect(actual.children[0].data).to.equal(expectedChildren[0]);
         expect(actual.children[1].data).to.equal(expectedChildren[1]);
@@ -97,10 +76,14 @@ describe('TreeNodeMetadataConverter', () => {
         // act
         const actual = convertToNodeInput(rootNode);
         // assert
+        expectExists(actual.children);
         expect(actual.children).to.have.lengthOf(1);
         expect(actual.children[0].data).to.equal(childLevel1);
-        expect(actual.children[0].children[0].data).to.equal(childLevel2Instance1);
-        expect(actual.children[0].children[1].data).to.equal(childLevel2Instance2);
+        const nestedChildren = actual.children[0].children;
+        expectExists(nestedChildren);
+        expect(nestedChildren).to.have.lengthOf(2);
+        expect(nestedChildren[0].data).to.equal(childLevel2Instance1);
+        expect(nestedChildren[1].data).to.equal(childLevel2Instance2);
       });
     });
   });

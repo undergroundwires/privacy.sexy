@@ -21,11 +21,10 @@ import ModalDialog from '@/presentation/components/Shared/Modal/ModalDialog.vue'
 import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
-import { OperatingSystem } from '@/domain/OperatingSystem';
 import IconButton from '../IconButton.vue';
 import InstructionList from './Instructions/InstructionList.vue';
 import { IInstructionListData } from './Instructions/InstructionListData';
-import { getInstructions, hasInstructions } from './Instructions/InstructionListDataFactory';
+import { getInstructions } from './Instructions/InstructionListDataFactory';
 
 export default defineComponent({
   components: {
@@ -39,7 +38,7 @@ export default defineComponent({
 
     const areInstructionsVisible = ref(false);
     const fileName = computed<string>(() => buildFileName(currentState.value.collection.scripting));
-    const instructions = computed<IInstructionListData | undefined>(() => getDownloadInstructions(
+    const instructions = computed<IInstructionListData | undefined>(() => getInstructions(
       currentState.value.collection.os,
       fileName.value,
     ));
@@ -58,16 +57,6 @@ export default defineComponent({
     };
   },
 });
-
-function getDownloadInstructions(
-  os: OperatingSystem,
-  fileName: string,
-): IInstructionListData | undefined {
-  if (!hasInstructions(os)) {
-    return undefined;
-  }
-  return getInstructions(os, fileName);
-}
 
 function saveCodeToDisk(fileName: string, state: IReadOnlyCategoryCollectionState) {
   const content = state.code.current;

@@ -166,6 +166,17 @@ describe('CodeChangedEvent', () => {
     });
   });
   describe('getScriptPositionInCode', () => {
+    it('throws if script is unknown', () => {
+      // arrange
+      const expectedError = 'Unknown script: Position could not be found for the script';
+      const unknownScript = new ScriptStub('1');
+      const sut = new CodeChangedEventBuilder()
+        .build();
+      // act
+      const act = () => sut.getScriptPositionInCode(unknownScript);
+      // assert
+      expect(act).to.throw(expectedError);
+    });
     it('returns expected position for existing script', () => {
       // arrange
       const script = new ScriptStub('1');

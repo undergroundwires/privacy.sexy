@@ -89,12 +89,9 @@ export default defineComponent({
 
     const cardElement = shallowRef<HTMLElement>();
 
-    const cardTitle = computed<string | undefined>(() => {
-      if (!props.categoryId || !currentState.value) {
-        return undefined;
-      }
-      const category = currentState.value.collection.findCategory(props.categoryId);
-      return category?.name;
+    const cardTitle = computed<string>(() => {
+      const category = currentState.value.collection.getCategory(props.categoryId);
+      return category.name;
     });
 
     function collapse() {
@@ -102,8 +99,12 @@ export default defineComponent({
     }
 
     async function scrollToCard() {
+      const card = cardElement.value;
+      if (!card) {
+        throw new Error('Card is not found');
+      }
       await sleep(400); // wait a bit to allow GUI to render the expanded card
-      cardElement.value.scrollIntoView({ behavior: 'smooth' });
+      card.scrollIntoView({ behavior: 'smooth' });
     }
 
     return {

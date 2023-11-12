@@ -48,8 +48,12 @@ export default defineComponent({
     const firstElement = shallowRef<HTMLElement>();
 
     function onResize(displacementX: number): void {
-      const leftWidth = firstElement.value.offsetWidth + displacementX;
-      firstElement.value.style.width = `${leftWidth}px`;
+      const element = firstElement.value;
+      if (!element) {
+        throw new Error('The element reference ref is not correctly assigned to a DOM element.');
+      }
+      const leftWidth = element.offsetWidth + displacementX;
+      element.style.width = `${leftWidth}px`;
     }
 
     return {

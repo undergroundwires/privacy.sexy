@@ -28,10 +28,7 @@ export function parseCategoryCollection(
 }
 
 function validate(content: CollectionData): void {
-  if (!content) {
-    throw new Error('missing content');
-  }
-  if (!content.actions || content.actions.length <= 0) {
+  if (!content.actions.length) {
     throw new Error('content does not define any action');
   }
 }

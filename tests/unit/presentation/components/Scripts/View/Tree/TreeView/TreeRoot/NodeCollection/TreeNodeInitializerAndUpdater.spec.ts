@@ -6,11 +6,12 @@ import { createTreeNodeParserStub } from '@tests/unit/shared/Stubs/TreeNodeParse
 import { TreeNodeStub } from '@tests/unit/shared/Stubs/TreeNodeStub';
 import { TreeInputNodeDataStub } from '@tests/unit/shared/Stubs/TreeInputNodeDataStub';
 import { QueryableNodes } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/NodeCollection/Query/QueryableNodes';
+import { TreeInputNodeData } from '@/presentation/components/Scripts/View/Tree/TreeView/Bindings/TreeInputNodeData';
 
 describe('TreeNodeInitializerAndUpdater', () => {
   describe('updateRootNodes', () => {
     it('should throw an error if no data is provided', () => {
-      itEachAbsentCollectionValue((absentValue) => {
+      itEachAbsentCollectionValue<TreeInputNodeData>((absentValue) => {
         // arrange
         const expectedError = 'missing data';
         const initializer = new TreeNodeInitializerAndUpdaterBuilder()
@@ -19,7 +20,7 @@ describe('TreeNodeInitializerAndUpdater', () => {
         const act = () => initializer.updateRootNodes(absentValue);
         // expect
         expect(act).to.throw(expectedError);
-      });
+      }, { excludeUndefined: true, excludeNull: true });
     });
 
     it('should update nodes when valid data is provided', () => {

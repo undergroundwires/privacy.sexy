@@ -14,38 +14,13 @@ describe('TreeViewFilterEvent', () => {
       // expect
       expect(event.action).to.equal(expectedAction);
     });
-    describe('returns expected predicate', () => {
-      const testCases: ReadonlyArray<{
-        readonly name: string,
-        readonly givenPredicate: TreeViewFilterPredicate,
-      }> = [
-        {
-          name: 'given a real predicate',
-          givenPredicate: createPredicateStub(),
-        },
-        {
-          name: 'given undefined predicate',
-          givenPredicate: undefined,
-        },
-      ];
-      testCases.forEach(({ name, givenPredicate }) => {
-        it(name, () => {
-          // arrange
-          const expectedPredicate = givenPredicate;
-          // act
-          const event = createFilterTriggeredEvent(expectedPredicate);
-          // assert
-          expect(event.predicate).to.equal(expectedPredicate);
-        });
-      });
-    });
-    it('returns event even without predicate', () => {
+    it('returns expected predicate', () => {
+      // arrange
+      const expectedPredicate = createPredicateStub();
       // act
-      const predicate = null as TreeViewFilterPredicate;
+      const event = createFilterTriggeredEvent(expectedPredicate);
       // assert
-      const event = createFilterTriggeredEvent(predicate);
-      // expect
-      expect(event.predicate).to.equal(predicate);
+      expect(event.predicate).to.equal(expectedPredicate);
     });
   });
 
@@ -57,14 +32,6 @@ describe('TreeViewFilterEvent', () => {
       const event = createFilterRemovedEvent();
       // expect
       expect(event.action).to.equal(expectedAction);
-    });
-    it('returns without predicate', () => {
-      // arrange
-      const expected = undefined;
-      // act
-      const event = createFilterRemovedEvent();
-      // assert
-      expect(event.predicate).to.equal(expected);
     });
   });
 });

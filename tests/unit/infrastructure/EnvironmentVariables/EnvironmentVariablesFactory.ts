@@ -5,6 +5,7 @@ import { itIsSingleton } from '@tests/unit/shared/TestCases/SingletonTests';
 import { EnvironmentVariablesFactory, EnvironmentVariablesValidator } from '@/infrastructure/EnvironmentVariables/EnvironmentVariablesFactory';
 import { ViteEnvironmentVariables } from '@/infrastructure/EnvironmentVariables/Vite/ViteEnvironmentVariables';
 import { IEnvironmentVariables } from '@/infrastructure/EnvironmentVariables/IEnvironmentVariables';
+import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 describe('EnvironmentVariablesFactory', () => {
   describe('instance', () => {
@@ -23,7 +24,7 @@ describe('EnvironmentVariablesFactory', () => {
   });
   it('validates its instance', () => {
     // arrange
-    let validatedInstance: IEnvironmentVariables;
+    let validatedInstance: IEnvironmentVariables | undefined;
     const validatorMock = (instanceToValidate: IEnvironmentVariables) => {
       validatedInstance = instanceToValidate;
     };
@@ -31,6 +32,7 @@ describe('EnvironmentVariablesFactory', () => {
     const sut = new TestableEnvironmentVariablesFactory(validatorMock);
     const actualInstance = sut.instance;
     // assert
+    expectExists(validatedInstance);
     expect(actualInstance).to.equal(validatedInstance);
   });
   it('throws error if validator fails', () => {
