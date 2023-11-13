@@ -27,7 +27,6 @@ export class LinuxInstructionsBuilder extends InstructionsBuilder {
             + '<li><code>Alt-T</code>: Parrot OS…</li>'
             + '<li><code>Ctrl-Alt-Insert</code>: Bodhi Linux…</li>'
             + '</ul>'
-            + '<br/>'
           ,
         },
       }))

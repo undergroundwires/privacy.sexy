@@ -13,8 +13,8 @@
     <hr />
     <p>
       <strong>2. The hard (manual) alternative</strong>. This requires you to do additional manual
-      steps. If you are unsure how to follow the instructions, hover on information
-      (<AppIcon icon="circle-info" />)
+      steps. If you are unsure how to follow the instructions, tap or hover on information
+      (<InfoTooltip>Engage with icons like this for extra wisdom!</InfoTooltip>)
       icons near the steps, or follow the easy alternative described above.
     </p>
     <p>
@@ -26,27 +26,15 @@
         >
           <div class="step__action">
             <span>{{ step.action.instruction }}</span>
-            <TooltipWrapper v-if="step.action.details">
-              <AppIcon
-                class="explanation"
-                icon="circle-info"
-              />
-              <template v-slot:tooltip>
-                <div v-html="step.action.details" />
-              </template>
-            </TooltipWrapper>
+            <div class="details-container" v-if="step.action.details">
+              <InfoTooltip><div v-html="step.action.details" /></InfoTooltip>
+            </div>
           </div>
           <div v-if="step.code" class="step__code">
             <CodeInstruction>{{ step.code.instruction }}</CodeInstruction>
-            <TooltipWrapper v-if="step.code.details">
-              <AppIcon
-                class="explanation"
-                icon="circle-info"
-              />
-              <template v-slot:tooltip>
-                <div v-html="step.code.details" />
-              </template>
-            </TooltipWrapper>
+            <div class="details-container" v-if="step.code.details">
+              <InfoTooltip><div v-html="step.code.details" /></InfoTooltip>
+            </div>
           </div>
         </li>
       </ol>
@@ -60,16 +48,14 @@ import {
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import TooltipWrapper from '@/presentation/components/Shared/TooltipWrapper.vue';
-import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import CodeInstruction from './CodeInstruction.vue';
 import { IInstructionListData } from './InstructionListData';
+import InfoTooltip from './InfoTooltip.vue';
 
 export default defineComponent({
   components: {
     CodeInstruction,
-    TooltipWrapper,
-    AppIcon,
+    InfoTooltip,
   },
   props: {
     data: {
@@ -125,7 +111,7 @@ function renderOsName(os: OperatingSystem): string {
     margin-top: 0.5em;
   }
 }
-.explanation {
-    margin-left: 0.5em;
+.details-container {
+  margin-left: 0.5em; // Do not style icon itself to ensure correct tooltip alignment
 }
 </style>

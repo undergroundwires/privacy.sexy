@@ -2,16 +2,18 @@
   <span class="code-wrapper">
     <span class="dollar">$</span>
     <code ref="codeElement"><slot /></code>
-    <TooltipWrapper>
-      <AppIcon
-        class="copy-button"
-        icon="copy"
-        @click="copyCode"
-      />
-      <template v-slot:tooltip>
-        Copy
-      </template>
-    </TooltipWrapper>
+    <div class="copy-action-container">
+      <TooltipWrapper>
+        <AppIcon
+          icon="copy"
+          class="copy-button"
+          @click="copyCode"
+        />
+        <template v-slot:tooltip>
+          Copy
+        </template>
+      </TooltipWrapper>
+    </div>
   </span>
 </template>
 
@@ -68,8 +70,10 @@ export default defineComponent({
     font-size: 0.8rem;
     user-select: none;
   }
-  .copy-button {
+  .copy-action-container {
     margin-left: 1rem;
+  }
+  .copy-button {
     @include clickable;
     @include hover-or-touch {
       color: $color-primary;
