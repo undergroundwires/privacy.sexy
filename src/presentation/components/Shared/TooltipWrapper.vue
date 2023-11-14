@@ -1,23 +1,28 @@
 <template>
   <div class="tooltip">
+    <!--
+      Both trigger and tooltip elements are grouped within a single parent for accurate positioning.
+      It allows the tooltip content to calculate its position based on the trigger's location.
+    -->
     <div
       class="tooltip__trigger"
       ref="triggeringElement">
       <slot />
     </div>
-    <div
-      class="tooltip__display"
-      ref="tooltipDisplayElement"
-      :style="displayStyles"
-    >
-      <div class="tooltip__content">
-        <slot name="tooltip" />
-      </div>
+    <div class="tooltip__overlay">
       <div
-        ref="arrowElement"
-        class="tooltip__arrow"
-        :style="arrowStyles"
-      />
+        ref="tooltipDisplayElement"
+        :style="displayStyles"
+      >
+        <div class="tooltip__content">
+          <slot name="tooltip" />
+        </div>
+        <div
+          ref="arrowElement"
+          class="tooltip__arrow"
+          :style="arrowStyles"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -127,11 +132,23 @@ function getCounterpartBoxOffsetProperty(placement: Placement): keyof CSSPropert
 
 $color-tooltip-background: $color-primary-darkest;
 
+.tooltip {
+  display: inline-flex;
+}
+
 @mixin set-visibility($isVisible: true) {
+  /*
+    Visibility is controlled through CSS rather than JavaScript. This allows better CSS
+    consistency by reusing `hover-or-touch` mixin. Using vue directives such as `v-if` and
+    `v-show` require JavaScript tracking of touch/hover without reuse of `hover-or-touch`.
+    The `visibility` property is toggled because:
+      - Using the `display` property doesn't support smooth transitions (e.g., fading out).
+      - Keeping invisible tooltips in the DOM is a best practice for accessibility (screen readers).
+  */
   @if $isVisible {
     visibility: visible;
     opacity: 1;
-    transition: opacity .15s;
+    transition: opacity .15s, visibility .15s;
   } @else {
     visibility: hidden;
     opacity: 0;
@@ -139,19 +156,46 @@ $color-tooltip-background: $color-primary-darkest;
   }
 }
 
-.tooltip {
-  display: inline-flex;
+@mixin fixed-fullscreen {
+  /*
+    This mixin removes the element from the normal document flow, ensuring that it does not disrupt the layout of other elements,
+    such as causing unintended screen width expansion on smaller mobile screens.
+
+    Setting `top`, `left`, `width` and `height` ensures that, the tooltip is prepared to cover the entire viewport, preventing it from
+    being cropped or causing overflow issues. `pointer-events: none;` disables capturing all events on page.
+
+    Other positioning alternatives considered:
+    - Moving tooltip off the screen using `left` and `top` properties:
+      - Causes unintended screen width expansion on smaller mobile screens.
+      - Causes screen shaking on Chromium browsers.
+    - `overflow: hidden`:
+      - It does not work automatic positioning of tooltips.
+    - `transform: translate(-100vw, -100vh)`:
+      - Causes screen shaking on Chromium browsers.
+  */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  overflow: hidden;
+  > * { // Restore styles in children
+    pointer-events: unset;
+    overflow: unset;
+  }
 }
 
-.tooltip__display {
+.tooltip__overlay {
   @include set-visibility(false);
+  @include fixed-fullscreen;
 }
 
 .tooltip__trigger {
   @include hover-or-touch {
-    + .tooltip__display {
-      @include set-visibility(true);
+    + .tooltip__overlay {
       z-index: 10000;
+      @include set-visibility(true);
     }
   }
 }

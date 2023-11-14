@@ -24,3 +24,40 @@ jobs:
       -
         name: Run e2e tests
         run: npm run test:cy:run
+      -
+        name: Output artifact directories
+        id: artifacts
+        shell: bash
+        run: |-
+          declare -r dirs_json_file='cypress-dirs.json'
+          if [ ! -f "${dirs_json_file}" ]; then
+            echo "${dirs_json_file} does not exist"
+            exit 1
+          fi
+
+          SCREENSHOTS_DIR=$(jq -r '.screenshots' "${dirs_json_file}")
+          VIDEOS_DIR=$(jq -r '.videos' "${dirs_json_file}")
+
+          for dir in "${SCREENSHOTS_DIR}" "${VIDEOS_DIR}"; do
+            if [ "${dir}" = 'null' ] || [ -z "${dir}" ]; then
+              echo "One or more directories are null or not specified in cypress-dirs.json"
+              exit 1
+            fi
+          done
+
+          echo "SCREENSHOTS_DIR=${SCREENSHOTS_DIR}" >> "${GITHUB_OUTPUT}"
+          echo "VIDEOS_DIR=${VIDEOS_DIR}" >> "${GITHUB_OUTPUT}"
+      -
+        name: Upload screenshots
+        if: failure() # Run only if previous step fails because screenshots will be generated only if E2E test failed
+        uses: actions/upload-artifact@v3
+        with:
+          name: e2e-screenshots
+          path: ${{ steps.artifacts.outputs.SCREENSHOTS_DIR }}
+      -
+        name: Upload videos
+        if: always() # Run even if previous step fails because test run video is always captured
+        uses: actions/upload-artifact@v3
+        with:
+          name: e2e-videos
+          path: ${{ steps.artifacts.outputs.VIDEOS_DIR }}

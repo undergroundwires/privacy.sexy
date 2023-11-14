@@ -1,19 +1,18 @@
 import { defineConfig } from 'cypress';
 import ViteConfig from './vite.config';
-
-const CYPRESS_BASE_DIR = 'tests/e2e/';
+import cypressDirs from './cypress-dirs.json' assert { type: 'json' };
 
 export default defineConfig({
-  fixturesFolder: `${CYPRESS_BASE_DIR}/fixtures`,
-  screenshotsFolder: `${CYPRESS_BASE_DIR}/screenshots`,
+  fixturesFolder: `${cypressDirs.base}/fixtures`,
+  screenshotsFolder: cypressDirs.screenshots,
 
   video: true,
-  videosFolder: `${CYPRESS_BASE_DIR}/videos`,
+  videosFolder: cypressDirs.videos,
 
   e2e: {
     baseUrl: `http://localhost:${getApplicationPort()}/`,
-    specPattern: `${CYPRESS_BASE_DIR}/**/*.cy.{js,jsx,ts,tsx}`, // Default: cypress/e2e/**/*.cy.{js,jsx,ts,tsx}
-    supportFile: `${CYPRESS_BASE_DIR}/support/e2e.ts`,
+    specPattern: `${cypressDirs.base}/**/*.cy.{js,jsx,ts,tsx}`, // Default: cypress/e2e/**/*.cy.{js,jsx,ts,tsx}
+    supportFile: `${cypressDirs.base}/support/e2e.ts`,
   },
 });
 
