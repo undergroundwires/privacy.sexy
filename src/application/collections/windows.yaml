@@ -1669,7 +1669,7 @@ actions:
                                     By running this script, you prevent the continuous surveillance and data gathering activities conducted by PCA.
 
                                     [1]: https://web.archive.org/web/20230905120815/https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services#program-compatibility-assistant-service "Guidance on disabling system services on Windows IoT Enterprise | Microsoft Learn"
-                                    [2]: https://web.archive.org/web/20230928142052/https://learn.microsoft.com/en-us/mem/configmgr/desktop-analytics/monitor-connection-health#appraiser-data-collection "Monitor connection health - Configuration Manager | Microsoft Learn"
+                                    [2]: https://web.archive.org/web/20231017234102/https://learn.microsoft.com/en-us/mem/configmgr/desktop-analytics/monitor-connection-health#appraiser-data-collection "Monitor connection health - Configuration Manager | Microsoft Learn"
                                 call:
                                     function: DisableService
                                     parameters:
@@ -1723,30 +1723,130 @@ actions:
                                         serviceName: diagsvc # Check: (Get-Service -Name diagsvc).StartType
                                         defaultStartupMode: Manual # Allowed values: Automatic | Manual
                     -
-                        name: Disable Customer Experience Improvement Program
+                        name: Disable "Customer Experience Improvement Program" scheduled tasks
                         recommend: standard
-                        code: |-
-                            schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator" /DISABLE
-                            schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask" /DISABLE
-                            schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" /DISABLE
-                        revertCode: |-
-                            schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\Consolidator" /ENABLE
-                            schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask" /ENABLE
-                            schtasks /change /TN "\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" /ENABLE
+                        docs: |-
+                            ### Overview of default task statuses
+
+                            `\Microsoft\Windows\Customer Experience Improvement Program\Consolidator`:
+
+                            | OS Version       | Default status |
+                            | ---------------- | -------------- |
+                            | Windows 10 22H2  | 🟢 Ready |
+                            | Windows 11 22H2  | 🟢 Ready |
+
+                            `\Microsoft\Windows\Customer Experience Improvement Program\KernelCeipTask`:
+
+                            | OS Version       | Default status |
+                            | ---------------- | -------------- |
+                            | Windows 10 22H2  | 🟡 N/A (missing) |
+                            | Windows 11 22H2  | 🟡 N/A (missing) |
+
+                            `\Microsoft\Windows\Customer Experience Improvement Program\UsbCeip`:
+
+                            | OS Version       | Default status |
+                            | ---------------- | -------------- |
+                            | Windows 10 22H2  | 🟢 Ready |
+                            | Windows 11 22H2  | 🟢 Ready |
+                        call:
+                            -
+                                function: DisableScheduledTask
+                                parameters:
+                                    # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Customer Experience Improvement Program\' -TaskName 'Consolidator'
+                                    taskPathPattern: \Microsoft\Windows\Customer Experience Improvement Program\
+                                    taskNamePattern: Consolidator
+                            -
+                                function: DisableScheduledTask
+                                parameters:
+                                    # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Customer Experience Improvement Program\' -TaskName 'KernelCeipTask'
+                                    taskPathPattern: \Microsoft\Windows\Customer Experience Improvement Program\
+                                    taskNamePattern: KernelCeipTask
+                            -
+                                function: DisableScheduledTask
+                                parameters:
+                                    # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Customer Experience Improvement Program\' -TaskName 'UsbCeip'
+                                    taskPathPattern: \Microsoft\Windows\Customer Experience Improvement Program\
+                                    taskNamePattern: UsbCeip
                     -
-                        category: Disable Webcam Telemetry (`devicecensus.exe`)
-                        docs:
-                            - https://www.ghacks.net/2019/09/23/what-is-devicecensus-exe-on-windows-10-and-why-does-it-need-internet-connectivity/
-                            - https://answers.microsoft.com/en-us/windows/forum/windows_10-security/devicecensusexe-and-host-process-for-windows-task/520d42a2-45c1-402a-81de-e1116ecf2538
+                        category: Disable census data collection
+                        docs: |-
+                            Census is a component within Windows that inventories the device [1].
+                            The primary role of Census is to collect and understand data about the device's configuration [1], including its operating system type, region, language, and architecture [2].
+                            This data helps determine the appropriateness of updates for the device [3].
+                            By disabling this feature, users can enhance their privacy by preventing the collection and transmission of device data to Microsoft [1] [2] [3].
+
+                            [1]: https://web.archive.org/web/20231017234102/https://learn.microsoft.com/en-us/mem/configmgr/desktop-analytics/monitor-connection-health#census-data-collection "Monitor connection health - Configuration Manager | Microsoft Learn"
+                            [2]: https://web.archive.org/web/20231017234118/https://answers.microsoft.com/en-us/windows/forum/all/what-is-device-census/6f0b9f58-86b6-4e36-8fc8-4701218b49b6 "What is Device Census? - Microsoft Community"
+                            [3]: https://web.archive.org/web/20231017234127/https://support.microsoft.com/en-us/topic/update-to-windows-10-version-1703-version-1607-version-1511-and-version-1507-for-update-applicability-march-15-2018-3aad1c66-2b88-c012-4623-dee1410891ad "Update to Windows 10 Version 1703, Version 1607, Version 1511, and Version 1507 for update applicability: March 15, 2018 - Microsoft Support"
                         children:
                             -
-                                name: Disable `devicecensus.exe` (telemetry) task
+                                name: Disable "Device" task
                                 recommend: standard
-                                code: schtasks /change /TN "Microsoft\Windows\Device Information\Device" /disable
-                                revertCode: schtasks /change /TN "Microsoft\Windows\Device Information\Device" /enable
+                                docs: |-
+                                    This script disables the "Device" scheduled task.
+
+                                    According to the Task Scheduler, this task triggers the execution of the
+                                    `%WINDIR%\System32\devicecensus.exe SystemCxt` command in Windows 10 and 11.
+                                    This component collects device and configuration data, which is then sent to Microsoft [1].
+
+                                    By disabling this task, users can prevent this specific data collection process, enhancing their privacy.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\Device Information\Device`:
+                                    
+                                    | OS Version       | Default status |
+                                    | ---------------- | -------------- |
+                                    | Windows 10 22H2  | 🟢 Ready |
+                                    | Windows 11 22H2  | 🟢 Ready |
+
+                                    [1]: https://web.archive.org/web/20231017234102/https://learn.microsoft.com/en-us/mem/configmgr/desktop-analytics/monitor-connection-health#census-data-collection "Monitor connection health - Configuration Manager | Microsoft Learn"
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Device Information\' -TaskName 'Device'
+                                        taskPathPattern: \Microsoft\Windows\Device Information\
+                                        taskNamePattern: Device
                             -
-                                name: Disable `devicecensus.exe` (telemetry) process
+                                name: Disable "Device User" task
                                 recommend: standard
+                                docs: |-
+                                    This script disables the "Device User" scheduled task.
+
+                                    According to the Task Scheduler, this task triggers the execution of the
+                                    `%WINDIR%\System32\devicecensus.exe UserCxt` command in Windows 10 and 11.
+                                    This component collects device and configuration data, which is then sent to Microsoft [1].
+
+                                    By disabling this task, users can prevent this specific data collection process, enhancing their privacy.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\Device Information\Device User`:
+                                    
+                                    | OS Version       | Default status |
+                                    | ---------------- | -------------- |
+                                    | Windows 10 22H2  | 🟢 Ready |
+                                    | Windows 11 22H2  | 🟢 Ready |
+
+                                    [1]: https://web.archive.org/web/20231017234102/https://learn.microsoft.com/en-us/mem/configmgr/desktop-analytics/monitor-connection-health#census-data-collection "Monitor connection health - Configuration Manager | Microsoft Learn"
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Device Information\' -TaskName 'Device User'
+                                        taskPathPattern: \Microsoft\Windows\Device Information\
+                                        taskNamePattern: Device User
+                            -
+                                name: Disable device and configuration data collection tool
+                                recommend: standard
+                                docs: |-
+                                    This script prevents the execution of `devicecensus.exe`, also known as the "device and configuration data collection tool" [1].
+                                    This tool is located at `%WINDIR%\System32\DeviceCensus.exe` [1] [2] and is responsible for gathering data used for compatibility updates [3].
+                                    Disabling this tool helps keeping the device's data private and preventing its usage for diagnostic collections or determining update
+                                    applicability [1] [2] [3].
+
+                                    [1]: https://web.archive.org/web/20231017234102/https://learn.microsoft.com/en-us/mem/configmgr/desktop-analytics/monitor-connection-health#census-data-collection "Monitor connection health - Configuration Manager | Microsoft Learn"
+                                    [2]: https://web.archive.org/web/20231017234628/https://strontic.github.io/xcyclopedia/library/DeviceCensus.exe-594993E23161BB37E365D8784DE020EA.html "DeviceCensus.exe | Device Census | STRONTIC | strontic.github.io"
+                                    [3]: https://web.archive.org/web/20231017234127/https://support.microsoft.com/en-us/topic/update-to-windows-10-version-1703-version-1607-version-1511-and-version-1507-for-update-applicability-march-15-2018-3aad1c66-2b88-c012-4623-dee1410891ad "Update to Windows 10 Version 1703, Version 1607, Version 1511, and Version 1507 for update applicability: March 15, 2018 - Microsoft Support"
                                 call:
                                     function: KillProcessWhenItStarts
                                     parameters:
@@ -1761,8 +1861,21 @@ actions:
                                     -
                                         name: Disable Microsoft Compatibility Appraiser task
                                         recommend: standard
-                                        code: schtasks /change /TN "Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" /disable
-                                        revertCode: schtasks /change /TN "Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser" /enable
+                                        docs: |-
+                                            ### Overview of default task statuses
+
+                                            `\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser`:
+                                            
+                                            | OS Version       | Default status |
+                                            | ---------------- | -------------- |
+                                            | Windows 10 22H2  | 🟢 Ready |
+                                            | Windows 11 22H2  | 🟢 Ready |
+                                        call:
+                                            function: DisableScheduledTask
+                                            parameters:
+                                                # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Application Experience\' -TaskName 'Microsoft Compatibility Appraiser'
+                                                taskPathPattern: \Microsoft\Windows\Application Experience\
+                                                taskNamePattern: Microsoft Compatibility Appraiser
                                     -
                                         name: Disable CompatTelRunner.exe (Microsoft Compatibility Appraiser) process
                                         recommend: standard
@@ -1773,23 +1886,64 @@ actions:
                             -
                                 name: Disable sending information to Customer Experience Improvement Program
                                 recommend: standard
-                                docs:
-                                    - https://www.ghacks.net/2016/10/26/turn-off-the-windows-customer-experience-program/
-                                    - https://answers.microsoft.com/en-us/windows/forum/windows_10-performance/permanently-disabling-windows-compatibility/6bf71583-81b0-4a74-ae2e-8fd73305aad1
-                                code: schtasks /change /TN "Microsoft\Windows\Application Experience\ProgramDataUpdater" /disable
-                                revertCode: schtasks /change /TN "Microsoft\Windows\Application Experience\ProgramDataUpdater" /enable
+                                docs: |-
+                                    [Turn off the Windows Customer Experience program - gHacks Tech News](https://www.ghacks.net/2016/10/26/turn-off-the-windows-customer-experience-program/)
+                                    [Permanently Disabling Windows Compatibility Telemetry - Microsoft Community](https://answers.microsoft.com/en-us/windows/forum/windows_10-performance/permanently-disabling-windows-compatibility/6bf71583-81b0-4a74-ae2e-8fd73305aad1)
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\Application Experience\ProgramDataUpdater`:
+                                    
+                                    | OS Version       | Default status |
+                                    | ---------------- | -------------- |
+                                    | Windows 10 22H2  | 🟢 Ready |
+                                    | Windows 11 22H2  | 🟡 N/A (missing) |
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Application Experience\' -TaskName 'ProgramDataUpdater'
+                                        taskPathPattern: \Microsoft\Windows\Application Experience\
+                                        taskNamePattern: ProgramDataUpdater
                             -
                                 name: Disable Application Impact Telemetry Agent task
                                 recommend: standard
-                                docs: https://www.shouldiblockit.com/aitagent.exe-6181.aspx
-                                code: schtasks /change /TN "Microsoft\Windows\Application Experience\AitAgent" /disable
-                                revertCode: schtasks /change /TN "Microsoft\Windows\Application Experience\AitAgent" /enable
+                                docs: |-
+                                    [aitagent.exe - Should I Block It? (Application Impact Telemetry Agent)](https://www.shouldiblockit.com/aitagent.exe-6181.aspx)
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\Application Experience\AitAgent`:
+                                    
+                                    | OS Version       | Default status |
+                                    | ---------------- | -------------- |
+                                    | Windows 10 22H2  | 🟡 N/A (missing) |
+                                    | Windows 11 22H2  | 🟡 N/A (missing) |
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Application Experience\' -TaskName 'AitAgent'
+                                        taskPathPattern: \Microsoft\Windows\Application Experience\
+                                        taskNamePattern: AitAgent
                             -
                                 name: Disable the reminder to "Disable apps to improve performance"
                                 recommend: strict
-                                docs: https://www.ghacks.net/2016/10/26/turn-off-the-windows-customer-experience-program/
-                                code: schtasks /change /TN "Microsoft\Windows\Application Experience\StartupAppTask" /disable
-                                revertCode: schtasks /change /TN "Microsoft\Windows\Application Experience\StartupAppTask" /enable
+                                docs: |-
+                                    [Turn off the Windows Customer Experience program - gHacks Tech News](https://www.ghacks.net/2016/10/26/turn-off-the-windows-customer-experience-program/)
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\Application Experience\StartupAppTask`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | -------------- |
+                                    | Windows 10 22H2  | 🟢 Ready |
+                                    | Windows 11 22H2  | 🟢 Ready |
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Application Experience\' -TaskName 'StartupAppTask'
+                                        taskPathPattern: \Microsoft\Windows\Application Experience\
+                                        taskNamePattern: StartupAppTask
                     -
                         category: Disable enterprise/business focused data collection
                         docs: |-
@@ -2032,14 +2186,55 @@ actions:
                     -
                         name: Disable error reporting
                         recommend: standard
-                        docs:
-                            # Settings
-                                - https://docs.microsoft.com/en-us/windows/win32/wer/wer-settings
-                                - https://www.stigviewer.com/stig/windows_10/2016-06-24/finding/V-63493
-                            # Windows Error Reporting Service
-                                - http://batcmd.com/windows/10/services/wersvc/
-                            # Problem Reports Control Panel Support
-                                - http://batcmd.com/windows/10/services/wercplsupport/
+                        docs: |-
+                            This script disables the Windows Error Reporting (WER) feature.
+
+                            Windows Error Reporting collects and sends error logs from your computer to Microsoft [1], which can be a potential privacy concern for users.
+                            By disabling it, this script ensures that your system errors remain local to your machine and are not sent to external servers.
+
+                            Here's a breakdown of what the script does:
+
+                            1. **Registry Changes**: The script modifies specific registry entries to disable the WER functionality and its related settings.
+
+                            2. **Scheduled Tasks**: The script disables scheduled tasks related to error details updates and queue reporting.
+
+                            3. **Services**: The script disables the services related to error reporting.
+
+                            ### Registry changes
+
+                            - `HKLM\Software\Microsoft\Windows\Windows Error Reporting!DefaultConsent` [2]
+                            - `HKLM\Software\Microsoft\Windows\Windows Error Reporting!DefaultOverrideBehavior` [2]
+                            - `HKLM\Software\Microsoft\Windows\Windows Error Reporting!DontSendAdditionalData` [2]
+                            - `HKLM\Software\Microsoft\Windows\Windows Error Reporting!LoggingDisabled` [2]
+                            - `HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting!Disabled` [2]
+                            - `HKLM\Software\Policies\Microsoft\Windows\Windows Error Reporting` [3]
+
+                            ### Services
+
+                            - Windows Error Reporting Service [4]
+                            - Problem Reports Control Panel Support [5]
+
+                            ### Overview of default task statuses
+
+                            `\Microsoft\Windows\ErrorDetails\EnableErrorDetailsUpdate`:
+
+                            | OS Version       | Default status |
+                            | ---------------- | -------------- |
+                            | Windows 10 22H2  | 🟡 N/A (missing) |
+                            | Windows 11 22H2  | 🟡 N/A (missing) |
+
+                            `\Microsoft\Windows\Windows Error Reporting\QueueReporting`:
+
+                            | OS Version       | Default status |
+                            | ---------------- | -------------- |
+                            | Windows 10 22H2  | 🟢 Ready |
+                            | Windows 11 22H2  | 🟢 Ready |
+
+                            [1]: https://web.archive.org/web/20231018135854/https://learn.microsoft.com/en-us/troubleshoot/windows-client/system-management-components/windows-error-reporting-diagnostics-enablement-guidance "Windows Error Reporting and Windows diagnostics enablement guidance - Windows Client | Microsoft Learn"
+                            [2]: https://web.archive.org/web/20231018135903/https://learn.microsoft.com/en-us/windows/win32/wer/wer-settings "WER Settings - Win32 apps | Microsoft Learn"
+                            [3]: https://web.archive.org/web/20231018135918/https://www.stigviewer.com/stig/windows_10/2016-06-24/finding/V-63493 "The system must be configured to allow a local or DOD-wide collector to request additional error reporting diagnostic data to be sent. | stigviewer.com"
+                            [4]: https://web.archive.org/web/20231018135930/https://batcmd.com/windows/10/services/wersvc/ "Windows Error Reporting Service - Windows 10 Service - batcmd.com"
+                            [5]: https://web.archive.org/web/20231019222221/https://batcmd.com/windows/10/services/wercplsupport/ "Problem Reports Control Panel Support - Windows 10 Service - batcmd.com"
                         call:
                             -
                                 function: RunInlineCode
@@ -2053,10 +2248,8 @@ actions:
                                         reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting\Consent" /v "DefaultOverrideBehavior" /t REG_DWORD /d "1" /f
                                         :: Disable WER sending second-level data
                                         reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting" /v "DontSendAdditionalData" /t REG_DWORD /d "1" /f
-                                        :: Disable WER crash dialogs, popups
+                                        :: Disable WER logging
                                         reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting" /v "LoggingDisabled" /t REG_DWORD /d "1" /f
-                                        schtasks /Change /TN "Microsoft\Windows\ErrorDetails\EnableErrorDetailsUpdate" /Disable
-                                        schtasks /Change /TN "Microsoft\Windows\Windows Error Reporting\QueueReporting" /Disable
                                     revertCode: |-
                                         :: Enable Windows Error Reporting (WER)
                                         reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Error Reporting" /v "Disabled" /f
@@ -2068,8 +2261,18 @@ actions:
                                         reg delete "HKLM\Software\Microsoft\Windows\Windows Error Reporting" /v "DontSendAdditionalData" /f
                                         :: Enable WER crash dialogs, popups
                                         reg add "HKLM\Software\Microsoft\Windows\Windows Error Reporting" /v "LoggingDisabled" /t REG_DWORD /d "0" /f
-                                        schtasks /Change /TN "Microsoft\Windows\ErrorDetails\EnableErrorDetailsUpdate" /Enable
-                                        schtasks /Change /TN "Microsoft\Windows\Windows Error Reporting\QueueReporting" /Enable
+                            -
+                                function: DisableScheduledTask
+                                parameters:
+                                    # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\ErrorDetails\' -TaskName 'EnableErrorDetailsUpdate'
+                                    taskPathPattern: \Microsoft\Windows\ErrorDetails\
+                                    taskNamePattern: EnableErrorDetailsUpdate
+                            -
+                                function: DisableScheduledTask
+                                parameters:
+                                    # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Windows Error Reporting\' -TaskName 'QueueReporting'
+                                    taskPathPattern: \Microsoft\Windows\Windows Error Reporting\
+                                    taskNamePattern: QueueReporting
                             - # Windows Error Reporting Service
                                 function: DisableService
                                 parameters:
@@ -3270,7 +3473,7 @@ actions:
                     - https://forum.palemoon.org/viewtopic.php?f=4&t=15686&sid=3d7982d3b9e89c713547f1a581ea44a2&start=20
                 children:
                     -
-                        name: Remove Nvidia telemetry tasks
+                        name: Remove Nvidia telemetry packages
                         recommend: standard
                         code: |-
                             if exist "%ProgramFiles%\NVIDIA Corporation\Installer2\InstallerCore\NVI2.DLL" (
@@ -3319,7 +3522,8 @@ actions:
                                     reg delete "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\Global\Startup" /v "SendTelemetryData" /f
                     -
                         name: Disable Nvidia Telemetry Container service
-                        docs: https://www.ghacks.net/2016/11/07/nvidia-telemetry-tracking/
+                        docs: |-
+                            [Disable Nvidia Telemetry tracking on Windows - gHacks Tech News](https://web.archive.org/web/20231019222346/https://www.ghacks.net/2016/11/07/nvidia-telemetry-tracking/)
                         call:
                             function: DisableService
                             parameters:
@@ -3328,16 +3532,91 @@ actions:
                                 # Description: "Container service for NVIDIA Telemetry"
                                 defaultStartupMode: Automatic
                     -
-                        name: Disable Nvidia telemetry services
-                        recommend: standard
-                        code: |-
-                            schtasks /change /TN NvTmMon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8} /DISABLE
-                            schtasks /change /TN NvTmRep_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8} /DISABLE
-                            schtasks /change /TN NvTmRepOnLogon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8} /DISABLE
-                        revertCode: |-
-                            schtasks /change /TN NvTmMon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8} /ENABLE
-                            schtasks /change /TN NvTmRep_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8} /ENABLE
-                            schtasks /change /TN NvTmRepOnLogon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8} /ENABLE
+                        category: Disable Nvidia telemetry scheduled tasks
+                        docs: |-
+                            This category contains scripts that disable Nvidia telemetry tasks. Telemetry tasks are programmed to transmit data, which
+                            may encompass system performance details or error reports [1] [2]. By disabling these tasks, you can improve your privacy by ensuring
+                            your system's data remains confidential and is not shared with external sources.
+
+                            [1]: https://web.archive.org/web/20231019222235/https://www.file.net/process/nvtmrep.exe.html "NvTmRep.exe Windows process - What is it? | file.net"
+                            [2]: https://web.archive.org/web/20231019222243/https://www.file.net/process/nvtmmon.exe.html "NvTmMon.exe Windows process - What is it? | file.net"
+                        children:
+                            -
+                                name: Disable "NVIDIA Telemetry Report" task
+                                recommend: standard
+                                docs: |-
+                                    This script disables the "NVIDIA Telemetry Report" scheduled task, which is related to the `NvTmRep` process.
+                                    This process is called "NVIDIA crash and telemetry reporter" [1].
+                                    Disabling it stops the `C:\Program Files (x86)\NVIDIA Corporation\Update Core\NvTmRep.exe` [2] program from executing and reporting data [1].
+
+                                    ### Overview of default task statuses
+
+                                    `\NvTmRep_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | -------------- |
+                                    | Windows 10 22H2  | 🟡 N/A (missing) |
+                                    | Windows 11 22H2  | 🟡 N/A (missing) |
+
+                                    [1]: https://web.archive.org/web/20231019222235/https://www.file.net/process/nvtmrep.exe.html "NvTmRep.exe Windows process - What is it? | file.net"
+                                    [2]: https://web.archive.org/web/20231019222346/https://www.ghacks.net/2016/11/07/nvidia-telemetry-tracking/ "Disable Nvidia Telemetry tracking on Windows - gHacks Tech News"
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\' -TaskName 'NvTmRep_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}'
+                                        taskPathPattern: \
+                                        taskNamePattern: NvTmRep_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}
+                            -
+                                name: Disable "NVIDIA Telemetry Report on Logon" task
+                                recommend: standard
+                                docs: |-
+                                    This script disables the "NVIDIA Telemetry Report on Logon" scheduled task, associated with the `NvTmRep` process.
+                                    This process is also known as "NVIDIA crash and telemetry reporter" [1].
+
+                                    When enabled, this task executes the `C:\Program Files (x86)\NVIDIA Corporation\Update Core\NvTmRep.exe --logon` [2]
+                                    program during user logon, sending telemetry data [1].
+
+                                    ### Overview of default task statuses
+
+                                    `\NvTmRepOnLogon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | -------------- |
+                                    | Windows 10 22H2  | 🟡 N/A (missing) |
+                                    | Windows 11 22H2  | 🟡 N/A (missing) |
+
+                                    [1]: https://web.archive.org/web/20231019222235/https://www.file.net/process/nvtmrep.exe.html "NvTmRep.exe Windows process - What is it? | file.net"
+                                    [2]: https://web.archive.org/web/20231019222346/https://www.ghacks.net/2016/11/07/nvidia-telemetry-tracking/ "Disable Nvidia Telemetry tracking on Windows - gHacks Tech News"
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\' -TaskName 'NvTmRepOnLogon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}'
+                                        taskPathPattern: \
+                                        taskNamePattern: NvTmRepOnLogon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}
+                            -
+                                name: Disable "NVIDIA telemetry monitor" task
+                                docs: |-
+                                    This script disables the "NVIDIA telemetry monitor" scheduled task related to the `NvTmMon` process.
+                                    The telemetry monitor collects and sends data to NVIDIA [1].
+                                    Turning off this task prevents `C:\Program Files (x86)\NVIDIA Corporation\Update Core\NvTmMon.exe` [2] from running and transmitting data [1].
+
+                                    ### Overview of default task statuses
+
+                                    `\NvTmMon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | -------------- |
+                                    | Windows 10 22H2  | 🟡 N/A (missing) |
+                                    | Windows 11 22H2  | 🟡 N/A (missing) |
+
+                                    [1]: https://web.archive.org/web/20231019222243/https://www.file.net/process/nvtmmon.exe.html "NvTmMon.exe Windows process - What is it? | file.net"
+                                    [2]: https://web.archive.org/web/20231019222346/https://www.ghacks.net/2016/11/07/nvidia-telemetry-tracking/ "Disable Nvidia Telemetry tracking on Windows - gHacks Tech News"
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\' -TaskName 'NvTmMon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}'
+                                        taskPathPattern: \
+                                        taskNamePattern: NvTmMon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}
             -
                 category: Disable Visual Studio Code data collection
                 docs:
@@ -3477,38 +3756,137 @@ actions:
                     -
                         name: Disable Microsoft Office telemetry agent
                         recommend: standard
-                        code: |-
-                            schtasks /change /TN "Microsoft\Office\OfficeTelemetryAgentFallBack" /DISABLE
-                            schtasks /change /TN "Microsoft\Office\OfficeTelemetryAgentFallBack2016" /DISABLE
-                            schtasks /change /TN "Microsoft\Office\OfficeTelemetryAgentLogOn" /DISABLE
-                            schtasks /change /TN "Microsoft\Office\OfficeTelemetryAgentLogOn2016" /DISABLE
-                        revertCode: |-
-                            schtasks /change /TN "Microsoft\Office\OfficeTelemetryAgentFallBack" /ENABLE
-                            schtasks /change /TN "Microsoft\Office\OfficeTelemetryAgentFallBack2016" /ENABLE
-                            schtasks /change /TN "Microsoft\Office\OfficeTelemetryAgentLogOn" /ENABLE
-                            schtasks /change /TN "Microsoft\Office\OfficeTelemetryAgentLogOn2016" /ENABLE
+                        docs: |-
+                            This script disables the scheduled tasks associated with the Office telemetry agent.
+
+                            The Office Telemetry Agent, introduced in Office 2013, collects and uploads a variety of data for monitoring purposes [1].
+                            This data includes runtime logs, properties of Office documents, and other insights from Office applications [1] [2].
+                            Notably, it can upload file names, paths, and document titles in their original format [1].
+                            The data is stored locally before being uploaded to a shared folder (at `%LOCALAPPDATA%\Microsoft\Office\16.0\Telemetry`) [3].
+                            This poses privacy risks as it may contain personal or confidential information.
+
+                            The `OfficeTelemetryAgentLogOn` scheduled task, collects data for the Office Telemetry Dashboard [1]. This task activates upon
+                            user login to an Office client and continues to scan and collect data during the session [1]. The types of data collected encompass
+                            file names of recently accessed Office documents [2] [3], names of add-ins and solutions interacting with Office [3], and system information
+                            including user and computer names [2]. 
+
+                            Disabling these tasks is recommended for enhancing privacy. The script effectively prevents privacy risks associated with telemetry
+                            data collection by disabling the related scheduled tasks. It prevents the collection and upload of potentially sensitive information,
+                            thereby protecting users from exposure of personal or internal process-related details.
+
+                            ### Overview of default task statuses
+
+                            `\Microsoft\Office\OfficeTelemetryAgentFallBack` (tested on Office version 2208):
+
+                            | OS Version       | Default status |
+                            | ---------------- | -------------- |
+                            | Windows 10 22H2  | 🟡 N/A (missing) |
+                            | Windows 11 22H2  | 🟡 N/A (missing) |
+
+                            `\Microsoft\Office\OfficeTelemetryAgentFallBack2016` (tested on Office version 2208):
+
+                            | OS Version       | Default status |
+                            | ---------------- | -------------- |
+                            | Windows 10 22H2  | 🟢 Ready |
+                            | Windows 11 22H2  | 🟢 Ready |
+
+                            `\Microsoft\Office\OfficeTelemetryAgentLogOn` (tested on Office version 2208):
+
+                            | OS Version       | Default status |
+                            | ---------------- | -------------- |
+                            | Windows 10 22H2  | 🟡 N/A (missing) |
+                            | Windows 11 22H2  | 🟡 N/A (missing) |
+
+                            `\Microsoft\Office\OfficeTelemetryAgentLogOn2016` (tested on Office version 2208):
+
+                            | OS Version       | Default status |
+                            | ---------------- | -------------- |
+                            | Windows 10 22H2  | 🟢 Ready |
+                            | Windows 11 22H2  | 🟢 Ready |
+
+                            [1]: https://web.archive.org/web/20231022114220/https://learn.microsoft.com/en-us/deployoffice/compat/deploy-telemetry-dashboard "Deploy Office Telemetry Dashboard - Deploy Office | Microsoft Learn"
+                            [2]: https://web.archive.org/web/20231022114227/https://learn.microsoft.com/en-us/deployoffice/compat/data-that-the-telemetry-agent-collects-in-office "Data collected by the agent for Office Telemetry Dashboard - Deploy Office | Microsoft Learn"
+                            [3]: https://web.archive.org/web/20231022114234/https://learn.microsoft.com/en-us/deployoffice/compat/manage-the-privacy-of-data-monitored-by-telemetry-in-office "Manage the privacy of data monitored by Office Telemetry Dashboard - Deploy Office | Microsoft Learn"
+                        call:
+                            -
+                                function: DisableScheduledTask
+                                parameters:
+                                    # Check: Get-ScheduledTask -TaskPath '\Microsoft\Office\' -TaskName 'OfficeTelemetryAgentFallBack'
+                                    taskPathPattern: \Microsoft\Office\
+                                    taskNamePattern: OfficeTelemetryAgentFallBack
+                            -
+                                function: DisableScheduledTask
+                                parameters:
+                                    # Check: Get-ScheduledTask -TaskPath '\Microsoft\Office\' -TaskName 'OfficeTelemetryAgentFallBack2016'
+                                    taskPathPattern: \Microsoft\Office\
+                                    taskNamePattern: OfficeTelemetryAgentFallBack2016
+                            -
+                                function: DisableScheduledTask
+                                parameters:
+                                    # Check: Get-ScheduledTask -TaskPath '\Microsoft\Office\' -TaskName 'OfficeTelemetryAgentLogOn'
+                                    taskPathPattern: \Microsoft\Office\
+                                    taskNamePattern: OfficeTelemetryAgentLogOn
+                            -
+                                function: DisableScheduledTask
+                                parameters:
+                                    # Check: Get-ScheduledTask -TaskPath '\Microsoft\Office\' -TaskName 'OfficeTelemetryAgentLogOn2016'
+                                    taskPathPattern: \Microsoft\Office\
+                                    taskNamePattern: OfficeTelemetryAgentLogOn2016
                     # - (breaks office, see https://answers.microsoft.com/en-us/office/forum/office_2016-officeapps/office-2016-click-to-run-service-is-it-necessary/07f87963-7193-488a-9885-d6339105824b)
                     #     name: Disable ClickToRun Service Monitor
                     #     docs: https://web.archive.org/web/20180201221907/https://technet.microsoft.com/en-us/library/jj219427.aspx
                     #     call:
                     #         -
-                    #             function: RunInlineCode
+                    #             function: DisableScheduledTask
                     #             parameters:
-                    #                 code: schtasks /change /TN "Microsoft\Office\Office ClickToRun Service Monitor" /DISABLE
-                    #                 revertCode: schtasks /change /TN "Microsoft\Office\Office ClickToRun Service Monitor" /ENABLE
+                    #                 # Check: Get-ScheduledTask -TaskPath '\Microsoft\Office\' -TaskName 'Office ClickToRun Service Monitor'
+                    #                 taskPathPattern: \Microsoft\Office\
+                    #                 taskNamePattern: Office ClickToRun Service Monitor
                     #         -
                     #             function: DisableService
                     #             parameters:
                     #                 serviceName: ClickToRunSvc # Check: (Get-Service -Name ClickToRunSvc).StartType
                     #                 defaultStartupMode: Automatic # Allowed values: Automatic | Manual
                     -
-                        name: Disable Microsoft Office Subscription Heartbeat
-                        code: |-
-                            schtasks /change /TN "Microsoft\Office\Office 15 Subscription Heartbeat" /DISABLE
-                            schtasks /change /TN "Microsoft\Office\Office 16 Subscription Heartbeat" /DISABLE
-                        revertCode: |-
-                            schtasks /change /TN "Microsoft\Office\Office 15 Subscription Heartbeat" /ENABLE
-                            schtasks /change /TN "Microsoft\Office\Office 16 Subscription Heartbeat" /ENABLE
+                        name: Disable "Microsoft Office Subscription Heartbeat" task
+                        docs: |-
+                            This script disables the "Microsoft Office Subscription Heartbeat" scheduled task. 
+
+                            The primary function of the Office Subscription Heartbeat task is to periodically check the subscription status of Microsoft Office products [1] [2],
+                            verifying their licenses are active and valid [1]. This task actively communicates with Microsoft servers, transmitting Microsoft account data [3] for
+                            license verification.
+
+                            Disabling this task improves privacy as it prevents these regular communications and data transmissions, though it may lead to complications
+                            regarding license compliance over time.
+
+                            The task creates and utilizes cache files located at `%SYSTEMDRIVE%\Program Files\Microsoft Office 15\root\vfs\Common AppData\microsoft\office\Heartbeat` [1]
+                            and `%PROGRAMDATA%\Microsoft\Office\Heartbeat\HeartbeatCache` [3] [4], in `HeartbeatCache.xml` file [1] [4]. It executes the `OLicenseHeartbeat.exe` process
+                            daily [2], also known as "Office Subscription Licensing Heartbeat" [2].
+
+                            `\Microsoft\Office\Office 15 Subscription Heartbeat` (tested since Office version 2208):
+
+                            | OS Version       | Default Status       |
+                            | ---------------- | -------------------- |
+                            | Windows 10 22H2  | 🟡 N/A (missing)     |
+                            | Windows 11 22H2  | 🟡 N/A (missing)     |
+
+                            > **CAUTION:** Consider that while disabling this task may lead to increased privacy, it could also impact license compliance and the overall functionality
+                            of Microsoft Office products in the long run.
+
+                            [1]: https://web.archive.org/web/20231024130456/https://learn.microsoft.com/en-us/microsoft-365/troubleshoot/licensing/subscription-automatic-license-renew-fails "Microsoft 365 subscription automatic license renewal fails when heartbeatcache in wrong location - Microsoft 365 | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20231024130510/https://www.shouldiblockit.com/olicenseheartbeat.exe-9886.aspx "OLicenseHeartbeat.exe - Should I Block It? (Office Subscription Licensing Heartbeat) | shouldiblockit.com"
+                            [3]: https://web.archive.org/web/20231024130503/https://support.microsoft.com/en-us/office/-product-key-is-not-valid-error-when-activating-office-4f89be39-26eb-404f-b485-8e2014bd3790#ID0EBBD=Microsoft_365_subscription '"Product key is not valid" error when activating Office - Microsoft Support | support.microsoft.com'
+                            [4]: https://web.archive.org/web/20231024130510/https://support.microsoft.com/en-us/office/about-the-microsoft-support-and-recovery-assistant-e90bb691-c2a7-4697-a94f-88836856c72f#ID0ED6=Office "About the Microsoft Support and Recovery Assistant - Microsoft Support | support.microsoft.com"
+                        call:
+                            function: DisableScheduledTask
+                            parameters:
+                                # Check: Get-ScheduledTask -TaskPath '\Microsoft\Office\' -TaskName 'Office 15 Subscription Heartbeat'
+                                taskPathPattern: \Microsoft\Office\
+                                taskNamePattern: Office 15 Subscription Heartbeat
+                                # "Office 16 Subscription Heartbeat":
+                                #   For Office 16, there isn't a separate and verified task named "Office 16 Subscription Heartbeat".
+                                #   Instead, it appears to utilize the "Office 15 Subscription Heartbeat" task, 
+                                #   but runs the `OLicenseHeartbeat.exe` process from the Office16 folder.
             -
                 category: Configure browsers
                 children:
@@ -3667,12 +4045,35 @@ actions:
                                     -
                                         name: Disable services that report the default browser agent
                                         recommend: standard
-                                        code: |-
-                                            schtasks.exe /change /disable /tn "\Mozilla\Firefox Default Browser Agent 308046B0AF4A39CB"
-                                            schtasks.exe /change /disable /tn "\Mozilla\Firefox Default Browser Agent D2CEEC440E2074BD"
-                                        revertCode: |-
-                                            schtasks.exe /change /enable /tn "\Mozilla\Firefox Default Browser Agent 308046B0AF4A39CB"
-                                            schtasks.exe /change /enable /tn "\Mozilla\Firefox Default Browser Agent D2CEEC440E2074BD"
+                                        docs: |-
+                                            ### Overview of default task statuses
+
+                                            `\Mozilla\Firefox Default Browser Agent 308046B0AF4A39CB` (tested on version 118):
+
+                                            | OS Version       | Default status |
+                                            | ---------------- | -------------- |
+                                            | Windows 10 22H2  | 🟢 Ready |
+                                            | Windows 11 22H2  | 🟢 Ready |
+
+                                            `\Mozilla\Firefox Default Browser Agent D2CEEC440E2074BD` (tested on version 118):
+
+                                            | OS Version       | Default status |
+                                            | ---------------- | -------------- |
+                                            | Windows 10 22H2  | 🟡 N/A (missing) |
+                                            | Windows 11 22H2  | 🟡 N/A (missing) |
+                                        call:
+                                            -
+                                                function: DisableScheduledTask
+                                                parameters:
+                                                    # Check: Get-ScheduledTask -TaskPath '\Mozilla\' -TaskName 'Firefox Default Browser Agent 308046B0AF4A39CB'
+                                                    taskPathPattern: \Mozilla\
+                                                    taskNamePattern: Firefox Default Browser Agent 308046B0AF4A39CB
+                                            -
+                                                function: DisableScheduledTask
+                                                parameters:
+                                                    # Check: Get-ScheduledTask -TaskPath '\Mozilla\' -TaskName 'Firefox Default Browser Agent D2CEEC440E2074BD'
+                                                    taskPathPattern: \Mozilla\
+                                                    taskNamePattern: Firefox Default Browser Agent D2CEEC440E2074BD
                             -
                                 name: Disable Firefox metrics reporting
                                 recommend: standard
@@ -3680,60 +4081,299 @@ actions:
                                 code: reg add HKLM\SOFTWARE\Policies\Mozilla\Firefox /v DisableTelemetry /t REG_DWORD /d 1 /f
                                 revertCode: reg add HKLM\SOFTWARE\Policies\Mozilla\Firefox /v DisableTelemetry /t REG_DWORD /d 0 /f
             -
-                name: Disable Google update services
-                recommend: standard
-                docs:
-                    - https://websetnet.net/how-to-disable-google-chrome-automatic-updates-in-windows-10/
-                    - https://www.bleepingcomputer.com/startups/GoogleUpdate.exe-25791.html #gupdate
-                    - https://www.bleepingcomputer.com/startups/GoogleUpdate.exe-26582.html #gupdatem
-                call:
+                category: Disable Google background automatic updates
+                docs: |-
+                    This category includes scripts to manage the automatic updates of various Google products in background.
+                    These products include Google Chrome, Google Earth, along with other applications [1].
+
+                    This category aims to give users control over the automatic update processes running in the background,
+                    without disabling manual updates or affecting the overall functionality of Google products [1].
+
+                    Google Chrome checks for, downloads, and installs updates in the background [2], without requiring user interaction [2].
+                    This includes constant network communication in background with Google servers, which reveals data about your device
+                    and usage behavior.
+
+                    By using the scripts provided, users can stop automatic update services and scheduled tasks related to Google software updates.
+                    This empowers users to initiate updates at their discretion, ensuring they have the final say in what gets installed on their systems.
+
+                    [1]: https://web.archive.org/web/20231026233855/https://github.com/google/omaha "google/omaha: Google Update for Windows | github.com/google"
+                    [2]: https://web.archive.org/web/20110218173854/http://www.google.com/support/chrome/bin/answer.py?hl=en&answer=95414 "Update Google Chrome : Install or update Google Chrome - Google Chrome Help | google.com/support"
+                children:
+                    # 💡 Valuable resources of information for this category:
+                    #   - https://bugs.chromium.org: Chromium project's bug tracker
+                    #   - https://github.com/google/omaha: The open-source version of Google Update
                     -
-                        function: RunInlineCode
-                        parameters:
-                            code: |-
-                                schtasks /change /disable /tn "GoogleUpdateTaskMachineCore"
-                                schtasks /change /disable /tn "GoogleUpdateTaskMachineUA"
-                            revertCode: |-
-                                schtasks /change /enable /tn "GoogleUpdateTaskMachineCore"
-                                schtasks /change /enable /tn "GoogleUpdateTaskMachineUA"
+                        name: Disable "Google Update Service" services
+                        recommend: standard
+                        docs: |-
+                            This script disables the "Google Update Service" services
+                            These services are identified as `gupdate` and `gupdatem` [1] [2] [3].
+                            They are responsible for keeping Google software up to date by initiating updates [4].
+                            They are linked to the `GoogleUpdate.exe` executable located in the `%PROGRAMFILES%\Google\Update` directory [5] [6] [7].
+
+                            The services operate based on a client/service model, where the client requests services to conduct updates [1].
+                            Despite both services being named "Google Update Service" [3] [8] [9], they are associated with different aspects of updating.
+                            The `gupdate` service is linked to regular update check [2] [5] [7], while `gupdatem` is connected to medium level service updates [2] [5] [6].
+
+                            According to Google's documentation, these services play a crucial role in maintaining the software's security and functionality [3].
+                            These services will uninstall themselves if no Google software is utilizing them [3].
+
+                            However, there are privacy and security concerns associated with these services. They continuously run in the background, sending data back to Google [10] [11],
+                            and they log Event Logs [12] [13] [14] [15] [16], which reveals information about the system's state. There have also been vulnerabilities found in these services
+                            in the past, adding an additional layer of risk [17].
+
+                            Disabling these services do not affect manual updates as these services are started for manual updates automatically [4].
+
+                            Often administrators choose to delete these services to prevent auto-updates [9], a practice that is acknowledged by the Google team [9].
+                            By disabling these services, this script aims to give users more control over their system and mitigate potential privacy and security risks, albeit at the cost
+                            of not receiving automatic software updates from Google.
+
+                            [1]: https://archive.ph/30Mh8 "omaha/omaha/goopdate/omaha3_idl.idl at 8fa5322c5c35d0cede28f4c32454cb0285490b6d · google/omaha | github.com/google"
+                            [2]: https://archive.ph/paJAm "omaha/omaha/common/omaha_customization_unittest.cc at 8fa5322c5c35d0cede28f4c32454cb0285490b6d · google/omaha | github.com/google"
+                            [3]: https://archive.ph/FJbvG "omaha/omaha/internal/grit/goopdateres.grd at 8fa5322c5c35d0cede28f4c32454cb0285490b6d · google/omaha · GitHub | github.com/google"
+                            [4]: https://archive.ph/ZoVnn "Comment 138 | 137915 - Update failed (error:3) | bugs.chromium.org"
+                            [5]: https://archive.ph/vAWVf "114356 - Loading issue... | bugs.chromium.org"
+                            [6]: https://web.archive.org/web/20231026231058/http://windows.fyicenter.com/4677_Google_Update_Service_gupdatem_-GoogleUpdate_exe_Service_on_Windows_7.html '"Google Update Service (gupdatem) - GoogleUpdate.exe" Service on Windows 7 | windows.fyicenter.com'
+                            [7]: https://web.archive.org/web/20231026231059/http://windows.fyicenter.com/4676_Google_Update_Service_gupdate_-GoogleUpdate_exe_Service_on_Windows_7.html '"Google Update Service (gupdate) - GoogleUpdate.exe" Service on Windows 7 | windows.fyicenter.com'
+                            [8]: https://archive.ph/AvwUm "Comment 9 | 948427 - Update disabled not working in Chrome 73.0.3683.86 | bugs.chromium.org"
+                            [9]: https://archive.ph/Sxvav "1096494 - google update service should never be deleted | bugs.chromium.org"
+                            [10]: https://web.archive.org/web/20231026231341/https://support.google.com/chrome/thread/207230079/high-ghost-data-usage-by-chrome-on-pc-past-midnight?hl=en "High ghost data usage by Chrome on PC past midnight - Google Chrome Community | support.google.com"
+                            [11]: https://web.archive.org/web/20231026231335/https://support.google.com/chrome/thread/113993958/why-gupdate-uses-all-my-bandwidth-stopping-my-surfing-completely?hl=en 'Why "gupdate" uses all my bandwidth, stopping my surfing completely? - Google Chrome Community | support.google.com'
+                            [12]: https://archive.ph/WgWli "237227 - Update service spam to Event Log | bugs.chromium.org"
+                            [13]: https://archive.ph/1ufoL 'Comment 5 | 71377 - Random but frequent crashes after downloads, "CSRBthFtpShellExt.dll_unloaded" | bugs.chromium.org'
+                            [14]: https://archive.ph/QKUdt "Comment 2 | 100548 - Please remove Googe Update from the Google Chrome Enterprise installation | bugs.chromium.org"
+                            [15]: https://archive.ph/H6S3z 'Comment 12 | 309362 - "Nearly up-to-date! Relaunch Google Chrome to finish updating." message is not going away | bugs.chromium.org'
+                            [16]: https://archive.ph/VYdgW "Comment 3 | 338776 - CRITICAL REGRESSION: unable to update to new version - relaunch after update does not finish updating - chromium | bugs.chromium.org"
+                            [17]: https://archive.ph/4CeqQ "167737 - Security: Unquoted search path vulnerability in GoogleUpdate.exe | bugs.chromium.org"
+                        # web.archive.org fails with those:
+                        #   - https://archive.ph/FJbvG: https://github.com/google/omaha/blob/8fa5322c5c35d0cede28f4c32454cb0285490b6d/omaha/internal/grit/goopdateres.grd#L166-L177
+                        #   - https://archive.ph/paJAm: https://github.com/google/omaha/blob/8fa5322c5c35d0cede28f4c32454cb0285490b6d/omaha/common/omaha_customization_unittest.cc#L290-L299
+                        #   - https://archive.ph/30Mh8: https://github.com/google/omaha/blob/8fa5322c5c35d0cede28f4c32454cb0285490b6d/omaha/goopdate/omaha3_idl.idl#L178-L186
+                        #   - https://archive.ph/Sxvav: https://bugs.chromium.org/p/chromium/issues/detail?id=1096494
+                        #   - https://archive.ph/AvwUm: https://bugs.chromium.org/p/chromium/issues/detail?id=948427#c9
+                        #   - https://archive.ph/VYdgW: https://bugs.chromium.org/p/chromium/issues/detail?id=338776#c3
+                        #   - https://archive.ph/H6S3z: https://bugs.chromium.org/p/chromium/issues/detail?id=309362#c12
+                        #   - https://archive.ph/4CeqQ: https://bugs.chromium.org/p/chromium/issues/detail?id=167737
+                        #   - https://archive.ph/QKUdt: https://bugs.chromium.org/p/chromium/issues/detail?id=100548#c2
+                        #   - https://archive.ph/1ufoL: https://bugs.chromium.org/p/chromium/issues/detail?id=71377#c5
+                        #   - https://archive.ph/ZoVnn: https://bugs.chromium.org/p/chromium/issues/detail?id=137915#c138
+                        #   - https://archive.ph/WgWli: https://bugs.chromium.org/p/chromium/issues/detail?id=237227
+                        #   - https://archive.ph/vAWVf: https://bugs.chromium.org/p/chromium/issues/detail?id=114356
+                        #   - https://archive.ph/FJbvG: https://github.com/google/omaha/blob/8fa5322c5c35d0cede28f4c32454cb0285490b6d/omaha/internal/grit/goopdateres.grd#L166-L177
+                        call:
+                            -
+                                function: DisableService
+                                parameters:
+                                    serviceName: gupdate # Check: (Get-Service -Name gupdate).StartType
+                                    defaultStartupMode: Automatic # Allowed values: Automatic | Manual
+                            -
+                                function: DisableService
+                                parameters:
+                                    serviceName: gupdatem # Check: (Get-Service -Name gupdatem).StartType
+                                    defaultStartupMode: Automatic # Allowed values: Automatic | Manual
                     -
-                        function: DisableService
-                        parameters:
-                            serviceName: gupdate # Check: (Get-Service -Name gupdate).StartType
-                            defaultStartupMode: Automatic # Allowed values: Automatic | Manual
-                    -
-                        function: DisableService
-                        parameters:
-                            serviceName: gupdatem # Check: (Get-Service -Name gupdatem).StartType
-                            defaultStartupMode: Automatic # Allowed values: Automatic | Manual
+                        name: Disable Google automatic updates scheduled tasks (may break Google Credential Provider)
+                        recommend: strict
+                        docs: |-
+                            This script disables the scheduled tasks used by Google to automatically update its software on Windows.
+
+                            The Google Update service creates two main tasks [1]:
+
+                            - `GoogleUpdateTaskMachineCore`: Initiates automatic updates [2].
+                            - `GoogleUpdateTaskMachineUA`: Corresponds to "Updates app" [3].
+
+                            In newer versions of the Google Update service, these task names have random suffixes appended to them [4].
+
+                            Both of these tasks call the executable file `C:\Program Files (x86)\Google\Update\GoogleUpdate.exe` [5] [6].
+                            This process is officially named as "Google Installer" [7] or "Constant Shell" [8].
+                            It is responsible for handling updates [9] [10].
+
+                            Disabling these tasks can impact the functionality of the "Google Credential Provider for Windows" (GCPW) service [11] [12].
+                            GCPW is a tool used to manage devices with Google endpoint management [13].
+                            This tool is typically used to offer access to Google Workspace services on managed computers [13].
+                            It allows users to sign in to a Windows 10 or 11 device using their Google Account for work or school [14].
+
+                            These tasks are described by Google as following [15]:
+
+                            > Keeps your Google software up to date. If this task is disabled or stopped, your Google software will not be kept up to date, meaning security
+                            > vulnerabilities that may arise cannot be fixed and features may not work. This task uninstalls itself when there is no Google software using it.
+
+                            ### Overview of default task statuses
+
+                            `\GoogleUpdateTaskMachineCore{RandomString}` [4] (tested since Chrome version 118):
+
+                            | OS Version       | Default status |
+                            | ---------------- | -------------- |
+                            | Windows 10 22H2  | 🟢 Running |
+                            | Windows 11 22H2  | 🟢 Running |
+
+                            `\GoogleUpdateTaskMachineUA{RandomString}` [4] (tested since Chrome version 118):
+
+                            | OS Version       | Default status |
+                            | ---------------- | -------------- |
+                            | Windows 10 22H2  | 🟢 Ready |
+                            | Windows 11 22H2  | 🟢 Ready |
+
+                            `\GoogleUpdateTaskMachineCore` [16] (used by older versions of Chrome):
+
+                            | OS Version       | Default status |
+                            | ---------------- | -------------- |
+                            | Windows 10 22H2  | 🟡 N/A (missing) |
+                            | Windows 11 22H2  | 🟡 N/A (missing) |
+
+                            `\GoogleUpdateTaskMachineUA` [16] (used by older versions of Chrome):
+
+                            | OS Version       | Default status |
+                            | ---------------- | -------------- |
+                            | Windows 10 22H2  | 🟡 N/A (missing) |
+                            | Windows 11 22H2  | 🟡 N/A (missing) |
+
+                            [1]: https://archive.ph/7GKGm "Comment 2 | 114356 - Google Update Services (gupdate & gupdatem) | bugs.chromium.org"
+                            [2]: https://archive.ph/ZMFsN "Comment 51 | 440549 - Google Chrome Auto-Update Not working consistently / Google Update GPO policy not honored. | bugs.chromium.org"
+                            [3]: https://archive.ph/gLYIf "Comment 52 | 440549 - Google Chrome Auto-Update Not working consistently / Google Update GPO policy not honored. | bugs.chromium.org"
+                            [4]: https://archive.ph/073xQ "omaha/omaha/common/scheduled_task_utils_internal.h at 8fa5322c5c35d0cede28f4c32454cb0285490b6d · google/omaha | github.com/google"
+                            [5]: https://archive.ph/Jxh9G "Comment 55 | 137915 - Update failed (error:3) | bugs.chromium.org"
+                            [6]: https://archive.ph/zQBY5 "Comment 12 | 1394589 - chrome 108 prematurely stopped checking for updates under Windows 7 - chromium"
+                            [7]: https://web.archive.org/web/20231025184531/https://strontic.github.io/xcyclopedia/library/GoogleUpdate.exe-6BF197B8C7DE4B004C5D6FA415FC7867.html "GoogleUpdate.exe | Google Installer | STRONTIC | strontic.github.io"
+                            [8]: https://archive.ph/hEosd "omaha/doc/Omaha3Walkthrough.md at 8fa5322c5c35d0cede28f4c32454cb0285490b6d · google/omaha | github.com/google"
+                            [9]: https://web.archive.org/web/20231025184546/https://www.shouldiblockit.com/googleupdate.exe-8f0de4fef8201e306f9938b0905ac96a.aspx "GoogleUpdate.exe - Should I Block It? (MD5 8f0de4fef8201e306f9938b0905ac96a) | shouldiblockit.com"
+                            [10]: https://web.archive.org/web/20231025185202/https://raw.githubusercontent.com/google/omaha/8fa5322c5c35d0cede28f4c32454cb0285490b6d/doc/GoogleUpdateOnAScheduleOverview.html "omaha/doc/GoogleUpdateOnAScheduleOverview.html at 8fa5322c5c35d0cede28f4c32454cb0285490b6d · google/omaha | github.com/google"
+                            [11]: https://web.archive.org/web/20231025184142/https://support.google.com/a/answer/9572621?hl=en#zippy=%2Cyour-administrator-doesnt-allow-you-to-sign-in-with-this-account-try-a-different-account "Troubleshoot GCPW - Google Workspace Admin Help | support.google.com"
+                            [12]: https://web.archive.org/web/20231025184249/https://cloud.google.com/knowledge/kb/error-message-received-when-trying-to-login-000003983 "Error message received when trying to login | Google Cloud | cloud.google.com"
+                            [13]: https://web.archive.org/web/20231025184232/https://support.google.com/a/topic/24642?hl=en "Manage devices for your organization - Google Workspace Admin Help | support.google.com"
+                            [14]: https://web.archive.org/web/20231025184204/https://support.google.com/a/answer/9250996?hl=en "Install Google Credential Provider for Windows - Google Workspace Admin Help | support.google.com"
+                            [15]: https://github.com/google/omaha/blob/8fa5322c5c35d0cede28f4c32454cb0285490b6d/omaha/internal/grit/goopdateres.grd#L166-L177 "omaha/omaha/internal/grit/goopdateres.grd at 8fa5322c5c35d0cede28f4c32454cb0285490b6d · google/omaha · GitHub | github.com/google"
+                            [16]: https://archive.ph/2rF9N "1274960 - GoogleUpdateSetup.exe don't check ACL of Schedule task files GoogleUpdateTaskMachineCore and GoogleUpdateTaskMachineUA - chromium | bugs.chromium.org"
+                        # web.archive.org fails with those:
+                        #   - https://archive.ph/7GKGm: https://web.archive.org/web/20231025184306/https://bugs.chromium.org/p/chromium/issues/detail?id=114356#c2
+                        #   - https://archive.ph/ZMFsN: https://web.archive.org/web/20231025184413/https://bugs.chromium.org/p/chromium/issues/detail?id=440549#c51
+                        #   - https://archive.ph/gLYIf: https://web.archive.org/web/20231025184413/https://bugs.chromium.org/p/chromium/issues/detail?id=440549#c52
+                        #   - https://archive.ph/Jxh9G: https://web.archive.org/web/20231025184442/https://bugs.chromium.org/p/chromium/issues/detail?id=137915#c55
+                        #   - https://archive.ph/zQBY5: https://web.archive.org/web/20231025184510/https://bugs.chromium.org/p/chromium/issues/detail?id=1394589#c12
+                        #   - https://archive.ph/hEosd : https://web.archive.org/web/20231025185137/https://github.com/google/omaha/blob/8fa5322c5c35d0cede28f4c32454cb0285490b6d/doc/Omaha3Walkthrough.md?plain=1#L11
+                        #   - https://archive.ph/2rF9N : https://web.archive.org/web/20231025184337/https://bugs.chromium.org/p/chromium/issues/detail?id=1274960
+                        #   - https://archive.ph/073xQ : https://github.com/google/omaha/blob/8fa5322c5c35d0cede28f4c32454cb0285490b6d/omaha/common/scheduled_task_utils_internal.h#L170-L173
+                        #   - https://github.com/google/omaha/blob/8fa5322c5c35d0cede28f4c32454cb0285490b6d/omaha/internal/grit/goopdateres.grd#L178-L181
+                        call:
+                            -
+                                function: DisableScheduledTask
+                                parameters:
+                                    # Check: Get-ScheduledTask -TaskPath '\' -TaskName 'GoogleUpdateTaskMachineCore'
+                                    taskPathPattern: \
+                                    taskNamePattern: GoogleUpdateTaskMachineCore
+                            -
+                                function: DisableScheduledTask
+                                parameters:
+                                    # Check: Get-ScheduledTask -TaskPath '\' -TaskName 'GoogleUpdateTaskMachineUA'
+                                    taskPathPattern: \
+                                    taskNamePattern: GoogleUpdateTaskMachineUA
+                            -
+                                function: DisableScheduledTask
+                                parameters:
+                                    # Check: Get-ScheduledTask -TaskPath '\' -TaskName 'GoogleUpdateTaskMachineCore{*}'
+                                    taskPathPattern: \
+                                    taskNamePattern: GoogleUpdateTaskMachineCore{*}
+                            -
+                                function: DisableScheduledTask
+                                parameters:
+                                    # Check: Get-ScheduledTask -TaskPath '\' -TaskName 'GoogleUpdateTaskMachineUA{*}'
+                                    taskPathPattern: \
+                                    taskNamePattern: GoogleUpdateTaskMachineUA{*}
             -
-                name: Disable Adobe Acrobat update services
-                recommend: standard
-                call:
+                category: Disable Adobe background automatic updates
+                docs: |-
+                    This category includes scripts designed to disable Adobe's background automatic update services and tasks.
+                    These automatic updates run in the background [1], typically starting up with your PC, and work to keep your Adobe software up to date [1].
+                    By disabling them, you optimize your system's performance, reduce unwanted data collection, and minimize your vulnerability surface.
+                    These scripts only disable automatic updates; manual updates are still possible.
+
+                    [1]: https://web.archive.org/web/20230624030406/https://helpx.adobe.com/x-productkb/global/adobe-background-processes.html "Why do I need the Adobe background processes? | helpx.adobe.com"
+                children:
                     -
-                        function: DisableService
-                        parameters:
-                            serviceName: AdobeARMservice # Check: (Get-Service -Name AdobeARMservice).StartType
-                            defaultStartupMode: Automatic # Allowed values: Automatic | Manual
+                        name: Disable "Adobe Acrobat Update Service" service
+                        recommend: standard
+                        docs: |-
+                            This script disables the `AdobeARMservice` service.
+                            This service is officially named "Adobe Acrobat Update Service" [1].
+                            It starts automatically when your PC boots, runs in the background, and installs updates if found [1] [2].
+                            Its primary function is to keep your Adobe software up to date [1].
+                            Disabling this service can help optimize your system's performance and reduce unwanted data collection.
+
+                            ### Overview of default service statuses
+
+                            `AdobeARMservice` (tested on Adobe Acrobat version 23.006):
+
+                            | OS Version       | Default status |
+                            | ---------------- | -------------- |
+                            | Windows 10 22H2  | 🟢 Running     |
+                            | Windows 11 22H2  | 🟢 Running     |
+
+                            [1]: https://web.archive.org/web/20231027145411/https://www.shouldiblockit.com/armsvc.exe-2873.aspx "armsvc.exe - Should I Block It? (Adobe Acrobat Update Service) | shouldiblockit.com"
+                            [2]: https://web.archive.org/web/20231027145343/https://www.file.net/process/armsvc.exe.html "armsvc.exe Windows process - What is it? | file.net"
+                        call:
+                            function: DisableService
+                            parameters:
+                                serviceName: AdobeARMservice # Check: (Get-Service -Name AdobeARMservice).StartType
+                                defaultStartupMode: Automatic # Allowed values: Automatic | Manual
                     -
-                        function: DisableService
-                        parameters:
-                            serviceName: adobeupdateservice # Check: (Get-Service -Name adobeupdateservice).StartType
-                            defaultStartupMode: Automatic # Allowed values: Automatic | Manual
+                        name: Disable "Adobe Update Service" service
+                        recommend: standard
+                        docs: |-
+                            This script disables the `adobeupdateservice` service.
+                            This service is responsible for updating Creative Cloud desktop apps [1] [2].
+                            It runs continuously in the background [3].
+                            It manages the privileges required for various actions, such as installing app updates and syncing fonts [3].
+                            This allows Adobe to perform its actions without prompting you for your system password or approval [3].
+
+                            This service has had vulnerabilities in the past, including the Privilege Escalation Unquoted Service Path
+                            vulnerability [4], making it a potential security risk.
+
+                            The service's executable is typically found at `C:\Program Files (x86)\Common Files\Adobe\Adobe Desktop Common\ElevationManager\AdobeUpdateService.exe` [1] [2].
+
+                            ### Overview of default service statuses
+
+                            `adobeupdateservice` (tested on Adobe Acrobat version 23.006):
+
+                            | OS Version       | Default status |
+                            | ---------------- | -------------- |
+                            | Windows 10 22H2  | 🟡 N/A (Missing) |
+                            | Windows 11 22H2  | 🟡 N/A (Missing) |
+
+                            [1]: https://web.archive.org/web/20231027145409/https://helpx.adobe.com/creative-cloud/kb/all-apps-displayed-aam.html "Not all apps displayed for download | Creative Cloud desktop app"
+                            [2]: https://web.archive.org/web/20231027145700/https://helpx.adobe.com/se/xd/kb/adobe-xd-not-compatible-on-windows-machine.html "Adobe XD appears as not compatible on Creative Cloud desktop app | helpx.adobe.com"
+                            [3]: https://web.archive.org/web/20230624030406/https://helpx.adobe.com/x-productkb/global/adobe-background-processes.html "Why do I need the Adobe background processes? | helpx.adobe.com"
+                            [4]: https://web.archive.org/web/20231027145430/https://www.exploit-db.com/exploits/39954 "AdobeUpdateService 3.6.0.248 - Unquoted Service Path Privilege Escalation - Windows local Exploit | exploit-db.com"
+                        call:
+                            function: DisableService
+                            parameters:
+                                serviceName: adobeupdateservice # Check: (Get-Service -Name adobeupdateservice).StartType
+                                defaultStartupMode: Automatic # Allowed values: Automatic | Manual
                     -
-                        function: DisableService
-                        parameters:
-                            serviceName: adobeflashplayerupdatesvc # Check: (Get-Service -Name adobeflashplayerupdatesvc).StartType
-                            defaultStartupMode: Automatic # Allowed values: Automatic | Manual
-                    -
-                        function: RunInlineCode
-                        parameters:
-                            code: |-
-                                schtasks /change /tn "Adobe Acrobat Update Task" /disable
-                                schtasks /change /tn "Adobe Flash Player Updater" /disable
-                            revertCode: |-
-                                schtasks /change /tn "Adobe Acrobat Update Task" /enable
-                                schtasks /change /tn "Adobe Flash Player Updater" /enable
+                        name: Disable "Adobe Acrobat Update Task" scheduled task
+                        recommend: standard
+                        docs: |-
+                            This script disables the "Adobe Acrobat Update Task" scheduled task.
+
+                            It is responsible for keeping your Adobe Reader and Acrobat applications up to date with the latest enhancements and security fixes [1].
+                            By disabling it, you reduce the system's exposure to potential vulnerabilities, though at the cost of not receiving automatic updates
+                            in the background.
+
+                            ### Overview of default task statuses
+
+                            `\Adobe Acrobat Update Task` [1] (tested on Adobe Acrobat version 23.006):
+
+                            | OS Version       | Default status |
+                            | ---------------- | -------------- |
+                            | Windows 10 22H2  | 🟢 Ready       |
+                            | Windows 11 22H2  | 🟢 Ready       |
+
+                            [1]: https://web.archive.org/web/20231027145509/http://windows.fyicenter.com/4324_Adobe_Acrobat_Update_Task_Scheduled_Task_on_Windows_7.html '"Adobe Acrobat Update Task" Scheduled Task on Windows 7 | windows.fyicenter.com'
+                        call:
+                            function: DisableScheduledTask
+                            parameters:
+                                # Check: Get-ScheduledTask -TaskPath '\' -TaskName 'Adobe Acrobat Update Task'
+                                taskPathPattern: \
+                                taskNamePattern: Adobe Acrobat Update Task
             -
                 name: Disable "Razer Game Scanner Service"
                 recommend: standard
@@ -3751,28 +4391,91 @@ actions:
                         serviceName: LogiRegistryService # Check: (Get-Service -Name 'LogiRegistryService').StartType
                         defaultStartupMode: Automatic # Allowed values: Automatic | Manual
             -
-                name: Disable Dropbox automatic update services
-                recommend: standard
-                call:
+                category: Disable Dropbox background automatic updates
+                docs: |-
+                    This category focuses on disabling continuous background processes related to automatic updates of Dropbox. Although these processes are
+                    intended to keep Dropbox up to date, they can be intrusive and use system resources unnecessarily. Disabling them does not prevent updates,
+                    but stops the automatic background processes that are running constantly, contributing to both privacy and system optimization. Users have
+                    to manually update Dropbox to ensure they have the latest version and security features.
+                children:
                     -
-                        function: DisableService
-                        parameters:
-                            serviceName: dbupdate # Check: (Get-Service -Name 'dbupdate').StartType
-                            defaultStartupMode: Automatic # Allowed values: Automatic | Manual
+                        name: Disable "Dropbox Update Service" services
+                        recommend: standard
+                        docs: |-
+                            Dropbox operates using two Windows services, `dbupdate` and `dbupdatem`, to manage automatic updates [1].
+                            Disabling these services can help enhance privacy and optimize system performance.
+
+                            ### Overview of default service statuses
+
+                            `dbupdate` (Dropbox Update Service, tested on Dropbox version 184.4):
+
+                            | OS Version       | Default status |
+                            | ---------------- | -------------- |
+                            | Windows 10 22H2  | 🔴 Stopped     |
+                            | Windows 11 22H2  | 🔴 Stopped     |
+
+                            `dbupdatem` (Dropbox Update Service, tested on Dropbox version 184.4):
+
+                            | OS Version       | Default status |
+                            | ---------------- | -------------- |
+                            | Windows 10 22H2  | 🔴 Stopped |
+                            | Windows 11 22H2  | 🔴 Stopped |
+
+                            [1]: https://web.archive.org/web/20231101153431/https://belkasoft.com/investigating_dropbox_desktop_app "Investigating the Dropbox Desktop App for Windows with Belkasoft X | belkasoft.com"
+                        call:
+                            -
+                                function: DisableService
+                                parameters:
+                                    serviceName: dbupdate # Check: (Get-Service -Name 'dbupdate').StartType
+                                    defaultStartupMode: Automatic # Allowed values: Automatic | Manual
+                            -
+                                function: DisableService
+                                parameters:
+                                    serviceName: dbupdatem # Check: (Get-Service -Name 'dbupdatem').StartType
+                                    defaultStartupMode: Automatic # Allowed values: Automatic | Manual
                     -
-                        function: DisableService
-                        parameters:
-                            serviceName: dbupdatem # Check: (Get-Service -Name 'dbupdatem').StartType
-                            defaultStartupMode: Automatic # Allowed values: Automatic | Manual
-                    -
-                        function: RunInlineCode
-                        parameters:
-                            code: |-
-                                schtasks /Change /DISABLE /TN "DropboxUpdateTaskMachineCore"
-                                schtasks /Change /DISABLE /TN "DropboxUpdateTaskMachineUA"
-                            revertCode: |-
-                                schtasks /Change /ENABLE /TN "DropboxUpdateTaskMachineCore"
-                                schtasks /Change /ENABLE /TN "DropboxUpdateTaskMachineUA"
+                        name: Disable Dropbox automatic updates scheduled tasks
+                        recommend: standard
+                        docs: |-
+                            This script disables the scheduled tasks that Dropbox uses to trigger updates.
+                            These tasks, named `DropboxUpdateTaskMachineUA` and `DropboxUpdateTaskMachineCore`,
+                            are referred to as "Dropbox Update tasks" by Dropbox [1].
+
+                            Disabling these scheduled tasks can further enhance privacy and optimize system performance.
+                            Dropbox disables these tasks for enterprise installations by default [1].
+
+                            ### Overview of default task statuses
+
+                            `\DropboxUpdateTaskMachineCore` (tested on Dropbox version 184.4):
+
+                            | OS Version       | Default status |
+                            | ---------------- | -------------- |
+                            | Windows 10 22H2  | 🟢 Ready       |
+                            | Windows 11 22H2  | 🟢 Ready       |
+
+                            `\DropboxUpdateTaskMachineUA` (tested on Dropbox version 184.4):
+
+                            | OS Version       | Default status |
+                            | ---------------- | -------------- |
+                            | Windows 10 22H2  | 🟢 Ready       |
+                            | Windows 11 22H2  | 🟢 Ready       |
+
+                            [1]: https://archive.ph/pJon7 "DropboxBusinessScripts/QA Installer/Dropbox Enterprise Installer.ps1 at 4f4c32ddd488b29e7fd16a40966761e70a758239 · dropbox/DropboxBusinessScripts | github.com/dropbox"
+                        # web.archive.org fails with those:
+                        #   - https://archive.ph/pJon7: https://github.com/dropbox/DropboxBusinessScripts/blob/4f4c32ddd488b29e7fd16a40966761e70a758239/QA%20Installer/Dropbox%20Enterprise%20Installer.ps1#L127-L136
+                        call:
+                            -
+                                function: DisableScheduledTask
+                                parameters:
+                                    # Check: Get-ScheduledTask -TaskPath '\' -TaskName 'DropboxUpdateTaskMachineUA'
+                                    taskPathPattern: \
+                                    taskNamePattern: DropboxUpdateTaskMachineUA
+                            -
+                                function: DisableScheduledTask
+                                parameters:
+                                    # Check: Get-ScheduledTask -TaskPath '\' -TaskName 'DropboxUpdateTaskMachineCore'
+                                    taskPathPattern: \
+                                    taskNamePattern: DropboxUpdateTaskMachineCore
             -
                 category: Disable Media Player data collection
                 children:
@@ -5835,44 +6538,171 @@ actions:
                         category: Disable OS components for Defender # Hackers way of disabling Defender
                         children:
                             -
-                                category: Disable Defender tasks
+                                category: Disable Defender scheduled tasks
                                 children:
                                     -
-                                        name: Disable "Windows Defender ExploitGuard" task
-                                        docs: https://www.microsoft.com/security/blog/2017/10/23/windows-defender-exploit-guard-reduce-the-attack-surface-against-next-generation-malware/
-                                        code: schtasks /Change /TN "Microsoft\Windows\ExploitGuard\ExploitGuard MDM policy Refresh" /Disable 2>nul
-                                        revertCode: schtasks /Change /TN "Microsoft\Windows\ExploitGuard\ExploitGuard MDM policy Refresh" /Enable
+                                        name: Disable "ExploitGuard MDM policy Refresh" task
+                                        docs: |-
+                                            This script disables the "ExploitGuard MDM policy Refresh" scheduled task.
+
+                                            The task is originally described in the Task Scheduler as: "Task for applying changes to the machine's Exploit Protection settings".
+
+                                            Windows Defender Exploit Guard is a security feature in Windows, designed to prevent potential intrusions [1].
+                                            It encompasses various components such as "Attack Surface Reduction (ASR)", "Network protection", "Controlled folder access", and "Exploit protection" [1].
+
+                                            Specifically, the "ExploitGuard MDM policy Refresh" task is in charge of refreshing the Exploit Guard policy settings through Mobile Device Management (MDM) policies [2].
+                                            MDM offers a method to remotely adjust the ExploitGuard settings on a device [2].
+
+                                            Microsoft rolled out the Exploit Guard feature starting from Windows 10 version 1709 [3] [4].
+                                            
+                                            Notably, the National Security Agency (NSA) in the USA has recommended the use of this feature for enhanced security [3].
+
+                                            ### Overview of default task statuses
+
+                                            `\Microsoft\Windows\ExploitGuard\ExploitGuard MDM policy Refresh`:
+
+                                            | OS Version       | Default status |
+                                            | ---------------- | -------------- |
+                                            | Windows 10 22H2  | 🟢 Ready |
+                                            | Windows 11 22H2  | 🟢 Ready |
+
+                                            [1]: https://web.archive.org/web/20231020130741/https://www.microsoft.com/en-us/security/blog/2017/10/23/windows-defender-exploit-guard-reduce-the-attack-surface-against-next-generation-malware/ "Windows Defender Exploit Guard: Reduce the attack surface against next-generation malware | Microsoft Security Blog"
+                                            [2]: https://web.archive.org/web/20231020130744/https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/enable-exploit-protection?view=o365-worldwide#mdm "Turn on exploit protection to help mitigate against attacks | Microsoft Learn"
+                                            [3]: https://web.archive.org/web/20231020130723/https://media.defense.gov/2019/Jul/16/2002158052/-1/-1/0/CSI-WINDOWS-10-FOR-ENTERPRISE-SECURITY-BENEFITS-OF-TIMELY-ADOPTION.PDF "Windows 10 for Enterprises Security Benefits of Timely Adoption | nist.gov"
+                                            [4]: https://web.archive.org/web/20231020130731/https://learn.microsoft.com/en-us/mem/configmgr/protect/deploy-use/create-deploy-exploit-guard-policy "Windows Defender Exploit Guard policy - Configuration Manager | Microsoft Learn"
+                                        call:
+                                            function: DisableScheduledTask
+                                            parameters:
+                                                # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\ExploitGuard\' -TaskName 'ExploitGuard MDM policy Refresh'
+                                                taskPathPattern: \Microsoft\Windows\ExploitGuard\
+                                                taskNamePattern: ExploitGuard MDM policy Refresh
                                     -
                                         name: Disable "Windows Defender Cache Maintenance" task
-                                        # Cache Maintenance is the storage for temporary files that are being either quarantined by Microsoft Defender
-                                        # or being checked. Running this will Clear Cache.
-                                        docs: https://answers.microsoft.com/en-us/windows/forum/all/win10-windows-defender-schedulable-tasks-what-does/968ddd6b-3a71-46ce-bc80-d2af11f7e1ae
-                                        code: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Cache Maintenance" /Disable 2>nul
-                                        revertCode: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Cache Maintenance" /Enable
+                                        docs: |-
+                                            This script disables the "Windows Defender Cache Maintenance" scheduled task.
+
+                                            The task is scheduled to periodically maintain the cache used by Microsoft Defender Antivirus [1].
+                                            It runs the command `C:\Program Files\Windows Defender\MpCmdRun.exe -IdleTask -TaskName WdCacheMaintenance` [1].
+                                            The `MpCmdRun.exe` is a command-line tool used to perform various Microsoft Defender Antivirus functions [2].
+
+                                            Cache maintenance involves managing temporary files that Microsoft Defender is either scanning or has quarantined [3]
+                                            Disabling this task prevents the system from automatically clearing the Defender cache [3].
+
+                                            This is particularly useful if you want to ensure that files are not removed from quarantine or the cache without your explicit action.
+                                            Disabling this task is reported to optimize system boot speed [4] but it could potentially lead to increased storage use by temporary files.
+
+                                            ### Overview of default task statuses
+
+                                            `\Microsoft\Windows\Windows Defender\Windows Defender Cache Maintenance`:
+
+                                            | OS Version       | Default status |
+                                            | ---------------- | -------------- |
+                                            | Windows 10 22H2  | 🟢 Ready |
+                                            | Windows 11 22H2  | 🟢 Ready |
+
+                                            [1]: https://web.archive.org/web/20231102111550/http://windows.fyicenter.com/4439_Windows_Defender_Cache_Maintenance_Scheduled_Task_on_Windows_8.html '"Windows Defender Cache Maintenance" Scheduled Task on Windows 8 | windows.fyicenter.com'
+                                            [2]: https://web.archive.org/web/20231102111626/https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/command-line-arguments-microsoft-defender-antivirus?view=o365-worldwide "Use the command line to manage Microsoft Defender Antivirus | Microsoft Learn | learn.microsoft.com"
+                                            [3]: https://web.archive.org/web/20231102111205/https://answers.microsoft.com/en-us/windows/forum/all/win10-windows-defender-schedulable-tasks-what-does/968ddd6b-3a71-46ce-bc80-d2af11f7e1ae "win10 windows defender schedulable tasks - what does each do? - Microsoft Community | answers.microsoft.com"
+                                            [4]: https://web.archive.org/web/20231102111645/https://discussions.citrix.com/topic/417772-very-slow-boot-times/ "Very slow boot times - Provisioning Server for Datacenters - Discussions | discussions.citrix.com"
+                                        call:
+                                            function: DisableScheduledTask
+                                            parameters:
+                                                # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Windows Defender\' -TaskName 'Windows Defender Cache Maintenance'
+                                                taskPathPattern: \Microsoft\Windows\Windows Defender\
+                                                taskNamePattern: Windows Defender Cache Maintenance
                                     -
                                         name: Disable "Windows Defender Cleanup" task
-                                        docs: https://answers.microsoft.com/en-us/windows/forum/all/win10-windows-defender-schedulable-tasks-what-does/968ddd6b-3a71-46ce-bc80-d2af11f7e1ae
-                                        # Periodic cleanup task
-                                        # Clears up files that are not needed anymore by Microsoft Defender.
-                                        code: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Cleanup" /Disable 2>nul
-                                        revertCode: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Cleanup" /Enable
+                                        docs: |-
+                                            This script disables the "Windows Defender Cleanup" scheduled task.
+
+                                            This task is used by Defender to remove unnecessary files, such as corrupted or quarantined items [1].
+                                            The task is described in the Task Scheduler as "Periodic cleanup task" [2] [3].
+                                            This task executes the following command:
+                                            `C:\Program Files\Windows Defender\MpCmdRun.exe -IdleTask -TaskName WdCleanup` [2] [3].
+
+                                            ### Overview of default task statuses
+
+                                            `\Microsoft\Windows\Windows Defender\Windows Defender Cleanup`:
+
+                                            | OS Version       | Default status |
+                                            | ---------------- | -------------- |
+                                            | Windows 10 22H2  | 🟢 Ready |
+                                            | Windows 11 22H2  | 🟢 Ready |
+
+                                            [1]: https://web.archive.org/web/20231103171411/https://answers.microsoft.com/en-us/windows/forum/all/win10-windows-defender-schedulable-tasks-what-does/968ddd6b-3a71-46ce-bc80-d2af11f7e1ae "win10 windows defender schedulable tasks - what does each do? - Microsoft Community | answers.microsoft.com"
+                                            [2]: https://web.archive.org/web/20231103171352/http://windows.fyicenter.com/4440_Windows_Defender_Cleanup_Scheduled_Task_on_Windows_8.html '"Windows Defender Cleanup" Scheduled Task on Windows 8 | windows.fyicenter.com'
+                                            [3]: https://web.archive.org/web/20231103171350/https://www.herdprotect.com/mpcmdrun.exe-bb31a13a0eeecfab745d4aa221ee222d5021e9d8.aspx "Malware scan of MpCmdRun.exe (Microsoft Malware Protection) bb31a13a0eeecfab745d4aa221ee222d5021e9d8 - herdProtect | herdprotect.com"
+                                        call:
+                                            function: DisableScheduledTask
+                                            parameters:
+                                                # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Windows Defender\' -TaskName 'Windows Defender Cleanup'
+                                                taskPathPattern: \Microsoft\Windows\Windows Defender\
+                                                taskNamePattern: Windows Defender Cleanup
                                     -
-                                        name: Disable "Windows Defender Scheduled Scan" task # Does not exist in Windows 11
-                                        docs:
-                                            - https://support.microsoft.com/en-us/windows/schedule-a-scan-in-microsoft-defender-antivirus-54b64e9c-880a-c6b6-2416-0eb330ed5d2d
-                                            - https://winbuzzer.com/2020/05/26/windows-defender-how-to-perform-a-scheduled-scan-in-windows-10-xcxwbt/
-                                        code: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Scheduled Scan" /Disable 2>nul
-                                        revertCode: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Scheduled Scan" /Enable 2>nul
+                                        name: Disable "Windows Defender Scheduled Scan" task
+                                        docs: |-
+                                            This script disables the "Windows Defender Scheduled Scan" scheduled task.
+
+                                            This scheduled task is responsible for performing automatic regular scans [1] [2].
+                                            By disabling this task, users can control the scheduling and frequency of antivirus scans, according to their needs, thus balancing
+                                            security with system resource management [1] [2].
+                                            
+                                            The task is known as "Periodic scan task" in the Task Scheduler [1] [3] [4].
+                                            It executes the following command:
+                                            `C:\Program Files\Windows Defender\MpCmdRun.exe Scan -ScheduleJob -ScanTrigger 55` [3] [4].
+
+                                            ### Overview of default task statuses
+
+                                            `\Microsoft\Windows\Windows Defender\Windows Defender Scheduled Scan`:
+
+                                            | OS Version       | Default status |
+                                            | ---------------- | -------------- |
+                                            | Windows 10 22H2  | 🟢 Ready |
+                                            | Windows 11 22H2  | 🟢 Ready |
+
+                                            [1]: https://web.archive.org/web/20231103171744/https://support.microsoft.com/en-us/windows/schedule-a-scan-in-microsoft-defender-antivirus-54b64e9c-880a-c6b6-2416-0eb330ed5d2d "Schedule a scan in Microsoft Defender Antivirus - Microsoft Support | support.microsoft.com"
+                                            [2]: https://web.archive.org/web/20231103171802/https://support.microsoft.com/en-us/windows/stay-protected-with-windows-security-2ae0363d-0ada-c064-8b56-6a39afb6a963 "Stay protected with Windows Security - Microsoft Support | support.microsoft.com"
+                                            [3]: https://web.archive.org/web/20231103171350/https://www.herdprotect.com/mpcmdrun.exe-bb31a13a0eeecfab745d4aa221ee222d5021e9d8.aspx "Malware scan of MpCmdRun.exe (Microsoft Malware Protection) bb31a13a0eeecfab745d4aa221ee222d5021e9d8 - herdProtect | herdprotect.com"
+                                            [4]: https://web.archive.org/web/20231103171825/http://windows.fyicenter.com/4441_Windows_Defender_Scheduled_Scan_Scheduled_Task_on_Windows_8.html '"Windows Defender Scheduled Scan" Scheduled Task on Windows 8 | windows.fyicenter.com'
+                                        call:
+                                            function: DisableScheduledTask
+                                            parameters:
+                                                # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Windows Defender\' -TaskName 'Windows Defender Scheduled Scan'
+                                                taskPathPattern: \Microsoft\Windows\Windows Defender\
+                                                taskNamePattern: Windows Defender Scheduled Scan
                                     -
                                         name: Disable "Windows Defender Verification" task
-                                        # Check if there are any problems with your Windows Defender like in updates, system files, etc,.
-                                        # Creates daily restore points
-                                        docs:
-                                            - https://answers.microsoft.com/en-us/windows/forum/all/win10-windows-defender-schedulable-tasks-what-does/968ddd6b-3a71-46ce-bc80-d2af11f7e1ae
-                                            - https://answers.microsoft.com/en-us/windows/forum/all/windows-defender-system-restore-points/86f77a7f-4ee9-411f-b016-223993c55426
-                                            - https://www.windowsphoneinfo.com/threads/same-problems-with-windows-defender-verification-and-scan-tasks.121489/#Same_problems_with_Windows_Defender_Verification_and_Scan_Tasks
-                                        code: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Verification" /Disable 2>nul
-                                        revertCode: schtasks /Change /TN "Microsoft\Windows\Windows Defender\Windows Defender Verification" /Enable
+                                        docs: |-
+                                            This script disables the "Windows Defender Verification" scheduled task.
+
+                                            This task checks for issues with Defender, such as update problems or system file errors [1].
+                                            It is also linked to the creation of daily system restore points [2].
+                                            Disabling this task can prevent unnecessary system slowdowns and restore point creation, conserving disk space and system resources.
+                                            It improves privacy by reducing the system state data stored on the device.
+
+                                            The task is known as "Periodic verification task" in the Task Scheduler [3] [4].
+                                            It executes the following command:
+                                            `C:\Program Files\Windows Defender\MpCmdRun.exe -IdleTask -TaskName WdVerification` [3] [4].
+
+                                            ### Overview of default task statuses
+
+                                            `\Microsoft\Windows\Windows Defender\Windows Defender Verification`:
+
+                                            | OS Version       | Default status |
+                                            | ---------------- | -------------- |
+                                            | Windows 10 22H2  | 🟢 Ready |
+                                            | Windows 11 22H2  | 🟢 Ready |
+
+                                            [1]: https://web.archive.org/web/20231102111205/https://answers.microsoft.com/en-us/windows/forum/all/win10-windows-defender-schedulable-tasks-what-does/968ddd6b-3a71-46ce-bc80-d2af11f7e1ae "win10 windows defender schedulable tasks - what does each do? - Microsoft Community | answers.microsoft.com"
+                                            [2]: https://web.archive.org/web/20231103172413/https://answers.microsoft.com/en-us/windows/forum/all/windows-defender-system-restore-points/86f77a7f-4ee9-411f-b016-223993c55426 "Windows Defender / System Restore Points - Microsoft Community | answers.microsoft.com"
+                                            [3]: https://web.archive.org/web/20231103171350/https://www.herdprotect.com/mpcmdrun.exe-bb31a13a0eeecfab745d4aa221ee222d5021e9d8.aspx "Malware scan of MpCmdRun.exe (Microsoft Malware Protection) bb31a13a0eeecfab745d4aa221ee222d5021e9d8 - herdProtect | herdprotect.com"
+                                            [4]: https://web.archive.org/web/20231103172432/http://windows.fyicenter.com/4442_Windows_Defender_Verification_Scheduled_Task_on_Windows_8.html '"Windows Defender Verification" Scheduled Task on Windows 8 | windows.fyicenter.com'
+                                        call:
+                                            function: DisableScheduledTask
+                                            parameters:
+                                                # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Windows Defender\' -TaskName 'Windows Defender Verification'
+                                                taskPathPattern: \Microsoft\Windows\Windows Defender\
+                                                taskNamePattern: Windows Defender Verification
                             -
                                 category: Disable Defender services and drivers
                                 # Normally users can disable services on GUI or using commands like "sc config"
@@ -9292,81 +10122,92 @@ actions:
                         reg add "HKCR\Wow6432Node\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v "System.IsPinnedToNameSpaceTree" /d "1" /t REG_DWORD /f
                 -
                     name: Disable OneDrive scheduled tasks
-                    docs: |-
-                        Scheduled tasks for OneDrive handle maintainence tasks such as auto-updates and data reporting.
-                        These tasks are left intact even after successful uninstall.
-
-                        Windows 10 and 11 comes with two tasks named:
-                        1. `OneDrive Standalone Update Task`
-                        2. `OneDrive Reporting Task`
-
-                        Both tasks are enabled by default. They are not documented officially either on Microsoft's website
-                        or inside Task Scheduler itself through any description. But one could find these tasks by running:
-                        `Get-ScheduledTask 'OneDrive *' | Select -ExpandProperty TaskName`.
-
-                        The tasks are named accordingly:
-
-                        - OneDrive Reporting Task-S-1-5-21-994346235-3805487047-77196597-500
-                        - OneDrive Standalone Update Task-S-1-5-21-994346235-3805487047-77196597-500
-                        - OneDrive Standalone Update Task-S-1-5-21-2040720125-3302134200-1644992326-500
-
-                        The SID number (after `-`) changes per installation. SID of user accounts always start with `S-1-5-21` [1]
-                        so these are users. You can see all user accounts by running `wmic useraccount get Name,sid`, and you will
-                        find out that the first SID used belongs to your account (can verify using `whoami /user`). The other SID
-                        used does not belong to any user account even though it starts with `S-1-5-21`. It may be caused by
-                        `sysprep` behavior where it will use different SID for scheduled tasks to avoid duplication [2].
-
-                        Third SID is unpredictable but also impossible to disable. Disabling using `schtasks` would result in:
-                        `schtasks : ERROR: Catastrophic failure`. You can try using:
-
-                        ```ps1
-                            $tasks=$(
-                                Get-ScheduledTask 'OneDrive Reporting Task-*'
-                                Get-ScheduledTask 'OneDrive Standalone Update Task-*'
-                            )
-                            foreach ($task in $tasks) {
-                                $fullPath = $task.TaskPath + $task.TaskName
-                                Write-Host "Disabling `"$fullPath`""
-                                schtasks /Change /TN "$fullPath" /DISABLE
-                            }
-                        ```
-
-                        Even disabling this using Task Scheduler UI shows "Catastrophic failure (Exception from HRESULT: 0x80000FFF (E_UNEXPECTED))".
-
-                        Disabling tasks with user SID works fine, you can test it using (run as .bat file, not directly on terminal):
-
-                        ```batchfile
-                            @echo off
-                            for /f "tokens=1,2 delims==" %%s IN ('wmic path win32_useraccount where name^='%username%' get sid /value ^| find /i "SID"') do (
-                                set "User_SID=%%t"
-                            )
-                            schtasks /Change /TN "\OneDrive Standalone Update Task-%User_SID%" /DISABLE
-                            schtasks /Change /TN "\OneDrive Reporting Task-%User_SID%" /DISABLE
-                        ```
-
-                        Deleting tasks works fine so this script will delete all these tasks instead.
-
-                        [1]: https://renenyffenegger.ch/notes/Windows/security/SID/index "Windows security identifiers (SID) | renenyffenegger.ch"
-                        [2]: https://en.wikipedia.org/w/index.php?title=Windows_Task_Scheduler&oldid=1086196699#Bugs "Windows Task Scheduler - Wikipedia | wikipedia.rg"
                     recommend: strict
+                    docs: |-
+                        This script disables the scheduled tasks associated with Microsoft OneDrive that typically
+                        run maintenance activities such as auto-updates [1] [2] [3] and data collection [2].
+                        Disabling these tasks impacts OneDrive's automatic background update process [1] [2] [3].
+
+                        By default, Windows 10 (since 22H2) and Windows 11 (since 22H2) include the following tasks:
+                        - `OneDrive Standalone Update Task` [1] [2] [3]
+                        - `OneDrive Reporting Task` [1]
+
+                        These tasks are enabled by default and lack official documentation from Microsoft. They can be identified
+                        by executing `Get-ScheduledTask 'OneDrive *' | Select -ExpandProperty TaskName` in PowerShell.
+                        These tasks are observed to persist even after OneDrive is uninstalled.
+
+                        The tasks appear with a Security Identifier (SID) unique to each installation [1], following this pattern:
+                        - `OneDrive Reporting Task-S-1-5-21-xxxxxx`
+                        - `OneDrive Standalone Update Task-S-1-5-21-xxxxxx`
+
+                        The SID, denoted by 'xxxxxx', varies per installation and represents the user account associated with the task.
+                        SID of user accounts always start with `S-1-5-21` [4], the rest of the number chages per user.
+                        To see all user SIDs, you can run `wmic useraccount get Name,sid`.
+                        The SID for your account can be confirmed using `whoami /user`.
+                        A SID which doesn't correspond to any user account may appear.
+                        This is be due to system preparation processes (`sysprep`) that use different SIDs for tasks to prevent duplication [5].
+
+                        Disabling tasks with standard user SIDs is straightforward, but attempting to disable tasks with unpredictable SIDs can
+                        result in an error message: `Catastrophic failure (Exception from HRESULT: 0x80000FFF (E_UNEXPECTED))`.
+
+                        Nonetheless, disabling tasks with the correct SID is achievable using the provided script, which locates the full task names
+                        including the SIDs.
+
+                        If OneDrive is installed for all users on a machine (which is not the default behavior [6]), an additional task is present:
+                        - `OneDrive Per-Machine Standalone Update` [1] [7].
+
+                        Disabling the `OneDrive Standalone Update Task` is recommended by Microsoft to improve system performance and reduce
+                        unnecessary data collection [2].
+
+                        ### Overview of default task statuses
+
+                        `\OneDrive Reporting Task-$SID`:
+
+                        | OS Version       | Default status |
+                        | ---------------- | -------------- |
+                        | Windows 10 22H2  | 🟢 Ready |
+                        | Windows 11 22H2  | 🟢 Ready |
+
+                        `\OneDrive Standalone Update Task-$SID`:
+
+                        | OS Version       | Default status |
+                        | ---------------- | -------------- |
+                        | Windows 10 22H2  | 🟢 Ready |
+                        | Windows 11 22H2  | 🟢 Ready |
+
+                        `\OneDrive Per-Machine Standalone Update`:
+
+                        | OS Version       | Default status |
+                        | ---------------- | -------------- |
+                        | Windows 10 22H2  | 🟡 N/A (missing) |
+                        | Windows 11 22H2  | 🟡 N/A (missing) |
+
+                        [1]: https://web.archive.org/web/20231104142218/https://docs.fra.me/blog/2023/08/04/application-optimizations-microsoft-onedrive/#scheduled-tasks "Application Optimization Essentials: Microsoft OneDrive | Frame Platform Documentation | docs.fra.me"
+                        [2]: https://web.archive.org/web/20231104142209/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds-vdi-recommendations-1803 "Optimizing Windows 10, version 1803, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn | learn.microsoft.com"
+                        [3]: https://web.archive.org/web/20231104142301/http://windows.fyicenter.com/5623_OneDrive_Standalone_Update_Task-S-1-_Scheduled_Task_on_Windows_7.html '"OneDrive Standalone Update Task-S-1-..." Scheduled Task on Windows 7 | windows.fyicenter.com'
+                        [4]: https://web.archive.org/web/20231104133125/https://renenyffenegger.ch/notes/Windows/security/SID/index "Windows security identifiers (SID) | renenyffenegger.ch"
+                        [5]: https://en.wikipedia.org/w/index.php?title=Windows_Task_Scheduler&oldid=1086196699#Bugs "Windows Task Scheduler - Wikipedia | wikipedia.rg"
+                        [6]: https://web.archive.org/web/20231104142412/https://learn.microsoft.com/en-us/sharepoint/per-machine-installation "Install the sync app per-machine (Windows) - SharePoint in Microsoft 365 | Microsoft Learn | learn.microsoft.com"
+                        [7]: https://web.archive.org/web/20231104142343/https://docs.citrix.com/en-us/tech-zone/build/deployment-guides/microsoft-365-citrix.html "Deployment Guide: Microsoft 365 with Citrix Virtual Apps and Desktops | docs.citrix.com"
                     call:
-                        function: RunPowerShell
-                        parameters:
-                            code: |-
-                                $tasks=$(
-                                    Get-ScheduledTask 'OneDrive Reporting Task-*'
-                                    Get-ScheduledTask 'OneDrive Standalone Update Task-*'
-                                )
-                                if($tasks.Length -eq 0) {
-                                    Write-Host 'Skipping, no OneDrive tasks exists.'
-                                } else {
-                                    Write-Host "Total found OneDrive tasks: $($tasks.Length)."
-                                    foreach ($task in $tasks) {
-                                        $fullPath = $task.TaskPath + $task.TaskName
-                                        Write-Host "Deleting `"$fullPath`""
-                                        schtasks /DELETE /TN "$fullPath" /f
-                                    }
-                                }
+                        -
+                            function: DisableScheduledTask
+                            parameters:
+                                # Check: Get-ScheduledTask -TaskPath '\' -TaskName 'OneDrive Reporting Task-*'
+                                taskPathPattern: \
+                                taskNamePattern: OneDrive Reporting Task-*
+                        -
+                            function: DisableScheduledTask
+                            parameters:
+                                # Check: Get-ScheduledTask -TaskPath '\' -TaskName 'OneDrive Standalone Update Task-*'
+                                taskPathPattern: \
+                                taskNamePattern: OneDrive Standalone Update Task-*
+                        -
+                            function: DisableScheduledTask
+                            parameters:
+                                # Check: Get-ScheduledTask -TaskPath '\' -TaskName 'OneDrive Per-Machine Standalone Update'
+                                taskPathPattern: \
+                                taskNamePattern: OneDrive Per-Machine Standalone Update
                 -
                     name: Clear OneDrive environment variable
                     recommend: strict
@@ -11853,3 +12694,76 @@ functions:
                 function: DeleteFiles
                 parameters:
                     fileGlob: '%APPDATA%\Mozilla\Firefox\Profiles\*\{{ $pathGlob }}'
+    -
+        name: DisableScheduledTask
+        parameters:
+            - name: taskPathPattern
+            - name: taskNamePattern
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: "Disable scheduled task(s): `{{ $taskPathPattern }}{{ $taskNamePattern }}`"
+                    revertCodeComment: "Restore scheduled task(s) to default state: `{{ $taskPathPattern }}{{ $taskNamePattern }}`"
+            -
+                function: RunPowerShell
+                parameters:
+                    code: |-
+                        $taskPathPattern='{{ $taskPathPattern }}'
+                        $taskNamePattern='{{ $taskNamePattern }}'
+                        Write-Output "Disabling tasks matching pattern `"$taskNamePattern`"." 
+                        $tasks = @(Get-ScheduledTask -TaskPath $taskPathPattern -TaskName $taskNamePattern -ErrorAction Ignore)
+                        if (-Not $tasks) {
+                            Write-Output "Skipping, no tasks matching pattern `"$taskNamePattern`" found, no action needed."
+                            exit 0
+                        }
+                        $operationFailed = $false
+                        foreach ($task in $tasks) {
+                            $taskName = $task.TaskName
+                            if ($task.State -eq [Microsoft.PowerShell.Cmdletization.GeneratedTypes.ScheduledTask.StateEnum]::Disabled) {
+                                Write-Output "Skipping, task `"$taskName`" is already disabled, no action needed."
+                                continue
+                            }
+                            try {
+                                $task | Disable-ScheduledTask -ErrorAction Stop | Out-Null
+                                Write-Output "Successfully disabled task `"$taskName`"."
+                            } catch {
+                                Write-Error "Failed to disable task `"$taskName`": $($_.Exception.Message)"
+                                $operationFailed = $true
+                            }
+                        }
+                        if ($operationFailed) {
+                            Write-Output 'Failed to disable some tasks. Check error messages above.'
+                            exit 1
+                        }
+                    # Not failing if tasks cannot be found because all tasks disabled by privacy.sexy do not exist in all Windows versions by default.
+                    revertCode: |-
+                        $taskPathPattern='{{ $taskPathPattern }}'
+                        $taskNamePattern='{{ $taskNamePattern }}'
+                        Write-Output "Enabling tasks matching pattern `"$taskNamePattern`"." 
+                        $tasks = @(Get-ScheduledTask -TaskPath $taskPathPattern -TaskName $taskNamePattern -ErrorAction Ignore)
+                        if (-Not $tasks) {
+                            Write-Warning "Cannot enable, no tasks matching pattern `"$taskNamePattern`" found." + `
+                                "This task appears to be not included in this version of Windows."
+                            exit 0
+                        }
+                        $operationFailed = $false
+                        foreach ($task in $tasks) {
+                            $taskName = $task.TaskName
+                            if (($task.State -ne [Microsoft.PowerShell.Cmdletization.GeneratedTypes.ScheduledTask.StateEnum]::Disabled) `
+                                -and ($task.State -ne [Microsoft.PowerShell.Cmdletization.GeneratedTypes.ScheduledTask.StateEnum]::Unknown)) {
+                                Write-Output "Skipping, task `"$taskName`" is already enabled, no action needed."
+                                continue
+                            }
+                            try {
+                                $task | Enable-ScheduledTask -ErrorAction Stop | Out-Null
+                                Write-Output "Successfully enabled task `"$taskName`"."
+                            } catch {
+                                Write-Error "Failed to enable task `"$taskName`": $($_.Exception.Message)"
+                                $operationFailed = $true
+                            }
+                        }
+                        if ($operationFailed) {
+                            Write-Output 'Failed to restore some tasks. Check error messages above.'
+                            exit 1
+                        }

@@ -100,6 +100,16 @@ $text-size: 0.75em; // Lower looks bad on Firefox
       }
     }
   }
+  h1, h2, h3, h4, h5, h6 {
+    &:first-child {
+      /*
+        Remove default browser margin, if they're the first element.
+        Just like `<p>`, it ensures that the visible texts start with top spacing.
+      */
+      margin-top: 0;
+    }
+  }
+
   @mixin set-paragraph-vertical-gap($paragraph-vertical-gap) {
     p {
       /*
