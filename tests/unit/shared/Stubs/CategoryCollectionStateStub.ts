@@ -22,7 +22,7 @@ export class CategoryCollectionStateStub implements ICategoryCollectionState {
     return this.collection.os;
   }
 
-  public collection: ICategoryCollection = new CategoryCollectionStub();
+  public collection: ICategoryCollection = new CategoryCollectionStub().withSomeActions();
 
   public selection: IUserSelection = new UserSelectionStub([]);
 

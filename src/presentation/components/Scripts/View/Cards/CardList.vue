@@ -1,34 +1,36 @@
 <template>
   <SizeObserver v-on:widthChanged="width = $event">
-    <!--
-      <div id="responsivity-debug">
-        Width: {{ width || 'undefined' }}
-        Size:
-          <span v-if="width <= 500">small</span>
-          <span v-if="width > 500 && width < 750">medium</span>
-          <span v-if="width >= 750">big</span>
+    <transition name="fade-transition">
+      <div v-if="width">
+        <!-- <div id="responsivity-debug">
+          Width: {{ width || 'undefined' }}
+          Size:
+            <span v-if="width <= 500">small</span>
+            <span v-if="width > 500 && width < 750">medium</span>
+            <span v-if="width >= 750">big</span>
+        </div> -->
+        <div
+          v-if="categoryIds.length > 0"
+          class="cards"
+        >
+          <CardListItem
+            class="card"
+            v-bind:class="{
+              'small-screen': width <= 500,
+              'medium-screen': width > 500 && width < 750,
+              'big-screen': width >= 750,
+            }"
+            v-for="categoryId of categoryIds"
+            :data-category="categoryId"
+            v-bind:key="categoryId"
+            :categoryId="categoryId"
+            :activeCategoryId="activeCategoryId"
+            v-on:cardExpansionChanged="onSelected(categoryId, $event)"
+          />
+        </div>
+        <div v-else class="error">Something went bad 😢</div>
       </div>
-    -->
-    <div
-      v-if="categoryIds.length > 0"
-      class="cards"
-    >
-      <CardListItem
-        class="card"
-        v-bind:class="{
-          'small-screen': width <= 500,
-          'medium-screen': width > 500 && width < 750,
-          'big-screen': width >= 750,
-        }"
-        v-for="categoryId of categoryIds"
-        :data-category="categoryId"
-        v-bind:key="categoryId"
-        :categoryId="categoryId"
-        :activeCategoryId="activeCategoryId"
-        v-on:cardExpansionChanged="onSelected(categoryId, $event)"
-      />
-    </div>
-    <div v-else class="error">Something went bad 😢</div>
+    </transition>
   </SizeObserver>
 </template>
 
@@ -49,7 +51,8 @@ export default defineComponent({
   setup() {
     const { currentState, onStateChange } = injectKey((keys) => keys.useCollectionState);
 
-    const width = ref<number>(0);
+    const width = ref<number | undefined>();
+
     const categoryIds = computed<readonly number[]>(
       () => currentState.value.collection.actions.map((category) => category.id),
     );
@@ -138,4 +141,6 @@ function isClickable(element: Element) {
   font-size: 3.5em;
   font-family: $font-normal;
 }
+
+@include fade-transition('fade-transition');
 </style>

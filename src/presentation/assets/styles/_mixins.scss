@@ -1,48 +1,63 @@
 @mixin hover-or-touch($selector-suffix: '', $selector-prefix: '&') {
-    @media (hover: hover) { 
-        /*  We only do this if hover is truly supported; otherwise the emulator in mobile
+  @media (hover: hover) {
+
+    /*  We only do this if hover is truly supported; otherwise the emulator in mobile
             keeps hovered style in-place even after touching, making it sticky.  */
-        #{$selector-prefix}:hover #{$selector-suffix} {
-            @content;
-        }
+    #{$selector-prefix}:hover #{$selector-suffix} {
+      @content;
     }
-    @media (hover: none) {
-        /*  We only do this if hover is not supported,otherwise the desktop behavior is not
+  }
+
+  @media (hover: none) {
+
+    /*  We only do this if hover is not supported,otherwise the desktop behavior is not
             as desired; it does not get activated on hover but only during click/touch.  */
-        #{$selector-prefix}:active #{$selector-suffix} {
-            @content;
-        }
+    #{$selector-prefix}:active #{$selector-suffix} {
+      @content;
     }
+  }
 }
 
 @mixin clickable($cursor: 'pointer') {
-    cursor: #{$cursor};
-    user-select: none;
-    /*
+  cursor: #{$cursor};
+  user-select: none;
+  /*
         It removes (blue) background during touch as seen in mobile webkit browsers (Chrome, Safari, Edge).
         The default behavior is that any element (or containing element) that has cursor:pointer
         explicitly set and is clicked will flash blue momentarily.
         Removing it could have accessibility issue since that hides an interactive cue. But as we still provide
         response to user actions through :active by `hover-or-touch` mixin.
     */
-    -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@mixin fade-transition($name) {
+  .#{$name}-enter-active,
+  .#{$name}-leave-active {
+    transition: opacity 0.3s ease;
+  }
+
+  .#{$name}-enter-from,
+  .#{$name}-leave-to {
+    opacity: 0;
+  }
 }
 
 @mixin fade-slide-transition($name, $duration, $offset-upward: null) {
-    .#{$name}-enter-active,
-    .#{$name}-leave-active {
-        transition: all $duration;
-    }
 
-    .#{$name}-leave-active,
-    .#{$name}-enter-from
-    {
-        opacity: 0;
+  .#{$name}-enter-active,
+  .#{$name}-leave-active {
+    transition: all $duration;
+  }
 
-        @if $offset-upward {
-            transform: translateY($offset-upward);
-        }
+  .#{$name}-leave-active,
+  .#{$name}-enter-from {
+    opacity: 0;
+
+    @if $offset-upward {
+      transform: translateY($offset-upward);
     }
+  }
 }
 
 @mixin reset-ul {

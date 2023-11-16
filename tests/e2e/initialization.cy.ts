@@ -1,9 +1,11 @@
+import { waitForHeaderBrandTitle } from './shared/ApplicationLoad';
+
 describe('application is initialized as expected', () => {
   it('loads title as expected', () => {
     // act
     cy.visit('/');
     // assert
-    cy.contains('h1', 'privacy.sexy');
+    waitForHeaderBrandTitle();
   });
   it('there are no console.error output', () => {
     // act

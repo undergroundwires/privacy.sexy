@@ -9,6 +9,7 @@ import {
   defineComponent, shallowRef, onMounted, onBeforeUnmount, watch,
 } from 'vue';
 import { useResizeObserverPolyfill } from '@/presentation/components/Shared/Hooks/UseResizeObserverPolyfill';
+import { throttle } from '@/presentation/components/Shared/Throttle';
 
 export default defineComponent({
   emits: {
@@ -34,10 +35,11 @@ export default defineComponent({
           return;
         }
         resizeObserverReady.then(() => {
-          observer = new ResizeObserver(updateSize);
+          disposeObserver();
+          observer = new ResizeObserver(throttle(updateSize, 200));
           observer.observe(element);
         });
-        updateSize();
+        updateSize(); // Do not throttle, immediately inform new width
       }, { immediate: true });
     });
 

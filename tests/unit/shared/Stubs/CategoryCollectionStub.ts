@@ -21,6 +21,13 @@ export class CategoryCollectionStub implements ICategoryCollection {
 
   public readonly actions = new Array<ICategory>();
 
+  public withSomeActions(): this {
+    this.withAction(new CategoryStub(1));
+    this.withAction(new CategoryStub(2));
+    this.withAction(new CategoryStub(3));
+    return this;
+  }
+
   public withAction(category: ICategory): this {
     this.actions.push(category);
     return this;

@@ -27,6 +27,7 @@ jobs:
       -
         name: Output artifact directories
         id: artifacts
+        if: always() # Run even if previous steps fail because test run video is always captured
         shell: bash
         run: |-
           declare -r dirs_json_file='cypress-dirs.json'
@@ -49,15 +50,15 @@ jobs:
           echo "VIDEOS_DIR=${VIDEOS_DIR}" >> "${GITHUB_OUTPUT}"
       -
         name: Upload screenshots
-        if: failure() # Run only if previous step fails because screenshots will be generated only if E2E test failed
+        if: failure() # Run only if previous steps fail because screenshots will be generated only if E2E test failed
         uses: actions/upload-artifact@v3
         with:
-          name: e2e-screenshots
+          name: e2e-screenshots-${{ matrix.os }}
           path: ${{ steps.artifacts.outputs.SCREENSHOTS_DIR }}
       -
         name: Upload videos
-        if: always() # Run even if previous step fails because test run video is always captured
+        if: always() # Run even if previous steps fail because test run video is always captured
         uses: actions/upload-artifact@v3
         with:
-          name: e2e-videos
+          name: e2e-videos-${{ matrix.os }}
           path: ${{ steps.artifacts.outputs.VIDEOS_DIR }}
