@@ -2,7 +2,8 @@
   <div
     class="handle"
     :style="{ cursor: cursorCssValue }"
-    @mousedown="startResize">
+    @mousedown="startResize"
+  >
     <div class="line" />
     <AppIcon
       class="icon"

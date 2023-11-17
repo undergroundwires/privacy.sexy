@@ -2,10 +2,11 @@
   <div class="wrapper">
     <div
       class="expansible-node"
-      @click="toggleCheck"
       :style="{
         'padding-left': `${currentNode.hierarchy.depthInTree * 24}px`,
-      }">
+      }"
+      @click="toggleCheck"
+    >
       <div
         class="expand-collapse-arrow"
         :class="{
@@ -15,10 +16,10 @@
         @click.stop="toggleExpand"
       />
       <LeafTreeNode
-        :nodeId="nodeId"
-        :treeRoot="treeRoot"
+        :node-id="nodeId"
+        :tree-root="treeRoot"
       >
-        <template v-slot:node-content="slotProps">
+        <template #node-content="slotProps">
           <slot name="node-content" v-bind="slotProps" />
         </template>
       </LeafTreeNode>
@@ -32,11 +33,11 @@
         <HierarchicalTreeNode
           v-for="id in renderedNodeIds"
           :key="id"
-          :nodeId="id"
-          :treeRoot="treeRoot"
-          :renderingStrategy="renderingStrategy"
+          :node-id="id"
+          :tree-root="treeRoot"
+          :rendering-strategy="renderingStrategy"
         >
-          <template v-slot:node-content="slotProps">
+          <template #node-content="slotProps">
             <slot name="node-content" v-bind="slotProps" />
           </template>
         </HierarchicalTreeNode>

@@ -2,8 +2,8 @@
   <IconButton
     v-if="canRun"
     text="Run"
-    @click="executeCode"
     icon-name="play"
+    @click="executeCode"
   />
 </template>
 

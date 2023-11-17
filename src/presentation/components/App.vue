@@ -7,7 +7,10 @@
       <TheCodeButtons class="app__row app__code-buttons" />
       <TheFooter />
     </div>
-    <component v-if="devToolkitComponent" :is="devToolkitComponent" />
+    <component
+      :is="devToolkitComponent"
+      v-if="devToolkitComponent"
+    />
   </div>
 </template>
 

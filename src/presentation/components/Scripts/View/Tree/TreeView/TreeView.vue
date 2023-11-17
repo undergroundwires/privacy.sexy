@@ -1,10 +1,10 @@
 <template>
   <div
-    class="tree"
     ref="treeContainerElement"
+    class="tree"
   >
-    <TreeRoot :treeRoot="tree" :renderingStrategy="nodeRenderingScheduler">
-      <template v-slot="slotProps">
+    <TreeRoot :tree-root="tree" :rendering-strategy="nodeRenderingScheduler">
+      <template #default="slotProps">
         <slot name="node-content" v-bind="slotProps" />
       </template>
     </TreeRoot>
@@ -34,11 +34,6 @@ export default defineComponent({
   components: {
     TreeRoot,
   },
-  emits: {
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-    nodeStateChanged: (node: TreeNodeStateChangedEmittedEvent) => true,
-    /* eslint-enable @typescript-eslint/no-unused-vars */
-  },
   props: {
     initialNodes: {
       type: Array as PropType<readonly TreeInputNodeData[]>,
@@ -52,6 +47,11 @@ export default defineComponent({
       type: Array as PropType<ReadonlyArray<string>>,
       default: () => [],
     },
+  },
+  emits: {
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+    nodeStateChanged: (node: TreeNodeStateChangedEmittedEvent) => true,
+    /* eslint-enable @typescript-eslint/no-unused-vars */
   },
   setup(props, { emit }) {
     const treeContainerElement = shallowRef<HTMLElement | undefined>();

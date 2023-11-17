@@ -1,5 +1,5 @@
 <template>
-  <div class="container" v-if="hasCode">
+  <div v-if="hasCode" class="container">
     <CodeRunButton class="code-button" />
     <CodeSaveButton class="code-button" />
     <CodeCopyButton class="code-button" />

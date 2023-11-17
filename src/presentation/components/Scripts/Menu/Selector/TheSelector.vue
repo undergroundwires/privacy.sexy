@@ -7,7 +7,7 @@
         :enabled="currentSelection !== SelectionType.None"
         @click="selectType(SelectionType.None)"
       />
-      <template v-slot:tooltip>
+      <template #tooltip>
         Deselect all selected scripts.
         <br />
         💡 Good start to dive deeper into tweaks and select only what you want.
@@ -21,7 +21,7 @@
         :enabled="currentSelection !== SelectionType.Standard"
         @click="selectType(SelectionType.Standard)"
       />
-      <template v-slot:tooltip>
+      <template #tooltip>
         🛡️ Balanced for privacy and functionality.
         <br />
         OS and applications will function normally.
@@ -37,7 +37,7 @@
         :enabled="currentSelection !== SelectionType.Strict"
         @click="selectType(SelectionType.Strict)"
       />
-      <template v-slot:tooltip>
+      <template #tooltip>
         🚫 Stronger privacy, disables risky functions that may leak your data.
         <br />
         ⚠️ Double check to remove scripts where you would trade functionality for privacy
@@ -53,7 +53,7 @@
         :enabled="currentSelection !== SelectionType.All"
         @click="selectType(SelectionType.All)"
       />
-      <template v-slot:tooltip>
+      <template #tooltip>
         🔒 Strongest privacy, disabling any functionality that may leak your data.
         <br />
         🛑 Not designed for daily users, it will break important functionalities.

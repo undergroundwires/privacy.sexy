@@ -1,9 +1,11 @@
 <template>
   <div
-    class="inline-icon"
-    v-html="svgContent"
+    class="icon-container"
     @click="onClicked"
-  />
+  >
+    <!-- eslint-disable vue/no-v-html -->
+    <div class="inline-icon" v-html="svgContent" />
+  </div>
 </template>
 
 <script lang="ts">
@@ -41,13 +43,14 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.inline-icon {
+.icon-container {
   display: inline-block;
-  :deep(svg) { // using :deep because when v-html is used the content doesn't go through Vue's template compiler.
-    display: inline-block;
-    height: 1em;
-    overflow: visible;
-    vertical-align: -0.125em;
+  .inline-icon {
+    :deep(svg) { // using :deep because when v-html is used the content doesn't go through Vue's template compiler.
+      height: 1em;
+      overflow: visible;
+      vertical-align: -0.125em;
+    }
   }
 }
 </style>

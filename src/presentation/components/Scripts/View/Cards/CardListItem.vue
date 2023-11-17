@@ -1,19 +1,21 @@
 <template>
   <div
+    ref="cardElement"
     class="card"
-    v-on:click="isExpanded = !isExpanded"
-    v-bind:class="{
+    :class="{
       'is-collapsed': !isExpanded,
       'is-inactive': activeCategoryId && activeCategoryId != categoryId,
       'is-expanded': isExpanded,
     }"
-    ref="cardElement">
+    @click="isExpanded = !isExpanded"
+  >
     <div class="card__inner">
       <!-- Title -->
       <span
+        v-if="cardTitle.length > 0"
         class="card__inner__title"
-        v-if="cardTitle && cardTitle.length > 0">
-        <span>{{cardTitle}}</span>
+      >
+        <span>{{ cardTitle }}</span>
       </span>
       <span v-else>Oh no 😢</span>
       <!-- Expand icon -->
@@ -24,17 +26,17 @@
       <!-- Indeterminate and full states -->
       <CardSelectionIndicator
         class="card__inner__selection_indicator"
-        :categoryId="categoryId"
+        :category-id="categoryId"
       />
     </div>
-    <div class="card__expander" v-on:click.stop>
+    <div class="card__expander" @click.stop>
       <div class="card__expander__content">
-        <ScriptsTree :categoryId="categoryId" />
+        <ScriptsTree :category-id="categoryId" />
       </div>
       <div class="card__expander__close-button">
         <AppIcon
           icon="xmark"
-          v-on:click="collapse()"
+          @click="collapse()"
         />
       </div>
     </div>

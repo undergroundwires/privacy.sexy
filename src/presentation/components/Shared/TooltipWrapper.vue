@@ -5,8 +5,9 @@
       It allows the tooltip content to calculate its position based on the trigger's location.
     -->
     <div
+      ref="triggeringElement"
       class="tooltip__trigger"
-      ref="triggeringElement">
+    >
       <slot />
     </div>
     <div class="tooltip__overlay">

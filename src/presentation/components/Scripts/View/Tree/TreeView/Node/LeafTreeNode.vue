@@ -5,11 +5,11 @@
   >
     <div
       class="node focusable"
-      @focus="onNodeFocus"
-      tabindex="-1"
       :class="{
         'keyboard-focus': hasKeyboardFocus,
       }"
+      tabindex="-1"
+      @focus="onNodeFocus"
     >
       <div
         class="checkbox"
@@ -22,7 +22,7 @@
       <div class="content">
         <slot
           name="node-content"
-          :nodeMetadata="currentNode.metadata"
+          :node-metadata="currentNode.metadata"
         />
       </div>
     </div>

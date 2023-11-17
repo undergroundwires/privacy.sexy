@@ -10,7 +10,7 @@ module.exports = {
   },
   extends: [
     // Vue specific rules, eslint-plugin-vue
-    'plugin:vue/essential',
+    'plugin:vue/vue3-recommended',
 
     // Extends eslint-config-airbnb
     '@vue/eslint-config-airbnb-with-typescript',

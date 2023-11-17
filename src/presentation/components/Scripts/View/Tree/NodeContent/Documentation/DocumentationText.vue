@@ -1,8 +1,9 @@
 <template>
+  <!-- eslint-disable vue/no-v-html -->
   <div
     class="documentation-text"
+    @click.stop
     v-html="renderedText"
-    v-on:click.stop
   />
 </template>
 

@@ -9,7 +9,9 @@
         class="button__icon"
         :icon="iconName"
       />
-      <div class="button__text">{{text}}</div>
+      <div class="button__text">
+        {{ text }}
+      </div>
     </button>
   </div>
 </template>

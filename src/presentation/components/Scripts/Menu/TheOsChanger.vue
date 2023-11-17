@@ -4,8 +4,8 @@
       v-for="os in allOses"
       :key="os.name"
       :enabled="currentOs !== os.os"
-      @click="changeOs(os.os)"
       :label="os.name"
+      @click="changeOs(os.os)"
     />
   </MenuOptionList>
 </template>

@@ -1,6 +1,8 @@
 <template>
   <div class="list">
-    <div v-if="label">{{ label }}:</div>
+    <div v-if="label">
+      {{ label }}:
+    </div>
     <div class="items">
       <slot />
     </div>

@@ -61,6 +61,7 @@ describe('AppIcon.vue', () => {
 
     // act
     await wrapper.trigger('click');
+    await nextTick();
 
     // assert
     expect(wrapper.emitted().click).to.have.lengthOf(1);

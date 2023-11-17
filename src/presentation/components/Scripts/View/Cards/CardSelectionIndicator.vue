@@ -1,12 +1,12 @@
 <template>
   <div>
     <AppIcon
-      icon="battery-half"
       v-if="isAnyChildSelected && !areAllChildrenSelected"
+      icon="battery-half"
     />
     <AppIcon
-      icon="battery-full"
       v-if="areAllChildrenSelected"
+      icon="battery-full"
     />
   </div>
 </template>

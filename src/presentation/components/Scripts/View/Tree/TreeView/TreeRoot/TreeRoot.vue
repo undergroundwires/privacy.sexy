@@ -5,11 +5,11 @@
     <HierarchicalTreeNode
       v-for="nodeId in renderedNodeIds"
       :key="nodeId"
-      :nodeId="nodeId"
-      :treeRoot="treeRoot"
-      :renderingStrategy="renderingStrategy"
+      :node-id="nodeId"
+      :tree-root="treeRoot"
+      :rendering-strategy="renderingStrategy"
     >
-      <template v-slot:node-content="slotProps">
+      <template #node-content="slotProps">
         <slot v-bind="slotProps" />
       </template>
     </HierarchicalTreeNode>

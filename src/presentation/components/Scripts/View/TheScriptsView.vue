@@ -10,13 +10,14 @@
         </div>
       </template>
     </div>
-    <div v-else> <!-- Searching -->
+    <div v-else>
+      <!-- Searching -->
       <div class="search">
         <div class="search__query">
           <div>Searching for "{{ trimmedSearchQuery }}"</div>
           <div
             class="search__query__close-button"
-            v-on:click="clearSearchQuery()"
+            @click="clearSearchQuery()"
           >
             <AppIcon icon="xmark" />
           </div>

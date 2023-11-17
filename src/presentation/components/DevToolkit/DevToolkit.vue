@@ -6,9 +6,10 @@
     <hr />
     <button
       v-for="action in devActions"
-      @click="action.handler"
       :key="action.name"
-      type="button">
+      type="button"
+      @click="action.handler"
+    >
       {{ action.name }}
     </button>
   </div>

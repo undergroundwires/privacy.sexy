@@ -6,22 +6,26 @@
       </div>
       <ToggleDocumentationButton
         v-if="docs && docs.length > 0"
-        v-on:show="isExpanded = true"
-        v-on:hide="isExpanded = false"
+        @show="isExpanded = true"
+        @hide="isExpanded = false"
       />
     </div>
     <div
       v-if="docs && docs.length > 0 && isExpanded"
       class="docs"
-      v-bind:class="{ 'docs-expanded': isExpanded, 'docs-collapsed': !isExpanded }"
+      :class="{
+        'docs-expanded': isExpanded,
+        'docs-collapsed': !isExpanded,
+      }"
     >
       <DocumentationText
         :docs="docs"
         class="text"
-        v-bind:class="{
+        :class="{
           expanded: isExpanded,
           collapsed: !isExpanded,
-        }" />
+        }"
+      />
     </div>
   </div>
 </template>

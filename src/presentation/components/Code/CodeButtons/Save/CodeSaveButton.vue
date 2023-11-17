@@ -2,8 +2,8 @@
   <div>
     <IconButton
       :text="isDesktopVersion ? 'Save' : 'Download'"
-      @click="saveCode"
       :icon-name="isDesktopVersion ? 'floppy-disk' : 'file-arrow-down'"
+      @click="saveCode"
     />
     <ModalDialog v-if="instructions" v-model="areInstructionsVisible">
       <InstructionList :data="instructions" />

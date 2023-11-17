@@ -1,17 +1,17 @@
 <template>
   <div class="scripts">
-    <TheScriptsMenu v-on:viewChanged="currentView = $event" />
+    <TheScriptsMenu @view-changed="currentView = $event" />
     <HorizontalResizeSlider
       class="row"
-      verticalMargin="15px"
-      firstInitialWidth="55%"
-      firstMinWidth="20%"
-      secondMinWidth="20%"
+      vertical-margin="15px"
+      first-initial-width="55%"
+      first-min-width="20%"
+      second-min-width="20%"
     >
-      <template v-slot:first>
-        <TheScriptsView :currentView="currentView" />
+      <template #first>
+        <TheScriptsView :current-view="currentView" />
       </template>
-      <template v-slot:second>
+      <template #second>
         <TheCodeArea theme="xcode" />
       </template>
     </HorizontalResizeSlider>

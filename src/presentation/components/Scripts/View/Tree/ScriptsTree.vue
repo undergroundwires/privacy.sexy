@@ -2,13 +2,13 @@
   <span id="container">
     <span v-if="initialNodes.length">
       <TreeView
-        :initialNodes="initialNodes"
-        :selectedLeafNodeIds="selectedScriptNodeIds"
-        :latestFilterEvent="latestFilterEvent"
-        @nodeStateChanged="handleNodeChangedEvent($event)"
+        :initial-nodes="initialNodes"
+        :selected-leaf-node-ids="selectedScriptNodeIds"
+        :latest-filter-event="latestFilterEvent"
+        @node-state-changed="handleNodeChangedEvent($event)"
       >
-        <template v-slot:node-content="{ nodeMetadata }">
-          <NodeContent :nodeMetadata="nodeMetadata" />
+        <template #node-content="{ nodeMetadata }">
+          <NodeContent :node-metadata="nodeMetadata" />
         </template>
       </TreeView>
     </span>
@@ -28,15 +28,15 @@ import { TreeNodeStateChangedEmittedEvent } from './TreeView/Bindings/TreeNodeSt
 import { useSelectedScriptNodeIds } from './TreeViewAdapter/UseSelectedScriptNodeIds';
 
 export default defineComponent({
+  components: {
+    TreeView,
+    NodeContent,
+  },
   props: {
     categoryId: {
       type: [Number],
       default: undefined,
     },
-  },
-  components: {
-    TreeView,
-    NodeContent,
   },
   setup(props) {
     const useUserCollectionStateHook = injectKey((keys) => keys.useUserSelectionState);

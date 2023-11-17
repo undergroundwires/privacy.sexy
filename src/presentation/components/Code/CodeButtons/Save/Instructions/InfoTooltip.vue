@@ -1,7 +1,7 @@
 <template>
   <TooltipWrapper>
     <AppIcon icon="circle-info" />
-    <template v-slot:tooltip>
+    <template #tooltip>
       <slot />
     </template>
   </TooltipWrapper>

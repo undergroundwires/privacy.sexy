@@ -2,9 +2,9 @@
   <a
     class="button"
     target="_blank"
-    v-bind:class="{ 'button-on': isOn }"
-    v-on:click.stop
-    v-on:click="toggle()"
+    :class="{ 'button-on': isOn }"
+    @click.stop
+    @click="toggle()"
   >
     <AppIcon icon="circle-info" />
   </a>

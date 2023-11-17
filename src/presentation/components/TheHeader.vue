@@ -1,7 +1,11 @@
 <template>
   <div id="container">
-    <h1 class="child title">{{ title }}</h1>
-    <h2 class="child subtitle">{{ subtitle }}</h2>
+    <h1 class="child title">
+      {{ title }}
+    </h1>
+    <h2 class="child subtitle">
+      {{ subtitle }}
+    </h2>
   </div>
 </template>
 

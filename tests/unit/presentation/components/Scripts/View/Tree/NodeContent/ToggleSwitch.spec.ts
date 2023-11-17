@@ -201,14 +201,6 @@ function mountToggleSwitchParent(options?: {
       ToggleSwitch,
     },
     emits: [parentClickEventName],
-    template: `
-      <div @click="handleParentClick">
-        <ToggleSwitch
-          :stopClickPropagation="stopClickPropagation"
-          :label="'test-label'"
-        />
-      </div>
-    `,
     setup(_, { emit }) {
       const stopClickPropagation = options?.stopClickPropagation;
 
@@ -221,6 +213,14 @@ function mountToggleSwitchParent(options?: {
         stopClickPropagation,
       };
     },
+    template: `
+      <div @click="handleParentClick">
+        <ToggleSwitch
+          :stopClickPropagation="stopClickPropagation"
+          :label="'test-label'"
+        />
+      </div>
+    `,
   });
   const wrapper = mount(
     parentComponent,

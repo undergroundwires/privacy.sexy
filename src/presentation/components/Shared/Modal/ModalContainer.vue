@@ -4,14 +4,14 @@
     class="modal-container"
   >
     <ModalOverlay
-      @transitionedOut="onOverlayTransitionedOut"
-      @click="onBackgroundOverlayClick"
       :show="isOpen"
+      @transitioned-out="onOverlayTransitionedOut"
+      @click="onBackgroundOverlayClick"
     />
     <ModalContent
       class="modal-content"
       :show="isOpen"
-      @transitionedOut="onContentTransitionedOut"
+      @transitioned-out="onContentTransitionedOut"
     >
       <slot />
     </ModalContent>
@@ -34,11 +34,6 @@ export default defineComponent({
     ModalOverlay,
     ModalContent,
   },
-  emits: {
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-    'update:modelValue': (isOpen: boolean) => true,
-    /* eslint-enable @typescript-eslint/no-unused-vars */
-  },
   props: {
     modelValue: {
       type: Boolean,
@@ -48,6 +43,11 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+  },
+  emits: {
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+    'update:modelValue': (isOpen: boolean) => true,
+    /* eslint-enable @typescript-eslint/no-unused-vars */
   },
   setup(props, { emit }) {
     const isRendered = ref(false);

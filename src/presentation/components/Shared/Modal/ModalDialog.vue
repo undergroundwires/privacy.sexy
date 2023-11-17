@@ -26,16 +26,16 @@ export default defineComponent({
     ModalContainer,
     AppIcon,
   },
-  emits: {
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-    'update:modelValue': (isOpen: boolean) => true,
-    /* eslint-enable @typescript-eslint/no-unused-vars */
-  },
   props: {
     modelValue: {
       type: Boolean,
       required: true,
     },
+  },
+  emits: {
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+    'update:modelValue': (isOpen: boolean) => true,
+    /* eslint-enable @typescript-eslint/no-unused-vars */
   },
   setup(props, { emit }) {
     const showDialog = computed({

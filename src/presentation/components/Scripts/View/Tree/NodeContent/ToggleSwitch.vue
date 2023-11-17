@@ -4,9 +4,9 @@
     @click="handleClickPropagation"
   >
     <input
+      v-model="isChecked"
       type="checkbox"
       class="toggle-input"
-      v-model="isChecked"
     >
     <div class="toggle-animation">
       <span class="label-off">{{ label }}</span>

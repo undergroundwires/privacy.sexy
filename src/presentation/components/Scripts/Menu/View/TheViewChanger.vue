@@ -1,7 +1,8 @@
 <template>
   <MenuOptionList
     label="View"
-    class="part">
+    class="part"
+  >
     <MenuOptionListItem
       v-for="view in viewOptions"
       :key="view.type"

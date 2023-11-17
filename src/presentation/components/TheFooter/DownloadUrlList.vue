@@ -1,17 +1,22 @@
 <template>
   <span
     class="container"
-    v-bind:class="{
+    :class="{
       'container-unsupported': !hasCurrentOsDesktopVersion,
       'container-supported': hasCurrentOsDesktopVersion,
-    }">
+    }"
+  >
     <span class="description">
       <AppIcon class="description__icon" icon="desktop" />
       <span class="description__text">For desktop:</span>
     </span>
     <span class="urls">
-      <span class="urls__url" v-for="os of supportedDesktops" v-bind:key="os">
-        <DownloadUrlListItem :operatingSystem="os" />
+      <span
+        v-for="os of supportedDesktops"
+        :key="os"
+        class="urls__url"
+      >
+        <DownloadUrlListItem :operating-system="os" />
       </span>
     </span>
   </span>

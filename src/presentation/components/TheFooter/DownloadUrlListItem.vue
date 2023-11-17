@@ -2,10 +2,11 @@
   <span class="url">
     <a
       :href="downloadUrl"
-      v-bind:class="{
+      :class="{
         url__active: hasCurrentOsDesktopVersion && isCurrentOs,
         url__inactive: hasCurrentOsDesktopVersion && !isCurrentOs,
-      }">{{ operatingSystemName }}</a>
+      }"
+    >{{ operatingSystemName }}</a>
   </span>
 </template>
 

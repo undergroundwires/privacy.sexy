@@ -1,8 +1,8 @@
 <template>
   <IconButton
     text="Copy"
-    @click="copyCode"
     icon-name="copy"
+    @click="copyCode"
   />
 </template>
 

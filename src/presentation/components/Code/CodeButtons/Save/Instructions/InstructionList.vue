@@ -20,19 +20,21 @@
     <p>
       <ol>
         <li
-          v-for='(step, index) in data.steps'
-          v-bind:key="index"
+          v-for="(step, index) in data.steps"
+          :key="index"
           class="step"
         >
           <div class="step__action">
             <span>{{ step.action.instruction }}</span>
-            <div class="details-container" v-if="step.action.details">
+            <div v-if="step.action.details" class="details-container">
+              <!-- eslint-disable vue/no-v-html -->
               <InfoTooltip><div v-html="step.action.details" /></InfoTooltip>
             </div>
           </div>
           <div v-if="step.code" class="step__code">
             <CodeInstruction>{{ step.code.instruction }}</CodeInstruction>
-            <div class="details-container" v-if="step.code.details">
+            <div v-if="step.code.details" class="details-container">
+              <!-- eslint-disable vue/no-v-html -->
               <InfoTooltip><div v-html="step.code.details" /></InfoTooltip>
             </div>
           </div>

@@ -1,10 +1,10 @@
 <template>
-  <div class="search" v-non-collapsing>
+  <div v-non-collapsing class="search">
     <input
+      v-model="searchQuery"
       type="search"
       class="search-term"
       :placeholder="searchPlaceholder"
-      v-model="searchQuery"
     >
     <div class="icon-wrapper">
       <AppIcon icon="magnifying-glass" />

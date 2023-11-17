@@ -9,7 +9,7 @@
           class="copy-button"
           @click="copyCode"
         />
-        <template v-slot:tooltip>
+        <template #tooltip>
           Copy
         </template>
       </TooltipWrapper>

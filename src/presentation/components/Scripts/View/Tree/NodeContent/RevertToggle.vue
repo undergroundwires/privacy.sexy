@@ -1,7 +1,7 @@
 <template>
   <ToggleSwitch
     v-model="isReverted"
-    :stopClickPropagation="true"
+    :stop-click-propagation="true"
     :label="'revert'"
   />
 </template>

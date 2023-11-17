@@ -1,11 +1,14 @@
 <template>
   <DocumentableNode :docs="nodeMetadata.docs">
     <div id="node">
-      <div class="item text">{{ nodeMetadata.text }}</div>
+      <div class="item text">
+        {{ nodeMetadata.text }}
+      </div>
       <RevertToggle
-        class="item"
         v-if="nodeMetadata.isReversible"
-        :node="nodeMetadata" />
+        class="item"
+        :node="nodeMetadata"
+      />
     </div>
   </DocumentableNode>
 </template>

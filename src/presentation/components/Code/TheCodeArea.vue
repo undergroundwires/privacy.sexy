@@ -1,7 +1,8 @@
 <template>
   <SizeObserver
-    v-on:sizeChanged="sizeChanged()"
-    v-non-collapsing>
+    v-non-collapsing
+    @size-changed="sizeChanged()"
+  >
     <div
       :id="editorId"
       class="code-area"
@@ -24,17 +25,17 @@ import { NonCollapsing } from '@/presentation/components/Scripts/View/Cards/NonC
 import ace from './ace-importer';
 
 export default defineComponent({
-  props: {
-    theme: {
-      type: String,
-      default: undefined,
-    },
-  },
   components: {
     SizeObserver,
   },
   directives: {
     NonCollapsing,
+  },
+  props: {
+    theme: {
+      type: String,
+      default: undefined,
+    },
   },
   setup(props) {
     const { onStateChange, currentState } = injectKey((keys) => keys.useCollectionState);

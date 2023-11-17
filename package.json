@@ -24,7 +24,7 @@
     "electron:preview": "electron-vite preview",
     "electron:prebuild": "electron-vite build",
     "electron:build": "electron-builder",
-    "lint:eslint": "eslint . --ignore-path .gitignore",
+    "lint:eslint": "eslint . --max-warnings=0 --ignore-path .gitignore",
     "lint:md": "markdownlint **/*.md --ignore node_modules",
     "lint:md:consistency": "remark . --frail --use remark-preset-lint-consistent",
     "lint:md:relative-urls": "remark . --frail --use remark-validate-links",

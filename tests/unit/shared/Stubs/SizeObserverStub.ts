@@ -8,7 +8,6 @@ export function createSizeObserverStub(
 ) {
   const component = defineComponent({
     name: COMPONENT_SIZE_OBSERVER_NAME,
-    template: `<div id="${COMPONENT_SIZE_OBSERVER_NAME}-stub"><slot /></div>`,
     emits: {
       /* eslint-disable @typescript-eslint/no-unused-vars */
       widthChanged: (newWidth: number) => true,
@@ -19,6 +18,7 @@ export function createSizeObserverStub(
         emit('widthChanged', newValue);
       });
     },
+    template: `<div id="${COMPONENT_SIZE_OBSERVER_NAME}-stub"><slot /></div>`,
   });
   return {
     name: COMPONENT_SIZE_OBSERVER_NAME,

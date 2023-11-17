@@ -5,12 +5,13 @@
       such as adding content in `::before` block without making it clickable.
     -->
     <span
-      v-bind:class="{
+      v-non-collapsing
+      :class="{
         disabled: !enabled,
         enabled: enabled,
       }"
-      v-non-collapsing
-      @click="onClicked()">{{label}}</span>
+      @click="onClicked()"
+    >{{ label }}</span>
   </span>
 </template>
 

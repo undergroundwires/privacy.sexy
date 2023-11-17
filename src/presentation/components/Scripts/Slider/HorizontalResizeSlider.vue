@@ -1,14 +1,14 @@
 <template>
   <div
     class="slider"
-    v-bind:style="{
+    :style="{
       '--vertical-margin': verticalMargin,
       '--first-min-width': firstMinWidth,
       '--first-initial-width': firstInitialWidth,
       '--second-min-width': secondMinWidth,
     }"
   >
-    <div class="first" ref="firstElement">
+    <div ref="firstElement" class="first">
       <slot name="first" />
     </div>
     <SliderHandle class="handle" @resized="onResize($event)" />

@@ -3,9 +3,10 @@
     <TheSelector class="item" />
     <TheOsChanger class="item" />
     <TheViewChanger
+      v-if="!isSearching"
       class="item"
-      v-on:viewChanged="$emit('viewChanged', $event)"
-      v-if="!isSearching" />
+      @view-changed="$emit('viewChanged', $event)"
+    />
   </div>
 </template>
 
@@ -17,12 +18,18 @@ import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 import TheOsChanger from './TheOsChanger.vue';
 import TheSelector from './Selector/TheSelector.vue';
 import TheViewChanger from './View/TheViewChanger.vue';
+import { ViewType } from './View/ViewType';
 
 export default defineComponent({
   components: {
     TheSelector,
     TheOsChanger,
     TheViewChanger,
+  },
+  emits: {
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+    viewChanged: (viewType: ViewType) => true,
+    /* eslint-enable @typescript-eslint/no-unused-vars */
   },
   setup() {
     const { onStateChange } = injectKey((keys) => keys.useCollectionState);

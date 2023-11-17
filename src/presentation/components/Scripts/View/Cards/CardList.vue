@@ -1,5 +1,7 @@
 <template>
-  <SizeObserver v-on:widthChanged="width = $event">
+  <SizeObserver
+    @width-changed="width = $event"
+  >
     <transition name="fade-transition">
       <div v-if="width">
         <!-- <div id="responsivity-debug">
@@ -14,21 +16,23 @@
           class="cards"
         >
           <CardListItem
+            v-for="categoryId of categoryIds"
+            :key="categoryId"
             class="card"
-            v-bind:class="{
+            :class="{
               'small-screen': width <= 500,
               'medium-screen': width > 500 && width < 750,
               'big-screen': width >= 750,
             }"
-            v-for="categoryId of categoryIds"
             :data-category="categoryId"
-            v-bind:key="categoryId"
-            :categoryId="categoryId"
-            :activeCategoryId="activeCategoryId"
-            v-on:cardExpansionChanged="onSelected(categoryId, $event)"
+            :category-id="categoryId"
+            :active-category-id="activeCategoryId"
+            @card-expansion-changed="onSelected(categoryId, $event)"
           />
         </div>
-        <div v-else class="error">Something went bad 😢</div>
+        <div v-else class="error">
+          Something went bad 😢
+        </div>
       </div>
     </transition>
   </SizeObserver>
