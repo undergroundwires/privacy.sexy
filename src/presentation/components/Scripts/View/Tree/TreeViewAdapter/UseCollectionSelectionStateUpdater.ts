@@ -16,19 +16,38 @@ export function useCollectionSelectionStateUpdater(
       return;
     }
     if (node.state.current.checkState === TreeNodeCheckState.Checked) {
-      if (currentSelection.value.isSelected(node.id)) {
+      if (currentSelection.value.scripts.isSelected(node.id)) {
         return;
       }
       modifyCurrentSelection((selection) => {
-        selection.addSelectedScript(node.id, false);
+        selection.scripts.processChanges({
+          changes: [
+            {
+              scriptId: node.id,
+              newStatus: {
+                isSelected: true,
+                isReverted: false,
+              },
+            },
+          ],
+        });
       });
     }
     if (node.state.current.checkState === TreeNodeCheckState.Unchecked) {
-      if (!currentSelection.value.isSelected(node.id)) {
+      if (!currentSelection.value.scripts.isSelected(node.id)) {
         return;
       }
       modifyCurrentSelection((selection) => {
-        selection.removeSelectedScript(node.id);
+        selection.scripts.processChanges({
+          changes: [
+            {
+              scriptId: node.id,
+              newStatus: {
+                isSelected: false,
+              },
+            },
+          ],
+        });
       });
     }
   }

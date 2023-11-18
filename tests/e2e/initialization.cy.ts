@@ -1,11 +1,11 @@
-import { waitForHeaderBrandTitle } from './shared/ApplicationLoad';
+import { getHeaderBrandTitle } from './support/interactions/header';
 
 describe('application is initialized as expected', () => {
   it('loads title as expected', () => {
     // act
     cy.visit('/');
     // assert
-    waitForHeaderBrandTitle();
+    getHeaderBrandTitle();
   });
   it('there are no console.error output', () => {
     // act

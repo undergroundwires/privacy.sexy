@@ -1,90 +1,118 @@
 import { describe, it, expect } from 'vitest';
 import { ScriptReverter } from '@/presentation/components/Scripts/View/Tree/NodeContent/Reverter/ScriptReverter';
-import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
-import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
-import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
-import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
 import { getScriptNodeId } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/CategoryNodeMetadataConverter';
+import { UserSelectionStub } from '@tests/unit/shared/Stubs/UserSelectionStub';
+import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import { ScriptSelectionStub } from '@tests/unit/shared/Stubs/ScriptSelectionStub';
 
 describe('ScriptReverter', () => {
   describe('getState', () => {
-    it('false when script is not selected', () => {
-      // arrange
-      const script = new ScriptStub('id');
-      const nodeId = getScriptNodeId(script);
-      const sut = new ScriptReverter(nodeId);
-      // act
-      const actual = sut.getState([]);
-      // assert
-      expect(actual).to.equal(false);
-    });
-    it('false when script is selected but not reverted', () => {
-      // arrange
-      const scripts = [new SelectedScriptStub('id'), new SelectedScriptStub('dummy')];
-      const nodeId = getScriptNodeId(scripts[0].script);
-      const sut = new ScriptReverter(nodeId);
-      // act
-      const actual = sut.getState(scripts);
-      // assert
-      expect(actual).to.equal(false);
-    });
-    it('true when script is selected and reverted', () => {
-      // arrange
-      const scripts = [new SelectedScriptStub('id', true), new SelectedScriptStub('dummy')];
-      const nodeId = getScriptNodeId(scripts[0].script);
-      const sut = new ScriptReverter(nodeId);
-      // act
-      const actual = sut.getState(scripts);
-      // assert
-      expect(actual).to.equal(true);
+    // arrange
+    const script = new ScriptStub('id');
+    const nodeId = getScriptNodeId(script);
+    const testScenarios: ReadonlyArray<{
+      readonly description: string;
+      readonly selectedScripts: readonly SelectedScript[];
+      readonly expectedState: boolean;
+    }> = [
+      {
+        description: 'returns `false` when script is not selected',
+        selectedScripts: [],
+        expectedState: false,
+      },
+      {
+        description: 'returns `false` when script is selected but not reverted',
+        selectedScripts: [
+          new SelectedScriptStub(script).withRevert(false),
+          new SelectedScriptStub(new ScriptStub('dummy')),
+        ],
+        expectedState: false,
+      },
+      {
+        description: 'returns `true` when script is selected and reverted',
+        selectedScripts: [
+          new SelectedScriptStub(script).withRevert(true),
+          new SelectedScriptStub(new ScriptStub('dummy')),
+        ],
+        expectedState: true,
+      },
+    ];
+    testScenarios.forEach((
+      { description, selectedScripts, expectedState },
+    ) => {
+      it(description, () => {
+        const sut = new ScriptReverter(nodeId);
+        // act
+        const actual = sut.getState(selectedScripts);
+        // assert
+        expect(actual).to.equal(expectedState);
+      });
     });
   });
   describe('selectWithRevertState', () => {
     // arrange
     const script = new ScriptStub('id');
-    const collection = new CategoryCollectionStub()
-      .withAction(new CategoryStub(5).withScript(script));
-    /* eslint-disable object-property-newline */
-    const testCases = [
+    const testScenarios: ReadonlyArray<{
+      readonly description: string;
+      readonly selection: readonly SelectedScript[];
+      readonly expectedRevert: boolean;
+    }> = [
       {
-        name: 'selects with revert state when not selected',
-        selection: [], revert: true, expectRevert: true,
+        description: 'selects as reverted when initially unselected',
+        selection: [],
+        expectedRevert: true,
       },
       {
-        name: 'selects with non-revert state when not selected',
-        selection: [], revert: false, expectRevert: false,
+        description: 'selects as non-reverted when initially unselected',
+        selection: [],
+        expectedRevert: false,
       },
       {
-        name: 'switches when already selected with revert state',
-        selection: [new SelectedScript(script, true)], revert: false, expectRevert: false,
+        description: 'toggles to non-reverted for previously reverted scripts',
+        selection: [
+          new SelectedScriptStub(script).withRevert(true),
+        ],
+        expectedRevert: false,
       },
       {
-        name: 'switches when already selected with not revert state',
-        selection: [new SelectedScript(script, false)], revert: true, expectRevert: true,
+        description: 'toggles to reverted for previously non-reverted scripts',
+        selection: [
+          new SelectedScriptStub(script).withRevert(false),
+        ],
+        expectedRevert: true,
       },
       {
-        name: 'keeps revert state when already selected with revert state',
-        selection: [new SelectedScript(script, true)], revert: true, expectRevert: true,
+        description: 'maintains reverted state for already reverted scripts',
+        selection: [
+          new SelectedScriptStub(script).withRevert(true),
+        ],
+        expectedRevert: true,
       },
       {
-        name: 'keeps revert state deselected when already selected with non revert state',
-        selection: [new SelectedScript(script, false)], revert: false, expectRevert: false,
+        description: 'maintains non-reverted state for already non-reverted scripts',
+        selection: [
+          new SelectedScriptStub(script).withRevert(false),
+        ],
+        expectedRevert: false,
       },
     ];
-    /* eslint-enable object-property-newline */
     const nodeId = getScriptNodeId(script);
-    for (const testCase of testCases) {
-      it(testCase.name, () => {
-        const selection = new UserSelection(collection, testCase.selection);
+    testScenarios.forEach((
+      { description, selection, expectedRevert },
+    ) => {
+      it(description, () => {
+        const scriptSelection = new ScriptSelectionStub()
+          .withSelectedScripts(selection);
+        const userSelection = new UserSelectionStub().withScripts(scriptSelection);
         const sut = new ScriptReverter(nodeId);
+        const revertState = expectedRevert;
         // act
-        sut.selectWithRevertState(testCase.revert, selection);
+        sut.selectWithRevertState(revertState, userSelection);
         // assert
-        expect(selection.isSelected(script.id)).to.equal(true);
-        expect(selection.selectedScripts[0].revert).equal(testCase.expectRevert);
+        expect(scriptSelection.isScriptSelected(script.id, expectedRevert)).to.equal(true);
       });
-    }
+    });
   });
 });

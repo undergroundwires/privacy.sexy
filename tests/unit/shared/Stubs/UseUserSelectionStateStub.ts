@@ -1,14 +1,15 @@
 import { shallowRef } from 'vue';
 import type { SelectionModifier, useUserSelectionState } from '@/presentation/components/Shared/Hooks/UseUserSelectionState';
-import { IUserSelection } from '@/application/Context/State/Selection/IUserSelection';
-import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
+import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
+import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 import { UserSelectionStub } from './UserSelectionStub';
+import { ScriptSelectionStub } from './ScriptSelectionStub';
 
 export class UseUserSelectionStateStub
   extends StubWithObservableMethodCalls<ReturnType<typeof useUserSelectionState>> {
-  private readonly currentSelection = shallowRef<IUserSelection>(
-    new UserSelectionStub([]),
+  private readonly currentSelection = shallowRef<UserSelection>(
+    new UserSelectionStub(),
   );
 
   private modifyCurrentSelection(mutator: SelectionModifier) {
@@ -19,19 +20,21 @@ export class UseUserSelectionStateStub
     });
   }
 
-  public withUserSelection(userSelection: IUserSelection): this {
+  public withUserSelection(userSelection: UserSelection): this {
     this.currentSelection.value = userSelection;
     return this;
   }
 
   public withSelectedScripts(selectedScripts: readonly SelectedScript[]): this {
     return this.withUserSelection(
-      new UserSelectionStub(selectedScripts.map((s) => s.script))
-        .withSelectedScripts(selectedScripts),
+      new UserSelectionStub()
+        .withScripts(
+          new ScriptSelectionStub().withSelectedScripts(selectedScripts),
+        ),
     );
   }
 
-  public get selection(): IUserSelection {
+  public get selection(): UserSelection {
     return this.currentSelection.value;
   }
 

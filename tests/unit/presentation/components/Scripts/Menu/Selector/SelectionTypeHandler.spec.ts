@@ -3,10 +3,14 @@ import {
   SelectionCheckContext, SelectionMutationContext, SelectionType,
   getCurrentSelectionType, setCurrentSelectionType,
 } from '@/presentation/components/Scripts/Menu/Selector/SelectionTypeHandler';
-import { scrambledEqual } from '@/application/Common/Array';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
+import { ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
+import { MethodCall } from '@tests/unit/shared/Stubs/StubWithObservableMethodCalls';
+import { expectExists } from '@tests/shared/Assertions/ExpectExists';
+import { scrambledEqual } from '@/application/Common/Array';
+import { IScript } from '@/domain/IScript';
 import { SelectionStateTestScenario } from './SelectionStateTestScenario';
 
 describe('SelectionTypeHandler', () => {
@@ -14,11 +18,11 @@ describe('SelectionTypeHandler', () => {
     describe('throws with invalid type', () => {
       // arrange
       const scenario = new SelectionStateTestScenario();
-      const state = scenario.generateState([]);
+      const { stateStub } = scenario.generateState([]);
       // act
       const act = (type: SelectionType) => setCurrentSelectionType(
         type,
-        createMutationContext(state),
+        createMutationContext(stateStub),
       );
       // assert
       new EnumRangeTestRunner(act)
@@ -28,44 +32,64 @@ describe('SelectionTypeHandler', () => {
     describe('select types as expected', () => {
       // arrange
       const scenario = new SelectionStateTestScenario();
-      const initialScriptsCases = [{
-        name: 'when nothing is selected',
-        initialScripts: [],
-      }, {
-        name: 'when some scripts are selected',
-        initialScripts: [...scenario.allStandard, ...scenario.someStrict],
-      }, {
-        name: 'when all scripts are selected',
-        initialScripts: scenario.all,
-      }];
-      for (const initialScriptsCase of initialScriptsCases) {
-        describe(initialScriptsCase.name, () => {
-          const state = scenario.generateState(initialScriptsCase.initialScripts);
-          const typeExpectations = [{
-            input: SelectionType.None,
-            output: [],
-          }, {
-            input: SelectionType.Standard,
-            output: scenario.allStandard,
-          }, {
-            input: SelectionType.Strict,
-            output: [...scenario.allStandard, ...scenario.allStrict],
-          }, {
-            input: SelectionType.All,
-            output: scenario.all,
-          }];
-          for (const expectation of typeExpectations) {
-            // act
-            it(`${SelectionType[expectation.input]} returns as expected`, () => {
-              setCurrentSelectionType(expectation.input, createMutationContext(state));
-              // assert
-              const actual = state.selection.selectedScripts;
-              const expected = expectation.output;
-              expect(scrambledEqual(actual, expected));
-            });
+      const testScenarios: ReadonlyArray<{
+        readonly givenType: SelectionType;
+        readonly expectedCall: MethodCall<ScriptSelection>;
+      }> = [
+        {
+          givenType: SelectionType.None,
+          expectedCall: {
+            methodName: 'deselectAll',
+            args: [],
+          },
+        },
+        {
+          givenType: SelectionType.Standard,
+          expectedCall: {
+            methodName: 'selectOnly',
+            args: [
+              scenario.allStandard.map((s) => s.script),
+            ],
+          },
+        },
+        {
+          givenType: SelectionType.Strict,
+          expectedCall: {
+            methodName: 'selectOnly',
+            args: [[
+              ...scenario.allStandard.map((s) => s.script),
+              ...scenario.allStrict.map((s) => s.script),
+            ]],
+          },
+        },
+        {
+          givenType: SelectionType.All,
+          expectedCall: {
+            methodName: 'selectAll',
+            args: [],
+          },
+        },
+      ];
+      testScenarios.forEach(({
+        givenType, expectedCall,
+      }) => {
+        it(`${SelectionType[givenType]} modifies as expected`, () => {
+          const { stateStub, scriptsStub } = scenario.generateState();
+          // act
+          setCurrentSelectionType(givenType, createMutationContext(stateStub));
+          // assert
+          const call = scriptsStub.callHistory.find(
+            (c) => c.methodName === expectedCall.methodName,
+          );
+          expectExists(call);
+          if (expectedCall.args.length > 0) { /** {@link ScriptSelection.selectOnly}. */
+            expect(scrambledEqual(
+              call.args[0] as IScript[],
+              expectedCall.args[0] as IScript[],
+            )).to.equal(true);
           }
         });
-      }
+      });
     });
   });
   describe('getCurrentSelectionType', () => {
@@ -106,9 +130,9 @@ describe('SelectionTypeHandler', () => {
     }];
     for (const testCase of testCases) {
       it(testCase.name, () => {
-        const state = scenario.generateState(testCase.selection);
+        const { stateStub } = scenario.generateState(testCase.selection);
         // act
-        const actual = getCurrentSelectionType(createCheckContext(state));
+        const actual = getCurrentSelectionType(createCheckContext(stateStub));
         // assert
         expect(actual).to.deep.equal(
           testCase.expected,
@@ -130,14 +154,14 @@ describe('SelectionTypeHandler', () => {
 
 function createMutationContext(state: ICategoryCollectionState): SelectionMutationContext {
   return {
-    selection: state.selection,
+    selection: state.selection.scripts,
     collection: state.collection,
   };
 }
 
 function createCheckContext(state: ICategoryCollectionState): SelectionCheckContext {
   return {
-    selection: state.selection,
+    selection: state.selection.scripts,
     collection: state.collection,
   };
 }

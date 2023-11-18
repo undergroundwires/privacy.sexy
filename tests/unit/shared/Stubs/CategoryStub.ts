@@ -12,6 +12,8 @@ export class CategoryStub extends BaseEntity<number> implements ICategory {
 
   public readonly docs = new Array<string>();
 
+  private allScriptsRecursively: (readonly IScript[]) | undefined;
+
   public constructor(id: number) {
     super(id);
   }
@@ -21,13 +23,16 @@ export class CategoryStub extends BaseEntity<number> implements ICategory {
   }
 
   public getAllScriptsRecursively(): readonly IScript[] {
-    return [
-      ...this.scripts,
-      ...this.subCategories.flatMap((c) => c.getAllScriptsRecursively()),
-    ];
+    if (this.allScriptsRecursively === undefined) {
+      return [
+        ...this.scripts,
+        ...this.subCategories.flatMap((c) => c.getAllScriptsRecursively()),
+      ];
+    }
+    return this.allScriptsRecursively;
   }
 
-  public withScriptIds(...scriptIds: string[]): this {
+  public withScriptIds(...scriptIds: readonly string[]): this {
     return this.withScripts(
       ...scriptIds.map((id) => new ScriptStub(id)),
     );
@@ -37,6 +42,15 @@ export class CategoryStub extends BaseEntity<number> implements ICategory {
     for (const script of scripts) {
       this.withScript(script);
     }
+    return this;
+  }
+
+  public withAllScriptIdsRecursively(...scriptIds: readonly string[]): this {
+    return this.withAllScriptsRecursively(...scriptIds.map((id) => new ScriptStub(id)));
+  }
+
+  public withAllScriptsRecursively(...scripts: IScript[]): this {
+    this.allScriptsRecursively = [...scripts];
     return this;
   }
 

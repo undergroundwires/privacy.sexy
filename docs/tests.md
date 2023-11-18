@@ -81,8 +81,10 @@ These checks validate various qualities like runtime execution, building process
     - [`Stubs/`](./../tests/unit/shared/Stubs): Maintains stubs for component isolation, equipped with basic functionalities and, when necessary, spying or mocking capabilities.
 - [`./tests/integration/`](./../tests/integration/): Contains integration test files.
 - [`cypress.config.ts`](./../cypress.config.ts): Cypress (E2E tests) configuration file.
+- [`cypress-dirs.json`](./../cypress-dirs.json): A central definition of directories used by Cypress, designed for reuse across different configurations.
 - [`./tests/e2e/`](./../tests/e2e/): Base Cypress folder, includes tests with `.cy.ts` extension.
-  - [`/support/e2e.ts`](./../tests/e2e/support/e2e.ts): Support file, runs before every single spec file.
   - [`/tsconfig.json`]: TypeScript configuration for file Cypress code, improves IDE support, recommended to have by official documentation.
   - *(git ignored)* `/videos`: Asset folder for videos taken during tests.
   - *(git ignored)* `/screenshots`: Asset folder for Screenshots taken during tests.
+  - [`/support/e2e.ts`](./../tests/e2e/support/e2e.ts): Support file, runs before every single test file.
+  - [`/support/interactions/`](./../tests/e2e/support/interactions/): Contains reusable functions for simulating user interactions, enhancing test readability and maintainability.

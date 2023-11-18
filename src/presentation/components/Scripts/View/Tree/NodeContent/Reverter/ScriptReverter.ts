@@ -1,5 +1,5 @@
-import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
-import { IUserSelection } from '@/application/Context/State/Selection/IUserSelection';
+import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
+import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { getScriptId } from '../../TreeViewAdapter/CategoryNodeMetadataConverter';
 import { IReverter } from './IReverter';
 
@@ -18,7 +18,15 @@ export class ScriptReverter implements IReverter {
     return selectedScript.revert;
   }
 
-  public selectWithRevertState(newState: boolean, selection: IUserSelection): void {
-    selection.addOrUpdateSelectedScript(this.scriptId, newState);
+  public selectWithRevertState(newState: boolean, selection: UserSelection): void {
+    selection.scripts.processChanges({
+      changes: [{
+        scriptId: this.scriptId,
+        newStatus: {
+          isSelected: true,
+          isReverted: newState,
+        },
+      }],
+    });
   }
 }

@@ -1,5 +1,5 @@
 // eslint-disable-next-line max-classes-per-file
-import { waitForHeaderBrandTitle } from './shared/ApplicationLoad';
+import { getHeaderBrandTitle } from './support/interactions/header';
 
 interface Stoppable {
   stop(): void;
@@ -175,7 +175,7 @@ enum ApplicationLoadStep {
 const checkpoints: Record<ApplicationLoadStep, () => void> = {
   [ApplicationLoadStep.IndexHtmlLoaded]: () => cy.get('#app').should('be.visible'),
   [ApplicationLoadStep.AppVueLoaded]: () => cy.get('.app__wrapper').should('be.visible'),
-  [ApplicationLoadStep.HeaderBrandTitleLoaded]: () => waitForHeaderBrandTitle(),
+  [ApplicationLoadStep.HeaderBrandTitleLoaded]: () => getHeaderBrandTitle(),
 };
 
 class ContinuousRunner implements Stoppable {

@@ -2,16 +2,17 @@ import { IApplicationCode } from '@/application/Context/State/Code/IApplicationC
 import { IUserFilter } from '@/application/Context/State/Filter/IUserFilter';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { IScript } from '@/domain/IScript';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
-import { IUserSelection } from '@/application/Context/State/Selection/IUserSelection';
+import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
+import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { CategoryCollectionStub } from './CategoryCollectionStub';
 import { UserSelectionStub } from './UserSelectionStub';
 import { UserFilterStub } from './UserFilterStub';
 import { ApplicationCodeStub } from './ApplicationCodeStub';
 import { CategoryStub } from './CategoryStub';
+import { ScriptSelectionStub } from './ScriptSelectionStub';
 
 export class CategoryCollectionStateStub implements ICategoryCollectionState {
   public code: IApplicationCode = new ApplicationCodeStub();
@@ -24,10 +25,11 @@ export class CategoryCollectionStateStub implements ICategoryCollectionState {
 
   public collection: ICategoryCollection = new CategoryCollectionStub().withSomeActions();
 
-  public selection: IUserSelection = new UserSelectionStub([]);
+  public selection: UserSelection = new UserSelectionStub();
 
   constructor(readonly allScripts: IScript[] = [new ScriptStub('script-id')]) {
-    this.selection = new UserSelectionStub(allScripts);
+    this.selection = new UserSelectionStub()
+      .withScripts(new ScriptSelectionStub());
     this.collection = new CategoryCollectionStub()
       .withOs(this.os)
       .withTotalScripts(this.allScripts.length)
@@ -60,11 +62,14 @@ export class CategoryCollectionStateStub implements ICategoryCollectionState {
 
   public withSelectedScripts(initialScripts: readonly SelectedScript[]): this {
     return this.withSelection(
-      new UserSelectionStub([]).withSelectedScripts(initialScripts),
+      new UserSelectionStub().withScripts(
+        new ScriptSelectionStub()
+          .withSelectedScripts(initialScripts),
+      ),
     );
   }
 
-  public withSelection(selection: IUserSelection) {
+  public withSelection(selection: UserSelection) {
     this.selection = selection;
     return this;
   }

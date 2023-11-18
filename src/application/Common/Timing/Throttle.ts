@@ -1,40 +1,24 @@
+import { Timer, TimeoutType } from './Timer';
+import { PlatformTimer } from './PlatformTimer';
+
 export type CallbackType = (..._: unknown[]) => void;
 
 export function throttle(
   callback: CallbackType,
   waitInMs: number,
-  timer: ITimer = NodeTimer,
+  timer: Timer = PlatformTimer,
 ): CallbackType {
   const throttler = new Throttler(timer, waitInMs, callback);
   return (...args: unknown[]) => throttler.invoke(...args);
 }
 
-// Allows aligning with both NodeJs (NodeJs.Timeout) and Window type (number)
-export type Timeout = ReturnType<typeof setTimeout>;
-
-export interface ITimer {
-  setTimeout: (callback: () => void, ms: number) => Timeout;
-  clearTimeout: (timeoutId: Timeout) => void;
-  dateNow(): number;
-}
-
-const NodeTimer: ITimer = {
-  setTimeout: (callback, ms) => setTimeout(callback, ms),
-  clearTimeout: (timeoutId) => clearTimeout(timeoutId),
-  dateNow: () => Date.now(),
-};
-
-interface IThrottler {
-  invoke: CallbackType;
-}
-
-class Throttler implements IThrottler {
-  private queuedExecutionId: Timeout | undefined;
+class Throttler {
+  private queuedExecutionId: TimeoutType | undefined;
 
   private previouslyRun: number;
 
   constructor(
-    private readonly timer: ITimer,
+    private readonly timer: Timer,
     private readonly waitInMs: number,
     private readonly callback: CallbackType,
   ) {

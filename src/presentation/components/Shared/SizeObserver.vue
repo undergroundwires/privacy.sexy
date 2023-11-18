@@ -9,7 +9,7 @@ import {
   defineComponent, shallowRef, onMounted, onBeforeUnmount, watch,
 } from 'vue';
 import { useResizeObserverPolyfill } from '@/presentation/components/Shared/Hooks/UseResizeObserverPolyfill';
-import { throttle } from '@/presentation/components/Shared/Throttle';
+import { throttle } from '@/application/Common/Timing/Throttle';
 
 export default defineComponent({
   emits: {

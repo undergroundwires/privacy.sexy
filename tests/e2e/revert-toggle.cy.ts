@@ -1,12 +1,13 @@
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
+import { openCard } from './support/interactions/card';
 
 describe('revert toggle', () => {
   context('toggle switch', () => {
     beforeEach(() => {
       cy.visit('/');
-      cy.get('.card')
-        .eq(1) // to get 2nd element, first is often cleanup that may lack revert button
-        .click(); // open the card card
+      openCard({
+        cardIndex: 1, // first is often cleanup that may lack revert button
+      });
       cy.get('.toggle-switch')
         .first()
         .as('toggleSwitch');

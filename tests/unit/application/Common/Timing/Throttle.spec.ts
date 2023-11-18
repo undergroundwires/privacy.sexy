@@ -1,8 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { throttle, ITimer, Timeout } from '@/presentation/components/Shared/Throttle';
-import { EventSource } from '@/infrastructure/Events/EventSource';
-import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
-import { createMockTimeout } from '@tests/unit/shared/Stubs/TimeoutStub';
+import { TimerStub } from '@tests/unit/shared/Stubs/TimerStub';
+import { throttle } from '@/application/Common/Timing/Throttle';
 
 describe('throttle', () => {
   describe('validates parameters', () => {
@@ -34,7 +32,7 @@ describe('throttle', () => {
   });
   it('should call the callback immediately', () => {
     // arrange
-    const timer = new TimerMock();
+    const timer = new TimerStub();
     let totalRuns = 0;
     const callback = () => totalRuns++;
     const throttleFunc = throttle(callback, 500, timer);
@@ -45,7 +43,7 @@ describe('throttle', () => {
   });
   it('should call the callback again after the timeout', () => {
     // arrange
-    const timer = new TimerMock();
+    const timer = new TimerStub();
     let totalRuns = 0;
     const callback = () => totalRuns++;
     const waitInMs = 500;
@@ -60,7 +58,7 @@ describe('throttle', () => {
   });
   it('should call the callback at most once at given time', () => {
     // arrange
-    const timer = new TimerMock();
+    const timer = new TimerStub();
     let totalRuns = 0;
     const callback = () => totalRuns++;
     const waitInMs = 500;
@@ -77,7 +75,7 @@ describe('throttle', () => {
   });
   it('should call the callback as long as delay is waited', () => {
     // arrange
-    const timer = new TimerMock();
+    const timer = new TimerStub();
     let totalRuns = 0;
     const callback = () => totalRuns++;
     const waitInMs = 500;
@@ -93,7 +91,7 @@ describe('throttle', () => {
   });
   it('should call arguments as expected', () => {
     // arrange
-    const timer = new TimerMock();
+    const timer = new TimerStub();
     const expected = [1, 2, 3];
     const actual = new Array<number>();
     const callback = (arg: number) => { actual.push(arg); };
@@ -108,41 +106,3 @@ describe('throttle', () => {
     expect(expected).to.deep.equal(actual);
   });
 });
-
-class TimerMock implements ITimer {
-  private timeChanged = new EventSource<number>();
-
-  private subscriptions = new Array<IEventSubscription>();
-
-  private currentTime = 0;
-
-  public setTimeout(callback: () => void, ms: number): Timeout {
-    const runTime = this.currentTime + ms;
-    const subscription = this.timeChanged.on((time) => {
-      if (time >= runTime) {
-        callback();
-        subscription.unsubscribe();
-      }
-    });
-    this.subscriptions.push(subscription);
-    const id = this.subscriptions.length - 1;
-    return createMockTimeout(id);
-  }
-
-  public clearTimeout(timeoutId: Timeout): void {
-    this.subscriptions[+timeoutId].unsubscribe();
-  }
-
-  public dateNow(): number {
-    return this.currentTime;
-  }
-
-  public tickNext(ms: number): void {
-    this.setCurrentTime(this.currentTime + ms);
-  }
-
-  public setCurrentTime(ms: number): void {
-    this.currentTime = ms;
-    this.timeChanged.notify(this.currentTime);
-  }
-}

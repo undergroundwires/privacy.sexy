@@ -1,7 +1,7 @@
-import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
-import { IReadOnlyUserSelection } from '@/application/Context/State/Selection/IUserSelection';
 import { EventSource } from '@/infrastructure/Events/EventSource';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import { ReadonlyScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
 import { CodeChangedEvent } from './Event/CodeChangedEvent';
 import { CodePosition } from './Position/CodePosition';
 import { ICodeChangedEvent } from './Event/ICodeChangedEvent';
@@ -17,12 +17,12 @@ export class ApplicationCode implements IApplicationCode {
   private scriptPositions = new Map<SelectedScript, CodePosition>();
 
   constructor(
-    userSelection: IReadOnlyUserSelection,
+    selection: ReadonlyScriptSelection,
     private readonly scriptingDefinition: IScriptingDefinition,
     private readonly generator: IUserScriptGenerator = new UserScriptGenerator(),
   ) {
-    this.setCode(userSelection.selectedScripts);
-    userSelection.changed.on((scripts) => {
+    this.setCode(selection.selectedScripts);
+    selection.changed.on((scripts) => {
       this.setCode(scripts);
     });
   }

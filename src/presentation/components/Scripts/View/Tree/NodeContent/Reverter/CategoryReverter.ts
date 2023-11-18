@@ -1,6 +1,6 @@
-import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
-import { IUserSelection } from '@/application/Context/State/Selection/IUserSelection';
+import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
+import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { getCategoryId } from '../../TreeViewAdapter/CategoryNodeMetadataConverter';
 import { IReverter } from './IReverter';
 import { ScriptReverter } from './ScriptReverter';
@@ -19,8 +19,16 @@ export class CategoryReverter implements IReverter {
     return this.scriptReverters.every((script) => script.getState(selectedScripts));
   }
 
-  public selectWithRevertState(newState: boolean, selection: IUserSelection): void {
-    selection.addOrUpdateAllInCategory(this.categoryId, newState);
+  public selectWithRevertState(newState: boolean, selection: UserSelection): void {
+    selection.categories.processChanges({
+      changes: [{
+        categoryId: this.categoryId,
+        newStatus: {
+          isSelected: true,
+          isReverted: newState,
+        },
+      }],
+    });
   }
 }
 

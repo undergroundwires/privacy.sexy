@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { UserScriptGenerator } from '@/application/Context/State/Code/Generation/UserScriptGenerator';
-import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { ICodeBuilderFactory } from '@/application/Context/State/Code/Generation/ICodeBuilderFactory';
 import { ICodeBuilder } from '@/application/Context/State/Code/Generation/ICodeBuilder';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { ScriptingDefinitionStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionStub';
 import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
+import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
 
 describe('UserScriptGenerator', () => {
   describe('scriptingDefinition', () => {
@@ -94,7 +94,7 @@ describe('UserScriptGenerator', () => {
       const scriptName = 'test non-revert script';
       const scriptCode = 'REM nop';
       const script = new ScriptStub('id').withName(scriptName).withCode(scriptCode);
-      const selectedScripts = [new SelectedScript(script, false)];
+      const selectedScripts = [new SelectedScriptStub(script).withRevert(false)];
       const definition = new ScriptingDefinitionStub();
       // act
       const actual = sut.buildCode(selectedScripts, definition);
@@ -113,7 +113,8 @@ describe('UserScriptGenerator', () => {
       const script = new ScriptStub('id')
         .withName(scriptName)
         .withRevertCode(scriptCode)
-        .toSelectedScript(true);
+        .toSelectedScript()
+        .withRevert(true);
       const definition = new ScriptingDefinitionStub();
       // act
       const actual = sut.buildCode([script], definition);
@@ -127,10 +128,9 @@ describe('UserScriptGenerator', () => {
         const expectedError = 'Reverted script lacks revert code.';
         const sut = new UserScriptGenerator();
         const script = new ScriptStub('id')
-          .toSelectedScript(true);
-        // Hack until SelectedScript is interface:
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (script.script.code as any).revert = emptyRevertCode;
+          .withRevertCode(emptyRevertCode)
+          .toSelectedScript()
+          .withRevert(true);
         const definition = new ScriptingDefinitionStub();
         // act
         const act = () => sut.buildCode([script], definition);
@@ -181,7 +181,8 @@ describe('UserScriptGenerator', () => {
             const selectedScript = new ScriptStub('script-id')
               .withName('script')
               .withCode(testCase.scriptCode)
-              .toSelectedScript(false);
+              .toSelectedScript()
+              .withRevert(false);
             // act
             const actual = sut.buildCode([selectedScript], definition);
             // expect

@@ -38,11 +38,11 @@ export default defineComponent({
     );
 
     const isAnyChildSelected = computed<boolean>(
-      () => currentSelection.value.isAnySelected(currentCategory.value),
+      () => currentSelection.value.categories.isAnyScriptSelected(currentCategory.value),
     );
 
     const areAllChildrenSelected = computed<boolean>(
-      () => currentSelection.value.areAllSelected(currentCategory.value),
+      () => currentSelection.value.categories.areAllScriptsSelected(currentCategory.value),
     );
 
     return {

@@ -13,6 +13,7 @@ export function useSelectedScriptNodeIds(
   const selectedNodeIds = computed<readonly string[]>(() => {
     return currentSelection
       .value
+      .scripts
       .selectedScripts
       .map((selected) => scriptNodeIdParser(selected.script));
   });

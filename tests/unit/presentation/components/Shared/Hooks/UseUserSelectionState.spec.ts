@@ -1,19 +1,20 @@
 import { describe, it, expect } from 'vitest';
 import { nextTick, watch } from 'vue';
 import { SelectionModifier, useUserSelectionState } from '@/presentation/components/Shared/Hooks/UseUserSelectionState';
+import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
 import { UseCollectionStateStub } from '@tests/unit/shared/Stubs/UseCollectionStateStub';
 import { UseAutoUnsubscribedEventsStub } from '@tests/unit/shared/Stubs/UseAutoUnsubscribedEventsStub';
 import { UserSelectionStub } from '@tests/unit/shared/Stubs/UserSelectionStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { CategoryCollectionStateStub } from '@tests/unit/shared/Stubs/CategoryCollectionStateStub';
-import { IUserSelection } from '@/application/Context/State/Selection/IUserSelection';
 import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
+import { ScriptSelectionStub } from '@tests/unit/shared/Stubs/ScriptSelectionStub';
 
 describe('useUserSelectionState', () => {
   describe('currentSelection', () => {
     it('initializes with correct selection', () => {
       // arrange
-      const expectedSelection = new UserSelectionStub([new ScriptStub('initialSelectedScript')]);
+      const expectedSelection = new UserSelectionStub();
       const collectionStateStub = new UseCollectionStateStub()
         .withState(new CategoryCollectionStateStub().withSelection(expectedSelection));
       // act
@@ -27,8 +28,8 @@ describe('useUserSelectionState', () => {
     describe('once collection state is changed', () => {
       it('updated', () => {
         // arrange
-        const initialSelection = new UserSelectionStub([new ScriptStub('initialSelectedScript')]);
-        const changedSelection = new UserSelectionStub([new ScriptStub('changedSelectedScript')]);
+        const initialSelection = new UserSelectionStub();
+        const changedSelection = new UserSelectionStub();
         const collectionStateStub = new UseCollectionStateStub()
           .withState(new CategoryCollectionStateStub().withSelection(initialSelection));
         const { returnObject } = runHook({
@@ -45,8 +46,9 @@ describe('useUserSelectionState', () => {
       });
       it('not updated when old state changes', async () => {
         // arrange
-        const oldSelectionState = new UserSelectionStub([new ScriptStub('inOldState')]);
-        const newSelectionState = new UserSelectionStub([new ScriptStub('inNewState')]);
+        const oldScriptSelection = new ScriptSelectionStub();
+        const oldSelectionState = new UserSelectionStub().withScripts(oldScriptSelection);
+        const newSelectionState = new UserSelectionStub();
         const collectionStateStub = new UseCollectionStateStub()
           .withState(new CategoryCollectionStateStub().withSelection(oldSelectionState));
         const { returnObject } = runHook({
@@ -61,7 +63,9 @@ describe('useUserSelectionState', () => {
           totalUpdates++;
         });
         // act
-        oldSelectionState.triggerSelectionChangedEvent([new SelectedScriptStub('newInOldState')]);
+        oldScriptSelection.triggerSelectionChangedEvent([
+          new SelectedScriptStub(new ScriptStub('newInOldState')),
+        ]);
         await nextTick();
         // assert
         expect(totalUpdates).to.equal(0);
@@ -69,8 +73,8 @@ describe('useUserSelectionState', () => {
       describe('triggers change', () => {
         it('with new selection reference', async () => {
           // arrange
-          const oldSelection = new UserSelectionStub([]);
-          const newSelection = new UserSelectionStub([]);
+          const oldSelection = new UserSelectionStub();
+          const newSelection = new UserSelectionStub();
           const initialCollectionState = new CategoryCollectionStateStub()
             .withSelection(oldSelection);
           const changedCollectionState = new CategoryCollectionStateStub()
@@ -93,7 +97,7 @@ describe('useUserSelectionState', () => {
         });
         it('with the same selection reference', async () => {
           // arrange
-          const userSelection = new UserSelectionStub([new ScriptStub('sameScriptInSameReference')]);
+          const userSelection = new UserSelectionStub();
           const initialCollectionState = new CategoryCollectionStateStub()
             .withSelection(userSelection);
           const changedCollectionState = new CategoryCollectionStateStub()
@@ -119,26 +123,38 @@ describe('useUserSelectionState', () => {
     describe('once selection state is changed', () => {
       it('updated with same collection state', async () => {
         // arrange
-        const initialScripts = [new ScriptStub('initialSelectedScript')];
-        const changedScripts = [new SelectedScriptStub('changedSelectedScript')];
-        const selectionState = new UserSelectionStub(initialScripts);
-        const collectionState = new CategoryCollectionStateStub().withSelection(selectionState);
+        const initialScripts = [
+          new SelectedScriptStub(new ScriptStub('initialSelectedScript')),
+        ];
+        const changedScripts = [
+          new SelectedScriptStub(new ScriptStub('changedSelectedScript')),
+        ];
+        const scriptSelectionStub = new ScriptSelectionStub()
+          .withSelectedScripts(initialScripts);
+        const expectedSelectionState = new UserSelectionStub().withScripts(scriptSelectionStub);
+        const collectionState = new CategoryCollectionStateStub()
+          .withSelection(expectedSelectionState);
         const collectionStateStub = new UseCollectionStateStub().withState(collectionState);
         const { returnObject } = runHook({
           useCollectionState: collectionStateStub,
         });
         // act
-        selectionState.triggerSelectionChangedEvent(changedScripts);
+        scriptSelectionStub.triggerSelectionChangedEvent(changedScripts);
         await nextTick();
         // assert
         const actualSelection = returnObject.currentSelection.value;
-        expect(actualSelection).to.equal(selectionState);
+        expect(actualSelection).to.equal(expectedSelectionState);
       });
       it('updated once collection state is changed', async () => {
         // arrange
-        const changedScripts = [new SelectedScriptStub('changedSelectedScript')];
-        const newSelectionState = new UserSelectionStub([new ScriptStub('initialSelectedScriptInNewCollection')]);
-        const initialCollectionState = new CategoryCollectionStateStub().withSelectedScripts([new SelectedScriptStub('initialSelectedScriptInInitialCollection')]);
+        const changedScripts = [
+          new SelectedScriptStub(new ScriptStub('changedSelectedScript')),
+        ];
+        const scriptSelectionStub = new ScriptSelectionStub();
+        const newSelectionState = new UserSelectionStub().withScripts(scriptSelectionStub);
+        const initialCollectionState = new CategoryCollectionStateStub().withSelectedScripts([
+          new SelectedScriptStub(new ScriptStub('initialSelectedScriptInInitialCollection')),
+        ]);
         const collectionStateStub = new UseCollectionStateStub().withState(initialCollectionState);
         const { returnObject } = runHook({ useCollectionState: collectionStateStub });
         // act
@@ -146,7 +162,7 @@ describe('useUserSelectionState', () => {
           newState: new CategoryCollectionStateStub().withSelection(newSelectionState),
           immediateOnly: false,
         });
-        newSelectionState.triggerSelectionChangedEvent(changedScripts);
+        scriptSelectionStub.triggerSelectionChangedEvent(changedScripts);
         // assert
         const actualSelection = returnObject.currentSelection.value;
         expect(actualSelection).to.equal(newSelectionState);
@@ -156,17 +172,19 @@ describe('useUserSelectionState', () => {
           // arrange
           const oldSelectedScriptsArrayReference = [];
           const newSelectedScriptsArrayReference = [];
-          const userSelection = new UserSelectionStub(oldSelectedScriptsArrayReference)
+          const scriptSelectionStub = new ScriptSelectionStub()
             .withSelectedScripts(oldSelectedScriptsArrayReference);
           const collectionStateStub = new UseCollectionStateStub()
-            .withState(new CategoryCollectionStateStub().withSelection(userSelection));
+            .withState(new CategoryCollectionStateStub().withSelection(
+              new UserSelectionStub().withScripts(scriptSelectionStub),
+            ));
           const { returnObject } = runHook({ useCollectionState: collectionStateStub });
           let isChangeTriggered = false;
           watch(returnObject.currentSelection, () => {
             isChangeTriggered = true;
           });
           // act
-          userSelection.triggerSelectionChangedEvent(newSelectedScriptsArrayReference);
+          scriptSelectionStub.triggerSelectionChangedEvent(newSelectedScriptsArrayReference);
           await nextTick();
           // assert
           expect(isChangeTriggered).to.equal(true);
@@ -174,17 +192,19 @@ describe('useUserSelectionState', () => {
         it('with same selected scripts array reference', async () => {
           // arrange
           const sharedSelectedScriptsReference = [];
-          const userSelection = new UserSelectionStub([])
+          const scriptSelectionStub = new ScriptSelectionStub()
             .withSelectedScripts(sharedSelectedScriptsReference);
           const collectionStateStub = new UseCollectionStateStub()
-            .withState(new CategoryCollectionStateStub().withSelection(userSelection));
+            .withState(new CategoryCollectionStateStub().withSelection(
+              new UserSelectionStub().withScripts(scriptSelectionStub),
+            ));
           const { returnObject } = runHook({ useCollectionState: collectionStateStub });
           let isChangeTriggered = false;
           watch(returnObject.currentSelection, () => {
             isChangeTriggered = true;
           });
           // act
-          userSelection.triggerSelectionChangedEvent(sharedSelectedScriptsReference);
+          scriptSelectionStub.triggerSelectionChangedEvent(sharedSelectedScriptsReference);
           await nextTick();
           // assert
           expect(isChangeTriggered).to.equal(true);
@@ -197,7 +217,7 @@ describe('useUserSelectionState', () => {
       // arrange
       const { returnObject, collectionStateStub } = runHook();
       const expectedSelection = collectionStateStub.state.selection;
-      let mutatedSelection: IUserSelection | undefined;
+      let mutatedSelection: UserSelection | undefined;
       const mutator: SelectionModifier = (selection) => {
         mutatedSelection = selection;
       };
@@ -210,10 +230,10 @@ describe('useUserSelectionState', () => {
     it('new state is modified once collection state is changed', async () => {
       // arrange
       const { returnObject, collectionStateStub } = runHook();
-      const expectedSelection = new UserSelectionStub([]);
+      const expectedSelection = new UserSelectionStub();
       const newCollectionState = new CategoryCollectionStateStub()
         .withSelection(expectedSelection);
-      let mutatedSelection: IUserSelection | undefined;
+      let mutatedSelection: UserSelection | undefined;
       const mutator: SelectionModifier = (selection) => {
         mutatedSelection = selection;
       };
@@ -231,12 +251,12 @@ describe('useUserSelectionState', () => {
     it('old state is not modified once collection state is changed', async () => {
       // arrange
       const oldState = new CategoryCollectionStateStub().withSelectedScripts([
-        new SelectedScriptStub('scriptFromOldState'),
+        new SelectedScriptStub(new ScriptStub('scriptFromOldState')),
       ]);
       const collectionStateStub = new UseCollectionStateStub()
         .withState(oldState);
       const { returnObject } = runHook({ useCollectionState: collectionStateStub });
-      const expectedSelection = new UserSelectionStub([]);
+      const expectedSelection = new UserSelectionStub();
       const newCollectionState = new CategoryCollectionStateStub()
         .withSelection(expectedSelection);
       let totalMutations = 0;

@@ -3,8 +3,10 @@
     v-non-collapsing
     @size-changed="sizeChanged()"
   >
+    <!-- `data-test-highlighted-range` is a test hook for assessing highlighted text range -->
     <div
       :id="editorId"
+      :data-test-highlighted-range="highlightedRange"
       class="code-area"
     />
   </SizeObserver>
@@ -12,7 +14,7 @@
 
 <script lang="ts">
 import {
-  defineComponent, onUnmounted, onMounted,
+  defineComponent, onUnmounted, onMounted, ref,
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import { ICodeChangedEvent } from '@/application/Context/State/Code/Event/ICodeChangedEvent';
@@ -42,6 +44,8 @@ export default defineComponent({
     const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
 
     const editorId = 'codeEditor';
+    const highlightedRange = ref(0);
+
     let editor: ace.Ace.Editor | undefined;
     let currentMarkerId: number | undefined;
 
@@ -99,6 +103,7 @@ export default defineComponent({
       }
       editor?.session.removeMarker(currentMarkerId);
       currentMarkerId = undefined;
+      highlightedRange.value = 0;
     }
 
     function reactToChanges(event: ICodeChangedEvent, scripts: ReadonlyArray<IScript>) {
@@ -121,6 +126,7 @@ export default defineComponent({
         'code-area__highlight',
         'fullLine',
       );
+      highlightedRange.value = endRow - startRow;
     }
 
     function scrollToLine(row: number) {
@@ -133,6 +139,7 @@ export default defineComponent({
 
     return {
       editorId,
+      highlightedRange,
       sizeChanged,
     };
   },

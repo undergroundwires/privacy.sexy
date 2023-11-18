@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { CodeChangedEvent } from '@/application/Context/State/Code/Event/CodeChangedEvent';
-import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
 import { CodePosition } from '@/application/Context/State/Code/Position/CodePosition';
 import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
+import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 
 describe('CodeChangedEvent', () => {
   describe('ctor', () => {
@@ -15,8 +15,8 @@ describe('CodeChangedEvent', () => {
         const nonExistingLine1 = 2;
         const nonExistingLine2 = 31;
         const newScripts = new Map<SelectedScript, ICodePosition>([
-          [new SelectedScriptStub('1'), new CodePosition(0, nonExistingLine1)],
-          [new SelectedScriptStub('2'), new CodePosition(0, nonExistingLine2)],
+          [new SelectedScriptStub(new ScriptStub('1')), new CodePosition(0, nonExistingLine1)],
+          [new SelectedScriptStub(new ScriptStub('2')), new CodePosition(0, nonExistingLine2)],
         ]);
         // act
         let errorText = '';
@@ -47,7 +47,7 @@ describe('CodeChangedEvent', () => {
         for (const testCase of testCases) {
           it(testCase.name, () => {
             const newScripts = new Map<SelectedScript, ICodePosition>([
-              [new SelectedScriptStub('1'), testCase.position],
+              [new SelectedScriptStub(new ScriptStub('1')), testCase.position],
             ]);
             // act
             const act = () => new CodeChangedEventBuilder()
@@ -76,12 +76,15 @@ describe('CodeChangedEvent', () => {
     it('returns new scripts when scripts are added', () => {
       // arrange
       const expected = [new ScriptStub('3'), new ScriptStub('4')];
-      const initialScripts = [new SelectedScriptStub('1'), new SelectedScriptStub('2')];
+      const initialScripts = [
+        new SelectedScriptStub(new ScriptStub('1')),
+        new SelectedScriptStub(new ScriptStub('2')),
+      ];
       const newScripts = new Map<SelectedScript, ICodePosition>([
         [initialScripts[0], new CodePosition(0, 1)],
         [initialScripts[1], new CodePosition(0, 1)],
-        [new SelectedScript(expected[0], false), new CodePosition(0, 1)],
-        [new SelectedScript(expected[1], false), new CodePosition(0, 1)],
+        [new SelectedScriptStub(expected[0]).withRevert(false), new CodePosition(0, 1)],
+        [new SelectedScriptStub(expected[1]).withRevert(false), new CodePosition(0, 1)],
       ]);
       const sut = new CodeChangedEventBuilder()
         .withOldScripts(initialScripts)
@@ -98,8 +101,13 @@ describe('CodeChangedEvent', () => {
   describe('removedScripts', () => {
     it('returns removed scripts when script are removed', () => {
       // arrange
-      const existingScripts = [new SelectedScriptStub('0'), new SelectedScriptStub('1')];
-      const removedScripts = [new SelectedScriptStub('2')];
+      const existingScripts = [
+        new SelectedScriptStub(new ScriptStub('0')),
+        new SelectedScriptStub(new ScriptStub('1')),
+      ];
+      const removedScripts = [
+        new SelectedScriptStub(new ScriptStub('2')),
+      ];
       const initialScripts = [...existingScripts, ...removedScripts];
       const newScripts = new Map<SelectedScript, ICodePosition>([
         [initialScripts[0], new CodePosition(0, 1)],
@@ -119,10 +127,17 @@ describe('CodeChangedEvent', () => {
   describe('changedScripts', () => {
     it('returns changed scripts when scripts are changed', () => {
       // arrange
-      const initialScripts = [new SelectedScriptStub('1', false), new SelectedScriptStub('2', false)];
+      const changedScripts = [
+        new ScriptStub('scripts-with-changed-selection-1'),
+        new ScriptStub('scripts-with-changed-selection-2'),
+      ];
+      const initialScripts = [
+        new SelectedScriptStub(changedScripts[0]).withRevert(false),
+        new SelectedScriptStub(changedScripts[1]).withRevert(false),
+      ];
       const newScripts = new Map<SelectedScript, ICodePosition>([
-        [new SelectedScriptStub('1', true), new CodePosition(0, 1)],
-        [new SelectedScriptStub('2', false), new CodePosition(0, 1)],
+        [new SelectedScriptStub(changedScripts[0]).withRevert(true), new CodePosition(0, 1)],
+        [new SelectedScriptStub(changedScripts[1]).withRevert(false), new CodePosition(0, 1)],
       ]);
       const sut = new CodeChangedEventBuilder()
         .withOldScripts(initialScripts)
@@ -139,7 +154,7 @@ describe('CodeChangedEvent', () => {
     it('returns true when empty', () => {
       // arrange
       const newScripts = new Map<SelectedScript, ICodePosition>();
-      const oldScripts = [new SelectedScriptStub('1', false)];
+      const oldScripts = [new SelectedScriptStub(new ScriptStub('1')).withRevert(false)];
       const sut = new CodeChangedEventBuilder()
         .withOldScripts(oldScripts)
         .withNewScripts(newScripts)
@@ -151,7 +166,7 @@ describe('CodeChangedEvent', () => {
     });
     it('returns false when not empty', () => {
       // arrange
-      const oldScripts = [new SelectedScriptStub('1')];
+      const oldScripts = [new SelectedScriptStub(new ScriptStub('1'))];
       const newScripts = new Map<SelectedScript, ICodePosition>([
         [oldScripts[0], new CodePosition(0, 1)],
       ]);
@@ -182,7 +197,7 @@ describe('CodeChangedEvent', () => {
       const script = new ScriptStub('1');
       const expected = new CodePosition(0, 1);
       const newScripts = new Map<SelectedScript, ICodePosition>([
-        [new SelectedScript(script, false), expected],
+        [new SelectedScriptStub(script).withRevert(false), expected],
       ]);
       const sut = new CodeChangedEventBuilder()
         .withNewScripts(newScripts)

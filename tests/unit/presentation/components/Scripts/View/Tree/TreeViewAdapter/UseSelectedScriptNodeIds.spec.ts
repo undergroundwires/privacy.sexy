@@ -4,6 +4,7 @@ import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub'
 import { getScriptNodeId } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/CategoryNodeMetadataConverter';
 import { IScript } from '@/domain/IScript';
 import { UseUserSelectionStateStub } from '@tests/unit/shared/Stubs/UseUserSelectionStateStub';
+import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 
 describe('useSelectedScriptNodeIds', () => {
   it('returns an empty array when no scripts are selected', () => {
@@ -19,8 +20,8 @@ describe('useSelectedScriptNodeIds', () => {
     it('immediately', () => {
       // arrange
       const selectedScripts = [
-        new SelectedScriptStub('id-1'),
-        new SelectedScriptStub('id-2'),
+        new SelectedScriptStub(new ScriptStub('id-1')),
+        new SelectedScriptStub(new ScriptStub('id-2')),
       ];
       const parsedNodeIds = new Map<IScript, string>([
         [selectedScripts[0].script, 'expected-id-1'],
@@ -43,8 +44,8 @@ describe('useSelectedScriptNodeIds', () => {
       // arrange
       const initialScripts = [];
       const changedScripts = [
-        new SelectedScriptStub('id-1'),
-        new SelectedScriptStub('id-2'),
+        new SelectedScriptStub(new ScriptStub('id-1')),
+        new SelectedScriptStub(new ScriptStub('id-2')),
       ];
       const parsedNodeIds = new Map<IScript, string>([
         [changedScripts[0].script, 'expected-id-1'],

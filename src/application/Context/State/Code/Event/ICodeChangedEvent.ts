@@ -3,9 +3,9 @@ import { ICodePosition } from '@/application/Context/State/Code/Position/ICodePo
 
 export interface ICodeChangedEvent {
   readonly code: string;
-  addedScripts: ReadonlyArray<IScript>;
-  removedScripts: ReadonlyArray<IScript>;
-  changedScripts: ReadonlyArray<IScript>;
+  readonly addedScripts: ReadonlyArray<IScript>;
+  readonly removedScripts: ReadonlyArray<IScript>;
+  readonly changedScripts: ReadonlyArray<IScript>;
   isEmpty(): boolean;
   getScriptPositionInCode(script: IScript): ICodePosition;
 }

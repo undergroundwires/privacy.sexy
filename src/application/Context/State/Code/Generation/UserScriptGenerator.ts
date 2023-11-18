@@ -1,6 +1,6 @@
-import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { CodePosition } from '../Position/CodePosition';
 import { IUserScriptGenerator } from './IUserScriptGenerator';
 import { IUserScript } from './IUserScript';

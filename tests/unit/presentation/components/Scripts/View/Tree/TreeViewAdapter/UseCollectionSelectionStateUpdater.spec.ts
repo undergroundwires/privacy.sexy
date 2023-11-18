@@ -7,6 +7,7 @@ import { TreeNodeCheckState } from '@/presentation/components/Scripts/View/Tree/
 import { UserSelectionStub } from '@tests/unit/shared/Stubs/UserSelectionStub';
 import { TreeNodeStateChangedEmittedEventStub } from '@tests/unit/shared/Stubs/TreeNodeStateChangedEmittedEventStub';
 import { UseUserSelectionStateStub } from '@tests/unit/shared/Stubs/UseUserSelectionStateStub';
+import { ScriptSelectionStub } from '@tests/unit/shared/Stubs/ScriptSelectionStub';
 
 describe('useCollectionSelectionStateUpdater', () => {
   describe('updateNodeSelection', () => {
@@ -56,9 +57,12 @@ describe('useCollectionSelectionStateUpdater', () => {
       it('adds to selection if not already selected', () => {
         // arrange
         const { returnObject, useSelectionStateStub } = runHook();
-        const selectionStub = new UserSelectionStub([]);
-        selectionStub.isSelected = () => false;
-        useSelectionStateStub.withUserSelection(selectionStub);
+        const isScriptInitiallySelected = false;
+        const scriptSelectionStub = new ScriptSelectionStub()
+          .withIsSelectedResult(isScriptInitiallySelected);
+        useSelectionStateStub.withUserSelection(
+          new UserSelectionStub().withScripts(scriptSelectionStub),
+        );
         const node = createTreeNodeStub({
           isBranch: false,
           currentState: TreeNodeCheckState.Checked,
@@ -73,14 +77,17 @@ describe('useCollectionSelectionStateUpdater', () => {
         returnObject.updateNodeSelection(mockEvent);
         // assert
         expect(useSelectionStateStub.isSelectionModified()).to.equal(true);
-        expect(selectionStub.isScriptAdded(node.id)).to.equal(true);
+        expect(scriptSelectionStub.isScriptSelected(node.id, false)).to.equal(true);
       });
       it('does nothing if already selected', () => {
         // arrange
         const { returnObject, useSelectionStateStub } = runHook();
-        const selectionStub = new UserSelectionStub([]);
-        selectionStub.isSelected = () => true;
-        useSelectionStateStub.withUserSelection(selectionStub);
+        const isScriptInitiallySelected = true;
+        const scriptSelectionStub = new ScriptSelectionStub()
+          .withIsSelectedResult(isScriptInitiallySelected);
+        useSelectionStateStub.withUserSelection(
+          new UserSelectionStub().withScripts(scriptSelectionStub),
+        );
         const mockEvent = new TreeNodeStateChangedEmittedEventStub()
           .withNode(
             createTreeNodeStub({
@@ -102,9 +109,12 @@ describe('useCollectionSelectionStateUpdater', () => {
       it('removes from selection if already selected', () => {
         // arrange
         const { returnObject, useSelectionStateStub } = runHook();
-        const selectionStub = new UserSelectionStub([]);
-        selectionStub.isSelected = () => true;
-        useSelectionStateStub.withUserSelection(selectionStub);
+        const isScriptInitiallySelected = true;
+        const scriptSelectionStub = new ScriptSelectionStub()
+          .withIsSelectedResult(isScriptInitiallySelected);
+        useSelectionStateStub.withUserSelection(
+          new UserSelectionStub().withScripts(scriptSelectionStub),
+        );
         const node = createTreeNodeStub({
           isBranch: false,
           currentState: TreeNodeCheckState.Unchecked,
@@ -119,14 +129,17 @@ describe('useCollectionSelectionStateUpdater', () => {
         returnObject.updateNodeSelection(mockEvent);
         // assert
         expect(useSelectionStateStub.isSelectionModified()).to.equal(true);
-        expect(selectionStub.isScriptRemoved(node.id)).to.equal(true);
+        expect(scriptSelectionStub.isScriptDeselected(node.id)).to.equal(true);
       });
       it('does nothing if not already selected', () => {
         // arrange
         const { returnObject, useSelectionStateStub } = runHook();
-        const selectionStub = new UserSelectionStub([]);
-        selectionStub.isSelected = () => false;
-        useSelectionStateStub.withUserSelection(selectionStub);
+        const isScriptInitiallySelected = false;
+        const scriptSelectionStub = new ScriptSelectionStub()
+          .withIsSelectedResult(isScriptInitiallySelected);
+        useSelectionStateStub.withUserSelection(
+          new UserSelectionStub().withScripts(scriptSelectionStub),
+        );
         const mockEvent = new TreeNodeStateChangedEmittedEventStub()
           .withNode(
             createTreeNodeStub({

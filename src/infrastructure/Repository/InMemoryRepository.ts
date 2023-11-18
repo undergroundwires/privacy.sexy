@@ -1,8 +1,8 @@
 import { IEntity } from '../Entity/IEntity';
-import { IRepository } from './IRepository';
+import { Repository } from '../../application/Repository/Repository';
 
 export class InMemoryRepository<TKey, TEntity extends IEntity<TKey>>
-implements IRepository<TKey, TEntity> {
+implements Repository<TKey, TEntity> {
   private readonly items: TEntity[];
 
   constructor(items?: TEntity[]) {

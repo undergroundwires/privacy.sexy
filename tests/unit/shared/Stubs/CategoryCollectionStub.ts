@@ -33,6 +33,13 @@ export class CategoryCollectionStub implements ICategoryCollection {
     return this;
   }
 
+  public withActions(...actions: readonly ICategory[]): this {
+    for (const action of actions) {
+      this.withAction(action);
+    }
+    return this;
+  }
+
   public withOs(os: OperatingSystem): this {
     this.os = os;
     return this;

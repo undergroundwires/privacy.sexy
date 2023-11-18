@@ -1,9 +1,9 @@
 import { IScript } from '@/domain/IScript';
-import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { scrambledEqual } from '@/application/Common/Array';
-import { IReadOnlyUserSelection, IUserSelection } from '@/application/Context/State/Selection/IUserSelection';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
+import { ReadonlyScriptSelection, ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
+import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 
 export enum SelectionType {
   Standard,
@@ -34,12 +34,12 @@ export function getCurrentSelectionType(context: SelectionCheckContext): Selecti
 }
 
 export interface SelectionCheckContext {
-  readonly selection: IReadOnlyUserSelection;
+  readonly selection: ReadonlyScriptSelection;
   readonly collection: ICategoryCollection;
 }
 
 export interface SelectionMutationContext {
-  readonly selection: IUserSelection,
+  readonly selection: ScriptSelection,
   readonly collection: ICategoryCollection,
 }
 

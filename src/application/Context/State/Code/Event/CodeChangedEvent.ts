@@ -1,6 +1,6 @@
 import { IScript } from '@/domain/IScript';
 import { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
-import { SelectedScript } from '../../Selection/SelectedScript';
+import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { ICodeChangedEvent } from './ICodeChangedEvent';
 
 export class CodeChangedEvent implements ICodeChangedEvent {
@@ -36,7 +36,14 @@ export class CodeChangedEvent implements ICodeChangedEvent {
   }
 
   public getScriptPositionInCode(script: IScript): ICodePosition {
-    const position = this.scripts.get(script);
+    return this.getPositionById(script.id);
+  }
+
+  private getPositionById(scriptId: string): ICodePosition {
+    const position = [...this.scripts.entries()]
+      .filter(([s]) => s.id === scriptId)
+      .map(([, pos]) => pos)
+      .at(0);
     if (!position) {
       throw new Error('Unknown script: Position could not be found for the script');
     }

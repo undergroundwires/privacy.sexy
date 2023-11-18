@@ -41,7 +41,7 @@ export default defineComponent({
 
     const isReverted = computed<boolean>({
       get() {
-        const { selectedScripts } = currentSelection.value;
+        const { selectedScripts } = currentSelection.value.scripts;
         return revertHandler.value.getState(selectedScripts);
       },
       set: (value: boolean) => {

@@ -1,13 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
-import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
+import { UserSelectedScript } from '@/application/Context/State/Selection/Script/UserSelectedScript';
 
-describe('SelectedScript', () => {
+describe('UserSelectedScript', () => {
   it('id is same as script id', () => {
     // arrange
     const expectedId = 'scriptId';
     const script = new ScriptStub(expectedId);
-    const sut = new SelectedScript(script, false);
+    const sut = new UserSelectedScript(script, false);
     // act
     const actualId = sut.id;
     // assert
@@ -15,13 +15,13 @@ describe('SelectedScript', () => {
   });
   it('throws when revert is true for irreversible script', () => {
     // arrange
-    const expectedId = 'scriptId';
-    const script = new ScriptStub(expectedId)
+    const scriptId = 'irreversibleScriptId';
+    const expectedError = `The script with ID '${scriptId}' is not reversible and cannot be reverted.`;
+    const script = new ScriptStub(scriptId)
       .withRevertCode(undefined);
     // act
-    // eslint-disable-next-line no-new
-    function construct() { new SelectedScript(script, true); }
+    const act = () => new UserSelectedScript(script, true);
     // assert
-    expect(construct).to.throw('cannot revert an irreversible script');
+    expect(act).to.throw(expectedError);
   });
 });

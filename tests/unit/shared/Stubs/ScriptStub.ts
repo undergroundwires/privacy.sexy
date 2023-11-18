@@ -1,8 +1,8 @@
 import { BaseEntity } from '@/infrastructure/Entity/BaseEntity';
 import { IScript } from '@/domain/IScript';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
-import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { IScriptCode } from '@/domain/IScriptCode';
+import { SelectedScriptStub } from './SelectedScriptStub';
 
 export class ScriptStub extends BaseEntity<string> implements IScript {
   public name = `name${this.id}`;
@@ -50,7 +50,7 @@ export class ScriptStub extends BaseEntity<string> implements IScript {
     return this;
   }
 
-  public toSelectedScript(isReverted = false): SelectedScript {
-    return new SelectedScript(this, isReverted);
+  public toSelectedScript(): SelectedScriptStub {
+    return new SelectedScriptStub(this);
   }
 }

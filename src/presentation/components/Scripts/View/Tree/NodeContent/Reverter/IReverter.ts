@@ -1,7 +1,7 @@
-import { IUserSelection } from '@/application/Context/State/Selection/IUserSelection';
-import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
+import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
+import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 
 export interface IReverter {
   getState(selectedScripts: ReadonlyArray<SelectedScript>): boolean;
-  selectWithRevertState(newState: boolean, selection: IUserSelection): void;
+  selectWithRevertState(newState: boolean, selection: UserSelection): void;
 }

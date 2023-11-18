@@ -91,7 +91,7 @@ export default defineComponent({
 
     const currentSelectionType = computed<SelectionType>({
       get: () => getCurrentSelectionType({
-        selection: currentSelection.value,
+        selection: currentSelection.value.scripts,
         collection: currentCollection.value,
       }),
       set: (type: SelectionType) => {
@@ -105,7 +105,7 @@ export default defineComponent({
       }
       modifyCurrentSelection((mutableSelection) => {
         setCurrentSelectionType(type, {
-          selection: mutableSelection,
+          selection: mutableSelection.scripts,
           collection: currentCollection.value,
         });
       });
