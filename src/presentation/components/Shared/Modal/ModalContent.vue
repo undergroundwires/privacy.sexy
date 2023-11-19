@@ -3,7 +3,10 @@
     name="modal-content-transition"
     @after-leave="onAfterTransitionLeave"
   >
-    <div v-if="show" class="modal-content-wrapper">
+    <div
+      v-if="show"
+      class="modal-content-wrapper"
+    >
       <div
         ref="modalElement"
         class="modal-content-content"
@@ -31,7 +34,7 @@ export default defineComponent({
     'transitionedOut',
   ],
   setup(_, { emit }) {
-    const modalElement = shallowRef<HTMLElement>();
+    const modalElement = shallowRef<HTMLElement | undefined>();
 
     function onAfterTransitionLeave() {
       emit('transitionedOut');
@@ -43,6 +46,7 @@ export default defineComponent({
     };
   },
 });
+
 </script>
 
 <style scoped lang="scss">

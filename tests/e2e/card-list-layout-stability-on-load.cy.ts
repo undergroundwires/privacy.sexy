@@ -1,5 +1,6 @@
 // eslint-disable-next-line max-classes-per-file
 import { getHeaderBrandTitle } from './support/interactions/header';
+import { ViewportTestScenarios } from './support/scenarios/viewport-test-scenarios';
 
 interface Stoppable {
   stop(): void;
@@ -7,21 +8,12 @@ interface Stoppable {
 
 describe('card list layout stability', () => {
   describe('during initial page load', () => {
-    const testScenarios: ReadonlyArray<{
-      readonly name: string;
-      readonly width: number;
-      readonly height: number;
-    }> = [
-      { name: 'iPhone SE', width: 375, height: 667 },
-      { name: '13-inch Laptop', width: 1280, height: 800 },
-      { name: '4K Ultra HD Desktop', width: 3840, height: 2160 },
-    ];
     const testCleanup = new Array<Stoppable>();
     afterEach(() => {
       testCleanup.forEach((c) => c.stop());
       testCleanup.length = 0;
     });
-    testScenarios.forEach(({ name, width, height }) => {
+    ViewportTestScenarios.forEach(({ name, width, height }) => {
       it(`ensures layout stability on ${name}`, () => {
         // arrange
         const dimensions = new DimensionsStorage();

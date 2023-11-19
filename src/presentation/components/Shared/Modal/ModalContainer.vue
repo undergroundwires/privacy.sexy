@@ -24,7 +24,7 @@ import {
 } from 'vue';
 import ModalOverlay from './ModalOverlay.vue';
 import ModalContent from './ModalContent.vue';
-import { useLockBodyBackgroundScroll } from './Hooks/UseLockBodyBackgroundScroll';
+import { useLockBodyBackgroundScroll } from './Hooks/ScrollLock/UseLockBodyBackgroundScroll';
 import { useCurrentFocusToggle } from './Hooks/UseCurrentFocusToggle';
 import { useEscapeKeyListener } from './Hooks/UseEscapeKeyListener';
 import { useAllTrueWatcher } from './Hooks/UseAllTrueWatcher';
