@@ -1310,7 +1310,7 @@ actions:
                 # Helps to protect it from being stolen and used for identity theft or identifying you.
                 docs: https://winaero.com/blog/remove-windows-10-product-key-from-registry-and-protect-it-from-being-stolen/
                 # We use cscript.exe to execute instead of `slmgr` command directly to keep the output but surpress the dialogs.
-                code: cscript.exe //nologo "%SystemRoot%\system32\slmgr.vbs" /cpky
+                code: cscript.exe //nologo "%SYSTEMROOT%\System32\slmgr.vbs" /cpky
             -
                 name: Clear volume backups (shadow copies)
                 docs:
@@ -7092,6 +7092,9 @@ actions:
                             Disabling these update services is also a privacy measure. Some updates can change privacy settings or add features that
                             collect user data. By controlling update services, users can review and approve any changes before they take effect.
                         children:
+                            # Excluding:
+                            #   - Background Intelligent Transfer Service (BITS): Not exclusive to disabling automatic Windows updates, may break third-party apps
+                            #   - Delivery Optimization (DoSvc): Not exclusive to disabling automatic Windows updates, breaks Microsoft Store downloads.
                             -
                                 name: Disable "Windows Update" (`wuauserv`) service
                                 docs: |-
@@ -7166,11 +7169,817 @@ actions:
                                 call:
                                     function: DisableServiceInRegistry
                                     # Since Windows 10 21H2 and Windows 11 21H2:
-                                    #   - Using `sc config` resulsts in "Access in denied", so registry should be used to disable the service.
-                                    #   - Default startup mode is Manual
+                                    #   - ❗️ Using `sc config` results in "Access in denied", so registry should be used to disable the service.
                                     parameters:
                                         serviceName: WaaSMedicSvc # Check: (Get-Service -Name 'WaaSMedicSvc').StartType
                                         defaultStartupMode: Manual # Allowed values: Automatic | Manual
+                    -
+                        category: Disable Windows update scheduled tasks
+                        docs: |-
+                            This category includes scripts to disable scheduled tasks that are associated with the automatic functioning of the Windows Update service.
+                            These tasks are responsible for various background update-related activities such as checking for updates, downloading, and installing them
+                            in the background without user intervention.
+
+                            Disabling these tasks grants users more control over when and how updates are applied. This approach is often preferred by those wishing to
+                            manually manage updates or avoid unanticipated system modifications without consent, and it is considered a best practice in high-security
+                            environments where precise control over updates is crucial. However, it's important to exercise caution with these changes. Disabling automatic
+                            updates can lead to missed critical security patches and feature updates, potentially leaving the system vulnerable.
+
+                            To view all the scheduled tasks related to Windows Update, you can use the following PowerShell command:
+
+                            ```powershell
+                                @('\Microsoft\Windows\UpdateOrchestrator\*', '\Microsoft\Windows\WindowsUpdate\*', '\Microsoft\Windows\WaaSMedic\*', '\Microsoft\Windows\InstallService\*') `
+                                    | ForEach-Object { Get-ScheduledTask -TaskName '*' -TaskPath $_ -ErrorAction SilentlyContinue } `
+                                    | ForEach-Object { Write-Host "$($_.TaskPath)$($_.TaskName)" }
+                            ```
+                        children:
+                            -
+                                name: Disable "RestoreDevice" task
+                                docs: |-
+                                    This script disables the "RestoreDevice" scheduled task.
+
+                                    This task is involved in restoring device settings or drivers as part of update processes.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\InstallService\RestoreDevice`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | ------ |
+                                    | Windows 10 22H2  | 🟡 N/A (missing) |
+                                    | Windows 11 22H2  | 🟡 N/A (missing) |
+                                    | Windows 11 23H2  | 🟢 Ready |
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\InstallService\' -TaskName 'RestoreDevice'
+                                        taskPathPattern: \Microsoft\Windows\InstallService\
+                                        taskNamePattern: RestoreDevice
+                            -
+                                name: Disable "ScanForUpdates" task
+                                docs: |-
+                                    This script disables the "ScanForUpdates" scheduled task.
+
+                                    This task is responsible for performing update scans.
+
+                                    Microsoft officially documents this task as part of the Windows updates process [1].
+                                    Microsoft suggests disabling this task as a measure to reduce data collection and improve performance [2].
+                                    This recommendation is also supported by Citrix for optimization purposes [3].
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\InstallService\ScanForUpdates`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | ------ |
+                                    | Windows 10 22H2  | 🟢 Ready |
+                                    | Windows 11 22H2  | 🟢 Ready |
+                                    | Windows 11 23H2  | 🟢 Ready |
+
+                                    [1]: https://web.archive.org/web/20231111173058/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds-vdi-recommendations-2004#re-enable-windows-update "Optimizing Windows 10, Build 2004, for a Virtual Desktop role | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20231002162808/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#scheduled-tasks "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn | learn.microsoft.com"
+                                    [3]: https://web.archive.org/web/20231111173043/https://www.citrix.com/blogs/2021/02/17/tm-citrix-optimizer-2-8-whats-new/ "Citrix Optimizer 2.8 – What’s new - Citrix Blogs | www.citrix.com"
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\InstallService\' -TaskName 'ScanForUpdates'
+                                        taskPathPattern: \Microsoft\Windows\InstallService\
+                                        taskNamePattern: ScanForUpdates
+                            -
+                                name: Disable "ScanForUpdatesAsUser" task
+                                docs: |-
+                                    This script disables the "ScanForUpdatesAsUser" scheduled task.
+
+                                    This task is responsible for performing update scans under user-specific contexts.
+
+                                    Microsoft officially documents this task as part of the Windows updates process [1].
+                                    Microsoft suggests disabling this task as a measure to reduce data collection and improve performance [2].
+                                    This recommendation is also supported by Citrix for optimization purposes [3].
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\InstallService\ScanForUpdatesAsUser`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | ------ |
+                                    | Windows 10 22H2  | 🟢 Ready |
+                                    | Windows 11 22H2  | 🟢 Ready |
+                                    | Windows 11 23H2  | 🟢 Ready |
+
+                                    [1]: https://web.archive.org/web/20231111173058/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds-vdi-recommendations-2004#re-enable-windows-update "Optimizing Windows 10, Build 2004, for a Virtual Desktop role | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20231002162808/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#scheduled-tasks "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn | learn.microsoft.com"
+                                    [3]: https://web.archive.org/web/20231111173043/https://www.citrix.com/blogs/2021/02/17/tm-citrix-optimizer-2-8-whats-new/ "Citrix Optimizer 2.8 – What’s new - Citrix Blogs | www.citrix.com"
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\InstallService\' -TaskName 'ScanForUpdatesAsUser'
+                                        taskPathPattern: \Microsoft\Windows\InstallService\
+                                        taskNamePattern: ScanForUpdatesAsUser
+                            -
+                                name: Disable "SmartRetry" task
+                                docs: |-
+                                    This script disables the "SmartRetry" scheduled task.
+
+                                    This task handles the automatic retrying of failed updates, attempting to redownload or reinstall updates
+                                    that didn't install successfully on the first try.
+
+                                    Microsoft officially documents this task as part of the Windows updates process [1].
+                                    Microsoft suggests disabling this task as a measure to reduce data collection and improve performance [2].
+                                    This recommendation is also supported by Citrix for optimization purposes [3].
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\InstallService\SmartRetry`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | ------ |
+                                    | Windows 10 22H2  | 🟢 Ready |
+                                    | Windows 11 22H2  | 🟢 Ready |
+                                    | Windows 11 23H2  | 🟢 Ready |
+
+                                    [1]: https://web.archive.org/web/20231002162808/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#scheduled-tasks "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20231111172942/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-applicationmanagement "ApplicationManagement Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                    [3]: https://web.archive.org/web/20231111173043/https://www.citrix.com/blogs/2021/02/17/tm-citrix-optimizer-2-8-whats-new/ "Citrix Optimizer 2.8 – What’s new - Citrix Blogs | www.citrix.com"
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\InstallService\' -TaskName 'SmartRetry'
+                                        taskPathPattern: \Microsoft\Windows\InstallService\
+                                        taskNamePattern: SmartRetry
+                            -
+                                name: Disable "WakeUpAndContinueUpdates" task
+                                docs: |-
+                                    This script disables the "WakeUpAndContinueUpdates" scheduled task.
+
+                                    This task is responsible for waking the computer from sleep to continue or complete pending updates.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\InstallService\WakeUpAndContinueUpdates`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | ------ |
+                                    | Windows 10 22H2  | 🔴 Disabled |
+                                    | Windows 11 22H2  | 🔴 Disabled |
+                                    | Windows 11 22H3  | 🔴 Disabled |
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\InstallService\' -TaskName 'WakeUpAndContinueUpdates'
+                                        taskPathPattern: \Microsoft\Windows\InstallService\
+                                        taskNamePattern: WakeUpAndContinueUpdates
+                                        disableOnRevert: true
+                            -
+                                name: Disable "WakeUpAndScanForUpdates" task
+                                docs: |-
+                                    This script disables the "WakeUpAndScanForUpdates" scheduled task.
+
+                                    This task is responsible for waking up the system at scheduled times to check for Windows updates.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\InstallService\WakeUpAndScanForUpdates`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | ------ |
+                                    | Windows 10 22H2  | 🔴 Disabled |
+                                    | Windows 11 22H2  | 🔴 Disabled |
+                                    | Windows 11 22H3  | 🔴 Disabled |
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\InstallService\' -TaskName 'WakeUpAndScanForUpdates'
+                                        taskPathPattern: \Microsoft\Windows\InstallService\
+                                        taskNamePattern: WakeUpAndScanForUpdates
+                                        disableOnRevert: true
+                            -
+                                name: Disable "Scheduled Start" task
+                                docs: |-
+                                    This script disables the "Scheduled Start" scheduled task.
+                                    
+                                    This task initiates the Windows Update service at predetermined times or under specific conditions to perform tasks like
+                                    checking for and installing updates.
+
+                                    According to the Task Scheduler, this task initiates the Windows Update service for scheduled operations like scans [1].
+                                    It executes `%SYSTEMROOT%\System32\sc.exe start wuauserv` [1].
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\WindowsUpdate\Scheduled Start`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | ------ |
+                                    | Windows 10 22H2  | 🟢 Ready |
+                                    | Windows 11 22H2  | 🟢 Ready |
+                                    | Windows 11 23H2  | 🟢 Ready |
+
+                                    [1]: https://web.archive.org/web/20231111172839/http://windows.fyicenter.com/4451_Scheduled_Start_Scheduled_Task_on_Windows_8.html '"Scheduled Start" Scheduled Task on Windows 8 | windows.fyicenter.com'
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\WindowsUpdate\' -TaskName 'Scheduled Start'
+                                        taskPathPattern: \Microsoft\Windows\WindowsUpdate\
+                                        taskNamePattern: Scheduled Start
+                            -
+                                name: Disable "Report policies" task
+                                docs: |
+                                    This script disables the "Report policies" scheduled task.
+
+                                    This task might be responsible for reporting policy-related information to Windows Update or other system management tools.
+
+                                    According to the Task Scheduler, this task executes `%SYSTEMROOT%\System32\UsoClient.exe ReportPolicies`.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\UpdateOrchestrator\Report policies`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | ------ |
+                                    | Windows 10 22H2  | 🟢 Ready |
+                                    | Windows 11 22H2  | 🟢 Ready |
+                                    | Windows 11 23H2  | 🟢 Ready |
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'Report policies'
+                                        taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                        taskNamePattern: Report policies
+                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 10 22H2] [≥ Windows 11 22H2]
+                            -
+                                name: Disable "Schedule Maintenance Work" task
+                                docs: |-
+                                    This script disables the "Schedule Maintenance Work" scheduled task.
+
+                                    This task is responsible for performing maintenance activities related to Windows Update, such as cleanup operations or
+                                    preparation steps for update installations.
+
+                                    According to the Task Scheduler, this task executes `%SYSTEMROOT%\System32\UsoClient.exe StartMaintenanceWork`.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\UpdateOrchestrator\Schedule Maintenance Work`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | ------ |
+                                    | Windows 10 22H2  | 🔴 Disabled |
+                                    | Windows 11 22H2  | 🔴 Disabled |
+                                    | Windows 11 23H2  | 🔴 Disabled |
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'Schedule Maintenance Work'
+                                        taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                        taskNamePattern: Schedule Maintenance Work
+                                        disableOnRevert: true
+                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 10 22H2] [≥ Windows 11 22H2]
+                            -
+                                name: Disable "Schedule Scan" task
+                                docs: |-
+                                    This script disables the "Schedule Scan" scheduled task.
+                                    
+                                    This task responsible for periodically scanning for Windows updates.
+
+                                    According to the Task Scheduler, this task executes `%SYSTEMROOT%\System32\UsoClient.exe StartScan`.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\UpdateOrchestrator\Schedule Scan`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | ------ |
+                                    | Windows 10 22H2  | 🟢 Ready |
+                                    | Windows 11 22H2  | 🟢 Ready |
+                                    | Windows 11 23H2  | 🟢 Ready |
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'Schedule Scan'
+                                        taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                        taskNamePattern: Schedule Scan
+                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 10 22H2] [≥ Windows 11 22H2]
+                            -
+                                name: Disable "Schedule Scan Static Task" task
+                                docs: |-
+                                    This script disables the "Schedule Scan Static Task" scheduled task.
+
+                                    This task is responsible for running update scans at static, predefined intervals.
+
+                                    According to the Task Scheduler, this task conducts a scheduled Windows Update scan.
+                                    It executes `%SYSTEMROOT%\System32\UsoClient.exe StartScan`.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\UpdateOrchestrator\Schedule Scan Static Task`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | ------ |
+                                    | Windows 10 22H2  | 🟢 Ready |
+                                    | Windows 11 22H2  | 🟢 Ready |
+                                    | Windows 11 23H2  | 🟢 Ready |
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'Schedule Scan Static Task'
+                                        taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                        taskNamePattern: Schedule Scan Static Task
+                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 10 22H2] [≥ Windows 11 22H2]
+                            -
+                                name: Disable "Schedule Wake To Work" task
+                                docs: |-
+                                    This script disables the "Schedule Wake To Work" scheduled task.
+
+                                    This task is responsible for waking the computer from sleep or low-power mode to perform Windows updates.
+
+                                    According to the Task Scheduler, this task executes `%SYSTEMROOT%\System32\UsoClient.exe StartWork`.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\UpdateOrchestrator\Schedule Wake To Work`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | ------ |
+                                    | Windows 10 22H2  | 🔴 Disabled |
+                                    | Windows 11 22H2  | 🔴 Disabled |
+                                    | Windows 11 23H2  | 🔴 Disabled |
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'Schedule Wake To Work'
+                                        taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                        taskNamePattern: Schedule Wake To Work
+                                        disableOnRevert: true
+                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 10 22H2] [≥ Windows 11 22H2]
+                            -
+                                name: Disable "Schedule Work" task
+                                docs: |-
+                                    This script disables the "Schedule Work" scheduled task.
+
+                                    This task is responsible for scheduling and initiating Windows updates processes at predetermined times.
+
+                                    According to the Task Scheduler, this task executes `%SYSTEMROOT%\System32\UsoClient.exe StartWork`.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\UpdateOrchestrator\Schedule Work`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | ------ |
+                                    | Windows 10 22H2  | 🔴 Disabled |
+                                    | Windows 11 22H2  | 🔴 Disabled |
+                                    | Windows 11 23H2  | 🔴 Disabled |
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'Schedule Work'
+                                        taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                        taskNamePattern: Schedule Work
+                                        disableOnRevert: true
+                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 10 22H2] [≥ Windows 11 22H2]
+                            -
+                                name: Disable "UpdateModelTask" task
+                                docs: |-
+                                    This script disables the "UpdateModelTask Work" scheduled task.
+
+                                    This task is responsible for updating Machine Learning (ML) models related to Windows Updates.
+                                    
+                                    According to the Task Scheduler, its purpose is to update ML models and it
+                                    executes `%SYSTEMROOT%\System32\UsoClient.exe StartModelUpdates`.
+                                    
+                                    Microsoft suggests disabling it for performance optimization and reduced data collection [1].
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\UpdateOrchestrator\UpdateModelTask`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | ------ |
+                                    | Windows 10 22H2  | 🟢 Ready |
+                                    | Windows 11 22H2  | 🟡 N/A (missing) |
+                                    | Windows 11 23H2  | 🟡 N/A (missing) |
+
+                                    [1]: https://web.archive.org/web/20231002162808/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#scheduled-tasks "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'UpdateModelTask'
+                                        taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                        taskNamePattern: UpdateModelTask
+                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 10 22H2]
+                            -
+                                name: Disable "Start Oobe Expedite Work" task
+                                docs: |-
+                                    This script disables the "Start Oobe Expedite Work" scheduled task.
+
+                                    This task is responsible for performing tasks related to the "out-of-box experience" (OOBE) in Windows, such as
+                                    updating system settings, applications, or features soon after a system update or initial setup.
+
+                                    According to the Task Scheduler, its purpose is to perform a scheduled Windows Update scan.
+                                    It executes `%SYSTEMROOT%\System32\UsoClient.exe StartWork`.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\UpdateOrchestrator\Start Oobe Expedite Work`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | ------ |
+                                    | Windows 10 22H2  | 🟡 N/A (missing) |
+                                    | Windows 11 22H2  | 🟢 Ready |
+                                    | Windows 11 23H2  | 🟢 Ready |
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'Start Oobe Expedite Work'
+                                        taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                        taskNamePattern: Start Oobe Expedite Work
+                                        grantPermissions: true # 🔒 No permissions, Tested since [≥ Windows 11 22H2]
+                            -
+                                name: Disable "StartOobeAppsScan_LicenseAccepted" task
+                                docs: |-
+                                    This script disables the "StartOobeAppsScan_LicenseAccepted" scheduled task.
+
+                                    This task is responsible for initiating a scan of applications as part of the OOBE process, after a
+                                    license agreement is accepted, verifying that apps are up-to-date.
+
+                                    According to the Task Scheduler, its purpose is to perform a scheduled Windows Update scan.
+                                    It executes `%SYSTEMROOT%\System32\UsoClient.exe StartOobeAppsScan`.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\UpdateOrchestrator\StartOobeAppsScan_LicenseAccepted`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | ------ |
+                                    | Windows 10 22H2  | 🟡 N/A (missing) |
+                                    | Windows 11 22H2  | 🟢 Ready |
+                                    | Windows 11 23H2  | 🟢 Ready |
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'StartOobeAppsScan_LicenseAccepted'
+                                        taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                        taskNamePattern: StartOobeAppsScan_LicenseAccepted
+                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 11 22H2]
+                            -
+                                name: Disable "StartOobeAppsScan_OobeAppReady" task
+                                docs: |-
+                                    This script disables the "StartOobeAppsScan_OobeAppReady" scheduled task.
+
+                                    This task is responsible for scanning applications during the OOBE phase, verifying that
+                                    apps are ready for use after system updates.
+
+                                    According to the Task Scheduler, it performs a scheduled Windows Update scan.
+                                    It executes `%SYSTEMROOT%\System32\UsoClient.exe StartOobeAppsScan`.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\UpdateOrchestrator\StartOobeAppsScan_OobeAppReady`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | ------ |
+                                    | Windows 10 22H2  | 🟡 N/A (missing) |
+                                    | Windows 11 22H2  | 🟢 Ready |
+                                    | Windows 11 23H2  | 🟢 Ready |
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'StartOobeAppsScan_OobeAppReady'
+                                        taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                        taskNamePattern: StartOobeAppsScan_OobeAppReady
+                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 11 22H2]
+                            -
+                                name: Disable "StartOobeAppsScanAfterUpdate" task
+                                docs: |-
+                                    This script disables the "StartOobeAppsScanAfterUpdate" scheduled task.
+
+                                    This task is responsible for scanning applications following a system update, as part of the OOBE process,
+                                    to verify that all applications are compatible with the new update.
+
+                                    According to the Task Scheduler, it performs a scheduled Windows Update scan.
+                                    It executes `%SYSTEMROOT%\System32\UsoClient.exe StartOobeAppsScanAfterUpdate`.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\UpdateOrchestrator\StartOobeAppsScanAfterUpdate`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | ------ |
+                                    | Windows 10 22H2  | 🟡 N/A (missing) |
+                                    | Windows 11 22H2  | 🟢 Ready |
+                                    | Windows 11 23H2  | 🟢 Ready |
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'StartOobeAppsScanAfterUpdate'
+                                        taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                        taskNamePattern: StartOobeAppsScanAfterUpdate
+                                        grantPermissions: true  # 🔒 No permissions, tested since [≥ Windows 11 22H2]
+                            -
+                                name: Disable "USO_UxBroker" task
+                                docs: |-
+                                    This script disables the "USO_UxBroker" scheduled task.
+
+                                    This task is related to the User Experience (UX) Broker process in Windows, managing user notifications or interactions
+                                    required after an update.
+
+                                    According to the Task Scheduler, this task is responsible for triggering a system reboot following update installations.
+                                    It executes `%SYSTEMROOT%\System32\MusNotification.exe`.
+
+                                    Disabling this task is recommended to reduce data collection and enhance system performance [1].
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\UpdateOrchestrator\USO_UxBroker`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | ------ |
+                                    | Windows 10 22H2  | 🟢 Ready |
+                                    | Windows 11 22H2  | 🟢 Ready |
+                                    | Windows 11 23H2  | 🟢 Ready |
+
+                                    [1]: https://web.archive.org/web/20231002162808/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#scheduled-tasks "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'USO_UxBroker'
+                                        taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                        taskNamePattern: USO_UxBroker
+                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 10 22H2] [≥ Windows 11 22H2]
+                            -
+                                name: Disable "UUS Failover Task" task
+                                docs: |-
+                                    This script disables the "UUS Failover Task" scheduled task.
+
+                                    This task is responsible for the failover mechanism for updates, designed to handle scenarios where a primary
+                                    update process fails or encounters issues.
+
+                                    According to the Task Scheduler, this task is responsible for performing a scheduled Windows Update scan.
+                                    It executes `%SYSTEMROOT%\System32\UsoClient.exe HandleUusFailoverSignal`.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\UpdateOrchestrator\UUS Failover Task`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | ------ |
+                                    | Windows 10 22H2  | 🟡 N/A (missing) |
+                                    | Windows 11 22H2  | 🟢 Ready |
+                                    | Windows 11 23H2  | 🟢 Ready |
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\UpdateOrchestrator\' -TaskName 'UUS Failover Task'
+                                        taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                        taskNamePattern: UUS Failover Task
+                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 11 22H2]
+                            -
+                                name: Disable "PerformRemediation" task
+                                docs: |-
+                                    This script disables the "PerformRemediation" scheduled task.
+
+                                    This task is responsible for performing remediation or recovery actions for update-related services, ensuring that these services
+                                    are running in a supported configuration, particularly after updates.
+
+                                    According to the Task Scheduler, this task aids in recovering update-related services to a supported configuration.
+
+                                    This task restarts Windows Update Medic Service (`WaaSMedicSvc`), even if it is disabled manually [1].
+                                    
+                                    Microsoft suggests disabling this task to minimize data collection and optimize performance [2].
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\WaaSMedic\PerformRemediation`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | ------ |
+                                    | Windows 10 22H2  | 🟢 Ready |
+                                    | Windows 11 22H2  | 🟢 Ready |
+                                    | Windows 11 23H2  | 🟢 Ready |
+
+                                    [1]: https://github.com/undergroundwires/privacy.sexy/issues/272#issuecomment-1772602388 "[BUG]: Windows automatically re-enables Update after 4-5 days · Issue #272 · undergroundwires/privacy.sexy | github.com/undergroundwires"
+                                    [2]: https://web.archive.org/web/20231002162808/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#scheduled-tasks "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\WaaSMedic\' -TaskName 'PerformRemediation'
+                                        taskPathPattern: \Microsoft\Windows\WaaSMedic\
+                                        taskNamePattern: PerformRemediation
+                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 10 22H2] [≥ Windows 11 22H2]
+                            -
+                                name: Disable outdated Windows Update tasks
+                                docs: |-
+                                    This script disables older scheduled tasks associated with Windows updates, which are no longer present in
+                                    Windows versions since Windows 10 22H2 and Windows 11 22H2.
+                                    
+                                    The script is compatible with Windows 10 and newer versions, skipping any missing tasks on recent systems.
+
+                                    These tasks are linked to specific system files and are involved in various update processes, such as downloading and installing updates,
+                                    rebooting after updates, and more.
+                                    
+                                    Disabling these tasks can help reduce unnecessary system activity and potentially enhance privacy by limiting background update operations.
+
+                                    ### Overview of older Windows Update tasks
+
+                                    | Task path | Related system file |
+                                    | --------- | ------- |
+                                    | `\Microsoft\Windows\UpdateOrchestrator\AC Power Download`                     | `UsoClient.exe`       |
+                                    | `\Microsoft\Windows\UpdateOrchestrator\AC Power Install`                      | `UsoClient.exe`       |
+                                    | `\Microsoft\Windows\UpdateOrchestrator\Backup Scan`                           | `UsoClient.exe`       |
+                                    | `\Microsoft\Windows\UpdateOrchestrator\Battery Saver Deferred Install`        | `UsoClient.exe`       |
+                                    | `\Microsoft\Windows\UpdateOrchestrator\Driver Install`                        | `UsoClient.exe`       |
+                                    | `\Microsoft\Windows\UpdateOrchestrator\Maintenance Install`                   | `UsoClient.exe`       |
+                                    | `\Microsoft\Windows\UpdateOrchestrator\MusUx_LogonUpdateResults`              | `MusNotification.exe` |
+                                    | `\Microsoft\Windows\UpdateOrchestrator\MusUx_UpdateInterval`                  | `MusNotification.exe` |
+                                    | `\Microsoft\Windows\UpdateOrchestrator\Policy Install`                        | `UsoClient.exe`       |
+                                    | `\Microsoft\Windows\UpdateOrchestrator\Reboot`                                | `MusNotification.exe` |
+                                    | `\Microsoft\Windows\UpdateOrchestrator\Reboot_AC`                             | `MusNotification.exe` |
+                                    | `\Microsoft\Windows\UpdateOrchestrator\Reboot_Battery`                        | `MusNotification.exe` |
+                                    | `\Microsoft\Windows\UpdateOrchestrator\Refresh Settings`                      | `UsoClient.exe`       |
+                                    | `\Microsoft\Windows\UpdateOrchestrator\Resume On Boot`                        | `UsoClient.exe`       |
+                                    | `\Microsoft\Windows\UpdateOrchestrator\Schedule Retry Scan`                   | `UsoClient.exe`       |
+                                    | `\Microsoft\Windows\UpdateOrchestrator\StartOobeAppsScan`                     | `UsoClient.exe`       |
+                                    | `\Microsoft\Windows\UpdateOrchestrator\USO_Broker_Display`                    | `MusNotification.exe` |
+                                    | `\Microsoft\Windows\UpdateOrchestrator\USO_UxBroker_Display`                  | `MusNotification.exe` |
+                                    | `\Microsoft\Windows\UpdateOrchestrator\USO_UxBroker_ReadyToReboot`            | `MusNotification.exe` |
+                                    | `\Microsoft\Windows\UpdateOrchestrator\Universal Orchestrator Idle Start`     | `UsoClient.exe`       |
+                                    | `\Microsoft\Windows\UpdateOrchestrator\Universal Orchestrator Start`          | `UsoClient.exe`       |
+                                    | `\Microsoft\Windows\UpdateOrchestrator\UpdateAssistant`                       | `UpdateAssistant.exe` |
+                                    | `\Microsoft\Windows\UpdateOrchestrator\UpdateAssistantAllUsersRun`            | `UpdateAssistant.exe` |
+                                    | `\Microsoft\Windows\UpdateOrchestrator\UpdateAssistantCalendarRun`            | `UpdateAssistant.exe` |
+                                    | `\Microsoft\Windows\UpdateOrchestrator\UpdateAssistantWakeupRun`              | `UpdateAssistant.exe` |
+                                    | `\Microsoft\Windows\WindowsUpdate\AUScheduledInstall`                         | `wuaueng.dll`         |
+                                    | `\Microsoft\Windows\WindowsUpdate\AUSessionConnect`                           | `wuaueng.dll`         |
+                                    | `\Microsoft\Windows\WindowsUpdate\Automatic App Update`                       | `wuautoappupdate.dll` |
+                                    | `\Microsoft\Windows\WindowsUpdate\RUXIM\PLUGScheduler`                        | `PLUGscheduler.exe`   |
+                                    | `\Microsoft\Windows\WindowsUpdate\Scheduled Start With Network`               | `wuauserv` (via `sc`) |
+                                    | `\Microsoft\Windows\WindowsUpdate\sih`                                        | `SIHClient.exe`       |
+                                    | `\Microsoft\Windows\WindowsUpdate\sihboot`                                    | `SIHClient.exe`       |
+                                    | `\Microsoft\Windows\WindowsUpdate\sihpostreboot`                              | `SIHClient.exe`       |
+                                call:
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                            taskNamePattern: AC Power Download
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                            taskNamePattern: AC Power Install
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                            taskNamePattern: Backup Scan
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                            taskNamePattern: Battery Saver Deferred Install
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                            taskNamePattern: Driver Install
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                            taskNamePattern: Maintenance Install
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                            taskNamePattern: MusUx_LogonUpdateResults
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                            taskNamePattern: MusUx_UpdateInterval
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                            taskNamePattern: Policy Install
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                            taskNamePattern: Reboot
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                            taskNamePattern: Reboot_AC
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                            taskNamePattern: Reboot_Battery
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                            taskNamePattern: Refresh Settings
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                            taskNamePattern: Resume On Boot
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                            taskNamePattern: Schedule Retry Scan
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                            taskNamePattern: StartOobeAppsScan
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                            taskNamePattern: USO_Broker_Display
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                            taskNamePattern: USO_UxBroker_Display
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                            taskNamePattern: USO_UxBroker_ReadyToReboot
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                            taskNamePattern: Universal Orchestrator Start
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                            taskNamePattern: Universal Orchestrator Idle Start
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                            taskNamePattern: UpdateAssistant
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                            taskNamePattern: UpdateAssistantAllUsersRun
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                            taskNamePattern: UpdateAssistantCalendarRun
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\UpdateOrchestrator\
+                                            taskNamePattern: UpdateAssistantWakeupRun
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\WindowsUpdate\
+                                            taskNamePattern: AUScheduledInstall
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\WindowsUpdate\
+                                            taskNamePattern: AUSessionConnect
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\WindowsUpdate\
+                                            taskNamePattern: Automatic App Update
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\WindowsUpdate\RUXIM\
+                                            taskNamePattern: PLUGScheduler
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\WindowsUpdate\
+                                            taskNamePattern: Scheduled Start With Network
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\WindowsUpdate\
+                                            taskNamePattern: sih
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\WindowsUpdate\
+                                            taskNamePattern: sihboot
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            taskPathPattern: \Microsoft\Windows\WindowsUpdate\
+                                            taskNamePattern: sihpostreboot
             -
                 category: Configure how downloaded files are handled
                 docs: |-
@@ -9905,21 +10714,21 @@ actions:
                         [5]: https://web.archive.org/web/20231002162808/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#remove-onedrive-components "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn"
                     recommend: strict
                     code: |-
-                        if exist "%SystemRoot%\System32\OneDriveSetup.exe" (
-                            "%SystemRoot%\System32\OneDriveSetup.exe" /uninstall
+                        if exist "%SYSTEMROOT%\System32\OneDriveSetup.exe" (
+                            "%SYSTEMROOT%\System32\OneDriveSetup.exe" /uninstall
                         ) else (
-                            if exist "%SystemRoot%\SysWOW64\OneDriveSetup.exe" (
-                                "%SystemRoot%\SysWOW64\OneDriveSetup.exe" /uninstall
+                            if exist "%SYSTEMROOT%\SysWOW64\OneDriveSetup.exe" (
+                                "%SYSTEMROOT%\SysWOW64\OneDriveSetup.exe" /uninstall
                             ) else (
                                 echo Failed to uninstall, uninstaller could not be found. 1>&2
                             )
                         )
                     revertCode: |-
-                        if exist "%SystemRoot%\System32\OneDriveSetup.exe" (
-                            "%SystemRoot%\System32\OneDriveSetup.exe" /silent
+                        if exist "%SYSTEMROOT%\System32\OneDriveSetup.exe" (
+                            "%SYSTEMROOT%\System32\OneDriveSetup.exe" /silent
                         ) else (
-                            if exist "%SystemRoot%\SysWOW64\OneDriveSetup.exe" (
-                                "%SystemRoot%\SysWOW64\OneDriveSetup.exe" /silent
+                            if exist "%SYSTEMROOT%\SysWOW64\OneDriveSetup.exe" (
+                                "%SYSTEMROOT%\SysWOW64\OneDriveSetup.exe" /silent
                             ) else (
                                 echo Failed to install, installer could not be found. 1>&2
                             )
@@ -10070,9 +10879,9 @@ actions:
                                     Write-Host 'Skipping, no action needed on Windows 11.'
                                 } else {
                                     if([Environment]::Is64BitOperatingSystem) {
-                                        reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /V "OneDriveSetup" /t REG_SZ /d "%SystemRoot%\SysWOW64\OneDriveSetup.exe /silent" /f
+                                        reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /V "OneDriveSetup" /t REG_SZ /d "%SYSTEMROOT%\SysWOW64\OneDriveSetup.exe /silent" /f
                                     } else {
-                                        reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /V "OneDriveSetup" /t REG_SZ /d "%SystemRoot%\System32\OneDriveSetup.exe /silent" /f
+                                        reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /V "OneDriveSetup" /t REG_SZ /d "%SYSTEMROOT%\System32\OneDriveSetup.exe /silent" /f
                                     }
                                 }
                 -
@@ -10357,12 +11166,12 @@ actions:
 
                             | Path | Windows 11 | Windows 10 |
                             | ---- |:----------:|:----------:|
-                            | `%ProgramData%\Microsoft\Windows\Start Menu\Programs\Microsoft Edge.lnk` | ✅ Exists | ✅ Exists |
-                            | `%AppData%\Microsoft\Internet Explorer\Quick Launch\Microsoft Edge.lnk` | ✅ Exists | ✅ Exists |
-                            | `%AppData%\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\Microsoft Edge.lnk` | ✅ Exists | ✅ Exists |
-                            | `%Public%\Desktop\Microsoft Edge.lnk` | ✅ Exists | ✅ Exists |
-                            | `%SystemRoot%\System32\config\systemprofile\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\Microsoft Edge.lnk` | ✅ Exists | ✅ Exists |
-                            | `%UserProfile%\Desktop\Microsoft Edge.lnk` | ❌ Missing | ❌ Missing |
+                            | `%PROGRAMDATA%\Microsoft\Windows\Start Menu\Programs\Microsoft Edge.lnk` | ✅ Exists | ✅ Exists |
+                            | `%APPDATA%\Microsoft\Internet Explorer\Quick Launch\Microsoft Edge.lnk` | ✅ Exists | ✅ Exists |
+                            | `%APPDATA%\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\Microsoft Edge.lnk` | ✅ Exists | ✅ Exists |
+                            | `%PUBLIC%\Desktop\Microsoft Edge.lnk` | ✅ Exists | ✅ Exists |
+                            | `%SYSTEMROOT%\System32\config\systemprofile\AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\Microsoft Edge.lnk` | ✅ Exists | ✅ Exists |
+                            | `%USERPROFILE%\Desktop\Microsoft Edge.lnk` | ❌ Missing | ❌ Missing |
                         call:
                             # Exclude:
                             #   - `DisableEdgeDesktopShortcutCreation` because it's highly documented and it does not really bring value since this script already deletes `Microsoft Edge.lnk` from public folder.
@@ -11379,6 +12188,8 @@ functions:
                             [System.Security.AccessControl.AccessControlType]::Allow `
                         )
                         {{ end }}
+                    # Marked: refactor-with-variables
+                    #   Granting permission is identical to `DisableScheduledTask`.
                     duringIteration: |-
                         if (Test-Path -Path $path -PathType Container) {
                             Write-Host "Skipping folder (not its contents): `"$path`"."
@@ -12673,6 +13484,10 @@ functions:
         parameters:
             - name: taskPathPattern
             - name: taskNamePattern
+            - name: disableOnRevert
+              optional: true
+            - name: grantPermissions
+              optional: true
         call:
             -
                 function: Comment
@@ -12682,6 +13497,9 @@ functions:
             -
                 function: RunPowerShell
                 parameters:
+                    # Marked: refactor-with-variables
+                    #   Granting permission is identical to `SoftDeleteFiles`.
+                    #   It's also duplicated in `code` and `revertCode`
                     code: |-
                         $taskPathPattern='{{ $taskPathPattern }}'
                         $taskNamePattern='{{ $taskNamePattern }}'
@@ -12698,6 +13516,29 @@ functions:
                                 Write-Output "Skipping, task `"$taskName`" is already disabled, no action needed."
                                 continue
                             }
+                            {{ with $grantPermissions }}
+                                $taskFullPath = "$($task.TaskPath)$($task.TaskName)"
+                                $adminSid = New-Object System.Security.Principal.SecurityIdentifier 'S-1-5-32-544' 
+                                $adminAccount = $adminSid.Translate([System.Security.Principal.NTAccount])
+                                $taskFilePath="$($env:WINDIR)\System32\Tasks$($task.TaskPath)$($task.TaskName)"
+                                $accessGranted = $false
+                                try {
+                                    $originalAcl= Get-Acl -Path $taskFilePath -ErrorAction Stop
+                                    $modifiedAcl= Get-Acl -Path $taskFilePath -ErrorAction Stop
+                                    $modifiedAcl.SetOwner($adminAccount)
+                                    $taskFileAccessRule = New-Object System.Security.AccessControl.FileSystemAccessRule(    `
+                                    $adminAccount,                                                  `
+                                        [System.Security.AccessControl.FileSystemRights]::FullControl,  `
+                                        [System.Security.AccessControl.AccessControlType]::Allow        `
+                                    )
+                                    $modifiedAcl.SetAccessRule($taskFileAccessRule)
+                                    Set-Acl -Path $taskFilePath -AclObject $modifiedAcl -ErrorAction Stop
+                                    Write-Host "Successfully granted permissions for `"$taskFullPath`" ."
+                                    $accessGranted = $true
+                                } catch {
+                                    Write-Warning "Failed to grant access to `"$taskFullPath`": $($_.Exception.Message)"
+                                }
+                            {{ end }}
                             try {
                                 $task | Disable-ScheduledTask -ErrorAction Stop | Out-Null
                                 Write-Output "Successfully disabled task `"$taskName`"."
@@ -12705,6 +13546,16 @@ functions:
                                 Write-Error "Failed to disable task `"$taskName`": $($_.Exception.Message)"
                                 $operationFailed = $true
                             }
+                            {{ with $grantPermissions }}
+                                if ($accessGranted) {
+                                    try {
+                                        Set-Acl -Path $taskFilePath -AclObject $originalAcl -ErrorAction Stop
+                                        Write-Host "Successfully restored permissions for `"$taskFullPath`" ."
+                                    } catch {
+                                        Write-Warning "Failed to restore access on `"$taskFilePath`": $($_.Exception.Message)"
+                                    }
+                                }
+                            {{ end }}
                         }
                         if ($operationFailed) {
                             Write-Output 'Failed to disable some tasks. Check error messages above.'
@@ -12714,28 +13565,76 @@ functions:
                     revertCode: |-
                         $taskPathPattern='{{ $taskPathPattern }}'
                         $taskNamePattern='{{ $taskNamePattern }}'
+                        $shouldDisable = {{ with $disableOnRevert }} $true # {{ end }} $false
                         Write-Output "Enabling tasks matching pattern `"$taskNamePattern`"." 
                         $tasks = @(Get-ScheduledTask -TaskPath $taskPathPattern -TaskName $taskNamePattern -ErrorAction Ignore)
                         if (-Not $tasks) {
-                            Write-Warning "Cannot enable, no tasks matching pattern `"$taskNamePattern`" found." + `
-                                "This task appears to be not included in this version of Windows."
+                            Write-Warning (                                                             `
+                                "Missing task: Cannot enable, no tasks matching pattern `"$taskNamePattern`" found."  `
+                                + " This task appears to be not included in this version of Windows."   `
+                            )
                             exit 0
                         }
                         $operationFailed = $false
                         foreach ($task in $tasks) {
                             $taskName = $task.TaskName
-                            if (($task.State -ne [Microsoft.PowerShell.Cmdletization.GeneratedTypes.ScheduledTask.StateEnum]::Disabled) `
-                                -and ($task.State -ne [Microsoft.PowerShell.Cmdletization.GeneratedTypes.ScheduledTask.StateEnum]::Unknown)) {
-                                Write-Output "Skipping, task `"$taskName`" is already enabled, no action needed."
-                                continue
+                            if ($shouldDisable) {
+                                if ($task.State -eq [Microsoft.PowerShell.Cmdletization.GeneratedTypes.ScheduledTask.StateEnum]::Disabled) {
+                                    Write-Output "Skipping, task `"$taskName`" is already disabled, no action needed."
+                                    continue
+                                }
+                            } else {
+                                if (($task.State -ne [Microsoft.PowerShell.Cmdletization.GeneratedTypes.ScheduledTask.StateEnum]::Disabled) `
+                                    -and ($task.State -ne [Microsoft.PowerShell.Cmdletization.GeneratedTypes.ScheduledTask.StateEnum]::Unknown)) {
+                                    Write-Output "Skipping, task `"$taskName`" is already enabled, no action needed."
+                                    continue
+                                }
                             }
+                            {{ with $grantPermissions }}
+                                $taskFullPath = "$($task.TaskPath)$($task.TaskName)"
+                                $adminSid = New-Object System.Security.Principal.SecurityIdentifier 'S-1-5-32-544' 
+                                $adminAccount = $adminSid.Translate([System.Security.Principal.NTAccount])
+                                $taskFilePath="$($env:WINDIR)\System32\Tasks$($task.TaskPath)$($task.TaskName)"
+                                $accessGranted = $false
+                                try {
+                                    $originalAcl= Get-Acl -Path $taskFilePath -ErrorAction Stop
+                                    $modifiedAcl= Get-Acl -Path $taskFilePath -ErrorAction Stop
+                                    $modifiedAcl.SetOwner($adminAccount)
+                                    $taskFileAccessRule = New-Object System.Security.AccessControl.FileSystemAccessRule(    `
+                                    $adminAccount,                                                  `
+                                        [System.Security.AccessControl.FileSystemRights]::FullControl,  `
+                                        [System.Security.AccessControl.AccessControlType]::Allow        `
+                                    )
+                                    $modifiedAcl.SetAccessRule($taskFileAccessRule)
+                                    Set-Acl -Path $taskFilePath -AclObject $modifiedAcl -ErrorAction Stop
+                                    Write-Host "Successfully granted permissions for `"$taskFullPath`" ."
+                                    $accessGranted = $true
+                                } catch {
+                                    Write-Warning "Failed to grant access to `"$taskFullPath`": $($_.Exception.Message)"
+                                }
+                            {{ end }}
                             try {
-                                $task | Enable-ScheduledTask -ErrorAction Stop | Out-Null
-                                Write-Output "Successfully enabled task `"$taskName`"."
+                                if ($shouldDisable) {
+                                    $task | Disable-ScheduledTask -ErrorAction Stop | Out-Null
+                                    Write-Output "Successfully disabled task `"$taskName`"."
+                                } else {
+                                    $task | Enable-ScheduledTask -ErrorAction Stop | Out-Null
+                                    Write-Output "Successfully enabled task `"$taskName`"."
+                                }
                             } catch {
-                                Write-Error "Failed to enable task `"$taskName`": $($_.Exception.Message)"
+                                Write-Error "Failed to restore task `"$taskName`": $($_.Exception.Message)"
                                 $operationFailed = $true
                             }
+                            {{ with $grantPermissions }}
+                                if ($accessGranted) {
+                                    try {
+                                        Set-Acl -Path $taskFilePath -AclObject $originalAcl -ErrorAction Stop
+                                        Write-Host "Successfully restored permissions for `"$taskFullPath`" ."
+                                    } catch {
+                                        Write-Warning "Failed to restore access on `"$taskFilePath`": $($_.Exception.Message)"
+                                    }
+                                }
+                            {{ end }}
                         }
                         if ($operationFailed) {
                             Write-Output 'Failed to restore some tasks. Check error messages above.'
