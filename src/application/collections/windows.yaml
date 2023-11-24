@@ -12003,50 +12003,29 @@ functions:
                     recurse: 'true'
             -
                 # -- ❗️ This script must be executed before `UninstallStoreApp` as it enables it for system app removal ---
-                function: RunPowerShell
+                function: CreateRegistryKey
                 parameters:
+                    codeComment: Enable removal of system app '{{ $packageName }}' by marking it as "EndOfLife"
                     # This script modifies the system registry to enable the uninstallation of a specified app.
                     # Some apps (including system apps) are marked as non-removable, which prevents uninstallation and results in error 0x80070032 if an uninstall is attempted.
-                    # To bypass this, the script marks the app as 'EndOfLife' in the registry, tricking the system into allowing the uninstallation.
-                    codeComment: Enable removal of system app '{{ $packageName }}' by marking it as "EndOfLife" in the system registry
-                    code: |-
-                        $packageName='{{ $packageName }}'
-                        $publisherId='{{ $publisherId }}'
-                        $packageFamilyName = "$($packageName)_$($publisherId)"
-                        $sid = (New-Object System.Security.Principal.NTAccount($env:USERNAME)).Translate([Security.Principal.SecurityIdentifier]).Value
-                        $path = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\EndOfLife\$($sid)\$($packageFamilyName)"
-                        if (Test-Path $path) {
-                            Write-Host "Skipping, no action needed, path `"$path`" already exists."
-                            exit 0
-                        }
-                        try {
-                            New-Item -Path $path -Force -ErrorAction Stop | Out-Null
-                            Write-Host "Successfully created the registry key at path `"$path`"."
-                        } catch {
-                            Write-Error "Failed to create the registry key at path `"$path`": $($_.Exception.Message)"
-                        }
-                    revertCodeComment: Disable removal of system app '{{ $packageName }}' by removing the "EndOfLife" mark from the registry.
-                    revertCode: |-
-                        $packageName='{{ $packageName }}'
-                        $publisherId='{{ $publisherId }}'
-                        $packageFamilyName = "$($packageName)_$($publisherId)"
-                        $sid = (New-Object System.Security.Principal.NTAccount($env:USERNAME)).Translate([Security.Principal.SecurityIdentifier]).Value
-                        $path = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\EndOfLife\$($sid)\$($packageFamilyName)"
-                        if (-not (Test-Path $path)) {
-                            Write-Host "Skipping, no action needed, path `"$path`" does not exist."
-                            exit 0
-                        }
-                        try {
-                            Remove-Item -Path $path -Force -ErrorAction Stop | Out-Null
-                            Write-Host "Successfully removed the registry key at path `"$path`"."
-                        } catch {
-                            Write-Error "Failed to remove the registry key at path `"$path`": $($_.Exception.Message)"
-                        }
+                    # To bypass this, the script marks the app as 'EndOfLife' in the registry, tricking the system into allowing the uninstallation
+                    keyName: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\EndOfLife\$CURRENT_USER_SID\{{ $packageName }}_{{ $publisherId }}
+                    replaceSid: 'true'
             -
                 function: UninstallStoreApp
                 parameters:
                     packageName: '{{ $packageName }}'
                     publisherId: '{{ $publisherId }}'
+            -
+                # -- ❗️ This script must be executed after `UninstallStoreApp` as it disables it for system app removal ---
+                function: DeleteRegistryKey
+                parameters:
+                    codeComment: Revert '{{ $packageName }}' to its default, non-removable state.
+                    # This script reverses the previous modification made to the Windows registry to enable its uninstallation.
+                    # By removing the 'EndOfLife' status from the registry entry, the app is restored to its default, non-removable state.
+                    # Restoring (removing) this key is important for maintaining the stability of Windows Updates (for details: https://github.com/undergroundwires/privacy.sexy/issues/287).
+                    keyName: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\EndOfLife\$CURRENT_USER_SID\{{ $packageName }}_{{ $publisherId }}
+                    replaceSid: 'true'
             -
                 # Clear: User-specific data
                 #   - Folder    : %LOCALAPPDATA%\Packages\{PackageFamilyName}
@@ -12404,11 +12383,15 @@ functions:
         name: RunPowerShellWithSameCodeAndRevertCode
         parameters:
             - name: code
+            - name: codeComment
+              optional: true
         call:
             function: RunPowerShell
             parameters:
                 code: '{{ $code }}'
                 revertCode: '{{ $code }}'
+                codeComment: '{{ with $codeComment }}{{ . }}{{ end }}'
+                revertCodeComment: '{{ with $codeComment }}{{ . }}{{ end }}'
     -
         name: RunInlineCodeAsTrustedInstaller
         parameters:
@@ -13648,3 +13631,75 @@ functions:
                             Write-Output 'Failed to restore some tasks. Check error messages above.'
                             exit 1
                         }
+    -
+        name: CreateRegistryKey
+        parameters:
+            - name: keyName     # Full path of the subkey or entry to be added.
+            - name: replaceSid  # Replaces "$CURRENT_USER_SID" string in registry key with user SID.
+              optional: true
+            - name: codeComment
+              optional: true
+            - name: revertCodeComment
+              optional: true
+        call:
+            # Marked: refactor-with-variables
+            #   Replacing SID is same as `DeleteRegistryKey`
+            function: RunPowerShell
+            parameters:
+                code: |-
+                    $keyName='{{ $keyName }}'
+                    $replaceSid={{ with $replaceSid }} $true # {{ end }} $false
+                    $registryHive = $keyName.Split('\')[0]
+                    $registryPath = "$($registryHive):$($keyName.Substring($registryHive.Length))"
+                    {{ with $replaceSid }}
+                        $userSid = (New-Object System.Security.Principal.NTAccount($env:USERNAME)).Translate([Security.Principal.SecurityIdentifier]).Value
+                        $registryPath = $registryPath.Replace('$CURRENT_USER_SID', $userSid)
+                    {{ end }}
+                    if (Test-Path $registryPath) {
+                        Write-Host "Skipping, no action needed, registry path `"$registryPath`" already exists."
+                        exit 0
+                    }
+                    try {
+                        New-Item -Path $registryPath -Force -ErrorAction Stop | Out-Null
+                        Write-Host "Successfully created the registry key at path `"$registryPath`"."
+                    } catch {
+                        Write-Error "Failed to create the registry key at path `"$registryPath`": $($_.Exception.Message)"
+                    }
+                codeComment: '{{ with $codeComment }}{{ . }}{{ end }}'
+                revertCodeComment: '{{ with $revertCodeComment }}{{ . }}{{ end }}'
+    -    
+        name: DeleteRegistryKey
+        parameters:
+            - name: keyName     # Full path of the subkey or entry to be added.
+            - name: replaceSid  # Replaces "$CURRENT_USER_SID" string in registry key with user SID.
+              optional: true
+            - name: codeComment
+              optional: true
+            - name: revertCodeComment
+              optional: true
+        call:
+            # Marked: refactor-with-variables
+            #   Replacing SID is same as `CreateRegistryKey`
+            function: RunPowerShell
+            parameters:
+                code: |-
+                    $keyName='{{ $keyName }}'
+                    $replaceSid={{ with $replaceSid }} $true # {{ end }} $false
+                    $registryHive = $keyName.Split('\')[0]
+                    $registryPath = "$($registryHive):$($keyName.Substring($registryHive.Length))"
+                    {{ with $replaceSid }}
+                        $userSid = (New-Object System.Security.Principal.NTAccount($env:USERNAME)).Translate([Security.Principal.SecurityIdentifier]).Value
+                        $registryPath = $registryPath.Replace('$CURRENT_USER_SID', $userSid)
+                    {{ end }}
+                    if (-not (Test-Path $registryPath)) {
+                        Write-Host "Skipping, no action needed, registry path `"$registryPath`" does not exist."
+                        exit 0
+                    }
+                    try {
+                        Remove-Item -Path $registryPath -Force -ErrorAction Stop | Out-Null
+                        Write-Host "Successfully removed the registry key at path `"$registryPath`"."
+                    } catch {
+                        Write-Error "Failed to remove the registry key at path `"$registryPath`": $($_.Exception.Message)"
+                    }
+                codeComment: '{{ with $codeComment }}{{ . }}{{ end }}'
+                revertCodeComment: '{{ with $revertCodeComment }}{{ . }}{{ end }}'
