@@ -30,14 +30,14 @@
       />
     </div>
     <div class="card__expander" @click.stop>
-      <div class="card__expander__content">
-        <ScriptsTree :category-id="categoryId" />
-      </div>
       <div class="card__expander__close-button">
         <AppIcon
           icon="xmark"
           @click="collapse()"
         />
+      </div>
+      <div class="card__expander__content">
+        <ScriptsTree :category-id="categoryId" />
       </div>
     </div>
   </div>
@@ -184,20 +184,24 @@ $card-horizontal-gap    : $card-gap;
     position: relative;
     background-color: $color-primary-darker;
     color: $color-on-primary;
+
     display: flex;
     align-items: center;
+    flex-direction: column;
 
     &__content {
-      flex: 1;
       display: flex;
       justify-content: center;
       word-break: break-word;
+      margin-bottom: 1em;
+      margin-left: 0.5em;
+      margin-right: 0.5em;
+      max-width: 100%; // Prevents horizontal expansion of inner content (e.g., when a code block is shown)
     }
 
     &__close-button {
-      width: auto;
       font-size: 1.5em;
-      align-self: flex-start;
+      align-self: flex-end;
       margin-right: 0.25em;
       @include clickable;
       color: $color-primary-light;
@@ -242,8 +246,6 @@ $card-horizontal-gap    : $card-gap;
 
     .card__expander {
       min-height: 200px;
-      // max-height: 1000px;
-      // overflow-y: auto;
       margin-top: $expanded-margin-top;
       opacity: 1;
     }

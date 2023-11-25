@@ -59,19 +59,49 @@ function renderAsMarkdownListItem(content: string): string {
 
 $text-color: $color-on-primary;
 $text-size: 0.75em; // Lower looks bad on Firefox
+$base-spacing: $text-size;
+
+@mixin code-block() {
+  pre {
+    @content; // :has(> code) { @content; } would be better, but Firefox doesn't support it https://caniuse.com/css-has
+  }
+}
+
+@mixin inline-code() {
+  :not(pre) > code {
+    @content;
+  }
+}
+
+@mixin code() {
+  code {
+    @content;
+  }
+}
 
 .documentation-text {
   color: $text-color;
   font-size: $text-size;
   font-family: $font-main;
-  code {
-    word-break: break-all; // Inline code should wrap with the line, or whole text overflows
+
+  @include code {
     font-family: $font-normal;
     font-weight: 600;
   }
+
+  @include inline-code {
+    word-break: break-all; // Enables inline code to wrap with the text, even for long single words (like registry paths), thus preventing overflow.
+  }
+
+  @include code-block {
+    padding: $base-spacing;
+    background: $color-primary-darker;
+    overflow: auto; // Prevents horizontal expansion of inner content (e.g., when a code block is shown)
+  }
+
   a {
     &[href] {
-      word-break: break-word; // So URLs don't overflow
+      word-break: break-word; // Enables long URLs to wrap within the container, preventing horizontal overflow.
     }
     &[href^="http"]{
       &:after {
@@ -116,47 +146,49 @@ $text-size: 0.75em; // Lower looks bad on Firefox
     }
   }
 
-  @mixin left-padding($selectors, $horizontal-gap) {
+  @mixin left-padding($selectors, $horizontal-spacing) {
     #{$selectors} {
-      padding-inline-start: $horizontal-gap;
+      padding-inline-start: $horizontal-spacing;
     }
   }
 
-  @mixin bottom-margin($selectors, $vertical-gap) {
+  @mixin bottom-margin($selectors, $vertical-spacing) {
     #{$selectors} {
       &:not(:last-child) {
-        margin-bottom: $vertical-gap;
+        margin-bottom: $vertical-spacing;
       }
     }
   }
 
-  @mixin apply-uniform-vertical-spacing($vertical-gap) {
+  @mixin apply-uniform-vertical-spacing($base-vertical-spacing) {
     /* Reset default top/bottom margins added by browser. */
     @include no-margin('p');
     @include no-margin('h1, h2, h3, h4, h5, h6');
     @include no-margin('blockquote');
+    @include no-margin('pre');
 
     /* Add spacing between elements using `margin-bottom` only (bottom-out instead of top-down strategy). */
-    $small-gap: math.div($vertical-gap, 2);
-    @include bottom-margin('p', $vertical-gap);
-    @include bottom-margin('h1, h2, h3, h4, h5, h6', $vertical-gap);
-    @include bottom-margin('ul, ol', $vertical-gap);
-    @include bottom-margin('li', $small-gap);
-    @include bottom-margin('table', $vertical-gap);
-    @include bottom-margin('blockquote', $vertical-gap);
+    $small-vertical-spacing: math.div($base-vertical-spacing, 2);
+    @include bottom-margin('p', $base-vertical-spacing);
+    @include bottom-margin('h1, h2, h3, h4, h5, h6', $base-vertical-spacing);
+    @include bottom-margin('ul, ol', $base-vertical-spacing);
+    @include bottom-margin('li', $small-vertical-spacing);
+    @include bottom-margin('table', $base-vertical-spacing);
+    @include bottom-margin('blockquote', $base-vertical-spacing);
+    @include bottom-margin('pre', $base-vertical-spacing);
   }
 
-  @mixin apply-uniform-horizontal-spacing($horizontal-gap) {
+  @mixin apply-uniform-horizontal-spacing($base-horizontal-spacing) {
     /* Reset default left/right paddings added by browser. */
     @include no-padding('ul, ol');
 
     /* Add spacing for list items. */
-    $list-spacing: $horizontal-gap * 2;
-    @include left-padding('ul, ol', $list-spacing);
+    $large-horizontal-spacing: $base-horizontal-spacing * 2;
+    @include left-padding('ul, ol', $large-horizontal-spacing);
   }
 
-  @include apply-uniform-vertical-spacing($text-size);
-  @include apply-uniform-horizontal-spacing($text-size);
+  @include apply-uniform-vertical-spacing($base-spacing);
+  @include apply-uniform-horizontal-spacing($base-spacing);
 
   ul {
     /*
@@ -167,7 +199,7 @@ $text-size: 0.75em; // Lower looks bad on Firefox
   }
 
   blockquote {
-    padding: 0 1em;
+    padding: 0 $base-spacing;
     border-left: .25em solid $color-primary;
   }
 }

@@ -63,8 +63,5 @@ export default defineComponent({
 
 .tree-root {
   @include reset-ul;
-  margin-block-start: 1em;
-  margin-block-end: 1em;
-  padding-inline-start: 3px;
 }
 </style>

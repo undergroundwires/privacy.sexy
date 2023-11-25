@@ -1,25 +1,21 @@
 <template>
   <li
-    class="wrapper"
+    class="node focusable"
+    tabindex="-1"
+    :class="{
+      'keyboard-focus': hasKeyboardFocus,
+    }"
     @click.stop="toggleCheckState"
+    @focus="onNodeFocus"
   >
-    <div
-      class="node focusable"
-      :class="{
-        'keyboard-focus': hasKeyboardFocus,
-      }"
-      tabindex="-1"
-      @focus="onNodeFocus"
-    >
-      <div
-        class="checkbox"
-        :class="{
-          checked: checked,
-          indeterminate: indeterminate,
-        }"
-      />
-
-      <div class="content">
+    <div class="node__layout">
+      <div class="node__checkbox">
+        <NodeCheckbox
+          :node-id="nodeId"
+          :tree-root="treeRoot"
+        />
+      </div>
+      <div class="node__content content">
         <slot
           name="node-content"
           :node-metadata="currentNode.metadata"
@@ -36,10 +32,13 @@ import { useCurrentTreeNodes } from '../UseCurrentTreeNodes';
 import { useNodeState } from './UseNodeState';
 import { useKeyboardInteractionState } from './UseKeyboardInteractionState';
 import { TreeNode } from './TreeNode';
-import { TreeNodeCheckState } from './State/CheckState';
+import NodeCheckbox from './NodeCheckbox.vue';
 import type { PropType } from 'vue';
 
 export default defineComponent({
+  components: {
+    NodeCheckbox,
+  },
   props: {
     nodeId: {
       type: String,
@@ -53,22 +52,14 @@ export default defineComponent({
   setup(props) {
     const { isKeyboardBeingUsed } = useKeyboardInteractionState();
     const { nodes } = useCurrentTreeNodes(toRef(props, 'treeRoot'));
-    const currentNode = computed<TreeNode>(
-      () => nodes.value.getNodeById(props.nodeId),
-    );
+    const currentNode = computed<TreeNode>(() => nodes.value.getNodeById(props.nodeId));
     const { state } = useNodeState(currentNode);
-
-    const hasFocus = computed<boolean>(() => state.value.isFocused);
-    const checked = computed<boolean>(() => state.value.checkState === TreeNodeCheckState.Checked);
-    const indeterminate = computed<boolean>(
-      () => state.value.checkState === TreeNodeCheckState.Indeterminate,
-    );
 
     const hasKeyboardFocus = computed<boolean>(() => {
       if (!isKeyboardBeingUsed.value) {
         return false;
       }
-      return hasFocus.value;
+      return state.value.isFocused;
     });
 
     const onNodeFocus = () => {
@@ -82,8 +73,6 @@ export default defineComponent({
     return {
       onNodeFocus,
       toggleCheckState,
-      indeterminate,
-      checked,
       currentNode,
       hasKeyboardFocus,
     };
@@ -95,91 +84,59 @@ export default defineComponent({
 @use "@/presentation/assets/styles/main" as *;
 @use "./../tree-colors" as *;
 
-.wrapper {
+.node__layout {
+  display: flex;
+  align-items: center;
   flex: 1;
+
+  .node__checkbox {
+    flex-shrink: 0; // Always render the checkbox properly on small screens
+  }
+  .node__content {
+    flex: 1; // Expands the node horizontally, allowing its content to utilize full width for child item alignment, such as icons and text.
+    overflow: auto; // Prevents horizontal expansion of inner content (e.g., when a code block is shown)
+  }
+}
+
+.focusable {
+  outline: none; // We handle keyboard focus through own styling
+}
+.node {
+  margin-bottom: 3px;
+  margin-top: 3px;
   padding-bottom: 3px;
   padding-top: 3px;
-  .focusable {
-    outline: none; // We handle keyboard focus through own styling
+  padding-right: 6px;
+  cursor: pointer;
+  box-sizing: border-box;
+
+  &.keyboard-focus {
+    background: $color-node-highlight-bg;
   }
-  .node {
-    display: flex;
-    align-items: center;
-    padding-bottom: 3px;
-    padding-top: 3px;
+
+  @include hover-or-touch {
+    background: $color-node-highlight-bg;
+  }
+
+  .content {
+    display: flex; // We could provide `block`, but `flex` is more versatile.
+    color: $color-node-fg;
+    padding-left: 9px;
     padding-right: 6px;
-    cursor: pointer;
-    width: 100%;
-    box-sizing: border-box;
+    text-decoration: none;
+    user-select: none;
 
-    &.keyboard-focus {
-      background: $color-node-highlight-bg;
-    }
-
-    @include hover-or-touch {
-      background: $color-node-highlight-bg;
-    }
-
-    .checkbox {
-      flex-shrink: 0;
-      position: relative;
-      width: 30px;
-      height: 30px;
-      box-sizing: border-box;
-      border: 1px solid $color-node-checkbox-border-unchecked;
-      border-radius: 2px;
-      transition: border-color .25s, background-color .25s;
-      background: $color-node-checkbox-bg-unchecked;
-
-      &:after {
-        position: absolute;
-        display: block;
-        content: "";
-      }
-
-      &.indeterminate {
-        border-color: $color-node-checkbox-border-unchecked;
-
-        &:after {
-          background-color: $color-node-checkbox-border-indeterminate;
-          top: 50%;
-          left: 20%;
-          right: 20%;
-          height: 2px;
-        }
-      }
-
-      &.checked {
-        background: $color-node-checkbox-bg-checked;
-        border-color: $color-node-checkbox-border-checked;
-
-        &:after {
-          box-sizing: content-box;
-          border: 1.5px solid $color-node-checkbox-tick-checked;
-          /* probably width would be rounded in most cases */
-          border-left: 0;
-          border-top: 0;
-          left: 9px;
-          top: 3px;
-          height: 15px;
-          width: 8px;
-          transform: rotate(45deg) scaleY(1);
-          transition: transform .25s;
-          transform-origin: center;
-        }
-      }
-    }
-
-    .content {
-      padding-left: 9px;
-      padding-right: 6px;
-      flex-grow: 2;
-      text-decoration: none;
-      color: $color-node-fg;
-      line-height: 24px;
-      user-select: none;
-      font-size: 1.5em;
-    }
+    font-size: 1.5em;
+    line-height: 24px;
+    /*
+      Following is a workaround fixing overflow-y caused by line height being smaller than font.
+      It should be removed once a proper line-height matching the font-size (not smaller than) is used.
+    */
+    $line-height-compensation: calc((1.5em - 24px) / 4);
+    padding-top: $line-height-compensation;
+    padding-bottom: $line-height-compensation;
+    margin-top: calc(-1 * $line-height-compensation);
+    margin-bottom: calc(-1 * $line-height-compensation);
   }
 }
 </style>

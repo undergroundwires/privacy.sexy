@@ -7196,9 +7196,9 @@ actions:
                             To view all the scheduled tasks related to Windows Update, you can use the following PowerShell command:
 
                             ```powershell
-                                @('\Microsoft\Windows\UpdateOrchestrator\*', '\Microsoft\Windows\WindowsUpdate\*', '\Microsoft\Windows\WaaSMedic\*', '\Microsoft\Windows\InstallService\*') `
-                                    | ForEach-Object { Get-ScheduledTask -TaskName '*' -TaskPath $_ -ErrorAction SilentlyContinue } `
-                                    | ForEach-Object { Write-Host "$($_.TaskPath)$($_.TaskName)" }
+                            @('\Microsoft\Windows\UpdateOrchestrator\*', '\Microsoft\Windows\WindowsUpdate\*', '\Microsoft\Windows\WaaSMedic\*', '\Microsoft\Windows\InstallService\*') `
+                                | ForEach-Object { Get-ScheduledTask -TaskName '*' -TaskPath $_ -ErrorAction SilentlyContinue } `
+                                | ForEach-Object { Write-Host "$($_.TaskPath)$($_.TaskName)" }
                             ```
                         children:
                             -

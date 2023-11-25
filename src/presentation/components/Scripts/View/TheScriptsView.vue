@@ -1,6 +1,6 @@
 <template>
   <div class="scripts">
-    <div v-if="!isSearching">
+    <template v-if="!isSearching">
       <template v-if="currentView === ViewType.Cards">
         <CardList />
       </template>
@@ -9,8 +9,8 @@
           <ScriptsTree />
         </div>
       </template>
-    </div>
-    <div v-else>
+    </template>
+    <template v-else>
       <!-- Searching -->
       <div class="search">
         <div class="search__query">
@@ -33,7 +33,7 @@
       <div v-if="searchHasMatches" class="tree tree--searching">
         <ScriptsTree />
       </div>
-    </div>
+    </template>
   </div>
 </template>
 

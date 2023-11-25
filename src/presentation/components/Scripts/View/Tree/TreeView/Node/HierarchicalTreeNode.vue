@@ -5,7 +5,6 @@
       :style="{
         'padding-left': `${currentNode.hierarchy.depthInTree * 24}px`,
       }"
-      @click="toggleCheck"
     >
       <div
         class="expand-collapse-arrow"
@@ -15,16 +14,17 @@
         }"
         @click.stop="toggleExpand"
       />
-      <LeafTreeNode
-        :node-id="nodeId"
-        :tree-root="treeRoot"
-      >
-        <template #node-content="slotProps">
-          <slot name="node-content" v-bind="slotProps" />
-        </template>
-      </LeafTreeNode>
+      <div class="leaf-node">
+        <LeafTreeNode
+          :node-id="nodeId"
+          :tree-root="treeRoot"
+        >
+          <template #node-content="slotProps">
+            <slot name="node-content" v-bind="slotProps" />
+          </template>
+        </LeafTreeNode>
+      </div>
     </div>
-
     <transition name="children-transition">
       <ul
         v-if="hasChildren && expanded"
@@ -132,6 +132,12 @@ export default defineComponent({
 
 .expansible-node {
   display: flex;
+  flex-direction: row;
+  .leaf-node {
+    flex: 1; // Expands the node horizontally, allowing its content to utilize full width for child item alignment, such as icons and text.
+    overflow: auto; // Prevents horizontal expansion of inner content (e.g., when a code block is shown)
+  }
+
   flex-direction: row;
   align-items: center;
   @include hover-or-touch {

@@ -96,7 +96,7 @@ export default defineComponent({
 @use "./tree-colors" as *;
 
 .tree {
-  overflow: auto;
   background: $color-tree-bg;
+  overflow: auto; // Prevents horizontal expansion of inner content (e.g., when a code block is shown)
 }
 </style>

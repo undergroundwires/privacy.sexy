@@ -1,6 +1,6 @@
 <template>
-  <span id="container">
-    <span v-if="initialNodes.length">
+  <div class="scripts-tree-container">
+    <template v-if="initialNodes.length">
       <TreeView
         :initial-nodes="initialNodes"
         :selected-leaf-node-ids="selectedScriptNodeIds"
@@ -11,9 +11,11 @@
           <NodeContent :node-metadata="nodeMetadata" />
         </template>
       </TreeView>
-    </span>
-    <span v-else>Nooo 😢</span>
-  </span>
+    </template>
+    <template v-else>
+      Nooo 😢
+    </template>
+  </div>
 </template>
 
 <script lang="ts">
@@ -58,3 +60,10 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped lang="scss">
+.scripts-tree-container {
+  display: flex; // We could provide `block`, but `flex` is more versatile.
+  overflow: auto; // Prevents horizontal expansion of inner content (e.g., when a code block is shown)
+}
+</style>
