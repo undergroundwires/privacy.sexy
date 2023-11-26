@@ -3739,7 +3739,7 @@ functions:
       - name: prefName
       - name: jsonValue
     docs: |-
-      This script either creates or updates the `user.js` file to set specific Mozilla Firefox preferences.
+      This script modifies the `user.js` file in Firefox profiles to set specific preferences.
 
       The `user.js` file can be found in a Firefox profile folder [1] and its location depends on the type of installation:
 
@@ -3747,12 +3747,18 @@ functions:
       - Flatpak: `~/.var/app/org.mozilla.firefox/.mozilla/firefox/<profile-name>/user.js`
       - Snap: `~/snap/firefox/common/.mozilla/firefox/<profile-name>/user.js`
 
-      While the `user.js` file is optional [2], if it's present, the Firefox application will prioritize its settings over
-      those in `prefs.js` upon startup [1][2]. To prevent potential profile corruption, Mozilla advises against editing
-      `prefs.js` directly [2].
+      While the `user.js` file is optional [2], if it's present, the Firefox will prioritize its settings over
+      those in `prefs.js` upon startup [1] [2]. It's recommended not to directly edit `prefs.js` to avoid profile corruption [2].
+
+      When `user.js` is modified or deleted, corresponding changes in `prefs.js` are necessary for reversion, as Firefox
+      doesn't automatically revert these changes [3].
+
+      This script safely modifies `user.js` and ensures changes are reflected in `prefs.js` during reversion, addressing
+      issues with preference persistence [3].
 
       [1]: https://web.archive.org/web/20230811005205/https://kb.mozillazine.org/User.js_file "User.js file - MozillaZine Knowledge Base"
       [2]: https://web.archive.org/web/20221029211757/https://kb.mozillazine.org/Prefs.js_file "Prefs.js file - MozillaZine Knowledge Base"
+      [3]: https://github.com/undergroundwires/privacy.sexy/issues/282 "[BUG]: Reverting Firefox settings do not work on Linux · Issue #282 · undergroundwires/privacy.sexy | github.com"
     code: |-
       pref_name='{{ $prefName }}'
       pref_value='{{ $jsonValue }}'
@@ -3792,12 +3798,16 @@ functions:
       if [ "$total_profiles_found" -eq 0 ]; then
         echo 'No profile folders are found, no changes are made.'
       else
-        echo "Preferences verified in $total_profiles_found profiles."
+        echo "Successfully verified preferences in $total_profiles_found profiles."
       fi
     revertCode: |-
       pref_name='{{ $prefName }}'
       pref_value='{{ $jsonValue }}'
       echo "Reverting preference: \"$pref_name\" to its default."
+      if command -v 'ps' &> /dev/null && ps aux | grep -i "[f]irefox" > /dev/null; then
+        >&2 echo -e "\e[33mWarning: Firefox is currently running. Please close Firefox before executing the revert script to ensure changes are applied effectively.\e[0m"
+      fi
+      declare -a files_to_modify=('prefs.js' 'user.js')
       declare -a profile_paths=(
         ~/.mozilla/firefox/*/
         ~/.var/app/org.mozilla.firefox/.mozilla/firefox/*/
@@ -3805,31 +3815,39 @@ functions:
       )
       declare -i total_profiles_found=0
       for profile_dir in "${profile_paths[@]}"; do
-        user_js_file="${profile_dir}user.js"
-        if [ ! -f "$user_js_file" ]; then
+        if [ ! -d "$profile_dir" ]; then
           continue
         fi
-        ((total_profiles_found++))
-        echo "$user_js_file:"
-        pref_start="user_pref(\"$pref_name\","
-        pref_line="user_pref(\"$pref_name\", $pref_value);"
-        if ! grep --quiet "^$pref_start" "${user_js_file}"; then
-          echo $'\t''Skipping, preference was not configured before.'
-        elif grep --quiet "^$pref_line$" "${user_js_file}"; then
-          sed --in-place "/^$pref_line/d" "$user_js_file"
-          echo $'\t''Successfully reverted preference to default.'
-          if ! grep --quiet '[^[:space:]]' "$user_js_file"; then
-            rm "$user_js_file"
-            echo $'\t''Removed user.js file as it became empty.'
-          fi
-        else
-          echo $'\t''Skipping, the preference has value that is not configured by privacy.sexy.'
+        if [[ ! "$(basename "$profile_dir")" =~ ^[a-z0-9]{8}\..+ ]]; then
+          continue # Not a profile folder
         fi
+        ((total_profiles_found++))
+        for file_to_modify in "${files_to_modify[@]}"; do
+          config_file_path="${profile_dir}${file_to_modify}"
+          if [ ! -f "$config_file_path" ]; then
+            continue
+          fi
+          echo "$config_file_path:"
+          pref_start="user_pref(\"$pref_name\","
+          pref_line="user_pref(\"$pref_name\", $pref_value);"
+          if ! grep --quiet "^$pref_start" "${config_file_path}"; then
+            echo $'\t''Skipping, preference was not configured before.'
+          elif grep --quiet "^$pref_line$" "${config_file_path}"; then
+            sed --in-place "/^$pref_line/d" "$config_file_path"
+            echo $'\t''Successfully reverted preference to default.'
+            if ! grep --quiet '[^[:space:]]' "$config_file_path"; then
+              rm "$config_file_path"
+              echo $'\t'"Removed the file as it became empty."
+            fi
+          else
+            echo $'\t''Skipping, the preference has value that is not configured by privacy.sexy.'
+          fi
+        done
       done
       if [ "$total_profiles_found" -eq 0 ]; then
         echo 'No reversion was necessary.'
       else
-        echo "Preferences verified in $total_profiles_found profiles."
+        echo "Successfully verified preferences in $total_profiles_found profiles."
       fi
   -
     name: RenameFile
