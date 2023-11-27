@@ -463,7 +463,8 @@ actions:
                             -
                                 name: Clear Internet Explorer DOMStore
                                 recommend: standard
-                                docs: https://web.archive.org/web/20100416135352/http://msdn.microsoft.com/en-us/library/cc197062(VS.85).aspx
+                                docs: |-
+                                    [Introduction to DOM Storage | msdn.microsoft.com](https://web.archive.org/web/20100416135352/http://msdn.microsoft.com/en-us/library/cc197062(VS.85).aspx)
                                 call:
                                     function: ClearDirectoryContents
                                     parameters:
@@ -593,10 +594,10 @@ actions:
                                     - `C:\Documents and Settings\<Windows login/user name>\Application Data\Mozilla\Firefox\Profiles\<profile folder>` on Windows XP and earlier [1],
                                     - `%APPDATA%\Mozilla\Firefox\Profiles\<profile folder>` on Windows 10 and later [1].
 
-                                    **Considerations**: 
-                                    - Using this script results in a total loss of all personalized Firefox data. 
-                                    - If your goal is solely to clear browsing data while retaining settings and extensions, this script is not recommended.
-                                    - Close Firefox before running this script to prevent potential issues.
+                                    > **Caution**:
+                                    > - Using this script results in a total loss of all personalized Firefox data.
+                                    > - If your goal is solely to clear browsing data while retaining settings and extensions, this script is not recommended.
+                                    > - Close Firefox before running this script to prevent potential issues.
 
                                     [1]: https://web.archive.org/web/20231101125909/https://kb.mozillazine.org/Profile_folder_-_Firefox#Windows "Profile folder - Firefox - MozillaZine Knowledge Base | kb.mozillazine.org"
                                 call:
@@ -1204,7 +1205,7 @@ actions:
                             (`%ProgramData%\Microsoft\Windows Defender\Scans\History\Service\DetectionHistory\[numbered folder]\`), and it contains a
                             system-generated ID for the event [2].
 
-                            > **Caution**: Deleting these logs may decrease your security. These logs help in keeping track of potential threats and their sources,
+                            > **Caution:** Deleting these logs may decrease your security. These logs help in keeping track of potential threats and their sources,
                             allowing for a more proactive response in future encounters. Without this history, Microsoft Defender might not recognize recurring threats
                             as quickly, possibly leaving your system more vulnerable. It's essential to understand that you're making a trade-off between enhanced
                             privacy and potentially reduced security.
@@ -1298,7 +1299,7 @@ actions:
 
                     **Windows Component Store** contains all the files that are required to Windows features on demand [3].
 
-                    WARNING: Once the "Reset Base" operation is activated, you will not be able to uninstall previous updates. However, this
+                    > **Caution:** Once the "Reset Base" operation is activated, you will not be able to uninstall previous updates. However, this
                     small trade-off improves your privacy and control over system data.
 
                     [1]: https://web.archive.org/web/20230806160623/https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/what-is-dism?view=windows-11 "DISM Overview | Microsoft Learn"
@@ -1887,9 +1888,6 @@ actions:
                                 name: Disable sending information to Customer Experience Improvement Program
                                 recommend: standard
                                 docs: |-
-                                    [Turn off the Windows Customer Experience program - gHacks Tech News](https://www.ghacks.net/2016/10/26/turn-off-the-windows-customer-experience-program/)
-                                    [Permanently Disabling Windows Compatibility Telemetry - Microsoft Community](https://answers.microsoft.com/en-us/windows/forum/windows_10-performance/permanently-disabling-windows-compatibility/6bf71583-81b0-4a74-ae2e-8fd73305aad1)
-
                                     ### Overview of default task statuses
 
                                     `\Microsoft\Windows\Application Experience\ProgramDataUpdater`:
@@ -1898,6 +1896,11 @@ actions:
                                     | ---------------- | -------------- |
                                     | Windows 10 22H2  | 🟢 Ready |
                                     | Windows 11 22H2  | 🟡 N/A (missing) |
+
+                                    ### Additional documentation
+
+                                    - [Turn off the Windows Customer Experience program - gHacks Tech News](https://www.ghacks.net/2016/10/26/turn-off-the-windows-customer-experience-program/)
+                                    - [Permanently Disabling Windows Compatibility Telemetry - Microsoft Community](https://answers.microsoft.com/en-us/windows/forum/windows_10-performance/permanently-disabling-windows-compatibility/6bf71583-81b0-4a74-ae2e-8fd73305aad1)
                                 call:
                                     function: DisableScheduledTask
                                     parameters:
@@ -2390,7 +2393,7 @@ actions:
                                     Taking control of this service prevents Microsoft from activating peer-to-peer sharing, enhancing user privacy. It ensures your device doesn't share update data
                                     or fetch it from arbitrary peers.
 
-                                    > **Caution**: Disabling this service affects the functionality of Windows Store. It plays a role not just in Windows Updates but also in Microsoft Store app
+                                    > **Caution:** Disabling this service affects the functionality of Windows Store. It plays a role not just in Windows Updates but also in Microsoft Store app
                                     downloads, especially since Windows 11 [7]. There have been reported issues with some app downloads on Windows 10 [8].
 
                                     [1]: https://web.archive.org/web/20230914164204/https://learn.microsoft.com/en-us/windows/deployment/do/waas-delivery-optimization "What is Delivery Optimization? - Windows Deployment | Microsoft Learn"
@@ -3878,7 +3881,7 @@ actions:
                             | Windows 10 22H2  | 🟡 N/A (missing)     |
                             | Windows 11 22H2  | 🟡 N/A (missing)     |
 
-                            > **CAUTION:** Consider that while disabling this task may lead to increased privacy, it could also impact license compliance and the overall functionality
+                            > **Caution:** Consider that while disabling this task may lead to increased privacy, it could also impact license compliance and the overall functionality
                             of Microsoft Office products in the long run.
 
                             [1]: https://web.archive.org/web/20231024130456/https://learn.microsoft.com/en-us/microsoft-365/troubleshoot/licensing/subscription-automatic-license-renew-fails "Microsoft 365 subscription automatic license renewal fails when heartbeatcache in wrong location - Microsoft 365 | Microsoft Learn | learn.microsoft.com"
@@ -4959,7 +4962,7 @@ actions:
                         category: Disable Microsoft Defender firewall # Also known as Windows Firewall, Microsoft Defender Firewall
                         children:
                             -
-                                category: Disable Microsoft Defender Firewall services and drivers (breaks Microsoft Store and `netsh advfirewall` CLI)
+                                category: Disable Microsoft Defender Firewall services and drivers
                                 children:
                                     -
                                         name: Disable "Windows Defender Firewall Authorization Driver" service
@@ -4985,32 +4988,38 @@ actions:
                                                     fileGlob: '%SYSTEMROOT%\System32\drivers\mpsdrv.sys'
                                                     grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                                     -
-                                        name: Disable "Windows Defender Firewall" service
-                                        docs:
-                                            - http://batcmd.com/windows/10/services/mpssvc/
-                                            - https://en.wikipedia.org/wiki/Windows_Firewall
-                                            # More information about MpsSvc:
-                                            - https://web.archive.org/web/20110203202612/http://technet.microsoft.com/en-us/library/dd364391(v=WS.10).aspx
-                                            # More information about boot time protection and stopping the firewall service:
-                                            - https://web.archive.org/web/20110131034058/http://blogs.technet.com:80/b/networking/archive/2009/03/24/stopping-the-windows-authenticating-firewall-service-and-the-boot-time-policy.aspx
-                                            # Stopping the service associated with Windows Firewall is not supported by Microsoft:
-                                            - https://web.archive.org/web/20121106033255/http://technet.microsoft.com/en-us/library/cc753180.aspx
-                                            # ❗️ Breaks Microsoft Store
-                                            #   Can no longer update nor install apps, they both fail with 0x80073D0A
-                                            #   Also breaks some of Store apps such as Photos:
-                                            #       - https://answers.microsoft.com/en-us/windows/forum/all/microsoft-store-windows-defender-windows-firewall/f2f68cd7-64ec-4fe1-ade4-9d12cde057f9
-                                            #       - https://github.com/undergroundwires/privacy.sexy/issues/104#issuecomment-962651791
-                                            #   > The MpsSvc service host much more functionality than just windows firewall. For instance, Windows
-                                            #     Service hardening which is a windows protection of system services. It also host network isolatio
-                                            #     which is a crucial part of the confidence model for Windows Store based applications. 3rd party firewalls
-                                            #     know this fact and instead of disabling the firewall service they coordinate through public APIs with Windows
-                                            #     Firewall so that they can have ownership of the firewall policies of the computer. Hence you do not have to do
-                                            #     anything special once you install a 3rd party security product.
-                                            #     Source: https://www.walkernews.net/2012/09/23/how-to-fix-windows-store-app-update-error-code-0x80073d0a/
-                                            # ❗️ Breaks: `netsh advfirewall set`
-                                            #   Disabling and stopping it breaks "netsh advfirewall set" commands such as
-                                            #   `netsh advfirewall set allprofiles state on`, `netsh advfirewall set allprofiles state off`.
-                                            #   More about `netsh firewall` context: https://docs.microsoft.com/en-us/troubleshoot/windows-server/networking/netsh-advfirewall-firewall-control-firewall-behavior
+                                        name: Disable "Windows Defender Firewall" service (breaks Microsoft Store downloads and `netsh advfirewall` CLI)
+                                        docs: |-
+                                            This script disables the "Windows Defender Firewall" service, also known as `MpsSvc` [1] [2] [3].
+
+                                            The Windows Defender Firewall, previously known as Windows Firewall [4], is a component that helps protect against unauthorized network access [3] [4].
+                                            It operates by filtering both incoming and outgoing network traffic based on predefined security rules [1].
+
+                                            Disabling the Windows Defender Firewall has significant impacts, including:
+
+                                            - **Microsoft Store app downloads**: Disabling this service prevents updates and installations from the Microsoft Store, resulting in error code `0x80073D0A` [5] [6].
+                                            - **`netsh advfirewall` commands**: The script renders the `netsh advfirewall` command-line context, which manages Windows Firewall settings [7], becomes inoperative.
+                                            - **Activation of boot-time filters**: Deactivating the service may trigger boot-time filters that protect the computer during startup or when the firewall service stops unexpectedly [2].
+                                            This feature was introduced to minimize vulnerabilities during startup [2].
+
+                                            Beyond firewall functionality, the MpsSvc service is integral to Windows Service hardening and network isolation [6], essential for Windows Store applications [6]. As a result, third-party
+                                            firewalls typically interact with Windows Firewall via public APIs, rather than disabling the service outright [6].
+
+                                            The `MpsSvc` service is set to start automatically by default [3] and runs the `%WINDIR%\System32\MPSSVC.dll` driver [3]. This file is also referred to as "Microsoft Protection Service" [8].
+
+                                            > **Caution:** Disabling this service significantly compromises system security [9] and is not recommended by Microsoft [9].
+                                            > It affects not only the firewall's protective capabilities but also the functionality of other Windows components like the Store [5] [6] and command-line utilities.
+                                            > Users should be aware of these considerable trade-offs when considering this script for privacy enhancement.
+
+                                            [1]: https://web.archive.org/web/20110203202612/http://technet.microsoft.com/en-us/library/dd364391(v=WS.10).aspx "Windows Firewall Service | technet.microsoft.com"
+                                            [2]: https://web.archive.org/web/20110131034058/http://blogs.technet.com:80/b/networking/archive/2009/03/24/stopping-the-windows-authenticating-firewall-service-and-the-boot-time-policy.aspx "Stopping the Windows Authenticating Firewall Service and the boot time policy - Microsoft Enterprise Networking Team - Site Home - TechNet Blogs | blogs.technet.com"
+                                            [3]: https://web.archive.org/web/20231122132143/https://batcmd.com/windows/10/services/mpssvc/ "Windows Defender Firewall - Windows 10 Service - batcmd.com | batcmd.com"
+                                            [4]: https://en.wikipedia.org/w/index.php?title=Windows_Firewall&oldid=1183396285 "Windows Firewall - Wikipedia | wikipedia.org"
+                                            [5]: https://github.com/undergroundwires/privacy.sexy/issues/104#issuecomment-962651791 "[BUG][help wanted]: Cannot enable Windows Defender · Issue #104 · undergroundwires/privacy.sexy | github.com/undergroundwires/privacy.sexy"
+                                            [6]: https://web.archive.org/web/20200620033533/https://www.walkernews.net/2012/09/23/how-to-fix-windows-store-app-update-error-code-0x80073d0a/ "How To Fix Windows Store App Update Error Code 0x80073D0A? – Walker News | www.walkernews.net"
+                                            [7]: https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/netsh-advfirewall-firewall-control-firewall-behavior "Use netsh advfirewall firewall context - Windows Server | Microsoft Learn | learn.microsoft.com"
+                                            [8]: https://web.archive.org/web/20231122132150/https://strontic.github.io/xcyclopedia/library/MPSSVC.dll-AA441F7C99AAACBA2538E90D7693637A.html "MPSSVC.dll | Microsoft Protection Service | STRONTIC | strontic.github.io"
+                                            [9]: https://web.archive.org/web/20121106033255/http://technet.microsoft.com/en-us/library/cc753180.aspx "Basic Firewall Policy Design | technet.microsoft.com"
                                         call:
                                             -
                                                 function: DisableServiceInRegistry # We must disable it on registry level, "Access is denied" for sc config
@@ -6475,7 +6484,7 @@ actions:
                                                     -
                                                         name: Disable "Secure boot" button in "Windows Security"
                                                         docs: |-
-                                                            [Hide the Secure boot area | admx.help](https://web.archive.org/web/20231013162210/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefenderSecurityCenter::DeviceSecurity_HideSecureBoot
+                                                            [Hide the Secure boot area | admx.help](https://web.archive.org/web/20231013162210/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefenderSecurityCenter::DeviceSecurity_HideSecureBoot)
                                                         code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Device security" /v "HideSecureBoot" /t REG_DWORD /d "1" /f
                                                         revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Device security" /v "HideSecureBoot" /f 2>nul
                                                     -
@@ -6973,7 +6982,7 @@ actions:
                     4. **Configurational integrity**: Updates have the capacity to change pre-configured settings without explicit user consent. This could
                     result in unintended alteration of your privacy settings, leaving you exposed until you realize the change.
 
-                    **Security implications**: While controlling updates enhances your privacy, it can leave your system vulnerable to unpatched exploits.
+                    > **Caution**: While controlling updates enhances your privacy, it can leave your system vulnerable to unpatched exploits.
                     Ensure that you manually review and apply updates on a regular basis. You're essentially trading off some security for a heightened level of
                     privacy.
 
@@ -8804,7 +8813,7 @@ actions:
                                 packageName: Microsoft.Getstarted
                                 publisherId: 8wekyb3d8bbwe
                     -
-                        category: Remove extensions
+                        category: Remove extension apps
                         docs: |-
                             This category focuses on scripts designed to uninstall specific extensions from Windows.
 

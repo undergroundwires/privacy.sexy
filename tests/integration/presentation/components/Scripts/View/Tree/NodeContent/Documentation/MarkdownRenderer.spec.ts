@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { parseApplication } from '@/application/Parser/ApplicationParser';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { createRenderer } from '@/presentation/components/Scripts/View/Tree/NodeContent/Documentation/MarkdownRenderer';
+import { createMarkdownRenderer } from '@/presentation/components/Scripts/View/Tree/NodeContent/Documentation/MarkdownRenderer';
 
 describe('MarkdownRenderer', () => {
   describe('can render all docs', () => {
     // arrange
-    const renderer = createRenderer();
+    const renderer = createMarkdownRenderer();
     for (const node of collectAllDocumentableNodes()) {
       it(`${node.nodeLabel}`, () => {
         // act

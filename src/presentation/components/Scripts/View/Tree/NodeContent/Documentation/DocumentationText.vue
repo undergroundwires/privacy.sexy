@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from 'vue';
-import { createRenderer } from './MarkdownRenderer';
+import { createMarkdownRenderer } from './MarkdownRenderer';
 
 export default defineComponent({
   props: {
@@ -27,7 +27,7 @@ export default defineComponent({
   },
 });
 
-const renderer = createRenderer();
+const renderer = createMarkdownRenderer();
 
 function renderText(docs: readonly string[] | undefined): string {
   if (!docs || docs.length === 0) {
