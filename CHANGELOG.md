@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.12.8 (2023-11-27)
+
+* Remove duplicated `index.html` file | [aab0f7e](https://github.com/undergroundwires/privacy.sexy/commit/aab0f7ea4680f377c610066bd0e99011eed8b506)
+* Refactor DI for simplicity and type safety | [7770a9b](https://github.com/undergroundwires/privacy.sexy/commit/7770a9b5211d7208cfb2bfa5f737d46dc90b7946)
+* Refactor user selection state handling using hook | [58cd551](https://github.com/undergroundwires/privacy.sexy/commit/58cd551a304a03e42637e6858982f8c5dfd9f598)
+* Refactor watch sources for reliability | [7ab16ec](https://github.com/undergroundwires/privacy.sexy/commit/7ab16ecccb31b2d54e5b634520a8246fbbc248c1)
+* Refactor to enforce strictNullChecks | [949fac1](https://github.com/undergroundwires/privacy.sexy/commit/949fac1a7cbc962ed63058e6a896695cfb4d35c8)
+* Fix icon tooltip alignment on instructions modal | [bd383ed](https://github.com/undergroundwires/privacy.sexy/commit/bd383ed273ca95c10ea1cce765c0aa6836ec508c)
+* Fix mobile layout overflow caused by tooltips | [e541a35](https://github.com/undergroundwires/privacy.sexy/commit/e541a35e86c0eff83f84dd002b46de7c55ebbcac)
+* win: improve disabling of scheduled tasks | [3864f04](https://github.com/undergroundwires/privacy.sexy/commit/3864f042180f62afe469fdfe36010b018f84f4b3)
+* Fix card list UI layout shifts (jumps) on load | [bf3426f](https://github.com/undergroundwires/privacy.sexy/commit/bf3426f91b6b7dbcad58d58507222559a8d14242)
+* Refactor to Vue 3 recommended ESLint rules | [4531645](https://github.com/undergroundwires/privacy.sexy/commit/4531645b4c0c5143f15240652368bb9b9ddb48a4)
+* Fix code highlighting and optimize category select | [cb42f11](https://github.com/undergroundwires/privacy.sexy/commit/cb42f11b9785e74719338a0a80a50d81dfccb4b6)
+* Fix layout jumps/shifts and overflow on modals | [e299d40](https://github.com/undergroundwires/privacy.sexy/commit/e299d40fa1d71d921d4dac37e469fe299c9da3af)
+* win: fix and improve Store app categorization #190 | [094dbb0](https://github.com/undergroundwires/privacy.sexy/commit/094dbb01b83bce9925fafab778b922f64390c2be)
+* win: fix persistent update disabling /w tasks #272 | [dee3279](https://github.com/undergroundwires/privacy.sexy/commit/dee3279f85c99a9c62201a093b1afa41ec2412ec)
+* win: discourage IntelliCode disabling #267, #286 | [7f7a84e](https://github.com/undergroundwires/privacy.sexy/commit/7f7a84e3ba259fade22d4838563d16129a1585e6)
+* Fix spacing in documentation for readability | [1442f62](https://github.com/undergroundwires/privacy.sexy/commit/1442f626335e30e3a8d74e4e13e561c41f073ef8)
+* win: fix system app removal affecting updates #287 | [7c632f7](https://github.com/undergroundwires/privacy.sexy/commit/7c632f738853b32fd90952bb4ca1ac924f962eb0)
+* Fix rendering of inline code blocks for docs | [9845a7c](https://github.com/undergroundwires/privacy.sexy/commit/9845a7cd68a9920c96da739b58238bb1fdb1251d)
+* linux: fix Firefox settings not reverting #282 | [bcad357](https://github.com/undergroundwires/privacy.sexy/commit/bcad357017d9f29ce77e706ca943107dd9caefb6)
+* Fix incorrect URL rendering in documentation texts | [d328f08](https://github.com/undergroundwires/privacy.sexy/commit/d328f0895244d998e885ad8df335b6444b9ac66b)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.12.7...0.12.8)
+
 ## 0.12.7 (2023-11-07)
 
 * Add winget download instructions | [b2ffc90](https://github.com/undergroundwires/privacy.sexy/commit/b2ffc90da70367b9e65c82556e8f440f865ceb98)
