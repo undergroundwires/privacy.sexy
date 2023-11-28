@@ -28,6 +28,170 @@ actions:
         category: Privacy cleanup
         children:
             -
+                category: Clear recent activity logs
+                docs: |-
+                    This category encompasses a suite of scripts designed to erase traces of a user's recent activities.
+                    These activities include files accessed, applications used, and system settings altered.
+                    The primary objective of this category is to enhance user privacy by removing records that could potentially reveal personal usage patterns, habits, and preferences.
+                    By doing so, these scripts contribute significantly to safeguarding personal and sensitive information from unauthorized access and analysis.
+                children:
+                    -
+                        category: Clear Quick Access (jump) lists
+                        docs: |-
+                            This category focuses on managing Jump Lists in Windows.
+                            This feature was first introduced with Windows 7 in July 2009 and has been included in subsequent versions [1] [2] [3].
+                            These lists are found in the Start Menu or Taskbar and provide quick access to recently opened files and folders [1] [2] [3] [4] [5].
+
+                            The privacy concern with Jump Lists is their detailed recording of user activities. They store data such as file names, directory paths,
+                            MAC (Modified, Accessed, Created) timestamps, network information, volume names, and file sizes [2] [3] [4] [6]. This information is
+                            utilized in forensic analysis to reveal user behavior and interactions with the system [1] [2] [3] [4] [5]. Authorities frequently examine
+                            these files for investigative purposes [3].
+
+                            Clearing these Jump Lists is crucial for maintaining privacy. It helps remove traces of user activities, particularly those involving
+                            personal or confidential files. By doing so, users prevent the easy accessibility of their activity history, an important privacy measure
+                            since these records can persist long after the original files and applications are deleted [3] [5].
+
+                            [1]: https://web.archive.org/web/20231128091134/https://www.forensicfocus.com/articles/forensic-analysis-of-windows-7-jump-lists/ "Forensic Analysis of Windows 7 Jump Lists - Forensic Focus | forensicfocus.com"
+                            [2]: https://web.archive.org/web/20210205154335/https://cyberforensicator.com/wp-content/uploads/2017/01/1-s2.0-S1742287616300202-main.2-14.pdf "A forensic insight into Windows 10 Jump Lists | Bhupendra Singh, Upasna Sin | Dept. of Computer Engineering, Defence Institute of Advanced Technology (DU), Girinagar, Pune, India"
+                            [3]: https://web.archive.org/web/20231128094035/https://forensafe.com/blogs/jumplist.html "Jump Lists Blog | forensafe.com"
+                            [4]: https://web.archive.org/web/20231128091208/https://www.justice.gov/usao/page/file/931366/download "Forensic Science and Forensic Evidence I | United States Attorneys' Bulletin | justice.gov"
+                            [5]: https://web.archive.org/web/20231128091107/https://www.slideshare.net/ctin/windows-7-forensics-jump-listsrv3public "Windows 7 forensics jump lists-rv3-public | PPT | slideshare.net"
+                            [6]: https://web.archive.org/web/20231128095448/https://computerforensics.parsonage.co.uk/downloads/TheMeaningofLIFE.pdf "The Meaning of Linkfiles In Forensic Examinations | Harry Parsonage | computerforensics.parsonage.co.uk"
+                        children:
+                            -
+                                name: Clear recently accessed files list
+                                recommend: standard
+                                docs: |-
+                                    This script clears the `AutomaticDestinations` Jump List files in Windows.
+                                    It improves user privacy by removing traces of recent file and application usage.
+
+                                    These files are automatically created when a user opens a file or an application [1].
+                                    They help users quickly access recently or frequently used items, usually via the Windows taskbar [2].
+                                    They are hidden and do not appear in Windows Explorer [3].
+                                    The files are located in `%APPDATA%\Microsoft\Windows\Recent\AutomaticDestinations` [2] [3] [4].
+                                    These files are identified by the `automaticDestinations-ms` extension [3].
+
+                                    However, these files also record detailed user activity, such as timestamps, file locations, network information, and usage frequency [1] [3] [4] [5].
+                                    They store comprehensive data including boot session times, sequence numbers, user directories, and MAC addresses of network cards [1] [5].
+                                    Web search strings from browsers like Edge, Firefox, Chrome, and Opera, used by Cortana, are also stored in these files [3].
+
+                                    By clearing these files, the script not only removes the history of user activity but also reduces the risk of this data being analyzed to
+                                    construct user activity timelines [1]. Such analysis could potentially expose personal usage patterns and behaviors, compromising privacy.
+
+                                    [1]: https://web.archive.org/web/20231128094035/https://forensafe.com/blogs/jumplist.html "Jump Lists Blog | forensafe.com"
+                                    [2]: https://web.archive.org/web/20231128091208/https://www.justice.gov/usao/page/file/931366/download "Forensic Science and Forensic Evidence I | Uneyited States Attorns' Bulletin | justice.gov"
+                                    [3]: https://web.archive.org/web/20210205154335/https://cyberforensicator.com/wp-content/uploads/2017/01/1-s2.0-S1742287616300202-main.2-14.pdf "A forensic insight into Windows 10 Jump Lists | Bhupendra Singh, Upasna Sin | Dept. of Computer Engineering, Defence Institute of Advanced Technology (DU), Girinagar, Pune, India"
+                                    [4]: https://web.archive.org/web/20231128091107/https://www.slideshare.net/ctin/windows-7-forensics-jump-listsrv3public "Windows 7 forensics jump lists-rv3-public | PPT | slideshare.net"
+                                    [5]: https://web.archive.org/web/20231128095448/https://computerforensics.parsonage.co.uk/downloads/TheMeaningofLIFE.pdf "The Meaning of Linkfiles In Forensic Examinations | Harry Parsonage | computerforensics.parsonage.co.uk"
+                                call:
+                                    function: ClearDirectoryContents
+                                    parameters:
+                                        directoryGlob: '%APPDATA%\Microsoft\Windows\Recent\AutomaticDestinations'
+                            -
+                                name: Clear pinned items for the user
+                                docs: |-
+                                    This script removes `CustomDestinations` Jump List files in Windows.
+                                    These files are hidden [1] and located in `%APPDATA%\Microsoft\Windows\Recent\CustomDestinations` [1] [2] [3].
+
+                                    `CustomDestinations` files are created by different applications to enable users to pin items such as tasks and files or applications. This
+                                    includes tasks like opening a new browser window or creating a new spreadsheet [2], as well as files and applications frequently used [3] [4].
+                                    They are commonly used by web browsers and media players to store a user's web history and other activities [1].
+
+                                    The privacy concern arises because these files not only record pinned items but also store detailed data about user interactions. This includes
+                                    file opening, modification, and access times, along with the full directory path and volume information [3] [4]. Such information, if accessed,
+                                    could potentially reveal personal habits and preferences [1] [2] [3].
+
+                                    Clearing these files prevents the potential use of this data in reconstructing a user's activity history, which is particularly sensitive
+                                    when it involves personal or confidential information. The script thus plays a crucial role in maintaining the confidentiality and privacy
+                                    of the user's digital activities.
+
+                                    [1]: https://web.archive.org/web/20210205154335/https://cyberforensicator.com/wp-content/uploads/2017/01/1-s2.0-S1742287616300202-main.2-14.pdf "A forensic insight into Windows 10 Jump Lists | Bhupendra Singh, Upasna Sin | Dept. of Computer Engineering, Defence Institute of Advanced Technology (DU), Girinagar, Pune, India"
+                                    [2]: https://web.archive.org/web/20231128091107/https://www.slideshare.net/ctin/windows-7-forensics-jump-listsrv3public "Windows 7 forensics jump lists-rv3-public | PPT | slideshare.net"
+                                    [3]: https://web.archive.org/web/20231128091208/https://www.justice.gov/usao/page/file/931366/download "Forensic Science and Forensic Evidence I | United States Attorneys' Bulletin | justice.gov"
+                                    [4]: https://web.archive.org/web/20231128094035/https://forensafe.com/blogs/jumplist.html "Jump Lists Blog | forensafe.com"
+                                call:
+                                    function: ClearDirectoryContents
+                                    parameters:
+                                        directoryGlob: '%APPDATA%\Microsoft\Windows\Recent\CustomDestinations'
+                    -
+                        category: Clear Windows Registry usage data
+                        docs: |-
+                            The Windows Registry is a hierarchical database that stores settings, configurations, and options for the operating system, installed
+                            applications, and user preferences. Over time, as users interact with their system and software, usage data and traces get stored in
+                            the registry.
+
+                            This category focuses on clearing specific types of this usage data, ensuring privacy and potentially improving system responsiveness.
+                        children:
+                            -
+                                name: Clear last `regedit` key
+                                recommend: standard
+                                code: |-
+                                    reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit" /va /f
+                                    reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Regedit" /va /f
+                            -
+                                name: Clear favorite keys in `regedit`
+                                recommend: standard
+                                code: |-
+                                    reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit\Favorites" /va /f
+                                    reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Regedit\Favorites" /va /f
+                    -
+                        name: Clear recently opened applications list
+                        recommend: standard
+                        code: |-
+                            reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRU" /va /f
+                            reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRULegacy" /va /f
+                    -
+                        name: Clear "Adobe Media Browser" most recently used (MRU) list
+                        recommend: standard
+                        code: reg delete "HKCU\Software\Adobe\MediaBrowser\MRU" /va /f
+                    -
+                        name: Clear "MSPaint" most recently used (MRU) list
+                        recommend: standard
+                        code: |-
+                            reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Paint\Recent File List" /va /f
+                            reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Paint\Recent File List" /va /f
+                    -
+                        name: Clear "Wordpad" most recently used (MRU) list
+                        recommend: standard
+                        code: reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Wordpad\Recent File List" /va /f
+                    -
+                        name: Clear "Map Network Drive" most recently used (MRU) list
+                        recommend: standard
+                        code: |-
+                            reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Map Network Drive MRU" /va /f
+                            reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Map Network Drive MRU" /va /f
+                    -
+                        name: Clear "Windows Search Assistant" history
+                        recommend: standard
+                        code: reg delete "HKCU\Software\Microsoft\Search Assistant\ACMru" /va /f
+                    -
+                        name: Clear recently opened files list for each file type
+                        recommend: standard
+                        code: |-
+                            reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs" /va /f
+                            reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs" /va /f
+                            reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\OpenSaveMRU" /va /f
+                    -
+                        name: Clear Windows Media Player recent files and URLs
+                        recommend: standard
+                        code: |-
+                            reg delete "HKCU\Software\Microsoft\MediaPlayer\Player\RecentFileList" /va /f
+                            reg delete "HKCU\Software\Microsoft\MediaPlayer\Player\RecentURLList" /va /f
+                            reg delete "HKLM\SOFTWARE\Microsoft\MediaPlayer\Player\RecentFileList" /va /f
+                            reg delete "HKLM\SOFTWARE\Microsoft\MediaPlayer\Player\RecentURLList" /va /f
+                    -
+                        name: Clear most recent DirectX application usage
+                        recommend: standard
+                        code: |-
+                            reg delete "HKCU\Software\Microsoft\Direct3D\MostRecentApplication" /va /f
+                            reg delete "HKLM\SOFTWARE\Microsoft\Direct3D\MostRecentApplication" /va /f
+                    -
+                        name: Clear "Windows Run" most recently used (MRU) list and typed paths
+                        recommend: standard
+                        code: |-
+                            reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU" /va /f
+                            reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths" /va /f
+            -
                 category: Clear third-party application data
                 children:
                     -
@@ -262,104 +426,6 @@ actions:
                                             reg delete "HKCR\Licenses\B16F0CF0-8AD1-4A5B-87BC-CB0DBE9C48FC" /va /f
                                             reg delete "HKCR\Licenses\10D17DBA-761D-4CD8-A627-984E75A58700" /va /f
                                             reg delete "HKCR\Licenses\1299B4B9-DFCC-476D-98F0-F65A2B46C96D" /va /f
-                    -
-                        category: Clear most recently used (MRU) lists
-                        children:
-                            -
-                                category: Clear Quick Access (jump) lists
-                                docs: https://cyberforensicator.com/wp-content/uploads/2017/01/1-s2.0-S1742287616300202-main.2-14.pdf
-                                children:
-                                    -
-                                        name: Clear recently accessed files list
-                                        recommend: standard
-                                        call:
-                                            function: ClearDirectoryContents
-                                            parameters:
-                                                directoryGlob: '%APPDATA%\Microsoft\Windows\Recent\AutomaticDestinations'
-                                    -
-                                        name: Clear pinned items for the user
-                                        call:
-                                            function: ClearDirectoryContents
-                                            parameters:
-                                                directoryGlob: '%APPDATA%\Microsoft\Windows\Recent\CustomDestinations'
-                            -
-                                category: Clear Windows Registry usage data
-                                docs: |-
-                                    The Windows Registry is a hierarchical database that stores settings, configurations, and options for the operating system, installed
-                                    applications, and user preferences. Over time, as users interact with their system and software, usage data and traces get stored in
-                                    the registry.
-
-                                    This category focuses on clearing specific types of this usage data, ensuring privacy and potentially improving system responsiveness.
-                                children:
-                                    -
-                                        name: Clear last `regedit` key
-                                        recommend: standard
-                                        code: |-
-                                            reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit" /va /f
-                                            reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Regedit" /va /f
-                                    -
-                                        name: Clear favorite keys in `regedit`
-                                        recommend: standard
-                                        code: |-
-                                            reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Regedit\Favorites" /va /f
-                                            reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Regedit\Favorites" /va /f
-                            -
-                                name: Clear recently opened applications list
-                                recommend: standard
-                                code: |-
-                                    reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRU" /va /f
-                                    reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRULegacy" /va /f
-                            -
-                                name: Clear "Adobe Media Browser" most recently used (MRU) list
-                                recommend: standard
-                                code: reg delete "HKCU\Software\Adobe\MediaBrowser\MRU" /va /f
-                            -
-                                name: Clear "MSPaint" most recently used (MRU) list
-                                recommend: standard
-                                code: |-
-                                    reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Applets\Paint\Recent File List" /va /f
-                                    reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Paint\Recent File List" /va /f
-                            -
-                                name: Clear "Wordpad" most recently used (MRU) list
-                                recommend: standard
-                                code: reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Applets\Wordpad\Recent File List" /va /f
-                            -
-                                name: Clear "Map Network Drive" most recently used (MRU) list
-                                recommend: standard
-                                code: |-
-                                    reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Map Network Drive MRU" /va /f
-                                    reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Map Network Drive MRU" /va /f
-                            -
-                                name: Clear "Windows Search Assistant" history
-                                recommend: standard
-                                code: reg delete "HKCU\Software\Microsoft\Search Assistant\ACMru" /va /f
-                            -
-                                name: Clear recently opened files list for each file type
-                                recommend: standard
-                                code: |-
-                                    reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs" /va /f
-                                    reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs" /va /f
-                                    reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\OpenSaveMRU" /va /f
-                            -
-                                name: Clear Windows Media Player recent files and URLs
-                                recommend: standard
-                                code: |-
-                                   reg delete "HKCU\Software\Microsoft\MediaPlayer\Player\RecentFileList" /va /f
-                                   reg delete "HKCU\Software\Microsoft\MediaPlayer\Player\RecentURLList" /va /f
-                                   reg delete "HKLM\SOFTWARE\Microsoft\MediaPlayer\Player\RecentFileList" /va /f
-                                   reg delete "HKLM\SOFTWARE\Microsoft\MediaPlayer\Player\RecentURLList" /va /f
-                            -
-                                name: Clear most recent DirectX application usage
-                                recommend: standard
-                                code: |-
-                                   reg delete "HKCU\Software\Microsoft\Direct3D\MostRecentApplication" /va /f
-                                   reg delete "HKLM\SOFTWARE\Microsoft\Direct3D\MostRecentApplication" /va /f
-                            -
-                                name: Clear "Windows Run" most recently used (MRU) list and typed paths
-                                recommend: standard
-                                code: |-
-                                   reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU" /va /f
-                                   reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths" /va /f
                     -
                         name: Clear Dotnet CLI telemetry
                         recommend: standard
