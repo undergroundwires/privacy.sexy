@@ -444,47 +444,285 @@ actions:
                 recommend: standard
                 code: sudo purge
             -
-                category: Clear all privacy permissions for applications
+                category: Clear application privacy permissions
+                docs: |-
+                    This category provides scripts to reset privacy permissions for a variety of applications on your device,
+                    helping you to re-establish control over your personal data. Each script targets a specific permission type – such
+                    as camera, microphone, contacts, or accessibility services – enabling you to revoke permissions that have previously
+                    been granted to applications.
+
+                    By resetting these permissions, you not only enhance your privacy but also improve your device's security. After
+                    running these scripts, applications will require your explicit permission again to access these services or
+                    information. This means the next time an app attempts to use a service like your camera or access your contacts,
+                    you'll be prompted to grant or deny permission. It's a proactive step to ensure that your sensitive information
+                    or system services are accessed only with your current and informed consent.
                 children:
+                    # Main documentation: https://archive.ph/26Hlq (https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services)
                     -
-                        name: Clear "camera" permissions
-                        code: tccutil reset Camera
+                        name: Clear **"All"** permissions
+                        docs: |-
+                            This script resets all permissions for applications.
+                            It revokes all previously granted permissions, enhancing privacy and security by ensuring no application has unauthorized access to system services or user data.
+                        call:
+                            function: ResetServicePermissions
+                            parameters:
+                                serviceId: All
                     -
-                        name: Clear "microphone" permissions
-                        code: tccutil reset Microphone
+                        name: Clear "Camera" permissions
+                        docs: |-
+                            This script resets permissions for camera access [1].
+                            It ensures no application can access the system camera without explicit user permission, protecting against unauthorized surveillance and data breaches.
+
+                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                        call:
+                            function: ResetServicePermissions
+                            parameters:
+                                serviceId: Camera
                     -
-                        name: Clear "accessibility" permissions
-                        code: tccutil reset Accessibility
+                        name: Clear "Microphone" permissions
+                        docs: |-
+                            This script resets permissions for microphone access [1].
+                            It revokes all granted access to the microphone, protecting against eavesdropping and unauthorized audio recording by applications.
+
+                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                        call:
+                            function: ResetServicePermissions
+                            parameters:
+                                serviceId: Microphone
                     -
-                        name: Clear "screen capture" permissions
-                        code: tccutil reset ScreenCapture
+                        name: Clear "Accessibility" permissions
+                        docs: |-
+                            This script resets permissions for accessibility features [1].
+                            It revokes application access to accessibility services, preventing misuse and ensuring these features are used only with user consent.
+
+                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                        call:
+                            function: ResetServicePermissions
+                            parameters:
+                                serviceId: Accessibility
                     -
-                        name: Clear "reminders" permissions
-                        code: tccutil reset Reminders
+                        name: Clear "Screen Capture" permissions
+                        docs: |-
+                            This script resets permissions for screen capture [1].
+                            It ensures applications cannot capture screen content without user authorization, protecting sensitive information displayed on the screen.
+
+                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                        call:
+                            function: ResetServicePermissions
+                            parameters:
+                                serviceId: ScreenCapture
                     -
-                        name: Clear "photos" permissions
-                        code: tccutil reset Photos
+                        name: Clear "Reminders" permissions
+                        docs: |-
+                            This script resets permissions for accessing reminders information managed by the Reminders app [1].
+                            It ensures applications cannot access or modify reminders data without explicit user permission, maintaining the privacy of personal reminders.
+
+                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                        call:
+                            function: ResetServicePermissions
+                            parameters:
+                                serviceId: Reminders
                     -
-                        name: Clear "calendar" permissions
-                        code: tccutil reset Calendar
+                        name: Clear "Photos" permissions
+                        docs: |-
+                            This script resets permissions for accessing the pictures managed by the Photos app [1].
+                            It revokes all permissions granted to applications, safeguarding personal photos and media from unauthorized access.
+
+                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                        call:
+                            function: ResetServicePermissions
+                            parameters:
+                                serviceId: Photos
                     -
-                        name: Clear "full disk access" permissions
-                        code: tccutil reset SystemPolicyAllFiles
+                        name: Clear "Calendar" permissions
+                        docs: |-
+                            This script resets permissions for accessing the calendar information managed by the Calendar app [1].
+                            It ensures that applications cannot access calendar data without user consent, protecting personal and sensitive calendar information.
+
+                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                        call:
+                            function: ResetServicePermissions
+                            parameters:
+                                serviceId: Calendar
                     -
-                        name: Clear "contacts" permissions
-                        code: tccutil reset SystemPolicyAllFiles
+                        name: Clear "Full Disk Access" permissions
+                        docs: |-
+                            This script resets permissions for full disk access.
+                            Full disk access allows the application access to all protected files, including system administration files [1].
+                            It revokes broad file access from applications, significantly reducing the risk of data exposure and enhancing overall system security.
+
+                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                        call:
+                            function: ResetServicePermissions
+                            parameters:
+                                serviceId: SystemPolicyAllFiles
                     -
-                        name: Clear "desktop folder" permissions
-                        code: tccutil reset SystemPolicyDesktopFolder
+                        name: Clear "Contacts" permissions
+                        docs: |-
+                            This script resets permissions for accessing contacts.
+                            The contact information managed by the Contacts app [1].
+                            It ensures that applications cannot access the user's contact list without explicit permission, maintaining the confidentiality of personal contacts.
+
+                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                        call:
+                            function: ResetServicePermissions
+                            parameters:
+                                serviceId: AddressBook
                     -
-                        name: Clear "documents folder" permissions
-                        code: tccutil reset SystemPolicyDocumentsFolder
+                        name: Clear "Desktop Folder" permissions
+                        docs: |-
+                            This script resets permissions for accessing the Desktop folder [1].
+                            It revokes application access to files on the desktop, protecting personal and work-related documents from unauthorized access.
+
+                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                        call:
+                            function: ResetServicePermissions
+                            parameters:
+                                serviceId: SystemPolicyDesktopFolder
                     -
-                        name: Clear "downloads" permissions
-                        code: tccutil reset SystemPolicyDownloadsFolder
+                        name: Clear "Documents Folder" permissions
+                        docs: |-
+                            This script resets permissions for accessing the Documents folder [1].
+                            It prevents applications from accessing files in this folder without user consent, safeguarding important and private documents.
+
+                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                        call:
+                            function: ResetServicePermissions
+                            parameters:
+                                serviceId: SystemPolicyDocumentsFolder
                     -
-                        name: Clear all app permissions
-                        code: tccutil reset All
+                        name: Clear "Downloads Folder" permissions
+                        docs: |-
+                            This script resets permissions for accessing the Downloads folder [1].
+                            It ensures that applications cannot access downloaded files without user authorization, protecting downloaded content from misuse.
+
+                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                        call:
+                            function: ResetServicePermissions
+                            parameters:
+                                serviceId: SystemPolicyDownloadsFolder
+                    -
+                        name: Clear "Apple Events" permissions
+                        docs: |-
+                            This script resets permissions for Apple Events [1].
+                            It revokes permissions for applications to send restricted Apple Events to other processes [1], enhancing privacy and security.
+
+                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                        call:
+                            function: ResetServicePermissions
+                            parameters:
+                                serviceId: AppleEvents
+                    -
+                        name: Clear "File Provider Presence" permissions
+                        docs: |-
+                            This script resets permissions for File Provider Presence [1].
+                            It revokes the ability of File Provider applications to know when the user is accessing their managed files [1], enhancing user privacy.
+
+                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                        call:
+                            function: ResetServicePermissions
+                            parameters:
+                                serviceId: FileProviderPresence
+                    -
+                        name: Clear "Listen Events" permissions
+                        docs: |-
+                            This script resets "ListenEvent" permissions [1].
+                            It revokes application access to listen to system events [1], preventing unauthorized monitoring of user interactions with the system.
+
+                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                        call:
+                            function: ResetServicePermissions
+                            parameters:
+                                serviceId: ListenEvent
+                    -
+                        name: Clear "Media Library" permissions
+                        docs: |-
+                            This script resets permissions for accessing the Media Library [1].
+                            It ensures that applications cannot access Apple Music, music and video activity, and the media library [1] without user consent.
+
+                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                        call:
+                            function: ResetServicePermissions
+                            parameters:
+                                serviceId: MediaLibrary
+                    -
+                        name: Clear "Post Event" permissions
+                        docs: |-
+                            This script resets permissions for sending "PostEvent" [1].
+                            It prevents applications from using CoreGraphics APIs to send system events [1], safeguarding against potential misuse.
+
+                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                        call:
+                            function: ResetServicePermissions
+                            parameters:
+                                serviceId: PostEvent
+                    -
+                        name: Clear "Speech Recognition" permissions
+                        recommend: strict
+                        docs: |-
+                            This script resets permissions for using Speech Recognition [1].
+                            It revokes application access to the speech recognition facility and sending speech data to Apple [1], protecting user privacy.
+
+                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                        call:
+                            function: ResetServicePermissions
+                            parameters:
+                                serviceId: SpeechRecognition
+                    -
+                        name: Clear "App Modification" permissions
+                        docs: |-
+                            This script resets permissions for modifying other apps [1].
+                            It prevents applications from updating or deleting other apps [1], maintaining system integrity and user control.
+
+                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                        call:
+                            function: ResetServicePermissions
+                            parameters:
+                                serviceId: SystemPolicyAppBundles
+                    -
+                        name: Clear "Application Data" permissions
+                        docs: |-
+                            This script resets permissions for accessing application data [1].
+                            It revokes application access to specific application data, enhancing privacy and data security.
+
+                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                        call:
+                            function: ResetServicePermissions
+                            parameters:
+                                serviceId: SystemPolicyAppData
+                    -
+                        name: Clear "Network Volumes" permissions
+                        docs: |-
+                            This script resets permissions for accessing files on network volumes [1].
+                            It ensures applications cannot access network files without user authorization.
+
+                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                        call:
+                            function: ResetServicePermissions
+                            parameters:
+                                serviceId: SystemPolicyNetworkVolumes
+                    -
+                        name: Clear "Removable Volumes" permissions
+                        docs: |-
+                            This script resets permissions for accessing files on removable volumes [1].
+                            It protects data on external drives from unauthorized application access.
+
+                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                        call:
+                            function: ResetServicePermissions
+                            parameters:
+                                serviceId: SystemPolicyRemovableVolumes
+                    -
+                        name: Clear "System Administration Files" permissions
+                        docs: |-
+                            This script resets permissions for accessing system administration files [1].
+                            It enhances system security by restricting application access to critical system files.
+
+                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                        call:
+                            function: ResetServicePermissions
+                            parameters:
+                                serviceId: SystemPolicySysAdminFiles
     -
         category: Configure programs
         children:
@@ -1268,3 +1506,55 @@ functions:
                     echo "[$profile_file] No need for any action, configuration does not exist"
                 fi
             done
+    -
+        name: RunIfCommandExists # Skips if command does not exist
+        #   Marked: refactor-with-partials
+        #     Same function as Linux
+        parameters:
+            - name: command
+            - name: code
+            - name: revertCode
+              optional: true
+        code: |-
+            if ! command -v '{{ $command }}' &> /dev/null; then
+                echo 'Skipping because "{{ $command }}" is not found.'
+            else
+                {{ $code }}
+            fi
+        revertCode: |-
+            {{ with $revertCode }}
+                if ! command -v '{{ $command }}' &> /dev/null; then
+                    >&2 echo 'Cannot revert because "{{ $command }}" is not found.'
+                else
+                    {{ . }}
+                fi
+            {{ end }}
+    -
+        name: ResetServicePermissions
+        parameters:
+            - name: serviceId # Specifies the service ID for which to reset permissions
+        docs: |-
+            This function resets the specified service ID permissions.
+            The `serviceId` parameter allows you to define the specific service ID (e.g., Camera, Microphone,
+            Accessibility) for which you want to reset all user-granted permissions.
+        call:
+            function: RunIfCommandExists
+            parameters:
+                command: tccutil
+                code: |-
+                    declare serviceId='{{ $serviceId }}'
+                    declare reset_output reset_exit_code
+                    {
+                        reset_output=$(tccutil reset "$serviceId" 2>&1)
+                        reset_exit_code=$?
+                    }
+                    if [ $reset_exit_code -eq 0 ]; then
+                        echo "Successfully reset permissions for \"${serviceId}\"."
+                    elif [ $reset_exit_code -eq 70 ]; then
+                        echo "Skipping, service ID \"${serviceId}\" is not supported on your operating system version."
+                    elif [ $reset_exit_code -ne 0 ]; then
+                        >&2 echo "Failed to reset permissions for \"${serviceId}\". Exit code: $reset_exit_code."
+                        if [ -n "$reset_output" ]; then
+                            echo "Output from \`tccutil\`: $reset_output."
+                        fi
+                    fi
