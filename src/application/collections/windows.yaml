@@ -1915,9 +1915,9 @@ actions:
                                     [2]: https://web.archive.org/web/20231017234628/https://strontic.github.io/xcyclopedia/library/DeviceCensus.exe-594993E23161BB37E365D8784DE020EA.html "DeviceCensus.exe | Device Census | STRONTIC | strontic.github.io"
                                     [3]: https://web.archive.org/web/20231017234127/https://support.microsoft.com/en-us/topic/update-to-windows-10-version-1703-version-1607-version-1511-and-version-1507-for-update-applicability-march-15-2018-3aad1c66-2b88-c012-4623-dee1410891ad "Update to Windows 10 Version 1703, Version 1607, Version 1511, and Version 1507 for update applicability: March 15, 2018 - Microsoft Support"
                                 call:
-                                    function: KillProcessWhenItStarts
+                                    function: TerminateExecutableOnLaunch
                                     parameters:
-                                        processName: DeviceCensus.exe
+                                        executableNameWithExtension: DeviceCensus.exe
                     -
                         category: Disable Compatibility Telemetry (Application Experience)
                         children:
@@ -1947,9 +1947,9 @@ actions:
                                         name: Disable CompatTelRunner.exe (Microsoft Compatibility Appraiser) process
                                         recommend: standard
                                         call:
-                                            function: KillProcessWhenItStarts
+                                            function: TerminateExecutableOnLaunch
                                             parameters:
-                                                processName: CompatTelRunner.exe
+                                                executableNameWithExtension: CompatTelRunner.exe
                             -
                                 name: Disable sending information to Customer Experience Improvement Program
                                 recommend: standard
@@ -10762,11 +10762,11 @@ actions:
                         [3]: https://social.msdn.microsoft.com/Forums/en-US/072e3577-d0ff-4950-9e0b-40b037853881/starting-and-stopping-sharepoint-library-sync-with-onedrive?forum=sharepointdevelopmentprevious "Starting and stopping SharePoint library sync with OneDrive | social.msdn.microsoft.com"
                         [4]: https://learn.microsoft.com/en-us/answers/questions/473995/onedrive-was-previously-disabled-and-now-i-can39t.html "OneDrive was previously disabled and now I can't enable it with GPO - Microsoft Q&A | learn.microsoft.com"
                     call:
-                        function: KillProcess
+                        function: TerminateRunningProcess
                         parameters:
-                            processName: OneDrive.exe
-                            processStartPath: '%LOCALAPPDATA%\Microsoft\OneDrive\OneDrive.exe'
-                            processStartArgs: /background
+                            executableNameWithExtension: OneDrive.exe
+                            revertExecutablePath: '%LOCALAPPDATA%\Microsoft\OneDrive\OneDrive.exe'
+                            revertExecutableArgs: /background
                 -
                     name: Remove OneDrive from startup
                     recommend: strict
@@ -11905,37 +11905,73 @@ actions:
                 revertCode: del /f /q %APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat
 functions:
     -
-        name: KillProcess
+        name: TerminateRunningProcess
         parameters:
-            - name: processName
-            - name: processStartPath
-            - name: processStartArgs
-        # `start` command is used to start processes without blocking execution of rest of the script, see https://ss64.com/nt/start.html.
-        code: |-
-            tasklist /fi "ImageName eq {{ $processName }}" /fo csv 2>NUL | find /i "{{ $processName }}">NUL && (
-                echo {{ $processName }} is running and will be killed.
-                taskkill /f /im {{ $processName }}
-            ) || (
-                echo Skipping, {{ $processName }} is not running.
-            )
-        revertCode: |-
-            tasklist /fi "ImageName eq {{ $processName }}" /fo csv 2>NUL | find /i "{{ $processName }}">NUL && (
-                echo Skipping, {{ $processName }} is already running.
-            ) || (
-                if exist "{{ $processStartPath }}" (
-                    start "" "{{ $processStartPath }}" {{ with $processStartArgs }}{{ . }}{{ end }}
-                    echo Executed {{ $processStartPath }} {{ with $processStartArgs }}{{ . }}{{ end }}
-                ) else (
-                    echo Failed to run the file, it does not exist. 1>&2
-                )
-            )
+            - name: executableNameWithExtension # Name of the executable file, including its extension, to be terminated.
+            - name: revertExecutablePath        # Path of the executable to be run during the revert process.
+              optional: true
+            - name: revertExecutableArgs        # Arguments to pass to the executable during the revert process.
+              optional: true
+        docs: |-
+            This function is designed to terminate a specified running process.
+            It checks if the process is currently running and, if so, uses the `taskkill` command to forcibly terminate it.
+            This function is particularly useful for stopping processes that may interfere with system configurations or other operations.
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: Check and terminate the running process "{{ $executableNameWithExtension }}"
+                    revertCodeComment: >-
+                        {{ with $revertExecutablePath }}
+                            Optionally start the process "{{ $executableNameWithExtension }}" if not running
+                        {{ end }}
+            -
+                function: RunInlineCode
+                parameters:
+                    code: |-
+                        tasklist /fi "ImageName eq {{ $executableNameWithExtension }}" /fo csv 2>NUL | find /i "{{ $executableNameWithExtension }}">NUL && (
+                            echo {{ $executableNameWithExtension }} is running and will be killed.
+                            taskkill /f /im {{ $executableNameWithExtension }}
+                        ) || (
+                            echo Skipping, {{ $executableNameWithExtension }} is not running.
+                        )
+                    # `start` command is used to start processes without blocking execution of rest of the script, see https://ss64.com/nt/start.html.
+                    revertCode: |-
+                        {{ with $revertExecutablePath }}
+                            tasklist /fi "ImageName eq {{ $executableNameWithExtension }}" /fo csv 2>NUL | find /i "{{ $executableNameWithExtension }}">NUL && (
+                                echo Skipping, {{ $executableNameWithExtension }} is already running.
+                            ) || (
+                                if exist "{{ . }}" (
+                                    start "" "{{ . }}" {{ with $revertExecutableArgs }}{{ . }}{{ end }}
+                                    echo Executed {{ . }} {{ with $revertExecutableArgs }}{{ . }}{{ end }}
+                                ) else (
+                                    echo Failed to run the file, it does not exist. 1>&2
+                                )
+                            )
+                        {{ end }}
     -
-        name: KillProcessWhenItStarts
+        name: TerminateExecutableOnLaunch
         parameters:
-            - name: processName
-        # https://docs.microsoft.com/en-us/previous-versions/windows/desktop/xperf/image-file-execution-options
-        code: reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\'{{ $processName }}'" /v "Debugger" /t REG_SZ /d "%windir%\System32\taskkill.exe" /f
-        revertCode: reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\'{{ $processName }}'" /v "Debugger" /f
+            - name: executableNameWithExtension # Filename of the executable (including its extension) to be terminated upon launch.
+        docs: |-
+            It immediately terminates a specified process whenever it starts.
+            The function adds `Debugger` registry value to point to the `taskkill.exe` utility, a command-line tool used for terminating processes.
+            This effectively means that every time the process attempts to start, `taskkill.exe` is invoked instead, leading to the immediate termination of the process.
+        call:
+            -
+                function: TerminateRunningProcess
+                parameters:
+                    executableNameWithExtension: '{{ $executableNameWithExtension }}'
+            -
+                function: Comment
+                parameters:
+                    codeComment: Configure termination of "{{ $executableNameWithExtension }}" immediately upon its startup
+                    revertCodeComment: Remove configuration preventing "{{ $executableNameWithExtension }}" from starting
+            -
+                function: RunInlineCode
+                parameters:
+                    code: reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\{{ $executableNameWithExtension }}" /v "Debugger" /t REG_SZ /d "%WINDIR%\System32\taskkill.exe" /f
+                    revertCode: reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\{{ $executableNameWithExtension }}" /v "Debugger" /f 2>nul
     -
         name: DisableFeature
         parameters:
