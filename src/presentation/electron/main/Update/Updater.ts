@@ -1,5 +1,5 @@
 import { autoUpdater, UpdateInfo } from 'electron-updater';
-import log from 'electron-log';
+import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import { handleManualUpdate, requiresManualUpdate } from './ManualUpdater';
 import { handleAutoUpdate } from './AutoUpdater';
 
@@ -8,21 +8,21 @@ interface IUpdater {
 }
 
 export function setupAutoUpdater(): IUpdater {
-  autoUpdater.logger = log;
+  autoUpdater.logger = ElectronLogger;
 
   // Disable autodownloads because "checking" and "downloading" are handled separately based on the
   // current platform and user's choice.
   autoUpdater.autoDownload = false;
 
   autoUpdater.on('error', (error: Error) => {
-    log.error('@error@\n', error);
+    ElectronLogger.error('@error@\n', error);
   });
 
   let isAlreadyHandled = false;
   autoUpdater.on('update-available', async (info: UpdateInfo) => {
-    log.info('@update-available@\n', info);
+    ElectronLogger.info('@update-available@\n', info);
     if (isAlreadyHandled) {
-      log.info('Available updates is already handled');
+      ElectronLogger.info('Available updates is already handled');
       return;
     }
     isAlreadyHandled = true;

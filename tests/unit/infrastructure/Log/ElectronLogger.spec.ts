@@ -1,42 +1,15 @@
 import { describe, expect } from 'vitest';
-import { ElectronLog } from 'electron-log';
 import { StubWithObservableMethodCalls } from '@tests/unit/shared/Stubs/StubWithObservableMethodCalls';
 import { createElectronLogger } from '@/infrastructure/Log/ElectronLogger';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { itEachLoggingMethod } from './LoggerTestRunner';
+import type { LogFunctions } from 'electron-log';
 
 describe('ElectronLogger', () => {
-  describe('throws if logger is missing', () => {
-    itEachAbsentObjectValue((absentValue) => {
-      // arrange
-      const expectedError = 'missing logger';
-      const electronLog = absentValue as never;
-      // act
-      const act = () => createElectronLogger(electronLog);
-      // assert
-      expect(act).to.throw(expectedError);
-    }, { excludeUndefined: true });
-  });
-  describe('throws if log function is missing', () => {
-    itEachLoggingMethod((functionName, testParameters) => {
-      // arrange
-      const expectedError = `missing "${functionName}" function`;
-      const electronLogMock = {} as Partial<ElectronLog>;
-      electronLogMock[functionName] = undefined;
-      const logger = createElectronLogger(electronLogMock);
-
-      // act
-      const act = () => logger[functionName](...testParameters);
-
-      // assert
-      expect(act).to.throw(expectedError);
-    });
-  });
   describe('methods log the provided params', () => {
     itEachLoggingMethod((functionName, testParameters) => {
       // arrange
       const expectedParams = testParameters;
-      const electronLogMock = new MockElectronLog();
+      const electronLogMock = new ElectronLogStub();
       const logger = createElectronLogger(electronLogMock);
 
       // act
@@ -50,9 +23,51 @@ describe('ElectronLogger', () => {
   });
 });
 
-class MockElectronLog
-  extends StubWithObservableMethodCalls<ElectronLog>
-  implements Partial<ElectronLog> {
+class ElectronLogStub
+  extends StubWithObservableMethodCalls<LogFunctions>
+  implements LogFunctions {
+  public error(...args: unknown[]) {
+    this.registerMethodCall({
+      methodName: 'error',
+      args,
+    });
+  }
+
+  public warn(...args: unknown[]) {
+    this.registerMethodCall({
+      methodName: 'warn',
+      args,
+    });
+  }
+
+  public verbose(...args: unknown[]): void {
+    this.registerMethodCall({
+      methodName: 'verbose',
+      args,
+    });
+  }
+
+  public debug(...args: unknown[]) {
+    this.registerMethodCall({
+      methodName: 'debug',
+      args,
+    });
+  }
+
+  public silly(...args: unknown[]) {
+    this.registerMethodCall({
+      methodName: 'silly',
+      args,
+    });
+  }
+
+  public log(...args: unknown[]) {
+    this.registerMethodCall({
+      methodName: 'log',
+      args,
+    });
+  }
+
   public info(...args: unknown[]) {
     this.registerMethodCall({
       methodName: 'info',

@@ -17,16 +17,18 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { injectKey } from '@/presentation/injectionSymbols';
 import { dumpNames } from './DumpNames';
 
 export default defineComponent({
   setup() {
+    const { log } = injectKey((keys) => keys.useLogger);
     const devActions: readonly DevAction[] = [
       {
         name: 'Log script/category names',
         handler: async () => {
           const names = await dumpNames();
-          console.log(names);
+          log.info(names);
         },
       },
     ];

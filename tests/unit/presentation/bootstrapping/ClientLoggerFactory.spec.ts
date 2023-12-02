@@ -3,7 +3,7 @@ import {
 } from 'vitest';
 import { IRuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/IRuntimeEnvironment';
 import { ClientLoggerFactory } from '@/presentation/bootstrapping/ClientLoggerFactory';
-import { ILogger } from '@/infrastructure/Log/ILogger';
+import { Logger } from '@/application/Common/Log/Logger';
 import { WindowInjectedLogger } from '@/infrastructure/Log/WindowInjectedLogger';
 import { ConsoleLogger } from '@/infrastructure/Log/ConsoleLogger';
 import { NoopLogger } from '@/infrastructure/Log/NoopLogger';
@@ -29,7 +29,7 @@ describe('ClientLoggerFactory', () => {
     });
     const testCases: Array<{
       readonly description: string,
-      readonly expectedType: Constructible<ILogger>,
+      readonly expectedType: Constructible<Logger>,
       readonly environment: IRuntimeEnvironment,
     }> = [
       {

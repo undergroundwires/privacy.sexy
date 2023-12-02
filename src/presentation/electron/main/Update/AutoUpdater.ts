@@ -1,7 +1,7 @@
 import { app, dialog } from 'electron';
 import { autoUpdater, UpdateInfo } from 'electron-updater';
 import { ProgressInfo } from 'electron-builder';
-import log from 'electron-log';
+import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import { UpdateProgressBar } from './UpdateProgressBar';
 
 export async function handleAutoUpdate() {
@@ -23,11 +23,11 @@ function startHandlingUpdateProgress() {
       On macOS, download-progress event is not called.
       So the indeterminate progress will continue until download is finished.
     */
-    log.debug('@download-progress@\n', progress);
+    ElectronLogger.debug('@download-progress@\n', progress);
     progressBar.showProgress(progress);
   });
   autoUpdater.on('update-downloaded', async (info: UpdateInfo) => {
-    log.info('@update-downloaded@\n', info);
+    ElectronLogger.info('@update-downloaded@\n', info);
     progressBar.close();
     await handleUpdateDownloaded();
   });

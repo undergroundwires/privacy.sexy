@@ -37,7 +37,7 @@
     "@juggle/resize-observer": "^3.4.0",
     "ace-builds": "^1.30.0",
     "cross-fetch": "^4.0.0",
-    "electron-log": "^4.4.8",
+    "electron-log": "^5.0.1",
     "electron-progressbar": "^2.1.0",
     "electron-updater": "^6.1.4",
     "file-saver": "^2.0.5",

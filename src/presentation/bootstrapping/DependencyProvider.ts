@@ -12,6 +12,7 @@ import {
 } from '@/presentation/injectionSymbols';
 import { PropertyKeys } from '@/TypeHelpers';
 import { useUserSelectionState } from '@/presentation/components/Shared/Hooks/UseUserSelectionState';
+import { useLogger } from '@/presentation/components/Shared/Hooks/UseLogger';
 
 export function provideDependencies(
   context: IApplicationContext,
@@ -56,6 +57,10 @@ export function provideDependencies(
         const state = di.injectKey((keys) => keys.useCollectionState);
         return useUserSelectionState(state, events);
       },
+    ),
+    useLogger: (di) => di.provide(
+      InjectionKeys.useLogger,
+      useLogger,
     ),
   };
   registerAll(Object.values(resolvers), api);

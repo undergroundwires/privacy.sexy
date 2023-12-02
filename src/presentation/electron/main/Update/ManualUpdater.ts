@@ -2,12 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import { app, dialog, shell } from 'electron';
 import { UpdateInfo } from 'electron-updater';
-import log from 'electron-log';
 import fetch from 'cross-fetch';
 import { ProjectInformation } from '@/domain/ProjectInformation';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { Version } from '@/domain/Version';
 import { parseProjectInformation } from '@/application/Parser/ProjectInformationParser';
+import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import { UpdateProgressBar } from './UpdateProgressBar';
 
 export function requiresManualUpdate(): boolean {
@@ -64,16 +64,16 @@ async function askForVisitingWebsiteForManualUpdate(): Promise<ManualDownloadDia
 }
 
 async function download(info: UpdateInfo, project: ProjectInformation) {
-  log.info('Downloading update manually');
+  ElectronLogger.info('Downloading update manually');
   const progressBar = new UpdateProgressBar();
   progressBar.showIndeterminateState();
   try {
     const filePath = `${path.dirname(app.getPath('temp'))}/privacy.sexy/${info.version}-installer.dmg`;
     const parentFolder = path.dirname(filePath);
     if (fs.existsSync(filePath)) {
-      log.info('Update is already downloaded');
+      ElectronLogger.info('Update is already downloaded');
       await fs.promises.unlink(filePath);
-      log.info(`Deleted ${filePath}`);
+      ElectronLogger.info(`Deleted ${filePath}`);
     } else {
       await fs.promises.mkdir(parentFolder, { recursive: true });
     }
@@ -99,20 +99,20 @@ async function downloadFileWithProgress(
   progressHandler: ProgressCallback,
 ) {
   // We don't download through autoUpdater as it cannot download DMG but requires distributing ZIP
-  log.info(`Fetching ${url}`);
+  ElectronLogger.info(`Fetching ${url}`);
   const response = await fetch(url);
   if (!response.ok) {
     throw Error(`Unable to download, server returned ${response.status} ${response.statusText}`);
   }
   const contentLengthString = response.headers.get('content-length');
   if (contentLengthString === null || contentLengthString === undefined) {
-    log.error('Content-Length header is missing');
+    ElectronLogger.error('Content-Length header is missing');
   }
   const contentLength = +(contentLengthString ?? 0);
   const writer = fs.createWriteStream(filePath);
-  log.info(`Writing to ${filePath}, content length: ${contentLength}`);
+  ElectronLogger.info(`Writing to ${filePath}, content length: ${contentLength}`);
   if (Number.isNaN(contentLength) || contentLength <= 0) {
-    log.error('Unknown content-length', Array.from(response.headers.entries()));
+    ElectronLogger.error('Unknown content-length', Array.from(response.headers.entries()));
     progressHandler = () => { /* do nothing */ };
   }
   const reader = getReader(response);
@@ -137,9 +137,9 @@ async function streamWithProgress(
     receivedLength += chunk.length;
     const percentage = Math.floor((receivedLength / totalLength) * 100);
     progressHandler(percentage);
-    log.debug(`Received ${receivedLength} of ${totalLength}`);
+    ElectronLogger.debug(`Received ${receivedLength} of ${totalLength}`);
   }
-  log.info('Downloaded successfully');
+  ElectronLogger.info('Downloaded successfully');
 }
 
 function getReader(response: Response): NodeJS.ReadableStream | undefined {

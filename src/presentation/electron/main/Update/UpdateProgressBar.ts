@@ -1,7 +1,7 @@
 import ProgressBar from 'electron-progressbar';
 import { ProgressInfo } from 'electron-builder';
 import { app, BrowserWindow } from 'electron';
-import log from 'electron-log';
+import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 
 export class UpdateProgressBar {
   private progressBar: ProgressBar | undefined;
@@ -81,7 +81,7 @@ const progressBarFactory = {
         progressBar.detail = 'Download completed.';
       })
       .on('aborted', (value: number) => {
-        log.info(`progress aborted... ${value}`);
+        ElectronLogger.info(`Progress aborted... ${value}`);
       })
       .on('progress', (value: number) => {
         progressBar.detail = `${value}% ...`;

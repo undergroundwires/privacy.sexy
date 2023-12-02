@@ -32,21 +32,6 @@ describe('ConsoleLogger', () => {
       expect(consoleMock.callHistory[0].args).to.deep.equal(expectedParams);
     });
   });
-  describe('throws if log function is missing', () => {
-    itEachLoggingMethod((functionName, testParameters) => {
-      // arrange
-      const expectedError = `missing "${functionName}" function`;
-      const consoleMock = {} as Partial<Console>;
-      consoleMock[functionName] = undefined;
-      const logger = new ConsoleLogger(consoleMock);
-
-      // act
-      const act = () => logger[functionName](...testParameters);
-
-      // assert
-      expect(act).to.throw(expectedError);
-    });
-  });
 });
 
 class MockConsole
@@ -55,6 +40,27 @@ class MockConsole
   public info(...args: unknown[]) {
     this.registerMethodCall({
       methodName: 'info',
+      args,
+    });
+  }
+
+  public warn(...args: unknown[]) {
+    this.registerMethodCall({
+      methodName: 'warn',
+      args,
+    });
+  }
+
+  public debug(...args: unknown[]) {
+    this.registerMethodCall({
+      methodName: 'debug',
+      args,
+    });
+  }
+
+  public error(...args: unknown[]) {
+    this.registerMethodCall({
+      methodName: 'error',
       args,
     });
   }

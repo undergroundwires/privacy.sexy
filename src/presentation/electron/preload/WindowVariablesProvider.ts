@@ -1,13 +1,12 @@
-import log from 'electron-log';
 import { createNodeSystemOperations } from '@/infrastructure/SystemOperations/NodeSystemOperations';
 import { createElectronLogger } from '@/infrastructure/Log/ElectronLogger';
-import { ILogger } from '@/infrastructure/Log/ILogger';
+import { Logger } from '@/application/Common/Log/Logger';
 import { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
 import { convertPlatformToOs } from './NodeOsMapper';
 
 export function provideWindowVariables(
   createSystem = createNodeSystemOperations,
-  createLogger: () => ILogger = () => createElectronLogger(log),
+  createLogger: () => Logger = () => createElectronLogger(),
   convertToOs = convertPlatformToOs,
 ): WindowVariables {
   return {

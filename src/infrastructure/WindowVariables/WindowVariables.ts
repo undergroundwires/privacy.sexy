@@ -1,11 +1,11 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { ISystemOperations } from '@/infrastructure/SystemOperations/ISystemOperations';
-import { ILogger } from '@/infrastructure/Log/ILogger';
+import { Logger } from '@/application/Common/Log/Logger';
 
 /* Primary entry point for platform-specific injections */
 export interface WindowVariables {
-  readonly isDesktop?: boolean;
+  readonly isDesktop: boolean;
   readonly system?: ISystemOperations;
   readonly os?: OperatingSystem;
-  readonly log?: ILogger;
+  readonly log: Logger;
 }

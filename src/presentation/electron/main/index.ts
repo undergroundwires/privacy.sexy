@@ -3,9 +3,10 @@
 import {
   app, protocol, BrowserWindow, shell, screen,
 } from 'electron';
+import log from 'electron-log/main';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
-import log from 'electron-log';
 import { validateRuntimeSanity } from '@/infrastructure/RuntimeSanity/SanityChecks';
+import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import { setupAutoUpdater } from './Update/Updater';
 import {
   APP_ICON_PATH, PRELOADER_SCRIPT_PATH, RENDERER_HTML_PATH, RENDERER_URL,
@@ -23,6 +24,7 @@ protocol.registerSchemesAsPrivileged([
 ]);
 
 setupLogger();
+
 validateRuntimeSanity({
   // Metadata is used by manual updates.
   validateEnvironmentVariables: true,
@@ -89,7 +91,7 @@ app.on('ready', async () => {
     try {
       await installExtension(VUEJS_DEVTOOLS);
     } catch (e) {
-      log.error('Vue Devtools failed to install:', e.toString());
+      ElectronLogger.error('Vue Devtools failed to install:', e.toString());
     }
   }
   createWindow();
@@ -123,7 +125,7 @@ function loadApplication(window: BrowserWindow) {
     updater.checkForUpdates();
   }
   // Do not remove [WINDOW_INIT]; it's a marker used in tests.
-  log.info('[WINDOW_INIT] Main window initialized and content loading.');
+  ElectronLogger.info('[WINDOW_INIT] Main window initialized and content loading.');
 }
 
 function configureExternalsUrlsOpenBrowser(window: BrowserWindow) {
@@ -150,5 +152,7 @@ function getWindowSize(idealWidth: number, idealHeight: number) {
 }
 
 function setupLogger(): void {
+  // log.initialize(); ← We inject logger to renderer through preloader, this is not needed.
   log.transports.file.level = 'silly';
+  log.eventLogger.startLogging();
 }

@@ -124,9 +124,9 @@
 - 🌍️ **Online**: [https://privacy.sexy](https://privacy.sexy).
 - 🖥️ **Offline**: Download directly for: [Windows](https://github.com/undergroundwires/privacy.sexy/releases/download/0.12.8/privacy.sexy-Setup-0.12.8.exe), [macOS](https://github.com/undergroundwires/privacy.sexy/releases/download/0.12.8/privacy.sexy-0.12.8.dmg), [Linux](https://github.com/undergroundwires/privacy.sexy/releases/download/0.12.8/privacy.sexy-0.12.8.AppImage). For more options, see [here](#additional-install-options).
 
-Online version does not require to run any software on your computer. Offline version has more functions such as running the scripts directly.
+For a detailed comparison of features between the desktop and web versions of privacy.sexy, see [Desktop vs. Web Features](./docs/desktop-vs-web-features.md).
 
-💡 You should apply your configuration from time to time (more than once). It would strengthen your privacy and security control because privacy.sexy and its scripts get better and stronger in every new version.
+💡 Regularly applying your configuration with privacy.sexy is recommended, especially after each new release and major operating system updates. Each version updates scripts to enhance stability, privacy, and security.
 
 [![privacy.sexy application](img/screenshot.png?raw=true )](https://privacy.sexy)
 

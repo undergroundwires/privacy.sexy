@@ -1,4 +1,4 @@
-import { splitTextIntoLines, indentText, filterEmpty } from '../utils/text';
+import { splitTextIntoLines, indentText } from '../utils/text';
 import { log, die } from '../utils/log';
 import { readAppLogFile } from './app-logs';
 import { STDERR_IGNORE_PATTERNS } from './error-ignore-patterns';
@@ -10,8 +10,6 @@ const EXPECTED_LOG_MARKERS = [
   '[PRELOAD_INIT]',
   '[APP_INIT]',
 ];
-
-type ProcessType = 'main' | 'renderer';
 
 export async function checkForErrors(
   stderr: string,
@@ -31,13 +29,11 @@ async function gatherErrors(
   projectDir: string,
 ): Promise<ExecutionError[]> {
   if (!projectDir) { throw new Error('missing project directory'); }
-  const { logFileContent: mainLogs, logFilePath: mainLogFile } = await readAppLogFile(projectDir, 'main');
-  const { logFileContent: rendererLogs, logFilePath: rendererLogFile } = await readAppLogFile(projectDir, 'renderer');
-  const allLogs = filterEmpty([mainLogs, rendererLogs, stderr]).join('\n');
+  const { logFileContent: mainLogs, logFilePath: mainLogFile } = await readAppLogFile(projectDir);
+  const allLogs = [mainLogs, stderr].filter(Boolean).join('\n');
   return [
     verifyStdErr(stderr),
-    verifyApplicationLogsExist('main', mainLogs, mainLogFile),
-    verifyApplicationLogsExist('renderer', rendererLogs, rendererLogFile),
+    verifyApplicationLogsExist(mainLogs, mainLogFile),
     ...EXPECTED_LOG_MARKERS.map(
       (marker) => verifyLogMarkerExistsInLogs(allLogs, marker),
     ),
@@ -72,13 +68,12 @@ function formatError(error: ExecutionError): string {
 }
 
 function verifyApplicationLogsExist(
-  processType: ProcessType,
   logContent: string | undefined,
   logFilePath: string,
 ): ExecutionError | undefined {
   if (!logContent?.length) {
     return describeError(
-      `Missing application (${processType}) logs`,
+      'Missing application logs',
       'Application logs are empty not were not found.'
         + `\nLog path: ${logFilePath}`,
     );

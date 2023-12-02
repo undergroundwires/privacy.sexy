@@ -177,10 +177,11 @@ function expectObjectOnDesktop<T>(key: keyof WindowVariables) {
   describe('does not object type when not on desktop', () => {
     itEachInvalidObjectValue((invalidObjectValue) => {
       // arrange
+      const isOnDesktop = false;
       const invalidObject = invalidObjectValue as T;
       const input: WindowVariables = {
         ...new WindowVariablesStub(),
-        isDesktop: undefined,
+        isDesktop: isOnDesktop,
         [key]: invalidObject,
       };
       // act

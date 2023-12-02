@@ -3,7 +3,7 @@ import { provideWindowVariables } from '@/presentation/electron/preload/WindowVa
 import { SystemOperationsStub } from '@tests/unit/shared/Stubs/SystemOperationsStub';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { ISystemOperations } from '@/infrastructure/SystemOperations/ISystemOperations';
-import { ILogger } from '@/infrastructure/Log/ILogger';
+import { Logger } from '@/application/Common/Log/Logger';
 import { LoggerStub } from '@tests/unit/shared/Stubs/LoggerStub';
 
 describe('WindowVariablesProvider', () => {
@@ -55,7 +55,7 @@ class TestContext {
 
   private os: OperatingSystem = OperatingSystem.Android;
 
-  private log: ILogger = new LoggerStub();
+  private log: Logger = new LoggerStub();
 
   public withSystem(system: ISystemOperations): this {
     this.system = system;
@@ -67,7 +67,7 @@ class TestContext {
     return this;
   }
 
-  public withLogger(log: ILogger): this {
+  public withLogger(log: Logger): this {
     this.log = log;
     return this;
   }

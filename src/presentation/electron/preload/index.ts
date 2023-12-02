@@ -1,8 +1,8 @@
 // This file is used to securely expose Electron APIs to the application.
 
 import { contextBridge } from 'electron';
-import log from 'electron-log';
 import { validateRuntimeSanity } from '@/infrastructure/RuntimeSanity/SanityChecks';
+import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import { provideWindowVariables } from './WindowVariablesProvider';
 
 validateRuntimeSanity({
@@ -20,4 +20,4 @@ Object.entries(windowVariables).forEach(([key, value]) => {
 });
 
 // Do not remove [PRELOAD_INIT]; it's a marker used in tests.
-log.info('[PRELOAD_INIT] Preload script successfully initialized and executed.');
+ElectronLogger.info('[PRELOAD_INIT] Preload script successfully initialized and executed.');
