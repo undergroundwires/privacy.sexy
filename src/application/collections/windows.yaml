@@ -1643,7 +1643,7 @@ actions:
 
                             [1]: https://web.archive.org/web/20230924112733/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-appcompat#appcompatturnoffprograminventory "ADMX_AppCompat Policy CSP - Windows Client Management | Microsoft Learn"
                             [2]: https://web.archive.org/web/20230927174739/https://www.stigviewer.com/stig/windows_10/2018-04-06/finding/V-63663 "The Application Compatibility Program Inventory must be prevented from collecting data and sending the information to Microsoft | stigviewer.com"
-                            [3]: https://web.archive.org/web/20230927174824/https://learn.microsoft.com/en-us/azure/governance/policy/samples/guest-configuration-baseline-windows#windows-components "Reference - Azure Policy guest configuration baseline for Windows - Azure Policy | Microsoft Learn"
+                            [3]: https://web.archive.org/web/20231105200918/https://learn.microsoft.com/en-us/azure/governance/policy/samples/guest-configuration-baseline-windows#windows-components "Reference - Azure Policy guest configuration baseline for Windows - Azure Policy | Microsoft Learn | learn.microsoft.com"
                             [4]: https://web.archive.org/web/20210729125842/https://www.cyber.gov.au/acsc/view-all-content/publications/hardening-microsoft-windows-10-version-1909-workstations "Hardening Microsoft Windows 10 version 1909 Workstations | Cyber.gov.au"
                             [5]: https://web.archive.org/web/20230927174843/https://csrc.nist.gov/CSRC/media/Projects/United-States-Government-Configuration-Baseline/data/documentation/USGCB-Windows-Settings.xls "USGCB Windows Settings | nist.gov"
                         code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppCompat" /v "DisableInventory" /t REG_DWORD /d 1 /f
@@ -4607,6 +4607,9 @@ actions:
                     reg add "HKLM\Software\Piriform\CCleaner" /v "(Cfg)SoftwareUpdaterIpm" /t REG_DWORD /d 1 /f
     -
         category: Security improvements
+        docs: |-
+            This category encompasses a range of scripts designed to improve the security of your system by enforcing security best practices.
+            These scripts help protect your system against various types of cyber threats and unauthorized access.
         children:
             -
                 category: Enable protection against Meltdown and Spectre
@@ -4714,11 +4717,45 @@ actions:
                 code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "DisableExceptionChainValidation" /t REG_DWORD /d 0 /f
                 revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "DisableExceptionChainValidation" /t REG_DWORD /d 1 /f
             -
-                name: Disable anonymous enumeration of SAM accounts
+                name: Disable unauthorized user account discovery (anonymous SAM enumeration)
                 recommend: standard
-                docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63745
-                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "RestrictAnonymousSAM" /t REG_DWORD /d 1 /f
-                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "RestrictAnonymousSAM" /t REG_DWORD /d 0 /f
+                docs: |-
+                    This script increases your system's security by preventing unauthorized users from seeing account names in the
+                    Security Accounts Manager (SAM) [1] [2] [3] [4] [5] [6].
+                    When account names are exposed, attackers might use them for guessing passwords or tricking people into revealing
+                    sensitive information [4] [6] [7] [8].
+                    This is a security action recommended by organizations like the Department of Defense [1], NASA [2], IRS [8],
+                    NIST [6], CIS [4], and Microsoft [3].
+
+                    The change is enacted through the `HKLM\SYSTEM\CurrentControlSet\Control\Lsa!RestrictAnonymousSAM` registry
+                    value [1] [2] [4] [5]. By default, it's enabled [4] and Windows restricts this setting if the registry value does
+                    not exist [3].
+
+                    While the script secures the system from these threats, it also has implications for interoperability with older systems.
+                    It will prevent the establishment of trusts with Windows NT 4.0 domains [4] [5] [7] [9] and cause issues for older
+                    client operating systems, like Windows NT 3.51 and Windows 95, when they try to access server resources [4] [5] [7].
+                    Typically, anonymous connections are requested by earlier versions of clients (down-level clients) during SMB session setup [7].
+
+                    The script has no impact on domain controllers since their behavior in this aspect is controlled by different settings [5] [7].
+                    The policy setting does not require a restart to become effective [5], and there is no impact on current systems
+                    where the default behavior already includes this restriction [4].
+
+                    Despite the potential interoperability issues with older systems, the script maintains a security posture that is
+                    important in modern networks to minimize unauthorized access and protect user privacy.
+
+                    [1]: https://web.archive.org/web/20231105200434/https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63745 "Anonymous enumeration of SAM accounts must not be allowed. | www.stigviewer.com"
+                    [2]: https://web.archive.org/web/20231105200713/https://asapdata.arc.nasa.gov/share/Paul/CIS_Microsoft_Windows_Server_2016_RTM_Release_1607_Benchmark_v1.1.0.pdf "CIS Microsoft Windows Server 2016 RTM (Release 1607) Benchmark | nasa.gov"
+                    [3]: https://web.archive.org/web/20231105200918/https://learn.microsoft.com/en-us/azure/governance/policy/samples/guest-configuration-baseline-windows#security-options---network-access "Reference - Azure Policy guest configuration baseline for Windows - Azure Policy | Microsoft Learn | learn.microsoft.com"
+                    [4]: https://web.archive.org/web/20231105201133/https://community.mis.temple.edu/mis5170sec001sec701sp2018/files/2018/02/CIS_Microsoft_Windows_Server_2012_R2_Benchmark_v2.2.1.pdf "CIS Microsoft Windows Server 2012 R2 Benchmark | temple.edu"
+                    [5]: https://web.archive.org/web/20231105201446/https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/jj852230%28v=ws.11%29 "Network access: Do not allow anonymous enumeration of SAM accounts | Microsoft Learn | learn.microsoft.com"
+                    [6]: https://web.archive.org/web/20230927174843/https://csrc.nist.gov/CSRC/media/Projects/United-States-Government-Configuration-Baseline/data/documentation/USGCB-Windows-Settings.xls "USGCB Windows Settings | nist.gov"
+                    [7]: https://web.archive.org/web/20231105201346/https://support.microsoft.com/en-us/topic/client-service-and-program-issues-can-occur-if-you-change-security-settings-and-user-rights-assignments-0cb6901b-dcbf-d1a9-e9ea-f1b49a56d53a "Client, service, and program issues can occur if you change security settings and user rights assignments - Microsoft Support | support.microsoft.com"
+                    [8]: https://web.archive.org/web/20231105200853/https://www.irs.gov/pub/irs-utl/safeguards-scsem-win-server2016.xlsx "IRS Office of Safeguards SCSEM | irs.gov"
+                    [9]: https://web.archive.org/web/20231105201413/https://learn.microsoft.com/en-us/troubleshoot/windows-server/windows-security/trust-between-windows-ad-domain-not-work-correctly "Trust between a Windows NT domain and an Active Directory domain can't be established or it doesn't work as expected - Windows Server | Microsoft Learn | learn.microsoft.com"
+                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v "RestrictAnonymousSAM" /t REG_DWORD /d 1 /f
+                revertCode: |-
+                    :: Default value is `1` on modern Windows versions (Windows 10 since 22H2, Windows 11 since 22H2)
+                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v "RestrictAnonymousSAM" /t REG_DWORD /d 1 /f
             -
                 name: Disable anonymous access to named pipes and shares
                 recommend: standard
