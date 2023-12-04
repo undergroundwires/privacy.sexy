@@ -1,17 +1,17 @@
 import { autoUpdater, UpdateInfo } from 'electron-updater';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
-import { handleManualUpdate, requiresManualUpdate } from './ManualUpdater';
-import { handleAutoUpdate } from './AutoUpdater';
+import { requiresManualUpdate, startManualUpdateProcess } from './ManualUpdater/ManualUpdateCoordinator';
+import { handleAutoUpdate } from './AutomaticUpdateCoordinator';
 
-interface IUpdater {
+interface Updater {
   checkForUpdates(): Promise<void>;
 }
 
-export function setupAutoUpdater(): IUpdater {
+export function setupAutoUpdater(): Updater {
   autoUpdater.logger = ElectronLogger;
 
-  // Disable autodownloads because "checking" and "downloading" are handled separately based on the
-  // current platform and user's choice.
+  // Auto-downloads are disabled to allow separate handling of 'check' and 'download' actions,
+  // which vary based on the specific platform and user preferences.
   autoUpdater.autoDownload = false;
 
   autoUpdater.on('error', (error: Error) => {
@@ -39,7 +39,7 @@ export function setupAutoUpdater(): IUpdater {
 
 async function handleAvailableUpdate(info: UpdateInfo) {
   if (requiresManualUpdate()) {
-    await handleManualUpdate(info);
+    await startManualUpdateProcess(info);
     return;
   }
   await handleAutoUpdate();

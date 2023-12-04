@@ -1,6 +1,7 @@
 # Security Policy
 
-privacy.sexy takes security seriously. Commitment is made to address all security issues with urgency. Responsible reporting of any discovered vulnerabilities in the project is highly encouraged.
+Security is a top priority at privacy.sexy.
+Please report any discovered vulnerabilities responsibly.
 
 ## Reporting a Vulnerability
 
@@ -11,20 +12,31 @@ Efforts to responsibly disclose findings are greatly appreciated. To report a se
 
 ## Security Report Handling
 
-Upon receipt of a security report, the following actions will be taken:
+Upon receiving a security report, the process involves:
 
-- The report will be confirmed, identifying the affected components.
-- The impact and severity of the issue will be assessed.
-- Work on a fix and plan a release to address the vulnerability will be initiated.
-- The reporter will be kept updated about the progress.
+- Confirming the report and identifying affected components.
+- Assessing the impact and severity of the issue.
+- Fixing the vulnerability and planning a release to address it.
+- Keeping the reporter informed about progress.
 
-## Testing
+## Security Practices
 
-Regular and extensive testing is conducted to ensure robust security in the project. Information about testing practices can be found in the [Testing Documentation](./docs/tests.md).
+### Update Security and Integrity
+
+privacy.sexy benefits from automated update processes including security tests. Automated deployments from source code ensure immediate and secure updates, mirroring the latest source code. This aligns the deployed application with the expected source code, enhancing transparency and trust. For more details, see [CI/CD Documentation](./docs/ci-cd.md).
+
+Every desktop update undergoes a thorough verification process. Updates are cryptographically signed to ensure authenticity and integrity, preventing tampered versions from reaching your device. Version checks are conducted to prevent downgrade attacks.
+
+### Testing
+
+privacy.sexy employs a comprehensive testing strategy that integrates extensive automated testing with manual community-driven tests.
+Details on testing practices are available in the [Testing Documentation](./docs/tests.md).
 
 ## Support
 
-For additional assistance or any unanswered questions, [submit a GitHub issue](https://github.com/undergroundwires/privacy.sexy/issues/new/choose). Security concerns are a priority, and necessary support to address them is assured.
+For help or any questions, [submit a GitHub issue](https://github.com/undergroundwires/privacy.sexy/issues/new/choose). Addressing security concerns is a priority, and we ensure the necessary support.
+
+Support privacy.sexy's commitment to security by [making a donation ❤️](https://github.com/sponsors/undergroundwires). Your contributions aid in maintaining and enhancing the project's security features.
 
 ---
 

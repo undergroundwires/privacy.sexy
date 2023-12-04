@@ -7,7 +7,7 @@ import log from 'electron-log/main';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { validateRuntimeSanity } from '@/infrastructure/RuntimeSanity/SanityChecks';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
-import { setupAutoUpdater } from './Update/Updater';
+import { setupAutoUpdater } from './Update/UpdateInitializer';
 import {
   APP_ICON_PATH, PRELOADER_SCRIPT_PATH, RENDERER_HTML_PATH, RENDERER_URL,
 } from './ElectronConfig';
