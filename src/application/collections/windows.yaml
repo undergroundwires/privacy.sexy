@@ -8187,40 +8187,34 @@ actions:
             -
                 name: Remove "Windows Security" app (`SecHealthUI`) (breaks Windows Security user interface)
                 docs: |-
-                    This script uninstalls the "Windows Security app" [1], also known as `SecHealthUI` [1] [2] [3].
+                    This script removes the "Windows Security" app [1], known as `SecHealthUI` [2] [3].
+                    This app serves as the interface for Windows Security [2], helping users monitor and manage their computer's security [4].
+                    It provides alerts and guidance on vulnerabilities through the Action Center [4].
 
-                    The Windows Security app is a tool that aids users in safeguarding their computer systems [4]. It monitors the computer's health
-                    state and provides alerts and guidance to address vulnerabilities, making these alerts visible through the Action Center [4].
+                    However, uninstalling the "Windows Security" app has significant implications:
 
-                    While this enhances privacy, there's a trade-off with security. It can make the computer more vulnerable to threats, as it will no
-                    longer alert the user about existing vulnerabilities and will not communicate updates to Action Center, where they are displayed to
-                    the end user [4]. It will also break the user interface that allows you to configure other Windows security features, such as
-                    Tamper Protection [5].
+                    - It may increase vulnerability to threats by no longer alerting users about security issues or communicating updates through the Action Center [4].
+                    - Disabling its interface can hinder the effective management of security settings, including tamper protection [5].
 
-                    Uninstalling the Windows Security app enhances privacy by reducing the digital footprints and amount of personal and system data collected and
-                    made visible:
+                    Despite these risks, removing the app can enhance privacy in several ways:
 
-                    - **Reduced Digital Footprints**: Disabling the Windows Security app can minimize the amount of personal and system data that is collected, shown
-                    and sent to Microsoft, providing users with more control over their information. This reduces amount of data that can be used to study your
-                    behavior, such as by inspecting detected threats that are visibhle in your Windows Security app [6]. So the Windows Security app, the system
-                    leaves fewer digital traces that can be exploited to track user behavior or gather sensitive information.
-                    - **More control over security settings**: Removing the user interface enforces the system owner to do changes programetically, removing the
-                    risks for unintended misconfigurations, or restricting access to the users of the computer.
-                    - **Limited Notifications and Alerts:** Users gain freedom from incessant notifications and alerts, which may sometimes inadvertently share
-                    sensitive system or user data.
-                    - **User Autonomy Over System Security:**: Users have the autonomy to choose alternative security measures and software, potentially opting
-                    for solutions that prioritize privacy and have a more robust commitment to not sharing user data.
-                    - **Enhanced anonymity**: This application is under [Microsoft's privacy policy](https://web.archive.org/web/20231006114659/https://privacy.microsoft.com/en-us/privacystatement)
-                    which allows Microsoft to send your data remote entities, constantly comunicate with Microsoft servers.
+                    - **Less personal data collection**: Reduces the collection and display of personal and system data such as threats [6], limiting information used to analyze user behavior.
+                    - **More control over security settings**: Encourages managing security settings programmatically, reducing accidental misconfigurations and unauthorized access.
+                    - **Decreased notifications and alerts**: Reduces the number of notifications that may expose sensitive information.
+                    - **User choice in security tools**: Offers freedom to choose alternative privacy-focused security measures.
+                    - **Increased anonymity**: By uninstalling the app, users reduce the amount of data shared under the terms of
+                      [Microsoft's privacy policy](https://web.archive.org/web/20231006114659/https://privacy.microsoft.com/en-us/privacystatement),
+                      which allows Microsoft to collect and share data with external entities when the app is in use.
 
                     This app comes pre-installed on certain versions of Windows [7] [8].
+                    The package is named `Microsoft.Windows.SecHealthUI` on Windows 10 and `Microsoft.SecHealthUI` on Windows 11 [1] [2].
 
-                    This is a separate app from each of the individual Defender features [9], and it is updated independently from the OS [10]. Even after
-                    uninstallation, Windows will continue to send security notifications unless those notifications are separately disabled [11]. In a similar manner,
-                    uninstalling the Windows Security app does not disable Microsoft Defender Antivirus or the Microsoft Defender Firewall [12].
+                    It operates independently from individual Defender features [9] and is updated separately from the operating system [10].
+                    Uninstalling it does not disable Microsoft Defender Antivirus or Firewall [11],
+                    and Windows will continue sending security notifications unless disabled separately [12].
 
-                    > **Caution:** Uninstalling the Windows Security app is a significant action that should be undertaken with a clear understanding of the implications for
-                    the security and operation of your computer system.
+                    > **Caution**: Uninstalling "Windows Security" app can expose your system to threats and limit your ability to configure
+                    > security settings. It should only be done with a full understanding of the consequences.
 
                     [1]: https://web.archive.org/web/20231006113851/https://support.microsoft.com/en-us/topic/windows-security-update-a6ac7d2e-b1bf-44c0-a028-41720a242da3 "Windows Security Update - Microsoft Support"
                     [2]: https://github.com/undergroundwires/privacy.sexy/issues/195 "[BUG]: Uninstalling the SecHealthUI fails, despite the app being installed. · Issue #195 · undergroundwires/privacy.sexy"
@@ -8232,15 +8226,28 @@ actions:
                     [8]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                     [9]: https://web.archive.org/web/20231013153902/https://learn.microsoft.com/en-us/windows/security/operating-system-security/system-security/windows-defender-security-center/windows-defender-security-center#how-windows-security-works-with-windows-security-features "Windows Security - Windows Security | Microsoft Learn"
                     [10]: https://web.archive.org/web/20231006115836/https://support.microsoft.com/en-us/topic/kb5020779-the-vulnerable-driver-blocklist-after-the-october-2022-preview-release-3fcbe13a-6013-4118-b584-fcfbc6a09936 "KB5020779 The vulnerable driver blocklist after the October 2022 preview release - Microsoft Support"
-                    [11]: https://web.archive.org/web/20231006115826/https://support.microsoft.com/en-us/windows/windows-security-notifications-6a59ce6a-e1e0-4795-b080-ba92d49644b2 "Windows Security notifications - Microsoft Support"
-                    [12]: https://web.archive.org/web/20231006115845/https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/microsoft-defender-security-center-antivirus?view=o365-worldwide "Microsoft Defender Antivirus in the Windows Security app | Microsoft Learn"
+                    [11]: https://web.archive.org/web/20231006115845/https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/microsoft-defender-security-center-antivirus?view=o365-worldwide "Microsoft Defender Antivirus in the Windows Security app | Microsoft Learn"
+                    [12]: https://web.archive.org/web/20231006115826/https://support.microsoft.com/en-us/windows/windows-security-notifications-6a59ce6a-e1e0-4795-b080-ba92d49644b2 "Windows Security notifications - Microsoft Support"
                 call:
-                    function: UninstallSystemApp
-                    parameters:
-                        # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ❌ Missing
-                        # More info     : Get-AppxPackage Microsoft.Windows.SecHealthUI
-                        packageName: Microsoft.Windows.SecHealthUI
-                        publisherId: cw5n1h2txyewy
+                    -
+                        function: UninstallNonRemovableStoreAppWithCleanup
+                        parameters:
+                            # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ❌ Missing
+                            # More info     : Get-AppxPackage Microsoft.Windows.SecHealthUI
+                            packageName: Microsoft.Windows.SecHealthUI
+                            publisherId: cw5n1h2txyewy
+                    -
+                        function: UninstallNonRemovableStoreApp
+                        # Notes:
+                        #   - Although not a system app, this app is flagged as 'NonRemovable'.
+                        #     Therefore, `UninstallNonRemovableStoreApp` is preferred over `UninstallStoreApp`.
+                        #   - Attempts to remove the app installation files lead to permission errors, even with file ACLs permissions granted.
+                        #     Therefore, `UninstallNonRemovableStoreApp` is preferred over `UninstallNonRemovableStoreAppWithCleanup`.
+                        parameters:
+                            # Existence     : Windows 10 (≥ 22H2): ❌ Missing | Windows 11 (≥ 22H2): ✅ Exists
+                            # More info     : Get-AppxPackage Microsoft.SecHealthUI
+                            packageName: Microsoft.SecHealthUI
+                            publisherId: 8wekyb3d8bbwe
     -
         category: UI for privacy
         children:
@@ -8662,9 +8669,10 @@ actions:
 
                     The applications are categorized as:
 
-                    - **Installed**: Included with the OS installation [1] [2]. They are stored in the `C:\Program Files\WindowsApps\{PackageFamilyName}` directory [1].
-                    - **Provisioned**: Added when you log in with a new user account for the first time [1] [2] [3]. They are typically located in
-                    `C:\Program Files\WindowsApps\{PackageName}` [1]. Following PowerShell command can be used to view all provisioned apps:
+                    - **Installed**: Included with the OS installation [1] [2]. They are stored in the `C:\Program Files\WindowsApps\{PackageFullName}` directory [1].
+                    - **Provisioned**: Added when you log in with a new user account for the first time [1] [2] [3].
+                    They are located in `C:\Program Files\WindowsApps\{PackageFullName}` [1].
+                    Following PowerShell command can be used to view all provisioned apps:
                     `Get-AppxProvisionedPackage -Online | Format-Table DisplayName, PackageName, PublisherId` [3].
                     - **System apps**: Integral components of Windows [1] [2].
 
@@ -9998,7 +10006,7 @@ actions:
                                     [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                     [2]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                         # More info     : Get-AppxPackage 1527c705-839a-4832-9118-54d4Bd6a0c89
@@ -10012,7 +10020,7 @@ actions:
                                     [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                     [2]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                         # More info     : Get-AppxPackage c5e2524a-ea46-4f67-841f-6a9465d9d515
@@ -10026,7 +10034,7 @@ actions:
                                     [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                     [2]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                         # More info     : Get-AppxPackage E2A4F912-2574-4A75-9BB0-0D023378592B
@@ -10040,7 +10048,7 @@ actions:
                                     [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                     [2]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                         # More info     : Get-AppxPackage F46D4000-FD22-4DB4-AC8E-4E1DDDE828FE
@@ -10054,7 +10062,7 @@ actions:
                                     [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                     [2]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ❌ Missing | Windows 11 (≥ 22H2): ❌ Missing
                                         # More info     : Get-AppxPackage InputApp
@@ -10089,7 +10097,7 @@ actions:
                                     [6]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                     [7]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                         # More info     : Get-AppxPackage Microsoft.AAD.BrokerPlugin
@@ -10106,7 +10114,7 @@ actions:
                                     [2]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                     [3]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                         # More info     : Get-AppxPackage Microsoft.AccountsControl
@@ -10120,7 +10128,7 @@ actions:
                                     [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                     [2]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                         # More info     : Get-AppxPackage Microsoft.AsyncTextService
@@ -10137,7 +10145,7 @@ actions:
                                     [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                     [2]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                         # More info     : Get-AppxPackage Microsoft.BioEnrollment
@@ -10152,7 +10160,7 @@ actions:
                                     [2]: https://web.archive.org/web/20231006175115/https://learn.microsoft.com/en-us/windows/client-management/mdm/applocker-csp "AppLocker CSP - Windows Client Management | Microsoft Learn"
                                     [3]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                         # More info     : Get-AppxPackage Microsoft.CredDialogHost
@@ -10166,7 +10174,7 @@ actions:
                                     [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                     [2]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                         # More info     : Get-AppxPackage Microsoft.ECApp
@@ -10182,7 +10190,7 @@ actions:
                                     [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                     [2]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                         # More info     : Get-AppxPackage Microsoft.LockApp
@@ -10229,7 +10237,7 @@ actions:
                                             [4]: https://web.archive.org/web/20231004085037/https://learn.microsoft.com/en-us/lifecycle/faq/internet-explorer-microsoft-edge "Lifecycle FAQ - Internet Explorer and Microsoft Edge | Microsoft Learn"
                                             [5]: https://web.archive.org/web/20231008125552/https://support.microsoft.com/en-us/windows/-windows-activity-history-and-your-privacy-2b279964-44ec-8c2f-e0c2-6779b07d2cbd "Windows activity history and your privacy - Microsoft Support"
                                         call:
-                                            function: UninstallSystemApp
+                                            function: UninstallNonRemovableStoreAppWithCleanup
                                             parameters:
                                                 # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                                 # More info     : Get-AppxPackage Microsoft.MicrosoftEdge
@@ -10255,7 +10263,7 @@ actions:
                                             [3]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                             [4]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                         call:
-                                            function: UninstallSystemApp
+                                            function: UninstallNonRemovableStoreAppWithCleanup
                                             parameters:
                                                 # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                                 # More info     : Get-AppxPackage Microsoft.MicrosoftEdgeDevToolsClient
@@ -10315,7 +10323,7 @@ actions:
                                     [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                     [2]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                         # More info     : Get-AppxPackage Microsoft.Win32WebViewHost
@@ -10332,7 +10340,7 @@ actions:
                                     [2]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 recommend: strict
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ❌ Missing | Windows 11 (≥ 22H2): ❌ Missing
                                         # More info     : Get-AppxPackage Microsoft.PPIProjection
@@ -10346,7 +10354,7 @@ actions:
                                     [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                     [2]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                         # More info     : Get-AppxPackage Microsoft.Windows.Apprep.ChxApp
@@ -10360,7 +10368,7 @@ actions:
                                     [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                     [2]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                         # More info     : Get-AppxPackage Microsoft.Windows.AssignedAccessLockApp
@@ -10374,7 +10382,7 @@ actions:
                                     [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                     [2]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                         # More info     : Get-AppxPackage Microsoft.Windows.CapturePicker
@@ -10417,7 +10425,7 @@ actions:
                                     [12]: https://github.com/undergroundwires/privacy.sexy/issues/67 "[BUG]: Unable to change PIN and Password · Issue #67 · undergroundwires/privacy.sexy | github.com"
 
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                         # More info     : Get-AppxPackage Microsoft.Windows.CloudExperienceHost
@@ -10448,7 +10456,7 @@ actions:
                                     [4]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                     [5]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                         # More info     : Get-AppxPackage Microsoft.Windows.ContentDeliveryManager
@@ -10477,7 +10485,7 @@ actions:
                                     [8]: https://web.archive.org/web/20231007222922/https://learn.microsoft.com/en-us/answers/questions/893937/searchapp-exe-connecting-to-ms-for-no-reason "Searchapp.exe connecting to MS for no reason. - Microsoft Q&A"
                                 call:
                                     -
-                                        function: UninstallSystemApp
+                                        function: UninstallNonRemovableStoreAppWithCleanup
                                         parameters:
                                             # Existence     : Windows 10 (≥ 22H2): ❌ Missing | Windows 11 (≥ 22H2): ❌ Missing
                                             # More info     : Get-AppxPackage Microsoft.Windows.Cortana
@@ -10504,7 +10512,7 @@ actions:
                                     [1]: https://web.archive.org/web/20231003184605/https://www.addictivetips.com/windows-tips/check-pc-windows-holographic-app-requirements/ "Check If Your PC Meets The Windows Holographic App Requirements | addictivetips.com"
                                     [2]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ❌ Missing | Windows 11 (≥ 22H2): ❌ Missing
                                         # More info     : Get-AppxPackage Microsoft.Windows.Holographic.FirstRun
@@ -10535,7 +10543,7 @@ actions:
                                             [3]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                             [4]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                         call:
-                                            function: UninstallSystemApp
+                                            function: UninstallNonRemovableStoreAppWithCleanup
                                             parameters:
                                                 # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                                 # More info     : Get-AppxPackage Microsoft.Windows.OOBENetworkCaptivePortal
@@ -10563,7 +10571,7 @@ actions:
                                             [3]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                             [4]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                         call:
-                                            function: UninstallSystemApp
+                                            function: UninstallNonRemovableStoreAppWithCleanup
                                             parameters:
                                                 # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                                 # More info     : Get-AppxPackage Microsoft.Windows.OOBENetworkConnectionFlow
@@ -10597,7 +10605,7 @@ actions:
                                     [5]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                     [6]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                         # More info     : Get-AppxPackage Microsoft.Windows.ParentalControls
@@ -10625,7 +10633,7 @@ actions:
                                     [3]: https://web.archive.org/web/20231009112816/https://blogs.windows.com/windowsexperience/2016/10/26/empowering-a-new-wave-of-creativity-with-the-windows-10-creators-update-and-surface-studio/ "Empowering a new wave of creativity with the Windows 10 Creators Update and Surface Studio | Windows Experience Blog"
                                     [4]: https://web.archive.org/web/20231009111644/https://strontic.github.io/xcyclopedia/library/PeopleExperienceHost.exe-4DB57408AA06543E575368FEDC280B4A. "PeopleExperienceHost.exe | Windows My People | STRONTIC"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                         # More info     : Get-AppxPackage Microsoft.Windows.PeopleExperienceHost
@@ -10639,7 +10647,7 @@ actions:
                                     [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                     [2]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                         # More info     : Get-AppxPackage Microsoft.Windows.PinningConfirmationDialog
@@ -10663,7 +10671,7 @@ actions:
                                     [1]: https://web.archive.org/web/20231008120335/https://learn.microsoft.com/en-us/windows/apps/design/shell/tiles-and-notifications/secondary-tiles "Secondary tiles - Windows apps | Microsoft Learn"
                                     [2]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ❌ Missing | Windows 11 (≥ 22H2): ❌ Missing
                                         # More info     : Get-AppxPackage Microsoft.Windows.SecondaryTileExperience
@@ -10693,7 +10701,7 @@ actions:
                                     [4]: https://web.archive.org/web/20231008122321/https://learn.microsoft.com/en-us/education/windows/take-tests-in-windows "Take tests and assessments in Windows - Windows Education | Microsoft Learn"
                                     [5]: https://web.archive.org/web/20231008122328/https://learn.microsoft.com/en-us/windows/client-management/mdm/secureassessment-csp "SecureAssessment CSP - Windows Client Management | Microsoft Learn"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                         # More info     : Get-AppxPackage Microsoft.Windows.SecureAssessmentBrowser
@@ -10707,7 +10715,7 @@ actions:
 
                                     [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ❌ Missing | Windows 11 (≥ 22H2): ❌ Missing
                                         # More info     : Get-AppxPackage Microsoft.WindowsFeedback
@@ -10730,7 +10738,7 @@ actions:
                                     [3]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 recommend: strict
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                         # More info     : Get-AppxPackage Microsoft.XboxGameCallableUI
@@ -10745,7 +10753,7 @@ actions:
                                     [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                     [2]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                         # More info     : Get-AppxPackage Windows.CBSPreview
@@ -10758,7 +10766,7 @@ actions:
 
                                     [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ❌ Missing | Windows 11 (≥ 22H2): ❌ Missing
                                         # More info     : Get-AppxPackage Windows.ContactSupport
@@ -10772,7 +10780,7 @@ actions:
                                     [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                     [2]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ❌ Missing | Windows 11 (≥ 22H2): ❌ Missing
                                         # More info     : Get-AppxPackage Windows.Print3D
@@ -10786,7 +10794,7 @@ actions:
                                     [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                     [2]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
-                                    function: UninstallSystemApp
+                                    function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         # Existence     : Windows 10 (≥ 22H2): ✅ Exists | Windows 11 (≥ 22H2): ✅ Exists
                                         # More info     : Get-AppxPackage Windows.PrintDialog
@@ -12139,40 +12147,13 @@ functions:
                         :: Remove '{{ $packageName }}' from deprovisioned list to allow reinstall during updates.
                         reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned\{{ $packageName }}_{{ $publisherId }}" /f 2>nul
     -
-        name: UninstallSystemApp
+        name: UninstallNonRemovableStoreApp
         parameters:
             - name: packageName
             - name: publisherId
         call:
             -
-                # Installation (SystemApps)
-                #   - Parent    : %WINDIR%\SystemApps\{PackageFamilyName}
-                # -- ❗️ When reverting, this script must be executed before `UninstallStoreApp` as it holds manifest data to be able to reinstall the app ---
-                # Clear: Installation (SystemApps)
-                #   - Folder    : %WINDIR%\SystemApps\{PackageFamilyName}
-                #   - Example   : C:\Windows\SystemApps\Windows.CBSPreview_cw5n1h2txyewy
-                #   - Check     : (Get-AppxPackage -AllUsers 'Windows.CBSPreview').InstallLocation
-                #   - Check all : Get-AppxPackage -PackageTypeFilter Main | ? { $_.SignatureKind -eq "System" } | Sort Name | Format-Table Name, InstallLocation
-                function: SoftDeleteFiles
-                parameters:
-                    fileGlob: '%WINDIR%\SystemApps\{{ $packageName }}_{{ $publisherId }}\*'
-                    grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
-                    recurse: 'true'
-            -
-                # -- ❗️ When reverting, this script must be executed before `UninstallStoreApp` as it holds manifest data to be able to reinstall the app ---
-                # Clear: Installation (Root)
-                #   - Folder    : %WINDIR%\{ShortAppName}
-                #   - Example   : C:\Windows\PrintDialog
-                #   - Check     : (Get-AppxPackage -AllUsers 'Windows.PrintDialog').InstallLocation
-                #   - Check all : Get-AppxPackage -PackageTypeFilter Main | ? { $_.SignatureKind -eq "System" } | Sort Name | Format-Table Name, InstallLocation
-                function: SoftDeleteFiles
-                parameters:
-                    fileGlob: >-
-                        %WINDIR%\$(("{{ $packageName }}" -Split '\.')[-1])\*
-                    grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
-                    recurse: 'true'
-            -
-                # -- ❗️ This script must be executed before `UninstallStoreApp` as it enables it for system app removal ---
+                # ❗️ ORDERING: Run before `UninstallStoreApp` to enable removal of system apps.
                 function: CreateRegistryKey
                 parameters:
                     codeComment: Enable removal of system app '{{ $packageName }}' by marking it as "EndOfLife"
@@ -12187,7 +12168,7 @@ functions:
                     packageName: '{{ $packageName }}'
                     publisherId: '{{ $publisherId }}'
             -
-                # -- ❗️ This script must be executed after `UninstallStoreApp` as it disables it for system app removal ---
+                # ❗️ ORDERING: Run after `UninstallStoreApp` to restore the app to its default state.
                 function: DeleteRegistryKey
                 parameters:
                     codeComment: Revert '{{ $packageName }}' to its default, non-removable state.
@@ -12196,7 +12177,87 @@ functions:
                     # Restoring (removing) this key is important for maintaining the stability of Windows Updates (for details: https://github.com/undergroundwires/privacy.sexy/issues/287).
                     keyName: HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\EndOfLife\$CURRENT_USER_SID\{{ $packageName }}_{{ $publisherId }}
                     replaceSid: 'true'
+    -
+        name: UninstallNonRemovableStoreAppWithCleanup # ❗️ Prefer `UninstallNonRemovableStoreApp` for new scripts
+        # 💡 Purpose:
+        #   This function is designed for comprehensive cleanup, removing the store app along with associated data such as installation directories, user data, and metadata.
+        #
+        #   It is maintained primarily for backward compatibility, supporting users who need to reverse changes made by earlier versions of privacy.sexy scripts that included app data removal.
+        #   Historically, due to limitations in uninstalling non-removable apps through Windows package management tools (like `Remove-AppxPackage`), earlier versions of privacy.sexy scripts
+        #   relied on a soft-deletion approach for app data. Newer scripts can now effectively use Windows package management to remove such apps.
+        #
+        #   For general usage in new scripts, prefer `UninstallNonRemovableStoreApp`. It offers a simpler, safer, and less invasive approach. The extensive cleanup performed by
+        #   this function is typically unnecessary for most users.
+        parameters:
+            - name: packageName
+            - name: publisherId
+        call:
             -
+                function: ClearStoreAppDataBeforeUninstallation
+                parameters:
+                    packageName: '{{ $packageName }}'
+                    publisherId: '{{ $publisherId }}'
+            -
+                function: UninstallNonRemovableStoreApp
+                parameters:
+                    packageName: '{{ $packageName }}'
+                    publisherId: '{{ $publisherId }}'
+            -
+                function: ClearStoreAppDataAfterUninstallation
+                parameters:
+                    packageName: '{{ $packageName }}'
+                    publisherId: '{{ $publisherId }}'
+    -
+        name: ClearStoreAppDataBeforeUninstallation
+        parameters:
+            - name: packageName
+            - name: publisherId
+        call:
+            -
+                # ❗️ ORDERING: Run before `UninstallStoreApp` to ensure required manifest data is available for reinstallation when reverting.
+                # Clear: Installation (SystemApps, Directory I)
+                #   - Folder    : %WINDIR%\SystemApps\{PackageFamilyName}
+                #   - Example   : C:\Windows\SystemApps\Windows.CBSPreview_cw5n1h2txyewy
+                #   - Check     : (Get-AppxPackage -AllUsers 'Windows.CBSPreview').InstallLocation
+                #   - Check all : Get-AppxPackage -PackageTypeFilter Main | ? { $_.SignatureKind -eq "System" } | Sort Name | Format-Table Name, InstallLocation
+                function: SoftDeleteFiles
+                parameters:
+                    fileGlob: '%WINDIR%\SystemApps\{{ $packageName }}_{{ $publisherId }}\*'
+                    grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
+                    recurse: 'true'
+            -
+                # ❗️ ORDERING: Run before `UninstallStoreApp` to ensure required manifest data is available for reinstallation when reverting.
+                # Clear: Installation (SystemApps, Directory II)
+                #   - Folder    : %WINDIR%\{ShortAppName}
+                #   - Example   : C:\Windows\PrintDialog
+                #   - Check     : (Get-AppxPackage -AllUsers 'Windows.PrintDialog').InstallLocation
+                #   - Check all : Get-AppxPackage -PackageTypeFilter Main | ? { $_.SignatureKind -eq "System" } | Sort Name | Format-Table Name, InstallLocation
+                function: SoftDeleteFiles
+                parameters:
+                    fileGlob: >-
+                        %WINDIR%\$(("{{ $packageName }}" -Split '\.')[-1])\*
+                    grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
+                    recurse: 'true'
+            -
+                # ❗️ ORDERING: Run before `UninstallStoreApp` to ensure required manifest data is available for reinstallation when reverting.
+                # Clear: Installation (non-system i.e. provisioned and installed apps)
+                #   - Folder    : %SYSTEMDRIVE%\Program Files\WindowsApps\{PackageFullName}
+                #   - Example   : C:\Program Files\WindowsApps\Microsoft.BingWeather_4.25.20211.0_x64__8wekyb3d8bbwe
+                #   - Check     : (Get-AppxPackage -AllUsers 'Microsoft.BingWeather').InstallLocation
+                #   - Check all : Get-AppxPackage -PackageTypeFilter Main | ? { $_.SignatureKind -eq "Store" } | Sort Name | Format-Table Name, InstallLocation
+                function: SoftDeleteFiles
+                parameters:
+                    fileGlob: '%SYSTEMDRIVE%\Program Files\WindowsApps\{{ $packageName }}_*_{{ $publisherId }}\*'
+                    grantPermissions: 'true' # 🔒️ Protected on Windows 11 since 22H2 (when deleting `Microsoft.SecHealthUI`)
+                    recurse: 'true'
+    -
+        name: ClearStoreAppDataAfterUninstallation
+        parameters:
+            - name: packageName
+            - name: publisherId
+        call:
+            -
+                # ❗️ ORDERING: Run after `UninstallStoreApp` to ensure only leftover files are removed without keeping unnecessary files on the system.
                 # Clear: User-specific data
                 #   - Folder    : %LOCALAPPDATA%\Packages\{PackageFamilyName}
                 #   - Example   : C:\Users\undergroundwires\AppData\Local\Packages\Windows.CBSPreview_cw5n1h2txyewy
@@ -12206,6 +12267,7 @@ functions:
                     fileGlob: '%LOCALAPPDATA%\Packages\{{ $packageName }}_{{ $publisherId }}\*'
                     recurse: 'true'
             -
+                # ❗️ ORDERING: Run after `UninstallStoreApp` to ensure only leftover files are removed without keeping unnecessary files on the system.
                 # Clear: Metadata
                 #   - Folder    : %PROGRAMDATA%\Microsoft\Windows\AppRepository\Packages\{PackageFullName}
                 #   - Example   : C:\ProgramData\Microsoft\Windows\AppRepository\Packages\Windows.CBSPreview_10.0.19580.1000_neutral_neutral_cw5n1h2txyewy
