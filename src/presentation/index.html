@@ -9,6 +9,21 @@
   <meta name="description"
     content="Web tool to generate scripts for enforcing privacy & security best-practices such as stopping data collection of Windows and different softwares on it." />
   <link rel="icon" href="/favicon.ico">
+
+  <!-- Security meta tags based on OWASP recommendations, see https://owasp.org/www-project-secure-headers/ci/headers_add.json -->
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="
+      default-src 'self';
+      style-src 'self' 'unsafe-inline';
+      img-src 'self' data:;
+      form-action 'self';
+      object-src 'none';
+      upgrade-insecure-requests;
+      block-all-mixed-content;
+    "
+  >
+  <meta name="referrer" content="no-referrer">
 </head>
 
 <body>

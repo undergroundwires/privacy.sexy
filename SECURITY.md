@@ -21,6 +21,20 @@ Upon receiving a security report, the process involves:
 
 ## Security Practices
 
+### Application Security
+
+privacy.sexy adopts a defense in depth strategy to protect users on multiple layers:
+
+- **Link Protection:**
+  privacy.sexy ensures each external link has special attributes for your privacy and security.
+  These attributes block the new site from accessing the privacy.sexy page, increasing your online safety and privacy.
+- **Content Security Policies (CSP):**
+  privacy.sexy actively follows security guidelines from the Open Web Application Security Project (OWASP) at strictest level.
+  This approach protects against attacks like Cross Site Scripting (XSS) and data injection.
+- **Context Isolation:**
+  The desktop application isolates different code sections based on their access level.
+  This separation prevents attackers from introducing harmful code into the app, known as injection attacks.
+
 ### Update Security and Integrity
 
 privacy.sexy benefits from automated update processes including security tests. Automated deployments from source code ensure immediate and secure updates, mirroring the latest source code. This aligns the deployed application with the expected source code, enhancing transparency and trust. For more details, see [CI/CD Documentation](./docs/ci-cd.md).
@@ -29,7 +43,7 @@ Every desktop update undergoes a thorough verification process. Updates are cryp
 
 ### Testing
 
-privacy.sexy employs a comprehensive testing strategy that integrates extensive automated testing with manual community-driven tests.
+privacy.sexy's testing approach includes a mix of automated and community-driven tests.
 Details on testing practices are available in the [Testing Documentation](./docs/tests.md).
 
 ## Support

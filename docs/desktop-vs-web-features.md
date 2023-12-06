@@ -35,7 +35,7 @@ The desktop version ensures secure delivery through cryptographic signatures and
 
 > **Note for macOS users:** On macOS, the desktop version's auto-update process involves manual steps due to Apple's code signing costs.
 > Users get notified about updates but might need to complete the installation manually.
-> Your [support through donations](https://github.com/sponsors/undergroundwires) can help improve this process ❤️.
+> Consider [donating](https://github.com/sponsors/undergroundwires) to help improve this process ❤️.
 
 ### Logging
 
