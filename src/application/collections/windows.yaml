@@ -4249,7 +4249,7 @@ actions:
                                     serviceName: gupdatem # Check: (Get-Service -Name gupdatem).StartType
                                     defaultStartupMode: Automatic # Allowed values: Automatic | Manual
                     -
-                        name: Disable Google automatic updates scheduled tasks (may break Google Credential Provider)
+                        name: Disable Google automatic updates scheduled tasks (breaks Google Credential Provider)
                         recommend: strict
                         docs: |-
                             This script disables the scheduled tasks used by Google to automatically update its software on Windows.
@@ -4612,6 +4612,38 @@ actions:
             These scripts help protect your system against various types of cyber threats and unauthorized access.
         children:
             -
+                name: Disable hidden remote file access via administrative shares (breaks remote system management software)
+                recommend: strict
+                docs: |-
+                    This script improves your privacy and security by disabling Windows administrative shares,
+                    which are typically used for remote access to your computer's file system.
+
+                    Windows automatically creates hidden administrative shares, such as `C$` and `D$`, that allow system administrators remote access to
+                    every disk volume on your computer [1] [2]. These shares are often targeted as potential attack vectors [3].
+
+                    Disabling administrative shares is generally a good practice for enhancing security. It is recommended by various security standards
+                    and compliance frameworks, including some government standards [3], PCI-DSS [4], and CIS [2]. It reduces the system's vulnerability
+                    to unauthorized remote access.
+
+                    These shares are often used for system administrators to perform tasks like software installation and vulnerability scanning
+                    remotely [1]. Disabling them may limit remote management capabilities. This might require setting up network shares manually
+                    for specific folders or drives, which is more secure but requires additional effort.
+
+                    Some software, such as Microsoft Systems Management Server (SMS) [2], Microsoft Operations Manager [2], Microsoft PsTools [5],
+                    and certain third-party network backup applications [2], rely on administrative shares. Therefore, disabling these shares could
+                    disrupt their functionality.
+
+                    > **Caution**: Disabling administrative shares can impact remote management software and may interrupt the ability to remotely control
+                    > machines. Consider your operational and security needs before making this change.
+
+                    [1]: https://web.archive.org/web/20230831114315/https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/remove-administrative-shares "Remove administrative shares - Windows Server | Microsoft Learn | learn.microsoft.com"
+                    [2]: https://web.archive.org/web/20231206152703/http://www.itref.ir/uploads/editor/1edad0.pdf "CIS Microsoft Windows 8 Benchmark | itref.ir"
+                    [3]: https://web.archive.org/web/20230831124304/https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/Business-Partner-System-Security-Manual-BPSSM.pdf "CMS Manual System | Pub 100-17 Medicare Business Partners | Department of Health & Human Services (DHHS) & Centers for Medicare & Medicaid Services (CMS) | cms.gov"
+                    [4]: https://web.archive.org/web/20230831124324/https://www.unifiedcompliance.com/products/search-authority-documents/authority-document/1071/ "Payment Card Organizations > PCI Security Standards Council | Unified Compliance | www.unifiedcompliance.com"
+                    [5]: https://github.com/undergroundwires/privacy.sexy/issues/249 "Disabling administrative shares breaks PsTools | undergroundwires/privacy.sexy | github.com"
+                code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareWks" /t REG_DWORD /d 0 /f
+                revertCode: reg delete "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareWks" /f # Key does not exist since Windows 11 22H2
+            -
                 category: Enable protection against Meltdown and Spectre
                 docs: https://support.microsoft.com/en-us/help/4072698/windows-server-speculative-execution-side-channel-vulnerabilities-prot
                 children:
@@ -4632,12 +4664,7 @@ actions:
                         name: Mitigate Spectre Variant 2 and Meltdown in Hyper-V
                         code: reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Virtualization" /v MinVmVersionForCpuBasedMitigations /t REG_SZ /d "1.0" /f
                         revertCode: reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Virtualization" /v MinVmVersionForCpuBasedMitigations /f
-            -
-                name: Disable administrative shares
-                recommend: standard
-                code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareWks" /t REG_DWORD /d 0 /f
-                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareWks" /t REG_DWORD /d 1 /f
-            -
+            - 
                 name: Enable Data Execution Prevention (DEP)
                 code: |-
                     reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoDataExecutionPrevention" /t REG_DWORD /d 0 /f
