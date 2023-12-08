@@ -9536,16 +9536,44 @@ actions:
                                         packageName: Microsoft.XboxGameOverlay
                                         publisherId: 8wekyb3d8bbwe
                             -
-                                name: Remove "Xbox Identity Provider" app
-                                recommend: standard
+                                name: Remove "Xbox Identity Provider" app (breaks Xbox sign-in)
+                                recommend: strict
                                 docs: |-
-                                    [Microsoft Store Page](https://web.archive.org/web/20231004150131/https://apps.microsoft.com/store/detail/xbox-identity-provider/9WZDNCRD1HKW)
+                                    This script uninstalls the "Xbox Identity Provider" app.
+                                    This app enables your PC games to connect to Xbox Live [1].
+                                    Its removal can help prevent personal gaming data from being shared with Microsoft's servers.
 
-                                    This app comes pre-installed on certain versions of Windows [1] [2] [3].
+                                    Running this script will impact:
 
-                                    [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
-                                    [2]: https://web.archive.org/web/20231006175115/https://learn.microsoft.com/en-us/windows/client-management/mdm/applocker-csp "AppLocker CSP - Windows Client Management | Microsoft Learn"
-                                    [3]: https://web.archive.org/web/20221101231811/https://learn.microsoft.com/en-us/windows/application-management/provisioned-apps-windows-client-os "Get the provisioned apps on Windows client operating system - Windows Application Management | Microsoft Learn"
+                                    - Xbox sign-in for certain games, making it impossible to log in [2] [3] [4].
+                                    - Log-in functionality for Xbox Game Pass, leading to errors and inability to access games [5] [6].
+                                    - Log-in to the Xbox app itself [2] [4] [7] [8].
+
+                                    Common errors caused by the absence of this app include:
+
+                                    - "We tried to sign you in to your Microsoft Account, but something went wrong" [6].
+                                    - "You are not signed in to Xbox Live" [6].
+                                    - "We couldn't sign you in to Xbox Live. User Interaction is required for Authentication" [6].
+                                    - "We can't sign you in right now. Try again later. (`0x406`)" [7] [8].
+
+                                    This app comes pre-installed on certain versions of Windows [9] [10] [11].
+
+                                    See also: [Microsoft Store Page](https://web.archive.org/web/20231004150131/https://apps.microsoft.com/store/detail/xbox-identity-provider/9WZDNCRD1HKW)
+
+                                    > **Caution:** Removing this app disrupts Xbox sign-in for games and services that require it,
+                                    > including Xbox Game Pass. Ensure you understand the impact on your gaming experience before proceeding.
+
+                                    [1]: https://web.archive.org/web/20231004150131/https://apps.microsoft.com/store/detail/xbox-identity-provider/9WZDNCRD1HKW "Xbox Identity Provider - Microsoft Store Apps | apps.microsoft.com"
+                                    [2]: https://github.com/undergroundwires/privacy.sexy/issues/79 "[BUG]: Xbox sign in not working · Issue #79 · undergroundwires/privacy.sexy | github.com"
+                                    [3]: https://github.com/undergroundwires/privacy.sexy/issues/181 "[BUG]: Standard Privacy Script mess with some online games · Issue #181 · undergroundwires/privacy.sexy | github.com"
+                                    [4]: https://github.com/undergroundwires/privacy.sexy/issues/64 "[BUG]: can't sign in again · Issue #64 · undergroundwires/privacy.sexy | github.com"
+                                    [5]: https://web.archive.org/web/20231206171549/https://www.reddit.com/r/theouterworlds/comments/dn73hf/xbox_game_pass_for_pc_problem_you_are_not_signed/?rdt=43601 "Xbox Game Pass for PC Problem: You are not signed in to Xbox Live. Cloud Saves are unavailable. : r/theouterworlds | reddit.com"
+                                    [6]: https://web.archive.org/web/20231206171559/https://bestgamingtips.com/fix-xbox-identity-provider-not-working/ "Xbox Live Identity Provider Not Working | Fix | bestgamingtips.com"
+                                    [7]: https://web.archive.org/web/20231206171520/https://answers.microsoft.com/en-us/windows/forum/all/xbox-app-error-0x406/09dc12db-97ee-4907-89b8-3a2b7ebe1507?page=13 "Page 13 | Xbox App Error 0x406 - Microsoft Community | answers.microsoft.com"
+                                    [8]: https://web.archive.org/web/20231206172303/https://windowsreport.com/xbox-sign-in-error-0x406/ "How to fix Xbox sign in error 0x406 | windowsreport.com"
+                                    [9]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
+                                    [10]: https://web.archive.org/web/20231006175115/https://learn.microsoft.com/en-us/windows/client-management/mdm/applocker-csp "AppLocker CSP - Windows Client Management | Microsoft Learn"
+                                    [11]: https://web.archive.org/web/20221101231811/https://learn.microsoft.com/en-us/windows/application-management/provisioned-apps-windows-client-os "Get the provisioned apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
                                     function: UninstallStoreApp
                                     parameters:
