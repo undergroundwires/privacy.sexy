@@ -7238,10 +7238,16 @@ actions:
 
                             Disabling these update services is also a privacy measure. Some updates can change privacy settings or add features that
                             collect user data. By controlling update services, users can review and approve any changes before they take effect.
+
+                            > **Caution**: Disabling Windows update services may lead to missed critical security patches and feature updates.
+                            > Consider the balance between maintaining privacy and ensuring system security and stability.
                         children:
+                            # Tips:
+                            #   - Related services can be seen in `%WINDIR%\WaaS\services` folder.
                             # Excluding:
                             #   - Background Intelligent Transfer Service (BITS): Not exclusive to disabling automatic Windows updates, may break third-party apps
                             #   - Delivery Optimization (DoSvc): Not exclusive to disabling automatic Windows updates, breaks Microsoft Store downloads.
+                            #   - Windows Remediation Service (sedsvc): Seems to exist in legacy versions on Windows, does not exist since Windows 10 22H2 and Windows 11 23H2
                             -
                                 name: Disable "Windows Update" (`wuauserv`) service
                                 docs: |-
@@ -7258,6 +7264,10 @@ actions:
                                     If you disable this service, you won't be able to use the Windows Update feature for automatic updates [5]. Additionally,
                                     other software on your computer won't be able to access the functionalities provided by the Windows Update Agent,
                                     commonly known as WUA API [5].
+
+                                    > **Caution:** This script stops Windows Update Agent's ability to check for and manage system updates. This means your system
+                                    > won't automatically receive important updates, which could leave it vulnerable to specific security risks and performance issues
+                                    > over time.
 
                                     [1]: https://web.archive.org/web/20230902020255/https://learn.microsoft.com/en-us/troubleshoot/windows-client/deployment/additional-resources-for-windows-update "Additional resources for Windows Update - Windows Client | Microsoft Learn | learn.microsoft.com"
                                     [2]: https://web.archive.org/web/20231027190503/https://learn.microsoft.com/en-us/troubleshoot/mem/configmgr/update-management/troubleshoot-software-update-scan-failures "Troubleshoot software update scan failures - Configuration Manager | Microsoft Learn | learn.microsoft.com"
@@ -7285,6 +7295,10 @@ actions:
 
                                     Turning off this service can affect the update process and might cause issues like freezing during update scanning [3].
 
+                                    > **Caution**: This script directly affects the orchestration and scheduling of Windows updates. This can lead to
+                                    > irregularities in receiving updates, potentially causing delays or failures in obtaining critical security patches and
+                                    > feature updates specific to Windows functionalities.
+
                                     [1]: https://web.archive.org/web/20231004161147/https://learn.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server "Security guidelines for system services in Windows Server 2016 | Microsoft Learn"
                                     [2]: https://web.archive.org/web/20230905120348/https://learn.microsoft.com/en-us/troubleshoot/windows-client/performance/windows-devices-fail-boot-after-installing-kb4041676-kb4041691 "Windows devices may fail to boot after installing October 10 version of KB 4041676 or 4041691 that contained a publishing issue - Windows Client | Microsoft Learn"
                                     [3]: https://web.archive.org/web/20231001150100/https://learn.microsoft.com/en-us/windows/deployment/update/prepare-deploy-windows "Prepare to deploy Windows - Windows Deployment | Microsoft Learn"
@@ -7299,27 +7313,142 @@ actions:
                                     This script disables the Windows Update Medic Service. This service runs quietly in the background [1],
                                     making sure that parts related to Windows updates are working as they should [1] [2].
 
-                                    By default, the service is enabled and its startup setting is set to manual [3].
-
                                     This service can undo any adjustments you've made to your Windows Update settings without your consent.
-                                    For example, it can re-enable automatic Windows updates [4].
+                                    For example, it can re-enable automatic Windows updates [3].
                                     That can interfere if you've tailored these settings for better privacy or security.
 
-                                    When you disable this service using our script, you're taking back control. You get to choose how your system
-                                    handles updates and data transfers, ensuring that your privacy settings stay as you intended. This is a reliable
-                                    way to strengthen both your privacy and your control over your computer.
+                                    By default, the service is enabled and its startup setting is set to manual [4] [5]. It executes
+                                    `%SYSTEMROOT%\System32\WaaSMedicSvc.dll` [5], known as "WaasMedic Service Dll" [6]. It stores remediation
+                                    configuration such as registry keys, tasks and services at `%WINDIR%\WaaS\` folder [7] [8] [9].
+                                    Other related files include:
+
+                                    | Path | Description | Windows 10 22H2 | Windows 11 23H2 |
+                                    | ---- |:-----------:|:---------------:|:---------------:|
+                                    | `%SYSTEMROOT%\System32\WaaSMedicAgent.exe` | WaasMedic Agent Exe | ✅ Exists | ❌ Missing |
+                                    | `%SYSTEMROOT%\System32\WaaSMedicCapsule.dll` | WaasMedic Capsule Exe | ✅ Exists | ❌ Missing |
+                                    | `%SYSTEMROOT%\System32\WaaSMedicPS.dll` | WaaS Medic Proxy Stub library | ✅ Exists | ✅ Exists |
+                                    | `%SYSTEMROOT%\System32\WaaSAssessment.dll` | WaaS Assessment | ✅ Exists | ✅ Exists  |
+                                    | `%SYSTEMROOT%\System32\Windows.Internal.WaaSMedicDocked.dll` | WaaS Assessment | ❌ Missing | ✅ Exists |
+                                    | `%WINDIR%\UUS\amd64\WaaSMedicSvcImpl.dll` | WaaS Assessment | ❌ Missing | ✅ Exists |
+
+                                    > **Caution:** While this script provides greater control over Windows Update operations and enhances user
+                                    > privacy by limiting unsolicited data transmission to Microsoft, it's important to be aware of the potential
+                                    > impacts on system stability and update integrity. Disabling the Windows Update Medic Service prevents the
+                                    > self-healing capability of Windows Updates, favoring the maintenance of user-defined update preferences.
 
                                     [1]: https://web.archive.org/web/20230905120805/https://support.microsoft.com/en-us/topic/kb5005322-some-devices-cannot-install-new-updates-after-installing-kb5003214-may-25-2021-and-kb5003690-june-21-2021-66edf7cf-5d3c-401f-bd32-49865343144f "KB5005322—Some devices cannot install new updates after installing KB5003214 (May 25, 2021) and KB5003690 (June 21, 2021) - Microsoft Support"
                                     [2]: https://web.archive.org/web/20231001150100/https://learn.microsoft.com/en-us/windows/deployment/update/prepare-deploy-windows "Prepare to deploy Windows - Windows Deployment | Microsoft Learn"
-                                    [3]: https://web.archive.org/web/20230905120815/https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services "Guidance on disabling system services on Windows IoT Enterprise | Microsoft Learn"
-                                    [4]: https://github.com/undergroundwires/privacy.sexy/issues/252
+                                    [3]: https://github.com/undergroundwires/privacy.sexy/issues/252 "Disable automatic Updates · Issue #252 · undergroundwires/privacy.sexy | github.com/undergroundwires/privacy.sexy"
+                                    [4]: https://web.archive.org/web/20230905120815/https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services "Guidance on disabling system services on Windows IoT Enterprise | Microsoft Learn"
+                                    [5]: https://web.archive.org/web/20231129202405/https://batcmd.com/windows/10/services/waasmedicsvc/ "Windows Update Medic Service - Windows 10 Service | batcmd.com"
+                                    [6]: https://web.archive.org/web/20231129202715/https://strontic.github.io/xcyclopedia/library/WaaSMedicSvc.dll-4064770B860EF19D55B9DAE32F1B300A.html "WaaSMedicSvc.dll | WaasMedic Service Dll | STRONTIC | strontic.github.io"
+                                    [7]: https://github.com/undergroundwires/privacy.sexy/issues/272#issuecomment-1821728182 "[BUG]: Windows automatically re-enables Update after 4-5 days · Issue #272 · undergroundwires/privacy.sexy | github.com/undergroundwires"
+                                    [8]: https://web.archive.org/web/20231127032408/https://www.acepace.net/2019-03-29-upfc/ "What the bleep is UPFC.exe? | www.acepace.net"
+                                    [9]: https://web.archive.org/web/20231129203543/https://call4cloud.nl/2022/03/before-we-wipe/ "KB5011487 | KB5011493 | 2022-03 | Windows.old wipe Issue | call4cloud.nl"
                                 call:
-                                    function: DisableServiceInRegistry
-                                    # Since Windows 10 21H2 and Windows 11 21H2:
-                                    #   - ❗️ Using `sc config` results in "Access in denied", so registry should be used to disable the service.
-                                    parameters:
-                                        serviceName: WaaSMedicSvc # Check: (Get-Service -Name 'WaaSMedicSvc').StartType
-                                        defaultStartupMode: Manual # Allowed values: Automatic | Manual
+                                    -
+                                        function: DisableServiceInRegistry
+                                        # Since Windows 10 21H2 and Windows 11 21H2:
+                                        #   - ❗️ Using `sc config` results in "Access in denied", so registry should be used to disable the service.
+                                        parameters:
+                                            serviceName: WaaSMedicSvc # Check: (Get-Service -Name 'WaaSMedicSvc').StartType
+                                            defaultStartupMode: Manual # Allowed values: Automatic | Manual
+                                    -
+                                        function: SoftDeleteFiles
+                                        parameters:
+                                            fileGlob: '%SYSTEMROOT%\System32\WaaSMedicSvc.dll'
+                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
+                                    -
+                                        function: TerminateExecutableOnLaunch
+                                        parameters:
+                                            executableNameWithExtension: WaaSMedicAgent.exe
+                                    -
+                                        function: SoftDeleteFiles
+                                        parameters:
+                                            fileGlob: '%SYSTEMROOT%\System32\WaaSMedicAgent.exe'
+                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔍 Missing on Windows 11 since 23H2
+                                    -
+                                        function: SoftDeleteFiles
+                                        parameters:
+                                            fileGlob: '%SYSTEMROOT%\System32\WaaSMedicCapsule.dll'
+                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔍 Missing on Windows 11 since 23H2
+                                    -
+                                        function: SoftDeleteFiles
+                                        parameters:
+                                            fileGlob: '%SYSTEMROOT%\System32\WaaSMedicPS.dll'
+                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
+                                    -
+                                        function: SoftDeleteFiles
+                                        parameters:
+                                            fileGlob: '%SYSTEMROOT%\System32\WaaSAssessment.dll'
+                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
+                                    -
+                                        function: SoftDeleteFiles
+                                        parameters:
+                                            fileGlob: '%SYSTEMROOT%\System32\Windows.Internal.WaaSMedicDocked.dll'
+                                            grantPermissions: true # 🔍 Missing on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
+                                    -
+                                        function: SoftDeleteFiles
+                                        parameters:
+                                            fileGlob: '%WINDIR%\UUS\amd64\WaaSMedicSvcImpl.dll'
+                                            grantPermissions: true # 🔍 Missing on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
+                                    -
+                                        function: SoftDeleteFiles
+                                        parameters:
+                                            fileGlob: '%WINDIR%\WaaS\*' # Includes `services` and `tasks` folders that defines the desired state configuration on remediation.
+                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
+                                            recurse: true
+                            -
+                                name: Disable automatically enabling Windows Update Medic Service
+                                recommend: strict
+                                docs: |-
+                                    This script disables the `upfc.exe` process, preventing it from automatically re-enabling Windows updates [5].
+
+                                    `upfc.exe` is found at `%SYSTEMROOT%\System32\upfc.exe` [1] [2].
+                                    This executable is identified by Microsoft as "Updateability From SCM" [1] [2].
+                                    SCM refers to the "Service Control Manager (SCM)", a special system process also known as `services.exe` [3].
+                                    `upfc.exe` is automatically launched by SCM during system startup [4].
+                                    It is part of the Windows Update self-healing mechanism [1].
+
+                                    It recovers Windows Update Medic Service (`WaaSMedicSvc`) once disabled [1] [5].
+                                    `upfc.exe` operates early in the boot process and performs several functions [1]:
+
+                                    1. It checks the details of the `WaaSMedicSvc` against a configuration file, ensuring the service's settings match those listed [1].
+                                    2. If discrepancies are found, such as invalid registry settings, `upfc.exe` recreates the service according to the XML configuration file [1].
+
+                                    However, `upfc.exe` also sends data about its operations to Microsoft [1] [5], including details about discrepancies found and any corrective
+                                    actions taken [1] [5]. This data is part of the telemetry Microsoft collects [1], which raises privacy concerns.
+
+                                    This script will skip some of its disabling logic on older Windows versions due to community reports of disabling this service causing
+                                    BSOD (blue screen of death) [5] [6].
+
+                                    > **Caution:** By disabling `upfc.exe`, this script enhances user privacy by stopping the automatic sending of operational data to Microsoft.
+                                    > However, it's important to note that this might impact the integrity and security of the Windows Update process. Users should weigh the
+                                    > privacy benefits against potential security risks before using this script.
+
+                                    [1]: https://web.archive.org/web/20231127032408/https://www.acepace.net/2019-03-29-upfc/ "What the bleep is UPFC.exe? | www.acepace.net"
+                                    [2]: https://web.archive.org/web/20231127032440/https://strontic.github.io/xcyclopedia/library/upfc.exe-299EA296575CCB9D2C1A779062535D5C.html "upfc.exe | Updateability From SCM | STRONTIC | strontic.github.io"
+                                    [3]: https://en.wikipedia.org/w/index.php?title=Service_Control_Manager&oldid=1063455957 "Service Control Manager - Wikipedia | en.wikipedia.org"
+                                    [4]: https://web.archive.org/web/20231129135553/https://blogs.windows.com/windows-insider/2018/07/31/announcing-windows-server-2019-insider-preview-build-17723/ "Announcing Windows Server 2019 Insider Preview Build 17723 | Windows Insider Blog | blogs.windows.com"
+                                    [5]: https://github.com/undergroundwires/privacy.sexy/issues/272 "[BUG]: Windows automatically re-enables Update after 4-5 days · Issue #272 · undergroundwires/privacy.sexy | github.com/undergroundwires"
+                                    [6]: https://web.archive.org/web/20231129135227/https://www.tenforums.com/windows-updates-activation/104945-stop-windows-10-updates-properly-completely-25.html "Stop Windows 10 Updates Properly and Completely Solved - Page 25 - Windows 10 Forums | www.tenforums.com"
+                                call:
+                                    -
+                                        function: SoftDeleteFiles
+                                        parameters:
+                                            fileGlob: '%SYSTEMROOT%\System32\upfc.exe'
+                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
+                                            beforeIteration: |- # Skip Windows versions older than Windows 10 22H2 (build number 19045) to avoid reported blue screen issues.
+                                                $osVersion = [System.Environment]::OSVersion.Version
+                                                function Test-IsBeforeWin10Version22H2 { ($osVersion.Major -lt 10) -or (($osVersion.Major -eq 10) -and ($osVersion.Build -lt 19045)) }
+                                                if (Test-IsBeforeWin10Version22H2) {
+                                                    Write-Warning 'Skipping the removal of upfc.exe on systems older Windows versions to prevent possible system crashes or errors.'
+                                                    exit 0
+                                                }
+                                    -
+                                        function: TerminateExecutableOnLaunch
+                                        parameters:
+                                            executableNameWithExtension: upfc.exe
                     -
                         category: Disable Windows update scheduled tasks
                         docs: |-
@@ -12358,9 +12487,11 @@ functions:
         #   3. (with `grantPermissions`:) Remove elevated script privileges.
         parameters:
             - name: fileGlob
-            - name: grantPermissions
+            - name: grantPermissions    # Grants permission on the files found, and restores original permissions after modification.
               optional: true
-            - name: recurse
+            - name: recurse             # If set, deletes all files in all directories recursively.
+              optional: true
+            - name: beforeIteration     # (Iteration callback) Code to run before iteration.
               optional: true
         call:
             -
@@ -12390,6 +12521,9 @@ functions:
                     #           }
                     #       ```
                     beforeIteration: |-
+                        {{ with $beforeIteration }}
+                            {{ . }}
+                        {{ end }}
                         $renamedCount   = 0
                         $skippedCount   = 0
                         $failedCount    = 0
@@ -12874,7 +13008,7 @@ functions:
                     } else {
                         try {
                             Set-ItemProperty $registryKey -Name Start -Value $defaultStartupRegValue -Force
-                            Write-Host "Enabled `"$serviceName`" successfully with `"$defaultStartupMode`" start, may require restarting your computer."
+                            Write-Host "Enabled `"$serviceName`" successfully with `"$defaultStartupMode`" start, this may require restarting your computer."
                         } catch {
                             Write-Error "Could not enable `"$serviceName`": $_"
                             Exit 1
@@ -13031,100 +13165,106 @@ functions:
             - name: serviceName
             - name: defaultStartupMode # Allowed values: Automatic | Manual
         call:
-            function: RunPowerShell
-            # Careful with Set-Service cmdlet:
-            #   1. It exits with positive code even if service is disabled
-            #   2. It had breaking API change for `-StartupMode` parameter:
-            #           Powershell >= 6.0 : Automatic, AutomaticDelayedStart, Disabled, InvalidValue, Manual
-            #           PowerShell <= 5   : Boot, System, Automatic, Manual, Disabled
-            #           So "Disabled", "Automatic" and "Manual" are only consistent ones.
-            #       Read more:
-            #           https://github.com/PowerShell/PowerShell/blob/v7.2.0/src/Microsoft.PowerShell.Commands.Management/commands/management/Service.cs#L2966-L2978
-            #           https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-service?view=powershell-7.1
-            parameters:
-                code: |-
-                    $serviceName = '{{ $serviceName }}'
-                    Write-Host "Disabling service: `"$serviceName`"."
-                    # -- 1. Skip if service does not exist
-                    $service = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
-                    if(!$service) {
-                        Write-Host "Service `"$serviceName`" could not be not found, no need to disable it."
-                        Exit 0
-                    }
-                    # -- 2. Stop if running
-                    if ($service.Status -eq [System.ServiceProcess.ServiceControllerStatus]::Running) {
-                        Write-Host "`"$serviceName`" is running, stopping it."
-                        try {
-                            Stop-Service -Name "$serviceName" -Force -ErrorAction Stop
-                            Write-Host "Stopped `"$serviceName`" successfully."
-                        } catch {
-                            Write-Warning "Could not stop `"$serviceName`", it will be stopped after reboot: $_"
+            -
+                function: Comment
+                parameters:
+                    codeComment: "Disable service(s): `{{ $serviceName }}`"
+                    revertCodeComment: "Restore service(s) to default state: `{{ $serviceName }}`"
+            -
+                function: RunPowerShell
+                # Careful with Set-Service cmdlet:
+                #   1. It exits with positive code even if service is disabled
+                #   2. It had breaking API change for `-StartupMode` parameter:
+                #           Powershell >= 6.0 : Automatic, AutomaticDelayedStart, Disabled, InvalidValue, Manual
+                #           PowerShell <= 5   : Boot, System, Automatic, Manual, Disabled
+                #           So "Disabled", "Automatic" and "Manual" are only consistent ones.
+                #       Read more:
+                #           https://github.com/PowerShell/PowerShell/blob/v7.2.0/src/Microsoft.PowerShell.Commands.Management/commands/management/Service.cs#L2966-L2978
+                #           https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-service?view=powershell-7.1
+                parameters:
+                    code: |-
+                        $serviceName = '{{ $serviceName }}'
+                        Write-Host "Disabling service: `"$serviceName`"."
+                        # -- 1. Skip if service does not exist
+                        $service = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
+                        if(!$service) {
+                            Write-Host "Service `"$serviceName`" could not be not found, no need to disable it."
+                            Exit 0
                         }
-                    } else {
-                        Write-Host "`"$serviceName`" is not running, no need to stop."
-                    }
-
-                    # -- 3. Skip if already disabled
-                    $startupType = $service.StartType # Does not work before .NET 4.6.1
-                    if(!$startupType) {
-                        $startupType = (Get-WmiObject -Query "Select StartMode From Win32_Service Where Name='$serviceName'" -ErrorAction Ignore).StartMode
-                        if(!$startupType) {
-                            $startupType = (Get-WmiObject -Class Win32_Service -Property StartMode -Filter "Name='$serviceName'" -ErrorAction Ignore).StartMode
-                        }
-                    }
-                    if($startupType -eq 'Disabled') {
-                        Write-Host "$serviceName is already disabled, no further action is needed"
-                    }
-                    # -- 4. Disable service
-                    try {
-                        Set-Service -Name "$serviceName" -StartupType Disabled -Confirm:$false -ErrorAction Stop
-                        Write-Host "Disabled `"$serviceName`" successfully."
-                    } catch {
-                        Write-Error "Could not disable `"$serviceName`": $_"
-                    }
-                revertCode: |-
-                    $serviceName = '{{ $serviceName }}'
-                    $defaultStartupMode = '{{ $defaultStartupMode }}'
-                    Write-Host "Enabling service: `"$serviceName`" with `"$defaultStartupMode`" start."
-                    # -- 1. Skip if service does not exist
-                    $service = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
-                    if(!$service) {
-                        Write-Warning "Service `"$serviceName`" could not be not found, cannot enable it."
-                        Exit 1
-                    }
-                    # -- 2. Enable or skip if already enabled
-                    $startupType = $service.StartType # Does not work before .NET 4.6.1
-                    if(!$startupType) {
-                        $startupType = (Get-WmiObject -Query "Select StartMode From Win32_Service Where Name='$serviceName'" -ErrorAction Ignore).StartMode
-                        if(!$startupType) {
-                            $startupType = (Get-WmiObject -Class Win32_Service -Property StartMode -Filter "Name='$serviceName'" -ErrorAction Ignore).StartMode
-                        }
-                    }
-                    if($startupType -eq "$defaultStartupMode") {
-                        Write-Host "`"$serviceName`" is already enabled with `"$defaultStartupMode`" start, no further action is needed."
-                    } else {
-                        try {
-                            Set-Service -Name "$serviceName" -StartupType "$defaultStartupMode" -Confirm:$false -ErrorAction Stop
-                            Write-Host "Enabled `"$serviceName`" successfully with `"$defaultStartupMode`" start, may require restarting your computer."
-                        } catch {
-                            Write-Error "Could not enable `"$serviceName`": $_"
-                            Exit 1
-                        }
-                    }
-                    # -- 4. Start if not running (must be enabled first)
-                    if($defaultStartupMode -eq 'Automatic') {
-                        if ($service.Status -ne [System.ServiceProcess.ServiceControllerStatus]::Running) {
-                            Write-Host "`"$serviceName`" is not running, starting it."
+                        # -- 2. Stop if running
+                        if ($service.Status -eq [System.ServiceProcess.ServiceControllerStatus]::Running) {
+                            Write-Host "`"$serviceName`" is running, stopping it."
                             try {
-                                Start-Service $serviceName -ErrorAction Stop
-                                Write-Host "Started `"$serviceName`" successfully."
+                                Stop-Service -Name "$serviceName" -Force -ErrorAction Stop
+                                Write-Host "Stopped `"$serviceName`" successfully."
                             } catch {
-                                Write-Warning "Could not start `"$serviceName`", requires restart, it will be started after reboot.`r`n$_"
+                                Write-Warning "Could not stop `"$serviceName`", it will be stopped after reboot: $_"
                             }
                         } else {
-                            Write-Host "`"$serviceName`" is already running, no need to start."
+                            Write-Host "`"$serviceName`" is not running, no need to stop."
                         }
-                    }
+
+                        # -- 3. Skip if already disabled
+                        $startupType = $service.StartType # Does not work before .NET 4.6.1
+                        if(!$startupType) {
+                            $startupType = (Get-WmiObject -Query "Select StartMode From Win32_Service Where Name='$serviceName'" -ErrorAction Ignore).StartMode
+                            if(!$startupType) {
+                                $startupType = (Get-WmiObject -Class Win32_Service -Property StartMode -Filter "Name='$serviceName'" -ErrorAction Ignore).StartMode
+                            }
+                        }
+                        if($startupType -eq 'Disabled') {
+                            Write-Host "$serviceName is already disabled, no further action is needed"
+                        }
+                        # -- 4. Disable service
+                        try {
+                            Set-Service -Name "$serviceName" -StartupType Disabled -Confirm:$false -ErrorAction Stop
+                            Write-Host "Disabled `"$serviceName`" successfully."
+                        } catch {
+                            Write-Error "Could not disable `"$serviceName`": $_"
+                        }
+                    revertCode: |-
+                        $serviceName = '{{ $serviceName }}'
+                        $defaultStartupMode = '{{ $defaultStartupMode }}'
+                        Write-Host "Enabling service: `"$serviceName`" with `"$defaultStartupMode`" start."
+                        # -- 1. Skip if service does not exist
+                        $service = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
+                        if(!$service) {
+                            Write-Warning "Service `"$serviceName`" could not be not found, cannot enable it."
+                            Exit 1
+                        }
+                        # -- 2. Enable or skip if already enabled
+                        $startupType = $service.StartType # Does not work before .NET 4.6.1
+                        if(!$startupType) {
+                            $startupType = (Get-WmiObject -Query "Select StartMode From Win32_Service Where Name='$serviceName'" -ErrorAction Ignore).StartMode
+                            if(!$startupType) {
+                                $startupType = (Get-WmiObject -Class Win32_Service -Property StartMode -Filter "Name='$serviceName'" -ErrorAction Ignore).StartMode
+                            }
+                        }
+                        if($startupType -eq "$defaultStartupMode") {
+                            Write-Host "`"$serviceName`" is already enabled with `"$defaultStartupMode`" start, no further action is needed."
+                        } else {
+                            try {
+                                Set-Service -Name "$serviceName" -StartupType "$defaultStartupMode" -Confirm:$false -ErrorAction Stop
+                                Write-Host "Enabled `"$serviceName`" successfully with `"$defaultStartupMode`" start, this may require restarting your computer."
+                            } catch {
+                                Write-Error "Could not enable `"$serviceName`": $_"
+                                Exit 1
+                            }
+                        }
+                        # -- 4. Start if not running (must be enabled first)
+                        if($defaultStartupMode -eq 'Automatic') {
+                            if ($service.Status -ne [System.ServiceProcess.ServiceControllerStatus]::Running) {
+                                Write-Host "`"$serviceName`" is not running, starting it."
+                                try {
+                                    Start-Service $serviceName -ErrorAction Stop
+                                    Write-Host "Started `"$serviceName`" successfully."
+                                } catch {
+                                    Write-Warning "Could not start `"$serviceName`", requires restart, it will be started after reboot.`r`n$_"
+                                }
+                            } else {
+                                Write-Host "`"$serviceName`" is already running, no need to start."
+                            }
+                        }
     -
         name: ShowWarning
         parameters:
@@ -13719,7 +13859,7 @@ functions:
         #   Use `DeleteDirectory` or `ClearDirectoryContents` to delete directories.
         parameters:
             - name: fileGlob            # File glob pattern to delete.
-            - name: grantPermissions    # Grants permission on the files found to be able to delete them.
+            - name: grantPermissions    # Grants permission on the files found, and restores original permissions after modification.
               optional: true
         call:
             -
