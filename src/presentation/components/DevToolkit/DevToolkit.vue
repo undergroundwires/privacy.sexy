@@ -1,28 +1,44 @@
 <template>
-  <div class="dev-toolkit">
-    <div class="title">
-      Tools
+  <div v-if="isOpen" class="dev-toolkit-container">
+    <div class="dev-toolkit">
+      <div class="toolkit-header">
+        <div class="title">
+          Tools
+        </div>
+        <button type="button" class="close-button" @click="close">
+          <AppIcon icon="xmark" />
+        </button>
+      </div>
+      <hr />
+      <div class="action-buttons">
+        <button
+          v-for="action in devActions"
+          :key="action.name"
+          type="button"
+          class="action-button"
+          @click="action.handler"
+        >
+          {{ action.name }}
+        </button>
+      </div>
     </div>
-    <hr />
-    <button
-      v-for="action in devActions"
-      :key="action.name"
-      type="button"
-      @click="action.handler"
-    >
-      {{ action.name }}
-    </button>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
+import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import { dumpNames } from './DumpNames';
 
 export default defineComponent({
+  components: {
+    AppIcon,
+  },
   setup() {
     const { log } = injectKey((keys) => keys.useLogger);
+    const isOpen = ref(true);
+
     const devActions: readonly DevAction[] = [
       {
         name: 'Log script/category names',
@@ -32,8 +48,15 @@ export default defineComponent({
         },
       },
     ];
+
+    function close() {
+      isOpen.value = false;
+    }
+
     return {
       devActions,
+      isOpen,
+      close,
     };
   },
 });
@@ -47,7 +70,7 @@ interface DevAction {
 <style scoped lang="scss">
 @use "@/presentation/assets/styles/main" as *;
 
-.dev-toolkit {
+.dev-toolkit-container {
   position: fixed;
   top: 0;
   right: 0;
@@ -56,19 +79,59 @@ interface DevAction {
   padding: 10px;
   z-index: 10000;
 
+  display:flex;
+  flex-direction: column;
+
+  /* Minimize interaction, so it does not interfere with events targeting elements behind it to allow easier tests */
+  pointer-events: none;
+  * > button {
+    pointer-events: initial;
+  }
+}
+
+.dev-toolkit {
+  display:flex;
+  flex-direction: column;
+
+  hr {
+    width: 100%;
+  }
+
+  .toolkit-header {
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    .title {
+      flex: 1;
+    }
+    .close-button {
+      flex-shrink: 0;
+    }
+  }
+
   .title {
     font-weight: bold;
     text-align: center;
   }
 
+  .action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
   button {
     display: block;
-    margin-bottom: 10px;
     padding: 5px 10px;
     background-color: $color-primary;
     color: $color-on-primary;
     border: none;
     cursor: pointer;
+
+    @include hover-or-touch {
+      background-color: $color-secondary;
+      color: $color-on-secondary;
+    }
   }
 }
 </style>

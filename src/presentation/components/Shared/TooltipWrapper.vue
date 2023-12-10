@@ -13,6 +13,7 @@
     <div class="tooltip__overlay">
       <div
         ref="tooltipDisplayElement"
+        class="tooltip__display"
         :style="displayStyles"
       >
         <div class="tooltip__content">
@@ -38,28 +39,26 @@ import type { CSSProperties } from 'vue';
 
 const GAP_BETWEEN_TOOLTIP_AND_TRIGGER_IN_PX = 2;
 const ARROW_SIZE_IN_PX = 4;
-const MARGIN_FROM_DOCUMENT_EDGE_IN_PX = 2;
+
+const DEFAULT_PLACEMENT: Placement = 'top';
 
 export default defineComponent({
   setup() {
     const tooltipDisplayElement = shallowRef<HTMLElement | undefined>();
     const triggeringElement = shallowRef<HTMLElement | undefined>();
     const arrowElement = shallowRef<HTMLElement | undefined>();
-    const placement = shallowRef<Placement>('top');
 
     useResizeObserverPolyfill();
 
-    const { floatingStyles, middlewareData } = useFloating(
+    const { floatingStyles, middlewareData, placement } = useFloating(
       triggeringElement,
       tooltipDisplayElement,
       {
-        placement,
+        placement: DEFAULT_PLACEMENT,
         middleware: [
           offset(ARROW_SIZE_IN_PX + GAP_BETWEEN_TOOLTIP_AND_TRIGGER_IN_PX),
           /* Shifts the element along the specified axes in order to keep it in view. */
-          shift({
-            padding: MARGIN_FROM_DOCUMENT_EDGE_IN_PX,
-          }),
+          shift(),
           /*  Changes the placement of the floating element in order to keep it in view,
               with the ability to flip to any placement. */
           flip(),
@@ -68,6 +67,7 @@ export default defineComponent({
         whileElementsMounted: autoUpdate,
       },
     );
+
     const arrowStyles = computed<CSSProperties>(() => {
       if (!middlewareData.value.arrow) {
         return {
@@ -129,6 +129,7 @@ function getCounterpartBoxOffsetProperty(placement: Placement): keyof CSSPropert
 </script>
 
 <style scoped lang="scss">
+@use 'sass:math';
 @use "@/presentation/assets/styles/main" as *;
 
 $color-tooltip-background: $color-primary-darkest;
@@ -146,14 +147,14 @@ $color-tooltip-background: $color-primary-darkest;
       - Using the `display` property doesn't support smooth transitions (e.g., fading out).
       - Keeping invisible tooltips in the DOM is a best practice for accessibility (screen readers).
   */
+  $animation-duration: 0.5s;
+  transition: opacity $animation-duration, visibility $animation-duration;
   @if $isVisible {
     visibility: visible;
     opacity: 1;
-    transition: opacity .15s, visibility .15s;
   } @else {
     visibility: hidden;
     opacity: 0;
-    transition: opacity .15s, visibility .15s;
   }
 }
 
@@ -175,10 +176,12 @@ $color-tooltip-background: $color-primary-darkest;
       - Causes screen shaking on Chromium browsers.
   */
   position: fixed;
+
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
+
   pointer-events: none;
   overflow: hidden;
   > * { // Restore styles in children
@@ -190,13 +193,19 @@ $color-tooltip-background: $color-primary-darkest;
 .tooltip__overlay {
   @include set-visibility(false);
   @include fixed-fullscreen;
+
+  /*
+    Reset white-space to the default value to prevent inheriting styles from the trigger element.
+    This prevents unintentional layout issues or overflow.
+  */
+  white-space: normal;
 }
 
 .tooltip__trigger {
   @include hover-or-touch {
     + .tooltip__overlay {
-      z-index: 10000;
       @include set-visibility(true);
+      z-index: 10000;
     }
   }
 }
@@ -206,6 +215,15 @@ $color-tooltip-background: $color-primary-darkest;
   color: $color-on-primary;
   border-radius: 16px;
   padding: 5px 10px 4px;
+
+  /*
+    This margin creates a visual buffer between the tooltip and the edges of the document.
+    It prevents the tooltip from appearing too close to the edges, ensuring a visually pleasing
+    and balanced layout.
+    Avoiding setting vertical margin as it disrupts the arrow rendering.
+  */
+  margin-left: 2px;
+  margin-right: 2px;
 }
 
 .tooltip__arrow {
