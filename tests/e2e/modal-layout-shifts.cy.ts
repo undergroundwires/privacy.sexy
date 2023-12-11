@@ -1,3 +1,4 @@
+import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { ViewportTestScenarios } from './support/scenarios/viewport-test-scenarios';
 
 describe('Modal interaction and layout stability', () => {
@@ -24,10 +25,10 @@ describe('Modal interaction and layout stability', () => {
 
       captureViewportMetrics((metrics) => {
         const metricsAfterModal = metrics;
-        expect(metricsBeforeModal).to.deep.equal(metricsAfterModal, [
+        expect(metricsBeforeModal).to.deep.equal(metricsAfterModal, formatAssertionMessage([
           `Expected (initial metrics before modal): ${JSON.stringify(metricsBeforeModal)}`,
           `Actual (metrics after modal is opened): ${JSON.stringify(metricsAfterModal)}`,
-        ].join('\n'));
+        ]));
       });
     });
   });

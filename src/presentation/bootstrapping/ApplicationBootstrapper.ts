@@ -2,6 +2,7 @@ import { Bootstrapper } from './Bootstrapper';
 import { RuntimeSanityValidator } from './Modules/RuntimeSanityValidator';
 import { AppInitializationLogger } from './Modules/AppInitializationLogger';
 import { DependencyBootstrapper } from './Modules/DependencyBootstrapper';
+import { MobileSafariActivePseudoClassEnabler } from './Modules/MobileSafariActivePseudoClassEnabler';
 import type { App } from 'vue';
 
 export class ApplicationBootstrapper implements Bootstrapper {
@@ -19,6 +20,7 @@ export class ApplicationBootstrapper implements Bootstrapper {
       new RuntimeSanityValidator(),
       new DependencyBootstrapper(),
       new AppInitializationLogger(),
+      new MobileSafariActivePseudoClassEnabler(),
     ];
   }
 }

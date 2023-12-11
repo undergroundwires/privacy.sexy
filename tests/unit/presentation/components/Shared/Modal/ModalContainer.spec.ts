@@ -1,7 +1,10 @@
-import { describe, it, expect } from 'vitest';
+import {
+  describe, it, expect, afterEach,
+} from 'vitest';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import ModalContainer from '@/presentation/components/Shared/Modal/ModalContainer.vue';
+import { createWindowEventSpies } from '@tests/shared/Spies/WindowEventSpies';
 
 const DOM_MODAL_CONTAINER_SELECTOR = '.modal-container';
 const COMPONENT_MODAL_OVERLAY_NAME = 'ModalOverlay';
@@ -70,17 +73,16 @@ describe('ModalContainer.vue', () => {
 
     it('closes on pressing ESC key', async () => {
       // arrange
-      const { triggerKeyUp, restore } = createWindowEventSpies();
+      createWindowEventSpies(afterEach);
       const wrapper = mountComponent({ modelValue: true });
 
       // act
       const escapeEvent = new KeyboardEvent('keyup', { key: 'Escape' });
-      triggerKeyUp(escapeEvent);
+      window.dispatchEvent(escapeEvent);
       await wrapper.vm.$nextTick();
 
       // assert
       expect(wrapper.emitted('update:modelValue')).to.deep.equal([[false]]);
-      restore();
     });
 
     it('emit false value after overlay and content transitions out and model prop is true', async () => {
@@ -172,45 +174,4 @@ function mountComponent(options: {
       },
     },
   });
-}
-
-function createWindowEventSpies() {
-  const originalAddEventListener = window.addEventListener;
-  const originalRemoveEventListener = window.removeEventListener;
-
-  let savedListener: EventListenerOrEventListenerObject | null = null;
-
-  window.addEventListener = (
-    type: string,
-    listener: EventListenerOrEventListenerObject,
-    options?: boolean | AddEventListenerOptions,
-  ): void => {
-    if (type === 'keyup' && typeof listener === 'function') {
-      savedListener = listener;
-    }
-    originalAddEventListener.call(window, type, listener, options);
-  };
-
-  window.removeEventListener = (
-    type: string,
-    listener: EventListenerOrEventListenerObject,
-    options?: boolean | EventListenerOptions,
-  ): void => {
-    if (type === 'keyup' && typeof listener === 'function') {
-      savedListener = null;
-    }
-    originalRemoveEventListener.call(window, type, listener, options);
-  };
-
-  return {
-    triggerKeyUp: (event: KeyboardEvent) => {
-      if (savedListener) {
-        (savedListener as EventListener)(event);
-      }
-    },
-    restore: () => {
-      window.addEventListener = originalAddEventListener;
-      window.removeEventListener = originalRemoveEventListener;
-    },
-  };
 }

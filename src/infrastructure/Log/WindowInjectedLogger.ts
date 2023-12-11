@@ -5,7 +5,7 @@ export class WindowInjectedLogger implements Logger {
   private readonly logger: Logger;
 
   constructor(windowVariables: WindowVariables | undefined | null = window) {
-    if (!windowVariables) { // do not trust strict null checks for global objects
+    if (!windowVariables) { // do not trust strictNullChecks for global objects
       throw new Error('missing window');
     }
     if (!windowVariables.log) {

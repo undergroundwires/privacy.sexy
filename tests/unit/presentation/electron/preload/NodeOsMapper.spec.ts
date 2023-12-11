@@ -1,6 +1,7 @@
 import { describe } from 'vitest';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { convertPlatformToOs } from '@/presentation/electron/preload/NodeOsMapper';
+import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 
 describe('NodeOsMapper', () => {
   describe('convertPlatformToOs', () => {
@@ -45,14 +46,13 @@ describe('NodeOsMapper', () => {
           // act
           const actualOs = convertPlatformToOs(nodePlatform);
           // assert
-          expect(actualOs).to.equal(expectedOs, printMessage());
+          expect(actualOs).to.equal(expectedOs, formatAssertionMessage([
+            `Expected: "${printResult(expectedOs)}"\n`,
+            `Actual: "${printResult(actualOs)}"\n`,
+            `Platform: "${nodePlatform}"`,
+          ]));
           function printResult(os: ReturnType<typeof convertPlatformToOs>): string {
             return os === undefined ? 'undefined' : OperatingSystem[os];
-          }
-          function printMessage(): string {
-            return `Expected: "${printResult(expectedOs)}"\n`
-              + `Actual: "${printResult(actualOs)}"\n`
-              + `Platform: "${nodePlatform}"`;
           }
         });
       });

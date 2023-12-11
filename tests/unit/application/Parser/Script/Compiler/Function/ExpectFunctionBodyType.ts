@@ -1,6 +1,7 @@
 import {
   CallFunctionBody, CodeFunctionBody, FunctionBodyType, SharedFunctionBody,
 } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
+import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 
 export function expectCodeFunctionBody(
   body: SharedFunctionBody,
@@ -16,14 +17,9 @@ export function expectCallsFunctionBody(
 
 function expectBodyType(body: SharedFunctionBody, expectedType: FunctionBodyType) {
   const actualType = body.type;
-  expect(actualType).to.equal(
-    expectedType,
-    [
-      '\n---',
-      `Actual: ${FunctionBodyType[actualType]}`,
-      `Expected: ${FunctionBodyType[expectedType]}`,
-      `Body: ${JSON.stringify(body)}`,
-      '---\n\n',
-    ].join('\n'),
-  );
+  expect(actualType).to.equal(expectedType, formatAssertionMessage([
+    `Actual: ${FunctionBodyType[actualType]}`,
+    `Expected: ${FunctionBodyType[expectedType]}`,
+    `Body: ${JSON.stringify(body)}`,
+  ]));
 }

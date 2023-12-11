@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from 'fs';
 import { resolve, join, basename } from 'path';
 import { describe, it, expect } from 'vitest';
+import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 
 /*
   A common mistake when working with yaml files to forget mentioning that a value should
@@ -24,11 +25,10 @@ describe('collection files to have no unintended inlining', () => {
       // act
       const lines = await findBadLineNumbers(testCase.content);
       // assert
-      expect(lines).to.be.have.lengthOf(0, printMessage());
-      function printMessage(): string {
-        return 'Did you intend to have multi-lined string in lines: ' // eslint-disable-line prefer-template
-          + lines.map(((line) => line.toString())).join(', ');
-      }
+      expect(lines).to.be.have.lengthOf(0, formatAssertionMessage([
+        'Did you intend to have multi-lined string in lines: ',
+        lines.map(((line) => line.toString())).join(', '),
+      ]));
     });
   }
 });

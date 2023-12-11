@@ -2,9 +2,10 @@ import { OperatingSystem } from '@/domain/OperatingSystem';
 import { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
 import { IEnvironmentVariables } from '@/infrastructure/EnvironmentVariables/IEnvironmentVariables';
 import { EnvironmentVariablesFactory } from '@/infrastructure/EnvironmentVariables/EnvironmentVariablesFactory';
-import { BrowserOsDetector } from './BrowserOs/BrowserOsDetector';
-import { IBrowserOsDetector } from './BrowserOs/IBrowserOsDetector';
+import { ConditionBasedOsDetector } from './BrowserOs/ConditionBasedOsDetector';
+import { BrowserEnvironment, BrowserOsDetector } from './BrowserOs/BrowserOsDetector';
 import { IRuntimeEnvironment } from './IRuntimeEnvironment';
+import { isTouchEnabledDevice } from './TouchSupportDetection';
 
 export class RuntimeEnvironment implements IRuntimeEnvironment {
   public static readonly CurrentEnvironment: IRuntimeEnvironment = new RuntimeEnvironment(window);
@@ -18,11 +19,10 @@ export class RuntimeEnvironment implements IRuntimeEnvironment {
   protected constructor(
     window: Partial<Window>,
     environmentVariables: IEnvironmentVariables = EnvironmentVariablesFactory.Current.instance,
-    browserOsDetector: IBrowserOsDetector = new BrowserOsDetector(),
+    browserOsDetector: BrowserOsDetector = new ConditionBasedOsDetector(),
+    touchDetector = isTouchEnabledDevice,
   ) {
-    if (!window) {
-      throw new Error('missing window');
-    }
+    if (!window) { throw new Error('missing window'); } // do not trust strictNullChecks for global objects
     this.isNonProduction = environmentVariables.isNonProduction;
     this.isDesktop = isDesktop(window);
     if (this.isDesktop) {
@@ -31,7 +31,11 @@ export class RuntimeEnvironment implements IRuntimeEnvironment {
       this.os = undefined;
       const userAgent = getUserAgent(window);
       if (userAgent) {
-        this.os = browserOsDetector.detect(userAgent);
+        const browserEnvironment: BrowserEnvironment = {
+          userAgent,
+          isTouchSupported: touchDetector(),
+        };
+        this.os = browserOsDetector.detect(browserEnvironment);
       }
     }
   }

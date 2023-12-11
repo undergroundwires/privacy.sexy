@@ -6,6 +6,7 @@ import { nextTick } from 'vue';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import { IconName } from '@/presentation/components/Shared/Icon/IconName';
 import { UseSvgLoaderStub } from '@tests/unit/shared/Stubs/UseSvgLoaderStub';
+import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 
 describe('AppIcon.vue', () => {
   it('renders the correct SVG content based on the icon prop', async () => {
@@ -23,12 +24,8 @@ describe('AppIcon.vue', () => {
     await nextTick();
 
     // assert
-    const actualSvg = extractAndNormalizeSvg(wrapper.html());
-    const expectedSvg = extractAndNormalizeSvg(expectedIconContent);
-    expect(actualSvg).to.equal(
-      expectedSvg,
-      `Expected:\n\n${expectedSvg}\n\nActual:\n\n${actualSvg}`,
-    );
+    const actualSvg = wrapper.html();
+    expectSvg(actualSvg, expectedIconContent);
   });
   it('updates the SVG content when the icon prop changes', async () => {
     // arrange
@@ -48,12 +45,8 @@ describe('AppIcon.vue', () => {
     await nextTick();
 
     // assert
-    const actualSvg = extractAndNormalizeSvg(wrapper.html());
-    const expectedSvg = extractAndNormalizeSvg(updatedIconContent);
-    expect(actualSvg).to.equal(
-      expectedSvg,
-      `Expected:\n\n${expectedSvg}\n\nActual:\n\n${actualSvg}`,
-    );
+    const actualSvg = wrapper.html();
+    expectSvg(actualSvg, updatedIconContent);
   });
   it('emits `click` event when clicked', async () => {
     // arrange
@@ -84,6 +77,15 @@ function mountComponent(options?: {
       },
     },
   });
+}
+
+function expectSvg(actualSvg: string, expectedSvg: string): ReturnType<typeof expect> {
+  const normalizedExpectedSvg = extractAndNormalizeSvg(expectedSvg);
+  const normalizedActualSvg = extractAndNormalizeSvg(actualSvg);
+  return expect(normalizedActualSvg).to.equal(normalizedExpectedSvg, formatAssertionMessage([
+    'Expected:\n', normalizedExpectedSvg,
+    'Actual:\n', normalizedActualSvg,
+  ]));
 }
 
 function extractAndNormalizeSvg(svgString: string): string {

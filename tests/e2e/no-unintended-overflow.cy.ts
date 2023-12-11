@@ -1,3 +1,5 @@
+import { formatAssertionMessage } from '../shared/FormatAssertionMessage';
+
 describe('has no unintended overflow', () => {
   it('fits the content without horizontal scroll', () => {
     // arrange
@@ -6,7 +8,7 @@ describe('has no unintended overflow', () => {
     cy.visit('/');
     // assert
     cy.window().then((win) => {
-      expect(win.document.documentElement.scrollWidth, [
+      expect(win.document.documentElement.scrollWidth, formatAssertionMessage([
         `Window inner dimensions: ${win.innerWidth}x${win.innerHeight}`,
         `Window outer dimensions: ${win.outerWidth}x${win.outerHeight}`,
         `Body scrollWidth: ${win.document.body.scrollWidth}`,
@@ -17,7 +19,7 @@ describe('has no unintended overflow', () => {
         `Meta viewport content: ${win.document.querySelector('meta[name="viewport"]')?.getAttribute('content')}`,
         `Device Pixel Ratio: ${win.devicePixelRatio}`,
         `Cypress Viewport: ${Cypress.config('viewportWidth')}x${Cypress.config('viewportHeight')}`,
-      ].join('\n')).to.be.lte(win.innerWidth);
+      ])).to.be.lte(win.innerWidth);
     });
   });
 });

@@ -1,4 +1,5 @@
 // eslint-disable-next-line max-classes-per-file
+import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { getHeaderBrandTitle } from './support/interactions/header';
 import { ViewportTestScenarios } from './support/scenarios/viewport-test-scenarios';
 
@@ -49,11 +50,12 @@ describe('card list layout stability', () => {
         // assert
         const widthToleranceInPx = 0;
         const widthsInPx = dimensions.getUniqueWidths();
-        expect(isWithinTolerance(widthsInPx, widthToleranceInPx)).to.equal(true, [
-          `Unique width values over time: ${[...widthsInPx].join(', ')}`,
-          `Height changes are more than ${widthToleranceInPx}px tolerance`,
-          `Captured metrics: ${dimensions.toString()}`,
-        ].join('\n\n'));
+        expect(isWithinTolerance(widthsInPx, widthToleranceInPx))
+          .to.equal(true, formatAssertionMessage([
+            `Unique width values over time: ${[...widthsInPx].join(', ')}`,
+            `Height changes are more than ${widthToleranceInPx}px tolerance`,
+            `Captured metrics: ${dimensions.toString()}`,
+          ]));
 
         const heightToleranceInPx = 100; // Set in relation to card sizes.
         // Tolerance allows for minor layout shifts without (e.g. for icon or font loading)
@@ -61,11 +63,12 @@ describe('card list layout stability', () => {
         // cards per row changes, avoiding failures for shifts less than the smallest card
         // size (~175px).
         const heightsInPx = dimensions.getUniqueHeights();
-        expect(isWithinTolerance(heightsInPx, heightToleranceInPx)).to.equal(true, [
-          `Unique height values over time: ${[...heightsInPx].join(', ')}`,
-          `Height changes are more than ${heightToleranceInPx}px tolerance`,
-          `Captured metrics: ${dimensions.toString()}`,
-        ].join('\n\n'));
+        expect(isWithinTolerance(heightsInPx, heightToleranceInPx))
+          .to.equal(true, formatAssertionMessage([
+            `Unique height values over time: ${[...heightsInPx].join(', ')}`,
+            `Height changes are more than ${heightToleranceInPx}px tolerance`,
+            `Captured metrics: ${dimensions.toString()}`,
+          ]));
       });
     });
   });

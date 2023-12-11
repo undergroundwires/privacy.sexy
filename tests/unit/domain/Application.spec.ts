@@ -69,7 +69,7 @@ describe('Application', () => {
             value: [
               new CategoryCollectionStub().withOs(OperatingSystem.Windows),
               new CategoryCollectionStub().withOs(OperatingSystem.Windows),
-              new CategoryCollectionStub().withOs(OperatingSystem.BlackBerry),
+              new CategoryCollectionStub().withOs(OperatingSystem.BlackBerry10),
             ],
           },
         ];

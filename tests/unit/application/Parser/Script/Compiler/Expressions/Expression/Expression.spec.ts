@@ -12,6 +12,7 @@ import { IReadOnlyFunctionParameterCollection } from '@/application/Parser/Scrip
 import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { IExpressionEvaluationContext } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionEvaluationContext';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
+import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 
 describe('Expression', () => {
   describe('ctor', () => {
@@ -116,11 +117,10 @@ describe('Expression', () => {
       // arrange
       const actual = sut.evaluate(context);
       // assert
-      expect(expected).to.equal(actual, printMessage());
-      function printMessage(): string {
-        return `\nGiven arguments: ${JSON.stringify(givenArguments)}\n`
-          + `\nExpected parameter names: ${JSON.stringify(expectedParameterNames)}\n`;
-      }
+      expect(expected).to.equal(actual, formatAssertionMessage([
+        `Given arguments: ${JSON.stringify(givenArguments)}`,
+        `Expected parameter names: ${JSON.stringify(expectedParameterNames)}`,
+      ]));
     });
     it('sends pipeline compiler as it is', () => {
       // arrange

@@ -1,4 +1,5 @@
 import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 
 export function expectEqualSelectedScripts(
   actual: readonly SelectedScript[],
@@ -14,11 +15,11 @@ function expectSameScriptIds(
 ) {
   const existingScriptIds = expected.map((script) => script.id).sort();
   const expectedScriptIds = actual.map((script) => script.id).sort();
-  expect(existingScriptIds).to.deep.equal(expectedScriptIds, [
+  expect(existingScriptIds).to.deep.equal(expectedScriptIds, formatAssertionMessage([
     'Unexpected script IDs.',
     `Expected: ${expectedScriptIds.join(', ')}`,
     `Actual: ${existingScriptIds.join(', ')}`,
-  ].join('\n'));
+  ]));
 }
 
 function expectSameRevertStates(
@@ -33,7 +34,7 @@ function expectSameRevertStates(
       }
       return script.revert !== other.revert;
     });
-  expect(scriptsWithDifferentRevertStates).to.have.lengthOf(0, [
+  expect(scriptsWithDifferentRevertStates).to.have.lengthOf(0, formatAssertionMessage([
     'Scripts with different revert states:',
     scriptsWithDifferentRevertStates
       .map((s) => [
@@ -42,5 +43,5 @@ function expectSameRevertStates(
         `Expected revert state: "${expected.find((existing) => existing.id === s.id)?.revert ?? 'unknown'}"`,
       ].map((line) => `\t${line}`).join('\n'))
       .join('\n---\n'),
-  ].join('\n'));
+  ]));
 }

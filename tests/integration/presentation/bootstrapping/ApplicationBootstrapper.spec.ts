@@ -1,4 +1,4 @@
-import { describe } from 'vitest';
+import { describe, it } from 'vitest';
 import { createApp } from 'vue';
 import { ApplicationBootstrapper } from '@/presentation/bootstrapping/ApplicationBootstrapper';
 import { expectDoesNotThrowAsync } from '@tests/shared/Assertions/ExpectThrowsAsync';

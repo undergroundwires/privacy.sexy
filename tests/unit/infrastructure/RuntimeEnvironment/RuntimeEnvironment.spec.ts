@@ -1,11 +1,13 @@
+// eslint-disable-next-line max-classes-per-file
 import { describe, it, expect } from 'vitest';
-import { IBrowserOsDetector } from '@/infrastructure/RuntimeEnvironment/BrowserOs/IBrowserOsDetector';
+import { BrowserOsDetector } from '@/infrastructure/RuntimeEnvironment/BrowserOs/BrowserOsDetector';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
 import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { BrowserOsDetectorStub } from '@tests/unit/shared/Stubs/BrowserOsDetectorStub';
 import { IEnvironmentVariables } from '@/infrastructure/EnvironmentVariables/IEnvironmentVariables';
 import { EnvironmentVariablesStub } from '@tests/unit/shared/Stubs/EnvironmentVariablesStub';
+import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 describe('RuntimeEnvironment', () => {
   describe('ctor', () => {
@@ -21,6 +23,22 @@ describe('RuntimeEnvironment', () => {
         // assert
         expect(act).to.throw(expectedError);
       });
+    });
+    it('uses browser OS detector with current touch support', () => {
+      // arrange
+      const expectedTouchSupport = true;
+      const osDetector = new BrowserOsDetectorStub();
+      // act
+      createEnvironment({
+        window: { os: undefined, navigator: { userAgent: 'Forcing touch detection' } } as Partial<Window>,
+        isTouchSupported: expectedTouchSupport,
+        browserOsDetector: osDetector,
+      });
+      // assert
+      const actualCall = osDetector.callHistory.find((c) => c.methodName === 'detect');
+      expectExists(actualCall);
+      const [{ isTouchSupported: actualTouchSupport }] = actualCall.args;
+      expect(actualTouchSupport).to.equal(expectedTouchSupport);
     });
   });
   describe('isDesktop', () => {
@@ -54,7 +72,7 @@ describe('RuntimeEnvironment', () => {
     it('returns undefined if user agent is missing', () => {
       // arrange
       const expected = undefined;
-      const browserDetectorMock: IBrowserOsDetector = {
+      const browserDetectorMock: BrowserOsDetector = {
         detect: () => {
           throw new Error('should not reach here');
         },
@@ -76,9 +94,9 @@ describe('RuntimeEnvironment', () => {
           userAgent: givenUserAgent,
         },
       };
-      const browserDetectorMock: IBrowserOsDetector = {
-        detect: (agent) => {
-          if (agent !== givenUserAgent) {
+      const browserDetectorMock: BrowserOsDetector = {
+        detect: (environment) => {
+          if (environment.userAgent !== givenUserAgent) {
             throw new Error('Unexpected user agent');
           }
           return expected;
@@ -155,23 +173,31 @@ describe('RuntimeEnvironment', () => {
 });
 
 interface EnvironmentOptions {
-  window: Partial<Window>;
-  browserOsDetector?: IBrowserOsDetector;
-  environmentVariables?: IEnvironmentVariables;
+  readonly window?: Partial<Window>;
+  readonly browserOsDetector?: BrowserOsDetector;
+  readonly environmentVariables?: IEnvironmentVariables;
+  readonly isTouchSupported?: boolean;
 }
 
 function createEnvironment(options: Partial<EnvironmentOptions> = {}): TestableRuntimeEnvironment {
-  const defaultOptions: EnvironmentOptions = {
+  const defaultOptions: Required<EnvironmentOptions> = {
     window: {},
     browserOsDetector: new BrowserOsDetectorStub(),
     environmentVariables: new EnvironmentVariablesStub(),
+    isTouchSupported: false,
   };
 
   return new TestableRuntimeEnvironment({ ...defaultOptions, ...options });
 }
 
 class TestableRuntimeEnvironment extends RuntimeEnvironment {
-  public constructor(options: EnvironmentOptions) {
-    super(options.window, options.environmentVariables, options.browserOsDetector);
+  /* Using a separate object instead of `ConstructorParameter<..>` */
+  public constructor(options: Required<EnvironmentOptions>) {
+    super(
+      options.window,
+      options.environmentVariables,
+      options.browserOsDetector,
+      () => options.isTouchSupported,
+    );
   }
 }

@@ -21,6 +21,7 @@ import { CategoryCollectionStateStub } from '@tests/unit/shared/Stubs/CategoryCo
 import { NodeMetadataStub } from '@tests/unit/shared/Stubs/NodeMetadataStub';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
+import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 
 describe('UseTreeViewFilterEvent', () => {
   describe('initially', () => {
@@ -259,16 +260,11 @@ function itExpectedFilterTriggeredEvent(
       }
       expect(event.value.predicate).toBeDefined();
       const actualPredicateResult = event.value.predicate(givenNode);
-      expect(actualPredicateResult).to.equal(
-        expectedPredicateResult,
-        [
-          '\n---',
-          `Script matches (${scriptMatches.length}): [${scriptMatches.map((s) => s.id).join(', ')}]`,
-          `Category matches (${categoryMatches.length}): [${categoryMatches.map((s) => s.id).join(', ')}]`,
-          `Expected node: "${givenNode.id}"`,
-          '---\n\n',
-        ].join('\n'),
-      );
+      expect(actualPredicateResult).to.equal(expectedPredicateResult, formatAssertionMessage([
+        `Script matches (${scriptMatches.length}): [${scriptMatches.map((s) => s.id).join(', ')}]`,
+        `Category matches (${categoryMatches.length}): [${categoryMatches.map((s) => s.id).join(', ')}]`,
+        `Expected node: "${givenNode.id}"`,
+      ]));
     });
   });
 }
