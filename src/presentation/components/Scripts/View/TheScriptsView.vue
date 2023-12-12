@@ -5,9 +5,7 @@
         <CardList />
       </template>
       <template v-else-if="currentView === ViewType.Tree">
-        <div class="tree">
-          <ScriptsTree />
-        </div>
+        <ScriptsTree />
       </template>
     </template>
     <template v-else>
@@ -30,8 +28,8 @@
           </div>
         </div>
       </div>
-      <div v-if="searchHasMatches" class="tree tree--searching">
-        <ScriptsTree />
+      <div v-if="searchHasMatches">
+        <ScriptsTree :has-top-padding="false" />
       </div>
     </template>
   </div>
@@ -139,29 +137,20 @@ $margin-inner: 4px;
     overflow: auto;
     max-height: 70vh;
   }
-  .tree {
-    padding-left: 3%;
-    padding-top: 15px;
-    padding-bottom: 15px;
-    &--searching {
-      background-color: $color-primary-darker;
-      padding-top: 0px;
-    }
-  }
 }
 
 .search {
   display: flex;
   flex-direction: column;
-  background-color: $color-primary-darker;
-  &__query {
+  background-color: $color-scripts-bg;
+  .search__query {
     display: flex;
     justify-content: center;
     flex-direction: row;
     align-items: center;
     margin-top: 1em;
     color: $color-primary;
-    &__close-button {
+    .search__query__close-button {
       @include clickable;
       font-size: 1.25em;
       margin-left: 0.25rem;
@@ -170,7 +159,7 @@ $margin-inner: 4px;
       }
     }
   }
-  &-no-matches {
+  .search-no-matches {
     display:flex;
     flex-direction: column;
     word-break:break-word;

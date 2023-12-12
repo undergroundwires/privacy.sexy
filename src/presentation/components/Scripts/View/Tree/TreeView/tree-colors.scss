@@ -1,7 +1,7 @@
 @use "@/presentation/assets/styles/main" as *;
 
 /* Tree colors, based on global colors */
-$color-tree-bg                              : $color-primary-darker;
+$color-tree-bg                              : $color-scripts-bg;
 $color-node-arrow                           : $color-on-primary;
 $color-node-fg                              : $color-on-primary;
 $color-node-highlight-bg                    : $color-primary-dark;

@@ -1,5 +1,10 @@
 <template>
-  <div class="scripts-tree-container">
+  <div
+    class="scripts-tree-container"
+    :class="{
+      'top-padding': hasTopPadding,
+    }"
+  >
     <template v-if="initialNodes.length">
       <TreeView
         :initial-nodes="initialNodes"
@@ -39,6 +44,10 @@ export default defineComponent({
       type: [Number],
       default: undefined,
     },
+    hasTopPadding: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup(props) {
     const useUserCollectionStateHook = injectKey((keys) => keys.useUserSelectionState);
@@ -62,8 +71,21 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@use "@/presentation/assets/styles/main" as *;
+
+$padding: 20px;
+
 .scripts-tree-container {
   display: flex; // We could provide `block`, but `flex` is more versatile.
-  overflow: auto; // Prevents horizontal expansion of inner content (e.g., when a code block is shown)
+
+  /* Set background color in consistent way so it has similar look when searching, on tree view, in cards etc. */
+  background: $color-scripts-bg;
+
+  padding-bottom: $padding;
+  padding-left: $padding;
+  padding-right: $padding;
+  &.top-padding {
+    padding-top: $padding;
+  }
 }
 </style>

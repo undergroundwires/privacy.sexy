@@ -37,7 +37,10 @@
         />
       </div>
       <div class="card__expander__content">
-        <ScriptsTree :category-id="categoryId" />
+        <ScriptsTree
+          :category-id="categoryId"
+          :has-top-padding="false"
+        />
       </div>
     </div>
   </div>
@@ -159,27 +162,26 @@ $card-horizontal-gap    : $card-gap;
     &:after {
       transition: all 0.3s ease-in-out;
     }
-    &__title {
+    .card__inner__title {
       display: flex;
       flex-direction: column;
       flex: 1;
       justify-content: center;
     }
-    &__selection_indicator {
+    .card__inner__selection_indicator {
       height: $card-inner-padding;
       margin-right: -$card-inner-padding;
       padding-right: 10px;
       display: flex;
       justify-content: flex-end;
     }
-
-    &__expand-icon {
+    .card__inner__expand-icon {
       width: 100%;
       margin-top: .25em;
       vertical-align: middle;
     }
   }
-  &__expander {
+  .card__expander {
     transition: all 0.2s ease-in-out;
     position: relative;
     background-color: $color-primary-darker;
@@ -189,17 +191,14 @@ $card-horizontal-gap    : $card-gap;
     align-items: center;
     flex-direction: column;
 
-    &__content {
+    .card__expander__content {
       display: flex;
       justify-content: center;
       word-break: break-word;
-      margin-bottom: 1em;
-      margin-left: 0.5em;
-      margin-right: 0.5em;
       max-width: 100%; // Prevents horizontal expansion of inner content (e.g., when a code block is shown)
     }
 
-    &__close-button {
+    .card__expander__close-button {
       font-size: 1.5em;
       align-self: flex-end;
       margin-right: 0.25em;

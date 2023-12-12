@@ -167,7 +167,7 @@ $base-spacing: $text-size;
     @include no-margin('blockquote');
     @include no-margin('pre');
 
-    /* Add spacing between elements using `margin-bottom` only (bottom-out instead of top-down strategy). */
+    /* Add spacing between elements using `margin-bottom` only (bottom-up instead of top-down strategy). */
     $small-vertical-spacing: math.div($base-vertical-spacing, 2);
     @include bottom-margin('p', $base-vertical-spacing);
     @include bottom-margin('h1, h2, h3, h4, h5, h6', $base-vertical-spacing);
