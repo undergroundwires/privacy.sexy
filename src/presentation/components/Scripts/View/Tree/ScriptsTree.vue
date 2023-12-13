@@ -77,6 +77,7 @@ $padding: 20px;
 
 .scripts-tree-container {
   display: flex; // We could provide `block`, but `flex` is more versatile.
+  overflow: auto; // Prevents horizontal expansion of inner content (e.g., when a code block is shown)
 
   /* Set background color in consistent way so it has similar look when searching, on tree view, in cards etc. */
   background: $color-scripts-bg;

@@ -1461,6 +1461,393 @@ actions:
         category: Disable OS data collection
         children:
             -
+                category: Disable Application Experience data collection
+                docs: |-
+                    Application Experience comprises services and tasks that help applications, including older ones, run smoothly.
+                    These components collect and send telemetry data to Microsoft, potentially impacting user privacy [1] [2] [3] [4].
+                    
+                    Scripts under this category aim to enhance user privacy, data protection, and protect the system from potential
+                    vulnerabilities [5]. They also optimize system performance [1] [2] by removing non-essential operating system components.
+                    
+                    However, disabling Application Experience could influence the performance or compatibility of specific applications
+                    or services on your system [3] [5].
+
+                    [1]: https://web.archive.org/web/20230929124611/https://learn.microsoft.com/en-us/troubleshoot/mem/configmgr/update-management/high-network-bandwidth-usage "High network bandwidth usage - Configuration Manager | Microsoft Learn"
+                    [2]: https://web.archive.org/web/20230929124644/https://geeksadvice.com/fix-microsoft-compatibility-telemetry-high-cpu-usage/ "Fix Microsoft Compatibility Telemetry High CPU Usage (CompatTelRunner.exe) | Geek's Advice"
+                    [3]: https://web.archive.org/web/20230528031527/https://learn.microsoft.com/en-us/mem/configmgr/desktop-analytics/overview "Desktop Analytics - Configuration Manager | Microsoft Learn"
+                    [4]: https://web.archive.org/web/20230928142052/https://learn.microsoft.com/en-us/mem/configmgr/desktop-analytics/monitor-connection-health "Monitor connection health - Configuration Manager | Microsoft Learn"
+                    [5]: https://web.archive.org/web/20230929124720/https://nvd.nist.gov/vuln/detail/CVE-2019-1267 "NVD - CVE-2019-1267 | nist.gov"
+                children:
+                    # Excluding:
+                    #   - "Application Experience" service (`AeLookupSvc`) as it does not exists since Windows 10 21H1 and Windows 11 22H2
+                    -
+                        category: Disable automatic system compatibility checks (Microsoft Compatibility Appraiser)
+                        docs: |-
+                            This category covers disabling of the Microsoft Compatibility Appraiser.
+                            This tool checks your computer's software and hardware compatibility with the latest Windows updates,
+                            including major upgrades such as Windows 11 [1].
+                            It scans your system, collecting detailed information about your apps and devices to ensure everything will work
+                            smoothly with potential updates [2] [3].
+                            This process helps Microsoft improve Windows and keep your system running efficiently with the latest features.
+                            However, it sends substantial system usage data to Microsoft, raising privacy concerns for some users.
+
+                            This script optimizes your computer by managing how it prepares for Windows updates.
+                            The Microsoft Compatibility Appraiser, designed to check system readiness for new updates, routinely discards saved
+                            update data [2].
+                            Consequently, your computer must redownload this data during subsequent update checks, consuming significant
+                            internet bandwidth [2] and CPU resources [3].
+                            Preventing this redundancy, the script reduces internet usage and improves computer performance.
+
+                            The Microsoft Compatibility Appraiser contributes to Desktop Analytics [2] (formerly Windows Analytics [4]), a system
+                            that collects and sends Windows diagnostics and app usage data to Microsoft servers [4].
+                            This service is unavailable in high-privacy settings such as GCC High or the US Department of Defense [4],
+                            highlighting its potential privacy implications.
+                            These organizations, known for stringent privacy and security standards, do not utilize Desktop Analytics, suggesting
+                            the service's inherent data collection practices may not align with high-privacy protocols.
+
+                            Despite its utility, Microsoft Compatibility Appraiser can introduce additional vulnerabilities to your system. A known
+                            elevation of privilege vulnerability linked with the appraiser allows a configuration file to be susceptible to symbolic link
+                            and hard link attacks, also known as the "Microsoft Compatibility Appraiser Elevation of Privilege Vulnerability" [5].
+
+                            By disabling the Microsoft Compatibility Appraiser, this category contributes to enhancing your system's privacy by reducing
+                            unnecessary data transmission to Microsoft servers, mitigating potential vulnerabilities, and conserving network bandwidth
+                            and CPU usage.
+
+                            [1]: https://web.archive.org/web/20230929124550/https://support.microsoft.com/en-us/windows/how-to-check-if-your-device-meets-windows-11-system-requirements-after-changing-device-hardware-f3bc0aeb-6884-41a1-ab57-88258df6812b "How to check if your device meets Windows 11 system requirements after changing device hardware - Microsoft Support"
+                            [2]: https://web.archive.org/web/20230929124611/https://learn.microsoft.com/en-us/troubleshoot/mem/configmgr/update-management/high-network-bandwidth-usage "High network bandwidth usage - Configuration Manager | Microsoft Learn"
+                            [3]: https://web.archive.org/web/20230929124644/https://geeksadvice.com/fix-microsoft-compatibility-telemetry-high-cpu-usage/ "Fix Microsoft Compatibility Telemetry High CPU Usage (CompatTelRunner.exe) | Geek's Advice"
+                            [4]: https://web.archive.org/web/20230528031527/https://learn.microsoft.com/en-us/mem/configmgr/desktop-analytics/overview "Desktop Analytics - Configuration Manager | Microsoft Learn"
+                            [5]: https://web.archive.org/web/20230929124720/https://nvd.nist.gov/vuln/detail/CVE-2019-1267 "NVD - CVE-2019-1267 | nist.gov"
+                        children:
+                            -
+                                name: Disable daily compatibility data collection ("Microsoft Compatibility Appraiser" task)
+                                recommend: standard
+                                docs: |-
+                                    This script disables the "Microsoft Compatibility Appraiser" scheduled task.
+
+                                    The "Microsoft Compatibility Appraiser" is a default scheduled task in Windows [1] [2].
+                                    It collects program telemetry information for participants in the Microsoft Customer Experience Improvement Program [2],
+                                    and it maintains this data collection across computer reboots [2].
+
+                                    Running at least daily [3], this task assesses your system's eligibility for Windows 11 upgrades [4].
+
+                                    By disabling this task, the script helps in optimizing computer performance as recommended by Microsoft [1] [2].
+                                    This action prevents the task from collecting and sending your computer's data to Microsoft, enhancing your privacy and conserving
+                                    system resources.
+                                    It also stops the task from checking Windows 11 eligibility, which can be beneficial for systems that do not plan to upgrade.
+
+                                    > **Caution:** While this script increases privacy, it may limit the system's ability to automatically resolve compatibility
+                                    > issues or provide upgrade recommendations.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser` [3] [4]:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | -------------- |
+                                    | Windows 10 22H2  | 🟢 Ready |
+                                    | Windows 11 22H2  | 🟢 Ready |
+                                    | Windows 11 23H2  | 🟢 Ready |
+
+                                    [1]: https://web.archive.org/web/20230929130253/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds-vdi-recommendations-1803#scheduled-tasks "Optimizing Windows 10, version 1803, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn"
+                                    [2]: https://web.archive.org/web/20230929130219/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds-vdi-recommendations-2004#scheduled-tasks "Optimizing Windows 10, Build 2004, for a Virtual Desktop role | Microsoft Learn"
+                                    [3]: https://web.archive.org/web/20230929124611/https://learn.microsoft.com/en-us/troubleshoot/mem/configmgr/update-management/high-network-bandwidth-usage#mitigation  "High network bandwidth usage - Configuration Manager | Microsoft Learn"
+                                    [4]: https://web.archive.org/web/20230929124550/https://support.microsoft.com/en-us/windows/how-to-check-if-your-device-meets-windows-11-system-requirements-after-changing-device-hardware-f3bc0aeb-6884-41a1-ab57-88258df6812b "How to check if your device meets Windows 11 system requirements after changing device hardware - Microsoft Support"
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Application Experience\' -TaskName 'Microsoft Compatibility Appraiser'
+                                        taskPathPattern: \Microsoft\Windows\Application Experience\
+                                        taskNamePattern: Microsoft Compatibility Appraiser
+                            -
+                                name: Disable telemetry collector and sender process (`CompatTelRunner.exe`)
+                                recommend: standard
+                                docs: |-
+                                    This script disables `CompatTelRunner.exe`, associated with the Microsoft Compatibility Appraiser [1] [2]
+                                    This process runs at least daily [2] from Windows 7 onwards [3] [4].
+
+                                    It collects extensive data, including information about devices, apps, drivers, hardware configurations,
+                                    and other user engagement details [1] [6].
+                                    This data, formerly known as Windows Customer Data [7], is then sent to Microsoft servers [1].
+
+                                    `CompatTelRunner.exe` is known for high CPU [8], disk [8], and network usage [2], affecting system performance.
+                                    Disabling it can therefore lead to better computer efficiency and enhanced privacy by reducing data transmission to Microsoft.
+
+                                    The `CompatTelRunner.exe` is located in the directory: `%WINDIR%\System32\CompatTelRunner.exe` [1].
+                                    This script specifically targets and disables it at this location.
+
+                                    [1]: https://web.archive.org/web/20230928142052/https://learn.microsoft.com/en-us/mem/configmgr/desktop-analytics/monitor-connection-health "Monitor connection health - Configuration Manager | Microsoft Learn"
+                                    [2]: https://web.archive.org/web/20230929124611/https://learn.microsoft.com/en-us/troubleshoot/mem/configmgr/update-management/high-network-bandwidth-usage "High network bandwidth usage - Configuration Manager | Microsoft Learn"
+                                    [3]: https://web.archive.org/web/20230929132723/https://support.microsoft.com/en-us/topic/compatibility-update-for-keeping-windows-up-to-date-in-windows-7-5fe4a218-adf1-9074-9522-bea956cf149b "Compatibility update for keeping Windows up-to-date in Windows 7 - Microsoft Support"
+                                    [4]: https://web.archive.org/web/20230929132734/https://support.microsoft.com/en-us/topic/compatibility-update-for-keeping-windows-up-to-date-in-windows-8-1-34c1fdff-bb94-32ef-4a8b-0d71e11c4af0 "Compatibility update for keeping Windows up-to-date in Windows 8.1 - Microsoft Support"
+                                    [5]: https://web.archive.org/web/20230929132806/https://support.microsoft.com/en-us/topic/update-rollup-2-for-system-center-configuration-manager-current-branch-version-1810-fb956f05-ef39-03b4-ab73-e66dd5e96a9a "Update Rollup 2 for System Center Configuration Manager current branch, version 1810 - Microsoft Support"
+                                    [6]: https://web.archive.org/web/20230929132837/https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-8.1-and-8/appraiser-diagnostic-data-events-and-fields#windows-customer-data-opt-in "Windows 7, Windows 8, and Windows 8.1 appraiser diagnostic data events and fields | Microsoft Learn"
+                                    [7]: https://web.archive.org/web/20230929132845/https://support.microsoft.com/en-us/topic/compatibility-update-for-keeping-windows-up-to-date-in-windows-server-2012-r2-and-windows-server-2008-r2-sp1-c62197fb-d711-f7d3-f135-172844b9f322 "Compatibility update for keeping Windows up-to-date in Windows Server 2012 R2 and Windows Server 2008 R2 SP1 - Microsoft Support"
+                                    [8]: https://web.archive.org/web/20230929124644/https://geeksadvice.com/fix-microsoft-compatibility-telemetry-high-cpu-usage/ "Fix Microsoft Compatibility Telemetry High CPU Usage (CompatTelRunner.exe) | Geek's Advice"
+                                call:
+                                    -
+                                        function: TerminateExecutableOnLaunch
+                                        parameters:
+                                            executableNameWithExtension: CompatTelRunner.exe
+                                    -
+                                        function: SoftDeleteFiles
+                                        parameters:
+                                            fileGlob: '%WINDIR%\System32\CompatTelRunner.exe'
+                                            grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
+                    -
+                        category: Disable background application compatibility checks (Application Experience scheduled tasks)
+                        docs: |-
+                            This category focuses on disabling scheduled tasks related to Application Experience.
+                            These tasks aim to improve user experience by identifying compatibility issues with older software and boosting application performance.
+                            However, they also collect and transmit telemetry data to Microsoft.
+                            Disabling them can optimize system performance, reduce unwanted data collection, and lower security risks.
+
+                            To view all the scheduled tasks related to Application Experience, you can use the following PowerShell command:
+
+                            ```powershell
+                            @('\Microsoft\Windows\Application Experience\*') `
+                                | ForEach-Object { Get-ScheduledTask -TaskName '*' -TaskPath $_ -ErrorAction SilentlyContinue } `
+                                | ForEach-Object { Write-Host "$($_.TaskPath)$($_.TaskName)" }
+                            ```
+                        children:
+                            -
+                                name: Disable program data collection and reporting (`ProgramDataUpdater`)
+                                recommend: standard
+                                docs: |-
+                                    This script disables the "ProgramDataUpdater" scheduled task.
+                                    This component collects and transmits Application Telemetry information for participants in
+                                    the Microsoft Customer Experience Improvement Program [1].
+
+                                    Running this script improves privacy and security by limiting data transmission, making it suitable for high-security environments.
+                                    Recommendations to disable or delete this task have been voiced by both the Polish [2] and Argentine [3] governments.
+
+                                    Microsoft acknowledges this task as non-essential, explaining that its deactivation improves system reliability and
+                                    performance by preventing possible degradation [1] [4].
+                                    It highlights that the task's deactivation will not adversely affect other users and services,
+                                    reinforcing its non-critical nature [1].
+
+                                    Running this script prioritizes privacy by reducing telemetry data sent to Microsoft.
+                                    This choice comes without any notable drawbacks [1], thereby ensuring enhanced privacy and security.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\Application Experience\ProgramDataUpdater`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | -------------- |
+                                    | Windows 10 22H2  | 🟢 Ready |
+                                    | Windows 11 22H2  | 🟡 N/A (missing) |
+                                    | Windows 11 23H2  | 🟡 N/A (missing) |
+
+                                    [1]: https://web.archive.org/web/20231002104948/https://learn.microsoft.com/en-us/services-hub/health/other/work-with-results/assessmentplanreport_windowsclientassessmentplus.xlsx "Windows Client Assessment Recommendations Report generated on: 06/13/2019 | microsoft.com"
+                                    [2]: https://web.archive.org/web/20231011231107/https://plid.obywatel.gov.pl/wp-content/uploads/2014/08/Wymagania-dla-stacji-koncowych-SRP-v-5-0.pdf "WYMAGANIA - dla stacji roboczych stanowisk obsługi dla użytkowników końcowych SRP"
+                                    [3]: https://archive.ph/2023.10.17-193954/http://onc-ftp1.argentinacompra.gov.ar/0091/000/020000042017001000/CNV-000736230001.xml "A complete task sequence for deploying a client operating system (snapshot from http://onc-ftp1.argentinacompra.gov.ar/0091/000/020000042017001000/CNV-000736230001.xml) | Government of Argentina"
+                                    [4]: https://web.archive.org/web/20220120073244/https://docs.microsoft.com/en-us/archive/blogs/jeff_stokes/hot-off-the-presses-get-it-now-the-windows-8-vdi-optimization-script-courtesy-of-pfe "Hot off the presses, get it now, the Windows 8 VDI optimization script, courtesy of PFE! | Microsoft Docs"
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Application Experience\' -TaskName 'ProgramDataUpdater'
+                                        taskPathPattern: \Microsoft\Windows\Application Experience\
+                                        taskNamePattern: ProgramDataUpdater
+                            -
+                                name: Disable application usage tracking (`AitAgent`)
+                                recommend: standard
+                                docs: |-
+                                    This script disables the "AitAgent" scheduled task.
+
+                                    `AitAgent` is a task that is part of the Microsoft Customer Experience Improvement Program [3] [4], which aggregates and uploads
+                                    Application Telemetry information if the user has opted in [3].
+
+                                    This task is part of Application Experience as per its registry location
+                                    (`Microsoft\Windows\Application Experience\AitAgent` [1] [3])
+                                    and VMWare's documentation [4].
+
+                                    Governments of various countries, including Argentina [1] and the United States (via VMWare) [2], recommend disabling this
+                                    task to improve system privacy by reducing data collection. Microsoft recommends disabling to optimize speed of your computer [5].
+                                    By disabling this task, you minimize background activities on your system, contributing positively to your privacy.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\Application Experience\AitAgent`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | -------------- |
+                                    | Windows 10 22H2  | 🟡 N/A (missing) |
+                                    | Windows 11 22H2  | 🟡 N/A (missing) |
+                                    | Windows 11 23H2  | 🟡 N/A (missing) |
+
+                                    [1]: https://archive.ph/2023.10.17-193954/http://onc-ftp1.argentinacompra.gov.ar/0091/000/020000042017001000/CNV-000736230001.xml "A complete task sequence for deploying a client operating system (snapshot from http://onc-ftp1.argentinacompra.gov.ar/0091/000/020000042017001000/CNV-000736230001.xml) | Government of Argentina"
+                                    [2]: https://web.archive.org/web/20231123073336/https://www.mspb.gov/foia/files/VMWareHealthCheckReport.pdf "VMware Desktop Virtualization Health Check Services Health Check Report | www.mspb.gov"
+                                    [3]: https://web.archive.org/web/20231130072051/http://windows.fyicenter.com/4363_AitAgent_Scheduled_Task_on_Windows_8.html '"AitAgent" Scheduled Task on Windows 8'
+                                    [4]: https://web.archive.org/web/20231017193840/https://docs.vmware.com/en/VMware-Horizon-7/7.13/horizon-virtual-desktops/GUID-BE82165B-13BC-4FD9-A9CF-FBEF6343D98A.html "Disable the Windows Customer Experience Improvement Program | docs.vmware.com"
+                                    [5]: https://web.archive.org/web/20220120073244/https://docs.microsoft.com/en-us/archive/blogs/jeff_stokes/hot-off-the-presses-get-it-now-the-windows-8-vdi-optimization-script-courtesy-of-pfe "Hot off the presses, get it now, the Windows 8 VDI optimization script, courtesy of PFE! | Microsoft Docs"
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Application Experience\' -TaskName 'AitAgent'
+                                        taskPathPattern: \Microsoft\Windows\Application Experience\
+                                        taskNamePattern: AitAgent
+                            -
+                                name: Disable startup application data tracking (`StartupAppTask`)
+                                recommend: strict
+                                docs: |-
+                                    This script disables the "StartupAppTask" scheduled task.
+                                    This task checks auto-start programs at boot-up and alerts if there are excessively many [1].
+                                    By disabling this task, you can speed up your computer's startup time and reduce unnecessary data collection [1].
+
+                                    Microsoft itself suggests turning it off to optimize system performance and reduce data collection [1] [2].
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\Application Experience\StartupAppTask`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | -------------- |
+                                    | Windows 10 22H2  | 🟢 Ready |
+                                    | Windows 11 22H2  | 🟢 Ready |
+                                    | Windows 11 23H2  | 🟢 Ready |
+
+                                    [1]: https://web.archive.org/web/20230929130219/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds-vdi-recommendations-2004#scheduled-tasks "Optimizing Windows 10, Build 2004, for a Virtual Desktop role | Microsoft Learn"
+                                    [2]: https://web.archive.org/web/20220120073244/https://docs.microsoft.com/en-us/archive/blogs/jeff_stokes/hot-off-the-presses-get-it-now-the-windows-8-vdi-optimization-script-courtesy-of-pfe "Hot off the presses, get it now, the Windows 8 VDI optimization script, courtesy of PFE! | Microsoft Docs"
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Application Experience\' -TaskName 'StartupAppTask'
+                                        taskPathPattern: \Microsoft\Windows\Application Experience\
+                                        taskNamePattern: StartupAppTask
+                            -
+                                name: Disable software compatibility updates (`PcaPatchDbTask`)
+                                recommend: strict
+                                docs: |-
+                                    This script disables the "PcaPatchDbTask" scheduled task.
+
+                                    "PcaPatchDbTask" is responsible for periodically updating a specific database that tracks software known to have compatibility issues [1].
+                                    When users run a program listed in this database, Windows' Program Compatibility Assistant (PCA) will notify them and suggest a solution
+                                    to address the compatibility problem the next time the program is started [2] [3]. By keeping this database updated, the PCA can consistently
+                                    recognize and remedy compatibility conflicts, ensuring that even software designed for older Windows versions runs correctly on newer ones.
+
+                                    This database is named the System Application Compatibility Database [3]. Its primary function is to support users in seamlessly operating older
+                                    software on modern Windows versions by auto-applying compatibility settings when necessary.
+
+                                    Besides compatibility features, 'PcaPatchDbTask' supports Windows' Dynamic Update process, performing tasks like [4]:
+
+                                    - Retrieving the latest Windows updates and integrating them into the existing system [4]. This action can occasionally trigger antivirus alerts, labeling
+                                    the process as "Riskware.Injector.Generic" [5].
+                                    - Acquiring drivers that may be missing from the installation media [4].
+                                    - Keeping the aforementioned compatibility database up-to-date [1] [4].
+
+                                    "PcaPatchDbTask" was initially rolled out in Windows 10 [4] and it's present by default since Windows 10 21H1 and Windows 11 22H2.
+
+                                    Disabling this task might enhance user privacy by preventing automated compatibility checks and updates. However, users might miss out on helpful
+                                    compatibility solutions for older software.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\Application Experience\PcaPatchDbTask`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | -------------- |
+                                    | Windows 10 22H2  | 🟢 Ready |
+                                    | Windows 11 22H2  | 🟢 Ready |
+                                    | Windows 11 23H2  | 🟢 Ready |
+
+                                    [1]: https://web.archive.org/web/20231004190322/https://raw.githubusercontent.com/Azure/Azure-Sentinel/daa1d3717a3c6240cf15f7f06041905b73208720/Sample%20Data/ASIM/Microsoft_Windows_AuditEvent_WindowsEvent_IngestedLogs_.csv "(Line 48 shows task scheduler description for PcaPatchDbTask) Azure-Sentinel/Sample Data/ASIM/Microsoft_Windows_AuditEvent_WindowsEvent_IngestedLogs_.csv at daa1d3717a3c6240cf15f7f06041905b73208720 · Azure/Azure-Sentinel | github.com"
+                                    [2]: https://web.archive.org/web/20231004182336/https://techcommunity.microsoft.com/t5/ask-the-performance-team/the-program-compatibility-assistant-part-one/ba-p/372538 "The Program Compatibility Assistant - Part One - Microsoft Community Hub | techcommunity.microsoft.com"
+                                    [3]: https://web.archive.org/web/20231004182349/https://techcommunity.microsoft.com/t5/ask-the-performance-team/the-program-compatibility-assistant-part-two/ba-p/372543 "The Program Compatibility Assistant - Part Two - Microsoft Community Hub | techcommunity.microsoft.com"
+                                    [4]: https://web.archive.org/web/20231004182253/https://slideplayer.com/slide/12553555/ "Enhance Windows 10 deployment: What's new with Windows 10 deployment | Microsoft (from Microsoft Ignite 2016)"
+                                    [5]: https://web.archive.org/web/20231004182325/https://forums.malwarebytes.com/topic/274456-recurring-detection-infection-or-part-of-a-windows-update/ "Recurring Detection - infection or part of a Windows update? - File Detections - Malwarebytes Forums"
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Application Experience\' -TaskName 'PcaPatchDbTask'
+                                        taskPathPattern: \Microsoft\Windows\Application Experience\
+                                        taskNamePattern: PcaPatchDbTask
+                            -
+                                name: Disable compatibility adjustment data sharing (`SdbinstMergeDbTask`)
+                                recommend: strict
+                                docs: |-
+                                    This script disables the "SdbinstMergeDbTask" scheduled task.
+
+                                    The 'SdbinstMergeDbTask' task merges pending shim application compatibility databases, as described in
+                                    Task Scheduler (Windows 11 22H2), facilitating the running of older software on newer Windows versions.
+
+                                    According to Task Scheduler (Windows 11 22H2), the task utilizes the `sdbinst.exe` tool [1] [2] [3].
+                                    This tool is known as the "Application Compatibility Database Installer" [4].
+                                    It is part of the Application Compatibility Toolkit (ACT) [4] [5].
+                                    It allows the deployment of SDB files (Windows Shim Database [6] [7]) to the computer [4] [5].
+                                    Before any compatibility fixes or messages are applied [5], this tool is used to make sure applications run correctly, a process called application shimming [8].
+
+                                    This task is associated with the collection of telemetry data [1] [2] [3].
+                                    Telemetry data is information that software providers, such as Microsoft, gather about software usage.
+                                    By disabling this task, the amount of telemetry data that Microsoft collects is reduced, which boosts user privacy.
+
+                                    Additionally, there have been instances where malicious actors exploited this Windows feature to covertly gain
+                                    unauthorized access and execute code within genuine Windows processes [2] [9] [10] [11].
+                                    Disabling this task provides an added layer of security against such threats.
+
+                                    Standard administrator rights are insufficient to turn off this task [12].
+                                    Attempts to do so result in an `ERROR: Access is denied` message.
+                                    To overcome this, the script escalates its privileges ensuring the task is correctly disabled.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\Application Experience\SdbinstMergeDbTask`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | -------------- |
+                                    | Windows 10 22H2  | 🟡 N/A (missing) |
+                                    | Windows 11 22H2  | 🟢 Ready |
+                                    | Windows 11 23H2  | 🟢 Ready |
+
+                                    [1]: https://web.archive.org/web/20231005111407/https://github.com/elastic/detection-rules/issues/2354 "[Rule Tuning] Potential Application Shimming via Sdbinst (Windows) · Issue #2354 · elastic/detection-rules | github.com"
+                                    [2]: https://web.archive.org/web/20231005111515/https://www.elastic.co/guide/en/security/current/potential-application-shimming-via-sdbinst.html "Potential Application Shimming via Sdbinst | Elastic Security Solution [8.10] | Elastic"
+                                    [3]: https://web.archive.org/web/20231005111850/https://www.bleepingcomputer.com/forums/t/785832/farbar-loghijackthis-log/ "FarBar log/HijackThis log - Virus, Trojan, Spyware, and Malware Removal Help | bleepingcomputer.com"
+                                    [4]: https://web.archive.org/web/20231005111905/https://download.microsoft.com/download/4/a/2/4a28d2bb-2916-43a6-9c88-a819d3bfa70f/05_CHAPTER_3_Planning_and_Testing_for_Application_Deployment.doc "Planning and Testing for Application Deployment (Word Document) | microsoft.com"
+                                    [5]: https://web.archive.org/web/20231005111314/https://learn.microsoft.com/en-us/windows/deployment/planning/using-the-sdbinstexe-command-line-tool "Using the Sdbinst.exe Command-Line Tool (Windows 10) - Windows Deployment | Microsoft Learn"
+                                    [6]: https://web.archive.org/web/20231005111428/https://www.microfocus.com/documentation/idol/IDOL_23_2/KeyviewViewingSDK_23.2_Documentation/Guides/html/Content/kv_formats/_KV_FMT__AllDetected.htm "Supported Formats | microfocus.com"
+                                    [7]: https://web.archive.org/web/20230927174609/https://tzworks.com/prototype_page.php?proto_id=33 "Windows Shim Database (SDB) Parser | tzworks.com"
+                                    [8]: https://web.archive.org/web/20231005111828/https://andreafortuna.org/2018/11/12/process-injection-and-persistence-using-application-shimming/ "Process Injection and Persistence using Application Shimming | Andrea Fortuna | andreafortuna.org"
+                                    [9]: https://web.archive.org/web/20231005112020/https://detection.fyi/sigmahq/sigma/windows/process_creation/proc_creation_win_sdbinst_shim_persistence/ "Potential Shim Database Persistence via Sdbinst.EXE | Detection.FYI"
+                                    [10]: https://web.archive.org/web/20231005112110/https://detection.fyi/sigmahq/sigma/windows/process_creation/proc_creation_win_sdbinst_susp_extension/ "Suspicious Shim Database Installation via Sdbinst.EXE | Detection.FYI"
+                                    [11]: https://web.archive.org/web/20231005112255/https://jpcertcc.github.io/ToolAnalysisResultSheet/details/SDB-UAC-Bypass.htm "SDB UAC Bypass | jpcertcc.github.io"
+                                    [12]: https://web.archive.org/web/20231005111150/https://discuss.techlore.tech/t/will-windows-11-force-me-to-sign-in-to-a-microsoft-account/1869/9 "Will Windows 11 force me to sign in to a Microsoft Account? - Privacy and Security / Get Advice - Techlore Discussions | discuss.techlore.tech"
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Application Experience\' -TaskName 'SdbinstMergeDbTask'
+                                        taskPathPattern: \Microsoft\Windows\Application Experience\
+                                        taskNamePattern: SdbinstMergeDbTask
+                                        grantPermissions: true # 🔒 No permissions, tested since [≥ Windows 11 23H2]
+                            -
+                                name: Disable application backup data gathering (`MareBackup`)
+                                recommend: strict
+                                docs: |-
+                                    This script disables the "MareBackup" scheduled task.
+
+                                    According to the Task Scheduler, this task gathers Win32 application data for backups.
+                                    It executes `%WINDIR%\System32\CompatTelRunner.exe`.
+
+                                    Although this task is intended for backup and system reliability, some users may prefer limiting the amount of data
+                                    collected by Windows, thus enhancing their privacy.
+
+                                    > **Caution**: Designed for application data backup, this task supports data recovery processes.
+
+                                    ### Overview of default task statuses
+
+                                    `\Microsoft\Windows\Application Experience\MareBackup`:
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | -------------- |
+                                    | Windows 10 22H2  | 🟡 N/A (missing) |
+                                    | Windows 11 22H2  | 🟡 N/A (missing) |
+                                    | Windows 11 23H2  | 🟢 Ready |
+                                call:
+                                    function: DisableScheduledTask
+                                    parameters:
+                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Application Experience\' -TaskName 'MareBackup'
+                                        taskPathPattern: \Microsoft\Windows\Application Experience\
+                                        taskNamePattern: MareBackup
+            -
                 category: Disable Application Compatibility Framework
                 docs: |-
                     This category disables the Application Compatibility (AppCompat) framework on Windows.
@@ -1484,7 +1871,6 @@ actions:
                     [3]: https://web.archive.org/web/20230927174609/https://tzworks.com/prototype_page.php?proto_id=33 "Windows Shim Database (SDB) Parser | tzworks.com"
                     [4]: https://web.archive.org/web/20230927174559/https://www.blackhat.com/docs/eu-15/materials/eu-15-Pierce-Defending-Against-Malicious-Application-Compatibility-Shims-wp.pdf "Malicious Application Compatibility Shims | blackhat.com"
                 children:
-                    # Excluding "Application Experience" service (`AeLookupSvc`) as it does not exists since Windows 10 21H1 and Windows 11 22H2
                     -
                         name: Disable Application Impact Telemetry (AIT)
                         recommend: standard
@@ -1635,11 +2021,10 @@ actions:
                             This advice is based on the principle of limiting the amount of data shared, contributing to better privacy and security.
 
                             When you run this script, it modifies a specific registry key (`HKLM\Software\Policies\Microsoft\Windows\AppCompat!DisableInventory`) to turn off the
-                            Inventory Collector [1]. Note that disabling the Inventory Collector could impact the functionality of certain features that rely on system information
-                            and updates [2] [3].
+                            Inventory Collector [1].
 
-                            By running this script, the functionality will be turned off by altering a specific registry key:
-                            `HKLM\Software\Policies\Microsoft\Windows\AppCompat!DisableInventory` [1].
+                            > **Caution:** Disabling the Inventory Collector may lead to challenges in identifying and resolving compatibility issues
+                            > between your software and hardware.
 
                             [1]: https://web.archive.org/web/20230924112733/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-appcompat#appcompatturnoffprograminventory "ADMX_AppCompat Policy CSP - Windows Client Management | Microsoft Learn"
                             [2]: https://web.archive.org/web/20230927174739/https://www.stigviewer.com/stig/windows_10/2018-04-06/finding/V-63663 "The Application Compatibility Program Inventory must be prevented from collecting data and sending the information to Microsoft | stigviewer.com"
@@ -1918,101 +2303,6 @@ actions:
                                     function: TerminateExecutableOnLaunch
                                     parameters:
                                         executableNameWithExtension: DeviceCensus.exe
-                    -
-                        category: Disable Compatibility Telemetry (Application Experience)
-                        children:
-                            -
-                                category: Disable Microsoft Compatibility Appraiser
-                                docs: https://www.ghacks.net/2016/10/26/turn-off-the-windows-customer-experience-program/
-                                children:
-                                    -
-                                        name: Disable Microsoft Compatibility Appraiser task
-                                        recommend: standard
-                                        docs: |-
-                                            ### Overview of default task statuses
-
-                                            `\Microsoft\Windows\Application Experience\Microsoft Compatibility Appraiser`:
-                                            
-                                            | OS Version       | Default status |
-                                            | ---------------- | -------------- |
-                                            | Windows 10 22H2  | 🟢 Ready |
-                                            | Windows 11 22H2  | 🟢 Ready |
-                                        call:
-                                            function: DisableScheduledTask
-                                            parameters:
-                                                # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Application Experience\' -TaskName 'Microsoft Compatibility Appraiser'
-                                                taskPathPattern: \Microsoft\Windows\Application Experience\
-                                                taskNamePattern: Microsoft Compatibility Appraiser
-                                    -
-                                        name: Disable CompatTelRunner.exe (Microsoft Compatibility Appraiser) process
-                                        recommend: standard
-                                        call:
-                                            function: TerminateExecutableOnLaunch
-                                            parameters:
-                                                executableNameWithExtension: CompatTelRunner.exe
-                            -
-                                name: Disable sending information to Customer Experience Improvement Program
-                                recommend: standard
-                                docs: |-
-                                    ### Overview of default task statuses
-
-                                    `\Microsoft\Windows\Application Experience\ProgramDataUpdater`:
-                                    
-                                    | OS Version       | Default status |
-                                    | ---------------- | -------------- |
-                                    | Windows 10 22H2  | 🟢 Ready |
-                                    | Windows 11 22H2  | 🟡 N/A (missing) |
-
-                                    ### Additional documentation
-
-                                    - [Turn off the Windows Customer Experience program - gHacks Tech News](https://www.ghacks.net/2016/10/26/turn-off-the-windows-customer-experience-program/)
-                                    - [Permanently Disabling Windows Compatibility Telemetry - Microsoft Community](https://answers.microsoft.com/en-us/windows/forum/windows_10-performance/permanently-disabling-windows-compatibility/6bf71583-81b0-4a74-ae2e-8fd73305aad1)
-                                call:
-                                    function: DisableScheduledTask
-                                    parameters:
-                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Application Experience\' -TaskName 'ProgramDataUpdater'
-                                        taskPathPattern: \Microsoft\Windows\Application Experience\
-                                        taskNamePattern: ProgramDataUpdater
-                            -
-                                name: Disable Application Impact Telemetry Agent task
-                                recommend: standard
-                                docs: |-
-                                    [aitagent.exe - Should I Block It? (Application Impact Telemetry Agent)](https://www.shouldiblockit.com/aitagent.exe-6181.aspx)
-
-                                    ### Overview of default task statuses
-
-                                    `\Microsoft\Windows\Application Experience\AitAgent`:
-                                    
-                                    | OS Version       | Default status |
-                                    | ---------------- | -------------- |
-                                    | Windows 10 22H2  | 🟡 N/A (missing) |
-                                    | Windows 11 22H2  | 🟡 N/A (missing) |
-                                call:
-                                    function: DisableScheduledTask
-                                    parameters:
-                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Application Experience\' -TaskName 'AitAgent'
-                                        taskPathPattern: \Microsoft\Windows\Application Experience\
-                                        taskNamePattern: AitAgent
-                            -
-                                name: Disable the reminder to "Disable apps to improve performance"
-                                recommend: strict
-                                docs: |-
-                                    [Turn off the Windows Customer Experience program - gHacks Tech News](https://www.ghacks.net/2016/10/26/turn-off-the-windows-customer-experience-program/)
-
-                                    ### Overview of default task statuses
-
-                                    `\Microsoft\Windows\Application Experience\StartupAppTask`:
-
-                                    | OS Version       | Default status |
-                                    | ---------------- | -------------- |
-                                    | Windows 10 22H2  | 🟢 Ready |
-                                    | Windows 11 22H2  | 🟢 Ready |
-                                call:
-                                    function: DisableScheduledTask
-                                    parameters:
-                                        # Check: Get-ScheduledTask -TaskPath '\Microsoft\Windows\Application Experience\' -TaskName 'StartupAppTask'
-                                        taskPathPattern: \Microsoft\Windows\Application Experience\
-                                        taskNamePattern: StartupAppTask
                     -
                         category: Disable enterprise/business focused data collection
                         docs: |-
