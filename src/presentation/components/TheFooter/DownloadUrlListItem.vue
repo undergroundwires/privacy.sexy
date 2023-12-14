@@ -16,6 +16,7 @@ import {
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import { OperatingSystem } from '@/domain/OperatingSystem';
+import { getOperatingSystemDisplayName } from '@/presentation/components/Shared/OperatingSystemNames';
 
 export default defineComponent({
   props: {
@@ -33,7 +34,7 @@ export default defineComponent({
     });
 
     const operatingSystemName = computed<string>(() => {
-      return getOperatingSystemName(props.operatingSystem);
+      return getOperatingSystemDisplayName(props.operatingSystem);
     });
 
     const hasCurrentOsDesktopVersion = computed<boolean>(() => {
@@ -58,20 +59,6 @@ function hasDesktopVersion(os: OperatingSystem): boolean {
     || os === OperatingSystem.Linux
     || os === OperatingSystem.macOS;
 }
-
-function getOperatingSystemName(os: OperatingSystem): string {
-  switch (os) {
-    case OperatingSystem.Linux:
-      return 'Linux (preview)';
-    case OperatingSystem.macOS:
-      return 'macOS';
-    case OperatingSystem.Windows:
-      return 'Windows';
-    default:
-      throw new Error(`Unsupported os: ${OperatingSystem[os]}`);
-  }
-}
-
 </script>
 
 <style scoped lang="scss">

@@ -2,8 +2,8 @@ import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { openCard } from './support/interactions/card';
 
 describe('script selection highlighting', () => {
+  // Regression test for a bug where selecting multiple scripts only highlighted the last one.
   it('highlights more when multiple scripts are selected', () => {
-    // Regression test for a bug where selecting multiple scripts only highlighted the last one.
     cy.visit('/');
     selectLastScript();
     getCurrentHighlightRange((lastScriptHighlightRange) => {

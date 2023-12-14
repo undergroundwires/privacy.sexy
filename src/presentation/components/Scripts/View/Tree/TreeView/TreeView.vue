@@ -3,7 +3,7 @@
     ref="treeContainerElement"
     class="tree"
   >
-    <TreeRoot :tree-root="tree" :rendering-strategy="nodeRenderingScheduler">
+    <TreeRoot :tree-root="tree" :rendering-strategy="renderingStrategy">
       <template #default="slotProps">
         <slot name="node-content" v-bind="slotProps" />
       </template>
@@ -15,6 +15,7 @@
 import {
   defineComponent, onMounted, watch,
   shallowRef, toRef, shallowReadonly,
+  nextTick,
 } from 'vue';
 import { TreeRootManager } from './TreeRoot/TreeRootManager';
 import TreeRoot from './TreeRoot/TreeRoot.vue';
@@ -27,7 +28,7 @@ import { useLeafNodeCheckedStateUpdater } from './UseLeafNodeCheckedStateUpdater
 import { TreeNodeStateChangedEmittedEvent } from './Bindings/TreeNodeStateChangedEmittedEvent';
 import { useAutoUpdateParentCheckState } from './UseAutoUpdateParentCheckState';
 import { useAutoUpdateChildrenCheckState } from './UseAutoUpdateChildrenCheckState';
-import { useGradualNodeRendering } from './Rendering/UseGradualNodeRendering';
+import { useGradualNodeRendering, NodeRenderingControl } from './Rendering/UseGradualNodeRendering';
 import type { PropType } from 'vue';
 
 export default defineComponent({
@@ -35,7 +36,7 @@ export default defineComponent({
     TreeRoot,
   },
   props: {
-    initialNodes: {
+    nodes: {
       type: Array as PropType<readonly TreeInputNodeData[]>,
       default: () => [],
     },
@@ -65,7 +66,7 @@ export default defineComponent({
     useLeafNodeCheckedStateUpdater(treeRef, toRef(props, 'selectedLeafNodeIds'));
     useAutoUpdateParentCheckState(treeRef);
     useAutoUpdateChildrenCheckState(treeRef);
-    const nodeRenderingScheduler = useGradualNodeRendering(treeRef);
+    const nodeRenderer = useGradualNodeRendering(treeRef);
 
     const { onNodeStateChange } = useNodeStateChangeAggregator(treeRef);
 
@@ -78,18 +79,44 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      watch(() => props.initialNodes, (nodes) => {
-        tree.collection.updateRootNodes(nodes);
+      watch(() => props.nodes, async (nodes) => {
+        await forceRerenderNodes(
+          nodeRenderer,
+          () => tree.collection.updateRootNodes(nodes),
+        );
       }, { immediate: true });
     });
 
     return {
       treeContainerElement,
-      nodeRenderingScheduler,
+      renderingStrategy: nodeRenderer.renderingStrategy,
       tree,
     };
   },
 });
+
+/**
+ * This function is used to manually trigger a re-render of the tree nodes.
+ * In Vue, manually controlling the rendering process is typically an anti-pattern,
+ * as Vue's reactivity system is designed to handle updates efficiently. However,
+ * in this specific case, it's necessary to ensure the correct order of rendering operations.
+ * This function first clears the rendering queue and the currently rendered nodes,
+ * ensuring that UI elements relying on outdated node states are removed. This is needed
+ * in scenarios where the collection is updated before the nodes, which can lead to errors
+ * if nodes that no longer exist in the collection are still being rendered.
+ * Using this function, we ensure a clean state before updating the nodes, aligning with
+ * the updated collection.
+ */
+async function forceRerenderNodes(
+  renderer: NodeRenderingControl,
+  nodeUpdater: () => void,
+) {
+  renderer.clearRenderingStates();
+  renderer.notifyRenderingUpdates();
+  await nextTick();
+  nodeUpdater();
+}
+
 </script>
 
 <style scoped lang="scss">

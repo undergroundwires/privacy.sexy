@@ -13,6 +13,6 @@
     "sourceMap": false,
   },
   "include": [
-    "**/*.ts"
+    "**/*.ts",
   ]
 }

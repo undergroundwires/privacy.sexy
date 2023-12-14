@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { type Ref, shallowRef } from 'vue';
+import {
+  type Ref, shallowRef, watch, nextTick,
+} from 'vue';
 import { useGradualNodeRendering } from '@/presentation/components/Scripts/View/Tree/TreeView/Rendering/UseGradualNodeRendering';
 import { TreeRoot } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/TreeRoot';
 import { TreeRootStub } from '@tests/unit/shared/Stubs/TreeRootStub';
@@ -70,9 +72,9 @@ describe('useGradualNodeRendering', () => {
             .withOldState(new TreeNodeStateDescriptorStub().withVisibility(oldVisibilityState))
             .withNewState(new TreeNodeStateDescriptorStub().withVisibility(newVisibilityState));
           // act
-          const strategy = builder.call();
+          const { renderingStrategy } = builder.call();
           aggregatorStub.notifyChange(change);
-          const actualRenderStatus = strategy.shouldRender(node);
+          const actualRenderStatus = renderingStrategy.shouldRender(node);
           // assert
           expect(actualRenderStatus).to.equal(expectedRenderStatus);
         });
@@ -186,11 +188,11 @@ describe('useGradualNodeRendering', () => {
             .withSubsequentBatchSize(subsequentBatchSize)
             .withDelayScheduler(delaySchedulerStub);
           // act
-          const strategy = builder.call();
+          const { renderingStrategy } = builder.call();
           Array.from({ length: schedulerTicks }).forEach(
             () => delaySchedulerStub.runNextScheduled(),
           );
-          const actualRenderStatuses = nodes.map((node) => strategy.shouldRender(node));
+          const actualRenderStatuses = nodes.map((node) => renderingStrategy.shouldRender(node));
           // expect
           expect(actualRenderStatuses).to.deep.equal(expectedRenderStatuses);
         });
@@ -218,9 +220,9 @@ describe('useGradualNodeRendering', () => {
       const actualOrder = new Set<ReadOnlyTreeNode>();
       // act
       ordererStub.orderNodes = () => expectedNodes[0];
-      const strategy = builder.call();
+      const { renderingStrategy } = builder.call();
       const updateOrder = () => allNodes
-        .filter((node) => strategy.shouldRender(node))
+        .filter((node) => renderingStrategy.shouldRender(node))
         .forEach((node) => actualOrder.add(node));
       updateOrder();
       for (let i = 1; i < expectedNodes.length; i++) {
@@ -246,6 +248,48 @@ describe('useGradualNodeRendering', () => {
     builder.call();
     // assert
     expect(delaySchedulerStub.nextCallback).toBeUndefined();
+  });
+  describe('clearRenderingStates', () => {
+    it('clears all nodes from rendering states', () => {
+      // arrange
+      const nodesStub = [new TreeNodeStub(), new TreeNodeStub()];
+      const rendering = new UseGradualNodeRenderingBuilder()
+        .withCurrentTreeNodes(new UseCurrentTreeNodesStub()
+          .withQueryableNodes(new QueryableNodesStub().withFlattenedNodes(nodesStub)))
+        .call();
+
+      // act
+      rendering.clearRenderingStates();
+
+      // assert
+      const isAnyRendered = nodesStub
+        .map((node) => rendering.renderingStrategy.shouldRender(node))
+        .some(Boolean);
+      expect(isAnyRendered).to.equal(false);
+    });
+  });
+  describe('notifyRenderingUpdates', () => {
+    it('triggers Vue reactivity update', async () => {
+      // arrange
+      const nodes = createNodesWithVisibility(true, 1);
+      const rendering = new UseGradualNodeRenderingBuilder()
+        .withCurrentTreeNodes(new UseCurrentTreeNodesStub()
+          .withQueryableNodes(new QueryableNodesStub().withFlattenedNodes(nodes)))
+        .withInitialBatchSize(nodes.length)
+        .call();
+      let isVueReactivityTriggered = false;
+      watch(() => rendering.renderingStrategy.shouldRender(nodes[0]), () => {
+        isVueReactivityTriggered = true;
+      });
+
+      // act
+      rendering.clearRenderingStates();
+      rendering.notifyRenderingUpdates();
+      await nextTick();
+
+      // assert
+      expect(isVueReactivityTriggered).toEqual(true);
+    });
   });
 });
 

@@ -5,11 +5,18 @@ import { ReadOnlyTreeNode } from '../Node/TreeNode';
 import { useNodeStateChangeAggregator } from '../UseNodeStateChangeAggregator';
 import { TreeRoot } from '../TreeRoot/TreeRoot';
 import { useCurrentTreeNodes } from '../UseCurrentTreeNodes';
+import { QueryableNodes } from '../TreeRoot/NodeCollection/Query/QueryableNodes';
 import { NodeRenderingStrategy } from './Scheduling/NodeRenderingStrategy';
 import { DelayScheduler } from './DelayScheduler';
 import { TimeoutDelayScheduler } from './Scheduling/TimeoutDelayScheduler';
 import { RenderQueueOrderer } from './Ordering/RenderQueueOrderer';
 import { CollapsedParentOrderer } from './Ordering/CollapsedParentOrderer';
+
+export interface NodeRenderingControl {
+  readonly renderingStrategy: NodeRenderingStrategy;
+  clearRenderingStates(): void;
+  notifyRenderingUpdates(): void;
+}
 
 /**
  * Renders tree nodes gradually to prevent UI freeze when loading large amounts of nodes.
@@ -22,7 +29,7 @@ export function useGradualNodeRendering(
   initialBatchSize = 30,
   subsequentBatchSize = 5,
   orderer: RenderQueueOrderer = new CollapsedParentOrderer(),
-): NodeRenderingStrategy {
+): NodeRenderingControl {
   const nodesToRender = new Set<ReadOnlyTreeNode>();
   const nodesBeingRendered = shallowRef(new Set<ReadOnlyTreeNode>());
   let isRenderingInProgress = false;
@@ -30,6 +37,10 @@ export function useGradualNodeRendering(
 
   const { onNodeStateChange } = useChangeAggregator(treeRootRef);
   const { nodes } = useTreeNodes(treeRootRef);
+
+  function notifyRenderingUpdates() {
+    triggerRef(nodesBeingRendered);
+  }
 
   function updateNodeRenderQueue(node: ReadOnlyTreeNode, isVisible: boolean) {
     if (isVisible
@@ -43,16 +54,20 @@ export function useGradualNodeRendering(
       }
       if (nodesBeingRendered.value.has(node)) {
         nodesBeingRendered.value.delete(node);
-        triggerRef(nodesBeingRendered);
+        notifyRenderingUpdates();
       }
     }
   }
 
-  watch(nodes, (newNodes) => {
+  function clearRenderingStates() {
     nodesToRender.clear();
     nodesBeingRendered.value.clear();
+  }
+
+  function initializeAndRenderNodes(newNodes: QueryableNodes) {
+    clearRenderingStates();
     if (!newNodes || newNodes.flattenedNodes.length === 0) {
-      triggerRef(nodesBeingRendered);
+      notifyRenderingUpdates();
       return;
     }
     newNodes
@@ -60,6 +75,10 @@ export function useGradualNodeRendering(
       .filter((node) => node.state.current.isVisible)
       .forEach((node) => nodesToRender.add(node));
     beginRendering();
+  }
+
+  watch(nodes, (newNodes) => {
+    initializeAndRenderNodes(newNodes);
   }, { immediate: true });
 
   onNodeStateChange((change) => {
@@ -91,7 +110,7 @@ export function useGradualNodeRendering(
       nodesToRender.delete(node);
       nodesBeingRendered.value.add(node);
     });
-    triggerRef(nodesBeingRendered);
+    notifyRenderingUpdates();
     scheduler.scheduleNext(
       () => renderNextBatch(subsequentBatchSize),
       renderingDelayInMs,
@@ -103,6 +122,10 @@ export function useGradualNodeRendering(
   }
 
   return {
-    shouldRender: shouldNodeBeRendered,
+    renderingStrategy: {
+      shouldRender: shouldNodeBeRendered,
+    },
+    clearRenderingStates,
+    notifyRenderingUpdates,
   };
 }

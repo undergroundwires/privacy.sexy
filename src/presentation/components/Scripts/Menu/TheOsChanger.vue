@@ -14,10 +14,11 @@
 import { defineComponent, computed } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import { OperatingSystem } from '@/domain/OperatingSystem';
+import { getOperatingSystemDisplayName } from '@/presentation/components/Shared/OperatingSystemNames';
 import MenuOptionList from './MenuOptionList.vue';
 import MenuOptionListItem from './MenuOptionListItem.vue';
 
-interface IOsViewModel {
+interface OperatingSystemOption {
   readonly name: string;
   readonly os: OperatingSystem;
 }
@@ -31,12 +32,12 @@ export default defineComponent({
     const { modifyCurrentContext, currentState } = injectKey((keys) => keys.useCollectionState);
     const { application } = injectKey((keys) => keys.useApplication);
 
-    const allOses = computed<ReadonlyArray<IOsViewModel>>(
+    const allOses = computed<ReadonlyArray<OperatingSystemOption>>(
       () => application
         .getSupportedOsList()
-        .map((os) : IOsViewModel => ({
+        .map((os) : OperatingSystemOption => ({
           os,
-          name: renderOsName(os),
+          name: getOperatingSystemDisplayName(os),
         })),
     );
 
@@ -57,13 +58,4 @@ export default defineComponent({
     };
   },
 });
-
-function renderOsName(os: OperatingSystem): string {
-  switch (os) {
-    case OperatingSystem.Windows: return 'Windows';
-    case OperatingSystem.macOS: return 'macOS';
-    case OperatingSystem.Linux: return 'Linux (preview)';
-    default: throw new RangeError(`Cannot render os name: ${OperatingSystem[os]}`);
-  }
-}
 </script>

@@ -24,16 +24,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { OperatingSystem } from '@/domain/OperatingSystem';
 import { injectKey } from '@/presentation/injectionSymbols';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import DownloadUrlListItem from './DownloadUrlListItem.vue';
-
-const supportedOperativeSystems: readonly OperatingSystem[] = [
-  OperatingSystem.Windows,
-  OperatingSystem.Linux,
-  OperatingSystem.macOS,
-];
 
 export default defineComponent({
   components: {
@@ -42,8 +35,12 @@ export default defineComponent({
   },
   setup() {
     const { os: currentOs } = injectKey((keys) => keys.useRuntimeEnvironment);
+    const { application } = injectKey((keys) => keys.useApplication);
+
+    const supportedOperativeSystems = application.getSupportedOsList();
+
     const supportedDesktops = [
-      ...supportedOperativeSystems,
+      ...application.getSupportedOsList(),
     ].sort((os) => (os === currentOs ? 0 : 1));
 
     const hasCurrentOsDesktopVersion = currentOs === undefined

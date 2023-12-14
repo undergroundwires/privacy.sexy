@@ -9,23 +9,43 @@ import { provideDependencies } from '@/presentation/bootstrapping/DependencyProv
 import { ApplicationContextStub } from '@tests/unit/shared/Stubs/ApplicationContextStub';
 
 describe('TreeView', () => {
-  it('should render all provided root nodes correctly', async () => {
+  it('renders all provided root nodes correctly', async () => {
     // arrange
     const nodes = createSampleNodes();
     const wrapper = createTreeViewWrapper(nodes);
+
     // act
     await waitForStableDom(wrapper.element);
+
     // assert
     const expectedTotalRootNodes = nodes.length;
     expect(wrapper.findAll('.node').length).to.equal(expectedTotalRootNodes, wrapper.html());
-    const rootNodeTexts = nodes.map((node) => node.data.label);
+    const rootNodeTexts = nodes.map((node) => (node.data as TreeInputMetadata).label);
     rootNodeTexts.forEach((label) => {
       expect(wrapper.text()).to.include(label);
     });
   });
+
+  // Regression test for a bug where updating the nodes prop caused uncaught exceptions.
+  it('updates nodes correctly when props change', async () => {
+    // arrange
+    const firstNodeLabel = 'Node 1';
+    const secondNodeLabel = 'Node 2';
+    const initialNodes: TreeInputNodeDataWithMetadata[] = [{ id: 'node1', data: { label: firstNodeLabel } }];
+    const updatedNodes: TreeInputNodeDataWithMetadata[] = [{ id: 'node2', data: { label: secondNodeLabel } }];
+    const wrapper = createTreeViewWrapper(initialNodes);
+
+    // act
+    await wrapper.setProps({ nodes: updatedNodes });
+    await waitForStableDom(wrapper.element);
+
+    // assert
+    expect(wrapper.text()).toContain(secondNodeLabel);
+    expect(wrapper.text()).not.toContain(firstNodeLabel);
+  });
 });
 
-function createTreeViewWrapper(initialNodeData: readonly TreeInputNodeData[]) {
+function createTreeViewWrapper(initialNodeData: readonly TreeInputNodeDataWithMetadata[]) {
   return mount(defineComponent({
     components: {
       TreeView,
@@ -33,26 +53,34 @@ function createTreeViewWrapper(initialNodeData: readonly TreeInputNodeData[]) {
     setup() {
       provideDependencies(new ApplicationContextStub());
 
-      const initialNodes = shallowRef(initialNodeData);
+      const nodes = shallowRef(initialNodeData);
       const selectedLeafNodeIds = shallowRef<readonly string[]>([]);
+
       return {
-        initialNodes,
+        nodes,
         selectedLeafNodeIds,
       };
     },
     template: `
-    <TreeView
-      :initialNodes="initialNodes"
-      :selectedLeafNodeIds="selectedLeafNodeIds"
-    >
-      <template v-slot:node-content="{ nodeMetadata }">
-        {{ nodeMetadata.label }}
-      </template>
-    </TreeView>`,
+      <TreeView
+        :nodes="nodes"
+        :selectedLeafNodeIds="selectedLeafNodeIds"
+      >
+        <template v-slot:node-content="{ nodeMetadata }">
+          {{ nodeMetadata.label }}
+        </template>
+      </TreeView>
+    `,
   }));
 }
 
-function createSampleNodes() {
+interface TreeInputMetadata {
+  readonly label: string;
+}
+
+type TreeInputNodeDataWithMetadata = TreeInputNodeData & { readonly data?: TreeInputMetadata };
+
+function createSampleNodes(): TreeInputNodeDataWithMetadata[] {
   return [
     {
       id: 'root1',
@@ -93,7 +121,7 @@ function createSampleNodes() {
 
 function waitForStableDom(rootElement, timeout = 3000, interval = 200): Promise<void> {
   return new Promise((resolve, reject) => {
-    let lastTimeoutId;
+    let lastTimeoutId: ReturnType<typeof setTimeout>;
     const observer = new MutationObserver(() => {
       if (lastTimeoutId) {
         clearTimeout(lastTimeoutId);

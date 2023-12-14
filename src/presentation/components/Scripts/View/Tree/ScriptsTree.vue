@@ -5,9 +5,9 @@
       'top-padding': hasTopPadding,
     }"
   >
-    <template v-if="initialNodes.length">
+    <template v-if="nodes.length">
       <TreeView
-        :initial-nodes="initialNodes"
+        :nodes="nodes"
         :selected-leaf-node-ids="selectedScriptNodeIds"
         :latest-filter-event="latestFilterEvent"
         @node-state-changed="handleNodeChangedEvent($event)"
@@ -61,7 +61,7 @@ export default defineComponent({
     }
 
     return {
-      initialNodes: treeViewInputNodes,
+      nodes: treeViewInputNodes,
       selectedScriptNodeIds,
       latestFilterEvent,
       handleNodeChangedEvent,
