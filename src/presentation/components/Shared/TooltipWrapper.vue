@@ -194,6 +194,13 @@ $color-tooltip-background: $color-primary-darkest;
   @include fixed-fullscreen;
 
   /*
+    The z-index is set for both visible and invisible states to ensure it maintains its stacking order
+    above other elements during transitions. This approach prevents the tooltip from falling behind other
+    elements during the fade-in and fade-out animations.
+  */
+  z-index: 10;
+
+  /*
     Reset white-space to the default value to prevent inheriting styles from the trigger element.
     This prevents unintentional layout issues or overflow.
   */
@@ -204,7 +211,6 @@ $color-tooltip-background: $color-primary-darkest;
   @include hover-or-touch {
     + .tooltip__overlay {
       @include set-visibility(true);
-      z-index: 10000;
     }
   }
 }
