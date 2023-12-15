@@ -1,34 +1,34 @@
 @mixin hover-or-touch($selector-suffix: '', $selector-prefix: '&') {
   @media (hover: hover) {
-
-    /*  We only do this if hover is truly supported; otherwise the emulator in mobile
-            keeps hovered style in-place even after touching, making it sticky.  */
+    /*
+      Only apply hover styles if the device truly supports hover; otherwise the
+      emulator in mobile keeps hovered style in-place even after touching, making it sticky.
+    */
     #{$selector-prefix}:hover #{$selector-suffix} {
       @content;
     }
   }
 
   @media (hover: none) {
-
-    /*  We only do this if hover is not supported,otherwise the desktop behavior is not
-            as desired; it does not get activated on hover but only during click/touch.  */
+    /*
+      Apply active styles on touch or click, ensuring interactive feedback on devices without hover capability.
+    */
     #{$selector-prefix}:active #{$selector-suffix} {
       @content;
     }
   }
 }
 
+/*
+  This mixin removes the default blue tap highlight seen in mobile WebKit browsers (e.g., Chrome, Safari, Edge).
+  The mixin by itself may reduce accessibility by hiding this interactive cue. Therefore, it is recommended
+  to use this mixin in conjunction with the `hover-or-touch` mixin to provide necessary visual feedback
+  for interactive elements during hover or touch interactions.
+*/
 @mixin clickable($cursor: 'pointer') {
   cursor: #{$cursor};
   user-select: none;
-  /*
-        It removes (blue) background during touch as seen in mobile webkit browsers (Chrome, Safari, Edge).
-        The default behavior is that any element (or containing element) that has cursor:pointer
-        explicitly set and is clicked will flash blue momentarily.
-        Removing it could have accessibility issue since that hides an interactive cue. But as we still provide
-        response to user actions through :active by `hover-or-touch` mixin.
-    */
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: transparent; // Removes blue tap highlight
 }
 
 @mixin fade-transition($name) {

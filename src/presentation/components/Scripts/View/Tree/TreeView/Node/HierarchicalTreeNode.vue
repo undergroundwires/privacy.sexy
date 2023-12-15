@@ -1,15 +1,17 @@
 <template>
   <div class="wrapper">
-    <div
+    <InteractableNode
       class="expansible-node"
       :style="{
         'padding-left': `${currentNode.hierarchy.depthInTree * 24}px`,
       }"
+      :node-id="nodeId"
+      :tree-root="treeRoot"
     >
       <div
         class="expand-collapse-arrow"
         :class="{
-          expanded: expanded,
+          expanded: isExpanded,
           'has-children': hasChildren,
         }"
         @click.stop="toggleExpand"
@@ -24,10 +26,10 @@
           </template>
         </LeafTreeNode>
       </div>
-    </div>
+    </InteractableNode>
     <transition name="children-transition">
       <ul
-        v-if="hasChildren && expanded"
+        v-if="hasChildren && isExpanded"
         class="children"
       >
         <HierarchicalTreeNode
@@ -54,12 +56,14 @@ import { NodeRenderingStrategy } from '../Rendering/Scheduling/NodeRenderingStra
 import { useNodeState } from './UseNodeState';
 import { TreeNode } from './TreeNode';
 import LeafTreeNode from './LeafTreeNode.vue';
+import InteractableNode from './InteractableNode.vue';
 import type { PropType } from 'vue';
 
 export default defineComponent({
   name: 'HierarchicalTreeNode', // Needed due to recursion
   components: {
     LeafTreeNode,
+    InteractableNode,
   },
   props: {
     nodeId: {
@@ -82,7 +86,7 @@ export default defineComponent({
     );
 
     const { state } = useNodeState(currentNode);
-    const expanded = computed<boolean>(() => state.value.isExpanded);
+    const isExpanded = computed<boolean>(() => state.value.isExpanded);
 
     const renderedNodeIds = computed<readonly string[]>(
       () => currentNode.value
@@ -96,18 +100,13 @@ export default defineComponent({
       currentNode.value.state.toggleExpand();
     }
 
-    function toggleCheck() {
-      currentNode.value.state.toggleCheck();
-    }
-
     const hasChildren = computed<boolean>(
       () => currentNode.value.hierarchy.isBranchNode,
     );
 
     return {
       renderedNodeIds,
-      expanded,
-      toggleCheck,
+      isExpanded,
       toggleExpand,
       currentNode,
       hasChildren,
@@ -123,7 +122,6 @@ export default defineComponent({
 .wrapper {
   display: flex;
   flex-direction: column;
-  cursor: pointer;
 
   .children {
     @include reset-ul;
@@ -140,15 +138,14 @@ export default defineComponent({
 
   flex-direction: row;
   align-items: center;
-  @include hover-or-touch {
-    background: $color-node-highlight-bg;
-  }
+
   .expand-collapse-arrow {
     flex-shrink: 0;
     height: 30px;
-    cursor: pointer;
     margin-left: 30px;
     width: 0;
+
+    @include clickable;
 
     &:after {
       position: absolute;
