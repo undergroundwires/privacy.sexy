@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.12.9 (2023-12-16)
+
+* win: improve docs and category of jump lists #146 | [40ae8a8](https://github.com/undergroundwires/privacy.sexy/commit/40ae8a8addaeb834ee26eabd330fda5cbb495324)
+* mac: improve clearing privacy permissions | [5a7d7d8](https://github.com/undergroundwires/privacy.sexy/commit/5a7d7d88ff2f3e8862b18c94d062f692ee4b690b)
+* win: fix logic for terminating processes | [807ae6a](https://github.com/undergroundwires/privacy.sexy/commit/807ae6a8f8ca724d781169f3ecb40f43ccd3fe10)
+* win: improve documentation for "Get Help" app #280 | [8f5d7ed](https://github.com/undergroundwires/privacy.sexy/commit/8f5d7ed3cfa57f66dded9b72374006c9b6df2ce9)
+* Centralize log file and refactor desktop logging | [08dbfea](https://github.com/undergroundwires/privacy.sexy/commit/08dbfead7ca7b55fe85f7dded01f2d4b88906c72)
+* win: fix revert and improve docs for SAM enum #255 | [25e23c8](https://github.com/undergroundwires/privacy.sexy/commit/25e23c89c3f86897d5661a24a774997c924d3b2d)
+* Improve security and reliability of macOS updates | [4765752](https://github.com/undergroundwires/privacy.sexy/commit/4765752ee3a36301b3d97317c570432424de8460)
+* win: fix Win 11 Windows Security app removal #195 | [daa6230](https://github.com/undergroundwires/privacy.sexy/commit/daa6230fc96f2cf7210bc8c165106c0d5544e5fb)
+* Improve security and privacy with strict meta tags | [ba5b29a](https://github.com/undergroundwires/privacy.sexy/commit/ba5b29a35dd7665aeea430aec4aaa8ff5ca811de)
+* win: document and discourage admin shares #249 | [e747ee5](https://github.com/undergroundwires/privacy.sexy/commit/e747ee5cbc7cf5f0fe28a87fe7d02457d777373e)
+* win: discourage XboxIdentityProvider #64, #79 #181 | [c72f9f5](https://github.com/undergroundwires/privacy.sexy/commit/c72f9f501680c1d880a0b560d02451a9e31063b4)
+* win: improve disabling update healing #272 | [47b4823](https://github.com/undergroundwires/privacy.sexy/commit/47b4823bc5e487188b12cbea67db2525260af497)
+* Fix tooltip overflow on smaller screens | [916c9d6](https://github.com/undergroundwires/privacy.sexy/commit/916c9d62d9fce27c3cd3feaf90c66df584d4f04a)
+* Fix touch state not being activated in iOS Safari | [a985127](https://github.com/undergroundwires/privacy.sexy/commit/a9851272ae14eb1b374767b0eed3eb68e6dd1560)
+* Fix tree view alignment and padding issues | [15134ea](https://github.com/undergroundwires/privacy.sexy/commit/15134ea04bc46e8cb13977d75b788f5ff71c800e)
+* win: improve disabling of Application Experience | [fe3de49](https://github.com/undergroundwires/privacy.sexy/commit/fe3de498c8a1394efd6517d436797a08f938bb57)
+* Fix OS switching not working on tree view UI | [3457fe1](https://github.com/undergroundwires/privacy.sexy/commit/3457fe18cf8193883f45b50ecbc9638c91ace2fb)
+* Fix touch-enabled Chromium highlight on tree nodes | [2063397](https://github.com/undergroundwires/privacy.sexy/commit/20633972e9b56bdc102357129e74df30a95cefa9)
+* win: add scripts to postpone auto-updates #272 | [e95b2ba](https://github.com/undergroundwires/privacy.sexy/commit/e95b2ba2179e40c0033a51b0087871dbfdc32d78)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.12.8...0.12.9)
+
 ## 0.12.8 (2023-11-27)
 
 * Remove duplicated `index.html` file | [aab0f7e](https://github.com/undergroundwires/privacy.sexy/commit/aab0f7ea4680f377c610066bd0e99011eed8b506)
