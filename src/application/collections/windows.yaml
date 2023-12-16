@@ -8546,6 +8546,366 @@ actions:
                                         parameters:
                                             taskPathPattern: \Microsoft\Windows\WindowsUpdate\
                                             taskNamePattern: sihpostreboot
+                    -
+                        category: Maximize auto-update duration
+                        docs: |-
+                            This category includes scripts designed to extend the intervals between automatic updates.
+                            These scripts provide users with greater control over the timing of system updates.
+                            By adjusting the schedule of these updates, users can minimize interruptions and potential system instability associated with frequent updates.
+
+                            > **Caution**: Postponing updates can delay critical security fixes and feature enhancements,
+                            > increasing potential security risks for your computer.
+                        children:
+                            -
+                                name: Maximize update pause duration
+                                docs: |-
+                                    This script maximizes the pause duration for system updates via the settings interface.
+                                    It postpones both feature and quality updates in Windows 10 and Windows 11.
+                                    This is particularly useful for those preferring fewer interruptions from regular updates.
+
+                                    By default, the following registry keys are absent in Windows 10 and Windows 11 and are added only when updates are
+                                    paused through the user interface [1]:
+
+                                    - `HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings!PauseFeatureUpdatesStartTime`
+                                    - `HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings!PauseFeatureUpdatesEndTime`
+                                    - `HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings!PauseQualityUpdatesStartTime`
+                                    - `HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings!PauseQualityUpdatesEndTime`
+                                    - `HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings!PauseUpdatesStartTime` (set only in Windows 11 22H2 and later)
+                                    - `HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings!PauseUpdatesExpiryTime`
+
+                                    This method has been tested and verified on Windows 10 from version 22H2 and Windows 11 from version 22H3 onwards.
+                                    To ensure functional integrity, all these keys must be added together.
+
+                                    While beneficial for Windows Home users [1], note that Group Policy Object (GPO) settings might override these changes.
+
+                                    > **Caution**: This script postpones critical security updates, increasing potential security risks for your computer.
+
+                                    [1]: https://github.com/undergroundwires/privacy.sexy/issues/272#issuecomment-1772602388 "[BUG]: Windows automatically re-enables Update after 4-5 days · Issue #272 · undergroundwires/privacy.sexy | github.com/undergroundwires"
+                                call:
+                                    function: RunPowerShell
+                                    parameters:
+                                        # Note:
+                                        #   - StartTime must be set, or the setting UI on Windows 11 becomes unresponsive for future changes.
+                                        #   - >3000 on Windows 11 does not work, works fine for Windows 10.
+                                        # Marked: refactor-with-variables
+                                        #   - Getting `$currentTime` is used across multiple scripts.
+                                        code: |-
+                                            $currentTime = (Get-Date).ToString('yyyy-MM-ddTHH:mm:ssZ')
+                                            $endTime = '2963-01-17T00:00:00Z'
+                                            reg add "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseFeatureUpdatesStartTime" /t REG_SZ /d "$currentTime" /f
+                                            reg add "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseFeatureUpdatesEndTime" /t REG_SZ /d "$endTime" /f
+                                            reg add "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseQualityUpdatesStartTime" /t REG_SZ /d "$currentTime" /f
+                                            reg add "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseQualityUpdatesEndTime" /t REG_SZ /d "$endTime" /f
+                                            reg add "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseUpdatesStartTime" /t REG_SZ /d "$currentTime" /f
+                                            reg add "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseUpdatesExpiryTime" /t REG_SZ /d "$endTime" /f
+                                        revertCode: |-
+                                            reg delete "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseFeatureUpdatesStartTime" /f 2>$null
+                                            reg delete "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseFeatureUpdatesEndTime" /f 2>$null
+                                            reg delete "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseQualityUpdatesStartTime" /f 2>$null
+                                            reg delete "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseQualityUpdatesEndTime" /f 2>$null
+                                            reg delete "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseUpdatesStartTime" /f 2>$null
+                                            reg delete "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings" /v "PauseUpdatesExpiryTime" /f 2>$null
+                            -
+                                name: Maximize feature update duration (disables resuming updates from settings)
+                                docs: |-
+                                    This script provides control over when and how often Windows feature updates and preview builds occur.
+                                    These updates bring major changes to the operating system, affecting functionality and user privacy [1] [2].
+
+                                    Key aspects of Windows feature updates include:
+
+                                    - Protecting against behavioral issues [1].
+                                    - Adding new features [1].
+
+                                    > **Caution**:
+                                    >
+                                    > - This script postpones critical security updates, increasing potential security risks for your computer.
+                                    > - This script disables the option to resume updates through the settings interface.
+                                    >   The update settings will display "Your organization paused some updates for this device", and you won't be able
+                                    >   to resume them there.
+
+                                    ### Registry keys
+
+                                    The script modifies various Group Policy (GPO), state, and Mobile Device Management (MDM) keys.
+
+                                    Group Policy (GPO) keys:
+
+                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate!PauseFeatureUpdatesStartTime`:
+                                        Sets the start date for pausing feature updates [3].
+                                        It is specified in a date format (yyyy-mm-dd, e.g., 2018-10-28) [4].
+                                        This key supersedes the now-obsolete Windows 10 version 1607 key: `HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate!PauseFeatureUpdates` [5].
+                                        By default, this registry key is missing since Windows 10 22H2 and Windows 11 22H3.
+                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate!PauseFeatureUpdatesPeriodInDays`:
+                                        Specifies the pause duration for feature updates [6].
+                                        The range is from 0 (default) to 365 days [6].
+                                        By default, this registry key is missing since Windows 10 22H2 and Windows 11 22H3.
+                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate!DeferFeatureUpdates`:
+                                        Enables pausing of feature updates and activates `PauseFeatureUpdatesPeriodInDays` [5].
+                                        By default, this registry key is missing since Windows 10 22H2 and Windows 11 22H3, meaning that the feature updates are not paused [7].
+                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate!DeferFeatureUpdatesPeriodInDays`:
+                                        Allows pausing of feature updates for a specified number of days [4] [5] [7].
+                                        It ranges from 0 to 365 days [5] [7].
+                                        This key supersedes the now-obsolete Windows 10 version 1511 key: `HKLM\Policies\Microsoft\Windows\WindowsUpdate!DeferUpgradePeriod` [4] [5].
+                                        By default, this registry key is missing since Windows 10 22H2 and Windows 11 22H3.
+                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate!Pause`:
+                                        Used for pausing updates in older Windows 10 versions [4].
+                                        By default, this registry key is missing since Windows 10 22H2 and Windows 11 22H3.
+
+                                    State keys:
+
+                                    - `HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\Settings!PausedFeatureStatus`:
+                                        Shows the current status of feature update pause [5].
+                                        By default, this key is set to `0` since Windows 10 22H2 and Windows 11 22H3.
+                                        `0` means feature updates not paused, `1` means feature updates paused, `2` means feature updates have auto-resumed after being paused [5].
+                                    - `HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\PolicyState!DeferFeatureUpdates`:
+                                        By default, this key is set to `0` since Windows 10 22H2 and Windows 11 22H3.
+                                    - `HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\PolicyState!FeatureUpdatesPaused`:
+                                        By default, this registry key is missing since Windows 10 22H2 and Windows 11 22H3.
+                                    - `HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\Settings!PausedFeatureDate`:
+                                        Records the date when feature updates were paused [5].
+                                        By default, this registry key is missing since Windows 10 22H2 and Windows 11 22H3.
+                                    - `HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\PolicyState!PauseFeatureUpdatesStartTime`:
+                                        Reflects the start time for pausing Feature Updates.
+                                        By default, this registry key is missing since Windows 10 22H2 and Windows 11 22H3.
+
+                                    MDM (PolicyManager) keys:
+
+                                    - `HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\PauseFeatureUpdates!value`:
+                                        Manages pausing of feature updates for Windows 10, version 1607 or later [5].
+                                        By default, this key is set to `0` since Windows 10 22H2 and Windows 11 22H3.
+                                    - `HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\PauseFeatureUpdatesStartTime!value`:
+                                        Specifies the start time for pausing feature updates [3] [4].
+                                        By default, this registry key is missing since Windows 10 22H2 and Windows 11 22H3.
+                                    - `HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\DeferFeatureUpdatesPeriodInDays!value`:
+                                        Sets the deferral period for feature updates [4].
+                                        By default, this key is set to `0` since Windows 10 22H2 and Windows 11 22H3.
+                                    - `HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\ConfigureDeadlineForFeatureUpdates!value`:
+                                        Determines the deadline for automatic feature update installation [5].
+                                        The maximum value is limited to 30 days [5].
+                                        By default, this key is set to `7` since Windows 10 22H2 and Windows 11 22H3 [5].
+
+                                    [1]: https://web.archive.org/web/20231209161721/https://learn.microsoft.com/en-us/windows/deployment/windows-autopatch/operate/windows-autopatch-groups-windows-feature-update-overview "Windows feature updates overview - Windows Deployment | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20231214085615/https://learn.microsoft.com/en-us/windows/deployment/update/waas-manage-updates-wufb "Windows Update for Business - Windows Deployment | Microsoft Learn | learn.microsoft.com"
+                                    [3]: https://web.archive.org/web/20231209161509/https://learn.microsoft.com/en-us/windows/privacy/required-windows-diagnostic-data-events-and-fields-2004 "Required diagnostic events and fields for Windows 10 (versions 22H2, 21H2, 21H1, 20H2, and 2004) - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                                    [4]: https://web.archive.org/web/20230708165017/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-update "Update Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                    [5]: https://web.archive.org/web/20231206151045/https://learn.microsoft.com/en-us/windows/deployment/update/waas-configure-wufb "Configure Windows Update for Business - Windows Deployment | Microsoft Learn | learn.microsoft.com"
+                                    [6]: https://web.archive.org/web/20231209161617/https://learn.microsoft.com/en-us/mem/intune/protect/windows-update-settings "Windows Update settings you can manage with Intune Update Ring policies for Windows 10/11 devices. | Microsoft Learn | learn.microsoft.com"
+                                    [7]: https://web.archive.org/web/20231209161658/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsUpdate::DeferFeatureUpdates "Select when Preview Builds and Feature Updates are received | admx.help"
+                                call:
+                                    function: RunPowerShell
+                                    parameters:
+                                        # Note:
+                                        #   - Policy state keys (HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy) are not needed to be modified, but just modified for extra robustness.
+                                        # Marked: refactor-with-variables
+                                        #   - Getting `$currentTime` is used across multiple scripts.
+                                        code: |-
+                                            $currentTime = (Get-Date).ToString('yyyy-MM-ddTHH:mm:ssZ')
+                                            # GPO
+                                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "PauseFeatureUpdatesStartTime" /t "REG_SZ" /d "$currentTime" /f
+                                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "PauseFeatureUpdatesPeriodInDays" /d "365" /t "REG_DWORD" /f
+                                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "PauseFeatureUpdates" /t "REG_DWORD" /d 1 /f
+                                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DeferFeatureUpdates" /t "REG_DWORD" /d 1 /f
+                                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DeferFeatureUpdatesPeriodInDays" /d "365" /t "REG_DWORD" /f
+                                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "Pause" /t "REG_DWORD" /d "1" /f
+                                            # State
+                                            reg add "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\Settings" /v "PausedFeatureStatus" /t "REG_DWORD" /d "1" /f
+                                            reg add "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\Settings" /v "PausedFeatureDate" /t "REG_SZ" /d "$currentTime" /f
+                                            reg add "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\PolicyState" /v "DeferFeatureUpdates" /d "1" /t "REG_DWORD" /f
+                                            reg add "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\PolicyState" /v "FeatureUpdatesPaused" /d "1" /t "REG_DWORD" /f
+                                            reg add "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\PolicyState" /v "PauseFeatureUpdatesStartTime" /t "REG_SZ" /d "$currentTime" /f
+                                            # MDM (PolicyManager)
+                                            reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\Pause" /v "value" /t "REG_DWORD" /d "1" /f
+                                            reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\PauseFeatureUpdates" /v "value" /t "REG_DWORD" /d "1" /f
+                                            reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\PauseFeatureUpdatesStartTime" /v "value" /t "REG_SZ" /d "$currentTime" /f
+                                            reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\DeferFeatureUpdatesPeriodInDays" /v "value" /t "REG_DWORD" /d "365" /f
+                                            reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\ConfigureDeadlineForFeatureUpdates" /v "value" /t "REG_DWORD" /d "30" /f
+                                        revertCode: |-
+                                            # GPO
+                                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "PauseFeatureUpdatesStartTime" /f 2>$null
+                                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "PauseFeatureUpdatesPeriodInDays" /f 2>$null
+                                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "PauseFeatureUpdates" /f 2>$null
+                                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DeferFeatureUpdates" /f 2>$null
+                                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DeferFeatureUpdatesPeriodInDays" /f 2>$null
+                                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "Pause" /f 2>$null
+                                            # State
+                                            reg add "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\Settings" /v "PausedFeatureStatus" /t "REG_DWORD" /d "0" /f
+                                            reg delete "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\Settings" /v "PausedFeatureDate" /f 2>$null
+                                            reg add "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\PolicyState" /v "DeferFeatureUpdates" /d "0" /t "REG_DWORD" /f
+                                            reg delete "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\PolicyState" /v "FeatureUpdatesPaused" /f 2>$null
+                                            reg delete "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\PolicyState" /v "PauseFeatureUpdatesStartTime" /f 2>$null
+                                            # MDM (PolicyManager)
+                                            reg delete "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\Pause" /v "value" /f 2>$null
+                                            reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\PauseFeatureUpdates" /v "value" /t "REG_DWORD" /d "0" /f
+                                            reg delete "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\PauseFeatureUpdatesStartTime" /v "value" /f 2>$null
+                                            reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\DeferFeatureUpdatesPeriodInDays" /v "value" /t "REG_DWORD" /d "0" /f
+                                            reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\ConfigureDeadlineForFeatureUpdates" /v "value" /t "REG_DWORD" /d "7" /f
+                            -
+                                name: Maximize quality update duration (disables resuming updates from settings)
+                                docs: |-
+                                    This script extends the time between mandatory quality updates, which include security patches [1] [2].
+                                    Delaying these updates helps prevent frequent system reboots and disruptions, aiding productivity in professional and critical settings.
+
+                                    > **Caution**:
+                                    >
+                                    > - This script postpones critical security updates, increasing potential security risks for your computer.
+                                    > - This script disables the option to resume updates through the settings interface.
+                                    >   The update settings will display "Your organization paused some updates for this device", and you won't be able
+                                    >   to resume them there.
+
+                                    ### Registry keys
+
+                                    The script modifies various Group Policy (GPO), state, and Mobile Device Management (MDM) keys.
+
+                                    Group Policy (GPO) Keys:
+
+                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate!PauseQualityUpdates`:
+                                        Pauses quality updates for up to 35 days, or until the setting is reversed [3] [4].
+                                        This setting has been available since Windows 10 1607 [3].
+                                        By default, this key is not present since Windows 10 22H2 and Windows 11 23H2.
+                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate!PauseQualityUpdatesStartTime`:
+                                        Sets the start date for pausing quality updates [3] [4].
+                                        This setting is available since Windows 10 1703, and it activates `PauseQualityUpdates key` [3].
+                                        By default, this key is not present since Windows 10 22H2 and Windows 11 23H2.
+                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate!Pause`:
+                                        Defers updates and upgrades in earlier versions of Windows 10 (1511) [3].
+                                        By default, this key is not present since Windows 10 22H2 and Windows 11 23H2.
+                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate!DeferQualityUpdates`:
+                                        Defers quality updates for up to 30 days [3] [4].
+                                        By default, this key is not present since Windows 10 22H2 and Windows 11 23H2.
+                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate!DeferQualityUpdatesPeriodInDays`:
+                                        Specifies the deferral period for quality updates, up to 35 [3] or 30 [4] [5] days.
+                                        This setting has been available since Windows 10 1607 [3] [4], and it activates `DeferQualityUpdates` key [3].
+                                        By default, this key is not present since Windows 10 22H2 and Windows 11 23H2.
+
+                                    State Keys:
+
+                                    - `HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\Settings!PausedQualityStatus`:
+                                        Indicates if quality updates are currently paused, with `0` as not paused [3].
+                                        By default, this key is set to `0`, indicating no pause since Windows 10 22H2 and Windows 11 23H2.
+                                    - `HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\Settings!PausedQualityDate`:
+                                        Indicates the date when the pause of quality updates was initiated [3].
+                                        This key is used to disable auto-updates [6].
+                                        By default, this key is not present since Windows 10 22H2 and Windows 11 23H2 [6].
+                                    - `HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\PolicyState!DeferQualityUpdates`:
+                                        Indicates whether quality updates have been paused.
+                                        This key is used to disable auto-updates [6].
+                                        By default, this key is set to `0`, indicating no pause since Windows 10 22H2 and Windows 11 23H2 [6].
+
+                                    Mobile Device Management (MDM) Keys:
+
+                                    - `HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\PauseQualityUpdates!value`:
+                                        Manages pausing of quality updates for Windows 10 1607 and later [3].
+                                        The default value is `0`, indicating no pause since Windows 10 22H2 and Windows 11 23H2.
+                                    - `HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\PauseQualityUpdatesStartTime!value`:
+                                        Sets the start time for pausing quality updates for Windows 10 1703 and later [3].
+                                        By default, this key is not present since Windows 10 22H2 and Windows 11 23H2.
+                                    - `HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\Pause!value`:
+                                        MDM for Windows 10, version 1511 [3].
+                                        By default, this key is not present since Windows 10 22H2 and Windows 11 23H2.
+                                    - `HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\DeferQualityUpdatesPeriodInDays!value`:
+                                        Determines the deferral period for quality updates for Windows 10 1607 and later [3].
+                                        By default, this key is set to `0`, indicating no pause since Windows 10 22H2 and Windows 11 23H2.
+                                    - `HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\ConfigureDeadlineForQualityUpdates!value`:
+                                        Sets the deadline for automatic installation of quality updates for Windows 10 1903 and later, up to 30 days [4].
+                                        By default, this key is set to `7` [4], indicating seven days deadline before updates are enforced since Windows 10 22H2 and Windows 11 23H2.
+
+                                    [1]: https://web.archive.org/web/20231214091439/https://learn.microsoft.com/en-us/windows/deployment/windows-autopatch/operate/windows-autopatch-groups-windows-quality-update-overview "Windows quality updates overview with Autopatch groups experience - Windows Deployment | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20231214085615/https://learn.microsoft.com/en-us/windows/deployment/update/waas-manage-updates-wufb "Windows Update for Business - Windows Deployment | Microsoft Learn | learn.microsoft.com"
+                                    [3]: https://web.archive.org/web/20231206151045/https://learn.microsoft.com/en-us/windows/deployment/update/waas-configure-wufb#pause-quality-updates "Configure Windows Update for Business - Windows Deployment | Microsoft Learn | learn.microsoft.com"
+                                    [4]: https://web.archive.org/web/20230708165017/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-update "Update Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                    [5]: https://archive.ph/2023.12.14-092501/https://github.com/MicrosoftDocs/IntuneDocs/blob/main/intune/protect/windows-update-settings.md "IntuneDocs/intune/protect/windows-update-settings.md at main · MicrosoftDocs/IntuneDocs | github.com"
+                                    [6]: https://web.archive.org/web/20231111173058/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds-vdi-recommendations-2004#re-enable-windows-update "Optimizing Windows 10, Build 2004, for a Virtual Desktop role | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    function: RunPowerShell
+                                    parameters:
+                                        code: |-
+                                            $currentTime = (Get-Date).ToString('yyyy-MM-ddTHH:mm:ssZ')
+                                            # GPO
+                                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "Pause" /t "REG_DWORD" /d "1" /f
+                                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "PauseQualityUpdates" /t "REG_DWORD" /d "1" /f
+                                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "PauseQualityUpdatesStartTime" /t "REG_SZ" /d "$currentTime" /f
+                                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DeferQualityUpdates" /t "REG_DWORD" /d 1 /f
+                                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DeferQualityUpdatesPeriodInDays" /d "35" /t "REG_DWORD" /f
+                                            # State
+                                            reg add "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\Settings" /v "PausedQualityStatus" /t "REG_DWORD" /d "1" /f
+                                            reg add "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\Settings" /v "PausedQualityDate" /t "REG_SZ" /d "$currentTime" /f
+                                            reg add "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\PolicyState" /v "DeferQualityUpdates" /d "1" /t "REG_DWORD" /f
+                                            # MDM (PolicyManager)
+                                            reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\Pause" /v "value" /t "REG_DWORD" /d "1" /f
+                                            reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\PauseQualityUpdates" /v "value" /t "REG_DWORD" /d "1" /f
+                                            reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\PauseQualityUpdatesStartTime" /v "value" /t "REG_SZ" /d "$currentTime" /f
+                                            reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\DeferQualityUpdatesPeriodInDays" /v "value" /t "REG_DWORD" /d "35" /f
+                                            reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\ConfigureDeadlineForQualityUpdates" /v "value" /t "REG_DWORD" /d "30" /f
+                                        revertCode: |-
+                                            # GPO
+                                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "Pause" /f 2>$null
+                                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "PauseQualityUpdates" /f 2>$null
+                                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "PauseQualityUpdatesStartTime" /f 2>$null
+                                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DeferQualityUpdates" /f 2>$null
+                                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DeferQualityUpdatesPeriodInDays" /f 2>$null
+                                            # State
+                                            reg add "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\Settings" /v "PausedQualityStatus" /t "REG_DWORD" /d "0" /f
+                                            reg delete "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\Settings" /v "PausedQualityDate" /f 2>$null
+                                            reg add "HKLM\SOFTWARE\Microsoft\WindowsUpdate\UpdatePolicy\PolicyState" /v "DeferQualityUpdates" /t "REG_DWORD" /d "0" /f
+                                            # MDM (PolicyManager)
+                                            reg delete "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\Pause" /v "value" /f 2>$null
+                                            reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\PauseQualityUpdates" /v "value" /t "REG_DWORD" /d "0" /f
+                                            reg delete "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\PauseQualityUpdatesStartTime" /v "value" /f 2>$null
+                                            reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\DeferQualityUpdatesPeriodInDays" /v "value" /t "REG_DWORD" /d "0" /f
+                                            reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\ConfigureDeadlineForQualityUpdates" /v "value" /t "REG_DWORD" /d "7" /f
+                            -
+                                name: Maximize update duration on older Windows versions
+                                docs: |-
+                                    This script extends the time between updates and upgrades, but only works on older Windows versions
+                                    (version 1511 and earlier) [1] [2].
+
+                                    > **Caution**:
+                                    >
+                                    > - This script postpones critical security updates, increasing potential security risks for your computer.
+                                    > - This script has no effect on newer Windows versions and will not make the intended changes.
+
+                                    The script modifies the following keys:
+
+                                    - `HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\RequireDeferUpgrade!value`:
+                                        Sets the device to a more predictable update schedule [1].
+                                        By default, this key is set to `0` since Windows 10 22H2 and Windows 11 22H3.
+                                    - `HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\RequireDeferUpdate!value`:
+                                        Pauses quality updates [1].
+                                        By default, this registry key is missing since Windows 10 22H2 and Windows 11 22H3.
+                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate!DeferUpdate`:
+                                        Determines the delay period for updates [1].
+                                        By default, this registry key is missing since Windows 10 22H2 and Windows 11 22H3.
+                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate!DeferUpgrade`:
+                                        Determines the delay period for upgrades [1].
+                                        By default, this registry key is missing since Windows 10 22H2 and Windows 11 22H3.
+                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate!DeferUpdatePeriod` [1].
+                                        Pauses upgrades for up to 4 weeks [2] [3].
+                                        By default, this registry key is missing since Windows 10 22H2 and Windows 11 22H3.
+                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate!DeferUpgradePeriod` [1] [2] [3].
+                                        Pauses upgrades for up to 8 months [2] [3].
+                                        By default, this registry key is missing since Windows 10 22H2 and Windows 11 22H3.
+                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate!PauseDeferrals`:
+                                        Pauses updates and upgrades for up to 5 weeks [2] [3].
+                                        By default, this registry key is missing since Windows 10 22H2 and Windows 11 22H3.
+
+                                    [1]: https://web.archive.org/web/20231206151045/https://learn.microsoft.com/en-us/windows/deployment/update/waas-configure-wufb "Configure Windows Update for Business - Windows Deployment | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20230708165017/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-update "Update Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                    [3]: https://web.archive.org/web/20231209170224/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsUpdate::DeferUpgrade "Defer Upgrades and Updates | admx.help"
+                                code: |-
+                                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DeferUpdate" /t REG_DWORD /d "1" /f
+                                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DeferUpgrade" /t REG_DWORD /d "1" /f
+                                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DeferUpdatePeriod" /t REG_DWORD /d "4" /f
+                                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DeferUpgradePeriod" /t REG_DWORD /d "8" /f
+                                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "PauseDeferrals" /t REG_DWORD /d "1" /f
+                                    reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\RequireDeferUpgrade" /v "value" /t "REG_DWORD" /d "1" /f
+                                    reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\RequireDeferUpdate" /v "value" /t "REG_DWORD" /d "1" /f
+                                revertCode: |-
+                                    reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DeferUpdate" /f 2>null
+                                    reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DeferUpgrade" /f 2>null
+                                    reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DeferUpdatePeriod" /f 2>null
+                                    reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "DeferUpgradePeriod" /f 2>null
+                                    reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate" /v "PauseDeferrals" /f 2>null
+                                    reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\RequireDeferUpgrade" /v "value" /t "REG_DWORD" /d "0" /f
+                                    reg delete "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Update\RequireDeferUpdate" /v "value" /f 2>null
             -
                 category: Configure how downloaded files are handled
                 docs: |-
