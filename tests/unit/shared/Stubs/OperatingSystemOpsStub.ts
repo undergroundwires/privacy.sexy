@@ -1,9 +1,9 @@
-import { IOperatingSystemOps } from '@/infrastructure/SystemOperations/ISystemOperations';
+import { OperatingSystemOps } from '@/infrastructure/CodeRunner/SystemOperations/SystemOperations';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class OperatingSystemOpsStub
-  extends StubWithObservableMethodCalls<IOperatingSystemOps>
-  implements IOperatingSystemOps {
+  extends StubWithObservableMethodCalls<OperatingSystemOps>
+  implements OperatingSystemOps {
   private temporaryDirectory = '/stub-temp-dir/';
 
   public withTemporaryDirectoryResult(directory: string): this {

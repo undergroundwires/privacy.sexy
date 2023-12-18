@@ -1,3 +1,4 @@
+import { isArray } from '@/TypeHelpers';
 import { TreeInputNodeData } from '../../Bindings/TreeInputNodeData';
 import { TreeNode } from '../../Node/TreeNode';
 import { TreeNodeManager } from '../../Node/TreeNodeManager';
@@ -5,7 +6,7 @@ import { TreeNodeManager } from '../../Node/TreeNodeManager';
 export function parseTreeInput(
   input: readonly TreeInputNodeData[],
 ): TreeNode[] {
-  if (!Array.isArray(input)) {
+  if (!isArray(input)) {
     throw new Error('input data must be an array');
   }
   const nodes = input.map((nodeData) => createNode(nodeData));

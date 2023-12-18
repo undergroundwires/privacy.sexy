@@ -1,3 +1,5 @@
+import { isString } from '@/TypeHelpers';
+
 // Because we cannot do "T extends enum" 😞 https://github.com/microsoft/TypeScript/issues/30611
 export type EnumType = number | string;
 export type EnumVariable<T extends EnumType, TEnumValue extends EnumType>
@@ -23,7 +25,7 @@ function parseEnumValue<T extends EnumType, TEnumValue extends EnumType>(
   if (!value) {
     throw new Error(`missing ${enumName}`);
   }
-  if (typeof value !== 'string') {
+  if (!isString(value)) {
     throw new Error(`unexpected type of ${enumName}: "${typeof value}"`);
   }
   const casedValue = getEnumNames(enumVariable)
@@ -40,7 +42,7 @@ export function getEnumNames
 ): string[] {
   return Object
     .values(enumVariable)
-    .filter((enumMember) => typeof enumMember === 'string') as string[];
+    .filter((enumMember): enumMember is string => isString(enumMember));
 }
 
 export function getEnumValues<T extends EnumType, TEnumValue extends EnumType>(

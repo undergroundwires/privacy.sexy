@@ -13,6 +13,7 @@ import {
 import { PropertyKeys } from '@/TypeHelpers';
 import { useUserSelectionState } from '@/presentation/components/Shared/Hooks/UseUserSelectionState';
 import { useLogger } from '@/presentation/components/Shared/Hooks/UseLogger';
+import { useCodeRunner } from '@/presentation/components/Shared/Hooks/UseCodeRunner';
 
 export function provideDependencies(
   context: IApplicationContext,
@@ -61,6 +62,10 @@ export function provideDependencies(
     useLogger: (di) => di.provide(
       InjectionKeys.useLogger,
       useLogger,
+    ),
+    useCodeRunner: (di) => di.provide(
+      InjectionKeys.useCodeRunner,
+      useCodeRunner,
     ),
   };
   registerAll(Object.values(resolvers), api);

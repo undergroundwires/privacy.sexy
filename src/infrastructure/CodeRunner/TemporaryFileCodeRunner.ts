@@ -1,18 +1,19 @@
-import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { getWindowInjectedSystemOperations } from './SystemOperations/WindowInjectedSystemOperations';
+import { CodeRunner } from '@/application/CodeRunner';
+import { SystemOperations } from './SystemOperations/SystemOperations';
+import { createNodeSystemOperations } from './SystemOperations/NodeSystemOperations';
 
-export class CodeRunner {
+export class TemporaryFileCodeRunner implements CodeRunner {
   constructor(
-    private readonly system = getWindowInjectedSystemOperations(),
-    private readonly environment = RuntimeEnvironment.CurrentEnvironment,
+    private readonly system: SystemOperations = createNodeSystemOperations(),
   ) { }
 
-  public async runCode(code: string, folderName: string, fileExtension: string): Promise<void> {
-    const { os } = this.environment;
-    if (os === undefined) {
-      throw new Error('Unidentified operating system');
-    }
+  public async runCode(
+    code: string,
+    folderName: string,
+    fileExtension: string,
+    os: OperatingSystem,
+  ): Promise<void> {
     const dir = this.system.location.combinePaths(
       this.system.operatingSystem.getTempDirectory(),
       folderName,
@@ -22,7 +23,7 @@ export class CodeRunner {
     await this.system.fileSystem.writeToFile(filePath, code);
     await this.system.fileSystem.setFilePermissions(filePath, '755');
     const command = getExecuteCommand(filePath, os);
-    this.system.command.execute(command);
+    await this.system.command.execute(command);
   }
 }
 

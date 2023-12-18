@@ -1,12 +1,14 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { PropertyKeys } from '@/TypeHelpers';
+import {
+  PropertyKeys, isBoolean, isFunction, isNumber, isPlainObject,
+} from '@/TypeHelpers';
 import { WindowVariables } from './WindowVariables';
 
 /**
  * Checks for consistency in runtime environment properties injected by Electron preloader.
  */
 export function validateWindowVariables(variables: Partial<WindowVariables>) {
-  if (!isObject(variables)) {
+  if (!isPlainObject(variables)) {
     throw new Error('window is not an object');
   }
   const errors = [...testEveryProperty(variables)];
@@ -21,7 +23,7 @@ function* testEveryProperty(variables: Partial<WindowVariables>): Iterable<strin
   } = {
     os: testOperatingSystem(variables.os),
     isDesktop: testIsDesktop(variables.isDesktop),
-    system: testSystem(variables),
+    codeRunner: testCodeRunner(variables),
     log: testLogger(variables),
   };
 
@@ -49,14 +51,15 @@ function testLogger(variables: Partial<WindowVariables>): boolean {
   if (!variables.isDesktop) {
     return true;
   }
-  return isObject(variables.log);
+  return isPlainObject(variables.log);
 }
 
-function testSystem(variables: Partial<WindowVariables>): boolean {
+function testCodeRunner(variables: Partial<WindowVariables>): boolean {
   if (!variables.isDesktop) {
     return true;
   }
-  return isObject(variables.system);
+  return isPlainObject(variables.codeRunner)
+    && isFunction(variables.codeRunner.runCode);
 }
 
 function testIsDesktop(isDesktop: unknown): boolean {
@@ -64,18 +67,4 @@ function testIsDesktop(isDesktop: unknown): boolean {
     return true;
   }
   return isBoolean(isDesktop);
-}
-
-function isNumber(variable: unknown): variable is number {
-  return typeof variable === 'number';
-}
-
-function isBoolean(variable: unknown): variable is boolean {
-  return typeof variable === 'boolean';
-}
-
-function isObject(variable: unknown): variable is object {
-  return Boolean(variable) // the data type of null is an object
-    && typeof variable === 'object'
-    && !Array.isArray(variable);
 }

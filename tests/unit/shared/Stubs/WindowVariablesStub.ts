@@ -1,12 +1,12 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { Logger } from '@/application/Common/Log/Logger';
-import { ISystemOperations } from '@/infrastructure/SystemOperations/ISystemOperations';
 import { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
-import { SystemOperationsStub } from './SystemOperationsStub';
+import { CodeRunner } from '@/application/CodeRunner';
 import { LoggerStub } from './LoggerStub';
+import { CodeRunnerStub } from './CodeRunnerStub';
 
 export class WindowVariablesStub implements WindowVariables {
-  public system?: ISystemOperations = new SystemOperationsStub();
+  public codeRunner?: CodeRunner = new CodeRunnerStub();
 
   public isDesktop = false;
 
@@ -29,8 +29,8 @@ export class WindowVariablesStub implements WindowVariables {
     return this;
   }
 
-  public withSystem(value?: ISystemOperations): this {
-    this.system = value;
+  public withCodeRunner(value?: CodeRunner): this {
+    this.codeRunner = value;
     return this;
   }
 }

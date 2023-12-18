@@ -31,9 +31,9 @@ privacy.sexy adopts a defense in depth strategy to protect users on multiple lay
 - **Content Security Policies (CSP):**
   privacy.sexy actively follows security guidelines from the Open Web Application Security Project (OWASP) at strictest level.
   This approach protects against attacks like Cross Site Scripting (XSS) and data injection.
-- **Context Isolation:**
-  The desktop application isolates different code sections based on their access level.
-  This separation prevents attackers from introducing harmful code into the app, known as injection attacks.
+- **Host System Access Control:**
+  The desktop application segregates code sections based on their access levels.
+  This provides a critical defense mechanism, prevents attackers from introducing harmful code into the app, known as injection attacks.
 
 ### Update Security and Integrity
 

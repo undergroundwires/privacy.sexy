@@ -1,3 +1,4 @@
+import { isBoolean, isFunction } from '@/TypeHelpers';
 import { IEnvironmentVariables } from './IEnvironmentVariables';
 
 /* Validation is externalized to keep the environment objects simple */
@@ -15,7 +16,7 @@ export function validateEnvironmentVariables(environment: IEnvironmentVariables)
 function getKeysMissingValues(keyValuePairs: Record<string, unknown>): string[] {
   return Object.entries(keyValuePairs)
     .reduce((acc, [key, value]) => {
-      if (!value && typeof value !== 'boolean') {
+      if (!value && !isBoolean(value)) {
         acc.push(key);
       }
       return acc;
@@ -38,7 +39,7 @@ function capturePropertyValues(instance: object): Record<string, unknown> {
 
   // Capture getter properties from the instance's prototype
   for (const [key, descriptor] of Object.entries(descriptors)) {
-    if (typeof descriptor.get === 'function') {
+    if (isFunction(descriptor.get)) {
       obj[key] = descriptor.get.call(instance);
     }
   }

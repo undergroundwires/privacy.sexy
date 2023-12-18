@@ -92,6 +92,8 @@ Shared components include:
 
 Desktop builds uses `electron-vite` to bundle the code, and `electron-builder` to build and publish the packages.
 
+Host system access is strictly controlled. The [`preloader`](./../src/presentation/electron/preload/) isolates logic that interacts with the host system. These functionalities are then securely exposed to the renderer process (Vue application) using context-bridging. [`ApiContextBridge.ts`](./../src/presentation/electron/preload/ContextBridging/ApiContextBridge.ts) handles the configuration of the exposed APIs, ensuring a secure bridge between the Electron and Vue layers.
+
 ## Styles
 
 ### Style location

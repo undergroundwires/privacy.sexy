@@ -1,17 +1,16 @@
 import { describe, it, expect } from 'vitest';
-import { RuntimeEnvironmentStub } from '@tests/unit/shared/Stubs/RuntimeEnvironmentStub';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { CodeRunner } from '@/infrastructure/CodeRunner';
+import { FileSystemOps, SystemOperations } from '@/infrastructure/CodeRunner/SystemOperations/SystemOperations';
+import { TemporaryFileCodeRunner } from '@/infrastructure/CodeRunner/TemporaryFileCodeRunner';
 import { expectThrowsAsync } from '@tests/shared/Assertions/ExpectThrowsAsync';
 import { SystemOperationsStub } from '@tests/unit/shared/Stubs/SystemOperationsStub';
 import { OperatingSystemOpsStub } from '@tests/unit/shared/Stubs/OperatingSystemOpsStub';
 import { LocationOpsStub } from '@tests/unit/shared/Stubs/LocationOpsStub';
 import { FileSystemOpsStub } from '@tests/unit/shared/Stubs/FileSystemOpsStub';
 import { CommandOpsStub } from '@tests/unit/shared/Stubs/CommandOpsStub';
-import { IFileSystemOps, ISystemOperations } from '@/infrastructure/SystemOperations/ISystemOperations';
 import { FunctionKeys } from '@/TypeHelpers';
 
-describe('CodeRunner', () => {
+describe('TemporaryFileCodeRunner', () => {
   describe('runCode', () => {
     it('creates temporary directory recursively', async () => {
       // arrange
@@ -121,11 +120,11 @@ describe('CodeRunner', () => {
     describe('executes as expected', () => {
       // arrange
       const filePath = 'expected-file-path';
-      interface IExecutionTestCase {
+      interface ExecutionTestCase {
         readonly givenOs: OperatingSystem;
         readonly expectedCommand: string;
       }
-      const testData: readonly IExecutionTestCase[] = [
+      const testData: readonly ExecutionTestCase[] = [
         {
           givenOs: OperatingSystem.Windows,
           expectedCommand: filePath,
@@ -164,7 +163,7 @@ describe('CodeRunner', () => {
       }
     });
     it('runs in expected order', async () => { // verifies correct `async`, `await` usage.
-      const expectedOrder: readonly FunctionKeys<IFileSystemOps>[] = [
+      const expectedOrder: readonly FunctionKeys<FileSystemOps>[] = [
         'createDirectory',
         'writeToFile',
         'setFilePermissions',
@@ -186,7 +185,7 @@ describe('CodeRunner', () => {
     describe('throws with invalid OS', () => {
       const testScenarios: ReadonlyArray<{
         readonly description: string;
-        readonly invalidOs: OperatingSystem | undefined;
+        readonly invalidOs: OperatingSystem;
         readonly expectedError: string;
       }> = [
         (() => {
@@ -197,11 +196,6 @@ describe('CodeRunner', () => {
             expectedError: `unsupported os: ${OperatingSystem[unsupportedOs]}`,
           };
         })(),
-        {
-          description: 'unknown OS',
-          invalidOs: undefined,
-          expectedError: 'Unidentified operating system',
-        },
       ];
       testScenarios.forEach(({ description, invalidOs, expectedError }) => {
         it(description, async () => {
@@ -225,19 +219,17 @@ class TestContext {
 
   private fileExtension = 'fileExtension';
 
-  private os: OperatingSystem | undefined = OperatingSystem.Windows;
+  private os: OperatingSystem = OperatingSystem.Windows;
 
-  private systemOperations: ISystemOperations = new SystemOperationsStub();
+  private systemOperations: SystemOperations = new SystemOperationsStub();
 
   public async runCode(): Promise<void> {
-    const environment = new RuntimeEnvironmentStub()
-      .withOs(this.os);
-    const runner = new CodeRunner(this.systemOperations, environment);
-    await runner.runCode(this.code, this.folderName, this.fileExtension);
+    const runner = new TemporaryFileCodeRunner(this.systemOperations);
+    await runner.runCode(this.code, this.folderName, this.fileExtension, this.os);
   }
 
   public withSystemOperations(
-    systemOperations: ISystemOperations,
+    systemOperations: SystemOperations,
   ): this {
     this.systemOperations = systemOperations;
     return this;
@@ -250,22 +242,22 @@ class TestContext {
     return this.withSystemOperations(stub);
   }
 
-  public withOs(os: OperatingSystem | undefined) {
+  public withOs(os: OperatingSystem): this {
     this.os = os;
     return this;
   }
 
-  public withFolderName(folderName: string) {
+  public withFolderName(folderName: string): this {
     this.folderName = folderName;
     return this;
   }
 
-  public withCode(code: string) {
+  public withCode(code: string): this {
     this.code = code;
     return this;
   }
 
-  public withExtension(fileExtension: string) {
+  public withExtension(fileExtension: string): this {
     this.fileExtension = fileExtension;
     return this;
   }

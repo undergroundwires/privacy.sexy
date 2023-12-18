@@ -1,10 +1,10 @@
-import { tmpdir } from 'os';
-import { join } from 'path';
-import { chmod, mkdir, writeFile } from 'fs/promises';
-import { exec } from 'child_process';
-import { ISystemOperations } from './ISystemOperations';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { chmod, mkdir, writeFile } from 'node:fs/promises';
+import { exec } from 'node:child_process';
+import { SystemOperations } from './SystemOperations';
 
-export function createNodeSystemOperations(): ISystemOperations {
+export function createNodeSystemOperations(): SystemOperations {
   return {
     operatingSystem: {
       getTempDirectory: () => tmpdir(),
@@ -33,7 +33,14 @@ export function createNodeSystemOperations(): ISystemOperations {
       ) => writeFile(filePath, data),
     },
     command: {
-      execute: (command) => exec(command),
+      execute: (command) => new Promise((resolve, reject) => {
+        exec(command, (error) => {
+          if (error) {
+            reject(error);
+          }
+          resolve();
+        });
+      }),
     },
   };
 }

@@ -1,4 +1,5 @@
 import type { DocumentableData, DocumentationData } from '@/application/collections/';
+import { isString, isArray } from '@/TypeHelpers';
 
 export function parseDocs(documentable: DocumentableData): readonly string[] {
   const { docs } = documentable;
@@ -14,11 +15,9 @@ function addDocs(
   docs: DocumentationData,
   container: DocumentationContainer,
 ): DocumentationContainer {
-  if (docs instanceof Array) {
-    if (docs.length > 0) {
-      container.addParts(docs);
-    }
-  } else if (typeof docs === 'string') {
+  if (isArray(docs)) {
+    docs.forEach((doc) => container.addPart(doc));
+  } else if (isString(docs)) {
     container.addPart(docs);
   } else {
     throwInvalidType();
@@ -29,20 +28,14 @@ function addDocs(
 class DocumentationContainer {
   private readonly parts = new Array<string>();
 
-  public addPart(documentation: string) {
+  public addPart(documentation: unknown): void {
     if (!documentation) {
       throw Error('missing documentation');
     }
-    if (typeof documentation !== 'string') {
+    if (!isString(documentation)) {
       throwInvalidType();
     }
     this.parts.push(documentation);
-  }
-
-  public addParts(parts: readonly string[]) {
-    for (const part of parts) {
-      this.addPart(part);
-    }
   }
 
   public getAll(): ReadonlyArray<string> {
@@ -50,6 +43,6 @@ class DocumentationContainer {
   }
 }
 
-function throwInvalidType() {
+function throwInvalidType(): never {
   throw new Error('docs field (documentation) must be an array of strings');
 }

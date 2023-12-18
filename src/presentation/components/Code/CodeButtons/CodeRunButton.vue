@@ -11,8 +11,6 @@
 import { defineComponent, computed } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { CodeRunner } from '@/infrastructure/CodeRunner';
-import { IReadOnlyApplicationContext } from '@/application/Context/IApplicationContext';
 import IconButton from './IconButton.vue';
 
 export default defineComponent({
@@ -22,11 +20,19 @@ export default defineComponent({
   setup() {
     const { currentState, currentContext } = injectKey((keys) => keys.useCollectionState);
     const { os, isDesktop } = injectKey((keys) => keys.useRuntimeEnvironment);
+    const { codeRunner } = injectKey((keys) => keys.useCodeRunner);
 
     const canRun = computed<boolean>(() => getCanRunState(currentState.value.os, isDesktop, os));
 
     async function executeCode() {
-      await runCode(currentContext);
+      if (!codeRunner) { throw new Error('missing code runner'); }
+      if (os === undefined) { throw new Error('unidentified host operating system'); }
+      await codeRunner.runCode(
+        currentContext.state.code.current,
+        currentContext.app.info.name,
+        currentState.value.collection.scripting.fileExtension,
+        os,
+      );
     }
 
     return {
@@ -44,14 +50,5 @@ function getCanRunState(
 ): boolean {
   const isRunningOnSelectedOs = selectedOs === hostOs;
   return isDesktopVersion && isRunningOnSelectedOs;
-}
-
-async function runCode(context: IReadOnlyApplicationContext) {
-  const runner = new CodeRunner();
-  await runner.runCode(
-    /* code: */ context.state.code.current,
-    /* appName: */ context.app.info.name,
-    /* fileExtension: */ context.state.collection.scripting.fileExtension,
-  );
 }
 </script>

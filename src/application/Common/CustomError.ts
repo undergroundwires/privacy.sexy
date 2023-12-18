@@ -1,3 +1,5 @@
+import { isFunction } from '@/TypeHelpers';
+
 /*
   Provides a unified and resilient way to extend errors across platforms.
 
@@ -49,9 +51,4 @@ function ensureStackTrace(target: Error) {
     return;
   }
   captureStackTrace(target, target.constructor);
-}
-
-// eslint-disable-next-line @typescript-eslint/ban-types
-function isFunction(func: unknown): func is Function {
-  return typeof func === 'function';
 }

@@ -7,6 +7,7 @@ import type { useCurrentCode } from '@/presentation/components/Shared/Hooks/UseC
 import type { useAutoUnsubscribedEvents } from '@/presentation/components/Shared/Hooks/UseAutoUnsubscribedEvents';
 import type { useUserSelectionState } from '@/presentation/components/Shared/Hooks/UseUserSelectionState';
 import type { useLogger } from '@/presentation/components/Shared/Hooks/UseLogger';
+import type { useCodeRunner } from './components/Shared/Hooks/UseCodeRunner';
 
 export const InjectionKeys = {
   useCollectionState: defineTransientKey<ReturnType<typeof useCollectionState>>('useCollectionState'),
@@ -17,6 +18,7 @@ export const InjectionKeys = {
   useCurrentCode: defineTransientKey<ReturnType<typeof useCurrentCode>>('useCurrentCode'),
   useUserSelectionState: defineTransientKey<ReturnType<typeof useUserSelectionState>>('useUserSelectionState'),
   useLogger: defineTransientKey<ReturnType<typeof useLogger>>('useLogger'),
+  useCodeRunner: defineTransientKey<ReturnType<typeof useCodeRunner>>('useCodeRunner'),
 };
 
 export interface InjectionKeyWithLifetime<T> {

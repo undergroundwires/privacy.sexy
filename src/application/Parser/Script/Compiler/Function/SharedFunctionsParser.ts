@@ -6,6 +6,7 @@ import { CodeValidator } from '@/application/Parser/Script/Validation/CodeValida
 import { NoEmptyLines } from '@/application/Parser/Script/Validation/Rules/NoEmptyLines';
 import { NoDuplicatedLines } from '@/application/Parser/Script/Validation/Rules/NoDuplicatedLines';
 import { ICodeValidator } from '@/application/Parser/Script/Validation/ICodeValidator';
+import { isArray, isNullOrUndefined, isPlainObject } from '@/TypeHelpers';
 import { createFunctionWithInlineCode, createCallerFunction } from './SharedFunction';
 import { SharedFunctionCollection } from './SharedFunctionCollection';
 import { ISharedFunctionCollection } from './ISharedFunctionCollection';
@@ -121,8 +122,11 @@ function ensureEitherCallOrCodeIsDefined(holders: readonly FunctionData[]) {
 }
 
 function ensureExpectedParametersType(functions: readonly FunctionData[]) {
+  const hasValidParameters = (
+    func: FunctionData,
+  ) => isNullOrUndefined(func.parameters) || isArrayOfObjects(func.parameters);
   const unexpectedFunctions = functions
-    .filter((func) => func.parameters && !isArrayOfObjects(func.parameters));
+    .filter((func) => !hasValidParameters(func));
   if (unexpectedFunctions.length) {
     const errorMessage = `parameters must be an array of objects in function(s) ${printNames(unexpectedFunctions)}`;
     throw new Error(errorMessage);
@@ -130,8 +134,7 @@ function ensureExpectedParametersType(functions: readonly FunctionData[]) {
 }
 
 function isArrayOfObjects(value: unknown): boolean {
-  return Array.isArray(value)
-    && value.every((item) => typeof item === 'object');
+  return isArray(value) && value.every((item) => isPlainObject(item));
 }
 
 function printNames(holders: readonly FunctionData[]) {

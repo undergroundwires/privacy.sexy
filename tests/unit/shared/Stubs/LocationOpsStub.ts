@@ -1,9 +1,9 @@
-import { ILocationOps } from '@/infrastructure/SystemOperations/ISystemOperations';
+import { LocationOps } from '@/infrastructure/CodeRunner/SystemOperations/SystemOperations';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class LocationOpsStub
-  extends StubWithObservableMethodCalls<ILocationOps>
-  implements ILocationOps {
+  extends StubWithObservableMethodCalls<LocationOps>
+  implements LocationOps {
   private sequence = new Array<string>();
 
   private scenarios = new Map<string, string>();

@@ -1,9 +1,9 @@
-import { IFileSystemOps } from '@/infrastructure/SystemOperations/ISystemOperations';
+import { FileSystemOps } from '@/infrastructure/CodeRunner/SystemOperations/SystemOperations';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class FileSystemOpsStub
-  extends StubWithObservableMethodCalls<IFileSystemOps>
-  implements IFileSystemOps {
+  extends StubWithObservableMethodCalls<FileSystemOps>
+  implements FileSystemOps {
   public setFilePermissions(filePath: string, mode: string | number): Promise<void> {
     this.registerMethodCall({
       methodName: 'setFilePermissions',

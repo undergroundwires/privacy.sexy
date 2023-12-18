@@ -1,6 +1,6 @@
 import { describe } from 'vitest';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { convertPlatformToOs } from '@/presentation/electron/preload/NodeOsMapper';
+import { convertPlatformToOs } from '@/presentation/electron/preload/ContextBridging/NodeOsMapper';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 
 describe('NodeOsMapper', () => {

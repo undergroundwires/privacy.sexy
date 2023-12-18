@@ -1,6 +1,7 @@
 import { describe } from 'vitest';
 import { ISanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/ISanityCheckOptions';
 import { validateRuntimeSanity } from '@/infrastructure/RuntimeSanity/SanityChecks';
+import { isBoolean } from '@/TypeHelpers';
 
 describe('SanityChecks', () => {
   describe('validateRuntimeSanity', () => {
@@ -42,7 +43,7 @@ function generateBooleanPermutations<T>(object: T | undefined): T[] {
   const currentKey = keys[0];
   const currentValue = object[currentKey];
 
-  if (typeof currentValue !== 'boolean') {
+  if (!isBoolean(currentValue)) {
     return generateBooleanPermutations({
       ...object,
       [currentKey]: currentValue,

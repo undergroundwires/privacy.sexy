@@ -2,9 +2,9 @@ import { describe, it, expect } from 'vitest';
 import { validateWindowVariables } from '@/infrastructure/WindowVariables/WindowVariablesValidator';
 import { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { SystemOperationsStub } from '@tests/unit/shared/Stubs/SystemOperationsStub';
-import { getAbsentObjectTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
+import { getAbsentObjectTestCases, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { WindowVariablesStub } from '@tests/unit/shared/Stubs/WindowVariablesStub';
+import { CodeRunnerStub } from '@tests/unit/shared/Stubs/CodeRunnerStub';
 
 describe('WindowVariablesValidator', () => {
   describe('validateWindowVariables', () => {
@@ -92,51 +92,35 @@ describe('WindowVariablesValidator', () => {
       });
 
       describe('`isDesktop` property', () => {
-        it('throws an error when only isDesktop is provided and it is true without a system object', () => {
+        it('does not throw when true with valid services', () => {
           // arrange
-          const systemObject = undefined;
-          const expectedError = getExpectedError(
-            {
-              name: 'system',
-              object: systemObject,
-            },
-          );
+          const validCodeRunner = new CodeRunnerStub();
           const input = new WindowVariablesStub()
             .withIsDesktop(true)
-            .withSystem(systemObject);
-          // act
-          const act = () => validateWindowVariables(input);
-          // assert
-          expect(act).to.throw(expectedError);
-        });
-
-        it('does not throw when isDesktop is true with a valid system object', () => {
-          // arrange
-          const validSystem = new SystemOperationsStub();
-          const input = new WindowVariablesStub()
-            .withIsDesktop(true)
-            .withSystem(validSystem);
+            .withCodeRunner(validCodeRunner);
           // act
           const act = () => validateWindowVariables(input);
           // assert
           expect(act).to.not.throw();
         });
 
-        it('does not throw when isDesktop is false without a system object', () => {
-          // arrange
-          const absentSystem = undefined;
-          const input = new WindowVariablesStub()
-            .withIsDesktop(false)
-            .withSystem(absentSystem);
-          // act
-          const act = () => validateWindowVariables(input);
-          // assert
-          expect(act).to.not.throw();
+        describe('does not throw when false without services', () => {
+          itEachAbsentObjectValue((absentValue) => {
+            // arrange
+            const absentCodeRunner = absentValue;
+            const input = new WindowVariablesStub()
+              .withIsDesktop(false)
+              .withCodeRunner(absentCodeRunner);
+            // act
+            const act = () => validateWindowVariables(input);
+            // assert
+            expect(act).to.not.throw();
+          }, { excludeNull: true });
         });
       });
 
-      describe('`system` property', () => {
-        expectObjectOnDesktop('system');
+      describe('`codeRunner` property', () => {
+        expectObjectOnDesktop('codeRunner');
       });
 
       describe('`log` property', () => {
@@ -158,6 +142,7 @@ function expectObjectOnDesktop<T>(key: keyof WindowVariables) {
   describe('validates object type on desktop', () => {
     itEachInvalidObjectValue((invalidObjectValue) => {
       // arrange
+      const isOnDesktop = true;
       const invalidObject = invalidObjectValue as T;
       const expectedError = getExpectedError({
         name: key,
@@ -165,7 +150,7 @@ function expectObjectOnDesktop<T>(key: keyof WindowVariables) {
       });
       const input: WindowVariables = {
         ...new WindowVariablesStub(),
-        isDesktop: true,
+        isDesktop: isOnDesktop,
         [key]: invalidObject,
       };
       // act

@@ -1,8 +1,9 @@
+import { isNumber } from '@/TypeHelpers';
 import { IEntity } from './IEntity';
 
 export abstract class BaseEntity<TId> implements IEntity<TId> {
   protected constructor(public id: TId) {
-    if (typeof id !== 'number' && !id) {
+    if (!isNumber(id) && !id) {
       throw new Error('Id cannot be null or empty');
     }
   }

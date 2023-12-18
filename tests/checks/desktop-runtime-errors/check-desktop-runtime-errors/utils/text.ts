@@ -1,3 +1,5 @@
+import { isString } from '@/TypeHelpers';
+
 export function indentText(
   text: string,
   indentLevel = 1,
@@ -21,7 +23,7 @@ export function filterEmpty(texts: readonly (string | undefined | null)[]): stri
 }
 
 function validateText(text: string): void {
-  if (typeof text !== 'string') {
+  if (!isString(text)) {
     throw new Error(`text is not a string. It is: ${typeof text}\n${text}`);
   }
 }
