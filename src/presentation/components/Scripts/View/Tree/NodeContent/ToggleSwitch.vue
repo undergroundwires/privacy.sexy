@@ -1,7 +1,7 @@
 <template>
   <div
     class="toggle-switch"
-    @click="handleClickPropagation"
+    @click="onClick"
   >
     <input
       v-model="isChecked"
@@ -9,6 +9,7 @@
       class="toggle-input"
     >
     <div class="toggle-animation">
+      <div class="circle" />
       <span class="label-off">{{ label }}</span>
       <span class="label-on">{{ label }}</span>
     </div>
@@ -48,15 +49,16 @@ export default defineComponent({
       },
     });
 
-    function handleClickPropagation(event: Event): void {
+    function onClick(event: Event): void {
       if (props.stopClickPropagation) {
         event.stopPropagation();
       }
+      isChecked.value = !isChecked.value;
     }
 
     return {
       isChecked,
-      handleClickPropagation,
+      onClick,
     };
   },
 });
@@ -114,7 +116,6 @@ $gap                    : 0.25em;
     width: 100%;
     height: 100%;
     opacity: 0;
-    z-index: 2;
     @include clickable;
   }
 
@@ -127,8 +128,7 @@ $gap                    : 0.25em;
     background-color: $color-bg-unchecked;
     transition: background-color 0.25s ease-out;
 
-    &:before {
-      content: "";
+    .circle {
       display: block;
       position: absolute;
       left: $padding-horizontal;
@@ -141,7 +141,6 @@ $gap                    : 0.25em;
       border-radius: 50%;
       background-color: $color-toggle-unchecked;
       transition: left 0.3s ease-out;
-      z-index: 10;
     }
   }
 
@@ -149,7 +148,7 @@ $gap                    : 0.25em;
     background-color: $color-bg-checked;
     flex-direction: row-reverse;
 
-    &:before {
+    .circle {
       $left-offset: calc(100% - #{$size-circle});
       $padded-left-offset: calc(#{$left-offset} - #{$padding-horizontal});
       left: $padded-left-offset;

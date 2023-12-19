@@ -24,7 +24,7 @@ describe('revert toggle', () => {
         .contains('revert');
     });
 
-    it('should render label completely without clipping', () => {
+    it('should render label completely without clipping', () => { // Regression test for a bug where label is partially rendered (clipped)
       cy
         .get('@toggleSwitch')
         .find('span')
@@ -36,6 +36,22 @@ describe('revert toggle', () => {
           expectExists(containerWidth);
           expect(expectedMinimumTextWidth).to.be.lessThan(containerWidth);
         });
+    });
+
+    it('should toggle the revert state when clicked', () => {
+      cy.get('@toggleSwitch').then(($toggleSwitch) => {
+        // arrange
+        const initialState = $toggleSwitch.find('.toggle-input').is(':checked');
+
+        // act
+        cy.wrap($toggleSwitch).click();
+
+        // assert
+        cy.wrap($toggleSwitch).find('.toggle-input').should(($input) => {
+          const newState = $input.is(':checked');
+          expect(newState).to.not.equal(initialState);
+        });
+      });
     });
   });
 });

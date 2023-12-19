@@ -9,6 +9,7 @@ import ToggleSwitch from '@/presentation/components/Scripts/View/Tree/NodeConten
 const DOM_INPUT_TOGGLE_CHECKBOX_SELECTOR = 'input.toggle-input';
 const DOM_INPUT_TOGGLE_LABEL_OFF_SELECTOR = 'span.label-off';
 const DOM_INPUT_TOGGLE_LABEL_ON_SELECTOR = 'span.label-on';
+const DOM_INPUT_CIRCLE_ICON_SELECTOR = '.circle';
 
 describe('ToggleSwitch.vue', () => {
   describe('initial state', () => {
@@ -130,10 +131,25 @@ describe('ToggleSwitch.vue', () => {
         });
       });
     });
+    it('emits when the circle icon is clicked', async () => { // Regression test for unresponsive circle icon
+      // arrange
+      const initialCheckValue = false;
+      const expectedCheckValue = true;
+      const wrapper = mountComponent({
+        properties: {
+          modelValue: initialCheckValue,
+        },
+      });
+      // act
+      const circleIcon = wrapper.find(DOM_INPUT_CIRCLE_ICON_SELECTOR);
+      await circleIcon.trigger('click');
+      // assert
+      expect(wrapper.emitted('update:modelValue')).to.deep.equal([[expectedCheckValue]]);
+    });
   });
 
   describe('click propagation', () => {
-    it('stops propagation `stopClickPropagation` is true', async () => {
+    it('stops propagation if `stopClickPropagation` is true', async () => {
       // arrange
       const { wrapper: parentWrapper, parentClickEventName } = mountToggleSwitchParent(
         { stopClickPropagation: true },
@@ -148,7 +164,7 @@ describe('ToggleSwitch.vue', () => {
       const receivedEvents = parentWrapper.emitted(parentClickEventName);
       expect(receivedEvents).to.equal(undefined);
     });
-    it('allows propagation `stopClickPropagation` is false', async () => {
+    it('allows propagation if `stopClickPropagation` is false', async () => {
       // arrange
       const { wrapper: parentWrapper, parentClickEventName } = mountToggleSwitchParent(
         { stopClickPropagation: false },
