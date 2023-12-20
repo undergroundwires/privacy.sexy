@@ -5,71 +5,56 @@ labels: enhancement
 ---
 
 <!--
-Thank you for suggesting an script to make privacy better. 🤗 
-Please fill in as much of the template below as you're able.
-You could alternatively send a PR directly (see CONTRIBUTING.md).
+Thank you for contributing to privacy.sexy! 🌟
+For guidance, see our script guidelines: https://github.com/undergroundwires/privacy.sexy/blob/master/docs/script-guidelines.md.
+Consider submitting a PR for faster implementation: https://github.com/undergroundwires/privacy.sexy/blob/master/CONTRIBUTING.md#extend-scripts.
 -->
 
-### OS
+### Operating system
 
 <!--
-Which OS will the new script configure?
-One of the supported OSes: "Windows", "macOS" or "Linux".
+  Specify the OS: Windows, macOS, or Linux.
 -->
 
 ### Name
 
 <!--
-The name of the script.
-It should start with an imperative noun such as "disable", "turn off" , "clear"...
-E.g. "Disable webcam telemetry"
+  Suggest a name for the script.
+  Naming conventions: https://github.com/undergroundwires/privacy.sexy/blob/master/docs/script-guidelines.md#name.
 -->
 
-### Script code
+### Code
 
 <!--
-Code that will be executed when script is selected.
-Try to keep it as simple and backwards-compatible as possible.
-Allowed languages:
-  - Windows: PowerShell (ps1) or batchfile
-    - 💡 Prioritize the one that's simpler, batchfile if similar.
-  - macOS: bash (sh)
-  - Linux: bash (sh) or Python 3
-    - 💡 Prioritize the one that's simpler, bash if similar.
+  Provide or explain the code to execute when the script runs.
+  Code guidelines: https://github.com/undergroundwires/privacy.sexy/blob/master/docs/script-guidelines.md#code.
 -->
 
 ### Revert code
 
 <!--
-If applicable, add code that will revert the script code to its original (OS default) state.
-It may require additional time, but it's much appreciated by the community.
-Leave blank if the script is nonreversible (e.g. when clearing data without backup).
+  Include code to revert changes to the default state.
+  Leave blank for non-reversible scripts.
 -->
 
-### Suggested category
+### Category
 
 <!--
-If applicable, suggest one more multiple suitable parent category of script.
-A category is the item where the script will be presented under.
-Most likely there already is a category for the script, so check the existing categories.
-If you're unsure, leave blank and maintainer(s) will choose one.
+  Suggest a category for the script.
+  If unsure, leave blank for maintainers to decide.
 -->
 
-### Suggested recommendation level
+### Recommendation level
 
 <!--
-If applicable, suggest recommending the script or not recommending at all.
-A script should be only recommended if it'll be safe for your grandmother to run.
-So you have three options here:
-  STANDARD: Non-breaking scripts that does not limit any functionality.
-  STRICT: Scripts that can break certain functionality but not intrusive to common daily OS usage.
-  NONE: Script is not recommended for newbies at all, only those who knows what's going on should select it.
-If you're unsure, leave blank and maintainer(s) will choose one.
+  Suggest a recommendation level: STANDARD (non-breaking), STRICT (limits functionality), or NONE (for advanced users).
+  If unsure, leave blank for maintainers to decide.
 -->
 
-### Additional documentation/references
+### Documentation/References
 
-<!-- 
-If applicable, refer to documentation that should show up on the script description.
-Sources (URLs) should be as high quality as possible e.g. vendor documentation is favored over user forums.
+<!--
+  Provide any relevant documentation or references.
+  Prefer high-quality sources such as vendor documentation.
+  Documentation guidelines: https://github.com/undergroundwires/privacy.sexy/blob/master/docs/script-guidelines.md#documentation.
 -->

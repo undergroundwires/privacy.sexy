@@ -1,192 +1,164 @@
 # Collection files
 
-- privacy.sexy is a data-driven application where it reads the necessary OS-specific logic from yaml files in [`application/collections`](./../src/application/collections/)
-- 💡 Best practices
-  - If you repeat yourself, try to utilize [YAML-defined functions](#function)
-  - Always try to add documentation and a way to revert a tweak in [scripts](#script)
-- 📖 Types in code: [`collection.yaml.d.ts`](./../src/application/collections/collection.yaml.d.ts)
+privacy.sexy is a data-driven application that reads YAML files.
+This document details the structure and syntax of the YAML files located in [`application/collections`](./../src/application/collections/), which form the backbone of the application's data model.
+
+Related documentation:
+
+- 📖 [`collection.yaml.d.ts`](./../src/application/collections/collection.yaml.d.ts) outlines code types.
+- 📖 [Script Guidelines](./script-guidelines.md) provide guidance on script creation including best-practices.
 
 ## Objects
 
 ### `Collection`
 
-- A collection simply defines:
-  - different categories and their scripts in a tree structure
-  - OS specific details
-- Also allows defining common [function](#function)s to be used throughout the collection if you'd like different scripts to share same code.
+- Defines categories, scripts, and OS-specific details in a tree structure.
+- Allows defining common [functions](#function) for code reuse.
 
 #### `Collection` syntax
 
-- `os:` *`string`*  (**required**)
-  - Operating system that the [Collection](#collection) is written for.
-  - 📖 See [OperatingSystem.ts](./../src/domain/OperatingSystem.ts) enumeration for allowed values.
+- `os:` *`string`* **(required)**
+  - Operating system for the collection.
+  - 📖 See [`OperatingSystem.ts`](./../src/domain/OperatingSystem.ts) for possible values.
 - `actions: [` ***[`Category`](#category)*** `, ... ]` **(required)**
-  - Each [category](#category) is rendered as different cards in card presentation.
+  - Renders each parent category as cards in the user interface.
   - ❗ A [Collection](#collection) must consist of at least one category.
 - `functions: [` ***[`Function`](#function)*** `, ... ]`
-  - Functions are optionally defined to re-use the same code throughout different scripts.
+  - Optional for code reuse.
 - `scripting:` ***[`ScriptingDefinition`](#scriptingdefinition)*** **(required)**
-  - Defines the scripting language that the code of other action uses.
+  - Sets the scripting language for all inline code used within the collection.
 
 ### `Category`
 
-- Category has a parent that has tree-like structure where it can have subcategories or subscripts.
-- It's a logical grouping of different scripts and other categories.
+Represents a logical group of scripts and subcategories.
 
 #### `Category` syntax
 
-- `category:` *`string`*  (**required**)
-  - Name of the category
-  - ❗ Must be unique throughout the [Collection](#collection)
-- `children: [` ***[`Category`](#category)*** `|` [***`Script`***](#script) `, ... ]`  (**required**)
+- `category:` *`string`*  **(required)**
+  - Name of the category.
+  - ❗ Must be unique throughout the [collection](#collection).
+- `children: [` ***[`Category`](#category)*** `|` [***`Script`***](#script) `, ... ]` **(required)**
   - ❗ Category must consist of at least one subcategory or script.
   - Children can be combination of scripts and subcategories.
 - `docs`: *`string`* | `[`*`string`*`, ... ]`
-  - Documentation pieces related to the category.
-  - Rendered as markdown.
+  - Markdown-formatted documentation related to the category.
 
 ### `Script`
 
-- Script represents a single tweak.
-- A script can be of two different types (just like [functions](#function)):
-  1. Inline script; a script with an inline code
-     - Must define `code` property and optionally `revertCode` but not `call`
-  2. Caller script; a script that calls other functions
-     - Must define `call` property but not `code` or `revertCode`
-- 🙏 For any new script, please add `revertCode` and `docs` values if possible.
+Represents an individual tweak.
+
+Types (like [functions](#function)):
+
+1. Inline script:
+   - Direct code.
+   - ❗ Requires `code` and optional `revertCode`.
+2. Caller script:
+   - Calls other [functions](#function).
+   - ❗ Requires `call`, but not `code` or `revertCode`.
+
+📖 For detailed guidelines, see [Script Guidelines](./script-guidelines.md).
 
 #### `Script` syntax
 
-- `name`: *`string`* (**required**)
-  - Name of the script
-  - ❗ Must be unique throughout the [Collection](#collection)
-  - E.g. `Disable targeted ads`
-- `code`: *`string`* (may be **required**)
-  - Batch file commands that will be executed
-  - 💡 If defined, best practice to also define `revertCode`
-  - ❗ If not defined `call` must be defined, do not define if `call` is defined.
-- `revertCode`: `string`
-  - Code that'll undo the change done by `code` property.
-  - E.g. let's say `code` sets an environment variable as `setx POWERSHELL_TELEMETRY_OPTOUT 1`
-    - then `revertCode` should be doing `setx POWERSHELL_TELEMETRY_OPTOUT 0`
-  - ❗ Do not define if `call` is defined.
-- `call`: ***[`FunctionCall`](#functioncall)*** | `[` ***[`FunctionCall`](#functioncall)*** `, ... ]` (may be **required**)
-  - A shared function or sequence of functions to call (called in order)
-  - ❗ If not defined `code` must be defined
+- `name`: *`string`* **(required)**
+  - Script name.
+  - ❗ Must be unique throughout the [Collection](#collection).
+- `code`: *`string`* **(conditionally required)**
+  - Code to execute when the user selects the script.
+  - 💡 If defined, it's best practice to also define `revertCode`.
+  - ❗ Cannot co-exist with `call`, define either `code` with optional `revertCode` or `call`.
+- `revertCode`: *`string`*
+  - Reverts changes made by `code`.
+  - ❗ Cannot co-exist with `call`, define `revertCode` with `code` or `call`.
+- `call`: ***[`FunctionCall`](#functioncall)*** | `[` ***[`FunctionCall`](#functioncall)*** `, ... ]` **(conditionally required)**
+  - A shared function or sequence of functions to call (called in order).
+  - ❗ Cannot co-exist with `code` or `revertCode`, define `code` with optional `revertCode` or `call`.
 - `docs`: *`string`* | `[`*`string`*`, ... ]`
-  - Documentation pieces related to the script.
-  - Rendered as markdown.
-- `recommend`: `"standard"` | `"strict"` | `undefined` (default)
-  - If not defined then the script will not be recommended
-  - If defined it can be either
-    - `standard`: Only non-breaking scripts without limiting OS functionality
-    - `strict`: Scripts that can break certain functionality in favor of privacy and security
+  - Markdown-formatted documentation related to the script.
+- `recommend`: *`"standard"`* | *`"strict"`* | *`undefined`* (default: `undefined`)
+  - Sets recommendation level.
+  - Application will not recommend the script if `undefined`.
+
+📖 For detailed guidelines, see [Script Guidelines](./script-guidelines.md).
 
 ### `FunctionCall`
 
-- Describes a single call to a function by optionally providing values to its parameters.
-- 👀 See [parameter substitution](./templating.md#parameter-substitution) for an example usage
+Specifies a function call. It may require providing argument values to its parameters.
 
 #### `FunctionCall` syntax
 
-- `function`: *`string`* (**required**)
+- `function`: *`string`* **(required)**
   - Name of the function to call.
-  - ❗ Function with same name must defined in `functions` property of [Collection](#collection)
-- `parameters`: `[ parameterName:` *`parameterValue`*`, ... ]`
-  - Defines key value dictionary for each parameter and its value
-  - E.g.
-
-    ```yaml
-      parameters:
-        userDefinedParameterName: parameterValue
-        # ...
-        appName: Microsoft.WindowsFeedbackHub
-    ```
-
-  - 💡 [Expressions (templating)](./templating.md#expressions) can be used as parameter value
+  - ❗ Function with same name must defined in `functions` property of [Collection](#collection).
+- `parameters`: `[` *`parameterName: parameterValue`* `, ... ]`
+  - Key-value pairs representing function parameters and their corresponding argument values.
+  - 📖 See [parameter substitution](./templating.md#parameter-substitution) for an example usage.
+  - 💡 You can use [expressions (templating)](./templating.md#expressions) when providing argument values for parameters.
 
 ### `Function`
 
-- Functions allow re-usable code throughout the defined scripts.
+- Enables reusable code in scripts.
 - Functions are templates compiled by privacy.sexy and uses special expression expressions.
-- A function can be of two different types (just like [scripts](#script)):
+- A function can be of two different types (like [scripts](#script)):
   1. Inline function: a function with an inline code.
-     - Must define `code` property and optionally `revertCode` but not `call`.
+     - ❗ Requires `code` and optionally `revertCode`, but not `call`.
   2. Caller function: a function that calls other functions.
-     - Must define `call` property but not `code` or `revertCode`.
-- 👀 Read more on [Templating](./templating.md) for function expressions and [example usages](./templating.md#parameter-substitution).
+     - ❗ Requires `call`, but not `code` or `revertCode`.
+- 📖 Read about function expressions in [Templating](./templating.md) with [example usages](./templating.md#parameter-substitution).
 
 #### `Function` syntax
 
-- `name`: *`string`* (**required**)
+- `name`: *`string`* **(required)**
   - Name of the function that scripts will use.
-  - Convention is to use camelCase, and be verbs.
-  - E.g. `uninstallStoreApp`
-  - ❗ Function names must be unique
-- `parameters`: `[` ***[`FunctionParameter`](#functionparameter)*** `, ... ]`
-  - List of parameters that function code refers to.
-  - ❗ Must be defined to be able use in [`FunctionCall`](#functioncall) or [expressions (templating)](./templating.md#expressions)
- `code`: *`string`* (**required** if `call` is undefined)
-  - Batch file commands that will be executed
-  - 💡 [Expressions (templating)](./templating.md#expressions) can be used in its value
-  - 💡 If defined, best practice to also define `revertCode`
-  - ❗ If not defined `call` must be defined
+  - ❗ Function names must be unique.
+  - ❗ Function names must follow camelCase and start with verbs (e.g., `uninstallStoreApp`).
+- `parameters`: `[` ***[`FunctionParameter`](#functionparameter)*** `, ... ]` **(conditionally required)**
+  - Lists parameters used.
+  - ❗ Required to be able use in [`FunctionCall`](#functioncall) or [expressions (templating)](./templating.md#expressions).
+- `code`: *`string`* **(conditionally required)**
+  - Code to execute when the user selects the script.
+  - 💡 You can use [expressions (templating)](./templating.md#expressions) in its value.
+  - 💡 If defined, it's best practice to also define `revertCode`.
+  - ❗ Cannot co-exist with `call`, define either `code` with optional `revertCode` or `call`.
 - `revertCode`: *`string`*
-  - Code that'll undo the change done by `code` property.
-  - E.g. let's say `code` sets an environment variable as `setx POWERSHELL_TELEMETRY_OPTOUT 1`
-    - then `revertCode` should be doing `setx POWERSHELL_TELEMETRY_OPTOUT 0`
-  - 💡 [Expressions (templating)](./templating.md#expressions) can be used in code
-- `call`: ***[`FunctionCall`](#functioncall)*** | `[` ***[`FunctionCall`](#functioncall)*** `, ... ]` (may be **required**)
-  - A shared function or sequence of functions to call (called in order)
-  - The parameter values that are sent can use [expressions (templating)](./templating.md#expressions)
-  - ❗ If not defined `code` must be defined
+  - Reverts changes made by `code`.
+  - 💡 You can use [expressions (templating)](./templating.md#expressions) in its value.
+  - ❗ Cannot co-exist with `call`, define `revertCode` with `code` or `call`.
+- `call`: ***[`FunctionCall`](#functioncall)*** | `[` ***[`FunctionCall`](#functioncall)*** `, ... ]` **(conditionally required)**
+  - A shared function or sequence of functions to call (called in order).
+  - 💡 You can use [expressions (templating)](./templating.md#expressions) in argument values provided for parameters.
+  - ❗ Cannot co-exist with `code` or `revertCode`, define `code` with optional `revertCode` or `call`.
 
 ### `FunctionParameter`
 
-- Defines a parameter that function requires optionally or mandatory.
-- Its arguments are provided by a [Script](#script) through a [FunctionCall](#functioncall).
+- Defines a single parameter that may require an argument value optionally or mandatory.
+- A [`FunctionCall`](#functioncall) provides argument values by a caller.
+  - A caller can be a [Script](#script) or [Function](#function).
 
 #### `FunctionParameter` syntax
 
-- `name`: *`string`* (**required**)
-  - Name of the parameters that the function has.
-  - Parameter names must be defined to be used in [expressions (templating)](./templating.md#expressions).
-  - ❗ Parameter names must be unique and include alphanumeric characters only.
+- `name`: *`string`* **(required)**
+  - Name of the parameter that the function has.
+  - ❗ Required for [expressions (templating)](./templating.md#expressions).
+  - ❗ Must be unique and consists of alphanumeric characters.
 - `optional`: *`boolean`* (default: `false`)
-  - Specifies whether the caller [Script](#script) must provide any value for the parameter.
-  - If set to `false` i.e. an argument value is not optional then it expects a non-empty value for the variable;
-    - Otherwise it throws.
-  - 💡 Set it to `true` if a parameter is used conditionally;
+  - Indicates the caller must provide and argument value for the parameter.
+  - 💡 If set to `false` i.e. an argument value is not optional then it expects a non-empty value for the variable.
+    - E.g., in a [`with` expression](./templating.md#with).
+  - 💡 Set it to `true` if you will use its argument value conditionally;
     - Or else set it to `false` for verbosity or do not define it as default value is `false` anyway.
-  - 💡 Can be used in conjunction with [`with` expression](./templating.md#with).
 
 ### `ScriptingDefinition`
 
-- Defines global properties for scripting that's used throughout its parent [Collection](#collection).
+Sets global scripting properties for a [Collection](#collection).
 
 #### `ScriptingDefinition` syntax
 
-- `language:` *`string`* (**required**)
-  - 📖 See [ScriptingLanguage.ts](./../src/domain/ScriptingLanguage.ts) enumeration for allowed values.
-- `startCode:` *`string`* (**required**)
-  - Code that'll be inserted on top of user created script.
-  - Global variables such as `$homepage`, `$version`, `$date` can be used using [parameter substitution](./templating.md#parameter-substitution) code syntax such as `Welcome to {{ $homepage }}!`
-- `endCode:` *`string`* (**required**)
-  - Code that'll be inserted at the end of user created script.
-  - Global variables such as `$homepage`, `$version`, `$date` can be used using [parameter substitution](./templating.md#parameter-substitution) code syntax such as `Welcome to {{ $homepage }}!`
-
-## Naming guidelines
-
-- Prioritize consistency throughout all names.
-- Use an instruction format like "do this, do that" for clear, direct guidance. This approach reduces potential confusion and offers easy-to-follow steps. It provides specific, unambiguous instructions.
-- Ensure brand names adhere to their official casing.
-- Choose clear and uncomplicated language.
-- Favor the terms:
-  - "Disable" over "Turn off"
-  - "Configure" over "Set up"
-  - "Clear" over "Erase" or "Clean"
-  - "Minimize" over "Limit" or "Reduce" (when it enhances clarity)
-  - "Remove" over "Uninstall"
-- Structure your phrases for clarity.
-  - For instance, "Disable XX telemetry" or "Clear XX data" are preferred over "Clear data from XX", "Disable telemetry in XX", or "Clear data of XX".
-- Use sentence case rather than Title Case.
+- `language:` *`string`* **(required)**
+  - 📖 See [`ScriptingLanguage.ts`](./../src/domain/ScriptingLanguage.ts) enumeration for allowed values.
+- `startCode:` *`string`* **(required)**
+  - Prepends the given code to the generated script file.
+  - 💡 You can use global variables such as `$homepage`, `$version`, `$date` via [parameter substitution](./templating.md#parameter-substitution) code syntax such as `Welcome to {{ $homepage }}!`.
+- `endCode:` *`string`* **(required)**
+  - Appends to the given code to the generated script file.
+  - 💡 You can use global variables such as `$homepage`, `$version`, `$date` via [parameter substitution](./templating.md#parameter-substitution) code syntax such as `Welcome to {{ $homepage }}!`.
