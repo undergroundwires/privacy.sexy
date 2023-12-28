@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-import { resolve, join } from 'path';
-import { rm, mkdtemp, stat } from 'fs/promises';
-import { spawn } from 'child_process';
-import { URL, fileURLToPath } from 'url';
+import { resolve, join } from 'node:path';
+import { rm, mkdtemp, stat } from 'node:fs/promises';
+import { spawn } from 'node:child_process';
+import { URL, fileURLToPath } from 'node:url';
 
 class Paths {
   constructor(selfDirectory) {

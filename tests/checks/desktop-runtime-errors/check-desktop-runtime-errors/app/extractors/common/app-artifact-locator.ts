@@ -1,5 +1,5 @@
-import { join } from 'path';
-import { readdir } from 'fs/promises';
+import { join } from 'node:path';
+import { readdir } from 'node:fs/promises';
 import { die } from '../../../utils/log';
 import { exists } from '../../../utils/io';
 import { getAppName } from '../../../utils/npm';

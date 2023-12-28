@@ -1,5 +1,5 @@
-import { access, chmod } from 'fs/promises';
-import { constants } from 'fs';
+import { access, chmod } from 'node:fs/promises';
+import { constants } from 'node:fs';
 import { log } from '../../utils/log';
 import { ExtractionResult } from './common/extraction-result';
 import { findByFilePattern } from './common/app-artifact-locator';

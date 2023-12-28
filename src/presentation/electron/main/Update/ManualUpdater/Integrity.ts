@@ -1,5 +1,5 @@
-import { createHash } from 'crypto';
-import { createReadStream } from 'fs';
+import { createHash } from 'node:crypto';
+import { createReadStream } from 'node:fs';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import { retryFileSystemAccess } from './RetryFileSystemAccess';
 

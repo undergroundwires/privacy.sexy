@@ -13,9 +13,9 @@
  *   --web                   Verify artifacts for the web application.
  */
 
-import { access, readdir } from 'fs/promises';
-import { exec } from 'child_process';
-import { resolve } from 'path';
+import { access, readdir } from 'node:fs/promises';
+import { exec } from 'node:child_process';
+import { resolve } from 'node:path';
 
 const PROCESS_ARGUMENTS = process.argv.slice(2);
 const PRINT_DIST_DIR_SCRIPT_BASE_COMMAND = 'node scripts/print-dist-dir';

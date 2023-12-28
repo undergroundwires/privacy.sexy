@@ -1,8 +1,7 @@
-import { spawn } from 'child_process';
+import { spawn, type ChildProcess } from 'node:child_process';
 import { log, LogLevel, die } from '../utils/log';
 import { captureScreen } from './system-capture/screen-capture';
 import { captureWindowTitles } from './system-capture/window-title-capture';
-import type { ChildProcess } from 'child_process';
 
 const TERMINATION_GRACE_PERIOD_IN_SECONDS = 20;
 const TERMINATION_CHECK_INTERVAL_IN_MS = 1000;

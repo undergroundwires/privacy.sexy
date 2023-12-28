@@ -1,4 +1,4 @@
-import { unlink } from 'fs/promises';
+import { unlink } from 'node:fs/promises';
 import { runCommand } from '../../utils/run-command';
 import { log, LogLevel } from '../../utils/log';
 import { CURRENT_PLATFORM, SupportedPlatform } from '../../utils/platform';

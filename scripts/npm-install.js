@@ -35,10 +35,10 @@ Note:
   Example: npm run install-deps -- --fresh --non-deterministic
 */
 
-import { exec } from 'child_process';
-import { resolve } from 'path';
-import { access, rm, unlink } from 'fs/promises';
-import { constants } from 'fs';
+import { exec } from 'node:child_process';
+import { resolve } from 'node:path';
+import { access, rm, unlink } from 'node:fs/promises';
+import { constants } from 'node:fs';
 
 const MAX_RETRIES = 5;
 const RETRY_DELAY_IN_MS = 5 /* seconds */ * 1000;

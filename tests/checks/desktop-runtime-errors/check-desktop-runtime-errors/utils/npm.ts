@@ -1,5 +1,5 @@
-import { join } from 'path';
-import { rm, readFile } from 'fs/promises';
+import { join } from 'node:path';
+import { rm, readFile } from 'node:fs/promises';
 import { exists, isDirMissingOrEmpty } from './io';
 import { runCommand } from './run-command';
 import { LogLevel, die, log } from './log';

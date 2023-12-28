@@ -1,5 +1,5 @@
-import { readdirSync, readFileSync } from 'fs';
-import { resolve, join, basename } from 'path';
+import { readdirSync, readFileSync } from 'node:fs';
+import { resolve, join, basename } from 'node:path';
 import { describe, it, expect } from 'vitest';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 

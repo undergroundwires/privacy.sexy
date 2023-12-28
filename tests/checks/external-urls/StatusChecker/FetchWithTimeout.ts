@@ -1,5 +1,3 @@
-import fetch from 'cross-fetch';
-
 export async function fetchWithTimeout(
   url: string,
   timeoutInMs: number,

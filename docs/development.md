@@ -13,7 +13,9 @@ See [ci-cd.md](./ci-cd.md) for more information.
 
 ### Prerequisites
 
-- Install Node >16.x.
+- Install Node.js:
+  - Refer to [action.yml](./../.github/actions/setup-node/action.yml) for the minimum required version compatible with the automated workflows.
+  - 💡 Recommended: Use [`nvm`](https://github.com/nvm-sh/nvm) CLI to install and switch between Node.js versions.
 - Install dependencies using `npm install` (or [`npm run install-deps`](#utility-scripts) for more options).
 
 ### Testing

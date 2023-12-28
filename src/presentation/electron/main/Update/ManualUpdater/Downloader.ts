@@ -1,14 +1,12 @@
-import { existsSync, createWriteStream } from 'fs';
-import { unlink, mkdir } from 'fs/promises';
-import path from 'path';
+import { existsSync, createWriteStream, type WriteStream } from 'node:fs';
+import { unlink, mkdir } from 'node:fs/promises';
+import path from 'node:path';
 import { app } from 'electron';
 import { UpdateInfo } from 'electron-updater';
-import fetch from 'cross-fetch';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import { UpdateProgressBar } from '../UpdateProgressBar';
 import { retryFileSystemAccess } from './RetryFileSystemAccess';
-import type { WriteStream } from 'fs';
-import type { Readable } from 'stream';
+import type { ReadableStream } from 'node:stream/web';
 
 const MAX_PROGRESS_LOG_ENTRIES = 10;
 const UNKNOWN_SIZE_LOG_INTERVAL_BYTES = 10 * 1024 * 1024; // 10 MB
@@ -128,13 +126,13 @@ function getContentLengthFromResponse(response: Response): ResponseContentLength
 
 async function withReadableStream(
   response: Response,
-  handler: (readStream: Readable) => Promise<void>,
+  handler: (readStream: ReadableStream) => Promise<void>,
 ) {
   const reader = createReader(response);
   try {
     await handler(reader);
   } finally {
-    reader.destroy();
+    reader.cancel();
   }
 }
 
@@ -152,7 +150,7 @@ async function withWriteStream(
 
 async function streamWithProgress(
   contentLength: ResponseContentLength,
-  readStream: Readable,
+  readStream: ReadableStream,
   writeStream: WriteStream,
   progressHandler: ProgressCallback,
 ): Promise<void> {
@@ -212,12 +210,13 @@ function shouldLogProgress(
   return { shouldLog: false, nextLogThreshold: previousLogThreshold };
 }
 
-function createReader(response: Response): Readable {
+function createReader(response: Response): ReadableStream {
   if (!response.body) {
     throw new Error('Response body is empty, cannot proceed with download.');
   }
-  // On browser, we could use browser API response.body.getReader()
-  // But here, we use cross-fetch that gets node-fetch on a node application
-  // This API is node-fetch specific, see https://github.com/node-fetch/node-fetch#streams
-  return response.body as unknown as Readable;
+  // TypeScript has removed the async iterator type definition for ReadableStream due to
+  // limited browser support. Node.js, however, supports async iterable streams, allowing
+  // type casting to function properly in this context.
+  // https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/65542#discussioncomment-6071004
+  return response.body as ReadableStream;
 }

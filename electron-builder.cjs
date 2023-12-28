@@ -1,6 +1,6 @@
 /* eslint-disable no-template-curly-in-string */
 
-const { join } = require('path');
+const { join } = require('node:path');
 const { electronBundled, electronUnbundled } = require('./dist-dirs.json');
 
 module.exports = {

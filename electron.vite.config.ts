@@ -1,4 +1,4 @@
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 import { mergeConfig, UserConfig } from 'vite';
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
 import { getAliasesFromTsConfig, getClientEnvironmentVariables } from './vite-config-helper';

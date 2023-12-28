@@ -1,4 +1,4 @@
-import { platform } from 'os';
+import { platform } from 'node:os';
 import { die } from './log';
 
 export enum SupportedPlatform {

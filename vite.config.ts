@@ -1,5 +1,5 @@
 /// <reference types="vitest" />
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 import { defineConfig, UserConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import legacy from '@vitejs/plugin-legacy';

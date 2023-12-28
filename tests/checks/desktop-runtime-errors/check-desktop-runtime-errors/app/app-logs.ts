@@ -1,5 +1,5 @@
-import { unlink, readFile } from 'fs/promises';
-import { join } from 'path';
+import { unlink, readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { log, die, LogLevel } from '../utils/log';
 import { exists } from '../utils/io';
 import { SupportedPlatform, CURRENT_PLATFORM } from '../utils/platform';

@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import distDirs from '@/../dist-dirs.json' assert { type: 'json' };
 
 export const DESKTOP_BUILD_COMMAND = [
