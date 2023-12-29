@@ -16,7 +16,7 @@ describe('Modal interaction and layout stability', () => {
       });
 
       cy
-        .contains('a', 'Privacy')
+        .contains('button', 'Privacy')
         .click();
 
       cy

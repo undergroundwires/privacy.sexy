@@ -6,25 +6,24 @@
       <div class="dialog__content">
         <slot />
       </div>
-      <div
+      <FlatButton
+        icon="xmark"
         class="dialog__close-button"
         @click="hide"
-      >
-        <AppIcon icon="xmark" />
-      </div>
+      />
     </div>
   </ModalContainer>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
+import FlatButton from '@/presentation/components/Shared/FlatButton.vue';
 import ModalContainer from './ModalContainer.vue';
 
 export default defineComponent({
   components: {
     ModalContainer,
-    AppIcon,
+    FlatButton,
   },
   props: {
     modelValue: {
@@ -72,16 +71,12 @@ export default defineComponent({
     margin: 5%;
   }
 
-  &__close-button {
+  .dialog__close-button {
     color: $color-primary-dark;
     width: auto;
     font-size: 1.5em;
     margin-right: 0.25em;
     align-self: flex-start;
-    @include clickable;
-    @include hover-or-touch {
-      color: $color-primary;
-    }
   }
 }
 </style>

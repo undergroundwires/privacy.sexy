@@ -79,14 +79,15 @@ To add a new dependency:
 
 ## Shared UI components
 
-Shared UI components promote consistency and simplifies the creation of the front-end.
+Shared UI components ensure consistency and streamline front-end development.
 
-In order to maintain portability and easy maintainability, the preference is towards using homegrown components over third-party ones or comprehensive UI frameworks like Quasar.
+We use homegrown components over third-party solutions or comprehensive UI frameworks like Quasar to maintain portability and easy maintenance.
 
 Shared components include:
 
-- [ModalDialog.vue](./../src/presentation/components/Shared/Modal/ModalDialog.vue) is utilized for rendering modal windows.
-- [TooltipWrapper.vue](./../src/presentation/components/Shared/TooltipWrapper.vue) acts as a wrapper for rendering tooltips.
+- [ModalDialog.vue](./../src/presentation/components/Shared/Modal/ModalDialog.vue): Renders modal windows.
+- [TooltipWrapper.vue](./../src/presentation/components/Shared/TooltipWrapper.vue): Provides tooltip functionality for improved information accessibility.
+- [FlatButton.vue](./../src/presentation/components/Shared/FlatButton.vue): Creates flat-style buttons for a unified and consistent user interface.
 
 ## Desktop builds
 

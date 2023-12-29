@@ -30,7 +30,6 @@ $color-on-surface           : #4d5156;
 // Background | Appears behind scrollable content.
 $color-background           : #e6ecf4;
 
-
 /*
     Application-specific colors:
     These are tailored to the specific needs of the application and derived from the above theme colors.
@@ -38,3 +37,4 @@ $color-background           : #e6ecf4;
     This approach maintains a cohesive look and feel and simplifies theme adjustments.
 */
 $color-scripts-bg: $color-primary-darker;
+$color-highlight: $color-primary;

@@ -4,11 +4,7 @@
     <code ref="codeElement"><slot /></code>
     <div class="copy-action-container">
       <TooltipWrapper>
-        <AppIcon
-          icon="copy"
-          class="copy-button"
-          @click="copyCode"
-        />
+        <FlatButton icon="copy" @click="copyCode" />
         <template #tooltip>
           Copy
         </template>
@@ -20,13 +16,13 @@
 <script lang="ts">
 import { defineComponent, shallowRef } from 'vue';
 import TooltipWrapper from '@/presentation/components/Shared/TooltipWrapper.vue';
-import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import { injectKey } from '@/presentation/injectionSymbols';
+import FlatButton from '@/presentation/components/Shared/FlatButton.vue';
 
 export default defineComponent({
   components: {
     TooltipWrapper,
-    AppIcon,
+    FlatButton,
   },
   setup() {
     const { copyText } = injectKey((keys) => keys.useClipboard);
@@ -72,12 +68,6 @@ export default defineComponent({
   }
   .copy-action-container {
     margin-left: 1rem;
-  }
-  .copy-button {
-    @include clickable;
-    @include hover-or-touch {
-      color: $color-primary;
-    }
   }
   code {
     font-size: 1rem;

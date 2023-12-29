@@ -128,7 +128,7 @@ $base-spacing: $text-size;
       */
       @include hover-or-touch {
         &::after{
-          background-color: $globals-color-hover;
+          background-color: $color-highlight;
         }
       }
     }

@@ -11,14 +11,10 @@
     box-sizing: border-box;
 }
 
-$globals-color-hover: $color-primary;
 a {
-    color:inherit;
-    text-decoration: underline;
+    color: inherit;
     cursor: pointer;
-    @include hover-or-touch {
-        color: $globals-color-hover;
-    }
+    @include flat-button($disabled: false);
 }
 
 body {

@@ -1,3 +1,5 @@
+@use "@/presentation/assets/styles/colors" as *;
+
 @mixin hover-or-touch($selector-suffix: '', $selector-prefix: '&') {
   @media (hover: hover) {
     /*
@@ -64,4 +66,48 @@
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+@mixin reset-button {
+  margin: 0;
+  padding-block: 0;
+  padding-inline: 0;
+  font: unset;
+  border: unset;
+  background: unset;
+  align-items: unset;
+  text-align: unset;
+  text-shadow: unset;
+  text-rendering: unset;
+  color: inherit;
+  writing-mode: unset;
+  letter-spacing: unset;
+  word-spacing: unset;
+  line-height: unset;
+  text-transform: unset;
+  text-indent: unset;
+  appearance: unset;
+  cursor: unset;
+}
+
+@mixin flat-button($disabled: false) {
+  @include reset-button;
+
+  @if $disabled {
+    color: $color-primary-light;
+  } @else {
+    color: inherit;
+    @include clickable;
+    @include hover-or-touch {
+      text-decoration: underline;
+      color: $color-highlight;
+      /*
+        Using color change and underlining and as hover cues instead of bold text,
+        due to inconsistent bold rendering in macOS browsers:
+          - Safari: Renders bold, causes layout shift.
+          - Firefox: Renders bold correctly, no layout shift.
+          - Chromium-based browsers (including Electron app): Do not render bold, no layout shift.
+      */
+    }
+  }
 }

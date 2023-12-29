@@ -5,9 +5,7 @@
         <div class="title">
           Tools
         </div>
-        <button type="button" class="close-button" @click="close">
-          <AppIcon icon="xmark" />
-        </button>
+        <FlatButton icon="xmark" class="close-button" @click="close" />
       </div>
       <hr />
       <div class="action-buttons">
@@ -28,12 +26,12 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
-import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
+import FlatButton from '@/presentation/components/Shared/FlatButton.vue';
 import { dumpNames } from './DumpNames';
 
 export default defineComponent({
   components: {
-    AppIcon,
+    FlatButton,
   },
   setup() {
     const { log } = injectKey((keys) => keys.useLogger);
@@ -118,19 +116,19 @@ interface DevAction {
     display: flex;
     flex-direction: column;
     gap: 10px;
-  }
 
-  button {
-    display: block;
-    padding: 5px 10px;
-    background-color: $color-primary;
-    color: $color-on-primary;
-    border: none;
-    cursor: pointer;
+    button {
+      display: block;
+      padding: 5px 10px;
+      background-color: $color-primary;
+      color: $color-on-primary;
+      border: none;
+      cursor: pointer;
 
-    @include hover-or-touch {
-      background-color: $color-secondary;
-      color: $color-on-secondary;
+      @include hover-or-touch {
+        background-color: $color-secondary;
+        color: $color-on-secondary;
+      }
     }
   }
 }

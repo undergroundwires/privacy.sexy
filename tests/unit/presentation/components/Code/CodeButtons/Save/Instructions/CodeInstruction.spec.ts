@@ -7,9 +7,9 @@ import { Clipboard } from '@/presentation/components/Shared/Hooks/Clipboard/Clip
 import { UseClipboardStub } from '@tests/unit/shared/Stubs/UseClipboardStub';
 import { ClipboardStub } from '@tests/unit/shared/Stubs/ClipboardStub';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
+import FlatButton from '@/presentation/components/Shared/FlatButton.vue';
 
 const DOM_SELECTOR_CODE_SLOT = 'code';
-const DOM_SELECTOR_COPY_BUTTON = '.copy-button';
 const COMPONENT_TOOLTIP_WRAPPER_NAME = 'TooltipWrapper';
 
 describe('CodeInstruction.vue', () => {
@@ -35,7 +35,7 @@ describe('CodeInstruction.vue', () => {
       });
       wrapper.vm.codeElement = { textContent: expectedCode } as HTMLElement;
       // act
-      const copyButton = wrapper.find(DOM_SELECTOR_COPY_BUTTON);
+      const copyButton = wrapper.findComponent(FlatButton);
       await copyButton.trigger('click');
       // assert
       const calls = clipboardStub.callHistory;

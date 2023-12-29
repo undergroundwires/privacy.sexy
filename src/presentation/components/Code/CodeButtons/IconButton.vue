@@ -64,6 +64,8 @@ export default defineComponent({
 }
 
 .button {
+  @include reset-button;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -72,13 +74,13 @@ export default defineComponent({
   color: $color-on-secondary;
 
   border: none;
-  padding:20px;
+  padding: 20px;
   transition-duration: 0.4s;
   overflow: hidden;
   box-shadow: 0 3px 9px $color-primary-darkest;
   border-radius: 4px;
 
-  &__icon {
+  .button__icon {
     font-size: 2em;
   }
 

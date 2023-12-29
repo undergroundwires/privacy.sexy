@@ -31,7 +31,7 @@
     </div>
     <div class="card__expander" @click.stop>
       <div class="card__expander__close-button">
-        <AppIcon
+        <FlatButton
           icon="xmark"
           @click="collapse()"
         />
@@ -51,6 +51,7 @@ import {
   defineComponent, computed, shallowRef,
 } from 'vue';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
+import FlatButton from '@/presentation/components/Shared/FlatButton.vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import ScriptsTree from '@/presentation/components/Scripts/View/Tree/ScriptsTree.vue';
 import { sleep } from '@/infrastructure/Threading/AsyncSleep';
@@ -61,6 +62,7 @@ export default defineComponent({
     ScriptsTree,
     AppIcon,
     CardSelectionIndicator,
+    FlatButton,
   },
   props: {
     categoryId: {

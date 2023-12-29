@@ -1,22 +1,23 @@
 <template>
-  <a
-    class="button"
-    target="_blank"
-    :class="{ 'button-on': isOn }"
+  <div
+    class="documentation-button"
+    :class="{ expanded: isOn }"
     @click.stop
-    @click="toggle()"
   >
-    <AppIcon icon="circle-info" />
-  </a>
+    <FlatButton
+      icon="circle-info"
+      @click="toggle()"
+    />
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
+import FlatButton from '@/presentation/components/Shared/FlatButton.vue';
 
 export default defineComponent({
   components: {
-    AppIcon,
+    FlatButton,
   },
   emits: [
     'show',
@@ -45,14 +46,15 @@ export default defineComponent({
 <style scoped lang="scss">
 @use "@/presentation/assets/styles/main" as *;
 
-.button {
-  @include clickable;
+.documentation-button {
   vertical-align: middle;
   color: $color-primary;
-  @include hover-or-touch {
-    color: $color-primary-darker;
+  :deep() { // This override leads to inconsistent highlight color, it should be re-styled.
+    @include hover-or-touch {
+      color: $color-primary-darker;
+    }
   }
-  &-on {
+  &.expanded {
     color: $color-primary-light;
   }
 }

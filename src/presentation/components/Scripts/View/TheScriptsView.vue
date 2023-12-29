@@ -17,7 +17,7 @@
             class="search__query__close-button"
             @click="clearSearchQuery()"
           >
-            <AppIcon icon="xmark" />
+            <FlatButton icon="xmark" />
           </div>
         </div>
         <div v-if="!searchHasMatches" class="search-no-matches">
@@ -39,19 +39,19 @@
 import {
   defineComponent, PropType, ref, computed,
 } from 'vue';
-import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import ScriptsTree from '@/presentation/components/Scripts/View/Tree/ScriptsTree.vue';
 import CardList from '@/presentation/components/Scripts/View/Cards/CardList.vue';
 import { ViewType } from '@/presentation/components/Scripts/Menu/View/ViewType';
 import { IReadOnlyUserFilter } from '@/application/Context/State/Filter/IUserFilter';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
+import FlatButton from '@/presentation/components/Shared/FlatButton.vue';
 
 export default defineComponent({
   components: {
     ScriptsTree,
     CardList,
-    AppIcon,
+    FlatButton,
   },
   props: {
     currentView: {
@@ -149,14 +149,10 @@ $margin-inner: 4px;
     flex-direction: row;
     align-items: center;
     margin-top: 1em;
-    color: $color-primary;
+    color: $color-primary-light;
     .search__query__close-button {
-      @include clickable;
       font-size: 1.25em;
       margin-left: 0.25rem;
-      @include hover-or-touch {
-        color: $color-primary-dark;
-      }
     }
   }
   .search-no-matches {

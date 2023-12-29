@@ -64,7 +64,6 @@ function hasDesktopVersion(os: OperatingSystem): boolean {
 <style scoped lang="scss">
 @use "@/presentation/assets/styles/main" as *;
 .url {
-  @include clickable;
   &__active {
     font-size: 1em;
   }

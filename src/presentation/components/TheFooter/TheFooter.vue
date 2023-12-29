@@ -32,8 +32,12 @@
           </a>
         </div>
         <div class="footer__section__item">
-          <AppIcon class="icon" icon="user-secret" />
-          <a @click="showPrivacyDialog()">Privacy</a>
+          <FlatButton
+            label="Privacy"
+            icon="user-secret"
+            flat
+            @click="showPrivacyDialog()"
+          />
         </div>
       </div>
     </div>
@@ -50,6 +54,7 @@ import {
 import ModalDialog from '@/presentation/components/Shared/Modal/ModalDialog.vue';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import { injectKey } from '@/presentation/injectionSymbols';
+import FlatButton from '@/presentation/components/Shared/FlatButton.vue';
 import DownloadUrlList from './DownloadUrlList.vue';
 import PrivacyPolicy from './PrivacyPolicy.vue';
 
@@ -59,6 +64,7 @@ export default defineComponent({
     PrivacyPolicy,
     DownloadUrlList,
     AppIcon,
+    FlatButton,
   },
   setup() {
     const { info } = injectKey((keys) => keys.useApplication);
@@ -99,7 +105,6 @@ export default defineComponent({
 
 .icon {
   margin-right: 0.5em;
-  text-decoration: none;
 }
 
 .footer {
