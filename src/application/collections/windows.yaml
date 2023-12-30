@@ -14354,10 +14354,20 @@ functions:
             parameters:
                 pathGlob: '{{ $pathGlob }}'
                 recurse: '{{ with $recurse }}{{ . }}{{ end }}'
-                # Granting permissions has limitations for wildcard due to `takeown` and `icacls`. These commands are used for their simplicity to avoid adjusting token privileges.
+                # Marked: refactor-with-variables (optionally)
+                #   Granting permissions has limitations for wildcard due to `takeown` and `icacls`. These commands are used for their simplicity to avoid adjusting token privileges.
                 #   However, adjusting token privileges is already implemented by `SoftFileDelete`, when this kind of implementations are reusable, this script can be improved to
-                #   use `Get-Acl`, `Set-Acl` instead for better wildcards support.
-                #   Marked: refactor-with-variables
+                #   use `Get-Acl`, `Set-Acl` instead for better wildcards support. When using `Get-Acl`, `Set-Acl`, think also about a way to handle when the user is lacking "List Folder"
+                # Considerations for using `Get-Acl` and `Set-Acl`:
+                #   These commands may encounter issues when the user lacks "List Folder" permissions on a parent directory, which is essential for the `DeleteGlob` function.
+                #   This is robustly handled by `takeown`.
+                #     `takeown` effectively handles scenarios where the user lacks "List Folder" permissions.
+                #     It requires a localized 'yes' flag, which varies with the system language ('y' for English).
+                #     To find the localized 'yes', the script uses the `choice` command. This approach is simpler and more reliable
+                #     than parsing `takeown /?`, which has proven to be inconsistent across different languages.
+                #   For future enhancements:
+                #       - Explore handling folder listing permission issues when transitioning to `Get-Acl` and `Set-Acl`.
+                #       - Currently, `takeown` is preferred for its reliability in permission handling, especially in wildcard scenarios.
                 beforeIteration: |-
                     {{ with $grantPermissions }}
                         # Not using `Get-Acl`/`Set-Acl` to avoid adjusting token privileges
@@ -14376,7 +14386,18 @@ functions:
                         }
                         $takeOwnershipCommand = "takeown /f `"$cmdPath`" /a" # `icacls /setowner` does not succeed, so use `takeown` instead.
                         if (-not (Test-Path -Path "$expandedPath" -PathType Leaf)) {
-                            $takeOwnershipCommand += ' /r /d y'
+                            $localizedYes = 'Y' # Default 'Yes' flag (fallback)
+                            try {
+                                $choiceOutput = cmd /c "choice <nul 2>nul"
+                                if ($choiceOutput -and $choiceOutput.Length -ge 2) {
+                                    $localizedYes = $choiceOutput[1]
+                                } else {
+                                    Write-Warning "Failed to determine localized 'Yes' character. Output: `"$choiceOutput`""
+                                }
+                            } catch {
+                                Write-Warning "Failed to determine localized 'Yes' character. Error: $_"
+                            }
+                            $takeOwnershipCommand += " /r /d $localizedYes"
                         }
                         $takeOwnershipOutput = cmd /c "$takeOwnershipCommand 2>&1" # `stderr` message is misleading, e.g. "ERROR: The system cannot find the file specified." is not an error.
                         if ($LASTEXITCODE -eq 0) {
