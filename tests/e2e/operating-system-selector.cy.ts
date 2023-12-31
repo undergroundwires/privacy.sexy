@@ -2,6 +2,7 @@ import { ViewType } from '@/presentation/components/Scripts/Menu/View/ViewType';
 import { getEnumValues } from '@/application/Common/Enum';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { getOperatingSystemDisplayName } from '@/presentation/components/Shared/OperatingSystemNames';
+import { AllSupportedOperatingSystems } from '@tests/shared/TestCases/SupportedOperatingSystems';
 
 describe('operating system selector', () => {
   // Regression test for a bug where switching between operating systems caused uncaught exceptions.
@@ -29,11 +30,7 @@ function getSupportedOperatingSystemsList() {
       the application within Cypress, as its compilation is tightly coupled with Vite.
       Ideally, this should dynamically fetch the list from the compiled application.
   */
-  return [
-    OperatingSystem.Windows,
-    OperatingSystem.Linux,
-    OperatingSystem.macOS,
-  ];
+  return AllSupportedOperatingSystems;
 }
 
 function assertExpectedActions() {

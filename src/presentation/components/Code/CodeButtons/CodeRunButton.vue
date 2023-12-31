@@ -30,7 +30,6 @@ export default defineComponent({
       await codeRunner.runCode(
         currentContext.state.code.current,
         currentContext.app.info.name,
-        currentState.value.collection.scripting.fileExtension,
         os,
       );
     }

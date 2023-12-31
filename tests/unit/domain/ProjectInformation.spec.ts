@@ -5,6 +5,7 @@ import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTes
 import { VersionStub } from '@tests/unit/shared/Stubs/VersionStub';
 import { Version } from '@/domain/Version';
 import { PropertyKeys } from '@/TypeHelpers';
+import { SupportedOperatingSystem, AllSupportedOperatingSystems } from '@tests/shared/TestCases/SupportedOperatingSystems';
 
 describe('ProjectInformation', () => {
   describe('retrieval of property values', () => {
@@ -117,48 +118,42 @@ describe('ProjectInformation', () => {
       });
     });
   });
-  describe('correct retrieval of download URL per operating system', () => {
-    const testCases: ReadonlyArray<{
-      readonly os: OperatingSystem,
+  describe('correct retrieval of download URL for every supported operating system', () => {
+    const testCases: Record<SupportedOperatingSystem, {
       readonly expected: string,
       readonly repositoryUrl: string,
       readonly version: string,
-    }> = [
-      {
-        os: OperatingSystem.macOS,
+    }> = {
+      [OperatingSystem.macOS]: {
         expected: 'https://github.com/undergroundwires/privacy.sexy/releases/download/0.7.2/privacy.sexy-0.7.2.dmg',
         repositoryUrl: 'https://github.com/undergroundwires/privacy.sexy.git',
         version: '0.7.2',
       },
-      {
-        os: OperatingSystem.Linux,
+      [OperatingSystem.Linux]: {
         expected: 'https://github.com/undergroundwires/privacy.sexy/releases/download/0.7.2/privacy.sexy-0.7.2.AppImage',
         repositoryUrl: 'https://github.com/undergroundwires/privacy.sexy.git',
         version: '0.7.2',
       },
-      {
-        os: OperatingSystem.Windows,
+      [OperatingSystem.Windows]: {
         expected: 'https://github.com/undergroundwires/privacy.sexy/releases/download/0.7.2/privacy.sexy-Setup-0.7.2.exe',
         repositoryUrl: 'https://github.com/undergroundwires/privacy.sexy.git',
         version: '0.7.2',
       },
-    ];
-    for (const testCase of testCases) {
-      it(`should return the expected download URL for ${OperatingSystem[testCase.os]}`, () => {
+    };
+    AllSupportedOperatingSystems.forEach((operatingSystem) => {
+      it(`should return the expected download URL for ${OperatingSystem[operatingSystem]}`, () => {
         // arrange
-        const {
-          expected, version, repositoryUrl, os,
-        } = testCase;
+        const { expected, version, repositoryUrl } = testCases[operatingSystem];
         const sut = new ProjectInformationBuilder()
           .withVersion(new VersionStub(version))
           .withRepositoryUrl(repositoryUrl)
           .build();
         // act
-        const actual = sut.getDownloadUrl(os);
+        const actual = sut.getDownloadUrl(operatingSystem);
         // assert
         expect(actual).to.equal(expected);
       });
-    }
+    });
     describe('should throw an error when provided with an invalid operating system', () => {
       // arrange
       const sut = new ProjectInformationBuilder()

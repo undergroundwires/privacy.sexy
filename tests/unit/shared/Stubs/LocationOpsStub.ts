@@ -8,6 +8,8 @@ export class LocationOpsStub
 
   private scenarios = new Map<string, string>();
 
+  private defaultSeparator = `/[${LocationOpsStub.name}]PATH-SEGMENT-SEPARATOR/`;
+
   public withJoinResult(returnValue: string, ...paths: string[]): this {
     this.scenarios.set(LocationOpsStub.getScenarioKey(paths), returnValue);
     return this;
@@ -16,6 +18,11 @@ export class LocationOpsStub
   public withJoinResultSequence(...valuesToReturn: string[]): this {
     this.sequence.push(...valuesToReturn);
     this.sequence.reverse();
+    return this;
+  }
+
+  public withDefaultSeparator(defaultSeparator: string): this {
+    this.defaultSeparator = defaultSeparator;
     return this;
   }
 
@@ -33,7 +40,7 @@ export class LocationOpsStub
     if (foundScenario) {
       return foundScenario;
     }
-    return pathSegments.join('/PATH-SEGMENT-SEPARATOR/');
+    return pathSegments.join(this.defaultSeparator);
   }
 
   private static getScenarioKey(paths: string[]): string {
