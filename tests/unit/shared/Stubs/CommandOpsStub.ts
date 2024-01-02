@@ -4,9 +4,9 @@ import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 export class CommandOpsStub
   extends StubWithObservableMethodCalls<CommandOps>
   implements CommandOps {
-  public execute(command: string): Promise<void> {
+  public exec(command: string): Promise<void> {
     this.registerMethodCall({
-      methodName: 'execute',
+      methodName: 'exec',
       args: [command],
     });
     return Promise.resolve();

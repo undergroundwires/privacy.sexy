@@ -1,4 +1,7 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
+import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
+import { HostRuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/HostRuntimeEnvironment';
+import { FilenameGenerator } from './FilenameGenerator';
 
 /**
  * Generates a timestamped filename specific to the given operating system.
@@ -7,13 +10,22 @@ import { OperatingSystem } from '@/domain/OperatingSystem';
  *  - A timestamp for uniqueness and easier auditability.
  *  - File extension based on the operating system.
  */
-export function generateOsTimestampedFileName(
-  currentOs: OperatingSystem,
-  date = new Date(),
-): string {
-  const baseFileName = `run-${createTimeStampForFile(date)}`;
-  const extension = FileExtensions[currentOs];
-  return extension ? `${baseFileName}.${extension}` : baseFileName;
+export class OsTimestampedFilenameGenerator implements FilenameGenerator {
+  private readonly currentOs?: OperatingSystem;
+
+  constructor(
+    environment: RuntimeEnvironment = HostRuntimeEnvironment.CurrentEnvironment,
+  ) {
+    this.currentOs = environment.os;
+  }
+
+  public generateFilename(
+    date = new Date(),
+  ): string {
+    const baseFileName = `run-${createTimeStampForFile(date)}`;
+    const extension = this.currentOs === undefined ? undefined : FileExtensions[this.currentOs];
+    return extension ? `${baseFileName}.${extension}` : baseFileName;
+  }
 }
 
 const FileExtensions: Partial<Record<OperatingSystem, string>> = {

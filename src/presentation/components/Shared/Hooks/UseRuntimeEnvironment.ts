@@ -1,5 +1,5 @@
-import { IRuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/IRuntimeEnvironment';
+import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
 
-export function useRuntimeEnvironment(environment: IRuntimeEnvironment) {
+export function useRuntimeEnvironment(environment: RuntimeEnvironment) {
   return environment;
 }

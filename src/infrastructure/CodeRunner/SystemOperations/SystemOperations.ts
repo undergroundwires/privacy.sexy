@@ -14,7 +14,7 @@ export interface LocationOps {
 }
 
 export interface CommandOps {
-  execute(command: string): Promise<void>;
+  exec(command: string): Promise<void>;
 }
 
 export interface FileSystemOps {

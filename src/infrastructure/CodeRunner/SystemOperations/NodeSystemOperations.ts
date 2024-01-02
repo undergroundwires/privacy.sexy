@@ -33,7 +33,7 @@ export function createNodeSystemOperations(): SystemOperations {
       ) => writeFile(filePath, data),
     },
     command: {
-      execute: (command) => new Promise((resolve, reject) => {
+      exec: (command) => new Promise((resolve, reject) => {
         exec(command, (error) => {
           if (error) {
             reject(error);

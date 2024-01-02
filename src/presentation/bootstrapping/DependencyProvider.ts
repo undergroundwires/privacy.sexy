@@ -5,7 +5,6 @@ import { useAutoUnsubscribedEvents } from '@/presentation/components/Shared/Hook
 import { useClipboard } from '@/presentation/components/Shared/Hooks/Clipboard/UseClipboard';
 import { useCurrentCode } from '@/presentation/components/Shared/Hooks/UseCurrentCode';
 import { IApplicationContext } from '@/application/Context/IApplicationContext';
-import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
 import {
   AnyLifetimeInjectionKey, InjectionKeySelector, InjectionKeys, SingletonKey,
   TransientKey, injectKey,
@@ -14,6 +13,7 @@ import { PropertyKeys } from '@/TypeHelpers';
 import { useUserSelectionState } from '@/presentation/components/Shared/Hooks/UseUserSelectionState';
 import { useLogger } from '@/presentation/components/Shared/Hooks/UseLogger';
 import { useCodeRunner } from '@/presentation/components/Shared/Hooks/UseCodeRunner';
+import { HostRuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/HostRuntimeEnvironment';
 
 export function provideDependencies(
   context: IApplicationContext,
@@ -33,7 +33,7 @@ export function provideDependencies(
     ),
     useRuntimeEnvironment: (di) => di.provide(
       InjectionKeys.useRuntimeEnvironment,
-      RuntimeEnvironment.CurrentEnvironment,
+      HostRuntimeEnvironment.CurrentEnvironment,
     ),
     useAutoUnsubscribedEvents: (di) => di.provide(
       InjectionKeys.useAutoUnsubscribedEvents,

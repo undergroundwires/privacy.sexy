@@ -1,5 +1,5 @@
+import { HostRuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/HostRuntimeEnvironment';
 import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
-import { IRuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/IRuntimeEnvironment';
 import { ConsoleLogger } from '@/infrastructure/Log/ConsoleLogger';
 import { Logger } from '@/application/Common/Log/Logger';
 import { LoggerFactory } from '@/application/Common/Log/LoggerFactory';
@@ -11,7 +11,9 @@ export class ClientLoggerFactory implements LoggerFactory {
 
   public readonly logger: Logger;
 
-  protected constructor(environment: IRuntimeEnvironment = RuntimeEnvironment.CurrentEnvironment) {
+  protected constructor(
+    environment: RuntimeEnvironment = HostRuntimeEnvironment.CurrentEnvironment,
+  ) {
     if (environment.isDesktop) {
       this.logger = new WindowInjectedLogger();
       return;

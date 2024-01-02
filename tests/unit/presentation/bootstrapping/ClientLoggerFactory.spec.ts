@@ -1,7 +1,7 @@
 import {
   describe, it, beforeEach, afterEach,
 } from 'vitest';
-import { IRuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/IRuntimeEnvironment';
+import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
 import { ClientLoggerFactory } from '@/presentation/bootstrapping/ClientLoggerFactory';
 import { Logger } from '@/application/Common/Log/Logger';
 import { WindowInjectedLogger } from '@/infrastructure/Log/WindowInjectedLogger';
@@ -30,7 +30,7 @@ describe('ClientLoggerFactory', () => {
     const testCases: Array<{
       readonly description: string,
       readonly expectedType: Constructible<Logger>,
-      readonly environment: IRuntimeEnvironment,
+      readonly environment: RuntimeEnvironment,
     }> = [
       {
         description: 'desktop environment',
@@ -74,7 +74,7 @@ describe('ClientLoggerFactory', () => {
 });
 
 class TestableClientLoggerFactory extends ClientLoggerFactory {
-  public constructor(environment: IRuntimeEnvironment) {
+  public constructor(environment: RuntimeEnvironment) {
     super(environment);
   }
 }

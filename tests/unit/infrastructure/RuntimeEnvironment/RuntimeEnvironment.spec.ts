@@ -2,14 +2,14 @@
 import { describe, it, expect } from 'vitest';
 import { BrowserOsDetector } from '@/infrastructure/RuntimeEnvironment/BrowserOs/BrowserOsDetector';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
+import { HostRuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/HostRuntimeEnvironment';
 import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { BrowserOsDetectorStub } from '@tests/unit/shared/Stubs/BrowserOsDetectorStub';
 import { IEnvironmentVariables } from '@/infrastructure/EnvironmentVariables/IEnvironmentVariables';
 import { EnvironmentVariablesStub } from '@tests/unit/shared/Stubs/EnvironmentVariablesStub';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
-describe('RuntimeEnvironment', () => {
+describe('HostRuntimeEnvironment', () => {
   describe('ctor', () => {
     describe('throws if window is absent', () => {
       itEachAbsentObjectValue((absentValue) => {
@@ -190,7 +190,7 @@ function createEnvironment(options: Partial<EnvironmentOptions> = {}): TestableR
   return new TestableRuntimeEnvironment({ ...defaultOptions, ...options });
 }
 
-class TestableRuntimeEnvironment extends RuntimeEnvironment {
+class TestableRuntimeEnvironment extends HostRuntimeEnvironment {
   /* Using a separate object instead of `ConstructorParameter<..>` */
   public constructor(options: Required<EnvironmentOptions>) {
     super(

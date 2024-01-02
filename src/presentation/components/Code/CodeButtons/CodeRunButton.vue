@@ -26,11 +26,9 @@ export default defineComponent({
 
     async function executeCode() {
       if (!codeRunner) { throw new Error('missing code runner'); }
-      if (os === undefined) { throw new Error('unidentified host operating system'); }
       await codeRunner.runCode(
         currentContext.state.code.current,
         currentContext.app.info.name,
-        os,
       );
     }
 

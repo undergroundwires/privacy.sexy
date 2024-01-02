@@ -1,30 +1,30 @@
-import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CodeRunner } from '@/application/CodeRunner';
 import { Logger } from '@/application/Common/Log/Logger';
 import { ElectronLogger } from '../Log/ElectronLogger';
 import { SystemOperations } from './SystemOperations/SystemOperations';
 import { createNodeSystemOperations } from './SystemOperations/NodeSystemOperations';
-import { generateOsTimestampedFileName } from './FileNameGenerator';
-
-export type FileNameGenerator = (os: OperatingSystem) => string;
+import { FilenameGenerator } from './Filename/FilenameGenerator';
+import { ScriptFileExecutor } from './Execution/ScriptFileExecutor';
+import { VisibleTerminalScriptExecutor } from './Execution/VisibleTerminalScriptFileExecutor';
+import { OsTimestampedFilenameGenerator } from './Filename/OsTimestampedFilenameGenerator';
 
 export class TemporaryFileCodeRunner implements CodeRunner {
   constructor(
     private readonly system: SystemOperations = createNodeSystemOperations(),
-    private readonly fileNameGenerator: FileNameGenerator = generateOsTimestampedFileName,
+    private readonly filenameGenerator: FilenameGenerator = new OsTimestampedFilenameGenerator(),
     private readonly logger: Logger = ElectronLogger,
+    private readonly scriptFileExecutor: ScriptFileExecutor = new VisibleTerminalScriptExecutor(),
   ) { }
 
   public async runCode(
     code: string,
     tempScriptFolderName: string,
-    os: OperatingSystem,
   ): Promise<void> {
-    this.logger.info(`Starting running code for OS: ${OperatingSystem[os]}`);
+    this.logger.info('Starting running code.');
     try {
-      const fileName = this.fileNameGenerator(os);
-      const filePath = await this.createTemporaryFile(fileName, tempScriptFolderName, code);
-      await this.executeFile(filePath, os);
+      const filename = this.filenameGenerator.generateFilename();
+      const filePath = await this.createTemporaryFile(filename, tempScriptFolderName, code);
+      await this.scriptFileExecutor.executeScriptFile(filePath);
       this.logger.info(`Successfully executed script at ${filePath}`);
     } catch (error) {
       this.logger.error(`Error executing script: ${error.message}`, error);
@@ -33,7 +33,7 @@ export class TemporaryFileCodeRunner implements CodeRunner {
   }
 
   private async createTemporaryFile(
-    fileName: string,
+    filename: string,
     tempScriptFolderName: string,
     contents: string,
   ): Promise<string> {
@@ -42,7 +42,7 @@ export class TemporaryFileCodeRunner implements CodeRunner {
       tempScriptFolderName,
     );
     await this.createDirectoryIfNotExists(directoryPath);
-    const filePath = this.system.location.combinePaths(directoryPath, fileName);
+    const filePath = this.system.location.combinePaths(directoryPath, filename);
     await this.createFile(filePath, contents);
     return filePath;
   }
@@ -57,42 +57,5 @@ export class TemporaryFileCodeRunner implements CodeRunner {
     this.logger.info(`Checking and ensuring directory exists: ${directoryPath}`);
     await this.system.fileSystem.createDirectory(directoryPath, true);
     this.logger.info(`Directory confirmed at: ${directoryPath}`);
-  }
-
-  private async executeFile(filePath: string, os: OperatingSystem): Promise<void> {
-    await this.setFileExecutablePermissions(filePath);
-    const command = getExecuteCommand(filePath, os);
-    await this.executeCommand(command);
-  }
-
-  private async setFileExecutablePermissions(filePath: string): Promise<void> {
-    this.logger.info(`Setting execution permissions for file at ${filePath}`);
-    await this.system.fileSystem.setFilePermissions(filePath, '755');
-    this.logger.info(`Execution permissions set successfully for ${filePath}`);
-  }
-
-  private async executeCommand(command: string): Promise<void> {
-    this.logger.info(`Executing command: ${command}`);
-    await this.system.command.execute(command);
-    this.logger.info('Command executed successfully.');
-  }
-}
-
-function getExecuteCommand(
-  scriptPath: string,
-  os: OperatingSystem,
-): string {
-  switch (os) {
-    case OperatingSystem.Linux:
-      return `x-terminal-emulator -e '${scriptPath}'`;
-    case OperatingSystem.macOS:
-      return `open -a Terminal.app ${scriptPath}`;
-    // Another option with graphical sudo would be
-    //  `osascript -e "do shell script \\"${scriptPath}\\" with administrator privileges"`
-    // However it runs in background
-    case OperatingSystem.Windows:
-      return scriptPath;
-    default:
-      throw Error(`unsupported os: ${OperatingSystem[os]}`);
   }
 }

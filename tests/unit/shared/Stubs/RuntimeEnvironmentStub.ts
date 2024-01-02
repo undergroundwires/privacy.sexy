@@ -1,7 +1,7 @@
-import { IRuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/IRuntimeEnvironment';
+import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 
-export class RuntimeEnvironmentStub implements IRuntimeEnvironment {
+export class RuntimeEnvironmentStub implements RuntimeEnvironment {
   public isNonProduction = true;
 
   public isDesktop = true;

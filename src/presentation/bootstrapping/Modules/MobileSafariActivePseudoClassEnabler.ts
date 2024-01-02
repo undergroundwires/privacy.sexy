@@ -1,11 +1,11 @@
-import { IRuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/IRuntimeEnvironment';
-import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
+import { HostRuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/HostRuntimeEnvironment';
 import { OperatingSystem } from '@/domain/OperatingSystem';
+import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
 import { Bootstrapper } from '../Bootstrapper';
 
 export class MobileSafariActivePseudoClassEnabler implements Bootstrapper {
   constructor(
-    private readonly currentEnvironment = RuntimeEnvironment.CurrentEnvironment,
+    private readonly currentEnvironment = HostRuntimeEnvironment.CurrentEnvironment,
     private readonly browser: BrowserAccessor = GlobalBrowserAccessor,
   ) {
 
@@ -42,14 +42,14 @@ export interface BrowserAccessor {
   addWindowEventListener(...args: Parameters<typeof window.addEventListener>): void;
 }
 
-function isMobileSafari(environment: IRuntimeEnvironment, userAgent: string): boolean {
+function isMobileSafari(environment: RuntimeEnvironment, userAgent: string): boolean {
   if (!isMobileAppleOperatingSystem(environment)) {
     return false;
   }
   return isSafari(userAgent);
 }
 
-function isMobileAppleOperatingSystem(environment: IRuntimeEnvironment): boolean {
+function isMobileAppleOperatingSystem(environment: RuntimeEnvironment): boolean {
   if (environment.os === undefined) {
     return false;
   }

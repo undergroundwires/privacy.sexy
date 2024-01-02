@@ -1,18 +1,18 @@
 import { describe, it, expect } from 'vitest';
-import { OperatingSystem } from '@/domain/OperatingSystem';
 import { FileSystemOps, SystemOperations } from '@/infrastructure/CodeRunner/SystemOperations/SystemOperations';
-import { FileNameGenerator, TemporaryFileCodeRunner } from '@/infrastructure/CodeRunner/TemporaryFileCodeRunner';
-import { expectThrowsAsync } from '@tests/shared/Assertions/ExpectThrowsAsync';
+import { TemporaryFileCodeRunner } from '@/infrastructure/CodeRunner/TemporaryFileCodeRunner';
 import { SystemOperationsStub } from '@tests/unit/shared/Stubs/SystemOperationsStub';
 import { OperatingSystemOpsStub } from '@tests/unit/shared/Stubs/OperatingSystemOpsStub';
 import { LocationOpsStub } from '@tests/unit/shared/Stubs/LocationOpsStub';
-import { FileSystemOpsStub } from '@tests/unit/shared/Stubs/FileSystemOpsStub';
-import { CommandOpsStub } from '@tests/unit/shared/Stubs/CommandOpsStub';
 import { FunctionKeys } from '@/TypeHelpers';
-import { AllSupportedOperatingSystems, SupportedOperatingSystem } from '@tests/shared/TestCases/SupportedOperatingSystems';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { LoggerStub } from '@tests/unit/shared/Stubs/LoggerStub';
 import { Logger } from '@/application/Common/Log/Logger';
+import { FilenameGenerator } from '@/infrastructure/CodeRunner/Filename/FilenameGenerator';
+import { FilenameGeneratorStub } from '@tests/unit/shared/Stubs/FilenameGeneratorStub';
+import { ScriptFileExecutor } from '@/infrastructure/CodeRunner/Execution/ScriptFileExecutor';
+import { ScriptFileExecutorStub } from '@tests/unit/shared/Stubs/ScriptFileExecutorStub';
+import { FileSystemOpsStub } from '@tests/unit/shared/Stubs/FileSystemOpsStub';
 
 describe('TemporaryFileCodeRunner', () => {
   describe('runCode', () => {
@@ -69,26 +69,6 @@ describe('TemporaryFileCodeRunner', () => {
         const [, actualData] = calls[0].args;
         expect(actualData).to.equal(expectedCode);
       });
-      it('generates file name for correct operating system', async () => {
-        // arrange
-        const expectedOperatingSystem = OperatingSystem.macOS;
-        const calls = new Array<OperatingSystem>();
-        const fileNameGenerator: FileNameGenerator = (operatingSystem) => {
-          calls.push(operatingSystem);
-          return 'unimportant file name';
-        };
-        const context = new CodeRunnerTestSetup()
-          .withOs(expectedOperatingSystem)
-          .withFileNameGenerator(fileNameGenerator);
-
-        // act
-        await context.runCode();
-
-        // assert
-        expect(calls).to.have.lengthOf(1);
-        const [actualOperatingSystem] = calls;
-        expect(actualOperatingSystem).to.equal(expectedOperatingSystem);
-      });
       it('creates file in expected directory', async () => {
         // arrange
         const pathSegmentSeparator = '/PATH-SEGMENT-SEPARATOR/';
@@ -128,9 +108,9 @@ describe('TemporaryFileCodeRunner', () => {
         // arrange
         const pathSegmentSeparator = '/PATH-SEGMENT-SEPARATOR/';
         const filesystem = new FileSystemOpsStub();
-        const expectedFileName = 'expected-script-file-name';
+        const expectedFilename = 'expected-script-file-name';
         const context = new CodeRunnerTestSetup()
-          .withFileNameGenerator(() => expectedFileName)
+          .withFileNameGenerator(new FilenameGeneratorStub().withFilename(expectedFilename))
           .withSystemOperationsStub((ops) => ops
             .withFileSystem(filesystem)
             .withLocation(new LocationOpsStub().withDefaultSeparator(pathSegmentSeparator)));
@@ -149,99 +129,10 @@ describe('TemporaryFileCodeRunner', () => {
           `Actual file path: ${actualFilePath}`,
         ]));
       });
-    });
-    describe('file permissions', () => {
-      it('sets correct permissions', async () => {
-        // arrange
-        const expectedMode = '755';
-        const filesystem = new FileSystemOpsStub();
-        const context = new CodeRunnerTestSetup()
-          .withSystemOperationsStub((ops) => ops.withFileSystem(filesystem));
-
-        // act
-        await context.runCode();
-
-        // assert
-        const calls = filesystem.callHistory.filter((call) => call.methodName === 'setFilePermissions');
-        expect(calls.length).to.equal(1);
-        const [, actualMode] = calls[0].args;
-        expect(actualMode).to.equal(expectedMode);
-      });
-      it('sets correct permissions on correct file', async () => {
-        // arrange
-        const expectedFilePath = 'expected-file-path';
-        const filesystem = new FileSystemOpsStub();
-        const extension = '.sh';
-        const expectedName = `run.${extension}`;
-        const folderName = 'privacy.sexy';
-        const temporaryDirName = 'tmp';
-        const context = new CodeRunnerTestSetup()
-          .withSystemOperationsStub((ops) => ops
-            .withOperatingSystem(
-              new OperatingSystemOpsStub()
-                .withTemporaryDirectoryResult(temporaryDirName),
-            )
-            .withLocation(
-              new LocationOpsStub()
-                .withJoinResult('folder', temporaryDirName, folderName)
-                .withJoinResult(expectedFilePath, 'folder', expectedName),
-            )
-            .withFileSystem(filesystem));
-
-        // act
-        await context
-          .withFolderName(folderName)
-          .withFileNameGenerator(() => expectedName)
-          .runCode();
-
-        // assert
-        const calls = filesystem.callHistory.filter((call) => call.methodName === 'setFilePermissions');
-        expect(calls.length).to.equal(1);
-        const [actualFilePath] = calls[0].args;
-        expect(actualFilePath).to.equal(expectedFilePath);
-      });
-    });
-    describe('file execution', () => {
-      describe('executes correct command', () => {
-        // arrange
-        const filePath = 'executed-file-path';
-        const testScenarios: Record<SupportedOperatingSystem, string> = {
-          [OperatingSystem.Windows]: filePath,
-          [OperatingSystem.macOS]: `open -a Terminal.app ${filePath}`,
-          [OperatingSystem.Linux]: `x-terminal-emulator -e '${filePath}'`,
-        };
-        AllSupportedOperatingSystems.forEach((operatingSystem) => {
-          it(`returns correctly for ${OperatingSystem[operatingSystem]}`, async () => {
-            // arrange
-            const expectedCommand = testScenarios[operatingSystem];
-            const command = new CommandOpsStub();
-            const context = new CodeRunnerTestSetup()
-              .withFileNameGenerator(() => filePath)
-              .withSystemOperationsStub((ops) => ops
-                .withLocation(
-                  new LocationOpsStub()
-                    .withJoinResultSequence('non-important-folder-name', filePath),
-                )
-                .withCommand(command));
-
-            // act
-            await context
-              .withOs(operatingSystem)
-              .runCode();
-
-            // assert
-            const calls = command.callHistory.filter((c) => c.methodName === 'execute');
-            expect(calls.length).to.equal(1);
-            const [actualCommand] = calls[0].args;
-            expect(actualCommand).to.equal(expectedCommand);
-          });
-        });
-      });
-      it('runs in expected order', async () => { // verifies correct `async`, `await` usage.
+      it('creates file after creating the directory', async () => {
         const expectedOrder: readonly FunctionKeys<FileSystemOps>[] = [
           'createDirectory',
           'writeToFile',
-          'setFilePermissions',
         ];
         const fileSystem = new FileSystemOpsStub();
         const context = new CodeRunnerTestSetup()
@@ -258,31 +149,50 @@ describe('TemporaryFileCodeRunner', () => {
         expect(expectedOrder).to.deep.equal(actualOrder);
       });
     });
-    describe('throws with invalid OS', () => {
-      const testScenarios: ReadonlyArray<{
-        readonly description: string;
-        readonly invalidOs: OperatingSystem;
-        readonly expectedError: string;
-      }> = [
-        (() => {
-          const unsupportedOs = OperatingSystem.Android;
-          return {
-            description: 'unsupported OS',
-            invalidOs: unsupportedOs,
-            expectedError: `unsupported os: ${OperatingSystem[unsupportedOs]}`,
-          };
-        })(),
-      ];
-      testScenarios.forEach(({ description, invalidOs, expectedError }) => {
-        it(description, async () => {
-          // arrange
-          const context = new CodeRunnerTestSetup()
-            .withOs(invalidOs);
-          // act
-          const act = async () => { await context.runCode(); };
-          // assert
-          await expectThrowsAsync(act, expectedError);
-        });
+    describe('file execution', () => {
+      it('executes correct file', async () => {
+        // arrange
+        const fileSystem = new FileSystemOpsStub();
+        const fileExecutor = new ScriptFileExecutorStub();
+        const context = new CodeRunnerTestSetup()
+          .withSystemOperationsStub((ops) => ops.withFileSystem(fileSystem))
+          .withFileExecutor(fileExecutor);
+
+        // act
+        await context.runCode();
+
+        // assert
+        const writeFileCalls = fileSystem.callHistory.filter((call) => call.methodName === 'writeToFile');
+        expect(writeFileCalls.length).to.equal(1);
+        const [expectedFilePath] = writeFileCalls[0].args;
+        const execFileCalls = fileExecutor.callHistory.filter((call) => call.methodName === 'executeScriptFile');
+        expect(execFileCalls.length).to.equal(1);
+        const [actualPath] = execFileCalls[0].args;
+        expect(actualPath).to.equal(expectedFilePath);
+      });
+      it('executes after creating the file', async () => {
+        // arrange
+        let isFileCreated = false;
+        let isExecutedAfterCreation = false;
+        const filesystem = new FileSystemOpsStub();
+        filesystem.writeToFile = () => {
+          isFileCreated = true;
+          return Promise.resolve();
+        };
+        const fileExecutor = new ScriptFileExecutorStub();
+        fileExecutor.executeScriptFile = () => {
+          isExecutedAfterCreation = isFileCreated;
+          return Promise.resolve();
+        };
+        const context = new CodeRunnerTestSetup()
+          .withSystemOperationsStub((ops) => ops.withFileSystem(filesystem))
+          .withFileExecutor(fileExecutor);
+
+        // act
+        await context.runCode();
+
+        // assert
+        expect(isExecutedAfterCreation).to.equal(true);
       });
     });
   });
@@ -293,21 +203,22 @@ class CodeRunnerTestSetup {
 
   private folderName = `[${CodeRunnerTestSetup.name}]folderName`;
 
-  private fileNameGenerator: FileNameGenerator = () => `[${CodeRunnerTestSetup.name}]file-name-stub`;
-
-  private os: OperatingSystem = OperatingSystem.Windows;
+  private filenameGenerator: FilenameGenerator = new FilenameGeneratorStub();
 
   private systemOperations: SystemOperations = new SystemOperationsStub();
+
+  private fileExecutor: ScriptFileExecutor = new ScriptFileExecutorStub();
 
   private logger: Logger = new LoggerStub();
 
   public async runCode(): Promise<void> {
     const runner = new TemporaryFileCodeRunner(
       this.systemOperations,
-      this.fileNameGenerator,
+      this.filenameGenerator,
       this.logger,
+      this.fileExecutor,
     );
-    await runner.runCode(this.code, this.folderName, this.os);
+    await runner.runCode(this.code, this.folderName);
   }
 
   public withSystemOperations(
@@ -324,13 +235,13 @@ class CodeRunnerTestSetup {
     return this.withSystemOperations(stub);
   }
 
-  public withOs(os: OperatingSystem): this {
-    this.os = os;
+  public withFolderName(folderName: string): this {
+    this.folderName = folderName;
     return this;
   }
 
-  public withFolderName(folderName: string): this {
-    this.folderName = folderName;
+  public withFileExecutor(fileExecutor: ScriptFileExecutor): this {
+    this.fileExecutor = fileExecutor;
     return this;
   }
 
@@ -339,8 +250,8 @@ class CodeRunnerTestSetup {
     return this;
   }
 
-  public withFileNameGenerator(fileNameGenerator: FileNameGenerator): this {
-    this.fileNameGenerator = fileNameGenerator;
+  public withFileNameGenerator(fileNameGenerator: FilenameGenerator): this {
+    this.filenameGenerator = fileNameGenerator;
     return this;
   }
 }
