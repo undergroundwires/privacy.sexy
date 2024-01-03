@@ -59,6 +59,11 @@ export const MobileSafariDetectionTestCases: ReadonlyArray<PlatformTestCase> = [
         userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
       },
       {
+        deviceInfo: 'macOS (Electron)',
+        operatingSystem: OperatingSystem.macOS,
+        userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.5993.54 Electron/27.0.0 Safari/537.36',
+      },
+      {
         deviceInfo: 'iPad (iPadOS 17)',
         operatingSystem: OperatingSystem.iPadOS,
         userAgent: 'Mozilla/5.0 (iPad; CPU OS 17_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/119.0.6045.109 Mobile/15E148 Safari/604.1',

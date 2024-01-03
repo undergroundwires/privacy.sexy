@@ -57,6 +57,7 @@ export const BrowserConditions: readonly BrowserCondition[] = [
   {
     operatingSystem: OperatingSystem.iPadOS,
     existingPartsInSameUserAgent: ['Macintosh'], // Reported by Safari on iPads running ≥ iPadOS 13
+    notExistingPartsInUserAgent: ['Electron'], // Electron supports only macOS, not iPadOS
     touchSupport: TouchSupportExpectation.MustExist, // Safari same user agent as desktop macOS
   },
   {

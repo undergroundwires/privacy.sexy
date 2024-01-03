@@ -32,11 +32,6 @@ describe('TouchSupportDetection', () => {
         }),
         expectedTouch: true,
       },
-      {
-        description: 'detects touch capability with defined window.TouchEvent',
-        expectedTouch: true,
-        accessor: createMockAccessor({ windowTouchEvent: () => class {} }),
-      },
     ];
     testScenarios.forEach(({ description, accessor, expectedTouch }) => {
       it(`${description} - returns ${expectedTouch}`, () => {
@@ -56,7 +51,6 @@ function createMockAccessor(
     navigatorMaxTouchPoints: () => undefined,
     windowMatchMediaMatches: () => false,
     documentOntouchend: () => undefined,
-    windowTouchEvent: () => undefined,
   };
   return {
     ...defaultTouchSupport,
