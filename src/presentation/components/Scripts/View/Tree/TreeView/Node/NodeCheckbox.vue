@@ -2,8 +2,8 @@
   <div
     class="checkbox"
     :class="{
-      checked: checked,
-      indeterminate: indeterminate,
+      checked,
+      indeterminate,
     }"
   />
 </template>

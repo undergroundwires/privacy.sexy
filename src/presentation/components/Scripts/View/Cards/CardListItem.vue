@@ -4,7 +4,7 @@
     class="card"
     :class="{
       'is-collapsed': !isExpanded,
-      'is-inactive': activeCategoryId && activeCategoryId != categoryId,
+      'is-inactive': activeCategoryId && activeCategoryId !== categoryId,
       'is-expanded': isExpanded,
     }"
     @click="isExpanded = !isExpanded"

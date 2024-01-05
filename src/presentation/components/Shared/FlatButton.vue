@@ -5,7 +5,7 @@
     type="button"
     class="flat-button"
     :class="{
-      disabled: disabled,
+      disabled,
     }"
     @click="onClicked"
   >

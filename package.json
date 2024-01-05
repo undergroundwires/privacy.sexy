@@ -45,15 +45,15 @@
   },
   "devDependencies": {
     "@modyfi/vite-plugin-yaml": "^1.0.4",
-    "@rushstack/eslint-patch": "^1.5.1",
+    "@rushstack/eslint-patch": "^1.6.1",
     "@types/ace": "^0.0.49",
     "@types/file-saver": "^2.0.5",
-    "@typescript-eslint/eslint-plugin": "^5.62.0",
-    "@typescript-eslint/parser": "^5.62.0",
+    "@typescript-eslint/eslint-plugin": "^6.17.0",
+    "@typescript-eslint/parser": "^6.17.0",
     "@vitejs/plugin-legacy": "^4.1.1",
     "@vitejs/plugin-vue": "^4.4.0",
-    "@vue/eslint-config-airbnb-with-typescript": "^7.0.0",
-    "@vue/eslint-config-typescript": "^11.0.3",
+    "@vue/eslint-config-airbnb-with-typescript": "^8.0.0",
+    "@vue/eslint-config-typescript": "^12.0.0",
     "@vue/test-utils": "^2.4.1",
     "autoprefixer": "^10.4.16",
     "cypress": "^13.3.1",
@@ -62,9 +62,9 @@
     "electron-devtools-installer": "^3.2.0",
     "electron-icon-builder": "^2.0.1",
     "electron-vite": "^1.0.28",
-    "eslint": "^8.51.0",
+    "eslint": "^8.56.0",
     "eslint-plugin-cypress": "^2.15.1",
-    "eslint-plugin-vue": "^9.17.0",
+    "eslint-plugin-vue": "^9.19.2",
     "eslint-plugin-vuejs-accessibility": "^2.2.0",
     "icon-gen": "^4.0.0",
     "jsdom": "^22.1.0",
@@ -86,11 +86,8 @@
     "yaml-lint": "^1.7.0"
   },
   "//devDependencies": {
-    "terser": "Used by @vitejs/plugin-legacy for minification",
-    "@rushstack/eslint-patch": "Needed by @vue/eslint-config-typescript",
-    "@vue/eslint-config-typescript": "Cannot upgrade to 12.X.X due to @vue/eslint-config-airbnb-with-typescript, https://github.com/vuejs/eslint-config-airbnb/issues/58",
-    "@typescript-eslint/eslint-plugin": "Cannot upgrade to 6.X.X due to @vue/eslint-config-airbnb-with-typescript, https://github.com/vuejs/eslint-config-airbnb/issues/58",
-    "@typescript-eslint/parser": "Cannot upgrade to 6.X.X due to @vue/eslint-config-airbnb-with-typescript, https://github.com/vuejs/eslint-config-airbnb/issues/58"
+    "terser": "Used by `@vitejs/plugin-legacy` for minification",
+    "@rushstack/eslint-patch": "Needed by `@vue/eslint-config-typescript` and `@vue/eslint-config-airbnb-with-typescript`"
   },
   "homepage": "https://privacy.sexy",
   "repository": {

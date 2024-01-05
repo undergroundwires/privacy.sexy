@@ -9,14 +9,15 @@ module.exports = {
     es2022: true, // add globals and sets parserOptions.ecmaVersion to 2022
   },
   extends: [
-    // Vue specific rules, eslint-plugin-vue
+    // Vue specific base rules, `eslint-plugin-vue`
     'plugin:vue/vue3-recommended',
 
-    // Extends eslint-config-airbnb
+    // Extends `eslint-config-airbnb`
     '@vue/eslint-config-airbnb-with-typescript',
 
-    // Extends @typescript-eslint/recommended
-    // Uses the recommended rules from the @typescript-eslint/eslint-plugin
+    // - Sets base parser and plugin options.
+    // - Includes `plugin:@typescript-eslint/recommended`. But incompatible with
+    //   `strict-type-checked` and `stylistic-type-checked`, see https://github.com/vuejs/eslint-config-typescript/issues/67.
     '@vue/typescript/recommended',
   ],
   rules: {
