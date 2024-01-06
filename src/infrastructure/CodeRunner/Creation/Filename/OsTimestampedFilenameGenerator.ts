@@ -1,6 +1,6 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
-import { HostRuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/HostRuntimeEnvironment';
+import { CurrentEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironmentFactory';
 import { FilenameGenerator } from './FilenameGenerator';
 
 /**
@@ -14,7 +14,7 @@ export class OsTimestampedFilenameGenerator implements FilenameGenerator {
   private readonly currentOs?: OperatingSystem;
 
   constructor(
-    environment: RuntimeEnvironment = HostRuntimeEnvironment.CurrentEnvironment,
+    environment: RuntimeEnvironment = CurrentEnvironment,
   ) {
     this.currentOs = environment.os;
   }

@@ -1,4 +1,4 @@
-import { dialog } from 'electron';
+import { dialog } from 'electron/main';
 
 export enum ManualUpdateChoice {
   NoAction = 0,

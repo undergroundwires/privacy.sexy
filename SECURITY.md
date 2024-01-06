@@ -32,8 +32,11 @@ privacy.sexy adopts a defense in depth strategy to protect users on multiple lay
   privacy.sexy actively follows security guidelines from the Open Web Application Security Project (OWASP) at strictest level.
   This approach protects against attacks like Cross Site Scripting (XSS) and data injection.
 - **Host System Access Control:**
-  The desktop application segregates code sections based on their access levels.
+  The desktop application segregates and isolates code sections based on their access levels through sandboxing.
   This provides a critical defense mechanism, prevents attackers from introducing harmful code into the app, known as injection attacks.
+- **Auditing and Transparency:**
+  The desktop application improves security and transparency by logging application activities and retaining files of executed scripts
+  This facilitates detailed auditability and effective troubleshooting, contributing to the integrity and reliability of the application.
 
 ### Update Security and Integrity
 

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { BrowserTouchSupportAccessor, isTouchEnabledDevice } from '@/infrastructure/RuntimeEnvironment/TouchSupportDetection';
+import { BrowserTouchSupportAccessor, isTouchEnabledDevice } from '@/infrastructure/RuntimeEnvironment/Browser/TouchSupportDetection';
 
 describe('TouchSupportDetection', () => {
   describe('isTouchEnabledDevice', () => {

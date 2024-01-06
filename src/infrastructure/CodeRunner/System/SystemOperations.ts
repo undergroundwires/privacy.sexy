@@ -6,7 +6,7 @@ export interface SystemOperations {
 }
 
 export interface OperatingSystemOps {
-  getTempDirectory(): string;
+  getUserDataDirectory(): string;
 }
 
 export interface LocationOps {

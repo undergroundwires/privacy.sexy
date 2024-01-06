@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { AllSupportedOperatingSystems, SupportedOperatingSystem } from '@tests/shared/TestCases/SupportedOperatingSystems';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { OsTimestampedFilenameGenerator } from '@/infrastructure/CodeRunner/Filename/OsTimestampedFilenameGenerator';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { RuntimeEnvironmentStub } from '@tests/unit/shared/Stubs/RuntimeEnvironmentStub';
+import { OsTimestampedFilenameGenerator } from '@/infrastructure/CodeRunner/Creation/Filename/OsTimestampedFilenameGenerator';
 
 describe('OsTimestampedFilenameGenerator', () => {
   describe('generateFilename', () => {

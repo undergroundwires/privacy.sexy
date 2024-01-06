@@ -4,16 +4,13 @@ import { VITE_USER_DEFINED_ENVIRONMENT_KEYS } from './src/infrastructure/Environ
 import tsconfigJson from './tsconfig.json' assert { type: 'json' };
 import packageJson from './package.json' assert { type: 'json' };
 
-export function getAliasesFromTsConfig(): Record<string, string> {
-  const { paths } = tsconfigJson.compilerOptions;
-  return Object.keys(paths).reduce((aliases, pathName) => {
-    const pathFolder = paths[pathName][0];
-    const aliasFolder = pathFolder.substring(0, pathFolder.length - 1); // trim * from end
-    const aliasName = pathName.substring(0, pathName.length - 2); // trim /* from end
-    const aliasPath = resolve(getSelfDirectoryAbsolutePath(), aliasFolder);
-    aliases[aliasName] = aliasPath;
-    return aliases;
-  }, {});
+type ViteAliasDefinitions = Record<string, string>;
+
+export function getAliases(): ViteAliasDefinitions {
+  return {
+    ...getPathAliasesFromTsConfig(),
+    ...getElectronProcessSpecificModuleAliases(),
+  };
 }
 
 export function getSelfDirectoryAbsolutePath() {
@@ -28,7 +25,9 @@ type ViteEnvironmentKeyValues = {
   ]: string
 };
 
-export function getClientEnvironmentVariables(): Record<string, string> {
+type ViteGlobalVariableReplacementDefinitions = Record<string, string>;
+
+export function getClientEnvironmentVariables(): ViteGlobalVariableReplacementDefinitions {
   const environmentVariables: ViteEnvironmentKeyValues = {
     [VITE_USER_DEFINED_ENVIRONMENT_KEYS.NAME]: packageJson.name,
     [VITE_USER_DEFINED_ENVIRONMENT_KEYS.VERSION]: packageJson.version,
@@ -37,8 +36,33 @@ export function getClientEnvironmentVariables(): Record<string, string> {
     [VITE_USER_DEFINED_ENVIRONMENT_KEYS.SLOGAN]: packageJson.slogan,
   };
   return Object.entries(environmentVariables).reduce((acc, [key, value]) => {
-    const newKey = `import.meta.env.${key}`;
-    const newValue = JSON.stringify(value);
-    return { ...acc, [newKey]: newValue };
+    const formattedEnvVariableKey = `import.meta.env.${key}`;
+    const jsonEncodedEnvVariableValue = JSON.stringify(value);
+    return { ...acc, [formattedEnvVariableKey]: jsonEncodedEnvVariableValue };
+  }, {});
+}
+
+function getPathAliasesFromTsConfig(): ViteAliasDefinitions {
+  const { paths } = tsconfigJson.compilerOptions;
+  return Object.keys(paths).reduce((aliases, pathName) => {
+    const pathFolder = paths[pathName][0];
+    const aliasFolder = pathFolder.substring(0, pathFolder.length - 1); // trim * from end
+    const aliasName = pathName.substring(0, pathName.length - 2); // trim /* from end
+    const aliasPath = resolve(getSelfDirectoryAbsolutePath(), aliasFolder);
+    aliases[aliasName] = aliasPath;
+    return aliases;
+  }, {});
+}
+
+function getElectronProcessSpecificModuleAliases(): ViteAliasDefinitions {
+  // Workaround for scoped Electron module imports due to https://github.com/alex8088/electron-vite/issues/372
+  const electronProcessScopedModuleAliases = [
+    'electron/main',
+    'electron/renderer',
+    'electron/common',
+  ] as const;
+  return electronProcessScopedModuleAliases.reduce((aliases, alias) => {
+    aliases[alias] = 'electron';
+    return aliases;
   }, {});
 }

@@ -5,7 +5,7 @@ import vue from '@vitejs/plugin-vue';
 import legacy from '@vitejs/plugin-legacy';
 import ViteYaml from '@modyfi/vite-plugin-yaml';
 import distDirs from './dist-dirs.json' assert { type: 'json' };
-import { getAliasesFromTsConfig, getClientEnvironmentVariables, getSelfDirectoryAbsolutePath } from './vite-config-helper';
+import { getAliases, getClientEnvironmentVariables, getSelfDirectoryAbsolutePath } from './vite-config-helper';
 
 const WEB_DIRECTORY = resolve(getSelfDirectoryAbsolutePath(), 'src/presentation');
 const TEST_INITIALIZATION_FILE = resolve(getSelfDirectoryAbsolutePath(), 'tests/shared/bootstrap/setup.ts');
@@ -33,7 +33,7 @@ export function createVueConfig(options?: {
     },
     resolve: {
       alias: {
-        ...getAliasesFromTsConfig(),
+        ...getAliases(),
       },
     },
     server: {
@@ -43,7 +43,7 @@ export function createVueConfig(options?: {
       globals: true,
       environment: 'jsdom',
       alias: {
-        ...getAliasesFromTsConfig(),
+        ...getAliases(),
       },
       setupFiles: [
         TEST_INITIALIZATION_FILE,

@@ -1,4 +1,4 @@
-import { contextBridge } from 'electron';
+import { contextBridge } from 'electron/renderer';
 import { bindObjectMethods } from './MethodContextBinder';
 import { provideWindowVariables } from './RendererApiProvider';
 

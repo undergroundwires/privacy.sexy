@@ -1,7 +1,7 @@
 import { resolve } from 'node:path';
 import { mergeConfig, UserConfig } from 'vite';
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
-import { getAliasesFromTsConfig, getClientEnvironmentVariables } from './vite-config-helper';
+import { getAliases, getClientEnvironmentVariables } from './vite-config-helper';
 import { createVueConfig } from './vite.config';
 import distDirs from './dist-dirs.json' assert { type: 'json' };
 
@@ -54,7 +54,9 @@ function getSharedElectronConfig(options: {
       },
       rollupOptions: {
         output: {
-          entryFileNames: '[name].cjs', // This is needed so `type="module"` works
+          // Mark: electron-esm-support
+          //  This is needed so `type="module"` works
+          entryFileNames: '[name].cjs',
         },
       },
     },
@@ -64,7 +66,7 @@ function getSharedElectronConfig(options: {
     },
     resolve: {
       alias: {
-        ...getAliasesFromTsConfig(),
+        ...getAliases(),
       },
     },
   };

@@ -1,4 +1,4 @@
-import { app, dialog } from 'electron';
+import { app, dialog } from 'electron/main';
 import { autoUpdater, UpdateInfo } from 'electron-updater';
 import { ProgressInfo } from 'electron-builder';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';

@@ -1,17 +1,17 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { CommandOps, SystemOperations } from '@/infrastructure/CodeRunner/SystemOperations/SystemOperations';
+import { CommandOps, SystemOperations } from '@/infrastructure/CodeRunner/System/SystemOperations';
 import { Logger } from '@/application/Common/Log/Logger';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
-import { HostRuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/HostRuntimeEnvironment';
-import { createNodeSystemOperations } from '@/infrastructure/CodeRunner/SystemOperations/NodeSystemOperations';
+import { NodeElectronSystemOperations } from '@/infrastructure/CodeRunner/System/NodeElectronSystemOperations';
+import { CurrentEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironmentFactory';
 import { ScriptFileExecutor } from './ScriptFileExecutor';
 
 export class VisibleTerminalScriptExecutor implements ScriptFileExecutor {
   constructor(
-    private readonly system: SystemOperations = createNodeSystemOperations(),
+    private readonly system: SystemOperations = new NodeElectronSystemOperations(),
     private readonly logger: Logger = ElectronLogger,
-    private readonly environment: RuntimeEnvironment = HostRuntimeEnvironment.CurrentEnvironment,
+    private readonly environment: RuntimeEnvironment = CurrentEnvironment,
   ) { }
 
   public async executeScriptFile(filePath: string): Promise<void> {

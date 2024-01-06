@@ -1,14 +1,14 @@
 import { IApplicationContext } from '@/application/Context/IApplicationContext';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { IApplication } from '@/domain/IApplication';
-import { HostRuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/HostRuntimeEnvironment';
+import { CurrentEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironmentFactory';
 import { IApplicationFactory } from '../IApplicationFactory';
 import { ApplicationFactory } from '../ApplicationFactory';
 import { ApplicationContext } from './ApplicationContext';
 
 export async function buildContext(
   factory: IApplicationFactory = ApplicationFactory.Current,
-  environment = HostRuntimeEnvironment.CurrentEnvironment,
+  environment = CurrentEnvironment,
 ): Promise<IApplicationContext> {
   const app = await factory.getApp();
   const os = getInitialOs(app, environment.os);

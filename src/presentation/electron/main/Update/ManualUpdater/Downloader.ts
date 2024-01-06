@@ -1,7 +1,7 @@
 import { existsSync, createWriteStream, type WriteStream } from 'node:fs';
 import { unlink, mkdir } from 'node:fs/promises';
 import path from 'node:path';
-import { app } from 'electron';
+import { app } from 'electron/main';
 import { UpdateInfo } from 'electron-updater';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import { UpdateProgressBar } from '../UpdateProgressBar';

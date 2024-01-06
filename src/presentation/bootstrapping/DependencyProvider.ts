@@ -13,7 +13,7 @@ import { PropertyKeys } from '@/TypeHelpers';
 import { useUserSelectionState } from '@/presentation/components/Shared/Hooks/UseUserSelectionState';
 import { useLogger } from '@/presentation/components/Shared/Hooks/UseLogger';
 import { useCodeRunner } from '@/presentation/components/Shared/Hooks/UseCodeRunner';
-import { HostRuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/HostRuntimeEnvironment';
+import { CurrentEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironmentFactory';
 
 export function provideDependencies(
   context: IApplicationContext,
@@ -33,7 +33,7 @@ export function provideDependencies(
     ),
     useRuntimeEnvironment: (di) => di.provide(
       InjectionKeys.useRuntimeEnvironment,
-      HostRuntimeEnvironment.CurrentEnvironment,
+      CurrentEnvironment,
     ),
     useAutoUnsubscribedEvents: (di) => di.provide(
       InjectionKeys.useAutoUnsubscribedEvents,

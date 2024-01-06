@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { ApiFacadeFactory, provideWindowVariables } from '@/presentation/electron/preload/ContextBridging/RendererApiProvider';
+import { ApiFacadeFactory, IpcConsumerProxyCreator, provideWindowVariables } from '@/presentation/electron/preload/ContextBridging/RendererApiProvider';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { Logger } from '@/application/Common/Log/Logger';
 import { LoggerStub } from '@tests/unit/shared/Stubs/LoggerStub';
-import { CodeRunner } from '@/application/CodeRunner';
-import { CodeRunnerStub } from '@tests/unit/shared/Stubs/CodeRunnerStub';
 import { PropertyKeys } from '@/TypeHelpers';
 import { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
+import { IpcChannelDefinitions } from '@/presentation/electron/shared/IpcBridging/IpcChannelDefinitions';
+import { IpcChannel } from '@/presentation/electron/shared/IpcBridging/IpcChannel';
 
 describe('RendererApiProvider', () => {
   describe('provideWindowVariables', () => {
@@ -21,17 +21,7 @@ describe('RendererApiProvider', () => {
         setupContext: (context) => context,
         expectedValue: true,
       },
-      codeRunner: (() => {
-        const codeRunner = new CodeRunnerStub();
-        const createFacadeMock: ApiFacadeFactory = (obj) => obj;
-        return {
-          description: 'encapsulates correctly',
-          setupContext: (context) => context
-            .withCodeRunner(codeRunner)
-            .withApiFacadeCreator(createFacadeMock),
-          expectedValue: codeRunner,
-        };
-      })(),
+      codeRunner: expectIpcConsumer(IpcChannelDefinitions.CodeRunner),
       os: (() => {
         const operatingSystem = OperatingSystem.WindowsPhone;
         return {
@@ -40,17 +30,10 @@ describe('RendererApiProvider', () => {
           expectedValue: operatingSystem,
         };
       })(),
-      log: (() => {
-        const logger = new LoggerStub();
-        const createFacadeMock: ApiFacadeFactory = (obj) => obj;
-        return {
-          description: 'encapsulates correctly',
-          setupContext: (context) => context
-            .withLogger(logger)
-            .withApiFacadeCreator(createFacadeMock),
-          expectedValue: logger,
-        };
-      })(),
+      log: expectFacade({
+        instance: new LoggerStub(),
+        setupContext: (c, logger) => c.withLogger(logger),
+      }),
     };
     Object.entries(testScenarios).forEach((
       [property, { description, setupContext, expectedValue }],
@@ -65,22 +48,43 @@ describe('RendererApiProvider', () => {
         expect(actualValue).to.equal(expectedValue);
       });
     });
+    function expectIpcConsumer<T>(expectedDefinition: IpcChannel<T>): WindowVariableTestCase {
+      const ipcConsumerCreator: IpcConsumerProxyCreator = (definition) => definition as never;
+      return {
+        description: 'creates correct IPC consumer',
+        setupContext: (context) => context
+          .withIpcConsumerCreator(ipcConsumerCreator),
+        expectedValue: expectedDefinition,
+      };
+    }
+    function expectFacade<T>(options: {
+      readonly instance: T;
+      setupContext: (
+        context: RendererApiProviderTestContext,
+        instance: T,
+      ) => RendererApiProviderTestContext;
+    }): WindowVariableTestCase {
+      const createFacadeMock: ApiFacadeFactory = (obj) => obj;
+      return {
+        description: 'creates correct facade',
+        setupContext: (context) => options.setupContext(
+          context.withApiFacadeCreator(createFacadeMock),
+          options.instance,
+        ),
+        expectedValue: options.instance,
+      };
+    }
   });
 });
 
 class RendererApiProviderTestContext {
-  private codeRunner: CodeRunner = new CodeRunnerStub();
-
   private os: OperatingSystem = OperatingSystem.Android;
 
   private log: Logger = new LoggerStub();
 
   private apiFacadeCreator: ApiFacadeFactory = (obj) => obj;
 
-  public withCodeRunner(codeRunner: CodeRunner): this {
-    this.codeRunner = codeRunner;
-    return this;
-  }
+  private ipcConsumerCreator: IpcConsumerProxyCreator = () => { return {} as never; };
 
   public withOs(os: OperatingSystem): this {
     this.os = os;
@@ -97,12 +101,17 @@ class RendererApiProviderTestContext {
     return this;
   }
 
+  public withIpcConsumerCreator(ipcConsumerCreator: IpcConsumerProxyCreator): this {
+    this.ipcConsumerCreator = ipcConsumerCreator;
+    return this;
+  }
+
   public provideWindowVariables() {
     return provideWindowVariables(
-      () => this.codeRunner,
       () => this.log,
       () => this.os,
       this.apiFacadeCreator,
+      this.ipcConsumerCreator,
     );
   }
 }

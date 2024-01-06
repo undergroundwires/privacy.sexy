@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { ConditionBasedOsDetector } from '@/infrastructure/RuntimeEnvironment/BrowserOs/ConditionBasedOsDetector';
-import { BrowserEnvironment } from '@/infrastructure/RuntimeEnvironment/BrowserOs/BrowserOsDetector';
+import { ConditionBasedOsDetector } from '@/infrastructure/RuntimeEnvironment/Browser/BrowserOs/ConditionBasedOsDetector';
+import { BrowserEnvironment } from '@/infrastructure/RuntimeEnvironment/Browser/BrowserOs/BrowserOsDetector';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { BrowserOsTestCases } from './BrowserOsTestCases';
 

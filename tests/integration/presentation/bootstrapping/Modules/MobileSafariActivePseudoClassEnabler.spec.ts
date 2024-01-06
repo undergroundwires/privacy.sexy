@@ -3,8 +3,8 @@ import { OperatingSystem } from '@/domain/OperatingSystem';
 import { MobileSafariActivePseudoClassEnabler } from '@/presentation/bootstrapping/Modules/MobileSafariActivePseudoClassEnabler';
 import { EventName, createWindowEventSpies } from '@tests/shared/Spies/WindowEventSpies';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
-import { isTouchEnabledDevice } from '@/infrastructure/RuntimeEnvironment/TouchSupportDetection';
-import { HostRuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/HostRuntimeEnvironment';
+import { isTouchEnabledDevice } from '@/infrastructure/RuntimeEnvironment/Browser/TouchSupportDetection';
+import { BrowserRuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/Browser/BrowserRuntimeEnvironment';
 import { MobileSafariDetectionTestCases } from './MobileSafariDetectionTestCases';
 
 describe('MobileSafariActivePseudoClassEnabler', () => {
@@ -17,7 +17,7 @@ describe('MobileSafariActivePseudoClassEnabler', () => {
         const expectedEvent: EventName = 'touchstart';
         patchUserAgent(userAgent, afterEach);
         const { isAddEventCalled, currentListeners } = createWindowEventSpies(afterEach);
-        const patchedEnvironment = new ConstructibleRuntimeEnvironment(supportsTouch);
+        const patchedEnvironment = new TouchSupportControlledBrowserEnvironment(supportsTouch);
         const sut = new MobileSafariActivePseudoClassEnabler(patchedEnvironment);
         // act
         sut.bootstrap();
@@ -59,7 +59,7 @@ function getTouchDetectorMock(
   return () => isTouchEnabled;
 }
 
-class ConstructibleRuntimeEnvironment extends HostRuntimeEnvironment {
+class TouchSupportControlledBrowserEnvironment extends BrowserRuntimeEnvironment {
   public constructor(isTouchEnabled: boolean) {
     super(window, undefined, undefined, getTouchDetectorMock(isTouchEnabled));
   }

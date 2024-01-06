@@ -1,15 +1,15 @@
 // eslint-disable-next-line max-classes-per-file
 import { describe, it, expect } from 'vitest';
-import { BrowserOsDetector } from '@/infrastructure/RuntimeEnvironment/BrowserOs/BrowserOsDetector';
+import { BrowserOsDetector } from '@/infrastructure/RuntimeEnvironment/Browser/BrowserOs/BrowserOsDetector';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { HostRuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/HostRuntimeEnvironment';
+import { BrowserRuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/Browser/BrowserRuntimeEnvironment';
 import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { BrowserOsDetectorStub } from '@tests/unit/shared/Stubs/BrowserOsDetectorStub';
 import { IEnvironmentVariables } from '@/infrastructure/EnvironmentVariables/IEnvironmentVariables';
 import { EnvironmentVariablesStub } from '@tests/unit/shared/Stubs/EnvironmentVariablesStub';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
-describe('HostRuntimeEnvironment', () => {
+describe('BrowserRuntimeEnvironment', () => {
   describe('ctor', () => {
     describe('throws if window is absent', () => {
       itEachAbsentObjectValue((absentValue) => {
@@ -17,9 +17,9 @@ describe('HostRuntimeEnvironment', () => {
         const expectedError = 'missing window';
         const absentWindow = absentValue;
         // act
-        const act = () => createEnvironment({
-          window: absentWindow as never,
-        });
+        const act = () => new BrowserRuntimeEnvironmentBuilder()
+          .withWindow(absentWindow as never)
+          .build();
         // assert
         expect(act).to.throw(expectedError);
       });
@@ -28,12 +28,13 @@ describe('HostRuntimeEnvironment', () => {
       // arrange
       const expectedTouchSupport = true;
       const osDetector = new BrowserOsDetectorStub();
+      const window = { os: undefined, navigator: { userAgent: 'Forcing touch detection' } } as Partial<Window>;
       // act
-      createEnvironment({
-        window: { os: undefined, navigator: { userAgent: 'Forcing touch detection' } } as Partial<Window>,
-        isTouchSupported: expectedTouchSupport,
-        browserOsDetector: osDetector,
-      });
+      new BrowserRuntimeEnvironmentBuilder()
+        .withWindow(window)
+        .withBrowserOsDetector(osDetector)
+        .withTouchSupported(expectedTouchSupport)
+        .build();
       // assert
       const actualCall = osDetector.callHistory.find((c) => c.methodName === 'detect');
       expectExists(actualCall);
@@ -48,9 +49,9 @@ describe('HostRuntimeEnvironment', () => {
         isDesktop: true,
       };
       // act
-      const sut = createEnvironment({
-        window: desktopWindow,
-      });
+      const sut = new BrowserRuntimeEnvironmentBuilder()
+        .withWindow(desktopWindow)
+        .build();
       // assert
       expect(sut.isDesktop).to.equal(true);
     });
@@ -61,9 +62,9 @@ describe('HostRuntimeEnvironment', () => {
         isDesktop: false,
       };
       // act
-      const sut = createEnvironment({
-        window: browserWindow,
-      });
+      const sut = new BrowserRuntimeEnvironmentBuilder()
+        .withWindow(browserWindow)
+        .build();
       // assert
       expect(sut.isDesktop).to.equal(expectedValue);
     });
@@ -77,9 +78,9 @@ describe('HostRuntimeEnvironment', () => {
           throw new Error('should not reach here');
         },
       };
-      const sut = createEnvironment({
-        browserOsDetector: browserDetectorMock,
-      });
+      const sut = new BrowserRuntimeEnvironmentBuilder()
+        .withBrowserOsDetector(browserDetectorMock)
+        .build();
       // act
       const actual = sut.os;
       // assert
@@ -103,10 +104,10 @@ describe('HostRuntimeEnvironment', () => {
         },
       };
       // act
-      const sut = createEnvironment({
-        window: windowWithUserAgent as Partial<Window>,
-        browserOsDetector: browserDetectorMock,
-      });
+      const sut = new BrowserRuntimeEnvironmentBuilder()
+        .withWindow(windowWithUserAgent as Partial<Window>)
+        .withBrowserOsDetector(browserDetectorMock)
+        .build();
       const actual = sut.os;
       // assert
       expect(actual).to.equal(expected);
@@ -127,9 +128,9 @@ describe('HostRuntimeEnvironment', () => {
               os: expectedOs,
             };
             // act
-            const sut = createEnvironment({
-              window: desktopWindowWithOs,
-            });
+            const sut = new BrowserRuntimeEnvironmentBuilder()
+              .withWindow(desktopWindowWithOs)
+              .build();
             // assert
             const actualOs = sut.os;
             expect(actualOs).to.equal(expectedOs);
@@ -144,9 +145,9 @@ describe('HostRuntimeEnvironment', () => {
             os: absentValue as never,
           };
           // act
-          const sut = createEnvironment({
-            window: windowWithAbsentOs,
-          });
+          const sut = new BrowserRuntimeEnvironmentBuilder()
+            .withWindow(windowWithAbsentOs)
+            .build();
           // assert
           expect(sut.os).to.equal(expectedValue);
         });
@@ -161,9 +162,9 @@ describe('HostRuntimeEnvironment', () => {
         const environment = new EnvironmentVariablesStub()
           .withIsNonProduction(expectedValue);
         // act
-        const sut = createEnvironment({
-          environmentVariables: environment,
-        });
+        const sut = new BrowserRuntimeEnvironmentBuilder()
+          .withEnvironmentVariables(environment)
+          .build();
         // assert
         const actualValue = sut.isNonProduction;
         expect(actualValue).to.equal(expectedValue);
@@ -172,32 +173,41 @@ describe('HostRuntimeEnvironment', () => {
   });
 });
 
-interface EnvironmentOptions {
-  readonly window?: Partial<Window>;
-  readonly browserOsDetector?: BrowserOsDetector;
-  readonly environmentVariables?: IEnvironmentVariables;
-  readonly isTouchSupported?: boolean;
-}
+class BrowserRuntimeEnvironmentBuilder {
+  private window: Partial<Window> = {};
 
-function createEnvironment(options: Partial<EnvironmentOptions> = {}): TestableRuntimeEnvironment {
-  const defaultOptions: Required<EnvironmentOptions> = {
-    window: {},
-    browserOsDetector: new BrowserOsDetectorStub(),
-    environmentVariables: new EnvironmentVariablesStub(),
-    isTouchSupported: false,
-  };
+  private browserOsDetector: BrowserOsDetector = new BrowserOsDetectorStub();
 
-  return new TestableRuntimeEnvironment({ ...defaultOptions, ...options });
-}
+  private environmentVariables: IEnvironmentVariables = new EnvironmentVariablesStub();
 
-class TestableRuntimeEnvironment extends HostRuntimeEnvironment {
-  /* Using a separate object instead of `ConstructorParameter<..>` */
-  public constructor(options: Required<EnvironmentOptions>) {
-    super(
-      options.window,
-      options.environmentVariables,
-      options.browserOsDetector,
-      () => options.isTouchSupported,
+  private isTouchSupported = false;
+
+  public withEnvironmentVariables(environmentVariables: IEnvironmentVariables): this {
+    this.environmentVariables = environmentVariables;
+    return this;
+  }
+
+  public withWindow(window: Partial<Window>): this {
+    this.window = window;
+    return this;
+  }
+
+  public withBrowserOsDetector(browserOsDetector: BrowserOsDetector): this {
+    this.browserOsDetector = browserOsDetector;
+    return this;
+  }
+
+  public withTouchSupported(isTouchSupported: boolean): this {
+    this.isTouchSupported = isTouchSupported;
+    return this;
+  }
+
+  public build() {
+    return new BrowserRuntimeEnvironment(
+      this.window,
+      this.environmentVariables,
+      this.browserOsDetector,
+      () => this.isTouchSupported,
     );
   }
 }

@@ -1,11 +1,11 @@
-import { HostRuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/HostRuntimeEnvironment';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
+import { CurrentEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironmentFactory';
 import { Bootstrapper } from '../Bootstrapper';
 
 export class MobileSafariActivePseudoClassEnabler implements Bootstrapper {
   constructor(
-    private readonly currentEnvironment = HostRuntimeEnvironment.CurrentEnvironment,
+    private readonly currentEnvironment = CurrentEnvironment,
     private readonly browser: BrowserAccessor = GlobalBrowserAccessor,
   ) {
 

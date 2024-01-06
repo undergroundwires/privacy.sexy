@@ -1,6 +1,6 @@
 import ProgressBar from 'electron-progressbar';
 import { ProgressInfo } from 'electron-builder';
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow } from 'electron/main';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 
 export class UpdateProgressBar {

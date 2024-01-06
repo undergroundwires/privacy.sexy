@@ -1,4 +1,5 @@
-import { app, shell } from 'electron';
+import { app } from 'electron/main';
+import { shell } from 'electron/common';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import { retryFileSystemAccess } from './RetryFileSystemAccess';
 

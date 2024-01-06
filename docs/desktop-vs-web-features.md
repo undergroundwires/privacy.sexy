@@ -50,5 +50,12 @@ Log file locations vary by operating system:
 
 ### Script execution
 
-Direct execution of scripts is possible in the desktop version, offering a more integrated experience.
-This functionality is not present in the web version due to browser limitations.
+The desktop version of privacy.sexy enables direct script execution, providing a seamless and integrated experience.
+This direct execution capability isn't available in the web version due to inherent browser restrictions.
+
+For enhanced auditability and easier troubleshooting, the desktop version keeps a record of executed scripts in designated directories.
+These locations vary based on the operating system:
+
+- macOS: `$HOME/Library/Application Support/privacy.sexy/runs`
+- Linux: `$HOME/.config/privacy.sexy/runs`
+- Windows: `%APPDATA%\privacy.sexy\runs`

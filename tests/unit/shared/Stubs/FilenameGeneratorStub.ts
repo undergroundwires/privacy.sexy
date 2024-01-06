@@ -1,4 +1,4 @@
-import { FilenameGenerator } from '@/infrastructure/CodeRunner/Filename/FilenameGenerator';
+import { FilenameGenerator } from '@/infrastructure/CodeRunner/Creation/Filename/FilenameGenerator';
 
 export class FilenameGeneratorStub implements FilenameGenerator {
   private filename = `[${FilenameGeneratorStub.name}]file-name-stub`;

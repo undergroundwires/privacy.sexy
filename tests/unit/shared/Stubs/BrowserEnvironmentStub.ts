@@ -1,4 +1,4 @@
-import { BrowserEnvironment } from '@/infrastructure/RuntimeEnvironment/BrowserOs/BrowserOsDetector';
+import { BrowserEnvironment } from '@/infrastructure/RuntimeEnvironment/Browser/BrowserOs/BrowserOsDetector';
 
 export class BrowserEnvironmentStub implements BrowserEnvironment {
   public isTouchSupported = false;

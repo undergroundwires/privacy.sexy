@@ -2,22 +2,19 @@ import { OperatingSystem } from '@/domain/OperatingSystem';
 import { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
 import { IEnvironmentVariables } from '@/infrastructure/EnvironmentVariables/IEnvironmentVariables';
 import { EnvironmentVariablesFactory } from '@/infrastructure/EnvironmentVariables/EnvironmentVariablesFactory';
+import { RuntimeEnvironment } from '../RuntimeEnvironment';
 import { ConditionBasedOsDetector } from './BrowserOs/ConditionBasedOsDetector';
 import { BrowserEnvironment, BrowserOsDetector } from './BrowserOs/BrowserOsDetector';
-import { RuntimeEnvironment } from './RuntimeEnvironment';
 import { isTouchEnabledDevice } from './TouchSupportDetection';
 
-export class HostRuntimeEnvironment implements RuntimeEnvironment {
-  public static readonly CurrentEnvironment
-  : RuntimeEnvironment = new HostRuntimeEnvironment(window);
-
+export class BrowserRuntimeEnvironment implements RuntimeEnvironment {
   public readonly isDesktop: boolean;
 
   public readonly os: OperatingSystem | undefined;
 
   public readonly isNonProduction: boolean;
 
-  protected constructor(
+  public constructor(
     window: Partial<Window>,
     environmentVariables: IEnvironmentVariables = EnvironmentVariablesFactory.Current.instance,
     browserOsDetector: BrowserOsDetector = new ConditionBasedOsDetector(),

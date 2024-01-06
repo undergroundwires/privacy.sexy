@@ -7,7 +7,7 @@ import { RuntimeEnvironmentStub } from '@tests/unit/shared/Stubs/RuntimeEnvironm
 import { LoggerStub } from '@tests/unit/shared/Stubs/LoggerStub';
 import { SystemOperationsStub } from '@tests/unit/shared/Stubs/SystemOperationsStub';
 import { CommandOpsStub } from '@tests/unit/shared/Stubs/CommandOpsStub';
-import { SystemOperations } from '@/infrastructure/CodeRunner/SystemOperations/SystemOperations';
+import { SystemOperations } from '@/infrastructure/CodeRunner/System/SystemOperations';
 import { FileSystemOpsStub } from '@tests/unit/shared/Stubs/FileSystemOpsStub';
 
 describe('VisibleTerminalScriptFileExecutor', () => {

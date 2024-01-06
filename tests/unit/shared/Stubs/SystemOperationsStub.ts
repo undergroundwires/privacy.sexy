@@ -4,7 +4,7 @@ import type {
   OperatingSystemOps,
   LocationOps,
   SystemOperations,
-} from '@/infrastructure/CodeRunner/SystemOperations/SystemOperations';
+} from '@/infrastructure/CodeRunner/System/SystemOperations';
 import { CommandOpsStub } from './CommandOpsStub';
 import { FileSystemOpsStub } from './FileSystemOpsStub';
 import { LocationOpsStub } from './LocationOpsStub';

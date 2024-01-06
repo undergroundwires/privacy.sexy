@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { BrowserCondition, TouchSupportExpectation } from '@/infrastructure/RuntimeEnvironment/BrowserOs/BrowserCondition';
-import { ConditionBasedOsDetector } from '@/infrastructure/RuntimeEnvironment/BrowserOs/ConditionBasedOsDetector';
+import { BrowserCondition, TouchSupportExpectation } from '@/infrastructure/RuntimeEnvironment/Browser/BrowserOs/BrowserCondition';
+import { ConditionBasedOsDetector } from '@/infrastructure/RuntimeEnvironment/Browser/BrowserOs/ConditionBasedOsDetector';
 import { getAbsentStringTestCases, itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { BrowserEnvironmentStub } from '@tests/unit/shared/Stubs/BrowserEnvironmentStub';

@@ -1,6 +1,8 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
 
-export function convertPlatformToOs(platform: NodeJS.Platform): OperatingSystem | undefined {
+export function convertPlatformToOs(
+  platform: NodeJS.Platform,
+): OperatingSystem | undefined {
   switch (platform) {
     case 'darwin':
       return OperatingSystem.macOS;

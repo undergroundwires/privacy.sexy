@@ -1,16 +1,19 @@
 // Initializes Electron's main process, always runs in the background, and manages the main window.
 
 import {
-  app, protocol, BrowserWindow, shell, screen,
-} from 'electron';
+  app, protocol, BrowserWindow, screen,
+} from 'electron/main';
+import { shell } from 'electron/common';
 import log from 'electron-log/main';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { validateRuntimeSanity } from '@/infrastructure/RuntimeSanity/SanityChecks';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
+import { name } from '@/../package.json' assert { type: 'json' };
 import { setupAutoUpdater } from './Update/UpdateInitializer';
 import {
   APP_ICON_PATH, PRELOADER_SCRIPT_PATH, RENDERER_HTML_PATH, RENDERER_URL,
 } from './ElectronConfig';
+import { registerAllIpcChannels } from './IpcRegistration';
 
 const isDevelopment = !app.isPackaged;
 
@@ -57,36 +60,11 @@ function createWindow() {
   });
 }
 
-let macOsQuit = false;
-// Quit when all windows are closed.
-app.on('window-all-closed', () => {
-  if (process.platform === 'darwin'
-    && !macOsQuit) {
-    // On macOS it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
-    return;
-  }
-  app.quit();
-});
+configureAppQuitBehavior();
+registerAllIpcChannels();
+setAppName();
 
-if (process.platform === 'darwin') {
-  // On macOS we application quit is stopped if user does not Cmd + Q
-  // But we still want to be able to use app.quit() and quit the application
-  // on menu bar, after updates etc.
-  app.on('before-quit', () => {
-    macOsQuit = true;
-  });
-}
-
-app.on('activate', () => {
-  // On macOS it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (win === null) {
-    createWindow();
-  }
-});
-
-app.on('ready', async () => {
+app.whenReady().then(async () => {
   if (isDevelopment) {
     try {
       await installExtension(VUEJS_DEVTOOLS);
@@ -95,6 +73,13 @@ app.on('ready', async () => {
     }
   }
   createWindow();
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      // On macOS it's common to re-create a window in the app when the
+      // dock icon is clicked and there are no other windows open.
+      createWindow();
+    }
+  });
 });
 
 // Exit cleanly on request from parent process in development mode.
@@ -155,4 +140,40 @@ function setupLogger(): void {
   // log.initialize(); ← We inject logger to renderer through preloader, this is not needed.
   log.transports.file.level = 'silly';
   log.eventLogger.startLogging();
+}
+
+function configureAppQuitBehavior() {
+  let macOsQuit = false;
+  // Quit when all windows are closed.
+  app.on('window-all-closed', () => {
+    if (process.platform === 'darwin'
+      && !macOsQuit) {
+      /*
+        On macOS it is common for applications and their menu bar
+        to stay active until the user quits explicitly with Cmd + Q
+      */
+      return;
+    }
+    app.quit();
+  });
+  if (process.platform === 'darwin') {
+    /*
+      On macOS we application quit is stopped if user does not Cmd + Q
+      But we still want to be able to use app.quit() and quit the application
+      on menu bar, after updates etc.
+    */
+    app.on('before-quit', () => {
+      macOsQuit = true;
+    });
+  }
+}
+
+function setAppName() {
+  /*
+    Set the app name in development mode to ensure correct userData path.
+    Without this, `app.getPath('userData')` defaults to 'Electron'.
+  */
+  if (isDevelopment) {
+    app.setName(name); // Works only for Windows, unsolved for macOS.
+  }
 }

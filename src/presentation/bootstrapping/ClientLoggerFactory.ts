@@ -1,10 +1,10 @@
-import { HostRuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/HostRuntimeEnvironment';
 import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
 import { ConsoleLogger } from '@/infrastructure/Log/ConsoleLogger';
 import { Logger } from '@/application/Common/Log/Logger';
 import { LoggerFactory } from '@/application/Common/Log/LoggerFactory';
 import { NoopLogger } from '@/infrastructure/Log/NoopLogger';
 import { WindowInjectedLogger } from '@/infrastructure/Log/WindowInjectedLogger';
+import { CurrentEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironmentFactory';
 
 export class ClientLoggerFactory implements LoggerFactory {
   public static readonly Current: LoggerFactory = new ClientLoggerFactory();
@@ -12,7 +12,7 @@ export class ClientLoggerFactory implements LoggerFactory {
   public readonly logger: Logger;
 
   protected constructor(
-    environment: RuntimeEnvironment = HostRuntimeEnvironment.CurrentEnvironment,
+    environment: RuntimeEnvironment = CurrentEnvironment,
   ) {
     if (environment.isDesktop) {
       this.logger = new WindowInjectedLogger();
