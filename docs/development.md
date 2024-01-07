@@ -17,6 +17,7 @@ See [ci-cd.md](./ci-cd.md) for more information.
   - Refer to [action.yml](./../.github/actions/setup-node/action.yml) for the minimum required version compatible with the automated workflows.
   - 💡 Recommended: Use [`nvm`](https://github.com/nvm-sh/nvm) CLI to install and switch between Node.js versions.
 - Install dependencies using `npm install` (or [`npm run install-deps`](#utility-scripts) for more options).
+- For Visual Studio Code users, running the configuration script is recommended to optimize the IDE settings, as detailed in [utility scripts](#utility-scripts).
 
 ### Testing
 
@@ -79,8 +80,8 @@ See [ci-cd.md](./ci-cd.md) for more information.
 - [**`npm run install-deps [-- <options>]`**](../scripts/npm-install.js):
   - Manages NPM dependency installation, it offers capabilities like doing a fresh install, retries on network errors, and other features.
   - For example, you can run `npm run install-deps -- --fresh` to do clean installation of dependencies.
-- [**`./scripts/configure-vscode.sh`**](../scripts/configure-vscode.sh):
-  - This script checks and sets the necessary configurations for VSCode in `settings.json` file.
+- [**`python ./scripts/configure_vscode.py`**](../scripts/configure_vscode.py):
+  - Optimizes Visual Studio Code settings and installs essential extensions, enhancing the development environment.
 
 #### Automation scripts
 
@@ -96,3 +97,4 @@ See [ci-cd.md](./ci-cd.md) for more information.
 You should use EditorConfig to follow project style.
 
 For Visual Studio Code, [`.vscode/extensions.json`](./../.vscode/extensions.json) includes list of recommended extensions.
+You can use [VSCode configuration script](#utility-scripts) to automatically install those.

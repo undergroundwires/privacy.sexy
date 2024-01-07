@@ -16,7 +16,8 @@
     // Scripting
     "timonwong.shellcheck",             // Lints bash files.
     "ms-vscode.powershell",             // Lints PowerShell files.
-    "ms-python.python",                 // Lints Python files.
+    "ms-python.python",                 // Python IntelliSense, debugging, and basic linting.
+    "ms-python.pylint",                 // Lints Python files
     // Distribution
     "ms-azuretools.vscode-docker"       // Adds Docker support.
   ]

@@ -1,3 +1,6 @@
+# Top-most EditorConfig file
+root = true
+
 [*.{js,jsx,ts,tsx,vue,sh}]
 indent_style = space
 indent_size = 2
@@ -9,3 +12,8 @@ max_line_length = 100
 [{Dockerfile}]
 indent_style = space
 indent_size = 4
+
+[*.py]
+indent_size = 4 # PEP 8 (the official Python style guide) recommends using 4 spaces per indentation level
+indent_style = space
+max_line_length = 100
