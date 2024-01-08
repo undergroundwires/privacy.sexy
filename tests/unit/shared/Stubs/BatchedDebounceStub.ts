@@ -10,7 +10,7 @@ export class BatchedDebounceStub<T> {
   public func = (
     callback: (batches: readonly T[]) => void,
     waitInMs: number,
-  ): (arg: T) => void => {
+  ): ReturnType<typeof batchedDebounce> => {
     this.callHistory.push([callback, waitInMs]);
     return (arg: T) => {
       this.collectedArgs.push(arg);

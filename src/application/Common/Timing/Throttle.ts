@@ -1,7 +1,7 @@
 import { Timer, TimeoutType } from './Timer';
 import { PlatformTimer } from './PlatformTimer';
 
-export type CallbackType = (..._: unknown[]) => void;
+export type CallbackType = (..._: readonly unknown[]) => void;
 
 export function throttle(
   callback: CallbackType,
