@@ -2,26 +2,33 @@ import { BrowserRuntimeEnvironment } from './Browser/BrowserRuntimeEnvironment';
 import { NodeRuntimeEnvironment } from './Node/NodeRuntimeEnvironment';
 import { RuntimeEnvironment } from './RuntimeEnvironment';
 
-export const CurrentEnvironment = determineAndCreateRuntimeEnvironment(
-  () => globalThis.window,
-);
+export const CurrentEnvironment = determineAndCreateRuntimeEnvironment({
+  getGlobalWindow: () => globalThis.window,
+  getGlobalProcess: () => globalThis.process,
+});
 
 export function determineAndCreateRuntimeEnvironment(
-  windowAccessor: WindowAccessor,
+  globalAccessor: GlobalAccessor,
   browserEnvironmentFactory: BrowserRuntimeEnvironmentFactory = (
     window,
   ) => new BrowserRuntimeEnvironment(window),
   nodeEnvironmentFactory: NodeRuntimeEnvironmentFactory = () => new NodeRuntimeEnvironment(),
 ): RuntimeEnvironment {
-  const window = windowAccessor();
+  if (globalAccessor.getGlobalProcess()) {
+    return nodeEnvironmentFactory();
+  }
+  const window = globalAccessor.getGlobalWindow();
   if (window) {
     return browserEnvironmentFactory(window);
   }
-  return nodeEnvironmentFactory();
+  throw new Error('Unsupported runtime environment: The current context is neither a recognized browser nor a Node.js environment.');
 }
 
 export type BrowserRuntimeEnvironmentFactory = (window: Window) => RuntimeEnvironment;
 
 export type NodeRuntimeEnvironmentFactory = () => NodeRuntimeEnvironment;
 
-export type WindowAccessor = () => Window | undefined;
+export interface GlobalAccessor {
+  getGlobalWindow(): Window | undefined;
+  getGlobalProcess(): NodeJS.Process | undefined;
+}

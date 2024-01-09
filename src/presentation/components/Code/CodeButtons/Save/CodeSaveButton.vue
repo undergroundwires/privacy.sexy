@@ -21,6 +21,7 @@ import ModalDialog from '@/presentation/components/Shared/Modal/ModalDialog.vue'
 import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import { ScriptFileName } from '@/application/CodeRunner/ScriptFileName';
 import IconButton from '../IconButton.vue';
 import InstructionList from './Instructions/InstructionList.vue';
 import { IInstructionListData } from './Instructions/InstructionListData';
@@ -74,11 +75,11 @@ function getType(language: ScriptingLanguage) {
       throw new Error('unknown file type');
   }
 }
+
 function buildFileName(scripting: IScriptingDefinition) {
-  const fileName = 'privacy-script';
   if (scripting.fileExtension) {
-    return `${fileName}.${scripting.fileExtension}`;
+    return `${ScriptFileName}.${scripting.fileExtension}`;
   }
-  return fileName;
+  return ScriptFileName;
 }
 </script>

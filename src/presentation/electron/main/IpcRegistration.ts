@@ -1,5 +1,5 @@
 import { ScriptFileCodeRunner } from '@/infrastructure/CodeRunner/ScriptFileCodeRunner';
-import { CodeRunner } from '@/application/CodeRunner';
+import { CodeRunner } from '@/application/CodeRunner/CodeRunner';
 import { registerIpcChannel } from '../shared/IpcBridging/IpcProxy';
 import { IpcChannelDefinitions } from '../shared/IpcBridging/IpcChannelDefinitions';
 

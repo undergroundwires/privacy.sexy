@@ -13,15 +13,41 @@ export class ClientLoggerFactory implements LoggerFactory {
 
   protected constructor(
     environment: RuntimeEnvironment = CurrentEnvironment,
+    windowAccessor: WindowAccessor = () => globalThis.window,
+    noopLoggerFactory: LoggerCreationFunction = () => new NoopLogger(),
+    windowInjectedLoggerFactory: LoggerCreationFunction = () => new WindowInjectedLogger(),
+    consoleLoggerFactory: LoggerCreationFunction = () => new ConsoleLogger(),
   ) {
+    if (isUnitOrIntegrationTests(environment, windowAccessor)) {
+      this.logger = noopLoggerFactory(); // keep the test outputs clean
+      return;
+    }
     if (environment.isDesktop) {
-      this.logger = new WindowInjectedLogger();
+      this.logger = windowInjectedLoggerFactory();
       return;
     }
     if (environment.isNonProduction) {
-      this.logger = new ConsoleLogger();
+      this.logger = consoleLoggerFactory();
       return;
     }
-    this.logger = new NoopLogger();
+    this.logger = noopLoggerFactory();
   }
+}
+
+export type WindowAccessor = () => OptionalWindow;
+
+export type LoggerCreationFunction = () => Logger;
+
+type OptionalWindow = Window | undefined | null;
+
+function isUnitOrIntegrationTests(
+  environment: RuntimeEnvironment,
+  windowAccessor: WindowAccessor,
+): boolean {
+  /*
+    In a desktop application context, Electron preloader process inject a logger into
+    the global window object. If we're in a desktop (Node) environment and the logger isn't
+    injected, it indicates a testing environment.
+  */
+  return environment.isDesktop && !windowAccessor()?.log;
 }

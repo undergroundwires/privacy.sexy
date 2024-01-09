@@ -1,4 +1,4 @@
-import { ScriptFileCreator } from '@/infrastructure/CodeRunner/Creation/ScriptFileCreator';
+import { ScriptFileCreator, ScriptFileNameParts } from '@/infrastructure/CodeRunner/Creation/ScriptFileCreator';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class ScriptFileCreatorStub
@@ -11,10 +11,13 @@ export class ScriptFileCreatorStub
     return this;
   }
 
-  public createScriptFile(contents: string): Promise<string> {
+  public createScriptFile(
+    contents: string,
+    scriptFileNameParts: ScriptFileNameParts,
+  ): Promise<string> {
     this.registerMethodCall({
       methodName: 'createScriptFile',
-      args: [contents],
+      args: [contents, scriptFileNameParts],
     });
     return Promise.resolve(this.createdFilePath);
   }

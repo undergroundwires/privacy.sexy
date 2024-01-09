@@ -55,7 +55,7 @@ describe('VisibleTerminalScriptFileExecutor', () => {
           {
             description: 'encloses path in quotes',
             filePath: 'file',
-            expectedCommand: '"file"',
+            expectedCommand: 'PowerShell Start-Process -Verb RunAs -FilePath "file"',
           },
         ],
         [OperatingSystem.macOS]: [

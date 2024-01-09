@@ -1,9 +1,17 @@
 import { FilenameGenerator } from '@/infrastructure/CodeRunner/Creation/Filename/FilenameGenerator';
+import { ScriptFileNameParts } from '@/infrastructure/CodeRunner/Creation/ScriptFileCreator';
+import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
-export class FilenameGeneratorStub implements FilenameGenerator {
+export class FilenameGeneratorStub
+  extends StubWithObservableMethodCalls<FilenameGenerator>
+  implements FilenameGenerator {
   private filename = `[${FilenameGeneratorStub.name}]file-name-stub`;
 
-  public generateFilename(): string {
+  public generateFilename(scriptFileNameParts: ScriptFileNameParts): string {
+    this.registerMethodCall({
+      methodName: 'generateFilename',
+      args: [scriptFileNameParts],
+    });
     return this.filename;
   }
 

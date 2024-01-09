@@ -26,7 +26,10 @@ export default defineComponent({
 
     async function executeCode() {
       if (!codeRunner) { throw new Error('missing code runner'); }
-      await codeRunner.runCode(currentContext.state.code.current);
+      await codeRunner.runCode(
+        currentContext.state.code.current,
+        currentContext.state.collection.scripting.fileExtension,
+      );
     }
 
     return {

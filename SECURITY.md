@@ -37,6 +37,10 @@ privacy.sexy adopts a defense in depth strategy to protect users on multiple lay
 - **Auditing and Transparency:**
   The desktop application improves security and transparency by logging application activities and retaining files of executed scripts
   This facilitates detailed auditability and effective troubleshooting, contributing to the integrity and reliability of the application.
+- **Privilege Management:**
+  The desktop application operates without persistent administrative or `sudo` privileges, reinforcing its security posture. It requests
+  elevation of privileges for system modifications with explicit user consent and logs every action taken with high privileges. This
+  approach actively minimizes potential security risks by limiting privileged operations and aligning with the principle of least privilege.
 
 ### Update Security and Integrity
 

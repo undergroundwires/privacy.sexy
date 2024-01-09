@@ -1,3 +1,5 @@
+import { ScriptFileNameParts } from '../ScriptFileCreator';
+
 export interface FilenameGenerator {
-  generateFilename(): string;
+  generateFilename(scriptFileNameParts: ScriptFileNameParts): string;
 }

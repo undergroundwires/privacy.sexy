@@ -1,5 +1,5 @@
 import { FunctionKeys } from '@/TypeHelpers';
-import { CodeRunner } from '@/application/CodeRunner';
+import { CodeRunner } from '@/application/CodeRunner/CodeRunner';
 import { IpcChannel } from './IpcChannel';
 
 export const IpcChannelDefinitions = {

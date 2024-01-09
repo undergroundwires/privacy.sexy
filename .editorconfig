@@ -1,10 +1,11 @@
-# Top-most EditorConfig file
-root = true
+root = true # Top-most EditorConfig file
+
+[*]
+end_of_line = lf
 
 [*.{js,jsx,ts,tsx,vue,sh}]
 indent_style = space
 indent_size = 2
-end_of_line = lf
 trim_trailing_whitespace = true
 insert_final_newline = true
 max_line_length = 100
@@ -17,3 +18,9 @@ indent_size = 4
 indent_size = 4 # PEP 8 (the official Python style guide) recommends using 4 spaces per indentation level
 indent_style = space
 max_line_length = 100
+
+[*.ps1]
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+insert_final_newline = true

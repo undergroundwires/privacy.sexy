@@ -24,6 +24,10 @@ export class VisibleTerminalScriptExecutor implements ScriptFileExecutor {
   }
 
   private async setFileExecutablePermissions(filePath: string): Promise<void> {
+    /*
+      This is required on macOS and Linux otherwise the terminal emulators will refuse to
+      execute the script. It's not needed on Windows.
+    */
     this.logger.info(`Setting execution permissions for file at ${filePath}`);
     await this.system.fileSystem.setFilePermissions(filePath, '755');
     this.logger.info(`Execution permissions set successfully for ${filePath}`);
@@ -53,43 +57,93 @@ interface TerminalExecutionContext {
 
 type TerminalRunner = (context: TerminalExecutionContext) => Promise<void>;
 
+export const LinuxTerminalEmulator = 'x-terminal-emulator';
+
 const TerminalRunners: Partial<Record<OperatingSystem, TerminalRunner>> = {
   [OperatingSystem.Windows]: async (context) => {
+    const command = [
+      'PowerShell',
+      'Start-Process',
+      '-Verb RunAs', // Run as administrator with GUI sudo prompt
+      `-FilePath ${cmdShellPathArgumentEscape(context.scriptFilePath)}`,
+    ].join(' ');
     /*
-      Options:
-        "path":
-          ✅ Launches the script within `cmd.exe`.
-          ✅ Uses user-friendly GUI sudo prompt.
+      📝 Options:
+        `child_process.execFile()`
+        "path", `cmd.exe /c "path"`
+          ❌  Script execution in the background without a visible terminal.
+              This occurs only when the user runs the application as administrator, as seen
+              in Windows Pro VMs on Azure.
+        `PowerShell Start -Verb RunAs "path"`
+          ✅  Visible terminal window
+          ✅  GUI sudo prompt (through `RunAs` option)
+        `PowerShell Start "path"`
+        `explorer.exe "path"`
+        `electron.shell.openPath`
+        `start cmd.exe /c "$path"`
+          ✅  Visible terminal window
+          ✅  GUI sudo prompt (through `RunAs` option)
+          👍  Among all options `start` command is the most explicit one, being the most resilient
+              against the potential changes in Windows or Electron framework (e.g. https://github.com/electron/electron/issues/36765).
+              `%COMSPEC%` environment variable should be checked before defaulting to `cmd.exe.
+      Related docs: https://web.archive.org/web/20240106002357/https://nodejs.org/api/child_process.html#spawning-bat-and-cmd-files-on-windows
     */
-    const command = cmdShellPathArgumentEscape(context.scriptFilePath);
     await runCommand(command, context);
   },
   [OperatingSystem.Linux]: async (context) => {
-    const command = `x-terminal-emulator -e ${posixShellPathArgumentEscape(context.scriptFilePath)}`;
+    const command = `${LinuxTerminalEmulator} -e ${posixShellPathArgumentEscape(context.scriptFilePath)}`;
     /*
-      Options:
-        `x-terminal-emulator -e`:
-          ✅ Launches the script within the default terminal emulator.
-          ❌ Requires terminal-based (not GUI) sudo prompt, which may not be very user friendly.
+      🤔 Potential improvements:
+          Use user-friendly GUI sudo prompt (not terminal-based).
+          If `pkexec` exists, we could do `x-terminal-emulator -e pkexec 'path'`, which always
+          prompts with user-friendly GUI sudo prompt.
+      📝 Options:
+        `x-terminal-emulator -e 'path'`:
+            ✅  Visible terminal window
+            ❌  Terminal-based (not GUI) sudo prompt.
+        `x-terminal-emulator -e pkexec 'path'
+          ✅  Visible terminal window
+          ✅  Always prompts with user-friendly GUI sudo prompt.
+          🤔  Not using `pkexec` as it is not in all Linux distributions. It should have smarter
+              logic to handle if it does not exist.
+        `electron.shell.openPath`:
+          ❌  Opens the script in the default text editor, verified on
+              Debian/Ubuntu-based distributions.
+        `child_process.execFile()`:
+          ❌  Script execution in the background without a visible terminal.
     */
     await runCommand(command, context);
   },
   [OperatingSystem.macOS]: async (context) => {
     const command = `open -a Terminal.app ${posixShellPathArgumentEscape(context.scriptFilePath)}`;
+    // -a Specifies the application to use for opening the file
+    /* eslint-disable vue/max-len */
     /*
-      Options:
-        `open -a Terminal.app`:
-          ✅ Launches the script within Terminal app, that exists natively in all modern macOS
-             versions.
-          ❌ Requires terminal-based (not GUI) sudo prompt, which may not be very user friendly.
-          ❌ Terminal app requires many privileges to execute the script, this would prompt user
-             to grant privileges to the Terminal app.
-
-        `osascript -e "do shell script \\"${scriptPath}\\" with administrator privileges"`:
-          ✅ Uses user-friendly GUI sudo prompt.
-          ❌ Executes the script in the background, which does not provide the user with immediate
-             visual feedback or allow interaction with the script as it runs.
+      🤔 Potential improvements:
+        Use user-friendly GUI sudo prompt for running the script.
+      📝 Options:
+        `open -a Terminal.app 'path'`
+          ✅  Visible terminal window
+          ❌  Terminal-based (not GUI) sudo prompt.
+          ❌  Terminal app requires many privileges to execute the script, this prompts user
+              to grant privileges to the Terminal app.
+        `osascript -e 'do shell script "'/tmp/test.sh'" with administrator privileges'`
+          ✅  Script as root
+          ✅  GUI sudo prompt.
+          ❌  Script execution in the background without a visible terminal.
+        `osascript -e 'do shell script "open -a 'Terminal.app' '/tmp/test.sh'" with administrator privileges'`
+          ❌  Script as user, not root
+          ✅  GUI sudo prompt.
+          ✅  Visible terminal window
+        `osascript -e 'do shell script "/System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal '/tmp/test.sh'" with administrator privileges'`
+          ✅  Script as root
+          ✅  GUI sudo prompt.
+          ✅  Visible terminal window
+        Useful resources about `do shell script .. with administrator privileges`:
+          - Change "osascript wants to make changes" prompt: https://web.archive.org/web/20240109191128/https://apple.stackexchange.com/questions/283353/how-to-rename-osascript-in-the-administrator-privileges-dialog
+          - More about `do shell script`: https://web.archive.org/web/20100906222226/http://developer.apple.com/mac/library/technotes/tn2002/tn2065.html
     */
+    /* eslint-enable vue/max-len */
     await runCommand(command, context);
   },
 } as const;
@@ -101,11 +155,13 @@ async function runCommand(command: string, context: TerminalExecutionContext): P
 }
 
 function posixShellPathArgumentEscape(pathArgument: string): string {
-  // - Wraps the path in single quotes, which is a standard practice in POSIX shells
-  //   (like bash and zsh) found on macOS/Linux to ensure that characters like spaces, '*', and
-  //   '?' are treated as literals, not as special characters.
-  // - Escapes any single quotes within the path itself. This allows paths containing single
-  //   quotes to be correctly interpreted in POSIX-compliant systems, such as Linux and macOS.
+  /*
+    - Wraps the path in single quotes, which is a standard practice in POSIX shells
+      (like bash and zsh) found on macOS/Linux to ensure that characters like spaces, '*', and
+      '?' are treated as literals, not as special characters.
+    - Escapes any single quotes within the path itself. This allows paths containing single
+      quotes to be correctly interpreted in POSIX-compliant systems, such as Linux and macOS.
+  */
   return `'${pathArgument.replaceAll('\'', '\'\\\'\'')}'`;
 }
 

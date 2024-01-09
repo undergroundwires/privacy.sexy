@@ -1,7 +1,7 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { Logger } from '@/application/Common/Log/Logger';
 import { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
-import { CodeRunner } from '@/application/CodeRunner';
+import { CodeRunner } from '@/application/CodeRunner/CodeRunner';
 import { LoggerStub } from './LoggerStub';
 import { CodeRunnerStub } from './CodeRunnerStub';
 

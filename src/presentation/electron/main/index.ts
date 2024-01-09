@@ -8,7 +8,6 @@ import log from 'electron-log/main';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { validateRuntimeSanity } from '@/infrastructure/RuntimeSanity/SanityChecks';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
-import { name } from '@/../package.json' assert { type: 'json' };
 import { setupAutoUpdater } from './Update/UpdateInitializer';
 import {
   APP_ICON_PATH, PRELOADER_SCRIPT_PATH, RENDERER_HTML_PATH, RENDERER_URL,
@@ -62,7 +61,6 @@ function createWindow() {
 
 configureAppQuitBehavior();
 registerAllIpcChannels();
-setAppName();
 
 app.whenReady().then(async () => {
   if (isDevelopment) {
@@ -165,15 +163,5 @@ function configureAppQuitBehavior() {
     app.on('before-quit', () => {
       macOsQuit = true;
     });
-  }
-}
-
-function setAppName() {
-  /*
-    Set the app name in development mode to ensure correct userData path.
-    Without this, `app.getPath('userData')` defaults to 'Electron'.
-  */
-  if (isDevelopment) {
-    app.setName(name); // Works only for Windows, unsolved for macOS.
   }
 }

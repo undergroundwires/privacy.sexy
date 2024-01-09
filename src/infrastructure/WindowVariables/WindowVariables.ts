@@ -1,6 +1,6 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { Logger } from '@/application/Common/Log/Logger';
-import { CodeRunner } from '@/application/CodeRunner';
+import { CodeRunner } from '@/application/CodeRunner/CodeRunner';
 
 /* Primary entry point for platform-specific injections */
 export interface WindowVariables {
