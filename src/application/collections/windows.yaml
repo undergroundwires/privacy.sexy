@@ -9892,22 +9892,42 @@ actions:
                     -
                         category: Remove extension apps
                         docs: |-
-                            This category focuses on scripts designed to uninstall specific extensions from Windows.
+                            This category contains scripts to uninstall extension apps.
+                            Extension apps are add-ons that enhance functionality related to media, images, and other software capabilities.
 
-                            Extensions, in the context of Windows, are software components that add specific capabilities to a larger software application. These
-                            extensions can be related to media, images, videos, or other functionalities that enhance the main software's performance.
+                            Many of these extensions come pre-installed on some Windows versions [1].
+                            While they can be helpful, not everyone needs them.
 
-                            Most of these extensions come pre-installed on certain versions of Windows [1]. While they offer additional functionalities, not all
-                            users require them, so the scripts provide an option to uninstall them if desired.
+                            Unused extensions can present security risks due to potential critical vulnerabilities [2] [3].
+                            A critical vulnerability is a serious security risk that could allow attackers to gain full control of your system.
+                            This risk is heightened because extensions usually have extensive access to the system.
+
+                            By using these scripts, you can remove unnecessary extensions to improve your computer's security and lower the risk
+                            of cyber attacks, a proactive measure for security and privacy.
+
+                            > **Caution:** Uninstalling extensions could affect certain features, such as media playback or image processing.
 
                             [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
+                            [2]: https://web.archive.org/web/20231230081051/https://www.cvedetails.com/vulnerability-list/vendor_id-26/product_id-80307/Microsoft-Hevc-Video-Extensions.html "Microsoft Hevc Video Extensions : Security vulnerabilities, CVEs | cvedetails.com"
+                            [3]: https://web.archive.org/web/20231231094958/https://www.opencve.io/cve?vendor=microsoft&product=raw_image_extension "Microsoft - Raw Image Extension CVE - OpenCVE | www.opencve.io"
                         children:
                             -
                                 name: Remove "HEIF Image Extensions" app
                                 docs: |-
+                                    This script uninstalls the "HEIF Image Extensions" app.
+
+                                    The HEIF Image Extension lets Windows devices read and write files in the High Efficiency Image File (HEIF) format,
+                                    commonly with `.heic` or `.heif` extensions [1].
+
+                                    This app contains high severity vulnerabilities in certain versions [2].
+                                    A high vulnerability is a serious security risk that could allow attackers to gain full control of your system.
+                                    Removing this app will improve your system's security and reduce the risk of these threats.
+
+                                    This app comes pre-installed on certain versions of Windows [3] [4].
+
                                     [Microsoft Store Page](https://web.archive.org/web/20231003201158/https://apps.microsoft.com/store/detail/heif-image-extensions/9PMMSR1CGPWG)
 
-                                    This app comes pre-installed on certain versions of Windows [1] [2].
+                                    > **Caution:** Removing this app could impact your ability to view and manage high-efficiency image files in `.heic` or `.heif` formats.
 
                                     ### Overview of default preinstallation
 
@@ -9921,8 +9941,10 @@ actions:
                                     | Windows 11 | 22H2 | ✅ |
                                     | Windows 11 | 23H2 | ✅ |
 
-                                    [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
-                                    [2]: https://web.archive.org/web/20221101231811/https://learn.microsoft.com/en-us/windows/application-management/provisioned-apps-windows-client-os "Get the provisioned apps on Windows client operating system - Windows Application Management | Microsoft Learn"
+                                    [1]: https://web.archive.org/web/20231003201158/https://apps.microsoft.com/store/detail/heif-image-extensions/9PMMSR1CGPWG "HEIF Image Extensions - Microsoft Store Apps | apps.microsoft.com"
+                                    [2]: https://web.archive.org/web/20231231101743/https://www.cvedetails.com/vulnerability-list/vendor_id-26/product_id-88754/Microsoft-Heif-Image-Extension.html "Microsoft Heif Image Extension : Security vulnerabilities, CVEs | cvedetails.com"
+                                    [3]: https://web.archive.org/web/20221101231811/https://learn.microsoft.com/en-us/windows/application-management/provisioned-apps-windows-client-os "Get the provisioned apps on Windows client operating system - Windows Application Management | Microsoft Learn"
+                                    [4]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                 call:
                                     function: UninstallStoreApp
                                     parameters:
@@ -9931,9 +9953,21 @@ actions:
                             -
                                 name: Remove "VP9 Video Extensions" app
                                 docs: |-
+                                    This script uninstalls the "VP9 Video Extensions" app.
+
+                                    The "VP9 Video Extensions" app facilitates the playback of VP9 video format, widely used for internet streaming,
+                                    across various video applications on Windows [1]. The app leverages hardware capabilities on newer devices for
+                                    enhanced performance and offers software support where such hardware is absent [1].
+
+                                    This app contains high severity vulnerabilities in certain versions [2].
+                                    A high vulnerability is a serious security risk that could allow attackers to gain full control of your system.
+                                    Removing this app will improve your system's security and reduce the risk of these threats.
+
+                                    This app comes pre-installed on certain versions of Windows [3] [4].
+
                                     [Microsoft Store Page](https://web.archive.org/web/20231003201732/https://apps.microsoft.com/store/detail/vp9-video-extensions/9N4D0MSMP0PT)
 
-                                    This app comes pre-installed on certain versions of Windows [1] [2].
+                                    > **Caution:** Removing this app could impact your ability to play VP9 video content, widely used in internet streaming.
 
                                     ### Overview of default preinstallation
 
@@ -9947,8 +9981,10 @@ actions:
                                     | Windows 11 | 22H2 | ✅ |
                                     | Windows 11 | 23H2 | ✅ |
 
-                                    [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
-                                    [2]: https://web.archive.org/web/20221101231811/https://learn.microsoft.com/en-us/windows/application-management/provisioned-apps-windows-client-os "Get the provisioned apps on Windows client operating system - Windows Application Management | Microsoft Learn"
+                                    [1]: https://web.archive.org/web/20231003201732/https://apps.microsoft.com/store/detail/vp9-video-extensions/9N4D0MSMP0PT "VP9 Video Extensions - Microsoft Apps | apps.microsoft.com"
+                                    [2]: https://web.archive.org/web/20231231101046/https://www.cvedetails.com/vulnerability-list/vendor_id-26/product_id-82475/version_id-637349/Microsoft-Vp9-Video-Extensions--.html "Microsoft Vp9 Video Extensions version - : Security vulnerabilities, CVEs | cvedetails.com"
+                                    [3]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
+                                    [4]: https://web.archive.org/web/20221101231811/https://learn.microsoft.com/en-us/windows/application-management/provisioned-apps-windows-client-os "Get the provisioned apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
                                     function: UninstallStoreApp
                                     parameters:
@@ -9957,9 +9993,20 @@ actions:
                             -
                                 name: Remove "Web Media Extensions" app
                                 docs: |-
-                                    [Microsoft Store Page](https://web.archive.org/web/20231003202207/https://apps.microsoft.com/store/detail/web-media-extensions/9N5TDP8VCMHS)
+                                    This script uninstalls the "Web Media Extensions" app.
 
-                                    This app comes pre-installed on certain versions of Windows [1] [2].
+                                    "Web Media Extensions" package enhances Microsoft Edge and Windows by supporting open source formats commonly used on the web [1].
+                                    It enables native playback of media in OGG format and content encoded with Vorbis or Theora codecs [1].
+
+                                    This app contains high severity vulnerabilities in certain versions [2].
+                                    A high vulnerability is a serious security risk that could allow attackers to gain full control of your system.
+                                    Removing this app will improve your system's security and reduce the risk of these threats.
+
+                                    This app comes pre-installed on certain versions of Windows [3] [4].
+
+                                    [Microsoft Store Page](https://archive.ph/2023.12.31-102721/https://apps.microsoft.com/detail/9N5TDP8VCMHS?hl=en-us&gl=US)
+
+                                    > **Caution:** Removing this app may limit playback of media in OGG format or content encoded with Vorbis or Theora codecs.
 
                                     ### Overview of default preinstallation
 
@@ -9973,8 +10020,10 @@ actions:
                                     | Windows 11 | 22H2 | ✅ |
                                     | Windows 11 | 23H2 | ✅ |
 
-                                    [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
-                                    [2]: https://web.archive.org/web/20221101231811/https://learn.microsoft.com/en-us/windows/application-management/provisioned-apps-windows-client-os "Get the provisioned apps on Windows client operating system - Windows Application Management | Microsoft Learn"
+                                    [1]: https://archive.ph/2023.12.31-102721/https://apps.microsoft.com/detail/9N5TDP8VCMHS?hl=en-us&gl=US "Web Media Extensions - Microsoft Apps | apps.microsoft.com"
+                                    [2]: https://web.archive.org/web/20231231101609/https://www.cvedetails.com/vulnerability-list/vendor_id-26/product_id-94822/Microsoft-Web-Media-Extensions.html "Microsoft Web Media Extensions : Security vulnerabilities, CVEs | cvedetails.com"
+                                    [3]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
+                                    [4]: https://web.archive.org/web/20221101231811/https://learn.microsoft.com/en-us/windows/application-management/provisioned-apps-windows-client-os "Get the provisioned apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
                                     function: UninstallStoreApp
                                     parameters:
@@ -9983,9 +10032,19 @@ actions:
                             -
                                 name: Remove "Webp Image Extensions" app
                                 docs: |-
+                                    This script uninstalls the "Webp Image Extensions" app.
+
+                                    The "Webp Image Extensions" app allows Microsoft Edge browser to display WebP images [1].
+                                    WebP is an advanced image format offering efficient compression to support smaller, high-quality images on the web [1].
+
+                                    This app contains vulnerabilities in certain versions [2].
+                                    Removing this app will improve your system's security and reduce the risk of these threats.
+
+                                    This app comes pre-installed on certain versions of Windows [3] [4].
+
                                     [Microsoft Store Page](https://web.archive.org/web/20231003202310/https://apps.microsoft.com/store/detail/webp-image-extensions/9PG2DK419DRG)
 
-                                    This app comes pre-installed on certain versions of Windows [1].
+                                    > **Caution:** Removing this app may affect your ability to view WebP images in the Microsoft Edge browser and other applications.
 
                                     ### Overview of default preinstallation
 
@@ -9999,12 +10058,91 @@ actions:
                                     | Windows 11 | 22H2 | ✅ |
                                     | Windows 11 | 23H2 | ✅ |
 
-                                    [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
-                                    [2]: https://web.archive.org/web/20221101231811/https://learn.microsoft.com/en-us/windows/application-management/provisioned-apps-windows-client-os "Get the provisioned apps on Windows client operating system - Windows Application Management | Microsoft Learn"
+                                    [1]: https://web.archive.org/web/20231003202310/https://apps.microsoft.com/store/detail/webp-image-extensions/9PG2DK419DRG "Webp Image Extensions - Microsoft Store Apps | apps.microsoft.com"
+                                    [2]: https://web.archive.org/web/20231231095646/https://www.cvedetails.com/vulnerability-list/vendor_id-26/product_id-88755/Microsoft-Webp-Image-Extension.html "Microsoft Webp Image Extension : Security vulnerabilities, CVEs | cvedetails.com"
+                                    [3]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
+                                    [4]: https://web.archive.org/web/20221101231811/https://learn.microsoft.com/en-us/windows/application-management/provisioned-apps-windows-client-os "Get the provisioned apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                                 call:
                                     function: UninstallStoreApp
                                     parameters:
                                         packageName: Microsoft.WebpImageExtension # Get-AppxPackage Microsoft.WebpImageExtension
+                                        publisherId: 8wekyb3d8bbwe
+                            -
+                                name: Remove "HEVC Video Extensions" app
+                                docs: |-
+                                    This script uninstalls the "HEVC Video Extensions" app.
+                                    The app is designed to extend the capability of Windows to play and produce HEVC (High Efficiency Video Coding)
+                                    encoded video content, which is key for high-quality video formats like 4K and Ultra HD [1].
+
+                                    The app utilizes hardware features in newer devices to enhance video quality [1]. However, for devices lacking hardware support,
+                                    the app provides software support, although the performance might vary based on video resolution and PC capabilities [1].
+                                    It also includes the H265 codec, essential for HEVC video processing [2].
+
+                                    This app contains critical severity vulnerabilities in certain versions [3].
+                                    A critical vulnerability is a serious security risk that could allow attackers to gain full control of your system.
+                                    Removing this app will improve your system's security and reduce the risk of these threats.
+
+                                    This app comes pre-installed on certain versions of Windows [4].
+
+                                    [Microsoft Store Page](https://archive.ph/2023.12.30-072158/https://apps.microsoft.com/detail/9NMZLZ57R3T7?hl=en-us&gl=US)
+
+                                    > **Caution:** Removing this app could impact your ability to handle HEVC-encoded content.
+
+                                    ### Overview of default preinstallation
+
+                                    | OS | Version | Existence |
+                                    | -- |:-------:|:---------:|
+                                    | Windows 10 | 19H2 | ❌ |
+                                    | Windows 10 | 20H2 | ❌ |
+                                    | Windows 10 | 21H2 | ❌ |
+                                    | Windows 10 | 22H2 | ❌ |
+                                    | Windows 11 | 21H2 | ❌ |
+                                    | Windows 11 | 22H2 | ✅ |
+                                    | Windows 11 | 23H2 | ✅ |
+
+                                    [1]: https://archive.ph/2023.12.30-072158/https://apps.microsoft.com/detail/9NMZLZ57R3T7?hl=en-us&gl=US "HEVC Video Extensions - Microsoft Apps | apps.microsoft.com"
+                                    [2]: https://web.archive.org/web/20231230073622/https://learn.microsoft.com/en-us/azure/remote-rendering/resources/troubleshoot#h265-codec-not-available "Troubleshoot - Azure Remote Rendering | Microsoft Learn | learn.microsoft.com"
+                                    [3]: https://web.archive.org/web/20231230081051/https://www.cvedetails.com/vulnerability-list/vendor_id-26/product_id-80307/Microsoft-Hevc-Video-Extensions.html "Microsoft Hevc Video Extensions : Security vulnerabilities, CVEs | cvedetails.com"
+                                    [4]: https://web.archive.org/web/20231230073627/https://learn.microsoft.com/en-us/windows/application-management/remove-provisioned-apps-during-update "Keep removed apps from returning during an update - Windows Application Management | Microsoft Learn"
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.HEVCVideoExtension # Get-AppxPackage Microsoft.HEVCVideoExtension
+                                        publisherId: 8wekyb3d8bbwe
+                            -
+                                name: Remove "Raw Image Extension" app
+                                docs: |-
+                                    This script uninstalls the "Raw Image Extension" app.
+
+                                    This app enables viewing support for raw file formats from digital cameras directly in Windows File
+                                    Explorer and the Photos app [1]. It utilizes the [libraw](http://www.libraw.org) open source project for this functionality [1].
+
+                                    This app contains critical severity vulnerabilities in certain versions [2].
+                                    A critical vulnerability is a serious security risk that could allow attackers to gain full control of your system.
+                                    Removing this app will improve your system's security and reduce the risk of these threats.
+
+                                    [Microsoft Store Page](https://archive.ph/2023.12.30-072308/https://apps.microsoft.com/detail/9NCTDW2W1BH8?hl=en-US&gl=US)
+
+                                    > **Caution:** Uninstalling this app may limit your ability to view and handle raw images from digital cameras.
+
+                                    ### Overview of default preinstallation
+
+                                    | OS | Version | Existence |
+                                    | -- |:-------:|:---------:|
+                                    | Windows 10 | 19H2 | ❌ |
+                                    | Windows 10 | 20H2 | ❌ |
+                                    | Windows 10 | 21H2 | ❌ |
+                                    | Windows 10 | 22H2 | ❌ |
+                                    | Windows 11 | 21H2 | ❌ |
+                                    | Windows 11 | 22H2 | ✅ |
+                                    | Windows 11 | 23H2 | ✅ |
+
+                                    [1]: https://archive.ph/2023.12.30-072308/https://apps.microsoft.com/detail/9NCTDW2W1BH8?hl=en-US&gl=US "Raw Image Extension - Microsoft Apps | apps.microsoft.com"
+                                    [2]: https://web.archive.org/web/20231231094958/https://www.opencve.io/cve?vendor=microsoft&product=raw_image_extension "Microsoft - Raw Image Extension CVE - OpenCVE | www.opencve.io"
+                                call:
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.RawImageExtension # Get-AppxPackage Microsoft.RawImageExtension
                                         publisherId: 8wekyb3d8bbwe
                     -
                         name: Remove "Microsoft Messaging" app
