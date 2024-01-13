@@ -18,13 +18,14 @@ export function validateWindowVariables(variables: Partial<WindowVariables>) {
 }
 
 function* testEveryProperty(variables: Partial<WindowVariables>): Iterable<string> {
-  const tests: {
-    [K in PropertyKeys<Required<WindowVariables>>]: boolean;
-  } = {
+  const tests: Record<PropertyKeys<Required<WindowVariables>>, boolean> = {
     os: testOperatingSystem(variables.os),
-    isDesktop: testIsDesktop(variables.isDesktop),
+    isRunningAsDesktopApplication: testIsRunningAsDesktopApplication(
+      variables.isRunningAsDesktopApplication,
+    ),
     codeRunner: testCodeRunner(variables),
     log: testLogger(variables),
+    dialog: testDialog(variables),
   };
 
   for (const [propertyName, testResult] of Object.entries(tests)) {
@@ -48,23 +49,30 @@ function testOperatingSystem(os: unknown): boolean {
 }
 
 function testLogger(variables: Partial<WindowVariables>): boolean {
-  if (!variables.isDesktop) {
+  if (!variables.isRunningAsDesktopApplication) {
     return true;
   }
   return isPlainObject(variables.log);
 }
 
 function testCodeRunner(variables: Partial<WindowVariables>): boolean {
-  if (!variables.isDesktop) {
+  if (!variables.isRunningAsDesktopApplication) {
     return true;
   }
   return isPlainObject(variables.codeRunner)
     && isFunction(variables.codeRunner.runCode);
 }
 
-function testIsDesktop(isDesktop: unknown): boolean {
-  if (isDesktop === undefined) {
+function testIsRunningAsDesktopApplication(isRunningAsDesktopApplication: unknown): boolean {
+  if (isRunningAsDesktopApplication === undefined) {
     return true;
   }
-  return isBoolean(isDesktop);
+  return isBoolean(isRunningAsDesktopApplication);
+}
+
+function testDialog(variables: Partial<WindowVariables>): boolean {
+  if (!variables.isRunningAsDesktopApplication) {
+    return true;
+  }
+  return isPlainObject(variables.dialog);
 }

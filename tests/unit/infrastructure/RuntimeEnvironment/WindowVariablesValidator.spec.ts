@@ -5,6 +5,9 @@ import { OperatingSystem } from '@/domain/OperatingSystem';
 import { getAbsentObjectTestCases, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { WindowVariablesStub } from '@tests/unit/shared/Stubs/WindowVariablesStub';
 import { CodeRunnerStub } from '@tests/unit/shared/Stubs/CodeRunnerStub';
+import { PropertyKeys } from '@/TypeHelpers';
+import { LoggerStub } from '@tests/unit/shared/Stubs/LoggerStub';
+import { DialogStub } from '@tests/unit/shared/Stubs/DialogStub';
 
 describe('WindowVariablesValidator', () => {
   describe('validateWindowVariables', () => {
@@ -24,20 +27,20 @@ describe('WindowVariablesValidator', () => {
       it('throws an error with a description of all invalid properties', () => {
         // arrange
         const invalidOs = 'invalid' as unknown as OperatingSystem;
-        const invalidIsDesktop = 'not a boolean' as unknown as boolean;
+        const invalidIsRunningAsDesktopApplication = 'not a boolean' as never;
         const expectedError = getExpectedError(
           {
             name: 'os',
             object: invalidOs,
           },
           {
-            name: 'isDesktop',
-            object: invalidIsDesktop,
+            name: 'isRunningAsDesktopApplication',
+            object: invalidIsRunningAsDesktopApplication,
           },
         );
         const input = new WindowVariablesStub()
           .withOs(invalidOs)
-          .withIsDesktop(invalidIsDesktop);
+          .withIsRunningAsDesktopApplication(invalidIsRunningAsDesktopApplication);
         // act
         const act = () => validateWindowVariables(input);
         // assert
@@ -82,7 +85,7 @@ describe('WindowVariablesValidator', () => {
         it('does not throw for a missing os value', () => {
           // arrange
           const input = new WindowVariablesStub()
-            .withIsDesktop(true)
+            .withIsRunningAsDesktopApplication(true)
             .withOs(undefined);
           // act
           const act = () => validateWindowVariables(input);
@@ -91,15 +94,24 @@ describe('WindowVariablesValidator', () => {
         });
       });
 
-      describe('`isDesktop` property', () => {
+      describe('`isRunningAsDesktopApplication` property', () => {
         it('does not throw when true with valid services', () => {
           // arrange
-          const validCodeRunner = new CodeRunnerStub();
-          const input = new WindowVariablesStub()
-            .withIsDesktop(true)
-            .withCodeRunner(validCodeRunner);
+          const windowVariables = new WindowVariablesStub();
+          const windowVariableConfigurators: Record< // Ensure types match for compile-time checking
+          PropertyKeys<Required<WindowVariables>>,
+          (stub: WindowVariablesStub) => WindowVariablesStub> = {
+            isRunningAsDesktopApplication: (s) => s.withIsRunningAsDesktopApplication(true),
+            codeRunner: (s) => s.withCodeRunner(new CodeRunnerStub()),
+            os: (s) => s.withOs(OperatingSystem.Windows),
+            log: (s) => s.withLog(new LoggerStub()),
+            dialog: (s) => s.withDialog(new DialogStub()),
+          };
+          Object
+            .values(windowVariableConfigurators)
+            .forEach((configure) => configure(windowVariables));
           // act
-          const act = () => validateWindowVariables(input);
+          const act = () => validateWindowVariables(windowVariables);
           // assert
           expect(act).to.not.throw();
         });
@@ -109,7 +121,7 @@ describe('WindowVariablesValidator', () => {
             // arrange
             const absentCodeRunner = absentValue;
             const input = new WindowVariablesStub()
-              .withIsDesktop(false)
+              .withIsRunningAsDesktopApplication(undefined)
               .withCodeRunner(absentCodeRunner);
             // act
             const act = () => validateWindowVariables(input);
@@ -150,7 +162,7 @@ function expectObjectOnDesktop<T>(key: keyof WindowVariables) {
       });
       const input: WindowVariables = {
         ...new WindowVariablesStub(),
-        isDesktop: isOnDesktop,
+        isRunningAsDesktopApplication: isOnDesktop,
         [key]: invalidObject,
       };
       // act
@@ -159,14 +171,13 @@ function expectObjectOnDesktop<T>(key: keyof WindowVariables) {
       expect(act).to.throw(expectedError);
     });
   });
-  describe('does not object type when not on desktop', () => {
+  describe('does not validate object type when not on desktop', () => {
     itEachInvalidObjectValue((invalidObjectValue) => {
       // arrange
-      const isOnDesktop = false;
       const invalidObject = invalidObjectValue as T;
       const input: WindowVariables = {
         ...new WindowVariablesStub(),
-        isDesktop: isOnDesktop,
+        isRunningAsDesktopApplication: undefined,
         [key]: invalidObject,
       };
       // act

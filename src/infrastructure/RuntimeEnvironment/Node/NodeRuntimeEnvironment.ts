@@ -3,7 +3,7 @@ import { RuntimeEnvironment } from '../RuntimeEnvironment';
 import { convertPlatformToOs } from './NodeOsMapper';
 
 export class NodeRuntimeEnvironment implements RuntimeEnvironment {
-  public readonly isDesktop: boolean;
+  public readonly isRunningAsDesktopApplication: boolean;
 
   public readonly os: OperatingSystem | undefined;
 
@@ -14,7 +14,7 @@ export class NodeRuntimeEnvironment implements RuntimeEnvironment {
     convertToOs: PlatformToOperatingSystemConverter = convertPlatformToOs,
   ) {
     if (!nodeProcess) { throw new Error('missing process'); } // do not trust strictNullChecks for global objects
-    this.isDesktop = true;
+    this.isRunningAsDesktopApplication = true;
     this.os = convertToOs(nodeProcess.platform);
     this.isNonProduction = nodeProcess.env.NODE_ENV !== 'production'; // populated by Vite
   }

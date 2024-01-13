@@ -12,13 +12,19 @@ export function provideWindowVariables(
   createApiFacade: ApiFacadeFactory = createSecureFacade,
   ipcConsumerCreator: IpcConsumerProxyCreator = createIpcConsumerProxy,
 ): WindowVariables {
-  return {
-    isDesktop: true,
+  // Enforces mandatory variable availability at compile time
+  const variables: RequiredWindowVariables = {
+    isRunningAsDesktopApplication: true,
     log: createApiFacade(createLogger(), ['info', 'debug', 'warn', 'error']),
     os: convertToOs(process.platform),
     codeRunner: ipcConsumerCreator(IpcChannelDefinitions.CodeRunner),
+    dialog: ipcConsumerCreator(IpcChannelDefinitions.Dialog),
   };
+  return variables;
 }
+
+type RequiredWindowVariables = PartiallyRequired<WindowVariables, 'os' /* | 'anotherOptionalKey'.. */>;
+type PartiallyRequired<T, K extends keyof T> = Required<Omit<T, K>> & Pick<T, K>;
 
 export type LoggerFactory = () => Logger;
 

@@ -84,4 +84,23 @@ export const BrowserConditions: readonly BrowserCondition[] = [
     notExistingPartsInUserAgent: ['like Mac OS X'], // Eliminate iOS and iPadOS for Safari
     touchSupport: TouchSupportExpectation.MustNotExist, // Distinguish from iPadOS for Safari
   },
+  ...generateJsdomBrowserConditions(),
 ] as const;
+
+function generateJsdomBrowserConditions(): readonly BrowserCondition[] {
+  // jsdom user agent format: `Mozilla/5.0 (${process.platform || "unknown OS"}) ...` (https://archive.ph/2023.02.14-193200/https://github.com/jsdom/jsdom#advanced-configuration)
+  const operatingSystemPlatformMap: Partial<Record<
+  OperatingSystem,
+  NodeJS.Platform> // Enforce right platform constants at compile time
+  > = {
+    [OperatingSystem.Linux]: 'linux',
+    [OperatingSystem.Windows]: 'win32',
+    [OperatingSystem.macOS]: 'darwin',
+  } as const;
+  return Object
+    .entries(operatingSystemPlatformMap)
+    .map(([operatingSystemKey, platformString]): BrowserCondition => ({
+      operatingSystem: Number(operatingSystemKey),
+      existingPartsInSameUserAgent: ['jsdom', platformString],
+    }));
+}

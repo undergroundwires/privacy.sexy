@@ -16,7 +16,7 @@ describe('RendererApiProvider', () => {
       readonly expectedValue: unknown;
     }
     const testScenarios: Record<PropertyKeys<Required<WindowVariables>>, WindowVariableTestCase> = {
-      isDesktop: {
+      isRunningAsDesktopApplication: {
         description: 'returns true',
         setupContext: (context) => context,
         expectedValue: true,
@@ -34,6 +34,7 @@ describe('RendererApiProvider', () => {
         instance: new LoggerStub(),
         setupContext: (c, logger) => c.withLogger(logger),
       }),
+      dialog: expectIpcConsumer(IpcChannelDefinitions.Dialog),
     };
     Object.entries(testScenarios).forEach((
       [property, { description, setupContext, expectedValue }],

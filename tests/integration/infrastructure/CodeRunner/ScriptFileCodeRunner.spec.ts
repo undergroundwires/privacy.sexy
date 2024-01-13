@@ -17,6 +17,7 @@ describe('ScriptFileCodeRunner', () => {
     const currentOperatingSystem = CurrentEnvironment.os;
     if (await shouldSkipTest(currentOperatingSystem)) {
       skip();
+      return;
     }
     const temporaryDirectoryProvider = createTemporaryDirectoryProvider();
     const codeRunner = createCodeRunner(temporaryDirectoryProvider);
@@ -61,10 +62,14 @@ function getPlatformSpecificArguments(
 function shouldSkipTest(
   os: OperatingSystem | undefined,
 ): Promise<boolean> {
+  if (os !== OperatingSystem.Linux) {
+    return Promise.resolve(false);
+  }
+  return isLinuxTerminalEmulatorSupported();
+}
+
+function isLinuxTerminalEmulatorSupported(): Promise<boolean> {
   return new Promise((resolve) => {
-    if (os !== OperatingSystem.Linux) {
-      resolve(false);
-    }
     exec(`which ${LinuxTerminalEmulator}`).on('close', (exitCode) => {
       resolve(exitCode !== 0);
     });

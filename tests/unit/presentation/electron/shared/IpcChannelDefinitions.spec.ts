@@ -1,16 +1,20 @@
 import { describe, it, expect } from 'vitest';
 import { IpcChannel } from '@/presentation/electron/shared/IpcBridging/IpcChannel';
-import { IpcChannelDefinitions } from '@/presentation/electron/shared/IpcBridging/IpcChannelDefinitions';
+import { ChannelDefinitionKey, IpcChannelDefinitions } from '@/presentation/electron/shared/IpcBridging/IpcChannelDefinitions';
 
 describe('IpcChannelDefinitions', () => {
   it('defines IPC channels correctly', () => {
-    const testScenarios: Record<keyof typeof IpcChannelDefinitions, {
+    const testScenarios: Record<ChannelDefinitionKey, {
       readonly expectedNamespace: string;
       readonly expectedAccessibleMembers: readonly string[];
     }> = {
       CodeRunner: {
         expectedNamespace: 'code-run',
         expectedAccessibleMembers: ['runCode'],
+      },
+      Dialog: {
+        expectedNamespace: 'dialogs',
+        expectedAccessibleMembers: ['saveFile'],
       },
     };
     Object.entries(testScenarios).forEach((
@@ -49,7 +53,7 @@ describe('IpcChannelDefinitions', () => {
     it('has unique accessible members within each channel', () => {
       Object.values(IpcChannelDefinitions).forEach((channel) => {
         // arrange
-        const { accessibleMembers: accessibleMembersOfChannel } = channel;
+        const accessibleMembersOfChannel = channel.accessibleMembers as string[];
         // act
         const repeatedAccessibleMembersInChannel = accessibleMembersOfChannel
           .filter((item, index) => accessibleMembersOfChannel.indexOf(item) !== index);

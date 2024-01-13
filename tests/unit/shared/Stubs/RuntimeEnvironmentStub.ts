@@ -4,7 +4,7 @@ import { OperatingSystem } from '@/domain/OperatingSystem';
 export class RuntimeEnvironmentStub implements RuntimeEnvironment {
   public isNonProduction = true;
 
-  public isDesktop = true;
+  public isRunningAsDesktopApplication = false;
 
   public os: OperatingSystem | undefined = OperatingSystem.Windows;
 
@@ -13,8 +13,8 @@ export class RuntimeEnvironmentStub implements RuntimeEnvironment {
     return this;
   }
 
-  public withIsDesktop(isDesktop: boolean): this {
-    this.isDesktop = isDesktop;
+  public withIsRunningAsDesktopApplication(isRunningAsDesktopApplication: boolean): this {
+    this.isRunningAsDesktopApplication = isRunningAsDesktopApplication;
     return this;
   }
 

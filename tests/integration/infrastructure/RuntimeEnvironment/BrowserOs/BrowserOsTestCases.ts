@@ -39,6 +39,8 @@ export const BrowserOsTestCases: ReadonlyArray<BrowserOsTestCase> = [
       'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 UBrowser/6.0.1308.1016 Safari/537.36',
       // Electron:
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.5993.54 Electron/27.0.0 Safari/537.36',
+      // jsdom:
+      'Mozilla/5.0 (Windows) AppleWebKit/537.36 (KHTML, like Gecko) jsdom/22.1.0',
     ],
   }),
   ...createTests({
@@ -60,6 +62,8 @@ export const BrowserOsTestCases: ReadonlyArray<BrowserOsTestCase> = [
       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 Edg/119.0.0.0',
       // Electron:
       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.5993.54 Electron/27.0.0 Safari/537.36',
+      // jsdom:
+      'Mozilla/5.0 (darwin) AppleWebKit/537.36 (KHTML, like Gecko) jsdom/22.1.0',
     ],
   }),
   ...createTests({
@@ -74,6 +78,8 @@ export const BrowserOsTestCases: ReadonlyArray<BrowserOsTestCase> = [
       'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.188',
       // Electron:
       'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.5993.54 Electron/27.0.0 Safari/537.36',
+      // jsdom:
+      'Mozilla/5.0 (linux) AppleWebKit/537.36 (KHTML, like Gecko) jsdom/22.1.0',
     ],
   }),
   ...createTests({

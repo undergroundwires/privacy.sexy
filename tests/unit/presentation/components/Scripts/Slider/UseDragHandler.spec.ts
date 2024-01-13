@@ -245,7 +245,7 @@ function initializeDragHandlerWithMocks(mocks?: {
 }
 
 function createMockPointerEvent(...args: ConstructorArguments<typeof PointerEvent>): PointerEvent {
-  return new MouseEvent(...args) as PointerEvent; // JSDom does not support `PointerEvent` constructor, https://github.com/jsdom/jsdom/issues/2527
+  return new MouseEvent(...args) as PointerEvent; // jsdom does not support `PointerEvent` constructor, https://github.com/jsdom/jsdom/issues/2527
 }
 
 class DragDomModifierMock implements DragDomModifier {

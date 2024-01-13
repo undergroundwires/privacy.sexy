@@ -19,10 +19,14 @@ export default defineComponent({
   },
   setup() {
     const { currentState, currentContext } = injectKey((keys) => keys.useCollectionState);
-    const { os, isDesktop } = injectKey((keys) => keys.useRuntimeEnvironment);
+    const { os, isRunningAsDesktopApplication } = injectKey((keys) => keys.useRuntimeEnvironment);
     const { codeRunner } = injectKey((keys) => keys.useCodeRunner);
 
-    const canRun = computed<boolean>(() => getCanRunState(currentState.value.os, isDesktop, os));
+    const canRun = computed<boolean>(() => getCanRunState(
+      currentState.value.os,
+      isRunningAsDesktopApplication,
+      os,
+    ));
 
     async function executeCode() {
       if (!codeRunner) { throw new Error('missing code runner'); }
@@ -33,7 +37,6 @@ export default defineComponent({
     }
 
     return {
-      isDesktopVersion: isDesktop,
       canRun,
       executeCode,
     };
@@ -42,10 +45,10 @@ export default defineComponent({
 
 function getCanRunState(
   selectedOs: OperatingSystem,
-  isDesktopVersion: boolean,
+  isRunningAsDesktopApplication: boolean,
   hostOs: OperatingSystem | undefined,
 ): boolean {
   const isRunningOnSelectedOs = selectedOs === hostOs;
-  return isDesktopVersion && isRunningOnSelectedOs;
+  return isRunningAsDesktopApplication && isRunningOnSelectedOs;
 }
 </script>

@@ -1,10 +1,10 @@
 import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
 import { ConsoleLogger } from '@/infrastructure/Log/ConsoleLogger';
 import { Logger } from '@/application/Common/Log/Logger';
-import { LoggerFactory } from '@/application/Common/Log/LoggerFactory';
 import { NoopLogger } from '@/infrastructure/Log/NoopLogger';
 import { WindowInjectedLogger } from '@/infrastructure/Log/WindowInjectedLogger';
 import { CurrentEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironmentFactory';
+import { LoggerFactory } from './LoggerFactory';
 
 export class ClientLoggerFactory implements LoggerFactory {
   public static readonly Current: LoggerFactory = new ClientLoggerFactory();
@@ -22,7 +22,7 @@ export class ClientLoggerFactory implements LoggerFactory {
       this.logger = noopLoggerFactory(); // keep the test outputs clean
       return;
     }
-    if (environment.isDesktop) {
+    if (environment.isRunningAsDesktopApplication) {
       this.logger = windowInjectedLoggerFactory();
       return;
     }
@@ -49,5 +49,5 @@ function isUnitOrIntegrationTests(
     the global window object. If we're in a desktop (Node) environment and the logger isn't
     injected, it indicates a testing environment.
   */
-  return environment.isDesktop && !windowAccessor()?.log;
+  return environment.isRunningAsDesktopApplication && !windowAccessor()?.log;
 }

@@ -11,9 +11,10 @@ import {
 } from '@/presentation/injectionSymbols';
 import { PropertyKeys } from '@/TypeHelpers';
 import { useUserSelectionState } from '@/presentation/components/Shared/Hooks/UseUserSelectionState';
-import { useLogger } from '@/presentation/components/Shared/Hooks/UseLogger';
+import { useLogger } from '@/presentation/components/Shared/Hooks/Log/UseLogger';
 import { useCodeRunner } from '@/presentation/components/Shared/Hooks/UseCodeRunner';
 import { CurrentEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironmentFactory';
+import { useDialog } from '@/presentation/components/Shared/Hooks/Dialog/UseDialog';
 
 export function provideDependencies(
   context: IApplicationContext,
@@ -66,6 +67,10 @@ export function provideDependencies(
     useCodeRunner: (di) => di.provide(
       InjectionKeys.useCodeRunner,
       useCodeRunner,
+    ),
+    useDialog: (di) => di.provide(
+      InjectionKeys.useDialog,
+      useDialog,
     ),
   };
   registerAll(Object.values(resolvers), api);

@@ -1,12 +1,12 @@
 <template>
   <div class="privacy-policy">
-    <div v-if="!isDesktop" class="line">
+    <div v-if="!isRunningAsDesktopApplication" class="line">
       <div class="line__emoji">
         🚫🍪
       </div>
       <div>No cookies!</div>
     </div>
-    <div v-if="isDesktop" class="line">
+    <div v-if="isRunningAsDesktopApplication" class="line">
       <div class="line__emoji">
         🚫🌐
       </div>
@@ -30,7 +30,7 @@
         of the <a :href="repositoryUrl" target="_blank" rel="noopener noreferrer">source code</a> with no changes.
       </div>
     </div>
-    <div v-if="!isDesktop" class="line">
+    <div v-if="!isRunningAsDesktopApplication" class="line">
       <div class="line__emoji">
         📈
       </div>
@@ -60,7 +60,7 @@ import { injectKey } from '@/presentation/injectionSymbols';
 export default defineComponent({
   setup() {
     const { info } = injectKey((keys) => keys.useApplication);
-    const { isDesktop } = injectKey((keys) => keys.useRuntimeEnvironment);
+    const { isRunningAsDesktopApplication } = injectKey((keys) => keys.useRuntimeEnvironment);
 
     const repositoryUrl = computed<string>(() => info.repositoryUrl);
     const feedbackUrl = computed<string>(() => info.feedbackUrl);
@@ -68,7 +68,7 @@ export default defineComponent({
     return {
       repositoryUrl,
       feedbackUrl,
-      isDesktop,
+      isRunningAsDesktopApplication,
     };
   },
 });

@@ -215,19 +215,35 @@ describe('IpcProxy', () => {
       expect(actualChannelNames).to.have.lengthOf(expectedChannelNames.length);
       expect(actualChannelNames).to.have.members(expectedChannelNames);
     });
-    it('throws error for non-function members', () => {
-      // arrange
-      const expectedError = 'Non-function members are not yet supported';
-      const propertyName = 'propertyKey';
-      const testObject = { [`${propertyName}`]: 123 };
-      const testIpcChannel: IpcChannel<typeof testObject> = {
-        namespace: 'testNamespace',
-        accessibleMembers: [propertyName] as never,
-      };
-      // act
-      const act = () => registerIpcChannel(testIpcChannel, testObject, mockIpcMain().ipcMainMock);
-      // assert
-      expect(act).to.throw(expectedError);
+    describe('validation', () => {
+      it('throws error for non-function members', () => {
+        // arrange
+        const expectedError = 'Non-function members are not yet supported';
+        const propertyName = 'propertyKey';
+        const testObject = { [`${propertyName}`]: 123 };
+        const testIpcChannel: IpcChannel<typeof testObject> = {
+          namespace: 'testNamespace',
+          accessibleMembers: [propertyName] as never,
+        };
+        // act
+        const act = () => registerIpcChannel(testIpcChannel, testObject, mockIpcMain().ipcMainMock);
+        // assert
+        expect(act).to.throw(expectedError);
+      });
+      it('throws error for undefined members', () => {
+        // arrange
+        const nonExistingFunctionName = 'nonExistingFunction';
+        const expectedError = `The function "${nonExistingFunctionName}" is not found on the target object.`;
+        const testObject = { };
+        const testIpcChannel: IpcChannel<typeof testObject> = {
+          namespace: 'testNamespace',
+          accessibleMembers: [nonExistingFunctionName] as never,
+        };
+        // act
+        const act = () => registerIpcChannel(testIpcChannel, testObject, mockIpcMain().ipcMainMock);
+        // assert
+        expect(act).to.throw(expectedError);
+      });
     });
   });
 });

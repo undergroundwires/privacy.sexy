@@ -1,11 +1,13 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { Logger } from '@/application/Common/Log/Logger';
 import { CodeRunner } from '@/application/CodeRunner/CodeRunner';
+import { Dialog } from '@/presentation/common/Dialog';
 
 /* Primary entry point for platform-specific injections */
 export interface WindowVariables {
-  readonly isDesktop: boolean;
+  readonly isRunningAsDesktopApplication?: true;
   readonly codeRunner?: CodeRunner;
   readonly os?: OperatingSystem;
-  readonly log: Logger;
+  readonly log?: Logger;
+  readonly dialog?: Dialog;
 }

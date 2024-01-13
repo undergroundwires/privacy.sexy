@@ -1,10 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import { CodeRunnerStub } from '@tests/unit/shared/Stubs/CodeRunnerStub';
-import { IpcChannelDefinitions } from '@/presentation/electron/shared/IpcBridging/IpcChannelDefinitions';
-import { CodeRunnerFactory, IpcRegistrar, registerAllIpcChannels } from '@/presentation/electron/main/IpcRegistration';
+import { ChannelDefinitionKey, IpcChannelDefinitions } from '@/presentation/electron/shared/IpcBridging/IpcChannelDefinitions';
+import {
+  CodeRunnerFactory, DialogFactory, IpcChannelRegistrar, registerAllIpcChannels,
+} from '@/presentation/electron/main/IpcRegistration';
 import { IpcChannel } from '@/presentation/electron/shared/IpcBridging/IpcChannel';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { collectExceptionMessage } from '@tests/unit/shared/ExceptionCollector';
+import { DialogStub } from '@tests/unit/shared/Stubs/DialogStub';
 
 describe('IpcRegistration', () => {
   describe('registerAllIpcChannels', () => {
@@ -23,7 +26,7 @@ describe('IpcRegistration', () => {
       });
     });
     describe('registers expected instances', () => {
-      const testScenarios: Record<keyof typeof IpcChannelDefinitions, {
+      const testScenarios: Record<ChannelDefinitionKey, {
         buildContext: (context: IpcRegistrationTestSetup) => IpcRegistrationTestSetup,
         expectedInstance: object,
       }> = {
@@ -31,6 +34,13 @@ describe('IpcRegistration', () => {
           const expectedInstance = new CodeRunnerStub();
           return {
             buildContext: (c) => c.withCodeRunnerFactory(() => expectedInstance),
+            expectedInstance,
+          };
+        })(),
+        Dialog: (() => {
+          const expectedInstance = new DialogStub();
+          return {
+            buildContext: (c) => c.withDialogFactory(() => expectedInstance),
             expectedInstance,
           };
         })(),
@@ -46,7 +56,8 @@ describe('IpcRegistration', () => {
           // act
           context.run();
           // assert
-          const actualInstance = getRegisteredInstance(IpcChannelDefinitions.CodeRunner);
+          const channel = IpcChannelDefinitions[key];
+          const actualInstance = getRegisteredInstance(channel);
           expect(actualInstance).to.equal(expectedInstance);
         });
       });
@@ -54,7 +65,7 @@ describe('IpcRegistration', () => {
     it('throws an error if registration fails', () => {
       // arrange
       const expectedError = 'registrar error';
-      const registrarMock: IpcRegistrar = () => {
+      const registrarMock: IpcChannelRegistrar = () => {
         throw new Error(expectedError);
       };
       const context = new IpcRegistrationTestSetup()
@@ -70,9 +81,11 @@ describe('IpcRegistration', () => {
 class IpcRegistrationTestSetup {
   private codeRunnerFactory: CodeRunnerFactory = () => new CodeRunnerStub();
 
-  private registrar: IpcRegistrar = () => { /* NOOP */ };
+  private dialogFactory: DialogFactory = () => new DialogStub();
 
-  public withRegistrar(registrar: IpcRegistrar): this {
+  private registrar: IpcChannelRegistrar = () => { /* NOOP */ };
+
+  public withRegistrar(registrar: IpcChannelRegistrar): this {
     this.registrar = registrar;
     return this;
   }
@@ -82,26 +95,37 @@ class IpcRegistrationTestSetup {
     return this;
   }
 
+  public withDialogFactory(dialogFactory: DialogFactory): this {
+    this.dialogFactory = dialogFactory;
+    return this;
+  }
+
   public run() {
     registerAllIpcChannels(
       this.codeRunnerFactory,
+      this.dialogFactory,
       this.registrar,
     );
   }
 }
 
+type DefinedIpcChannelTypes = {
+  [K in ChannelDefinitionKey]: (typeof IpcChannelDefinitions)[K]
+}[ChannelDefinitionKey];
+
 function createIpcRegistrarMock() {
-  const registeredChannels = new Array<Parameters<IpcRegistrar>>();
-  const registrarMock: IpcRegistrar = <T>(channel: IpcChannel<T>, obj: T) => {
+  const registeredChannels = new Array<Parameters<IpcChannelRegistrar>>();
+  const registrarMock: IpcChannelRegistrar = <T>(channel: IpcChannel<T>, obj: T) => {
     registeredChannels.push([channel as IpcChannel<unknown>, obj]);
   };
-  const isChannelRegistered = <T>(channel: IpcChannel<T>): boolean => {
+  const isChannelRegistered = (channel: DefinedIpcChannelTypes): boolean => {
     return registeredChannels.some((i) => i[0] === channel);
   };
-  const getRegisteredInstance = <T>(channel: IpcChannel<T>): unknown => {
+  const getRegisteredInstance = <T>(channel: IpcChannel<T>): T => {
     const registration = registeredChannels.find((i) => i[0] === channel);
     expectExists(registration);
-    return registration[1];
+    const [, registeredInstance] = registration;
+    return registeredInstance as T;
   };
   return {
     registrarMock,

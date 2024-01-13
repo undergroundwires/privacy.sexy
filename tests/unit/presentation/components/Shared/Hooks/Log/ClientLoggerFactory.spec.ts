@@ -1,11 +1,11 @@
 // eslint-disable-next-line max-classes-per-file
 import { describe, it } from 'vitest';
 import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
-import { ClientLoggerFactory, LoggerCreationFunction, WindowAccessor } from '@/presentation/bootstrapping/ClientLoggerFactory';
 import { Logger } from '@/application/Common/Log/Logger';
 import { RuntimeEnvironmentStub } from '@tests/unit/shared/Stubs/RuntimeEnvironmentStub';
 import { itIsSingleton } from '@tests/unit/shared/TestCases/SingletonTests';
 import { LoggerStub } from '@tests/unit/shared/Stubs/LoggerStub';
+import { ClientLoggerFactory, LoggerCreationFunction, WindowAccessor } from '@/presentation/components/Shared/Hooks/Log/ClientLoggerFactory';
 
 describe('ClientLoggerFactory', () => {
   describe('Current', () => {
@@ -29,7 +29,7 @@ describe('ClientLoggerFactory', () => {
         build: (b, expectedLogger) => b
           .withWindowInjectedLoggerFactory(() => expectedLogger)
           .withEnvironment(new RuntimeEnvironmentStub()
-            .withIsDesktop(true)
+            .withIsRunningAsDesktopApplication(true)
             .withIsNonProduction(false))
           .withWindowAccessor(() => createWindowWithLogger())
           .build(),
@@ -39,7 +39,7 @@ describe('ClientLoggerFactory', () => {
         build: (b, expectedLogger) => b
           .withWindowInjectedLoggerFactory(() => expectedLogger)
           .withEnvironment(new RuntimeEnvironmentStub()
-            .withIsDesktop(true)
+            .withIsRunningAsDesktopApplication(true)
             .withIsNonProduction(true))
           .withWindowAccessor(() => createWindowWithLogger())
           .build(),
@@ -49,7 +49,7 @@ describe('ClientLoggerFactory', () => {
         build: (b, expectedLogger) => b
           .withConsoleLoggerFactory(() => expectedLogger)
           .withEnvironment(new RuntimeEnvironmentStub()
-            .withIsDesktop(false)
+            .withIsRunningAsDesktopApplication(false)
             .withIsNonProduction(true))
           .withWindowAccessor(() => createWindowWithLogger())
           .build(),
@@ -59,7 +59,7 @@ describe('ClientLoggerFactory', () => {
         build: (b, expectedLogger) => b
           .withNoopLoggerFactory(() => expectedLogger)
           .withEnvironment(new RuntimeEnvironmentStub()
-            .withIsDesktop(false)
+            .withIsRunningAsDesktopApplication(false)
             .withIsNonProduction(false))
           .withWindowAccessor(() => createWindowWithLogger())
           .build(),
@@ -68,7 +68,7 @@ describe('ClientLoggerFactory', () => {
         description: 'unit/integration tests environment',
         build: (b, expectedLogger) => b
           .withNoopLoggerFactory(() => expectedLogger)
-          .withEnvironment(new RuntimeEnvironmentStub().withIsDesktop(true))
+          .withEnvironment(new RuntimeEnvironmentStub().withIsRunningAsDesktopApplication(true))
           .withWindowAccessor(() => createWindowWithLogger(null))
           .build(),
       },

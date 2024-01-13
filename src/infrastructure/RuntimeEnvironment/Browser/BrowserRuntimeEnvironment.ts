@@ -1,5 +1,4 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
 import { IEnvironmentVariables } from '@/infrastructure/EnvironmentVariables/IEnvironmentVariables';
 import { EnvironmentVariablesFactory } from '@/infrastructure/EnvironmentVariables/EnvironmentVariablesFactory';
 import { RuntimeEnvironment } from '../RuntimeEnvironment';
@@ -8,7 +7,7 @@ import { BrowserEnvironment, BrowserOsDetector } from './BrowserOs/BrowserOsDete
 import { isTouchEnabledDevice } from './TouchSupportDetection';
 
 export class BrowserRuntimeEnvironment implements RuntimeEnvironment {
-  public readonly isDesktop: boolean;
+  public readonly isRunningAsDesktopApplication: boolean;
 
   public readonly os: OperatingSystem | undefined;
 
@@ -18,31 +17,34 @@ export class BrowserRuntimeEnvironment implements RuntimeEnvironment {
     window: Partial<Window>,
     environmentVariables: IEnvironmentVariables = EnvironmentVariablesFactory.Current.instance,
     browserOsDetector: BrowserOsDetector = new ConditionBasedOsDetector(),
-    touchDetector = isTouchEnabledDevice,
+    touchDetector: TouchDetector = isTouchEnabledDevice,
   ) {
     if (!window) { throw new Error('missing window'); } // do not trust strictNullChecks for global objects
     this.isNonProduction = environmentVariables.isNonProduction;
-    this.isDesktop = isDesktop(window);
-    if (this.isDesktop) {
-      this.os = window?.os;
-    } else {
-      this.os = undefined;
-      const userAgent = getUserAgent(window);
-      if (userAgent) {
-        const browserEnvironment: BrowserEnvironment = {
-          userAgent,
-          isTouchSupported: touchDetector(),
-        };
-        this.os = browserOsDetector.detect(browserEnvironment);
-      }
-    }
+    this.isRunningAsDesktopApplication = isElectronRendererProcess(window);
+    this.os = determineOperatingSystem(window, touchDetector, browserOsDetector);
   }
 }
 
-function getUserAgent(window: Partial<Window>): string | undefined {
-  return window?.navigator?.userAgent;
+function isElectronRendererProcess(globalWindow: Partial<Window>): boolean {
+  return globalWindow.isRunningAsDesktopApplication === true; // Preloader injects this
+  // We could also do `globalWindow?.navigator?.userAgent?.includes('Electron') === true;`
 }
 
-function isDesktop(window: Partial<WindowVariables>): boolean {
-  return window?.isDesktop === true;
+function determineOperatingSystem(
+  globalWindow: Partial<Window>,
+  touchDetector: TouchDetector,
+  browserOsDetector: BrowserOsDetector,
+): OperatingSystem | undefined {
+  const userAgent = globalWindow?.navigator?.userAgent;
+  if (!userAgent) {
+    return undefined;
+  }
+  const browserEnvironment: BrowserEnvironment = {
+    userAgent,
+    isTouchSupported: touchDetector(),
+  };
+  return browserOsDetector.detect(browserEnvironment);
 }
+
+type TouchDetector = () => boolean;

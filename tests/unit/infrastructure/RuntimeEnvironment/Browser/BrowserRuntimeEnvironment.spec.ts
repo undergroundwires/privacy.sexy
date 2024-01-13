@@ -1,4 +1,3 @@
-// eslint-disable-next-line max-classes-per-file
 import { describe, it, expect } from 'vitest';
 import { BrowserOsDetector } from '@/infrastructure/RuntimeEnvironment/Browser/BrowserOs/BrowserOsDetector';
 import { OperatingSystem } from '@/domain/OperatingSystem';
@@ -42,31 +41,32 @@ describe('BrowserRuntimeEnvironment', () => {
       expect(actualTouchSupport).to.equal(expectedTouchSupport);
     });
   });
-  describe('isDesktop', () => {
-    it('returns true when window property isDesktop is true', () => {
+  describe('isRunningAsDesktopApplication', () => {
+    it('returns true when window property `isRunningAsDesktopApplication` is true', () => {
       // arrange
-      const desktopWindow = {
-        isDesktop: true,
+      const expectedValue = true;
+      const desktopWindow: Partial<Window> = {
+        isRunningAsDesktopApplication: true,
       };
       // act
       const sut = new BrowserRuntimeEnvironmentBuilder()
         .withWindow(desktopWindow)
         .build();
       // assert
-      expect(sut.isDesktop).to.equal(true);
+      expect(sut.isRunningAsDesktopApplication).to.equal(expectedValue);
     });
-    it('returns false when window property isDesktop is false', () => {
+    it('returns false when window property `isRunningAsDesktopApplication` is undefined', () => {
       // arrange
       const expectedValue = false;
-      const browserWindow = {
-        isDesktop: false,
+      const browserWindow: Partial<Window> = {
+        isRunningAsDesktopApplication: undefined,
       };
       // act
       const sut = new BrowserRuntimeEnvironmentBuilder()
         .withWindow(browserWindow)
         .build();
       // assert
-      expect(sut.isDesktop).to.equal(expectedValue);
+      expect(sut.isRunningAsDesktopApplication).to.equal(expectedValue);
     });
   });
   describe('os', () => {
@@ -111,47 +111,6 @@ describe('BrowserRuntimeEnvironment', () => {
       const actual = sut.os;
       // assert
       expect(actual).to.equal(expected);
-    });
-    describe('desktop os', () => {
-      describe('returns from window property `os`', () => {
-        const testValues = [
-          OperatingSystem.macOS,
-          OperatingSystem.Windows,
-          OperatingSystem.Linux,
-        ];
-        testValues.forEach((testValue) => {
-          it(`given ${OperatingSystem[testValue]}`, () => {
-            // arrange
-            const expectedOs = testValue;
-            const desktopWindowWithOs = {
-              isDesktop: true,
-              os: expectedOs,
-            };
-            // act
-            const sut = new BrowserRuntimeEnvironmentBuilder()
-              .withWindow(desktopWindowWithOs)
-              .build();
-            // assert
-            const actualOs = sut.os;
-            expect(actualOs).to.equal(expectedOs);
-          });
-        });
-      });
-      describe('returns undefined when window property `os` is absent', () => {
-        itEachAbsentObjectValue((absentValue) => {
-          // arrange
-          const expectedValue = undefined;
-          const windowWithAbsentOs = {
-            os: absentValue as never,
-          };
-          // act
-          const sut = new BrowserRuntimeEnvironmentBuilder()
-            .withWindow(windowWithAbsentOs)
-            .build();
-          // assert
-          expect(sut.os).to.equal(expectedValue);
-        });
-      });
     });
   });
   describe('isNonProduction', () => {

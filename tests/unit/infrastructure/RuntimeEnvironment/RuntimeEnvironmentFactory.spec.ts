@@ -1,73 +1,95 @@
 import { describe, it, expect } from 'vitest';
 import {
-  BrowserRuntimeEnvironmentFactory, NodeRuntimeEnvironmentFactory,
-  GlobalAccessor as GlobalPropertiesAccessor, determineAndCreateRuntimeEnvironment,
+  BrowserRuntimeEnvironmentFactory, GlobalPropertiesAccessor, NodeRuntimeEnvironmentFactory,
+  determineAndCreateRuntimeEnvironment,
 } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironmentFactory';
 import { RuntimeEnvironmentStub } from '@tests/unit/shared/Stubs/RuntimeEnvironmentStub';
 
 describe('RuntimeEnvironmentFactory', () => {
   describe('determineAndCreateRuntimeEnvironment', () => {
-    it('uses browser environment when window exists', () => {
-      // arrange
-      const expectedEnvironment = new RuntimeEnvironmentStub();
-      const context = new RuntimeEnvironmentFactoryTestSetup()
-        .withWindowAccessor(() => createWindowStub())
-        .withBrowserEnvironmentFactory(() => expectedEnvironment);
-      // act
-      const actualEnvironment = context.buildEnvironment();
-      // assert
-      expect(actualEnvironment).to.equal(expectedEnvironment);
+    describe('Node environment creation', () => {
+      it('selects Node environment if Electron main process detected', () => {
+        // arrange
+        const processStub = createProcessStub({
+          versions: {
+            electron: '28.1.3',
+          } as NodeJS.ProcessVersions,
+        });
+        const expectedEnvironment = new RuntimeEnvironmentStub();
+        const context = new RuntimeEnvironmentFactoryTestSetup()
+          .withGlobalProcess(processStub)
+          .withNodeEnvironmentFactory(() => expectedEnvironment);
+        // act
+        const actualEnvironment = context.buildEnvironment();
+        // assert
+        expect(actualEnvironment).to.equal(expectedEnvironment);
+      });
+      it('passes correct process to Node environment factory', () => {
+        // arrange
+        const expectedProcess = createProcessStub({
+          versions: {
+            electron: '28.1.3',
+          } as NodeJS.ProcessVersions,
+        });
+        let actualProcess: GlobalProcess;
+        const nodeEnvironmentFactoryMock: NodeRuntimeEnvironmentFactory = (providedProcess) => {
+          actualProcess = providedProcess;
+          return new RuntimeEnvironmentStub();
+        };
+        const context = new RuntimeEnvironmentFactoryTestSetup()
+          .withGlobalProcess(expectedProcess)
+          .withNodeEnvironmentFactory(nodeEnvironmentFactoryMock);
+        // act
+        context.buildEnvironment();
+        // assert
+        expect(actualProcess).to.equal(expectedProcess);
+      });
     });
-
-    it('passes correct window to browser environment', () => {
-      // arrange
-      const expectedWindow = createWindowStub();
-      let actualWindow: Window | undefined;
-      const browserEnvironmentFactoryMock: BrowserRuntimeEnvironmentFactory = (providedWindow) => {
-        actualWindow = providedWindow;
-        return new RuntimeEnvironmentStub();
-      };
-      const context = new RuntimeEnvironmentFactoryTestSetup()
-        .withWindowAccessor(() => expectedWindow)
-        .withBrowserEnvironmentFactory(browserEnvironmentFactoryMock);
-      // act
-      context.buildEnvironment();
-      // assert
-      expect(actualWindow).to.equal(expectedWindow);
+    describe('browser environment creation', () => {
+      it('selects browser environment if Electron main process not detected', () => {
+        // arrange
+        const expectedEnvironment = new RuntimeEnvironmentStub();
+        const undefinedProcess: GlobalProcess = undefined;
+        const windowStub = createWindowStub();
+        const context = new RuntimeEnvironmentFactoryTestSetup()
+          .withGlobalProcess(undefinedProcess)
+          .withGlobalWindow(windowStub)
+          .withBrowserEnvironmentFactory(() => expectedEnvironment);
+        // act
+        const actualEnvironment = context.buildEnvironment();
+        // assert
+        expect(actualEnvironment).to.equal(expectedEnvironment);
+      });
+      it('passes correct window to browser environment factory', () => {
+        // arrange
+        const expectedWindow = createWindowStub({
+          isRunningAsDesktopApplication: undefined,
+        });
+        let actualWindow: GlobalWindow;
+        const browserEnvironmentFactoryMock
+        : BrowserRuntimeEnvironmentFactory = (providedWindow) => {
+          actualWindow = providedWindow;
+          return new RuntimeEnvironmentStub();
+        };
+        const undefinedProcess: GlobalProcess = undefined;
+        const context = new RuntimeEnvironmentFactoryTestSetup()
+          .withGlobalWindow(expectedWindow)
+          .withGlobalProcess(undefinedProcess)
+          .withBrowserEnvironmentFactory(browserEnvironmentFactoryMock);
+        // act
+        context.buildEnvironment();
+        // assert
+        expect(actualWindow).to.equal(expectedWindow);
+      });
     });
-
-    it('uses node environment when window is absent', () => {
+    it('throws error when both window and process are undefined', () => {
       // arrange
-      const expectedEnvironment = new RuntimeEnvironmentStub();
+      const undefinedWindow: GlobalWindow = undefined;
+      const undefinedProcess: GlobalProcess = undefined;
+      const expectedError = 'Unsupported runtime environment: The current context is neither a recognized browser nor a desktop environment.';
       const context = new RuntimeEnvironmentFactoryTestSetup()
-        .withWindowAccessor(() => undefined)
-        .withProcessAccessor(() => createProcessStub())
-        .withNodeEnvironmentFactory(() => expectedEnvironment);
-      // act
-      const actualEnvironment = context.buildEnvironment();
-      // assert
-      expect(actualEnvironment).to.equal(expectedEnvironment);
-    });
-
-    it('uses node environment when window is present too', () => { // This allows running integration tests
-      // arrange
-      const expectedEnvironment = new RuntimeEnvironmentStub();
-      const context = new RuntimeEnvironmentFactoryTestSetup()
-        .withWindowAccessor(() => createWindowStub())
-        .withProcessAccessor(() => createProcessStub())
-        .withNodeEnvironmentFactory(() => expectedEnvironment);
-      // act
-      const actualEnvironment = context.buildEnvironment();
-      // assert
-      expect(actualEnvironment).to.equal(expectedEnvironment);
-    });
-
-    it('throws if both node and window are missing', () => {
-      // arrange
-      const expectedError = 'Unsupported runtime environment: The current context is neither a recognized browser nor a Node.js environment.';
-      const context = new RuntimeEnvironmentFactoryTestSetup()
-        .withWindowAccessor(() => undefined)
-        .withProcessAccessor(() => undefined);
+        .withGlobalProcess(undefinedProcess)
+        .withGlobalWindow(undefinedWindow);
       // act
       const act = () => context.buildEnvironment();
       // assert
@@ -76,22 +98,22 @@ describe('RuntimeEnvironmentFactory', () => {
   });
 });
 
-function createWindowStub(): Window {
-  return {} as Window;
+function createWindowStub(partialWindowProperties?: Partial<Window>): Window {
+  return {
+    ...partialWindowProperties,
+  } as Window;
 }
 
-function createProcessStub(): NodeJS.Process {
-  return {} as NodeJS.Process;
+function createProcessStub(partialProcessProperties?: Partial<NodeJS.Process>): NodeJS.Process {
+  return {
+    ...partialProcessProperties,
+  } as NodeJS.Process;
 }
-
-type WindowAccessor = GlobalPropertiesAccessor['getGlobalWindow'];
-
-type ProcessAccessor = GlobalPropertiesAccessor['getGlobalProcess'];
 
 export class RuntimeEnvironmentFactoryTestSetup {
-  private windowAccessor: WindowAccessor = () => undefined;
+  private globalWindow: GlobalWindow = createWindowStub();
 
-  private processAccessor: ProcessAccessor = () => undefined;
+  private globalProcess: GlobalProcess = createProcessStub();
 
   private browserEnvironmentFactory
   : BrowserRuntimeEnvironmentFactory = () => new RuntimeEnvironmentStub();
@@ -99,13 +121,13 @@ export class RuntimeEnvironmentFactoryTestSetup {
   private nodeEnvironmentFactory
   : NodeRuntimeEnvironmentFactory = () => new RuntimeEnvironmentStub();
 
-  public withWindowAccessor(windowAccessor: WindowAccessor): this {
-    this.windowAccessor = windowAccessor;
+  public withGlobalWindow(globalWindow: GlobalWindow): this {
+    this.globalWindow = globalWindow;
     return this;
   }
 
-  public withProcessAccessor(processAccessor: ProcessAccessor): this {
-    this.processAccessor = processAccessor;
+  public withGlobalProcess(globalProcess: GlobalProcess): this {
+    this.globalProcess = globalProcess;
     return this;
   }
 
@@ -126,11 +148,15 @@ export class RuntimeEnvironmentFactoryTestSetup {
   public buildEnvironment(): ReturnType<typeof determineAndCreateRuntimeEnvironment> {
     return determineAndCreateRuntimeEnvironment(
       {
-        getGlobalProcess: this.processAccessor,
-        getGlobalWindow: this.windowAccessor,
+        window: this.globalWindow,
+        process: this.globalProcess,
       },
       this.browserEnvironmentFactory,
       this.nodeEnvironmentFactory,
     );
   }
 }
+
+type GlobalWindow = GlobalPropertiesAccessor['window'];
+
+type GlobalProcess = GlobalPropertiesAccessor['process'];

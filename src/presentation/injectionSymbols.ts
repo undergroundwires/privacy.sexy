@@ -6,8 +6,9 @@ import type { useClipboard } from '@/presentation/components/Shared/Hooks/Clipbo
 import type { useCurrentCode } from '@/presentation/components/Shared/Hooks/UseCurrentCode';
 import type { useAutoUnsubscribedEvents } from '@/presentation/components/Shared/Hooks/UseAutoUnsubscribedEvents';
 import type { useUserSelectionState } from '@/presentation/components/Shared/Hooks/UseUserSelectionState';
-import type { useLogger } from '@/presentation/components/Shared/Hooks/UseLogger';
+import type { useLogger } from '@/presentation/components/Shared/Hooks/Log/UseLogger';
 import type { useCodeRunner } from './components/Shared/Hooks/UseCodeRunner';
+import type { useDialog } from './components/Shared/Hooks/Dialog/UseDialog';
 
 export const InjectionKeys = {
   useCollectionState: defineTransientKey<ReturnType<typeof useCollectionState>>('useCollectionState'),
@@ -19,6 +20,7 @@ export const InjectionKeys = {
   useUserSelectionState: defineTransientKey<ReturnType<typeof useUserSelectionState>>('useUserSelectionState'),
   useLogger: defineTransientKey<ReturnType<typeof useLogger>>('useLogger'),
   useCodeRunner: defineTransientKey<ReturnType<typeof useCodeRunner>>('useCodeRunner'),
+  useDialog: defineTransientKey<ReturnType<typeof useDialog>>('useDialog'),
 };
 
 export interface InjectionKeyWithLifetime<T> {

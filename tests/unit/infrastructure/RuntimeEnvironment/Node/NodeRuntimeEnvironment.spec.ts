@@ -62,14 +62,14 @@ describe('NodeRuntimeEnvironment', () => {
       expect(environment.os).to.equal(expectedOs);
     });
   });
-  describe('isDesktop', () => {
+  describe('isRunningAsDesktopApplication', () => {
     it('is always true', () => {
       // arrange
       const expectedDesktopCondition = true;
       // act
       const environment = new NodeRuntimeEnvironment();
       /// assert
-      expect(environment.isDesktop).to.equal(expectedDesktopCondition);
+      expect(environment.isRunningAsDesktopApplication).to.equal(expectedDesktopCondition);
     });
   });
   describe('isNonProduction', () => {

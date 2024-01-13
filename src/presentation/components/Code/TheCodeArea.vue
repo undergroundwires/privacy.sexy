@@ -188,6 +188,7 @@ function getDefaultCode(language: ScriptingLanguage): string {
     .appendCommentLine(' ✔️ No need to run any compiled software on your system, just run the generated scripts.')
     .appendCommentLine(' ✔️ Have full visibility into what the tweaks do as you enable them.')
     .appendCommentLine(' ✔️ Open-source and free (both free as in beer and free as in speech).')
+    .appendCommentLine(' ✔️ Committed to your safety with strong security measures.')
     .toString();
 }
 

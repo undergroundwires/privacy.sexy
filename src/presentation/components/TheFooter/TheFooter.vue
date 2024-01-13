@@ -2,7 +2,7 @@
   <div>
     <div class="footer">
       <div class="footer__section">
-        <span v-if="isDesktop" class="footer__section__item">
+        <span v-if="isRunningAsDesktopApplication" class="footer__section__item">
           <AppIcon class="icon" icon="globe" />
           <span>
             Online version at <a :href="homepageUrl" target="_blank" rel="noopener noreferrer">{{ homepageUrl }}</a>
@@ -68,7 +68,7 @@ export default defineComponent({
   },
   setup() {
     const { info } = injectKey((keys) => keys.useApplication);
-    const { isDesktop } = injectKey((keys) => keys.useRuntimeEnvironment);
+    const { isRunningAsDesktopApplication } = injectKey((keys) => keys.useRuntimeEnvironment);
 
     const isPrivacyDialogVisible = ref(false);
 
@@ -87,7 +87,7 @@ export default defineComponent({
     }
 
     return {
-      isDesktop,
+      isRunningAsDesktopApplication,
       isPrivacyDialogVisible,
       showPrivacyDialog,
       version,

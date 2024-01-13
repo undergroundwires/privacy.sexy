@@ -1,8 +1,8 @@
 <template>
   <div>
     <IconButton
-      :text="isDesktopVersion ? 'Save' : 'Download'"
-      :icon-name="isDesktopVersion ? 'floppy-disk' : 'file-arrow-down'"
+      :text="isRunningAsDesktopApplication ? 'Save' : 'Download'"
+      :icon-name="isRunningAsDesktopApplication ? 'floppy-disk' : 'file-arrow-down'"
       @click="saveCode"
     />
     <ModalDialog v-if="instructions" v-model="areInstructionsVisible">
@@ -16,12 +16,11 @@ import {
   defineComponent, ref, computed,
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
-import { SaveFileDialog, FileType } from '@/infrastructure/SaveFileDialog';
 import ModalDialog from '@/presentation/components/Shared/Modal/ModalDialog.vue';
-import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { ScriptFileName } from '@/application/CodeRunner/ScriptFileName';
+import { FileType } from '@/presentation/common/Dialog';
 import IconButton from '../IconButton.vue';
 import InstructionList from './Instructions/InstructionList.vue';
 import { IInstructionListData } from './Instructions/InstructionListData';
@@ -35,7 +34,8 @@ export default defineComponent({
   },
   setup() {
     const { currentState } = injectKey((keys) => keys.useCollectionState);
-    const { isDesktop } = injectKey((keys) => keys.useRuntimeEnvironment);
+    const { isRunningAsDesktopApplication } = injectKey((keys) => keys.useRuntimeEnvironment);
+    const { dialog } = injectKey((keys) => keys.useDialog);
 
     const areInstructionsVisible = ref(false);
     const fileName = computed<string>(() => buildFileName(currentState.value.collection.scripting));
@@ -44,13 +44,17 @@ export default defineComponent({
       fileName.value,
     ));
 
-    function saveCode() {
-      saveCodeToDisk(fileName.value, currentState.value);
+    async function saveCode() {
+      await dialog.saveFile(
+        currentState.value.code.current,
+        fileName.value,
+        getType(currentState.value.collection.scripting.language),
+      );
       areInstructionsVisible.value = true;
     }
 
     return {
-      isDesktopVersion: isDesktop,
+      isRunningAsDesktopApplication,
       instructions,
       fileName,
       areInstructionsVisible,
@@ -58,12 +62,6 @@ export default defineComponent({
     };
   },
 });
-
-function saveCodeToDisk(fileName: string, state: IReadOnlyCategoryCollectionState) {
-  const content = state.code.current;
-  const type = getType(state.collection.scripting.language);
-  SaveFileDialog.saveFile(content, fileName, type);
-}
 
 function getType(language: ScriptingLanguage) {
   switch (language) {
