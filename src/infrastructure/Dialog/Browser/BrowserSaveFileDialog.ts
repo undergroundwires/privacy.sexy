@@ -1,9 +1,9 @@
-import { FileType } from '@/presentation/common/Dialog';
+import { FileType, SaveFileOutcome } from '@/presentation/common/Dialog';
 
 export interface BrowserSaveFileDialog {
   saveFile(
     fileContents: string,
-    fileName: string,
+    defaultFilename: string,
     fileType: FileType,
-  ): void;
+  ): SaveFileOutcome;
 }

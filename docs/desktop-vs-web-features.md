@@ -9,6 +9,8 @@ This table highlights differences between the desktop and web versions of `priva
 | [Auto-updates](#auto-updates) | 🟢 Available | 🟢 Available |
 | [Logging](#logging) | 🟢 Available | 🔴 Not available |
 | [Script execution](#script-execution) | 🟢 Available | 🔴 Not available |
+| [Error handling](#error-handling) | 🟢 Advanced | 🟡 Limited |
+| [Native dialogs](#error-handling) | 🟢 Available | 🔴 Not available |
 
 ## Feature descriptions
 
@@ -53,7 +55,7 @@ Log file locations vary by operating system:
 The desktop version of privacy.sexy enables direct script execution, providing a seamless and integrated experience.
 This direct execution capability isn't available in the web version due to inherent browser restrictions.
 
-**Logging and storage:**
+**Script execution history:**
 
 For enhanced auditability and easier troubleshooting, the desktop version keeps a record of executed scripts in designated directories.
 These locations vary based on the operating system:
@@ -62,7 +64,13 @@ These locations vary based on the operating system:
 - Linux: `$HOME/.config/privacy.sexy/runs`
 - Windows: `%APPDATA%\privacy.sexy\runs`
 
-**Native file system dialogs:**
+### Error handling
 
-The desktop version uses native system file save dialogs, offering more features and reliability compared to the browser's file system dialogs.
+The desktop version of privacy.sexy features advanced error handling capabilities.
+It employs robust and reliable execution strategies, including self-healing mechanisms, and provides guidance and troubleshooting information to resolve issues effectively.
+In contrast, the web version has more basic error handling due to browser limitations and the nature of web applications.
+
+### Native dialogs
+
+The desktop version uses native dialogs, offering more features and reliability compared to the browser's file system dialogs.
 These native dialogs provide a more integrated and user-friendly experience, aligning with the operating system's standard interface and functionalities.

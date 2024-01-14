@@ -6,10 +6,10 @@ import { describe, it } from 'vitest';
 import { ScriptDirectoryProvider } from '@/infrastructure/CodeRunner/Creation/Directory/ScriptDirectoryProvider';
 import { ScriptFileCreationOrchestrator } from '@/infrastructure/CodeRunner/Creation/ScriptFileCreationOrchestrator';
 import { ScriptFileCodeRunner } from '@/infrastructure/CodeRunner/ScriptFileCodeRunner';
-import { expectDoesNotThrowAsync } from '@tests/shared/Assertions/ExpectThrowsAsync';
 import { CurrentEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironmentFactory';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { LinuxTerminalEmulator } from '@/infrastructure/CodeRunner/Execution/VisibleTerminalScriptFileExecutor';
+import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 
 describe('ScriptFileCodeRunner', () => {
   it('executes simple script correctly', async ({ skip }) => {
@@ -23,9 +23,12 @@ describe('ScriptFileCodeRunner', () => {
     const codeRunner = createCodeRunner(temporaryDirectoryProvider);
     const args = getPlatformSpecificArguments(currentOperatingSystem);
     // act
-    const act = () => codeRunner.runCode(...args);
+    const { success, error } = await codeRunner.runCode(...args);
     // assert
-    await expectDoesNotThrowAsync(act);
+    expect(success).to.equal(true, formatAssertionMessage([
+      'Failed to successfully execute the script.',
+      'Details:', JSON.stringify(error),
+    ]));
   });
 });
 
@@ -88,7 +91,10 @@ function createTemporaryDirectoryProvider(): ScriptDirectoryProvider {
     provideScriptDirectory: async () => {
       const temporaryDirectoryPathPrefix = join(tmpdir(), 'privacy-sexy-tests-');
       const temporaryDirectoryFullPath = await mkdtemp(temporaryDirectoryPathPrefix);
-      return temporaryDirectoryFullPath;
+      return {
+        success: true,
+        directoryAbsolutePath: temporaryDirectoryFullPath,
+      };
     },
   };
 }

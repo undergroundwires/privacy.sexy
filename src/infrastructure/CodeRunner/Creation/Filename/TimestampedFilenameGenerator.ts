@@ -1,14 +1,14 @@
-import { ScriptFileNameParts } from '../ScriptFileCreator';
+import { ScriptFilenameParts } from '../ScriptFileCreator';
 import { FilenameGenerator } from './FilenameGenerator';
 
 export class TimestampedFilenameGenerator implements FilenameGenerator {
   public generateFilename(
-    scriptFileNameParts: ScriptFileNameParts,
+    scriptFilenameParts: ScriptFilenameParts,
     date = new Date(),
   ): string {
-    validateScriptFileNameParts(scriptFileNameParts);
-    const baseFileName = `${createTimeStampForFile(date)}-${scriptFileNameParts.scriptName}`;
-    return scriptFileNameParts.scriptFileExtension ? `${baseFileName}.${scriptFileNameParts.scriptFileExtension}` : baseFileName;
+    validateScriptFilenameParts(scriptFilenameParts);
+    const baseFilename = `${createTimeStampForFile(date)}-${scriptFilenameParts.scriptName}`;
+    return scriptFilenameParts.scriptFileExtension ? `${baseFilename}.${scriptFilenameParts.scriptFileExtension}` : baseFilename;
   }
 }
 
@@ -21,11 +21,11 @@ function createTimeStampForFile(date: Date): string {
     .replace(/\..+/, '');
 }
 
-function validateScriptFileNameParts(scriptFileNameParts: ScriptFileNameParts) {
-  if (!scriptFileNameParts.scriptName) {
+function validateScriptFilenameParts(scriptFilenameParts: ScriptFilenameParts) {
+  if (!scriptFilenameParts.scriptName) {
     throw new Error('Script name is required but not provided.');
   }
-  if (scriptFileNameParts.scriptFileExtension?.startsWith('.')) {
+  if (scriptFilenameParts.scriptFileExtension?.startsWith('.')) {
     throw new Error('File extension should not start with a dot.');
   }
 }

@@ -5,7 +5,7 @@ import { IpcChannel } from './IpcChannel';
 
 export const IpcChannelDefinitions = {
   CodeRunner: defineElectronIpcChannel<CodeRunner>('code-run', ['runCode']),
-  Dialog: defineElectronIpcChannel<Dialog>('dialogs', ['saveFile']),
+  Dialog: defineElectronIpcChannel<Dialog>('dialogs', ['showError', 'saveFile']),
 } as const;
 
 export type ChannelDefinitionKey = keyof typeof IpcChannelDefinitions;

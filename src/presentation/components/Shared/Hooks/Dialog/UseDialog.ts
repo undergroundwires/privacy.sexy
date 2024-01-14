@@ -1,9 +1,9 @@
 import { Dialog } from '@/presentation/common/Dialog';
 import { CurrentEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironmentFactory';
-import { determineDialogBasedOnEnvironment } from './ClientDialogFactory';
+import { createEnvironmentSpecificLoggedDialog } from './ClientDialogFactory';
 
 export function useDialog(
-  factory: DialogFactory = () => determineDialogBasedOnEnvironment(CurrentEnvironment),
+  factory: DialogFactory = () => createEnvironmentSpecificLoggedDialog(CurrentEnvironment),
 ) {
   const dialog = factory();
   return {

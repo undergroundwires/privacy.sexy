@@ -1,9 +1,10 @@
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import { Logger } from '@/application/Common/Log/Logger';
+import { CodeRunError, CodeRunErrorType } from '@/application/CodeRunner/CodeRunner';
 import { SystemOperations } from '../System/SystemOperations';
 import { NodeElectronSystemOperations } from '../System/NodeElectronSystemOperations';
 import { FilenameGenerator } from './Filename/FilenameGenerator';
-import { ScriptFileNameParts, ScriptFileCreator } from './ScriptFileCreator';
+import { ScriptFilenameParts, ScriptFileCreator, ScriptFileCreationOutcome } from './ScriptFileCreator';
 import { TimestampedFilenameGenerator } from './Filename/TimestampedFilenameGenerator';
 import { ScriptDirectoryProvider } from './Directory/ScriptDirectoryProvider';
 import { PersistentDirectoryProvider } from './Directory/PersistentDirectoryProvider';
@@ -18,23 +19,99 @@ export class ScriptFileCreationOrchestrator implements ScriptFileCreator {
 
   public async createScriptFile(
     contents: string,
-    scriptFileNameParts: ScriptFileNameParts,
-  ): Promise<string> {
-    const filePath = await this.provideFilePath(scriptFileNameParts);
-    await this.createFile(filePath, contents);
-    return filePath;
+    scriptFilenameParts: ScriptFilenameParts,
+  ): Promise<ScriptFileCreationOutcome> {
+    const {
+      success: isDirectoryCreated, error: directoryCreationError, directoryAbsolutePath,
+    } = await this.directoryProvider.provideScriptDirectory();
+    if (!isDirectoryCreated) {
+      return createFailure(directoryCreationError);
+    }
+    const {
+      success: isFilePathConstructed, error: filePathGenerationError, filePath,
+    } = this.constructFilePath(scriptFilenameParts, directoryAbsolutePath);
+    if (!isFilePathConstructed) {
+      return createFailure(filePathGenerationError);
+    }
+    const {
+      success: isFileCreated, error: fileCreationError,
+    } = await this.writeFile(filePath, contents);
+    if (!isFileCreated) {
+      return createFailure(fileCreationError);
+    }
+    return {
+      success: true,
+      scriptFileAbsolutePath: filePath,
+    };
   }
 
-  private async provideFilePath(scriptFileNameParts: ScriptFileNameParts): Promise<string> {
-    const filename = this.filenameGenerator.generateFilename(scriptFileNameParts);
-    const directoryPath = await this.directoryProvider.provideScriptDirectory();
-    const filePath = this.system.location.combinePaths(directoryPath, filename);
-    return filePath;
+  private constructFilePath(
+    scriptFilenameParts: ScriptFilenameParts,
+    directoryPath: string,
+  ): FilePathConstructionOutcome {
+    try {
+      const filename = this.filenameGenerator.generateFilename(scriptFilenameParts);
+      const filePath = this.system.location.combinePaths(directoryPath, filename);
+      return { success: true, filePath };
+    } catch (error) {
+      return {
+        success: false,
+        error: this.handleException(error, 'FilePathGenerationError'),
+      };
+    }
   }
 
-  private async createFile(filePath: string, contents: string): Promise<void> {
-    this.logger.info(`Creating file at ${filePath}, size: ${contents.length} characters`);
-    await this.system.fileSystem.writeToFile(filePath, contents);
-    this.logger.info(`File created successfully at ${filePath}`);
+  private async writeFile(
+    filePath: string,
+    contents: string,
+  ): Promise<FileWriteOutcome> {
+    try {
+      this.logger.info(`Creating file at ${filePath}, size: ${contents.length} characters`);
+      await this.system.fileSystem.writeToFile(filePath, contents);
+      this.logger.info(`File created successfully at ${filePath}`);
+      return { success: true };
+    } catch (error) {
+      return {
+        success: false,
+        error: this.handleException(error, 'FileWriteError'),
+      };
+    }
+  }
+
+  private handleException(
+    exception: Error,
+    errorType: CodeRunErrorType,
+  ): CodeRunError {
+    const errorMessage = 'Error during script file operation';
+    this.logger.error(errorType, errorMessage, exception);
+    return {
+      type: errorType,
+      message: `${errorMessage}: ${exception.message}`,
+    };
   }
 }
+
+function createFailure(error: CodeRunError): ScriptFileCreationOutcome {
+  return {
+    success: false,
+    error,
+  };
+}
+
+type FileWriteOutcome = {
+  readonly success: true;
+  readonly error?: undefined;
+} | {
+  readonly success: false;
+  readonly error: CodeRunError;
+};
+
+type FilePathConstructionOutcome = {
+  readonly success: true;
+  readonly filePath: string;
+  readonly error?: undefined;
+} | {
+  readonly success: false;
+  readonly filePath?: undefined;
+  readonly error: CodeRunError;
+};

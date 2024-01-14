@@ -5,7 +5,9 @@ import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
 import { NodeElectronSystemOperations } from '@/infrastructure/CodeRunner/System/NodeElectronSystemOperations';
 import { CurrentEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironmentFactory';
-import { ScriptFileExecutor } from './ScriptFileExecutor';
+import { CodeRunErrorType } from '@/application/CodeRunner/CodeRunner';
+import { isString } from '@/TypeHelpers';
+import { FailedScriptFileExecution, ScriptFileExecutionOutcome, ScriptFileExecutor } from './ScriptFileExecutor';
 
 export class VisibleTerminalScriptExecutor implements ScriptFileExecutor {
   constructor(
@@ -14,38 +16,77 @@ export class VisibleTerminalScriptExecutor implements ScriptFileExecutor {
     private readonly environment: RuntimeEnvironment = CurrentEnvironment,
   ) { }
 
-  public async executeScriptFile(filePath: string): Promise<void> {
+  public async executeScriptFile(filePath: string): Promise<ScriptFileExecutionOutcome> {
     const { os } = this.environment;
     if (os === undefined) {
-      throw new Error('Unknown operating system');
+      return this.handleError('UnsupportedOperatingSystem', 'Operating system could not be identified from environment.');
     }
-    await this.setFileExecutablePermissions(filePath);
-    await this.runFileWithRunner(filePath, os);
+    const filePermissionsResult = await this.setFileExecutablePermissions(filePath);
+    if (!filePermissionsResult.success) {
+      return filePermissionsResult;
+    }
+    const scriptExecutionResult = await this.runFileWithRunner(filePath, os);
+    if (!scriptExecutionResult.success) {
+      return scriptExecutionResult;
+    }
+    return {
+      success: true,
+    };
   }
 
-  private async setFileExecutablePermissions(filePath: string): Promise<void> {
+  private async setFileExecutablePermissions(
+    filePath: string,
+  ): Promise<ScriptFileExecutionOutcome> {
     /*
       This is required on macOS and Linux otherwise the terminal emulators will refuse to
       execute the script. It's not needed on Windows.
     */
-    this.logger.info(`Setting execution permissions for file at ${filePath}`);
-    await this.system.fileSystem.setFilePermissions(filePath, '755');
-    this.logger.info(`Execution permissions set successfully for ${filePath}`);
+    try {
+      this.logger.info(`Setting execution permissions for file at ${filePath}`);
+      await this.system.fileSystem.setFilePermissions(filePath, '755');
+      this.logger.info(`Execution permissions set successfully for ${filePath}`);
+      return { success: true };
+    } catch (error) {
+      return this.handleError('FileExecutionError', error);
+    }
   }
 
-  private async runFileWithRunner(filePath: string, os: OperatingSystem): Promise<void> {
+  private async runFileWithRunner(
+    filePath: string,
+    os: OperatingSystem,
+  ): Promise<ScriptFileExecutionOutcome> {
     this.logger.info(`Executing script file: ${filePath} on ${OperatingSystem[os]}.`);
     const runner = TerminalRunners[os];
     if (!runner) {
-      throw new Error(`Unsupported operating system: ${OperatingSystem[os]}`);
+      return this.handleError('UnsupportedOperatingSystem', `Unsupported operating system: ${OperatingSystem[os]}`);
     }
     const context: TerminalExecutionContext = {
       scriptFilePath: filePath,
       commandOps: this.system.command,
       logger: this.logger,
     };
-    await runner(context);
-    this.logger.info('Command script file successfully.');
+    try {
+      await runner(context);
+      this.logger.info('Command script file successfully.');
+      return { success: true };
+    } catch (error) {
+      return this.handleError('FileExecutionError', error);
+    }
+  }
+
+  private handleError(
+    type: CodeRunErrorType,
+    error: Error | string,
+  ): FailedScriptFileExecution {
+    const errorMessage = 'Error during script file execution';
+    this.logger.error([type, errorMessage, ...(error ? [error] : [])]);
+    return {
+      success: false,
+      error: {
+        type,
+        message: `${errorMessage}: ${isString(error) ? error : errorMessage}`,
+      },
+    };
   }
 }
 

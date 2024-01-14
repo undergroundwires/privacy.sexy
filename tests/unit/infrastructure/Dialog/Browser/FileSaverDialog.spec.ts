@@ -88,7 +88,7 @@ class SaveFileTestSetup {
 
   private fileContents: string = `${SaveFileTestSetup.name} file contents`;
 
-  private fileName: string = `${SaveFileTestSetup.name} file name`;
+  private filename: string = `${SaveFileTestSetup.name} filename`;
 
   private fileType: FileType = FileType.BatchFile;
 
@@ -119,7 +119,7 @@ class SaveFileTestSetup {
     );
     return dialog.saveFile(
       this.fileContents,
-      this.fileName,
+      this.filename,
       this.fileType,
     );
   }

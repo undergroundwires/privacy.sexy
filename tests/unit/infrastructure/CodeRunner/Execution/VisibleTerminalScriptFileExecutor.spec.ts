@@ -1,5 +1,4 @@
 import { describe, it, expect } from 'vitest';
-import { expectThrowsAsync } from '@tests/shared/Assertions/ExpectThrowsAsync';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { AllSupportedOperatingSystems, SupportedOperatingSystem } from '@tests/shared/TestCases/SupportedOperatingSystems';
 import { VisibleTerminalScriptExecutor } from '@/infrastructure/CodeRunner/Execution/VisibleTerminalScriptFileExecutor';
@@ -9,41 +8,12 @@ import { SystemOperationsStub } from '@tests/unit/shared/Stubs/SystemOperationsS
 import { CommandOpsStub } from '@tests/unit/shared/Stubs/CommandOpsStub';
 import { SystemOperations } from '@/infrastructure/CodeRunner/System/SystemOperations';
 import { FileSystemOpsStub } from '@tests/unit/shared/Stubs/FileSystemOpsStub';
+import { CodeRunErrorType } from '@/application/CodeRunner/CodeRunner';
+import { Logger } from '@/application/Common/Log/Logger';
+import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 describe('VisibleTerminalScriptFileExecutor', () => {
   describe('executeScriptFile', () => {
-    describe('throws error for invalid operating systems', () => {
-      const testScenarios: ReadonlyArray<{
-        readonly description: string;
-        readonly invalidOs?: OperatingSystem;
-        readonly expectedError: string;
-      }> = [
-        (() => {
-          const unsupportedOs = OperatingSystem.Android;
-          return {
-            description: 'unsupported OS',
-            invalidOs: unsupportedOs,
-            expectedError: `Unsupported operating system: ${OperatingSystem[unsupportedOs]}`,
-          };
-        })(),
-        {
-          description: 'undefined OS',
-          invalidOs: undefined,
-          expectedError: 'Unknown operating system',
-        },
-      ];
-      testScenarios.forEach(({ description, invalidOs, expectedError }) => {
-        it(description, async () => {
-          // arrange
-          const context = new ScriptFileTestSetup()
-            .withOs(invalidOs);
-          // act
-          const act = async () => { await context.executeScriptFile(); };
-          // assert
-          await expectThrowsAsync(act, expectedError);
-        });
-      });
-    });
     describe('command execution', () => {
       // arrange
       const testScenarios: Record<SupportedOperatingSystem, readonly {
@@ -88,10 +58,10 @@ describe('VisibleTerminalScriptFileExecutor', () => {
           testScenarios[operatingSystem].forEach((
             { description, filePath, expectedCommand },
           ) => {
-            it(description, async () => {
+            it(`executes command - ${description}`, async () => {
               // arrange
               const command = new CommandOpsStub();
-              const context = new ScriptFileTestSetup()
+              const context = new ScriptFileExecutorTestSetup()
                 .withOs(operatingSystem)
                 .withFilePath(filePath)
                 .withSystemOperations(new SystemOperationsStub().withCommand(command));
@@ -124,7 +94,7 @@ describe('VisibleTerminalScriptFileExecutor', () => {
           isExecutedAfterPermissions = isPermissionsSet;
           return Promise.resolve();
         };
-        const context = new ScriptFileTestSetup()
+        const context = new ScriptFileExecutorTestSetup()
           .withSystemOperations(new SystemOperationsStub()
             .withFileSystem(fileSystemMock)
             .withCommand(commandMock));
@@ -139,7 +109,7 @@ describe('VisibleTerminalScriptFileExecutor', () => {
         // arrange
         const expectedMode = '755';
         const fileSystem = new FileSystemOpsStub();
-        const context = new ScriptFileTestSetup()
+        const context = new ScriptFileExecutorTestSetup()
           .withSystemOperations(new SystemOperationsStub().withFileSystem(fileSystem));
 
         // act
@@ -151,11 +121,11 @@ describe('VisibleTerminalScriptFileExecutor', () => {
         const [, actualMode] = calls[0].args;
         expect(actualMode).to.equal(expectedMode);
       });
-      it('sets permissions on the correct file', async () => {
+      it('sets permissions for correct file', async () => {
         // arrange
         const expectedFilePath = 'expected-file-path';
         const fileSystem = new FileSystemOpsStub();
-        const context = new ScriptFileTestSetup()
+        const context = new ScriptFileExecutorTestSetup()
           .withFilePath(expectedFilePath)
           .withSystemOperations(new SystemOperationsStub().withFileSystem(fileSystem));
 
@@ -169,15 +139,120 @@ describe('VisibleTerminalScriptFileExecutor', () => {
         expect(actualFilePath).to.equal(expectedFilePath);
       });
     });
+    it('indicates success on successful execution', async () => {
+      // arrange
+      const expectedSuccessResult = true;
+      const context = new ScriptFileExecutorTestSetup();
+
+      // act
+      const { success: actualSuccessValue } = await context.executeScriptFile();
+
+      // assert
+      expect(actualSuccessValue).to.equal(expectedSuccessResult);
+    });
+    describe('error handling', () => {
+      const testScenarios: ReadonlyArray<{
+        readonly description: string;
+        readonly expectedErrorType: CodeRunErrorType;
+        readonly expectedErrorMessage: string;
+        buildFaultyContext(
+          setup: ScriptFileExecutorTestSetup,
+          errorMessage: string,
+        ): ScriptFileExecutorTestSetup;
+      }> = [
+        {
+          description: 'unindentified os',
+          expectedErrorType: 'UnsupportedOperatingSystem',
+          expectedErrorMessage: 'Operating system could not be identified from environment',
+          buildFaultyContext: (setup) => {
+            return setup.withOs(undefined);
+          },
+        },
+        {
+          description: 'unsupported OS',
+          expectedErrorType: 'UnsupportedOperatingSystem',
+          expectedErrorMessage: `Unsupported operating system: ${OperatingSystem[OperatingSystem.Android]}`,
+          buildFaultyContext: (setup) => {
+            return setup.withOs(OperatingSystem.Android);
+          },
+        },
+        {
+          description: 'file permissions failure',
+          expectedErrorType: 'FileExecutionError',
+          expectedErrorMessage: 'Error when setting file permissions',
+          buildFaultyContext: (setup, errorMessage) => {
+            const fileSystem = new FileSystemOpsStub();
+            fileSystem.setFilePermissions = () => Promise.reject(errorMessage);
+            return setup.withSystemOperations(
+              new SystemOperationsStub().withFileSystem(fileSystem),
+            );
+          },
+        },
+        {
+          description: 'command failure',
+          expectedErrorType: 'FileExecutionError',
+          expectedErrorMessage: 'Error when setting file permissions',
+          buildFaultyContext: (setup, errorMessage) => {
+            const command = new CommandOpsStub();
+            command.exec = () => Promise.reject(errorMessage);
+            return setup.withSystemOperations(
+              new SystemOperationsStub().withCommand(command),
+            );
+          },
+        },
+      ];
+      testScenarios.forEach(({
+        description, expectedErrorType, expectedErrorMessage, buildFaultyContext,
+      }) => {
+        it(`handles error - ${description}`, async () => {
+          // arrange
+          const context = buildFaultyContext(
+            new ScriptFileExecutorTestSetup(),
+            expectedErrorMessage,
+          );
+
+          // act
+          const { success, error } = await context.executeScriptFile();
+
+          // assert
+          expect(success).to.equal(false);
+          expectExists(error);
+          expect(error.message).to.include(expectedErrorMessage);
+          expect(error.type).to.equal(expectedErrorType);
+        });
+        it(`logs error - ${description}`, async () => {
+          // arrange
+          const loggerStub = new LoggerStub();
+          const context = buildFaultyContext(
+            new ScriptFileExecutorTestSetup()
+              .withLogger(loggerStub),
+            expectedErrorMessage,
+          );
+
+          // act
+          await context.executeScriptFile();
+
+          // assert
+          loggerStub.assertLogsContainMessagePart('error', expectedErrorMessage);
+        });
+      });
+    });
   });
 });
 
-class ScriptFileTestSetup {
+class ScriptFileExecutorTestSetup {
   private os?: OperatingSystem = OperatingSystem.Windows;
 
-  private filePath = `[${ScriptFileTestSetup.name}] file path`;
+  private filePath = `[${ScriptFileExecutorTestSetup.name}] file path`;
 
   private system: SystemOperations = new SystemOperationsStub();
+
+  private logger: Logger = new LoggerStub();
+
+  public withLogger(logger: Logger): this {
+    this.logger = logger;
+    return this;
+  }
 
   public withOs(os: OperatingSystem | undefined): this {
     this.os = os;
@@ -194,10 +269,9 @@ class ScriptFileTestSetup {
     return this;
   }
 
-  public executeScriptFile(): Promise<void> {
+  public executeScriptFile() {
     const environment = new RuntimeEnvironmentStub().withOs(this.os);
-    const logger = new LoggerStub();
-    const executor = new VisibleTerminalScriptExecutor(this.system, logger, environment);
+    const executor = new VisibleTerminalScriptExecutor(this.system, this.logger, environment);
     return executor.executeScriptFile(this.filePath);
   }
 }

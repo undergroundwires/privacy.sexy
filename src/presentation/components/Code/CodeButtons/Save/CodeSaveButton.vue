@@ -19,8 +19,8 @@ import { injectKey } from '@/presentation/injectionSymbols';
 import ModalDialog from '@/presentation/components/Shared/Modal/ModalDialog.vue';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
-import { ScriptFileName } from '@/application/CodeRunner/ScriptFileName';
-import { FileType } from '@/presentation/common/Dialog';
+import { ScriptFilename } from '@/application/CodeRunner/ScriptFilename';
+import { Dialog, FileType } from '@/presentation/common/Dialog';
 import IconButton from '../IconButton.vue';
 import InstructionList from './Instructions/InstructionList.vue';
 import { IInstructionListData } from './Instructions/InstructionListData';
@@ -38,25 +38,28 @@ export default defineComponent({
     const { dialog } = injectKey((keys) => keys.useDialog);
 
     const areInstructionsVisible = ref(false);
-    const fileName = computed<string>(() => buildFileName(currentState.value.collection.scripting));
+    const filename = computed<string>(() => buildFilename(currentState.value.collection.scripting));
     const instructions = computed<IInstructionListData | undefined>(() => getInstructions(
       currentState.value.collection.os,
-      fileName.value,
+      filename.value,
     ));
 
     async function saveCode() {
-      await dialog.saveFile(
+      const { success, error } = await dialog.saveFile(
         currentState.value.code.current,
-        fileName.value,
+        filename.value,
         getType(currentState.value.collection.scripting.language),
       );
+      if (!success) {
+        showScriptSaveError(dialog, `${error.type}: ${error.message}`);
+        return;
+      }
       areInstructionsVisible.value = true;
     }
 
     return {
       isRunningAsDesktopApplication,
       instructions,
-      fileName,
       areInstructionsVisible,
       saveCode,
     };
@@ -74,10 +77,30 @@ function getType(language: ScriptingLanguage) {
   }
 }
 
-function buildFileName(scripting: IScriptingDefinition) {
+function buildFilename(scripting: IScriptingDefinition) {
   if (scripting.fileExtension) {
-    return `${ScriptFileName}.${scripting.fileExtension}`;
+    return `${ScriptFilename}.${scripting.fileExtension}`;
   }
-  return ScriptFileName;
+  return ScriptFilename;
+}
+
+function showScriptSaveError(dialog: Dialog, technicalDetails: string) {
+  dialog.showError(
+    'Error Saving Script',
+    [
+      'An error occurred while saving the script.',
+      'This issue may arise from insufficient permissions, limited disk space, or interference from security software.',
+      '\n',
+      'To address this:',
+      '- Verify your permissions for the selected save directory.',
+      '- Check available disk space.',
+      '- Review your antivirus or security settings; adding an exclusion for privacy.sexy might be necessary.',
+      '- Try saving the script to a different location or modifying your selection.',
+      '- If the problem persists, reach out to the community for further assistance.',
+      '\n',
+      'Technical Details:',
+      technicalDetails,
+    ].join('\n'),
+  );
 }
 </script>

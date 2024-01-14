@@ -1,6 +1,8 @@
 import { Logger } from '@/application/Common/Log/Logger';
-import { ScriptFileName } from '@/application/CodeRunner/ScriptFileName';
-import { CodeRunner } from '@/application/CodeRunner/CodeRunner';
+import { ScriptFilename } from '@/application/CodeRunner/ScriptFilename';
+import {
+  CodeRunError, CodeRunOutcome, CodeRunner, FailedCodeRun,
+} from '@/application/CodeRunner/CodeRunner';
 import { ElectronLogger } from '../Log/ElectronLogger';
 import { ScriptFileExecutor } from './Execution/ScriptFileExecutor';
 import { ScriptFileCreator } from './Creation/ScriptFileCreator';
@@ -18,18 +20,38 @@ export class ScriptFileCodeRunner implements CodeRunner {
   public async runCode(
     code: string,
     fileExtension: string,
-  ): Promise<void> {
+  ): Promise<CodeRunOutcome> {
     this.logger.info('Initiating script running process.');
-    try {
-      const scriptFilePath = await this.scriptFileCreator.createScriptFile(code, {
-        scriptName: ScriptFileName,
-        scriptFileExtension: fileExtension,
-      });
-      await this.scriptFileExecutor.executeScriptFile(scriptFilePath);
-      this.logger.info(`Successfully ran script at ${scriptFilePath}`);
-    } catch (error) {
-      this.logger.error(`Error running script: ${error.message}`, error);
-      throw error;
+    const {
+      success: isFileCreated, scriptFileAbsolutePath, error: fileCreationError,
+    } = await this.scriptFileCreator.createScriptFile(code, {
+      scriptName: ScriptFilename,
+      scriptFileExtension: fileExtension,
+    });
+    if (!isFileCreated) {
+      return createFailure(fileCreationError);
     }
+    const {
+      success: isFileSuccessfullyExecuted,
+      error: fileExecutionError,
+    } = await this.scriptFileExecutor.executeScriptFile(
+      scriptFileAbsolutePath,
+    );
+    if (!isFileSuccessfullyExecuted) {
+      return createFailure(fileExecutionError);
+    }
+    this.logger.info(`Successfully ran script at ${scriptFileAbsolutePath}`);
+    return {
+      success: true,
+    };
   }
+}
+
+function createFailure(
+  error: CodeRunError,
+): FailedCodeRun {
+  return {
+    success: false,
+    error,
+  };
 }

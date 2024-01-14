@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { FileType } from '@/presentation/common/Dialog';
+import { FileType, SaveFileErrorType } from '@/presentation/common/Dialog';
 import { ElectronFileDialogOperations, NodeElectronSaveFileDialog, NodeFileOperations } from '@/infrastructure/Dialog/Electron/NodeElectronSaveFileDialog';
 import { Logger } from '@/application/Common/Log/Logger';
 import { LoggerStub } from '@tests/unit/shared/Stubs/LoggerStub';
@@ -8,14 +8,14 @@ import { ElectronFileDialogOperationsStub } from './ElectronFileDialogOperations
 import { NodeFileOperationsStub } from './NodeFileOperationsStub';
 
 describe('NodeElectronSaveFileDialog', () => {
-  describe('shows dialog with correct options', () => {
+  describe('dialog options', () => {
     it('correct title', async () => {
       // arrange
       const expectedFileName = 'expected-file-name';
       const electronMock = new ElectronFileDialogOperationsStub();
       const context = new SaveFileDialogTestSetup()
         .withElectron(electronMock)
-        .withFileName(expectedFileName);
+        .withDefaultFilename(expectedFileName);
       // act
       await context.saveFile();
       // assert
@@ -52,7 +52,7 @@ describe('NodeElectronSaveFileDialog', () => {
         .withUserDownloadsPath(expectedParentDirectory);
       const context = new SaveFileDialogTestSetup()
         .withElectron(electronMock)
-        .withFileName(expectedFileName)
+        .withDefaultFilename(expectedFileName)
         .withNode(new NodeFileOperationsStub().withPathSegmentSeparator(pathSegmentSeparator));
       // act
       await context.saveFile();
@@ -63,7 +63,7 @@ describe('NodeElectronSaveFileDialog', () => {
         electronMock,
       );
     });
-    describe('correct filters', () => {
+    describe('correct file type filters', () => {
       const defaultFilter: Electron.FileFilter = {
         name: 'All Files',
         extensions: ['*'],
@@ -109,92 +109,224 @@ describe('NodeElectronSaveFileDialog', () => {
     });
   });
 
-  describe('saves the file when the dialog is not canceled', () => {
-    it('writes to the selected file path', async () => {
-      // arrange
-      const expectedFilePath = 'expected-file-path';
-      const isCancelled = false;
-      const electronMock = new ElectronFileDialogOperationsStub()
-        .withMimicUserCancel(isCancelled)
-        .withUserSelectedFilePath(expectedFilePath);
-      const nodeMock = new NodeFileOperationsStub();
-      const context = new SaveFileDialogTestSetup()
-        .withElectron(electronMock)
-        .withNode(nodeMock);
+  describe('file saving process', () => {
+    describe('when dialog is confirmed', () => {
+      it('writes to the selected file path', async () => {
+        // arrange
+        const expectedFilePath = 'expected-file-path';
+        const isCancelled = false;
+        const electronMock = new ElectronFileDialogOperationsStub()
+          .withMimicUserCancel(isCancelled)
+          .withUserSelectedFilePath(expectedFilePath);
+        const nodeMock = new NodeFileOperationsStub();
+        const context = new SaveFileDialogTestSetup()
+          .withElectron(electronMock)
+          .withNode(nodeMock);
 
-      // act
-      await context.saveFile();
+        // act
+        await context.saveFile();
 
-      // assert
-      const saveFileCalls = nodeMock.callHistory.filter((c) => c.methodName === 'writeFile');
-      expect(saveFileCalls).to.have.lengthOf(1);
-      const [actualFilePath] = saveFileCalls[0].args;
-      expect(actualFilePath).to.equal(expectedFilePath);
+        // assert
+        const saveFileCalls = nodeMock.callHistory.filter((c) => c.methodName === 'writeFile');
+        expect(saveFileCalls).to.have.lengthOf(1);
+        const [actualFilePath] = saveFileCalls[0].args;
+        expect(actualFilePath).to.equal(expectedFilePath);
+      });
+      it('writes the correct file contents', async () => {
+        // arrange
+        const expectedFileContents = 'expected-file-contents';
+        const isCancelled = false;
+        const electronMock = new ElectronFileDialogOperationsStub()
+          .withMimicUserCancel(isCancelled);
+        const nodeMock = new NodeFileOperationsStub();
+        const context = new SaveFileDialogTestSetup()
+          .withElectron(electronMock)
+          .withFileContents(expectedFileContents)
+          .withNode(nodeMock);
+
+        // act
+        await context.saveFile();
+
+        // assert
+        const saveFileCalls = nodeMock.callHistory.filter((c) => c.methodName === 'writeFile');
+        expect(saveFileCalls).to.have.lengthOf(1);
+        const [,actualFileContents] = saveFileCalls[0].args;
+        expect(actualFileContents).to.equal(expectedFileContents);
+      });
+      it('returns success status', async () => {
+        // arrange
+        const expectedSuccessValue = true;
+        const context = new SaveFileDialogTestSetup();
+
+        // act
+        const { success } = await context.saveFile();
+
+        // assert
+        expect(success).to.equal(expectedSuccessValue);
+      });
     });
+    describe('when dialog is canceled', async () => {
+      it('does not save file', async () => {
+        // arrange
+        const isCancelled = true;
+        const electronMock = new ElectronFileDialogOperationsStub()
+          .withMimicUserCancel(isCancelled);
+        const nodeMock = new NodeFileOperationsStub();
+        const context = new SaveFileDialogTestSetup()
+          .withElectron(electronMock)
+          .withNode(nodeMock);
 
-    it('writes the correct file contents', async () => {
-      // arrange
-      const expectedFileContents = 'expected-file-contents';
-      const isCancelled = false;
-      const electronMock = new ElectronFileDialogOperationsStub()
-        .withMimicUserCancel(isCancelled);
-      const nodeMock = new NodeFileOperationsStub();
-      const context = new SaveFileDialogTestSetup()
-        .withElectron(electronMock)
-        .withFileContents(expectedFileContents)
-        .withNode(nodeMock);
+        // act
+        await context.saveFile();
 
-      // act
-      await context.saveFile();
+        // assert
+        const saveFileCall = nodeMock.callHistory.find((c) => c.methodName === 'writeFile');
+        expect(saveFileCall).to.equal(undefined);
+      });
+      it('logs cancelation info', async () => {
+        // arrange
+        const expectedLogMessagePart = 'File save cancelled';
+        const logger = new LoggerStub();
+        const isCancelled = true;
+        const electronMock = new ElectronFileDialogOperationsStub()
+          .withMimicUserCancel(isCancelled);
+        const context = new SaveFileDialogTestSetup()
+          .withElectron(electronMock)
+          .withLogger(logger);
 
-      // assert
-      const saveFileCalls = nodeMock.callHistory.filter((c) => c.methodName === 'writeFile');
-      expect(saveFileCalls).to.have.lengthOf(1);
-      const [,actualFileContents] = saveFileCalls[0].args;
-      expect(actualFileContents).to.equal(expectedFileContents);
+        // act
+        await context.saveFile();
+
+        // assert
+        logger.assertLogsContainMessagePart('info', expectedLogMessagePart);
+      });
+      it('returns success', async () => {
+        // arrange
+        const expectedSuccessValue = true;
+        const isCancelled = true;
+        const electronMock = new ElectronFileDialogOperationsStub()
+          .withMimicUserCancel(isCancelled);
+        const context = new SaveFileDialogTestSetup()
+          .withElectron(electronMock);
+
+        // act
+        const { success } = await context.saveFile();
+
+        // assert
+        expect(success).to.equal(expectedSuccessValue);
+      });
     });
   });
 
-  it('does not save file when dialog is canceled', async () => {
-    // arrange
-    const isCancelled = true;
-    const electronMock = new ElectronFileDialogOperationsStub()
-      .withMimicUserCancel(isCancelled);
-    const nodeMock = new NodeFileOperationsStub();
-    const context = new SaveFileDialogTestSetup()
-      .withElectron(electronMock)
-      .withNode(nodeMock);
+  describe('error handling', () => {
+    const testScenarios: ReadonlyArray<{
+      readonly description: string;
+      readonly expectedErrorType: SaveFileErrorType;
+      readonly expectedErrorMessage: string;
+      buildFaultyContext(
+        setup: SaveFileDialogTestSetup,
+        errorMessage: string,
+      ): SaveFileDialogTestSetup;
+    }> = [
+      {
+        description: 'file writing failure',
+        expectedErrorType: 'FileCreationError',
+        expectedErrorMessage: 'Error when writing file',
+        buildFaultyContext: (setup, errorMessage) => {
+          const electronMock = new ElectronFileDialogOperationsStub().withMimicUserCancel(false);
+          const nodeMock = new NodeFileOperationsStub();
+          nodeMock.writeFile = () => Promise.reject(new Error(errorMessage));
+          return setup
+            .withElectron(electronMock)
+            .withNode(nodeMock);
+        },
+      },
+      {
+        description: 'user path retrieval failure',
+        expectedErrorType: 'DialogDisplayError',
+        expectedErrorMessage: 'Error when retrieving user path',
+        buildFaultyContext: (setup, errorMessage) => {
+          const electronMock = new ElectronFileDialogOperationsStub().withMimicUserCancel(false);
+          electronMock.getUserDownloadsPath = () => {
+            throw new Error(errorMessage);
+          };
+          return setup
+            .withElectron(electronMock);
+        },
+      },
+      {
+        description: 'path combination failure',
+        expectedErrorType: 'DialogDisplayError',
+        expectedErrorMessage: 'Error when combining paths',
+        buildFaultyContext: (setup, errorMessage) => {
+          const nodeMock = new NodeFileOperationsStub();
+          nodeMock.join = () => {
+            throw new Error(errorMessage);
+          };
+          return setup
+            .withNode(nodeMock);
+        },
+      },
+      {
+        description: 'dialog display failure',
+        expectedErrorType: 'DialogDisplayError',
+        expectedErrorMessage: 'Error when showing save dialog',
+        buildFaultyContext: (setup, errorMessage) => {
+          const electronMock = new ElectronFileDialogOperationsStub().withMimicUserCancel(false);
+          electronMock.showSaveDialog = () => Promise.reject(new Error(errorMessage));
+          return setup
+            .withElectron(electronMock);
+        },
+      },
+      {
+        description: 'unexpected dialog return value failure',
+        expectedErrorType: 'DialogDisplayError',
+        expectedErrorMessage: 'Unexpected Error: File path is undefined after save dialog completion.',
+        buildFaultyContext: (setup) => {
+          const electronMock = new ElectronFileDialogOperationsStub().withMimicUserCancel(false);
+          electronMock.showSaveDialog = () => Promise.resolve({
+            canceled: false,
+            filePath: undefined,
+          });
+          return setup
+            .withElectron(electronMock);
+        },
+      },
+    ];
+    testScenarios.forEach(({
+      description, expectedErrorType, expectedErrorMessage, buildFaultyContext,
+    }) => {
+      it(`handles error - ${description}`, async () => {
+        // arrange
+        const context = buildFaultyContext(
+          new SaveFileDialogTestSetup(),
+          expectedErrorMessage,
+        );
 
-    // act
-    await context.saveFile();
+        // act
+        const { success, error } = await context.saveFile();
 
-    // assert
-    const saveFileCall = nodeMock.callHistory.find((c) => c.methodName === 'writeFile');
-    expect(saveFileCall).to.equal(undefined);
-  });
+        // assert
+        expect(success).to.equal(false);
+        expectExists(error);
+        expect(error.message).to.include(expectedErrorMessage);
+        expect(error.type).to.equal(expectedErrorType);
+      });
+      it(`logs error: ${description}`, async () => {
+        // arrange
+        const loggerStub = new LoggerStub();
+        const context = buildFaultyContext(
+          new SaveFileDialogTestSetup()
+            .withLogger(loggerStub),
+          expectedErrorMessage,
+        );
 
-  describe('logging', () => {
-    it('logs an error if writing the file fails', async () => {
-      // arrange
-      const expectedErrorMessage = 'Injected write error';
-      const electronMock = new ElectronFileDialogOperationsStub().withMimicUserCancel(false);
-      const nodeMock = new NodeFileOperationsStub();
-      nodeMock.writeFile = () => Promise.reject(new Error(expectedErrorMessage));
-      const loggerStub = new LoggerStub();
-      const context = new SaveFileDialogTestSetup()
-        .withElectron(electronMock)
-        .withNode(nodeMock)
-        .withLogger(loggerStub);
+        // act
+        await context.saveFile();
 
-      // act
-      await context.saveFile();
-
-      // assert
-      const errorCalls = loggerStub.callHistory.filter((c) => c.methodName === 'error');
-      expect(errorCalls.length).to.equal(1);
-      const errorCall = errorCalls[0];
-      const [errorMessage] = errorCall.args;
-      expect(errorMessage).to.include(expectedErrorMessage);
+        // assert
+        loggerStub.assertLogsContainMessagePart('error', expectedErrorMessage);
+      });
     });
   });
 });
@@ -202,7 +334,7 @@ describe('NodeElectronSaveFileDialog', () => {
 class SaveFileDialogTestSetup {
   private fileContents = `${SaveFileDialogTestSetup.name} file contents`;
 
-  private fileName = `${SaveFileDialogTestSetup.name} file name`;
+  private filename = `${SaveFileDialogTestSetup.name} filename`;
 
   private fileType = FileType.BatchFile;
 
@@ -227,8 +359,8 @@ class SaveFileDialogTestSetup {
     return this;
   }
 
-  public withFileName(fileName: string): this {
-    this.fileName = fileName;
+  public withDefaultFilename(defaultFilename: string): this {
+    this.filename = defaultFilename;
     return this;
   }
 
@@ -246,7 +378,7 @@ class SaveFileDialogTestSetup {
     const dialog = new NodeElectronSaveFileDialog(this.logger, this.electron, this.node);
     return dialog.saveFile(
       this.fileContents,
-      this.fileName,
+      this.filename,
       this.fileType,
     );
   }

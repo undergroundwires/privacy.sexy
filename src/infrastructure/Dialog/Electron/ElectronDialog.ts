@@ -1,17 +1,29 @@
-import { Dialog, FileType } from '@/presentation/common/Dialog';
+import { dialog } from 'electron/main';
+import { Dialog, FileType, SaveFileOutcome } from '@/presentation/common/Dialog';
 import { NodeElectronSaveFileDialog } from './NodeElectronSaveFileDialog';
 import { ElectronSaveFileDialog } from './ElectronSaveFileDialog';
 
 export class ElectronDialog implements Dialog {
   constructor(
-    private readonly fileSaveDialog: ElectronSaveFileDialog = new NodeElectronSaveFileDialog(),
+    private readonly saveFileDialog: ElectronSaveFileDialog = new NodeElectronSaveFileDialog(),
+    private readonly electron: ElectronDialogAccessor = {
+      showErrorBox: dialog.showErrorBox.bind(dialog),
+    },
   ) { }
 
-  public async saveFile(
+  public saveFile(
     fileContents: string,
-    fileName: string,
+    defaultFilename: string,
     type: FileType,
-  ): Promise<void> {
-    await this.fileSaveDialog.saveFile(fileContents, fileName, type);
+  ): Promise<SaveFileOutcome> {
+    return this.saveFileDialog.saveFile(fileContents, defaultFilename, type);
   }
+
+  public showError(title: string, message: string): void {
+    this.electron.showErrorBox(title, message);
+  }
+}
+
+export interface ElectronDialogAccessor {
+  readonly showErrorBox: typeof dialog.showErrorBox;
 }

@@ -3,18 +3,10 @@ import { writeFile } from 'node:fs/promises';
 import { app, dialog } from 'electron/main';
 import { Logger } from '@/application/Common/Log/Logger';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
-import { FileType } from '@/presentation/common/Dialog';
+import {
+  FileType, SaveFileError, SaveFileErrorType, SaveFileOutcome,
+} from '@/presentation/common/Dialog';
 import { ElectronSaveFileDialog } from './ElectronSaveFileDialog';
-
-export interface ElectronFileDialogOperations {
-  getUserDownloadsPath(): string;
-  showSaveDialog(options: Electron.SaveDialogOptions): Promise<Electron.SaveDialogReturnValue>;
-}
-
-export interface NodeFileOperations {
-  readonly join: typeof join;
-  writeFile(file: string, data: string): Promise<void>;
-}
 
 export class NodeElectronSaveFileDialog implements ElectronSaveFileDialog {
   constructor(
@@ -31,44 +23,123 @@ export class NodeElectronSaveFileDialog implements ElectronSaveFileDialog {
 
   public async saveFile(
     fileContents: string,
-    fileName: string,
+    defaultFilename: string,
     type: FileType,
-  ): Promise<void> {
-    const userSelectedFilePath = await this.showSaveFileDialog(fileName, type);
-    if (!userSelectedFilePath) {
-      this.logger.info(`File save cancelled by user: ${fileName}`);
-      return;
+  ): Promise<SaveFileOutcome> {
+    const {
+      success: isPathConstructed,
+      filePath: defaultFilePath,
+      error: pathConstructionError,
+    } = this.constructDefaultFilePath(defaultFilename);
+    if (!isPathConstructed) {
+      return { success: false, error: pathConstructionError };
     }
-    await this.writeFile(userSelectedFilePath, fileContents);
+    const fileDialog = await this.showSaveFileDialog(defaultFilename, defaultFilePath, type);
+    if (!fileDialog.success) {
+      return {
+        success: false,
+        error: fileDialog.error,
+      };
+    }
+    if (fileDialog.canceled) {
+      this.logger.info(`File save cancelled by user: ${defaultFilename}`);
+      return {
+        success: true,
+      };
+    }
+    const result = await this.writeFile(fileDialog.filePath, fileContents);
+    return result;
   }
 
-  private async writeFile(filePath: string, fileContents: string): Promise<void> {
+  private async writeFile(
+    filePath: string,
+    fileContents: string,
+  ): Promise<SaveFileOutcome> {
     try {
       this.logger.info(`Saving file: ${filePath}`);
       await this.node.writeFile(filePath, fileContents);
       this.logger.info(`File saved: ${filePath}`);
+      return {
+        success: true,
+      };
     } catch (error) {
-      this.logger.error(`Error saving file: ${error.message}`);
+      return {
+        success: false,
+        error: this.handleException(error, 'FileCreationError'),
+      };
     }
   }
 
-  private async showSaveFileDialog(fileName: string, type: FileType): Promise<string | undefined> {
-    const downloadsFolder = this.electron.getUserDownloadsPath();
-    const defaultFilePath = this.node.join(downloadsFolder, fileName);
-    const dialogResult = await this.electron.showSaveDialog({
-      title: fileName,
-      defaultPath: defaultFilePath,
-      filters: getDialogFileFilters(type),
-      properties: [
-        'createDirectory', // Enables directory creation on macOS.
-        'showOverwriteConfirmation', // Shows overwrite confirmation on Linux.
-      ],
-    });
-    if (dialogResult.canceled) {
-      return undefined;
+  private async showSaveFileDialog(
+    defaultFilename: string,
+    defaultFilePath: string,
+    type: FileType,
+  ): Promise<SaveDialogOutcome> {
+    try {
+      const dialogResult = await this.electron.showSaveDialog({
+        title: defaultFilename,
+        defaultPath: defaultFilePath,
+        filters: getDialogFileFilters(type),
+        properties: [
+          'createDirectory', // Enables directory creation on macOS.
+          'showOverwriteConfirmation', // Shows overwrite confirmation on Linux.
+        ],
+      });
+      if (dialogResult.canceled) {
+        return { success: true, canceled: true };
+      }
+      if (!dialogResult.filePath) {
+        return {
+          success: false,
+          error: { type: 'DialogDisplayError', message: 'Unexpected Error: File path is undefined after save dialog completion.' },
+        };
+      }
+      return { success: true, filePath: dialogResult.filePath };
+    } catch (error) {
+      return {
+        success: false,
+        error: this.handleException(error, 'DialogDisplayError'),
+      };
     }
-    return dialogResult.filePath;
   }
+
+  private constructDefaultFilePath(defaultFilename: string): DefaultFilePathConstructionOutcome {
+    try {
+      const downloadsFolder = this.electron.getUserDownloadsPath();
+      const defaultFilePath = this.node.join(downloadsFolder, defaultFilename);
+      return {
+        success: true,
+        filePath: defaultFilePath,
+      };
+    } catch (err) {
+      return {
+        success: false,
+        error: this.handleException(err, 'DialogDisplayError'),
+      };
+    }
+  }
+
+  private handleException(
+    exception: Error,
+    errorType: SaveFileErrorType,
+  ): SaveFileError {
+    const errorMessage = 'Error during saving script file.';
+    this.logger.error(errorType, errorMessage, exception);
+    return {
+      type: errorType,
+      message: `${errorMessage}: ${exception.message}`,
+    };
+  }
+}
+
+export interface ElectronFileDialogOperations {
+  getUserDownloadsPath(): string;
+  showSaveDialog(options: Electron.SaveDialogOptions): Promise<Electron.SaveDialogReturnValue>;
+}
+
+export interface NodeFileOperations {
+  readonly join: typeof join;
+  writeFile(file: string, data: string): Promise<void>;
 }
 
 function getDialogFileFilters(fileType: FileType): Electron.FileFilter[] {
@@ -96,3 +167,12 @@ const FileTypeSpecificFilters: Record<FileType, Electron.FileFilter[]> = {
     },
   ],
 };
+
+type SaveDialogOutcome =
+  | { readonly success: true; readonly filePath: string; readonly canceled?: false }
+  | { readonly success: true; readonly canceled: true }
+  | { readonly success: false; readonly error: SaveFileError; readonly canceled?: false };
+
+type DefaultFilePathConstructionOutcome =
+  | { readonly success: true; readonly filePath: string; readonly error?: undefined; }
+  | { readonly success: false; readonly filePath?: undefined; readonly error: SaveFileError; };

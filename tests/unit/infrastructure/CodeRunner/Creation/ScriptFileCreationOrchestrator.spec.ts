@@ -11,19 +11,21 @@ import { FilenameGeneratorStub } from '@tests/unit/shared/Stubs/FilenameGenerato
 import { SystemOperationsStub } from '@tests/unit/shared/Stubs/SystemOperationsStub';
 import { SystemOperations } from '@/infrastructure/CodeRunner/System/SystemOperations';
 import { LocationOpsStub } from '@tests/unit/shared/Stubs/LocationOpsStub';
-import { ScriptFileNameParts } from '@/infrastructure/CodeRunner/Creation/ScriptFileCreator';
+import { ScriptFilenameParts } from '@/infrastructure/CodeRunner/Creation/ScriptFileCreator';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
+import { expectTrue } from '@tests/shared/Assertions/ExpectTrue';
+import { CodeRunErrorType } from '@/application/CodeRunner/CodeRunner';
 
 describe('ScriptFileCreationOrchestrator', () => {
   describe('createScriptFile', () => {
     describe('path generation', () => {
-      it('generates correct directory path', async () => {
+      it('correctly generates directory path', async () => {
         // arrange
         const pathSegmentSeparator = '/PATH-SEGMENT-SEPARATOR/';
         const expectedScriptDirectory = '/expected-script-directory';
         const filesystem = new FileSystemOpsStub();
-        const context = new ScriptFileCreationOrchestratorTestSetup()
-          .withSystemOperations(new SystemOperationsStub()
+        const context = new ScriptFileCreatorTestSetup()
+          .withSystem(new SystemOperationsStub()
             .withLocation(
               new LocationOpsStub().withDefaultSeparator(pathSegmentSeparator),
             )
@@ -33,45 +35,47 @@ describe('ScriptFileCreationOrchestrator', () => {
           );
 
         // act
-        const actualFilePath = await context.createScriptFile();
+        const { success, scriptFileAbsolutePath } = await context.createScriptFile();
 
         // assert
-        const actualDirectory = actualFilePath
+        expectTrue(success);
+        const actualDirectory = scriptFileAbsolutePath
           .split(pathSegmentSeparator)
           .slice(0, -1)
           .join(pathSegmentSeparator);
         expect(actualDirectory).to.equal(expectedScriptDirectory, formatAssertionMessage([
-          `Actual file path: ${actualFilePath}`,
+          `Actual file path: ${scriptFileAbsolutePath}`,
         ]));
       });
-      it('generates correct file name', async () => {
+      it('correctly generates filename', async () => {
         // arrange
         const pathSegmentSeparator = '/PATH-SEGMENT-SEPARATOR/';
         const filesystem = new FileSystemOpsStub();
         const expectedFilename = 'expected-script-file-name';
-        const context = new ScriptFileCreationOrchestratorTestSetup()
+        const context = new ScriptFileCreatorTestSetup()
           .withFilenameGenerator(new FilenameGeneratorStub().withFilename(expectedFilename))
-          .withSystemOperations(new SystemOperationsStub()
+          .withSystem(new SystemOperationsStub()
             .withFileSystem(filesystem)
             .withLocation(new LocationOpsStub().withDefaultSeparator(pathSegmentSeparator)));
 
         // act
-        const actualFilePath = await context.createScriptFile();
+        const { success, scriptFileAbsolutePath } = await context.createScriptFile();
 
         // assert
-        const actualFileName = actualFilePath
+        expectTrue(success);
+        const actualFileName = scriptFileAbsolutePath
           .split(pathSegmentSeparator)
           .pop();
         expect(actualFileName).to.equal(expectedFilename);
       });
-      it('generates file name using specified parts', async () => {
+      it('uses specified parts to generate filename', async () => {
         // arrange
-        const expectedParts: ScriptFileNameParts = {
+        const expectedParts: ScriptFilenameParts = {
           scriptName: 'expected-script-name',
           scriptFileExtension: 'expected-script-file-extension',
         };
         const filenameGeneratorStub = new FilenameGeneratorStub();
-        const context = new ScriptFileCreationOrchestratorTestSetup()
+        const context = new ScriptFileCreatorTestSetup()
           .withFileNameParts(expectedParts)
           .withFilenameGenerator(filenameGeneratorStub);
 
@@ -79,58 +83,60 @@ describe('ScriptFileCreationOrchestrator', () => {
         await context.createScriptFile();
 
         // assert
-        const fileNameGenerationCalls = filenameGeneratorStub.callHistory.filter((c) => c.methodName === 'generateFilename');
-        expect(fileNameGenerationCalls).to.have.lengthOf(1);
-        const callArguments = fileNameGenerationCalls[0].args;
+        const filenameGenerationCalls = filenameGeneratorStub.callHistory.filter((c) => c.methodName === 'generateFilename');
+        expect(filenameGenerationCalls).to.have.lengthOf(1);
+        const callArguments = filenameGenerationCalls[0].args;
         const [scriptNameFileParts] = callArguments;
         expectExists(scriptNameFileParts, `Call arguments: ${JSON.stringify(callArguments)}`);
         expect(scriptNameFileParts).to.equal(expectedParts);
       });
-      it('generates complete file path', async () => {
+      it('correctly generates complete file path', async () => {
         // arrange
         const expectedPath = 'expected-script-path';
-        const fileName = 'file-name';
+        const filename = 'filename';
         const directoryPath = 'directory-path';
         const filesystem = new FileSystemOpsStub();
-        const context = new ScriptFileCreationOrchestratorTestSetup()
-          .withFilenameGenerator(new FilenameGeneratorStub().withFilename(fileName))
+        const context = new ScriptFileCreatorTestSetup()
+          .withFilenameGenerator(new FilenameGeneratorStub().withFilename(filename))
           .withDirectoryProvider(new ScriptDirectoryProviderStub().withDirectoryPath(directoryPath))
-          .withSystemOperations(new SystemOperationsStub()
+          .withSystem(new SystemOperationsStub()
             .withFileSystem(filesystem)
             .withLocation(
-              new LocationOpsStub().withJoinResult(expectedPath, directoryPath, fileName),
+              new LocationOpsStub().withJoinResult(expectedPath, directoryPath, filename),
             ));
 
         // act
-        const actualFilePath = await context.createScriptFile();
+        const { success, scriptFileAbsolutePath } = await context.createScriptFile();
 
         // assert
-        expect(actualFilePath).to.equal(expectedPath);
+        expectTrue(success);
+        expect(scriptFileAbsolutePath).to.equal(expectedPath);
       });
     });
     describe('file writing', () => {
-      it('writes file to the generated path', async () => {
+      it('writes to generated file path', async () => {
         // arrange
         const filesystem = new FileSystemOpsStub();
-        const context = new ScriptFileCreationOrchestratorTestSetup()
-          .withSystemOperations(new SystemOperationsStub()
+        const context = new ScriptFileCreatorTestSetup()
+          .withSystem(new SystemOperationsStub()
             .withFileSystem(filesystem));
 
         // act
-        const expectedPath = await context.createScriptFile();
+        const { success, scriptFileAbsolutePath } = await context.createScriptFile();
 
         // assert
+        expectTrue(success);
         const calls = filesystem.callHistory.filter((call) => call.methodName === 'writeToFile');
         expect(calls.length).to.equal(1);
         const [actualFilePath] = calls[0].args;
-        expect(actualFilePath).to.equal(expectedPath);
+        expect(actualFilePath).to.equal(scriptFileAbsolutePath);
       });
-      it('writes provided script content to file', async () => {
+      it('writes script content to file', async () => {
         // arrange
         const expectedCode = 'expected-code';
         const filesystem = new FileSystemOpsStub();
-        const context = new ScriptFileCreationOrchestratorTestSetup()
-          .withSystemOperations(new SystemOperationsStub().withFileSystem(filesystem))
+        const context = new ScriptFileCreatorTestSetup()
+          .withSystem(new SystemOperationsStub().withFileSystem(filesystem))
           .withFileContents(expectedCode);
 
         // act
@@ -143,10 +149,119 @@ describe('ScriptFileCreationOrchestrator', () => {
         expect(actualData).to.equal(expectedCode);
       });
     });
+    describe('error handling', () => {
+      const testScenarios: ReadonlyArray<{
+        readonly description: string;
+        readonly expectedErrorType: CodeRunErrorType;
+        readonly expectedErrorMessage: string;
+        readonly expectLogs: boolean;
+        buildFaultyContext(
+          setup: ScriptFileCreatorTestSetup,
+          errorMessage: string,
+          errorType: CodeRunErrorType,
+        ): ScriptFileCreatorTestSetup;
+      }> = [
+        {
+          description: 'path combination failure',
+          expectedErrorType: 'FilePathGenerationError',
+          expectedErrorMessage: 'Error when combining paths',
+          expectLogs: true,
+          buildFaultyContext: (setup, errorMessage) => {
+            const locationStub = new LocationOpsStub();
+            locationStub.combinePaths = () => {
+              throw new Error(errorMessage);
+            };
+            return setup.withSystem(new SystemOperationsStub().withLocation(locationStub));
+          },
+        },
+        {
+          description: 'file writing failure',
+          expectedErrorType: 'FileWriteError',
+          expectedErrorMessage: 'Error when writing to file',
+          expectLogs: true,
+          buildFaultyContext: (setup, errorMessage) => {
+            const fileSystemStub = new FileSystemOpsStub();
+            fileSystemStub.writeToFile = () => {
+              throw new Error(errorMessage);
+            };
+            return setup.withSystem(new SystemOperationsStub().withFileSystem(fileSystemStub));
+          },
+        },
+        {
+          description: 'filename generation failure',
+          expectedErrorType: 'FilePathGenerationError',
+          expectedErrorMessage: 'Error when writing to file',
+          expectLogs: true,
+          buildFaultyContext: (setup, errorMessage) => {
+            const filenameGenerator = new FilenameGeneratorStub();
+            filenameGenerator.generateFilename = () => {
+              throw new Error(errorMessage);
+            };
+            return setup.withFilenameGenerator(filenameGenerator);
+          },
+        },
+        {
+          description: 'script directory provision failure',
+          expectedErrorType: 'DirectoryCreationError',
+          expectedErrorMessage: 'Error when providing directory',
+          expectLogs: false,
+          buildFaultyContext: (setup, errorMessage, errorType) => {
+            const directoryProvider = new ScriptDirectoryProviderStub();
+            directoryProvider.provideScriptDirectory = () => Promise.resolve({
+              success: false,
+              error: {
+                message: errorMessage,
+                type: errorType,
+              },
+            });
+            return setup.withDirectoryProvider(directoryProvider);
+          },
+        },
+      ];
+      testScenarios.forEach(({
+        description, expectedErrorType, expectedErrorMessage, buildFaultyContext, expectLogs,
+      }) => {
+        it(`handles error - ${description}`, async () => {
+          // arrange
+          const context = buildFaultyContext(
+            new ScriptFileCreatorTestSetup(),
+            expectedErrorMessage,
+            expectedErrorType,
+          );
+
+          // act
+          const { success, error } = await context.createScriptFile();
+
+          // assert
+          expect(success).to.equal(false);
+          expectExists(error);
+          expect(error.message).to.include(expectedErrorMessage);
+          expect(error.type).to.equal(expectedErrorType);
+        });
+        if (expectLogs) {
+          it(`logs error: ${description}`, async () => {
+            // arrange
+            const loggerStub = new LoggerStub();
+            const context = buildFaultyContext(
+              new ScriptFileCreatorTestSetup()
+                .withLogger(loggerStub),
+              expectedErrorMessage,
+              expectedErrorType,
+            );
+
+            // act
+            await context.createScriptFile();
+
+            // assert
+            loggerStub.assertLogsContainMessagePart('error', expectedErrorMessage);
+          });
+        }
+      });
+    });
   });
 });
 
-class ScriptFileCreationOrchestratorTestSetup {
+class ScriptFileCreatorTestSetup {
   private system: SystemOperations = new SystemOperationsStub();
 
   private filenameGenerator: FilenameGenerator = new FilenameGeneratorStub();
@@ -155,11 +270,11 @@ class ScriptFileCreationOrchestratorTestSetup {
 
   private logger: Logger = new LoggerStub();
 
-  private fileContents = `[${ScriptFileCreationOrchestratorTestSetup.name}] script file contents`;
+  private fileContents = `[${ScriptFileCreatorTestSetup.name}] script file contents`;
 
-  private fileNameParts: ScriptFileNameParts = {
-    scriptName: `[${ScriptFileCreationOrchestratorTestSetup.name}] script name`,
-    scriptFileExtension: `[${ScriptFileCreationOrchestratorTestSetup.name}] file extension`,
+  private filenameParts: ScriptFilenameParts = {
+    scriptName: `[${ScriptFileCreatorTestSetup.name}] script name`,
+    scriptFileExtension: `[${ScriptFileCreatorTestSetup.name}] file extension`,
   };
 
   public withFileContents(fileContents: string): this {
@@ -177,13 +292,18 @@ class ScriptFileCreationOrchestratorTestSetup {
     return this;
   }
 
-  public withSystemOperations(system: SystemOperations): this {
+  public withSystem(system: SystemOperations): this {
     this.system = system;
     return this;
   }
 
-  public withFileNameParts(fileNameParts: ScriptFileNameParts): this {
-    this.fileNameParts = fileNameParts;
+  public withFileNameParts(filenameParts: ScriptFilenameParts): this {
+    this.filenameParts = filenameParts;
+    return this;
+  }
+
+  public withLogger(logger: Logger): this {
+    this.logger = logger;
     return this;
   }
 
@@ -194,6 +314,6 @@ class ScriptFileCreationOrchestratorTestSetup {
       this.directoryProvider,
       this.logger,
     );
-    return creator.createScriptFile(this.fileContents, this.fileNameParts);
+    return creator.createScriptFile(this.fileContents, this.filenameParts);
   }
 }

@@ -1,5 +1,5 @@
 import fileSaver from 'file-saver';
-import { FileType } from '@/presentation/common/Dialog';
+import { FileType, SaveFileOutcome } from '@/presentation/common/Dialog';
 import { BrowserSaveFileDialog } from './BrowserSaveFileDialog';
 
 export type SaveAsFunction = (data: Blob, filename?: string) => void;
@@ -14,17 +14,20 @@ export class FileSaverDialog implements BrowserSaveFileDialog {
 
   public saveFile(
     fileContents: string,
-    fileName: string,
+    defaultFilename: string,
     fileType: FileType,
-  ): void {
+  ): SaveFileOutcome {
     const mimeType = MimeTypes[fileType];
-    this.saveBlob(fileContents, mimeType, fileName);
+    this.saveBlob(fileContents, mimeType, defaultFilename);
+    return {
+      success: true, // Exceptions are handled internally
+    };
   }
 
-  private saveBlob(file: BlobPart, mimeType: string, fileName: string): void {
+  private saveBlob(file: BlobPart, mimeType: string, defaultFilename: string): void {
     try {
       const blob = new Blob([file], { type: mimeType });
-      this.fileSaverSaveAs(blob, fileName);
+      this.fileSaverSaveAs(blob, defaultFilename);
     } catch (e) {
       this.windowOpen(`data:${mimeType},${encodeURIComponent(file.toString())}`, '_blank', '');
     }

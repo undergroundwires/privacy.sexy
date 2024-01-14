@@ -38,7 +38,7 @@ describe('TimestampedFilenameGenerator', () => {
       const filename = generateFilenamePartsForTesting({ date });
       // assert
       expect(filename.timestamp).to.equal(expectedTimestamp, formatAssertionMessage[
-        `Generated file name: ${filename.generatedFilename}`
+        `Generated filename: ${filename.generatedFilename}`
       ]);
     });
     describe('extension', () => {
@@ -49,7 +49,7 @@ describe('TimestampedFilenameGenerator', () => {
         const filename = generateFilenamePartsForTesting({ extension: expectedExtension });
         // assert
         expect(filename.extension).to.equal(expectedExtension, formatAssertionMessage[
-          `Generated file name: ${filename.generatedFilename}`
+          `Generated filename: ${filename.generatedFilename}`
         ]);
       });
       describe('handles absent extension', () => {

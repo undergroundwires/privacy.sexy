@@ -1,4 +1,4 @@
-import { ScriptDirectoryProvider } from '@/infrastructure/CodeRunner/Creation/Directory/ScriptDirectoryProvider';
+import { ScriptDirectoryOutcome, ScriptDirectoryProvider } from '@/infrastructure/CodeRunner/Creation/Directory/ScriptDirectoryProvider';
 
 export class ScriptDirectoryProviderStub implements ScriptDirectoryProvider {
   private directoryPath = `[${ScriptDirectoryProviderStub.name}]scriptDirectory`;
@@ -8,7 +8,10 @@ export class ScriptDirectoryProviderStub implements ScriptDirectoryProvider {
     return this;
   }
 
-  public provideScriptDirectory(): Promise<string> {
-    return Promise.resolve(this.directoryPath);
+  public provideScriptDirectory(): Promise<ScriptDirectoryOutcome> {
+    return Promise.resolve({
+      success: true,
+      directoryAbsolutePath: this.directoryPath,
+    });
   }
 }
