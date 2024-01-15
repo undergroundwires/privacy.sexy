@@ -27,10 +27,10 @@ export default defineComponent({
   setup() {
     const { copyText } = injectKey((keys) => keys.useClipboard);
 
-    const codeElement = shallowRef<HTMLElement | undefined>();
+    const codeElementRef = shallowRef<HTMLElement | undefined>();
 
     async function copyCode() {
-      const element = codeElement.value;
+      const element = codeElementRef.value;
       if (!element) {
         throw new Error('Code element could not be found.');
       }
@@ -43,7 +43,7 @@ export default defineComponent({
 
     return {
       copyCode,
-      codeElement,
+      codeElement: codeElementRef,
     };
   },
 });
@@ -53,7 +53,7 @@ export default defineComponent({
 @use "@/presentation/assets/styles/main" as *;
 
 .code-wrapper {
-  display:flex;
+  display: inline-flex;
   white-space: nowrap;
   justify-content: space-between;
   font-family: $font-normal;

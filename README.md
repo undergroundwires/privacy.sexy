@@ -137,7 +137,7 @@ For a detailed comparison of features between the desktop and web versions of pr
 - **Transparent**. Have full visibility into what the tweaks do as you enable them.
 - **Reversible**. Revert if something feels wrong.
 - **Accessible**. No need to run any compiled software on your computer with web version.
-- **Secure**: Security is a top priority at privacy.sexy with [comprehensive safeguards](./SECURITY.md#application-security) in place.
+- **Secure**: Security is a top priority at privacy.sexy with [comprehensive safeguards](./SECURITY.md#security-practices) in place.
 - **Open**. What you see as code in this repository is what you get. The application itself, its infrastructure and deployments are open-source and automated thanks to [bump-everywhere](https://github.com/undergroundwires/bump-everywhere).
 - **Tested**. A lot of tests. Automated and manual. Community-testing and verification. Stability improvements comes before new features.
 - **Extensible**. Effortlessly [extend scripts](./CONTRIBUTING.md#extend-scripts) with a custom designed [templating language](./docs/templating.md).

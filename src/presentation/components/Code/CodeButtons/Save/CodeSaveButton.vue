@@ -5,8 +5,8 @@
       :icon-name="isRunningAsDesktopApplication ? 'floppy-disk' : 'file-arrow-down'"
       @click="saveCode"
     />
-    <ModalDialog v-if="instructions" v-model="areInstructionsVisible">
-      <InstructionList :data="instructions" />
+    <ModalDialog v-model="areInstructionsVisible">
+      <RunInstructions :filename="filename" />
     </ModalDialog>
   </div>
 </template>
@@ -22,14 +22,12 @@ import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { ScriptFilename } from '@/application/CodeRunner/ScriptFilename';
 import { Dialog, FileType } from '@/presentation/common/Dialog';
 import IconButton from '../IconButton.vue';
-import InstructionList from './Instructions/InstructionList.vue';
-import { IInstructionListData } from './Instructions/InstructionListData';
-import { getInstructions } from './Instructions/InstructionListDataFactory';
+import RunInstructions from './RunInstructions/RunInstructions.vue';
 
 export default defineComponent({
   components: {
     IconButton,
-    InstructionList,
+    RunInstructions,
     ModalDialog,
   },
   setup() {
@@ -39,10 +37,6 @@ export default defineComponent({
 
     const areInstructionsVisible = ref(false);
     const filename = computed<string>(() => buildFilename(currentState.value.collection.scripting));
-    const instructions = computed<IInstructionListData | undefined>(() => getInstructions(
-      currentState.value.collection.os,
-      filename.value,
-    ));
 
     async function saveCode() {
       const { success, error } = await dialog.saveFile(
@@ -59,8 +53,8 @@ export default defineComponent({
 
     return {
       isRunningAsDesktopApplication,
-      instructions,
       areInstructionsVisible,
+      filename,
       saveCode,
     };
   },

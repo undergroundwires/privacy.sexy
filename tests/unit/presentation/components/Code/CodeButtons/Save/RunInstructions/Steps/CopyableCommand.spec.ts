@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { shallowMount } from '@vue/test-utils';
-import CodeInstruction from '@/presentation/components/Code/CodeButtons/Save/Instructions/CodeInstruction.vue';
+import CodeInstruction from '@/presentation/components/Code/CodeButtons/Save/RunInstructions/Steps/CopyableCommand.vue';
 import { expectThrowsAsync } from '@tests/shared/Assertions/ExpectThrowsAsync';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { Clipboard } from '@/presentation/components/Shared/Hooks/Clipboard/Clipboard';
