@@ -49,11 +49,15 @@
         </p>
         <p>
           These false positives are common for scripts that modify system settings.
+          privacy.sexy is secure, transparent, and open-source.
         </p>
         <p>
           To handle false warnings in Microsoft Defender:
           <ol>
-            <li>Open <strong>Virus & threat protection</strong> from the Start menu.</li>
+            <li>
+              Open <strong>Virus & threat protection</strong> from
+              the <strong>Start</strong> menu.
+            </li>
             <li>
               Locate the event in <strong>Protection history</strong>
               that pertains to the script.

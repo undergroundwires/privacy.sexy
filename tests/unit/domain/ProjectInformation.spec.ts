@@ -119,7 +119,7 @@ describe('ProjectInformation', () => {
     });
   });
   describe('correct retrieval of download URL for every supported operating system', () => {
-    const testCases: Record<SupportedOperatingSystem, {
+    const testScenarios: Record<SupportedOperatingSystem, {
       readonly expected: string,
       readonly repositoryUrl: string,
       readonly version: string,
@@ -143,7 +143,7 @@ describe('ProjectInformation', () => {
     AllSupportedOperatingSystems.forEach((operatingSystem) => {
       it(`should return the expected download URL for ${OperatingSystem[operatingSystem]}`, () => {
         // arrange
-        const { expected, version, repositoryUrl } = testCases[operatingSystem];
+        const { expected, version, repositoryUrl } = testScenarios[operatingSystem];
         const sut = new ProjectInformationBuilder()
           .withVersion(new VersionStub(version))
           .withRepositoryUrl(repositoryUrl)

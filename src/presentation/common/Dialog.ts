@@ -32,4 +32,5 @@ export interface SaveFileError {
 
 export type SaveFileErrorType =
   | 'FileCreationError'
+  | 'FileReadbackVerificationError'
   | 'DialogDisplayError';

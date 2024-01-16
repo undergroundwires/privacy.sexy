@@ -29,7 +29,9 @@ There are different types of tests executed:
 
 - Evaluate individual components in isolation.
 - Located in [`./tests/unit`](./../tests/unit).
-- Achieve isolation using [stubs](./../tests/unit/shared/Stubs).
+- Achieve isolation using stubs where you place:
+  - Common stubs in [`./shared/Stubs`](./../tests/unit/shared/Stubs),
+  - Component-specific stubs in same folder as test file.
 - Include Vue component tests, enabled by `@vue/test-utils`.
 
 #### Unit tests naming

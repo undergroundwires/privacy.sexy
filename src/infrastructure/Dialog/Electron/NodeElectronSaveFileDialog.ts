@@ -1,11 +1,12 @@
 import { join } from 'node:path';
-import { writeFile } from 'node:fs/promises';
 import { app, dialog } from 'electron/main';
 import { Logger } from '@/application/Common/Log/Logger';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import {
   FileType, SaveFileError, SaveFileErrorType, SaveFileOutcome,
 } from '@/presentation/common/Dialog';
+import { FileReadbackVerificationErrors, ReadbackFileWriter } from '@/infrastructure/ReadbackFileWriter/ReadbackFileWriter';
+import { NodeReadbackFileWriter } from '@/infrastructure/ReadbackFileWriter/NodeReadbackFileWriter';
 import { ElectronSaveFileDialog } from './ElectronSaveFileDialog';
 
 export class NodeElectronSaveFileDialog implements ElectronSaveFileDialog {
@@ -15,10 +16,8 @@ export class NodeElectronSaveFileDialog implements ElectronSaveFileDialog {
       getUserDownloadsPath: () => app.getPath('downloads'),
       showSaveDialog: dialog.showSaveDialog.bind(dialog),
     },
-    private readonly node: NodeFileOperations = {
-      join,
-      writeFile,
-    },
+    private readonly node: NodeFileOperations = { join },
+    private readonly fileWriter: ReadbackFileWriter = new NodeReadbackFileWriter(),
   ) { }
 
   public async saveFile(
@@ -55,19 +54,19 @@ export class NodeElectronSaveFileDialog implements ElectronSaveFileDialog {
     filePath: string,
     fileContents: string,
   ): Promise<SaveFileOutcome> {
-    try {
-      this.logger.info(`Saving file: ${filePath}`);
-      await this.node.writeFile(filePath, fileContents);
-      this.logger.info(`File saved: ${filePath}`);
-      return {
-        success: true,
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: this.handleException(error, 'FileCreationError'),
-      };
+    const {
+      success, error,
+    } = await this.fileWriter.writeAndVerifyFile(filePath, fileContents);
+    if (success) {
+      return { success: true };
     }
+    return {
+      success: false,
+      error: {
+        message: error.message,
+        type: FileReadbackVerificationErrors.find((e) => e === error.type) ? 'FileReadbackVerificationError' : 'FileCreationError',
+      },
+    };
   }
 
   private async showSaveFileDialog(
@@ -139,7 +138,6 @@ export interface ElectronFileDialogOperations {
 
 export interface NodeFileOperations {
   readonly join: typeof join;
-  writeFile(file: string, data: string): Promise<void>;
 }
 
 function getDialogFileFilters(fileType: FileType): Electron.FileFilter[] {

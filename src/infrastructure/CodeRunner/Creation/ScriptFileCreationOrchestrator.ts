@@ -1,6 +1,8 @@
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import { Logger } from '@/application/Common/Log/Logger';
 import { CodeRunError, CodeRunErrorType } from '@/application/CodeRunner/CodeRunner';
+import { FileReadbackVerificationErrors, ReadbackFileWriter } from '@/infrastructure/ReadbackFileWriter/ReadbackFileWriter';
+import { NodeReadbackFileWriter } from '@/infrastructure/ReadbackFileWriter/NodeReadbackFileWriter';
 import { SystemOperations } from '../System/SystemOperations';
 import { NodeElectronSystemOperations } from '../System/NodeElectronSystemOperations';
 import { FilenameGenerator } from './Filename/FilenameGenerator';
@@ -14,6 +16,7 @@ export class ScriptFileCreationOrchestrator implements ScriptFileCreator {
     private readonly system: SystemOperations = new NodeElectronSystemOperations(),
     private readonly filenameGenerator: FilenameGenerator = new TimestampedFilenameGenerator(),
     private readonly directoryProvider: ScriptDirectoryProvider = new PersistentDirectoryProvider(),
+    private readonly fileWriter: ReadbackFileWriter = new NodeReadbackFileWriter(),
     private readonly logger: Logger = ElectronLogger,
   ) { }
 
@@ -65,17 +68,19 @@ export class ScriptFileCreationOrchestrator implements ScriptFileCreator {
     filePath: string,
     contents: string,
   ): Promise<FileWriteOutcome> {
-    try {
-      this.logger.info(`Creating file at ${filePath}, size: ${contents.length} characters`);
-      await this.system.fileSystem.writeToFile(filePath, contents);
-      this.logger.info(`File created successfully at ${filePath}`);
+    const {
+      success, error,
+    } = await this.fileWriter.writeAndVerifyFile(filePath, contents);
+    if (success) {
       return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        error: this.handleException(error, 'FileWriteError'),
-      };
     }
+    return {
+      success: false,
+      error: {
+        message: error.message,
+        type: FileReadbackVerificationErrors.find((e) => e === error.type) ? 'FileReadbackVerificationError' : 'FileWriteError',
+      },
+    };
   }
 
   private handleException(

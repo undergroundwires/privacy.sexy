@@ -5,15 +5,16 @@ export interface CodeRunner {
   ): Promise<CodeRunOutcome>;
 }
 
+export type CodeRunOutcome = SuccessfulCodeRun | FailedCodeRun;
+
 export type CodeRunErrorType =
   | 'FileWriteError'
+  | 'FileReadbackVerificationError'
   | 'FilePathGenerationError'
   | 'UnsupportedOperatingSystem'
   | 'FileExecutionError'
   | 'DirectoryCreationError'
   | 'UnexpectedError';
-
-export type CodeRunOutcome = SuccessfulCodeRun | FailedCodeRun;
 
 interface CodeRunStatus {
   readonly success: boolean;

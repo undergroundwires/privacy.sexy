@@ -19,12 +19,4 @@ export class FileSystemOpsStub
     });
     return Promise.resolve();
   }
-
-  public writeToFile(filePath: string, data: string): Promise<void> {
-    this.registerMethodCall({
-      methodName: 'writeToFile',
-      args: [filePath, data],
-    });
-    return Promise.resolve();
-  }
 }

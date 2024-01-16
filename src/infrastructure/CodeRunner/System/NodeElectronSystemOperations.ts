@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import { chmod, mkdir, writeFile } from 'node:fs/promises';
+import { chmod, mkdir } from 'node:fs/promises';
 import { exec } from 'node:child_process';
 import { app } from 'electron/main';
 import {
@@ -46,10 +46,6 @@ export class NodeElectronSystemOperations implements SystemOperations {
       // when `recursive` is true, or empty return value.
       // See https://github.com/nodejs/node/pull/31530
     },
-    writeToFile: (
-      filePath: string,
-      data: string,
-    ) => writeFile(filePath, data),
   };
 
   public readonly command: CommandOps = {

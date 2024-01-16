@@ -4,8 +4,10 @@ import { ElectronFileDialogOperations, NodeElectronSaveFileDialog, NodeFileOpera
 import { Logger } from '@/application/Common/Log/Logger';
 import { LoggerStub } from '@tests/unit/shared/Stubs/LoggerStub';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
+import { ReadbackFileWriterStub } from '@tests/unit/shared/Stubs/ReadbackFileWriterStub';
+import { FileReadbackVerificationErrors, FileWriteOperationErrors, ReadbackFileWriter } from '@/infrastructure/ReadbackFileWriter/ReadbackFileWriter';
 import { ElectronFileDialogOperationsStub } from './ElectronFileDialogOperationsStub';
-import { NodeFileOperationsStub } from './NodeFileOperationsStub';
+import { NodePathOperationsStub } from './NodePathOperationsStub';
 
 describe('NodeElectronSaveFileDialog', () => {
   describe('dialog options', () => {
@@ -53,7 +55,7 @@ describe('NodeElectronSaveFileDialog', () => {
       const context = new SaveFileDialogTestSetup()
         .withElectron(electronMock)
         .withDefaultFilename(expectedFileName)
-        .withNode(new NodeFileOperationsStub().withPathSegmentSeparator(pathSegmentSeparator));
+        .withNode(new NodePathOperationsStub().withPathSegmentSeparator(pathSegmentSeparator));
       // act
       await context.saveFile();
       // assert
@@ -118,16 +120,16 @@ describe('NodeElectronSaveFileDialog', () => {
         const electronMock = new ElectronFileDialogOperationsStub()
           .withMimicUserCancel(isCancelled)
           .withUserSelectedFilePath(expectedFilePath);
-        const nodeMock = new NodeFileOperationsStub();
+        const fileWriterStub = new ReadbackFileWriterStub();
         const context = new SaveFileDialogTestSetup()
           .withElectron(electronMock)
-          .withNode(nodeMock);
+          .withFileWriter(fileWriterStub);
 
         // act
         await context.saveFile();
 
         // assert
-        const saveFileCalls = nodeMock.callHistory.filter((c) => c.methodName === 'writeFile');
+        const saveFileCalls = fileWriterStub.callHistory.filter((c) => c.methodName === 'writeAndVerifyFile');
         expect(saveFileCalls).to.have.lengthOf(1);
         const [actualFilePath] = saveFileCalls[0].args;
         expect(actualFilePath).to.equal(expectedFilePath);
@@ -138,17 +140,17 @@ describe('NodeElectronSaveFileDialog', () => {
         const isCancelled = false;
         const electronMock = new ElectronFileDialogOperationsStub()
           .withMimicUserCancel(isCancelled);
-        const nodeMock = new NodeFileOperationsStub();
+        const fileWriterStub = new ReadbackFileWriterStub();
         const context = new SaveFileDialogTestSetup()
           .withElectron(electronMock)
           .withFileContents(expectedFileContents)
-          .withNode(nodeMock);
+          .withFileWriter(fileWriterStub);
 
         // act
         await context.saveFile();
 
         // assert
-        const saveFileCalls = nodeMock.callHistory.filter((c) => c.methodName === 'writeFile');
+        const saveFileCalls = fileWriterStub.callHistory.filter((c) => c.methodName === 'writeAndVerifyFile');
         expect(saveFileCalls).to.have.lengthOf(1);
         const [,actualFileContents] = saveFileCalls[0].args;
         expect(actualFileContents).to.equal(expectedFileContents);
@@ -171,16 +173,16 @@ describe('NodeElectronSaveFileDialog', () => {
         const isCancelled = true;
         const electronMock = new ElectronFileDialogOperationsStub()
           .withMimicUserCancel(isCancelled);
-        const nodeMock = new NodeFileOperationsStub();
+        const fileWriterStub = new ReadbackFileWriterStub();
         const context = new SaveFileDialogTestSetup()
           .withElectron(electronMock)
-          .withNode(nodeMock);
+          .withFileWriter(fileWriterStub);
 
         // act
         await context.saveFile();
 
         // assert
-        const saveFileCall = nodeMock.callHistory.find((c) => c.methodName === 'writeFile');
+        const saveFileCall = fileWriterStub.callHistory.find((c) => c.methodName === 'writeAndVerifyFile');
         expect(saveFileCall).to.equal(undefined);
       });
       it('logs cancelation info', async () => {
@@ -219,32 +221,50 @@ describe('NodeElectronSaveFileDialog', () => {
   });
 
   describe('error handling', () => {
-    const testScenarios: ReadonlyArray<{
+    interface SaveFileFailureTestScenario {
       readonly description: string;
       readonly expectedErrorType: SaveFileErrorType;
       readonly expectedErrorMessage: string;
+      readonly expectLogs: boolean,
       buildFaultyContext(
         setup: SaveFileDialogTestSetup,
         errorMessage: string,
       ): SaveFileDialogTestSetup;
-    }> = [
-      {
-        description: 'file writing failure',
+    }
+    const testScenarios: ReadonlyArray<SaveFileFailureTestScenario> = [
+      ...FileWriteOperationErrors.map((writeError): SaveFileFailureTestScenario => ({
+        description: `file writing failure: ${writeError}`,
         expectedErrorType: 'FileCreationError',
-        expectedErrorMessage: 'Error when writing file',
+        expectedErrorMessage: 'Error when writing to file',
+        expectLogs: false,
         buildFaultyContext: (setup, errorMessage) => {
           const electronMock = new ElectronFileDialogOperationsStub().withMimicUserCancel(false);
-          const nodeMock = new NodeFileOperationsStub();
-          nodeMock.writeFile = () => Promise.reject(new Error(errorMessage));
+          const fileWriterStub = new ReadbackFileWriterStub();
+          fileWriterStub.configureFailure(writeError, errorMessage);
           return setup
             .withElectron(electronMock)
-            .withNode(nodeMock);
+            .withFileWriter(fileWriterStub);
         },
-      },
+      })),
+      ...FileReadbackVerificationErrors.map((verificationError): SaveFileFailureTestScenario => ({
+        description: `file verification failure: ${verificationError}`,
+        expectedErrorType: 'FileReadbackVerificationError',
+        expectedErrorMessage: 'Error when verifying the file',
+        expectLogs: false,
+        buildFaultyContext: (setup, errorMessage) => {
+          const electronMock = new ElectronFileDialogOperationsStub().withMimicUserCancel(false);
+          const fileWriterStub = new ReadbackFileWriterStub();
+          fileWriterStub.configureFailure(verificationError, errorMessage);
+          return setup
+            .withElectron(electronMock)
+            .withFileWriter(fileWriterStub);
+        },
+      })),
       {
         description: 'user path retrieval failure',
         expectedErrorType: 'DialogDisplayError',
         expectedErrorMessage: 'Error when retrieving user path',
+        expectLogs: true,
         buildFaultyContext: (setup, errorMessage) => {
           const electronMock = new ElectronFileDialogOperationsStub().withMimicUserCancel(false);
           electronMock.getUserDownloadsPath = () => {
@@ -258,8 +278,9 @@ describe('NodeElectronSaveFileDialog', () => {
         description: 'path combination failure',
         expectedErrorType: 'DialogDisplayError',
         expectedErrorMessage: 'Error when combining paths',
+        expectLogs: true,
         buildFaultyContext: (setup, errorMessage) => {
-          const nodeMock = new NodeFileOperationsStub();
+          const nodeMock = new NodePathOperationsStub();
           nodeMock.join = () => {
             throw new Error(errorMessage);
           };
@@ -271,6 +292,7 @@ describe('NodeElectronSaveFileDialog', () => {
         description: 'dialog display failure',
         expectedErrorType: 'DialogDisplayError',
         expectedErrorMessage: 'Error when showing save dialog',
+        expectLogs: true,
         buildFaultyContext: (setup, errorMessage) => {
           const electronMock = new ElectronFileDialogOperationsStub().withMimicUserCancel(false);
           electronMock.showSaveDialog = () => Promise.reject(new Error(errorMessage));
@@ -282,6 +304,7 @@ describe('NodeElectronSaveFileDialog', () => {
         description: 'unexpected dialog return value failure',
         expectedErrorType: 'DialogDisplayError',
         expectedErrorMessage: 'Unexpected Error: File path is undefined after save dialog completion.',
+        expectLogs: true,
         buildFaultyContext: (setup) => {
           const electronMock = new ElectronFileDialogOperationsStub().withMimicUserCancel(false);
           electronMock.showSaveDialog = () => Promise.resolve({
@@ -294,7 +317,7 @@ describe('NodeElectronSaveFileDialog', () => {
       },
     ];
     testScenarios.forEach(({
-      description, expectedErrorType, expectedErrorMessage, buildFaultyContext,
+      description, expectedErrorType, expectedErrorMessage, buildFaultyContext, expectLogs,
     }) => {
       it(`handles error - ${description}`, async () => {
         // arrange
@@ -312,21 +335,23 @@ describe('NodeElectronSaveFileDialog', () => {
         expect(error.message).to.include(expectedErrorMessage);
         expect(error.type).to.equal(expectedErrorType);
       });
-      it(`logs error: ${description}`, async () => {
-        // arrange
-        const loggerStub = new LoggerStub();
-        const context = buildFaultyContext(
-          new SaveFileDialogTestSetup()
-            .withLogger(loggerStub),
-          expectedErrorMessage,
-        );
+      if (expectLogs) {
+        it(`logs error - ${description}`, async () => {
+          // arrange
+          const loggerStub = new LoggerStub();
+          const context = buildFaultyContext(
+            new SaveFileDialogTestSetup()
+              .withLogger(loggerStub),
+            expectedErrorMessage,
+          );
 
-        // act
-        await context.saveFile();
+          // act
+          await context.saveFile();
 
-        // assert
-        loggerStub.assertLogsContainMessagePart('error', expectedErrorMessage);
-      });
+          // assert
+          loggerStub.assertLogsContainMessagePart('error', expectedErrorMessage);
+        });
+      }
     });
   });
 });
@@ -342,7 +367,9 @@ class SaveFileDialogTestSetup {
 
   private electron: ElectronFileDialogOperations = new ElectronFileDialogOperationsStub();
 
-  private node: NodeFileOperations = new NodeFileOperationsStub();
+  private node: NodeFileOperations = new NodePathOperationsStub();
+
+  private fileWriter: ReadbackFileWriter = new ReadbackFileWriterStub();
 
   public withElectron(electron: ElectronFileDialogOperations): this {
     this.electron = electron;
@@ -351,6 +378,11 @@ class SaveFileDialogTestSetup {
 
   public withNode(node: NodeFileOperations): this {
     this.node = node;
+    return this;
+  }
+
+  public withFileWriter(fileWriter: ReadbackFileWriter): this {
+    this.fileWriter = fileWriter;
     return this;
   }
 
@@ -375,7 +407,12 @@ class SaveFileDialogTestSetup {
   }
 
   public saveFile() {
-    const dialog = new NodeElectronSaveFileDialog(this.logger, this.electron, this.node);
+    const dialog = new NodeElectronSaveFileDialog(
+      this.logger,
+      this.electron,
+      this.node,
+      this.fileWriter,
+    );
     return dialog.saveFile(
       this.fileContents,
       this.filename,

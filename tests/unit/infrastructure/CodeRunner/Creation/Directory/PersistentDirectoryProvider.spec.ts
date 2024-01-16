@@ -169,7 +169,7 @@ describe('PersistentDirectoryProvider', () => {
           expect(error.message).to.include(expectedErrorMessage);
           expect(error.type).to.equal(expectedErrorType);
         });
-        it(`logs error: ${description}`, async () => {
+        it(`logs error - ${description}`, async () => {
           // arrange
           const loggerStub = new LoggerStub();
           const context = buildFaultyContext(

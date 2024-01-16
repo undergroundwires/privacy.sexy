@@ -15,6 +15,8 @@ import { ScriptFilenameParts } from '@/infrastructure/CodeRunner/Creation/Script
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { expectTrue } from '@tests/shared/Assertions/ExpectTrue';
 import { CodeRunErrorType } from '@/application/CodeRunner/CodeRunner';
+import { FileReadbackVerificationErrors, FileWriteOperationErrors, ReadbackFileWriter } from '@/infrastructure/ReadbackFileWriter/ReadbackFileWriter';
+import { ReadbackFileWriterStub } from '@tests/unit/shared/Stubs/ReadbackFileWriterStub';
 
 describe('ScriptFileCreationOrchestrator', () => {
   describe('createScriptFile', () => {
@@ -116,17 +118,16 @@ describe('ScriptFileCreationOrchestrator', () => {
     describe('file writing', () => {
       it('writes to generated file path', async () => {
         // arrange
-        const filesystem = new FileSystemOpsStub();
+        const fileWriter = new ReadbackFileWriterStub();
         const context = new ScriptFileCreatorTestSetup()
-          .withSystem(new SystemOperationsStub()
-            .withFileSystem(filesystem));
+          .withFileWriter(fileWriter);
 
         // act
         const { success, scriptFileAbsolutePath } = await context.createScriptFile();
 
         // assert
         expectTrue(success);
-        const calls = filesystem.callHistory.filter((call) => call.methodName === 'writeToFile');
+        const calls = fileWriter.callHistory.filter((call) => call.methodName === 'writeAndVerifyFile');
         expect(calls.length).to.equal(1);
         const [actualFilePath] = calls[0].args;
         expect(actualFilePath).to.equal(scriptFileAbsolutePath);
@@ -134,23 +135,23 @@ describe('ScriptFileCreationOrchestrator', () => {
       it('writes script content to file', async () => {
         // arrange
         const expectedCode = 'expected-code';
-        const filesystem = new FileSystemOpsStub();
+        const fileWriter = new ReadbackFileWriterStub();
         const context = new ScriptFileCreatorTestSetup()
-          .withSystem(new SystemOperationsStub().withFileSystem(filesystem))
+          .withFileWriter(fileWriter)
           .withFileContents(expectedCode);
 
         // act
         await context.createScriptFile();
 
         // assert
-        const calls = filesystem.callHistory.filter((call) => call.methodName === 'writeToFile');
+        const calls = fileWriter.callHistory.filter((call) => call.methodName === 'writeAndVerifyFile');
         expect(calls.length).to.equal(1);
         const [, actualData] = calls[0].args;
         expect(actualData).to.equal(expectedCode);
       });
     });
     describe('error handling', () => {
-      const testScenarios: ReadonlyArray<{
+      interface FileCreationFailureTestScenario {
         readonly description: string;
         readonly expectedErrorType: CodeRunErrorType;
         readonly expectedErrorMessage: string;
@@ -160,7 +161,8 @@ describe('ScriptFileCreationOrchestrator', () => {
           errorMessage: string,
           errorType: CodeRunErrorType,
         ): ScriptFileCreatorTestSetup;
-      }> = [
+      }
+      const testScenarios: readonly FileCreationFailureTestScenario[] = [
         {
           description: 'path combination failure',
           expectedErrorType: 'FilePathGenerationError',
@@ -174,19 +176,31 @@ describe('ScriptFileCreationOrchestrator', () => {
             return setup.withSystem(new SystemOperationsStub().withLocation(locationStub));
           },
         },
-        {
-          description: 'file writing failure',
+        ...FileWriteOperationErrors.map((writeError): FileCreationFailureTestScenario => ({
+          description: `file writing failure: ${writeError}`,
           expectedErrorType: 'FileWriteError',
           expectedErrorMessage: 'Error when writing to file',
-          expectLogs: true,
+          expectLogs: false,
           buildFaultyContext: (setup, errorMessage) => {
-            const fileSystemStub = new FileSystemOpsStub();
-            fileSystemStub.writeToFile = () => {
-              throw new Error(errorMessage);
-            };
-            return setup.withSystem(new SystemOperationsStub().withFileSystem(fileSystemStub));
+            const fileWriterStub = new ReadbackFileWriterStub();
+            fileWriterStub.configureFailure(writeError, errorMessage);
+            return setup.withFileWriter(fileWriterStub);
           },
-        },
+        })),
+        ...FileReadbackVerificationErrors.map(
+          (verificationError): FileCreationFailureTestScenario => (
+            {
+              description: `file verification failure: ${verificationError}`,
+              expectedErrorType: 'FileReadbackVerificationError',
+              expectedErrorMessage: 'Error when verifying the file',
+              expectLogs: false,
+              buildFaultyContext: (setup, errorMessage) => {
+                const fileWriterStub = new ReadbackFileWriterStub();
+                fileWriterStub.configureFailure(verificationError, errorMessage);
+                return setup.withFileWriter(fileWriterStub);
+              },
+            }),
+        ),
         {
           description: 'filename generation failure',
           expectedErrorType: 'FilePathGenerationError',
@@ -239,7 +253,7 @@ describe('ScriptFileCreationOrchestrator', () => {
           expect(error.type).to.equal(expectedErrorType);
         });
         if (expectLogs) {
-          it(`logs error: ${description}`, async () => {
+          it(`logs error - ${description}`, async () => {
             // arrange
             const loggerStub = new LoggerStub();
             const context = buildFaultyContext(
@@ -269,6 +283,8 @@ class ScriptFileCreatorTestSetup {
   private directoryProvider: ScriptDirectoryProvider = new ScriptDirectoryProviderStub();
 
   private logger: Logger = new LoggerStub();
+
+  private fileWriter: ReadbackFileWriter = new ReadbackFileWriterStub();
 
   private fileContents = `[${ScriptFileCreatorTestSetup.name}] script file contents`;
 
@@ -307,11 +323,17 @@ class ScriptFileCreatorTestSetup {
     return this;
   }
 
+  public withFileWriter(fileWriter: ReadbackFileWriter): this {
+    this.fileWriter = fileWriter;
+    return this;
+  }
+
   public createScriptFile(): ReturnType<ScriptFileCreationOrchestrator['createScriptFile']> {
     const creator = new ScriptFileCreationOrchestrator(
       this.system,
       this.filenameGenerator,
       this.directoryProvider,
+      this.fileWriter,
       this.logger,
     );
     return creator.createScriptFile(this.fileContents, this.filenameParts);
