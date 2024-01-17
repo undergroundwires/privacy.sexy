@@ -1,49 +1,32 @@
+import { ElectronEnvironmentDetector } from './Electron/ElectronEnvironmentDetector';
 import { BrowserRuntimeEnvironment } from './Browser/BrowserRuntimeEnvironment';
 import { NodeRuntimeEnvironment } from './Node/NodeRuntimeEnvironment';
 import { RuntimeEnvironment } from './RuntimeEnvironment';
+import { ContextIsolatedElectronDetector } from './Electron/ContextIsolatedElectronDetector';
 
-export const CurrentEnvironment = determineAndCreateRuntimeEnvironment({
-  window: globalThis.window,
-  process: globalThis.process,
-});
+export const CurrentEnvironment = determineAndCreateRuntimeEnvironment(globalThis.window);
 
 export function determineAndCreateRuntimeEnvironment(
-  globalAccessor: GlobalPropertiesAccessor,
+  globalWindow: Window | undefined | null = globalThis.window,
+  electronDetector: ElectronEnvironmentDetector = new ContextIsolatedElectronDetector(),
   browserEnvironmentFactory: BrowserRuntimeEnvironmentFactory = (
     window,
   ) => new BrowserRuntimeEnvironment(window),
-  nodeEnvironmentFactory: NodeRuntimeEnvironmentFactory = (
-    process: NodeJS.Process,
-  ) => new NodeRuntimeEnvironment(process),
+  nodeEnvironmentFactory: NodeRuntimeEnvironmentFactory = () => new NodeRuntimeEnvironment(),
 ): RuntimeEnvironment {
-  if (isElectronMainProcess(globalAccessor.process)) {
-    return nodeEnvironmentFactory(globalAccessor.process);
+  if (
+    electronDetector.isRunningInsideElectron()
+    && electronDetector.determineElectronProcessType() === 'main') {
+    return nodeEnvironmentFactory();
   }
-  const { window } = globalAccessor;
-  if (!window) {
+  if (!globalWindow) {
     throw new Error('Unsupported runtime environment: The current context is neither a recognized browser nor a desktop environment.');
   }
-  return browserEnvironmentFactory(window);
-}
-
-function isElectronMainProcess(
-  nodeProcess: NodeJS.Process | undefined,
-): nodeProcess is NodeJS.Process {
-  // Electron populates `nodeProcess.versions.electron` with its version, see https://web.archive.org/web/20240113162837/https://www.electronjs.org/docs/latest/api/process#processversionselectron-readonly.
-  if (!nodeProcess) {
-    return false;
-  }
-  if (nodeProcess.versions.electron) {
-    return true;
-  }
-  return false;
+  return browserEnvironmentFactory(globalWindow);
 }
 
 export type BrowserRuntimeEnvironmentFactory = (window: Window) => RuntimeEnvironment;
 
-export type NodeRuntimeEnvironmentFactory = (process: NodeJS.Process) => NodeRuntimeEnvironment;
+export type NodeRuntimeEnvironmentFactory = () => NodeRuntimeEnvironment;
 
-export interface GlobalPropertiesAccessor {
-  readonly window: Window | undefined;
-  readonly process: NodeJS.Process | undefined;
-}
+export type GlobalWindowAccessor = Window | undefined;

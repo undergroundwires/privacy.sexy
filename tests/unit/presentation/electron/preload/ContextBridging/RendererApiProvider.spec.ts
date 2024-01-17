@@ -15,7 +15,9 @@ describe('RendererApiProvider', () => {
       setupContext(context: RendererApiProviderTestContext): RendererApiProviderTestContext;
       readonly expectedValue: unknown;
     }
-    const testScenarios: Record<PropertyKeys<Required<WindowVariables>>, WindowVariableTestCase> = {
+    const testScenarios: Record<
+    PropertyKeys<Required<WindowVariables>>,
+    WindowVariableTestCase> = {
       isRunningAsDesktopApplication: {
         description: 'returns true',
         setupContext: (context) => context,
@@ -32,9 +34,12 @@ describe('RendererApiProvider', () => {
       })(),
       log: expectFacade({
         instance: new LoggerStub(),
-        setupContext: (c, logger) => c.withLogger(logger),
+        setupContext: (c, instance) => c.withLogger(instance),
       }),
       dialog: expectIpcConsumer(IpcChannelDefinitions.Dialog),
+      scriptDiagnosticsCollector: expectIpcConsumer(
+        IpcChannelDefinitions.ScriptDiagnosticsCollector,
+      ),
     };
     Object.entries(testScenarios).forEach((
       [property, { description, setupContext, expectedValue }],
@@ -109,10 +114,10 @@ class RendererApiProviderTestContext {
 
   public provideWindowVariables() {
     return provideWindowVariables(
-      () => this.log,
-      () => this.os,
       this.apiFacadeCreator,
       this.ipcConsumerCreator,
+      () => this.os,
+      () => this.log,
     );
   }
 }

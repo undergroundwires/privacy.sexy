@@ -9,6 +9,7 @@ import type { useUserSelectionState } from '@/presentation/components/Shared/Hoo
 import type { useLogger } from '@/presentation/components/Shared/Hooks/Log/UseLogger';
 import type { useCodeRunner } from './components/Shared/Hooks/UseCodeRunner';
 import type { useDialog } from './components/Shared/Hooks/Dialog/UseDialog';
+import type { useScriptDiagnosticsCollector } from './components/Shared/Hooks/UseScriptDiagnosticsCollector';
 
 export const InjectionKeys = {
   useCollectionState: defineTransientKey<ReturnType<typeof useCollectionState>>('useCollectionState'),
@@ -21,6 +22,7 @@ export const InjectionKeys = {
   useLogger: defineTransientKey<ReturnType<typeof useLogger>>('useLogger'),
   useCodeRunner: defineTransientKey<ReturnType<typeof useCodeRunner>>('useCodeRunner'),
   useDialog: defineTransientKey<ReturnType<typeof useDialog>>('useDialog'),
+  useScriptDiagnosticsCollector: defineTransientKey<ReturnType<typeof useScriptDiagnosticsCollector>>('useScriptDiagnostics'),
 };
 
 export interface InjectionKeyWithLifetime<T> {

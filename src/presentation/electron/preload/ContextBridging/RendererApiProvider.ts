@@ -7,10 +7,10 @@ import { IpcChannelDefinitions } from '../../shared/IpcBridging/IpcChannelDefini
 import { createSecureFacade } from './SecureFacadeCreator';
 
 export function provideWindowVariables(
-  createLogger: LoggerFactory = () => createElectronLogger(),
-  convertToOs = convertPlatformToOs,
   createApiFacade: ApiFacadeFactory = createSecureFacade,
   ipcConsumerCreator: IpcConsumerProxyCreator = createIpcConsumerProxy,
+  convertToOs = convertPlatformToOs,
+  createLogger: LoggerFactory = () => createElectronLogger(),
 ): WindowVariables {
   // Enforces mandatory variable availability at compile time
   const variables: RequiredWindowVariables = {
@@ -19,6 +19,9 @@ export function provideWindowVariables(
     os: convertToOs(process.platform),
     codeRunner: ipcConsumerCreator(IpcChannelDefinitions.CodeRunner),
     dialog: ipcConsumerCreator(IpcChannelDefinitions.Dialog),
+    scriptDiagnosticsCollector: ipcConsumerCreator(
+      IpcChannelDefinitions.ScriptDiagnosticsCollector,
+    ),
   };
   return variables;
 }
@@ -26,8 +29,8 @@ export function provideWindowVariables(
 type RequiredWindowVariables = PartiallyRequired<WindowVariables, 'os' /* | 'anotherOptionalKey'.. */>;
 type PartiallyRequired<T, K extends keyof T> = Required<Omit<T, K>> & Pick<T, K>;
 
-export type LoggerFactory = () => Logger;
-
 export type ApiFacadeFactory = typeof createSecureFacade;
 
 export type IpcConsumerProxyCreator = typeof createIpcConsumerProxy;
+
+export type LoggerFactory = () => Logger;

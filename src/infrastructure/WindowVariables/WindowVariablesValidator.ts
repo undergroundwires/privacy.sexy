@@ -1,3 +1,5 @@
+import { ContextIsolatedElectronDetector } from '@/infrastructure/RuntimeEnvironment/Electron/ContextIsolatedElectronDetector';
+import { ElectronEnvironmentDetector } from '@/infrastructure/RuntimeEnvironment/Electron/ElectronEnvironmentDetector';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import {
   PropertyKeys, isBoolean, isFunction, isNumber, isPlainObject,
@@ -7,7 +9,14 @@ import { WindowVariables } from './WindowVariables';
 /**
  * Checks for consistency in runtime environment properties injected by Electron preloader.
  */
-export function validateWindowVariables(variables: Partial<WindowVariables>) {
+export function validateWindowVariables(
+  variables: Partial<WindowVariables>,
+  electronDetector: ElectronEnvironmentDetector = new ContextIsolatedElectronDetector(),
+) {
+  if (!electronDetector.isRunningInsideElectron()
+    || electronDetector.determineElectronProcessType() !== 'renderer') {
+    return;
+  }
   if (!isPlainObject(variables)) {
     throw new Error('window is not an object');
   }
@@ -20,12 +29,11 @@ export function validateWindowVariables(variables: Partial<WindowVariables>) {
 function* testEveryProperty(variables: Partial<WindowVariables>): Iterable<string> {
   const tests: Record<PropertyKeys<Required<WindowVariables>>, boolean> = {
     os: testOperatingSystem(variables.os),
-    isRunningAsDesktopApplication: testIsRunningAsDesktopApplication(
-      variables.isRunningAsDesktopApplication,
-    ),
+    isRunningAsDesktopApplication: testIsRunningAsDesktopApplication(variables),
     codeRunner: testCodeRunner(variables),
     log: testLogger(variables),
     dialog: testDialog(variables),
+    scriptDiagnosticsCollector: testScriptDiagnosticsCollector(variables),
   };
 
   for (const [propertyName, testResult] of Object.entries(tests)) {
@@ -49,30 +57,30 @@ function testOperatingSystem(os: unknown): boolean {
 }
 
 function testLogger(variables: Partial<WindowVariables>): boolean {
-  if (!variables.isRunningAsDesktopApplication) {
-    return true;
-  }
-  return isPlainObject(variables.log);
+  return isPlainObject(variables.log)
+    && isFunction(variables.log.debug)
+    && isFunction(variables.log.info)
+    && isFunction(variables.log.error)
+    && isFunction(variables.log.warn);
 }
 
 function testCodeRunner(variables: Partial<WindowVariables>): boolean {
-  if (!variables.isRunningAsDesktopApplication) {
-    return true;
-  }
   return isPlainObject(variables.codeRunner)
     && isFunction(variables.codeRunner.runCode);
 }
 
-function testIsRunningAsDesktopApplication(isRunningAsDesktopApplication: unknown): boolean {
-  if (isRunningAsDesktopApplication === undefined) {
-    return true;
-  }
-  return isBoolean(isRunningAsDesktopApplication);
+function testIsRunningAsDesktopApplication(variables: Partial<WindowVariables>): boolean {
+  return isBoolean(variables.isRunningAsDesktopApplication)
+    && variables.isRunningAsDesktopApplication === true;
 }
 
 function testDialog(variables: Partial<WindowVariables>): boolean {
-  if (!variables.isRunningAsDesktopApplication) {
-    return true;
-  }
-  return isPlainObject(variables.dialog);
+  return isPlainObject(variables.dialog)
+    && isFunction(variables.dialog.saveFile)
+    && isFunction(variables.dialog.showError);
+}
+
+function testScriptDiagnosticsCollector(variables: Partial<WindowVariables>): boolean {
+  return isPlainObject(variables.scriptDiagnosticsCollector)
+    && isFunction(variables.scriptDiagnosticsCollector.collectDiagnosticInformation);
 }

@@ -20,8 +20,9 @@ import ModalDialog from '@/presentation/components/Shared/Modal/ModalDialog.vue'
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { ScriptFilename } from '@/application/CodeRunner/ScriptFilename';
-import { Dialog, FileType, SaveFileError } from '@/presentation/common/Dialog';
+import { FileType } from '@/presentation/common/Dialog';
 import IconButton from '../IconButton.vue';
+import { createScriptErrorDialog } from '../ScriptErrorDialog';
 import RunInstructions from './RunInstructions/RunInstructions.vue';
 
 export default defineComponent({
@@ -34,6 +35,7 @@ export default defineComponent({
     const { currentState } = injectKey((keys) => keys.useCollectionState);
     const { isRunningAsDesktopApplication } = injectKey((keys) => keys.useRuntimeEnvironment);
     const { dialog } = injectKey((keys) => keys.useDialog);
+    const { scriptDiagnosticsCollector } = injectKey((keys) => keys.useScriptDiagnosticsCollector);
 
     const areInstructionsVisible = ref(false);
     const filename = computed<string>(() => buildFilename(currentState.value.collection.scripting));
@@ -45,7 +47,12 @@ export default defineComponent({
         getType(currentState.value.collection.scripting.language),
       );
       if (!success) {
-        showScriptSaveError(dialog, error);
+        dialog.showError(...(await createScriptErrorDialog({
+          errorContext: 'save',
+          errorType: error.type,
+          errorMessage: error.message,
+          isFileReadbackError: error.type === 'FileReadbackVerificationError',
+        }, scriptDiagnosticsCollector)));
         return;
       }
       areInstructionsVisible.value = true;
@@ -76,61 +83,5 @@ function buildFilename(scripting: IScriptingDefinition) {
     return `${ScriptFilename}.${scripting.fileExtension}`;
   }
   return ScriptFilename;
-}
-
-function showScriptSaveError(dialog: Dialog, error: SaveFileError) {
-  const technicalDetails = `[${error.type}] ${error.message}`;
-  dialog.showError(
-    ...(
-      error.type === 'FileReadbackVerificationError'
-        ? createAntivirusErrorDialog(technicalDetails)
-        : createGenericErrorDialog(technicalDetails)),
-  );
-}
-
-function createGenericErrorDialog(technicalDetails: string): Parameters<Dialog['showError']> {
-  return [
-    'Error Saving Script',
-    [
-      'An error occurred while saving the script.',
-      'This issue may arise from insufficient permissions, limited disk space, or interference from security software.',
-      '\n',
-      'To address this:',
-      '- Verify your permissions for the selected save directory.',
-      '- Check available disk space.',
-      '- Review your antivirus or security settings; adding an exclusion for privacy.sexy might be necessary.',
-      '- Try saving the script to a different location or modifying your selection.',
-      '- If the problem persists, reach out to the community for further assistance.',
-      '\n',
-      'Technical Details:',
-      technicalDetails,
-    ].join('\n'),
-  ];
-}
-
-function createAntivirusErrorDialog(technicalDetails: string): Parameters<Dialog['showError']> {
-  return [
-    'Potential Antivirus Intervention',
-    [
-      [
-        'It seems your antivirus software might have blocked the saving of the script.',
-        'privacy.sexy is secure, transparent, and open-source, but the scripts might still be mistakenly flagged by antivirus software such as Defender.',
-      ].join(' '),
-      '\n',
-      'To resolve this, consider:',
-      '1. Checking your antivirus for any blocking notifications and allowing the script.',
-      '2. Temporarily disabling real-time protection or adding an exclusion for privacy.sexy scripts.',
-      '3. Re-attempting to save the script.',
-      '4. If the problem continues, review your antivirus logs for more details.',
-      '\n',
-      'To handle false warnings in Defender: Open "Virus & threat protection" from the "Start" menu.',
-      '\n',
-      'Always ensure to re-enable your antivirus protection promptly.',
-      'For more guidance, refer to your antivirus documentation.',
-      '\n',
-      'Technical Details:',
-      technicalDetails,
-    ].join('\n'),
-  ];
 }
 </script>

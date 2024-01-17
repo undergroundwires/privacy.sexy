@@ -41,6 +41,10 @@ privacy.sexy adopts a defense in depth strategy to protect users on multiple lay
   The desktop application operates without persistent administrative or `sudo` privileges, reinforcing its security posture. It requests
   elevation of privileges for system modifications with explicit user consent and logs every action taken with high privileges. This
   approach actively minimizes potential security risks by limiting privileged operations and aligning with the principle of least privilege.
+- **Secure Script Execution/Storage:**
+  Before executing any script, the desktop application stores a copy to allow antivirus software to perform scans. This safeguards against
+  any unwanted modifications. Furthermore, the application incorporates integrity checks for tamper protection. If the script file differs from
+  the user's selected script, the application will not execute or save the script, ensuring the processing of authentic scripts.
 
 ### Update Security and Integrity
 

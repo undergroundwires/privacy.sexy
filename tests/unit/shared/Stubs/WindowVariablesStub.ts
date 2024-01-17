@@ -3,9 +3,11 @@ import { Logger } from '@/application/Common/Log/Logger';
 import { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
 import { CodeRunner } from '@/application/CodeRunner/CodeRunner';
 import { Dialog } from '@/presentation/common/Dialog';
+import { ScriptDiagnosticsCollector } from '@/application/ScriptDiagnostics/ScriptDiagnosticsCollector';
 import { LoggerStub } from './LoggerStub';
 import { CodeRunnerStub } from './CodeRunnerStub';
 import { DialogStub } from './DialogStub';
+import { ScriptDiagnosticsCollectorStub } from './ScriptDiagnosticsCollectorStub';
 
 export class WindowVariablesStub implements WindowVariables {
   public codeRunner?: CodeRunner = new CodeRunnerStub();
@@ -17,6 +19,16 @@ export class WindowVariablesStub implements WindowVariables {
   public log?: Logger = new LoggerStub();
 
   public dialog?: Dialog = new DialogStub();
+
+  public scriptDiagnosticsCollector?
+  : ScriptDiagnosticsCollector = new ScriptDiagnosticsCollectorStub();
+
+  public withScriptDiagnosticsCollector(
+    scriptDiagnosticsCollector: ScriptDiagnosticsCollector,
+  ): this {
+    this.scriptDiagnosticsCollector = scriptDiagnosticsCollector;
+    return this;
+  }
 
   public withLog(log: Logger): this {
     this.log = log;

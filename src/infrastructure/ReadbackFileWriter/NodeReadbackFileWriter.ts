@@ -27,11 +27,6 @@ export class NodeReadbackFileWriter implements ReadbackFileWriter {
     const fileWritePipelineActions: ReadonlyArray<() => Promise<FileWriteOutcome>> = [
       () => this.createOrOverwriteFile(filePath, fileContents),
       () => this.verifyFileExistsWithoutReading(filePath),
-      /*
-        Reading the file contents back, we can detect if the file has been altered or
-        removed post-creation. Removal of scripts when reading back is seen by some antivirus
-        software when it falsely identifies a script as harmful.
-      */
       () => this.verifyFileContentsByReading(filePath, fileContents),
     ];
     for (const action of fileWritePipelineActions) {

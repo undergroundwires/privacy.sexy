@@ -49,7 +49,7 @@
         </p>
         <p>
           These false positives are common for scripts that modify system settings.
-          privacy.sexy is secure, transparent, and open-source.
+          Don't worry; privacy.sexy is secure, transparent, and open-source.
         </p>
         <p>
           To handle false warnings in Microsoft Defender:

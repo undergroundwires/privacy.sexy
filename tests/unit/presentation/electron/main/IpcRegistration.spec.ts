@@ -2,12 +2,14 @@ import { describe, it, expect } from 'vitest';
 import { CodeRunnerStub } from '@tests/unit/shared/Stubs/CodeRunnerStub';
 import { ChannelDefinitionKey, IpcChannelDefinitions } from '@/presentation/electron/shared/IpcBridging/IpcChannelDefinitions';
 import {
-  CodeRunnerFactory, DialogFactory, IpcChannelRegistrar, registerAllIpcChannels,
+  CodeRunnerFactory, DialogFactory, IpcChannelRegistrar,
+  ScriptDiagnosticsCollectorFactory, registerAllIpcChannels,
 } from '@/presentation/electron/main/IpcRegistration';
 import { IpcChannel } from '@/presentation/electron/shared/IpcBridging/IpcChannel';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { collectExceptionMessage } from '@tests/unit/shared/ExceptionCollector';
 import { DialogStub } from '@tests/unit/shared/Stubs/DialogStub';
+import { ScriptDiagnosticsCollectorStub } from '../../../shared/Stubs/ScriptDiagnosticsCollectorStub';
 
 describe('IpcRegistration', () => {
   describe('registerAllIpcChannels', () => {
@@ -41,6 +43,13 @@ describe('IpcRegistration', () => {
           const expectedInstance = new DialogStub();
           return {
             buildContext: (c) => c.withDialogFactory(() => expectedInstance),
+            expectedInstance,
+          };
+        })(),
+        ScriptDiagnosticsCollector: (() => {
+          const expectedInstance = new ScriptDiagnosticsCollectorStub();
+          return {
+            buildContext: (c) => c.witScriptDiagnosticsCollectorFactory(() => expectedInstance),
             expectedInstance,
           };
         })(),
@@ -79,11 +88,14 @@ describe('IpcRegistration', () => {
 });
 
 class IpcRegistrationTestSetup {
+  private registrar: IpcChannelRegistrar = () => { /* NOOP */ };
+
   private codeRunnerFactory: CodeRunnerFactory = () => new CodeRunnerStub();
 
   private dialogFactory: DialogFactory = () => new DialogStub();
 
-  private registrar: IpcChannelRegistrar = () => { /* NOOP */ };
+  private scriptDiagnosticsCollectorFactory
+  : ScriptDiagnosticsCollectorFactory = () => new ScriptDiagnosticsCollectorStub();
 
   public withRegistrar(registrar: IpcChannelRegistrar): this {
     this.registrar = registrar;
@@ -100,11 +112,19 @@ class IpcRegistrationTestSetup {
     return this;
   }
 
+  public witScriptDiagnosticsCollectorFactory(
+    scriptDiagnosticsCollectorFactory: ScriptDiagnosticsCollectorFactory,
+  ): this {
+    this.scriptDiagnosticsCollectorFactory = scriptDiagnosticsCollectorFactory;
+    return this;
+  }
+
   public run() {
     registerAllIpcChannels(
+      this.registrar,
       this.codeRunnerFactory,
       this.dialogFactory,
-      this.registrar,
+      this.scriptDiagnosticsCollectorFactory,
     );
   }
 }

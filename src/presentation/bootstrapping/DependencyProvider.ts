@@ -15,6 +15,7 @@ import { useLogger } from '@/presentation/components/Shared/Hooks/Log/UseLogger'
 import { useCodeRunner } from '@/presentation/components/Shared/Hooks/UseCodeRunner';
 import { CurrentEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironmentFactory';
 import { useDialog } from '@/presentation/components/Shared/Hooks/Dialog/UseDialog';
+import { useScriptDiagnosticsCollector } from '@/presentation/components/Shared/Hooks/UseScriptDiagnosticsCollector';
 
 export function provideDependencies(
   context: IApplicationContext,
@@ -71,6 +72,10 @@ export function provideDependencies(
     useDialog: (di) => di.provide(
       InjectionKeys.useDialog,
       useDialog,
+    ),
+    useScriptDiagnosticsCollector: (di) => di.provide(
+      InjectionKeys.useScriptDiagnosticsCollector,
+      useScriptDiagnosticsCollector,
     ),
   };
   registerAll(Object.values(resolvers), api);

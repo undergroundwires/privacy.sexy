@@ -16,6 +16,10 @@ describe('IpcChannelDefinitions', () => {
         expectedNamespace: 'dialogs',
         expectedAccessibleMembers: ['saveFile'],
       },
+      ScriptDiagnosticsCollector: {
+        expectedNamespace: 'script-diagnostics-collector',
+        expectedAccessibleMembers: ['collectDiagnosticInformation'],
+      },
     };
     Object.entries(testScenarios).forEach((
       [definitionKey, { expectedNamespace, expectedAccessibleMembers }],
