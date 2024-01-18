@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.12.10 (2024-01-17)
+
+* Fix CSP for Vue, Ace, Vite, Safari compatibility | [940febc](https://github.com/undergroundwires/privacy.sexy/commit/940febc3e80cfd0c01b5cc8282ebaab6b024d1b5)
+* Improve security by isolating code execution more | [efa05f4](https://github.com/undergroundwires/privacy.sexy/commit/efa05f42bc53c44a352152b7c272bc0bda363070)
+* Fix unresponsive circle icon in revert button | [645c333](https://github.com/undergroundwires/privacy.sexy/commit/645c33378769969c525a1552c65f8d0005e25fcf)
+* Improve documentation for contribution guidelines | [fc9dd23](https://github.com/undergroundwires/privacy.sexy/commit/fc9dd234e9c749247f42289432ebb92dbe0a5f64)
+* Bump Node.js environment to 18.x | [2f06043](https://github.com/undergroundwires/privacy.sexy/commit/2f0604355988a421690bb275375c3df280af7ee6)
+* Fix button inconsistencies and macOS layout shifts | [86fde6d](https://github.com/undergroundwires/privacy.sexy/commit/86fde6d7dc61bbeeb3088cd24e37451181cc4e01)
+* win: fix language dependent delete script #149 | [8f4b34f](https://github.com/undergroundwires/privacy.sexy/commit/8f4b34f8f156476f56fb7dde8e7c762f4455518b)
+* Improve desktop script runs with timestamps & logs | [cdc32d1](https://github.com/undergroundwires/privacy.sexy/commit/cdc32d1f12c938966238c9569c91b64b23cd6f26)
+* win: improve store app docs and add research #279 | [fac72ed](https://github.com/undergroundwires/privacy.sexy/commit/fac72edd551264320ed97194e7ecb3fcc34139f7)
+* Fix handling special chars in script paths | [40f5eb8](https://github.com/undergroundwires/privacy.sexy/commit/40f5eb8334b27e958eee63e2141ded7d5861d960)
+* Fix macOS detection in desktop app and Chromium | [dc30825](https://github.com/undergroundwires/privacy.sexy/commit/dc30825232a1355a325e364c8cd9fde78ffa3b1a)
+* Bump ESLint Typescript dependencies to latest | [bf7fb07](https://github.com/undergroundwires/privacy.sexy/commit/bf7fb0732c52745521c1a89b963bdbf3394d9e63)
+* Fix script deletion during execution on desktop | [c84a1bb](https://github.com/undergroundwires/privacy.sexy/commit/c84a1bb74ccb7a53bd493684b63a9e04f40e0b8b)
+* Fix script execution for Linux VSCode development | [3b1a89c](https://github.com/undergroundwires/privacy.sexy/commit/3b1a89ce863c18c32be7d0b22dba566f692d81d1)
+* Fix touch, cursor and accessibility in slider | [7285842](https://github.com/undergroundwires/privacy.sexy/commit/728584240cae6b3857abca4d3ddaaa7f6bb4a66e)
+* Fix invisible script execution on Windows #264 | [b404a91](https://github.com/undergroundwires/privacy.sexy/commit/b404a91ada509e19a287d026d55db0035ff6233b)
+* win: add missing extension apps, improve docs #279 | [da4be50](https://github.com/undergroundwires/privacy.sexy/commit/da4be500da7b0b5897a8b3e0525d9e50c9159fe0)
+* Show native save dialogs in desktop app #50, #264 | [c546a33](https://github.com/undergroundwires/privacy.sexy/commit/c546a33eff7506550c7bcf03bb1f227a7c091816)
+* Show save/execution error dialogs on desktop #264 | [e09db0f](https://github.com/undergroundwires/privacy.sexy/commit/e09db0f1bd73503204d8e5375a9cfe693f174a57)
+* Add Windows save instructions UI and fix URL #296 | [756c736](https://github.com/undergroundwires/privacy.sexy/commit/756c736e21d713b8d2651cf2a9d7cf0678badde0)
+* Add AD detection on desktop app #264, #304 | [f03fc24](https://github.com/undergroundwires/privacy.sexy/commit/f03fc2409832ddf904bc6bd4e19274a8d40745dc)
+* Improve script error dialogs #304 | [6ada8d4](https://github.com/undergroundwires/privacy.sexy/commit/6ada8d425c4a7df88490756187c84b5c57ed1dcc)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.12.9...0.12.10)
+
 ## 0.12.9 (2023-12-16)
 
 * win: improve docs and category of jump lists #146 | [40ae8a8](https://github.com/undergroundwires/privacy.sexy/commit/40ae8a8addaeb834ee26eabd330fda5cbb495324)
