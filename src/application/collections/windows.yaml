@@ -3666,7 +3666,7 @@ actions:
                             that primarily collected your personal usage and related performance data [2].
 
                             For more information about the information collected, processed, or transmitted by the `VSCEIP`, see the
-                            [Microsoft Privacy Statement](https://privacy.microsoft.com/en-US/privacystatement).
+                            [Microsoft Privacy Statement](https://web.archive.org/web/20231006114659/https://privacy.microsoft.com/en-us/privacystatement).
 
                             Visual Studio uses different keys based on CPU architecture of the host operating system (32bit or 64bit) [1]:
 
@@ -4901,6 +4901,154 @@ actions:
             This category encompasses a range of scripts designed to improve the security of your system by enforcing security best practices.
             These scripts help protect your system against various types of cyber threats and unauthorized access.
         children:
+            -
+                category: Disable clipboard data collection
+                docs: |-
+                    This category includes scripts that focus on disabling various aspects of clipboard data collection in Windows.
+                    The clipboard is a critical component of the operating system, often containing sensitive data such as usernames, passwords, and other
+                    personal information [1].
+                    However, features such as clipboard history and device synchronization can significantly increase privacy and security risks.
+
+                    By default, Windows tends to store clipboard data in an unencrypted format [2], making it easily accessible to malicious applications or scripts.
+                    Additionally, data synchronization features can lead to sensitive information being stored on remote servers or shared across devices, increasing the
+                    risk of data exposure.
+
+                    The scripts in this category address these risks by disabling the related features..
+                    While these features offer convenience and productivity benefits, they can inadvertently compromise user privacy and security.
+                    
+                    > **Caution**: Applying these scripts may lead to a loss of certain functionalities. Users who rely on these features for their daily tasks should
+                    > consider the trade-offs before proceeding with these changes.
+
+                    [1]: https://web.archive.org/web/20240119160347/https://github.com/undergroundwires/privacy.sexy/issues/247 "Disable Clipboard History · Issue #247 · undergroundwires/privacy.sexy · GitHub | github.com"
+                    [2]: https://web.archive.org/web/20240119151846/https://ghostvolt.com/blog/Is-the-Windows-Clipboard-Function-History-or-Sync-Secure.html "Is the Windows Clipboard Function, History or Sync Secure | ghostvolt.com"
+                children:
+                    -
+                        name: Disable Cloud Clipboard (breaks clipboard sync)
+                        recommend: strict
+                        docs: |-
+                            This script disables the Cloud Clipboard feature [1], also known as the cross-device clipboard [2].
+                            The Cloud Clipboard, introduced in the Windows 10 October 2018 Update [3], synchronizes clipboard contents across Windows
+                            devices [1] [2] [4]. While this feature enhances usability, it can pose a privacy risk as sensitive information like passwords or credit card
+                            details [5] might be inadvertently synchronized and stored on Microsoft servers.
+
+                            Disabling Cloud Clipboard is recommended in secure environments where clipboard data should remain local to the system, avoiding
+                            potential exposure or misuse of sensitive information [6]. The Center for Internet Security (CIS) recommends disabling this feature in
+                            such settings for enhanced security [6]. Moreover, Microsoft acknowledges that disabling network connections linked to the Cloud Clipboard
+                            can improve privacy [1]. This script secures your clipboard data by preventing unauthorized access from other processes on your computer
+                            or network, reducing the risk of data theft.
+
+                            The script configures the following registry keys:
+
+                            - `HKLM\SOFTWARE\Policies\Microsoft\Windows\System!AllowCrossDeviceClipboard`: Disables the Cloud Clipboard feature, preventing
+                            clipboard synchronization across devices [1] [2] [6].
+                            - `HKCU\Software\Microsoft\Clipboard!CloudClipboardAutomaticUpload`: Stops the automatic upload of clipboard data to the cloud [7].
+
+                            > **Caution**: After running this script, clipboard contents will not synchronize across devices [1] [2] [6].
+                            > Text or images copied on one device will not be accessible on other devices [3] [4] [5].
+                            > This enhances privacy and security but limits the clipboard's functionality across your Windows devices.
+
+                            [1]: https://web.archive.org/web/20230731230134/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#30-cloud-clipboard "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
+                            [2]: https://web.archive.org/web/20240119150031/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#allowcrossdeviceclipboard "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20210619004804/https://community.windows.com/en-us/stories/cloud-clipboard-windows-10 "Copy and paste across Windows 10 devices using cloud clipboard | Windows Community | community.windows.com"
+                            [4]: https://web.archive.org/web/20240119150040/https://support.microsoft.com/en-us/windows/clipboard-in-windows-c436501e-985d-1c8d-97ea-fe46ddf338c6 "Clipboard in Windows - Microsoft Support | support.microsoft.com"
+                            [5]: https://web.archive.org/web/20240119160347/https://github.com/undergroundwires/privacy.sexy/issues/247 "Disable Clipboard History · Issue #247 · undergroundwires/privacy.sexy · GitHub | github.com"
+                            [6]: https://web.archive.org/web/20240119145854/https://www.tenable.com/audits/items/CIS_MS_InTune_for_Windows_11_Level_2_BitLocker_v1.0.0.audit:19bea796bd6a86f37028214bbed97ffd "18.8.31.1 Ensure 'Allow Clipboard synchronization across devic... | Tenable® | www.tenable.com"
+                            [7]: https://web.archive.org/web/20240119145950/https://www.elevenforum.com/t/enable-or-disable-clipboard-sync-across-devices-in-windows-11.976/ "Enable or Disable Clipboard Sync Across Devices in Windows 11 Tutorial | Windows 11 Forum | elevenforum.com"
+                        call:
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "AllowCrossDeviceClipboard" /t "REG_DWORD" /d "0" /f
+                                    # This key does not exist by default since Windows 10 22H2 and Windows 11 23H2
+                                    revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "AllowCrossDeviceClipboard" /f 2>nul
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: reg add "HKCU\Software\Microsoft\Clipboard" /v "CloudClipboardAutomaticUpload" /t "REG_DWORD" /d "0" /f
+                                    # This key does not exist by default since Windows 10 22H2 and Windows 11 23H2
+                                    revertCode: reg delete "HKCU\Software\Microsoft\Clipboard" /v "CloudClipboardAutomaticUpload" /f 2>nul
+                    -
+                        name: Disable clipboard history
+                        recommend: standard
+                        docs: |-
+                            This script deactivates the clipboard history feature in Windows, a feature that is enabled by default [1] [2].
+                            Regularly, users copy sensitive data such as usernames and passwords to their clipboard, making clipboard history
+                            valuable to attackers for gathering information for post-exploitation activities like lateral movement.
+
+                            Microsoft introduced clipboard history in the Windows 10 October 2018 Update [1], offering enhanced functionality, including
+                            multi-device sync and customizable history management [1].
+                            Despite these benefits, clipboard history poses several security risks:
+
+                            - **Plain Text Storage**: Clipboard data is stored unencrypted, making it vulnerable to access by malicious applications [3].
+                            - **Persistent Memory**: The data remains in memory until overwritten or the machine restarts, exposing it to unauthorized access
+                            by other users or malware [3].
+                            - **Process Accessibility**: Most running processes and applications can access clipboard data, increasing the risk if any are malicious [3].
+                            - **Open Network Threats**: Malicious website scripts could potentially access clipboard data, leading to data theft [3].
+                            - **Windows Clipboard History**: Stores the last 25 copied text and image items, which could include sensitive information [3].
+                            - **Increased Attack Surface**: Clipboard history is susceptible to exploitation by malware that silently accesses and logs clipboard data [3].
+
+                            Microsoft's privacy statement also indicates that clipboard data could be used for marketing and advertising purposes [4].
+
+                            Given these risks, especially when handling sensitive data like passwords or credit card numbers [5], it is advisable for
+                            users concerned about security to disable clipboard history to safeguard their privacy.
+
+                            This script modifies Windows Registry keys to turn off clipboard history and sync features:
+
+                            - `HKCU\Software\Microsoft\Clipboard!EnableClipboardHistory`: Disables the local clipboard history for the current user [6] [7] [8].
+                            - `HKLM\SOFTWARE\Policies\Microsoft\Windows\System!AllowClipboardHistory`: Disables the policy for storing clipboard contents [2] [9].
+
+                            [1]: https://web.archive.org/web/20210619004804/https://community.windows.com/en-us/stories/cloud-clipboard-windows-10 "Copy and paste across Windows 10 devices using cloud clipboard | Windows Community | community.windows.com"
+                            [2]: https://web.archive.org/web/20240119153212/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience#allowclipboardhistory "Experience Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20240119151846/https://ghostvolt.com/blog/Is-the-Windows-Clipboard-Function-History-or-Sync-Secure.html "Is the Windows Clipboard Function, History or Sync Secure | ghostvolt.com"
+                            [4]: https://web.archive.org/web/20231006114659/https://privacy.microsoft.com/en-us/privacystatement "Microsoft Privacy Statement – Microsoft privacy | privacy.microsoft.com"
+                            [5]: https://web.archive.org/web/20240119160347/https://github.com/undergroundwires/privacy.sexy/issues/247 "Disable Clipboard History · Issue #247 · undergroundwires/privacy.sexy · GitHub | github.com"
+                            [6]: https://web.archive.org/web/20240119153118/https://www.elevenforum.com/t/enable-or-disable-clipboard-history-in-windows-11.973/ "Enable or Disable Clipboard History in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+                            [7]: https://web.archive.org/web/20240119153113/https://itechbrand.com/how-to-enable-and-use-clipboard-history-on-windows-10/ "How to: Enable and Use Clipboard History on Windows 10 | ITechBrand | itechbrand.com"
+                            [8]: https://web.archive.org/web/20240119153250/https://labs.withsecure.com/tools/sharpcliphistory "SharpClipHistory | WithSecure™ Labs | labs.withsecure.com"
+                            [9]: https://web.archive.org/web/20240119153231/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.OSPolicy::AllowClipboardHistory "Allow Clipboard History | admx.help"
+                        call:
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: reg add "HKCU\Software\Microsoft\Clipboard" /v "EnableClipboardHistory" /t REG_DWORD /d 0 /f
+                                    # This key does not exist by default since Windows 10 22H2 and Windows 11 23H2
+                                    revertCode: reg delete "HKCU\Software\Microsoft\Clipboard" /v "EnableClipboardHistory" /f 2>nul
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "AllowClipboardHistory" /t "REG_DWORD" /d "0" /f
+                                    # This key does not exist by default since Windows 10 22H2 and Windows 11 23H2
+                                    revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "AllowClipboardHistory" /f 2>nul
+                    -
+                        name: Disable background clipboard data collection (`cbdhsvc`) (breaks clipboard history and sync)
+                        recommend: strict
+                        docs: |-
+                            This script disables `cbdhsvc` also known as "Clipboard User Service" [1].
+                            This service is responsible for clipboard history and synchronization across devices [1].
+
+                            Microsoft acknowledges that disabling this service does not adversely affect the system's core functionality [2].
+
+                            Disabling this service enhances your security by reducing your system's
+                            vulnerability surface. This service has been historically susceptible to vulnerabilities such as Privilege Escalation vulnerability [3].
+                            Turning off `cbdhsvc` also helps improve system performance by reducing the number of background processes as `cbdhsvc` runs automatically
+                            in the background [1].
+                            Additionally, it enhances privacy by preventing the storage and sharing of clipboard history with Microsoft servers.
+                            Clipboard data often contains sensitive information, including passwords and credit card numbers [4].
+                            
+                            > **Caution**: Disabling this service will remove the functionalities for clipboard history and synchronization across devices.
+                            > If you depend on these features, you should weigh the benefits against the loss of these functionalities.
+
+                            [1]: https://web.archive.org/web/20240119153912/https://learn.microsoft.com/en-us/windows/application-management/per-user-services-in-windows "Per-user services - Windows Application Management | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20230905120815/https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services#per-user-services "Guidance on disabling system services on Windows IoT Enterprise | Microsoft Learn"
+                            [3]: https://archive.ph/2024.01.19-154717/https://msrc.microsoft.com/update-guide/vulnerability/CVE-2022-21869 "CVE-2022-21869 - Security Update Guide - Microsoft - Clipboard User Service Elevation of Privilege Vulnerability | rc.microsoft.com"
+                            [4]: https://web.archive.org/web/20240119160347/https://github.com/undergroundwires/privacy.sexy/issues/247 "Disable Clipboard History · Issue #247 · undergroundwires/privacy.sexy · GitHub | github.com"
+                        call:
+                            function: DisablePerUserService
+                            parameters:
+                                # Check (system-wide):  (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\cbdhsvc").Start
+                                # Check (per-user):     (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\cbdhsvc_*").Start
+                                serviceName: cbdhsvc
+                                defaultStartupMode: Automatic
             -
                 name: Disable hidden remote file access via administrative shares (breaks remote system management software)
                 recommend: strict
