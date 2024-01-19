@@ -1,13 +1,14 @@
-import { ICommandOps } from '@/infrastructure/SystemOperations/ISystemOperations';
+import { CommandOps } from '@/infrastructure/CodeRunner/System/SystemOperations';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class CommandOpsStub
-  extends StubWithObservableMethodCalls<ICommandOps>
-  implements ICommandOps {
-  public execute(command: string): void {
+  extends StubWithObservableMethodCalls<CommandOps>
+  implements CommandOps {
+  public exec(command: string): Promise<void> {
     this.registerMethodCall({
-      methodName: 'execute',
+      methodName: 'exec',
       args: [command],
     });
+    return Promise.resolve();
   }
 }

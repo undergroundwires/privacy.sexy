@@ -11,7 +11,7 @@ export class ExpressionStub implements IExpression {
 
   public parameters: IReadOnlyFunctionParameterCollection = new FunctionParameterCollectionStub();
 
-  private result: string = undefined;
+  private result = `[${ExpressionStub.name}] result`;
 
   public withParameters(parameters: IReadOnlyFunctionParameterCollection) {
     this.parameters = parameters;

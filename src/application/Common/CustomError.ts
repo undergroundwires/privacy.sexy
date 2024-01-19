@@ -1,3 +1,5 @@
+import { isFunction } from '@/TypeHelpers';
+
 /*
   Provides a unified and resilient way to extend errors across platforms.
 
@@ -20,31 +22,33 @@ export abstract class CustomError extends Error {
   }
 }
 
-export const Environment = {
+interface ErrorPrototypeManipulation {
+  getSetPrototypeOf: () => (typeof Object.setPrototypeOf | undefined);
+  getCaptureStackTrace: () => (typeof Error.captureStackTrace | undefined);
+}
+
+export const PlatformErrorPrototypeManipulation: ErrorPrototypeManipulation = {
   getSetPrototypeOf: () => Object.setPrototypeOf,
   getCaptureStackTrace: () => Error.captureStackTrace,
 };
 
 function fixPrototype(target: Error, prototype: CustomError) {
-  // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-2.html#support-for-newtarget
-  const setPrototypeOf = Environment.getSetPrototypeOf();
-  if (!functionExists(setPrototypeOf)) {
+  // This is recommended by TypeScript guidelines.
+  //  Source: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-2.html#support-for-newtarget
+  //  Snapshots: https://web.archive.org/web/20231111234849/https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-2.html#support-for-newtarget, https://archive.ph/tr7cX#support-for-newtarget
+  const setPrototypeOf = PlatformErrorPrototypeManipulation.getSetPrototypeOf();
+  if (!isFunction(setPrototypeOf)) {
     return;
   }
   setPrototypeOf(target, prototype);
 }
 
 function ensureStackTrace(target: Error) {
-  const captureStackTrace = Environment.getCaptureStackTrace();
-  if (!functionExists(captureStackTrace)) {
+  const captureStackTrace = PlatformErrorPrototypeManipulation.getCaptureStackTrace();
+  if (!isFunction(captureStackTrace)) {
     // captureStackTrace is only available on V8, if it's not available
     // modern JS engines will usually generate a stack trace on error objects when they're thrown.
     return;
   }
   captureStackTrace(target, target.constructor);
-}
-
-function functionExists(func: unknown): boolean {
-  // Not doing truthy/falsy check i.e. if(func) as most values are truthy in JS for robustness
-  return typeof func === 'function';
 }

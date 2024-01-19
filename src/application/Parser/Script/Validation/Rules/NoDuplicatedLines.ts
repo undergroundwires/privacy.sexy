@@ -3,9 +3,7 @@ import { ICodeLine } from '../ICodeLine';
 import { ICodeValidationRule, IInvalidCodeLine } from '../ICodeValidationRule';
 
 export class NoDuplicatedLines implements ICodeValidationRule {
-  constructor(private readonly syntax: ILanguageSyntax) {
-    if (!syntax) { throw new Error('missing syntax'); }
-  }
+  constructor(private readonly syntax: ILanguageSyntax) { }
 
   public analyze(lines: readonly ICodeLine[]): IInvalidCodeLine[] {
     return lines

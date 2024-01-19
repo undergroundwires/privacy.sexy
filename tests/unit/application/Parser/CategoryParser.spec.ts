@@ -4,15 +4,15 @@ import { CategoryFactoryType, parseCategory } from '@/application/Parser/Categor
 import { parseScript } from '@/application/Parser/Script/ScriptParser';
 import { parseDocs } from '@/application/Parser/DocumentationParser';
 import { ScriptCompilerStub } from '@tests/unit/shared/Stubs/ScriptCompilerStub';
-import { ScriptDataStub } from '@tests/unit/shared/Stubs/ScriptDataStub';
 import { CategoryCollectionParseContextStub } from '@tests/unit/shared/Stubs/CategoryCollectionParseContextStub';
 import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
 import { CategoryDataStub } from '@tests/unit/shared/Stubs/CategoryDataStub';
-import { itEachAbsentCollectionValue, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { NodeType } from '@/application/Parser/NodeValidation/NodeType';
 import { expectThrowsNodeError, ITestScenario, NodeValidationTestRunner } from '@tests/unit/application/Parser/NodeValidation/NodeValidatorTestRunner';
 import { ICategoryCollectionParseContext } from '@/application/Parser/Script/ICategoryCollectionParseContext';
 import { Category } from '@/domain/Category';
+import { createScriptDataWithCall, createScriptDataWithCode, createScriptDataWithoutCallOrCodes } from '@tests/unit/shared/Stubs/ScriptDataStub';
 
 describe('CategoryParser', () => {
   describe('parseCategory', () => {
@@ -30,7 +30,7 @@ describe('CategoryParser', () => {
             });
         });
         describe('throws when category children is absent', () => {
-          itEachAbsentCollectionValue((absentValue) => {
+          itEachAbsentCollectionValue<CategoryOrScriptData>((absentValue) => {
             // arrange
             const categoryName = 'test';
             const expectedMessage = `"${categoryName}" has no children.`;
@@ -41,7 +41,7 @@ describe('CategoryParser', () => {
             const test = createTest(category);
             // assert
             expectThrowsNodeError(test, expectedMessage);
-          });
+          }, { excludeUndefined: true, excludeNull: true });
         });
         describe('throws when category child is missing', () => {
           new NodeValidationTestRunner()
@@ -140,19 +140,6 @@ describe('CategoryParser', () => {
         }, expectedError);
       });
     });
-    describe('throws when context is absent', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing context';
-        const context = absentValue;
-        // act
-        const act = () => new TestBuilder()
-          .withContext(context)
-          .parseCategory();
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
     it('returns expected docs', () => {
       // arrange
       const url = 'https://privacy.sexy';
@@ -170,7 +157,7 @@ describe('CategoryParser', () => {
     describe('parses expected subscript', () => {
       it('single script with code', () => {
         // arrange
-        const script = ScriptDataStub.createWithCode();
+        const script = createScriptDataWithCode();
         const context = new CategoryCollectionParseContextStub();
         const expected = [parseScript(script, context)];
         const category = new CategoryDataStub()
@@ -186,7 +173,7 @@ describe('CategoryParser', () => {
       });
       it('single script with function call', () => {
         // arrange
-        const script = ScriptDataStub.createWithCall();
+        const script = createScriptDataWithCall();
         const compiler = new ScriptCompilerStub()
           .withCompileAbility(script);
         const context = new CategoryCollectionParseContextStub()
@@ -205,8 +192,8 @@ describe('CategoryParser', () => {
       });
       it('multiple scripts with function call and code', () => {
         // arrange
-        const callableScript = ScriptDataStub.createWithCall();
-        const scripts = [callableScript, ScriptDataStub.createWithCode()];
+        const callableScript = createScriptDataWithCall();
+        const scripts = [callableScript, createScriptDataWithCode()];
         const category = new CategoryDataStub()
           .withChildren(scripts);
         const compiler = new ScriptCompilerStub()
@@ -234,8 +221,7 @@ describe('CategoryParser', () => {
             new CategoryDataStub()
               .withName('sub-category')
               .withChildren([
-                ScriptDataStub
-                  .createWithoutCallOrCodes()
+                createScriptDataWithoutCallOrCodes()
                   .withCode(duplicatedCode),
               ]),
           ]);
@@ -253,7 +239,7 @@ describe('CategoryParser', () => {
       // arrange
       const expected = [new CategoryDataStub()
         .withName('test category')
-        .withChildren([ScriptDataStub.createWithCode()]),
+        .withChildren([createScriptDataWithCode()]),
       ];
       const category = new CategoryDataStub()
         .withName('category name')
@@ -276,7 +262,7 @@ class TestBuilder {
 
   private context: ICategoryCollectionParseContext = new CategoryCollectionParseContextStub();
 
-  private factory: CategoryFactoryType = undefined;
+  private factory?: CategoryFactoryType = undefined;
 
   public withData(data: CategoryData) {
     this.data = data;

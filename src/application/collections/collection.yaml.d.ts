@@ -12,29 +12,38 @@ declare module '@/application/collections/*' {
   }
 
   export type CategoryOrScriptData = CategoryData | ScriptData;
-  export type DocumentationData = ReadonlyArray<string> | string;
+  export type DocumentationData = ReadonlyArray<string> | string | undefined;
 
   export interface DocumentableData {
     readonly docs?: DocumentationData;
   }
 
-  export interface InstructionHolder {
-    readonly name: string;
-
-    readonly code?: string;
+  export interface CodeInstruction {
+    readonly code: string;
     readonly revertCode?: string;
-
-    readonly call?: FunctionCallsData;
   }
+
+  export interface CallInstruction {
+    readonly call: FunctionCallsData;
+  }
+
+  export type InstructionHolder = CodeInstruction | CallInstruction;
 
   export interface ParameterDefinitionData {
     readonly name: string;
     readonly optional?: boolean;
   }
 
-  export interface FunctionData extends InstructionHolder {
+  export type FunctionDefinition = {
+    readonly name: string;
     readonly parameters?: readonly ParameterDefinitionData[];
-  }
+  };
+
+  export type CodeFunctionData = FunctionDefinition & CodeInstruction;
+
+  export type CallFunctionData = FunctionDefinition & CallInstruction;
+
+  export type FunctionData = CodeFunctionData | CallFunctionData;
 
   export interface FunctionCallParametersData {
     readonly [index: string]: string;
@@ -47,10 +56,16 @@ declare module '@/application/collections/*' {
 
   export type FunctionCallsData = readonly FunctionCallData[] | FunctionCallData | undefined;
 
-  export interface ScriptData extends InstructionHolder, DocumentableData {
+  export type ScriptDefinition = DocumentableData & {
     readonly name: string;
     readonly recommend?: string;
-  }
+  };
+
+  export type CodeScriptData = ScriptDefinition & CodeInstruction;
+
+  export type CallScriptData = ScriptDefinition & CallInstruction;
+
+  export type ScriptData = CodeScriptData | CallScriptData;
 
   export interface ScriptingDefinitionData {
     readonly language: string;

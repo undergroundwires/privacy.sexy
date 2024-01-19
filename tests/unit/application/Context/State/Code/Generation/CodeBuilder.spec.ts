@@ -91,8 +91,8 @@ describe('CodeBuilder', () => {
   it('appendFunction', () => {
     // arrange
     const sut = new CodeBuilderConcrete();
-    const functionName = 'function';
-    const code = 'code';
+    const functionName = 'expected-function-name';
+    const code = 'expected-code';
     // act
     sut.appendFunction(functionName, code);
     // assert

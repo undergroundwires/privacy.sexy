@@ -1,5 +1,4 @@
 import { describe, it, expect } from 'vitest';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { EnvironmentVariablesStub } from '@tests/unit/shared/Stubs/EnvironmentVariablesStub';
 import { validateEnvironmentVariables } from '@/infrastructure/EnvironmentVariables/EnvironmentVariablesValidator';
 import { IEnvironmentVariables } from '@/infrastructure/EnvironmentVariables/IEnvironmentVariables';
@@ -28,17 +27,6 @@ describe('EnvironmentVariablesValidator', () => {
     expect(act).to.not.throw();
   });
   describe('throws as expected', () => {
-    describe('"missing environment" if environment is not provided', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing environment';
-        const environment = absentValue;
-        // act
-        const act = () => validateEnvironmentVariables(environment);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
     it('"missing keys" if environment has properties with missing values', () => {
       // arrange
       const expectedError = 'Environment keys missing: name, homepageUrl';

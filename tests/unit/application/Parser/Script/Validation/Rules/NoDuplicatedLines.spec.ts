@@ -1,24 +1,10 @@
-import { describe, expect } from 'vitest';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { describe } from 'vitest';
 import { NoDuplicatedLines } from '@/application/Parser/Script/Validation/Rules/NoDuplicatedLines';
 import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
 import { IInvalidCodeLine } from '@/application/Parser/Script/Validation/ICodeValidationRule';
 import { testCodeValidationRule } from './CodeValidationRuleTestRunner';
 
 describe('NoDuplicatedLines', () => {
-  describe('ctor', () => {
-    describe('throws if syntax is missing', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing syntax';
-        const syntax = absentValue;
-        // act
-        const act = () => new NoDuplicatedLines(syntax);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
-  });
   describe('analyze', () => {
     testCodeValidationRule([
       {

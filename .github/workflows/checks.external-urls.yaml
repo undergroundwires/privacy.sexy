@@ -8,11 +8,15 @@ jobs:
   run-check:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Setup node
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Setup node
         uses: ./.github/actions/setup-node
-      - name: Install dependencies
-        run: npm ci
-      - name: Test
+      -
+        name: Install dependencies
+        uses: ./.github/actions/npm-install-dependencies
+      -
+        name: Test
         run: npm run check:external-urls

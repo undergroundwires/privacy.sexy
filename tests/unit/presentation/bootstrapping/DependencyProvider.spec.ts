@@ -14,10 +14,18 @@ describe('DependencyProvider', () => {
       useApplication: createSingletonTests(),
       useRuntimeEnvironment: createSingletonTests(),
       useAutoUnsubscribedEvents: createTransientTests(),
+      useClipboard: createTransientTests(),
+      useCurrentCode: createTransientTests(),
+      useUserSelectionState: createTransientTests(),
+      useLogger: createTransientTests(),
+      useCodeRunner: createTransientTests(),
+      useDialog: createTransientTests(),
+      useScriptDiagnosticsCollector: createTransientTests(),
     };
     Object.entries(testCases).forEach(([key, runTests]) => {
-      describe(`Key: "${key}"`, () => {
-        runTests(InjectionKeys[key]);
+      const registeredKey = InjectionKeys[key].key;
+      describe(`Key: "${registeredKey.toString()}"`, () => {
+        runTests(registeredKey);
       });
     });
   });

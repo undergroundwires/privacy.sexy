@@ -1,43 +1,48 @@
 <template>
-  <SizeObserver v-on:widthChanged="width = $event">
-    <!--
-      <div id="responsivity-debug">
-        Width: {{ width || 'undefined' }}
-        Size:
-          <span v-if="width <= 500">small</span>
-          <span v-if="width > 500 && width < 750">medium</span>
-          <span v-if="width >= 750">big</span>
+  <SizeObserver
+    @width-changed="width = $event"
+  >
+    <transition name="fade-transition">
+      <div v-if="width">
+        <!-- <div id="responsivity-debug">
+          Width: {{ width || 'undefined' }}
+          Size:
+            <span v-if="width <= 500">small</span>
+            <span v-if="width > 500 && width < 750">medium</span>
+            <span v-if="width >= 750">big</span>
+        </div> -->
+        <div
+          v-if="categoryIds.length > 0"
+          class="cards"
+        >
+          <CardListItem
+            v-for="categoryId of categoryIds"
+            :key="categoryId"
+            class="card"
+            :class="{
+              'small-screen': width <= 500,
+              'medium-screen': width > 500 && width < 750,
+              'big-screen': width >= 750,
+            }"
+            :data-category="categoryId"
+            :category-id="categoryId"
+            :active-category-id="activeCategoryId"
+            @card-expansion-changed="onSelected(categoryId, $event)"
+          />
+        </div>
+        <div v-else class="error">
+          Something went bad 😢
+        </div>
       </div>
-    -->
-    <div
-      v-if="categoryIds != null && categoryIds.length > 0"
-      class="cards"
-    >
-      <CardListItem
-        class="card"
-        v-bind:class="{
-          'small-screen': width <= 500,
-          'medium-screen': width > 500 && width < 750,
-          'big-screen': width >= 750,
-        }"
-        v-for="categoryId of categoryIds"
-        :data-category="categoryId"
-        v-bind:key="categoryId"
-        :categoryId="categoryId"
-        :activeCategoryId="activeCategoryId"
-        v-on:cardExpansionChanged="onSelected(categoryId, $event)"
-      />
-    </div>
-    <div v-else class="error">Something went bad 😢</div>
+    </transition>
   </SizeObserver>
 </template>
 
 <script lang="ts">
 import {
   defineComponent, ref, onMounted, onUnmounted, computed,
-  inject,
 } from 'vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { injectKey } from '@/presentation/injectionSymbols';
 import SizeObserver from '@/presentation/components/Shared/SizeObserver.vue';
 import { hasDirective } from './NonCollapsingDirective';
 import CardListItem from './CardListItem.vue';
@@ -48,11 +53,13 @@ export default defineComponent({
     SizeObserver,
   },
   setup() {
-    const { currentState, onStateChange } = inject(InjectionKeys.useCollectionState)();
+    const { currentState, onStateChange } = injectKey((keys) => keys.useCollectionState);
 
-    const width = ref<number>(0);
-    const categoryIds = computed<ReadonlyArray<number>>(() => currentState
-      .value.collection.actions.map((category) => category.id));
+    const width = ref<number | undefined>();
+
+    const categoryIds = computed<readonly number[]>(
+      () => currentState.value.collection.actions.map((category) => category.id),
+    );
     const activeCategoryId = ref<number | undefined>(undefined);
 
     function onSelected(categoryId: number, isExpanded: boolean) {
@@ -138,4 +145,6 @@ function isClickable(element: Element) {
   font-size: 3.5em;
   font-family: $font-normal;
 }
+
+@include fade-transition('fade-transition');
 </style>

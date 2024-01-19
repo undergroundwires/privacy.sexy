@@ -1,10 +1,8 @@
+import { isBoolean, isFunction } from '@/TypeHelpers';
 import { IEnvironmentVariables } from './IEnvironmentVariables';
 
 /* Validation is externalized to keep the environment objects simple */
 export function validateEnvironmentVariables(environment: IEnvironmentVariables): void {
-  if (!environment) {
-    throw new Error('missing environment');
-  }
   const keyValues = capturePropertyValues(environment);
   if (!Object.keys(keyValues).length) {
     throw new Error('Unable to capture key/value pairs');
@@ -18,7 +16,7 @@ export function validateEnvironmentVariables(environment: IEnvironmentVariables)
 function getKeysMissingValues(keyValuePairs: Record<string, unknown>): string[] {
   return Object.entries(keyValuePairs)
     .reduce((acc, [key, value]) => {
-      if (!value && typeof value !== 'boolean') {
+      if (!value && !isBoolean(value)) {
         acc.push(key);
       }
       return acc;
@@ -30,7 +28,7 @@ function getKeysMissingValues(keyValuePairs: Record<string, unknown>): string[] 
  * Necessary because code transformations can make class getters non-enumerable during bundling.
  * This ensures that even if getters are non-enumerable, their values are still captured and used.
  */
-function capturePropertyValues(instance: unknown): Record<string, unknown> {
+function capturePropertyValues(instance: object): Record<string, unknown> {
   const obj: Record<string, unknown> = {};
   const descriptors = Object.getOwnPropertyDescriptors(instance.constructor.prototype);
 
@@ -41,7 +39,7 @@ function capturePropertyValues(instance: unknown): Record<string, unknown> {
 
   // Capture getter properties from the instance's prototype
   for (const [key, descriptor] of Object.entries(descriptors)) {
-    if (typeof descriptor.get === 'function') {
+    if (isFunction(descriptor.get)) {
       obj[key] = descriptor.get.call(instance);
     }
   }

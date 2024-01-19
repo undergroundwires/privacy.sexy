@@ -1,3 +1,4 @@
+import { isString } from '@/TypeHelpers';
 import { INodeDataErrorContext, NodeDataError } from './NodeDataError';
 import { NodeData } from './NodeData';
 
@@ -13,7 +14,7 @@ export class NodeValidator {
         'missing name',
       )
       .assert(
-        () => typeof nameValue === 'string',
+        () => isString(nameValue),
         `Name (${JSON.stringify(nameValue)}) is not a string but ${typeof nameValue}.`,
       );
   }
@@ -32,7 +33,7 @@ export class NodeValidator {
     return this;
   }
 
-  public throw(errorMessage: string) {
+  public throw(errorMessage: string): never {
     throw new NodeDataError(errorMessage, this.context);
   }
 }

@@ -1,12 +1,14 @@
-import { ILocationOps } from '@/infrastructure/SystemOperations/ISystemOperations';
+import { LocationOps } from '@/infrastructure/CodeRunner/System/SystemOperations';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class LocationOpsStub
-  extends StubWithObservableMethodCalls<ILocationOps>
-  implements ILocationOps {
+  extends StubWithObservableMethodCalls<LocationOps>
+  implements LocationOps {
   private sequence = new Array<string>();
 
   private scenarios = new Map<string, string>();
+
+  private defaultSeparator = `/[${LocationOpsStub.name}]PATH-SEGMENT-SEPARATOR/`;
 
   public withJoinResult(returnValue: string, ...paths: string[]): this {
     this.scenarios.set(LocationOpsStub.getScenarioKey(paths), returnValue);
@@ -19,19 +21,26 @@ export class LocationOpsStub
     return this;
   }
 
+  public withDefaultSeparator(defaultSeparator: string): this {
+    this.defaultSeparator = defaultSeparator;
+    return this;
+  }
+
   public combinePaths(...pathSegments: string[]): string {
     this.registerMethodCall({
       methodName: 'combinePaths',
       args: pathSegments,
     });
-    if (this.sequence.length > 0) {
-      return this.sequence.pop();
+    const nextInSequence = this.sequence.pop();
+    if (nextInSequence) {
+      return nextInSequence;
     }
     const key = LocationOpsStub.getScenarioKey(pathSegments);
-    if (!this.scenarios.has(key)) {
-      return pathSegments.join('/PATH-SEGMENT-SEPARATOR/');
+    const foundScenario = this.scenarios.get(key);
+    if (foundScenario) {
+      return foundScenario;
     }
-    return this.scenarios.get(key);
+    return pathSegments.join(this.defaultSeparator);
   }
 
   private static getScenarioKey(paths: string[]): string {

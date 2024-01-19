@@ -1,45 +1,51 @@
 <template>
   <span
     class="container"
-    v-bind:class="{
+    :class="{
       'container-unsupported': !hasCurrentOsDesktopVersion,
       'container-supported': hasCurrentOsDesktopVersion,
-    }">
+    }"
+  >
     <span class="description">
-      <font-awesome-icon class="description__icon" :icon="['fas', 'desktop']" />
+      <AppIcon class="description__icon" icon="desktop" />
       <span class="description__text">For desktop:</span>
     </span>
     <span class="urls">
-      <span class="urls__url" v-for="os of supportedDesktops" v-bind:key="os">
-        <DownloadUrlListItem :operatingSystem="os" />
+      <span
+        v-for="os of supportedDesktops"
+        :key="os"
+        class="urls__url"
+      >
+        <DownloadUrlListItem :operating-system="os" />
       </span>
     </span>
   </span>
 </template>
 
 <script lang="ts">
-import { defineComponent, inject } from 'vue';
-import { OperatingSystem } from '@/domain/OperatingSystem';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { defineComponent } from 'vue';
+import { injectKey } from '@/presentation/injectionSymbols';
+import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import DownloadUrlListItem from './DownloadUrlListItem.vue';
-
-const supportedOperativeSystems: readonly OperatingSystem[] = [
-  OperatingSystem.Windows,
-  OperatingSystem.Linux,
-  OperatingSystem.macOS,
-];
 
 export default defineComponent({
   components: {
     DownloadUrlListItem,
+    AppIcon,
   },
   setup() {
-    const { os: currentOs } = inject(InjectionKeys.useRuntimeEnvironment);
+    const { os: currentOs } = injectKey((keys) => keys.useRuntimeEnvironment);
+    const { application } = injectKey((keys) => keys.useApplication);
+
+    const supportedOperativeSystems = application.getSupportedOsList();
+
     const supportedDesktops = [
-      ...supportedOperativeSystems,
+      ...application.getSupportedOsList(),
     ].sort((os) => (os === currentOs ? 0 : 1));
 
-    const hasCurrentOsDesktopVersion = supportedOperativeSystems.includes(currentOs);
+    const hasCurrentOsDesktopVersion = currentOs === undefined
+      ? false
+      : supportedOperativeSystems.includes(currentOs);
 
     return {
       supportedDesktops,

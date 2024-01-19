@@ -1,7 +1,10 @@
 /*
     Colors used throughout the application
-    Inspired by material color system: https://material.io/design/color/the-color-system.html, https://material.io/develop/web/theming/color
-    Colors are named using Vue Design System: https://github.com/viljamis/vue-design-system/wiki/Naming-of-Things#naming-colors
+    Inspired by the material color system (https://material.io/design/color/the-color-system.html, https://material.io/develop/web/theming/color).
+    Colors are named according to the Vue Design System guidelines (https://github.com/viljamis/vue-design-system/wiki/Naming-of-Things#naming-colors):
+        - Default: The default base color is `color-{name}`.
+        - Darker than default: Shades are named as `color-{name}-dark`, `color-{name}-darker`, or `color-{name}-darkest`.
+        - Lighter than default: Tints are named as `color-{name}-light`, `color-{name}-lighter`, or `color-{name}-lightest`.
 */
 
 // --- Primary | The color displayed most frequently across screens and components
@@ -26,3 +29,12 @@ $color-on-surface           : #4d5156;
 
 // Background | Appears behind scrollable content.
 $color-background           : #e6ecf4;
+
+/*
+    Application-specific colors:
+    These are tailored to the specific needs of the application and derived from the above theme colors.
+    Use these colors to ensure consistent styling across components. When adding new colors, reference existing theme colors.
+    This approach maintains a cohesive look and feel and simplifies theme adjustments.
+*/
+$color-scripts-bg: $color-primary-darker;
+$color-highlight: $color-primary;

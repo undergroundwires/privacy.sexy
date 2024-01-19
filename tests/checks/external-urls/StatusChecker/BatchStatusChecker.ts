@@ -9,9 +9,9 @@ export async function getUrlStatusesInParallel(
 ): Promise<IUrlStatus[]> {
   // urls = [ 'https://privacy.sexy' ]; // Here to comment out when testing
   const uniqueUrls = Array.from(new Set(urls));
-  options = { ...DefaultOptions, ...options };
-  console.log('Options: ', options);
-  const results = await request(uniqueUrls, options);
+  const defaultedOptions = { ...DefaultOptions, ...options };
+  console.log('Options: ', defaultedOptions);
+  const results = await request(uniqueUrls, defaultedOptions);
   return results;
 }
 
@@ -25,7 +25,7 @@ interface IDomainOptions {
   sameDomainDelayInMs?: number;
 }
 
-const DefaultOptions: IBatchRequestOptions = {
+const DefaultOptions: Required<IBatchRequestOptions> = {
   domainOptions: {
     sameDomainParallelize: false,
     sameDomainDelayInMs: 3 /* sec */ * 1000,
@@ -39,7 +39,7 @@ const DefaultOptions: IBatchRequestOptions = {
 
 function request(
   urls: string[],
-  options: IBatchRequestOptions,
+  options: Required<IBatchRequestOptions>,
 ): Promise<IUrlStatus[]> {
   if (!options.domainOptions.sameDomainParallelize) {
     return runOnEachDomainWithDelay(
@@ -54,7 +54,7 @@ function request(
 async function runOnEachDomainWithDelay(
   urls: string[],
   action: (url: string) => Promise<IUrlStatus>,
-  delayInMs: number,
+  delayInMs: number | undefined,
 ): Promise<IUrlStatus[]> {
   const grouped = groupUrlsByDomain(urls);
   const tasks = grouped.map(async (group) => {
@@ -64,7 +64,9 @@ async function runOnEachDomainWithDelay(
       const status = await action(url);
       results.push(status);
       if (results.length !== group.length) {
-        await sleep(delayInMs);
+        if (delayInMs !== undefined) {
+          await sleep(delayInMs);
+        }
       }
     }
     /* eslint-enable no-await-in-loop */

@@ -1,36 +1,57 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { ILogger } from '@/infrastructure/Log/ILogger';
-import { ISystemOperations } from '@/infrastructure/SystemOperations/ISystemOperations';
+import { Logger } from '@/application/Common/Log/Logger';
 import { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
-import { SystemOperationsStub } from './SystemOperationsStub';
+import { CodeRunner } from '@/application/CodeRunner/CodeRunner';
+import { Dialog } from '@/presentation/common/Dialog';
+import { ScriptDiagnosticsCollector } from '@/application/ScriptDiagnostics/ScriptDiagnosticsCollector';
 import { LoggerStub } from './LoggerStub';
+import { CodeRunnerStub } from './CodeRunnerStub';
+import { DialogStub } from './DialogStub';
+import { ScriptDiagnosticsCollectorStub } from './ScriptDiagnosticsCollectorStub';
 
 export class WindowVariablesStub implements WindowVariables {
-  public system: ISystemOperations = new SystemOperationsStub();
+  public codeRunner?: CodeRunner = new CodeRunnerStub();
 
-  public isDesktop = false;
+  public isRunningAsDesktopApplication: true | undefined = true;
 
-  public os: OperatingSystem = OperatingSystem.BlackBerryOS;
+  public os?: OperatingSystem = OperatingSystem.BlackBerryOS;
 
-  public log: ILogger = new LoggerStub();
+  public log?: Logger = new LoggerStub();
 
-  public withLog(log: ILogger): this {
+  public dialog?: Dialog = new DialogStub();
+
+  public scriptDiagnosticsCollector?
+  : ScriptDiagnosticsCollector = new ScriptDiagnosticsCollectorStub();
+
+  public withScriptDiagnosticsCollector(
+    scriptDiagnosticsCollector: ScriptDiagnosticsCollector,
+  ): this {
+    this.scriptDiagnosticsCollector = scriptDiagnosticsCollector;
+    return this;
+  }
+
+  public withLog(log: Logger): this {
     this.log = log;
     return this;
   }
 
-  public withIsDesktop(value: boolean): this {
-    this.isDesktop = value;
+  public withDialog(dialog: Dialog): this {
+    this.dialog = dialog;
     return this;
   }
 
-  public withOs(value: OperatingSystem): this {
+  public withIsRunningAsDesktopApplication(isRunningAsDesktopApplication: true | undefined): this {
+    this.isRunningAsDesktopApplication = isRunningAsDesktopApplication;
+    return this;
+  }
+
+  public withOs(value: OperatingSystem | undefined): this {
     this.os = value;
     return this;
   }
 
-  public withSystem(value: ISystemOperations): this {
-    this.system = value;
+  public withCodeRunner(value?: CodeRunner): this {
+    this.codeRunner = value;
     return this;
   }
 }

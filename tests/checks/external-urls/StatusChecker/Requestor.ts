@@ -1,48 +1,49 @@
 import { retryWithExponentialBackOff } from './ExponentialBackOffRetryHandler';
 import { IUrlStatus } from './IUrlStatus';
-import { fetchFollow, IFollowOptions } from './FetchFollow';
+import { fetchFollow, IFollowOptions, DefaultFollowOptions } from './FetchFollow';
 import { getRandomUserAgent } from './UserAgents';
 
 export function getUrlStatus(
   url: string,
   options: IRequestOptions = DefaultOptions,
 ): Promise<IUrlStatus> {
-  options = { ...DefaultOptions, ...options };
-  const fetchOptions = getFetchOptions(url, options);
+  const defaultedOptions = { ...DefaultOptions, ...options };
+  const fetchOptions = getFetchOptions(url, defaultedOptions);
   return retryWithExponentialBackOff(async () => {
     console.log('Requesting', url);
     let result: IUrlStatus;
     try {
       const response = await fetchFollow(
         url,
-        options.requestTimeoutInMs,
+        defaultedOptions.requestTimeoutInMs,
         fetchOptions,
-        options.followOptions,
+        defaultedOptions.followOptions,
       );
       result = { url, code: response.status };
     } catch (err) {
       result = { url, error: JSON.stringify(err, null, '\t') };
     }
     return result;
-  }, options.retryExponentialBaseInMs);
+  }, defaultedOptions.retryExponentialBaseInMs);
 }
 
 export interface IRequestOptions {
-  retryExponentialBaseInMs?: number;
-  additionalHeaders?: Record<string, string>;
-  additionalHeadersUrlIgnore?: string[];
-  followOptions?: IFollowOptions;
-  requestTimeoutInMs: number;
+  readonly retryExponentialBaseInMs?: number;
+  readonly additionalHeaders?: Record<string, string>;
+  readonly additionalHeadersUrlIgnore?: string[];
+  readonly followOptions?: IFollowOptions;
+  readonly requestTimeoutInMs: number;
 }
 
-const DefaultOptions: IRequestOptions = {
+const DefaultOptions: Required<IRequestOptions> = {
   retryExponentialBaseInMs: 5000,
   additionalHeaders: {},
   additionalHeadersUrlIgnore: [],
   requestTimeoutInMs: 60 /* seconds */ * 1000,
+  followOptions: DefaultFollowOptions,
 };
 
-function getFetchOptions(url: string, options: IRequestOptions): RequestInit {
+function getFetchOptions(url: string, options: Required<IRequestOptions>): RequestInit {
   const additionalHeaders = options.additionalHeadersUrlIgnore
     .some((ignorePattern) => url.startsWith(ignorePattern))
     ? {}

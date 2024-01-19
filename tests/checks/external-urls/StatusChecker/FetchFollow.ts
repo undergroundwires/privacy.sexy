@@ -4,19 +4,22 @@ export function fetchFollow(
   url: string,
   timeoutInMs: number,
   fetchOptions: RequestInit,
-  followOptions: IFollowOptions,
+  followOptions: IFollowOptions | undefined,
 ): Promise<Response> {
-  followOptions = { ...DefaultOptions, ...followOptions };
-  if (followRedirects(followOptions)) {
+  const defaultedFollowOptions = {
+    ...DefaultFollowOptions,
+    ...followOptions,
+  };
+  if (followRedirects(defaultedFollowOptions)) {
     return fetchWithTimeout(url, timeoutInMs, fetchOptions);
   }
   fetchOptions = { ...fetchOptions, redirect: 'manual' /* handled manually */ };
-  const cookies = new CookieStorage(followOptions.enableCookies);
+  const cookies = new CookieStorage(defaultedFollowOptions.enableCookies);
   return followRecursivelyWithCookies(
     url,
     timeoutInMs,
     fetchOptions,
-    followOptions.maximumRedirectFollowDepth,
+    defaultedFollowOptions.maximumRedirectFollowDepth,
     cookies,
   );
 }
@@ -27,7 +30,7 @@ export interface IFollowOptions {
   enableCookies?: boolean;
 }
 
-const DefaultOptions: IFollowOptions = {
+export const DefaultFollowOptions: Required<IFollowOptions> = {
   followRedirects: true,
   maximumRedirectFollowDepth: 20,
   enableCookies: true,
@@ -53,9 +56,14 @@ async function followRecursivelyWithCookies(
   if (newFollowDepth < 0) {
     throw new Error(`[max-redirect] maximum redirect reached at: ${url}`);
   }
-  const cookieHeader = response.headers.get('set-cookie');
-  cookies.addHeader(cookieHeader);
   const nextUrl = response.headers.get('location');
+  if (!nextUrl) {
+    return response;
+  }
+  const cookieHeader = response.headers.get('set-cookie');
+  if (cookieHeader) {
+    cookies.addHeader(cookieHeader);
+  }
   return followRecursivelyWithCookies(nextUrl, timeoutInMs, options, newFollowDepth, cookies);
 }
 

@@ -4,24 +4,10 @@ import { IReadOnlyFunctionCallArgumentCollection } from '@/application/Parser/Sc
 import { IPipelineCompiler } from '@/application/Parser/Script/Compiler/Expressions/Pipes/IPipelineCompiler';
 import { FunctionCallArgumentCollectionStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentCollectionStub';
 import { PipelineCompilerStub } from '@tests/unit/shared/Stubs/PipelineCompilerStub';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('ExpressionEvaluationContext', () => {
   describe('ctor', () => {
     describe('args', () => {
-      describe('throws if args is missing', () => {
-        itEachAbsentObjectValue((absentValue) => {
-          // arrange
-          const expectedError = 'missing args, send empty collection instead.';
-          const args = absentValue;
-          // act
-          const act = () => new ExpressionEvaluationContextBuilder()
-            .withArgs(args)
-            .build();
-          // assert
-          expect(act).throw(expectedError);
-        });
-      });
       it('sets as expected', () => {
         // arrange
         const expected = new FunctionCallArgumentCollectionStub()

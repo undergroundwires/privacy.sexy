@@ -3,40 +3,21 @@ import { CodeSubstituter } from '@/application/Parser/ScriptingDefinition/CodeSu
 import { IExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/IExpressionsCompiler';
 import { ProjectInformationStub } from '@tests/unit/shared/Stubs/ProjectInformationStub';
 import { ExpressionsCompilerStub } from '@tests/unit/shared/Stubs/ExpressionsCompilerStub';
-import { getAbsentObjectTestCases, getAbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
+import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('CodeSubstituter', () => {
-  describe('throws with invalid parameters', () => {
-    // arrange
-    const testCases = [
-      ...getAbsentStringTestCases().map((testCase) => ({
-        name: `given code: ${testCase.valueName}`,
-        expectedError: 'missing code',
-        parameters: {
-          code: testCase.absentValue,
-          info: new ProjectInformationStub(),
-        },
-      })),
-      ...getAbsentObjectTestCases().map((testCase) => ({
-        name: `given info: ${testCase.valueName}`,
-        expectedError: 'missing info',
-        parameters: {
-          code: 'non empty code',
-          info: testCase.absentValue,
-        },
-      })),
-    ];
-    for (const testCase of testCases) {
-      it(`${testCase.name} throws "${testCase.expectedError}"`, () => {
-        // arrange
-        const sut = new CodeSubstituterBuilder().build();
-        const { code, info } = testCase.parameters;
-        // act
-        const act = () => sut.substitute(code, info);
-        // assert
-        expect(act).to.throw(testCase.expectedError);
-      });
-    }
+  describe('throws if code is empty', () => {
+    itEachAbsentStringValue((emptyCode) => {
+      // arrange
+      const expectedError = 'missing code';
+      const code = emptyCode;
+      const info = new ProjectInformationStub();
+      const sut = new CodeSubstituterBuilder().build();
+      // act
+      const act = () => sut.substitute(code, info);
+      // assert
+      expect(act).to.throw(expectedError);
+    }, { excludeNull: true, excludeUndefined: true });
   });
   describe('substitutes parameters as expected values', () => {
     // arrange
@@ -67,7 +48,7 @@ describe('CodeSubstituter', () => {
         sut.substitute('non empty code', info);
         // assert
         expect(compilerStub.callHistory).to.have.lengthOf(1);
-        const { parameters } = compilerStub.callHistory[0];
+        const parameters = compilerStub.callHistory[0].args[1];
         expect(parameters.hasArgument(testCase.parameter));
         const { argumentValue } = parameters.getArgument(testCase.parameter);
         expect(argumentValue).to.equal(testCase.argument);
@@ -85,7 +66,7 @@ describe('CodeSubstituter', () => {
     sut.substitute(expected, new ProjectInformationStub());
     // assert
     expect(compilerStub.callHistory).to.have.lengthOf(1);
-    expect(compilerStub.callHistory[0].code).to.equal(expected);
+    expect(compilerStub.callHistory[0].args[0]).to.equal(expected);
   });
 });
 

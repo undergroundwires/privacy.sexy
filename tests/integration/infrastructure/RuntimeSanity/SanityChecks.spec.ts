@@ -1,6 +1,7 @@
 import { describe } from 'vitest';
 import { ISanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/ISanityCheckOptions';
 import { validateRuntimeSanity } from '@/infrastructure/RuntimeSanity/SanityChecks';
+import { isBoolean } from '@/TypeHelpers';
 
 describe('SanityChecks', () => {
   describe('validateRuntimeSanity', () => {
@@ -28,7 +29,11 @@ function generateTestOptions(): ISanityCheckOptions[] {
   return generateBooleanPermutations(defaultOptions);
 }
 
-function generateBooleanPermutations<T>(object: T): T[] {
+function generateBooleanPermutations<T>(object: T | undefined): T[] {
+  if (!object) {
+    return [];
+  }
+
   const keys = Object.keys(object) as (keyof T)[];
 
   if (keys.length === 0) {
@@ -38,7 +43,7 @@ function generateBooleanPermutations<T>(object: T): T[] {
   const currentKey = keys[0];
   const currentValue = object[currentKey];
 
-  if (typeof currentValue !== 'boolean') {
+  if (!isBoolean(currentValue)) {
     return generateBooleanPermutations({
       ...object,
       [currentKey]: currentValue,
@@ -47,7 +52,7 @@ function generateBooleanPermutations<T>(object: T): T[] {
 
   const remainingKeys = Object.fromEntries(
     keys.slice(1).map((key) => [key, object[key]]),
-  ) as unknown as T;
+  ) as unknown as T | undefined;
 
   const subPermutations = generateBooleanPermutations(remainingKeys);
 

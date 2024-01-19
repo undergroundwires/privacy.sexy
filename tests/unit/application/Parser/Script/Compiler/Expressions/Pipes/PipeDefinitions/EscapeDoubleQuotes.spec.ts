@@ -8,6 +8,12 @@ describe('EscapeDoubleQuotes', () => {
   const sut = new EscapeDoubleQuotes();
   // act
   runPipeTests(sut, [
+    ...getAbsentStringTestCases({ excludeNull: true, excludeUndefined: true })
+      .map((testCase) => ({
+        name: 'returns as it is when if input is missing',
+        input: testCase.absentValue,
+        expectedOutput: testCase.absentValue,
+      })),
     {
       name: 'using "',
       input: 'hello "world"',
@@ -23,10 +29,5 @@ describe('EscapeDoubleQuotes', () => {
       input: '""hello world""',
       expectedOutput: '"^"""^""hello world"^"""^""',
     },
-    ...getAbsentStringTestCases().map((testCase) => ({
-      name: 'returns as it is when if input is missing',
-      input: testCase.absentValue,
-      expectedOutput: testCase.absentValue,
-    })),
   ]);
 });

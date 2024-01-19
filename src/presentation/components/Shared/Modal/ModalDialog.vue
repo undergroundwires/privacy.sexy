@@ -6,43 +6,42 @@
       <div class="dialog__content">
         <slot />
       </div>
-      <div
+      <FlatButton
+        icon="xmark"
         class="dialog__close-button"
         @click="hide"
-      >
-        <font-awesome-icon
-          :icon="['fas', 'times']"
-        />
-      </div>
+      />
     </div>
   </ModalContainer>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
+import FlatButton from '@/presentation/components/Shared/FlatButton.vue';
 import ModalContainer from './ModalContainer.vue';
 
 export default defineComponent({
   components: {
     ModalContainer,
-  },
-  emits: {
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-    input: (isOpen: boolean) => true,
-    /* eslint-enable @typescript-eslint/no-unused-vars */
+    FlatButton,
   },
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
       required: true,
     },
   },
+  emits: {
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+    'update:modelValue': (isOpen: boolean) => true,
+    /* eslint-enable @typescript-eslint/no-unused-vars */
+  },
   setup(props, { emit }) {
     const showDialog = computed({
-      get: () => props.value,
+      get: () => props.modelValue,
       set: (value) => {
-        if (value !== props.value) {
-          emit('input', value);
+        if (value !== props.modelValue) {
+          emit('update:modelValue', value);
         }
       },
     });
@@ -72,16 +71,12 @@ export default defineComponent({
     margin: 5%;
   }
 
-  &__close-button {
+  .dialog__close-button {
     color: $color-primary-dark;
     width: auto;
     font-size: 1.5em;
     margin-right: 0.25em;
     align-self: flex-start;
-    @include clickable;
-    @include hover-or-touch {
-      color: $color-primary;
-    }
   }
 }
 </style>

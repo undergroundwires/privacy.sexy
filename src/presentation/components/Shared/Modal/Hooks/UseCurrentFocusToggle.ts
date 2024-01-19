@@ -4,7 +4,7 @@ import { Ref, watchEffect } from 'vue';
  * Manages focus transitions, ensuring good usability and accessibility.
  */
 export function useCurrentFocusToggle(shouldDisableFocus: Ref<boolean>) {
-  let previouslyFocusedElement: HTMLElement | undefined;
+  let previouslyFocusedElement: HTMLElement | null;
 
   watchEffect(() => {
     if (shouldDisableFocus.value) {
@@ -17,7 +17,7 @@ export function useCurrentFocusToggle(shouldDisableFocus: Ref<boolean>) {
         return;
       }
       previouslyFocusedElement.focus();
-      previouslyFocusedElement = undefined;
+      previouslyFocusedElement = null;
     }
   });
 }

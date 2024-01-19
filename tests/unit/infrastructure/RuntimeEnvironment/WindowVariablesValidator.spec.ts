@@ -2,225 +2,238 @@ import { describe, it, expect } from 'vitest';
 import { validateWindowVariables } from '@/infrastructure/WindowVariables/WindowVariablesValidator';
 import { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { SystemOperationsStub } from '@tests/unit/shared/Stubs/SystemOperationsStub';
 import { getAbsentObjectTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 import { WindowVariablesStub } from '@tests/unit/shared/Stubs/WindowVariablesStub';
+import { CodeRunnerStub } from '@tests/unit/shared/Stubs/CodeRunnerStub';
+import { PropertyKeys } from '@/TypeHelpers';
+import { LoggerStub } from '@tests/unit/shared/Stubs/LoggerStub';
+import { DialogStub } from '@tests/unit/shared/Stubs/DialogStub';
+import { ScriptDiagnosticsCollectorStub } from '@tests/unit/shared/Stubs/ScriptDiagnosticsCollectorStub';
+import { ElectronEnvironmentDetector } from '@/infrastructure/RuntimeEnvironment/Electron/ElectronEnvironmentDetector';
+import { ElectronEnvironmentDetectorStub } from '@tests/unit/shared/Stubs/ElectronEnvironmentDetectorStub';
 
 describe('WindowVariablesValidator', () => {
   describe('validateWindowVariables', () => {
-    describe('validates window type', () => {
-      itEachInvalidObjectValue((invalidObjectValue) => {
-        // arrange
-        const expectedError = 'window is not an object';
-        const window: Partial<WindowVariables> = invalidObjectValue;
-        // act
-        const act = () => validateWindowVariables(window);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
-
-    describe('property validations', () => {
-      it('throws an error with a description of all invalid properties', () => {
-        // arrange
-        const invalidOs = 'invalid' as unknown as OperatingSystem;
-        const invalidIsDesktop = 'not a boolean' as unknown as boolean;
-        const expectedError = getExpectedError(
-          {
-            name: 'os',
-            object: invalidOs,
-          },
-          {
-            name: 'isDesktop',
-            object: invalidIsDesktop,
-          },
-        );
-        const input = new WindowVariablesStub()
-          .withOs(invalidOs)
-          .withIsDesktop(invalidIsDesktop);
-        // act
-        const act = () => validateWindowVariables(input);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-
-      describe('`os` property', () => {
-        it('throws an error when os is not a number', () => {
-          // arrange
-          const invalidOs = 'Linux' as unknown as OperatingSystem;
-          const expectedError = getExpectedError(
-            {
-              name: 'os',
-              object: invalidOs,
-            },
-          );
-          const input = new WindowVariablesStub()
-            .withOs(invalidOs);
-          // act
-          const act = () => validateWindowVariables(input);
-          // assert
-          expect(act).to.throw(expectedError);
-        });
-
-        it('throws an error for an invalid numeric os value', () => {
-          // arrange
-          const invalidOs = Number.MAX_SAFE_INTEGER;
-          const expectedError = getExpectedError(
-            {
-              name: 'os',
-              object: invalidOs,
-            },
-          );
-          const input = new WindowVariablesStub()
-            .withOs(invalidOs);
-          // act
-          const act = () => validateWindowVariables(input);
-          // assert
-          expect(act).to.throw(expectedError);
-        });
-
-        it('does not throw for a missing os value', () => {
-          // arrange
-          const input = new WindowVariablesStub()
-            .withIsDesktop(true)
-            .withOs(undefined);
-          // act
-          const act = () => validateWindowVariables(input);
-          // assert
-          expect(act).to.not.throw();
-        });
-      });
-
-      describe('`isDesktop` property', () => {
-        it('throws an error when only isDesktop is provided and it is true without a system object', () => {
-          // arrange
-          const systemObject = undefined;
-          const expectedError = getExpectedError(
-            {
-              name: 'system',
-              object: systemObject,
-            },
-          );
-          const input = new WindowVariablesStub()
-            .withIsDesktop(true)
-            .withSystem(systemObject);
-          // act
-          const act = () => validateWindowVariables(input);
-          // assert
-          expect(act).to.throw(expectedError);
-        });
-
-        it('does not throw when isDesktop is true with a valid system object', () => {
-          // arrange
-          const validSystem = new SystemOperationsStub();
-          const input = new WindowVariablesStub()
-            .withIsDesktop(true)
-            .withSystem(validSystem);
-          // act
-          const act = () => validateWindowVariables(input);
-          // assert
-          expect(act).to.not.throw();
-        });
-
-        it('does not throw when isDesktop is false without a system object', () => {
-          // arrange
-          const absentSystem = undefined;
-          const input = new WindowVariablesStub()
-            .withIsDesktop(false)
-            .withSystem(absentSystem);
-          // act
-          const act = () => validateWindowVariables(input);
-          // assert
-          expect(act).to.not.throw();
-        });
-      });
-
-      describe('`system` property', () => {
-        expectObjectOnDesktop('system');
-      });
-
-      describe('`log` property', () => {
-        expectObjectOnDesktop('log');
-      });
-    });
-
-    it('does not throw for a valid object', () => {
-      const input = new WindowVariablesStub();
+    it('throws an error with a description of all invalid properties', () => {
+      // arrange
+      const invalidOs = 'invalid' as unknown as OperatingSystem;
+      const invalidIsRunningAsDesktopApplication = 'not a boolean' as never;
+      const expectedError = getExpectedError(
+        {
+          name: 'os',
+          value: invalidOs,
+        },
+        {
+          name: 'isRunningAsDesktopApplication',
+          value: invalidIsRunningAsDesktopApplication,
+        },
+      );
+      const input = new WindowVariablesStub()
+        .withOs(invalidOs)
+        .withIsRunningAsDesktopApplication(invalidIsRunningAsDesktopApplication);
+      const context = new ValidateWindowVariablesTestSetup()
+        .withWindowVariables(input);
       // act
-      const act = () => validateWindowVariables(input);
+      const act = () => context.validateWindowVariables();
       // assert
-      expect(act).to.not.throw();
+      expect(act).to.throw(expectedError);
+    });
+    describe('when not in Electron renderer process', () => {
+      const testScenarios: ReadonlyArray<{
+        readonly description: string;
+        readonly environment: ElectronEnvironmentDetector;
+      }> = [
+        {
+          description: 'skips in non-Electron environments',
+          environment: new ElectronEnvironmentDetectorStub()
+            .withNonElectronEnvironment(),
+        },
+        {
+          description: 'skips in Electron main process',
+          environment: new ElectronEnvironmentDetectorStub()
+            .withElectronEnvironment('main'),
+        },
+        {
+          description: 'skips in Electron preloader process',
+          environment: new ElectronEnvironmentDetectorStub()
+            .withElectronEnvironment('preloader'),
+        },
+      ];
+      testScenarios.forEach(({ description, environment }) => {
+        it(description, () => {
+          // arrange
+          const invalidOs = 'invalid' as unknown as OperatingSystem;
+          const input = new WindowVariablesStub()
+            .withOs(invalidOs);
+          const context = new ValidateWindowVariablesTestSetup()
+            .withElectronDetector(environment)
+            .withWindowVariables(input);
+          // act
+          const act = () => context.validateWindowVariables();
+          // assert
+          expect(act).to.not.throw();
+        });
+      });
+    });
+
+    describe('does not throw when a property is valid', () => {
+      const testScenarios: Record<PropertyKeys<Required<WindowVariables>>, ReadonlyArray<{
+        readonly description: string;
+        readonly validValue: unknown;
+      }>> = {
+        isRunningAsDesktopApplication: [{
+          description: 'accepts boolean true',
+          validValue: true,
+        }],
+        os: [
+          {
+            description: 'accepts undefined',
+            validValue: undefined,
+          },
+          {
+            description: 'accepts valid enum value',
+            validValue: OperatingSystem.WindowsPhone,
+          },
+        ],
+        codeRunner: [{
+          description: 'accepts an object',
+          validValue: new CodeRunnerStub(),
+        }],
+        log: [{
+          description: 'accepts an object',
+          validValue: new LoggerStub(),
+        }],
+        dialog: [{
+          description: 'accepts an object',
+          validValue: new DialogStub(),
+        }],
+        scriptDiagnosticsCollector: [{
+          description: 'accepts an object',
+          validValue: new ScriptDiagnosticsCollectorStub(),
+        }],
+      };
+      Object.entries(testScenarios).forEach(([propertyKey, validValueScenarios]) => {
+        describe(propertyKey, () => {
+          validValueScenarios.forEach(({ description, validValue }) => {
+            it(description, () => {
+              // arrange
+              const input = new WindowVariablesStub();
+              input[propertyKey] = validValue;
+              const context = new ValidateWindowVariablesTestSetup()
+                .withWindowVariables(input);
+              // act
+              const act = () => context.validateWindowVariables();
+              // assert
+              expect(act).to.not.throw();
+            });
+          });
+        });
+      });
+    });
+
+    describe('throws an error when a property is invalid', () => {
+      interface InvalidValueTestCase {
+        readonly description: string;
+        readonly invalidValue: unknown;
+      }
+      const testScenarios: Record<
+      PropertyKeys<Required<WindowVariables>>,
+      ReadonlyArray<InvalidValueTestCase>> = {
+        isRunningAsDesktopApplication: [
+          {
+            description: 'rejects false',
+            invalidValue: false,
+          },
+          {
+            description: 'rejects undefined',
+            invalidValue: undefined,
+          },
+        ],
+        os: [
+          {
+            description: 'rejects non-numeric',
+            invalidValue: 'Linux',
+          },
+          {
+            description: 'rejects out-of-range',
+            invalidValue: Number.MAX_SAFE_INTEGER,
+          },
+        ],
+        codeRunner: getInvalidObjectValueTestCases(),
+        log: getInvalidObjectValueTestCases(),
+        dialog: getInvalidObjectValueTestCases(),
+        scriptDiagnosticsCollector: getInvalidObjectValueTestCases(),
+      };
+      Object.entries(testScenarios).forEach(([propertyKey, validValueScenarios]) => {
+        describe(propertyKey, () => {
+          validValueScenarios.forEach(({ description, invalidValue }) => {
+            it(description, () => {
+              // arrange
+              const expectedErrorMessage = getExpectedError({
+                name: propertyKey as keyof WindowVariables,
+                value: invalidValue,
+              });
+              const input = new WindowVariablesStub();
+              input[propertyKey] = invalidValue;
+              const context = new ValidateWindowVariablesTestSetup()
+                .withWindowVariables(input);
+              // act
+              const act = () => context.validateWindowVariables();
+              // assert
+              expect(act).to.throw(expectedErrorMessage);
+            });
+          });
+        });
+      });
+      function getInvalidObjectValueTestCases(): InvalidValueTestCase[] {
+        return [
+          {
+            description: 'rejects string',
+            invalidValue: 'invalid object',
+          },
+          {
+            description: 'rejects array of objects',
+            invalidValue: [{}, {}],
+          },
+          ...getAbsentObjectTestCases().map((testCase) => ({
+            description: `rejects absent: ${testCase.valueName}`,
+            invalidValue: testCase.absentValue,
+          })),
+        ];
+      }
     });
   });
 });
 
-function expectObjectOnDesktop<T>(key: keyof WindowVariables) {
-  describe('validates object type on desktop', () => {
-    itEachInvalidObjectValue((invalidObjectValue) => {
-      // arrange
-      const invalidObject = invalidObjectValue as T;
-      const expectedError = getExpectedError({
-        name: key,
-        object: invalidObject,
-      });
-      const input: WindowVariables = {
-        ...new WindowVariablesStub(),
-        isDesktop: true,
-        [key]: invalidObject,
-      };
-      // act
-      const act = () => validateWindowVariables(input);
-      // assert
-      expect(act).to.throw(expectedError);
-    });
-  });
-  describe('does not object type when not on desktop', () => {
-    itEachInvalidObjectValue((invalidObjectValue) => {
-      // arrange
-      const invalidObject = invalidObjectValue as T;
-      const input: WindowVariables = {
-        ...new WindowVariablesStub(),
-        isDesktop: undefined,
-        [key]: invalidObject,
-      };
-      // act
-      const act = () => validateWindowVariables(input);
-      // assert
-      expect(act).to.not.throw();
-    });
-  });
-}
+class ValidateWindowVariablesTestSetup {
+  private electronDetector: ElectronEnvironmentDetector = new ElectronEnvironmentDetectorStub()
+    .withElectronEnvironment('renderer');
 
-function itEachInvalidObjectValue<T>(runner: (invalidObjectValue: T) => void) {
-  const testCases: Array<{
-    readonly name: string;
-    readonly value: T;
-  }> = [
-    {
-      name: 'given string',
-      value: 'invalid object' as unknown as T,
-    },
-    {
-      name: 'given array of objects',
-      value: [{}, {}] as unknown as T,
-    },
-    ...getAbsentObjectTestCases().map((testCase) => ({
-      name: `given absent: ${testCase.valueName}`,
-      value: testCase.absentValue as unknown as T,
-    })),
-  ];
-  testCases.forEach((testCase) => {
-    it(testCase.name, () => {
-      runner(testCase.value);
-    });
-  });
+  private windowVariables: WindowVariables = new WindowVariablesStub();
+
+  public withWindowVariables(windowVariables: WindowVariables): this {
+    this.windowVariables = windowVariables;
+    return this;
+  }
+
+  public withElectronDetector(electronDetector: ElectronEnvironmentDetector): this {
+    this.electronDetector = electronDetector;
+    return this;
+  }
+
+  public validateWindowVariables() {
+    return validateWindowVariables(
+      this.windowVariables,
+      this.electronDetector,
+    );
+  }
 }
 
 function getExpectedError(...unexpectedObjects: Array<{
   readonly name: keyof WindowVariables;
-  readonly object: unknown;
+  readonly value: unknown;
 }>) {
   const errors = unexpectedObjects
-    .map(({ name, object }) => `Unexpected ${name} (${typeof object})`);
+    .map(({ name, value: object }) => `Unexpected ${name} (${typeof object})`);
   return errors.join('\n');
 }

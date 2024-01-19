@@ -1,12 +1,12 @@
 import { validateRuntimeSanity } from '@/infrastructure/RuntimeSanity/SanityChecks';
-import { IVueBootstrapper } from '../IVueBootstrapper';
+import { Bootstrapper } from '../Bootstrapper';
 
-export class RuntimeSanityValidator implements IVueBootstrapper {
+export class RuntimeSanityValidator implements Bootstrapper {
   constructor(private readonly validator = validateRuntimeSanity) {
 
   }
 
-  public bootstrap(): void {
+  public async bootstrap(): Promise<void> {
     this.validator({
       validateEnvironmentVariables: true,
       validateWindowVariables: true,

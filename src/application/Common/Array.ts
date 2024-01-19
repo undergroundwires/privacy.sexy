@@ -1,7 +1,5 @@
 // Compares to Array<T> objects for equality, ignoring order
 export function scrambledEqual<T>(array1: readonly T[], array2: readonly T[]) {
-  if (!array1) { throw new Error('missing first array'); }
-  if (!array2) { throw new Error('missing second array'); }
   const sortedArray1 = sort(array1);
   const sortedArray2 = sort(array2);
   return sequenceEqual(sortedArray1, sortedArray2);
@@ -12,8 +10,6 @@ export function scrambledEqual<T>(array1: readonly T[], array2: readonly T[]) {
 
 // Compares to Array<T> objects for equality in same order
 export function sequenceEqual<T>(array1: readonly T[], array2: readonly T[]) {
-  if (!array1) { throw new Error('missing first array'); }
-  if (!array2) { throw new Error('missing second array'); }
   if (array1.length !== array2.length) {
     return false;
   }

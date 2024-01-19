@@ -11,14 +11,11 @@ export class ExpressionsCompiler implements IExpressionsCompiler {
   ) { }
 
   public compileExpressions(
-    code: string | undefined,
+    code: string,
     args: IReadOnlyFunctionCallArgumentCollection,
   ): string {
-    if (!args) {
-      throw new Error('missing args, send empty collection instead.');
-    }
     if (!code) {
-      return code;
+      return '';
     }
     const context = new ExpressionEvaluationContext(args);
     const compiledCode = compileRecursively(code, context, this.extractor);
@@ -145,7 +142,7 @@ function ensureParamsUsedInCodeHasArgsProvided(
   providedArgs: IReadOnlyFunctionCallArgumentCollection,
 ): void {
   const usedParameterNames = extractRequiredParameterNames(expressions);
-  if (!usedParameterNames?.length) {
+  if (!usedParameterNames.length) {
     return;
   }
   const notProvidedParameters = usedParameterNames

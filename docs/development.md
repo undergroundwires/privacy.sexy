@@ -13,8 +13,11 @@ See [ci-cd.md](./ci-cd.md) for more information.
 
 ### Prerequisites
 
-- Install node >15.x.
-- Install dependencies using `npm install`.
+- Install Node.js:
+  - Refer to [action.yml](./../.github/actions/setup-node/action.yml) for the minimum required version compatible with the automated workflows.
+  - 💡 Recommended: Use [`nvm`](https://github.com/nvm-sh/nvm) CLI to install and switch between Node.js versions.
+- Install dependencies using `npm install` (or [`npm run install-deps`](#utility-scripts) for more options).
+- For Visual Studio Code users, running the configuration script is recommended to optimize the IDE settings, as detailed in [utility scripts](#utility-scripts).
 
 ### Testing
 
@@ -60,6 +63,7 @@ See [ci-cd.md](./ci-cd.md) for more information.
 
 1. Build: `docker build -t undergroundwires/privacy.sexy:latest .`
 2. Run: `docker run -it -p 8080:80 --rm --name privacy.sexy undergroundwires/privacy.sexy:latest`
+3. Application should be available at [`http://localhost:8080`](http://localhost:8080)
 
 ### Building
 
@@ -73,22 +77,24 @@ See [ci-cd.md](./ci-cd.md) for more information.
 
 #### Utility scripts
 
-- [**`./scripts/fresh-npm-install.sh`**](../scripts/fresh-npm-install.sh):
-  - Run fresh NPM install.
-  - This script provides a clean NPM install, removing existing node modules and optionally the package-lock.json (when run with -n), then installs dependencies and runs unit tests.
-- [**`./scripts/configure-vscode.sh`**](../scripts/configure-vscode.sh):
-  - This script checks and sets the necessary configurations for VSCode in `settings.json` file.
+- [**`npm run install-deps [-- <options>]`**](../scripts/npm-install.js):
+  - Manages NPM dependency installation, it offers capabilities like doing a fresh install, retries on network errors, and other features.
+  - For example, you can run `npm run install-deps -- --fresh` to do clean installation of dependencies.
+- [**`python ./scripts/configure_vscode.py`**](../scripts/configure_vscode.py):
+  - Optimizes Visual Studio Code settings and installs essential extensions, enhancing the development environment.
 
 #### Automation scripts
 
-- [**`node scripts/print-dist-dir.js [-- <options>]`**](../scripts/print-dist-dir.js):
+- [**`node scripts/print-dist-dir.js [<options>]`**](../scripts/print-dist-dir.js):
   - Determines the absolute path of a distribution directory based on CLI arguments and outputs its absolute path.
-  - Primarily used by automation scripts.
 - [**`npm run check:verify-build-artifacts [-- <options>]`**](../scripts/verify-build-artifacts.js):
   - Verifies the existence and content of build artifacts. Useful for ensuring that the build process is generating the expected output.
+- [**`node scripts/verify-web-server-status.js --url [URL]`**](../scripts/verify-web-server-status.js):
+  - Checks if a specified server is up with retries and returns an HTTP 200 status code.
 
 ## Recommended extensions
 
 You should use EditorConfig to follow project style.
 
 For Visual Studio Code, [`.vscode/extensions.json`](./../.vscode/extensions.json) includes list of recommended extensions.
+You can use [VSCode configuration script](#utility-scripts) to automatically install those.

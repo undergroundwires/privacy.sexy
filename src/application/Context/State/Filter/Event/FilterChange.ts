@@ -1,37 +1,37 @@
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
 import { FilterActionType } from './FilterActionType';
-import { IFilterChangeDetails, IFilterChangeDetailsVisitor } from './IFilterChangeDetails';
+import {
+  IFilterChangeDetails, IFilterChangeDetailsVisitor,
+  ApplyFilterAction, ClearFilterAction,
+} from './IFilterChangeDetails';
 
 export class FilterChange implements IFilterChangeDetails {
-  public static forApply(filter: IFilterResult) {
-    if (!filter) {
-      throw new Error('missing filter');
-    }
-    return new FilterChange(FilterActionType.Apply, filter);
+  public static forApply(
+    filter: IFilterResult,
+  ): IFilterChangeDetails {
+    return new FilterChange({ type: FilterActionType.Apply, filter });
   }
 
-  public static forClear() {
-    return new FilterChange(FilterActionType.Clear);
+  public static forClear(): IFilterChangeDetails {
+    return new FilterChange({ type: FilterActionType.Clear });
   }
 
-  private constructor(
-    public readonly actionType: FilterActionType,
-    public readonly filter?: IFilterResult,
-  ) { }
+  private constructor(public readonly action: ApplyFilterAction | ClearFilterAction) { }
 
   public visit(visitor: IFilterChangeDetailsVisitor): void {
-    if (!visitor) {
-      throw new Error('missing visitor');
-    }
-    switch (this.actionType) {
+    switch (this.action.type) {
       case FilterActionType.Apply:
-        visitor.onApply(this.filter);
+        if (visitor.onApply) {
+          visitor.onApply(this.action.filter);
+        }
         break;
       case FilterActionType.Clear:
-        visitor.onClear();
+        if (visitor.onClear) {
+          visitor.onClear();
+        }
         break;
       default:
-        throw new Error(`Unknown action type: ${this.actionType}`);
+        throw new Error(`Unknown action: ${this.action}`);
     }
   }
 }

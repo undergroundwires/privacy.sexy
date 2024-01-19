@@ -4,7 +4,6 @@ import { Script } from '@/domain/Script';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { IScriptCode } from '@/domain/IScriptCode';
 import { ScriptCodeStub } from '@tests/unit/shared/Stubs/ScriptCodeStub';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('Script', () => {
   describe('ctor', () => {
@@ -19,19 +18,6 @@ describe('Script', () => {
         const actual = sut.code;
         // assert
         expect(actual).to.deep.equal(expected);
-      });
-      describe('throws when missing', () => {
-        itEachAbsentObjectValue((absentValue) => {
-          // arrange
-          const expectedError = 'missing code';
-          const code: IScriptCode = absentValue;
-          // act
-          const construct = () => new ScriptBuilder()
-            .withCode(code)
-            .build();
-          // assert
-          expect(construct).to.throw(expectedError);
-        });
       });
     });
     describe('canRevert', () => {
@@ -59,7 +45,7 @@ describe('Script', () => {
     describe('level', () => {
       it('cannot construct with invalid wrong value', () => {
         // arrange
-        const invalidValue: RecommendationLevel = 55;
+        const invalidValue: RecommendationLevel = 55 as never;
         const expectedError = 'invalid level';
         // act
         const construct = () => new ScriptBuilder()
@@ -112,34 +98,34 @@ class ScriptBuilder {
 
   private code: IScriptCode = new ScriptCodeStub();
 
-  private level = RecommendationLevel.Standard;
+  private level? = RecommendationLevel.Standard;
 
-  private docs: readonly string[] = undefined;
+  private docs: readonly string[] = [];
 
-  public withCodes(code: string, revertCode = ''): ScriptBuilder {
+  public withCodes(code: string, revertCode = ''): this {
     this.code = new ScriptCodeStub()
       .withExecute(code)
       .withRevert(revertCode);
     return this;
   }
 
-  public withCode(code: IScriptCode): ScriptBuilder {
+  public withCode(code: IScriptCode): this {
     this.code = code;
     return this;
   }
 
-  public withName(name: string): ScriptBuilder {
+  public withName(name: string): this {
     this.name = name;
     return this;
   }
 
-  public withRecommendationLevel(level: RecommendationLevel): ScriptBuilder {
+  public withRecommendationLevel(level: RecommendationLevel | undefined): this {
     this.level = level;
     return this;
   }
 
-  public withDocs(urls: readonly string[]): ScriptBuilder {
-    this.docs = urls;
+  public withDocs(docs: readonly string[]): this {
+    this.docs = docs;
     return this;
   }
 

@@ -12,8 +12,5 @@ export class ExpressionEvaluationContext implements IExpressionEvaluationContext
     public readonly args: IReadOnlyFunctionCallArgumentCollection,
     public readonly pipelineCompiler: IPipelineCompiler = new PipelineCompiler(),
   ) {
-    if (!args) {
-      throw new Error('missing args, send empty collection instead.');
-    }
   }
 }

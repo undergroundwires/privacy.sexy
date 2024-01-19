@@ -11,9 +11,6 @@ export class Script extends BaseEntity<string> implements IScript {
     public readonly level?: RecommendationLevel,
   ) {
     super(name);
-    if (!code) {
-      throw new Error('missing code');
-    }
     validateLevel(level);
   }
 

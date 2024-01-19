@@ -1,29 +1,39 @@
 <template>
   <div class="privacy-policy">
-    <div v-if="!isDesktop" class="line">
-      <div class="line__emoji">🚫🍪</div>
+    <div v-if="!isRunningAsDesktopApplication" class="line">
+      <div class="line__emoji">
+        🚫🍪
+      </div>
       <div>No cookies!</div>
     </div>
-    <div v-if="isDesktop" class="line">
-      <div class="line__emoji">🚫🌐</div>
+    <div v-if="isRunningAsDesktopApplication" class="line">
+      <div class="line__emoji">
+        🚫🌐
+      </div>
       <div>
         Everything is offline, except single request GitHub
         to check for updates on application start.
       </div>
     </div>
     <div class="line">
-      <div class="line__emoji">🚫👀</div>
+      <div class="line__emoji">
+        🚫👀
+      </div>
       <div>No user behavior / IP address collection!</div>
     </div>
     <div class="line">
-      <div class="line__emoji">🤖</div>
+      <div class="line__emoji">
+        🤖
+      </div>
       <div>
         All transparent: Deployed automatically from the master branch
         of the <a :href="repositoryUrl" target="_blank" rel="noopener noreferrer">source code</a> with no changes.
       </div>
     </div>
-    <div v-if="!isDesktop" class="line">
-      <div class="line__emoji">📈</div>
+    <div v-if="!isRunningAsDesktopApplication" class="line">
+      <div class="line__emoji">
+        📈
+      </div>
       <div>
         Basic <a href="https://aws.amazon.com/cloudfront/reporting/" target="_blank" rel="noopener noreferrer">CDN statistics</a>
         are collected by AWS but they cannot be traced to you or your behavior.
@@ -31,23 +41,26 @@
       </div>
     </div>
     <div class="line">
-      <div class="line__emoji">🎉</div>
+      <div class="line__emoji">
+        🎉
+      </div>
       <div>
         As almost no data is collected, the application gets better
         only with your active feedback.
-        Feel free to <a :href="feedbackUrl" target="_blank" rel="noopener noreferrer">create an issue</a> 😊</div>
+        Feel free to <a :href="feedbackUrl" target="_blank" rel="noopener noreferrer">create an issue</a> 😊
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, inject } from 'vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { defineComponent, computed } from 'vue';
+import { injectKey } from '@/presentation/injectionSymbols';
 
 export default defineComponent({
   setup() {
-    const { info } = inject(InjectionKeys.useApplication);
-    const { isDesktop } = inject(InjectionKeys.useRuntimeEnvironment);
+    const { info } = injectKey((keys) => keys.useApplication);
+    const { isRunningAsDesktopApplication } = injectKey((keys) => keys.useRuntimeEnvironment);
 
     const repositoryUrl = computed<string>(() => info.repositoryUrl);
     const feedbackUrl = computed<string>(() => info.feedbackUrl);
@@ -55,7 +68,7 @@ export default defineComponent({
     return {
       repositoryUrl,
       feedbackUrl,
-      isDesktop,
+      isRunningAsDesktopApplication,
     };
   },
 });

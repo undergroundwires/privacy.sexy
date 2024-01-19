@@ -4,14 +4,14 @@
     class="modal-container"
   >
     <ModalOverlay
-      @transitionedOut="onOverlayTransitionedOut"
-      @click="onBackgroundOverlayClick"
       :show="isOpen"
+      @transitioned-out="onOverlayTransitionedOut"
+      @click="onBackgroundOverlayClick"
     />
     <ModalContent
       class="modal-content"
       :show="isOpen"
-      @transitionedOut="onContentTransitionedOut"
+      @transitioned-out="onContentTransitionedOut"
     >
       <slot />
     </ModalContent>
@@ -24,7 +24,7 @@ import {
 } from 'vue';
 import ModalOverlay from './ModalOverlay.vue';
 import ModalContent from './ModalContent.vue';
-import { useLockBodyBackgroundScroll } from './Hooks/UseLockBodyBackgroundScroll';
+import { useLockBodyBackgroundScroll } from './Hooks/ScrollLock/UseLockBodyBackgroundScroll';
 import { useCurrentFocusToggle } from './Hooks/UseCurrentFocusToggle';
 import { useEscapeKeyListener } from './Hooks/UseEscapeKeyListener';
 import { useAllTrueWatcher } from './Hooks/UseAllTrueWatcher';
@@ -34,13 +34,8 @@ export default defineComponent({
     ModalOverlay,
     ModalContent,
   },
-  emits: {
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-    input: (isOpen: boolean) => true,
-    /* eslint-enable @typescript-eslint/no-unused-vars */
-  },
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
       required: true,
     },
@@ -48,6 +43,11 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+  },
+  emits: {
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+    'update:modelValue': (isOpen: boolean) => true,
+    /* eslint-enable @typescript-eslint/no-unused-vars */
   },
   setup(props, { emit }) {
     const isRendered = ref(false);
@@ -67,13 +67,13 @@ export default defineComponent({
     onModalFullyTransitionedOut(() => {
       isRendered.value = false;
       resetTransitionStatus();
-      if (props.value) {
-        emit('input', false);
+      if (props.modelValue) {
+        emit('update:modelValue', false);
       }
     });
 
     watchEffect(() => {
-      if (props.value) {
+      if (props.modelValue) {
         open();
       } else {
         close();
@@ -99,8 +99,8 @@ export default defineComponent({
 
       isOpen.value = false;
 
-      if (props.value) {
-        emit('input', false);
+      if (props.modelValue) {
+        emit('update:modelValue', false);
       }
     }
 
@@ -115,8 +115,8 @@ export default defineComponent({
         isOpen.value = true;
       });
 
-      if (!props.value) {
-        emit('input', true);
+      if (!props.modelValue) {
+        emit('update:modelValue', true);
       }
     }
 

@@ -32,7 +32,7 @@ export class SharedFunctionsParserStub implements ISharedFunctionsParser {
     return result || new SharedFunctionCollectionStub();
   }
 
-  private findResult(functions: readonly FunctionData[]): ISharedFunctionCollection {
+  private findResult(functions: readonly FunctionData[]): ISharedFunctionCollection | undefined {
     return this.setupResults
       .find((result) => sequenceEqual(result.functions, functions))
       ?.result;

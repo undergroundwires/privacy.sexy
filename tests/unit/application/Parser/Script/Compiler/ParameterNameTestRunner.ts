@@ -1,11 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { getAbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 
 export function testParameterName(action: (parameterName: string) => string) {
   describe('name', () => {
     describe('sets as expected', () => {
       // arrange
-      const expectedValues = [
+      const expectedValues: readonly string[] = [
         'lowercase',
         'onlyLetters',
         'l3tt3rsW1thNumb3rs',
@@ -21,29 +20,33 @@ export function testParameterName(action: (parameterName: string) => string) {
     });
     describe('throws if invalid', () => {
       // arrange
-      const testCases = [
-        ...getAbsentStringTestCases().map((test) => ({
-          name: test.valueName,
-          value: test.absentValue,
-          expectedError: 'missing parameter name',
-        })),
+      const testScenarios: readonly {
+        readonly description: string;
+        readonly value: string;
+        readonly expectedError: string;
+      }[] = [
         {
-          name: 'has @',
+          description: 'empty Name',
+          value: '',
+          expectedError: 'missing parameter name',
+        },
+        {
+          description: 'has @',
           value: 'b@d',
           expectedError: 'parameter name must be alphanumeric but it was "b@d"',
         },
         {
-          name: 'has {',
+          description: 'has {',
           value: 'b{a}d',
           expectedError: 'parameter name must be alphanumeric but it was "b{a}d"',
         },
       ];
-      for (const testCase of testCases) {
-        it(testCase.name, () => {
+      for (const { description, value, expectedError } of testScenarios) {
+        it(description, () => {
           // act
-          const act = () => action(testCase.value);
+          const act = () => action(value);
           // assert
-          expect(act).to.throw(testCase.expectedError);
+          expect(act).to.throw(expectedError);
         });
       }
     });

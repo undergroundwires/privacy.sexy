@@ -1,38 +1,59 @@
-import type { FunctionData, ParameterDefinitionData, FunctionCallsData } from '@/application/collections/';
+import type {
+  ParameterDefinitionData, CodeFunctionData,
+  FunctionCallsData, CallFunctionData,
+} from '@/application/collections/';
 import { FunctionCallDataStub } from './FunctionCallDataStub';
 
-export class FunctionDataStub implements FunctionData {
-  public static createWithCode() {
-    return new FunctionDataStub()
-      .withCode('stub-code')
-      .withRevertCode('stub-revert-code');
-  }
+export function createFunctionDataWithCode(): FunctionDataStub {
+  const instance = new FunctionDataStub()
+    .withCode('stub-code')
+    .withRevertCode('stub-revert-code');
+  return instance;
+}
 
-  public static createWithCall(call?: FunctionCallsData) {
-    let instance = new FunctionDataStub();
-    if (call) {
-      instance = instance.withCall(call);
-    } else {
-      instance = instance.withMockCall();
-    }
-    return instance;
+export function createFunctionDataWithCall(
+  call?: FunctionCallsData,
+): FunctionDataStub {
+  let instance = new FunctionDataStub();
+  if (call) {
+    instance = instance.withCall(call);
+  } else {
+    instance = instance.withMockCall();
   }
+  return instance;
+}
 
-  public static createWithoutCallOrCodes() {
-    return new FunctionDataStub();
-  }
+export function createFunctionDataWithoutCallOrCode(): FunctionDataStub {
+  return new FunctionDataStub();
+}
 
+interface FunctionDataBuilder<T> {
+  withName(name: string): T;
+  withParameters(...parameters: readonly ParameterDefinitionData[]): T;
+  withParametersObject(parameters: readonly ParameterDefinitionData[]): T;
+}
+
+interface CodeFunctionDataBuilder extends FunctionDataBuilder<CodeFunctionDataBuilder> {
+  withCode(code: string): this;
+  withRevertCode(revertCode: string): this;
+}
+
+interface CallFunctionDataBuilder extends FunctionDataBuilder<CallFunctionDataBuilder> {
+  withCall(call: FunctionCallsData): this;
+  withMockCall(): this;
+}
+
+class FunctionDataStub
+implements CodeFunctionDataBuilder, CallFunctionDataBuilder, CallFunctionData, CodeFunctionData {
   public name = 'functionDataStub';
 
   public code: string;
 
-  public revertCode: string;
+  public revertCode?: string;
 
-  public call?: FunctionCallsData;
+  public call: FunctionCallsData;
 
   public parameters?: readonly ParameterDefinitionData[];
-
-  private constructor() { /* use static factory methods to create an instance */ }
 
   public withName(name: string) {
     this.name = name;

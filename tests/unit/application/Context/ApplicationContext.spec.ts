@@ -6,8 +6,7 @@ import { IApplicationContext, IApplicationContextChangedEvent } from '@/applicat
 import { IApplication } from '@/domain/IApplication';
 import { ApplicationStub } from '@tests/unit/shared/Stubs/ApplicationStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
-import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 describe('ApplicationContext', () => {
   describe('changeContext', () => {
@@ -51,6 +50,19 @@ describe('ApplicationContext', () => {
         // assert
         expectEmptyState(sut.state);
       });
+      it('throws when OS is unknown to application', () => {
+        // arrange
+        const expectedError = 'expected error from application';
+        const applicationStub = new ApplicationStub();
+        const sut = new ObservableApplicationContextFactory()
+          .withApp(applicationStub)
+          .construct();
+        // act
+        applicationStub.getCollection = () => { throw new Error(expectedError); };
+        const act = () => sut.changeContext(OperatingSystem.Android);
+        // assert
+        expect(act).to.throw(expectedError);
+      });
     });
     it('remembers old state when changed backed to same os', () => {
       // arrange
@@ -70,6 +82,7 @@ describe('ApplicationContext', () => {
       sut.state.filter.applyFilter('second-state');
       sut.changeContext(os);
       // assert
+      expectExists(sut.state.filter.currentFilter);
       const actualFilter = sut.state.filter.currentFilter.query;
       expect(actualFilter).to.equal(expectedFilter);
     });
@@ -125,35 +138,8 @@ describe('ApplicationContext', () => {
         expect(duplicates.length).to.be.equal(0);
       });
     });
-    describe('throws with invalid os', () => {
-      new EnumRangeTestRunner((os: OperatingSystem) => {
-        // arrange
-        const sut = new ObservableApplicationContextFactory()
-          .construct();
-        // act
-        sut.changeContext(os);
-      })
-      // assert
-        .testOutOfRangeThrows()
-        .testAbsentValueThrows()
-        .testInvalidValueThrows(OperatingSystem.Android, 'os "Android" is not defined in application');
-    });
   });
   describe('ctor', () => {
-    describe('app', () => {
-      describe('throw when app is missing', () => {
-        itEachAbsentObjectValue((absentValue) => {
-          // arrange
-          const expectedError = 'missing app';
-          const app = absentValue;
-          const os = OperatingSystem.Windows;
-          // act
-          const act = () => new ApplicationContext(app, os);
-          // assert
-          expect(act).to.throw(expectedError);
-        });
-      });
-    });
     describe('collection', () => {
       it('returns right collection for expected OS', () => {
         // arrange
@@ -195,16 +181,17 @@ describe('ApplicationContext', () => {
         const actual = sut.state.os;
         expect(actual).to.deep.equal(expected);
       });
-      describe('throws when OS is invalid', () => {
+      it('throws when OS is unknown to application', () => {
+        // arrange
+        const expectedError = 'expected error from application';
+        const applicationStub = new ApplicationStub();
+        applicationStub.getCollection = () => { throw new Error(expectedError); };
         // act
-        const act = (os: OperatingSystem) => new ObservableApplicationContextFactory()
-          .withInitialOs(os)
+        const act = () => new ObservableApplicationContextFactory()
+          .withApp(applicationStub)
           .construct();
         // assert
-        new EnumRangeTestRunner(act)
-          .testOutOfRangeThrows()
-          .testAbsentValueThrows()
-          .testInvalidValueThrows(OperatingSystem.Android, 'os "Android" is not defined in application');
+        expect(act).to.throw(expectedError);
       });
     });
     describe('app', () => {

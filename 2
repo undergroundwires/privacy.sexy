@@ -1,0 +1,31 @@
+Show error on AV removal on desktop $264, $304
+
+This solves $264 where users do not get error messages when running
+script file fails due to antivirus intervention (it being blocking the
+script file as soon as privacy.sexy generates it to run it). Now if the
+desktop app users tries to save or run a script file and it afils due to
+antivirus removal, they'll get a special error message with guiding next
+steps.
+
+- Add additional check to able to fail if the file writing fails. This
+  includes trying to reading the written file back as suggested in $304.
+  This successfully detects antivirus (Defender) intervation as read
+  file operation triggers the antivirus scan that deletes the file.
+- Show directory and file path in error messages as suggested in $304.
+- Show an error message with more detailed information if an antivirus
+  is detected.
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# Date:      Tue Jan 16 16:23:08 2024 +0100
+#
+# On branch master
+# Your branch is ahead of 'origin/master' by 1 commit.
+#   (use "git push" to publish your local commits)
+#
+# Changes to be committed:
+#	modified:   ../../application/CodeRunner/CodeRunner.ts
+#	new file:   NodeReliableFileWriter.ts
+#	new file:   ReliableFileWriter.ts
+#

@@ -9,6 +9,29 @@
   <meta name="description"
     content="Web tool to generate scripts for enforcing privacy & security best-practices such as stopping data collection of Windows and different softwares on it." />
   <link rel="icon" href="/favicon.ico">
+
+  <!--
+    Security meta tags based on OWASP recommendations.
+    See https://owasp.org/www-project-secure-headers/ci/headers_add.json for all recommended policies.
+    Exceptions:
+      - [+] `style-src 'unsafe-inline'`   : Required for Vue.
+      - [+] `img-src data:`               : Required for Ace (code editor) CSS.
+      - [+] `script-src: 'unsafe-inline'` : Required for Vite legacy (@vitejs/plugin-legacy) for production builds.
+      - [-] `upgrade-insecure-requests`     : Required for development on macOS Safari or Safari will block requests on `http://localhost`.
+  -->
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline';
+      style-src 'self' 'unsafe-inline';
+      img-src 'self' data:;
+      form-action 'self';
+      object-src 'none';
+      block-all-mixed-content;
+    "
+  >
+  <meta name="referrer" content="no-referrer">
 </head>
 
 <body>
@@ -28,8 +51,11 @@
     </style>
     <div id="javascriptDisabled">
       <h1>Problem loading page</h1>
-      <p>The page does not work without JavaScript enabled. Please enable it to use privacy.sexy. There's no shady stuff
-        as 100% of the website is open source.</p>
+      <p>
+        The page does not work without JavaScript enabled.
+        Please enable it to use privacy.sexy. 
+        Don't worry; privacy.sexy is secure, transparent, and open-source.
+      </p>
     </div>
   </noscript>
   <div id="app"></div>

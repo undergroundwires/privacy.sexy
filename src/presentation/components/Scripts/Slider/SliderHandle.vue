@@ -1,21 +1,28 @@
 <template>
-  <div
+  <button
+    ref="handleElementRef"
     class="handle"
-    :style="{ cursor: cursorCssValue }"
-    @mousedown="startResize">
+    type="button"
+  >
     <div class="line" />
-    <font-awesome-icon
+    <AppIcon
       class="icon"
-      :icon="['fas', 'arrows-alt-h']"
+      icon="left-right"
     />
     <div class="line" />
-  </div>
+  </button>
 </template>
 
 <script lang="ts">
-import { defineComponent, onUnmounted } from 'vue';
+import { defineComponent, shallowRef, watch } from 'vue';
+import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
+import { useDragHandler } from './UseDragHandler';
+import { useGlobalCursor } from './UseGlobalCursor';
 
 export default defineComponent({
+  components: {
+    AppIcon,
+  },
   emits: {
     /* eslint-disable @typescript-eslint/no-unused-vars */
     resized: (displacementX: number) => true,
@@ -23,36 +30,21 @@ export default defineComponent({
   },
   setup(_, { emit }) {
     const cursorCssValue = 'ew-resize';
-    let initialX: number | undefined;
 
-    const resize = (event) => {
-      const displacementX = event.clientX - initialX;
-      emit('resized', displacementX);
-      initialX = event.clientX;
-    };
+    const handleElementRef = shallowRef<HTMLElement | undefined>();
 
-    const stopResize = () => {
-      document.body.style.removeProperty('cursor');
-      document.removeEventListener('mousemove', resize);
-      window.removeEventListener('mouseup', stopResize);
-    };
+    const { displacementX, isDragging } = useDragHandler(handleElementRef);
 
-    function startResize(event: MouseEvent): void {
-      initialX = event.clientX;
-      document.body.style.setProperty('cursor', cursorCssValue);
-      document.addEventListener('mousemove', resize);
-      window.addEventListener('mouseup', stopResize);
-      event.stopPropagation();
-      event.preventDefault();
-    }
+    useGlobalCursor(isDragging, cursorCssValue);
 
-    onUnmounted(() => {
-      stopResize();
+    watch(displacementX, (value) => {
+      emit('resized', value);
     });
 
     return {
+      handleElementRef,
+      isDragging,
       cursorCssValue,
-      startResize,
     };
   },
 });
@@ -63,12 +55,11 @@ export default defineComponent({
 
 $color          : $color-primary-dark;
 $color-hover    : $color-primary;
+$cursor         : v-bind(cursorCssValue);
 
 .handle {
-  @include clickable($cursor: 'ew-resize');
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  @include reset-button;
+  @include clickable($cursor: $cursor);
   @include hover-or-touch {
     .line {
       background: $color-hover;
@@ -77,6 +68,11 @@ $color-hover    : $color-primary;
       color: $color-hover;
     }
   }
+  cursor: $cursor;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   .line {
     flex: 1;
     background: $color;

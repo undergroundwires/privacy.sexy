@@ -1,12 +1,12 @@
 import { IEntity } from '../Entity/IEntity';
-import { IRepository } from './IRepository';
+import { Repository } from '../../application/Repository/Repository';
 
 export class InMemoryRepository<TKey, TEntity extends IEntity<TKey>>
-implements IRepository<TKey, TEntity> {
+implements Repository<TKey, TEntity> {
   private readonly items: TEntity[];
 
   constructor(items?: TEntity[]) {
-    this.items = items || new Array<TEntity>();
+    this.items = items ?? new Array<TEntity>();
   }
 
   public get length(): number {
@@ -17,18 +17,15 @@ implements IRepository<TKey, TEntity> {
     return predicate ? this.items.filter(predicate) : this.items;
   }
 
-  public getById(id: TKey): TEntity | undefined {
+  public getById(id: TKey): TEntity {
     const items = this.getItems((entity) => entity.id === id);
     if (!items.length) {
-      return undefined;
+      throw new Error(`missing item: ${id}`);
     }
     return items[0];
   }
 
   public addItem(item: TEntity): void {
-    if (!item) {
-      throw new Error('missing item');
-    }
     if (this.exists(item.id)) {
       throw new Error(`Cannot add (id: ${item.id}) as it is already exists`);
     }
@@ -36,9 +33,6 @@ implements IRepository<TKey, TEntity> {
   }
 
   public addOrUpdateItem(item: TEntity): void {
-    if (!item) {
-      throw new Error('missing item');
-    }
     if (this.exists(item.id)) {
       this.removeItem(item.id);
     }

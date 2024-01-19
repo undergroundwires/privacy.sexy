@@ -20,7 +20,7 @@ export class CodeValidatorStub implements ICodeValidator {
   }
 
   public assertHistory(expected: {
-    validatedCodes: readonly string[],
+    validatedCodes: readonly (string | undefined)[],
     rules: readonly Constructible<ICodeValidationRule>[],
   }) {
     expect(this.callHistory).to.have.lengthOf(expected.validatedCodes.length);

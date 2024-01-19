@@ -1,4 +1,6 @@
 import { afterEach } from 'vitest';
-import { enableAutoDestroy } from '@vue/test-utils';
+import { enableAutoUnmount } from '@vue/test-utils';
+import { polyfillBlob } from './BlobPolyfill';
 
-enableAutoDestroy(afterEach);
+enableAutoUnmount(afterEach);
+polyfillBlob();

@@ -1,5 +1,6 @@
 import { describe } from 'vitest';
 import { InlinePowerShell } from '@/application/Parser/Script/Compiler/Expressions/Pipes/PipeDefinitions/InlinePowerShell';
+import { getAbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 import { IPipeTestCase, runPipeTests } from './PipeTestRunner';
 
 describe('InlinePowerShell', () => {
@@ -7,11 +8,12 @@ describe('InlinePowerShell', () => {
   const sut = new InlinePowerShell();
   // act
   runPipeTests(sut, [
-    {
-      name: 'returns undefined when if input is undefined',
-      input: undefined,
-      expectedOutput: undefined,
-    },
+    ...getAbsentStringTestCases({ excludeNull: true, excludeUndefined: true })
+      .map((testCase) => ({
+        name: 'returns as it is when if input is missing',
+        input: testCase.absentValue,
+        expectedOutput: '',
+      })),
     ...prefixTests('newline', getNewLineCases()),
     ...prefixTests('comment', getCommentCases()),
     ...prefixTests('here-string', hereStringCases()),

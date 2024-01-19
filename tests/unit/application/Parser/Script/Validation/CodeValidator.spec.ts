@@ -4,7 +4,7 @@ import { CodeValidationRuleStub } from '@tests/unit/shared/Stubs/CodeValidationR
 import { itEachAbsentCollectionValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { itIsSingleton } from '@tests/unit/shared/TestCases/SingletonTests';
 import { ICodeLine } from '@/application/Parser/Script/Validation/ICodeLine';
-import { IInvalidCodeLine } from '@/application/Parser/Script/Validation/ICodeValidationRule';
+import { ICodeValidationRule, IInvalidCodeLine } from '@/application/Parser/Script/Validation/ICodeValidationRule';
 
 describe('CodeValidator', () => {
   describe('instance', () => {
@@ -23,10 +23,10 @@ describe('CodeValidator', () => {
         const act = () => sut.throwIfInvalid(code, [new CodeValidationRuleStub()]);
         // assert
         expect(act).to.not.throw();
-      });
+      }, { excludeNull: true, excludeUndefined: true });
     });
     describe('throws if rules are empty', () => {
-      itEachAbsentCollectionValue((absentValue) => {
+      itEachAbsentCollectionValue<ICodeValidationRule>((absentValue) => {
         // arrange
         const expectedError = 'missing rules';
         const rules = absentValue;
@@ -35,7 +35,7 @@ describe('CodeValidator', () => {
         const act = () => sut.throwIfInvalid('code', rules);
         // assert
         expect(act).to.throw(expectedError);
-      });
+      }, { excludeUndefined: true, excludeNull: true });
     });
     describe('splits lines as expected', () => {
       it('supports all line separators', () => {

@@ -24,10 +24,11 @@ export class CategoryCollectionParserStub {
   }
 
   public getStub(): CategoryCollectionParserType {
-    return (data: CollectionData, info: IProjectInformation) => {
+    return (data: CollectionData, info: IProjectInformation): ICategoryCollection => {
       this.arguments.push({ data, info });
-      if (this.returnValues.has(data)) {
-        return this.returnValues.get(data);
+      const foundReturnValue = this.returnValues.get(data);
+      if (foundReturnValue) {
+        return foundReturnValue;
       }
       // Get next OS with a unique OS so mock does not result in an invalid app due to duplicated OS
       // collections.

@@ -2,8 +2,8 @@
   <div>
     <div class="footer">
       <div class="footer__section">
-        <span v-if="isDesktop" class="footer__section__item">
-          <font-awesome-icon class="icon" :icon="['fas', 'globe']" />
+        <span v-if="isRunningAsDesktopApplication" class="footer__section__item">
+          <AppIcon class="icon" icon="globe" />
           <span>
             Online version at <a :href="homepageUrl" target="_blank" rel="noopener noreferrer">{{ homepageUrl }}</a>
           </span>
@@ -15,25 +15,29 @@
       <div class="footer__section">
         <div class="footer__section__item">
           <a :href="feedbackUrl" target="_blank" rel="noopener noreferrer">
-            <font-awesome-icon class="icon" :icon="['far', 'smile']" />
+            <AppIcon class="icon" icon="face-smile" />
             <span>Feedback</span>
           </a>
         </div>
         <div class="footer__section__item">
           <a :href="repositoryUrl" target="_blank" rel="noopener noreferrer">
-            <font-awesome-icon class="icon" :icon="['fab', 'github']" />
+            <AppIcon class="icon" icon="github" />
             <span>Source Code</span>
           </a>
         </div>
         <div class="footer__section__item">
           <a :href="releaseUrl" target="_blank" rel="noopener noreferrer">
-            <font-awesome-icon class="icon" :icon="['fas', 'tag']" />
+            <AppIcon class="icon" icon="tag" />
             <span>v{{ version }}</span>
           </a>
         </div>
         <div class="footer__section__item">
-          <font-awesome-icon class="icon" :icon="['fas', 'user-secret']" />
-          <a @click="showPrivacyDialog()">Privacy</a>
+          <FlatButton
+            label="Privacy"
+            icon="user-secret"
+            flat
+            @click="showPrivacyDialog()"
+          />
         </div>
       </div>
     </div>
@@ -45,10 +49,12 @@
 
 <script lang="ts">
 import {
-  defineComponent, ref, computed, inject,
+  defineComponent, ref, computed,
 } from 'vue';
 import ModalDialog from '@/presentation/components/Shared/Modal/ModalDialog.vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
+import { injectKey } from '@/presentation/injectionSymbols';
+import FlatButton from '@/presentation/components/Shared/FlatButton.vue';
 import DownloadUrlList from './DownloadUrlList.vue';
 import PrivacyPolicy from './PrivacyPolicy.vue';
 
@@ -57,10 +63,12 @@ export default defineComponent({
     ModalDialog,
     PrivacyPolicy,
     DownloadUrlList,
+    AppIcon,
+    FlatButton,
   },
   setup() {
-    const { info } = inject(InjectionKeys.useApplication);
-    const { isDesktop } = inject(InjectionKeys.useRuntimeEnvironment);
+    const { info } = injectKey((keys) => keys.useApplication);
+    const { isRunningAsDesktopApplication } = injectKey((keys) => keys.useRuntimeEnvironment);
 
     const isPrivacyDialogVisible = ref(false);
 
@@ -79,7 +87,7 @@ export default defineComponent({
     }
 
     return {
-      isDesktop,
+      isRunningAsDesktopApplication,
       isPrivacyDialogVisible,
       showPrivacyDialog,
       version,
@@ -97,7 +105,6 @@ export default defineComponent({
 
 .icon {
   margin-right: 0.5em;
-  text-decoration: none;
 }
 
 .footer {

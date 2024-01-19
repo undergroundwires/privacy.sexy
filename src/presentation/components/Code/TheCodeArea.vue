@@ -1,9 +1,12 @@
 <template>
   <SizeObserver
-    v-on:sizeChanged="sizeChanged()"
-    v-non-collapsing>
+    v-non-collapsing
+    @size-changed="sizeChanged()"
+  >
+    <!-- `data-test-highlighted-range` is a test hook for assessing highlighted text range -->
     <div
       :id="editorId"
+      :data-test-highlighted-range="highlightedRange"
       class="code-area"
     />
   </SizeObserver>
@@ -11,9 +14,9 @@
 
 <script lang="ts">
 import {
-  defineComponent, onUnmounted, onMounted, inject,
+  defineComponent, onUnmounted, onMounted, ref,
 } from 'vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { injectKey } from '@/presentation/injectionSymbols';
 import { ICodeChangedEvent } from '@/application/Context/State/Code/Event/ICodeChangedEvent';
 import { IScript } from '@/domain/IScript';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
@@ -24,23 +27,25 @@ import { NonCollapsing } from '@/presentation/components/Scripts/View/Cards/NonC
 import ace from './ace-importer';
 
 export default defineComponent({
-  props: {
-    theme: {
-      type: String,
-      default: undefined,
-    },
-  },
   components: {
     SizeObserver,
   },
   directives: {
     NonCollapsing,
   },
+  props: {
+    theme: {
+      type: String,
+      default: undefined,
+    },
+  },
   setup(props) {
-    const { onStateChange, currentState } = inject(InjectionKeys.useCollectionState)();
-    const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
+    const { onStateChange, currentState } = injectKey((keys) => keys.useCollectionState);
+    const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
 
     const editorId = 'codeEditor';
+    const highlightedRange = ref(0);
+
     let editor: ace.Ace.Editor | undefined;
     let currentMarkerId: number | undefined;
 
@@ -70,13 +75,12 @@ export default defineComponent({
 
     function updateCode(code: string, language: ScriptingLanguage) {
       const innerCode = code || getDefaultCode(language);
-      editor.setValue(innerCode, 1);
+      editor?.setValue(innerCode, 1);
     }
 
     function handleCodeChange(event: ICodeChangedEvent) {
       removeCurrentHighlighting();
       updateCode(event.code, currentState.value.collection.scripting.language);
-      editor.setValue(event.code, 1);
       if (event.addedScripts?.length > 0) {
         reactToChanges(event, event.addedScripts);
       } else if (event.changedScripts?.length > 0) {
@@ -97,8 +101,9 @@ export default defineComponent({
       if (!currentMarkerId) {
         return;
       }
-      editor.session.removeMarker(currentMarkerId);
+      editor?.session.removeMarker(currentMarkerId);
       currentMarkerId = undefined;
+      highlightedRange.value = 0;
     }
 
     function reactToChanges(event: ICodeChangedEvent, scripts: ReadonlyArray<IScript>) {
@@ -116,20 +121,25 @@ export default defineComponent({
 
     function highlight(startRow: number, endRow: number) {
       const AceRange = ace.require('ace/range').Range;
-      currentMarkerId = editor.session.addMarker(
+      currentMarkerId = editor?.session.addMarker(
         new AceRange(startRow, 0, endRow, 0),
         'code-area__highlight',
         'fullLine',
       );
+      highlightedRange.value = endRow - startRow;
     }
 
     function scrollToLine(row: number) {
-      const column = editor.session.getLine(row).length;
-      editor.gotoLine(row, column, true);
+      const column = editor?.session.getLine(row).length;
+      if (column === undefined) {
+        return;
+      }
+      editor?.gotoLine(row, column, true);
     }
 
     return {
       editorId,
+      highlightedRange,
       sizeChanged,
     };
   },
@@ -178,6 +188,7 @@ function getDefaultCode(language: ScriptingLanguage): string {
     .appendCommentLine(' ✔️ No need to run any compiled software on your system, just run the generated scripts.')
     .appendCommentLine(' ✔️ Have full visibility into what the tweaks do as you enable them.')
     .appendCommentLine(' ✔️ Open-source and free (both free as in beer and free as in speech).')
+    .appendCommentLine(' ✔️ Committed to your safety with strong security measures.')
     .toString();
 }
 
@@ -186,14 +197,16 @@ function getDefaultCode(language: ScriptingLanguage): string {
 <style scoped lang="scss">
 @use "@/presentation/assets/styles/main" as *;
 
-::v-deep .code-area {
-  min-height: 200px;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  &__highlight {
-    background-color: $color-secondary-light;
-    position: absolute;
+:deep() {
+  .code-area {
+    min-height: 200px;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    &__highlight {
+      background-color: $color-secondary-light;
+      position: absolute;
+    }
   }
 }
 </style>

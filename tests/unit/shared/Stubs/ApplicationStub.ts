@@ -3,6 +3,7 @@ import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { IProjectInformation } from '@/domain/IProjectInformation';
 import { ProjectInformationStub } from './ProjectInformationStub';
+import { CategoryCollectionStub } from './CategoryCollectionStub';
 
 export class ApplicationStub implements IApplication {
   public info: IProjectInformation = new ProjectInformationStub();
@@ -10,24 +11,25 @@ export class ApplicationStub implements IApplication {
   public collections: ICategoryCollection[] = [];
 
   public getCollection(operatingSystem: OperatingSystem): ICategoryCollection {
-    return this.collections.find((collection) => collection.os === operatingSystem);
+    const collection = this.collections.find((c) => c.os === operatingSystem);
+    return collection ?? new CategoryCollectionStub();
   }
 
   public getSupportedOsList(): OperatingSystem[] {
     return this.collections.map((collection) => collection.os);
   }
 
-  public withCollection(collection: ICategoryCollection): ApplicationStub {
+  public withCollection(collection: ICategoryCollection): this {
     this.collections.push(collection);
     return this;
   }
 
-  public withProjectInformation(info: IProjectInformation): ApplicationStub {
+  public withProjectInformation(info: IProjectInformation): this {
     this.info = info;
     return this;
   }
 
-  public withCollections(...collections: readonly ICategoryCollection[]): ApplicationStub {
+  public withCollections(...collections: readonly ICategoryCollection[]): this {
     this.collections.push(...collections);
     return this;
   }

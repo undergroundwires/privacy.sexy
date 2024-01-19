@@ -1,0 +1,55 @@
+name: checks.scripts
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  icons-build:
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      matrix:
+        os: [ macos, ubuntu, windows ]
+      fail-fast: false # Still interested to see results from other combinations
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Setup node
+        uses: ./.github/actions/setup-node
+      -
+        name: Install dependencies
+        uses: ./.github/actions/npm-install-dependencies
+      -
+        name: Create icons
+        run: npm run icons:build
+
+  install-deps:
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      matrix:
+        install-deps-before: [true, false]
+        install-command:
+          - npm run install-deps
+          - npm run install-deps -- --no-errors
+          - npm run install-deps -- --ci
+          - npm run install-deps -- --fresh --non-deterministic
+          - npm run install-deps -- --fresh
+          - npm run install-deps -- --non-deterministic
+        os: [ macos, ubuntu, windows ]
+      fail-fast: false # Still interested to see results from other combinations
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Setup node
+        uses: ./.github/actions/setup-node
+      -
+        name: Install dependencies
+        if: matrix.install-deps-before == true
+        uses: ./.github/actions/npm-install-dependencies
+      -
+        name: Run install-deps
+        run: ${{ matrix.install-command }}

@@ -7,5 +7,5 @@ export interface IApplication {
   readonly collections: readonly ICategoryCollection[];
 
   getSupportedOsList(): OperatingSystem[];
-  getCollection(operatingSystem: OperatingSystem): ICategoryCollection | undefined;
+  getCollection(operatingSystem: OperatingSystem): ICategoryCollection;
 }

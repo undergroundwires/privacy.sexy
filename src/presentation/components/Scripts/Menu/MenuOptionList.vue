@@ -1,6 +1,8 @@
 <template>
   <div class="list">
-    <div v-if="label">{{ label }}:</div>
+    <div v-if="label">
+      {{ label }}:
+    </div>
     <div class="items">
       <slot />
     </div>
@@ -28,8 +30,8 @@ $gap: 0.25rem;
   font-family: $font-normal;
   display: flex;
   align-items: center;
-  .items {
-    * + *::before {
+  :deep(.items) {
+    > * + *::before {
       content: '|';
       padding-right: $gap;
       padding-left: $gap;

@@ -8,7 +8,6 @@ export class Application implements IApplication {
     public info: IProjectInformation,
     public collections: readonly ICategoryCollection[],
   ) {
-    validateInformation(info);
     validateCollections(collections);
   }
 
@@ -16,19 +15,17 @@ export class Application implements IApplication {
     return this.collections.map((collection) => collection.os);
   }
 
-  public getCollection(operatingSystem: OperatingSystem): ICategoryCollection | undefined {
-    return this.collections.find((collection) => collection.os === operatingSystem);
-  }
-}
-
-function validateInformation(info: IProjectInformation) {
-  if (!info) {
-    throw new Error('missing project information');
+  public getCollection(operatingSystem: OperatingSystem): ICategoryCollection {
+    const collection = this.collections.find((c) => c.os === operatingSystem);
+    if (!collection) {
+      throw new Error(`Operating system "${OperatingSystem[operatingSystem]}" is not defined in application`);
+    }
+    return collection;
   }
 }
 
 function validateCollections(collections: readonly ICategoryCollection[]) {
-  if (!collections || !collections.length) {
+  if (!collections.length) {
     throw new Error('missing collections');
   }
   if (collections.filter((c) => !c).length > 0) {

@@ -1,9 +1,9 @@
 import { IExpressionParser } from '../IExpressionParser';
-import { ExpressionPosition } from '../../Expression/ExpressionPosition';
 import { IExpression } from '../../Expression/IExpression';
 import { Expression, ExpressionEvaluator } from '../../Expression/Expression';
 import { IFunctionParameter } from '../../../Function/Parameter/IFunctionParameter';
 import { FunctionParameterCollection } from '../../../Function/Parameter/FunctionParameterCollection';
+import { createPositionFromRegexFullMatch } from '../../Expression/ExpressionPositionFactory';
 
 export abstract class RegexParser implements IExpressionParser {
   protected abstract readonly regex: RegExp;
@@ -21,7 +21,7 @@ export abstract class RegexParser implements IExpressionParser {
     const matches = code.matchAll(this.regex);
     for (const match of matches) {
       const primitiveExpression = this.buildExpression(match);
-      const position = this.doOrRethrow(() => createPosition(match), 'invalid script position', code);
+      const position = this.doOrRethrow(() => createPositionFromRegexFullMatch(match), 'invalid script position', code);
       const parameters = createParameters(primitiveExpression);
       const expression = new Expression(position, primitiveExpression.evaluator, parameters);
       yield expression;
@@ -35,12 +35,6 @@ export abstract class RegexParser implements IExpressionParser {
       throw new Error(`[${this.constructor.name}] ${errorText}: ${error.message}\nRegex: ${this.regex}\nCode: ${code}`);
     }
   }
-}
-
-function createPosition(match: RegExpMatchArray): ExpressionPosition {
-  const startPos = match.index;
-  const endPos = startPos + match[0].length;
-  return new ExpressionPosition(startPos, endPos);
 }
 
 function createParameters(

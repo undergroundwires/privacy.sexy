@@ -26,7 +26,7 @@ describe('FunctionCallArgument', () => {
           .build();
         // assert
         expect(act).to.throw(expectedError);
-      });
+      }, { excludeNull: true, excludeUndefined: true });
     });
   });
 });

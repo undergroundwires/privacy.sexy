@@ -1,40 +1,37 @@
 import type { FunctionCallData, FunctionCallsData, FunctionCallParametersData } from '@/application/collections/';
-import { IFunctionCall } from './IFunctionCall';
+import { isArray, isPlainObject } from '@/TypeHelpers';
+import { FunctionCall } from './FunctionCall';
 import { FunctionCallArgumentCollection } from './Argument/FunctionCallArgumentCollection';
 import { FunctionCallArgument } from './Argument/FunctionCallArgument';
-import { FunctionCall } from './FunctionCall';
+import { ParsedFunctionCall } from './ParsedFunctionCall';
 
-export function parseFunctionCalls(calls: FunctionCallsData): IFunctionCall[] {
-  if (calls === undefined) {
-    throw new Error('missing call data');
-  }
+export function parseFunctionCalls(calls: FunctionCallsData): FunctionCall[] {
   const sequence = getCallSequence(calls);
   return sequence.map((call) => parseFunctionCall(call));
 }
 
 function getCallSequence(calls: FunctionCallsData): FunctionCallData[] {
-  if (typeof calls !== 'object') {
-    throw new Error('called function(s) must be an object');
+  if (!isPlainObject(calls) && !isArray(calls)) {
+    throw new Error('called function(s) must be an object or array');
   }
-  if (calls instanceof Array) {
+  if (isArray(calls)) {
     return calls as FunctionCallData[];
   }
-  return [calls as FunctionCallData];
+  const singleCall = calls as FunctionCallData;
+  return [singleCall];
 }
 
-function parseFunctionCall(call: FunctionCallData): IFunctionCall {
-  if (!call) {
-    throw new Error('missing call data');
-  }
+function parseFunctionCall(call: FunctionCallData): FunctionCall {
   const callArgs = parseArgs(call.parameters);
-  return new FunctionCall(call.function, callArgs);
+  return new ParsedFunctionCall(call.function, callArgs);
 }
 
 function parseArgs(
-  parameters: FunctionCallParametersData,
+  parameters: FunctionCallParametersData | undefined,
 ): FunctionCallArgumentCollection {
-  return Object.keys(parameters || {})
-    .map((parameterName) => new FunctionCallArgument(parameterName, parameters[parameterName]))
+  const parametersMap = parameters ?? {};
+  return Object.keys(parametersMap)
+    .map((parameterName) => new FunctionCallArgument(parameterName, parametersMap[parameterName]))
     .reduce((args, arg) => {
       args.addArgument(arg);
       return args;

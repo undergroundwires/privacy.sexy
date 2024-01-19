@@ -1,17 +1,21 @@
 <template>
   <div id="container">
-    <h1 class="child title">{{ title }}</h1>
-    <h2 class="child subtitle">{{ subtitle }}</h2>
+    <h1 class="child title">
+      {{ title }}
+    </h1>
+    <h2 class="child subtitle">
+      {{ subtitle }}
+    </h2>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, inject } from 'vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { defineComponent, computed } from 'vue';
+import { injectKey } from '@/presentation/injectionSymbols';
 
 export default defineComponent({
   setup() {
-    const { info } = inject(InjectionKeys.useApplication);
+    const { info } = injectKey((keys) => keys.useApplication);
 
     const title = computed(() => info.name);
     const subtitle = computed(() => info.slogan);
@@ -22,6 +26,7 @@ export default defineComponent({
     };
   },
 });
+
 </script>
 
 <style scoped lang="scss">

@@ -1,8 +1,7 @@
-import { spawn } from 'child_process';
+import { spawn, type ChildProcess } from 'node:child_process';
 import { log, LogLevel, die } from '../utils/log';
 import { captureScreen } from './system-capture/screen-capture';
 import { captureWindowTitles } from './system-capture/window-title-capture';
-import type { ChildProcess } from 'child_process';
 
 const TERMINATION_GRACE_PERIOD_IN_SECONDS = 20;
 const TERMINATION_CHECK_INTERVAL_IN_MS = 1000;
@@ -20,6 +19,7 @@ export function runApplication(
 
   logDetails(appFile, executionDurationInSeconds);
 
+  const process = spawn(appFile);
   const processDetails: ApplicationProcessDetails = {
     stderrData: '',
     stdoutData: '',
@@ -27,15 +27,15 @@ export function runApplication(
     windowTitles: [],
     isCrashed: false,
     isDone: false,
-    process: undefined,
+    process,
     resolve: () => { /* NOOP */ },
   };
 
-  const process = spawn(appFile);
-  processDetails.process = process;
-
   return new Promise((resolve) => {
     processDetails.resolve = resolve;
+    if (process.pid === undefined) {
+      throw new Error('Unknown PID');
+    }
     beginCapturingTitles(process.pid, processDetails);
     handleProcessEvents(
       processDetails,
@@ -54,13 +54,14 @@ interface ApplicationExecutionResult {
 }
 
 interface ApplicationProcessDetails {
+  readonly process: ChildProcess;
+
   stderrData: string;
   stdoutData: string;
   explicitlyKilled: boolean;
   windowTitles: Array<string>;
   isCrashed: boolean;
   isDone: boolean;
-  process: ChildProcess;
   resolve: (value: ApplicationExecutionResult) => void;
 }
 
@@ -85,7 +86,7 @@ function beginCapturingTitles(
     const titles = await captureWindowTitles(processId);
 
     (titles || []).forEach((title) => {
-      if (!title?.length) {
+      if (!title) {
         return;
       }
       if (!processDetails.windowTitles.includes(title)) {
@@ -109,10 +110,10 @@ function handleProcessEvents(
   executionDurationInSeconds: number,
 ): void {
   const { process } = processDetails;
-  process.stderr.on('data', (data) => {
+  process.stderr?.on('data', (data) => {
     processDetails.stderrData += data.toString();
   });
-  process.stdout.on('data', (data) => {
+  process.stdout?.on('data', (data) => {
     processDetails.stdoutData += data.toString();
   });
 
@@ -130,7 +131,7 @@ function handleProcessEvents(
 }
 
 async function onProcessExit(
-  code: number,
+  code: number | null,
   processDetails: ApplicationProcessDetails,
   enableScreenshot: boolean,
   screenshotPath: string,

@@ -11,7 +11,7 @@ export function hasDirective(el: Element): boolean {
 }
 
 export const NonCollapsing: ObjectDirective<HTMLElement> = {
-  inserted(el: HTMLElement) { // In Vue 3, use "mounted"
+  mounted(el: HTMLElement) {
     el.setAttribute(attributeName, '');
   },
 };

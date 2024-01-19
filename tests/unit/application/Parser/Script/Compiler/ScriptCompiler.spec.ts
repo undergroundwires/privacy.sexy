@@ -3,60 +3,31 @@ import type { FunctionData } from '@/application/collections/';
 import { ScriptCode } from '@/domain/ScriptCode';
 import { ScriptCompiler } from '@/application/Parser/Script/Compiler/ScriptCompiler';
 import { ISharedFunctionsParser } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionsParser';
-import { ICompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/ICompiledCode';
-import { IFunctionCallCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/IFunctionCallCompiler';
+import { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
+import { FunctionCallCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/FunctionCallCompiler';
 import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
-import { ScriptDataStub } from '@tests/unit/shared/Stubs/ScriptDataStub';
-import { FunctionDataStub } from '@tests/unit/shared/Stubs/FunctionDataStub';
+import { createFunctionDataWithCode } from '@tests/unit/shared/Stubs/FunctionDataStub';
 import { FunctionCallCompilerStub } from '@tests/unit/shared/Stubs/FunctionCallCompilerStub';
 import { SharedFunctionsParserStub } from '@tests/unit/shared/Stubs/SharedFunctionsParserStub';
 import { SharedFunctionCollectionStub } from '@tests/unit/shared/Stubs/SharedFunctionCollectionStub';
 import { parseFunctionCalls } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCallParser';
 import { FunctionCallDataStub } from '@tests/unit/shared/Stubs/FunctionCallDataStub';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
 import { ICodeValidator } from '@/application/Parser/Script/Validation/ICodeValidator';
 import { CodeValidatorStub } from '@tests/unit/shared/Stubs/CodeValidatorStub';
 import { NoEmptyLines } from '@/application/Parser/Script/Validation/Rules/NoEmptyLines';
+import { CompiledCodeStub } from '@tests/unit/shared/Stubs/CompiledCodeStub';
+import { collectExceptionMessage } from '@tests/unit/shared/ExceptionCollector';
+import { createScriptDataWithCall, createScriptDataWithCode } from '@tests/unit/shared/Stubs/ScriptDataStub';
 
 describe('ScriptCompiler', () => {
-  describe('ctor', () => {
-    describe('throws if syntax is missing', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing syntax';
-        const syntax = absentValue;
-        // act
-        const act = () => new ScriptCompilerBuilder()
-          .withSomeFunctions()
-          .withSyntax(syntax)
-          .build();
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
-  });
   describe('canCompile', () => {
-    describe('throws if script is missing', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing script';
-        const argument = absentValue;
-        const builder = new ScriptCompilerBuilder()
-          .withEmptyFunctions()
-          .build();
-        // act
-        const act = () => builder.canCompile(argument);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
     it('returns true if "call" is defined', () => {
       // arrange
       const sut = new ScriptCompilerBuilder()
         .withEmptyFunctions()
         .build();
-      const script = ScriptDataStub.createWithCall();
+      const script = createScriptDataWithCall();
       // act
       const actual = sut.canCompile(script);
       // assert
@@ -67,7 +38,7 @@ describe('ScriptCompiler', () => {
       const sut = new ScriptCompilerBuilder()
         .withEmptyFunctions()
         .build();
-      const script = ScriptDataStub.createWithCode();
+      const script = createScriptDataWithCode();
       // act
       const actual = sut.canCompile(script);
       // assert
@@ -75,29 +46,27 @@ describe('ScriptCompiler', () => {
     });
   });
   describe('compile', () => {
-    describe('throws if script is missing', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing script';
-        const argument = absentValue;
-        const builder = new ScriptCompilerBuilder()
-          .withEmptyFunctions()
-          .build();
-        // act
-        const act = () => builder.compile(argument);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
+    it('throws if script does not have body', () => {
+      // arrange
+      const expectedError = 'Script does include any calls.';
+      const scriptData = createScriptDataWithCode();
+      const sut = new ScriptCompilerBuilder()
+        .withSomeFunctions()
+        .build();
+      // act
+      const act = () => sut.compile(scriptData);
+      // assert
+      expect(act).to.throw(expectedError);
     });
     it('returns code as expected', () => {
       // arrange
-      const expected: ICompiledCode = {
+      const expected: CompiledCode = {
         code: 'expected-code',
         revertCode: 'expected-revert-code',
       };
       const call = new FunctionCallDataStub();
-      const script = ScriptDataStub.createWithCall(call);
-      const functions = [FunctionDataStub.createWithCode().withName('existing-func')];
+      const script = createScriptDataWithCall(call);
+      const functions = [createFunctionDataWithCode().withName('existing-func')];
       const compiledFunctions = new SharedFunctionCollectionStub();
       const functionParserMock = new SharedFunctionsParserStub();
       functionParserMock.setup(functions, compiledFunctions);
@@ -124,7 +93,7 @@ describe('ScriptCompiler', () => {
           .withSyntax(expected)
           .withSharedFunctionsParser(parser)
           .build();
-        const scriptData = ScriptDataStub.createWithCall();
+        const scriptData = createScriptDataWithCall();
         // act
         sut.compile(scriptData);
         // assert
@@ -133,13 +102,13 @@ describe('ScriptCompiler', () => {
       });
       it('parses given functions', () => {
         // arrange
-        const expectedFunctions = [FunctionDataStub.createWithCode().withName('existing-func')];
+        const expectedFunctions = [createFunctionDataWithCode().withName('existing-func')];
         const parser = new SharedFunctionsParserStub();
         const sut = new ScriptCompilerBuilder()
           .withFunctions(...expectedFunctions)
           .withSharedFunctionsParser(parser)
           .build();
-        const scriptData = ScriptDataStub.createWithCall();
+        const scriptData = createScriptDataWithCall();
         // act
         sut.compile(scriptData);
         // assert
@@ -152,10 +121,10 @@ describe('ScriptCompiler', () => {
       const scriptName = 'scriptName';
       const innerError = 'innerError';
       const expectedError = `Script "${scriptName}" ${innerError}`;
-      const callCompiler: IFunctionCallCompiler = {
-        compileCall: () => { throw new Error(innerError); },
+      const callCompiler: FunctionCallCompiler = {
+        compileFunctionCalls: () => { throw new Error(innerError); },
       };
-      const scriptData = ScriptDataStub.createWithCall()
+      const scriptData = createScriptDataWithCall()
         .withName(scriptName);
       const sut = new ScriptCompilerBuilder()
         .withSomeFunctions()
@@ -170,15 +139,16 @@ describe('ScriptCompiler', () => {
       // arrange
       const scriptName = 'scriptName';
       const syntax = new LanguageSyntaxStub();
-      const invalidCode: ICompiledCode = { code: undefined, revertCode: undefined };
+      const invalidCode = new CompiledCodeStub()
+        .withCode('' /* invalid code (empty string) */);
       const realExceptionMessage = collectExceptionMessage(
         () => new ScriptCode(invalidCode.code, invalidCode.revertCode),
       );
       const expectedError = `Script "${scriptName}" ${realExceptionMessage}`;
-      const callCompiler: IFunctionCallCompiler = {
-        compileCall: () => invalidCode,
+      const callCompiler: FunctionCallCompiler = {
+        compileFunctionCalls: () => invalidCode,
       };
-      const scriptData = ScriptDataStub.createWithCall()
+      const scriptData = createScriptDataWithCall()
         .withName(scriptName);
       const sut = new ScriptCompilerBuilder()
         .withSomeFunctions()
@@ -196,7 +166,7 @@ describe('ScriptCompiler', () => {
         NoEmptyLines,
         // Allow duplicated lines to enable calling same function multiple times
       ];
-      const scriptData = ScriptDataStub.createWithCall();
+      const scriptData = createScriptDataWithCall();
       const validator = new CodeValidatorStub();
       const sut = new ScriptCompilerBuilder()
         .withSomeFunctions()
@@ -216,60 +186,60 @@ describe('ScriptCompiler', () => {
 class ScriptCompilerBuilder {
   private static createFunctions(...names: string[]): FunctionData[] {
     return names.map((functionName) => {
-      return FunctionDataStub.createWithCode().withName(functionName);
+      return createFunctionDataWithCode().withName(functionName);
     });
   }
 
-  private functions: FunctionData[];
+  private functions: FunctionData[] | undefined;
 
   private syntax: ILanguageSyntax = new LanguageSyntaxStub();
 
   private sharedFunctionsParser: ISharedFunctionsParser = new SharedFunctionsParserStub();
 
-  private callCompiler: IFunctionCallCompiler = new FunctionCallCompilerStub();
+  private callCompiler: FunctionCallCompiler = new FunctionCallCompilerStub();
 
   private codeValidator: ICodeValidator = new CodeValidatorStub();
 
-  public withFunctions(...functions: FunctionData[]): ScriptCompilerBuilder {
+  public withFunctions(...functions: FunctionData[]): this {
     this.functions = functions;
     return this;
   }
 
-  public withSomeFunctions(): ScriptCompilerBuilder {
+  public withSomeFunctions(): this {
     this.functions = ScriptCompilerBuilder.createFunctions('test-function');
     return this;
   }
 
-  public withFunctionNames(...functionNames: string[]): ScriptCompilerBuilder {
+  public withFunctionNames(...functionNames: string[]): this {
     this.functions = ScriptCompilerBuilder.createFunctions(...functionNames);
     return this;
   }
 
-  public withEmptyFunctions(): ScriptCompilerBuilder {
+  public withEmptyFunctions(): this {
     this.functions = [];
     return this;
   }
 
-  public withSyntax(syntax: ILanguageSyntax): ScriptCompilerBuilder {
+  public withSyntax(syntax: ILanguageSyntax): this {
     this.syntax = syntax;
     return this;
   }
 
   public withSharedFunctionsParser(
     sharedFunctionsParser: ISharedFunctionsParser,
-  ): ScriptCompilerBuilder {
+  ): this {
     this.sharedFunctionsParser = sharedFunctionsParser;
     return this;
   }
 
   public withCodeValidator(
     codeValidator: ICodeValidator,
-  ): ScriptCompilerBuilder {
+  ): this {
     this.codeValidator = codeValidator;
     return this;
   }
 
-  public withFunctionCallCompiler(callCompiler: IFunctionCallCompiler): ScriptCompilerBuilder {
+  public withFunctionCallCompiler(callCompiler: FunctionCallCompiler): this {
     this.callCompiler = callCompiler;
     return this;
   }
@@ -286,14 +256,4 @@ class ScriptCompilerBuilder {
       this.codeValidator,
     );
   }
-}
-
-function collectExceptionMessage(action: () => unknown) {
-  let message = '';
-  try {
-    action();
-  } catch (e) {
-    message = e.message;
-  }
-  return message;
 }

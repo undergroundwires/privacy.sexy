@@ -1,13 +1,13 @@
 <template>
-  <div class="search" v-non-collapsing>
+  <div v-non-collapsing class="search">
     <input
+      v-model="searchQuery"
       type="search"
       class="search-term"
       :placeholder="searchPlaceholder"
-      v-model="searchQuery"
     >
     <div class="icon-wrapper">
-      <font-awesome-icon :icon="['fas', 'search']" />
+      <AppIcon icon="magnifying-glass" />
     </div>
   </div>
 </template>
@@ -15,33 +15,35 @@
 <script lang="ts">
 import {
   defineComponent, ref, watch, computed,
-  inject,
 } from 'vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { injectKey } from '@/presentation/injectionSymbols';
 import { NonCollapsing } from '@/presentation/components/Scripts/View/Cards/NonCollapsingDirective';
+import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import { IReadOnlyUserFilter } from '@/application/Context/State/Filter/IUserFilter';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
 import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 
 export default defineComponent({
+  components: { AppIcon },
   directives: {
     NonCollapsing,
   },
   setup() {
     const {
       modifyCurrentState, onStateChange, currentState,
-    } = inject(InjectionKeys.useCollectionState)();
-    const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
+    } = injectKey((keys) => keys.useCollectionState);
+    const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
 
     const searchPlaceholder = computed<string>(() => {
       const { totalScripts } = currentState.value.collection;
       return `Search in ${totalScripts} scripts`;
     });
-    const searchQuery = ref<string>();
+
+    const searchQuery = ref<string | undefined>();
 
     watch(searchQuery, (newFilter) => updateFilter(newFilter));
 
-    function updateFilter(newFilter: string) {
+    function updateFilter(newFilter: string | undefined) {
       modifyCurrentState((state) => {
         const { filter } = state;
         if (!newFilter) {
@@ -60,7 +62,7 @@ export default defineComponent({
     }, { immediate: true });
 
     function updateFromInitialFilter(filter?: IFilterResult) {
-      searchQuery.value = filter?.query || '';
+      searchQuery.value = filter?.query;
     }
 
     function subscribeToFilterChanges(

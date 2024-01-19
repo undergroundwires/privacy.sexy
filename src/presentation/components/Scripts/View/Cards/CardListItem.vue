@@ -1,46 +1,45 @@
 <template>
   <div
+    ref="cardElement"
     class="card"
-    v-on:click="isExpanded = !isExpanded"
-    v-bind:class="{
+    :class="{
       'is-collapsed': !isExpanded,
-      'is-inactive': activeCategoryId && activeCategoryId != categoryId,
+      'is-inactive': activeCategoryId && activeCategoryId !== categoryId,
       'is-expanded': isExpanded,
     }"
-    ref="cardElement">
+    @click="isExpanded = !isExpanded"
+  >
     <div class="card__inner">
       <!-- Title -->
       <span
+        v-if="cardTitle.length > 0"
         class="card__inner__title"
-        v-if="cardTitle && cardTitle.length > 0">
-        <span>{{cardTitle}}</span>
+      >
+        <span>{{ cardTitle }}</span>
       </span>
       <span v-else>Oh no 😢</span>
       <!-- Expand icon -->
-      <font-awesome-icon
+      <AppIcon
         class="card__inner__expand-icon"
-        :icon="['far', isExpanded ? 'folder-open' : 'folder']"
+        :icon="isExpanded ? 'folder-open' : 'folder'"
       />
       <!-- Indeterminate and full states -->
-      <div class="card__inner__state-icons">
-        <font-awesome-icon
-          :icon="['fa', 'battery-half']"
-          v-if="isAnyChildSelected && !areAllChildrenSelected"
-        />
-        <font-awesome-icon
-          :icon="['fa', 'battery-full']"
-          v-if="areAllChildrenSelected"
-        />
-      </div>
+      <CardSelectionIndicator
+        class="card__inner__selection_indicator"
+        :category-id="categoryId"
+      />
     </div>
-    <div class="card__expander" v-on:click.stop>
-      <div class="card__expander__content">
-        <ScriptsTree :categoryId="categoryId" />
-      </div>
+    <div class="card__expander" @click.stop>
       <div class="card__expander__close-button">
-        <font-awesome-icon
-          :icon="['fas', 'times']"
-          v-on:click="collapse()"
+        <FlatButton
+          icon="xmark"
+          @click="collapse()"
+        />
+      </div>
+      <div class="card__expander__content">
+        <ScriptsTree
+          :category-id="categoryId"
+          :has-top-padding="false"
         />
       </div>
     </div>
@@ -49,16 +48,21 @@
 
 <script lang="ts">
 import {
-  defineComponent, ref, watch, computed,
-  inject,
+  defineComponent, computed, shallowRef,
 } from 'vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
-import ScriptsTree from '@/presentation/components/Scripts/View/ScriptsTree/ScriptsTree.vue';
+import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
+import FlatButton from '@/presentation/components/Shared/FlatButton.vue';
+import { injectKey } from '@/presentation/injectionSymbols';
+import ScriptsTree from '@/presentation/components/Scripts/View/Tree/ScriptsTree.vue';
 import { sleep } from '@/infrastructure/Threading/AsyncSleep';
+import CardSelectionIndicator from './CardSelectionIndicator.vue';
 
 export default defineComponent({
   components: {
     ScriptsTree,
+    AppIcon,
+    CardSelectionIndicator,
+    FlatButton,
   },
   props: {
     categoryId: {
@@ -76,8 +80,7 @@ export default defineComponent({
     /* eslint-enable @typescript-eslint/no-unused-vars */
   },
   setup(props, { emit }) {
-    const { onStateChange, currentState } = inject(InjectionKeys.useCollectionState)();
-    const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
+    const { currentState } = injectKey((keys) => keys.useCollectionState);
 
     const isExpanded = computed({
       get: () => {
@@ -91,53 +94,29 @@ export default defineComponent({
       },
     });
 
-    const isAnyChildSelected = ref(false);
-    const areAllChildrenSelected = ref(false);
-    const cardElement = ref<HTMLElement>();
+    const cardElement = shallowRef<HTMLElement>();
 
-    const cardTitle = computed<string | undefined>(() => {
-      if (!props.categoryId || !currentState.value) {
-        return undefined;
-      }
-      const category = currentState.value.collection.findCategory(props.categoryId);
-      return category?.name;
+    const cardTitle = computed<string>(() => {
+      const category = currentState.value.collection.getCategory(props.categoryId);
+      return category.name;
     });
 
     function collapse() {
       isExpanded.value = false;
     }
 
-    onStateChange((state) => {
-      events.unsubscribeAllAndRegister([
-        state.selection.changed.on(
-          () => updateSelectionIndicators(props.categoryId),
-        ),
-      ]);
-      updateSelectionIndicators(props.categoryId);
-    }, { immediate: true });
-
-    watch(
-      () => props.categoryId,
-      (categoryId) => updateSelectionIndicators(categoryId),
-    );
-
     async function scrollToCard() {
+      const card = cardElement.value;
+      if (!card) {
+        throw new Error('Card is not found');
+      }
       await sleep(400); // wait a bit to allow GUI to render the expanded card
-      cardElement.value.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function updateSelectionIndicators(categoryId: number) {
-      const category = currentState.value.collection.findCategory(categoryId);
-      const { selection } = currentState.value;
-      isAnyChildSelected.value = category ? selection.isAnySelected(category) : false;
-      areAllChildrenSelected.value = category ? selection.areAllSelected(category) : false;
+      card.scrollIntoView({ behavior: 'smooth' });
     }
 
     return {
       cardTitle,
       isExpanded,
-      isAnyChildSelected,
-      areAllChildrenSelected,
       cardElement,
       collapse,
     };
@@ -185,45 +164,45 @@ $card-horizontal-gap    : $card-gap;
     &:after {
       transition: all 0.3s ease-in-out;
     }
-    &__title {
+    .card__inner__title {
       display: flex;
       flex-direction: column;
       flex: 1;
       justify-content: center;
     }
-    &__state-icons {
+    .card__inner__selection_indicator {
       height: $card-inner-padding;
       margin-right: -$card-inner-padding;
       padding-right: 10px;
       display: flex;
       justify-content: flex-end;
     }
-
-    &__expand-icon {
+    .card__inner__expand-icon {
       width: 100%;
       margin-top: .25em;
       vertical-align: middle;
     }
   }
-  &__expander {
+  .card__expander {
     transition: all 0.2s ease-in-out;
     position: relative;
     background-color: $color-primary-darker;
     color: $color-on-primary;
+
     display: flex;
     align-items: center;
+    flex-direction: column;
 
-    &__content {
-      flex: 1;
+    .card__expander__content {
       display: flex;
       justify-content: center;
       word-break: break-word;
+      max-width: 100%; // Prevents horizontal expansion of inner content (e.g., when a code block is shown)
     }
 
-    &__close-button {
-      width: auto;
+    .card__expander__close-button {
       font-size: 1.5em;
-      align-self: flex-start;
+      align-self: flex-end;
       margin-right: 0.25em;
       @include clickable;
       color: $color-primary-light;
@@ -268,8 +247,6 @@ $card-horizontal-gap    : $card-gap;
 
     .card__expander {
       min-height: 200px;
-      // max-height: 1000px;
-      // overflow-y: auto;
       margin-top: $expanded-margin-top;
       opacity: 1;
     }

@@ -4,7 +4,7 @@
  */
 
 /// <reference types="electron-vite/node" />
-import { join } from 'path';
+import { join } from 'node:path';
 import appIcon from '@/presentation/public/icon.png?asset';
 
 export const APP_ICON_PATH = appIcon;

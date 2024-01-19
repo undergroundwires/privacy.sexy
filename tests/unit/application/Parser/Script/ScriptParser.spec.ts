@@ -4,9 +4,9 @@ import { parseScript, ScriptFactoryType } from '@/application/Parser/Script/Scri
 import { parseDocs } from '@/application/Parser/DocumentationParser';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { ICategoryCollectionParseContext } from '@/application/Parser/Script/ICategoryCollectionParseContext';
-import { itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { ScriptCompilerStub } from '@tests/unit/shared/Stubs/ScriptCompilerStub';
-import { ScriptDataStub } from '@tests/unit/shared/Stubs/ScriptDataStub';
+import { createScriptDataWithCall, createScriptDataWithCode, createScriptDataWithoutCallOrCodes } from '@tests/unit/shared/Stubs/ScriptDataStub';
 import { EnumParserStub } from '@tests/unit/shared/Stubs/EnumParserStub';
 import { ScriptCodeStub } from '@tests/unit/shared/Stubs/ScriptCodeStub';
 import { CategoryCollectionParseContextStub } from '@tests/unit/shared/Stubs/CategoryCollectionParseContextStub';
@@ -25,7 +25,7 @@ describe('ScriptParser', () => {
     it('parses name as expected', () => {
       // arrange
       const expected = 'test-expected-name';
-      const script = ScriptDataStub.createWithCode()
+      const script = createScriptDataWithCode()
         .withName(expected);
       // act
       const actual = new TestBuilder()
@@ -37,7 +37,7 @@ describe('ScriptParser', () => {
     it('parses docs as expected', () => {
       // arrange
       const docs = ['https://expected-doc1.com', 'https://expected-doc2.com'];
-      const script = ScriptDataStub.createWithCode()
+      const script = createScriptDataWithCode()
         .withDocs(docs);
       const expected = parseDocs(script);
       // act
@@ -51,7 +51,7 @@ describe('ScriptParser', () => {
       describe('accepts absent level', () => {
         itEachAbsentStringValue((absentValue) => {
           // arrange
-          const script = ScriptDataStub.createWithCode()
+          const script = createScriptDataWithCode()
             .withRecommend(absentValue);
           // act
           const actual = new TestBuilder()
@@ -59,14 +59,14 @@ describe('ScriptParser', () => {
             .parseScript();
           // assert
           expect(actual.level).to.equal(undefined);
-        });
+        }, { excludeNull: true });
       });
       it('parses level as expected', () => {
         // arrange
         const expectedLevel = RecommendationLevel.Standard;
         const expectedName = 'level';
         const levelText = 'standard';
-        const script = ScriptDataStub.createWithCode()
+        const script = createScriptDataWithCode()
           .withRecommend(levelText);
         const parserMock = new EnumParserStub<RecommendationLevel>()
           .setup(expectedName, levelText, expectedLevel);
@@ -83,8 +83,7 @@ describe('ScriptParser', () => {
       it('parses "execute" as expected', () => {
         // arrange
         const expected = 'expected-code';
-        const script = ScriptDataStub
-          .createWithCode()
+        const script = createScriptDataWithCode()
           .withCode(expected);
         // act
         const parsed = new TestBuilder()
@@ -97,8 +96,7 @@ describe('ScriptParser', () => {
       it('parses "revert" as expected', () => {
         // arrange
         const expected = 'expected-revert-code';
-        const script = ScriptDataStub
-          .createWithCode()
+        const script = createScriptDataWithCode()
           .withRevertCode(expected);
         // act
         const parsed = new TestBuilder()
@@ -109,23 +107,10 @@ describe('ScriptParser', () => {
         expect(actual).to.equal(expected);
       });
       describe('compiler', () => {
-        describe('throws when context is not defined', () => {
-          itEachAbsentObjectValue((absentValue) => {
-            // arrange
-            const expectedMessage = 'missing context';
-            const context: ICategoryCollectionParseContext = absentValue;
-            // act
-            const act = () => new TestBuilder()
-              .withContext(context)
-              .parseScript();
-            // assert
-            expect(act).to.throw(expectedMessage);
-          });
-        });
         it('gets code from compiler', () => {
           // arrange
           const expected = new ScriptCodeStub();
-          const script = ScriptDataStub.createWithCode();
+          const script = createScriptDataWithCode();
           const compiler = new ScriptCompilerStub()
             .withCompileAbility(script, expected);
           const parseContext = new CategoryCollectionParseContextStub()
@@ -147,8 +132,7 @@ describe('ScriptParser', () => {
           const duplicatedCode = `${commentDelimiter} duplicate-line\n${commentDelimiter} duplicate-line`;
           const parseContext = new CategoryCollectionParseContextStub()
             .withSyntax(new LanguageSyntaxStub().withCommentDelimiters(commentDelimiter));
-          const script = ScriptDataStub
-            .createWithoutCallOrCodes()
+          const script = createScriptDataWithoutCallOrCodes()
             .withCode(duplicatedCode);
           // act
           const act = () => new TestBuilder()
@@ -166,8 +150,7 @@ describe('ScriptParser', () => {
             NoDuplicatedLines,
           ];
           const validator = new CodeValidatorStub();
-          const script = ScriptDataStub
-            .createWithCode()
+          const script = createScriptDataWithCode()
             .withCode('expected code to be validated')
             .withRevertCode('expected revert code to be validated');
           // act
@@ -186,8 +169,7 @@ describe('ScriptParser', () => {
           const expectedRules = [];
           const expectedCodeCalls = [];
           const validator = new CodeValidatorStub();
-          const script = ScriptDataStub
-            .createWithCall();
+          const script = createScriptDataWithCall();
           const compiler = new ScriptCompilerStub()
             .withCompileAbility(script, new ScriptCodeStub());
           const parseContext = new CategoryCollectionParseContextStub()
@@ -222,7 +204,7 @@ describe('ScriptParser', () => {
         new NodeValidationTestRunner()
           .testInvalidNodeName((invalidName) => {
             return createTest(
-              ScriptDataStub.createWithCall().withName(invalidName),
+              createScriptDataWithCall().withName(invalidName),
             );
           })
           .testMissingNodeData((node) => {
@@ -231,30 +213,30 @@ describe('ScriptParser', () => {
           .runThrowingCase({
             name: 'throws when both function call and code are defined',
             scenario: createTest(
-              ScriptDataStub.createWithCall().withCode('code'),
+              createScriptDataWithCall().withCode('code'),
             ),
-            expectedMessage: 'Cannot define both "call" and "code".',
+            expectedMessage: 'Both "call" and "code" are defined.',
           })
           .runThrowingCase({
             name: 'throws when both function call and revertCode are defined',
             scenario: createTest(
-              ScriptDataStub.createWithCall().withRevertCode('revert-code'),
+              createScriptDataWithCall().withRevertCode('revert-code'),
             ),
-            expectedMessage: 'Cannot define "revertCode" if "call" is defined.',
+            expectedMessage: 'Both "call" and "revertCode" are defined.',
           })
           .runThrowingCase({
             name: 'throws when neither call or revertCode are defined',
             scenario: createTest(
-              ScriptDataStub.createWithoutCallOrCodes(),
+              createScriptDataWithoutCallOrCodes(),
             ),
-            expectedMessage: 'Must define either "call" or "code".',
+            expectedMessage: 'Neither "call" or "code" is defined.',
           });
       });
       it(`rethrows exception if ${Script.name} cannot be constructed`, () => {
         // arrange
         const expectedError = 'script creation failed';
         const factoryMock: ScriptFactoryType = () => { throw new Error(expectedError); };
-        const data = ScriptDataStub.createWithCode();
+        const data = createScriptDataWithCode();
         // act
         const act = () => new TestBuilder()
           .withData(data)
@@ -274,14 +256,14 @@ describe('ScriptParser', () => {
 });
 
 class TestBuilder {
-  private data: ScriptData = ScriptDataStub.createWithCode();
+  private data: ScriptData = createScriptDataWithCode();
 
   private context: ICategoryCollectionParseContext = new CategoryCollectionParseContextStub();
 
   private parser: IEnumParser<RecommendationLevel> = new EnumParserStub<RecommendationLevel>()
     .setupDefaultValue(RecommendationLevel.Standard);
 
-  private factory: ScriptFactoryType = undefined;
+  private factory?: ScriptFactoryType = undefined;
 
   private codeValidator: ICodeValidator = new CodeValidatorStub();
 

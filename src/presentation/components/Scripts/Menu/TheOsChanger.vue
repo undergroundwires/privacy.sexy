@@ -4,22 +4,21 @@
       v-for="os in allOses"
       :key="os.name"
       :enabled="currentOs !== os.os"
-      @click="changeOs(os.os)"
       :label="os.name"
+      @click="changeOs(os.os)"
     />
   </MenuOptionList>
 </template>
 
 <script lang="ts">
-import {
-  defineComponent, computed, inject,
-} from 'vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { defineComponent, computed } from 'vue';
+import { injectKey } from '@/presentation/injectionSymbols';
 import { OperatingSystem } from '@/domain/OperatingSystem';
+import { getOperatingSystemDisplayName } from '@/presentation/components/Shared/OperatingSystemNames';
 import MenuOptionList from './MenuOptionList.vue';
 import MenuOptionListItem from './MenuOptionListItem.vue';
 
-interface IOsViewModel {
+interface OperatingSystemOption {
   readonly name: string;
   readonly os: OperatingSystem;
 }
@@ -30,17 +29,17 @@ export default defineComponent({
     MenuOptionListItem,
   },
   setup() {
-    const { modifyCurrentContext, currentState } = inject(InjectionKeys.useCollectionState)();
-    const { application } = inject(InjectionKeys.useApplication);
+    const { modifyCurrentContext, currentState } = injectKey((keys) => keys.useCollectionState);
+    const { application } = injectKey((keys) => keys.useApplication);
 
-    const allOses = computed<ReadonlyArray<IOsViewModel>>(() => (
-      application.getSupportedOsList() ?? [])
-      .map((os) : IOsViewModel => (
-        {
+    const allOses = computed<ReadonlyArray<OperatingSystemOption>>(
+      () => application
+        .getSupportedOsList()
+        .map((os) : OperatingSystemOption => ({
           os,
-          name: renderOsName(os),
-        }
-      )));
+          name: getOperatingSystemDisplayName(os),
+        })),
+    );
 
     const currentOs = computed<OperatingSystem>(() => {
       return currentState.value.os;
@@ -59,13 +58,4 @@ export default defineComponent({
     };
   },
 });
-
-function renderOsName(os: OperatingSystem): string {
-  switch (os) {
-    case OperatingSystem.Windows: return 'Windows';
-    case OperatingSystem.macOS: return 'macOS';
-    case OperatingSystem.Linux: return 'Linux (preview)';
-    default: throw new RangeError(`Cannot render os name: ${OperatingSystem[os]}`);
-  }
-}
 </script>

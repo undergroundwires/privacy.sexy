@@ -1,9 +1,12 @@
-import type { FunctionData, InstructionHolder } from '@/application/collections/';
+import type {
+  FunctionData, CodeInstruction, CodeFunctionData, CallFunctionData, CallInstruction,
+} from '@/application/collections/';
 import { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
 import { CodeValidator } from '@/application/Parser/Script/Validation/CodeValidator';
 import { NoEmptyLines } from '@/application/Parser/Script/Validation/Rules/NoEmptyLines';
 import { NoDuplicatedLines } from '@/application/Parser/Script/Validation/Rules/NoDuplicatedLines';
 import { ICodeValidator } from '@/application/Parser/Script/Validation/ICodeValidator';
+import { isArray, isNullOrUndefined, isPlainObject } from '@/TypeHelpers';
 import { createFunctionWithInlineCode, createCallerFunction } from './SharedFunction';
 import { SharedFunctionCollection } from './SharedFunctionCollection';
 import { ISharedFunctionCollection } from './ISharedFunctionCollection';
@@ -23,9 +26,8 @@ export class SharedFunctionsParser implements ISharedFunctionsParser {
     functions: readonly FunctionData[],
     syntax: ILanguageSyntax,
   ): ISharedFunctionCollection {
-    if (!syntax) { throw new Error('missing syntax'); }
     const collection = new SharedFunctionCollection();
-    if (!functions || !functions.length) {
+    if (!functions.length) {
       return collection;
     }
     ensureValidFunctions(functions);
@@ -55,16 +57,18 @@ function parseFunction(
 }
 
 function validateCode(
-  data: FunctionData,
+  data: CodeFunctionData,
   syntax: ILanguageSyntax,
   validator: ICodeValidator,
 ): void {
-  [data.code, data.revertCode].forEach(
-    (code) => validator.throwIfInvalid(
-      code,
-      [new NoEmptyLines(), new NoDuplicatedLines(syntax)],
-    ),
-  );
+  [data.code, data.revertCode]
+    .filter((code): code is string => Boolean(code))
+    .forEach(
+      (code) => validator.throwIfInvalid(
+        code,
+        [new NoEmptyLines(), new NoDuplicatedLines(syntax)],
+      ),
+    );
 }
 
 function parseParameters(data: FunctionData): IReadOnlyFunctionParameterCollection {
@@ -85,19 +89,18 @@ function parseParameters(data: FunctionData): IReadOnlyFunctionParameterCollecti
     }, new FunctionParameterCollection());
 }
 
-function hasCode(data: FunctionData): boolean {
-  return Boolean(data.code);
+function hasCode(data: FunctionData): data is CodeFunctionData {
+  return (data as CodeInstruction).code !== undefined;
 }
 
-function hasCall(data: FunctionData): boolean {
-  return Boolean(data.call);
+function hasCall(data: FunctionData): data is CallFunctionData {
+  return (data as CallInstruction).call !== undefined;
 }
 
 function ensureValidFunctions(functions: readonly FunctionData[]) {
-  ensureNoUndefinedItem(functions);
   ensureNoDuplicatesInFunctionNames(functions);
-  ensureNoDuplicateCode(functions);
   ensureEitherCallOrCodeIsDefined(functions);
+  ensureNoDuplicateCode(functions);
   ensureExpectedParametersType(functions);
 }
 
@@ -105,7 +108,7 @@ function printList(list: readonly string[]): string {
   return `"${list.join('","')}"`;
 }
 
-function ensureEitherCallOrCodeIsDefined(holders: readonly InstructionHolder[]) {
+function ensureEitherCallOrCodeIsDefined(holders: readonly FunctionData[]) {
   // Ensure functions do not define both call and code
   const withBothCallAndCode = holders.filter((holder) => hasCode(holder) && hasCall(holder));
   if (withBothCallAndCode.length) {
@@ -119,8 +122,11 @@ function ensureEitherCallOrCodeIsDefined(holders: readonly InstructionHolder[]) 
 }
 
 function ensureExpectedParametersType(functions: readonly FunctionData[]) {
+  const hasValidParameters = (
+    func: FunctionData,
+  ) => isNullOrUndefined(func.parameters) || isArrayOfObjects(func.parameters);
   const unexpectedFunctions = functions
-    .filter((func) => func.parameters && !isArrayOfObjects(func.parameters));
+    .filter((func) => !hasValidParameters(func));
   if (unexpectedFunctions.length) {
     const errorMessage = `parameters must be an array of objects in function(s) ${printNames(unexpectedFunctions)}`;
     throw new Error(errorMessage);
@@ -128,11 +134,10 @@ function ensureExpectedParametersType(functions: readonly FunctionData[]) {
 }
 
 function isArrayOfObjects(value: unknown): boolean {
-  return Array.isArray(value)
-    && value.every((item) => typeof item === 'object');
+  return isArray(value) && value.every((item) => isPlainObject(item));
 }
 
-function printNames(holders: readonly InstructionHolder[]) {
+function printNames(holders: readonly FunctionData[]) {
   return printList(holders.map((holder) => holder.name));
 }
 
@@ -144,22 +149,19 @@ function ensureNoDuplicatesInFunctionNames(functions: readonly FunctionData[]) {
   }
 }
 
-function ensureNoUndefinedItem(functions: readonly FunctionData[]) {
-  if (functions.some((func) => !func)) {
-    throw new Error('some functions are undefined');
-  }
-}
-
 function ensureNoDuplicateCode(functions: readonly FunctionData[]) {
-  const duplicateCodes = getDuplicates(functions
+  const callFunctions = functions
+    .filter((func) => hasCode(func))
+    .map((func) => func as CodeFunctionData);
+  const duplicateCodes = getDuplicates(callFunctions
     .map((func) => func.code)
     .filter((code) => code));
   if (duplicateCodes.length > 0) {
     throw new Error(`duplicate "code" in functions: ${printList(duplicateCodes)}`);
   }
-  const duplicateRevertCodes = getDuplicates(functions
-    .filter((func) => func.revertCode)
-    .map((func) => func.revertCode));
+  const duplicateRevertCodes = getDuplicates(callFunctions
+    .map((func) => func.revertCode)
+    .filter((code): code is string => Boolean(code)));
   if (duplicateRevertCodes.length > 0) {
     throw new Error(`duplicate "revertCode" in functions: ${printList(duplicateRevertCodes)}`);
   }

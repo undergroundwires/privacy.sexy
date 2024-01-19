@@ -11,8 +11,6 @@ const EXPECTED_LOG_MARKERS = [
   '[APP_INIT]',
 ];
 
-type ProcessType = 'main' | 'renderer';
-
 export async function checkForErrors(
   stderr: string,
   windowTitles: readonly string[],
@@ -31,19 +29,17 @@ async function gatherErrors(
   projectDir: string,
 ): Promise<ExecutionError[]> {
   if (!projectDir) { throw new Error('missing project directory'); }
-  const { logFileContent: mainLogs, logFilePath: mainLogFile } = await readAppLogFile(projectDir, 'main');
-  const { logFileContent: rendererLogs, logFilePath: rendererLogFile } = await readAppLogFile(projectDir, 'renderer');
-  const allLogs = [mainLogs, rendererLogs, stderr].filter(Boolean).join('\n');
+  const { logFileContent: mainLogs, logFilePath: mainLogFile } = await readAppLogFile(projectDir);
+  const allLogs = [mainLogs, stderr].filter(Boolean).join('\n');
   return [
     verifyStdErr(stderr),
-    verifyApplicationLogsExist('main', mainLogs, mainLogFile),
-    verifyApplicationLogsExist('renderer', rendererLogs, rendererLogFile),
+    verifyApplicationLogsExist(mainLogs, mainLogFile),
     ...EXPECTED_LOG_MARKERS.map(
       (marker) => verifyLogMarkerExistsInLogs(allLogs, marker),
     ),
     verifyWindowTitle(windowTitles),
     verifyErrorsInLogs(allLogs),
-  ].filter(Boolean);
+  ].filter((error): error is ExecutionError => Boolean(error));
 }
 
 interface ExecutionError {
@@ -72,13 +68,12 @@ function formatError(error: ExecutionError): string {
 }
 
 function verifyApplicationLogsExist(
-  processType: ProcessType,
   logContent: string | undefined,
   logFilePath: string,
 ): ExecutionError | undefined {
   if (!logContent?.length) {
     return describeError(
-      `Missing application (${processType}) logs`,
+      'Missing application logs',
       'Application logs are empty not were not found.'
         + `\nLog path: ${logFilePath}`,
     );

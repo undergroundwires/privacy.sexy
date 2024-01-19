@@ -1,16 +1,16 @@
 import { IExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/IExpressionsCompiler';
 import { IReadOnlyFunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/Function/Call/Argument/IFunctionCallArgumentCollection';
 import { scrambledEqual } from '@/application/Common/Array';
-import { ISharedFunction } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
+import { FunctionBodyType, ISharedFunction } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
 import { FunctionCallArgumentCollectionStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentCollectionStub';
+import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
-export class ExpressionsCompilerStub implements IExpressionsCompiler {
-  public readonly callHistory = new Array<{
-    code: string, parameters: IReadOnlyFunctionCallArgumentCollection }>();
+export class ExpressionsCompilerStub
+  extends StubWithObservableMethodCalls<IExpressionsCompiler>
+  implements IExpressionsCompiler {
+  private readonly scenarios = new Array<ExpressionCompilationScenario>();
 
-  private readonly scenarios = new Array<ITestScenario>();
-
-  public setup(scenario: ITestScenario): ExpressionsCompilerStub {
+  public setup(scenario: ExpressionCompilationScenario): this {
     this.scenarios.push(scenario);
     return this;
   }
@@ -18,17 +18,32 @@ export class ExpressionsCompilerStub implements IExpressionsCompiler {
   public setupToReturnFunctionCode(
     func: ISharedFunction,
     givenArgs: FunctionCallArgumentCollectionStub,
-  ) {
-    return this
-      .setup({ givenCode: func.body.code.execute, givenArgs, result: func.body.code.execute })
-      .setup({ givenCode: func.body.code.revert, givenArgs, result: func.body.code.revert });
+  ): this {
+    if (func.body.type !== FunctionBodyType.Code) {
+      throw new Error('not a code body');
+    }
+    if (func.body.code.revert) {
+      this.setup({
+        givenCode: func.body.code.revert,
+        givenArgs,
+        result: func.body.code.revert,
+      });
+    }
+    return this.setup({
+      givenCode: func.body.code.execute,
+      givenArgs,
+      result: func.body.code.execute,
+    });
   }
 
   public compileExpressions(
     code: string,
     parameters: IReadOnlyFunctionCallArgumentCollection,
   ): string {
-    this.callHistory.push({ code, parameters });
+    this.registerMethodCall({
+      methodName: 'compileExpressions',
+      args: [code, parameters],
+    });
     const scenario = this.scenarios.find(
       (s) => s.givenCode === code && deepEqual(s.givenArgs, parameters),
     );
@@ -39,11 +54,11 @@ export class ExpressionsCompilerStub implements IExpressionsCompiler {
       .getAllParameterNames()
       .map((name) => `${name}=${parameters.getArgument(name).argumentValue}`)
       .join('\n\t');
-    return `[ExpressionsCompilerStub]\ncode: "${code}"\nparameters: ${parametersAndValues}`;
+    return `[${ExpressionsCompilerStub.name}]\ncode: "${code}"\nparameters: ${parametersAndValues}`;
   }
 }
 
-interface ITestScenario {
+interface ExpressionCompilationScenario {
   readonly givenCode: string;
   readonly givenArgs: IReadOnlyFunctionCallArgumentCollection;
   readonly result: string;

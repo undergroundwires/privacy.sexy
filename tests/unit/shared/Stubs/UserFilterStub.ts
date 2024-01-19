@@ -2,6 +2,7 @@ import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult'
 import { IUserFilter } from '@/application/Context/State/Filter/IUserFilter';
 import { IEventSource } from '@/infrastructure/Events/IEventSource';
 import { IFilterChangeDetails } from '@/application/Context/State/Filter/Event/IFilterChangeDetails';
+import { FilterActionType } from '@/application/Context/State/Filter/Event/FilterActionType';
 import { FilterResultStub } from './FilterResultStub';
 import { EventSourceStub } from './EventSourceStub';
 
@@ -21,7 +22,11 @@ export class UserFilterStub implements IUserFilter {
 
   public notifyFilterChange(change: IFilterChangeDetails) {
     this.filterChangedSource.notify(change);
-    this.currentFilter = change.filter;
+    if (change.action.type === FilterActionType.Apply) {
+      this.currentFilter = change.action.filter;
+    } else {
+      this.currentFilter = undefined;
+    }
   }
 
   public withNoCurrentFilter() {

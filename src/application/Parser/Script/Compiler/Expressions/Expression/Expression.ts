@@ -15,19 +15,10 @@ export class Expression implements IExpression {
     public readonly evaluator: ExpressionEvaluator,
     parameters?: IReadOnlyFunctionParameterCollection,
   ) {
-    if (!position) {
-      throw new Error('missing position');
-    }
-    if (!evaluator) {
-      throw new Error('missing evaluator');
-    }
     this.parameters = parameters ?? new FunctionParameterCollection();
   }
 
   public evaluate(context: IExpressionEvaluationContext): string {
-    if (!context) {
-      throw new Error('missing context');
-    }
     validateThatAllRequiredParametersAreSatisfied(this.parameters, context.args);
     const args = filterUnusedArguments(this.parameters, context.args);
     const filteredContext = new ExpressionEvaluationContext(args, context.pipelineCompiler);

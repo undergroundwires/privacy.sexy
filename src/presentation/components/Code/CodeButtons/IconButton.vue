@@ -1,33 +1,37 @@
 <template>
-  <button
-    class="button"
-    type="button"
-    @click="onClicked"
-  >
-    <font-awesome-icon
-      class="button__icon"
-      :icon="[iconPrefix, iconName]"
-      size="2x"
-    />
-    <div class="button__text">{{text}}</div>
-  </button>
+  <div class="button-wrapper">
+    <button
+      class="button"
+      type="button"
+      @click="onClicked"
+    >
+      <AppIcon
+        class="button__icon"
+        :icon="iconName"
+      />
+      <div class="button__text">
+        {{ text }}
+      </div>
+    </button>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
+import { IconName } from '@/presentation/components/Shared/Icon/IconName';
+import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 
 export default defineComponent({
+  components: {
+    AppIcon,
+  },
   props: {
     text: {
       type: String,
       required: true,
     },
-    iconPrefix: {
-      type: String,
-      required: true,
-    },
     iconName: {
-      type: String,
+      type: String as PropType<IconName>,
       required: true,
     },
   },
@@ -49,36 +53,50 @@ export default defineComponent({
 <style scoped lang="scss">
 @use "@/presentation/assets/styles/main" as *;
 
+.button-wrapper {
+  position: relative;
+  height: 70px;
+  .button {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+}
+
 .button {
+  @include reset-button;
+
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
 
   background-color: $color-secondary;
   color: $color-on-secondary;
 
   border: none;
-  padding:20px;
+  padding: 20px;
   transition-duration: 0.4s;
   overflow: hidden;
   box-shadow: 0 3px 9px $color-primary-darkest;
   border-radius: 4px;
 
+  .button__icon {
+    font-size: 2em;
+  }
+
   @include clickable;
 
-  width: 10%;
-  min-width: 90px;
   @include hover-or-touch {
     background: $color-surface;
     box-shadow: 0px 2px 10px 5px $color-secondary;
+    .button__text {
+      display: block;
+    }
+    .button__icon {
+      display: none;
+    }
   }
-  @include hover-or-touch('>&__text') {
-    display: block;
-  }
-  @include hover-or-touch('>&__icon') {
-    display: none;
-  }
-  &__text {
+  .button__text {
     display: none;
     font-family: $font-artistic;
     font-size: 1.5em;

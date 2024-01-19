@@ -1,21 +1,26 @@
 <template>
-  <span> <!-- Parent wrapper allows adding content inside with CSS without making it clickable -->
-    <span
-      v-bind:class="{
-        disabled: !enabled,
-        enabled: enabled,
-      }"
-      v-non-collapsing
-      @click="onClicked()">{{label}}</span>
+  <span>
+    <!--
+      Parent wrapper allows `MenuOptionList` to safely add content inside
+      such as adding content in `::before` block without making it clickable.
+    -->
+    <FlatButton
+      :disabled="!enabled"
+      :label="label"
+      flat
+      @click="onClicked()"
+    />
   </span>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { NonCollapsing } from '@/presentation/components/Scripts/View/Cards/NonCollapsingDirective';
+import FlatButton from '@/presentation/components/Shared/FlatButton.vue';
 
 export default defineComponent({
   directives: { NonCollapsing },
+  components: { FlatButton },
   props: {
     enabled: {
       type: Boolean,
@@ -43,18 +48,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped lang="scss">
-@use "@/presentation/assets/styles/main" as *;
-
-.enabled {
-  @include clickable;
-  @include hover-or-touch {
-    font-weight:bold;
-    text-decoration:underline;
-  }
-}
-.disabled {
-  color: $color-primary-light;
-}
-</style>

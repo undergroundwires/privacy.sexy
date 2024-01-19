@@ -1,68 +1,103 @@
-import { ISharedFunction, ISharedFunctionBody, FunctionBodyType } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
+import {
+  ISharedFunction, FunctionBodyType, CallFunctionBody, CodeFunctionBody,
+} from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
 import { IReadOnlyFunctionParameterCollection } from '@/application/Parser/Script/Compiler/Function/Parameter/IFunctionParameterCollection';
-import { IFunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/IFunctionCall';
+import { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
 import { FunctionParameterCollectionStub } from './FunctionParameterCollectionStub';
 import { FunctionCallStub } from './FunctionCallStub';
+import { FunctionCodeStub } from './FunctionCodeStub';
 
-export class SharedFunctionStub implements ISharedFunction {
-  public name = 'shared-function-stub-name';
+type CodeOrCallBody<T extends FunctionBodyType> = T extends FunctionBodyType.Calls
+  ? CallFunctionBody : CodeFunctionBody;
+
+export function createSharedFunctionStubWithCalls(): SharedFunctionStub<FunctionBodyType.Calls> {
+  return new SharedFunctionStub(FunctionBodyType.Calls);
+}
+
+export function createSharedFunctionStubWithCode(): SharedFunctionStub<FunctionBodyType.Code> {
+  return new SharedFunctionStub(FunctionBodyType.Code);
+}
+
+class SharedFunctionStub<T extends FunctionBodyType>
+implements ISharedFunction {
+  public name = `${SharedFunctionStub.name}-name`;
 
   public parameters: IReadOnlyFunctionParameterCollection = new FunctionParameterCollectionStub()
-    .withParameterName('shared-function-stub-parameter-name');
+    .withParameterName(`${SharedFunctionStub.name}-parameter-name`);
 
-  private code = 'shared-function-stub-code';
+  private code = `${SharedFunctionStub.name}-code`;
 
-  private revertCode = 'shared-function-stub-revert-code';
+  private revertCode: string | undefined = `${SharedFunctionStub.name}-revert-code`;
 
-  private bodyType: FunctionBodyType = FunctionBodyType.Code;
+  private readonly bodyType: FunctionBodyType = FunctionBodyType.Code;
 
-  private calls: IFunctionCall[] = [new FunctionCallStub()];
+  private calls: FunctionCall[] = [new FunctionCallStub()];
 
-  constructor(type: FunctionBodyType) {
+  constructor(type: T) {
     this.bodyType = type;
   }
 
-  public get body(): ISharedFunctionBody {
-    return {
-      type: this.bodyType,
-      code: this.bodyType === FunctionBodyType.Code ? {
-        execute: this.code,
-        revert: this.revertCode,
-      } : undefined,
-      calls: this.bodyType === FunctionBodyType.Calls ? this.calls : undefined,
-    };
+  public get body(): CodeOrCallBody<T> {
+    switch (this.bodyType) {
+      case FunctionBodyType.Code:
+        return this.getCodeBody() as CodeOrCallBody<T>;
+      case FunctionBodyType.Calls:
+        return this.getCallBody() as CodeOrCallBody<T>;
+      default:
+        throw new Error(`unknown body type: ${this.bodyType}`);
+    }
   }
 
-  public withName(name: string) {
+  public withName(name: string): this {
     this.name = name;
     return this;
   }
 
-  public withCode(code: string) {
+  public withCode(code: string): this {
     this.code = code;
     return this;
   }
 
-  public withRevertCode(revertCode: string) {
+  public withRevertCode(revertCode: string | undefined): this {
     this.revertCode = revertCode;
     return this;
   }
 
-  public withParameters(parameters: IReadOnlyFunctionParameterCollection) {
+  public withParameters(parameters: IReadOnlyFunctionParameterCollection): this {
     this.parameters = parameters;
     return this;
   }
 
-  public withCalls(...calls: readonly IFunctionCall[]) {
+  public withSomeCalls(): this {
+    return this.withCalls(new FunctionCallStub(), new FunctionCallStub());
+  }
+
+  public withCalls(...calls: readonly FunctionCall[]): this {
     this.calls = [...calls];
     return this;
   }
 
-  public withParameterNames(...parameterNames: readonly string[]) {
+  public withParameterNames(...parameterNames: readonly string[]): this {
     let collection = new FunctionParameterCollectionStub();
     for (const name of parameterNames) {
       collection = collection.withParameterName(name);
     }
     return this.withParameters(collection);
+  }
+
+  private getCodeBody(): CodeFunctionBody {
+    return {
+      type: FunctionBodyType.Code,
+      code: new FunctionCodeStub()
+        .withExecute(this.code)
+        .withRevert(this.revertCode),
+    };
+  }
+
+  private getCallBody(): CallFunctionBody {
+    return {
+      type: FunctionBodyType.Calls,
+      calls: this.calls,
+    };
   }
 }

@@ -11,6 +11,8 @@ The presentation layer uses an event-driven architecture for bidirectional react
 ## Structure
 
 - [`/src/` **`presentation/`**](./../src/presentation/): Contains Vue and Electron code.
+  - [**`main.ts`**](./../src/presentation/main.ts): Starts Vue app.
+  - [**`index.html`**](./../src/presentation/index.html): The `index.html` entry file, located at the root of the project as required by Vite
   - [**`bootstrapping/`**](./../src/presentation/bootstrapping/): Registers Vue components and plugins.
   - [**`components/`**](./../src/presentation/components/): Contains Vue components and helpers.
     - [**`Shared/`**](./../src/presentation/components/Shared): Contains shared Vue components and helpers.
@@ -20,9 +22,7 @@ The presentation layer uses an event-driven architecture for bidirectional react
     - [**`fonts/`**](./../src/presentation/assets/fonts/): Contains fonts.
     - [**`styles/`**](./../src/presentation/assets/styles/): Contains shared styles.
       - [**`components/`**](./../src/presentation/assets/styles/components): Contains styles coupled to Vue components.
-      - [**`vendors-extensions/`**](./../src/presentation/assets/styles/third-party-extensions): Contains styles for third-party components.
-      - [**`main.scss`**](./../src/presentation/assets/styles/main.scss): Main Sass file, imported by other components as single entrypoint.
-  - [**`main.ts`**](./../src/presentation/main.ts): Starts Vue app.
+      - [**`main.scss`**](./../src/presentation/assets/styles/main.scss): Main Sass file, imported by other components as single entrypoint..
   - [**`electron/`**](./../src/presentation/electron/): Contains Electron code.
     - [`/main/` **`index.ts`**](./../src/presentation/main.ts): Main entry for Electron, managing application windows and lifecycle events.
     - [`/preload/` **`index.ts`**](./../src/presentation/main.ts): Script executed before the renderer, securing Node.js features for renderer use.
@@ -71,27 +71,38 @@ To add a new dependency:
 1. **Define its symbol**: Define an associated symbol for every dependency in [`injectionSymbols.ts`](./../src/presentation/injectionSymbols.ts). Symbols are grouped into:
    - **Singletons**: Shared across components, instantiated once.
    - **Transients**: Factories yielding a new instance on every access.
-2. **Provide the dependency**: Modify the [`provideDependencies`](./../src/presentation/bootstrapping/DependencyProvider.ts) function to include the new dependency. [`App.vue`](./../src/presentation/components/App.vue) calls this function within its `setup()` hook to register the dependencies.
-3. **Inject the dependency**: Use Vue's `inject` method alongside the defined symbol to incorporate the dependency into components.
-   - For singletons, invoke the factory method: `inject(symbolKey)()`.
-   - For transients, directly inject: `inject(symbolKey)`.
+2. **Provide the dependency**:
+  Modify the [`provideDependencies`](./../src/presentation/bootstrapping/DependencyProvider.ts) function to include the new dependency.
+  [`App.vue`](./../src/presentation/components/App.vue) calls this function within its `setup()` hook to register the dependencies.
+3. **Inject the dependency**: Use `injectKey` to inject a dependency. Pass a selector function to `injectKey` that retrieves the appropriate symbol from the provided dependencies.
+   - Example usage: `injectKey((keys) => keys.useCollectionState)`;
 
 ## Shared UI components
 
-Shared UI components promote consistency and simplifies the creation of the front-end.
+Shared UI components ensure consistency and streamline front-end development.
 
-In order to maintain portability and easy maintainability, the preference is towards using homegrown components over third-party ones or comprehensive UI frameworks like Quasar.
+We use homegrown components over third-party solutions or comprehensive UI frameworks like Quasar to maintain portability and easy maintenance.
 
 Shared components include:
 
-- [ModalDialog.vue](./../src/presentation/components/Shared/Modal/ModalDialog.vue) is utilized for rendering modal windows.
-- [TooltipWrapper.vue](./../src/presentation/components/Shared/TooltipWrapper.vue) acts as a wrapper for rendering tooltips.
+- [ModalDialog.vue](./../src/presentation/components/Shared/Modal/ModalDialog.vue): Renders modal windows.
+- [TooltipWrapper.vue](./../src/presentation/components/Shared/TooltipWrapper.vue): Provides tooltip functionality for improved information accessibility.
+- [FlatButton.vue](./../src/presentation/components/Shared/FlatButton.vue): Creates flat-style buttons for a unified and consistent user interface.
 
 ## Desktop builds
 
 Desktop builds uses `electron-vite` to bundle the code, and `electron-builder` to build and publish the packages.
 
-## Sass naming convention
+Host system access is strictly controlled. The [`preloader`](./../src/presentation/electron/preload/) isolates logic that interacts with the host system. These functionalities are then securely exposed to the renderer process (Vue application) using context-bridging. [`ApiContextBridge.ts`](./../src/presentation/electron/preload/ContextBridging/ApiContextBridge.ts) handles the configuration of the exposed APIs, ensuring a secure bridge between the Electron and Vue layers.
+
+## Styles
+
+### Style location
+
+- **Global styles**: The [`assets/styles/`](#structure) directory is reserved for styles that have a broader scope, affecting multiple components or entire layouts. They are generic and should not be tightly coupled to a specific component's functionality.
+- **Component-specific styles**: Styles closely tied to a particular component's functionality or appearance should reside near the component they are used by. This makes it easier to locate and modify styles when working on a specific component.
+
+### Sass naming convention
 
 - Use lowercase for variables/functions/mixins, e.g.:
   - Variable: `$variable: value;`

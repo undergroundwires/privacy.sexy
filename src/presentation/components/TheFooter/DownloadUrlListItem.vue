@@ -2,20 +2,21 @@
   <span class="url">
     <a
       :href="downloadUrl"
-      v-bind:class="{
+      :class="{
         url__active: hasCurrentOsDesktopVersion && isCurrentOs,
         url__inactive: hasCurrentOsDesktopVersion && !isCurrentOs,
-      }">{{ operatingSystemName }}</a>
+      }"
+    >{{ operatingSystemName }}</a>
   </span>
 </template>
 
 <script lang="ts">
 import {
   defineComponent, PropType, computed,
-  inject,
 } from 'vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { injectKey } from '@/presentation/injectionSymbols';
 import { OperatingSystem } from '@/domain/OperatingSystem';
+import { getOperatingSystemDisplayName } from '@/presentation/components/Shared/OperatingSystemNames';
 
 export default defineComponent({
   props: {
@@ -25,22 +26,22 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { info } = inject(InjectionKeys.useApplication);
-    const { os: currentOs } = inject(InjectionKeys.useRuntimeEnvironment);
+    const { info } = injectKey((keys) => keys.useApplication);
+    const { os: currentOs } = injectKey((keys) => keys.useRuntimeEnvironment);
 
     const isCurrentOs = computed<boolean>(() => {
       return currentOs === props.operatingSystem;
     });
 
     const operatingSystemName = computed<string>(() => {
-      return getOperatingSystemName(props.operatingSystem);
+      return getOperatingSystemDisplayName(props.operatingSystem);
     });
 
     const hasCurrentOsDesktopVersion = computed<boolean>(() => {
       return hasDesktopVersion(props.operatingSystem);
     });
 
-    const downloadUrl = computed<string | undefined>(() => {
+    const downloadUrl = computed<string>(() => {
       return info.getDownloadUrl(props.operatingSystem);
     });
 
@@ -58,26 +59,11 @@ function hasDesktopVersion(os: OperatingSystem): boolean {
     || os === OperatingSystem.Linux
     || os === OperatingSystem.macOS;
 }
-
-function getOperatingSystemName(os: OperatingSystem): string {
-  switch (os) {
-    case OperatingSystem.Linux:
-      return 'Linux (preview)';
-    case OperatingSystem.macOS:
-      return 'macOS';
-    case OperatingSystem.Windows:
-      return 'Windows';
-    default:
-      throw new Error(`Unsupported os: ${OperatingSystem[os]}`);
-  }
-}
-
 </script>
 
 <style scoped lang="scss">
 @use "@/presentation/assets/styles/main" as *;
 .url {
-  @include clickable;
   &__active {
     font-size: 1em;
   }

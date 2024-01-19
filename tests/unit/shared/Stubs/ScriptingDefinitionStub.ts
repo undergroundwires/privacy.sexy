@@ -10,17 +10,17 @@ export class ScriptingDefinitionStub implements IScriptingDefinition {
 
   public endCode = 'REM end code';
 
-  public withStartCode(startCode: string): ScriptingDefinitionStub {
+  public withStartCode(startCode: string): this {
     this.startCode = startCode;
     return this;
   }
 
-  public withEndCode(endCode: string): ScriptingDefinitionStub {
+  public withEndCode(endCode: string): this {
     this.endCode = endCode;
     return this;
   }
 
-  public withLanguage(language: ScriptingLanguage): ScriptingDefinitionStub {
+  public withLanguage(language: ScriptingLanguage): this {
     this.language = language;
     return this;
   }

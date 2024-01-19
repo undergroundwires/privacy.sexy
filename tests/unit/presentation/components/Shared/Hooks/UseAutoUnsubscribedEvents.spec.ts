@@ -44,7 +44,7 @@ describe('UseAutoUnsubscribedEvents', () => {
     });
   });
   describe('event unsubscription', () => {
-    it('unsubscribes from all events when the associated component is destroyed', () => {
+    it('unsubscribes from all events when the associated component is unmounted', () => {
       // arrange
       const events = new EventSubscriptionCollectionStub();
       const expectedCall: FunctionKeys<EventSubscriptionCollection> = 'unsubscribeAll';
@@ -58,7 +58,7 @@ describe('UseAutoUnsubscribedEvents', () => {
       events.callHistory.length = 0;
 
       // act
-      stubComponent.destroy();
+      stubComponent.unmount();
 
       // assert
       expect(events.callHistory).to.have.lengthOf(1);

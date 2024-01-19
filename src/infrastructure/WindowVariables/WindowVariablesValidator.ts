@@ -1,12 +1,23 @@
+import { ContextIsolatedElectronDetector } from '@/infrastructure/RuntimeEnvironment/Electron/ContextIsolatedElectronDetector';
+import { ElectronEnvironmentDetector } from '@/infrastructure/RuntimeEnvironment/Electron/ElectronEnvironmentDetector';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { PropertyKeys } from '@/TypeHelpers';
+import {
+  PropertyKeys, isBoolean, isFunction, isNumber, isPlainObject,
+} from '@/TypeHelpers';
 import { WindowVariables } from './WindowVariables';
 
 /**
  * Checks for consistency in runtime environment properties injected by Electron preloader.
  */
-export function validateWindowVariables(variables: Partial<WindowVariables>) {
-  if (!isObject(variables)) {
+export function validateWindowVariables(
+  variables: Partial<WindowVariables>,
+  electronDetector: ElectronEnvironmentDetector = new ContextIsolatedElectronDetector(),
+) {
+  if (!electronDetector.isRunningInsideElectron()
+    || electronDetector.determineElectronProcessType() !== 'renderer') {
+    return;
+  }
+  if (!isPlainObject(variables)) {
     throw new Error('window is not an object');
   }
   const errors = [...testEveryProperty(variables)];
@@ -16,13 +27,13 @@ export function validateWindowVariables(variables: Partial<WindowVariables>) {
 }
 
 function* testEveryProperty(variables: Partial<WindowVariables>): Iterable<string> {
-  const tests: {
-    [K in PropertyKeys<WindowVariables>]: boolean;
-  } = {
+  const tests: Record<PropertyKeys<Required<WindowVariables>>, boolean> = {
     os: testOperatingSystem(variables.os),
-    isDesktop: testIsDesktop(variables.isDesktop),
-    system: testSystem(variables),
+    isRunningAsDesktopApplication: testIsRunningAsDesktopApplication(variables),
+    codeRunner: testCodeRunner(variables),
     log: testLogger(variables),
+    dialog: testDialog(variables),
+    scriptDiagnosticsCollector: testScriptDiagnosticsCollector(variables),
   };
 
   for (const [propertyName, testResult] of Object.entries(tests)) {
@@ -46,36 +57,30 @@ function testOperatingSystem(os: unknown): boolean {
 }
 
 function testLogger(variables: Partial<WindowVariables>): boolean {
-  if (!variables.isDesktop) {
-    return true;
-  }
-  return isObject(variables.log);
+  return isPlainObject(variables.log)
+    && isFunction(variables.log.debug)
+    && isFunction(variables.log.info)
+    && isFunction(variables.log.error)
+    && isFunction(variables.log.warn);
 }
 
-function testSystem(variables: Partial<WindowVariables>): boolean {
-  if (!variables.isDesktop) {
-    return true;
-  }
-  return isObject(variables.system);
+function testCodeRunner(variables: Partial<WindowVariables>): boolean {
+  return isPlainObject(variables.codeRunner)
+    && isFunction(variables.codeRunner.runCode);
 }
 
-function testIsDesktop(isDesktop: unknown): boolean {
-  if (isDesktop === undefined) {
-    return true;
-  }
-  return isBoolean(isDesktop);
+function testIsRunningAsDesktopApplication(variables: Partial<WindowVariables>): boolean {
+  return isBoolean(variables.isRunningAsDesktopApplication)
+    && variables.isRunningAsDesktopApplication === true;
 }
 
-function isNumber(variable: unknown): variable is number {
-  return typeof variable === 'number';
+function testDialog(variables: Partial<WindowVariables>): boolean {
+  return isPlainObject(variables.dialog)
+    && isFunction(variables.dialog.saveFile)
+    && isFunction(variables.dialog.showError);
 }
 
-function isBoolean(variable: unknown): variable is boolean {
-  return typeof variable === 'boolean';
-}
-
-function isObject(variable: unknown): variable is object {
-  return Boolean(variable) // the data type of null is an object
-    && typeof variable === 'object'
-    && !Array.isArray(variable);
+function testScriptDiagnosticsCollector(variables: Partial<WindowVariables>): boolean {
+  return isPlainObject(variables.scriptDiagnosticsCollector)
+    && isFunction(variables.scriptDiagnosticsCollector.collectDiagnosticInformation);
 }

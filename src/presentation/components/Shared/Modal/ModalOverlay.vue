@@ -55,7 +55,7 @@ $modal-overlay-color-background: $color-on-surface;
   box-sizing: border-box;
   left: 0;
   top: 0;
-  width: 100%;
+  width: 100vw;
   height: 100vh;
   background: rgba($modal-overlay-color-background, 0.3);
   opacity: 1;

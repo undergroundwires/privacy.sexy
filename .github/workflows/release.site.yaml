@@ -10,7 +10,7 @@ jobs:
     steps:
       -
         name: "Infrastructure: Checkout"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           path: aws
           repository: undergroundwires/aws-static-site-with-cd
@@ -75,7 +75,7 @@ jobs:
         working-directory: aws
       -
         name: "App: Checkout"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           path: app
           ref: master # otherwise we don't get version bump commit
@@ -84,8 +84,9 @@ jobs:
         uses: ./app/.github/actions/setup-node
       -
         name: "App: Install dependencies"
-        run: npm ci
-        working-directory: app
+        uses: ./app/.github/actions/npm-install-dependencies
+        with:
+          working-directory: app
       -
         name: "App: Run unit tests"
         run: npm run test:unit
@@ -101,7 +102,7 @@ jobs:
       -
         name: "App: Deploy to S3"
         shell: bash
-        run: >-
+        run: |-
           declare web_output_dir
           if ! web_output_dir=$(cd app && node scripts/print-dist-dir.js --web); then
             echo 'Error: Could not determine distribution directory.'

@@ -1,6 +1,6 @@
-import { mkdtemp, rm } from 'fs/promises';
-import { join } from 'path';
-import { tmpdir } from 'os';
+import { mkdtemp, rm } from 'node:fs/promises';
+import { join } from 'node:path';
+import { tmpdir } from 'node:os';
 import { exists } from '../../utils/io';
 import { log, die, LogLevel } from '../../utils/log';
 import { runCommand } from '../../utils/run-command';

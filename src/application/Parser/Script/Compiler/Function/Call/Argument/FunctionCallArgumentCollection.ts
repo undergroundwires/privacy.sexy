@@ -5,9 +5,6 @@ export class FunctionCallArgumentCollection implements IFunctionCallArgumentColl
   private readonly arguments = new Map<string, IFunctionCallArgument>();
 
   public addArgument(argument: IFunctionCallArgument): void {
-    if (!argument) {
-      throw new Error('missing argument');
-    }
     if (this.hasArgument(argument.parameterName)) {
       throw new Error(`argument value for parameter ${argument.parameterName} is already provided`);
     }

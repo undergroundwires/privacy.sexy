@@ -7,20 +7,20 @@
       <TheCodeButtons class="app__row app__code-buttons" />
       <TheFooter />
     </div>
+    <component
+      :is="devToolkitComponent"
+      v-if="devToolkitComponent"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineAsyncComponent, defineComponent, Component } from 'vue';
 import TheHeader from '@/presentation/components/TheHeader.vue';
 import TheFooter from '@/presentation/components/TheFooter/TheFooter.vue';
 import TheCodeButtons from '@/presentation/components/Code/CodeButtons/TheCodeButtons.vue';
 import TheScriptArea from '@/presentation/components/Scripts/TheScriptArea.vue';
 import TheSearchBar from '@/presentation/components/TheSearchBar.vue';
-import { buildContext } from '@/application/Context/ApplicationContextFactory';
-import { provideDependencies } from '../bootstrapping/DependencyProvider';
-
-const singletonAppContext = await buildContext();
 
 export default defineComponent({
   components: {
@@ -31,9 +31,21 @@ export default defineComponent({
     TheFooter,
   },
   setup() {
-    provideDependencies(singletonAppContext); // In Vue 3.0 we can move it to main.ts
+    const devToolkitComponent = getOptionalDevToolkitComponent();
+
+    return {
+      devToolkitComponent,
+    };
   },
 });
+
+function getOptionalDevToolkitComponent(): Component | undefined {
+  const isDevelopment = process.env.NODE_ENV !== 'production';
+  if (!isDevelopment) {
+    return undefined;
+  }
+  return defineAsyncComponent(() => import('@/presentation/components/DevToolkit/DevToolkit.vue'));
+}
 </script>
 
 <style lang="scss">
@@ -59,5 +71,4 @@ export default defineComponent({
     }
   }
 }
-
 </style>

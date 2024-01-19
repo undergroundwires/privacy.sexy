@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { FunctionParameterCollection } from '@/application/Parser/Script/Compiler/Function/Parameter/FunctionParameterCollection';
 import { FunctionParameterStub } from '@tests/unit/shared/Stubs/FunctionParameterStub';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('FunctionParameterCollection', () => {
   it('all returns added parameters as expected', () => {
@@ -32,19 +31,5 @@ describe('FunctionParameterCollection', () => {
     );
     // assert
     expect(act).to.throw(expectedError);
-  });
-  describe('addParameter', () => {
-    describe('throws if parameter is undefined', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing parameter';
-        const value = absentValue;
-        const sut = new FunctionParameterCollection();
-        // act
-        const act = () => sut.addParameter(value);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
   });
 });

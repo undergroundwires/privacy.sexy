@@ -1,8 +1,9 @@
 import { IScript } from '@/domain/IScript';
-import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { scrambledEqual } from '@/application/Common/Array';
-import { ICategoryCollectionState, IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import { ICategoryCollection } from '@/domain/ICategoryCollection';
+import { ReadonlyScriptSelection, ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
+import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 
 export enum SelectionType {
   Standard,
@@ -12,66 +13,82 @@ export enum SelectionType {
   Custom,
 }
 
-export class SelectionTypeHandler {
-  constructor(private readonly state: ICategoryCollectionState) {
-    if (!state) { throw new Error('missing state'); }
+export function setCurrentSelectionType(type: SelectionType, context: SelectionMutationContext) {
+  if (type === SelectionType.Custom) {
+    throw new Error('Cannot select custom type.');
   }
-
-  public selectType(type: SelectionType) {
-    if (type === SelectionType.Custom) {
-      throw new Error('cannot select custom type');
-    }
-    const selector = selectors.get(type);
-    selector.select(this.state);
+  const selector = selectors.get(type);
+  if (!selector) {
+    throw new Error(`Cannot handle the type: ${SelectionType[type]}`);
   }
-
-  public getCurrentSelectionType(): SelectionType {
-    for (const [type, selector] of selectors.entries()) {
-      if (selector.isSelected(this.state)) {
-        return type;
-      }
-    }
-    return SelectionType.Custom;
-  }
+  selector.select(context);
 }
 
-interface ISingleTypeHandler {
-  isSelected: (state: IReadOnlyCategoryCollectionState) => boolean;
-  select: (state: ICategoryCollectionState) => void;
+export function getCurrentSelectionType(context: SelectionCheckContext): SelectionType {
+  for (const [type, selector] of selectors.entries()) {
+    if (selector.isSelected(context)) {
+      return type;
+    }
+  }
+  return SelectionType.Custom;
 }
 
-const selectors = new Map<SelectionType, ISingleTypeHandler>([
+export interface SelectionCheckContext {
+  readonly selection: ReadonlyScriptSelection;
+  readonly collection: ICategoryCollection;
+}
+
+export interface SelectionMutationContext {
+  readonly selection: ScriptSelection,
+  readonly collection: ICategoryCollection,
+}
+
+interface SelectionTypeHandler {
+  isSelected: (context: SelectionCheckContext) => boolean;
+  select: (context: SelectionMutationContext) => void;
+}
+
+const selectors = new Map<SelectionType, SelectionTypeHandler>([
   [SelectionType.None, {
-    select: (state) => state.selection.deselectAll(),
-    isSelected: (state) => state.selection.selectedScripts.length === 0,
+    select: ({ selection }) => selection.deselectAll(),
+    isSelected: ({ selection }) => selection.selectedScripts.length === 0,
   }],
   [SelectionType.Standard, getRecommendationLevelSelector(RecommendationLevel.Standard)],
   [SelectionType.Strict, getRecommendationLevelSelector(RecommendationLevel.Strict)],
   [SelectionType.All, {
-    select: (state) => state.selection.selectAll(),
-    isSelected: (state) => state.selection.selectedScripts.length === state.collection.totalScripts,
+    select: ({ selection }) => selection.selectAll(),
+    isSelected: (
+      { selection, collection },
+    ) => selection.selectedScripts.length === collection.totalScripts,
   }],
 ]);
 
-function getRecommendationLevelSelector(level: RecommendationLevel): ISingleTypeHandler {
+function getRecommendationLevelSelector(
+  level: RecommendationLevel,
+): SelectionTypeHandler {
   return {
-    select: (state) => selectOnly(level, state),
-    isSelected: (state) => hasAllSelectedLevelOf(level, state),
+    select: (context) => selectOnly(level, context),
+    isSelected: (context) => hasAllSelectedLevelOf(level, context),
   };
 }
 
 function hasAllSelectedLevelOf(
   level: RecommendationLevel,
-  state: IReadOnlyCategoryCollectionState,
-) {
-  const scripts = state.collection.getScriptsByLevel(level);
-  const { selectedScripts } = state.selection;
+  context: SelectionCheckContext,
+): boolean {
+  const { collection, selection } = context;
+  const scripts = collection.getScriptsByLevel(level);
+  const { selectedScripts } = selection;
   return areAllSelected(scripts, selectedScripts);
 }
 
-function selectOnly(level: RecommendationLevel, state: ICategoryCollectionState) {
-  const scripts = state.collection.getScriptsByLevel(level);
-  state.selection.selectOnly(scripts);
+function selectOnly(
+  level: RecommendationLevel,
+  context: SelectionMutationContext,
+): void {
+  const { collection, selection } = context;
+  const scripts = collection.getScriptsByLevel(level);
+  selection.selectOnly(scripts);
 }
 
 function areAllSelected(

@@ -13,9 +13,6 @@ interface ITestOptions<T> {
 export function runFactoryValidatorTests<T>(
   testOptions: ITestOptions<T>,
 ) {
-  if (!testOptions) {
-    throw new Error('missing options');
-  }
   describe('shouldValidate', () => {
     it('returns true when option is true', () => {
       // arrange

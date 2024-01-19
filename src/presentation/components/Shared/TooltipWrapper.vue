@@ -1,65 +1,232 @@
-<!--
-  This component acts as a wrapper for the v-tooltip to solve the following:
-    - Direct inclusion of inline HTML in tooltip components has challenges such as
-      - absence of linting or editor support,
-      - involves cumbersome string concatenation.
-      This component caters to these issues by permitting HTML usage in a slot.
-    - It provides an abstraction for a third-party component which simplifies
-      switching and acts as an anti-corruption layer.
--->
-
 <template>
-  <div class="tooltip-container" v-tooltip.top-center="tooltipHtml">
-    <slot />
-    <div class="tooltip-content" ref="tooltipWrapper">
-      <slot name="tooltip" />
+  <div class="tooltip">
+    <!--
+      Both trigger and tooltip elements are grouped within a single parent for accurate positioning.
+      It allows the tooltip content to calculate its position based on the trigger's location.
+    -->
+    <div
+      ref="triggeringElement"
+      class="tooltip__trigger"
+    >
+      <slot />
+    </div>
+    <div class="tooltip__overlay">
+      <div
+        ref="tooltipDisplayElement"
+        class="tooltip__display"
+        :style="displayStyles"
+      >
+        <div class="tooltip__content">
+          <slot name="tooltip" />
+        </div>
+        <div
+          ref="arrowElement"
+          class="tooltip__arrow"
+          :style="arrowStyles"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import {
-  defineComponent, ref, onMounted, onUpdated, nextTick,
-} from 'vue';
+  useFloating, arrow, shift, flip, Placement, offset, Side, Coords, autoUpdate,
+} from '@floating-ui/vue';
+import { defineComponent, shallowRef, computed } from 'vue';
+import { useResizeObserverPolyfill } from '@/presentation/components/Shared/Hooks/UseResizeObserverPolyfill';
+import type { CSSProperties } from 'vue';
+
+const GAP_BETWEEN_TOOLTIP_AND_TRIGGER_IN_PX = 2;
+const ARROW_SIZE_IN_PX = 4;
+
+const DEFAULT_PLACEMENT: Placement = 'top';
 
 export default defineComponent({
   setup() {
-    const tooltipWrapper = ref<HTMLElement | undefined>();
-    const tooltipHtml = ref<string | undefined>();
+    const tooltipDisplayElement = shallowRef<HTMLElement | undefined>();
+    const triggeringElement = shallowRef<HTMLElement | undefined>();
+    const arrowElement = shallowRef<HTMLElement | undefined>();
 
-    onMounted(() => updateTooltipHTML());
+    useResizeObserverPolyfill();
 
-    onUpdated(() => {
-      nextTick(() => {
-        updateTooltipHTML();
-      });
+    const { floatingStyles, middlewareData, placement } = useFloating(
+      triggeringElement,
+      tooltipDisplayElement,
+      {
+        placement: DEFAULT_PLACEMENT,
+        middleware: [
+          offset(ARROW_SIZE_IN_PX + GAP_BETWEEN_TOOLTIP_AND_TRIGGER_IN_PX),
+          /* Shifts the element along the specified axes in order to keep it in view. */
+          shift(),
+          /*  Changes the placement of the floating element in order to keep it in view,
+              with the ability to flip to any placement. */
+          flip(),
+          arrow({ element: arrowElement }),
+        ],
+        whileElementsMounted: autoUpdate,
+      },
+    );
+
+    const arrowStyles = computed<CSSProperties>(() => {
+      if (!middlewareData.value.arrow) {
+        return {
+          display: 'none',
+        };
+      }
+      return {
+        ...getArrowPositionStyles(middlewareData.value.arrow, placement.value),
+        ...getArrowAppearanceStyles(),
+      };
     });
 
-    function updateTooltipHTML() {
-      const newValue = tooltipWrapper.value?.innerHTML;
-      const oldValue = tooltipHtml.value;
-      if (newValue === oldValue) {
-        return;
-      }
-      tooltipHtml.value = newValue;
-    }
-
     return {
-      tooltipWrapper,
-      tooltipHtml,
+      tooltipDisplayElement,
+      triggeringElement,
+      displayStyles: floatingStyles,
+      arrowStyles,
+      arrowElement,
+      placement,
     };
   },
 });
+
+function getArrowAppearanceStyles(): CSSProperties {
+  return {
+    width: `${ARROW_SIZE_IN_PX * 2}px`,
+    height: `${ARROW_SIZE_IN_PX * 2}px`,
+    rotate: '45deg',
+  };
+}
+
+function getArrowPositionStyles(
+  coordinations: Partial<Coords>,
+  placement: Placement,
+): CSSProperties {
+  const style: CSSProperties = {};
+  style.position = 'absolute';
+  const { x, y } = coordinations;
+  if (x) {
+    style.left = `${x}px`;
+  } else if (y) { // either X or Y is calculated
+    style.top = `${y}px`;
+  }
+  const oppositeSide = getCounterpartBoxOffsetProperty(placement);
+  style[oppositeSide.toString()] = `-${ARROW_SIZE_IN_PX}px`;
+  return style;
+}
+
+function getCounterpartBoxOffsetProperty(placement: Placement): keyof CSSProperties {
+  const sideCounterparts: Record<Side, keyof CSSProperties> = {
+    top: 'bottom',
+    right: 'left',
+    bottom: 'top',
+    left: 'right',
+  };
+  const currentSide = placement.split('-')[0] as Side;
+  return sideCounterparts[currentSide];
+}
 </script>
 
 <style scoped lang="scss">
+@use 'sass:math';
 @use "@/presentation/assets/styles/main" as *;
 
-.tooltip-container {
-  display: inline-block;
+$color-tooltip-background: $color-primary-darkest;
+
+.tooltip {
+  display: inline-flex;
 }
 
-.tooltip-content {
-  display: none;
+@mixin set-visibility($isVisible: true) {
+  /*
+    Visibility is controlled through CSS rather than JavaScript. This allows better CSS
+    consistency by reusing `hover-or-touch` mixin. Using vue directives such as `v-if` and
+    `v-show` require JavaScript tracking of touch/hover without reuse of `hover-or-touch`.
+    The `visibility` property is toggled because:
+      - Using the `display` property doesn't support smooth transitions (e.g., fading out).
+      - Keeping invisible tooltips in the DOM is a best practice for accessibility (screen readers).
+  */
+  $animation-duration: 0.5s;
+  transition: opacity $animation-duration, visibility $animation-duration;
+  @if $isVisible {
+    visibility: visible;
+    opacity: 1;
+  } @else {
+    visibility: hidden;
+    opacity: 0;
+  }
+}
+
+@mixin fixed-fullscreen {
+  /*
+    This mixin removes the element from the normal document flow, ensuring that it does not disrupt the layout of other elements,
+    such as causing unintended screen width expansion on smaller mobile screens.
+
+    Setting `top`, `left`, `width` and `height` ensures that, the tooltip is prepared to cover the entire viewport, preventing it from
+    being cropped or causing overflow issues. `pointer-events: none;` disables capturing all events on page.
+
+    Other positioning alternatives considered:
+    - Moving tooltip off the screen using `left` and `top` properties:
+      - Causes unintended screen width expansion on smaller mobile screens.
+      - Causes screen shaking on Chromium browsers.
+    - `overflow: hidden`:
+      - It does not work automatic positioning of tooltips.
+    - `transform: translate(-100vw, -100vh)`:
+      - Causes screen shaking on Chromium browsers.
+  */
+  position: fixed;
+
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  pointer-events: none;
+  overflow: hidden;
+  > * { // Restore styles in children
+    pointer-events: unset;
+    overflow: unset;
+  }
+}
+
+.tooltip__overlay {
+  @include set-visibility(false);
+  @include fixed-fullscreen;
+
+  /*
+    Reset white-space to the default value to prevent inheriting styles from the trigger element.
+    This prevents unintentional layout issues or overflow.
+  */
+  white-space: normal;
+}
+
+.tooltip__trigger {
+  @include hover-or-touch {
+    + .tooltip__overlay {
+      @include set-visibility(true);
+      z-index: 10000;
+    }
+  }
+}
+
+.tooltip__content {
+  background: $color-tooltip-background;
+  color: $color-on-primary;
+  border-radius: 16px;
+  padding: 5px 10px 4px;
+
+  /*
+    This margin creates a visual buffer between the tooltip and the edges of the document.
+    It prevents the tooltip from appearing too close to the edges, ensuring a visually pleasing
+    and balanced layout.
+    Avoiding setting vertical margin as it disrupts the arrow rendering.
+  */
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+.tooltip__arrow {
+  background: $color-tooltip-background;
 }
 </style>

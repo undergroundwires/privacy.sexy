@@ -1,3 +1,5 @@
+import { isString } from '@/TypeHelpers';
+
 export function indentText(
   text: string,
   indentLevel = 1,
@@ -15,8 +17,13 @@ export function splitTextIntoLines(text: string): string[] {
     .split(/[\r\n]+/);
 }
 
+export function filterEmpty(texts: readonly (string | undefined | null)[]): string[] {
+  return texts
+    .filter((title): title is string => Boolean(title));
+}
+
 function validateText(text: string): void {
-  if (typeof text !== 'string') {
+  if (!isString(text)) {
     throw new Error(`text is not a string. It is: ${typeof text}\n${text}`);
   }
 }

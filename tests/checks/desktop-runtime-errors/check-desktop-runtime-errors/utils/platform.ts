@@ -1,4 +1,4 @@
-import { platform } from 'os';
+import { platform } from 'node:os';
 import { die } from './log';
 
 export enum SupportedPlatform {
@@ -15,7 +15,7 @@ const NODE_PLATFORM_MAPPINGS: {
   [SupportedPlatform.Windows]: 'win32',
 };
 
-function findCurrentPlatform(): SupportedPlatform | undefined {
+function getCurrentPlatform(): SupportedPlatform | never {
   const nodePlatform = platform();
 
   for (const key of Object.keys(NODE_PLATFORM_MAPPINGS)) {
@@ -28,4 +28,4 @@ function findCurrentPlatform(): SupportedPlatform | undefined {
   return die(`Unsupported platform: ${nodePlatform}`);
 }
 
-export const CURRENT_PLATFORM: SupportedPlatform = findCurrentPlatform();
+export const CURRENT_PLATFORM: SupportedPlatform = getCurrentPlatform();

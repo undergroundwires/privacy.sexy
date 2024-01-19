@@ -1,7 +1,10 @@
-import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
+import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { CategoryCollectionStateStub } from '@tests/unit/shared/Stubs/CategoryCollectionStateStub';
+import { ScriptSelectionStub } from '@tests/unit/shared/Stubs/ScriptSelectionStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
+import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
+import { UserSelectionStub } from '@tests/unit/shared/Stubs/UserSelectionStub';
 
 export class SelectionStateTestScenario {
   public readonly all: readonly SelectedScript[];
@@ -28,13 +31,21 @@ export class SelectionStateTestScenario {
     this.all = [...this.allStandard, ...this.allStrict, ...this.allUnrecommended];
   }
 
-  public generateState(selectedScripts: readonly SelectedScript[]) {
+  public generateState(selectedScripts: readonly SelectedScript[] = []) {
     const allScripts = this.all.map((s) => s.script);
-    return new CategoryCollectionStateStub(allScripts)
+    const scriptSelection = new ScriptSelectionStub()
       .withSelectedScripts(selectedScripts);
+    const categoryCollectionState = new CategoryCollectionStateStub(allScripts)
+      .withSelection(new UserSelectionStub().withScripts(scriptSelection));
+    return {
+      scriptsStub: scriptSelection,
+      stateStub: categoryCollectionState,
+    };
   }
 }
 
-function createSelectedScripts(level?: RecommendationLevel, ...ids: string[]) {
-  return ids.map((id) => new SelectedScript(new ScriptStub(id).withLevel(level), false));
+function createSelectedScripts(level?: RecommendationLevel, ...ids: string[]): SelectedScript[] {
+  return ids.map((id) => new SelectedScriptStub(
+    new ScriptStub(id).withLevel(level),
+  ).withRevert(false));
 }

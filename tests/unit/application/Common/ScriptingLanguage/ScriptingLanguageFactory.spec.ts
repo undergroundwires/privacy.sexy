@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { ScriptingLanguageFactory } from '@/application/Common/ScriptingLanguage/ScriptingLanguageFactory';
 import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { ScriptingLanguageFactoryTestRunner } from './ScriptingLanguageFactoryTestRunner';
 
 class ScriptingLanguageConcrete extends ScriptingLanguageFactory<number> {
@@ -23,21 +22,7 @@ describe('ScriptingLanguageFactory', () => {
       // assert
       new EnumRangeTestRunner(act)
         .testOutOfRangeThrows()
-        .testAbsentValueThrows()
         .testValidValueDoesNotThrow(validValue);
-    });
-    describe('describe when getter is absent', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing getter';
-        const language = ScriptingLanguage.batchfile;
-        const getter = absentValue;
-        const sut = new ScriptingLanguageConcrete();
-        // act
-        const act = () => sut.registerGetter(language, getter);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
     });
     it('throw when language is already registered', () => {
       // arrange

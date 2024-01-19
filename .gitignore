@@ -1,5 +1,16 @@
-node_modules
+# Application build artifacts
 /dist-*/
-.vs
+
+# npm
+node_modules
+
+# Visual Studio Code
 .vscode/**/*
 !.vscode/extensions.json
+
+# draw.io
+*.bkp
+*.dtmp
+
+# macOS
+.DS_Store

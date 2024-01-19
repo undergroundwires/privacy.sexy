@@ -1,64 +1,21 @@
-import { IUserSelection } from '@/application/Context/State/Selection/IUserSelection';
-import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
-import { IScript } from '@/domain/IScript';
-import { IEventSource } from '@/infrastructure/Events/IEventSource';
-import { EventSource } from '@/infrastructure/Events/EventSource';
+import { CategorySelection } from '@/application/Context/State/Selection/Category/CategorySelection';
+import { ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
+import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
+import { CategorySelectionStub } from './CategorySelectionStub';
+import { ScriptSelectionStub } from './ScriptSelectionStub';
 
-export class UserSelectionStub implements IUserSelection {
-  public readonly changed: IEventSource<readonly SelectedScript[]> = new EventSource<
-  readonly SelectedScript[]>();
+export class UserSelectionStub implements UserSelection {
+  public categories: CategorySelection = new CategorySelectionStub();
 
-  public selectedScripts: readonly SelectedScript[] = [];
+  public scripts: ScriptSelection = new ScriptSelectionStub();
 
-  constructor(private readonly allScripts: readonly IScript[]) {
-
+  public withCategories(categories: CategorySelection): this {
+    this.categories = categories;
+    return this;
   }
 
-  public withSelectedScripts(selectedScripts: readonly SelectedScript[]) {
-    this.selectedScripts = selectedScripts;
-  }
-
-  public areAllSelected(): boolean {
-    throw new Error('Method not implemented.');
-  }
-
-  public isAnySelected(): boolean {
-    throw new Error('Method not implemented.');
-  }
-
-  public removeAllInCategory(): void {
-    throw new Error('Method not implemented.');
-  }
-
-  public addOrUpdateAllInCategory(): void {
-    throw new Error('Method not implemented.');
-  }
-
-  public addSelectedScript(): void {
-    throw new Error('Method not implemented.');
-  }
-
-  public addOrUpdateSelectedScript(): void {
-    throw new Error('Method not implemented.');
-  }
-
-  public removeSelectedScript(): void {
-    throw new Error('Method not implemented.');
-  }
-
-  public selectOnly(scripts: ReadonlyArray<IScript>): void {
-    this.selectedScripts = scripts.map((s) => new SelectedScript(s, false));
-  }
-
-  public isSelected(): boolean {
-    throw new Error('Method not implemented.');
-  }
-
-  public selectAll(): void {
-    this.selectOnly(this.allScripts);
-  }
-
-  public deselectAll(): void {
-    this.selectedScripts = [];
+  public withScripts(scripts: ScriptSelection): this {
+    this.scripts = scripts;
+    return this;
   }
 }

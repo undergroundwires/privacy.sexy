@@ -1,6 +1,6 @@
-import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { CodePosition } from '../Position/CodePosition';
 import { IUserScriptGenerator } from './IUserScriptGenerator';
 import { IUserScript } from './IUserScript';
@@ -17,8 +17,6 @@ export class UserScriptGenerator implements IUserScriptGenerator {
     selectedScripts: ReadonlyArray<SelectedScript>,
     scriptingDefinition: IScriptingDefinition,
   ): IUserScript {
-    if (!selectedScripts) { throw new Error('missing scripts'); }
-    if (!scriptingDefinition) { throw new Error('missing definition'); }
     if (!selectedScripts.length) {
       return { code: '', scriptPositions: new Map<SelectedScript, ICodePosition>() };
     }
@@ -68,8 +66,19 @@ function appendSelection(
 function appendCode(selection: SelectedScript, builder: ICodeBuilder): ICodeBuilder {
   const { script } = selection;
   const name = selection.revert ? `${script.name} (revert)` : script.name;
-  const scriptCode = selection.revert ? script.code.revert : script.code.execute;
+  const scriptCode = getSelectedCode(selection);
   return builder
     .appendLine()
     .appendFunction(name, scriptCode);
+}
+
+function getSelectedCode(selection: SelectedScript): string {
+  const { code } = selection.script;
+  if (!selection.revert) {
+    return code.execute;
+  }
+  if (!code.revert) {
+    throw new Error('Reverted script lacks revert code.');
+  }
+  return code.revert;
 }

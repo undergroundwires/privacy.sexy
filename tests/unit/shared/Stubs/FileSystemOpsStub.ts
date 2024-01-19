@@ -1,9 +1,9 @@
-import { IFileSystemOps } from '@/infrastructure/SystemOperations/ISystemOperations';
+import { FileSystemOps } from '@/infrastructure/CodeRunner/System/SystemOperations';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class FileSystemOpsStub
-  extends StubWithObservableMethodCalls<IFileSystemOps>
-  implements IFileSystemOps {
+  extends StubWithObservableMethodCalls<FileSystemOps>
+  implements FileSystemOps {
   public setFilePermissions(filePath: string, mode: string | number): Promise<void> {
     this.registerMethodCall({
       methodName: 'setFilePermissions',
@@ -12,18 +12,10 @@ export class FileSystemOpsStub
     return Promise.resolve();
   }
 
-  public createDirectory(directoryPath: string, isRecursive?: boolean): Promise<string> {
+  public createDirectory(directoryPath: string, isRecursive?: boolean): Promise<void> {
     this.registerMethodCall({
       methodName: 'createDirectory',
       args: [directoryPath, isRecursive],
-    });
-    return Promise.resolve(directoryPath);
-  }
-
-  public writeToFile(filePath: string, data: string): Promise<void> {
-    this.registerMethodCall({
-      methodName: 'writeToFile',
-      args: [filePath, data],
     });
     return Promise.resolve();
   }

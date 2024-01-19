@@ -1,10 +1,13 @@
+import { expectExists } from '@tests/shared/Assertions/ExpectExists';
+import { openCard } from './support/interactions/card';
+
 describe('revert toggle', () => {
   context('toggle switch', () => {
     beforeEach(() => {
       cy.visit('/');
-      cy.get('.card')
-        .eq(1) // to get 2nd element, first is often cleanup that may lack revert button
-        .click(); // open the card card
+      openCard({
+        cardIndex: 1, // first is often cleanup that may lack revert button
+      });
       cy.get('.toggle-switch')
         .first()
         .as('toggleSwitch');
@@ -21,7 +24,7 @@ describe('revert toggle', () => {
         .contains('revert');
     });
 
-    it('should render label completely without clipping', () => {
+    it('should render label completely without clipping', () => { // Regression test for a bug where label is partially rendered (clipped)
       cy
         .get('@toggleSwitch')
         .find('span')
@@ -30,20 +33,40 @@ describe('revert toggle', () => {
           const font = getFont($label[0]);
           const expectedMinimumTextWidth = getTextWidth(text, font);
           const containerWidth = $label.parent().width();
+          expectExists(containerWidth);
           expect(expectedMinimumTextWidth).to.be.lessThan(containerWidth);
         });
+    });
+
+    it('should toggle the revert state when clicked', () => {
+      cy.get('@toggleSwitch').then(($toggleSwitch) => {
+        // arrange
+        const initialState = $toggleSwitch.find('.toggle-input').is(':checked');
+
+        // act
+        cy.wrap($toggleSwitch).click();
+
+        // assert
+        cy.wrap($toggleSwitch).find('.toggle-input').should(($input) => {
+          const newState = $input.is(':checked');
+          expect(newState).to.not.equal(initialState);
+        });
+      });
     });
   });
 });
 
-function getFont(element) {
+function getFont(element: Element): string {
   const computedStyle = window.getComputedStyle(element);
   return `${computedStyle.fontWeight} ${computedStyle.fontSize} ${computedStyle.fontFamily}`;
 }
 
-function getTextWidth(text, font) {
+function getTextWidth(text: string, font: string): number {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    throw new Error('Unable to get 2D context from canvas element');
+  }
   ctx.font = font;
   const measuredWidth = ctx.measureText(text).width;
   return measuredWidth;

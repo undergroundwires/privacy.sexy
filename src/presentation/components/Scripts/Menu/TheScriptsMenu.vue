@@ -3,22 +3,22 @@
     <TheSelector class="item" />
     <TheOsChanger class="item" />
     <TheViewChanger
+      v-if="!isSearching"
       class="item"
-      v-on:viewChanged="$emit('viewChanged', $event)"
-      v-if="!isSearching" />
+      @view-changed="$emit('viewChanged', $event)"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import {
-  defineComponent, ref, inject,
-} from 'vue';
-import { InjectionKeys } from '@/presentation/injectionSymbols';
+import { defineComponent, ref } from 'vue';
+import { injectKey } from '@/presentation/injectionSymbols';
 import { IReadOnlyUserFilter } from '@/application/Context/State/Filter/IUserFilter';
 import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 import TheOsChanger from './TheOsChanger.vue';
 import TheSelector from './Selector/TheSelector.vue';
 import TheViewChanger from './View/TheViewChanger.vue';
+import { ViewType } from './View/ViewType';
 
 export default defineComponent({
   components: {
@@ -26,9 +26,14 @@ export default defineComponent({
     TheOsChanger,
     TheViewChanger,
   },
+  emits: {
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+    viewChanged: (viewType: ViewType) => true,
+    /* eslint-enable @typescript-eslint/no-unused-vars */
+  },
   setup() {
-    const { onStateChange } = inject(InjectionKeys.useCollectionState)();
-    const { events } = inject(InjectionKeys.useAutoUnsubscribedEvents)();
+    const { onStateChange } = injectKey((keys) => keys.useCollectionState);
+    const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
 
     const isSearching = ref(false);
 

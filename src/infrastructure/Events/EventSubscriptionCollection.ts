@@ -9,11 +9,8 @@ export class EventSubscriptionCollection implements IEventSubscriptionCollection
   }
 
   public register(subscriptions: IEventSubscription[]) {
-    if (!subscriptions || subscriptions.length === 0) {
+    if (subscriptions.length === 0) {
       throw new Error('missing subscriptions');
-    }
-    if (subscriptions.some((subscription) => !subscription)) {
-      throw new Error('missing subscription in list');
     }
     this.subscriptions.push(...subscriptions);
   }

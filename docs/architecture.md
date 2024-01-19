@@ -27,13 +27,14 @@ Application uses highly decoupled models & services in different DDD layers:
 **Domain layer**:
 
 - Serves as the system's core and central truth.
-- Facilitates communication between the application and presentation layers through the domain model.
+- It should be independent of other layers and encapsulate the core business concepts.
 
 **Infrastructure layer**:
 
-- Manages technical implementations without dependencies on other layers or domain knowledge.
+- Provides technical implementations.
+- Depends on the application and domain layers in terms of interfaces and contracts but should not include business logic.
 
-![DDD + vue.js](./../img/architecture/app-ddd.png)
+![DDD + vue.js](./../img/architecture/app-ddd.drawio.png)
 
 ### Application state
 

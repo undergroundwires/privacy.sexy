@@ -1,40 +1,40 @@
-import {
-  ICommandOps,
-  IFileSystemOps,
-  IOperatingSystemOps,
-  ILocationOps,
-  ISystemOperations,
-} from '@/infrastructure/SystemOperations/ISystemOperations';
+import type {
+  CommandOps,
+  FileSystemOps,
+  OperatingSystemOps,
+  LocationOps,
+  SystemOperations,
+} from '@/infrastructure/CodeRunner/System/SystemOperations';
 import { CommandOpsStub } from './CommandOpsStub';
 import { FileSystemOpsStub } from './FileSystemOpsStub';
 import { LocationOpsStub } from './LocationOpsStub';
 import { OperatingSystemOpsStub } from './OperatingSystemOpsStub';
 
-export class SystemOperationsStub implements ISystemOperations {
-  public operatingSystem: IOperatingSystemOps = new OperatingSystemOpsStub();
+export class SystemOperationsStub implements SystemOperations {
+  public operatingSystem: OperatingSystemOps = new OperatingSystemOpsStub();
 
-  public location: ILocationOps = new LocationOpsStub();
+  public location: LocationOps = new LocationOpsStub();
 
-  public fileSystem: IFileSystemOps = new FileSystemOpsStub();
+  public fileSystem: FileSystemOps = new FileSystemOpsStub();
 
-  public command: ICommandOps = new CommandOpsStub();
+  public command: CommandOps = new CommandOpsStub();
 
-  public withOperatingSystem(operatingSystemOps: IOperatingSystemOps): this {
+  public withOperatingSystem(operatingSystemOps: OperatingSystemOps): this {
     this.operatingSystem = operatingSystemOps;
     return this;
   }
 
-  public withLocation(location: ILocationOps): this {
+  public withLocation(location: LocationOps): this {
     this.location = location;
     return this;
   }
 
-  public withFileSystem(fileSystem: IFileSystemOps): this {
+  public withFileSystem(fileSystem: FileSystemOps): this {
     this.fileSystem = fileSystem;
     return this;
   }
 
-  public withCommand(command: ICommandOps): this {
+  public withCommand(command: CommandOps): this {
     this.command = command;
     return this;
   }

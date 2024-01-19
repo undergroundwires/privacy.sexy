@@ -1,5 +1,5 @@
-import { readdir, access } from 'fs/promises';
-import { constants } from 'fs';
+import { readdir, access } from 'node:fs/promises';
+import { constants } from 'node:fs';
 
 export async function exists(path: string): Promise<boolean> {
   if (!path) { throw new Error('Missing path'); }

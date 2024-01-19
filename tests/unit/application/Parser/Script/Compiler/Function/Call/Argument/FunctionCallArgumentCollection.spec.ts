@@ -1,22 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { FunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/Function/Call/Argument/FunctionCallArgumentCollection';
 import { FunctionCallArgumentStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentStub';
-import { itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('FunctionCallArgumentCollection', () => {
   describe('addArgument', () => {
-    describe('throws if argument is missing', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const errorMessage = 'missing argument';
-        const arg = absentValue;
-        const sut = new FunctionCallArgumentCollection();
-        // act
-        const act = () => sut.addArgument(arg);
-        // assert
-        expect(act).to.throw(errorMessage);
-      });
-    });
     it('throws if parameter value is already provided', () => {
       // arrange
       const duplicateParameterName = 'duplicateParam';
@@ -70,7 +58,7 @@ describe('FunctionCallArgumentCollection', () => {
         const act = () => sut.getArgument(parameterName);
         // assert
         expect(act).to.throw(expectedError);
-      });
+      }, { excludeNull: true, excludeUndefined: true });
     });
     it('throws if argument does not exist', () => {
       // arrange
@@ -106,7 +94,7 @@ describe('FunctionCallArgumentCollection', () => {
         const act = () => sut.hasArgument(parameterName);
         // assert
         expect(act).to.throw(expectedError);
-      });
+      }, { excludeNull: true, excludeUndefined: true });
     });
     describe('returns as expected', () => {
       // arrange

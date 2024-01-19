@@ -12,8 +12,8 @@
  *   --web                  Path for the web application
  */
 
-import { resolve } from 'path';
-import { readFile } from 'fs/promises';
+import { resolve } from 'node:path';
+import { readFile } from 'node:fs/promises';
 
 const DIST_DIRS_JSON_FILE_PATH = resolve(process.cwd(), 'dist-dirs.json'); // cannot statically import because ESLint does not support it https://github.com/eslint/eslint/discussions/15305
 const CLI_ARGUMENTS = process.argv.slice(2);

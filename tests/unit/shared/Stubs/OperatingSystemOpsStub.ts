@@ -1,21 +1,21 @@
-import { IOperatingSystemOps } from '@/infrastructure/SystemOperations/ISystemOperations';
+import { OperatingSystemOps } from '@/infrastructure/CodeRunner/System/SystemOperations';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class OperatingSystemOpsStub
-  extends StubWithObservableMethodCalls<IOperatingSystemOps>
-  implements IOperatingSystemOps {
-  private temporaryDirectory = '/stub-temp-dir/';
+  extends StubWithObservableMethodCalls<OperatingSystemOps>
+  implements OperatingSystemOps {
+  private userDataDirectory = `/${OperatingSystemOpsStub.name}-user-data-dir/`;
 
-  public withTemporaryDirectoryResult(directory: string): this {
-    this.temporaryDirectory = directory;
+  public withUserDirectoryResult(directory: string): this {
+    this.userDataDirectory = directory;
     return this;
   }
 
-  public getTempDirectory(): string {
+  public getUserDataDirectory(): string {
     this.registerMethodCall({
-      methodName: 'getTempDirectory',
+      methodName: 'getUserDataDirectory',
       args: [],
     });
-    return this.temporaryDirectory;
+    return this.userDataDirectory;
   }
 }

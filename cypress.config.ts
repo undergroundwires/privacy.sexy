@@ -1,15 +1,31 @@
 import { defineConfig } from 'cypress';
 import ViteConfig from './vite.config';
-
-const CYPRESS_BASE_DIR = 'tests/e2e/';
+import cypressDirs from './cypress-dirs.json' assert { type: 'json' };
 
 export default defineConfig({
-  fixturesFolder: `${CYPRESS_BASE_DIR}/fixtures`,
-  screenshotsFolder: `${CYPRESS_BASE_DIR}/screenshots`,
-  videosFolder: `${CYPRESS_BASE_DIR}/videos`,
+  fixturesFolder: `${cypressDirs.base}/fixtures`,
+  screenshotsFolder: cypressDirs.screenshots,
+
+  video: true,
+  videosFolder: cypressDirs.videos,
+
   e2e: {
-    baseUrl: `http://localhost:${ViteConfig.server.port}/`,
-    specPattern: `${CYPRESS_BASE_DIR}/**/*.cy.{js,jsx,ts,tsx}`, // Default: cypress/e2e/**/*.cy.{js,jsx,ts,tsx}
-    supportFile: `${CYPRESS_BASE_DIR}/support/e2e.ts`,
+    baseUrl: `http://localhost:${getApplicationPort()}/`,
+    specPattern: `${cypressDirs.base}/**/*.cy.{js,jsx,ts,tsx}`, // Default: cypress/e2e/**/*.cy.{js,jsx,ts,tsx}
+    supportFile: `${cypressDirs.base}/support/e2e.ts`,
   },
+
+  /*
+    Disabling Chrome's web security to allow for faster DOM queries to access DOM earlier than
+    `cy.get()`. It bypasses the usual same-origin policy constraints
+  */
+  chromeWebSecurity: false,
 });
+
+function getApplicationPort(): number {
+  const port = ViteConfig.server?.port;
+  if (port === undefined) {
+    throw new Error('Unknown application port');
+  }
+  return port;
+}

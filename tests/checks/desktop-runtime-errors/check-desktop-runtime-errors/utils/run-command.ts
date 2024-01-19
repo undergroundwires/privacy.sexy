@@ -1,6 +1,5 @@
-import { exec } from 'child_process';
+import { exec, type ExecOptions, type ExecException } from 'node:child_process';
 import { indentText } from './text';
-import type { ExecOptions, ExecException } from 'child_process';
 
 const TIMEOUT_IN_SECONDS = 180;
 const MAX_OUTPUT_BUFFER_SIZE = 1024 * 1024; // 1 MB
@@ -37,7 +36,7 @@ export interface CommandResult {
 
 function formatError(
   command: string,
-  error: ExecException | undefined,
+  error: ExecException | null,
   stdout: string | undefined,
   stderr: string | undefined,
 ) {

@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { shallowRef } from 'vue';
 import {
   ContextModifier, IStateCallbackSettings, NewStateEventHandler,
   StateModifier, useCollectionState,
@@ -8,16 +8,17 @@ import { IUserFilter } from '@/application/Context/State/Filter/IUserFilter';
 import { IApplicationContext } from '@/application/Context/IApplicationContext';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
 import { CategoryCollectionStateStub } from './CategoryCollectionStateStub';
-import { EventSubscriptionCollectionStub } from './EventSubscriptionCollectionStub';
 import { ApplicationContextStub } from './ApplicationContextStub';
 import { UserFilterStub } from './UserFilterStub';
+import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
-export class UseCollectionStateStub {
+export class UseCollectionStateStub
+  extends StubWithObservableMethodCalls<ReturnType<typeof useCollectionState>> {
   private currentContext: IApplicationContext = new ApplicationContextStub();
 
-  private readonly currentState = ref<ICategoryCollectionState>(new CategoryCollectionStateStub());
-
-  private readonly onStateChangeHandlers = new Array<NewStateEventHandler>();
+  private readonly currentState = shallowRef<ICategoryCollectionState>(
+    new CategoryCollectionStateStub(),
+  );
 
   public withFilter(filter: IUserFilter) {
     const state = new CategoryCollectionStateStub()
@@ -49,29 +50,34 @@ export class UseCollectionStateStub {
     return this.currentState.value;
   }
 
-  public triggerOnStateChange(newState: ICategoryCollectionState): void {
-    this.currentState.value = newState;
-    this.onStateChangeHandlers.forEach(
-      (handler) => handler(newState, undefined),
-    );
+  public isStateModified(): boolean {
+    const call = this.callHistory.find((c) => c.methodName === 'modifyCurrentState');
+    return call !== undefined;
   }
 
-  private onStateChange(
-    handler: NewStateEventHandler,
-    settings?: Partial<IStateCallbackSettings>,
-  ) {
-    if (settings?.immediate) {
-      handler(this.currentState.value, undefined);
+  public triggerImmediateStateChange(): void {
+    this.triggerOnStateChange({
+      newState: this.currentState.value,
+      immediateOnly: true,
+    });
+  }
+
+  public triggerOnStateChange(scenario: {
+    readonly newState: ICategoryCollectionState,
+    readonly immediateOnly: boolean,
+  }): void {
+    this.currentState.value = scenario.newState;
+    let handlers = this.getRegisteredHandlers();
+    if (scenario.immediateOnly) {
+      handlers = handlers.filter((args) => args[1]?.immediate === true);
     }
-    this.onStateChangeHandlers.push(handler);
-  }
-
-  private modifyCurrentState(mutator: StateModifier) {
-    mutator(this.currentState.value);
-  }
-
-  private modifyCurrentContext(mutator: ContextModifier) {
-    mutator(this.currentContext);
+    const callbacks = handlers.map((args) => args[0]);
+    if (!callbacks.length) {
+      throw new Error('No handler callbacks are registered to handle state change');
+    }
+    callbacks.forEach(
+      (handler) => handler(scenario.newState, undefined),
+    );
   }
 
   public get(): ReturnType<typeof useCollectionState> {
@@ -81,7 +87,46 @@ export class UseCollectionStateStub {
       onStateChange: this.onStateChange.bind(this),
       currentContext: this.currentContext,
       currentState: this.currentState,
-      events: new EventSubscriptionCollectionStub(),
     };
+  }
+
+  private onStateChange(
+    handler: NewStateEventHandler,
+    settings?: Partial<IStateCallbackSettings>,
+  ) {
+    if (settings?.immediate) {
+      handler(this.currentState.value, undefined);
+    }
+    this.registerMethodCall({
+      methodName: 'onStateChange',
+      args: [handler, settings],
+    });
+  }
+
+  private modifyCurrentState(mutator: StateModifier) {
+    mutator(this.currentState.value);
+    this.registerMethodCall({
+      methodName: 'modifyCurrentState',
+      args: [mutator],
+    });
+  }
+
+  private modifyCurrentContext(mutator: ContextModifier) {
+    mutator(this.currentContext);
+    this.registerMethodCall({
+      methodName: 'modifyCurrentContext',
+      args: [mutator],
+    });
+  }
+
+  private getRegisteredHandlers(): readonly Parameters<ReturnType<typeof useCollectionState>['onStateChange']>[] {
+    const calls = this.callHistory.filter((call) => call.methodName === 'onStateChange');
+    return calls.map((handler) => {
+      const [callback, settings] = handler.args;
+      return [
+        callback as NewStateEventHandler,
+        settings as Partial<IStateCallbackSettings>,
+      ];
+    });
   }
 }

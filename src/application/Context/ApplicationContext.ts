@@ -26,7 +26,6 @@ export class ApplicationContext implements IApplicationContext {
     public readonly app: IApplication,
     initialContext: OperatingSystem,
   ) {
-    validateApp(app);
     this.states = initializeStates(app);
     this.changeContext(initialContext);
   }
@@ -36,22 +35,14 @@ export class ApplicationContext implements IApplicationContext {
     if (this.currentOs === os) {
       return;
     }
-    this.collection = this.app.getCollection(os);
-    if (!this.collection) {
-      throw new Error(`os "${OperatingSystem[os]}" is not defined in application`);
-    }
+    const collection = this.app.getCollection(os);
+    this.collection = collection;
     const event: IApplicationContextChangedEvent = {
       newState: this.states[os],
       oldState: this.states[this.currentOs],
     };
     this.contextChanged.notify(event);
     this.currentOs = os;
-  }
-}
-
-function validateApp(app: IApplication) {
-  if (!app) {
-    throw new Error('missing app');
   }
 }
 

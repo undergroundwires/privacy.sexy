@@ -1,10 +1,10 @@
 import ProgressBar from 'electron-progressbar';
 import { ProgressInfo } from 'electron-builder';
-import { app, BrowserWindow } from 'electron';
-import log from 'electron-log';
+import { app, BrowserWindow } from 'electron/main';
+import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 
 export class UpdateProgressBar {
-  private progressBar: ProgressBar;
+  private progressBar: ProgressBar | undefined;
 
   private get innerProgressBarWindow(): BrowserWindow {
     // eslint-disable-next-line no-underscore-dangle
@@ -39,16 +39,16 @@ export class UpdateProgressBar {
         + `\n${e && e.message ? e.message : e}`;
       this.innerProgressBarWindow.setClosable(true);
     };
-    if (this.progressBar.innerProgressBarWindow) {
+    if (this.progressBar?.innerProgressBarWindow) {
       reportUpdateError();
     } else {
-      this.progressBar.on('ready', () => reportUpdateError());
+      this.progressBar?.on('ready', () => reportUpdateError());
     }
   }
 
   public close() {
-    if (!this.progressBar.isCompleted()) {
-      this.progressBar.close();
+    if (!this.progressBar?.isCompleted()) {
+      this.progressBar?.close();
     }
   }
 }
@@ -81,7 +81,7 @@ const progressBarFactory = {
         progressBar.detail = 'Download completed.';
       })
       .on('aborted', (value: number) => {
-        log.info(`progress aborted... ${value}`);
+        ElectronLogger.info(`Progress aborted... ${value}`);
       })
       .on('progress', (value: number) => {
         progressBar.detail = `${value}% ...`;

@@ -1,7 +1,7 @@
-import { SelectedScript } from '@/application/Context/State/Selection/SelectedScript';
 import { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
+import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 
 export interface IUserScript {
-  code: string;
-  scriptPositions: Map<SelectedScript, ICodePosition>;
+  readonly code: string;
+  readonly scriptPositions: Map<SelectedScript, ICodePosition>;
 }

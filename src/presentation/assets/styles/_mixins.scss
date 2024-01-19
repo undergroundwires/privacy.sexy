@@ -1,47 +1,113 @@
+@use "@/presentation/assets/styles/colors" as *;
+
 @mixin hover-or-touch($selector-suffix: '', $selector-prefix: '&') {
-    @media (hover: hover) { 
-        /*  We only do this if hover is truly supported; otherwise the emulator in mobile
-            keeps hovered style in-place even after touching, making it sticky.  */
-        #{$selector-prefix}:hover #{$selector-suffix} {
-            @content;
-        }
+  @media (hover: hover) {
+    /*
+      Only apply hover styles if the device truly supports hover; otherwise the
+      emulator in mobile keeps hovered style in-place even after touching, making it sticky.
+    */
+    #{$selector-prefix}:hover #{$selector-suffix} {
+      @content;
     }
-    @media (hover: none) {
-        /*  We only do this if hover is not supported,otherwise the desktop behavior is not
-            as desired; it does not get activated on hover but only during click/touch.  */
-        #{$selector-prefix}:active #{$selector-suffix} {
-            @content;
-        }
+  }
+
+  @media (hover: none) {
+    /*
+      Apply active styles on touch or click, ensuring interactive feedback on devices without hover capability.
+    */
+    #{$selector-prefix}:active #{$selector-suffix} {
+      @content;
     }
+  }
 }
 
+/*
+  This mixin removes the default blue tap highlight seen in mobile WebKit browsers (e.g., Chrome, Safari, Edge).
+  The mixin by itself may reduce accessibility by hiding this interactive cue. Therefore, it is recommended
+  to use this mixin in conjunction with the `hover-or-touch` mixin to provide necessary visual feedback
+  for interactive elements during hover or touch interactions.
+*/
 @mixin clickable($cursor: 'pointer') {
-    cursor: #{$cursor};
-    user-select: none;
-    /*
-        It removes (blue) background during touch as seen in mobile webkit browsers (Chrome, Safari, Edge).
-        The default behavior is that any element (or containing element) that has cursor:pointer
-        explicitly set and is clicked will flash blue momentarily.
-        Removing it could have accessibility issue since that hides an interactive cue. But as we still provide
-        response to user actions through :active by `hover-or-touch` mixin.
-    */
-    -webkit-tap-highlight-color: transparent;
+  cursor: #{$cursor};
+  user-select: none;
+  -webkit-tap-highlight-color: transparent; // Removes blue tap highlight
+}
+
+@mixin fade-transition($name) {
+  .#{$name}-enter-active,
+  .#{$name}-leave-active {
+    transition: opacity 0.3s ease;
+  }
+
+  .#{$name}-enter-from,
+  .#{$name}-leave-to {
+    opacity: 0;
+  }
 }
 
 @mixin fade-slide-transition($name, $duration, $offset-upward: null) {
-    .#{$name}-enter-active,
-    .#{$name}-leave-active {
-        transition: all $duration;
-    }
 
-    .#{$name}-leave-active,
-    .#{$name}-enter, // Vue 2.X compatibility
-    .#{$name}-enter-from // Vue 3.X compatibility
-    {
-        opacity: 0;
+  .#{$name}-enter-active,
+  .#{$name}-leave-active {
+    transition: all $duration;
+  }
 
-        @if $offset-upward {
-            transform: translateY($offset-upward);
-        }
+  .#{$name}-leave-active,
+  .#{$name}-enter-from {
+    opacity: 0;
+
+    @if $offset-upward {
+      transform: translateY($offset-upward);
     }
+  }
+}
+
+@mixin reset-ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@mixin reset-button {
+  margin: 0;
+  padding-block: 0;
+  padding-inline: 0;
+  font: unset;
+  border: unset;
+  background: unset;
+  align-items: unset;
+  text-align: unset;
+  text-shadow: unset;
+  text-rendering: unset;
+  color: inherit;
+  writing-mode: unset;
+  letter-spacing: unset;
+  word-spacing: unset;
+  line-height: unset;
+  text-transform: unset;
+  text-indent: unset;
+  appearance: unset;
+  cursor: unset;
+}
+
+@mixin flat-button($disabled: false) {
+  @include reset-button;
+
+  @if $disabled {
+    color: $color-primary-light;
+  } @else {
+    color: inherit;
+    @include clickable;
+    @include hover-or-touch {
+      text-decoration: underline;
+      color: $color-highlight;
+      /*
+        Using color change and underlining and as hover cues instead of bold text,
+        due to inconsistent bold rendering in macOS browsers:
+          - Safari: Renders bold, causes layout shift.
+          - Firefox: Renders bold correctly, no layout shift.
+          - Chromium-based browsers (including Electron app): Do not render bold, no layout shift.
+      */
+    }
+  }
 }

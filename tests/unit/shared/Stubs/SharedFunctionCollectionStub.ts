@@ -1,11 +1,11 @@
-import { ISharedFunction, FunctionBodyType } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
+import { ISharedFunction } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
 import { ISharedFunctionCollection } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionCollection';
-import { SharedFunctionStub } from './SharedFunctionStub';
+import { createSharedFunctionStubWithCode } from './SharedFunctionStub';
 
 export class SharedFunctionCollectionStub implements ISharedFunctionCollection {
   private readonly functions = new Map<string, ISharedFunction>();
 
-  public withFunction(...funcs: readonly ISharedFunction[]) {
+  public withFunctions(...funcs: readonly ISharedFunction[]): this {
     for (const func of funcs) {
       this.functions.set(func.name, func);
     }
@@ -13,12 +13,21 @@ export class SharedFunctionCollectionStub implements ISharedFunctionCollection {
   }
 
   public getFunctionByName(name: string): ISharedFunction {
-    if (this.functions.has(name)) {
-      return this.functions.get(name);
+    const foundFunction = this.functions.get(name);
+    if (foundFunction) {
+      return foundFunction;
     }
-    return new SharedFunctionStub(FunctionBodyType.Code)
+    return createSharedFunctionStubWithCode()
       .withName(name)
       .withCode('code by SharedFunctionCollectionStub')
       .withRevertCode('revert-code by SharedFunctionCollectionStub');
+  }
+
+  public getRequiredParameterNames(functionName: string): string[] {
+    return this.getFunctionByName(functionName)
+      .parameters
+      .all
+      .filter((p) => !p.isOptional)
+      .map((p) => p.name);
   }
 }

@@ -2,7 +2,7 @@ import { describe, it } from 'vitest';
 import { NodeDataError, INodeDataErrorContext } from '@/application/Parser/NodeValidation/NodeDataError';
 import { NodeData } from '@/application/Parser/NodeValidation/NodeData';
 import { getAbsentObjectTestCases, getAbsentStringTestCases, itEachAbsentTestCase } from '@tests/unit/shared/TestCases/AbsentTests';
-import { expectThrowsError } from '@tests/unit/shared/Assertions/ExpectThrowsError';
+import { expectDeepThrowsError } from '@tests/shared/Assertions/ExpectDeepThrowsError';
 
 export interface ITestScenario {
   readonly act: () => void;
@@ -82,6 +82,6 @@ export function expectThrowsNodeError(
   // act
   const act = () => test.act();
   // assert
-  expectThrowsError(act, expected);
+  expectDeepThrowsError(act, expected);
   return this;
 }

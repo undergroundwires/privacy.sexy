@@ -36,8 +36,15 @@ describe('Enum', () => {
     describe('throws as expected', () => {
       // arrange
       const enumName = 'ParsableEnum';
-      const testCases = [
-        ...getAbsentStringTestCases().map((test) => ({
+      const testScenarios: ReadonlyArray<{
+        readonly name: string;
+        readonly value: string;
+        readonly expectedError: string;
+      }> = [
+        ...getAbsentStringTestCases({
+          excludeNull: true,
+          excludeUndefined: true,
+        }).map((test) => ({
           name: test.valueName,
           value: test.absentValue,
           expectedError: `missing ${enumName}`,
@@ -59,7 +66,7 @@ describe('Enum', () => {
         },
       ];
         // act
-      for (const testCase of testCases) {
+      for (const testCase of testScenarios) {
         it(testCase.name, () => {
           const parser = createEnumParser(ParsableEnum);
           const act = () => parser.parseEnum(testCase.value, enumName);
@@ -100,7 +107,6 @@ describe('Enum', () => {
     // assert
     new EnumRangeTestRunner(act)
       .testOutOfRangeThrows()
-      .testAbsentValueThrows()
       .testValidValueDoesNotThrow(validValue);
   });
 });

@@ -16,9 +16,6 @@ export class ProjectInformation implements IProjectInformation {
     if (!name) {
       throw new Error('name is undefined');
     }
-    if (!version) {
-      throw new Error('undefined version');
-    }
     if (!slogan) {
       throw new Error('undefined slogan');
     }

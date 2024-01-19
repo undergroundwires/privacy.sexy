@@ -6,26 +6,34 @@ describe('ScriptCode', () => {
   describe('code', () => {
     describe('throws with invalid code', () => {
       // arrange
-      const testCases = [
+      const testScenarios: ReadonlyArray<{
+        readonly description: string;
+        readonly code: {
+          readonly execute: string;
+          readonly revert?: string;
+        },
+        readonly expectedError: string;
+      }> = [
         {
-          name: 'throws when "execute" and "revert" are same',
+          description: 'throws when "execute" and "revert" are same',
           code: {
             execute: 'same',
             revert: 'same',
           },
           expectedError: '(revert): Code itself and its reverting code cannot be the same',
         },
-        ...getAbsentStringTestCases().map((testCase) => ({
-          name: `cannot construct with ${testCase.valueName} "execute"`,
-          code: {
-            execute: testCase.absentValue,
-            revert: 'code',
-          },
-          expectedError: 'missing code',
-        })),
+        ...getAbsentStringTestCases({ excludeNull: true, excludeUndefined: true })
+          .map((testCase) => ({
+            description: `cannot construct with ${testCase.valueName} "execute"`,
+            code: {
+              execute: testCase.absentValue,
+              revert: 'code',
+            },
+            expectedError: 'missing code',
+          })),
       ];
-      for (const testCase of testCases) {
-        it(testCase.name, () => {
+      for (const testCase of testScenarios) {
+        it(testCase.description, () => {
           // act
           const act = () => new ScriptCodeBuilder()
             .withExecute(testCase.code.execute)
@@ -38,21 +46,27 @@ describe('ScriptCode', () => {
     });
     describe('sets as expected with valid "execute" or "revert"', () => {
       // arrange
-      const testCases = [
+      const testScenarios: ReadonlyArray<{
+        readonly description: string;
+        readonly code: string;
+        readonly revertCode: string | undefined;
+      }> = [
         {
-          testName: 'code and revert code is given',
+          description: 'code and revert code is given',
           code: 'valid code',
           revertCode: 'valid revert-code',
         },
-        {
-          testName: 'only code is given but not revert code',
-          code: 'valid code',
-          revertCode: undefined,
-        },
+        ...getAbsentStringTestCases({ excludeNull: true })
+          .map((testCase) => ({
+            description: `only code is given but not revert code (given ${testCase.valueName})`,
+            code: 'valid code',
+            revertCode: testCase.absentValue,
+            expectedError: 'missing code',
+          })),
       ];
       // assert
-      for (const testCase of testCases) {
-        it(testCase.testName, () => {
+      for (const testCase of testScenarios) {
+        it(testCase.description, () => {
           // act
           const sut = new ScriptCodeBuilder()
             .withExecute(testCase.code)
@@ -70,14 +84,14 @@ describe('ScriptCode', () => {
 class ScriptCodeBuilder {
   public execute = 'default-execute-code';
 
-  public revert = '';
+  public revert: string | undefined = '';
 
   public withExecute(execute: string) {
     this.execute = execute;
     return this;
   }
 
-  public withRevert(revert: string) {
+  public withRevert(revert: string | undefined) {
     this.revert = revert;
     return this;
   }

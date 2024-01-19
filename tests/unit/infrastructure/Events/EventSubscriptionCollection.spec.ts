@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { EventSubscriptionCollection } from '@/infrastructure/Events/EventSubscriptionCollection';
 import { EventSubscriptionStub } from '@tests/unit/shared/Stubs/EventSubscriptionStub';
-import { itEachAbsentCollectionValue, itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import { itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 
 describe('EventSubscriptionCollection', () => {
@@ -140,7 +140,7 @@ function describeSubscriptionValidations(
   handleValue: (subscriptions: IEventSubscription[]) => void,
 ) {
   describe('throws error if no subscriptions are provided', () => {
-    itEachAbsentCollectionValue((absentValue) => {
+    itEachAbsentCollectionValue<IEventSubscription>((absentValue) => {
       // arrange
       const expectedError = 'missing subscriptions';
 
@@ -149,24 +149,6 @@ function describeSubscriptionValidations(
 
       // assert
       expect(act).to.throw(expectedError);
-    });
-  });
-
-  describe('throws error if nullish subscriptions are provided', () => {
-    itEachAbsentObjectValue((absentValue) => {
-      // arrange
-      const expectedError = 'missing subscription in list';
-      const subscriptions = [
-        new EventSubscriptionStub(),
-        absentValue,
-        new EventSubscriptionStub(),
-      ];
-
-      // act
-      const act = () => handleValue(subscriptions);
-
-      // assert
-      expect(act).to.throw(expectedError);
-    });
+    }, { excludeUndefined: true, excludeNull: true });
   });
 }

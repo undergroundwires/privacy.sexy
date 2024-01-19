@@ -1,27 +1,26 @@
-import { TreeBootstrapper } from './Modules/TreeBootstrapper';
-import { IconBootstrapper } from './Modules/IconBootstrapper';
-import { VueConstructor, IVueBootstrapper } from './IVueBootstrapper';
-import { VueBootstrapper } from './Modules/VueBootstrapper';
-import { TooltipBootstrapper } from './Modules/TooltipBootstrapper';
+import { Bootstrapper } from './Bootstrapper';
 import { RuntimeSanityValidator } from './Modules/RuntimeSanityValidator';
 import { AppInitializationLogger } from './Modules/AppInitializationLogger';
+import { DependencyBootstrapper } from './Modules/DependencyBootstrapper';
+import { MobileSafariActivePseudoClassEnabler } from './Modules/MobileSafariActivePseudoClassEnabler';
+import type { App } from 'vue';
 
-export class ApplicationBootstrapper implements IVueBootstrapper {
-  public bootstrap(vue: VueConstructor): void {
-    const bootstrappers = ApplicationBootstrapper.getAllBootstrappers();
-    for (const bootstrapper of bootstrappers) {
-      bootstrapper.bootstrap(vue);
+export class ApplicationBootstrapper implements Bootstrapper {
+  constructor(private readonly bootstrappers = ApplicationBootstrapper.getAllBootstrappers()) { }
+
+  public async bootstrap(app: App): Promise<void> {
+    for (const bootstrapper of this.bootstrappers) {
+      // eslint-disable-next-line no-await-in-loop
+      await bootstrapper.bootstrap(app); // Not running `Promise.all` because order matters.
     }
   }
 
-  private static getAllBootstrappers(): IVueBootstrapper[] {
+  private static getAllBootstrappers(): Bootstrapper[] {
     return [
-      new IconBootstrapper(),
-      new TreeBootstrapper(),
-      new VueBootstrapper(),
-      new TooltipBootstrapper(),
       new RuntimeSanityValidator(),
+      new DependencyBootstrapper(),
       new AppInitializationLogger(),
+      new MobileSafariActivePseudoClassEnabler(),
     ];
   }
 }

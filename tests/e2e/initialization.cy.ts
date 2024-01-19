@@ -1,9 +1,11 @@
+import { getHeaderBrandTitle } from './support/interactions/header';
+
 describe('application is initialized as expected', () => {
   it('loads title as expected', () => {
     // act
     cy.visit('/');
     // assert
-    cy.contains('h1', 'privacy.sexy');
+    getHeaderBrandTitle();
   });
   it('there are no console.error output', () => {
     // act

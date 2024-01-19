@@ -1,10 +1,10 @@
-import Vue from 'vue';
+import { createApp } from 'vue';
 import App from './components/App.vue';
 import { ApplicationBootstrapper } from './bootstrapping/ApplicationBootstrapper';
 
-new ApplicationBootstrapper()
-  .bootstrap(Vue);
+const app = createApp(App);
 
-new Vue({
-  render: (h) => h(App),
-}).$mount('#app');
+await new ApplicationBootstrapper()
+  .bootstrap(app);
+
+app.mount('#app');

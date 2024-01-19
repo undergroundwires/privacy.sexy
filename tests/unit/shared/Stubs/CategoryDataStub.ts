@@ -1,8 +1,8 @@
 import type { CategoryData, CategoryOrScriptData, DocumentationData } from '@/application/collections/';
-import { ScriptDataStub } from './ScriptDataStub';
+import { createScriptDataWithCode } from '@tests/unit/shared/Stubs/ScriptDataStub';
 
 export class CategoryDataStub implements CategoryData {
-  public children: readonly CategoryOrScriptData[] = [ScriptDataStub.createWithCode()];
+  public children: readonly CategoryOrScriptData[] = [createScriptDataWithCode()];
 
   public category = 'category name';
 

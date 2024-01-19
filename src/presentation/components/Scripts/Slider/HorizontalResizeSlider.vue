@@ -1,14 +1,14 @@
 <template>
   <div
     class="slider"
-    v-bind:style="{
+    :style="{
       '--vertical-margin': verticalMargin,
       '--first-min-width': firstMinWidth,
       '--first-initial-width': firstInitialWidth,
       '--second-min-width': secondMinWidth,
     }"
   >
-    <div class="first" ref="firstElement">
+    <div ref="firstElement" class="first">
       <slot name="first" />
     </div>
     <SliderHandle class="handle" @resized="onResize($event)" />
@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, shallowRef } from 'vue';
 import SliderHandle from './SliderHandle.vue';
 
 export default defineComponent({
@@ -45,11 +45,15 @@ export default defineComponent({
     },
   },
   setup() {
-    const firstElement = ref<HTMLElement>();
+    const firstElement = shallowRef<HTMLElement>();
 
     function onResize(displacementX: number): void {
-      const leftWidth = firstElement.value.offsetWidth + displacementX;
-      firstElement.value.style.width = `${leftWidth}px`;
+      const element = firstElement.value;
+      if (!element) {
+        throw new Error('The element reference ref is not correctly assigned to a DOM element.');
+      }
+      const leftWidth = element.offsetWidth + displacementX;
+      element.style.width = `${leftWidth}px`;
     }
 
     return {

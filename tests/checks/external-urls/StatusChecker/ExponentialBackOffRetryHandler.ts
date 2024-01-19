@@ -13,7 +13,6 @@ export async function retryWithExponentialBackOff(
   if (shouldRetry(status)) {
     if (currentRetry <= maxTries) {
       const exponentialBackOffInMs = getRetryTimeoutInMs(currentRetry, baseRetryIntervalInMs);
-      // tslint:disable-next-line: no-console
       console.log(`Retrying (${currentRetry}) in ${exponentialBackOffInMs / 1000} seconds`, status);
       await sleep(exponentialBackOffInMs);
       return retryWithExponentialBackOff(action, baseRetryIntervalInMs, currentRetry + 1);
@@ -24,6 +23,9 @@ export async function retryWithExponentialBackOff(
 
 function shouldRetry(status: IUrlStatus) {
   if (status.error) {
+    return true;
+  }
+  if (status.code === undefined) {
     return true;
   }
   return isTransientError(status.code)

@@ -1,7 +1,10 @@
-import { describe, it, expect } from 'vitest';
+import {
+  describe, it, expect, afterEach,
+} from 'vitest';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick, defineComponent } from 'vue';
 import { useEscapeKeyListener } from '@/presentation/components/Shared/Modal/Hooks/UseEscapeKeyListener';
+import { EventName, createWindowEventSpies } from '@tests/shared/Spies/WindowEventSpies';
 
 describe('useEscapeKeyListener', () => {
   it('executes the callback when the Escape key is pressed', async () => {
@@ -40,28 +43,28 @@ describe('useEscapeKeyListener', () => {
 
   it('adds an event listener on component mount', () => {
     // arrange
-    const { restore, isAddEventCalled } = createWindowEventSpies();
+    const expectedEventType: EventName = 'keyup';
+    const { isAddEventCalled } = createWindowEventSpies(afterEach);
 
     // act
     createComponent();
 
     // assert
-    expect(isAddEventCalled()).to.equal(true);
-    restore();
+    expect(isAddEventCalled(expectedEventType)).to.equal(true);
   });
 
   it('removes the event listener on component unmount', async () => {
     // arrange
-    const { restore, isRemoveEventCalled } = createWindowEventSpies();
+    const expectedEventType: EventName = 'keyup';
+    const { isRemoveEventCalled } = createWindowEventSpies(afterEach);
 
     // act
     const wrapper = createComponent();
-    wrapper.destroy();
+    wrapper.unmount();
     await nextTick();
 
     // assert
-    expect(isRemoveEventCalled()).to.equal(true);
-    restore();
+    expect(isRemoveEventCalled(expectedEventType)).to.equal(true);
   });
 });
 
@@ -72,47 +75,4 @@ function createComponent(callback = () => {}) {
     },
     template: '<div></div>',
   }));
-}
-
-function createWindowEventSpies() {
-  let addEventCalled = false;
-  let removeEventCalled = false;
-
-  const originalAddEventListener = window.addEventListener;
-  const originalRemoveEventListener = window.removeEventListener;
-
-  window.addEventListener = (
-    type: string,
-    listener: EventListenerOrEventListenerObject,
-    options?: boolean | AddEventListenerOptions,
-  ): void => {
-    if (type === 'keyup' && typeof listener === 'function') {
-      addEventCalled = true;
-    }
-    originalAddEventListener(type, listener, options);
-  };
-
-  window.removeEventListener = (
-    type: string,
-    listener: EventListenerOrEventListenerObject,
-    options?: boolean | EventListenerOptions,
-  ): void => {
-    if (type === 'keyup' && typeof listener === 'function') {
-      removeEventCalled = true;
-    }
-    originalRemoveEventListener(type, listener, options);
-  };
-
-  return {
-    restore: () => {
-      window.addEventListener = originalAddEventListener;
-      window.removeEventListener = originalRemoveEventListener;
-    },
-    isAddEventCalled() {
-      return addEventCalled;
-    },
-    isRemoveEventCalled() {
-      return removeEventCalled;
-    },
-  };
 }

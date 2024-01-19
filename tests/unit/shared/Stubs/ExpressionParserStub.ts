@@ -20,8 +20,9 @@ export class ExpressionParserStub implements IExpressionParser {
 
   public findExpressions(code: string): IExpression[] {
     this.callHistory.push(code);
-    if (this.results.has(code)) {
-      return [...this.results.get(code)];
+    const foundResult = this.results.get(code);
+    if (foundResult) {
+      return [...foundResult];
     }
     return [];
   }

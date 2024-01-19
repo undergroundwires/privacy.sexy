@@ -1,7 +1,7 @@
-import { IFunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/IFunctionCall';
+import { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
 import { FunctionCallArgumentCollectionStub } from './FunctionCallArgumentCollectionStub';
 
-export class FunctionCallStub implements IFunctionCall {
+export class FunctionCallStub implements FunctionCall {
   public functionName = 'functionCallStub';
 
   public args = new FunctionCallArgumentCollectionStub();

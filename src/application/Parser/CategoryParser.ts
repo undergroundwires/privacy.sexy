@@ -1,5 +1,5 @@
 import type {
-  CategoryData, ScriptData, CategoryOrScriptData, InstructionHolder,
+  CategoryData, ScriptData, CategoryOrScriptData,
 } from '@/application/collections/';
 import { Script } from '@/domain/Script';
 import { Category } from '@/domain/Category';
@@ -16,7 +16,6 @@ export function parseCategory(
   context: ICategoryCollectionParseContext,
   factory: CategoryFactoryType = CategoryFactory,
 ): Category {
-  if (!context) { throw new Error('missing context'); }
   return parseCategoryRecursively({
     categoryData: category,
     context,
@@ -30,8 +29,8 @@ interface ICategoryParseContext {
   readonly factory: CategoryFactoryType,
   readonly parentCategory?: CategoryData,
 }
-// eslint-disable-next-line consistent-return
-function parseCategoryRecursively(context: ICategoryParseContext): Category {
+
+function parseCategoryRecursively(context: ICategoryParseContext): Category | never {
   ensureValidCategory(context.categoryData, context.parentCategory);
   const children: ICategoryChildren = {
     subCategories: new Array<Category>(),
@@ -55,7 +54,7 @@ function parseCategoryRecursively(context: ICategoryParseContext): Category {
       /* scripts: */ children.subScripts,
     );
   } catch (err) {
-    new NodeValidator({
+    return new NodeValidator({
       type: NodeType.Category,
       selfNode: context.categoryData,
       parentNode: context.parentCategory,
@@ -72,7 +71,7 @@ function ensureValidCategory(category: CategoryData, parentCategory?: CategoryDa
     .assertDefined(category)
     .assertValidName(category.category)
     .assert(
-      () => category.children && category.children.length > 0,
+      () => category.children.length > 0,
       `"${category.category}" has no children.`,
     );
 }
@@ -94,14 +93,14 @@ function parseNode(context: INodeParseContext) {
   validator.assertDefined(context.nodeData);
   if (isCategory(context.nodeData)) {
     const subCategory = parseCategoryRecursively({
-      categoryData: context.nodeData as CategoryData,
+      categoryData: context.nodeData,
       context: context.context,
       factory: context.factory,
       parentCategory: context.parent,
     });
     context.children.subCategories.push(subCategory);
   } else if (isScript(context.nodeData)) {
-    const script = parseScript(context.nodeData as ScriptData, context.context);
+    const script = parseScript(context.nodeData, context.context);
     context.children.subScripts.push(script);
   } else {
     validator.throw('Node is neither a category or a script.');
@@ -109,19 +108,18 @@ function parseNode(context: INodeParseContext) {
 }
 
 function isScript(data: CategoryOrScriptData): data is ScriptData {
-  const holder = (data as InstructionHolder);
-  return hasCode(holder) || hasCall(holder);
+  return hasCode(data) || hasCall(data);
 }
 
 function isCategory(data: CategoryOrScriptData): data is CategoryData {
   return hasProperty(data, 'category');
 }
 
-function hasCode(data: InstructionHolder): boolean {
+function hasCode(data: unknown): boolean {
   return hasProperty(data, 'code');
 }
 
-function hasCall(data: InstructionHolder) {
+function hasCall(data: unknown) {
   return hasProperty(data, 'call');
 }
 

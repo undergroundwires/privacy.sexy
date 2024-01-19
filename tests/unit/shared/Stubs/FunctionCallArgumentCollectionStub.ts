@@ -5,7 +5,19 @@ import { FunctionCallArgumentStub } from './FunctionCallArgumentStub';
 export class FunctionCallArgumentCollectionStub implements IFunctionCallArgumentCollection {
   private args = new Array<IFunctionCallArgument>();
 
-  public withArgument(parameterName: string, argumentValue: string) {
+  public withEmptyArguments(): this {
+    this.args.length = 0;
+    return this;
+  }
+
+  public withSomeArguments(): this {
+    return this
+      .withArgument('firstTestParameterName', 'first-parameter-argument-value')
+      .withArgument('secondTestParameterName', 'second-parameter-argument-value')
+      .withArgument('thirdTestParameterName', 'third-parameter-argument-value');
+  }
+
+  public withArgument(parameterName: string, argumentValue: string): this {
     const arg = new FunctionCallArgumentStub()
       .withParameterName(parameterName)
       .withArgumentValue(argumentValue);
@@ -13,7 +25,7 @@ export class FunctionCallArgumentCollectionStub implements IFunctionCallArgument
     return this;
   }
 
-  public withArguments(args: { readonly [index: string]: string }) {
+  public withArguments(args: { readonly [index: string]: string }): this {
     for (const [name, value] of Object.entries(args)) {
       this.withArgument(name, value);
     }

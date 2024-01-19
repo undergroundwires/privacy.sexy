@@ -12,8 +12,8 @@ export interface ICategoryCollection {
   readonly actions: ReadonlyArray<ICategory>;
 
   getScriptsByLevel(level: RecommendationLevel): ReadonlyArray<IScript>;
-  findCategory(categoryId: number): ICategory | undefined;
-  findScript(scriptId: string): IScript | undefined;
+  getCategory(categoryId: number): ICategory;
+  getScript(scriptId: string): IScript;
   getAllScripts(): ReadonlyArray<IScript>;
   getAllCategories(): ReadonlyArray<ICategory>;
 }

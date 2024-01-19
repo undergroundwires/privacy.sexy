@@ -21,7 +21,6 @@ export class ScriptingLanguageFactoryTestRunner<T> {
   }
 
   public testCreateMethod(sut: IScriptingLanguageFactory<T>) {
-    if (!sut) { throw new Error('missing sut'); }
     testLanguageValidation(sut);
     if (this.expectedLanguageTypes.size) {
       testExpectedInstanceTypes(sut, this.expectedLanguageTypes);
@@ -36,7 +35,7 @@ function testExpectedInstanceTypes<T>(
   sut: IScriptingLanguageFactory<T>,
   expectedTypes: Map<ScriptingLanguage, Constructible<T>>,
 ) {
-  if (!expectedTypes?.size) {
+  if (!expectedTypes.size) {
     throw new Error('No expected types provided.');
   }
   describe('`create` creates expected instances', () => {
@@ -47,7 +46,7 @@ function testExpectedInstanceTypes<T>(
         const expected = expectedTypes.get(language);
         const result = sut.create(language);
         // assert
-        expect(result).to.be.instanceOf(expected, `Actual was: ${result.constructor.name}`);
+        expect(result).to.be.instanceOf(expected, `Actual was: ${result}`);
       });
     }
   });
@@ -57,7 +56,7 @@ function testExpectedValues<T>(
   sut: IScriptingLanguageFactory<T>,
   expectedValues: Map<ScriptingLanguage, T>,
 ) {
-  if (!expectedValues?.size) {
+  if (!expectedValues.size) {
     throw new Error('No expected values provided.');
   }
   describe('`create` creates expected values', () => {
@@ -83,7 +82,6 @@ function testLanguageValidation<T>(sut: IScriptingLanguageFactory<T>) {
     // assert
     new EnumRangeTestRunner(act)
       .testOutOfRangeThrows()
-      .testAbsentValueThrows()
       .testValidValueDoesNotThrow(validValue);
   });
 }

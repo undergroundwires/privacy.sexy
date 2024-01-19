@@ -1,22 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { ApplicationFactory, ApplicationGetterType } from '@/application/ApplicationFactory';
 import { ApplicationStub } from '@tests/unit/shared/Stubs/ApplicationStub';
-import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
 describe('ApplicationFactory', () => {
-  describe('ctor', () => {
-    describe('throws if getter is absent', () => {
-      itEachAbsentObjectValue((absentValue) => {
-        // arrange
-        const expectedError = 'missing getter';
-        const getter: ApplicationGetterType = absentValue;
-        // act
-        const act = () => new SystemUnderTest(getter);
-        // assert
-        expect(act).to.throw(expectedError);
-      });
-    });
-  });
   describe('getApp', () => {
     it('returns result from the getter', async () => {
       // arrange

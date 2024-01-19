@@ -5,7 +5,6 @@ export class SharedFunctionCollection implements ISharedFunctionCollection {
   private readonly functionsByName = new Map<string, ISharedFunction>();
 
   public addFunction(func: ISharedFunction): void {
-    if (!func) { throw new Error('missing function'); }
     if (this.has(func.name)) {
       throw new Error(`function with name ${func.name} already exists`);
     }
@@ -19,6 +18,15 @@ export class SharedFunctionCollection implements ISharedFunctionCollection {
       throw new Error(`called function is not defined "${name}"`);
     }
     return func;
+  }
+
+  public getRequiredParameterNames(functionName: string): string[] {
+    return this
+      .getFunctionByName(functionName)
+      .parameters
+      .all
+      .filter((parameter) => !parameter.isOptional)
+      .map((parameter) => parameter.name);
   }
 
   private has(functionName: string) {

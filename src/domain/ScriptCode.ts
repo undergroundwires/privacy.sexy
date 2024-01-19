@@ -3,14 +3,14 @@ import { IScriptCode } from './IScriptCode';
 export class ScriptCode implements IScriptCode {
   constructor(
     public readonly execute: string,
-    public readonly revert: string,
+    public readonly revert: string | undefined,
   ) {
     validateCode(execute);
     validateRevertCode(revert, execute);
   }
 }
 
-function validateRevertCode(revertCode: string, execute: string) {
+function validateRevertCode(revertCode: string | undefined, execute: string) {
   if (!revertCode) {
     return;
   }
@@ -25,7 +25,7 @@ function validateRevertCode(revertCode: string, execute: string) {
 }
 
 function validateCode(code: string): void {
-  if (!code || code.length === 0) {
+  if (code.length === 0) {
     throw new Error('missing code');
   }
 }

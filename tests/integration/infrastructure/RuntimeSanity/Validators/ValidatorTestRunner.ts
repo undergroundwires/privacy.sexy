@@ -4,9 +4,6 @@ import { ISanityValidator } from '@/infrastructure/RuntimeSanity/Common/ISanityV
 export function itNoErrorsOnCurrentEnvironment(
   factory: () => ISanityValidator,
 ) {
-  if (!factory) {
-    throw new Error('missing factory');
-  }
   it('it does report errors on current environment', () => {
     // arrange
     const validator = factory();

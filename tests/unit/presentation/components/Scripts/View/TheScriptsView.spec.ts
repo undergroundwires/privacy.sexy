@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { Wrapper, shallowMount } from '@vue/test-utils';
+import { VueWrapper, shallowMount } from '@vue/test-utils';
+import { Component } from 'vue';
 import TheScriptsView from '@/presentation/components/Scripts/View/TheScriptsView.vue';
-import ScriptsTree from '@/presentation/components/Scripts/View/ScriptsTree/ScriptsTree.vue';
+import ScriptsTree from '@/presentation/components/Scripts/View/Tree/ScriptsTree.vue';
 import CardList from '@/presentation/components/Scripts/View/Cards/CardList.vue';
 import { ViewType } from '@/presentation/components/Scripts/Menu/View/ViewType';
 import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
@@ -10,10 +11,10 @@ import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { UseApplicationStub } from '@tests/unit/shared/Stubs/UseApplicationStub';
 import { UserFilterMethod, UserFilterStub } from '@tests/unit/shared/Stubs/UserFilterStub';
 import { FilterResultStub } from '@tests/unit/shared/Stubs/FilterResultStub';
-import { FilterChange } from '@/application/Context/State/Filter/Event/FilterChange';
 import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
 import { IFilterChangeDetails } from '@/application/Context/State/Filter/Event/IFilterChangeDetails';
 import { UseAutoUnsubscribedEventsStub } from '@tests/unit/shared/Stubs/UseAutoUnsubscribedEventsStub';
+import { FilterChangeDetailsStub } from '@tests/unit/shared/Stubs/FilterChangeDetailsStub';
 
 const DOM_SELECTOR_NO_MATCHES = '.search-no-matches';
 const DOM_SELECTOR_CLOSE_BUTTON = '.search__query__close-button';
@@ -23,8 +24,8 @@ describe('TheScriptsView.vue', () => {
     describe('initially', () => {
       interface IInitialViewTypeTestCase {
         readonly initialView: ViewType;
-        readonly expectedComponent: unknown;
-        readonly absentComponents: readonly unknown[];
+        readonly expectedComponent: Component;
+        readonly absentComponents: readonly Component[];
       }
       const testCases: readonly IInitialViewTypeTestCase[] = [
         {
@@ -56,8 +57,8 @@ describe('TheScriptsView.vue', () => {
       interface IToggleViewTypeTestCase {
         readonly originalView: ViewType;
         readonly newView: ViewType;
-        readonly absentComponents: readonly unknown[];
-        readonly expectedComponent: unknown;
+        readonly absentComponents: readonly Component[];
+        readonly expectedComponent: Component;
       }
 
       const toggleTestCases: IToggleViewTypeTestCase[] = [
@@ -99,8 +100,8 @@ describe('TheScriptsView.vue', () => {
       readonly name: string;
       readonly initialView: ViewType;
       readonly changeEvents: readonly IFilterChangeDetails[];
-      readonly componentsToDisappear: readonly unknown[];
-      readonly expectedComponent: unknown;
+      readonly componentsToDisappear: readonly Component[];
+      readonly expectedComponent: Component;
       readonly setupFilter?: (filter: UserFilterStub) => UserFilterStub;
     }
     const testCases: readonly ISwitchingViewTestCase[] = [
@@ -123,7 +124,7 @@ describe('TheScriptsView.vue', () => {
             new FilterResultStub().withQueryAndSomeMatches(),
           ),
         changeEvents: [
-          FilterChange.forClear(),
+          FilterChangeDetailsStub.forClear(),
         ],
         expectedComponent: CardList,
         componentsToDisappear: [ScriptsTree],
@@ -132,7 +133,7 @@ describe('TheScriptsView.vue', () => {
         name: 'tree on search',
         initialView: ViewType.Cards,
         changeEvents: [
-          FilterChange.forApply(
+          FilterChangeDetailsStub.forApply(
             new FilterResultStub().withQueryAndSomeMatches(),
           ),
         ],
@@ -143,10 +144,10 @@ describe('TheScriptsView.vue', () => {
         name: 'return to card after search',
         initialView: ViewType.Cards,
         changeEvents: [
-          FilterChange.forApply(
+          FilterChangeDetailsStub.forApply(
             new FilterResultStub().withQueryAndSomeMatches(),
           ),
-          FilterChange.forClear(),
+          FilterChangeDetailsStub.forClear(),
         ],
         expectedComponent: CardList,
         componentsToDisappear: [ScriptsTree],
@@ -155,10 +156,10 @@ describe('TheScriptsView.vue', () => {
         name: 'return to tree after search',
         initialView: ViewType.Tree,
         changeEvents: [
-          FilterChange.forApply(
+          FilterChangeDetailsStub.forApply(
             new FilterResultStub().withQueryAndSomeMatches(),
           ),
-          FilterChange.forClear(),
+          FilterChangeDetailsStub.forClear(),
         ],
         expectedComponent: ScriptsTree,
         componentsToDisappear: [CardList],
@@ -223,11 +224,11 @@ describe('TheScriptsView.vue', () => {
           });
 
           // act
-          filterStub.notifyFilterChange(FilterChange.forApply(
+          filterStub.notifyFilterChange(FilterChangeDetailsStub.forApply(
             new FilterResultStub().withQueryAndSomeMatches(),
           ));
           await wrapper.vm.$nextTick();
-          filterStub.notifyFilterChange(FilterChange.forClear());
+          filterStub.notifyFilterChange(FilterChangeDetailsStub.forClear());
           await wrapper.vm.$nextTick();
 
           // assert
@@ -264,7 +265,7 @@ describe('TheScriptsView.vue', () => {
           });
 
           // act
-          filterStub.notifyFilterChange(FilterChange.forApply(
+          filterStub.notifyFilterChange(FilterChangeDetailsStub.forApply(
             new FilterResultStub().withQueryAndSomeMatches(),
           ));
           await wrapper.vm.$nextTick();
@@ -283,7 +284,7 @@ describe('TheScriptsView.vue', () => {
       const wrapper = mountComponent({
         useCollectionState: stateStub.get(),
       });
-      filterStub.notifyFilterChange(FilterChange.forApply(
+      filterStub.notifyFilterChange(FilterChangeDetailsStub.forApply(
         new FilterResultStub().withQueryAndSomeMatches(),
       ));
       await wrapper.vm.$nextTick();
@@ -300,12 +301,12 @@ describe('TheScriptsView.vue', () => {
   });
 
   describe('no matches text', () => {
-    interface INoMatchesTextTestCase {
+    interface NoMatchesTextTestCase {
       readonly name: string;
       readonly filter: IFilterResult;
       readonly shouldNoMatchesExist: boolean;
     }
-    const commonTestCases: readonly INoMatchesTextTestCase[] = [
+    const commonTestCases: readonly NoMatchesTextTestCase[] = [
       {
         name: 'shows text given no matches',
         filter: new FilterResultStub()
@@ -320,7 +321,10 @@ describe('TheScriptsView.vue', () => {
       },
     ];
     describe('initial state', () => {
-      const initialStateTestCases: readonly INoMatchesTextTestCase[] = [
+      interface InitialStateTestCase extends Omit<NoMatchesTextTestCase, 'filter'> {
+        readonly filter?: IFilterResult;
+      }
+      const initialStateTestCases: readonly InitialStateTestCase[] = [
         ...commonTestCases,
         {
           name: 'does not show text given no filter',
@@ -359,7 +363,7 @@ describe('TheScriptsView.vue', () => {
           });
 
           // act
-          filterStub.notifyFilterChange(FilterChange.forApply(
+          filterStub.notifyFilterChange(FilterChangeDetailsStub.forApply(
             filter,
           ));
           await wrapper.vm.$nextTick();
@@ -379,10 +383,10 @@ describe('TheScriptsView.vue', () => {
         });
 
         // act
-        filter.notifyFilterChange(FilterChange.forApply(
+        filter.notifyFilterChange(FilterChangeDetailsStub.forApply(
           new FilterResultStub().withSomeMatches(),
         ));
-        filter.notifyFilterChange(FilterChange.forClear());
+        filter.notifyFilterChange(FilterChangeDetailsStub.forClear());
         await wrapper.vm.$nextTick();
 
         // expect
@@ -392,7 +396,7 @@ describe('TheScriptsView.vue', () => {
   });
 });
 
-function expectComponentsToNotExist(wrapper: Wrapper<Vue>, components: readonly unknown[]) {
+function expectComponentsToNotExist(wrapper: VueWrapper, components: readonly Component[]) {
   const existingUnexpectedComponents = components
     .map((component) => wrapper.findComponent(component))
     .filter((component) => component.exists());
@@ -404,15 +408,17 @@ function mountComponent(options?: {
   readonly viewType?: ViewType,
 }) {
   return shallowMount(TheScriptsView, {
-    provide: {
-      [InjectionKeys.useCollectionState as symbol]:
-        () => options?.useCollectionState ?? new UseCollectionStateStub().get(),
-      [InjectionKeys.useApplication as symbol]:
-        new UseApplicationStub().get(),
-      [InjectionKeys.useAutoUnsubscribedEvents as symbol]:
-        () => new UseAutoUnsubscribedEventsStub().get(),
+    global: {
+      provide: {
+        [InjectionKeys.useCollectionState.key]:
+          () => options?.useCollectionState ?? new UseCollectionStateStub().get(),
+        [InjectionKeys.useApplication.key]:
+          new UseApplicationStub().get(),
+        [InjectionKeys.useAutoUnsubscribedEvents.key]:
+          () => new UseAutoUnsubscribedEventsStub().get(),
+      },
     },
-    propsData: {
+    props: {
       currentView: options?.viewType === undefined ? ViewType.Tree : options.viewType,
     },
   });
