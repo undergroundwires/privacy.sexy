@@ -830,7 +830,7 @@ actions:
                             [5]: https://web.archive.org/web/20231001145651/https://s3.wp.wsu.edu/uploads/sites/3267/2022/05/Part2-DiskForensics.pdf "Disk Forensics | Montana State University"
                             [6]: https://web.archive.org/web/20231001150713/https://learn.microsoft.com/en-us/azure/cloud-services/cloud-services-troubleshoot-default-temp-folder-size-too-small-web-worker-role "Default TEMP folder size is too small for a role | Microsoft Learn"
                             [7]: https://web.archive.org/web/20231001150053/https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/bb776892%28v=vs.85%29 "About User Profiles (Windows) | Microsoft Learn"
-                            [8]: https://web.archive.org/save/https://learn.microsoft.com/en-us/troubleshoot/windows-server/shell-experience/temp-folder-with-logon-session-id-deleted "The %TEMP% folder with logon session ID is deleted - Windows Server | Microsoft Learn"
+                            [8]: https://web.archive.org/web/20240120214444/https://learn.microsoft.com/en-us/troubleshoot/windows-server/shell-experience/temp-folder-with-logon-session-id-deleted "The %TEMP% folder with logon session ID is deleted - Windows Server | Microsoft Learn"
                             [9]: https://web.archive.org/web/20231001145035/https://devblogs.microsoft.com/scripting/weekend-scripter-use-powershell-to-clean-out-temp-folders/ "Weekend Scripter: Use PowerShell to Clean Out Temp Folders - Scripting Blog | microsoft.com"
                         call:
                             function: ClearDirectoryContents
@@ -3254,79 +3254,199 @@ actions:
                 revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v "DisableSensors" /t REG_DWORD /d "0" /f
             -
                 category: Disable Windows search data collection
+                docs: |-
+                    This category is dedicated to minimizing the personal data collected and utilized by Windows Search and Cortana.
+                    It encompasses a range of scripts designed to curtail data sharing and bolster user privacy.
+                    These scripts are crucial for preventing the search function from transmitting sensitive information such as
+                    search history, account details, and location data to Microsoft's servers.
+
+                    The Windows search functionality, often integrated with Cortana [1], is a key feature that allows for data collection
+                    through various means. This includes gathering user searches, contacts, location data, voice inputs, browsing history,
+                    and details from emails, calendars, and communication history [2].
+
+                    The voice data thus collected aids in refining language understanding and machine learning models [2]. Furthermore,
+                    Cortana's use of location data provides contextually relevant answers and suggestions, often estimating the user's
+                    location via their IP address [2]. This feature extends to web browsing as well, where Cortana utilizes Microsoft Edge
+                    browsing history for personalized suggestions [2].
+
+                    Contacts, calendar details, and email information are also accessed by Cortana to track and offer tailored suggestions [2]
+                    Additionally, when signed in, chat history with Cortana is retained, and typed searches are transmitted to Bing for
+                    enhanced recommendation quality, even when Cortana is not actively in use [2].
+
+                    By using the scripts in this category, users can significantly enhance their privacy and security.
+                    These scripts enable users to control the extent of their personal data used by Windows, thereby ensuring a more secure
+                    and private search experience.
+
+                    [1]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#2-cortana-and-search "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
+                    [2]: https://web.archive.org/web/20240121010852/https://support.microsoft.com/en-us/windows/cortana-and-privacy-47e5856e-3680-d930-22e1-71ec6cdde231 "Cortana and privacy - Microsoft Support | support.microsoft.com"
                 children:
+                    # Excluding:
+                    #   Disable Bing adult content filter
+                    #       - `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SearchSettings!SafeSearchMode`
+                    #       - `HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search!ConnectedSearchSafeSearch`
+                    #       It doesn't really add to privacy or security.
+                    #   Remove Search Button on Taskbar:
+                    #       `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search!SearchboxTaskbarMode`
+                    #       It doesn't really add to privacy or security.
                     -
-                        category: Disable Cortana
+                        category: Disable Cortana data collection
+                        docs: |-
+                            This category targets the reduction of Cortana's data collection practices.
+
+                            Cortana, Microsoft's digital assistant, integrates deeply with Windows Search to provide personalized
+                            assistance based on user data.
+
+                            By disabling Cortana's data collection features, this category aims to enhance user privacy by preventing the
+                            sharing of sensitive information with Microsoft.
+
+                            The scripts within this category provide users with the tools to limit Cortana's reach into their personal data,
+                            thereby fostering a more private and secure digital environment.
                         children:
                             -
-                                name: Disable Cortana when searching
+                                name: Disable Cortana during search
                                 recommend: standard
                                 docs:
                                     - https://admx.help/?Category=Windows_10_2016&Policy=FullArmor.Policies.3B9EA2B5_A1D1_4CD5_9EDE_75B22990BC21::AllowCortana
                                     - https://docs.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#21-cortana-and-search-group-policies
-                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t REG_DWORD /d 0 /f
-                                revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /f
+                                call:
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /t "REG_DWORD" /d "0" /f
+                                            # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                            revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortana" /f 2>nul
+                                    -
+                                        function: ShowExplorerRestartSuggestion
                             -
                                 name: Disable Cortana experience
                                 recommend: standard
                                 code: reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Experience\AllowCortana" /v "value" /t REG_DWORD /d 0 /f
+                                # This key has value `1` (tested since Windows 10 22H2, and Windows 11 23H3)
                                 revertCode: reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\Experience\AllowCortana" /v "value" /t REG_DWORD /d 1 /f
                             -
                                 name: Disable Cortana's access to cloud services such as OneDrive and SharePoint
                                 recommend: standard
                                 docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search#search-allowcloudsearch
-                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCloudSearch" /t REG_DWORD /d 0 /f
-                                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCloudSearch" /t REG_DWORD /d 1 /f
+                                call:
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCloudSearch" /t "REG_DWORD" /d "0" /f
+                                            # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                            revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCloudSearch" /f 2>nul
+                                    -
+                                        function: ShowExplorerRestartSuggestion
                             -
                                 name: Disable Cortana speech interaction while the system is locked
                                 recommend: standard
                                 docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-abovelock
-                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortanaAboveLock" /t REG_DWORD /d 0 /f
-                                revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortanaAboveLock" /f
+                                call:
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortanaAboveLock" /t "REG_DWORD" /d "0" /f
+                                            # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                            revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowCortanaAboveLock" /f 2>nul
+                                    -
+                                        function: ShowExplorerRestartSuggestion
                             -
                                 name: Disable participation in Cortana data collection
                                 recommend: standard
-                                code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "CortanaConsent" /t REG_DWORD /d 0 /f
-                                revertCode: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "CortanaConsent" /t REG_DWORD /d 10 /f
+                                call:
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "CortanaConsent" /t "REG_DWORD" /d "0" /f
+                                            # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                            revertCode: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "CortanaConsent" /f 2>nul
+                                    -
+                                        function: ShowExplorerRestartSuggestion
                             -
                                 name: Disable enabling of Cortana
                                 recommend: standard
-                                code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CanCortanaBeEnabled" /t REG_DWORD /d 0 /f
-                                revertCode: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CanCortanaBeEnabled" /t REG_DWORD /d 1 /f
+                                call:
+                                    function: RunInlineCode
+                                    parameters:
+                                        code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "CanCortanaBeEnabled" /t "REG_DWORD" /d "0" /f
+                                        # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                        revertCode: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "CanCortanaBeEnabled" /f 2>nul
                             -
-                                name: Disable Cortana (Internet search results in start menu)
+                                name: Disable Cortana in start menu
                                 recommend: standard
-                                code: |-
-                                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CortanaEnabled" /t REG_DWORD /d 0 /f
-                                    reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CortanaEnabled" /t REG_DWORD /d 0 /f
-                                revertCode: |-
-                                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CortanaEnabled" /t REG_DWORD /d 1 /f
-                                    reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CortanaEnabled" /t REG_DWORD /d 1 /f
+                                call:
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "CortanaEnabled" /t "REG_DWORD" /d "0" /f
+                                            # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                            revertCode: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "CortanaEnabled" /f 2>nul
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CortanaEnabled" /t "REG_DWORD" /d "0" /f
+                                            # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                            revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CortanaEnabled" /f 2>nul
+                                    -
+                                        function: ShowExplorerRestartSuggestion
                             -
-                                category: Disable Cortana history
+                                category: Disable Cortana activity history
+                                docs: |-
+                                    This category focuses on preventing Cortana from storing and displaying user interaction history.
+
+                                    When enabled, Cortana collects data on user activities, such as interactions with the assistant and search queries,
+                                    to personalize the user experience.
+                                    This collection can be a privacy concern as it involves the retention and potential analysis of personal behavior patterns.
+
+                                    By disabling this feature, users can prevent their activity history from being used for customization or other purposes,
+                                    thereby enhancing their privacy and potentially improving system performance by reducing background data processing tasks.  
                                 children:
                                     -
                                         name: Disable Cortana's history display
                                         recommend: standard
                                         code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "HistoryViewEnabled" /t REG_DWORD /d 0 /f
-                                        revertCode: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "HistoryViewEnabled" /f
+                                        # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                        revertCode: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "HistoryViewEnabled" /f 2>nul
                                     -
                                         name: Disable Cortana's device history usage
                                         recommend: standard
-                                        code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "DeviceHistoryEnabled" /t REG_DWORD /d 0 /f
-                                        revertCode: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "DeviceHistoryEnabled" /f
+                                        call:
+                                            -
+                                                function: RunInlineCode
+                                                parameters:
+                                                    code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "DeviceHistoryEnabled" /t REG_DWORD /d 0 /f
+                                                    # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                                    revertCode: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "DeviceHistoryEnabled" /f 2>nul
+                                            -
+                                                function: ShowExplorerRestartSuggestion
                             -
-                                name: Remove Cortana taskbar icon
+                                name: Remove "Cortana" icon from taskbar
                                 recommend: standard
-                                code: reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /v "ShowCortanaButton" /t REG_DWORD /d 0 /f
-                                revertCode: reg delete HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced /v "ShowCortanaButton" /f
+                                code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowCortanaButton" /t REG_DWORD /d 0 /f
+                                # This key does not exist on Windows 11 since 22H3, but exists with value `0` on Windows 10 since 22H2
+                                revertCode: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowCortanaButton" /f 2>nul
                             -
                                 name: Disable Cortana in ambient mode
                                 recommend: standard
-                                code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CortanaInAmbientMode" /t REG_DWORD /d 0 /f
-                                revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CortanaInAmbientMode" /t REG_DWORD /d 1 /f
+                                call:
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CortanaInAmbientMode" /t "REG_DWORD" /d "0" /f
+                                            # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                            revertCode: reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "CortanaInAmbientMode" /f 2>nul
+                                    -
+                                        function: ShowExplorerRestartSuggestion
                             -
                                 category: Disable Cortana voice listening
+                                docs: |-
+                                    This category is designed to stop Cortana from listening for voice commands.
+
+                                    By default, Cortana can actively listen for voice input, which may include capturing and processing speech patterns and
+                                    potentially sensitive spoken content.
+                                    This capability raises privacy issues as voice data is often processed and stored remotely.
+
+                                    Disabling Cortana's voice listening features ensures that conversations or background noises are not inadvertently
+                                    recorded or analyzed, providing users with a greater level of privacy in their personal or work environments.
                                 children:
                                     -
                                         name: Disable "Hey Cortana" voice activation
@@ -3334,71 +3454,502 @@ actions:
                                         code: |-
                                             reg add "HKCU\Software\Microsoft\Speech_OneCore\Preferences" /v "VoiceActivationOn" /t REG_DWORD /d 0 /f
                                             reg add "HKLM\Software\Microsoft\Speech_OneCore\Preferences" /v "VoiceActivationDefaultOn" /t REG_DWORD /d 0 /f
+                                        # These keys do not exist (tested since Windows 10 22H2, and Windows 11 22H3)
                                         revertCode: |-
-                                            reg add "HKCU\Software\Microsoft\Speech_OneCore\Preferences" /v "VoiceActivationOn" /t REG_DWORD /d 1 /f
-                                            reg add "HKLM\Software\Microsoft\Speech_OneCore\Preferences" /v "VoiceActivationDefaultOn" /t REG_DWORD /d 1 /f
+                                            reg delete "HKCU\Software\Microsoft\Speech_OneCore\Preferences" /v "VoiceActivationOn" /f 2>nul
+                                            reg delete "HKLM\Software\Microsoft\Speech_OneCore\Preferences" /v "VoiceActivationDefaultOn" /f 2>nul
                                     -
                                         name: Disable Cortana listening to commands on Windows key + C
                                         recommend: standard
-                                        code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "VoiceShortcut" /t REG_DWORD /d 0 /f
-                                        revertCode: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "VoiceShortcut" /t REG_DWORD /d 1 /f
+                                        call:
+                                            -
+                                                function: RunInlineCode
+                                                parameters:
+                                                    code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "VoiceShortcut" /t "REG_DWORD" /d "0" /f
+                                                    # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                                    revertCode: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "VoiceShortcut" /f 2>nul
+                                            -
+                                                function: ShowExplorerRestartSuggestion
                                     -
                                         name: Disable Cortana on locked device
                                         recommend: standard
-                                        code: reg add "HKCU\Software\Microsoft\Speech_OneCore\Preferences" /v "VoiceActivationEnableAboveLockscreen" /t REG_DWORD /d 0 /f
-                                        revertCode: reg add "HKCU\Software\Microsoft\Speech_OneCore\Preferences" /v "VoiceActivationEnableAboveLockscreen" /t REG_DWORD /d 1 /f
+                                        code: reg add "HKCU\Software\Microsoft\Speech_OneCore\Preferences" /v "VoiceActivationEnableAboveLockscreen" /t "REG_DWORD" /d "0" /f
+                                        # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                        revertCode: reg delete "HKCU\Software\Microsoft\Speech_OneCore\Preferences" /v "VoiceActivationEnableAboveLockscreen" /f 2>nul
                                     -
-                                        name: Disable automatic update of Speech Data
+                                        name: Disable automatic update of speech data
                                         recommend: standard
-                                        code: reg add "HKCU\Software\Microsoft\Speech_OneCore\Preferences" /v "ModelDownloadAllowed" /t REG_DWORD /d 0 /f
-                                        revertCode: reg delete "HKCU\Software\Microsoft\Speech_OneCore\Preferences" /v "ModelDownloadAllowed" /f
+                                        code: reg add "HKCU\Software\Microsoft\Speech_OneCore\Preferences" /v "ModelDownloadAllowed" /t "REG_DWORD" /d "0" /f
+                                        # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                        revertCode: reg delete "HKCU\Software\Microsoft\Speech_OneCore\Preferences" /v "ModelDownloadAllowed" /f 2>nul
                                     -
                                         name: Disable Cortana voice support during Windows setup
                                         recommend: standard
-                                        code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OOBE" /v "DisableVoice" /t REG_DWORD /d 1 /f
-                                        revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OOBE" /v "DisableVoice" /f
+                                        # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                        code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OOBE" /v "DisableVoice" /t "REG_DWORD" /d "1" /f
+                                        revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OOBE" /v "DisableVoice" /f 2>nul
                     -
-                        category: Configure Windows search indexing
+                        category: Disable privacy-invasive indexing
+                        docs: |-
+                            This category is dedicated to preventing privacy-invasive indexing features within Windows.
+
+                            Indexing can include details from emails, documents, and other files that may contain sensitive information.
+                            Scripts in this category limit the exposure of personal data through search functionalities.
+
+                            By controlling what and how information is indexed, these scripts help in protecting user privacy against
+                            potential data breaches or unauthorized access.
                         children:
+                            # There are other missing indexing settings such as:
+                            #   EnableIndexingDelegateMailboxes, DisableRemovableDriveIndexing, PreventIndexingEmailAttachments
+                            #   PreventIndexingLowDiskSpaceMB, PreventIndexingOfflineFiles, PreventIndexingOutlook, PreventIndexingPublicFolders,
+                            #   PreventIndexingUncachedExchangeFolders, PreventIndexOnBattery, AutoIndexSharedFolders
                             -
-                                name: Disable indexing of encrypted items and stores
+                                name: Disable indexing of encrypted items
                                 recommend: standard
                                 docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search#search-allowindexingencryptedstoresoritems
-                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowIndexingEncryptedStoresOrItems" /t REG_DWORD /d 0 /f
-                                revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowIndexingEncryptedStoresOrItems" /f
+                                call:
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowIndexingEncryptedStoresOrItems" /t "REG_DWORD" /d "0" /f
+                                            # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                            revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowIndexingEncryptedStoresOrItems" /f 2>nul
+                                    -
+                                        function: ShowExplorerRestartSuggestion
                             -
                                 name: Disable automatic language detection when indexing
                                 recommend: standard
                                 docs: https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search#search-alwaysuseautolangdetection
-                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AlwaysUseAutoLangDetection" /t REG_DWORD /d 0 /f
-                                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AlwaysUseAutoLangDetection" /t REG_DWORD /d 1 /f
+                                call:
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AlwaysUseAutoLangDetection" /t "REG_DWORD" /d "0" /f
+                                            # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                            revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AlwaysUseAutoLangDetection" /f 2>nul
+                                    -
+                                        function: ShowExplorerRestartSuggestion
+                            -
+                                name: Disable remote access to search index
+                                recommend: standard
+                                docs: |-
+                                    This disables remote access to the search index of your computer [1] [2] [3] [4].
+
+                                    By executing this script, other computers will no longer be able to query your computer's search index remotely [1] [2] [4].
+                                    This means that when others are browsing network shares on your computer, they cannot use its index for searching [1] [2] [4].
+                                    By default, without this script, client computers can search using the host's index [1] [2] [3] [4], which might pose a privacy concern.
+
+                                    Implementing this change is crucial for maintaining both the privacy and security of your search data.
+                                    Not restricting this access is recognized as a security vulnerability [5].
+
+                                    The script targets the following registry key to implement the change:
+                                    `HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search!PreventRemoteQueries` [1] [2] [4] [5].
+
+                                    [1]: https://web.archive.org/web/20240120140023/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search#preventremotequeries "Search Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240120200959/https://admx.help/?Category=Windows_10_2016&Policy=FullArmor.Policies.3B9EA2B5_A1D1_4CD5_9EDE_75B22990BC21::PreventRemoteQueries "Prevent clients from querying the index remotely | admx.help"
+                                    [3]: https://web.archive.org/web/20240120200946/https://learn.microsoft.com/en-us/mem/intune/configuration/device-restrictions-windows-10#search "Device restriction settings for Windows 10/11 in Microsoft Intune | Microsoft Learn | learn.microsoft.com"
+                                    [4]: https://web.archive.org/web/20240120200943/https://www.windows-security.org/bcf256ddaff391fa2a294d42ffecbd90/prevent-clients-from-querying-the-index-remotely "Prevent clients from querying the index remotely | Windows security encyclopedia | www.windows-security.org"
+                                    [5]: https://web.archive.org/web/20240120200943/https://www.scaprepo.com/control.jsp?command=relation&relationId=CCE-93119-6&search=CCE-93119-6 "SecPod SCAP Repo, a repository of SCAP Content (CVE, CCE, CPE, CWE, OVAL and XCCDF) | www.scaprepo.com"
+                                call:
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "PreventRemoteQueries" /t REG_DWORD /d "1" /f
+                                            # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                            revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "PreventRemoteQueries" /f 2>nul
+                                    -
+                                        function: ShowExplorerRestartSuggestion
+                            -
+                                name: Disable iFilters and protocol handlers
+                                recommend: standard
+                                docs: |-
+                                    This script enhances the security of Windows Desktop Search by restricting the use of iFilters and protocol handlers [1].
+
+                                    These components enhance Windows search capabilities by enabling the indexing of specific file types and the processing
+                                    of various file protocols [2] [3].
+                                    By default, Windows Desktop Search can use any installed iFilters and protocol handlers [1], which might
+                                    pose a security risk if untrusted components are used.
+
+                                    The script configures the system to only use iFilters and protocol handlers that are explicitly listed in an 'allow list' [1].
+                                    It does not prevent the installation of new iFilters or protocol handlers, nor does it restrict their use by other applications [1].
+
+                                    This measure is particularly useful for preventing unauthorized or potentially harmful search-related add-ins from being used by
+                                    Windows Desktop Search, thereby enhancing the overall security of the system.
+
+                                    [1]: https://web.archive.org/web/20240121002144/https://admx.help/?Category=Windows_10_2016&Policy=FullArmor.Policies.3B9EA2B5_A1D1_4CD5_9EDE_75B22990BC21::PreventUnwantedAddins "Prevent unwanted iFilters and protocol handlers | admx.help"
+                                    [2]: https://web.archive.org/web/20240121002129/https://learn.microsoft.com/en-us/windows/win32/search/-search-ifilter-conceptual "Developing Filter Handlers for Windows Search - Win32 apps | Microsoft Learn | learn.microsoft.com"
+                                    [3]: https://web.archive.org/web/20240121002136/https://learn.microsoft.com/en-us/windows/win32/search/-search-ifilter-registering-filters "Registering Filter Handlers - Win32 apps | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "PreventUnwantedAddIns" /t "REG_SZ" /d " " /f
+                                            # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                            revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "PreventUnwantedAddIns" /f 2>nul
+                                    -
+                                        function: ShowExplorerRestartSuggestion
                     -
                         name: Disable search's access to location
                         recommend: standard
-                        docs:
-                            - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search#search-allowsearchtouselocation
-                            - https://docs.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#21-cortana-and-search-group-policies
-                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowSearchToUseLocation" /t REG_DWORD /d 0 /f
-                        revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowSearchToUseLocation" /t REG_DWORD /d 1 /f
+                        docs: |-
+                            This script blocks both the Windows search function and Cortana, Microsoft's virtual assistant, from
+                            accessing your device's location data [1].
+                            
+                            By default, Microsoft processes location data, impacting user privacy [2].
+
+                            The U.S. Internal Revenue Service advises restricting access to this data to improve security, given the
+                            sensitivity of location information [3].
+
+                            Once this script is applied, search and Cortana will no longer be able to provide results based on the user's
+                            location [1], thus enhancing privacy.
+
+                            The script accomplishes this by modifying the following registry keys:
+                            
+                            - `HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search!AllowSearchToUseLocation` [1] [2]
+                            - `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search!AllowSearchToUseLocation` [4]
+
+                            [1]: https://web.archive.org/web/20240120140023/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search#allowsearchtouselocation "Search Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#21-cortana-and-search-group-policies "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
+                            [3]: https://web.archive.org/web/20230914171139/https://www.irs.gov/pub/irs-utl/win10.xlsx "Internal Revenue Service Office of Safeguards - Windows 10 | irs.gov"
+                            [4]: https://web.archive.org/web/20240120230024/https://www.neowin.net/news/the-windows-10-spring-update-no-longer-lets-you-disable-web-search-in-start/ "The Windows 10 spring update no longer lets you disable web search in Start - workaround - Neowin | www.neowin.net"
+                        call:
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowSearchToUseLocation" /t "REG_DWORD" /d "0" /f
+                                    # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                    revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "AllowSearchToUseLocation" /f 2>nul
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "AllowSearchToUseLocation" /t "REG_DWORD" /d "1" /f
+                                    # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                    revertCode: reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "AllowSearchToUseLocation" /f 2>nul
+                            -
+                                function: ShowExplorerRestartSuggestion
                     -
-                        name: Disable web search in search bar
-                        recommend: standard
-                        docs:
-                            - https://admx.help/?Category=Windows_10_2016&Policy=FullArmor.Policies.3B9EA2B5_A1D1_4CD5_9EDE_75B22990BC21::DisableWebSearch
-                            - https://docs.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#21-cortana-and-search-group-policies
-                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "DisableWebSearch" /t REG_DWORD /d 1 /f
-                        revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "DisableWebSearch" /t REG_DWORD /d 0 /f
+                        category: Disable search suggestions
+                        docs: |-
+                            This category focuses on enhancing privacy by disabling various search suggestions in
+                            Windows, commonly associated with Cortana [1].
+                            Cortana is a digital assistant integrated into Windows Search, capable of collecting extensive
+                            personal data to provide its services [2].
+                            This includes your search queries, contact information, location, voice inputs, browsing history,
+                            and details from emails, calendars, and communication history [2].
+
+                            These scripts are designed to limit the amount of personal data shared with Microsoft, preventing your
+                            typed searches from being sent to Bing for search recommendations, even when Cortana is inactive [2].
+
+                            [1]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#2-cortana-and-search "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
+                            [2]: https://web.archive.org/web/20240121010852/https://support.microsoft.com/en-us/windows/cortana-and-privacy-47e5856e-3680-d930-22e1-71ec6cdde231 "Cortana and privacy - Microsoft Support | support.microsoft.com"
+                        children:
+                            -
+                                name: Disable Bing search and recent search suggestions (breaks search history)
+                                recommend: standard
+                                docs: |-
+                                    This script improves privacy by disabling Bing search in the Start menu and recent search suggestions in File Explorer [1] [2] [3] [4] [5].
+
+                                    By default, Windows 10's Search Box includes suggestions from the Internet, alongside local search results [4] [5] [6] [7].
+                                    This script limits the search results to your local machine, improving privacy by not sending data to Microsoft servers [2].
+
+                                    The script:
+
+                                    - Stops Bing web search integration in the Start menu [1] [2] [3] [4] [5].
+                                    - Disables recent search suggestions in File Explorer [5] [6] [7].
+                                    - Prevents search entries from being stored in the registry for future use [5] [6] [7].
+
+                                    > **Caution:** Running this script will remove Bing web search [1] [2] [3] [4] [5] and recent query suggestions
+                                    > from the search box [5] [6] [7], breaking the functionality of File Explorer pop-up suggestions based on past entries [6] [7].
+
+                                    This script modifies:
+
+                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer!DisableSearchBoxSuggestions` [2] [3] [4].
+                                    - `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search!DisableSearchBoxSuggestions` [8] [9].
+
+                                    These keys replace older `BingSearchEnabled` registry value [2] [3].
+                                    They apply to Windows 10 versions post 1909, including Windows 10 v2004 (20H1) and higher [5] [9].
+
+                                    [1]: https://web.archive.org/web/20240120193801/https://github.com/undergroundwires/privacy.sexy/pull/117 'Added "Disable Bing search suggestions in Start Menu" by Permanently · Pull Request #117 · undergroundwires/privacy.sexy | github.com'
+                                    [2]: https://web.archive.org/web/20240120182931/https://www.windowslatest.com/2020/10/04/disable-bing-in-windows-search/ "How to disable Bing search in the Windows 10 Start menu | www.windowslatest.com"
+                                    [3]: https://web.archive.org/web/20240120182853/https://borncity.com/win/2020/10/05/windows-10-disable-bing-in-the-search/ "Windows 10: Disable Bing in the search | Born's Tech and Windows World | borncity.com"
+                                    [4]: https://web.archive.org/web/20240120182943/https://www.techbout.com/disable-web-results-in-windows-search-44034/ "How to Disable Web Search Results in Windows 10 - Techbout | www.techbout.com"
+                                    [5]: https://web.archive.org/web/20240120135454/https://www.winhelponline.com/blog/disable-web-results-windows-10-start-menu/ "How to Disable Web Search in Windows 10 Start menu | Winhelponline | www.winhelponline.com"
+                                    [6]: https://web.archive.org/web/20240120194244/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsExplorer::DisableSearchBoxSuggestions "Turn off display of recent search entries in the File Explorer search box | admx.help"
+                                    [7]: https://web.archive.org/web/20240120194340/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-windowsexplorer#disablesearchboxsuggestions "ADMX_WindowsExplorer Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                    [8]: https://web.archive.org/web/20240120194603/https://www.pcastuces.com/pratique/astuces/6080-print.htm "PC Astuces - Désactiver les recommandations dans la recherche - Windows 10 | www.pcastuces.com"
+                                    [9]: https://web.archive.org/web/20240120194547/https://www.deskmodder.de/phpBB3/viewtopic.php?t=23243 "Websuche in der Windows 10 Taskleiste deaktivieren - Deskmodder.de | www.deskmodder.de"
+                                call:
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "DisableSearchBoxSuggestions" /t "REG_DWORD" /d "1" /f
+                                            # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                            revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "DisableSearchBoxSuggestions" /f 2>nul
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "DisableSearchBoxSuggestions" /t "REG_DWORD" /d "1" /f
+                                            # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                            revertCode: reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "DisableSearchBoxSuggestions" /f 2>nul
+                                    -
+                                        function: ShowExplorerRestartSuggestion
+                            -
+                                name: Disable Bing search in start menu # Obsolete since Windows 10 20H2, replaced by `DisableSearchBoxSuggestions`
+                                recommend: standard
+                                docs: |-
+                                    This script disables the Bing search integration in the Windows Start menu search function [1] [2] [3].
+
+                                    In Windows, typing in the Start menu search box displays results from the web via Bing, in addition
+                                    to local search results [2] [3].
+
+                                    By preventing the search function from sending queries to Microsoft servers, this script enhances user privacy
+                                    and may also optimize system performance by reducing the search workload.
+
+                                    Running this script prevents such web searches by modifying the `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search!BingSearchEnabled`
+                                    registry key [1] [2] [3]. It is applicable to Windows version 1909 and older [1] [2] [4].
+
+                                    [1]: https://web.archive.org/web/20240120182931/https://www.windowslatest.com/2020/10/04/disable-bing-in-windows-search/ "How to disable Bing search in the Windows 10 Start menu | www.windowslatest.com"
+                                    [2]: https://web.archive.org/web/20240120135454/https://www.winhelponline.com/blog/disable-web-results-windows-10-start-menu/ "How to Disable Web Search in Windows 10 Start menu | Winhelponline | www.winhelponline.com"
+                                    [3]: https://web.archive.org/web/20240120182943/https://www.techbout.com/disable-web-results-in-windows-search-44034/ "How to Disable Web Search Results in Windows 10 - Techbout | www.techbout.com"
+                                    [4]: https://web.archive.org/web/20240120182853/https://borncity.com/win/2020/10/05/windows-10-disable-bing-in-the-search/ "Windows 10: Disable Bing in the search | Born's Tech and Windows World | borncity.com"
+                                call:
+                                    -
+                                        function: RunInlineCode
+                                        parameters: # HKCU key is needed, not HKLM
+                                            code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /t "REG_DWORD" /d "0" /f
+                                            # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                            revertCode: reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /f 2>nul
+                                    -
+                                        function: ShowExplorerRestartSuggestion
+                            -
+                                name: Disable web search in search bar # Obsolete since Windows 10 1803
+                                recommend: standard
+                                docs: |-
+                                    This script disables the ability to perform web searches directly from the Windows Desktop Search [1] [2] [3]
+                                    By executing this script, searches made from the desktop will be restricted to local content, omitting
+                                    results from the web [1] [2] [3].
+
+                                    Without this script, Windows Desktop Search includes web results by default, utilizing the user's default
+                                    web browser and search engine [1].
+
+                                    This script configures `HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search!DisableWebSearch` registry key [1] [2] [3].
+                                    `DisableWebSearch` is not respected since Windows, version 1803 [1] [2].
+
+                                    [1]: https://web.archive.org/web/20240120163752/https://admx.help/?Category=Windows_10_2016&Policy=FullArmor.Policies.3B9EA2B5_A1D1_4CD5_9EDE_75B22990BC21::DisableWebSearch "Do not allow web search | admx.help"
+                                    [2]: https://web.archive.org/web/20240120143549/https://community.spiceworks.com/topic/2145330-psa-gp-to-disable-web-connected-search-no-longer-works-in-1803-workaround "PSA: GP to disable web-connected search no longer works in 1803 - workaround - Windows 10 | community.spiceworks.com"
+                                    [3]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#21-cortana-and-search-group-policies "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
+                                call:
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "DisableWebSearch" /t "REG_DWORD" /d "1" /f
+                                            # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                            revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "DisableWebSearch" /f 2>nul
+                                    -
+                                        function: ShowExplorerRestartSuggestion
+                            -
+                                name: Disable web results in Windows Search
+                                recommend: standard
+                                docs: |-
+                                    This script improves your privacy by disabling the display of web results in the Windows Search function [1] [2].
+                                    This prevents your search terms from being sent to Microsoft servers [3].
+
+                                    By default, the Windows Start menu Search box shows results from your computer, the Windows Store, and Bing's web search results [4].
+                                    This default behavior [2] means your queries are shared with Microsoft, which could impact your privacy [3].
+
+                                    Running this script stops the Start menu search from performing web searches and displaying web results [1] [2],
+                                    both generally and over metered connections [5], ensuring your searches remain local to your device [3] [5].
+
+                                    When executed, this script modifies the following registry keys:
+
+                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search!ConnectedSearchUseWeb` [1] [3] [4].
+                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search!ConnectedSearchUseWebOverMeteredConnections` [5].
+
+                                    [1]: https://web.archive.org/web/20240120135419/https://admx.help/?Category=Windows_10_2016&Policy=FullArmor.Policies.3B9EA2B5_A1D1_4CD5_9EDE_75B22990BC21::DoNotUseWebResults "Don't search the web or display web results in Search"
+                                    [4]: https://web.archive.org/web/20240120135454/https://www.winhelponline.com/blog/disable-web-results-windows-10-start-menu/ "How to Disable Web Search in Windows 10 Start menu | Winhelponline | www.winhelponline.com"
+                                    [3]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#21-cortana-and-search-group-policies "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
+                                    [2]: https://web.archive.org/web/20240120140023/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search#donotusewebresults "Search Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                    [5]: https://web.archive.org/web/20240120135331/https://admx.help/?Category=Windows_10_2016&Policy=FullArmor.Policies.3B9EA2B5_A1D1_4CD5_9EDE_75B22990BC21::DoNotUseWebResultsOnMeteredConnections "Don't search the web or display web results in Search over metered connections | admx.help"
+                                call:
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "ConnectedSearchUseWeb" /t "REG_DWORD" /d "0" /f
+                                            # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                            revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "ConnectedSearchUseWeb" /f 2>nul
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "ConnectedSearchUseWebOverMeteredConnections" /t "REG_DWORD" /d "0" /f
+                                            # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                            revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "ConnectedSearchUseWebOverMeteredConnections" /f 2>nul
+                                    -
+                                        function: ShowExplorerRestartSuggestion
+                            -
+                                name: Disable Windows search highlights
+                                recommend: standard
+                                docs: |-
+                                    This script disables the search highlights feature in the taskbar search box.
+
+                                    By default [1] [2], search highlights present content like holidays, anniversaries, and other special events,
+                                    both globally and regionally [1]. This feature, available since Windows 10 and 11 version 2004 [1] [3] [4],
+                                    periodically updates with content, including illustrations and text in the search box [1].
+
+                                    However, using search highlights can impact your privacy.
+                                    This feature is even considered a security vulnerability [2].
+                                    It reduces privacy by communicating personalized content including updates from
+                                    your organization, suggested people, files, and more [3]. Acknowledging this privacy concern, Windows provides
+                                    settings in the "Privacy & security" section to manage it [3].
+
+                                    This script adjusts following registry keys to turn off this feature:
+
+                                    - `HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search!EnableDynamicContentInWSB` [4] [2] [5]
+                                    - `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SearchSettings!IsDynamicSearchBoxEnabled` [6] [7] [8]
+                                    - `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SearchSettings!ShowDynamicContent` [7]
+
+                                    [1]: https://web.archive.org/web/20240120213614/https://techcommunity.microsoft.com/t5/windows-it-pro-blog/group-configuration-search-highlights-in-windows/ba-p/3263989 "Group configuration: search highlights in Windows - Microsoft Community Hub | techcommunity.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240120214205/https://www.scaprepo.com/view.jsp?id=CCE-99848-4 "SecPod SCAP Repo, a repository of SCAP Content (CVE, CCE, CPE, CWE, OVAL and XCCDF) | www.scaprepo.com"
+                                    [3]: https://web.archive.org/web/20240120214019/https://blogs.windows.com/windows-insider/2022/03/09/announcing-windows-11-insider-preview-build-22572/ "Announcing Windows 11 Insider Preview Build 22572 | Windows Insider Blog | blogs.windows.com"
+                                    [4]: https://web.archive.org/web/20240120214147/https://admx.help/?Category=Windows_10_2016&Policy=FullArmor.Policies.3B9EA2B5_A1D1_4CD5_9EDE_75B22990BC21::AllowSearchHighlights "Allow search highlights | admx.help"
+                                    [5]: https://web.archive.org/web/20240120140023/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-search#allowsearchhighlights "Search Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                    [6]: https://web.archive.org/web/20240121145807/https://www.thewindowsclub.com/how-to-disable-search-highlights-in-windows "How to disable Search Highlights in Windows 11/10 | www.thewindowsclub.com"
+                                    [7]: https://web.archive.org/web/20240120214424/https://www.tenforums.com/tutorials/194711-enable-disable-search-highlights-windows-10-a.html "Enable or Disable Search Highlights in Windows 10 | Tutorials | www.tenforums.com"
+                                    [8]: https://web.archive.org/web/20240120214331/https://www.howtogeek.com/895945/how-to-turn-off-search-highlights-on-windows-11/ "How to Turn Off Search Highlights on Windows 11 | www.howtogeek.com"
+                                call:
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "EnableDynamicContentInWSB" /t "REG_DWORD" /d "0" /f
+                                            # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                            revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "EnableDynamicContentInWSB" /f 2>nul
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\SearchSettings" /v "IsDynamicSearchBoxEnabled" /t "REG_DWORD" /d "1" /f
+                                            # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                            revertCode: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\SearchSettings" /v "IsDynamicSearchBoxEnabled" /f 2>nul
+                                    -
+                                        function: ShowExplorerRestartSuggestion
                     -
-                        name: Disable web search and results in search
-                        docs: https://docs.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#21-cortana-and-search-group-policies
-                        recommend: standard
-                        code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "ConnectedSearchUseWeb" /t REG_DWORD /d 0 /f
-                        revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "ConnectedSearchUseWeb" /t REG_DWORD /d 1 /f
+                        name: Disable local search history (breaks recent suggestions)
+                        recommend: strict
+                        docs: |-
+                            This disables the storage and display of search history in Windows [1] [2].
+                            
+                            When executed, the script prevents the operating system from storing search queries in the registry [1] [2].
+                            Consequently, suggestions based on previous searches will no longer appear in the search pane [1] [2].
+                            However, suggestions based on local content from apps or Windows itself will remain available [1] [2].
+
+                            The National Security Agency (NSA) in the USA recommends this setting for enhanced privacy and security [3].
+
+                            By default, Windows provides search suggestions based on previous searches [1] [2] [4].
+                            Running this script disables this feature, thereby enhancing privacy.
+
+                            The script configures the following registry keys:
+                            
+                            - `HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer!DisableSearchHistory` registry key [1] [2].
+                            - `HKCU\Software\Microsoft\Windows\CurrentVersion\SearchSettings!IsDeviceSearchHistoryEnabled` [5].
+
+                            [1]: https://web.archive.org/web/20240120195206/https://admx.help/?Category=Windows_10_2016&Policy=FullArmor.Policies.3B9EA2B5_A1D1_4CD5_9EDE_75B22990BC21::DisableSearchHistory "Turn off storage and display of search history | admx.help"
+                            [2]: https://web.archive.org/web/20240120195237/https://www.windows-security.org/97ff7103a68191c257fcf3a98d3dd87f/turn-off-storage-and-display-of-search-history "Turn off storage and display of search history | Windows security encyclopedia | www.windows-security.org"
+                            [3]: https://archive.ph/2024.01.20-195609/https://github.com/nsacyber/Windows-Secure-Host-Baseline/blob/a0bdd660753327addc3bf4c0500d03c2770a4740/Windows/Group%20Policy%20Templates/Search.admx%23L456 "Windows-Secure-Host-Baseline/Windows/Group Policy Templates/Search.admx · nsacyber/Windows-Secure-Host-Baseline | github.com"
+                            [4]: https://web.archive.org/web/20240120211224/https://support.microsoft.com/en-us/windows/windows-search-and-privacy-99fb8251-7260-1cd6-1bbb-15c2370eb168 "Windows Search and privacy - Microsoft Support | support.microsoft.com"
+                            [5]: https://web.archive.org/web/20240120211424/https://www.tenforums.com/tutorials/133365-how-turn-off-device-search-history-windows-10-a.html "How to Turn On or Off Device Search History in Windows 10 | Tutorials | www.tenforums.com"
+                            [6]: https://web.archive.org/web/20240120211431/https://technoresult.com/how-to-disable-windows-search-history-feature-in-windows-10/ "How to Disable Windows Search History Feature in Windows 10? - Technoresult | technoresult.com"
+                            [7]: https://web.archive.org/web/20240120211444/https://www.thewindowsclub.com/clear-windows-10-search-history-and-remove-recent-activities "How to clear Windows Search History and remove Recent Activities | www.thewindowsclub.com"
+                        call:
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: reg add "HKLM\Software\Policies\Microsoft\Windows\Explorer" /v "DisableSearchHistory" /t REG_DWORD /d "1" /f
+                                    # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                    revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows\Explorer" /v "DisableSearchHistory" /f 2>nul
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\SearchSettings" /v "IsDeviceSearchHistoryEnabled" /t REG_DWORD /d "1" /f
+                                    # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                    revertCode: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\SearchSettings" /v "IsDeviceSearchHistoryEnabled" /f 2>nul
+                            -
+                                function: ShowExplorerRestartSuggestion
                     -
-                        name: Disable Bing search
+                        name: Disable sharing personal search data with Microsoft
                         recommend: standard
-                        code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /t REG_DWORD /d 0 /f
-                        revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "BingSearchEnabled" /t REG_DWORD /d 1 /f
+                        docs: |-
+                            This script enhances privacy by limiting what search information is shared with Bing [1] [2] [3] [4] [5].
+
+                            By default, Search in Windows shares user information, including search history, Microsoft account details, and location data,
+                            to personalize search results and other Microsoft services [1] [2].
+                            Executing this script ensures that search history, account details, or specific location data are not sent to Microsoft [1] [2].
+
+                            Applicable to Windows 8.1 and later [1] [2] [3] [5], this script is a key privacy measure.
+                            It is recommended by the US Department of Defense (DoD) and is considered a standard security practice [3].
+                            Sharing this information is recognized as a security vulnerability [4].
+                            The Center for Internet Security (CIS) also recommends this setting in its security framework [5].
+
+                            The script modifies the following registry key to enforce this privacy setting:
+                            `HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search!ConnectedSearchPrivacy` [1] [2] [3] [4] [5].
+
+                            [1]: https://web.archive.org/web/20240120203041/https://admx.help/?Category=Windows_10_2016&Policy=FullArmor.Policies.3B9EA2B5_A1D1_4CD5_9EDE_75B22990BC21::SearchPrivacy "Set what information is shared in Search | admx.help"
+                            [2]: https://web.archive.org/web/20240120203121/https://www.windows-security.org/c3a6b16451db61009c33a3be38dd1594/set-what-information-is-shared-in-search "Set what information is shared in Search | Windows security encyclopedia | www.windows-security.org"
+                            [3]: https://web.archive.org/web/20240120202937/https://www.stigviewer.com/stig/windows_8_8.1/2015-06-16/finding/V-43242 "Information shared with Bing in Search must be configured to the most restrictive setting. (Windows 8.1) | www.stigviewer.com"
+                            [4]: https://web.archive.org/web/20240120203138/https://www.scaprepo.com/control.jsp?command=relation&relationId=oval:org.secpod.oval:def:27705&search=oval:org.secpod.oval:def:27705 "SecPod SCAP Repo, a repository of SCAP Content (CVE, CCE, CPE, CWE, OVAL and XCCDF) | www.scaprepo.com"
+                            [5]: https://web.archive.org/web/20240120203149/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_Windows_Server_2012_R2_Benchmark_v2_1_0.pdf "CIS Microsoft Windows Server 2012 R2 Benchmark v2.1.0 | bobylive.com"
+                        call:
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "ConnectedSearchPrivacy" /t REG_DWORD /d "3" /f
+                                    # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                    revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search" /v "ConnectedSearchPrivacy" /f 2>nul
+                            -
+                                function: ShowExplorerRestartSuggestion
+                    -
+                        name: Disable personal cloud content search in taskbar
+                        recommend: standard
+                        docs: |-
+                            This script disables the integration of personal cloud content in the taskbar search box [1] [2] [3].
+
+                            By default [2], Windows Search can access and display results from various Microsoft cloud services,
+                            including OneDrive, Outlook, Bing, SharePoint [2] [3] [4] for both personal Microsoft accounts and
+                            work or school accounts [1] [2] [3] [4].
+
+                            This means your personal and work-related files stored on Microsoft's cloud platforms can be searched
+                            through the Windows Search interface. While this feature increases convenience, it also poses privacy
+                            concerns. For instance, someone with access to your computer can potentially view your personal search
+                            results or data from your cloud storage. Additionally, your search queries are shared with Microsoft,
+                            further impacting your privacy.
+
+                            By disabling this feature, you ensure that Windows Search only returns results from your local device,
+                            safeguarding your personal and professional information stored in cloud services. This action enhances
+                            privacy by keeping your cloud-stored data separate from local search operations.
+
+                            The script modifies two registry keys to disable cloud content search for different account types:
+
+                            - For personal Microsoft accounts:
+                              `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SearchSettings!IsMSACloudSearchEnabled` [1] [2] [3]
+                            - For work or school accounts:
+                              `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SearchSettings!IsAADCloudSearchEnabled` [1] [2] [3]
+
+                            [1]: https://web.archive.org/web/20240121002929/https://r-pufky.github.io/docs/operating-systems/windows/10/20H2/settings/search/permissions-and-history.html "8.1. Permissions & History — Generic service & computer documentation. documentation | r-pufky.github.io"
+                            [2]: https://web.archive.org/web/20240121002902/https://www.clasesordenador.com/como-activar-y-desactivar-la-busqueda-de-contenido-en-la-nube-en-windows-11/ "Cómo activar y desactivar la búsqueda de contenido en la nube en Windows 11 | www.clasesordenador.com"
+                            [3]: https://web.archive.org/web/20240121002826/https://www.thewindowsclub.com/disable-cloud-content-search-in-taskbar-search-box "Disable Cloud Content Search in Taskbar search box in Windows 11/10 | www.thewindowsclub.com"
+                            [4]: https://web.archive.org/web/20240121010645/https://support.microsoft.com/en-us/windows/windows-search-and-privacy-99fb8251-7260-1cd6-1bbb-15c2370eb168 "Windows Search and privacy - Microsoft Support | support.microsoft.com"
+                        call:
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SearchSettings" /v "IsMSACloudSearchEnabled" /t REG_DWORD /d "0" /f
+                                    # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                    revertCode: reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SearchSettings" /v "IsMSACloudSearchEnabled" /f 2>nul
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SearchSettings" /v "IsAADCloudSearchEnabled" /t REG_DWORD /d "0" /f
+                                    # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                    revertCode: reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\SearchSettings" /v "IsAADCloudSearchEnabled" /f 2>nul
+                            -
+                                function: ShowExplorerRestartSuggestion
             -
                 category: Disable targeted advertisements and marketing
                 children:
@@ -4941,7 +5492,7 @@ actions:
 
                             - `HKLM\SOFTWARE\Policies\Microsoft\Windows\System!AllowCrossDeviceClipboard`: Disables the Cloud Clipboard feature, preventing
                             clipboard synchronization across devices [1] [2] [6].
-                            - `HKCU\Software\Microsoft\Clipboard!CloudClipboardAutomaticUpload`: Stops the automatic upload of clipboard data to the cloud [7].
+                            - `HKCU\SOFTWARE\Microsoft\Clipboard!CloudClipboardAutomaticUpload`: Stops the automatic upload of clipboard data to the cloud [7].
 
                             > **Caution**: After running this script, clipboard contents will not synchronize across devices [1] [2] [6].
                             > Text or images copied on one device will not be accessible on other devices [3] [4] [5].
@@ -9555,10 +10106,11 @@ actions:
                     - https://github.com/undergroundwires/privacy.sexy/issues/110
                 call:
                     -
-                        function: ShowWarning
+                        function: ShowMessage
                         parameters:
                             message: Disabling Network settings on Windows 10 is known to break Network settings.
                             ignoreWindows11: true
+                            warn: true
                     - # Windows Push Notifications System Service
                         function: DisableService
                         parameters:
@@ -15328,30 +15880,66 @@ functions:
                             }
                         }
     -
-        name: ShowWarning
+        name: ShowMessage
         parameters:
             - name: message
             - name: ignoreWindows11 # Ignores warning message on Windows 11, allowed values: true | false, default: false
+              optional: true
             - name: ignoreWindows10 # Ignores warning message on Windows 10, allowed values: true | false, default: false
+              optional: true
+            - name: showOnRevert
+              optional: true
+            - name: warn
+              optional: true
         call:
             function: RunPowerShell
             parameters:
                 code: |-
-                    $warningMessage = '{{ $message }}'
-
+                    $message = '{{ $message }}'
                     $ignoreWindows10 = {{ with $ignoreWindows10 }} $true # {{ end }} $false
                     $ignoreWindows11 = {{ with $ignoreWindows11 }} $true # {{ end }} $false
+                    $warn = {{ with $warn }} $true # {{ end }} $false
 
                     $osVersion = [System.Environment]::OSVersion.Version
                     function Test-IsWindows10 { ($osVersion.Major -eq 10) -and ($osVersion.Build -lt 22000) }
                     function Test-IsWindows11 { ($osVersion.Major -gt 10) -or (($osVersion.Major -eq 10) -and ($osVersion.Build -ge 22000)) }
 
                     if (($ignoreWindows10 -and (Test-IsWindows10)) -or ($ignoreWindows11 -and (Test-IsWindows11))) {
+                        echo "Skipping"
                         exit 0 # Skip
                     }
 
-                    Write-Warning "$warningMessage"
-                # revertCode: No warnings needed when reverting
+                    if ($warn) {
+                        Write-Warning "$message"
+                    } else {
+                        Write-Host "Note: " -ForegroundColor Blue -NoNewLine
+                        Write-Output "$message"
+                    }
+                # Marked: refactor-with-variables
+                #   Unfortunately duplicates `code` inside `showOnRevert` flag as privacy.sexy compiler does not support better way for now.
+                revertCode: |-
+                    {{ with $showOnRevert }}
+                        $message = '{{ $message }}'
+                        $ignoreWindows10 = {{ with $ignoreWindows10 }} $true # {{ end }} $false
+                        $ignoreWindows11 = {{ with $ignoreWindows11 }} $true # {{ end }} $false
+                        $warn = {{ with $warn }} $true # {{ end }} $false
+
+
+                        $osVersion = [System.Environment]::OSVersion.Version
+                        function Test-IsWindows10 { ($osVersion.Major -eq 10) -and ($osVersion.Build -lt 22000) }
+                        function Test-IsWindows11 { ($osVersion.Major -gt 10) -or (($osVersion.Major -eq 10) -and ($osVersion.Build -ge 22000)) }
+
+                        if (($ignoreWindows10 -and (Test-IsWindows10)) -or ($ignoreWindows11 -and (Test-IsWindows11))) {
+                            exit 0 # Skip
+                        }
+
+                        if ($warn) {
+                            Write-Warning "$message"
+                        } else {
+                            Write-Host "Note: " -ForegroundColor Blue -NoNewLine
+                            Write-Output "$message"
+                        }
+                    {{ end }}
     -
         name: RemoveBrowserAssociations
         parameters:
@@ -16213,3 +16801,19 @@ functions:
                     }
                 codeComment: '{{ with $codeComment }}{{ . }}{{ end }}'
                 revertCodeComment: '{{ with $revertCodeComment }}{{ . }}{{ end }}'
+    -
+        name: ShowExplorerRestartSuggestion
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: Suggest restarting explorer.exe for changes to take effect
+                    revertCodeComment: Suggest restarting explorer.exe for changes to take effect
+            -
+                function: ShowMessage
+                parameters:
+                    message: >-
+                        This script will not take effect until you restart explorer.exe.
+                        You can restart explorer.exe by restarting your computer or by running following on command prompt:
+                        `taskkill /f /im explorer.exe & start explorer`.
+                    showOnRevert: 'true'
