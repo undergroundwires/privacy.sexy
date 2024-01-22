@@ -3421,9 +3421,15 @@ actions:
                             -
                                 name: Remove "Cortana" icon from taskbar
                                 recommend: standard
-                                code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowCortanaButton" /t REG_DWORD /d 0 /f
-                                # This key does not exist on Windows 11 since 22H3, but exists with value `0` on Windows 10 since 22H2
-                                revertCode: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowCortanaButton" /f 2>nul
+                                call:
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowCortanaButton" /t "REG_DWORD" /d "0" /f
+                                            # This key does not exist on Windows 11 since 22H3, but exists with value `0` on Windows 10 since 22H2
+                                            revertCode: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowCortanaButton" /f 2>nul
+                                    -
+                                        function: ShowExplorerRestartSuggestion
                             -
                                 name: Disable Cortana in ambient mode
                                 recommend: standard
@@ -4052,10 +4058,17 @@ actions:
                     reg add "HKLM\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config" /v "AutoConnectAllowedOEM" /t REG_DWORD /d 0 /f
             -
                 name: Disable app launch tracking (hides most-used apps)
-                docs: https://www.thewindowsclub.com/enable-or-disable-app-launch-tracking-in-windows-10
                 recommend: strict
-                code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /d 0 /t REG_DWORD /f
-                revertCode: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /d 1 /t REG_DWORD /f
+                docs: https://www.thewindowsclub.com/enable-or-disable-app-launch-tracking-in-windows-10
+                call:
+                    -
+                        function: RunInlineCode
+                        parameters:
+                            code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /t "REG_DWORD" /d "0" /f
+                            # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                            revertCode: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "Start_TrackProgs" /f 2>nul
+                    -
+                        function: ShowExplorerRestartSuggestion
             -
                 name: Disable Website Access of Language List
                 recommend: standard
@@ -9869,8 +9882,15 @@ actions:
                     )
             -
                 name: Disable sync provider notifications
-                code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowSyncProviderNotifications" /d 0 /t REG_DWORD /f
-                revertCode: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowSyncProviderNotifications" /d 1 /t REG_DWORD /f
+                call:
+                    -
+                        function: RunInlineCode
+                        parameters:
+                            code: reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowSyncProviderNotifications" /t "REG_DWORD" /d "0" /f
+                            # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                            revertCode: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowSyncProviderNotifications" /f 2>nul
+                    -
+                        function: ShowExplorerRestartSuggestion
             -
                 name: Disable hibernation for faster startup and to avoid sensitive data storage
                 docs: |-
@@ -14649,7 +14669,8 @@ actions:
                     [3]: https://support.microsoft.com/en-us/windows/stay-up-to-date-with-widgets-7ba79aaa-dac6-4687-b460-ad16a06be6e4 "What data does Microsoft collect? | Widgets | Microsoft"
                 children:
                     -
-                        name: Remove Widgets from taskbar
+                        name: Remove "Widgets" from taskbar
+                        recommend: strict
                         docs: |-
                             To control whether the Widgets button is visible on the taskbar, Microsoft introduced `TaskbarDa` registry value [1].
                             Possible `DWORD` 32-bit settings for the `TaskbarDa` value are [1] [2]:
@@ -14661,9 +14682,15 @@ actions:
 
                             [1]: https://www.elevenforum.com/t/add-or-remove-widgets-button-on-taskbar-in-windows-11.32/ " Add or Remove Widgets Button on Taskbar in Windows 11 | Windows Eleven Forum"
                             [2]: https://www.bleepingcomputer.com/news/microsoft/new-windows-11-registry-hacks-to-customize-your-device/ "New Windows 11 registry hacks to customize your device | Bleeping Computer"
-                        recommend: strict
-                        code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarDa" /t REG_DWORD /d "0" /f
-                        revertCode: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarDa" /f 2>nul
+                        call:
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarDa" /t "REG_DWORD" /d "0" /f
+                                    # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                    revertCode: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarDa" /f 2>nul
+                            -
+                                function: ShowExplorerRestartSuggestion
                     -
                         name: Remove "Windows Web Experience Pack" (breaks Widgets)
                         recommend: strict
@@ -14708,13 +14735,173 @@ actions:
                                 packageName: MicrosoftWindows.Client.WebExperience # Get-AppxPackage MicrosoftWindows.Client.WebExperience
                                 publisherId: cw5n1h2txyewy
             -
-                name: Remove Meet Now icon from taskbar
+                name: Remove "Meet Now" icon from taskbar
                 recommend: strict
                 docs: # Skype feature, introduced in 20H2, KB4580364 update
                     - https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.TaskBar2::HideSCAMeetNow
                     - https://www.windowscentral.com/how-disable-meet-now-feature-windows-10
                 code: reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "HideSCAMeetNow" /t REG_DWORD /d 1 /f
                 revertCode: reg delete "HKLM\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "HideSCAMeetNow" /f
+            -
+                category: Remove Windows Copilot
+                docs: |-
+                    This category includes scripts to disable or remove the Windows Copilot feature.
+                    "Windows Copilot" is also known as "Copilot in Windows" [1] [2] [3],
+
+                    Windows Copilot is an AI assistant within Windows [1] [2].
+                    It helps with a wide range of tasks, like adjusting system settings [1] [2].
+                    It integrates with Bing Chat to deliver web results [1], and supports generating creative content, like images [1] [2],
+                    and providing personalized suggestions based on user data analysis [2].
+
+                    While these features enhance user experience, they raise privacy concerns due to the extensive personal
+                    data access and processing involved, including user files [4], keyboard and voice inputs [3], and browser
+                    history [3].
+                    Such data is transmitted to Microsoft's servers [3].
+                    Transmitting this data to Microsoft poses potential privacy and security risks.
+
+                    Moreover, Copilot's susceptibility to attacks like prompt engineering underlines its security risks [5].
+                    More about security vulnerabilities: [Attacks on language models](https://erkinekici.com/articles/attacks-on-language-models/).
+
+                    Removing Windows Copilot reduces privacy and security risks, improves system performance, and simplifies
+                    the user interface.
+
+                    [1]: https://web.archive.org/web/20240122063553/https://www.microsoft.com/en-us/windows/copilot-ai-features "Copilot in Windows & Other AI-Powered Features | Microsoft | www.microsoft.com"
+                    [2]: https://web.archive.org/web/20240122063357/https://support.microsoft.com/en-us/windows/welcome-to-copilot-in-windows-675708af-8c16-4675-afeb-85a5a476ccb0 "Welcome to Copilot in Windows - Microsoft Support | support.microsoft.com"
+                    [3]: https://web.archive.org/web/20240122063412/https://support.microsoft.com/en-us/windows/copilot-in-windows-your-data-and-privacy-3e265e82-fc76-4d0a-afc0-4a0de528b73a "Copilot in Windows: Your data and privacy - Microsoft Support | support.microsoft.com"
+                    [4]: https://web.archive.org/web/20240122063447/https://concentric.ai/too-much-access-microsoft-copilot-data-risks-explained/ "2023 Microsoft Copilot Data Risks Explained | Concentric AI | concentric.ai"
+                    [5]: https://erkinekici.com/articles/attacks-on-language-models/ "Attacks on language models :: Erkin Ekici | erkinekici.com"
+                children:
+                    -
+                        name: Disable Copilot feature
+                        recommend: strict
+                        docs: |-
+                            This script deactivates the Windows Copilot feature, enhancing user privacy and potentially improving system performance.
+                            By default, Copilot is enabled and appears on the taskbar when available [1] [2].
+
+                            Disabling Windows Copilot prevents it from appearing on the taskbar and stops it from functioning [1] [2].
+                            This action is useful for users who prioritize privacy and system performance, as it eliminates a potential
+                            channel for data sharing with Microsoft servers and reduces the attacks on language models [3]. 
+                            Read more: [Attacks on language models](https://erkinekici.com/articles/attacks-on-language-models/).
+
+                            The script operates by modifying two registry keys:
+
+                            - `HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot!TurnOffWindowsCopilot`:
+                              This key disables Copilot for all users on the device [2] [4].
+                            - `HKCU\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot!TurnOffWindowsCopilot`:
+                              This key disables Copilot for the current user [1] [4].
+
+                            To fully disable Copilot, both machine-level (`HKLM`) and user-level (`HKCU`) settings might need
+                            adjustment, given reports that `HKLM` alone is inadequate [4].
+
+                            This script turns off Copilot, enhancing privacy by preventing data collection and transmission,
+                            and improving security by reducing the risk of language model attacks [3].
+
+                            [1]: https://web.archive.org/web/20240122064120/https://learn.microsoft.com/en-us/windows/client-management/manage-windows-copilot "Manage Copilot in Windows - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20231004134328/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsai#turnoffwindowscopilot "WindowsAI Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://erkinekici.com/articles/attacks-on-language-models/ "Attacks on language models :: Erkin Ekici | erkinekici.com"
+                            [4]: https://web.archive.org/web/20240122064046/https://www.elevenforum.com/t/enable-or-disable-windows-copilot-in-windows-11.17045/ "Enable or Disable Windows Copilot in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+                        call:
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot" /v "TurnOffWindowsCopilot" /t "REG_DWORD" /d "1" /f
+                                    # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                    revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot" /v "TurnOffWindowsCopilot" /f 2>nul
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: reg add "HKCU\Software\Policies\Microsoft\Windows\WindowsCopilot" /v "TurnOffWindowsCopilot" /t "REG_DWORD" /d "0" /f
+                                    revertCode: reg delete "HKCU\Software\Policies\Microsoft\Windows\WindowsCopilot" /v "TurnOffWindowsCopilot" /f 2>nul
+                    -
+                        name: Disable Copilot access
+                        recommend: strict
+                        docs: |-
+                            This script disables Copilot access on your computer, enhancing your privacy.
+
+                            It prevents the Copilot feature from activating or being suggested for use locally [1] [2].
+
+                            When activated, Copilot can access and process a vast array of personal data, potentially leading to privacy concerns.
+                            By setting your local user's eligibility status to "ineligible" this script effectively removes the possibility of Copilot
+                            being automatically offered or activated on your system.
+
+                            It works by adjusting the `HKCU\Software\Microsoft\Windows\Shell\Copilot\BingChat!IsUserEligible` registry key [1] [2] [3].
+                            Typically, this key may be modified by Microsoft based on your account activity [3].
+                            However, running this script will override such adjustments, maintaining your privacy preference and potentially
+                            enhancing system performance by disabling background services.
+
+                            Please restart your computer after applying this script to activate changes [2] [3].
+                            If reverting, relog into your Microsoft account to reset settings [3].
+
+                            [1]: https://web.archive.org/web/20240122065339/https://itstechbased.com/how-to-enable-new-copilot-ai-in-windows-11-22631-2262-beta/ "How to Enable New Copilot AI in Windows 11 22631.2262 (Beta) - Tech Based | itstechbased.com"
+                            [2]: https://web.archive.org/web/20240122065302/https://betawiki.net/wiki/Windows_10_build_19045.3754 "Windows 10 build 19045.3754 - BetaWiki | betawiki.net"
+                            [3]: https://web.archive.org/web/20240122065316/https://www.neowin.net/guides/how-to-enable-copilot-in-windows-10/ "How to enable Copilot in Windows 10 - Neowin | www.neowin.net"
+                        call:
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: reg add "HKCU\Software\Microsoft\Windows\Shell\Copilot\BingChat" /v "IsUserEligible" /t "REG_DWORD" /d "0" /f
+                                    # Default value for this key varies, seen as `0` on some Windows 11 22H3, key does not exist on some Windows 10 22H2
+                                    revertCode: reg delete "HKCU\Software\Microsoft\Windows\Shell\Copilot\BingChat" /v "IsUserEligible" /f 2>nul
+                            -
+                                function: ShowComputerRestartSuggestion
+                    -
+                        name: Disable Copilot auto-launch on start
+                        recommend: strict
+                        docs: |-
+                            This script stops the Copilot feature from automatically starting up with Windows,
+                            providing a more controlled and resource-efficient computing experience.
+
+                            With the release of Windows 11 builds 25992 (Canary) and 23615 (Dev), users encountered a new functionality
+                            that would auto-launch Copilot on wider screens [1] [2] [3].
+
+                            This script modifies the `HKCU\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings!AutoOpenCopilotLargeScreens`
+                            registry key to configure this setting [1] [2].
+
+                            This script ensures Copilot stays inactive at startup, activating only when the user initiates it manually.
+                            This change not only respects user preference but also frees up system resources that would otherwise be consumed by this feature,
+                            potentially leading to faster startup times and better overall performance.
+
+                            [1]: https://web.archive.org/web/20240122071219/https://www.elevenforum.com/t/enable-or-disable-open-copilot-at-startup-in-windows-11.19626/ "Enable or Disable Open Copilot at Startup in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+                            [2]: https://web.archive.org/web/20240122071337/https://blogs.windows.com/windows-insider/2024/01/11/announcing-windows-11-insider-preview-build-23615-dev-channel/ "Announcing Windows 11 Insider Preview Build 23615 (Dev Channel) | Windows Insider Blog | blogs.windows.com"
+                            [3]: https://web.archive.org/web/20240122071352/https://geekrewind.com/how-to-turn-open-copilot-when-windows-starts-on-or-off-in-windows-11/ "How to Turn “Open Copilot when Windows Starts” On or Off in Windows 11 - Geek Rewind | geekrewind.com"
+                        call:
+                            function: RunInlineCode
+                            parameters:
+                                code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings" /v "AutoOpenCopilotLargeScreens" /t "REG_DWORD" /d "0" /f
+                                # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                revertCode: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings" /v "AutoOpenCopilotLargeScreens" /f 2>nul
+                    -
+                        name: Remove "Copilot" icon from taskbar
+                        recommend: strict
+                        docs: |-
+                            This script removes the Copilot icon from the taskbar.
+                            Windows added a taskbar button enabled by default to launch Windows Copilot [1].
+                            This feature was introduced with the Windows 11 22H2 Moments 4 update [2] [3].
+
+                            The script configures the `HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced!ShowCopilotButton`
+                            registry key [3] [4].
+
+                            This script will turn off the Copilot button in the Settings app of Windows 11, which will hide or remove
+                            the Copilot icon from the taskbar [4].
+
+                            Disabling the Copilot button won't uninstall the feature but will hide the icon from the taskbar, simplifying
+                            the user interface and reducing distractions.
+
+                            This action also reduces the visibility of a feature with privacy implications from data collection and processing.
+
+                            [1]: https://web.archive.org/web/20240122072226/https://blogs.windows.com/windows-insider/2023/06/29/announcing-windows-11-insider-preview-build-23493/ "Announcing Windows 11 Insider Preview Build 23493 | Windows Insider Blog | blogs.windows.com"
+                            [2]: https://web.archive.org/web/20240122072448/https://support.microsoft.com/en-us/topic/october-31-2023-kb5031455-os-builds-22621-2506-and-22631-2506-preview-6513c5ec-c5a2-4aaf-97f5-44c13d29e0d4 "October 31, 2023—KB5031455 (OS Builds 22621.2506 and 22631.2506) Preview - Microsoft Support | support.microsoft.com"
+                            [3]: https://web.archive.org/web/20240122071203/https://www.elevenforum.com/t/add-or-remove-copilot-button-on-taskbar-in-windows-11.16015/ "Add or Remove Copilot Button on Taskbar in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+                            [4]: https://web.archive.org/web/20240122071007/https://www.thewindowsclub.com/how-to-show-or-hide-copilot-button-on-taskbar-in-windows "How to remove Copilot from Taskbar in Windows 11 | www.thewindowsclub.com"
+                        call:
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowCopilotButton" /t "REG_DWORD" /d "0" /f
+                                    # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                    revertCode: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowCopilotButton" /f 2>nul
+                            -
+                                function: ShowExplorerRestartSuggestion
     -
         category: Advanced settings
         children:
@@ -16816,4 +17003,17 @@ functions:
                         This script will not take effect until you restart explorer.exe.
                         You can restart explorer.exe by restarting your computer or by running following on command prompt:
                         `taskkill /f /im explorer.exe & start explorer`.
+                    showOnRevert: 'true'
+    -
+        name: ShowComputerRestartSuggestion
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: Suggest restarting computer for changes to take effect
+                    revertCodeComment: Suggest restarting computer for changes to take effect
+            -
+                function: ShowMessage
+                parameters:
+                    message: For the changes to fully take effect, please restart your computer.
                     showOnRevert: 'true'
