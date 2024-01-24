@@ -5459,6 +5459,44 @@ actions:
                     reg add "HKLM\Software\Piriform\CCleaner" /v "(Cfg)GetIpmForTrial" /t REG_DWORD /d 1 /f
                     reg add "HKLM\Software\Piriform\CCleaner" /v "(Cfg)SoftwareUpdater" /t REG_DWORD /d 1 /f
                     reg add "HKLM\Software\Piriform\CCleaner" /v "(Cfg)SoftwareUpdaterIpm" /t REG_DWORD /d 1 /f
+            -
+                name: Block Dropbox telemetry
+                recommend: standard
+                docs: |-
+                    This script prevents your computer from sending personal data to Dropbox's telemetry servers [1],
+                    improving your privacy.
+
+                    Dropbox collects data such as:
+
+                    - **Account Information**: Includes your name, email, phone number, payment details, and address shared during account
+                      creation or when upgrading plans [2].
+                    - **Your Files**: Covers data on files you save in Dropbox, their usage, and details [2].
+                    - **Contacts**: If granted access, Dropbox stores contacts [2].
+                    - **Usage Information**: Tracks how you use Dropbox services, including file management and electronic signature activities [2].
+                    - **Device Information**: Includes information from your devices like IP addresses, browsers, location data [2].
+                    - **User Settings**: Uses cookies and pixel tags to remember your settings [2].
+                    - **DocSend and Dropbox Analytics**: Collects data, including device and ID information, when you view content via these services [2].
+                    - **Marketing Information**: Tracks your interactions with Dropbox or its representatives [2].
+
+                    Dropbox also shares collected data with third parties, affiliates, and other users [2].
+
+                    The script specifically targets and blocks connections to `telemetry.dropbox.com` [3] and `telemetry.v.dropbox.com` [4].
+
+                    By applying this script, you'll significantly reduce the data collected by Dropbox, providing direct and enhanced protection for your privacy.
+
+                    [1]: https://web.archive.org/web/20240123113411/https://www.dropboxforum.com/t5/Integrations/Why-So-Much-Telemetry/m-p/463436/highlight/true#M4616 "Re: Why So Much Telemetry ? - Page 3 - Dropbox Community | www.dropboxforum.com"
+                    [2]: https://web.archive.org/web/20240123113313/https://www.dropbox.com/privacy "Privacy Policy - Dropbox | www.dropbox.com"
+                    [3]: https://web.archive.org/web/20240123113357/https://www.dropboxforum.com/t5/Integrations/Why-So-Much-Telemetry/td-p/455961/page/2 "Why So Much Telemetry ? - Page 2 - Dropbox Community | dropboxforum.com"
+                    [4]: https://web.archive.org/web/20240123113411/https://www.dropboxforum.com/t5/Integrations/Why-So-Much-Telemetry/m-p/456421/highlight/true#M4592 "Re: Why So Much Telemetry ? - Dropbox Community | www.dropboxforum.com"
+                call:
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: telemetry.dropbox.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: telemetry.v.dropbox.com
     -
         category: Security improvements
         docs: |-
@@ -17017,3 +17055,124 @@ functions:
                 parameters:
                     message: For the changes to fully take effect, please restart your computer.
                     showOnRevert: 'true'
+    -
+        name: BlockViaHostsFile
+        parameters:
+            - name: domain
+        call:
+            function: RunPowerShell
+            parameters:
+                # Marked: improve-comment-inlining
+                #   `[char]35` is used in-place of `#` because otherwise compiler thinks,
+                #   this is online powershell comment.
+                codeComment: 'Add hosts entries for {{ $domain }}'
+                code: |-
+                    $domain ='{{ $domain }}'
+                    $hostsFilePath = "$env:WINDIR\System32\drivers\etc\hosts"
+                    $comment = "managed by privacy.sexy"
+                    $hostsFileEncoding = [Microsoft.PowerShell.Commands.FileSystemCmdletProviderEncoding]::Utf8
+                    $blockingHostsEntries = @(
+                        @{ AddressType = "IPv4";  IPAddress = '0.0.0.0'; }
+                        @{ AddressType = "IPv6";  IPAddress = '::1'; }
+                    )
+                    try {
+                        $isHostsFilePresent = Test-Path    `
+                            -Path $hostsFilePath        `
+                            -PathType Leaf              `
+                            -ErrorAction Stop
+                    } catch {
+                        Write-Error "Failed to check hosts file existence. Error: $_"
+                        exit 1
+                    }
+                    if (-Not $isHostsFilePresent) {
+                        Write-Output "Creating a new hosts file at $hostsFilePath."
+                        try {
+                            New-Item -Path $hostsFilePath -ItemType File -Force -ErrorAction Stop | Out-Null
+                            Write-Output "Successfully created the hosts file."
+                        } catch {
+                            Write-Error "Failed to create the hosts file. Error: $_"
+                            exit 1
+                        }
+                    }
+                    foreach ($blockingEntry in $blockingHostsEntries) {
+                        Write-Output "Processing addition for $($blockingEntry.AddressType) entry."
+                        try {
+                            $hostsFileContents = Get-Content `
+                                -Path "$hostsFilePath" `
+                                -Raw `
+                                -Encoding $hostsFileEncoding `
+                                -ErrorAction Stop
+                        } catch {
+                            Write-Error "Failed to read the hosts file. Error: $_"
+                            continue
+                        }
+                        $hostsEntryLine = "$($blockingEntry.IPAddress)`t$domain $([char]35) $comment"
+                        if ((-Not [String]::IsNullOrWhiteSpace($hostsFileContents)) -And ($hostsFileContents.Contains($hostsEntryLine))) {
+                            Write-Output 'Skipping, entry already exists.'
+                            continue
+                        }
+                        try {
+                            Add-Content `
+                                -Path $hostsFilePath `
+                                -Value $hostsEntryLine `
+                                -Encoding $hostsFileEncoding `
+                                -ErrorAction Stop
+                            Write-Output 'Successfully added the entry.'
+                        } catch {
+                            Write-Error "Failed to add the entry. Error: $_"
+                            continue
+                        }
+                    }
+                revertCodeComment: 'Remove hosts entries for {{ $domain }}'
+                # Marked: refactor-with-variables
+                #   Code and revertCode are similar
+                # No `Set-Content`:
+                #   Set-Content (including with `-Force`) flag sometimes (inconsistently) fails
+                #   with  `Stream was not readable (WriteErrorException)`. This is probably
+                #   cause by rapid read/writes. .NET `[System.IO.File]::WriteAllText` is more reliable.
+                #   `[System.IO.File]::ReadAllText` is also used instead of `Get-Content` for consistency.
+                revertCode: |-
+                    $domain ='{{ $domain }}'
+                    $hostsFilePath = "$env:WINDIR\System32\drivers\etc\hosts"
+                    $comment = "managed by privacy.sexy"
+                    $hostsFileEncoding = [System.Text.Encoding]::UTF8
+                    $blockingHostsEntries = @(
+                        @{ AddressType = "IPv4";  IPAddress = '0.0.0.0'; }
+                        @{ AddressType = "IPv6";  IPAddress = '::1'; }
+                    )
+                    try {
+                        $isHostsFilePresent = Test-Path `
+                            -Path $hostsFilePath `
+                            -PathType Leaf `
+                            -ErrorAction Stop
+                    } catch {
+                        Write-Error "Failed to check hosts file existence. Error: $_"
+                        exit 1
+                    }
+                    if (-Not $isHostsFilePresent) {
+                        Write-Output 'Skipping, the hosts file does not exist.'
+                        exit 0
+                    }
+                    foreach ($blockingEntry in $blockingHostsEntries) {
+                        Write-Output "Processing removal for $($blockingEntry.AddressType) entry."
+                        try {
+                            $hostsFileContents = [System.IO.File]::ReadAllText($hostsFilePath, $hostsFileEncoding)
+                        } catch {
+                            Write-Error "Failed to read the hosts file for removal. Error: $_"
+                            continue
+                        }
+                        $hostsEntryLine = "$($blockingEntry.IPAddress)`t$domain $([char]35) $comment"
+                        if ([String]::IsNullOrWhiteSpace($hostsFileContents) -Or (-Not $hostsFileContents.Contains($hostsEntryLine))) {
+                            Write-Output 'Skipping, entry not found.'
+                            continue
+                        }
+                        $hostsEntryRemovalPattern = [regex]::Escape($hostsEntryLine) + "(\r?\n)?"
+                        $hostsFileContentAfterRemoval = $hostsFileContents -Replace $hostsEntryRemovalPattern, ""
+                        try {
+                            [System.IO.File]::WriteAllText($hostsFilePath, $hostsFileContentAfterRemoval, $hostsFileEncoding)
+                            Write-Output 'Successfully removed the entry.'
+                        } catch {
+                            Write-Error "Failed to remove the entry. Error: $_"
+                            continue
+                        }
+                    }

@@ -19,6 +19,7 @@ Key attributes of a good script:
 - Choose clear and uncomplicated language.
 - It should start with an imperative noun.
 - Start with action verbs like `Clear`, `Disable`, `Remove`, `Configure`, `Minimize`, `Maximize`. While exceptions exist, these prefixes help maintain naming consistency.
+- The scripts that modify hosts file should start with `Block ..`.
 - Favor the terms:
   - `Disable` over `Turn off`, `Stop`, `Prevent`
   - `Configure` over `Set up`
