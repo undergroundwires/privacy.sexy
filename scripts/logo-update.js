@@ -1,4 +1,15 @@
-#!/usr/bin/env bash
+/**
+ * Description:
+ *  This script updates the logo images across the project based on the primary
+ *  logo file ('img/logo.svg' file).
+ *  It handles the creation and update of various icon sizes for different purposes,
+ *  including desktop launcher icons, tray icons, and web favicons from a single source
+ *  SVG logo file.
+ *
+ * Usage:
+ *   node ./scripts/logo-update.js
+ */
+
 import { resolve, join } from 'node:path';
 import { rm, mkdtemp, stat } from 'node:fs/promises';
 import { spawn } from 'node:child_process';
