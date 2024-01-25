@@ -4397,24 +4397,84 @@ actions:
                 code: setx POWERSHELL_TELEMETRY_OPTOUT 1
                 revertCode: setx POWERSHELL_TELEMETRY_OPTOUT 0
             -
-                category: Disable Nvidia telemetry
-                docs:
-                    - https://github.com/privacysexy-forks/nVidia-modded-Inf
-                    - https://github.com/privacysexy-forks/Disable-Nvidia-Telemetry
-                    - https://forum.palemoon.org/viewtopic.php?f=4&t=15686&sid=3d7982d3b9e89c713547f1a581ea44a2&start=20
+                category: Disable NVIDIA telemetry # TODO: Revise docs
+                docs: |-
+                    NVIDIA drivers collect various types of personal data from different sources and aggregates them to identify and analyze users [3]:
+
+                    - **System Hardware Information:** GPU specifications, clock speeds, monitor resolutions, CPU specifications, memory capacity,
+                      BIOS revisions, and motherboard details [4].
+                    - **Driver and Game Settings**: Information about driver settings for specific games (e.g., G-Sync status, anti-aliasing types)
+                      and game resolution and quality settings [4].
+                    - **List of Installed Games and Applications**: Games and applications installed on the system, such as those from Origin, Steam,
+                      or individual titles like Counter-Strike: GO and Overwatch [4].
+                    - **Content Viewing History:** History of the content viewed on its websites or online services [3].
+                    - **Contact Information**: Contact details like name, email, phone number, address, and organization affiliations [3].
+                    - **Order History and Contact Information** [3].
+                    - **Feedback Submission:** Feedback, email addresses, and technical information like operating system, browser version, and IP address [3].
+                    - **Email Interactions:** interactions with emails (open, click, unsubscribe) [3].
+                    - **User Profile Information:** Username, email address, account preferences, login activity, and IP address [3].
+                    - **Birthdate**
+                    - **Geographic Region**
+                    - **Software, Hardware, and Network Configuration Details**: This includes information about the software, hardware, and network configuration
+                      (operating system version, applications installed, hardware type, network speed, IP address). This data is shared with GeForce NOW partners.
+                    - **Feature and Application Usage:** Information about the features and applications used in connection with NVIDIA products or services is collected
+                      to understand user experience and improve products and services. This may include software or games usage data.
+                    - **Error or Crash Data**
+                    - **Lead Generation and Identity Enrichment Data:** Data from public and commercial sources like event attendance, internet searches, and data
+                      enrichment services [3].
+                    - **Public Images, Audio-Video, and Survey Data for AV and AI Research* [3]
+                    - **Interest-Based Advertising Data:** Name, email, phone number, job title, organizational affiliations, zip code, country, and social media
+                    handles [3].
+
+                    This user data is shared with NVIDIA partners such as shipping vendors, third-party ad providers, GeForce Now Alliance partners and other
+                    providers [3].
+
+                    NVIDIA Telemetry is part of the driver package and gets installed alongside it [1]. These telemetry services run in the background at user logon
+                    and periodically throughout the day [1]. They are known to collect data, but specifics about the collected data are not clearly disclosed by NVIDIA [1].
+
+                    In newer driver versions, telemetry tracking may be baked directly into NVIDIA Container (`NVDisplay.Container.exe`) process [1].
+                    The NVIDIA Container is associated with the NVIDIA graphics card drivers and is responsible for managing various NVIDIA processes [2].
+                    It is essential for the proper functioning of NVIDIA components, including the graphics card and its features privacy.sexy does not
+                    block NVIDIA Container to avoid unintended side effect [2].
+
+                    [1]: https://web.archive.org/web/20231019222346/https://www.ghacks.net/2016/11/07/nvidia-telemetry-tracking/ "Disable Nvidia Telemetry tracking on Windows - gHacks Tech News | ghacks.net"
+                    [2]: https://web.archive.org/web/20240110133708/https://www.file.net/process/nvdisplay.container.exe.html "NVDisplay.Container.exe Windows process - What is it? | www.file.net"
+                    [3]: https://web.archive.org/web/20240110134812/https://www.nvidia.com/en-us/about-nvidia/privacy-policy/ "NVIDIA Privacy Policy | nvidia.com"
+                    [4]: https://web.archive.org/web/20240110135926/https://gamersnexus.net/industry/2672-geforce-experience-data-transfer-analysis "Analyzing GeForce Experience Data Transfers with Packet Monitoring | GamersNexus | gamersnexus.net"
                 children:
+                    # TODO: https://m.blog.naver.com/iq_up/221507258628
                     -
-                        name: Remove Nvidia telemetry packages
+                        name: Disable NVIDIA telemetry component # TODO: Is best script name possible?
                         recommend: standard
-                        code: |-
-                            if exist "%ProgramFiles%\NVIDIA Corporation\Installer2\InstallerCore\NVI2.DLL" (
-                                rundll32 "%PROGRAMFILES%\NVIDIA Corporation\Installer2\InstallerCore\NVI2.DLL",UninstallPackage NvTelemetryContainer
-                                rundll32 "%PROGRAMFILES%\NVIDIA Corporation\Installer2\InstallerCore\NVI2.DLL",UninstallPackage NvTelemetry
-                            )
-                    -
-                        name: Remove Nvidia telemetry components
-                        recommend: standard
+                        docs: |- # TODO: Revise docs
+                            This script disables the NVIDIA telemetry component.
+
+                            DLL files such as `NvTelemetry64.dll` and `NvTelemetry.dll` "NVIDIA Telemetry" are described as "NVIDIA Telemetry" by NVIDIA [2] [3].
+                            Other telemetty components include `NvTelemetryAPI64.dll`, `NvTelemetryBridge64.dll`, `NvTelemetryAPI32.dll`, `NvTelemetryBridge32.dll` [1].
+
+                            The telemetry installation can be found at:
+
+                            - `%PROGRAMFILES%\NVIDIA Corporation\NvTelemetry\` [4] [5]
+                            - `%PROGRAMFILES(X86)%\NVIDIA Corporation\NvTelemetry\` [6] [7]
+
+                            [1]: https://web.archive.org/web/20240125171146/https://driver-symbols.nvidia.com/ "NVIDIA Binary Server | driver-symbols.nvidia.com"
+                            [2]: https://web.archive.org/web/20240125171133/https://www.dll4free.com/nvtelemetry64.dll.html "NvTelemetry64.dll Download - DLL 4 Free | www.dll4free.com"
+                            [3]: https://www.herdprotect.com/nvtelemetry.dll-43bc26e42324d0cb56234cacf47e188e54a662a1.aspx
+                            [4]: https://www.nvidia.com/en-us/geforce/forums/geforce-experience/14/296769/geforce-experience-318094/
+                            [5]: https://m.blog.naver.com/iq_up/221507258628
+                            [6]: https://www.nvidia.com/en-us/geforce/forums/geforce-experience/14/275674/geforce-experience-3140139-something-went-wrong-/
+                            [7]: https://www.file.net/process/nvtelemetrycontainer.exe.html
                         call:
+                            -
+                                function: SoftDeleteFiles
+                                parameters:
+                                    fileGlob: '%SYSTEMROOT%\System32\DriverStore\FileRepository\*\NvTelemetry*.dll'
+                                    # E.g. `C:\WINDOWS\System32\DriverStore\FileRepository\nv_dispig.inf_amd64_7e5fd280efaa5445\NvTelemetry64.dll`, https://github.com/undergroundwires/privacy.sexy/issues/308
+                                    grantPermissions: true # https://github.com/undergroundwires/privacy.sexy/issues/308
+                            -
+                                function: UninstallNvidiaDriverPackage
+                                parameters:
+                                    packageName: NvTelemetry
                             -
                                 function: SoftDeleteFiles
                                 parameters:
@@ -4426,16 +4486,16 @@ actions:
                                     fileGlob: '%PROGRAMFILES%\NVIDIA Corporation\NvTelemetry\*'
                                     recurse: true
                     -
-                        name: Disable Nvidia telemetry drivers
-                        recommend: standard
-                        call:
-                            function: SoftDeleteFiles
-                            parameters:
-                                fileGlob: '%SYSTEMROOT%\System32\DriverStore\FileRepository\NvTelemetry*.dll'
-                                recurse: true
-                    -
-                        name: Disable participation in Nvidia telemetry
-                        recommend: standard
+                        name: Disable participation in NVIDIA telemetry
+                        recommend: standard # TODO: Revise docs
+                        docs: |-
+                            These registry keys are set when "Help" tab in Nvidia Control Panel is used [1].
+
+                            This disables disable experience improvement program [2].
+                            It removes  participating in user experience telemetry [1].
+
+                            [1]: https://github.com/NateShoffner/Disable-Nvidia-Telemetry/issues/5
+                            [2]: https://www.anandtech.com/show/12811/nvidia-releases-39793-whql-driver-telemetry-changes-for-gdpr
                         call:
                             function: RunInlineCode
                             parameters:
@@ -4452,21 +4512,55 @@ actions:
                                     reg delete "HKLM\SOFTWARE\NVIDIA Corporation\Global\FTS" /v "EnableRID66610" /f
                                     reg delete "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\Global\Startup" /v "SendTelemetryData" /f
                     -
-                        name: Disable Nvidia Telemetry Container service
+                        name: Disable NVIDIA Telemetry Container # TODO: Revise docs
                         docs: |-
-                            [Disable Nvidia Telemetry tracking on Windows - gHacks Tech News](https://web.archive.org/web/20231019222346/https://www.ghacks.net/2016/11/07/nvidia-telemetry-tracking/)
+                            This script aims to disable NVIDIA Telemetry tracking by disabling "NVIDIA Telemetry Container".
+
+                            This script:
+
+                            1. Disables `NvTelemetryContainer` service [1]. This service is registered with display name "NVIDIA Telemetry Container"
+                               and description "Container service for NVIDIA Telemetry" [1] [2] [3]. It runs automatically when windows starts [3].
+                            2. It prevents `NvTelemetryContainer.exe` from running.
+                            3. Uninstalls the associated driver package.
+                            4. Removes installed `NvTelemetryContainer.exe` process found at:
+                               - `%PROGRAMFILES%\NVIDIA Corporation\NvTelemetry\NvTelemetryContainer.exe` [1]
+                               - `%PROGRAMFILES(X86)%\NVIDIA Corporation\NvTelemetry\NvTelemetryContainer.exe` [1]
+
+                            [1]: https://m.blog.naver.com/iq_up/221507258628
+                            [2]: https://www.file.net/process/nvtelemetrycontainer.exe.html
+                            [3]: https://www.ghacks.net/2016/11/07/nvidia-telemetry-tracking/#comment-4206745
                         call:
-                            function: DisableService
-                            parameters:
-                                serviceName: NvTelemetryContainer
-                                # Display name: "NVIDIA Telemetry Container"
-                                # Description: "Container service for NVIDIA Telemetry"
-                                defaultStartupMode: Automatic
+                            -
+                                function: DisableService
+                                parameters:
+                                    serviceName: NvTelemetryContainer
+                                    defaultStartupMode: Automatic
+                            -
+                                function: TerminateExecutableOnLaunch
+                                parameters:
+                                    executableNameWithExtension: NvTelemetryContainer.exe
+                            -
+                                function: UninstallNvidiaDriverPackage
+                                parameters:
+                                    packageName: NvTelemetryContainer
+                            -
+                                function: SoftDeleteFiles
+                                parameters:
+                                    fileGlob: '%PROGRAMFILES(X86)%\NVIDIA Corporation\NvTelemetry\NvTelemetryContainer.exe'
+                            -
+                                function: SoftDeleteFiles
+                                parameters:
+                                    fileGlob: '%PROGRAMFILES%\NVIDIA Corporation\NvTelemetry\NvTelemetryContainer.exe'
                     -
-                        category: Disable Nvidia telemetry scheduled tasks
+                        category: Disable NVIDIA telemetry scheduled tasks
                         docs: |-
-                            This category contains scripts that disable Nvidia telemetry tasks. Telemetry tasks are programmed to transmit data, which
-                            may encompass system performance details or error reports [1] [2]. By disabling these tasks, you can improve your privacy by ensuring
+                            This category contains scripts that disable NVIDIA telemetry tasks. Telemetry tasks are programmed to transmit data, which
+                            may encompass system performance details or error reports [1] [2].
+                            
+                            Disabling NVIDIA Telemetry tasks does not impact the functionality of the NVIDIA video card, and all features supported by the card remain
+                            usable [3].
+
+                            By disabling these tasks, you can improve your privacy by ensuring
                             your system's data remains confidential and is not shared with external sources.
 
                             [1]: https://web.archive.org/web/20231019222235/https://www.file.net/process/nvtmrep.exe.html "NvTmRep.exe Windows process - What is it? | file.net"
@@ -4548,6 +4642,87 @@ actions:
                                         # Check: Get-ScheduledTask -TaskPath '\' -TaskName 'NvTmMon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}'
                                         taskPathPattern: \
                                         taskNamePattern: NvTmMon_{B2FE1952-0186-46C3-BAEC-A80AA35AC5B8}
+                    -
+                        name: Disable NVIDIA game session telemetry
+                        recommend: standard
+                        docs: |-
+                            This script deactivates the NVIDIA Game Session Telemetry Plugin.
+
+                            NVIDIA's telemetry involves gathering data on installed software including games, game settings, and usage patterns
+                            such as game session durations [3] [4].
+                            This data collection poses a potential privacy concern as it tracks and reports user activity.
+
+                            This component is historically known for increasing CPU usage by 10% - 15% and community reports
+                            that disabling it optimizes your PC [1] [2].
+
+                            It's located at [1]:
+
+                            `%WINDIR%\System32\DriverStore\FileRepository\nv[INFNAMEHERE].inf_amd64_[UNIQUEVALUEHERE]\Display.NvContainer\plugins\Session\_NvGSTPlugin.dll`
+                            
+                            Disabling this plugin optimizes system performance and enhances privacy by reducing the amount of data NVIDIA collects
+                            about your software use and gaming habits.
+
+                            [1]: https://archive.ph/2024.01.13-114727/https://www.reddit.com/r/nvidia/comments/11e7ukr/game_ready_driver_53118_faqdiscussion/jam16da/ "Game Ready Driver 531.18 FAQ/Discussion | Reddit | reddit.com"
+                            [2]: https://www.bleepingcomputer.com/news/technology/nvidia-releases-driver-hotfix-for-windows-performance-issues/
+                            [3]: https://web.archive.org/web/20240110134812/https://www.nvidia.com/en-us/about-nvidia/privacy-policy/ "NVIDIA Privacy Policy | nvidia.com"
+                            [4]: https://web.archive.org/web/20240110135926/https://gamersnexus.net/industry/2672-geforce-experience-data-transfer-analysis "Analyzing GeForce Experience Data Transfers with Packet Monitoring | GamersNexus | gamersnexus.net"
+                        call:
+                            function: SoftDeleteFiles
+                            parameters:
+                                fileGlob: '%WINDIR%\System32\DriverStore\FileRepository\*\Display.NvContainer\plugins\Session\_NvGSTPlugin.dll'
+                                grantPermissions: true # https://github.com/undergroundwires/privacy.sexy/issues/308
+                    -
+                        name: Disable NVIDIA monitoring data collection
+                        recommend: standard
+                        docs: |-
+                            This script removes the NVIDIA RAS plugin, described as the "Display Driver NvTelemetry Plugin for NVIDIA Container" by NVIDIA [7].
+
+                            NVIDIA's RAS (Reliability, Availability, and Serviceability) mechanisms log telemetry events [1] [6].
+                            These events are primarily used for machine learning and predictive analysis of failures [2] [4].
+                            RAS data includes failure incidents and are captured in a failure database [3].
+                            This telemetry includes information such as fatal or non-fatal GPU issues and insights into GPU usage [5] [6].
+                            NVIDIA considers this data a type of telemetry [5] [6].
+
+                            These logs are also called Reliability, Availability, Serviceability events [5] [6].
+                            The purpose is to provide a monitoring system to track and predict [3].
+                            It's used by NVIDA to understand GPU usage [5] [6].
+
+                            However, this telemetry data collection raises privacy concerns for users who prefer to minimize the data shared with
+                            NVIDIA.
+
+                            The script targets and removes the plugin located in the following directories on your system:
+
+                            - `C:\Program Files\NVIDIA Corporation\Display.NvContainer\plugins\LocalSystem\DisplayDriverRAS` [1] [8]
+                            - `C:\Program Files\NVIDIA Corporation\DisplayDriverRAS` [8]
+                            - `%WINDIR%\System32\DriverStore\FileRepository\nv[INFNAMEHERE].inf_amd64_[UNIQUEVALUEHERE]\Display.NvContainer\plugins\LocalSystem\_DisplayDriverRAS.dll` [1]
+
+                            Removing this plugin can enhance privacy by stopping the collection of GPU telemetry data.
+
+                            [1]: https://github.com/undergroundwires/privacy.sexy/issues/308 "[BUG]: NVidia telemetry - Unable to disable NvTelemetry64.dll · Issue #308 · undergroundwires/privacy.sexy"
+                            [2]: https://www.cs.wm.edu/~bnie/publications/2016_HPCA_GPU_Soft_Errors.pdf "A Large-Scale Study of Soft-Errors on GPUs in the Field | Bin Nie, Devesh Tiwari†, Saurabh Gupta†, Evgenia Smirni, and James H. Rogers | College of William and Mary, †Oak Ridge National Laboratory | www.cs.wm.edu"
+                            [3]: https://cug.org/proceedings/cug2015_proceedings/includes/files/pap169.pdf "Analyzing the Interplay of Failures and Workload on a Leadership-Class Supercomputer | Esteban Meneses, Xiang Ni, Terry Jones, and Don Maxwell | cug.org"
+                            [4]: https://scholarworks.wm.edu/cgi/viewcontent.cgi?article=6802&context=etd "GPGPU Reliability Analysis: From Applications to Large Scale Systems | scholarworks.wm.edu"
+                            [5]: https://docs.nvidia.com/datacenter/dcgm/latest/user-guide/index.html "Overview — NVIDIA DCGM Documentation latest documentation | docs.nvidia.com"
+                            [6]: https://docs.nvidia.com/datacenter/dcgm/2.3/pdf/DCGM_User_Guide.pdf "Data Center GPU Manager | docs.nvidia.com"
+                            [7]: https://www.dllme.com/dll/files/displaydriverras "_DisplayDriverRAS.dll : Free .DLL Download. - DLLme.com | dllme.com"
+                            [8]: https://www.techpowerup.com/forums/threads/nvidia-container-still-running-after-clean-install.260272/post-4136005 "NVIDIA Container still running after clean install? | TechPowerUp Forums | techpowerup.com"
+                        call:
+                            -
+                                function: SoftDeleteFiles
+                                parameters:
+                                    fileGlob: '%PROGRAMFILES%\NVIDIA Corporation\Display.NvContainer\plugins\LocalSystem\_DisplayDriverRAS'
+                                    # grantPermissions: true # TODO: Is needed?
+                            -
+                                function: SoftDeleteFiles
+                                parameters:
+                                    fileGlob: '%PROGRAMFILES%\Program Files\NVIDIA Corporation\DisplayDriverRAS\_DisplayDriverRAS'
+                                    # grantPermissions: true # TODO: Is needed?
+                            -
+                                function: SoftDeleteFiles
+                                parameters:
+                                    fileGlob: '%SYSTEMROOT%\System32\DriverStore\FileRepository\*\Display.NvContainer\plugins\LocalSystem\_DisplayDriverRAS.dll'
+                                    # E.g. `C:\Windows\System32\DriverStore\FileRepository\nv_dispig.inf_amd64_7e5fd280efaa5445\Display.NvContainer\plugins\LocalSystem\_DisplayDriverRAS.dll`, https://github.com/undergroundwires/privacy.sexy/issues/308
+                                    # grantPermissions: true # TODO: Is needed?
             -
                 category: Disable Visual Studio Code data collection
                 docs:
@@ -16990,7 +17165,7 @@ functions:
                     }
                 codeComment: '{{ with $codeComment }}{{ . }}{{ end }}'
                 revertCodeComment: '{{ with $revertCodeComment }}{{ . }}{{ end }}'
-    -    
+    -
         name: DeleteRegistryKey
         parameters:
             - name: keyName     # Full path of the subkey or entry to be added.
