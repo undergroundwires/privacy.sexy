@@ -17,6 +17,9 @@ export const IconNames = [
   'file-arrow-down',
   'floppy-disk',
   'play',
+  'lightbulb',
+  'square-check',
+  'triangle-exclamation',
 ] as const;
 
 export type IconName = typeof IconNames[number];

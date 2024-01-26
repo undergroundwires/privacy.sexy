@@ -8,9 +8,11 @@
         @click="selectType(SelectionType.None)"
       />
       <template #tooltip>
-        Deselect all selected scripts.
-        <br />
-        💡 Good start to dive deeper into tweaks and select only what you want.
+        <SelectionTypeDocumentation
+          :privacy-rating="0"
+          description="Deselects all scripts. Good starting point to review and select individual tweaks."
+          recommendation="Recommended for users who prefer total control over changes. It allows you to examine and select only the tweaks you require."
+        />
       </template>
     </TooltipWrapper>
 
@@ -22,11 +24,16 @@
         @click="selectType(SelectionType.Standard)"
       />
       <template #tooltip>
-        🛡️ Balanced for privacy and functionality.
-        <br />
-        OS and applications will function normally.
-        <br />
-        💡 Recommended for everyone
+        <SelectionTypeDocumentation
+          :privacy-rating="2"
+          description="Provides a balanced approach between privacy and functionality."
+          recommendation="Recommended for most users who wish to improve privacy with best-practices without affecting stability."
+          :includes="[
+            'Retains functionality of all apps and system services.',
+            'Clears non-essential OS and app telemetry data and caches.',
+            'Keeps essential security services enabled.',
+          ]"
+        />
       </template>
     </TooltipWrapper>
 
@@ -38,11 +45,20 @@
         @click="selectType(SelectionType.Strict)"
       />
       <template #tooltip>
-        🚫 Stronger privacy, disables risky functions that may leak your data.
-        <br />
-        ⚠️ Double check to remove scripts where you would trade functionality for privacy
-        <br />
-        💡 Recommended for daily users that prefers more privacy over non-essential functions
+        <SelectionTypeDocumentation
+          :privacy-rating="3"
+          description="Focuses heavily on privacy by disabling some non-critical functions that could leak data."
+          recommendation="Recommended for advanced users who prioritize privacy over non-essential functionality."
+          :includes="[
+            'Disables optional OS and app services that could leak data.',
+            'Clears non-essential caches, histories, temporary files while retaining browser bookmarks.',
+            'Keeps vital security services and critical application functionality.',
+          ]"
+          :considerations="[
+            'Review each script to make sure you are comfortable with the disabled functionality.',
+            'Some non-critical applications or features may no longer function as expected.',
+          ]"
+        />
       </template>
     </TooltipWrapper>
 
@@ -54,11 +70,15 @@
         @click="selectType(SelectionType.All)"
       />
       <template #tooltip>
-        🔒 Strongest privacy, disabling any functionality that may leak your data.
-        <br />
-        🛑 Not designed for daily users, it will break important functionalities.
-        <br />
-        💡 Only recommended for extreme use-cases like crime labs where no leak is acceptable
+        <SelectionTypeDocumentation
+          :privacy-rating="4"
+          description="Strongest privacy by disabling any functionality that may risk data exposure."
+          recommendation="Recommended for extreme use cases where no data leak is acceptable like crime labs."
+          :considerations="[
+            'Not recommended for daily use as it breaks important functionality.',
+            'Do not run it without having backups and system snapshots, unless you\'re on a disposable system.',
+          ]"
+        />
       </template>
     </TooltipWrapper>
   </MenuOptionList>
@@ -74,12 +94,14 @@ import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import MenuOptionList from '../MenuOptionList.vue';
 import MenuOptionListItem from '../MenuOptionListItem.vue';
 import { SelectionType, setCurrentSelectionType, getCurrentSelectionType } from './SelectionTypeHandler';
+import SelectionTypeDocumentation from './SelectionTypeDocumentation.vue';
 
 export default defineComponent({
   components: {
     MenuOptionList,
     MenuOptionListItem,
     TooltipWrapper,
+    SelectionTypeDocumentation,
   },
   setup() {
     const {
