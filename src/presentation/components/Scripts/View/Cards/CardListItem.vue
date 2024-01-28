@@ -198,6 +198,7 @@ $card-horizontal-gap    : $card-gap;
       justify-content: center;
       word-break: break-word;
       max-width: 100%; // Prevents horizontal expansion of inner content (e.g., when a code block is shown)
+      width: 100%; // Expands the container to fill available horizontal space, enabling alignment of child items.
     }
 
     .card__expander__close-button {

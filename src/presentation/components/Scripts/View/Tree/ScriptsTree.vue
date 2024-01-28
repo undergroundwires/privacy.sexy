@@ -82,6 +82,8 @@ $padding: 20px;
   /* Set background color in consistent way so it has similar look when searching, on tree view, in cards etc. */
   background: $color-scripts-bg;
 
+  flex: 1; // Expands the container to fill available horizontal space, enabling alignment of child items.
+
   padding-bottom: $padding;
   padding-left: $padding;
   padding-right: $padding;
