@@ -29,20 +29,15 @@
         :category-id="categoryId"
       />
     </div>
-    <div class="card__expander" @click.stop>
-      <div class="card__expander__close-button">
-        <FlatButton
-          icon="xmark"
-          @click="collapse()"
-        />
-      </div>
-      <div class="card__expander__content">
-        <ScriptsTree
-          :category-id="categoryId"
-          :has-top-padding="false"
-        />
-      </div>
-    </div>
+    <CardExpansionPanelArrow v-show="isExpanded" />
+    <ExpandCollapseTransition>
+      <CardExpansionPanel
+        v-show="isExpanded"
+        :category-id="categoryId"
+        @on-collapse="collapse"
+        @click.stop
+      />
+    </ExpandCollapseTransition>
   </div>
 </template>
 
@@ -51,21 +46,27 @@ import {
   defineComponent, computed, shallowRef,
 } from 'vue';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
-import FlatButton from '@/presentation/components/Shared/FlatButton.vue';
+import ExpandCollapseTransition from '@/presentation/components/Shared/ExpandCollapse/ExpandCollapseTransition.vue';
 import { injectKey } from '@/presentation/injectionSymbols';
-import ScriptsTree from '@/presentation/components/Scripts/View/Tree/ScriptsTree.vue';
 import { sleep } from '@/infrastructure/Threading/AsyncSleep';
 import CardSelectionIndicator from './CardSelectionIndicator.vue';
+import CardExpansionPanel from './CardExpansionPanel.vue';
+import CardExpansionPanelArrow from './CardExpansionPanelArrow.vue';
 
 export default defineComponent({
   components: {
-    ScriptsTree,
     AppIcon,
     CardSelectionIndicator,
-    FlatButton,
+    CardExpansionPanel,
+    ExpandCollapseTransition,
+    CardExpansionPanelArrow,
   },
   props: {
     categoryId: {
+      type: Number,
+      required: true,
+    },
+    totalCardsPerRow: {
       type: Number,
       required: true,
     },
@@ -94,6 +95,14 @@ export default defineComponent({
       },
     });
 
+    const cardWidth = computed<string>(() => {
+      const totalTimesGapIsUsedInRow = props.totalCardsPerRow - 1;
+      const totalGapWidthInRow = `calc(${totalTimesGapIsUsedInRow} * 15px)`; // TODO: 15px is hardcoded, $card-gap variable should be used
+      const availableRowWidthForCards = `calc(100% - (${totalGapWidthInRow}))`;
+      const availableWidthPerCard = `calc((${availableRowWidthForCards}) / ${totalTimesGapIsUsedInRow})`;
+      return availableWidthPerCard;
+    });
+
     const cardElement = shallowRef<HTMLElement>();
 
     const cardTitle = computed<string>(() => {
@@ -118,6 +127,7 @@ export default defineComponent({
       cardTitle,
       isExpanded,
       cardElement,
+      cardWidth,
       collapse,
     };
   },
@@ -131,11 +141,22 @@ export default defineComponent({
 $card-inner-padding     : 30px;
 $arrow-size             : 15px;
 $expanded-margin-top    : 30px;
-$card-horizontal-gap    : $card-gap;
+
+.expansion__arrow {
+  position: relative;
+  .expansion__arrow__inner {
+    position: absolute;
+    left: calc(50% - $arrow-size * 1.5);
+    top: calc(1.5 * $arrow-size);
+    border: solid $color-primary-darker;
+    border-width: 0 $arrow-size $arrow-size 0;
+    padding: $arrow-size;
+    transform: rotate(-135deg);
+  }
+}
 
 .card {
-  transition: all 0.2s ease-in-out;
-
+  width: v-bind(cardWidth);
   &__inner {
     padding-top: $card-inner-padding;
     padding-right: $card-inner-padding;
@@ -160,9 +181,6 @@ $card-horizontal-gap    : $card-gap;
       color: $color-on-secondary;
       transform: scale(1.05);
     }
-    &:after {
-      transition: all 0.3s ease-in-out;
-    }
     .card__inner__title {
       display: flex;
       flex-direction: column;
@@ -184,73 +202,12 @@ $card-horizontal-gap    : $card-gap;
       font-size: $font-size-absolute-normal;
     }
   }
-  .card__expander {
-    transition: all 0.2s ease-in-out;
-    position: relative;
-    background-color: $color-primary-darker;
-    color: $color-on-primary;
-
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-
-    .card__expander__content {
-      display: flex;
-      justify-content: center;
-      word-break: break-word;
-      max-width: 100%; // Prevents horizontal expansion of inner content (e.g., when a code block is shown)
-      width: 100%; // Expands the container to fill available horizontal space, enabling alignment of child items.
-    }
-
-    .card__expander__close-button {
-      font-size: $font-size-absolute-large;
-      align-self: flex-end;
-      margin-right: 0.25em;
-      @include clickable;
-      color: $color-primary-light;
-      @include hover-or-touch {
-        color: $color-primary;
-      }
-    }
-  }
-
-  &.is-collapsed {
-    .card__inner {
-      &:after {
-        content: "";
-        opacity: 0;
-      }
-    }
-
-    .card__expander {
-      max-height: 0;
-      min-height: 0;
-      overflow: hidden;
-      opacity: 0;
-    }
-  }
 
   &.is-expanded {
     .card__inner {
       height: auto;
       background-color: $color-secondary;
       color: $color-on-secondary;
-      &:after { // arrow
-        content: "";
-        display: block;
-        position: absolute;
-        bottom: calc(-1 * #{$expanded-margin-top});
-        left: calc(50% - #{$arrow-size});
-        border-left: #{$arrow-size} solid transparent;
-        border-right: #{$arrow-size} solid transparent;
-        border-bottom: #{$arrow-size} solid $color-primary-darker;
-      }
-    }
-
-    .card__expander {
-      min-height: 200px;
-      margin-top: $expanded-margin-top;
-      opacity: 1;
     }
 
     @include hover-or-touch {
@@ -277,26 +234,26 @@ $card-horizontal-gap    : $card-gap;
   }
 }
 @mixin adaptive-card($cards-in-row) {
-  &.card {
+  .card {
     $total-times-gap-is-used-in-row: $cards-in-row - 1;
     $total-gap-width-in-row: $total-times-gap-is-used-in-row * $card-horizontal-gap;
     $available-row-width-for-cards: calc(100% - #{$total-gap-width-in-row});
     $available-width-per-card: calc(#{$available-row-width-for-cards} / #{$cards-in-row});
     width:$available-width-per-card;
-    .card__expander {
-      $all-cards-width: 100% * $cards-in-row;
-      $additional-padding-width: $card-horizontal-gap * ($cards-in-row - 1);
-      width: calc(#{$all-cards-width} + #{$additional-padding-width});
-    }
-    @for $nth-card from 2 through $cards-in-row { // From second card to rest
-      &:nth-of-type(#{$cards-in-row}n+#{$nth-card}) {
-        .card__expander {
-          $card-left: -100% * ($nth-card - 1);
-          $additional-space: $card-horizontal-gap * ($nth-card - 1);
-          margin-left: calc(#{$card-left} - #{$additional-space});
-        }
-      }
-    }
+    // .card__expander {
+    //   $all-cards-width: 100% * $cards-in-row;
+    //   $additional-padding-width: $card-horizontal-gap * ($cards-in-row - 1);
+    //   width: calc(#{$all-cards-width} + #{$additional-padding-width});
+    // }
+    // @for $nth-card from 2 through $cards-in-row { // From second card to rest
+    //   &:nth-of-type(#{$cards-in-row}n+#{$nth-card}) {
+    //     .card__expander {
+    //       $card-left: -100% * ($nth-card - 1);
+    //       $additional-space: $card-horizontal-gap * ($nth-card - 1);
+    //       margin-left: calc(#{$card-left} - #{$additional-space});
+    //     }
+    //   }
+    // }
     // Ensure new line after last row
     $card-after-last: $cards-in-row + 1;
     &:nth-of-type(#{$cards-in-row}n+#{$card-after-last}) {
@@ -304,8 +261,4 @@ $card-horizontal-gap    : $card-gap;
     }
   }
 }
-
-.big-screen     {   @include adaptive-card(3);  }
-.medium-screen  {   @include adaptive-card(2);  }
-.small-screen   {   @include adaptive-card(1);  }
 </style>

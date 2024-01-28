@@ -19,6 +19,7 @@
             v-for="categoryId of categoryIds"
             :key="categoryId"
             class="card"
+            :total-cards-per-row="cardsPerRow"
             :class="{
               'small-screen': width <= 500,
               'medium-screen': width > 500 && width < 750,
@@ -61,6 +62,19 @@ export default defineComponent({
       () => currentState.value.collection.actions.map((category) => category.id),
     );
     const activeCategoryId = ref<number | undefined>(undefined);
+
+    const cardsPerRow = computed<number>(() => {
+      if (width.value === undefined) {
+        throw new Error('Unknown width, total cards should not be calculated');
+      }
+      if (width.value <= 500) {
+        return 1;
+      }
+      if (width.value < 750) {
+        return 2;
+      }
+      return 3;
+    });
 
     function onSelected(categoryId: number, isExpanded: boolean) {
       activeCategoryId.value = isExpanded ? categoryId : undefined;
@@ -108,6 +122,7 @@ export default defineComponent({
       width,
       categoryIds,
       activeCategoryId,
+      cardsPerRow,
       onSelected,
     };
   },
