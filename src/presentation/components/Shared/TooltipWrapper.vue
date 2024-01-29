@@ -210,6 +210,16 @@ $color-tooltip-background: $color-primary-darkest;
   }
 }
 
+@mixin set-max-width($total-characters) {
+  @supports (width: 1ch) {
+    max-width: #{$total-characters}ch;
+  }
+  // For browsers that does not support `ch` unit (e.g., Opera Mini):
+  $estimated-character-size: calc(1em / 2); // 1 character is approximately half the font size
+  $estimated-width: calc(#{$estimated-character-size} * #{$total-characters});
+  max-width: $estimated-width;
+}
+
 .tooltip__content {
   background: $color-tooltip-background;
   color: $color-on-primary;
@@ -224,6 +234,15 @@ $color-tooltip-background: $color-primary-darkest;
   */
   margin-left: 2px;
   margin-right: 2px;
+
+  // Setting max-width increases readability and consistency reducing overlap and clutter.
+  @include set-max-width(
+    /*
+      Research in typography suggests that an optimal line length for text readability is between 50-75 characters per line.
+      Tooltips should be brief, so aiming for the for the lower end of this range (around 50 characters).
+    */
+    $total-characters: 50
+  );
 }
 
 .tooltip__arrow {
