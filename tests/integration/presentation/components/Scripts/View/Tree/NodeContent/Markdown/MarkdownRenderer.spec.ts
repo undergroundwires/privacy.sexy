@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { parseApplication } from '@/application/Parser/ApplicationParser';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { createMarkdownRenderer } from '@/presentation/components/Scripts/View/Tree/NodeContent/Documentation/MarkdownRenderer';
+import { createMarkdownRenderer } from '@/presentation/components/Scripts/View/Tree/NodeContent/Markdown/MarkdownRenderer';
 
 describe('MarkdownRenderer', () => {
   describe('can render all docs', () => {

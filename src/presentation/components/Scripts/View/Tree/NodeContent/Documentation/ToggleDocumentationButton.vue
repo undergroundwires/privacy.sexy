@@ -49,6 +49,8 @@ export default defineComponent({
 .documentation-button {
   vertical-align: middle;
   color: $color-primary;
+  font-size: 24px;
+
   :deep() { // This override leads to inconsistent highlight color, it should be re-styled.
     @include hover-or-touch {
       color: $color-primary-darker;

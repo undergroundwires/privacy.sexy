@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createMarkdownRenderer } from '@/presentation/components/Scripts/View/Tree/NodeContent/Documentation/MarkdownRenderer';
+import { createMarkdownRenderer } from '@/presentation/components/Scripts/View/Tree/NodeContent/Markdown/MarkdownRenderer';
 
 describe('MarkdownRenderer', () => {
   describe('createMarkdownRenderer', () => {
