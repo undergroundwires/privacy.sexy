@@ -203,6 +203,7 @@ function getDefaultCode(language: ScriptingLanguage): string {
     width: 100%;
     height: 100%;
     overflow: auto;
+    font-size: $font-size-small;
     &__highlight {
       background-color: $color-secondary-light;
       position: absolute;

@@ -53,13 +53,13 @@ export default defineComponent({
 @use "@/presentation/assets/styles/main" as *;
 @use "./../tree-colors" as *;
 
-$sideSizeInPx: 30px;
+$side-size-in-px: $font-size-larger;
 
 .checkbox {
   position: relative;
 
-  width: $sideSizeInPx;
-  height: $sideSizeInPx;
+  width: $side-size-in-px;
+  height: $side-size-in-px;
 
   box-sizing: border-box;
   border: 1px solid $color-node-checkbox-border-unchecked;
@@ -76,12 +76,12 @@ $sideSizeInPx: 30px;
   &.indeterminate {
     border-color: $color-node-checkbox-border-unchecked;
 
-    &:after {
+    &:after { // Draw line (─)
       background-color: $color-node-checkbox-border-indeterminate;
       top: 50%;
       left: 20%;
       right: 20%;
-      height: 2px;
+      height: 1.5px;
     }
   }
 
@@ -89,15 +89,18 @@ $sideSizeInPx: 30px;
     background: $color-node-checkbox-bg-checked;
     border-color: $color-node-checkbox-border-checked;
 
-    &:after {
+    &:after { // Draw checkmark tick (✔️)
+
       box-sizing: content-box;
       border: 1.5px solid $color-node-checkbox-tick-checked;
       border-left: 0;
       border-top: 0;
-      left: 9px;
-      top: 3px;
-      height: 15px;
-      width: 8px;
+
+      left: $side-size-in-px * 0.33;
+      top: $side-size-in-px * 0.11;
+      height: $side-size-in-px * 0.50;
+      width: $side-size-in-px * 0.25;
+
       transform: rotate(45deg) scaleY(1);
       transition: transform .25s;
       transform-origin: center;

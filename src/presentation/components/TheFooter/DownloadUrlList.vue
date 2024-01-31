@@ -2,8 +2,8 @@
   <span
     class="container"
     :class="{
-      'container-unsupported': !hasCurrentOsDesktopVersion,
-      'container-supported': hasCurrentOsDesktopVersion,
+      unsupported: !hasCurrentOsDesktopVersion,
+      supported: hasCurrentOsDesktopVersion,
     }"
   >
     <span class="description">
@@ -62,11 +62,8 @@ export default defineComponent({
   display:flex;
   flex-wrap: wrap;
   justify-content: space-around;
-  &-unsupported {
-    opacity: $color-primary-light;
-  }
-  &-supported {
-    font-size: 1em;
+  .unsupported {
+    color: $color-primary-light;
   }
   .description {
     &__icon {
@@ -81,7 +78,7 @@ export default defineComponent({
   &__url {
     &:not(:first-child)::before {
       content: "|";
-      font-size: 0.6rem;
+      font-size: $font-size-smaller;
       padding: 0 5px;
     }
   }

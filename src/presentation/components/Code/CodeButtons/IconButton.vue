@@ -81,7 +81,7 @@ export default defineComponent({
   border-radius: 4px;
 
   .button__icon {
-    font-size: 2em;
+    font-size: $font-size-larger;
   }
 
   @include clickable;
@@ -99,10 +99,9 @@ export default defineComponent({
   .button__text {
     display: none;
     font-family: $font-artistic;
-    font-size: 1.5em;
+    font-size: $font-size-large;
     color: $color-primary;
     font-weight: 500;
-    line-height: 1.1;
     @include hover-or-touch {
       display: block;
     }

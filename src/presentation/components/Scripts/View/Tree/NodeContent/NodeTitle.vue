@@ -24,17 +24,6 @@ export default defineComponent({
 
 .node-title {
   font-family: $font-main;
-  font-size: 1.5em;
-  line-height: 24px;
-  /*
-    Following is a workaround fixing overflow-y caused by line height being smaller than font.
-    It should be removed once a proper line-height matching the font-size (not smaller than) is used.
-  */
-  $line-height-compensation: calc((1.5em - 24px) / 4);
-  padding-top: $line-height-compensation;
-  padding-bottom: $line-height-compensation;
-  margin-top: calc(-1 * $line-height-compensation);
-  margin-bottom: calc(-1 * $line-height-compensation);
-  overflow-y: none;
+  font-size: $font-size-large;
 }
 </style>

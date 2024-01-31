@@ -1,4 +1,5 @@
 @use "@/presentation/assets/styles/colors" as *;
+@use "@/presentation/assets/styles/fonts" as *;
 
 @mixin hover-or-touch($selector-suffix: '', $selector-prefix: '&') {
   @media (hover: hover) {
@@ -92,6 +93,7 @@
 
 @mixin flat-button($disabled: false) {
   @include reset-button;
+  $font-size: $font-size-normal;
 
   @if $disabled {
     color: $color-primary-light;

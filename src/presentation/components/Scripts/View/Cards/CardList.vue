@@ -142,7 +142,7 @@ function isClickable(element: Element) {
 .error {
   width: 100%;
   text-align: center;
-  font-size: 3.5em;
+  font-size: $font-size-largest;
   font-family: $font-normal;
 }
 

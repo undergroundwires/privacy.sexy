@@ -2,7 +2,6 @@
   <!-- eslint-disable vue/no-v-html -->
   <div
     class="markdown-text"
-    @click.stop
     v-html="htmlOutput"
   />
 </template>

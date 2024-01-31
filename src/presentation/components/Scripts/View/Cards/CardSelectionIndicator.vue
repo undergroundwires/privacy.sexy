@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="icon">
     <AppIcon
       v-if="isAnyChildSelected && !areAllChildrenSelected"
       icon="battery-half"
@@ -53,3 +53,10 @@ export default defineComponent({
 });
 
 </script>
+
+<style scoped lang="scss">
+@use "@/presentation/assets/styles/main" as *;
+.icon {
+  font-size: $font-size-normal;
+}
+</style>

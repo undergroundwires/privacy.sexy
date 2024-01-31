@@ -124,7 +124,6 @@ export default defineComponent({
       }
     }
     flex-wrap: wrap;
-    font-size: 1rem;
     font-family: $font-normal;
     &__item:not(:first-child) {
       &::before {

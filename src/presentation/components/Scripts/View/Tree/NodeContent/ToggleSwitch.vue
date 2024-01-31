@@ -68,13 +68,15 @@ export default defineComponent({
 @use 'sass:math';
 @use "@/presentation/assets/styles/main" as *;
 
+$font-size              : $font-size-small;
+
 $color-toggle-unchecked : $color-primary-darker;
 $color-toggle-checked   : $color-on-secondary;
 $color-text-unchecked   : $color-on-primary;
 $color-text-checked     : $color-on-secondary;
 $color-bg-unchecked     : $color-primary;
 $color-bg-checked       : $color-secondary;
-$size-height            : 30px;
+$size-height            : $font-size + 8px;
 $size-circle            : math.div($size-height * 2, 3);
 $padding-horizontal     : 0.40em;
 $gap                    : 0.25em;
@@ -106,8 +108,7 @@ $gap                    : 0.25em;
   width: auto;
   height: $size-height;
   border-radius: $size-height;
-  line-height: $size-height;
-  font-size: math.div($size-height, 2);
+  font-size: $font-size;
 
   input.toggle-input {
     position: absolute;

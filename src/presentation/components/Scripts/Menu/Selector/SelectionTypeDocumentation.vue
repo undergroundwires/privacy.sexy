@@ -101,9 +101,6 @@ ul {
   padding-left: 0em;
   margin-top: 0.25em;
   list-style: disc;
-  li {
-    line-height: 1.2em;
-  }
 }
 .sections {
   display: flex;

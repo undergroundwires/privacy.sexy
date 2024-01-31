@@ -3,8 +3,8 @@
     <a
       :href="downloadUrl"
       :class="{
-        url__active: hasCurrentOsDesktopVersion && isCurrentOs,
-        url__inactive: hasCurrentOsDesktopVersion && !isCurrentOs,
+        active: hasCurrentOsDesktopVersion && isCurrentOs,
+        inactive: hasCurrentOsDesktopVersion && !isCurrentOs,
       }"
     >{{ operatingSystemName }}</a>
   </span>
@@ -64,11 +64,8 @@ function hasDesktopVersion(os: OperatingSystem): boolean {
 <style scoped lang="scss">
 @use "@/presentation/assets/styles/main" as *;
 .url {
-  &__active {
-    font-size: 1em;
-  }
-  &__inactive {
-    font-size: 0.70em;
+  .inactive {
+    font-size: $font-size-smaller;
   }
 }
 </style>

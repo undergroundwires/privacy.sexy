@@ -63,14 +63,14 @@ export default defineComponent({
   padding: 0.2rem;
   .dollar {
     margin-right: 0.5rem;
-    font-size: 0.8rem;
+    font-size: $font-size-smaller;
     user-select: none;
   }
   .copy-action-container {
     margin-left: 1rem;
   }
   code {
-    font-size: 1rem;
+    font-size: $font-size-small;
   }
 }
 </style>
