@@ -5,15 +5,19 @@ import {
 } from '@vue/test-utils';
 import { nextTick, defineComponent } from 'vue';
 import ToggleSwitch from '@/presentation/components/Scripts/View/Tree/NodeContent/ToggleSwitch.vue';
+import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 
 const DOM_INPUT_TOGGLE_CHECKBOX_SELECTOR = 'input.toggle-input';
-const DOM_INPUT_TOGGLE_LABEL_OFF_SELECTOR = 'span.label-off';
-const DOM_INPUT_TOGGLE_LABEL_ON_SELECTOR = 'span.label-on';
+const DOM_INPUT_TOGGLE_LABEL_OFF_SELECTOR = '.label-off';
+const DOM_INPUT_TOGGLE_LABEL_ON_SELECTOR = '.label-on';
 const DOM_INPUT_CIRCLE_ICON_SELECTOR = '.circle';
 
 describe('ToggleSwitch.vue', () => {
   describe('initial state', () => {
-    const testCases = [
+    const testScenarios: ReadonlyArray<{
+      readonly description: string;
+      readonly initialValue: boolean;
+    }> = [
       {
         initialValue: false,
         description: 'unchecked for false',
@@ -23,7 +27,7 @@ describe('ToggleSwitch.vue', () => {
         description: 'checked for true',
       },
     ];
-    testCases.forEach(({ initialValue, description }) => {
+    testScenarios.forEach(({ initialValue, description }) => {
       it(`renders as ${description}`, () => {
         // arrange
         const expectedState = initialValue;
@@ -42,17 +46,23 @@ describe('ToggleSwitch.vue', () => {
     });
   });
   describe('label rendering', () => {
-    const testCases = [
+    const testScenarios: ReadonlyArray<{
+      readonly description: string;
+      readonly initialValue: boolean;
+      readonly selector: string;
+    }> = [
       {
         description: 'off label',
+        initialValue: false,
         selector: DOM_INPUT_TOGGLE_LABEL_OFF_SELECTOR,
       },
       {
         description: 'on label',
+        initialValue: true,
         selector: DOM_INPUT_TOGGLE_LABEL_ON_SELECTOR,
       },
     ];
-    testCases.forEach(({ selector, description }) => {
+    testScenarios.forEach(({ selector, initialValue, description }) => {
       it(description, () => {
         // arrange
         const expectedLabel = 'expected-test-label';
@@ -61,18 +71,26 @@ describe('ToggleSwitch.vue', () => {
         const wrapper = mountComponent({
           properties: {
             label: expectedLabel,
+            modelValue: initialValue,
           },
         });
 
         // assert
         const element = wrapper.find(selector);
+        expect(element.exists()).to.equal(true, formatAssertionMessage([
+          `Selector "${selector}" could not find the DOM element`,
+          `HTML:\n${wrapper.html()}`,
+        ]));
         expect(element.text()).to.equal(expectedLabel);
       });
     });
   });
   describe('model updates', () => {
     describe('emission on change', () => {
-      const testCases = [
+      const testScenarios: ReadonlyArray<{
+        readonly initialValue: boolean;
+        readonly newCheckValue: boolean;
+      }> = [
         {
           initialValue: true,
           newCheckValue: false,
@@ -82,7 +100,7 @@ describe('ToggleSwitch.vue', () => {
           newCheckValue: true,
         },
       ];
-      testCases.forEach(({ initialValue, newCheckValue }) => {
+      testScenarios.forEach(({ initialValue, newCheckValue }) => {
         it(`emits ${newCheckValue} when initial value is ${initialValue} and checkbox value changes`, async () => {
           // arrange
           const wrapper = mountComponent({
@@ -102,7 +120,10 @@ describe('ToggleSwitch.vue', () => {
       });
     });
     describe('no emission on identical value', () => {
-      const testCases = [
+      const testScenarios: ReadonlyArray<{
+        readonly description: string;
+        readonly value: boolean;
+      }> = [
         {
           value: true,
           description: 'true',
@@ -112,7 +133,7 @@ describe('ToggleSwitch.vue', () => {
           description: 'false',
         },
       ];
-      testCases.forEach(({ value, description }) => {
+      testScenarios.forEach(({ value, description }) => {
         it(`does not emit for an unchanged value of ${description}`, async () => {
           // arrange
           const wrapper = mountComponent({

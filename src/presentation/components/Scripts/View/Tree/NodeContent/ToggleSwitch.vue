@@ -10,8 +10,15 @@
     >
     <div class="toggle-animation">
       <div class="circle" />
-      <span class="label-off">{{ label }}</span>
-      <span class="label-on">{{ label }}</span>
+      <span
+        class="label"
+        :class="{
+          'label-off': !isChecked,
+          'label-on': isChecked,
+        }"
+      >
+        {{ label }}
+      </span>
     </div>
   </div>
 </template>
@@ -91,16 +98,6 @@ $gap                    : 0.25em;
   }
 }
 
-@mixin setVisibility($isVisible: true) {
-  @if $isVisible {
-    display: block;
-    opacity: 1;
-  } @else {
-    display: none;
-    opacity: 0;
-  }
-}
-
 .toggle-switch {
   display: flex;
   overflow: hidden;
@@ -155,34 +152,22 @@ $gap                    : 0.25em;
       left: $padded-left-offset;
       background-color: $color-toggle-checked;
     }
+  }
 
-    .label-off {
-      @include setVisibility(false);
+  .label {
+    font-weight: bold;
+    transition: all 0.3s ease-out, color 0s;
+    &.label-off {
+      @include locateNearCircle('left');
+      padding-right: $padding-horizontal;
     }
 
-    .label-on {
-      @include setVisibility(true);
+    &.label-on {
+      color: $color-text-checked;
+
+      @include locateNearCircle('right');
+      padding-left: $padding-horizontal;
     }
-  }
-
-  .label-off, .label-on {
-    text-transform: uppercase;
-    font-weight: 700;
-    transition: all 0.3s ease-out;
-  }
-
-  .label-off {
-    @include setVisibility(true);
-    @include locateNearCircle('left');
-    padding-right: $padding-horizontal;
-  }
-
-  .label-on {
-    @include setVisibility(false);
-    color: $color-text-checked;
-
-    @include locateNearCircle('right');
-    padding-left: $padding-horizontal;
   }
 }
 </style>

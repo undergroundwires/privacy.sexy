@@ -1,4 +1,5 @@
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
+import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { openCard } from './support/interactions/card';
 
 describe('revert toggle', () => {
@@ -21,7 +22,7 @@ describe('revert toggle', () => {
     it('should have revert label', () => {
       cy.get('@toggleSwitch')
         .find('span')
-        .contains('revert');
+        .contains('revert', { matchCase: false });
     });
 
     it('should render label completely without clipping', () => { // Regression test for a bug where label is partially rendered (clipped)
@@ -34,7 +35,11 @@ describe('revert toggle', () => {
           const expectedMinimumTextWidth = getTextWidth(text, font);
           const containerWidth = $label.parent().width();
           expectExists(containerWidth);
-          expect(expectedMinimumTextWidth).to.be.lessThan(containerWidth);
+          expect(expectedMinimumTextWidth).to.be.lessThan(containerWidth, formatAssertionMessage([
+            'Label is not rendered completely.',
+            `Expected minimum text width: ${expectedMinimumTextWidth}`,
+            `Actual text container width: ${containerWidth}`,
+          ]));
         });
     });
 
