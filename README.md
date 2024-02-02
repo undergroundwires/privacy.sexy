@@ -1,6 +1,6 @@
 # privacy.sexy — Now you have the choice
 
-> Enforce privacy & security best-practices on Windows, macOS and Linux, because privacy is sexy 🍑🍆
+> Enforce privacy & security best-practices on Windows, macOS and Linux, because privacy is sexy.
 
 <!-- markdownlint-disable MD033 -->
 <p align="center">
