@@ -32,7 +32,12 @@ The presentation layer uses an event-driven architecture for bidirectional react
 
 ## Visual design best-practices
 
-Add visual clues for clickable items. It should be as clear as possible that they're interactable at first look without hovering. They should also have different visual state when hovering/touching on them that indicates that they are being clicked, which helps with accessibility.
+- **Clickables**:
+  Add visual clues for clickable items.
+  It should be as clear as possible that they're interactable at first look without hovering.
+  They should also have different visual state when hovering/touching on them that indicates that they are being clicked, which helps with accessibility.
+- **Borders**:
+  privacy.sexy prefers sharper edges in its design language.
 
 ## Application data
 

@@ -1,23 +1,6 @@
 @use "@/presentation/assets/styles/main" as *;
+@use "_code-styling" as *;
 @use 'sass:math';
-
-@mixin code-block() {
-  pre {
-    @content; // :has(> code) { @content; } would be better, but Firefox doesn't support it https://caniuse.com/css-has
-  }
-}
-
-@mixin inline-code() {
-  :not(pre) > code {
-    @content;
-  }
-}
-
-@mixin code() {
-  code {
-    @content;
-  }
-}
 
 @mixin no-margin($selectors) {
   #{$selectors} {
@@ -110,21 +93,6 @@
     }
   }
 
-  @include code {
-    font-family: $font-normal;
-    font-weight: 600;
-  }
-  
-  @include inline-code {
-    word-break: break-all; // Enables inline code to wrap with the text, even for long single words (like registry paths), thus preventing overflow.
-  }
-  
-  @include code-block {
-    padding: $base-spacing;
-    background: $color-primary-darker;
-    overflow: auto; // Prevents horizontal expansion of inner content (e.g., when a code block is shown)
-  }
-
   @include apply-uniform-vertical-spacing($base-spacing);
   @include apply-uniform-horizontal-spacing($base-spacing);
 
@@ -140,4 +108,9 @@
     padding: 0 $base-spacing;
     border-left: .25em solid $color-primary;
   }
+
+  @include style-code-elements(
+    $code-block-padding: $base-spacing,
+    $color-background: $color-primary-darker,
+  );
 }
