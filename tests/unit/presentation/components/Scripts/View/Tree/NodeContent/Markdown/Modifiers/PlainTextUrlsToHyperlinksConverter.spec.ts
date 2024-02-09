@@ -1,87 +1,47 @@
 import { describe, it, expect } from 'vitest';
-import { createMarkdownRenderer } from '@/presentation/components/Scripts/View/Tree/NodeContent/Markdown/MarkdownRenderer';
+import { PlainTextUrlsToHyperlinksConverter } from '@/presentation/components/Scripts/View/Tree/NodeContent/Markdown/Renderers/PlainTextUrlsToHyperlinksConverter';
+import { renderMarkdownUsingRenderer } from './MarkdownRenderingTester';
 
-describe('MarkdownRenderer', () => {
-  describe('createMarkdownRenderer', () => {
-    it('creates renderer instance', () => {
-      // arrange & act
-      const renderer = createMarkdownRenderer();
-      // assert
-      expect(renderer !== undefined);
-    });
-    describe('sets default anchor attributes', () => {
-      const attributes: ReadonlyArray<{
-        readonly attributeName: string,
-        readonly expectedValue: string,
-        readonly invalidMarkdown: string
+describe('PlainTextUrlsToHyperlinksConverter', () => {
+  describe('modify', () => {
+    describe('retains original content where no conversion is required', () => {
+      const testScenarios: ReadonlyArray<{
+        readonly description: string;
+        readonly markdownContent: string;
       }> = [
         {
-          attributeName: 'target',
-          expectedValue: '_blank',
-          invalidMarkdown: '<a href="https://undergroundwires.dev" target="_self">example</a>',
+          description: 'URLs within markdown link syntax',
+          markdownContent: 'URL: [privacy.sexy](https://privacy.sexy).',
         },
         {
-          attributeName: 'rel',
-          expectedValue: 'noopener noreferrer',
-          invalidMarkdown: '<a href="https://undergroundwires.dev" rel="nooverride">example</a>',
+          description: 'URLs within inline code blocks',
+          markdownContent: 'URL as code: `https://privacy.sexy`.',
+        },
+        {
+          description: 'reference-style links',
+          markdownContent: [
+            'This content has reference-style link [1].',
+            '[1]: https://privacy.sexy',
+          ].join('\n'),
         },
       ];
-      for (const attribute of attributes) {
-        const { attributeName, expectedValue, invalidMarkdown } = attribute;
-
-        it(`adds "${attributeName}" attribute to anchors`, () => {
+      testScenarios.forEach(({ description, markdownContent }) => {
+        it(description, () => {
           // arrange
-          const renderer = createMarkdownRenderer();
-          const markdown = '[undergroundwires.dev](https://undergroundwires.dev)';
+          const expectedOutput = markdownContent; // No change expected
 
           // act
-          const htmlString = renderer.render(markdown);
+          const convertedContent = renderMarkdownUsingRenderer(
+            PlainTextUrlsToHyperlinksConverter,
+            markdownContent,
+          );
 
           // assert
-          const html = parseHtml(htmlString);
-          const aElement = html.getElementsByTagName('a')[0];
-          expect(aElement.getAttribute(attributeName)).to.equal(expectedValue);
+          expect(convertedContent).to.equal(expectedOutput);
         });
-
-        it(`overrides existing "${attributeName}" attribute`, () => {
-          // arrange
-          const renderer = createMarkdownRenderer();
-
-          // act
-          const htmlString = renderer.render(invalidMarkdown);
-
-          // assert
-          const html = parseHtml(htmlString);
-          const aElement = html.getElementsByTagName('a')[0];
-          expect(aElement.getAttribute(attributeName)).to.equal(expectedValue);
-        });
-      }
+      });
     });
-    it('does not convert single line breaks to <br> elements', () => {
-      // arrange
-      const renderer = createMarkdownRenderer();
-      const markdown = 'Text with\nSingle\nLinebreaks';
-      // act
-      const htmlString = renderer.render(markdown);
-      // assert
-      const html = parseHtml(htmlString);
-      const totalBrElements = html.getElementsByTagName('br').length;
-      expect(totalBrElements).to.equal(0);
-    });
-    it('converts plain URLs into hyperlinks', () => {
-      // arrange
-      const renderer = createMarkdownRenderer();
-      const expectedUrl = 'https://privacy.sexy/';
-      const markdown = `Visit ${expectedUrl} now!`;
-      // act
-      const htmlString = renderer.render(markdown);
-      // assert
-      const html = parseHtml(htmlString);
-      const aElement = html.getElementsByTagName('a')[0];
-      const href = aElement.getAttribute('href');
-      expect(href).to.equal(expectedUrl);
-    });
-    describe('generates readable labels for automatically linked URLs', () => {
+    describe('converts plain URLs into hyperlinks', () => {
       const testScenarios: ReadonlyArray<{
         readonly description: string;
         readonly urlText: string;
@@ -158,22 +118,17 @@ describe('MarkdownRenderer', () => {
       }) => {
         it(description, () => {
           // arrange
-          const renderer = createMarkdownRenderer();
           const markdown = `Visit ${urlText} now!`;
+          const expectedOutput = `Visit [${expectedLabel}](${urlText}) now!`;
           // act
-          const htmlString = renderer.render(markdown);
+          const actualOutput = renderMarkdownUsingRenderer(
+            PlainTextUrlsToHyperlinksConverter,
+            markdown,
+          );
           // assert
-          const html = parseHtml(htmlString);
-          const aElement = html.getElementsByTagName('a')[0];
-          expect(aElement.text).to.equal(expectedLabel);
+          expect(actualOutput).to.equal(expectedOutput);
         });
       });
     });
   });
 });
-
-function parseHtml(htmlString: string): Document {
-  const parser = new window.DOMParser();
-  const htmlDoc = parser.parseFromString(htmlString, 'text/html');
-  return htmlDoc;
-}

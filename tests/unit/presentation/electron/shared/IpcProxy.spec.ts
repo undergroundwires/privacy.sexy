@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { createIpcConsumerProxy, registerIpcChannel } from '@/presentation/electron/shared/IpcBridging/IpcProxy';
-import { IpcChannel } from '@/presentation/electron/shared/IpcBridging/IpcChannel';
+import type { IpcChannel } from '@/presentation/electron/shared/IpcBridging/IpcChannel';
 
 describe('IpcProxy', () => {
   describe('createIpcConsumerProxy', () => {

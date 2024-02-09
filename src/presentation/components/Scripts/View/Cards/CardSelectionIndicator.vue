@@ -57,6 +57,6 @@ export default defineComponent({
 <style scoped lang="scss">
 @use "@/presentation/assets/styles/main" as *;
 .icon {
-  font-size: $font-size-normal;
+  font-size: $font-size-absolute-normal;
 }
 </style>

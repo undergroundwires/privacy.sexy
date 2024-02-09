@@ -1,0 +1,19 @@
+/*
+  This naming convention for font sizes adheres to CSS standards, distinguishing between absolute and relative sizes.
+
+  We prefix each variable with its type (absolute or relative) for clear identification and context.
+*/
+
+// Absolute sizes use the <absolute-size> CSS data type, representing specific, fixed sizes unaffected by the parent element's size.
+// See: https://archive.today/2024.02.02-005228/https://developer.mozilla.org/en-US/docs/Web/CSS/absolute-size.
+$font-size-absolute-x-small   : 14px;
+$font-size-absolute-small     : 16px;
+$font-size-absolute-normal    : 18px;
+$font-size-absolute-large     : 22px;
+$font-size-absolute-x-large   : 26px;
+$font-size-absolute-xx-large  : 40px;
+
+// Relative sizes employ the <relative-size> CSS data type, allowing font size adjustments based on the parent element's size.
+// See: https://archive.today/2024.02.02-010054/https://developer.mozilla.org/en-US/docs/Web/CSS/relative-size.
+$font-size-relative-smallest  : 80%; // Common browser standard for `font-size: smaller;`
+$font-size-relative-smaller   : 85%; // Common browser standard for `font-size: smaller;`

@@ -65,7 +65,7 @@ function hasDesktopVersion(os: OperatingSystem): boolean {
 @use "@/presentation/assets/styles/main" as *;
 .url {
   .inactive {
-    font-size: $font-size-smaller;
+    font-size: $font-size-absolute-x-small;
   }
 }
 </style>

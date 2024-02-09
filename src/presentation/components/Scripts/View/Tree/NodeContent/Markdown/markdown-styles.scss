@@ -55,8 +55,8 @@
   @include left-padding('ul, ol', $large-horizontal-spacing);
 }
 
-@mixin markdown-text-styles($text-size) {
-  $base-spacing: $text-size;
+@mixin markdown-text-styles {
+  $base-spacing: 1em;
 
   a {
     &[href] {
@@ -73,11 +73,19 @@
         content: '';
   
         display: inline-block;
-        width: $text-size;
-        height: $text-size;
+
+        /*
+          Use absolute sizing instead of relative. Relative sizing looks bad and inconsistent if there are external elements
+          inside small text (such as inside `<sup>`) and bigger elements like in bigger text. Making them always have same size
+          make the text read and flow better.
+        */
+        width: $font-size-absolute-x-small;
+        height: $font-size-absolute-x-small;
+
+        vertical-align: text-top;
   
         background-color: $text-color;
-        margin-left: math.div($text-size, 4);
+        margin-left: math.div(1em, 4);
       }
       /*
         Match color of global hover behavior. We need to do it manually because global hover sets
@@ -113,4 +121,11 @@
     $code-block-padding: $base-spacing,
     $color-background: $color-primary-darker,
   );
+
+  sup {
+    @include reset-sup;
+
+    vertical-align: super;
+    font-size: $font-size-relative-smallest;
+  }
 }

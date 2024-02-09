@@ -75,7 +75,7 @@ export default defineComponent({
 @use 'sass:math';
 @use "@/presentation/assets/styles/main" as *;
 
-$font-size              : $font-size-small;
+$font-size              : $font-size-absolute-small;
 
 $color-toggle-unchecked : $color-primary-darker;
 $color-toggle-checked   : $color-on-secondary;

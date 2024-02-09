@@ -46,11 +46,11 @@ export default defineComponent({
     margin: 0;
     text-transform: uppercase;
     font-family: $font-main;
-    font-size: $font-size-largest;
+    font-size: $font-size-absolute-xx-large;
   }
   .subtitle {
     margin: 0;
-    font-size: $font-size-larger;
+    font-size: $font-size-absolute-x-large;
     color: $color-primary;
     font-family: $font-artistic;
     font-weight: 500;

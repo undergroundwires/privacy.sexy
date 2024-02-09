@@ -24,6 +24,6 @@ export default defineComponent({
 
 .node-title {
   font-family: $font-main;
-  font-size: $font-size-large;
+  font-size: $font-size-absolute-large;
 }
 </style>

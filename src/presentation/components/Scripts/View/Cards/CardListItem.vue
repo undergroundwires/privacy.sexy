@@ -168,7 +168,7 @@ $card-horizontal-gap    : $card-gap;
       flex-direction: column;
       flex: 1;
       justify-content: center;
-      font-size: $font-size-large;
+      font-size: $font-size-absolute-large;
     }
     .card__inner__selection_indicator {
       height: $card-inner-padding;
@@ -181,7 +181,7 @@ $card-horizontal-gap    : $card-gap;
       width: 100%;
       margin-top: .25em;
       vertical-align: middle;
-      font-size: $font-size-normal;
+      font-size: $font-size-absolute-normal;
     }
   }
   .card__expander {
@@ -203,7 +203,7 @@ $card-horizontal-gap    : $card-gap;
     }
 
     .card__expander__close-button {
-      font-size: $font-size-large;
+      font-size: $font-size-absolute-large;
       align-self: flex-end;
       margin-right: 0.25em;
       @include clickable;

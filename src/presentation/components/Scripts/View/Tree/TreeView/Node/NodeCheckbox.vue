@@ -53,7 +53,7 @@ export default defineComponent({
 @use "@/presentation/assets/styles/main" as *;
 @use "./../tree-colors" as *;
 
-$side-size-in-px: $font-size-larger;
+$side-size-in-px: $font-size-absolute-x-large;
 
 .checkbox {
   position: relative;

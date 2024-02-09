@@ -74,7 +74,7 @@ export default defineComponent({
   .dialog__close-button {
     color: $color-primary-dark;
     width: auto;
-    font-size: $font-size-large;
+    font-size: $font-size-absolute-large;
     margin-right: 0.25em;
     align-self: flex-start;
   }

@@ -151,7 +151,7 @@ $margin-inner: 4px;
     margin-top: 1em;
     color: $color-primary-light;
     .search__query__close-button {
-      font-size: $font-size-large;
+      font-size: $font-size-absolute-large;
       margin-left: 0.25rem;
     }
   }
@@ -160,7 +160,7 @@ $margin-inner: 4px;
     flex-direction: column;
     word-break:break-word;
     color: $color-on-primary;
-    font-size: $font-size-large;
+    font-size: $font-size-absolute-large;
     padding:10px;
     text-align:center;
     > div {

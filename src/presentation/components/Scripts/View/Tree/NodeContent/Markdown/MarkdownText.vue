@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import { defineComponent, computed } from 'vue';
-import { createMarkdownRenderer } from './MarkdownRenderer';
+import { CompositeMarkdownRenderer } from './CompositeMarkdownRenderer';
 
 export default defineComponent({
   props: {
@@ -26,9 +26,8 @@ export default defineComponent({
   },
 });
 
-const renderer = createMarkdownRenderer();
-
 function convertMarkdownToHtml(markdownText: string): string {
+  const renderer = new CompositeMarkdownRenderer();
   return renderer.render(markdownText);
 }
 </script>
@@ -38,12 +37,11 @@ function convertMarkdownToHtml(markdownText: string): string {
 @import './markdown-styles.scss';
 
 $text-color: $color-on-primary;
-$text-size: 0.75em; // Lower looks bad on Firefox
 
 .markdown-text {
   color: $text-color;
-  font-size: $text-size;
+  font-size: $font-size-absolute-normal;
   font-family: $font-main;
-  @include markdown-text-styles($text-size: $text-size);
+  @include markdown-text-styles;
 }
 </style>

@@ -225,7 +225,7 @@ $color-tooltip-background: $color-primary-darkest;
   color: $color-on-primary;
   border-radius: 16px;
   padding: 5px 10px 4px;
-  font-size: $font-size-normal;
+  font-size: $font-size-absolute-normal;
 
   /*
     This margin creates a visual buffer between the tooltip and the edges of the document.

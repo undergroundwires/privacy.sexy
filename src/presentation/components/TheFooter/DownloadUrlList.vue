@@ -78,7 +78,7 @@ export default defineComponent({
   &__url {
     &:not(:first-child)::before {
       content: "|";
-      font-size: $font-size-smaller;
+      font-size: $font-size-absolute-x-small;
       padding: 0 5px;
     }
   }

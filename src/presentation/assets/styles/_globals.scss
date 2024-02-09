@@ -6,6 +6,7 @@
 @use "@/presentation/assets/styles/fonts" as *;
 @use "@/presentation/assets/styles/mixins" as *;
 @use "@/presentation/assets/styles/vite-path" as *;
+@use "@/presentation/assets/styles/typography" as *;
 
 * {
     box-sizing: border-box;
@@ -20,5 +21,5 @@ a {
 body {
     background: $color-background;
     font-family: $font-main;
-    font-size: $font-size-normal;
+    font-size: $font-size-absolute-normal;
 }

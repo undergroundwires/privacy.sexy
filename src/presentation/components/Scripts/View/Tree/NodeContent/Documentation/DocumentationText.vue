@@ -59,7 +59,7 @@ function formatAsMarkdownListItem(content: string): string {
   flex: 1; // Expands the container to fill available horizontal space, enabling alignment of child items.
   max-width: 100%; // Prevents horizontal expansion of inner content (e.g., when a code block is shown)
 
-  font-size: $font-size-normal;
+  font-size: $font-size-absolute-normal;
   font-family: $font-main;
 }
 </style>

@@ -113,7 +113,7 @@ export default defineComponent({
   outline: none;
   color: $color-primary;
   font-family: $font-normal;
-  font-size: $font-size-normal;
+  font-size: $font-size-absolute-normal;
   &:focus {
     color: $color-primary-darker;
   }
@@ -127,7 +127,7 @@ export default defineComponent({
   text-align: center;
   color: $color-on-primary;
   border-radius: 0 5px 5px 0;
-  font-size: $font-size-large;
+  font-size: $font-size-absolute-large;
   padding:5px;
 }
 </style>
