@@ -1,4 +1,4 @@
-# privacy.sexy — Now you have the choice
+# privacy.sexy — Privacy is sexy
 
 > Enforce privacy & security best-practices on Windows, macOS and Linux, because privacy is sexy.
 

@@ -2,7 +2,7 @@ import type { ScriptingDefinitionData } from '@/application/collections/';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { ScriptingDefinition } from '@/domain/ScriptingDefinition';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
-import { IProjectInformation } from '@/domain/IProjectInformation';
+import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
 import { createEnumParser } from '../../Common/Enum';
 import { ICodeSubstituter } from './ICodeSubstituter';
 import { CodeSubstituter } from './CodeSubstituter';
@@ -16,11 +16,11 @@ export class ScriptingDefinitionParser {
 
   public parse(
     definition: ScriptingDefinitionData,
-    info: IProjectInformation,
+    projectDetails: ProjectDetails,
   ): IScriptingDefinition {
     const language = this.languageParser.parseEnum(definition.language, 'language');
-    const startCode = this.codeSubstituter.substitute(definition.startCode, info);
-    const endCode = this.codeSubstituter.substitute(definition.endCode, info);
+    const startCode = this.codeSubstituter.substitute(definition.startCode, projectDetails);
+    const endCode = this.codeSubstituter.substitute(definition.endCode, projectDetails);
     return new ScriptingDefinition(
       language,
       startCode,

@@ -4,7 +4,7 @@ import { ScriptingDefinitionParser } from '@/application/Parser/ScriptingDefinit
 import { IEnumParser } from '@/application/Common/Enum';
 import { ICodeSubstituter } from '@/application/Parser/ScriptingDefinition/ICodeSubstituter';
 import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
-import { ProjectInformationStub } from '@tests/unit/shared/Stubs/ProjectInformationStub';
+import { ProjectDetailsStub } from '@tests/unit/shared/Stubs/ProjectDetailsStub';
 import { EnumParserStub } from '@tests/unit/shared/Stubs/EnumParserStub';
 import { ScriptingDefinitionDataStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionDataStub';
 import { CodeSubstituterStub } from '@tests/unit/shared/Stubs/CodeSubstituterStub';
@@ -17,7 +17,7 @@ describe('ScriptingDefinitionParser', () => {
         const expectedLanguage = ScriptingLanguage.batchfile;
         const languageText = 'batchfile';
         const expectedName = 'language';
-        const info = new ProjectInformationStub();
+        const projectDetails = new ProjectDetailsStub();
         const definition = new ScriptingDefinitionDataStub()
           .withLanguage(languageText);
         const parserMock = new EnumParserStub<ScriptingLanguage>()
@@ -26,7 +26,7 @@ describe('ScriptingDefinitionParser', () => {
           .withParser(parserMock)
           .build();
         // act
-        const actual = sut.parse(definition, info);
+        const actual = sut.parse(definition, projectDetails);
         // assert
         expect(actual.language).to.equal(expectedLanguage);
       });
@@ -51,14 +51,14 @@ describe('ScriptingDefinitionParser', () => {
       ];
       for (const testCase of testCases) {
         it(testCase.name, () => {
-          const info = new ProjectInformationStub();
+          const projectDetails = new ProjectDetailsStub();
           const substituterMock = new CodeSubstituterStub()
-            .setup(code, info, expected);
+            .setup(code, projectDetails, expected);
           const sut = new ScriptingDefinitionParserBuilder()
             .withSubstituter(substituterMock)
             .build();
           // act
-          const definition = sut.parse(testCase.data, info);
+          const definition = sut.parse(testCase.data, projectDetails);
           // assert
           const actual = testCase.getActualValue(definition);
           expect(actual).to.equal(expected);

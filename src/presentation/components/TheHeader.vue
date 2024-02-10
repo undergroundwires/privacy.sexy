@@ -1,9 +1,13 @@
 <template>
-  <div id="container">
-    <h1 class="child title">
+  <div class="container">
+    <h1 class="child brand">
       {{ title }}
     </h1>
-    <h2 class="child subtitle">
+    <h2 class="child slogan">
+      <!--
+        Keep the slogan without a period for impact and continuity.
+        Slogans should be punchy and memorable, not punctuated like full sentences.
+      -->
       {{ subtitle }}
     </h2>
   </div>
@@ -15,10 +19,10 @@ import { injectKey } from '@/presentation/injectionSymbols';
 
 export default defineComponent({
   setup() {
-    const { info } = injectKey((keys) => keys.useApplication);
+    const { projectDetails } = injectKey((keys) => keys.useApplication);
 
-    const title = computed(() => info.name);
-    const subtitle = computed(() => info.slogan);
+    const title = computed(() => projectDetails.name);
+    const subtitle = computed(() => projectDetails.slogan);
 
     return {
       title,
@@ -32,7 +36,7 @@ export default defineComponent({
 <style scoped lang="scss">
 @use "@/presentation/assets/styles/main" as *;
 
-#container {
+.container {
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -42,13 +46,13 @@ export default defineComponent({
     text-align: center;
   }
 
-  .title {
+  .brand {
     margin: 0;
     text-transform: uppercase;
     font-family: $font-main;
     font-size: $font-size-absolute-xx-large;
   }
-  .subtitle {
+  .slogan {
     margin: 0;
     font-size: $font-size-absolute-x-large;
     color: $color-primary;

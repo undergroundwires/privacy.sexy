@@ -1,9 +1,9 @@
 import { shell } from 'electron';
 import { UpdateInfo } from 'electron-updater';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
-import { ProjectInformation } from '@/domain/ProjectInformation';
+import { GitHubProjectDetails } from '@/domain/Project/GitHubProjectDetails';
 import { Version } from '@/domain/Version';
-import { parseProjectInformation } from '@/application/Parser/ProjectInformationParser';
+import { parseProjectDetails } from '@/application/Parser/ProjectDetailsParser';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { UpdateProgressBar } from '../UpdateProgressBar';
 import {
@@ -139,8 +139,8 @@ interface UpdateUrls {
 }
 
 function getRemoteUpdateUrls(targetVersion: string): UpdateUrls {
-  const existingProject = parseProjectInformation();
-  const targetProject = new ProjectInformation(
+  const existingProject = parseProjectDetails();
+  const targetProject = new GitHubProjectDetails(
     existingProject.name,
     new Version(targetVersion),
     existingProject.slogan,

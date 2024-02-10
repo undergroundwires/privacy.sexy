@@ -1,85 +1,87 @@
 import { describe, it, expect } from 'vitest';
-import { parseProjectInformation, ProjectInformationFactory } from '@/application/Parser/ProjectInformationParser';
+import { parseProjectDetails, ProjectDetailsFactory } from '@/application/Parser/ProjectDetailsParser';
 import { AppMetadataStub } from '@tests/unit/shared/Stubs/AppMetadataStub';
 import { PropertyKeys } from '@/TypeHelpers';
-import { ProjectInformationStub } from '@tests/unit/shared/Stubs/ProjectInformationStub';
+import { ProjectDetailsStub } from '@tests/unit/shared/Stubs/ProjectDetailsStub';
 import { Version } from '@/domain/Version';
 
-describe('ProjectInformationParser', () => {
-  describe('parseProjectInformation', () => {
-    it('returns expected information', () => {
+describe('ProjectDetailsParser', () => {
+  describe('parseProjectDetails', () => {
+    it('returns expected instance', () => {
       // arrange
-      const expectedInformation = new ProjectInformationStub();
+      const expectedInformation = new ProjectDetailsStub();
       const factoryMock = () => expectedInformation;
       // act
-      const actualInformation = parseProjectInformation(new AppMetadataStub(), factoryMock);
+      const actualInformation = parseProjectDetails(new AppMetadataStub(), factoryMock);
       // assert
       expect(expectedInformation).to.equal(actualInformation);
     });
     describe('default behavior does not throw', () => {
-      it('without metadataFactory', () => {
+      it('without metadata', () => {
         // arrange
         const metadataFactory = undefined;
-        const informationFactory = new ProjectInformationFactoryStub().getStub();
+        const projectDetailsFactory = new ProjectDetailsFactoryStub().getStub();
         // act
-        const act = () => parseProjectInformation(metadataFactory, informationFactory);
+        const act = () => parseProjectDetails(metadataFactory, projectDetailsFactory);
         // expectS
         expect(act).to.not.throw();
       });
-      it('without projectInformationFactory', () => {
+      it('without projectDetailsFactory', () => {
         // arrange
         const metadataFactory = new AppMetadataStub();
-        const informationFactory = undefined;
+        const projectDetailsFactory = undefined;
         // act
-        const act = () => parseProjectInformation(metadataFactory, informationFactory);
+        const act = () => parseProjectDetails(metadataFactory, projectDetailsFactory);
         // expect
         expect(act).to.not.throw();
       });
     });
-    describe('parses metadata to project information', () => {
-      interface IMetadataTestCase {
+    describe('parses metadata correctly', () => {
+      interface MetadataTestScenario {
         readonly setMetadata: (appMetadataStub: AppMetadataStub, value: string) => AppMetadataStub;
         readonly expectedValue: string;
-        readonly getActualValue: (info: ProjectInformationFactoryStub) => string;
+        readonly getActualValue: (projectDetailsFactory: ProjectDetailsFactoryStub) => string;
       }
-      const testCases: { [K in PropertyKeys<ProjectInformationFactoryStub>]: IMetadataTestCase } = {
+      const testScenarios: {
+        [K in PropertyKeys<ProjectDetailsFactoryStub>]: MetadataTestScenario
+      } = {
         name: {
           setMetadata: (metadata, value) => metadata.witName(value),
           expectedValue: 'expected-app-name',
-          getActualValue: (info) => info.name,
+          getActualValue: (projectDetailsFactory) => projectDetailsFactory.name,
         },
         version: {
           setMetadata: (metadata, value) => metadata.withVersion(value),
           expectedValue: '0.11.3',
-          getActualValue: (info) => info.version.toString(),
+          getActualValue: (projectDetailsFactory) => projectDetailsFactory.version.toString(),
         },
         slogan: {
           setMetadata: (metadata, value) => metadata.withSlogan(value),
           expectedValue: 'expected-slogan',
-          getActualValue: (info) => info.slogan,
+          getActualValue: (projectDetailsFactory) => projectDetailsFactory.slogan,
         },
         repositoryUrl: {
           setMetadata: (metadata, value) => metadata.withRepositoryUrl(value),
           expectedValue: 'https://expected-repository.url',
-          getActualValue: (info) => info.repositoryUrl,
+          getActualValue: (projectDetailsFactory) => projectDetailsFactory.repositoryUrl,
         },
         homepage: {
           setMetadata: (metadata, value) => metadata.withHomepageUrl(value),
           expectedValue: 'https://expected.sexy',
-          getActualValue: (info) => info.homepage,
+          getActualValue: (projectDetailsFactory) => projectDetailsFactory.homepage,
         },
       };
-      Object.entries(testCases).forEach(([propertyName, {
+      Object.entries(testScenarios).forEach(([propertyName, {
         expectedValue, setMetadata, getActualValue,
       }]) => {
         it(propertyName, () => {
           // act
           const metadata = setMetadata(new AppMetadataStub(), expectedValue);
-          const factoryStub = new ProjectInformationFactoryStub();
+          const projectDetailsFactoryStub = new ProjectDetailsFactoryStub();
           // act
-          parseProjectInformation(metadata, factoryStub.getStub());
+          parseProjectDetails(metadata, projectDetailsFactoryStub.getStub());
           // assert
-          const actual = getActualValue(factoryStub);
+          const actual = getActualValue(projectDetailsFactoryStub);
           expect(actual).to.be.equal(expectedValue);
         });
       });
@@ -87,7 +89,7 @@ describe('ProjectInformationParser', () => {
   });
 });
 
-class ProjectInformationFactoryStub {
+class ProjectDetailsFactoryStub {
   public name: string;
 
   public version: Version;
@@ -98,14 +100,14 @@ class ProjectInformationFactoryStub {
 
   public homepage: string;
 
-  public getStub(): ProjectInformationFactory {
+  public getStub(): ProjectDetailsFactory {
     return (name, version, slogan, repositoryUrl, homepage) => {
       this.name = name;
       this.version = version;
       this.slogan = slogan;
       this.repositoryUrl = repositoryUrl;
       this.homepage = homepage;
-      return new ProjectInformationStub();
+      return new ProjectDetailsStub();
     };
   }
 }

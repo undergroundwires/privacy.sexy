@@ -1,5 +1,5 @@
-import { IProjectInformation } from '@/domain/IProjectInformation';
+import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
 
 export interface ICodeSubstituter {
-  substitute(code: string, info: IProjectInformation): string;
+  substitute(code: string, projectDetails: ProjectDetails): string;
 }

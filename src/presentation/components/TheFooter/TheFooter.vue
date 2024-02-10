@@ -67,20 +67,20 @@ export default defineComponent({
     FlatButton,
   },
   setup() {
-    const { info } = injectKey((keys) => keys.useApplication);
+    const { projectDetails } = injectKey((keys) => keys.useApplication);
     const { isRunningAsDesktopApplication } = injectKey((keys) => keys.useRuntimeEnvironment);
 
     const isPrivacyDialogVisible = ref(false);
 
-    const version = computed<string>(() => info.version.toString());
+    const version = computed<string>(() => projectDetails.version.toString());
 
-    const homepageUrl = computed<string>(() => info.homepage);
+    const homepageUrl = computed<string>(() => projectDetails.homepage);
 
-    const repositoryUrl = computed<string>(() => info.repositoryWebUrl);
+    const repositoryUrl = computed<string>(() => projectDetails.repositoryWebUrl);
 
-    const releaseUrl = computed<string>(() => info.releaseUrl);
+    const releaseUrl = computed<string>(() => projectDetails.releaseUrl);
 
-    const feedbackUrl = computed<string>(() => info.feedbackUrl);
+    const feedbackUrl = computed<string>(() => projectDetails.feedbackUrl);
 
     function showPrivacyDialog() {
       isPrivacyDialogVisible.value = true;

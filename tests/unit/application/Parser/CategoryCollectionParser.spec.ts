@@ -6,7 +6,7 @@ import { OperatingSystem } from '@/domain/OperatingSystem';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { ScriptingDefinitionParser } from '@/application/Parser/ScriptingDefinition/ScriptingDefinitionParser';
 import { EnumParserStub } from '@tests/unit/shared/Stubs/EnumParserStub';
-import { ProjectInformationStub } from '@tests/unit/shared/Stubs/ProjectInformationStub';
+import { ProjectDetailsStub } from '@tests/unit/shared/Stubs/ProjectDetailsStub';
 import { getCategoryStub, CollectionDataStub } from '@tests/unit/shared/Stubs/CollectionDataStub';
 import { CategoryCollectionParseContextStub } from '@tests/unit/shared/Stubs/CategoryCollectionParseContextStub';
 import { CategoryDataStub } from '@tests/unit/shared/Stubs/CategoryDataStub';
@@ -25,9 +25,9 @@ describe('CategoryCollectionParser', () => {
           const expectedError = 'content does not define any action';
           const collection = new CollectionDataStub()
             .withActions(absentValue);
-          const info = new ProjectInformationStub();
+          const projectDetails = new ProjectDetailsStub();
           // act
-          const act = () => parseCategoryCollection(collection, info);
+          const act = () => parseCategoryCollection(collection, projectDetails);
           // assert
           expect(act).to.throw(expectedError);
         }, { excludeUndefined: true, excludeNull: true });
@@ -39,9 +39,9 @@ describe('CategoryCollectionParser', () => {
         const expected = [parseCategory(actions[0], context), parseCategory(actions[1], context)];
         const collection = new CollectionDataStub()
           .withActions(actions);
-        const info = new ProjectInformationStub();
+        const projectDetails = new ProjectDetailsStub();
         // act
-        const actual = parseCategoryCollection(collection, info).actions;
+        const actual = parseCategoryCollection(collection, projectDetails).actions;
         // assert
         expect(excludingId(actual)).to.be.deep.equal(excludingId(expected));
         function excludingId<TId>(array: ReadonlyArray<IEntity<TId>>) {
@@ -57,11 +57,11 @@ describe('CategoryCollectionParser', () => {
       it('parses scripting definition as expected', () => {
         // arrange
         const collection = new CollectionDataStub();
-        const information = new ProjectInformationStub();
+        const projectDetails = new ProjectDetailsStub();
         const expected = new ScriptingDefinitionParser()
-          .parse(collection.scripting, information);
+          .parse(collection.scripting, projectDetails);
         // act
-        const actual = parseCategoryCollection(collection, information).scripting;
+        const actual = parseCategoryCollection(collection, projectDetails).scripting;
         // assert
         expect(expected).to.deep.equal(actual);
       });
@@ -76,9 +76,9 @@ describe('CategoryCollectionParser', () => {
           .withOs(osText);
         const parserMock = new EnumParserStub<OperatingSystem>()
           .setup(expectedName, osText, expectedOs);
-        const info = new ProjectInformationStub();
+        const projectDetails = new ProjectDetailsStub();
         // act
-        const actual = parseCategoryCollection(collection, info, parserMock);
+        const actual = parseCategoryCollection(collection, projectDetails, parserMock);
         // assert
         expect(actual.os).to.equal(expectedOs);
       });
@@ -106,9 +106,9 @@ describe('CategoryCollectionParser', () => {
         const collection = new CollectionDataStub()
           .withActions([category])
           .withFunctions([func]);
-        const info = new ProjectInformationStub();
+        const projectDetails = new ProjectDetailsStub();
         // act
-        const actual = parseCategoryCollection(collection, info);
+        const actual = parseCategoryCollection(collection, projectDetails);
         // assert
         const actualScript = actual.getScript(scriptName);
         const actualCode = actualScript.code.execute;

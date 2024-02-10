@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { CollectionData } from '@/application/collections/';
-import { parseProjectInformation } from '@/application/Parser/ProjectInformationParser';
+import { parseProjectDetails } from '@/application/Parser/ProjectDetailsParser';
 import { CategoryCollectionParserType, parseApplication } from '@/application/Parser/ApplicationParser';
 import { IAppMetadata } from '@/infrastructure/EnvironmentVariables/IAppMetadata';
 import WindowsData from '@/application/collections/windows.yaml';
@@ -13,8 +13,8 @@ import { getAbsentCollectionTestCases } from '@tests/unit/shared/TestCases/Absen
 import { AppMetadataStub } from '@tests/unit/shared/Stubs/AppMetadataStub';
 import { EnvironmentVariablesFactory } from '@/infrastructure/EnvironmentVariables/EnvironmentVariablesFactory';
 import { CategoryCollectionParserStub } from '@tests/unit/shared/Stubs/CategoryCollectionParserStub';
-import { ProjectInformationParserStub } from '@tests/unit/shared/Stubs/ProjectInformationParserStub';
-import { ProjectInformationStub } from '@tests/unit/shared/Stubs/ProjectInformationStub';
+import { ProjectDetailsParserStub } from '@tests/unit/shared/Stubs/ProjectDetailsParserStub';
+import { ProjectDetailsStub } from '@tests/unit/shared/Stubs/ProjectDetailsStub';
 
 describe('ApplicationParser', () => {
   describe('parseApplication', () => {
@@ -38,63 +38,65 @@ describe('ApplicationParser', () => {
         expect(expected).to.equal(actual);
       });
     });
-    describe('project information', () => {
-      it('informationParser is used to create application info', () => {
+    describe('projectDetails', () => {
+      it('projectDetailsParser is used to create the instance', () => {
         // arrange
-        const expectedInformation = new ProjectInformationStub();
-        const informationParserStub = new ProjectInformationParserStub()
-          .withReturnValue(expectedInformation);
+        const expectedProjectDetails = new ProjectDetailsStub();
+        const projectDetailsParserStub = new ProjectDetailsParserStub()
+          .withReturnValue(expectedProjectDetails);
         const sut = new ApplicationParserBuilder()
-          .withProjectInformationParser(informationParserStub.getStub());
+          .withProjectDetailsParser(projectDetailsParserStub.getStub());
         // act
         const app = sut.parseApplication();
         // assert
-        const actualInformation = app.info;
-        expect(expectedInformation).to.deep.equal(actualInformation);
+        const actualProjectDetails = app.projectDetails;
+        expect(expectedProjectDetails).to.deep.equal(actualProjectDetails);
       });
-      it('informationParser is used to parse collection info', () => {
+      it('projectDetailsParser is used to parse collection', () => {
         // arrange
-        const expectedInformation = new ProjectInformationStub();
-        const informationParserStub = new ProjectInformationParserStub()
-          .withReturnValue(expectedInformation);
+        const expectedProjectDetails = new ProjectDetailsStub();
+        const projectDetailsParserStub = new ProjectDetailsParserStub()
+          .withReturnValue(expectedProjectDetails);
         const collectionParserStub = new CategoryCollectionParserStub();
         const sut = new ApplicationParserBuilder()
-          .withProjectInformationParser(informationParserStub.getStub())
+          .withProjectDetailsParser(projectDetailsParserStub.getStub())
           .withCategoryCollectionParser(collectionParserStub.getStub());
         // act
         sut.parseApplication();
         // assert
         expect(collectionParserStub.arguments).to.have.length.above(0);
-        const actuallyUsedInfos = collectionParserStub.arguments.map((arg) => arg.info);
-        expect(actuallyUsedInfos.every((info) => info === expectedInformation));
+        const actuallyUsedInfos = collectionParserStub.arguments.map((arg) => arg.projectDetails);
+        expect(actuallyUsedInfos.every(
+          (actualProjectDetails) => actualProjectDetails === expectedProjectDetails,
+        )).to.equal(true);
       });
     });
     describe('metadata', () => {
       it('used to parse expected metadata', () => {
         // arrange
         const expectedMetadata = new AppMetadataStub();
-        const infoParserStub = new ProjectInformationParserStub();
+        const projectDetailsParser = new ProjectDetailsParserStub();
         // act
         new ApplicationParserBuilder()
           .withMetadata(expectedMetadata)
-          .withProjectInformationParser(infoParserStub.getStub())
+          .withProjectDetailsParser(projectDetailsParser.getStub())
           .parseApplication();
         // assert
-        expect(infoParserStub.arguments).to.have.lengthOf(1);
-        expect(infoParserStub.arguments[0]).to.equal(expectedMetadata);
+        expect(projectDetailsParser.arguments).to.have.lengthOf(1);
+        expect(projectDetailsParser.arguments[0]).to.equal(expectedMetadata);
       });
       it('defaults to metadata from factory', () => {
         // arrange
         const expectedMetadata: IAppMetadata = EnvironmentVariablesFactory.Current.instance;
-        const infoParserStub = new ProjectInformationParserStub();
+        const projectDetailsParser = new ProjectDetailsParserStub();
         // act
         new ApplicationParserBuilder()
           .withMetadata(undefined) // force using default
-          .withProjectInformationParser(infoParserStub.getStub())
+          .withProjectDetailsParser(projectDetailsParser.getStub())
           .parseApplication();
         // assert
-        expect(infoParserStub.arguments).to.have.lengthOf(1);
-        expect(infoParserStub.arguments[0]).to.equal(expectedMetadata);
+        expect(projectDetailsParser.arguments).to.have.lengthOf(1);
+        expect(projectDetailsParser.arguments[0]).to.equal(expectedMetadata);
       });
     });
     describe('collectionsData', () => {
@@ -182,8 +184,8 @@ class ApplicationParserBuilder {
   private categoryCollectionParser
   : CategoryCollectionParserType = new CategoryCollectionParserStub().getStub();
 
-  private projectInformationParser
-  : typeof parseProjectInformation = new ProjectInformationParserStub().getStub();
+  private projectDetailsParser
+  : typeof parseProjectDetails = new ProjectDetailsParserStub().getStub();
 
   private metadata: IAppMetadata | undefined = new AppMetadataStub();
 
@@ -196,10 +198,10 @@ class ApplicationParserBuilder {
     return this;
   }
 
-  public withProjectInformationParser(
-    projectInformationParser: typeof parseProjectInformation,
+  public withProjectDetailsParser(
+    projectDetailsParser: typeof parseProjectDetails,
   ): this {
-    this.projectInformationParser = projectInformationParser;
+    this.projectDetailsParser = projectDetailsParser;
     return this;
   }
 
@@ -218,7 +220,7 @@ class ApplicationParserBuilder {
   public parseApplication(): ReturnType<typeof parseApplication> {
     return parseApplication(
       this.categoryCollectionParser,
-      this.projectInformationParser,
+      this.projectDetailsParser,
       this.metadata,
       this.collectionsData,
     );

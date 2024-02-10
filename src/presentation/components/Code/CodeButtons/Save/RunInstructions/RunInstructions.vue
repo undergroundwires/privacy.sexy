@@ -44,14 +44,14 @@ export default defineComponent({
   setup() {
     const { currentState } = injectKey((keys) => keys.useCollectionState);
 
-    const { info } = injectKey((keys) => keys.useApplication);
+    const { projectDetails } = injectKey((keys) => keys.useApplication);
 
     const operatingSystem = computed<OperatingSystem>(() => currentState.value.os);
 
-    const appName = computed<string>(() => info.name);
+    const appName = computed<string>(() => projectDetails.name);
 
     const downloadUrl = computed<string>(
-      () => info.getDownloadUrl(operatingSystem.value),
+      () => projectDetails.getDownloadUrl(operatingSystem.value),
     );
 
     const osName = computed<string>(

@@ -1,12 +1,12 @@
 import { IApplication } from '@/domain/IApplication';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { IProjectInformation } from '@/domain/IProjectInformation';
-import { ProjectInformationStub } from './ProjectInformationStub';
+import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
+import { ProjectDetailsStub } from './ProjectDetailsStub';
 import { CategoryCollectionStub } from './CategoryCollectionStub';
 
 export class ApplicationStub implements IApplication {
-  public info: IProjectInformation = new ProjectInformationStub();
+  public projectDetails: ProjectDetails = new ProjectDetailsStub();
 
   public collections: ICategoryCollection[] = [];
 
@@ -24,8 +24,8 @@ export class ApplicationStub implements IApplication {
     return this;
   }
 
-  public withProjectInformation(info: IProjectInformation): this {
-    this.info = info;
+  public withProjectDetails(info: ProjectDetails): this {
+    this.projectDetails = info;
     return this;
   }
 

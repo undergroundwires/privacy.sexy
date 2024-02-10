@@ -1,26 +1,26 @@
 import { describe, it, expect } from 'vitest';
 import { useApplication } from '@/presentation/components/Shared/Hooks/UseApplication';
 import { ApplicationStub } from '@tests/unit/shared/Stubs/ApplicationStub';
-import { ProjectInformationStub } from '@tests/unit/shared/Stubs/ProjectInformationStub';
+import { ProjectDetailsStub } from '@tests/unit/shared/Stubs/ProjectDetailsStub';
 
 describe('UseApplication', () => {
-  it('should return expected info', () => {
+  it('should return expected projectDetails', () => {
     // arrange
-    const expectedInfo = new ProjectInformationStub()
-      .withName('expected-project-information');
+    const expectedProjectDetails = new ProjectDetailsStub()
+      .withName(`expected-${ProjectDetailsStub.name}`);
     const application = new ApplicationStub()
-      .withProjectInformation(expectedInfo);
+      .withProjectDetails(expectedProjectDetails);
     // act
-    const { info } = useApplication(application);
+    const { projectDetails } = useApplication(application);
     // assert
-    expect(info).to.equal(expectedInfo);
+    expect(projectDetails).to.equal(expectedProjectDetails);
   });
 
   it('should return expected application', () => {
     // arrange
     const expectedApp = new ApplicationStub()
-      .withProjectInformation(
-        new ProjectInformationStub().withName('expected-application'),
+      .withProjectDetails(
+        new ProjectDetailsStub().withName('expected-application'),
       );
     // act
     const { application } = useApplication(expectedApp);

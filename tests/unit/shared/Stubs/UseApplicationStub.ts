@@ -13,7 +13,7 @@ export class UseApplicationStub {
   public get(): ReturnType<typeof useApplication> {
     return {
       application: this.application,
-      info: this.application.info,
+      projectDetails: this.application.projectDetails,
     };
   }
 }

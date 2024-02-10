@@ -1,8 +1,8 @@
-import { IProjectInformation } from '@/domain/IProjectInformation';
+import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
 import { Version } from '@/domain/Version';
 import { VersionStub } from './VersionStub';
 
-export class ProjectInformationStub implements IProjectInformation {
+export class ProjectDetailsStub implements ProjectDetails {
   public name = 'stub-name';
 
   public version = new VersionStub();
@@ -21,37 +21,37 @@ export class ProjectInformationStub implements IProjectInformation {
 
   public slogan = 'stub-slogan';
 
-  public withName(name: string): ProjectInformationStub {
+  public withName(name: string): this {
     this.name = name;
     return this;
   }
 
-  public withVersion(version: Version): ProjectInformationStub {
+  public withVersion(version: Version): this {
     this.version = version;
     return this;
   }
 
-  public withRepositoryUrl(repositoryUrl: string): ProjectInformationStub {
+  public withRepositoryUrl(repositoryUrl: string): this {
     this.repositoryUrl = repositoryUrl;
     return this;
   }
 
-  public withHomepageUrl(homepageUrl: string): ProjectInformationStub {
+  public withHomepageUrl(homepageUrl: string): this {
     this.homepage = homepageUrl;
     return this;
   }
 
-  public withFeedbackUrl(feedbackUrl: string): ProjectInformationStub {
+  public withFeedbackUrl(feedbackUrl: string): this {
     this.feedbackUrl = feedbackUrl;
     return this;
   }
 
-  public withReleaseUrl(releaseUrl: string): ProjectInformationStub {
+  public withReleaseUrl(releaseUrl: string): this {
     this.releaseUrl = releaseUrl;
     return this;
   }
 
-  public withRepositoryWebUrl(repositoryWebUrl: string): ProjectInformationStub {
+  public withRepositoryWebUrl(repositoryWebUrl: string): this {
     this.repositoryWebUrl = repositoryWebUrl;
     return this;
   }

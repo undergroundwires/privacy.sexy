@@ -26,7 +26,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { info } = injectKey((keys) => keys.useApplication);
+    const { projectDetails } = injectKey((keys) => keys.useApplication);
     const { os: currentOs } = injectKey((keys) => keys.useRuntimeEnvironment);
 
     const isCurrentOs = computed<boolean>(() => {
@@ -42,7 +42,7 @@ export default defineComponent({
     });
 
     const downloadUrl = computed<string>(() => {
-      return info.getDownloadUrl(props.operatingSystem);
+      return projectDetails.getDownloadUrl(props.operatingSystem);
     });
 
     return {

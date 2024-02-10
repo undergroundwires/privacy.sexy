@@ -1,9 +1,9 @@
 import { ICategoryCollection } from './ICategoryCollection';
-import { IProjectInformation } from './IProjectInformation';
+import { ProjectDetails } from './Project/ProjectDetails';
 import { OperatingSystem } from './OperatingSystem';
 
 export interface IApplication {
-  readonly info: IProjectInformation;
+  readonly projectDetails: ProjectDetails;
   readonly collections: readonly ICategoryCollection[];
 
   getSupportedOsList(): OperatingSystem[];

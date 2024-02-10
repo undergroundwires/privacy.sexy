@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ProjectInformation } from '@/domain/ProjectInformation';
+import { GitHubProjectDetails } from '@/domain/Project/GitHubProjectDetails';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
 import { VersionStub } from '@tests/unit/shared/Stubs/VersionStub';
@@ -7,19 +7,19 @@ import { Version } from '@/domain/Version';
 import { PropertyKeys } from '@/TypeHelpers';
 import { SupportedOperatingSystem, AllSupportedOperatingSystems } from '@tests/shared/TestCases/SupportedOperatingSystems';
 
-describe('ProjectInformation', () => {
+describe('GitHubProjectDetails', () => {
   describe('retrieval of property values', () => {
-    interface IInformationParsingTestCase {
+    interface PropertyTestScenario {
       readonly description?: string;
       readonly expectedValue: string;
       readonly buildWithExpectedValue: (
-        builder: ProjectInformationBuilder,
+        builder: ProjectDetailsBuilder,
         expected: string,
-      ) => ProjectInformationBuilder;
-      readonly getActualValue: (sut: ProjectInformation) => string;
+      ) => ProjectDetailsBuilder;
+      readonly getActualValue: (sut: GitHubProjectDetails) => string;
     }
-    const propertyTestCases: {
-      readonly [K in PropertyKeys<ProjectInformation>]: readonly IInformationParsingTestCase[];
+    const propertyTestScenarios: {
+      readonly [K in PropertyKeys<GitHubProjectDetails>]: readonly PropertyTestScenario[];
     } = {
       name: [{
         expectedValue: 'expected-app-name',
@@ -100,13 +100,13 @@ describe('ProjectInformation', () => {
         getActualValue: (sut) => sut.releaseUrl,
       }],
     };
-    Object.entries(propertyTestCases).forEach(([propertyName, testList]) => {
+    Object.entries(propertyTestScenarios).forEach(([propertyName, testList]) => {
       testList.forEach(({
         description, buildWithExpectedValue, expectedValue, getActualValue,
       }) => {
         it(`${propertyName}${description ? ` (${description})` : ''}`, () => {
           // arrange
-          const builder = new ProjectInformationBuilder();
+          const builder = new ProjectDetailsBuilder();
           const sut = buildWithExpectedValue(builder, expectedValue).build();
 
           // act
@@ -144,7 +144,7 @@ describe('ProjectInformation', () => {
       it(`should return the expected download URL for ${OperatingSystem[operatingSystem]}`, () => {
         // arrange
         const { expected, version, repositoryUrl } = testScenarios[operatingSystem];
-        const sut = new ProjectInformationBuilder()
+        const sut = new ProjectDetailsBuilder()
           .withVersion(new VersionStub(version))
           .withRepositoryUrl(repositoryUrl)
           .build();
@@ -156,7 +156,7 @@ describe('ProjectInformation', () => {
     });
     describe('should throw an error when provided with an invalid operating system', () => {
       // arrange
-      const sut = new ProjectInformationBuilder()
+      const sut = new ProjectDetailsBuilder()
         .build();
       // act
       const act = (os: OperatingSystem) => sut.getDownloadUrl(os);
@@ -168,7 +168,7 @@ describe('ProjectInformation', () => {
   });
 });
 
-class ProjectInformationBuilder {
+class ProjectDetailsBuilder {
   private name = 'default-name';
 
   private version: Version = new VersionStub();
@@ -179,33 +179,33 @@ class ProjectInformationBuilder {
 
   private slogan = 'default-slogan';
 
-  public withName(name: string): ProjectInformationBuilder {
+  public withName(name: string): this {
     this.name = name;
     return this;
   }
 
-  public withVersion(version: VersionStub): ProjectInformationBuilder {
+  public withVersion(version: VersionStub): this {
     this.version = version;
     return this;
   }
 
-  public withSlogan(slogan: string): ProjectInformationBuilder {
+  public withSlogan(slogan: string): this {
     this.slogan = slogan;
     return this;
   }
 
-  public withRepositoryUrl(repositoryUrl: string): ProjectInformationBuilder {
+  public withRepositoryUrl(repositoryUrl: string): this {
     this.repositoryUrl = repositoryUrl;
     return this;
   }
 
-  public withHomepage(homepage: string): ProjectInformationBuilder {
+  public withHomepage(homepage: string): this {
     this.homepage = homepage;
     return this;
   }
 
-  public build(): ProjectInformation {
-    return new ProjectInformation(
+  public build(): GitHubProjectDetails {
+    return new GitHubProjectDetails(
       this.name,
       this.version,
       this.slogan,

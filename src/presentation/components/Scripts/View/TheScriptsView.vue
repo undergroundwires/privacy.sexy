@@ -62,9 +62,9 @@ export default defineComponent({
   setup() {
     const { modifyCurrentState, onStateChange } = injectKey((keys) => keys.useCollectionState);
     const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
-    const { info } = injectKey((keys) => keys.useApplication);
+    const { projectDetails } = injectKey((keys) => keys.useApplication);
 
-    const repositoryUrl = computed<string>(() => info.repositoryWebUrl);
+    const repositoryUrl = computed<string>(() => projectDetails.repositoryWebUrl);
     const searchQuery = ref<string | undefined>();
     const isSearching = computed(() => Boolean(searchQuery.value));
     const searchHasMatches = ref(false);

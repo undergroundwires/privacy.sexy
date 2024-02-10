@@ -2,7 +2,7 @@ import { IExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expre
 import { ParameterSubstitutionParser } from '@/application/Parser/Script/Compiler/Expressions/SyntaxParsers/ParameterSubstitutionParser';
 import { CompositeExpressionParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/CompositeExpressionParser';
 import { ExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/ExpressionsCompiler';
-import { IProjectInformation } from '@/domain/IProjectInformation';
+import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
 import { FunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/Function/Call/Argument/FunctionCallArgumentCollection';
 import { FunctionCallArgument } from '@/application/Parser/Script/Compiler/Function/Call/Argument/FunctionCallArgument';
 import { ICodeSubstituter } from './ICodeSubstituter';
@@ -15,13 +15,13 @@ export class CodeSubstituter implements ICodeSubstituter {
 
   }
 
-  public substitute(code: string, info: IProjectInformation): string {
+  public substitute(code: string, projectDetails: ProjectDetails): string {
     if (!code) { throw new Error('missing code'); }
     const args = new FunctionCallArgumentCollection();
     const substitute = (name: string, value: string) => args
       .addArgument(new FunctionCallArgument(name, value));
-    substitute('homepage', info.homepage);
-    substitute('version', info.version.toString());
+    substitute('homepage', projectDetails.homepage);
+    substitute('version', projectDetails.version.toString());
     substitute('date', this.date.toUTCString());
     const compiledCode = this.compiler.compileExpressions(code, args);
     return compiledCode;

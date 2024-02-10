@@ -1,9 +1,9 @@
 import { assertInRange } from '@/application/Common/Enum';
-import { IProjectInformation } from './IProjectInformation';
-import { OperatingSystem } from './OperatingSystem';
-import { Version } from './Version';
+import { OperatingSystem } from '../OperatingSystem';
+import { Version } from '../Version';
+import type { ProjectDetails } from './ProjectDetails';
 
-export class ProjectInformation implements IProjectInformation {
+export class GitHubProjectDetails implements ProjectDetails {
   public readonly repositoryWebUrl: string;
 
   constructor(

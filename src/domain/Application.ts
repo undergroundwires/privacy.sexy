@@ -1,11 +1,11 @@
 import { IApplication } from './IApplication';
 import { ICategoryCollection } from './ICategoryCollection';
-import { IProjectInformation } from './IProjectInformation';
+import { ProjectDetails } from './Project/ProjectDetails';
 import { OperatingSystem } from './OperatingSystem';
 
 export class Application implements IApplication {
   constructor(
-    public info: IProjectInformation,
+    public projectDetails: ProjectDetails,
     public collections: readonly ICategoryCollection[],
   ) {
     validateCollections(collections);

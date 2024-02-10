@@ -24,6 +24,7 @@ import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/IC
 import { CodeBuilderFactory } from '@/application/Context/State/Code/Generation/CodeBuilderFactory';
 import SizeObserver from '@/presentation/components/Shared/SizeObserver.vue';
 import { NonCollapsing } from '@/presentation/components/Scripts/View/Cards/NonCollapsingDirective';
+import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
 import ace from './ace-importer';
 
 export default defineComponent({
@@ -41,6 +42,7 @@ export default defineComponent({
   },
   setup(props) {
     const { onStateChange, currentState } = injectKey((keys) => keys.useCollectionState);
+    const { projectDetails } = injectKey((keys) => keys.useApplication);
     const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);
 
     const editorId = 'codeEditor';
@@ -74,7 +76,7 @@ export default defineComponent({
     }
 
     function updateCode(code: string, language: ScriptingLanguage) {
-      const innerCode = code || getDefaultCode(language);
+      const innerCode = code || getDefaultCode(language, projectDetails);
       editor?.setValue(innerCode, 1);
     }
 
@@ -171,10 +173,14 @@ function getLanguage(language: ScriptingLanguage) {
   }
 }
 
-function getDefaultCode(language: ScriptingLanguage): string {
+function getDefaultCode(language: ScriptingLanguage, project: ProjectDetails): string {
   return new CodeBuilderFactory()
     .create(language)
-    .appendCommentLine('privacy.sexy — Now you have the choice.')
+    .appendCommentLine(`${project.name} — ${project.slogan}`)
+    /*
+      Keep the slogan without a period for impact and continuity.
+      Slogans should be punchy and memorable, not punctuated like full sentences.
+    */
     .appendCommentLine(' 🔐 Enforce privacy & security best-practices on Windows, macOS and Linux.')
     .appendLine()
     .appendCommentLine('-- 🤔 How to use')
@@ -183,7 +189,7 @@ function getDefaultCode(language: ScriptingLanguage): string {
     .appendCommentLine(' 📙 After you choose any tweak, you can download or copy to execute your script.')
     .appendCommentLine(' 📙 Come back regularly to apply latest version for stronger privacy and security.')
     .appendLine()
-    .appendCommentLine('-- 🧐 Why privacy.sexy')
+    .appendCommentLine(`-- 🧐 Why ${project.name}`)
     .appendCommentLine(' ✔️ Rich tweak pool to harden security & privacy of the OS and other software on it.')
     .appendCommentLine(' ✔️ No need to run any compiled software on your system, just run the generated scripts.')
     .appendCommentLine(' ✔️ Have full visibility into what the tweaks do as you enable them.')

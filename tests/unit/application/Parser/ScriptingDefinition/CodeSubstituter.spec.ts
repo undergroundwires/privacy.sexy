@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { CodeSubstituter } from '@/application/Parser/ScriptingDefinition/CodeSubstituter';
 import { IExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/IExpressionsCompiler';
-import { ProjectInformationStub } from '@tests/unit/shared/Stubs/ProjectInformationStub';
+import { ProjectDetailsStub } from '@tests/unit/shared/Stubs/ProjectDetailsStub';
 import { ExpressionsCompilerStub } from '@tests/unit/shared/Stubs/ExpressionsCompilerStub';
 import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 
@@ -11,26 +11,26 @@ describe('CodeSubstituter', () => {
       // arrange
       const expectedError = 'missing code';
       const code = emptyCode;
-      const info = new ProjectInformationStub();
+      const projectDetails = new ProjectDetailsStub();
       const sut = new CodeSubstituterBuilder().build();
       // act
-      const act = () => sut.substitute(code, info);
+      const act = () => sut.substitute(code, projectDetails);
       // assert
       expect(act).to.throw(expectedError);
     }, { excludeNull: true, excludeUndefined: true });
   });
   describe('substitutes parameters as expected values', () => {
     // arrange
-    const info = new ProjectInformationStub();
+    const projectDetails = new ProjectDetailsStub();
     const date = new Date();
     const testCases: Array<{ parameter: string, argument: string }> = [
       {
         parameter: 'homepage',
-        argument: info.homepage,
+        argument: projectDetails.homepage,
       },
       {
         parameter: 'version',
-        argument: info.version.toString(),
+        argument: projectDetails.version.toString(),
       },
       {
         parameter: 'date',
@@ -45,7 +45,7 @@ describe('CodeSubstituter', () => {
           .withDate(date)
           .build();
         // act
-        sut.substitute('non empty code', info);
+        sut.substitute('non empty code', projectDetails);
         // assert
         expect(compilerStub.callHistory).to.have.lengthOf(1);
         const parameters = compilerStub.callHistory[0].args[1];
@@ -63,7 +63,7 @@ describe('CodeSubstituter', () => {
       .withCompiler(compilerStub)
       .build();
     // act
-    sut.substitute(expected, new ProjectInformationStub());
+    sut.substitute(expected, new ProjectDetailsStub());
     // assert
     expect(compilerStub.callHistory).to.have.lengthOf(1);
     expect(compilerStub.callHistory[0].args[0]).to.equal(expected);

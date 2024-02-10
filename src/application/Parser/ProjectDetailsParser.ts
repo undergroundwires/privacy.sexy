@@ -1,21 +1,21 @@
-import { IProjectInformation } from '@/domain/IProjectInformation';
-import { ProjectInformation } from '@/domain/ProjectInformation';
+import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
+import { GitHubProjectDetails } from '@/domain/Project/GitHubProjectDetails';
 import { IAppMetadata } from '@/infrastructure/EnvironmentVariables/IAppMetadata';
 import { Version } from '@/domain/Version';
 import { EnvironmentVariablesFactory } from '@/infrastructure/EnvironmentVariables/EnvironmentVariablesFactory';
 import { ConstructorArguments } from '@/TypeHelpers';
 
 export function
-parseProjectInformation(
+parseProjectDetails(
   metadata: IAppMetadata = EnvironmentVariablesFactory.Current.instance,
-  createProjectInformation: ProjectInformationFactory = (
+  createProjectDetails: ProjectDetailsFactory = (
     ...args
-  ) => new ProjectInformation(...args),
-): IProjectInformation {
+  ) => new GitHubProjectDetails(...args),
+): ProjectDetails {
   const version = new Version(
     metadata.version,
   );
-  return createProjectInformation(
+  return createProjectDetails(
     metadata.name,
     version,
     metadata.slogan,
@@ -24,6 +24,6 @@ parseProjectInformation(
   );
 }
 
-export type ProjectInformationFactory = (
-  ...args: ConstructorArguments<typeof ProjectInformation>
-) => IProjectInformation;
+export type ProjectDetailsFactory = (
+  ...args: ConstructorArguments<typeof GitHubProjectDetails>
+) => ProjectDetails;

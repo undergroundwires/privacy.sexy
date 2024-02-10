@@ -59,11 +59,11 @@ import { injectKey } from '@/presentation/injectionSymbols';
 
 export default defineComponent({
   setup() {
-    const { info } = injectKey((keys) => keys.useApplication);
+    const { projectDetails } = injectKey((keys) => keys.useApplication);
     const { isRunningAsDesktopApplication } = injectKey((keys) => keys.useRuntimeEnvironment);
 
-    const repositoryUrl = computed<string>(() => info.repositoryUrl);
-    const feedbackUrl = computed<string>(() => info.feedbackUrl);
+    const repositoryUrl = computed<string>(() => projectDetails.repositoryUrl);
+    const feedbackUrl = computed<string>(() => projectDetails.feedbackUrl);
 
     return {
       repositoryUrl,

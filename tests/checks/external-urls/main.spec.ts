@@ -14,7 +14,7 @@ const requestOptions: IBatchRequestOptions = {
   requestOptions: {
     retryExponentialBaseInMs: 3 /* sec */ * 1000,
     requestTimeoutInMs: 60 /* sec */ * 1000,
-    additionalHeaders: { referer: app.info.homepage },
+    additionalHeaders: { referer: app.projectDetails.homepage },
   },
 };
 const testTimeoutInMs = urls.length * 60 /* seconds */ * 1000;

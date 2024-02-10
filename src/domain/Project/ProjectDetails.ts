@@ -1,7 +1,7 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { Version } from '@/domain/Version';
 
-export interface IProjectInformation {
+export interface ProjectDetails {
   readonly name: string;
   readonly version: Version;
 

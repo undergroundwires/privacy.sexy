@@ -1,5 +1,4 @@
-import { IProjectInformation } from '@/domain/IProjectInformation';
-import { ProjectInformation } from '@/domain/ProjectInformation';
+import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { getEnumValues } from '@/application/Common/Enum';
 import type { CollectionData } from '@/application/collections/';
@@ -10,7 +9,7 @@ import { CategoryCollectionStub } from './CategoryCollectionStub';
 export class CategoryCollectionParserStub {
   public readonly arguments = new Array<{
     data: CollectionData,
-    info: ProjectInformation,
+    projectDetails: ProjectDetails,
   }>();
 
   private readonly returnValues = new Map<CollectionData, ICategoryCollection>();
@@ -24,8 +23,8 @@ export class CategoryCollectionParserStub {
   }
 
   public getStub(): CategoryCollectionParserType {
-    return (data: CollectionData, info: IProjectInformation): ICategoryCollection => {
-      this.arguments.push({ data, info });
+    return (data: CollectionData, projectDetails: ProjectDetails): ICategoryCollection => {
+      this.arguments.push({ data, projectDetails });
       const foundReturnValue = this.returnValues.get(data);
       if (foundReturnValue) {
         return foundReturnValue;

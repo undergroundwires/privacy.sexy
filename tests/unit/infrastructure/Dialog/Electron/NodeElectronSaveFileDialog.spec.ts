@@ -185,7 +185,7 @@ describe('NodeElectronSaveFileDialog', () => {
         const saveFileCall = fileWriterStub.callHistory.find((c) => c.methodName === 'writeAndVerifyFile');
         expect(saveFileCall).to.equal(undefined);
       });
-      it('logs cancelation info', async () => {
+      it('logs cancelation', async () => {
         // arrange
         const expectedLogMessagePart = 'File save cancelled';
         const logger = new LoggerStub();

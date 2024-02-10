@@ -2,7 +2,7 @@ import type { CollectionData } from '@/application/collections/';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { CategoryCollection } from '@/domain/CategoryCollection';
-import { IProjectInformation } from '@/domain/IProjectInformation';
+import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
 import { createEnumParser } from '../Common/Enum';
 import { parseCategory } from './CategoryParser';
 import { CategoryCollectionParseContext } from './Script/CategoryCollectionParseContext';
@@ -10,12 +10,12 @@ import { ScriptingDefinitionParser } from './ScriptingDefinition/ScriptingDefini
 
 export function parseCategoryCollection(
   content: CollectionData,
-  info: IProjectInformation,
+  projectDetails: ProjectDetails,
   osParser = createEnumParser(OperatingSystem),
 ): ICategoryCollection {
   validate(content);
   const scripting = new ScriptingDefinitionParser()
-    .parse(content.scripting, info);
+    .parse(content.scripting, projectDetails);
   const context = new CategoryCollectionParseContext(content.functions, scripting);
   const categories = content.actions.map((action) => parseCategory(action, context));
   const os = osParser.parseEnum(content.os, 'os');
