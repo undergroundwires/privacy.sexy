@@ -1,10 +1,10 @@
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { NodeMetadata, NodeType } from '../NodeMetadata';
-import { IReverter } from './IReverter';
+import { Reverter } from './Reverter';
 import { ScriptReverter } from './ScriptReverter';
 import { CategoryReverter } from './CategoryReverter';
 
-export function getReverter(node: NodeMetadata, collection: ICategoryCollection): IReverter {
+export function getReverter(node: NodeMetadata, collection: ICategoryCollection): Reverter {
   switch (node.type) {
     case NodeType.Category:
       return new CategoryReverter(node.id, collection);

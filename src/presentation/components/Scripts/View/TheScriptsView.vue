@@ -1,5 +1,5 @@
 <template>
-  <div class="scripts">
+  <div class="scripts-view">
     <template v-if="!isSearching">
       <template v-if="currentView === ViewType.Cards">
         <CardList />
@@ -130,7 +130,7 @@ export default defineComponent({
 
 $margin-inner: 4px;
 
-.scripts {
+.scripts-view {
   margin-top: $margin-inner;
   @media screen and (min-width: $media-vertical-view-breakpoint) {
     // so the current code is always visible

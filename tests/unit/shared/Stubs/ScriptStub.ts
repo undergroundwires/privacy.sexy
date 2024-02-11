@@ -16,12 +16,17 @@ export class ScriptStub extends BaseEntity<string> implements IScript {
 
   public level? = RecommendationLevel.Standard;
 
+  private isReversible: boolean | undefined = undefined;
+
   constructor(public readonly id: string) {
     super(id);
   }
 
   public canRevert(): boolean {
-    return Boolean(this.code.revert);
+    if (this.isReversible === undefined) {
+      return Boolean(this.code.revert);
+    }
+    return this.isReversible;
   }
 
   public withLevel(value: RecommendationLevel | undefined): this {
@@ -39,6 +44,11 @@ export class ScriptStub extends BaseEntity<string> implements IScript {
 
   public withName(name: string): this {
     this.name = name;
+    return this;
+  }
+
+  public withReversibility(isReversible: boolean): this {
+    this.isReversible = isReversible;
     return this;
   }
 

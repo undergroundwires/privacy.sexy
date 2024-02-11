@@ -4,33 +4,31 @@ import { scrambledEqual } from '@/application/Common/Array';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { ReadonlyScriptSelection, ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
 import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import { RecommendationStatusType } from './RecommendationStatusType';
 
-export enum SelectionType {
-  Standard,
-  Strict,
-  All,
-  None,
-  Custom,
-}
-
-export function setCurrentSelectionType(type: SelectionType, context: SelectionMutationContext) {
-  if (type === SelectionType.Custom) {
+export function setCurrentRecommendationStatus(
+  type: RecommendationStatusType,
+  context: SelectionMutationContext,
+) {
+  if (type === RecommendationStatusType.Custom) {
     throw new Error('Cannot select custom type.');
   }
   const selector = selectors.get(type);
   if (!selector) {
-    throw new Error(`Cannot handle the type: ${SelectionType[type]}`);
+    throw new Error(`Cannot handle the type: ${RecommendationStatusType[type]}`);
   }
   selector.select(context);
 }
 
-export function getCurrentSelectionType(context: SelectionCheckContext): SelectionType {
+export function getCurrentRecommendationStatus(
+  context: SelectionCheckContext,
+): RecommendationStatusType {
   for (const [type, selector] of selectors.entries()) {
     if (selector.isSelected(context)) {
       return type;
     }
   }
-  return SelectionType.Custom;
+  return RecommendationStatusType.Custom;
 }
 
 export interface SelectionCheckContext {
@@ -43,19 +41,19 @@ export interface SelectionMutationContext {
   readonly collection: ICategoryCollection,
 }
 
-interface SelectionTypeHandler {
+interface RecommendationStatusTypeHandler {
   isSelected: (context: SelectionCheckContext) => boolean;
   select: (context: SelectionMutationContext) => void;
 }
 
-const selectors = new Map<SelectionType, SelectionTypeHandler>([
-  [SelectionType.None, {
+const selectors = new Map<RecommendationStatusType, RecommendationStatusTypeHandler>([
+  [RecommendationStatusType.None, {
     select: ({ selection }) => selection.deselectAll(),
     isSelected: ({ selection }) => selection.selectedScripts.length === 0,
   }],
-  [SelectionType.Standard, getRecommendationLevelSelector(RecommendationLevel.Standard)],
-  [SelectionType.Strict, getRecommendationLevelSelector(RecommendationLevel.Strict)],
-  [SelectionType.All, {
+  [RecommendationStatusType.Standard, getRecommendationLevelSelector(RecommendationLevel.Standard)],
+  [RecommendationStatusType.Strict, getRecommendationLevelSelector(RecommendationLevel.Strict)],
+  [RecommendationStatusType.All, {
     select: ({ selection }) => selection.selectAll(),
     isSelected: (
       { selection, collection },
@@ -65,7 +63,7 @@ const selectors = new Map<SelectionType, SelectionTypeHandler>([
 
 function getRecommendationLevelSelector(
   level: RecommendationLevel,
-): SelectionTypeHandler {
+): RecommendationStatusTypeHandler {
   return {
     select: (context) => selectOnly(level, context),
     isSelected: (context) => hasAllSelectedLevelOf(level, context),

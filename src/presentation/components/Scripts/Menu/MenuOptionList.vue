@@ -29,7 +29,6 @@ $gap: 0.25rem;
 .list {
   font-family: $font-normal;
   display: flex;
-  align-items: center;
   :deep(.items) {
     > * + *::before {
       content: '|';

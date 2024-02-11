@@ -2,20 +2,24 @@ import { UserSelection } from '@/application/Context/State/Selection/UserSelecti
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { getCategoryId } from '../../TreeViewAdapter/CategoryNodeMetadataConverter';
-import { IReverter } from './IReverter';
+import { Reverter } from './Reverter';
 import { ScriptReverter } from './ScriptReverter';
 
-export class CategoryReverter implements IReverter {
+export class CategoryReverter implements Reverter {
   private readonly categoryId: number;
 
   private readonly scriptReverters: ReadonlyArray<ScriptReverter>;
 
   constructor(nodeId: string, collection: ICategoryCollection) {
     this.categoryId = getCategoryId(nodeId);
-    this.scriptReverters = getAllSubScriptReverters(this.categoryId, collection);
+    this.scriptReverters = createScriptReverters(this.categoryId, collection);
   }
 
   public getState(selectedScripts: ReadonlyArray<SelectedScript>): boolean {
+    if (!this.scriptReverters.length) {
+      // An empty array indicates there are no reversible scripts in this category
+      return false;
+    }
     return this.scriptReverters.every((script) => script.getState(selectedScripts));
   }
 
@@ -32,8 +36,13 @@ export class CategoryReverter implements IReverter {
   }
 }
 
-function getAllSubScriptReverters(categoryId: number, collection: ICategoryCollection) {
+function createScriptReverters(
+  categoryId: number,
+  collection: ICategoryCollection,
+): ScriptReverter[] {
   const category = collection.getCategory(categoryId);
-  const scripts = category.getAllScriptsRecursively();
+  const scripts = category
+    .getAllScriptsRecursively()
+    .filter((script) => script.canRevert());
   return scripts.map((script) => new ScriptReverter(script.id));
 }

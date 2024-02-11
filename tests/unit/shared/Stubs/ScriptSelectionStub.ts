@@ -1,7 +1,9 @@
+import { expect } from 'vitest';
 import { ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
 import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { IScript } from '@/domain/IScript';
-import { ScriptSelectionChangeCommand } from '@/application/Context/State/Selection/Script/ScriptSelectionChange';
+import { ScriptSelectionChange, ScriptSelectionChangeCommand } from '@/application/Context/State/Selection/Script/ScriptSelectionChange';
+import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 import { EventSourceStub } from './EventSourceStub';
 import { SelectedScriptStub } from './SelectedScriptStub';
@@ -31,24 +33,22 @@ export class ScriptSelectionStub
   }
 
   public isScriptSelected(scriptId: string, revert: boolean): boolean {
-    const call = this.callHistory.find(
-      (c) => c.methodName === 'processChanges'
-      && c.args[0].changes.some((change) => (
-        change.newStatus.isSelected === true
-        && change.newStatus.isReverted === revert
-        && change.scriptId === scriptId)),
-    );
-    return call !== undefined;
+    return this.isScriptChanged({
+      scriptId,
+      newStatus: {
+        isSelected: true,
+        isReverted: revert,
+      },
+    });
   }
 
   public isScriptDeselected(scriptId: string): boolean {
-    const call = this.callHistory.find(
-      (c) => c.methodName === 'processChanges'
-      && c.args[0].changes.some((change) => (
-        change.newStatus.isSelected === false
-        && change.scriptId === scriptId)),
-    );
-    return call !== undefined;
+    return this.isScriptChanged({
+      scriptId,
+      newStatus: {
+        isSelected: false,
+      },
+    });
   }
 
   public processChanges(action: ScriptSelectionChangeCommand): void {
@@ -86,4 +86,45 @@ export class ScriptSelectionStub
     }
     return this.isSelectedResult;
   }
+
+  public assertSelectionChanges(expectedChanges: readonly ScriptSelectionChange[]): void {
+    const actualChanges = this.getAllChanges();
+    expect(actualChanges).to.have.lengthOf(expectedChanges.length, formatAssertionMessage([
+      `Expected number of changes to be ${expectedChanges.length}, but found ${actualChanges.length}`,
+      `Expected changes (${expectedChanges.length}):`, toNumberedPrettyJson(expectedChanges),
+      `Actual changes (${actualChanges.length}):`, toNumberedPrettyJson(actualChanges),
+    ]));
+    const unexpectedChanges = actualChanges.filter(
+      (actual) => !expectedChanges.some((expected) => isSameChange(actual, expected)),
+    );
+    expect(unexpectedChanges).to.have.lengthOf(0, formatAssertionMessage([
+      `Found ${unexpectedChanges.length} unexpected changes.`,
+      'Unexpected changes:', toNumberedPrettyJson(unexpectedChanges),
+      'Expected changes:', toNumberedPrettyJson(expectedChanges),
+      'Actual changes:', toNumberedPrettyJson(actualChanges),
+    ]));
+  }
+
+  private isScriptChanged(expectedChange: ScriptSelectionChange): boolean {
+    return this.getAllChanges().some((change) => isSameChange(change, expectedChange));
+  }
+
+  private getAllChanges(): ScriptSelectionChange[] {
+    const processChangesCalls = this.callHistory.filter((c) => c.methodName === 'processChanges');
+    const changeCommands = processChangesCalls.map(
+      (call) => call.args[0] as ScriptSelectionChangeCommand,
+    );
+    const changes = changeCommands.flatMap((command) => command.changes);
+    return changes;
+  }
+}
+
+function isSameChange(change: ScriptSelectionChange, otherChange: ScriptSelectionChange): boolean {
+  return change.newStatus.isSelected === otherChange.newStatus.isSelected
+    && change.newStatus.isReverted === otherChange.newStatus.isReverted
+    && change.scriptId === otherChange.scriptId;
+}
+
+function toNumberedPrettyJson<T>(array: readonly T[]): string {
+  return array.map((item, index) => `${index + 1}: ${JSON.stringify(item, undefined, 2)}`).join('\n');
 }

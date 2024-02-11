@@ -8,93 +8,172 @@ import { UserSelectionStub } from '@tests/unit/shared/Stubs/UserSelectionStub';
 import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
 import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { CategorySelectionStub } from '@tests/unit/shared/Stubs/CategorySelectionStub';
+import { IScript } from '@/domain/IScript';
 
 describe('CategoryReverter', () => {
   describe('getState', () => {
     // arrange
-    const scripts = [
-      new ScriptStub('reversible').withRevertCode('REM revert me'),
-      new ScriptStub('reversible2').withRevertCode('REM revert me 2'),
-    ];
-    const category = new CategoryStub(1).withScripts(...scripts);
-    const nodeId = getCategoryNodeId(category);
-    const collection = new CategoryCollectionStub().withAction(category);
-    const sut = new CategoryReverter(nodeId, collection);
     const testScenarios: ReadonlyArray<{
       readonly description: string;
-      readonly selectedScripts: readonly SelectedScript[];
+      readonly allScripts: readonly IScript[];
+      readonly selectScripts: (allScripts: readonly IScript[]) => readonly SelectedScript[];
       readonly expectedState: boolean;
     }> = [
       {
-        description: 'returns `false` for non-reverted subscripts',
-        selectedScripts: scripts.map(
-          (script) => new SelectedScriptStub(script).withRevert(false),
-        ),
-        expectedState: false,
+        description: 'returns true when all scripts are reverted',
+        allScripts: [
+          new ScriptStub('0').withReversibility(true),
+          new ScriptStub('1').withReversibility(true),
+        ],
+        selectScripts: (allScripts) => [
+          new SelectedScriptStub(allScripts[0]).withRevert(true),
+          new SelectedScriptStub(allScripts[1]).withRevert(true),
+        ],
+        expectedState: true,
       },
       {
-        description: 'returns `false` when only some subscripts are reverted',
-        selectedScripts: [
-          new SelectedScriptStub(scripts[0]).withRevert(false),
-          new SelectedScriptStub(scripts[0]).withRevert(true),
+        description: 'returns true when only reversible scripts are reverted',
+        allScripts: [
+          new ScriptStub('0').withReversibility(false),
+          new ScriptStub('1').withReversibility(true),
+          new ScriptStub('2').withReversibility(true),
+        ],
+        selectScripts: (allScripts) => [
+          new SelectedScriptStub(allScripts[1]).withRevert(true),
+          new SelectedScriptStub(allScripts[2]).withRevert(true),
+        ],
+        expectedState: true,
+      },
+      {
+        description: 'returns false when no scripts are reverted',
+        allScripts: [
+          new ScriptStub('0').withReversibility(true),
+          new ScriptStub('1').withReversibility(true),
+        ],
+        selectScripts: (allScripts) => [
+          new SelectedScriptStub(allScripts[0]).withRevert(false),
+          new SelectedScriptStub(allScripts[1]).withRevert(false),
         ],
         expectedState: false,
       },
       {
-        description: 'returns `true` when all subscripts are reverted',
-        selectedScripts: scripts.map(
-          (script) => new SelectedScriptStub(script).withRevert(true),
-        ),
-        expectedState: true,
+        description: 'returns false when some reversible scripts are not reverted',
+        allScripts: [
+          new ScriptStub('0').withReversibility(true),
+          new ScriptStub('1').withReversibility(true),
+        ],
+        selectScripts: (allScripts) => [
+          new SelectedScriptStub(allScripts[0]).withRevert(false),
+          new SelectedScriptStub(allScripts[1]).withRevert(true),
+        ],
+        expectedState: false,
+      },
+      {
+        description: 'returns false when any reversible script is not reverted',
+        allScripts: [
+          new ScriptStub('0').withReversibility(false),
+          new ScriptStub('1').withReversibility(true),
+          new ScriptStub('2').withReversibility(true),
+        ],
+        selectScripts: (allScripts) => [
+          new SelectedScriptStub(allScripts[1]).withRevert(true),
+          new SelectedScriptStub(allScripts[2]).withRevert(false),
+        ],
+        expectedState: false,
+      },
+      {
+        description: 'returns false when no reversible scripts are reverted',
+        allScripts: [
+          new ScriptStub('0').withReversibility(true),
+          new ScriptStub('1').withReversibility(true),
+        ],
+        selectScripts: (allScripts) => [
+          new SelectedScriptStub(allScripts[0]).withRevert(false),
+          new SelectedScriptStub(allScripts[1]).withRevert(false),
+        ],
+        expectedState: false,
+      },
+      {
+        description: 'returns false when all reversible scripts are not reverted',
+        allScripts: [
+          new ScriptStub('0').withReversibility(false),
+          new ScriptStub('1').withReversibility(true),
+          new ScriptStub('2').withReversibility(true),
+        ],
+        selectScripts: (allScripts) => [
+          new SelectedScriptStub(allScripts[1]).withRevert(false),
+          new SelectedScriptStub(allScripts[2]).withRevert(false),
+        ],
+        expectedState: false,
+      },
+      {
+        description: 'returns false when no scripts are reversible',
+        allScripts: [
+          new ScriptStub('0').withReversibility(false),
+          new ScriptStub('1').withReversibility(false),
+          new ScriptStub('2').withReversibility(false),
+        ],
+        selectScripts: () => [],
+        expectedState: false,
       },
     ];
-    testScenarios.forEach((
-      { description, selectedScripts, expectedState },
-    ) => {
+    testScenarios.forEach(({
+      description, allScripts, selectScripts, expectedState,
+    }) => {
       it(description, () => {
+        // arrange
+        const category = new CategoryStub(1).withScripts(...allScripts);
+        const categoryNodeId = getCategoryNodeId(category);
+        const collection = new CategoryCollectionStub().withAction(category);
+        const categoryReverter = new CategoryReverter(categoryNodeId, collection);
+        const selectedScripts = selectScripts(allScripts);
         // act
-        const actual = sut.getState(selectedScripts);
+        const actual = categoryReverter.getState(selectedScripts);
         // assert
         expect(actual).to.equal(expectedState);
       });
     });
   });
   describe('selectWithRevertState', () => {
-    // arrange
-    const allScripts = [
-      new ScriptStub('reversible').withRevertCode('REM revert me'),
-      new ScriptStub('reversible2').withRevertCode('REM revert me 2'),
-    ];
-    const category = new CategoryStub(1).withScripts(...allScripts);
-    const collection = new CategoryCollectionStub().withAction(category);
     const testScenarios: ReadonlyArray<{
       readonly description: string;
-      readonly expectedRevert: boolean;
+      readonly expectedRevertState: boolean;
     }> = [
       {
         description: 'selects with revert',
-        expectedRevert: true,
+        expectedRevertState: true,
       },
       {
         description: 'selects without revert',
-        expectedRevert: false,
+        expectedRevertState: false,
       },
     ];
-    const nodeId = getCategoryNodeId(category);
     testScenarios.forEach((
-      { description, expectedRevert },
+      { description, expectedRevertState },
     ) => {
       it(description, () => {
+        // arrange
+        const allScripts = [
+          new ScriptStub('reversible').withReversibility(true),
+          new ScriptStub('reversible2').withReversibility(true),
+        ];
+        const category = new CategoryStub(1).withScripts(...allScripts);
+        const nodeId = getCategoryNodeId(category);
+        const collection = new CategoryCollectionStub().withAction(category);
         const categorySelection = new CategorySelectionStub();
-        const sut = new CategoryReverter(nodeId, collection);
-        const revertState = expectedRevert;
+        const categoryReverter = new CategoryReverter(nodeId, collection);
+        const revertState = expectedRevertState;
         // act
-        sut.selectWithRevertState(
+        categoryReverter.selectWithRevertState(
           revertState,
           new UserSelectionStub().withCategories(categorySelection),
         );
         // assert
-        expect(categorySelection.isCategorySelected(category.id, expectedRevert)).to.equal(true);
+        const actualRevertState = categorySelection.isCategorySelected(
+          category.id,
+          expectedRevertState,
+        );
+        expect(actualRevertState).to.equal(true);
       });
     });
   });

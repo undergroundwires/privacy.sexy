@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { shallowMount } from '@vue/test-utils';
-import RatingCircle from '@/presentation/components/Scripts/Menu/Selector/Rating/RatingCircle.vue';
+import RatingCircle from '@/presentation/components/Scripts/Menu/Recommendation/Rating/RatingCircle.vue';
 
 const DOM_SVG_SELECTOR = 'svg';
 const DOM_CIRCLE_SELECTOR = `${DOM_SVG_SELECTOR} > circle`;

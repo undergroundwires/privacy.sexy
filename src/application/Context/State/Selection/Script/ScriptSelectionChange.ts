@@ -3,6 +3,7 @@ export type ScriptSelectionStatus = {
   readonly isReverted: boolean;
 } | {
   readonly isSelected: false;
+  readonly isReverted?: undefined;
 };
 
 export interface ScriptSelectionChange {

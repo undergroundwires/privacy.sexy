@@ -1,9 +1,9 @@
 import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
 import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { getScriptId } from '../../TreeViewAdapter/CategoryNodeMetadataConverter';
-import { IReverter } from './IReverter';
+import { Reverter } from './Reverter';
 
-export class ScriptReverter implements IReverter {
+export class ScriptReverter implements Reverter {
   private readonly scriptId: string;
 
   constructor(nodeId: string) {

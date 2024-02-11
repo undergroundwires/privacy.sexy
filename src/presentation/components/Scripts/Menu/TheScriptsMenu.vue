@@ -1,6 +1,9 @@
 <template>
   <div id="container">
-    <TheSelector class="item" />
+    <div class="item rows">
+      <TheRecommendationSelector class="item" />
+      <TheRevertSelector class="item" />
+    </div>
     <TheOsChanger class="item" />
     <TheViewChanger
       v-if="!isSearching"
@@ -16,15 +19,17 @@ import { injectKey } from '@/presentation/injectionSymbols';
 import { IReadOnlyUserFilter } from '@/application/Context/State/Filter/IUserFilter';
 import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 import TheOsChanger from './TheOsChanger.vue';
-import TheSelector from './Selector/TheSelector.vue';
 import TheViewChanger from './View/TheViewChanger.vue';
 import { ViewType } from './View/ViewType';
+import TheRecommendationSelector from './Recommendation/TheRecommendationSelector.vue';
+import TheRevertSelector from './Revert/TheRevertSelector.vue';
 
 export default defineComponent({
   components: {
-    TheSelector,
+    TheRecommendationSelector,
     TheOsChanger,
     TheViewChanger,
+    TheRevertSelector,
   },
   emits: {
     /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -80,6 +85,11 @@ $margin-between-lines: 7px;
     &:last-child {
       justify-content: flex-end;
     }
+  }
+  .rows {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 </style>

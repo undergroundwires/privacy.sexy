@@ -81,9 +81,7 @@ export class DebouncedScriptSelection implements ScriptSelection {
   }
 
   public selectOnly(scripts: readonly IScript[]): void {
-    if (scripts.length === 0) {
-      throw new Error('Provided script array is empty. To deselect all scripts, please use the deselectAll() method instead.');
-    }
+    assertNonEmptyScriptSelection(scripts);
     this.processChanges({
       changes: [
         ...getScriptIdsToBeDeselected(this.scripts, scripts)
@@ -144,6 +142,12 @@ export class DebouncedScriptSelection implements ScriptSelection {
     }
     this.scripts.removeItem(scriptId);
     return 1;
+  }
+}
+
+function assertNonEmptyScriptSelection(selectedItems: readonly IScript[]) {
+  if (selectedItems.length === 0) {
+    throw new Error('Provided script array is empty. To deselect all scripts, please use the deselectAll() method instead.');
   }
 }
 

@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import {
-  SelectionCheckContext, SelectionMutationContext, SelectionType,
-  getCurrentSelectionType, setCurrentSelectionType,
-} from '@/presentation/components/Scripts/Menu/Selector/SelectionTypeHandler';
+  SelectionCheckContext, SelectionMutationContext,
+  getCurrentRecommendationStatus, setCurrentRecommendationStatus,
+} from '@/presentation/components/Scripts/Menu/Recommendation/RecommendationStatusHandler';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
@@ -11,40 +11,41 @@ import { MethodCall } from '@tests/unit/shared/Stubs/StubWithObservableMethodCal
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { scrambledEqual } from '@/application/Common/Array';
 import { IScript } from '@/domain/IScript';
-import { SelectionStateTestScenario } from './SelectionStateTestScenario';
+import { RecommendationStatusType } from '@/presentation/components/Scripts/Menu/Recommendation/RecommendationStatusType';
+import { RecommendationStatusTestScenario } from './RecommendationStatusTestScenario';
 
-describe('SelectionTypeHandler', () => {
-  describe('setCurrentSelectionType', () => {
+describe('RecommendationStatusHandler', () => {
+  describe('setCurrentRecommendationStatus', () => {
     describe('throws with invalid type', () => {
       // arrange
-      const scenario = new SelectionStateTestScenario();
+      const scenario = new RecommendationStatusTestScenario();
       const { stateStub } = scenario.generateState([]);
       // act
-      const act = (type: SelectionType) => setCurrentSelectionType(
+      const act = (type: RecommendationStatusType) => setCurrentRecommendationStatus(
         type,
         createMutationContext(stateStub),
       );
       // assert
       new EnumRangeTestRunner(act)
-        .testInvalidValueThrows(SelectionType.Custom, 'Cannot select custom type.')
-        .testOutOfRangeThrows((value) => `Cannot handle the type: ${SelectionType[value]}`);
+        .testInvalidValueThrows(RecommendationStatusType.Custom, 'Cannot select custom type.')
+        .testOutOfRangeThrows((value) => `Cannot handle the type: ${RecommendationStatusType[value]}`);
     });
     describe('select types as expected', () => {
       // arrange
-      const scenario = new SelectionStateTestScenario();
+      const scenario = new RecommendationStatusTestScenario();
       const testScenarios: ReadonlyArray<{
-        readonly givenType: SelectionType;
+        readonly givenType: RecommendationStatusType;
         readonly expectedCall: MethodCall<ScriptSelection>;
       }> = [
         {
-          givenType: SelectionType.None,
+          givenType: RecommendationStatusType.None,
           expectedCall: {
             methodName: 'deselectAll',
             args: [],
           },
         },
         {
-          givenType: SelectionType.Standard,
+          givenType: RecommendationStatusType.Standard,
           expectedCall: {
             methodName: 'selectOnly',
             args: [
@@ -53,7 +54,7 @@ describe('SelectionTypeHandler', () => {
           },
         },
         {
-          givenType: SelectionType.Strict,
+          givenType: RecommendationStatusType.Strict,
           expectedCall: {
             methodName: 'selectOnly',
             args: [[
@@ -63,7 +64,7 @@ describe('SelectionTypeHandler', () => {
           },
         },
         {
-          givenType: SelectionType.All,
+          givenType: RecommendationStatusType.All,
           expectedCall: {
             methodName: 'selectAll',
             args: [],
@@ -73,10 +74,10 @@ describe('SelectionTypeHandler', () => {
       testScenarios.forEach(({
         givenType, expectedCall,
       }) => {
-        it(`${SelectionType[givenType]} modifies as expected`, () => {
+        it(`${RecommendationStatusType[givenType]} modifies as expected`, () => {
           const { stateStub, scriptsStub } = scenario.generateState();
           // act
-          setCurrentSelectionType(givenType, createMutationContext(stateStub));
+          setCurrentRecommendationStatus(givenType, createMutationContext(stateStub));
           // assert
           const call = scriptsStub.callHistory.find(
             (c) => c.methodName === expectedCall.methodName,
@@ -92,51 +93,51 @@ describe('SelectionTypeHandler', () => {
       });
     });
   });
-  describe('getCurrentSelectionType', () => {
+  describe('getCurrentRecommendationStatus', () => {
     // arrange
-    const scenario = new SelectionStateTestScenario();
+    const scenario = new RecommendationStatusTestScenario();
     const testCases = [{
       name: 'when nothing is selected',
       selection: [],
-      expected: SelectionType.None,
+      expected: RecommendationStatusType.None,
     }, {
       name: 'when some standard scripts are selected',
       selection: scenario.someStandard,
-      expected: SelectionType.Custom,
+      expected: RecommendationStatusType.Custom,
     }, {
       name: 'when all standard scripts are selected',
       selection: scenario.allStandard,
-      expected: SelectionType.Standard,
+      expected: RecommendationStatusType.Standard,
     }, {
       name: 'when all standard and some strict scripts are selected',
       selection: [...scenario.allStandard, ...scenario.someStrict],
-      expected: SelectionType.Custom,
+      expected: RecommendationStatusType.Custom,
     }, {
       name: 'when all standard and strict scripts are selected',
       selection: [...scenario.allStandard, ...scenario.allStrict],
-      expected: SelectionType.Strict,
+      expected: RecommendationStatusType.Strict,
     }, {
       name: 'when strict scripts are selected but not standard',
       selection: scenario.allStrict,
-      expected: SelectionType.Custom,
+      expected: RecommendationStatusType.Custom,
     }, {
       name: 'when all standard and strict, and some unrecommended are selected',
       selection: [...scenario.allStandard, ...scenario.allStrict, ...scenario.someUnrecommended],
-      expected: SelectionType.Custom,
+      expected: RecommendationStatusType.Custom,
     }, {
       name: 'when all scripts are selected',
       selection: scenario.all,
-      expected: SelectionType.All,
+      expected: RecommendationStatusType.All,
     }];
     for (const testCase of testCases) {
       it(testCase.name, () => {
         const { stateStub } = scenario.generateState(testCase.selection);
         // act
-        const actual = getCurrentSelectionType(createCheckContext(stateStub));
+        const actual = getCurrentRecommendationStatus(createCheckContext(stateStub));
         // assert
         expect(actual).to.deep.equal(
           testCase.expected,
-          `Actual: "${SelectionType[actual]}", expected: "${SelectionType[testCase.expected]}"`
+          `Actual: "${RecommendationStatusType[actual]}", expected: "${RecommendationStatusType[testCase.expected]}"`
             + `\nSelection: ${printSelection()}`,
         );
         function printSelection() {

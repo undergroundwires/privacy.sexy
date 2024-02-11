@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { shallowMount } from '@vue/test-utils';
-import SelectionTypeDocumentation from '@/presentation/components/Scripts/Menu/Selector/SelectionTypeDocumentation.vue';
-import CircleRating from '@/presentation/components/Scripts/Menu/Selector/Rating/CircleRating.vue';
+import RecommendationDocumentation from '@/presentation/components/Scripts/Menu/Recommendation/RecommendationDocumentation.vue';
+import CircleRating from '@/presentation/components/Scripts/Menu/Recommendation/Rating/CircleRating.vue';
 
 const DOM_SELECTOR_INCLUDES_SECTION = '.includes';
 const DOM_SELECTOR_CONSIDERATIONS_SECTION = '.considerations';
 
-describe('SelectionTypeDocumentation.vue', () => {
+describe('RecommendationDocumentation', () => {
   it('renders privacy rating using CircleRating component', () => {
     // arrange
     const expectedPrivacyRating = 3;
@@ -136,7 +136,7 @@ function mountComponent(options: {
   readonly includes?: string[],
   readonly considerations?: string[],
 }) {
-  return shallowMount(SelectionTypeDocumentation, {
+  return shallowMount(RecommendationDocumentation, {
     propsData: {
       privacyRating: options.privacyRating ?? 0,
       description: options.description ?? 'test-description',

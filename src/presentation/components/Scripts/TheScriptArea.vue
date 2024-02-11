@@ -1,5 +1,5 @@
 <template>
-  <div class="scripts">
+  <div class="script-area">
     <TheScriptsMenu @view-changed="currentView = $event" />
     <HorizontalResizeSlider
       class="row"
@@ -42,9 +42,9 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.scripts {
-  > * + * {
-    margin-top: 15px;
-  }
+.script-area {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 </style>

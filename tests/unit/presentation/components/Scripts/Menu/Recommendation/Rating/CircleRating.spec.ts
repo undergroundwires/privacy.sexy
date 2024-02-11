@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { shallowMount } from '@vue/test-utils';
-import CircleRating from '@/presentation/components/Scripts/Menu/Selector/Rating/CircleRating.vue';
-import RatingCircle from '@/presentation/components/Scripts/Menu/Selector/Rating/RatingCircle.vue';
+import RatingCircle from '@/presentation/components/Scripts/Menu/Recommendation/Rating/RatingCircle.vue';
+import CircleRating from '@/presentation/components/Scripts/Menu/Recommendation/Rating/CircleRating.vue';
 
 const MAX_RATING = 4;
 

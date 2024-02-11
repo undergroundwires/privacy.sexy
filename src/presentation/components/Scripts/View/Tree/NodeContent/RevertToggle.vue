@@ -13,9 +13,9 @@ import {
 import { injectKey } from '@/presentation/injectionSymbols';
 import { NodeMetadata } from '@/presentation/components/Scripts/View/Tree/NodeContent/NodeMetadata';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
-import { IReverter } from './Reverter/IReverter';
 import { getReverter } from './Reverter/ReverterFactory';
 import ToggleSwitch from './ToggleSwitch.vue';
+import type { Reverter } from './Reverter/Reverter';
 
 export default defineComponent({
   components: {
@@ -35,7 +35,7 @@ export default defineComponent({
 
     const currentCollection = computed<ICategoryCollection>(() => currentState.value.collection);
 
-    const revertHandler = computed<IReverter>(
+    const revertHandler = computed<Reverter>(
       () => getReverter(props.node, currentCollection.value),
     );
 
@@ -64,3 +64,4 @@ export default defineComponent({
   },
 });
 </script>
+./Reverter/Reverter

@@ -6,7 +6,7 @@ import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
 import { UserSelectionStub } from '@tests/unit/shared/Stubs/UserSelectionStub';
 
-export class SelectionStateTestScenario {
+export class RecommendationStatusTestScenario {
   public readonly all: readonly SelectedScript[];
 
   public readonly allStandard: readonly SelectedScript[];
