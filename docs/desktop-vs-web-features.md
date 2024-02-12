@@ -51,6 +51,8 @@ Log file locations vary by operating system:
 - Linux: `$HOME/.config/privacy.sexy/logs`
 - Windows: `%APPDATA%\privacy.sexy\logs`
 
+> 💡 privacy.sexy provides scripts to securely erase these logs.
+
 ### Script execution
 
 The desktop version of privacy.sexy enables direct script execution, providing a seamless and integrated experience.
@@ -64,6 +66,8 @@ These locations vary based on the operating system:
 - macOS: `$HOME/Library/Application Support/privacy.sexy/runs`
 - Linux: `$HOME/.config/privacy.sexy/runs`
 - Windows: `%APPDATA%\privacy.sexy\runs`
+
+> 💡 privacy.sexy provides scripts to securely erase your script execution history.
 
 ### Error handling
 
