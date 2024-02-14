@@ -43,8 +43,8 @@ import { injectKey } from '@/presentation/injectionSymbols';
 import ScriptsTree from '@/presentation/components/Scripts/View/Tree/ScriptsTree.vue';
 import CardList from '@/presentation/components/Scripts/View/Cards/CardList.vue';
 import { ViewType } from '@/presentation/components/Scripts/Menu/View/ViewType';
-import { IReadOnlyUserFilter } from '@/application/Context/State/Filter/IUserFilter';
-import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
+import { ReadonlyFilterContext } from '@/application/Context/State/Filter/FilterContext';
+import { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
 import FlatButton from '@/presentation/components/Shared/FlatButton.vue';
 
 export default defineComponent({
@@ -94,12 +94,12 @@ export default defineComponent({
       });
     }
 
-    function updateFromInitialFilter(filter?: IFilterResult) {
+    function updateFromInitialFilter(filter?: FilterResult) {
       searchQuery.value = filter?.query;
       searchHasMatches.value = filter?.hasAnyMatches() ?? false;
     }
 
-    function subscribeToFilterChanges(filter: IReadOnlyUserFilter) {
+    function subscribeToFilterChanges(filter: ReadonlyFilterContext) {
       return filter.filterChanged.on((event) => {
         event.visit({
           onApply: (newFilter) => {

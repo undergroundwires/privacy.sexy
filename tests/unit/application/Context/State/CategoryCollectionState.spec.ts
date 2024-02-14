@@ -11,8 +11,8 @@ import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { ReadonlyScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
 import { ScriptSelectionStub } from '@tests/unit/shared/Stubs/ScriptSelectionStub';
 import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
-import { UserFilterStub } from '@tests/unit/shared/Stubs/UserFilterStub';
 import type { CodeFactory, FilterFactory, SelectionFactory } from '@/application/Context/State/CategoryCollectionState';
+import { FilterContextStub } from '@tests/unit/shared/Stubs/FilterContextStub';
 
 describe('CategoryCollectionState', () => {
   describe('code', () => {
@@ -113,7 +113,7 @@ describe('CategoryCollectionState', () => {
       let actualCollection: ICategoryCollection | undefined;
       const filterFactoryMock: FilterFactory = (collection) => {
         actualCollection = collection;
-        return new UserFilterStub();
+        return new FilterContextStub();
       };
       // act
       new CategoryCollectionStateBuilder()
@@ -134,7 +134,7 @@ class CategoryCollectionStateBuilder {
 
   private selectionFactory: SelectionFactory = () => new UserSelectionStub();
 
-  private filterFactory: FilterFactory = () => new UserFilterStub();
+  private filterFactory: FilterFactory = () => new FilterContextStub();
 
   public withCollection(collection: ICategoryCollection): this {
     this.collection = collection;

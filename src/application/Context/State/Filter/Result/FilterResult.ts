@@ -1,6 +1,6 @@
 import { IScript, ICategory } from '@/domain/ICategory';
 
-export interface IFilterResult {
+export interface FilterResult {
   readonly categoryMatches: ReadonlyArray<ICategory>;
   readonly scriptMatches: ReadonlyArray<IScript>;
   readonly query: string;

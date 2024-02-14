@@ -1,10 +1,10 @@
-import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
-import { ICategory } from '@/domain/ICategory';
-import { IScript } from '@/domain/IScript';
+import type { ICategory } from '@/domain/ICategory';
+import type { IScript } from '@/domain/IScript';
+import type { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
 import { CategoryStub } from './CategoryStub';
 import { ScriptStub } from './ScriptStub';
 
-export class FilterResultStub implements IFilterResult {
+export class FilterResultStub implements FilterResult {
   public categoryMatches: readonly ICategory[] = [];
 
   public scriptMatches: readonly IScript[] = [];

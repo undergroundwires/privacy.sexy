@@ -16,7 +16,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
-import { IReadOnlyUserFilter } from '@/application/Context/State/Filter/IUserFilter';
+import { ReadonlyFilterContext } from '@/application/Context/State/Filter/FilterContext';
 import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 import TheOsChanger from './TheOsChanger.vue';
 import TheViewChanger from './View/TheViewChanger.vue';
@@ -49,7 +49,7 @@ export default defineComponent({
     }, { immediate: true });
 
     function subscribeToFilterChanges(
-      filter: IReadOnlyUserFilter,
+      filter: ReadonlyFilterContext,
     ): IEventSubscription {
       return filter.filterChanged.on((event) => {
         event.visit({

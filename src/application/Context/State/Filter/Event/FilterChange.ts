@@ -1,24 +1,24 @@
-import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
+import { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
 import { FilterActionType } from './FilterActionType';
 import {
-  IFilterChangeDetails, IFilterChangeDetailsVisitor,
+  FilterChangeDetails, FilterChangeDetailsVisitor,
   ApplyFilterAction, ClearFilterAction,
-} from './IFilterChangeDetails';
+} from './FilterChangeDetails';
 
-export class FilterChange implements IFilterChangeDetails {
+export class FilterChange implements FilterChangeDetails {
   public static forApply(
-    filter: IFilterResult,
-  ): IFilterChangeDetails {
+    filter: FilterResult,
+  ): FilterChangeDetails {
     return new FilterChange({ type: FilterActionType.Apply, filter });
   }
 
-  public static forClear(): IFilterChangeDetails {
+  public static forClear(): FilterChangeDetails {
     return new FilterChange({ type: FilterActionType.Clear });
   }
 
   private constructor(public readonly action: ApplyFilterAction | ClearFilterAction) { }
 
-  public visit(visitor: IFilterChangeDetailsVisitor): void {
+  public visit(visitor: FilterChangeDetailsVisitor): void {
     switch (this.action.type) {
       case FilterActionType.Apply:
         if (visitor.onApply) {

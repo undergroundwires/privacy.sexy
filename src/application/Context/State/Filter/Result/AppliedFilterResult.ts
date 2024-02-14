@@ -1,8 +1,8 @@
 import { IScript } from '@/domain/IScript';
 import { ICategory } from '@/domain/ICategory';
-import { IFilterResult } from './IFilterResult';
+import { FilterResult } from './FilterResult';
 
-export class FilterResult implements IFilterResult {
+export class AppliedFilterResult implements FilterResult {
   constructor(
     public readonly scriptMatches: ReadonlyArray<IScript>,
     public readonly categoryMatches: ReadonlyArray<ICategory>,

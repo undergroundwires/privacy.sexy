@@ -1,18 +1,21 @@
-import { FilterActionType } from '@/application/Context/State/Filter/Event/FilterActionType';
-import { IFilterChangeDetailsVisitor } from '@/application/Context/State/Filter/Event/IFilterChangeDetails';
-import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
+import type { FilterChangeDetailsVisitor } from '@/application/Context/State/Filter/Event/FilterChangeDetails';
+import type { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
+import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
-export class FilterChangeDetailsVisitorStub implements IFilterChangeDetailsVisitor {
-  public readonly visitedEvents = new Array<FilterActionType>();
-
-  public readonly visitedResults = new Array<IFilterResult>();
-
-  onClear(): void {
-    this.visitedEvents.push(FilterActionType.Clear);
+export class FilterChangeDetailsVisitorStub
+  extends StubWithObservableMethodCalls<Required<FilterChangeDetailsVisitor>>
+  implements FilterChangeDetailsVisitor {
+  public onClear(): void {
+    this.registerMethodCall({
+      methodName: 'onClear',
+      args: [],
+    });
   }
 
-  onApply(filter: IFilterResult): void {
-    this.visitedEvents.push(FilterActionType.Apply);
-    this.visitedResults.push(filter);
+  public onApply(filter: FilterResult): void {
+    this.registerMethodCall({
+      methodName: 'onApply',
+      args: [filter],
+    });
   }
 }

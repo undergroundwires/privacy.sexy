@@ -19,8 +19,8 @@ import {
 import { injectKey } from '@/presentation/injectionSymbols';
 import { NonCollapsing } from '@/presentation/components/Scripts/View/Cards/NonCollapsingDirective';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
-import { IReadOnlyUserFilter } from '@/application/Context/State/Filter/IUserFilter';
-import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
+import { ReadonlyFilterContext } from '@/application/Context/State/Filter/FilterContext';
+import { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
 import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 
 export default defineComponent({
@@ -61,12 +61,12 @@ export default defineComponent({
       ]);
     }, { immediate: true });
 
-    function updateFromInitialFilter(filter?: IFilterResult) {
+    function updateFromInitialFilter(filter?: FilterResult) {
       searchQuery.value = filter?.query;
     }
 
     function subscribeToFilterChanges(
-      filter: IReadOnlyUserFilter,
+      filter: ReadonlyFilterContext,
     ): IEventSubscription {
       return filter.filterChanged.on((event) => {
         event.visit({

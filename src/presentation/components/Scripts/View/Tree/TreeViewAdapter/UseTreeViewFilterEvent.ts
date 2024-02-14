@@ -4,8 +4,8 @@ import {
 import { IScript } from '@/domain/IScript';
 import { ICategory } from '@/domain/ICategory';
 import { injectKey } from '@/presentation/injectionSymbols';
-import { IReadOnlyUserFilter } from '@/application/Context/State/Filter/IUserFilter';
-import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
+import { ReadonlyFilterContext } from '@/application/Context/State/Filter/FilterContext';
+import { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
 import { TreeViewFilterEvent, createFilterRemovedEvent, createFilterTriggeredEvent } from '../TreeView/Bindings/TreeInputFilterEvent';
 import { NodeMetadata } from '../NodeContent/NodeMetadata';
 import { ReadOnlyTreeNode } from '../TreeView/Node/TreeNode';
@@ -14,7 +14,7 @@ import { getCategoryNodeId, getScriptNodeId } from './CategoryNodeMetadataConver
 
 type TreeNodeFilterResultPredicate = (
   node: ReadOnlyTreeNode,
-  filterResult: IFilterResult,
+  filterResult: FilterResult,
 ) => boolean;
 
 export function useTreeViewFilterEvent() {
@@ -41,7 +41,7 @@ export function useTreeViewFilterEvent() {
 }
 
 function subscribeToFilterChanges(
-  filter: IReadOnlyUserFilter,
+  filter: ReadonlyFilterContext,
   latestFilterEvent: Ref<TreeViewFilterEvent | undefined>,
   filterPredicate: TreeNodeFilterResultPredicate,
 ) {
@@ -60,7 +60,7 @@ function subscribeToFilterChanges(
 }
 
 function createFilterEvent(
-  filter: IFilterResult | undefined,
+  filter: FilterResult | undefined,
   filterPredicate: TreeNodeFilterResultPredicate,
 ): TreeViewFilterEvent {
   if (!filter) {
@@ -71,7 +71,7 @@ function createFilterEvent(
   );
 }
 
-function filterMatches(node: NodeMetadata, filter: IFilterResult): boolean {
+function filterMatches(node: NodeMetadata, filter: FilterResult): boolean {
   return containsScript(node, filter.scriptMatches)
     || containsCategory(node, filter.categoryMatches);
 }

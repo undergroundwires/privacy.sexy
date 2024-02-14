@@ -14,14 +14,14 @@ import { HierarchyAccessStub } from '@tests/unit/shared/Stubs/HierarchyAccessStu
 import { IScript } from '@/domain/IScript';
 import { ICategory } from '@/domain/ICategory';
 import { TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
-import { UserFilterStub } from '@tests/unit/shared/Stubs/UserFilterStub';
 import { FilterChangeDetailsStub } from '@tests/unit/shared/Stubs/FilterChangeDetailsStub';
-import { IFilterChangeDetails } from '@/application/Context/State/Filter/Event/IFilterChangeDetails';
+import { FilterChangeDetails } from '@/application/Context/State/Filter/Event/FilterChangeDetails';
 import { CategoryCollectionStateStub } from '@tests/unit/shared/Stubs/CategoryCollectionStateStub';
 import { NodeMetadataStub } from '@tests/unit/shared/Stubs/NodeMetadataStub';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
-import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
+import type { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
+import { FilterContextStub } from '@tests/unit/shared/Stubs/FilterContextStub';
 
 describe('UseTreeViewFilterEvent', () => {
   describe('initially', () => {
@@ -45,8 +45,8 @@ describe('UseTreeViewFilterEvent', () => {
         // arrange
         const newFilter = filterChange;
         const initialFilter = new FilterResultStub().withSomeMatches();
-        const filterStub = new UserFilterStub()
-          .withCurrentFilterResult(initialFilter);
+        const filterStub = new FilterContextStub()
+          .withCurrentFilter(initialFilter);
         const stateStub = new UseCollectionStateStub()
           .withFilter(filterStub);
         const { returnObject } = mountWrapperComponent({ useStateStub: stateStub });
@@ -63,8 +63,8 @@ describe('UseTreeViewFilterEvent', () => {
         // arrange
         const newFilter = filterChange;
         const initialFilter = new FilterResultStub().withSomeMatches();
-        const filterStub = new UserFilterStub()
-          .withCurrentFilterResult(initialFilter);
+        const filterStub = new FilterContextStub()
+          .withCurrentFilter(initialFilter);
         const stateStub = new UseCollectionStateStub()
           .withFilter(filterStub);
         const { returnObject } = mountWrapperComponent({ useStateStub: stateStub });
@@ -90,7 +90,7 @@ describe('UseTreeViewFilterEvent', () => {
       testFilterEvents((_, filterResult) => {
         // arrange
         const newCollection = new CategoryCollectionStateStub()
-          .withFilter(new UserFilterStub().withCurrentFilterResult(filterResult));
+          .withFilter(new FilterContextStub().withCurrentFilter(filterResult));
         const initialCollection = new CategoryCollectionStateStub();
         const useCollectionStateStub = new UseCollectionStateStub()
           .withState(initialCollection);
@@ -113,9 +113,9 @@ describe('UseTreeViewFilterEvent', () => {
         // arrange
         const newFilter = filterChange;
         const initialFilter = new FilterResultStub().withSomeMatches();
-        const filterStub = new UserFilterStub();
+        const filterStub = new FilterContextStub();
         const newCollection = new CategoryCollectionStateStub()
-          .withFilter(filterStub.withCurrentFilterResult(initialFilter));
+          .withFilter(filterStub.withCurrentFilter(initialFilter));
         const initialCollection = new CategoryCollectionStateStub();
         const useCollectionStateStub = new UseCollectionStateStub()
           .withState(initialCollection);
@@ -170,8 +170,8 @@ function mountWrapperComponent(options?: {
 }
 
 type FilterChangeTestScenario = (
-  result: IFilterChangeDetails,
-  filter: IFilterResult | undefined,
+  result: FilterChangeDetails,
+  filter: FilterResult | undefined,
 ) => Promise<{
   readonly event: Ref<TreeViewFilterEvent | undefined>,
 }>;

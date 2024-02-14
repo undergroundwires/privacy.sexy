@@ -9,12 +9,12 @@ import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCo
 import { UseCollectionStateStub } from '@tests/unit/shared/Stubs/UseCollectionStateStub';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { UseApplicationStub } from '@tests/unit/shared/Stubs/UseApplicationStub';
-import { UserFilterMethod, UserFilterStub } from '@tests/unit/shared/Stubs/UserFilterStub';
 import { FilterResultStub } from '@tests/unit/shared/Stubs/FilterResultStub';
-import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
-import { IFilterChangeDetails } from '@/application/Context/State/Filter/Event/IFilterChangeDetails';
+import { FilterChangeDetails } from '@/application/Context/State/Filter/Event/FilterChangeDetails';
 import { UseAutoUnsubscribedEventsStub } from '@tests/unit/shared/Stubs/UseAutoUnsubscribedEventsStub';
 import { FilterChangeDetailsStub } from '@tests/unit/shared/Stubs/FilterChangeDetailsStub';
+import { FilterContextStub } from '@tests/unit/shared/Stubs/FilterContextStub';
+import { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
 
 const DOM_SELECTOR_NO_MATCHES = '.search-no-matches';
 const DOM_SELECTOR_CLOSE_BUTTON = '.search__query__close-button';
@@ -22,12 +22,12 @@ const DOM_SELECTOR_CLOSE_BUTTON = '.search__query__close-button';
 describe('TheScriptsView.vue', () => {
   describe('view types', () => {
     describe('initially', () => {
-      interface IInitialViewTypeTestCase {
+      interface InitialViewTypeTestCase {
         readonly initialView: ViewType;
         readonly expectedComponent: Component;
         readonly absentComponents: readonly Component[];
       }
-      const testCases: readonly IInitialViewTypeTestCase[] = [
+      const testCases: readonly InitialViewTypeTestCase[] = [
         {
           initialView: ViewType.Tree,
           expectedComponent: ScriptsTree,
@@ -96,20 +96,20 @@ describe('TheScriptsView.vue', () => {
   });
 
   describe('switching views', () => {
-    interface ISwitchingViewTestCase {
+    interface ViewSwitchTestScenario {
       readonly name: string;
       readonly initialView: ViewType;
-      readonly changeEvents: readonly IFilterChangeDetails[];
+      readonly changeEvents: readonly FilterChangeDetails[];
       readonly componentsToDisappear: readonly Component[];
       readonly expectedComponent: Component;
-      readonly setupFilter?: (filter: UserFilterStub) => UserFilterStub;
+      readonly setupFilter?: (filter: FilterContextStub) => FilterContextStub;
     }
-    const testCases: readonly ISwitchingViewTestCase[] = [
+    const testCases: readonly ViewSwitchTestScenario[] = [
       {
         name: 'tree on initial search with card view',
         initialView: ViewType.Cards,
-        setupFilter: (filter: UserFilterStub) => filter
-          .withCurrentFilterResult(
+        setupFilter: (filter: FilterContextStub) => filter
+          .withCurrentFilter(
             new FilterResultStub().withQueryAndSomeMatches(),
           ),
         changeEvents: [],
@@ -119,8 +119,8 @@ describe('TheScriptsView.vue', () => {
       {
         name: 'restore card after initial search',
         initialView: ViewType.Cards,
-        setupFilter: (filter: UserFilterStub) => filter
-          .withCurrentFilterResult(
+        setupFilter: (filter: FilterContextStub) => filter
+          .withCurrentFilter(
             new FilterResultStub().withQueryAndSomeMatches(),
           ),
         changeEvents: [
@@ -171,7 +171,7 @@ describe('TheScriptsView.vue', () => {
     }) => {
       it(name, async () => {
         // arrange
-        let filterStub = new UserFilterStub();
+        let filterStub = new FilterContextStub();
         if (setupFilter) {
           filterStub = setupFilter(filterStub);
         }
@@ -201,7 +201,7 @@ describe('TheScriptsView.vue', () => {
       describe('does not show close button when not searching', () => {
         it('not searching initially', () => {
           // arrange
-          const filterStub = new UserFilterStub()
+          const filterStub = new FilterContextStub()
             .withNoCurrentFilter();
           const stateStub = new UseCollectionStateStub()
             .withFilter(filterStub);
@@ -217,7 +217,7 @@ describe('TheScriptsView.vue', () => {
         });
         it('stop searching', async () => {
           // arrange
-          const filterStub = new UserFilterStub();
+          const filterStub = new FilterContextStub();
           const stateStub = new UseCollectionStateStub().withFilter(filterStub);
           const wrapper = mountComponent({
             useCollectionState: stateStub.get(),
@@ -239,8 +239,8 @@ describe('TheScriptsView.vue', () => {
       describe('shows close button when searching', () => {
         it('searching initially', () => {
           // arrange
-          const filterStub = new UserFilterStub()
-            .withCurrentFilterResult(
+          const filterStub = new FilterContextStub()
+            .withCurrentFilter(
               new FilterResultStub().withQueryAndSomeMatches(),
             );
           const stateStub = new UseCollectionStateStub()
@@ -257,7 +257,7 @@ describe('TheScriptsView.vue', () => {
         });
         it('start searching', async () => {
           // arrange
-          const filterStub = new UserFilterStub()
+          const filterStub = new FilterContextStub()
             .withNoCurrentFilter();
           const stateStub = new UseCollectionStateStub().withFilter(filterStub);
           const wrapper = mountComponent({
@@ -279,7 +279,7 @@ describe('TheScriptsView.vue', () => {
 
     it('clears search query on close button click', async () => {
       // arrange
-      const filterStub = new UserFilterStub();
+      const filterStub = new FilterContextStub();
       const stateStub = new UseCollectionStateStub().withFilter(filterStub);
       const wrapper = mountComponent({
         useCollectionState: stateStub.get(),
@@ -296,14 +296,14 @@ describe('TheScriptsView.vue', () => {
 
       // assert
       expect(filterStub.callHistory).to.have.lengthOf(1);
-      expect(filterStub.callHistory).to.include(UserFilterMethod.ClearFilter);
+      expect(filterStub.callHistory.find((c) => c.methodName === 'clearFilter')).toBeDefined();
     });
   });
 
   describe('no matches text', () => {
     interface NoMatchesTextTestCase {
       readonly name: string;
-      readonly filter: IFilterResult;
+      readonly filter: FilterResult;
       readonly shouldNoMatchesExist: boolean;
     }
     const commonTestCases: readonly NoMatchesTextTestCase[] = [
@@ -322,7 +322,7 @@ describe('TheScriptsView.vue', () => {
     ];
     describe('initial state', () => {
       interface InitialStateTestCase extends Omit<NoMatchesTextTestCase, 'filter'> {
-        readonly filter?: IFilterResult;
+        readonly filter?: FilterResult;
       }
       const initialStateTestCases: readonly InitialStateTestCase[] = [
         ...commonTestCases,
@@ -355,7 +355,7 @@ describe('TheScriptsView.vue', () => {
         it(name, async () => {
           // arrange
           const expected = shouldNoMatchesExist;
-          const filterStub = new UserFilterStub();
+          const filterStub = new FilterContextStub();
           const stateStub = new UseCollectionStateStub()
             .withFilter(filterStub);
           const wrapper = mountComponent({
@@ -375,7 +375,7 @@ describe('TheScriptsView.vue', () => {
       });
       it('shows no text if filter is removed after matches', async () => {
         // arrange
-        const filter = new UserFilterStub();
+        const filter = new FilterContextStub();
         const stub = new UseCollectionStateStub()
           .withFilter(filter);
         const wrapper = mountComponent({

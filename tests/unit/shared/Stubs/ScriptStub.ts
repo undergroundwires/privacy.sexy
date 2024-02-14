@@ -12,7 +12,7 @@ export class ScriptStub extends BaseEntity<string> implements IScript {
     revert: `REM revert-code (${this.id})`,
   };
 
-  public readonly docs = new Array<string>();
+  public docs: readonly string[] = new Array<string>();
 
   public level? = RecommendationLevel.Standard;
 
@@ -57,6 +57,11 @@ export class ScriptStub extends BaseEntity<string> implements IScript {
       execute: this.code.execute,
       revert: revertCode,
     };
+    return this;
+  }
+
+  public withDocs(docs: readonly string[]): this {
+    this.docs = docs;
     return this;
   }
 

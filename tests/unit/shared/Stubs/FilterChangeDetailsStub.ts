@@ -1,9 +1,9 @@
 import { FilterActionType } from '@/application/Context/State/Filter/Event/FilterActionType';
-import { FilterAction, IFilterChangeDetails, IFilterChangeDetailsVisitor } from '@/application/Context/State/Filter/Event/IFilterChangeDetails';
-import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
+import type { FilterAction, FilterChangeDetails, FilterChangeDetailsVisitor } from '@/application/Context/State/Filter/Event/FilterChangeDetails';
+import type { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
 
-export class FilterChangeDetailsStub implements IFilterChangeDetails {
-  public static forApply(filter: IFilterResult) {
+export class FilterChangeDetailsStub implements FilterChangeDetails {
+  public static forApply(filter: FilterResult) {
     return new FilterChangeDetailsStub({
       type: FilterActionType.Apply,
       filter,
@@ -20,7 +20,7 @@ export class FilterChangeDetailsStub implements IFilterChangeDetails {
     public readonly action: FilterAction,
   ) { /* Private constructor to enforce factory methods */ }
 
-  visit(visitor: IFilterChangeDetailsVisitor): void {
+  visit(visitor: FilterChangeDetailsVisitor): void {
     if (this.action.type === FilterActionType.Apply) {
       if (visitor.onApply) {
         visitor.onApply(this.action.filter);

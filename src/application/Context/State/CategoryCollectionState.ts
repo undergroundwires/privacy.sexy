@@ -1,7 +1,7 @@
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { UserFilter } from './Filter/UserFilter';
-import { IUserFilter } from './Filter/IUserFilter';
+import { AdaptiveFilterContext } from './Filter/AdaptiveFilterContext';
+import { FilterContext } from './Filter/FilterContext';
 import { ApplicationCode } from './Code/ApplicationCode';
 import { UserSelection } from './Selection/UserSelection';
 import { ICategoryCollectionState } from './ICategoryCollectionState';
@@ -15,7 +15,7 @@ export class CategoryCollectionState implements ICategoryCollectionState {
 
   public readonly selection: UserSelection;
 
-  public readonly filter: IUserFilter;
+  public readonly filter: FilterContext;
 
   public constructor(
     public readonly collection: ICategoryCollection,
@@ -45,7 +45,7 @@ const DefaultSelectionFactory: SelectionFactory = (
 ) => new UserSelectionFacade(...params);
 
 export type FilterFactory = (
-  ...params: ConstructorParameters<typeof UserFilter>
-) => IUserFilter;
+  ...params: ConstructorParameters<typeof AdaptiveFilterContext>
+) => FilterContext;
 
-const DefaultFilterFactory: FilterFactory = (...params) => new UserFilter(...params);
+const DefaultFilterFactory: FilterFactory = (...params) => new AdaptiveFilterContext(...params);

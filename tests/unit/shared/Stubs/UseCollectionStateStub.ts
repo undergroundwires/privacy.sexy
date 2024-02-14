@@ -4,12 +4,12 @@ import {
   StateModifier, useCollectionState,
 } from '@/presentation/components/Shared/Hooks/UseCollectionState';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
-import { IUserFilter } from '@/application/Context/State/Filter/IUserFilter';
+import { FilterContext } from '@/application/Context/State/Filter/FilterContext';
 import { IApplicationContext } from '@/application/Context/IApplicationContext';
-import { IFilterResult } from '@/application/Context/State/Filter/IFilterResult';
+import { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
 import { CategoryCollectionStateStub } from './CategoryCollectionStateStub';
 import { ApplicationContextStub } from './ApplicationContextStub';
-import { UserFilterStub } from './UserFilterStub';
+import { FilterContextStub } from './FilterContextStub';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class UseCollectionStateStub
@@ -20,7 +20,7 @@ export class UseCollectionStateStub
     new CategoryCollectionStateStub(),
   );
 
-  public withFilter(filter: IUserFilter) {
+  public withFilter(filter: FilterContext) {
     const state = new CategoryCollectionStateStub()
       .withFilter(filter);
     const context = new ApplicationContextStub()
@@ -30,9 +30,9 @@ export class UseCollectionStateStub
       .withContext(context);
   }
 
-  public withFilterResult(filterResult: IFilterResult | undefined) {
-    const filter = new UserFilterStub()
-      .withCurrentFilterResult(filterResult);
+  public withFilterResult(filterResult: FilterResult | undefined) {
+    const filter = new FilterContextStub()
+      .withCurrentFilter(filterResult);
     return this.withFilter(filter);
   }
 

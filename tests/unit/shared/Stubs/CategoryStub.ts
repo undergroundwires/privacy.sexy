@@ -10,7 +10,7 @@ export class CategoryStub extends BaseEntity<number> implements ICategory {
 
   public readonly scripts = new Array<IScript>();
 
-  public readonly docs = new Array<string>();
+  public docs: readonly string[] = new Array<string>();
 
   private allScriptsRecursively: (readonly IScript[]) | undefined;
 
@@ -80,6 +80,11 @@ export class CategoryStub extends BaseEntity<number> implements ICategory {
 
   public withName(categoryName: string): this {
     this.name = categoryName;
+    return this;
+  }
+
+  public withDocs(docs: readonly string[]): this {
+    this.docs = docs;
     return this;
   }
 }

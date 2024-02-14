@@ -1,5 +1,4 @@
 import { IApplicationCode } from '@/application/Context/State/Code/IApplicationCode';
-import { IUserFilter } from '@/application/Context/State/Filter/IUserFilter';
 import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { IScript } from '@/domain/IScript';
@@ -7,9 +6,10 @@ import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
 import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import { FilterContext } from '@/application/Context/State/Filter/FilterContext';
 import { CategoryCollectionStub } from './CategoryCollectionStub';
 import { UserSelectionStub } from './UserSelectionStub';
-import { UserFilterStub } from './UserFilterStub';
+import { FilterContextStub } from './FilterContextStub';
 import { ApplicationCodeStub } from './ApplicationCodeStub';
 import { CategoryStub } from './CategoryStub';
 import { ScriptSelectionStub } from './ScriptSelectionStub';
@@ -17,7 +17,7 @@ import { ScriptSelectionStub } from './ScriptSelectionStub';
 export class CategoryCollectionStateStub implements ICategoryCollectionState {
   public code: IApplicationCode = new ApplicationCodeStub();
 
-  public filter: IUserFilter = new UserFilterStub();
+  public filter: FilterContext = new FilterContextStub();
 
   public get os(): OperatingSystem {
     return this.collection.os;
@@ -55,7 +55,7 @@ export class CategoryCollectionStateStub implements ICategoryCollectionState {
     return this;
   }
 
-  public withFilter(filter: IUserFilter): this {
+  public withFilter(filter: FilterContext): this {
     this.filter = filter;
     return this;
   }
@@ -69,7 +69,7 @@ export class CategoryCollectionStateStub implements ICategoryCollectionState {
     );
   }
 
-  public withSelection(selection: UserSelection) {
+  public withSelection(selection: UserSelection): this {
     this.selection = selection;
     return this;
   }

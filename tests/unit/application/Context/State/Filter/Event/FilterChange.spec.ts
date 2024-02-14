@@ -3,7 +3,8 @@ import { FilterChange } from '@/application/Context/State/Filter/Event/FilterCha
 import { FilterResultStub } from '@tests/unit/shared/Stubs/FilterResultStub';
 import { FilterActionType } from '@/application/Context/State/Filter/Event/FilterActionType';
 import { FilterChangeDetailsVisitorStub } from '@tests/unit/shared/Stubs/FilterChangeDetailsVisitorStub';
-import { ApplyFilterAction } from '@/application/Context/State/Filter/Event/IFilterChangeDetails';
+import { ApplyFilterAction } from '@/application/Context/State/Filter/Event/FilterChangeDetails';
+import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 describe('FilterChange', () => {
   describe('forApply', () => {
@@ -48,14 +49,48 @@ describe('FilterChange', () => {
   });
   describe('visit', () => {
     describe('onClear', () => {
-      itVisitsOnce(
-        () => FilterChange.forClear(),
-      );
+      it('visits once', () => {
+        // arrange
+        const sut = FilterChange.forClear();
+        const visitor = new FilterChangeDetailsVisitorStub();
+        // act
+        sut.visit(visitor);
+        // assert
+        expect(visitor.callHistory).to.have.lengthOf(1);
+      });
+
+      it('visits onClear', () => {
+        // arrange
+        const sut = FilterChange.forClear();
+        const visitor = new FilterChangeDetailsVisitorStub();
+        // act
+        sut.visit(visitor);
+        // assert
+        const call = visitor.callHistory.find((c) => c.methodName === 'onClear');
+        expect(call).toBeDefined();
+      });
     });
     describe('onApply', () => {
-      itVisitsOnce(
-        () => FilterChange.forApply(new FilterResultStub()),
-      );
+      it('visits once', () => {
+        // arrange
+        const sut = FilterChange.forApply(new FilterResultStub());
+        const visitor = new FilterChangeDetailsVisitorStub();
+        // act
+        sut.visit(visitor);
+        // assert
+        expect(visitor.callHistory).to.have.lengthOf(1);
+      });
+
+      it('visits onApply', () => {
+        // arrange
+        const sut = FilterChange.forApply(new FilterResultStub());
+        const visitor = new FilterChangeDetailsVisitorStub();
+        // act
+        sut.visit(visitor);
+        // assert
+        const call = visitor.callHistory.find((c) => c.methodName === 'onApply');
+        expect(call).toBeDefined();
+      });
 
       it('visits with expected filter', () => {
         // arrange
@@ -65,34 +100,11 @@ describe('FilterChange', () => {
         // act
         sut.visit(visitor);
         // assert
-        expect(visitor.visitedResults).to.have.lengthOf(1);
-        expect(visitor.visitedResults).to.include(expectedFilter);
+        const call = visitor.callHistory.find((c) => c.methodName === 'onApply');
+        expectExists(call);
+        const [actualFilter] = call.args;
+        expect(actualFilter).to.equal(expectedFilter);
       });
     });
   });
 });
-
-function itVisitsOnce(sutFactory: () => FilterChange) {
-  it('visits', () => {
-    // arrange
-    const sut = sutFactory();
-    const expectedType = sut.action.type;
-    const visitor = new FilterChangeDetailsVisitorStub();
-    // act
-    sut.visit(visitor);
-    // assert
-    expect(visitor.visitedEvents).to.include(expectedType);
-  });
-  it('visits once', () => {
-    // arrange
-    const sut = sutFactory();
-    const expectedType = sut.action.type;
-    const visitor = new FilterChangeDetailsVisitorStub();
-    // act
-    sut.visit(visitor);
-    // assert
-    expect(
-      visitor.visitedEvents.filter((action) => action === expectedType),
-    ).to.have.lengthOf(1);
-  });
-}
