@@ -11,5 +11,5 @@ export function getOperatingSystemDisplayName(os: OperatingSystem): string {
 const OperatingSystemNames: Partial<Record<OperatingSystem, string>> = {
   [OperatingSystem.Windows]: 'Windows',
   [OperatingSystem.macOS]: 'macOS',
-  [OperatingSystem.Linux]: 'Linux (preview)',
+  [OperatingSystem.Linux]: 'Linux',
 };
