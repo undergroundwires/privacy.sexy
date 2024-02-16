@@ -1,4 +1,5 @@
 @use "@/presentation/assets/styles/main" as *;
+@use 'sass:math';
 
 @mixin code-block() {
   pre {
@@ -22,18 +23,24 @@
   $color-background,
   $code-block-padding,
 ) {
+  $font-size-code: $font-size-relative-smaller;  // Keep relative size to scale right with different text sizes around.
   $border-radius: 2px; // Subtle rounding still maintaining sharp design.
 
   @include base-code {
-    font-family: $font-normal;
+    font-family: $font-family-monospace;
     border-radius: $border-radius;
-    font-size: $font-size-relative-smaller; // Keep relative size to scale right with different text sizes around.
+    font-size: $font-size-code;
   }
 
   @include inline-code {
     background: $color-background;
     word-break: break-all; // Enables inline code to wrap with the text, even for long single words (like registry paths), thus preventing overflow.
-    padding: 0.2em 0.4em; // Balanced padding for readability, with `em` units scaling with font size.
+
+    $font-size-code-in-decimal: math.div($font-size-code, 100%); // Converts percentage (e.g., 85%) to decimal (e.g., 0.85) for calculations.
+    $font-size-code-in-em: calc(1em * #{$font-size-code-in-decimal});
+    $vertical-padding: calc((1em - #{$font-size-code-in-em}) / 2);
+    $horizontal-padding: calc(#{$font-size-code-in-em} * 0.4);
+    padding: $vertical-padding $horizontal-padding;
   }
 
   @include code-block {

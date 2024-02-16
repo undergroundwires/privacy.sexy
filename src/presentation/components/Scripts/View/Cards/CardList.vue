@@ -129,7 +129,6 @@ function isClickable(element: Element) {
 .cards {
   display: flex;
   flex-flow: row wrap;
-  font-family: $font-main;
   gap: $card-gap;
   /*
     Padding is used to allow scale animation (growing size) for cards on hover.
@@ -143,7 +142,6 @@ function isClickable(element: Element) {
   width: 100%;
   text-align: center;
   font-size: $font-size-absolute-xx-large;
-  font-family: $font-normal;
 }
 
 @include fade-transition('fade-transition');

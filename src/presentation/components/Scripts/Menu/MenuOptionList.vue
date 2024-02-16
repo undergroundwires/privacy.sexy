@@ -27,7 +27,6 @@ export default defineComponent({
 
 $gap: 0.25rem;
 .list {
-  font-family: $font-normal;
   display: flex;
   :deep(.items) {
     > * + *::before {

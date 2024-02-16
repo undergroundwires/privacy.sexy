@@ -98,10 +98,9 @@ export default defineComponent({
   }
   .button__text {
     display: none;
-    font-family: $font-artistic;
+    font-family: $font-family-cursive;
     font-size: $font-size-absolute-large;
     color: $color-primary;
-    font-weight: 500;
     @include hover-or-touch {
       display: block;
     }

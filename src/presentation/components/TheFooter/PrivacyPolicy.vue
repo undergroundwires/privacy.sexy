@@ -80,7 +80,6 @@ export default defineComponent({
 .privacy-policy {
   display: flex;
   flex-direction: column;
-  font-family: $font-normal;
   text-align:center;
 
   .line {

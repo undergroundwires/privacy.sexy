@@ -1,5 +1,4 @@
 @use "@/presentation/assets/styles/colors" as *;
-@use "@/presentation/assets/styles/fonts" as *;
 @use "@/presentation/assets/styles/typography" as *;
 
 @mixin hover-or-touch($selector-suffix: '', $selector-prefix: '&') {

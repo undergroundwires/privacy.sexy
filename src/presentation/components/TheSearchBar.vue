@@ -112,7 +112,6 @@ export default defineComponent({
   padding-right:10px;
   outline: none;
   color: $color-primary;
-  font-family: $font-normal;
   font-size: $font-size-absolute-normal;
   &:focus {
     color: $color-primary-darker;

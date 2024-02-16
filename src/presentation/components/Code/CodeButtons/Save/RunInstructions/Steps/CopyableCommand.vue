@@ -56,7 +56,7 @@ export default defineComponent({
   display: inline-flex;
   white-space: nowrap;
   justify-content: space-between;
-  font-family: $font-normal;
+  font-family: $font-family-monospace;
   background-color: $color-primary-darker;
   color: $color-on-primary;
   align-items: center;

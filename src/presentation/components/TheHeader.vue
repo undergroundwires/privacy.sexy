@@ -49,15 +49,15 @@ export default defineComponent({
   .brand {
     margin: 0;
     text-transform: uppercase;
-    font-family: $font-main;
+    font-family: $font-family-logo;
     font-size: $font-size-absolute-xx-large;
   }
   .slogan {
     margin: 0;
     font-size: $font-size-absolute-x-large;
     color: $color-primary;
-    font-family: $font-artistic;
-    font-weight: 500;
+    font-family: $font-family-cursive;
+    font-weight: normal; // Resets the browser default bold (700) font weight for <h/> elements
   }
 }
 </style>

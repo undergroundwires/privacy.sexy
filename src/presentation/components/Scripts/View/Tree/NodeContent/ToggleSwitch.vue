@@ -75,22 +75,24 @@ export default defineComponent({
 @use 'sass:math';
 @use "@/presentation/assets/styles/main" as *;
 
-$font-size              : $font-size-absolute-small;
+$font-size                    : $font-size-absolute-small;
 
-$color-toggle-unchecked : $color-primary-darker;
-$color-toggle-checked   : $color-on-secondary;
-$color-text-unchecked   : $color-on-primary;
-$color-text-checked     : $color-on-secondary;
-$color-bg-unchecked     : $color-primary;
-$color-bg-checked       : $color-secondary;
-$size-height            : $font-size + 8px;
-$size-circle            : math.div($size-height * 2, 3);
-$padding-horizontal     : 0.40em;
-$gap                    : 0.25em;
+$color-toggle-unchecked       : $color-primary-darker;
+$color-toggle-checked         : $color-on-secondary;
+$color-text-unchecked         : $color-on-primary;
+$color-text-checked           : $color-on-secondary;
+$color-bg-unchecked           : $color-primary;
+$color-bg-checked             : $color-secondary;
+$padding-horizontal           : calc($font-size * 0.4);
+$padding-vertical             : calc($font-size * 0.3);
+$size-height                  : calc($font-size + ($padding-vertical * 2));
+$size-circle                  : math.div($size-height * 2, 3);
+
+$gap-between-circle-and-text  : 0.25em;
 
 @mixin locateNearCircle($direction: 'left') {
   $circle-width: calc(#{$size-circle} + #{$padding-horizontal});
-  $circle-space: calc(#{$circle-width} + #{$gap});
+  $circle-space: calc(#{$circle-width} + #{$gap-between-circle-and-text});
   @if $direction == 'left' {
     margin-left: $circle-space;
   } @else {
@@ -103,9 +105,10 @@ $gap                    : 0.25em;
   overflow: hidden;
   position: relative;
   width: auto;
+
+  font-size: $font-size;
   height: $size-height;
   border-radius: $size-height;
-  font-size: $font-size;
 
   input.toggle-input {
     position: absolute;
@@ -120,7 +123,7 @@ $gap                    : 0.25em;
   .toggle-animation {
     display: flex;
     align-items: center;
-    gap: $gap;
+    gap: $gap-between-circle-and-text;
     width: 100%;
     height: 100%;
     background-color: $color-bg-unchecked;
@@ -155,7 +158,7 @@ $gap                    : 0.25em;
   }
 
   .label {
-    font-weight: bold;
+    font-weight: bold; // TODO: Babaya sor
     transition: all 0.3s ease-out, color 0s;
     &.label-off {
       @include locateNearCircle('left');

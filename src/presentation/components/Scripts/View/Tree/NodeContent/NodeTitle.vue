@@ -23,7 +23,6 @@ export default defineComponent({
 @use "@/presentation/assets/styles/main" as *;
 
 .node-title {
-  font-family: $font-main;
   font-size: $font-size-absolute-large;
 }
 </style>

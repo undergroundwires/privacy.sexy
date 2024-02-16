@@ -210,6 +210,7 @@ function getDefaultCode(language: ScriptingLanguage, project: ProjectDetails): s
     height: 100%;
     overflow: auto;
     font-size: $font-size-absolute-small;
+    font-family: $font-family-monospace;
     &__highlight {
       background-color: $color-secondary-light;
       position: absolute;

@@ -110,7 +110,6 @@ ul {
   .includes {
     display: flex;
     gap: 0.5em;
-    font-weight: 500;
     .icon {
       color: $color-success;
     }
@@ -119,9 +118,7 @@ ul {
   .considerations {
     display: flex;
     gap: 0.5em;
-    .text {
-      font-weight: 500;
-    }
+    font-weight: bold;
     .icon {
       color: $color-danger;
     }

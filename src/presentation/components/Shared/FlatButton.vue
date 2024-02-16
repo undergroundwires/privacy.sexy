@@ -62,7 +62,6 @@ export default defineComponent({
 .flat-button {
   display: inline-flex;
   gap: 0.5em;
-  font-family: $font-normal;
   &.disabled {
     @include flat-button($disabled: true);
   }

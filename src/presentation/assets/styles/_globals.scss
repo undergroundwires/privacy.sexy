@@ -3,23 +3,27 @@
 */
 
 @use "@/presentation/assets/styles/colors" as *;
-@use "@/presentation/assets/styles/fonts" as *;
 @use "@/presentation/assets/styles/mixins" as *;
 @use "@/presentation/assets/styles/vite-path" as *;
 @use "@/presentation/assets/styles/typography" as *;
 
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 a {
-    color: inherit;
-    cursor: pointer;
-    @include flat-button($disabled: false);
+  color: inherit;
+  cursor: pointer;
+  @include flat-button($disabled: false);
 }
 
 body {
-    background: $color-background;
-    font-family: $font-main;
-    font-size: $font-size-absolute-normal;
+  background: $color-background;
+  font-family: $font-family-main;
+  font-size: $font-size-absolute-normal;
 }
+
+input {
+  font-family: unset; // Reset browser default
+}
+

@@ -41,7 +41,6 @@ $text-color: $color-on-primary;
 .markdown-text {
   color: $text-color;
   font-size: $font-size-absolute-normal;
-  font-family: $font-main;
   @include markdown-text-styles;
 }
 </style>

@@ -64,4 +64,3 @@ export default defineComponent({
   },
 });
 </script>
-./Reverter/Reverter
