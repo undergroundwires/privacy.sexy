@@ -1,0 +1,53 @@
+/*
+  Defines global styles that applies to globally defined tags by default (body, main, article, div etc.).
+  Styles Fundamental HTML elements.
+  Contains foundational CSS rules that have a broad impact on the project's styling.
+  CSS Base applies a style foundation for HTML elements that is consistent for baseline browsers
+*/
+
+@use "@/presentation/assets/styles/colors" as *;
+@use "@/presentation/assets/styles/mixins" as *;
+@use "@/presentation/assets/styles/vite-path" as *;
+@use "@/presentation/assets/styles/typography" as *;
+@use "_code-styling" as *;
+@use "_margin-padding" as *;
+@use "_link-styling" as *;
+
+$base-spacing: 1em;
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: $color-background;
+  font-family: $font-family-main;
+  font-size: $font-size-absolute-normal;
+
+  @include apply-uniform-spacing($base-spacing: $base-spacing)
+}
+
+input {
+  font-family: unset; // Reset browser default
+}
+
+blockquote {
+  padding: 0 $base-spacing;
+  border-left: .25em solid $color-primary;
+}
+
+@include style-code-elements(
+  $code-block-padding: $base-spacing,
+  $color-background: $color-primary-darker,
+);
+
+hr {
+  opacity: 0.6;
+}
+
+sup {
+  @include reset-sup;
+
+  vertical-align: super;
+  font-size: $font-size-relative-smallest;
+}

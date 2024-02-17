@@ -1,0 +1,42 @@
+@use "@/presentation/assets/styles/mixins" as *;
+@use "@/presentation/assets/styles/typography" as *;
+@use 'sass:math';
+
+a {
+  color: inherit;
+  cursor: pointer;
+  @include flat-button($disabled: false);
+
+  &[href] {
+    word-break: break-word; // Enables long URLs to wrap within the container, preventing horizontal overflow.
+  }
+  &[href^="http"]{
+    &:after {
+      display: inline-block;
+      content: '';
+
+      /*
+        Use mask element instead of content/background-image etc.
+        This way we can apply current font color to it to match the theme
+      */
+      mask: url(@/presentation/assets/icons/external-link.svg) no-repeat 50% 50%;
+      mask-size: cover;
+      background-color: currentColor;
+
+      /*
+        Use absolute sizing instead of relative. Relative sizing looks bad and inconsistent if there are external elements
+        inside small text (such as inside `<sup>`) and bigger elements like in bigger text. Making them always have same size
+        make the text read and flow better.
+      */
+      width: $font-size-absolute-x-small;
+      height: $font-size-absolute-x-small;
+
+      vertical-align: text-top;
+
+      @include set-property-ch-value-with-fallback(
+        $property: margin-left,
+        $value-in-ch: 0.25,
+      )
+    }
+  }
+}

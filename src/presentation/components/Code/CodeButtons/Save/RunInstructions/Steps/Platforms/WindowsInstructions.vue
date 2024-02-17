@@ -23,12 +23,12 @@
         </p>
         <p>
           In <strong>Edge</strong>:
-          <ol>
-            <li>Select <strong>Keep</strong> from the downloads section.</li>
-            <li>Click <strong>Show more</strong> on the next warning.</li>
-            <li>Select <strong>Keep anyway</strong>.</li>
-          </ol>
         </p>
+        <ol>
+          <li>Select <strong>Keep</strong> from the downloads section.</li>
+          <li>Click <strong>Show more</strong> on the next warning.</li>
+          <li>Select <strong>Keep anyway</strong>.</li>
+        </ol>
         <p>
           For <strong>Firefox</strong> and <strong>Chrome</strong>, typically no additional
           action is needed.
@@ -53,25 +53,26 @@
         </p>
         <p>
           To handle false warnings in Microsoft Defender:
-          <ol>
-            <li>
-              Open <strong>Virus & threat protection</strong> from
-              the <strong>Start</strong> menu.
-            </li>
-            <li>
-              Locate the event in <strong>Protection history</strong>
-              that pertains to the script.
-            </li>
-            <li>In the event details, select <strong>Actions</strong> > <strong>Allow</strong>.</li>
-            <li>If the script was deleted, please re-download it.</li>
-          </ol>
         </p>
+        <ol>
+          <li>
+            Open <strong>Virus & threat protection</strong> from
+            the <strong>Start</strong> menu.
+          </li>
+          <li>
+            Locate the event in <strong>Protection history</strong>
+            that pertains to the script.
+          </li>
+          <li>In the event details, select <strong>Actions</strong> > <strong>Allow</strong>.</li>
+          <li>If the script was deleted, please re-download it.</li>
+        </ol>
         <blockquote>
-          <strong>Caution:</strong> For your security, remember to:
+          <strong>Caution:</strong>
+          <p>For your security, remember to</p>
           <ul>
-            <li>Only allow scripts from trusted sources.</li>
-            <li>Avoid broad exclusions in your antivirus settings.</li>
-            <li>Keep real-time protection enabled whenever possible.</li>
+            <li>only allow scripts from trusted sources,</li>
+            <li>avoid broad exclusions in your antivirus settings,</li>
+            <li>and keep real-time protection enabled whenever possible.</li>
           </ul>
         </blockquote>
       </InfoTooltip>

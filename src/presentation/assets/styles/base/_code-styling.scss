@@ -1,4 +1,7 @@
-@use "@/presentation/assets/styles/main" as *;
+@use "@/presentation/assets/styles/colors" as *;
+@use "@/presentation/assets/styles/mixins" as *;
+@use "@/presentation/assets/styles/vite-path" as *;
+@use "@/presentation/assets/styles/typography" as *;
 @use 'sass:math';
 
 @mixin code-block() {
@@ -23,13 +26,14 @@
   $color-background,
   $code-block-padding,
 ) {
-  $font-size-code: $font-size-relative-smaller;  // Keep relative size to scale right with different text sizes around.
+  $font-size-code: $font-size-relative-smaller; // Keep relative size to scale right with different text sizes around.
   $border-radius: 2px; // Subtle rounding still maintaining sharp design.
 
   @include base-code {
     font-family: $font-family-monospace;
     border-radius: $border-radius;
     font-size: $font-size-code;
+    color: $color-on-primary;
   }
 
   @include inline-code {

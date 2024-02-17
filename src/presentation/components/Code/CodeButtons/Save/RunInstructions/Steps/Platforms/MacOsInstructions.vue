@@ -49,9 +49,7 @@
         Give the file execute permissions:
       </p>
       <p>
-        <CopyableCommand>
-          chmod +x {{ filename }}
-        </CopyableCommand>
+        <CopyableCommand>chmod +x {{ filename }}</CopyableCommand>
         <InfoTooltip>
           <p>
             Press on <code>enter/return</code> key after running the command.
@@ -67,9 +65,7 @@
         Execute the file:
       </p>
       <p>
-        <CopyableCommand>
-          ./{{ filename }}
-        </CopyableCommand>
+        <CopyableCommand>./{{ filename }}</CopyableCommand>
         <InfoTooltip>
           Alternatively you can locate the file in <strong>Finder</strong> and double click on it.
         </InfoTooltip>

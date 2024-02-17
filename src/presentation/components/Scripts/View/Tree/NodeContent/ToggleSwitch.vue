@@ -158,7 +158,7 @@ $gap-between-circle-and-text  : 0.25em;
   }
 
   .label {
-    font-weight: bold; // TODO: Babaya sor
+    font-weight: bold;
     transition: all 0.3s ease-out, color 0s;
     &.label-off {
       @include locateNearCircle('left');

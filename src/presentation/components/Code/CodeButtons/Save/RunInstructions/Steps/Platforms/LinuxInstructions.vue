@@ -46,9 +46,7 @@
         Navigate to the folder where you downloaded the file e.g.:
       </p>
       <p>
-        <CopyableCommand>
-          cd ~/Downloads
-        </CopyableCommand>
+        <CopyableCommand>cd ~/Downloads</CopyableCommand>
         <InfoTooltip>
           <p>
             Press on <code>enter/return</code> key after running the command.
@@ -72,9 +70,7 @@
         Give the file execute permissions:
       </p>
       <p>
-        <CopyableCommand>
-          chmod +x {{ filename }}
-        </CopyableCommand>
+        <CopyableCommand>chmod +x {{ filename }}</CopyableCommand>
         <InfoTooltip>
           <p>
             Press on <code>enter/return</code> key after running the command.
@@ -101,11 +97,11 @@
         Execute the file:
       </p>
       <p>
-        <CopyableCommand>
-          ./{{ filename }}
-        </CopyableCommand>
+        <CopyableCommand>./{{ filename }}</CopyableCommand>
         <InfoTooltip>
-          If you have desktop environment, instead of running this command you can alternatively:
+          <p>
+            If you have desktop environment, instead of running this command you can alternatively:
+          </p>
           <ol>
             <li>Locate the file using your file manager.</li>
             <li>Right click on the file, select "Run as program".</li>

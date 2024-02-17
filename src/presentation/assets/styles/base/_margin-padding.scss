@@ -1,0 +1,64 @@
+@use 'sass:math';
+
+@mixin no-margin($selectors) {
+  #{$selectors} {
+    margin: 0;
+  }
+}
+
+@mixin no-padding($selectors) {
+  #{$selectors} {
+    padding: 0;
+  }
+}
+
+@mixin left-padding($selectors, $horizontal-spacing) {
+  #{$selectors} {
+    padding-inline-start: $horizontal-spacing;
+  }
+}
+
+@mixin bottom-margin($selectors, $vertical-spacing) {
+  #{$selectors} {
+    &:not(:last-child) {
+      margin-bottom: $vertical-spacing;
+    }
+  }
+}
+
+@mixin apply-uniform-vertical-spacing($base-vertical-spacing) {
+  /* Reset default top/bottom margins added by browser. */
+  @include no-margin('p');
+  @include no-margin('h1, h2, h3, h4, h5, h6');
+  @include no-margin('blockquote');
+  @include no-margin('pre');
+  @include no-margin('hr');
+  @include no-margin('ul, ol');
+
+  /* Add spacing between elements using `margin-bottom` only (bottom-up instead of top-down strategy). */
+  $small-vertical-spacing: math.div($base-vertical-spacing, 2);
+  @include bottom-margin('p', $base-vertical-spacing);
+  @include bottom-margin('li > p', $small-vertical-spacing); // Reduce margin for paragraphs directly within list items to visually group related content.
+  @include bottom-margin('h1, h2, h3, h4, h5, h6', $small-vertical-spacing);
+  @include bottom-margin('ul, ol', $base-vertical-spacing);
+  @include bottom-margin('li', $small-vertical-spacing);
+  @include bottom-margin('table', $base-vertical-spacing);
+  @include bottom-margin('blockquote', $base-vertical-spacing);
+  @include bottom-margin('pre', $base-vertical-spacing);
+  @include bottom-margin('article', $base-vertical-spacing);
+  @include bottom-margin('hr', $base-vertical-spacing);
+}
+
+@mixin apply-uniform-horizontal-spacing($base-horizontal-spacing) {
+  /* Reset default left/right paddings added by browser. */
+  @include no-padding('ul, ol');
+
+  /* Add spacing for list items. */
+  $large-horizontal-spacing: $base-horizontal-spacing * 2;
+  @include left-padding('ul, ol', $large-horizontal-spacing);
+}
+
+@mixin apply-uniform-spacing($base-spacing) {
+  @include apply-uniform-vertical-spacing($base-spacing);
+  @include apply-uniform-horizontal-spacing($base-spacing);
+}

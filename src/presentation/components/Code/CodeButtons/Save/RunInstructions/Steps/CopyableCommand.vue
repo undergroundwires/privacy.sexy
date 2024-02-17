@@ -1,16 +1,16 @@
 <template>
-  <span class="code-wrapper">
+  <code class="copyable-command">
     <span class="dollar">$</span>
-    <code ref="codeElement"><slot /></code>
-    <div class="copy-action-container">
+    <span ref="copyableTextHolder"><slot /></span>
+    <span class="copy-action-container">
       <TooltipWrapper>
         <FlatButton icon="copy" @click="copyCode" />
         <template #tooltip>
           Copy
         </template>
       </TooltipWrapper>
-    </div>
-  </span>
+    </span>
+  </code>
 </template>
 
 <script lang="ts">
@@ -27,10 +27,10 @@ export default defineComponent({
   setup() {
     const { copyText } = injectKey((keys) => keys.useClipboard);
 
-    const codeElementRef = shallowRef<HTMLElement | undefined>();
+    const copyableTextHolderRef = shallowRef<HTMLElement | undefined>();
 
     async function copyCode() {
-      const element = codeElementRef.value;
+      const element = copyableTextHolderRef.value;
       if (!element) {
         throw new Error('Code element could not be found.');
       }
@@ -43,7 +43,7 @@ export default defineComponent({
 
     return {
       copyCode,
-      codeElement: codeElementRef,
+      copyableTextHolder: copyableTextHolderRef,
     };
   },
 });
@@ -52,25 +52,16 @@ export default defineComponent({
 <style scoped lang="scss">
 @use "@/presentation/assets/styles/main" as *;
 
-.code-wrapper {
+.copyable-command {
   display: inline-flex;
-  white-space: nowrap;
-  justify-content: space-between;
-  font-family: $font-family-monospace;
-  background-color: $color-primary-darker;
-  color: $color-on-primary;
-  align-items: center;
-  padding: 0.2rem;
+  padding: 0.25em;
+  font-size: $font-size-absolute-small;
   .dollar {
     margin-right: 0.5rem;
-    font-size: $font-size-absolute-x-small;
     user-select: none;
   }
   .copy-action-container {
     margin-left: 1rem;
-  }
-  code {
-    font-size: $font-size-absolute-small;
   }
 }
 </style>

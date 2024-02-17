@@ -129,7 +129,6 @@ function getCounterpartBoxOffsetProperty(placement: Placement): keyof CSSPropert
 </script>
 
 <style scoped lang="scss">
-@use 'sass:math';
 @use "@/presentation/assets/styles/main" as *;
 
 $color-tooltip-background: $color-primary-darkest;
@@ -210,21 +209,11 @@ $color-tooltip-background: $color-primary-darkest;
   }
 }
 
-@mixin set-max-width($total-characters) {
-  @supports (width: 1ch) {
-    max-width: #{$total-characters}ch;
-  }
-  // For browsers that does not support `ch` unit (e.g., Opera Mini):
-  $estimated-character-size: calc(1em / 2); // 1 character is approximately half the font size
-  $estimated-width: calc(#{$estimated-character-size} * #{$total-characters});
-  max-width: $estimated-width;
-}
-
 .tooltip__content {
   background: $color-tooltip-background;
   color: $color-on-primary;
   border-radius: 16px;
-  padding: 5px 10px 4px;
+  padding: 12px 10px;
   font-size: $font-size-absolute-normal;
 
   /*
@@ -237,13 +226,14 @@ $color-tooltip-background: $color-primary-darkest;
   margin-right: 2px;
 
   // Setting max-width increases readability and consistency reducing overlap and clutter.
-  @include set-max-width(
+  @include set-property-ch-value-with-fallback(
+    $property: max-width,
     /*
       Research in typography suggests that an optimal line length for text readability is between 50-75 characters per line.
       Tooltips should be brief, so aiming for the for the lower end of this range (around 50 characters).
     */
-    $total-characters: 50
-  );
+    $value-in-ch: 50,
+  )
 }
 
 .tooltip__arrow {

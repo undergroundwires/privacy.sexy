@@ -34,13 +34,18 @@ function convertMarkdownToHtml(markdownText: string): string {
 
 <style lang="scss"> /* Not scoped due to element styling such as "a". */
 @use "@/presentation/assets/styles/main" as *;
-@import './markdown-styles.scss';
 
 $text-color: $color-on-primary;
 
 .markdown-text {
   color: $text-color;
   font-size: $font-size-absolute-normal;
-  @include markdown-text-styles;
+  ul {
+    /*
+      Set list style explicitly, because otherwise it changes based on parent <ul>s.
+      We reset the style from here.
+    */
+    list-style: square;
+  }
 }
 </style>

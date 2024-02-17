@@ -1,53 +1,51 @@
 <template>
-  <div>
+  <section>
     <p class="privacy-rating">
       Privacy: <CircleRating :rating="privacyRating" />
     </p>
     <hr />
-    <div class="sections">
-      <section>
-        {{ description }}
-      </section>
-      <section class="recommendation">
-        <AppIcon icon="lightbulb" class="icon" />
-        <span class="text">{{ recommendation }}</span>
-      </section>
-      <section
-        v-if="includes?.length > 0"
-        class="includes"
-      >
-        <AppIcon icon="square-check" class="icon" />
-        <span class="text">
-          Includes:
-          <ul>
-            <li
-              v-for="inclusionItem in includes"
-              :key="inclusionItem"
-            >
-              {{ inclusionItem }}
-            </li>
-          </ul>
-        </span>
-      </section>
-      <section
-        v-if="considerations?.length > 0"
-        class="considerations"
-      >
-        <AppIcon icon="triangle-exclamation" class="icon" />
-        <span class="text">
-          Considerations:
-          <ul>
-            <li
-              v-for="considerationItem in considerations"
-              :key="considerationItem"
-            >
-              {{ considerationItem }}
-            </li>
-          </ul>
-        </span>
-      </section>
-    </div>
-  </div>
+    <p>
+      {{ description }}
+    </p>
+    <p class="recommendation">
+      <AppIcon icon="lightbulb" class="icon" />
+      <span>{{ recommendation }}</span>
+    </p>
+    <p
+      v-if="includes?.length > 0"
+      class="includes"
+    >
+      <AppIcon icon="square-check" class="icon" />
+      <span>
+        Includes:
+        <ul>
+          <li
+            v-for="inclusionItem in includes"
+            :key="inclusionItem"
+          >
+            {{ inclusionItem }}
+          </li>
+        </ul>
+      </span>
+    </p>
+    <p
+      v-if="considerations?.length > 0"
+      class="considerations"
+    >
+      <AppIcon icon="triangle-exclamation" class="icon" />
+      <span>
+        <strong>Considerations:</strong>
+        <ul>
+          <li
+            v-for="considerationItem in considerations"
+            :key="considerationItem"
+          >
+            {{ considerationItem }}
+          </li>
+        </ul>
+      </span>
+    </p>
+  </section>
 </template>
 
 <script lang="ts">
@@ -88,48 +86,32 @@ export default defineComponent({
 <style scoped lang="scss">
 @use "@/presentation/assets/styles/main" as *;
 
+@mixin horizontal-stack {
+  display: flex;
+  gap: 0.5em;
+}
+
+@mixin apply-icon-color($color) {
+  .icon {
+    color: $color;
+  }
+}
+
 .privacy-rating {
-  margin: 0.5em;
   text-align: center;
 }
-hr {
-  margin: 1em 0;
-  opacity: 0.6;
-}
-ul {
-  @include reset-ul;
-  padding-left: 0em;
-  margin-top: 0.25em;
-  list-style: disc;
-}
-.sections {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75em;
-  margin-bottom: 0.75em;
-  .includes {
-    display: flex;
-    gap: 0.5em;
-    .icon {
-      color: $color-success;
-    }
-  }
 
-  .considerations {
-    display: flex;
-    gap: 0.5em;
-    font-weight: bold;
-    .icon {
-      color: $color-danger;
-    }
-  }
-  .recommendation {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-    .icon {
-      color: $color-caution;
-    }
-  }
+.includes {
+  @include horizontal-stack;
+  @include apply-icon-color($color-success);
+}
+.considerations {
+  @include horizontal-stack;
+  @include apply-icon-color($color-danger);
+}
+.recommendation {
+  @include horizontal-stack;
+  @include apply-icon-color($color-caution);
+  align-items: center;
 }
 </style>

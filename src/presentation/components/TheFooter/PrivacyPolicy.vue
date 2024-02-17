@@ -1,56 +1,46 @@
 <template>
-  <div class="privacy-policy">
-    <div v-if="!isRunningAsDesktopApplication" class="line">
-      <div class="line__emoji">
-        🚫🍪
-      </div>
-      <div>No cookies!</div>
-    </div>
-    <div v-if="isRunningAsDesktopApplication" class="line">
-      <div class="line__emoji">
-        🚫🌐
-      </div>
-      <div>
-        Everything is offline, except single request GitHub
-        to check for updates on application start.
-      </div>
-    </div>
-    <div class="line">
-      <div class="line__emoji">
-        🚫👀
-      </div>
-      <div>No user behavior / IP address collection!</div>
-    </div>
-    <div class="line">
-      <div class="line__emoji">
-        🤖
-      </div>
-      <div>
-        All transparent: Deployed automatically from the master branch
-        of the <a :href="repositoryUrl" target="_blank" rel="noopener noreferrer">source code</a> with no changes.
-      </div>
-    </div>
-    <div v-if="!isRunningAsDesktopApplication" class="line">
-      <div class="line__emoji">
-        📈
-      </div>
-      <div>
-        Basic <a href="https://aws.amazon.com/cloudfront/reporting/" target="_blank" rel="noopener noreferrer">CDN statistics</a>
-        are collected by AWS but they cannot be traced to you or your behavior.
-        You can download the offline version if you don't want any CDN data collection.
-      </div>
-    </div>
-    <div class="line">
-      <div class="line__emoji">
-        🎉
-      </div>
-      <div>
-        As almost no data is collected, the application gets better
-        only with your active feedback.
-        Feel free to <a :href="feedbackUrl" target="_blank" rel="noopener noreferrer">create an issue</a> 😊
-      </div>
-    </div>
-  </div>
+  <section class="privacy-policy">
+    <ul>
+      <li v-if="!isRunningAsDesktopApplication">
+        <span class="emoji">🚫🍪</span>
+        <span>No cookies!</span>
+      </li>
+      <li v-if="isRunningAsDesktopApplication">
+        <span class="emoji">🚫🌐</span>
+        <span>
+          Everything is offline, except single request GitHub
+          to check for updates on application start.
+        </span>
+      </li>
+      <li>
+        <span class="emoji">🚫👀</span>
+        <span>No user behavior / IP address collection!</span>
+      </li>
+      <li>
+        <span class="emoji">🤖</span>
+        <span>
+          All transparent: Deployed automatically from the master branch
+          of the <a :href="repositoryUrl" target="_blank" rel="noopener noreferrer">source code</a> with no changes.
+        </span>
+      </li>
+      <li v-if="!isRunningAsDesktopApplication">
+        <span class="emoji">📈</span>
+        <span>
+          Basic <a href="https://aws.amazon.com/cloudfront/reporting/" target="_blank" rel="noopener noreferrer">CDN statistics</a>
+          are collected by AWS but they cannot be traced to you or your behavior.
+          You can download the offline version if you don't want any CDN data collection.
+        </span>
+      </li>
+      <li>
+        <span class="emoji">🎉</span>
+        <span>
+          As almost no data is collected, the application gets better
+          only with your active feedback.
+          Feel free to <a :href="feedbackUrl" target="_blank" rel="noopener noreferrer">create an issue</a> 😊
+        </span>
+      </li>
+    </ul>
+  </section>
 </template>
 
 <script lang="ts">
@@ -81,14 +71,13 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   text-align:center;
+}
 
-  .line {
-    display: flex;
-    flex-direction: column;
+ul {
+  @include reset-ul;
+}
 
-    &:not(:first-child) {
-      margin-top:0.2rem;
-    }
-  }
+.emoji {
+  display: block;
 }
 </style>

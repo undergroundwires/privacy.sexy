@@ -41,7 +41,7 @@
       <template #tooltip>
         <RevertStatusDocumentation
           icon="rotate-left"
-          description="Revert selected scripts back to their default settings where possible, balancing system functionality with privacy."
+          description="Reverts selected scripts back to their default settings where possible, balancing system functionality with privacy."
           :considerations="createConsiderationsConditionally({
             warnAlways: ['Reverting changes may reduce the level of privacy protection.'],
             warnIrreversibleScripts: (irreversibleCount) =>

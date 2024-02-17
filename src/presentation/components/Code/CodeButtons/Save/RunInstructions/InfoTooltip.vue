@@ -1,12 +1,12 @@
 <template>
-  <div class="info-container">
+  <span class="info-container">
     <TooltipWrapper>
       <AppIcon icon="circle-info" />
       <template #tooltip>
         <slot />
       </template>
     </TooltipWrapper>
-  </div>
+  </span>
 </template>
 
 <script lang="ts">
@@ -23,9 +23,23 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@use "@/presentation/assets/styles/main" as *;
+
+@mixin apply-style-when-placed-after-non-text {
+  * + & {
+    @content;
+  }
+}
+
 .info-container {
-  display: inline-block;
-  margin-left: 0.15em; // Do not style icon itself to ensure correct tooltip alignment
-  vertical-align: middle;
+  vertical-align: text-top;
+
+  * + & { // If it's followed by any other element
+    vertical-align: middle;
+    @include set-property-ch-value-with-fallback(
+      $property: margin-left,
+      $value-in-ch: 0.5,
+    )
+  }
 }
 </style>

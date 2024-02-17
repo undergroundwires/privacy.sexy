@@ -1,24 +1,27 @@
 <template>
   <div v-if="isOpen" class="dev-toolkit-container">
     <div class="dev-toolkit">
-      <div class="toolkit-header">
-        <div class="title">
+      <h3 class="toolkit-header">
+        <span class="title">
           Tools
-        </div>
+        </span>
         <FlatButton icon="xmark" class="close-button" @click="close" />
-      </div>
+      </h3>
       <hr />
-      <div class="action-buttons">
-        <button
+      <ul class="action-buttons">
+        <li
           v-for="action in devActions"
           :key="action.name"
-          type="button"
-          class="action-button"
-          @click="action.handler"
         >
-          {{ action.name }}
-        </button>
-      </div>
+          <button
+            type="button"
+            class="action-button"
+            @click="action.handler"
+          >
+            {{ action.name }}
+          </button>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -91,10 +94,6 @@ interface DevAction {
   display:flex;
   flex-direction: column;
 
-  hr {
-    width: 100%;
-  }
-
   .toolkit-header {
     display:flex;
     flex-direction: row;
@@ -108,7 +107,6 @@ interface DevAction {
   }
 
   .title {
-    font-weight: bold;
     text-align: center;
   }
 
@@ -116,8 +114,11 @@ interface DevAction {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    @include reset-ul;
 
-    button {
+    .action-button {
+      @include reset-button;
+
       display: block;
       padding: 5px 10px;
       background-color: $color-primary;

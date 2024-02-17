@@ -13,7 +13,4 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.step {
-  margin: 10px 0;
-}
 </style>

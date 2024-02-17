@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { shallowMount } from '@vue/test-utils';
-import CodeInstruction from '@/presentation/components/Code/CodeButtons/Save/RunInstructions/Steps/CopyableCommand.vue';
+import { VueWrapper, shallowMount } from '@vue/test-utils';
+import { ComponentPublicInstance } from 'vue';
+import CopyableCommand from '@/presentation/components/Code/CodeButtons/Save/RunInstructions/Steps/CopyableCommand.vue';
 import { expectThrowsAsync } from '@tests/shared/Assertions/ExpectThrowsAsync';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { Clipboard } from '@/presentation/components/Shared/Hooks/Clipboard/Clipboard';
@@ -9,10 +10,10 @@ import { ClipboardStub } from '@tests/unit/shared/Stubs/ClipboardStub';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import FlatButton from '@/presentation/components/Shared/FlatButton.vue';
 
-const DOM_SELECTOR_CODE_SLOT = 'code';
+const DOM_SELECTOR_CODE_SLOT = 'code > span:nth-of-type(2)';
 const COMPONENT_TOOLTIP_WRAPPER_NAME = 'TooltipWrapper';
 
-describe('CodeInstruction.vue', () => {
+describe('CopyableCommand.vue', () => {
   it('renders a slot content inside a <code> element', () => {
     // arrange
     const expectedSlotContent = 'Example Code';
@@ -33,7 +34,8 @@ describe('CodeInstruction.vue', () => {
       const wrapper = mountComponent({
         clipboard: clipboardStub,
       });
-      wrapper.vm.codeElement = { textContent: expectedCode } as HTMLElement;
+      const referencedElement = createElementWithTextContent(expectedCode);
+      setSlotContainerElement(wrapper, referencedElement);
       // act
       const copyButton = wrapper.findComponent(FlatButton);
       await copyButton.trigger('click');
@@ -45,21 +47,23 @@ describe('CodeInstruction.vue', () => {
       const [actualCode] = call.args;
       expect(actualCode).to.equal(expectedCode);
     });
-    it('throws an error when codeElement is not found during copy', async () => {
+    it('throws an error when referenced element is undefined during copy', async () => {
       // arrange
       const expectedError = 'Code element could not be found.';
       const wrapper = mountComponent();
-      wrapper.vm.codeElement = undefined;
+      const referencedElement = undefined;
+      setSlotContainerElement(wrapper, referencedElement);
       // act
       const act = () => wrapper.vm.copyCode();
       // assert
       await expectThrowsAsync(act, expectedError);
     });
-    it('throws an error when codeElement has no textContent during copy', async () => {
+    it('throws an error when reference element has no textContent during copy', async () => {
       // arrange
       const expectedError = 'Code element does not contain any text.';
       const wrapper = mountComponent();
-      wrapper.vm.codeElement = { textContent: '' } as HTMLElement;
+      const referencedElement = createElementWithTextContent('');
+      setSlotContainerElement(wrapper, referencedElement);
       // act
       const act = () => wrapper.vm.copyCode();
       // assert
@@ -72,7 +76,7 @@ function mountComponent(options?: {
   readonly clipboard?: Clipboard,
   readonly slotContent?: string,
 }) {
-  return shallowMount(CodeInstruction, {
+  return shallowMount(CopyableCommand, {
     global: {
       provide: {
         [InjectionKeys.useClipboard.key]:
@@ -94,4 +98,17 @@ function mountComponent(options?: {
       default: options?.slotContent ?? 'Stubbed slot content',
     },
   });
+}
+
+function setSlotContainerElement(
+  wrapper: VueWrapper<unknown>,
+  element?: HTMLElement,
+) {
+  (wrapper.vm as ComponentPublicInstance<typeof CopyableCommand>).copyableTextHolder = element;
+}
+
+function createElementWithTextContent(textContent: string): HTMLElement {
+  const element = document.createElement('span');
+  element.textContent = textContent;
+  return element;
 }
