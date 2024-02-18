@@ -27,7 +27,7 @@
         </LeafTreeNode>
       </div>
     </InteractableNode>
-    <transition name="children-transition">
+    <ExpandCollapseTransition>
       <ul
         v-if="hasChildren && isExpanded"
         class="children"
@@ -44,12 +44,13 @@
           </template>
         </HierarchicalTreeNode>
       </ul>
-    </transition>
+    </ExpandCollapseTransition>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, toRef } from 'vue';
+import ExpandCollapseTransition from '@/presentation/components/Shared/ExpandCollapse/ExpandCollapseTransition.vue';
 import { TreeRoot } from '../TreeRoot/TreeRoot';
 import { useCurrentTreeNodes } from '../UseCurrentTreeNodes';
 import { NodeRenderingStrategy } from '../Rendering/Scheduling/NodeRenderingStrategy';
@@ -64,6 +65,7 @@ export default defineComponent({
   components: {
     LeafTreeNode,
     InteractableNode,
+    ExpandCollapseTransition,
   },
   props: {
     nodeId: {
@@ -178,19 +180,4 @@ export default defineComponent({
     }
   }
 }
-
-@mixin left-fade-transition($name) {
-  .#{$name}-enter-active,
-  .#{$name}-leave-active {
-    transition: opacity .3s, transform .3s;
-    transform: translateX(0);
-  }
-
-  .#{$name}-enter-from,
-  .#{$name}-leave-to {
-    opacity: 0;
-    transform: translateX(-2em);
-  }
-}
-@include left-fade-transition('children-transition');
 </style>

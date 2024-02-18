@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { sleep, SchedulerType, SchedulerCallbackType } from '@/infrastructure/Threading/AsyncSleep';
+import { flushPromiseResolutionQueue, watchPromiseState } from '@tests/unit/shared/PromiseInspection';
 
 describe('AsyncSleep', () => {
   describe('sleep', () => {
@@ -32,10 +33,6 @@ describe('AsyncSleep', () => {
   });
 });
 
-function flushPromiseResolutionQueue() {
-  return Promise.resolve();
-}
-
 class SchedulerMock {
   public readonly mock: SchedulerType;
 
@@ -58,25 +55,4 @@ class SchedulerMock {
     }
     this.scheduledActions = this.scheduledActions.filter((action) => !dueActions.includes(action));
   }
-}
-
-function watchPromiseState<T>(promise: Promise<T>) {
-  let isPending = true;
-  let isRejected = false;
-  let isFulfilled = false;
-  promise.then(
-    () => {
-      isFulfilled = true;
-      isPending = false;
-    },
-    () => {
-      isRejected = true;
-      isPending = false;
-    },
-  );
-  return {
-    isFulfilled: () => isFulfilled,
-    isPending: () => isPending,
-    isRejected: () => isRejected,
-  };
 }

@@ -10,28 +10,31 @@
         @hide="isExpanded = false"
       />
     </div>
-    <div
-      v-if="docs && docs.length > 0 && isExpanded"
-      class="docs"
-      :class="{
-        'docs-expanded': isExpanded,
-        'docs-collapsed': !isExpanded,
-      }"
-    >
-      <DocumentationText
-        :docs="docs"
-        class="text"
+    <ExpandCollapseTransition>
+      <div
+        v-if="docs && docs.length > 0 && isExpanded"
+        class="docs"
         :class="{
-          expanded: isExpanded,
-          collapsed: !isExpanded,
+          'docs-expanded': isExpanded,
+          'docs-collapsed': !isExpanded,
         }"
-      />
-    </div>
+      >
+        <DocumentationText
+          :docs="docs"
+          class="text"
+          :class="{
+            expanded: isExpanded,
+            collapsed: !isExpanded,
+          }"
+        />
+      </div>
+    </ExpandCollapseTransition>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, PropType } from 'vue';
+import ExpandCollapseTransition from '@/presentation/components/Shared/ExpandCollapse/ExpandCollapseTransition.vue';
 import DocumentationText from './DocumentationText.vue';
 import ToggleDocumentationButton from './ToggleDocumentationButton.vue';
 
@@ -39,6 +42,7 @@ export default defineComponent({
   components: {
     DocumentationText,
     ToggleDocumentationButton,
+    ExpandCollapseTransition,
   },
   props: {
     docs: {
