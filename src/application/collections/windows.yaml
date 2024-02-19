@@ -6183,6 +6183,47 @@ actions:
                             reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Server" /v "DisabledByDefault" /f
                             reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Client" /v "Enabled" /f
                             reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Client" /v "DisabledByDefault" /f
+            -
+                name: Disable NetBios for all interfaces
+                recommend: standard
+                docs: |-
+                    This script enhances your network's security by turning off NetBIOS over TCP/IP for all network interfaces.
+
+                    NetBIOS is a protocol primarily used for backward compatibility with older Windows systems [1] [2].
+                    NetBIOS and LLMNR are susceptible to hacking techniques like spoofing [1] [2] [3] [4] [5] and man-in-the-middle
+                    attacks [1] [2] [6], risking your credentials and unauthorized network access [2] [5] [6].
+
+                    NetBIOS was initially created for communication between applications in small networks [1] [3] [5] [7].
+                    Its lack of authentication makes it easy for attackers to redirect traffic or fake network services [1] [2] [3] [4] [5] [6].
+
+                    Disabling NetBIOS helps protect against these security risks and reduces the exposure of Windows-specific services
+                    to potential attackers.
+
+                    The script disables NetBIOS by changing a specific registry values
+                    (`HKLM\SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces\{Interface}!NetbiosOptions` [1] [8]) from their default
+                    of `0` (enabled) [5] to `2` (disabled) [5] [8] for each network interface.
+
+                    [1]: https://web.archive.org/web/20240218210552/https://bobcares.com/blog/disable-netbios-and-llmnr-protocols-in-windows-using-gpo/ "Disable NetBIOS and LLMNR Protocols in Windows Using GPO | bobcares.com"
+                    [5]: https://web.archive.org/web/20240218210635/https://10dsecurity.com/blog-saying-goodbye-netbios.html "Saying Goodbye To NetBIOS | 10-D Security | 10dsecurity.com"
+                    [3]: https://web.archive.org/web/20240218210736/https://4sysops.com/archives/disable-netbios-in-windows-networks/ "Disable NetBIOS in Windows networks – 4sysops | 4sysops.com"
+                    [4]: https://web.archive.org/web/20240218211817/https://www.sternsecurity.com/blog/local-network-attacks-llmnr-and-nbt-ns-poisoning/ "Local Network Attacks: LLMNR and NBT-NS Poisoning - Stern Security | www.sternsecurity.com"
+                    [2]: https://web.archive.org/web/20240218211748/https://en.wikipedia.org/wiki/NetBIOS_over_TCP/IP "NetBIOS over TCP/IP - Wikipedia | en.wikipedia.org"
+                    [6]: https://web.archive.org/web/20240218210724/http://www.packetstan.com/2011/03/nbns-spoofing-on-your-way-to-world.html "Packetstan: NBNS Spoofing on your way to World Domination | www.packetstan.com"
+                    [7]: https://web.archive.org/web/20240218211730/https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-2000-server/cc940063%28v=technet.10%29?redirectedfrom=MSDN "NetBIOS Over TCP/IP | Microsoft Learn | learn.microsoft.com"
+                    [8]: https://web.archive.org/web/20240218210626/https://learn.microsoft.com/en-us/archive/msdn-technet-forums/c5f3c095-1ad2-4963-b075-787f800b81f2 "Disabling NETBIOS via GP | Microsoft Learn | social.technet.microsoft.com"
+                call:
+                    function: RunPowerShell
+                    parameters:
+                        code: |-
+                            $key = 'HKLM:SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces'
+                            Get-ChildItem $key | ForEach {
+                                Set-ItemProperty -Path "$key\$($_.PSChildName)" -Name NetbiosOptions -Value 2 -Verbose
+                            }
+                        revertCode: |-
+                            $key = 'HKLM:SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces'
+                            Get-ChildItem $key | ForEach {
+                                Set-ItemProperty -Path "$key\$($_.PSChildName)" -Name NetbiosOptions -Value 0 -Verbose
+                            }
     -
         category: Privacy over security
         children:
@@ -6214,7 +6255,7 @@ actions:
                                                 function: DisableServiceInRegistry # We must disable it on registry level, "Access is denied" for sc config
                                                 parameters:
                                                     serviceName: mpsdrv # Check: (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\mpsdrv").Start
-                                                    defaultStartupMode: Manual # Alowed values: Boot | System | Automatic | Manual
+                                                    defaultStartupMode: Manual # Allowed values: Boot | System | Automatic | Manual
                                             -
                                                 function: SoftDeleteFiles
                                                 parameters:
@@ -6258,7 +6299,7 @@ actions:
                                                 function: DisableServiceInRegistry # We must disable it on registry level, "Access is denied" for sc config
                                                 parameters:
                                                     serviceName: MpsSvc # Check: (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\MpsSvc").Start
-                                                    defaultStartupMode: Automatic # Alowed values: Boot | System | Automatic | Manual
+                                                    defaultStartupMode: Automatic # Allowed values: Boot | System | Automatic | Manual
                                             -
                                                 function: SoftDeleteFiles
                                                 parameters:
@@ -8057,7 +8098,7 @@ actions:
                                                 function: RunInlineCodeAsTrustedInstaller # We must disable it on registry level, "Access is denied" for sc config
                                                 parameters:
                                                     code: sc stop "Sense" >nul 2>&1 & reg add "HKLM\SYSTEM\CurrentControlSet\Services\Sense" /v "Start" /t REG_DWORD /d "4" /f
-                                                    revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\Sense" /v "Start" /t REG_DWORD /d "3" /f & sc start "Sense" >nul 2>&1 # Alowed values: Boot | System | Automatic | Manual
+                                                    revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\Sense" /v "Start" /t REG_DWORD /d "3" /f & sc start "Sense" >nul 2>&1 # Allowed values: Boot | System | Automatic | Manual
                                             -
                                                 function: SoftDeleteFiles
                                                 parameters:
@@ -10077,232 +10118,6 @@ actions:
                         revertCode: |-
                             reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{0ddd015d-b06c-45d5-8c4c-f59713854639}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
                             reg add "HKLM\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{0ddd015d-b06c-45d5-8c4c-f59713854639}\PropertyBag" /v "ThisPCPolicy" /t REG_SZ /d "Show" /f
-    -
-        category: Disable OS services
-        children:
-            -
-                name: Disable "Microsoft Account Sign-in Assistant" service (breaks Microsoft Store and Microsoft Account sign-in)
-                recommend: strict
-                docs:
-                    # **Summary**
-                    # This script gives you more privacy by preventing OS access to Azure AD to store your personal
-                    # and computer information that can be used to identify you and your computer.
-                    # However it breaks many OS features so you should make a decision based on how you'd like to use
-                    # your Windows. You can also apply and revert it once you need the broken functionality.
-                    # **Service**
-                    # This service communicates with Microsoft Account cloud authentication service
-                    # Many apps and system components that depend on Microsoft Account authentication may lose functionality.
-                    - https://docs.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#12-microsoft-account
-                    # It includes following description:
-                    # > Enables user sign-in through Microsoft account identity services.
-                    # > If this service is stopped, users will not be able to logon to the computer with their Microsoft account.
-                    # Microsoft states it's OK to disable
-                    - https://docs.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server#microsoft-account-sign-in-assistant
-                    # Formerly it was known as "Microsoft Windows Live ID Service"
-                    # And used only for applications like Office and Windows Live Messenger
-                    - https://www.howtogeek.com/howto/30348/what-are-wlidsvc.exe-and-wlidsvcm.exe-and-why-are-they-running/
-                    # It's part of OS and used for Microsoft account (MSA) that's used to identify your computer
-                    - https://docs.microsoft.com/en-us/windows/deployment/update/update-compliance-configuration-manual#required-endpoints
-                    - https://docs.microsoft.com/en-us/troubleshoot/mem/intune/windows-feature-updates-never-offered
-                    # **Breaks**
-                    # ❗️ Breaks Azure AD sign-in
-                    #   It may enrollment scenarios that rely on users to complete the enrollment.
-                    #   E.g. typically, users are shown an Azure AD sign in window.
-                    #   When set to Disable, the Azure AD sign in option may not show.
-                    #   Instead, users are asked to accept the EULA, and create a local account, which may not be what you want.
-                    - https://docs.microsoft.com/en-us/mem/intune/configuration/device-restrictions-windows-10#cloud-and-storage
-                    - https://docs.microsoft.com/en-us/mem/autopilot/pre-provision#user-flow
-                    #   ❗️ Breaks Windows Autopilot
-                    - https://docs.microsoft.com/en-us/mem/autopilot/windows-autopilot
-                    #       This service is required by Windows Autopilot to obtain the Windows Autopilot profile
-                    - https://docs.microsoft.com/en-us/mem/autopilot/policy-conflicts
-                    # ❗️ Breaks Microsoft Store
-                    #   On Windows 11 it fails with `PUR-AuthenticationFailure v3ZtcNH7IECS00iL.36.1``
-                    #   On Windows 10 it fails with `0x800706d9` and `0x800704cf``
-                    - https://github.com/undergroundwires/privacy.sexy/issues/100
-                    # ❗️ Breaks feature updates (but other features are still offered)
-                    #   Because it breaks Subscription Activation feature (license authentication)
-                    - https://docs.microsoft.com/en-us/mem/intune/protect/windows-10-feature-updates
-                    - https://docs.microsoft.com/en-us/windows/deployment/update/windows-update-troubleshooting#feature-updates-are-not-being-offered-while-other-updates-are
-                    - https://docs.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#12-microsoft-account
-                    - https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-accounts#accounts-allowmicrosoftaccountsigninassistant
-                    #   Feature updates are released annually. Feature updates add new features and functionality to Windows.
-                    #   Because they are delivered frequently (rather than every 3-5 years), they are easier to manage.
-                    - https://docs.microsoft.com/en-us/windows/deployment/update/get-started-updates-channels-tools#types-of-updates
-                call:
-                    function: DisableService
-                    parameters:
-                        serviceName: wlidsvc # Check: (Get-Service -Name 'wlidsvc').StartType
-                        defaultStartupMode: Manual # Allowed values: Automatic | Manual
-            -
-                name: Disable "Downloaded Maps Manager" service
-                recommend: standard
-                docs: http://batcmd.com/windows/10/services/mapsbroker/
-                call:
-                    function: DisableService
-                    parameters:
-                        serviceName: MapsBroker # Check: (Get-Service -Name 'MapsBroker').StartType
-                        defaultStartupMode: Automatic # Allowed values: Automatic | Manual
-            -
-                name: Disable "Microsoft Retail Demo" service
-                recommend: standard
-                docs: http://batcmd.com/windows/10/services/retaildemo/
-                call:
-                    function: DisableService
-                    parameters:
-                        serviceName: RetailDemo # Check: (Get-Service -Name 'RetailDemo').StartType
-                        defaultStartupMode: Manual # Allowed values: Automatic | Manual
-            -
-                category: Disable synchronization of mail, contacts, calendar, and user data
-                children:
-                    -
-                        name: Disable "User Data Storage" (`UnistoreSvc`) service
-                        docs: http://batcmd.com/windows/10/services/unistoresvc/
-                        recommend: strict
-                        call:
-                            function: DisablePerUserService
-                            parameters:
-                                # Check (system-wide):  (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\UnistoreSvc").Start
-                                # Check (per-user):     (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\UnistoreSvc_*").Start
-                                serviceName: UnistoreSvc
-                                defaultStartupMode: Manual # Alowed values: Boot | System | Automatic | Manual
-                    -
-                        name: Disable "Sync Host" (`OneSyncSvc`) service
-                        docs: http://batcmd.com/windows/10/services/onesyncsvc/
-                        recommend: strict
-                        call:
-                            function: DisablePerUserService
-                            parameters:
-                                # Check (system-wide):  (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\OneSyncSvc").Start
-                                # Check (per-user):     (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\OneSyncSvc_*").Start
-                                serviceName: OneSyncSvc
-                                defaultStartupMode: Automatic # Alowed values: Boot | System | Automatic | Manual
-            -
-                name: Disable "Contact Data" service (disables contact data indexing)
-                docs: http://batcmd.com/windows/10/services/pimindexmaintenancesvc/
-                call:
-                    function: DisablePerUserService
-                    parameters:
-                        # Check (system-wide):  (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\PimIndexMaintenanceSvc").Start
-                        # Check (per-user):     (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\PimIndexMaintenanceSvc_*").Start
-                        serviceName: PimIndexMaintenanceSvc
-                        defaultStartupMode: Manual # Alowed values: Boot | System | Automatic | Manual
-            -
-                name: Disable "User Data Access" service
-                docs: http://batcmd.com/windows/10/services/userdatasvc/
-                call:
-                    function: DisablePerUserService
-                    parameters:
-                        # Check (system-wide):  (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\UserDataSvc").Start
-                        # Check (per-user):     (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\UserDataSvc_*").Start
-                        serviceName: UserDataSvc
-                        defaultStartupMode: Manual # Alowed values: Boot | System | Automatic | Manual
-            -
-                name: Disable "MessagingService"
-                docs: http://batcmd.com/windows/10/services/messagingservice/
-                call:
-                    function: DisablePerUserService
-                    parameters:
-                        # Check (system-wide):  (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\MessagingService").Start
-                        # Check (per-user):     (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\MessagingService_*").Start
-                        serviceName: MessagingService
-                        defaultStartupMode: Manual # Alowed values: Boot | System | Automatic | Manual
-            -
-                name: Disable "Windows Push Notification Service" (breaks network settings view on Windows 10)
-                recommend: strict
-                docs:
-                    # It enables third-party developers to send toast, tile, badge, and raw updates from their own cloud service.
-                    # In the URL below you can read more about how it communicates with other sources.
-                    - https://docs.microsoft.com/en-us/windows/apps/design/shell/tiles-and-notifications/windows-push-notification-services--wns--overview
-                    # Hosts Windows notification platform, which provides support for local and push notifications.
-                    # According the uncited Wikipedia article, it bypasses VPN and connects directly to Microsoft.
-                    # It reveals real IP address of the host which circumvents the anonymity provided by VPN.
-                    - https://en.wikipedia.org/w/index.php?title=Windows_Push_Notification_Service&oldid=1012335551#Privacy_Issue
-                    # System-wide service:
-                    - http://batcmd.com/windows/10/services/wpnservice/
-                    # Per-user service:
-                    - http://batcmd.com/windows/10/services/wpnuserservice/
-                    # Disabling system-wide user service "WpnUserService" breaks accessing access network settings on Windows 10.
-                    # It works fine on Windows 11.
-                    - https://github.com/undergroundwires/privacy.sexy/issues/110
-                call:
-                    -
-                        function: ShowMessage
-                        parameters:
-                            message: Disabling Network settings on Windows 10 is known to break Network settings.
-                            ignoreWindows11: true
-                            warn: true
-                    - # Windows Push Notifications System Service
-                        function: DisableService
-                        parameters:
-                            serviceName: WpnService # Check: (Get-Service -Name 'WpnService').StartType
-                            defaultStartupMode: Automatic # Allowed values: Automatic | Manual
-                    - # Windows Push Notifications User Service
-                        function: DisablePerUserService
-                        parameters:
-                            # Check (system-wide):  (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\WpnUserService").Start
-                            # Check (per-user):     (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\WpnUserService_*").Start
-                            serviceName: WpnUserService
-                            defaultStartupMode: Automatic # Alowed values: Boot | System | Automatic | Manual
-            -
-                category: Disable Xbox services
-                children:
-                    -
-                        name: Disable "Xbox Live Auth Manager" service
-                        recommend: standard
-                        docs: https://batcmd.com/windows/10/services/xblauthmanager/
-                        call:
-                            function: DisableService
-                            parameters:
-                                serviceName: XblAuthManager # Check: (Get-Service -Name 'XblAuthManager').StartType
-                                defaultStartupMode: Manual # Allowed values: Automatic | Manual
-                    -
-                        name: Disable "Xbox Live Game Save" service
-                        recommend: standard
-                        docs: https://batcmd.com/windows/10/services/xblgamesave/
-                        call:
-                            function: DisableService
-                            parameters:
-                                serviceName: XblGameSave # Check: (Get-Service -Name 'XblGameSave').StartType
-                                defaultStartupMode: Manual # Allowed values: Automatic | Manual
-                    -
-                        name: Disable "Xbox Live Networking Service"
-                        recommend: standard
-                        docs: https://www.tenable.com/audits/items/CIS_MS_Windows_10_Enterprise_Level_1_v1.12.0.audit:413ad68866cc396f0bd1dd4ead7deb97
-                        call:
-                            function: DisableService
-                            parameters:
-                                serviceName: XboxNetApiSvc # Check: (Get-Service -Name 'XboxNetApiSvc').StartType
-                                defaultStartupMode: Manual # Allowed values: Automatic | Manual
-            -
-                name: Disable "Volume Shadow Copy Service" (breaks System Restore and Windows Backup) # Also known as • Volume Snapshot Service • VSS • VSC
-                recommend: strict
-                docs:
-                    - https://docs.microsoft.com/en-us/windows-server/storage/file-server/volume-shadow-copy-service
-                    - https://www.schneier.com/blog/archives/2009/12/the_security_im.html
-                call:
-                    function: DisableService
-                    parameters:
-                        serviceName: VSS # Check: (Get-Service -Name 'VSS').StartType
-                        defaultStartupMode: Manual # Allowed values: Automatic | Manual
-            -
-                name: Disable NetBios for all interfaces
-                docs:
-                    - https://bobcares.com/blog/disable-netbios-and-llmnr-protocols-in-windows-using-gpo/
-                    - https://social.technet.microsoft.com/Forums/windowsserver/en-US/c5f3c095-1ad2-4963-b075-787f800b81f2/
-                call:
-                    function: RunPowerShell
-                    parameters:
-                        code: |-
-                            $key = 'HKLM:SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces'
-                            Get-ChildItem $key | ForEach {
-                                Set-ItemProperty -Path "$key\$($_.PSChildName)" -Name NetbiosOptions -Value 2 -Verbose
-                            }
-                        revertCode: |-
-                            $key = 'HKLM:SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces'
-                            Get-ChildItem $key | ForEach {
-                                Set-ItemProperty -Path "$key\$($_.PSChildName)" -Name NetbiosOptions -Value 0 -Verbose
-                            }
     -
         category: Remove bloatware
         children:
@@ -15003,6 +14818,362 @@ actions:
                                     revertCode: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowCopilotButton" /f 2>nul
                             -
                                 function: ShowExplorerRestartSuggestion
+            -
+                category: Disable non-essential services
+                docs: |-
+                    This category contains scripts designed to enhance privacy by disabling system services that are not essential for your
+                    operating system's core functions.
+
+                    A Windows service is a program that runs in the background, automatically starting and operating without direct user
+                    interaction, even when no user is logged in [1].
+
+                    Disabling these services, especially those transmitting data to external parties or running unseen, significantly
+                    reduces the risk of unwanted data exposure.
+
+                    Taking these proactive steps is crucial for minimizing privacy risks and improving your system's security.
+
+                    [1]: https://web.archive.org/web/20240219200713/https://learn.microsoft.com/en-us/dotnet/framework/windows-services/introduction-to-windows-service-applications "Introduction to Windows Service Applications - .NET Framework | Microsoft Learn | learn.microsoft.com"
+                children:
+                    -
+                        name: Disable Microsoft Account Sign-in Assistant (breaks Microsoft Store and Microsoft Account sign-in)
+                        recommend: strict
+                        docs: |-
+                            This script disables the **Microsoft Account Sign-in Assistant** (`wlidsvc`) service.
+                            This service helps users sign in with their Microsoft account, giving access to Microsoft's services and apps [1] [2].
+
+                            This service connects with Microsoft's cloud for authentication [3].
+                            Formerly known as the "Microsoft Windows Live ID Service", it supported sign-ins for applications such as
+                            Office and Windows Live Messenger [4].
+                            Currently, it uses Microsoft Entra (formerly Azure AD [5]) as identity service [6] [7].
+                            It's used to facilitate creation of primary identifier Microsoft use for devices [8]
+
+                            Disabling this service prioritizes user privacy by limiting data sharing with Microsoft but necessitates a trade-off
+                            regarding certain convenience features and system capabilities.
+
+                            > **Caution**:
+                            > While Microsoft indicates this service can be safely disabled, [1] doing so may impact essential features and functionalities [3].
+                            >
+                            > - **Microsoft Sign-in**:
+                            >   Disabling this service prevents users from signing into the computer with their Microsoft account [2] [8].
+                            >   It also affects scenarios requiring user action for completion [6].
+                            >   For instance, users might not see the Microsoft Entra sign-in option [6] [7] [9], leading to the creation of a local account instead [6] [7].
+                            > - **Windows Autopilot**:
+                            >   Windows Autopilot is a set of technologies used by IT departments to set up and pre-configure new devices [9].
+                            >   It requires this service to retrieve the Windows Autopilot profile [10].
+                            > - **Microsoft Store**:
+                            >   On Windows 11 and Windows 10, failure messages may appear, indicating a break in functionality [11].
+                            >   Known error messages include `PUR-AuthenticationFailure v3ZtcNH7IECS00iL.36.1`, `0x800706d9`, and `0x800704cf` [11].
+                            > - **Feature Updates**:
+                            >   Feature updates, which add new functionalities to Windows [12], will not be offered [3] [13] [14] [15] [16].
+                            >   Disabling this service disrupts feature updates by impacting Subscription Activation (license authentication) [16].
+
+                            [1]: https://web.archive.org/web/20240218231654/https://learn.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server#microsoft-account-sign-in-assistant "Security guidelines for system services in Windows Server 2016 | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20240218232041/https://batcmd.com/windows/10/services/wlidsvc/ "Microsoft Account Sign-in Assistant - Windows 10 Service - batcmd.com | batcmd.com"
+                            [3]: https://web.archive.org/web/20230731230134/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#12-microsoft-account "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
+                            [4]: https://web.archive.org/web/20240219000506/https://www.howtogeek.com/30348/what-are-wlidsvc.exe-and-wlidsvcm.exe-and-why-are-they-running/ "What Are WLIDSVC.EXE and WLIDSVCM.EXE and Why Are They Running? | howtogeek.com"
+                            [5]: https://web.archive.org/web/20240218232515/https://learn.microsoft.com/en-us/entra/fundamentals/new-name "New name for Azure Active Directory - Microsoft Entra | Microsoft Learn | learn.microsoft.com"
+                            [6]: https://web.archive.org/web/20240120200946/https://learn.microsoft.com/en-us/mem/intune/configuration/device-restrictions-windows-10#search "Device restriction settings for Windows 10/11 in Microsoft Intune | Microsoft Learn | learn.microsoft.com"
+                            [7]: https://web.archive.org/web/20240218234642/https://learn.microsoft.com/en-us/autopilot/pre-provision#user-flow "Windows Autopilot for pre-provisioned deployment | Microsoft Learn | learn.microsoft.com"
+                            [8]: https://web.archive.org/web/20211129073326/https://docs.microsoft.com/en-us/windows/deployment/update/update-compliance-configuration-manual#required-endpoints "Manually configuring devices for Update Compliance - Windows Deployment | Microsoft Docs | docs.microsoft.com"
+                            [9]: https://web.archive.org/web/20240218234541/https://learn.microsoft.com/en-us/autopilot/windows-autopilot "Overview of Windows Autopilot | Microsoft Learn | learn.microsoft.com"
+                            [10]: https://web.archive.org/web/20240218235057/https://learn.microsoft.com/en-us/autopilot/policy-conflicts "Windows Autopilot policy conflicts | Microsoft Learn | learn.microsoft.com"
+                            [11]: https://web.archive.org/web/20240218233743/https://github.com/undergroundwires/privacy.sexy/issues/100 "[BUG]: Running the script broke Windows Store login; unable to install any Store apps due to error 0x800704cf · Issue #100 · undergroundwires/privacy.sexy | github.com"
+                            [12]: https://web.archive.org/web/20240218233355/https://learn.microsoft.com/en-us/windows/deployment/update/get-started-updates-channels-tools#types-of-updates "Windows client updates, channels, and tools - Windows Deployment | Microsoft Learn | learn.microsoft.com"
+                            [13]: https://web.archive.org/web/20240219000354/https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/windows-feature-updates-never-offered "Windows 10 feature updates not offered on Intune-managed devices - Intune | Microsoft Learn | learn.microsoft.com"
+                            [14]: https://web.archive.org/web/20240218235145/https://learn.microsoft.com/en-us/mem/intune/protect/windows-10-feature-updates "Configure feature updates policy for Windows 10 Windows 11 devices in Intune | Microsoft Learn | learn.microsoft.com"
+                            [15]: https://web.archive.org/web/20240218235015/https://learn.microsoft.com/en-us/troubleshoot/windows-client/deployment/windows-update-issues-troubleshooting#feature-updates-arent-being-offered-while-other-updates-are "Windows Update issues troubleshooting - Windows Client | Microsoft Learn"
+                            [16]: https://web.archive.org/web/20240218233634/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-accounts#allowmicrosoftaccountsigninassistant "Accounts Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                        call:
+                            function: DisableService
+                            parameters:
+                                serviceName: wlidsvc # Check: (Get-Service -Name 'wlidsvc').StartType
+                                defaultStartupMode: Manual # Allowed values: Automatic | Manual
+                    -
+                        name: Disable Downloaded Maps Manager
+                        recommend: standard
+                        docs: |-
+                            This script disables the **Downloaded Maps Manager** (`MapsBroker`) service.
+
+                            This service manages downloaded maps [1].
+
+                            Disabling this service prevents apps from accessing maps [1], enhancing privacy by limiting access to sensitive location data
+
+                            > **Caution**: This may affect apps that rely on downloaded maps but prioritizes user privacy [1].
+
+                            [1]: https://web.archive.org/web/20240219135016/https://batcmd.com/windows/10/services/mapsbroker/ "Downloaded Maps Manager - Windows 10 Service - batcmd.com | batcmd.com"
+                        call:
+                            function: DisableService
+                            parameters:
+                                serviceName: MapsBroker # Check: (Get-Service -Name 'MapsBroker').StartType
+                                defaultStartupMode: Automatic # Allowed values: Automatic | Manual
+                    -
+                        name: Disable Microsoft Retail Demo
+                        recommend: standard
+                        docs: |-
+                            This script disables the **Microsoft Retail Demo** (`RetailDemo`) service.
+
+                            This service is used to control device activity when the device is in retail demo mode [1].
+                            
+                            For personal use, this service is generally redundant, and disabling it strengthens privacy.
+                            By turning off this service, you prevent the potential misuse of demo content and settings, ensuring that your
+                            device operates under standard conditions without unnecessary exposure to retail demo features.
+
+                            [1]: https://web.archive.org/web/20240219135100/https://batcmd.com/windows/10/services/retaildemo/ "Retail Demo Service - Windows 10 Service - batcmd.com | batcmd.com"
+                        call:
+                            function: DisableService
+                            parameters:
+                                serviceName: RetailDemo # Check: (Get-Service -Name 'RetailDemo').StartType
+                                defaultStartupMode: Manual # Allowed values: Automatic | Manual
+                    -
+                        category: Disable synchronization of mail, contacts, calendar, and user data
+                        docs: |-
+                            This category contains scripts that improve privacy by turning off services that synchronize mail, contacts,
+                            calendars, and other user data.
+
+                            Turning off these services stops the automatic sharing and storing of personal information
+                            across devices and apps, crucial for privacy.
+                        children:
+                            -
+                                name: Disable User Data Storage
+                                recommend: strict
+                                docs: |-
+                                    This script disables the **User Data Storage** (`UnistoreSvc`) service.
+
+                                    This service stores user data like contact info, calendars, and messages [1].
+                                    Disabling this service boosts privacy by blocking app access to this data.
+
+                                    This script is recommended for users who prioritize privacy over the convenience of synchronized user data.
+
+                                    > **Caution**: Some applications may not function correctly without access to this data [1].
+
+                                    [1]: https://web.archive.org/web/20240219134932/https://batcmd.com/windows/10/services/unistoresvc/ "User Data Storage - Windows 10 Service - batcmd.com | batcmd.com"
+                                call:
+                                    function: DisablePerUserService
+                                    parameters:
+                                        # Check (system-wide):  (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\UnistoreSvc").Start
+                                        # Check (per-user):     (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\UnistoreSvc_*").Start
+                                        serviceName: UnistoreSvc
+                                        defaultStartupMode: Manual # Allowed values: Boot | System | Automatic | Manual
+                            -
+                                name: Disable Sync Host
+                                recommend: strict
+                                docs: |-
+                                    This script turns off the **Sync Host** (`OneSyncSvc`) service.
+
+                                    This service syncs mail, contacts, calendars, and other user data across devices and apps [1].
+
+                                    Disabling this service stops the automatic sharing of personal information, enhancing privacy.
+
+                                    This script is recommended for individuals prioritizing the security of their personal data over the functionality of
+                                    data synchronization.
+
+                                    > **Caution**: Mail and other applications relying on synchronized data may not perform as intended without this service [1].
+
+                                    [1]: https://web.archive.org/web/20240219141722/https://batcmd.com/windows/10/services/onesyncsvc/ "Sync Host - Windows 10 Service - batcmd.com | batcmd.com"
+                                call:
+                                    function: DisablePerUserService
+                                    parameters:
+                                        # Check (system-wide):  (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\OneSyncSvc").Start
+                                        # Check (per-user):     (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\OneSyncSvc_*").Start
+                                        serviceName: OneSyncSvc
+                                        defaultStartupMode: Automatic # Allowed values: Boot | System | Automatic | Manual
+                    -
+                        name: Disable User Data Access
+                        docs: |-
+                            This script disables the **User Data Access** (`UserDataSvc`) service.
+
+                            This service allows apps to access personal data such as contacts, calendars, and messages [1].
+                            By disabling this service, you enhance your privacy by preventing apps from accessing this personal information.
+
+                            This script is recommended for users valuing privacy more than some app functionalities relying on user data.
+
+                            > **Caution**: It's important to be aware that some apps relying on this data may not function correctly without it [1].
+
+                            [1]: https://web.archive.org/web/20240219141730/https://batcmd.com/windows/10/services/userdatasvc/ "User Data Access - Windows 10 Service - batcmd.com | batcmd.com"
+                        call:
+                            function: DisablePerUserService
+                            parameters:
+                                # Check (system-wide):  (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\UserDataSvc").Start
+                                # Check (per-user):     (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\UserDataSvc_*").Start
+                                serviceName: UserDataSvc
+                                defaultStartupMode: Manual # Allowed values: Boot | System | Automatic | Manual
+                    -
+                        name: Disable Messaging Service
+                        docs: |-
+                            This script disables the **Messaging Service** (`MessagingService`) service.
+
+                            This service supports text messaging and related functions [1].
+
+                            Disabling this service improves privacy by reducing how the system processes text messages [1].
+                            Users should consider this action if they prioritize privacy and do not use native text messaging features extensively.
+
+                            > **Caution**: Be advised that disabling this service may affect the functionality of text messaging and related services [1].
+
+                            [1]: https://web.archive.org/web/20240219141734/https://batcmd.com/windows/10/services/messagingservice/ "MessagingService - Windows 10 Service - batcmd.com | batcmd.com"
+                        call:
+                            function: DisablePerUserService
+                            parameters:
+                                # Check (system-wide):  (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\MessagingService").Start
+                                # Check (per-user):     (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\MessagingService_*").Start
+                                serviceName: MessagingService
+                                defaultStartupMode: Manual # Allowed values: Boot | System | Automatic | Manual
+                    -
+                        name: Disable Windows Push Notifications (breaks network settings view on Windows 10)
+                        recommend: strict
+                        docs: |-
+                            This script disables the **Windows Push Notification Service (WNS)** (`WpnService` and `WpnUserService`).
+                            
+                            WNS allows third-party developers to send a range of notifications, such as toast, tile, badge, and raw updates,
+                            from their cloud services [1].
+
+                            However, there are privacy concerns with this service:
+
+                            - It relies on connections to Microsoft cloud servers [1] [2] [3] [4] [5] to deliver both local and push
+                              notifications to your device [1].
+                            - It can bypass VPN protections, exposing the device's real IP address, as noted in Wikipedia (uncited) [2].
+
+                            This script disables `WpnService` (Windows Push Notifications System Service) [3] and
+                            `WpnUserService` (Windows Push Notifications User Service) [4].
+                            
+                            > **Caution**: Disabling the `WpnUserService` system-wide impacts access to network settings on Windows 10,
+                            > possibly causing issues with managing network connections [5] [6]. This issue does not occur on Windows 11 [5].
+
+                            [1]: https://web.archive.org/web/20240218223751/https://learn.microsoft.com/en-us/windows/apps/design/shell/tiles-and-notifications/windows-push-notification-services--wns--overview "Windows Push Notification Services (WNS) overview - Windows apps | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20240218223848/https://en.wikipedia.org/w/index.php?title=Windows_Push_Notification_Service&oldid=1012335551#Privacy_Issue "Windows Push Notification Service - Wikipedia | en.wikipedia.org"
+                            [3]: https://web.archive.org/web/20240218223841/https://batcmd.com/windows/10/services/wpnservice/ "Windows Push Notifications System Service - Windows 10 Service - batcmd.com | batcmd.com"
+                            [4]: https://web.archive.org/web/20240218223900/https://batcmd.com/windows/10/services/wpnuserservice/ "Windows Push Notifications User Service - Windows 10 Service - batcmd.com | batcmd.com"
+                            [5]: https://web.archive.org/web/20240218223920/https://github.com/undergroundwires/privacy.sexy/issues/110 '[BUG]: "SystemSettings.exe - Stack-based buffer" when accessing network settings · Issue #110 · undergroundwires/privacy.sexy | github.com/undergroundwires/privacy.sexy'
+                            [6]: https://web.archive.org/web/20240218225733/https://github.com/undergroundwires/privacy.sexy/issues/166 "[BUG]: Network & Internet Problem after using the script · Issue #166 · undergroundwires/privacy.sexy | GitHub | github.com/undergroundwires/privacy.sexy"
+                        call:
+                            -
+                                function: ShowMessage
+                                parameters:
+                                    message: Disabling Network settings on Windows 10 is known to break Network settings.
+                                    ignoreWindows11: true
+                                    warn: true
+                            -
+                                function: DisableService
+                                parameters:
+                                    serviceName: WpnService # Check: (Get-Service -Name 'WpnService').StartType
+                                    defaultStartupMode: Automatic # Allowed values: Automatic | Manual
+                            -
+                                function: DisablePerUserService
+                                parameters:
+                                    # Check (system-wide):  (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\WpnUserService").Start
+                                    # Check (per-user):     (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\WpnUserService_*").Start
+                                    serviceName: WpnUserService
+                                    defaultStartupMode: Automatic # Allowed values: Boot | System | Automatic | Manual
+                    -
+                        category: Disable Xbox services
+                        docs: |-
+                            This category includes scripts to turn off Xbox services.
+
+                            While enhancing gaming, these services may impact privacy and system performance for non-Xbox Live users.
+
+                            Turning off these services protects privacy by stopping unnecessary data sharing with Xbox Live servers.
+                        children:
+                            -
+                                name: Disable Xbox Live Auth Manager
+                                recommend: standard
+                                docs: |-
+                                    This script disables the **Xbox Live Auth Manager** (`XblAuthManager`) service.
+
+                                    This service manages Xbox Live login and permissions [1].
+                                    Turning off this service can enhance privacy for users who do not use Xbox Live, as it prevents potentially
+                                    unnecessary communication with Xbox Live servers.
+
+                                    > **Caution:** Disabling this service could impact apps needing Xbox Live login.
+
+                                    [1]: https://web.archive.org/web/20240219142010/https://batcmd.com/windows/10/services/xblauthmanager/ "Xbox Live Auth Manager - Windows 10 Service - batcmd.com | batcmd.com"
+                                call:
+                                    function: DisableService
+                                    parameters:
+                                        serviceName: XblAuthManager # Check: (Get-Service -Name 'XblAuthManager').StartType
+                                        defaultStartupMode: Manual # Allowed values: Automatic | Manual
+                            -
+                                name: Disable Xbox Live Game Save
+                                recommend: standard
+                                docs: |-
+                                    This script disables the **Xbox Live Game Save** (`XblGameSave`) service.
+
+                                    This service synchronizes save data for games that are enabled with Xbox Live save features [1].
+                                    If you're not using Xbox Live to save games, turning off this service can protect your privacy by stopping
+                                    save data transfers to Xbox Live [1].
+
+                                    > **Caution:** Be aware that stopping this service will prevent game save synchronization with Xbox Live [1],
+                                    > affecting users who play Xbox Live-enabled games.
+
+                                    [1]: https://web.archive.org/web/20240219141930/https://batcmd.com/windows/10/services/xblgamesave/ "Xbox Live Game Save - Windows 10 Service - batcmd.com | batcmd.com"
+                                call:
+                                    function: DisableService
+                                    parameters:
+                                        serviceName: XblGameSave # Check: (Get-Service -Name 'XblGameSave').StartType
+                                        defaultStartupMode: Manual # Allowed values: Automatic | Manual
+                            -
+                                name: Disable Xbox Live Networking
+                                recommend: standard
+                                docs: |-
+                                    This script disables the **Xbox Live Networking Service** (`XboxNetApiSvc`) service.
+
+                                    This service supports the `Windows.Networking.XboxLive` application programming interface [1].
+
+                                    Disabling this service is useful for those not using Xbox Live, as it stops the system from Xbox Live
+                                    networking activities.
+
+                                    This script may enhance privacy and improve system performance by reducing unnecessary network traffic and
+                                    resource use.
+
+                                    > **Caution:** Turning off this service could impact apps and games using Xbox Live network features.
+
+                                    [1]: https://web.archive.org/web/20240219141939/https://www.tenable.com/audits/items/CIS_MS_Windows_10_Enterprise_Level_1_v1.12.0.audit:413ad68866cc396f0bd1dd4ead7deb97 "5.45 Ensure 'Xbox Live Networking Service (XboxNetApiSvc)' is ... | Tenable® | www.tenable.com"
+                                call:
+                                    function: DisableService
+                                    parameters:
+                                        serviceName: XboxNetApiSvc # Check: (Get-Service -Name 'XboxNetApiSvc').StartType
+                                        defaultStartupMode: Manual # Allowed values: Automatic | Manual
+                    -
+                        name: Disable Shadow Copy (breaks System Restore and Windows Backup)
+                        recommend: strict
+                        docs: |-
+                            This script disables the **Shadow Copy** service, known also as the
+                            *Volume Shadow Copy Service* (VSS) [1] [2] [3] [4] [5] or *Volume Snapshot Service* [4] [6].
+                            This service is integral for system backups [1] [2] [3] [5] and data snapshots [1] [5] [7].
+                            It allows for data recovery [1] [5] and system restore points [1] [7] [8].
+
+                            Introduced with Windows Server 2003 [1], VSS facilitates backups and system restores without needing to take applications offline [1].
+                            It creates a consistent snapshot of data for backup, supporting functions like archiving, data mining, and disk-to-disk backups [1].
+                            These snapshots can restore data in case of data loss, to the original location or a new one, if the original has failed [1].
+
+                            However, VSS has privacy and security risks:
+
+                            - It can store unencrypted versions of files, even after users have encrypted and securely deleted them  [5] [7].
+                            This feature, while useful for recovery, poses a risk as it allows retrieving deleted files,
+                            undermining efforts to permanently remove sensitive information.
+                            - Malware may use this service for persistence [4].
+                            - Forensic investigators use shadow copies to recover deleted files and analyze your behavior [5].
+
+                            Disabling VSS can also free up system resources and potentially improve performance by eliminating the creation and storage of shadow copies.
+                            But it will render system restore points [1] [8] and Windows Backup [1] features inoperative, potentially compromising data recovery capabilities.
+                            This trade-off between privacy/security and system recovery features should be carefully considered.
+
+                            > **Caution**:
+                            > Disabling this service will make shadow copies unavailable for backup, which could cause backup processes to fail [3].
+                            > Services that depend on VSS will not start, affecting features like Windows Server Backup [1], Shadow Copies of Shared Folders [1],
+                            > System Center Data Protection Manager [1], and System Restore [1] [8].
+
+                            [1]: https://web.archive.org/web/20240218220458/https://learn.microsoft.com/en-us/windows-server/storage/file-server/volume-shadow-copy-service "Volume Shadow Copy Service | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20240218220517/https://learn.microsoft.com/en-us/windows/win32/vss/volume-shadow-copy-service-overview?redirectedfrom=MSDN "Volume Shadow Copy Service Overview - Win32 apps | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20240218221447/https://batcmd.com/windows/10/services/vss/ "Volume Shadow Copy - Windows 10 Service - batcmd.com | batcmd.com"
+                            [4]: https://archive.ph/2024.02.18-221756/https://msrc.microsoft.com/update-guide/vulnerability/CVE-2021-36934 "CVE-2021-36934 - Security Update Guide - Microsoft - Windows Elevation of Privilege Vulnerability | msrc.microsoft.com"
+                            [5]: https://web.archive.org/web/20240218221441/https://www.iiis.org/CDs2018/CD2018Spring/papers/ZA288KS.pdf "Forensic Analysis of Windows 10 Volume Shadow Copy Service | University of North Georgia | iiis.org"
+                            [6]: https://web.archive.org/web/20240218220401/https://download.microsoft.com/download/7/1/B/71B9C665-6D2B-4154-AB7E-9CDC40647B57/697737_ebook_mobile_TechPreview.pdf "Introducing Windows Server 2016 Technical Preview | John McCabe and the Windows Server team | download.microsoft.com" 
+                            [7]: https://web.archive.org/web/20240218220503/https://www.schneier.com/blog/archives/2009/12/the_security_im.html "The Security Implications of Windows Volume Shadow Copy - Schneier on Security | www.schneier.com"
+                            [8]: https://web.archive.org/web/20240218220527/https://github.com/undergroundwires/privacy.sexy/issues/81 "[BUG]: Can't access sign-in options nor create a restore point · Issue #81 · undergroundwires/privacy.sexy · GitHub | github.com/undergroundwires/privacy.sexy"
+                        call:
+                            function: DisableService
+                            parameters:
+                                serviceName: VSS # Check: (Get-Service -Name 'VSS').StartType
+                                defaultStartupMode: Manual # Allowed values: Automatic | Manual
     -
         category: Advanced settings
         children:
@@ -15680,7 +15851,7 @@ functions:
         name: DisablePerUserService
         parameters:
             - name: serviceName
-            - name: defaultStartupMode # Alowed values: Boot | System | Automatic | Manual
+            - name: defaultStartupMode # Allowed values: Boot | System | Automatic | Manual
         # More about per-user services: https://docs.microsoft.com/en-us/windows/application-management/per-user-services-in-windows
         call:
             - # System-wide variant: every per-user service has also system-wide counterpart with same default startup mode
