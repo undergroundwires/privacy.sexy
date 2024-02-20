@@ -1284,7 +1284,7 @@ actions:
                             [4]: https://web.archive.org/web/20231027165627/https://revertservice.com/10/diagtrack/ "Connected User Experiences and Telemetry (DiagTrack) Service Defaults in Windows 10 | revertservice.com"
                             [5]: https://web.archive.org/web/20231027164529/https://learn.microsoft.com/en-us/windows-hardware/drivers/devtest/trace-log "Trace Log - Windows drivers | Microsoft Learn"
                             [6]: https://web.archive.org/web/20231027164510/https://learn.microsoft.com/en-us/windows/win32/etw/configuring-and-starting-an-autologger-session "Configuring and Starting an AutoLogger Session - Win32 apps | Microsoft Learn | learn.microsoft.com"
-                            [7]: https://web.archive.org/web/20231027164821/https://learn.microsoft.com/en-us/windows/privacy/configure-windows-diagnostic-data-in-your-organization "Configure Windows diagnostic data in your organization (Windows 10 and Windows 11) - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                            [7]: https://web.archive.org/web/20240217185108/https://learn.microsoft.com/en-us/windows/privacy/configure-windows-diagnostic-data-in-your-organization "Configure Windows diagnostic data in your organization (Windows 10 and Windows 11) - Windows Privacy | Microsoft Learn | learn.microsoft.com"
                         call:
                             -
                                 function: DeleteFiles
@@ -3772,7 +3772,7 @@ actions:
                                     to local search results [2] [3].
 
                                     By preventing the search function from sending queries to Microsoft servers, this script enhances user privacy
-                                    and may also optimize system performance by reducing the search workload.
+                                    and optimizes system performance by reducing the search workload.
 
                                     Running this script prevents such web searches by modifying the `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search!BingSearchEnabled`
                                     registry key [1] [2] [3]. It is applicable to Windows version 1909 and older [1] [2] [4].
@@ -5522,44 +5522,6 @@ actions:
                     reg add "HKLM\Software\Piriform\CCleaner" /v "(Cfg)GetIpmForTrial" /t REG_DWORD /d 1 /f
                     reg add "HKLM\Software\Piriform\CCleaner" /v "(Cfg)SoftwareUpdater" /t REG_DWORD /d 1 /f
                     reg add "HKLM\Software\Piriform\CCleaner" /v "(Cfg)SoftwareUpdaterIpm" /t REG_DWORD /d 1 /f
-            -
-                name: Block Dropbox telemetry
-                recommend: standard
-                docs: |-
-                    This script prevents your computer from sending personal data to Dropbox's telemetry servers [1],
-                    improving your privacy.
-
-                    Dropbox collects data such as:
-
-                    - **Account Information**: Includes your name, email, phone number, payment details, and address shared during account
-                      creation or when upgrading plans [2].
-                    - **Your Files**: Covers data on files you save in Dropbox, their usage, and details [2].
-                    - **Contacts**: If granted access, Dropbox stores contacts [2].
-                    - **Usage Information**: Tracks how you use Dropbox services, including file management and electronic signature activities [2].
-                    - **Device Information**: Includes information from your devices like IP addresses, browsers, location data [2].
-                    - **User Settings**: Uses cookies and pixel tags to remember your settings [2].
-                    - **DocSend and Dropbox Analytics**: Collects data, including device and ID information, when you view content via these services [2].
-                    - **Marketing Information**: Tracks your interactions with Dropbox or its representatives [2].
-
-                    Dropbox also shares collected data with third parties, affiliates, and other users [2].
-
-                    The script specifically targets and blocks connections to `telemetry.dropbox.com` [3] and `telemetry.v.dropbox.com` [4].
-
-                    By applying this script, you'll significantly reduce the data collected by Dropbox, providing direct and enhanced protection for your privacy.
-
-                    [1]: https://web.archive.org/web/20240123113411/https://www.dropboxforum.com/t5/Integrations/Why-So-Much-Telemetry/m-p/463436/highlight/true#M4616 "Re: Why So Much Telemetry ? - Page 3 - Dropbox Community | www.dropboxforum.com"
-                    [2]: https://web.archive.org/web/20240123113313/https://www.dropbox.com/privacy "Privacy Policy - Dropbox | www.dropbox.com"
-                    [3]: https://web.archive.org/web/20240123113357/https://www.dropboxforum.com/t5/Integrations/Why-So-Much-Telemetry/td-p/455961/page/2 "Why So Much Telemetry ? - Page 2 - Dropbox Community | dropboxforum.com"
-                    [4]: https://web.archive.org/web/20240123113411/https://www.dropboxforum.com/t5/Integrations/Why-So-Much-Telemetry/m-p/456421/highlight/true#M4592 "Re: Why So Much Telemetry ? - Dropbox Community | www.dropboxforum.com"
-                call:
-                    -
-                        function: BlockViaHostsFile
-                        parameters:
-                            domain: telemetry.dropbox.com
-                    -
-                        function: BlockViaHostsFile
-                        parameters:
-                            domain: telemetry.v.dropbox.com
     -
         category: Security improvements
         docs: |-
@@ -6224,6 +6186,748 @@ actions:
                             Get-ChildItem $key | ForEach {
                                 Set-ItemProperty -Path "$key\$($_.PSChildName)" -Name NetbiosOptions -Value 0 -Verbose
                             }
+    -
+        category: Block tracking hosts
+        docs: |-
+            This category includes scripts that enhance privacy by blocking communications with hosts known for tracking
+            and data collection.
+
+            A **host** is a domain name serving as an address for a computer or resource on the Internet.
+            These hosts are often used by software applications, operating systems, and services to collect data, which
+            can include personal information, usage patterns, and more.
+
+            By modifying the **hosts file** (a simple text file on your computer that maps domain names to IP addresses),
+            these scripts stop your computer from connecting to servers that collect user data.
+
+            This not only reduces personal data sent to companies and third-party trackers, enhancing privacy, but may also
+            optimize system performance by minimizing unnecessary network requests.
+
+            > **Caution**: These scripts may interfere with the functionality of apps or services relying on the blocked data.
+            > Balance privacy with functionality according to your preferences and needs.
+        children:
+            # Excluded hosts:
+            #   - browser.events.data.microsoft.com: Seems to break "Secure File Exchange", "Windows Admin Center" among other things
+            -
+                name: Block Windows crash report hosts
+                recommend: standard
+                docs: |-
+                    This script prevents Windows from sending crash reports to Microsoft, enhancing your privacy.
+
+                    Windows Error Reporting (WER) creates minidumps (small memory snapshots at crash time) and
+                    sends them to Microsoft [1].
+                    
+                    Although intended to improve software by analyzing crash data, this feature raises privacy concerns
+                    such as:
+
+                    - Inclusion of sensitive information within the dumps, such as personal data and passwords [2] [3].
+                    - Data sharing with Microsoft and other third parties through the Windows Desktop Application Program [1].
+
+                    To safeguard your privacy, this script blocks specific hosts that Windows uses to transmit crash data,
+                    ensuring these minidump files remain on your local machine and are not sent to Microsoft or its partners.
+
+                    The blocked hosts are:
+
+                    - `oca.telemetry.microsoft.com` [4]
+                    - `oca.microsoft.com` [4]
+                    - `kmwatsonc.events.data.microsoft.com` [4]
+
+                    [1]: https://web.archive.org/web/20240217185113/https://learn.microsoft.com/en-us/windows/win32/dxtecharts/crash-dump-analysis "Crash Dump Analysis - Win32 apps | Microsoft Learn | learn.microsoft.com"
+                    [2]: https://web.archive.org/web/20240107005535/https://blog.carnal0wnage.com/2013/07/mimikatz-minidump-and-mimikatz-via-bat.html "Mimikatz Minidump and mimikatz via bat file Carnal0wnage - Blog Carnal0wnage Blog | blog.carnal0wnage.com"
+                    [3]: https://web.archive.org/web/20240217185037/https://learn.microsoft.com/en-us/troubleshoot/windows-client/performance/read-small-memory-dump-file "Read small memory dump files - Windows Client | Microsoft Learn | learn.microsoft.com"
+                    [4]: https://web.archive.org/web/20240217185108/https://learn.microsoft.com/en-us/windows/privacy/configure-windows-diagnostic-data-in-your-organization "Configure Windows diagnostic data in your organization (Windows 10 and Windows 11) - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                call:
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: oca.telemetry.microsoft.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: oca.microsoft.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: kmwatsonc.events.data.microsoft.com
+            -
+                name: Block Windows error reporting hosts
+                recommend: standard
+                docs: |-
+                    This script improves your privacy by preventing "Windows Error Reporting (WER)" from sending data about
+                    hardware and software issues back to Microsoft.
+
+                    WER is designed to collect diagnostic information [1] and report it back to Microsoft [1] [6], aiming to improve
+                    user experience by offering solutions to encountered problems [1]. However, this feature can inadvertently expose
+                    sensitive system information.
+
+                    By default, error reporting information is sent to Microsoft [6], which may include details that users prefer to keep
+                    private.
+
+                    > **Caution**: This script may prevent receiving automatic solutions or feedback for reported errors [1].
+
+                    The blocked hosts are:
+
+                    - `watson.telemetry.microsoft.com` [2] [3] [4] [5] [7]
+                    - `umwatsonc.events.data.microsoft.com` [2]
+                    - `ceuswatcab01.blob.core.windows.net` [2]
+                    - `ceuswatcab02.blob.core.windows.net` [2]
+                    - `eaus2watcab01.blob.core.windows.net` [2]
+                    - `eaus2watcab02.blob.core.windows.net` [2]
+                    - `weus2watcab01.blob.core.windows.net` [2]
+                    - `weus2watcab02.blob.core.windows.net` [2]
+                    - `co4.telecommand.telemetry.microsoft.com` [5] [6]
+                    - `cs11.wpc.v0cdn.net` [5] [6]
+                    - `cs1137.wpc.gammacdn.net` [5] [6]
+                    - `modern.watson.data.microsoft.com` [5] [6]
+
+                    [1]: https://web.archive.org/web/20240217185900/https://learn.microsoft.com/en-us/windows/win32/wer/about-wer "About WER - Win32 apps | Microsoft Learn | learn.microsoft.com"
+                    [2]: https://web.archive.org/web/20240217185108/https://learn.microsoft.com/en-us/windows/privacy/configure-windows-diagnostic-data-in-your-organization "Configure Windows diagnostic data in your organization (Windows 10 and Windows 11) - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [3]: https://web.archive.org/web/20240217185904/https://learn.microsoft.com/en-us/windows/privacy/manage-windows-11-endpoints "Connection endpoints for Windows 11 Enterprise - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [4]: https://web.archive.org/web/20240217185950/https://learn.microsoft.com/en-us/windows/privacy/windows-11-endpoints-non-enterprise-editions "Windows 11 connection endpoints for non-Enterprise editions - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [5]: https://web.archive.org/web/20240217190247/https://learn.microsoft.com/en-us/hololens/hololens-offline "Manage connection endpoints for HoloLens | Microsoft Learn | learn.microsoft.com"
+                    [6]: https://web.archive.org/web/20240217204237/https://learn.microsoft.com/en-us/windows/privacy/manage-windows-1903-endpoints "Connection endpoints for Windows 10 Enterprise, version 1903 - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [7]: https://web.archive.org/web/20240217204251/https://www.michaelhorowitz.com/Windows10.spying.onsettings.php "Windows 10 spies on your use of System Settings | www.michaelhorowitz.com"
+                call:
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: watson.telemetry.microsoft.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: umwatsonc.events.data.microsoft.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: ceuswatcab01.blob.core.windows.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: ceuswatcab02.blob.core.windows.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: eaus2watcab01.blob.core.windows.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: eaus2watcab02.blob.core.windows.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: weus2watcab01.blob.core.windows.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: weus2watcab02.blob.core.windows.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: co4.telecommand.telemetry.microsoft.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: cs11.wpc.v0cdn.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: cs1137.wpc.gammacdn.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: modern.watson.data.microsoft.com
+            -
+                name: Block telemetry and user experience hosts
+                recommend: standard
+                docs: |-
+                    This script improves privacy by blocking data sharing to the *Windows Connected User Experiences and
+                    Telemetry* component [1].
+                    This component is responsible for collecting and transmitting diagnostic data and usage
+                    information to Microsoft [1] [2], which is used to identify and fix problems, enhancing
+                    product and service offerings [2].
+
+                    While the collection of this data is intended to improve user experience by allowing Microsoft
+                    to address issues and enhance functionality [2], it raises privacy concerns for users who prefer to
+                    keep their diagnostic information private.
+                    Blocking these endpoints prevents the automatic transmission of this data to Microsoft [2],
+                    safeguarding user privacy.
+
+                    > **Caution**: This script may impact the delivery of diagnostic and usage-based solutions from
+                    Microsoft [1] [2].
+
+                    The blocked hosts are:
+
+                    - `functional.events.data.microsoft.com` [2]
+                    - `browser.events.data.msn.com` [2] [3] [4]
+                    - `self.events.data.microsoft.com` [2] [3]
+                    - `v10.events.data.microsoft.com` [1] [2] [5] [6] [9]
+                    - `v10c.events.data.microsoft.com` [1]
+                    - `us-v10c.events.data.microsoft.com` [1]
+                    - `eu-v10c.events.data.microsoft.com` [1]
+                    - `v10.vortex-win.data.microsoft.com` [1] [6] [7]
+                    - `vortex-win.data.microsoft.com` [8]
+                    - `telecommand.telemetry.microsoft.com` [2]
+                    - `www.telecommandsvc.microsoft.com` [2]
+                    - `umwatson.events.data.microsoft.com` [3] [4]
+                    - `watsonc.events.data.microsoft.com` [1]
+                    - `eu-watsonc.events.data.microsoft.com` [1]
+                    - `v20.events.data.microsoft.com` [9]
+
+                    [1]: https://web.archive.org/web/20240217185108/https://learn.microsoft.com/en-us/windows/privacy/configure-windows-diagnostic-data-in-your-organization "Configure Windows diagnostic data in your organization (Windows 10 and Windows 11) - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [2]: https://web.archive.org/web/20240217185904/https://learn.microsoft.com/en-us/windows/privacy/manage-windows-11-endpoints "Connection endpoints for Windows 11 Enterprise - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [3]: https://web.archive.org/web/20240217204251/https://www.michaelhorowitz.com/Windows10.spying.onsettings.php "Windows 10 spies on your use of System Settings | www.michaelhorowitz.com"
+                    [4]: https://web.archive.org/web/20240217205130/https://www.thewindowsclub.com/edge-waiting-for-browser-events-data-msn-com "Edge Waiting for browser.events.data.msn.com | thewindowsclub.com"
+                    [5]: https://web.archive.org/web/20240217185950/https://learn.microsoft.com/en-us/windows/privacy/windows-11-endpoints-non-enterprise-editions "Windows 11 connection endpoints for non-Enterprise editions - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [6]: https://web.archive.org/web/20240217190247/https://learn.microsoft.com/en-us/hololens/hololens-offline "Manage connection endpoints for HoloLens | Microsoft Learn | learn.microsoft.com"
+                    [7]: https://web.archive.org/web/20240217204237/https://learn.microsoft.com/en-us/windows/privacy/manage-windows-1903-endpoints "Connection endpoints for Windows 10 Enterprise, version 1903 - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [8]: https://web.archive.org/web/20240217205118/https://support.microsoft.com/en-us/topic/update-for-customer-experience-and-diagnostic-telemetry-2649a645-0d3d-fa61-0773-ef84c0a8c8ac#ID0EDDBH "Update for customer experience and diagnostic telemetry - Microsoft Support | support.microsoft.com"
+                    [9]: https://web.archive.org/web/20240219205201/https://learn.microsoft.com/en-us/windows/privacy/windows-endpoints-2004-non-enterprise-editions "Windows 10, version 2004, connection endpoints for non-Enterprise editions - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                call:
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: functional.events.data.microsoft.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: browser.events.data.msn.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: self.events.data.microsoft.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: v10.events.data.microsoft.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: v10c.events.data.microsoft.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: us-v10c.events.data.microsoft.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: eu-v10c.events.data.microsoft.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: v10.vortex-win.data.microsoft.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: vortex-win.data.microsoft.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: telecommand.telemetry.microsoft.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: www.telecommandsvc.microsoft.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: umwatson.events.data.microsoft.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: watsonc.events.data.microsoft.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: eu-watsonc.events.data.microsoft.com
+            -
+                name: Block remote configuration sync hosts
+                recommend: strict
+                docs: |-
+                    This script blocks specific hosts used by applications, such as "System Initiated User Feedback" and the
+                    "Xbox" app [1] [2], to dynamically update their configuration [1] [2]
+
+                    These endpoints play a crucial role in remotely configuring diagnostics-related settings and data collection [3].
+                    For instance, they allow for the remote blocking of events being sent back to Microsoft or enrolling a device
+                    in the Windows diagnostic data processor configuration [3].
+
+                    Blocking these hosts can enhance your privacy by preventing certain data from being collected and sent to Microsoft.
+
+                    > **Caution**: Using this script might disrupt the normal operation of applications that depend on syncing their
+                    > configurations online, leading to potential functionality issues [1].
+
+                    The blocked hosts are:
+
+                    - `settings-win.data.microsoft.com` [1] [2] [3] [4] [5]
+                    - `settings.data.microsoft.com` [1] [2] [5]
+
+                    [1]: https://web.archive.org/web/20240217185904/https://learn.microsoft.com/en-us/windows/privacy/manage-windows-11-endpoints "Connection endpoints for Windows 11 Enterprise - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [2]: https://web.archive.org/web/20240217185950/https://learn.microsoft.com/en-us/windows/privacy/windows-11-endpoints-non-enterprise-editions "Windows 11 connection endpoints for non-Enterprise editions - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [3]: https://web.archive.org/web/20240217185108/https://learn.microsoft.com/en-us/windows/privacy/configure-windows-diagnostic-data-in-your-organization "Configure Windows diagnostic data in your organization (Windows 10 and Windows 11) - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [4]: https://web.archive.org/web/20240217205118/https://support.microsoft.com/en-us/topic/update-for-customer-experience-and-diagnostic-telemetry-2649a645-0d3d-fa61-0773-ef84c0a8c8ac#ID0EDDBH "Update for customer experience and diagnostic telemetry - Microsoft Support | support.microsoft.com"
+                    [5]: https://web.archive.org/web/20240217204251/https://www.michaelhorowitz.com/Windows10.spying.onsettings.php "Windows 10 spies on your use of System Settings | www.michaelhorowitz.com"
+                call:
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: settings-win.data.microsoft.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: settings.data.microsoft.com
+            -
+                category: Block third-party app hosts
+                docs: |-
+                    This category includes scripts that block network connections to third-party applications that collect data.
+                    These scripts stop your system from sending data to third parties, thereby protecting your personal
+                    information and possibly improving system performance by cutting down on superfluous data transfers.
+                children:
+                    -
+                        name: Block Dropbox telemetry hosts
+                        recommend: standard
+                        docs: |-
+                            This script prevents your computer from sending personal data to Dropbox's data
+                            collection servers [1], improving your privacy.
+
+                            Dropbox collects data such as:
+
+                            - **Account Information**: Includes your name, email, phone number, payment details, and address shared during account
+                            creation or when upgrading plans [2].
+                            - **Your Files**: Covers data on files you save in Dropbox, their usage, and details [2].
+                            - **Contacts**: If granted access, Dropbox stores contacts [2].
+                            - **Usage Information**: Tracks how you use Dropbox services, including file management and electronic signature activities [2].
+                            - **Device Information**: Includes information from your devices like IP addresses, browsers, location data [2].
+                            - **User Settings**: Uses cookies and pixel tags to remember your settings [2].
+                            - **DocSend and Dropbox Analytics**: Collects data, including device and ID information, when you view content via these services [2].
+                            - **Marketing Information**: Tracks your interactions with Dropbox or its representatives [2].
+
+                            Dropbox also shares collected data with third parties, affiliates, and other users [2].
+
+                            Applying this script significantly reduces the data Dropbox collects, directly enhancing your privacy protection.
+
+                            The blocked hosts are:
+
+                            - `telemetry.dropbox.com` [3] 
+                            - `telemetry.v.dropbox.com` [4]
+
+                            [1]: https://web.archive.org/web/20240123113411/https://www.dropboxforum.com/t5/Integrations/Why-So-Much-Telemetry/m-p/463436/highlight/true#M4616 "Re: Why So Much Telemetry ? - Page 3 - Dropbox Community | www.dropboxforum.com"
+                            [2]: https://web.archive.org/web/20240123113313/https://www.dropbox.com/privacy "Privacy Policy - Dropbox | www.dropbox.com"
+                            [3]: https://web.archive.org/web/20240123113357/https://www.dropboxforum.com/t5/Integrations/Why-So-Much-Telemetry/td-p/455961/page/2 "Why So Much Telemetry ? - Page 2 - Dropbox Community | dropboxforum.com"
+                            [4]: https://web.archive.org/web/20240123113411/https://www.dropboxforum.com/t5/Integrations/Why-So-Much-Telemetry/m-p/456421/highlight/true#M4592 "Re: Why So Much Telemetry ? - Dropbox Community | www.dropboxforum.com"
+                        call:
+                            -
+                                function: BlockViaHostsFile
+                                parameters:
+                                    domain: telemetry.dropbox.com
+                            -
+                                function: BlockViaHostsFile
+                                parameters:
+                                    domain: telemetry.v.dropbox.com
+                    -
+                        name: Block Spotify Live Tile hosts
+                        docs: |-
+                            This script enhances privacy by preventing the Spotify application from fetching and displaying live updates on its Live Tile [1].
+
+                            Spotify, known for being pre-installed with Windows [2], can collect data in the background without user consent.
+
+                            This script stops the transmission of real-time data to the Spotify Live Tile [1], which may contain user-specific content or usage patterns.
+
+                            > **Caution**: Using this script may have side effects on Spotify functionalities beyond the Live Tile, potentially influencing other app
+                            > features or the Spotify website experience [3].
+
+                            The blocked hosts are:
+
+                            - `spclient.wg.spotify.com` [1]
+
+                            [1]: https://web.archive.org/web/20240217185950/https://learn.microsoft.com/en-us/windows/privacy/windows-11-endpoints-non-enterprise-editions "Windows 11 connection endpoints for non-Enterprise editions - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20240219224242/https://www.windowslatest.com/2022/09/28/spotify-app-is-automatically-getting-installed-on-windows-10-windows-11/ "Spotify app is automatically getting installed on Windows 10 & Windows 11 | windowslatest.com"
+                            [3]: https://web.archive.org/web/20240219205516/https://wiki.archlinux.org/title/spotify "Spotify - ArchWiki | wiki.archlinux.org"
+                        call:
+                            function: BlockViaHostsFile
+                            parameters:
+                                domain: spclient.wg.spotify.com
+            -
+                name: Block location data sharing hosts
+                recommend: strict
+                docs: |-
+                    This script improves user privacy by disabling the transmission of location data to Microsoft's servers [1] [2] [3] [4] [5].
+                    Location data is utilized by various Windows applications [1] [2] [3] [4] [5], including the Camera app [6] [7],
+                    to provide location-based services.
+
+                    However, the collection of such data raises privacy concerns as it involves transmitting potentially sensitive information
+                    such as OS version, device details, nearby wireless access points (including MAC addresses and signal strengths), and various
+                    unique identifiers [6].
+
+                    Sending this data to Microsoft allows for detailed profiling of your location and movements [6].
+                    This has led to privacy lawsuits alleging unauthorized tracking of users without their consent, particularly
+                    regarding the Camera app's location tracking capabilities [6] [7].
+
+                    By blocking the specified hosts, this script prevents Windows apps from accessing and sending location data  [1] [2] [3] [4] [5],
+                    thereby safeguarding your privacy.
+
+                    > **Caution**: This script may impact the functionality of apps that rely on location data [1] [3] [4] [5].
+                    > Users should weigh the benefits of enhanced privacy against the potential loss of location-based features in certain applications.
+
+                    The blocked hosts are:
+
+                    - `inference.location.live.net` [1] [2] [3] [4] [6] [7]
+                    - `location-inference-westus.cloudapp.net` [3] [5]
+
+                    [1]: https://web.archive.org/web/20240217185904/https://learn.microsoft.com/en-us/windows/privacy/manage-windows-11-endpoints "Connection endpoints for Windows 11 Enterprise - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [2]: https://web.archive.org/web/20240217185950/https://learn.microsoft.com/en-us/windows/privacy/windows-11-endpoints-non-enterprise-editions "Windows 11 connection endpoints for non-Enterprise editions - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [3]: https://web.archive.org/web/20240217204237/https://learn.microsoft.com/en-us/windows/privacy/manage-windows-1903-endpoints "Connection endpoints for Windows 10 Enterprise, version 1903 - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [4]: https://web.archive.org/web/20240217210446/https://learn.microsoft.com/en-us/windows/privacy/manage-windows-1909-endpoints "Connection endpoints for Windows 10 Enterprise, version 1909 - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [5]: https://web.archive.org/web/20240217210611/https://learn.microsoft.com/en-us/windows/privacy/manage-windows-1809-endpoints "Connection endpoints for Windows 10, version 1809 - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [6]: https://web.archive.org/web/20240217210525/https://www.zdnet.com/article/windows-phone-does-transmit-location-information-without-user-consent/ "Windows Phone DOES transmit location information without user consent | ZDNET | www.zdnet.com"
+                    [7]: https://web.archive.org/web/20240217220328/https://www.slashgear.com/microsoft-denies-windows-phone-camera-location-tracking-accusations-05177143/ "Microsoft Denies Windows Phone Camera Location Tracking Accusations - SlashGear | www.slashgear.com"
+                call:
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: inference.location.live.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: location-inference-westus.cloudapp.net
+            -
+                name: Block maps data and updates hosts
+                recommend: strict
+                docs: |-
+                    This script blocks connections to servers updating offline maps [1] [2] and Bing Maps APIs [3] [4] [5],
+                    responsible for geospatial [3] and location [4] [5] services.
+                    By doing so, it enhances your privacy by stopping the transmission of location data to Microsoft.
+
+                    > **Caution:** This script may have several side effects:
+                    > - Impacts apps and websites using Bing Maps for location services, including third-party ones.
+                    > - Stops offline map updates [1] [2], potentially leading to less accurate and outdated maps.
+
+                    The blocked hosts are:
+
+                    - `maps.windows.com` [1] [2]
+                    - `dev.virtualearth.net` [2] [4]
+                    - `ecn.dev.virtualearth.net` [1] [2] [3]
+                    - `ecn-us.dev.virtualearth.net` [1]
+                    - `weathermapdata.blob.core.windows.net` [1]
+
+                    [1]: https://web.archive.org/web/20240217185904/https://learn.microsoft.com/en-us/windows/privacy/manage-windows-11-endpoints "Connection endpoints for Windows 11 Enterprise - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [2]: https://web.archive.org/web/20240217185950/https://learn.microsoft.com/en-us/windows/privacy/windows-11-endpoints-non-enterprise-editions "Windows 11 connection endpoints for non-Enterprise editions - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [3]: https://web.archive.org/web/20240217220311/https://learn.microsoft.com/en-us/bingmaps/articles/geospatial-endpoint-service "Geospatial Endpoint Service - Bing Maps | Microsoft Learn | learn.microsoft.com"
+                    [4]: https://web.archive.org/web/20240217220300/https://learn.microsoft.com/en-us/bingmaps/rest-services/locations/find-a-location-by-address "Find a Location by Address - Bing Maps | Microsoft Learn | learn.microsoft.com"
+                    [5]: https://web.archive.org/web/20240217220332/https://learn.microsoft.com/en-us/bingmaps/rest-services/common-parameters-and-types/base-url-structure "Bing Maps REST URL Structure - Bing Maps | Microsoft Learn | learn.microsoft.com"
+                call:
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: maps.windows.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: ecn.dev.virtualearth.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: ecn-us.dev.virtualearth.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: weathermapdata.blob.core.windows.net
+            -
+                name: Block Spotlight ads and suggestions hosts
+                recommend: strict
+                docs: |-
+                    This script blocks specific hosts used by Windows Spotlight to retrieve metadata, which
+                    includes image references, app suggestions, Microsoft account notifications, and Windows tips [1] [2] [3].
+
+                    Windows Spotlight aims to deliver dynamic content on the lock screen and other parts of the
+                    Windows interface, such as personalized ads and tips [1] [3].
+
+                    By blocking these hosts, the script effectively prevents Windows Spotlight from downloading new lock screen
+                    images, app suggestions, account notifications, and tips [1] [2] [3].
+                    It improves your privacy by reducing unsolicited content and potential data collection.
+                    
+                    > **Caution:** While Spotlight attempts to update content, suggested apps,
+                    Microsoft account notifications, and Windows tips won't be downloaded once the script is in place [1] [3].
+
+                    The blocked hosts are:
+
+                    - `arc.msn.com` [1] [2] [3]
+                    - `ris.api.iris.microsoft.com` [1] [2] [3]
+                    - `api.msn.com` [1]
+                    - `assets.msn.com` [1]
+                    - `c.msn.com` [1]
+                    - `g.msn.com` [3]
+                    - `ntp.msn.com` [1]
+                    - `srtb.msn.com` [1]
+                    - `www.msn.com` [1]
+                    - `fd.api.iris.microsoft.com` [1]
+                    - `staticview.msn.com` [1]
+                    - `mucp.api.account.microsoft.com` [2]
+                    - `query.prod.cms.rt.microsoft.com` [3]
+
+                    [1]: https://web.archive.org/web/20240217185904/https://learn.microsoft.com/en-us/windows/privacy/manage-windows-11-endpoints "Connection endpoints for Windows 11 Enterprise - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [2]: https://web.archive.org/web/20240217185950/https://learn.microsoft.com/en-us/windows/privacy/windows-11-endpoints-non-enterprise-editions "Windows 11 connection endpoints for non-Enterprise editions - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [3]: https://web.archive.org/web/20240217204237/https://learn.microsoft.com/en-us/windows/privacy/manage-windows-1903-endpoints "Connection endpoints for Windows 10 Enterprise, version 1903 - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                call:
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: arc.msn.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: ris.api.iris.microsoft.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: api.msn.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: assets.msn.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: c.msn.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: g.msn.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: ntp.msn.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: srtb.msn.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: www.msn.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: fd.api.iris.microsoft.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: staticview.msn.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: mucp.api.account.microsoft.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: query.prod.cms.rt.microsoft.com
+            -
+                name: Block Cortana and Live Tiles hosts
+                recommend: strict
+                docs: |-
+                    This script blocks specific hosts related to Cortana and Live Tiles, enhancing your privacy by stopping
+                    updates to Cortana greetings, tips, and Live Tiles [1].
+
+                    The blocked hosts are:
+
+                    - `business.bing.com` [1] [2]
+                    - `c.bing.com` [1] [2]
+                    - `th.bing.com` [1]
+                    - `edgeassetservice.azureedge.net` [1] [2]
+                    - `c-ring.msedge.net` [1]
+                    - `fp.msedge.net` [1] [2]
+                    - `I-ring.msedge.net` [1]
+                    - `s-ring.msedge.net` [1] [2]
+                    - `dual-s-ring.msedge.net` [1]
+                    - `creativecdn.com` [1]
+                    - `r.bing.com` [1] [2]
+                    - `a-ring-fallback.msedge.net` [1]
+                    - `fp-afd-nocache-ccp.azureedge.net` [1]
+                    - `prod-azurecdn-akamai-iris.azureedge.net` [1] [2]
+                    - `widgetcdn.azureedge.net` [1] [2]
+                    - `widgetservice.azurefd.net` [1] [2]
+                    - `fp-vs.azureedge.net` [2]
+                    - `ln-ring.msedge.net` [2]
+                    - `t-ring.msedge.net` [2]
+                    - `t-ring-fdv2.msedge.net` [2]
+                    - `tse1.mm.bing.net` [2]
+
+                    [1]: https://web.archive.org/web/20240217185904/https://learn.microsoft.com/en-us/windows/privacy/manage-windows-11-endpoints "Connection endpoints for Windows 11 Enterprise - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [2]: https://web.archive.org/web/20240217185950/https://learn.microsoft.com/en-us/windows/privacy/windows-11-endpoints-non-enterprise-editions "Windows 11 connection endpoints for non-Enterprise editions - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                call:
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: business.bing.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: c.bing.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: th.bing.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: edgeassetservice.azureedge.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: c-ring.msedge.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: fp.msedge.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: I-ring.msedge.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: s-ring.msedge.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: dual-s-ring.msedge.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: creativecdn.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: r.bing.com
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: a-ring-fallback.msedge.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: fp-afd-nocache-ccp.azureedge.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: prod-azurecdn-akamai-iris.azureedge.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: widgetcdn.azureedge.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: widgetservice.azurefd.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: fp-vs.azureedge.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: ln-ring.msedge.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: t-ring.msedge.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: t-ring-fdv2.msedge.net
+                    -
+                        function: BlockViaHostsFile
+                        parameters:
+                            domain: tse1.mm.bing.net
+            -
+                name: Block Edge experimentation hosts
+                recommend: standard
+                docs: |-
+                    This script blocks the connection between Microsoft Edge and the Experimentation and Configuration Service (ECS) [1].
+
+                    ECS delivers various updates to Microsoft Edge, including configurations, feature rollouts, and experiments [1]:
+
+                    - **Configurations** aim to ensure the product's health, security, and privacy compliance [1].
+                      These settings are uniform for all users, based on their platforms and channels, and can enable or disable features
+                      as necessary [1].
+                    - **Controlled Feature Rollout (CFR)** gradually introduces a new feature to a portion of the user base [1].
+                    - **Experiments** test new features and functionalities within Microsoft Edge that are still under development [1].
+                      These features are not visible to all users and are activated or deactivated through experiment flags [1].
+
+                    By blocking communication with ECS, this script prevents Microsoft Edge from receiving updates related to these payloads [1].
+                    It enhances user privacy by limiting exposure to experimental features and configurations that may collect data or alter
+                    the browsing experience without the user's explicit consent.
+
+                    The blocked hosts are:
+
+                    - `config.edge.skype.com` [2]
+
+                    [1]: https://web.archive.org/web/20240219203636/https://learn.microsoft.com/en-us/deployedge/edge-configuration-and-experiments "Microsoft Edge configurations and experimentation | Microsoft Learn | learn.microsoft.com"
+                    [2]: https://web.archive.org/web/20240217204251/https://www.michaelhorowitz.com/Windows10.spying.onsettings.php "Windows 10 spies on your use of System Settings | www.michaelhorowitz.com"
+                call:
+                    function: BlockViaHostsFile
+                    parameters:
+                        domain: config.edge.skype.com
+            -
+                name: Block Photos app sync hosts
+                recommend: strict
+                docs: |-
+                    This script blocks connections to hosts the Photos app uses to download configuration files and interact with the shared
+                    infrastructure of the Office 365 portal, including browser-based Office applications [1] [2].
+
+                    > **Caution**: This script may affect the Photos app's ability to download configuration files and connect to Office 365 [1] [2],
+                    > potentially impacting its functionality.
+
+                    The blocked hosts are:
+
+                    - `evoke-windowsservices-tas.msedge.net` [1] [2]
+
+                    [1]: https://web.archive.org/web/20240217185904/https://learn.microsoft.com/en-us/windows/privacy/manage-windows-11-endpoints "Connection endpoints for Windows 11 Enterprise - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [2]: https://web.archive.org/web/20240217185950/https://learn.microsoft.com/en-us/windows/privacy/windows-11-endpoints-non-enterprise-editions "Windows 11 connection endpoints for non-Enterprise editions - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                call:
+                    function: BlockViaHostsFile
+                    parameters:
+                        domain: evoke-windowsservices-tas.msedge.net
+            -
+                name: Block OneNote Live Tile hosts
+                recommend: strict
+                docs: |-
+                    This script blocks the communication used by OneNote Live Tile [1].
+
+                    It enhances privacy by preventing OneNote from retrieving live data updates [1], which might include user-specific content
+                    or usage patterns.
+
+                    > **Caution**: This script could lead to broader implications beyond the Live Tile functionality.
+                    > It may affect OneNote's overall performance and features, such as the ability to use stickers add-ins and access certain assets
+                    > within the Office suite [2]. This could potentially hinder the user experience by limiting the functionality of OneNote's dynamic
+                    > content and integrations.
+
+                    The blocked hosts are:
+
+                    - `cdn.onenote.net` [1]
+
+                    [1]: https://web.archive.org/web/20240217185950/https://learn.microsoft.com/en-us/windows/privacy/windows-11-endpoints-non-enterprise-editions "Windows 11 connection endpoints for non-Enterprise editions - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [2]: https://web.archive.org/web/20240219212903/https://macadmins.software/docs/Network_Traffic.pdf "Microsoft Word - Network_Traffic.docx | macadmins.software"
+                call:
+                    function: BlockViaHostsFile
+                    parameters:
+                        domain: cdn.onenote.net
+            -
+                name: Block Weather Live Tile hosts
+                recommend: strict
+                docs: |-
+                    The endpoints listed below are for the Weather app [1] [2] and its Live Tile feature [3].
+
+                    > **Caution:** This script breaks Weather app [1] [2] and its tile [3].
+
+                    The blocked hosts are:
+
+                    - `tile-service.weather.microsoft.com` [1] [2]
+
+                    [1]: https://web.archive.org/web/20240217185950/https://learn.microsoft.com/en-us/windows/privacy/windows-11-endpoints-non-enterprise-editions "Windows 11 connection endpoints for non-Enterprise editions - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [2]: https://web.archive.org/web/20240217185904/https://learn.microsoft.com/en-us/windows/privacy/manage-windows-11-endpoints "Connection endpoints for Windows 11 Enterprise - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [3]: https://web.archive.org/web/20240219205201/https://learn.microsoft.com/en-us/windows/privacy/windows-endpoints-2004-non-enterprise-editions "Windows 10, version 2004, connection endpoints for non-Enterprise editions - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                call:
+                    function: BlockViaHostsFile
+                    parameters:
+                        domain: tile-service.weather.microsoft.com
     -
         category: Privacy over security
         children:
@@ -11238,7 +11942,7 @@ actions:
                             | Windows 11 | 22H2 | ❌ |
                             | Windows 11 | 23H2 | ❌ |
 
-                            [1]: https://web.archive.org/web/20231004112751/https://learn.microsoft.com/en-us/windows/privacy/manage-windows-1903-endpoints "Connection endpoints for Windows 10 Enterprise, version 1903 - Windows Privacy | Microsoft Learn"
+                            [1]: https://web.archive.org/web/20240217204237/https://learn.microsoft.com/en-us/windows/privacy/manage-windows-1903-endpoints "Connection endpoints for Windows 10 Enterprise, version 1903 - Windows Privacy | Microsoft Learn | learn.microsoft.com"
                             [2]: https://web.archive.org/web/20231004112830/https://blogs.windows.com/windows-insider/2016/06/21/microsoft-wallet-with-tap-to-pay-is-now-available-for-windows-insiders/ "Microsoft Wallet with tap to pay is now available for Windows Insiders | Windows Insider Blog"
                             [3]: https://web.archive.org/web/20180216173337/http://www.microsoft.com/wallet/ "Microsoft Wallet: Digital Wallet for Secure Mobile Payments"
                             [4]: https://web.archive.org/web/20230609124956/https://stripe.com/docs/microsoft-pay "Microsoft Pay | Stripe Documentation"
@@ -17299,8 +18003,9 @@ functions:
             function: RunPowerShell
             parameters:
                 # Marked: improve-comment-inlining
-                #   `[char]35` is used in-place of `#` because otherwise compiler thinks,
-                #   this is online powershell comment.
+                #   `[char]35` is used in place of `#` because otherwise, the compiler interprets it
+                #   as an inline PowerShell comment. This workaround allows for the inclusion of the
+                #   hash symbol in strings without confusing the PowerShell parser.
                 codeComment: 'Add hosts entries for {{ $domain }}'
                 code: |-
                     $domain ='{{ $domain }}'
@@ -17361,12 +18066,16 @@ functions:
                     }
                 revertCodeComment: 'Remove hosts entries for {{ $domain }}'
                 # Marked: refactor-with-variables
-                #   Code and revertCode are similar
-                # No `Set-Content`:
-                #   Set-Content (including with `-Force`) flag sometimes (inconsistently) fails
-                #   with  `Stream was not readable (WriteErrorException)`. This is probably
-                #   cause by rapid read/writes. .NET `[System.IO.File]::WriteAllText` is more reliable.
-                #   `[System.IO.File]::ReadAllText` is also used instead of `Get-Content` for consistency.
+                #   Both code and revertCode sections perform similar operations with slight variations.
+                # Avoiding `Set-Content`:
+                #   Using `Set-Content` with or without the `-Force` flag can lead to inconsistent failures,
+                #   manifesting as a "Stream was not readable (WriteErrorException)" error. This issue is
+                #   likely due to rapid consecutive read/write operations that PowerShell's `Set-Content`
+                #   cannot reliably handle in all scenarios.
+                #   To avoid this problem and ensure reliable file operations, we use the .NET class methods
+                #   `WriteAllText` for writing to files and `ReadAllText` for reading files. These methods
+                #   provide a more stable approach for handling file I/O operations, especially in scripts
+                #   that perform frequent file updates.
                 revertCode: |-
                     $domain ='{{ $domain }}'
                     $hostsFilePath = "$env:WINDIR\System32\drivers\etc\hosts"
