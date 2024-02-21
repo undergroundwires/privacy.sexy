@@ -122,7 +122,7 @@
 ## Get started
 
 - 🌍️ **Online**: [https://privacy.sexy](https://privacy.sexy).
-- 🖥️ **Offline**: Download directly for: [Windows](https://github.com/undergroundwires/privacy.sexy/releases/download/0.12.10/privacy.sexy-Setup-0.12.10.exe), [macOS](https://github.com/undergroundwires/privacy.sexy/releases/download/0.12.10/privacy.sexy-0.12.10.dmg), [Linux](https://github.com/undergroundwires/privacy.sexy/releases/download/0.12.10/privacy.sexy-0.12.10.AppImage). For more options, see [here](#additional-install-options).
+- 🖥️ **Offline**: Download directly for: [Windows](https://github.com/undergroundwires/privacy.sexy/releases/download/0.13.0/privacy.sexy-Setup-0.13.0.exe), [macOS](https://github.com/undergroundwires/privacy.sexy/releases/download/0.13.0/privacy.sexy-0.13.0.dmg), [Linux](https://github.com/undergroundwires/privacy.sexy/releases/download/0.13.0/privacy.sexy-0.13.0.AppImage). For more options, see [here](#additional-install-options).
 
 For a detailed comparison of features between the desktop and web versions of privacy.sexy, see [Desktop vs. Web Features](./docs/desktop-vs-web-features.md).
 

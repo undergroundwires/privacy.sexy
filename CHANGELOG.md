@@ -1,5 +1,34 @@
 # Changelog
 
+## 0.13.0 (2024-02-11)
+
+* win: add disabling clipboard features #251, #247 | [c6ebba8](https://github.com/undergroundwires/privacy.sexy/commit/c6ebba85fb1b362be0d81d3078f19db71e0528b2)
+* win: improve search privacy scripts #117 | [541f9aa](https://github.com/undergroundwires/privacy.sexy/commit/541f9aa5ee1b5f4885063b65beaf6cd873f0d786)
+* win: add disabling Windows Copilot #263, #266 | [cd42550](https://github.com/undergroundwires/privacy.sexy/commit/cd425502ae882bba9642dc2171c2b5771946b5a9)
+* win: add Dropbox telemetry blocking #125, #118 | [10829d6](https://github.com/undergroundwires/privacy.sexy/commit/10829d65aa3fb0df937bb8829244e6290bb748c7)
+* Improve selection type documentation | [7af8daa](https://github.com/undergroundwires/privacy.sexy/commit/7af8daa3411b24efb6385c7876a49bd372753f38)
+* Expand script names to take full available width | [d277139](https://github.com/undergroundwires/privacy.sexy/commit/d277139dd50eeb4e4057b0a7d8fc4ac2d70785de)
+* Limit tooltip width for improved readability | [6ab6dac](https://github.com/undergroundwires/privacy.sexy/commit/6ab6dacd1be2d7bf1863b07b121d86f2a379ac67)
+* Add markdown support for script/category names | [a5ffed4](https://github.com/undergroundwires/privacy.sexy/commit/a5ffed4cd60d9d058d5374145c1176b10fad1660)
+* Normalize and improve font sizes | [4da306b](https://github.com/undergroundwires/privacy.sexy/commit/4da306b9f79b0bb7a64bb197fb246258cf435b8d)
+* Change 'revert' button to title case | [937f459](https://github.com/undergroundwires/privacy.sexy/commit/937f4593d1a91081ab6b1bcb8f85d03879d7cf07)
+* Remove playful emojis (🍑🍆) | [aa4205f](https://github.com/undergroundwires/privacy.sexy/commit/aa4205ff7af7d05cfb5e82bf541b521d49bbd1c8)
+* Improve UI code styling for all platforms | [311fcb1](https://github.com/undergroundwires/privacy.sexy/commit/311fcb18133d1343f6a9ae5bd7a25795a1d12c49)
+* Render bracket references as superscript text | [b9c89b7](https://github.com/undergroundwires/privacy.sexy/commit/b9c89b701fc77d20dcc706419a8659ad156c4fc2)
+* Change slogan and refactor project info naming | [a54e164](https://github.com/undergroundwires/privacy.sexy/commit/a54e16488ce32219bcf811b5da85f06584b293fb)
+* Add 'Revert All Selection' feature #68 | [55fa7ea](https://github.com/undergroundwires/privacy.sexy/commit/55fa7eae71031357d6f03f0d349a09cd446270d3)
+* win, mac, linux: add privacy.sexy cleanup scripts | [63366a4](https://github.com/undergroundwires/privacy.sexy/commit/63366a4ec2533a376849d692211e9972b56ab4a8)
+* Extend search by including documentation content | [6142f3a](https://github.com/undergroundwires/privacy.sexy/commit/6142f3a2973d20493f784f323f3be57fa8deaeef)
+* Remove 'preview' label from Linux options | [ebd8285](https://github.com/undergroundwires/privacy.sexy/commit/ebd82853ddc56f1cc2fc9be3fe0b3001b07f0186)
+* Change fonts for improved readability | [d5bbc32](https://github.com/undergroundwires/privacy.sexy/commit/d5bbc321f902dc60618ffdfda0d583a4a433f7af)
+* Apply global styles for visual consistency | [faa7a38](https://github.com/undergroundwires/privacy.sexy/commit/faa7a38a7d16390f27e4a3e51017b81665cf85ca)
+* Add UI animations for expand/collapse actions | [fb08f03](https://github.com/undergroundwires/privacy.sexy/commit/fb08f037651e1a7d453b9a6af724cbccecc5b903)
+* win: relocate service disabling and improve docs | [894687c](https://github.com/undergroundwires/privacy.sexy/commit/894687c0e0375a24f40bcd720ea69c9b2aa62a58)
+* win: add host blocking category #26 | [17152c8](https://github.com/undergroundwires/privacy.sexy/commit/17152c84dc639e75560998a6feddfd46e0f713ce)
+* Update meta title and description | [c7fa4b6](https://github.com/undergroundwires/privacy.sexy/commit/c7fa4b6d020ac6fd3bf72bb4e57022dffb1ba921)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.12.10...0.13.0)
+
 ## 0.12.10 (2024-01-17)
 
 * Fix CSP for Vue, Ace, Vite, Safari compatibility | [940febc](https://github.com/undergroundwires/privacy.sexy/commit/940febc3e80cfd0c01b5cc8282ebaab6b024d1b5)
