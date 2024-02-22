@@ -20,6 +20,7 @@ jobs:
           fetch-depth: 0 # fetch all history
       -
         name: Checkout to bump commit
+        shell: bash
         run: git checkout "$(git rev-list "${{ github.event.release.tag_name }}"..master | tail -1)"
       -
         name: Setup node
