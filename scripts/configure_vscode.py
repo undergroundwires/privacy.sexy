@@ -6,10 +6,11 @@ development and installs recommended extensions from '.vscode/extensions.json'.
 
 import os
 import json
+from pathlib import Path
 import subprocess
 import sys
 import re
-from typing import Any
+from typing import Any, Optional
 from shutil import which
 
 VSCODE_SETTINGS_JSON_FILE: str = '.vscode/settings.json'
@@ -84,7 +85,7 @@ def install_recommended_extensions() -> None:
         if not extensions:
             print_skip(f"No recommendations found in the {VSCODE_EXTENSIONS_JSON_FILE} file.")
             return
-        vscode_cli_path = which('code') # More reliable than using `code`, especially on Windows.
+        vscode_cli_path = locate_vscode_cli()
         if vscode_cli_path is None:
             print_error('Visual Studio Code CLI (`code`) tool not found.')
             return
@@ -92,11 +93,23 @@ def install_recommended_extensions() -> None:
     except json.JSONDecodeError:
         print_error(f"Invalid JSON in {VSCODE_EXTENSIONS_JSON_FILE}")
 
+def locate_vscode_cli() -> Optional[str]:
+    vscode_alias = which('code') # More reliable than using `code`, especially on Windows.
+    if vscode_alias:
+        return vscode_alias
+    potential_vscode_cli_paths = [
+        '/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code' # macOS VS Code may not register 'code' command in PATH
+    ]
+    for vscode_cli_candidate_path in potential_vscode_cli_paths:
+        if Path(vscode_cli_candidate_path).is_file():
+            return vscode_cli_candidate_path
+    return None
+
 def remove_json_comments(json_like: str) -> str:
     pattern: str = r'(?:"(?:\\.|[^"\\])*"|/\*[\s\S]*?\*/|//.*)|([^:]//.*$)'
     return re.sub(
         pattern,
-        lambda m: '' if m.group(1) else m.group(0), json_like, flags=re.MULTILINE,
+        lambda m: '' if m.group(1) else m.agroup(0), json_like, flags=re.MULTILINE,
     )
 
 def install_vscode_extensions(vscode_cli_path: str, extensions: list[str]) -> None:
@@ -122,6 +135,12 @@ def install_vscode_extensions(vscode_cli_path: str, extensions: list[str]) -> No
             print_error(' '.join([
                 f"Visual Studio Code CLI tool not found: {vscode_cli_path}."
                 f"Could not install extension: {ext}",
+            ]))
+        except Exception as e: # pylint: disable=broad-except
+            print_error(' '.join([
+                f"Failed to install extension '{ext}'.",
+                f"Attempted using Visual Studio Code CLI at: '{vscode_cli_path}'.",
+                f"Encountered error: {e}",
             ]))
     total_extensions = len(extensions)
     print_installation_results(successful_installations, total_extensions)
