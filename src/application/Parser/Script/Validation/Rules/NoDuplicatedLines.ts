@@ -1,6 +1,6 @@
-import { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
-import { ICodeLine } from '../ICodeLine';
-import { ICodeValidationRule, IInvalidCodeLine } from '../ICodeValidationRule';
+import type { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
+import type { ICodeLine } from '../ICodeLine';
+import type { ICodeValidationRule, IInvalidCodeLine } from '../ICodeValidationRule';
 
 export class NoDuplicatedLines implements ICodeValidationRule {
   constructor(private readonly syntax: ILanguageSyntax) { }

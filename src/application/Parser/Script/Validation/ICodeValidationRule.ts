@@ -1,4 +1,4 @@
-import { ICodeLine } from './ICodeLine';
+import type { ICodeLine } from './ICodeLine';
 
 export interface IInvalidCodeLine {
   readonly index: number;

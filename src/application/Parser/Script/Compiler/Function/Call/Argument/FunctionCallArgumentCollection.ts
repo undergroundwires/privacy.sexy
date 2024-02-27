@@ -1,5 +1,5 @@
-import { IFunctionCallArgument } from './IFunctionCallArgument';
-import { IFunctionCallArgumentCollection } from './IFunctionCallArgumentCollection';
+import type { IFunctionCallArgument } from './IFunctionCallArgument';
+import type { IFunctionCallArgumentCollection } from './IFunctionCallArgumentCollection';
 
 export class FunctionCallArgumentCollection implements IFunctionCallArgumentCollection {
   private readonly arguments = new Map<string, IFunctionCallArgument>();

@@ -1,5 +1,5 @@
-import { ISanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/ISanityCheckOptions';
-import { ISanityValidator } from '@/infrastructure/RuntimeSanity/Common/ISanityValidator';
+import type { ISanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/ISanityCheckOptions';
+import type { ISanityValidator } from '@/infrastructure/RuntimeSanity/Common/ISanityValidator';
 
 export class SanityValidatorStub implements ISanityValidator {
   public shouldValidateArgs = new Array<ISanityCheckOptions>();

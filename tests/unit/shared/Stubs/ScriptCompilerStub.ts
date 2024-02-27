@@ -1,6 +1,6 @@
 import type { ScriptData } from '@/application/collections/';
-import { IScriptCompiler } from '@/application/Parser/Script/Compiler/IScriptCompiler';
-import { IScriptCode } from '@/domain/IScriptCode';
+import type { IScriptCompiler } from '@/application/Parser/Script/Compiler/IScriptCompiler';
+import type { IScriptCode } from '@/domain/IScriptCode';
 import { ScriptCodeStub } from './ScriptCodeStub';
 
 export class ScriptCompilerStub implements IScriptCompiler {

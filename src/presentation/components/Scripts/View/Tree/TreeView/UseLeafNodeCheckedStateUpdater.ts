@@ -1,9 +1,9 @@
 import { type Ref, watch } from 'vue';
-import { TreeRoot } from './TreeRoot/TreeRoot';
-import { TreeNode } from './Node/TreeNode';
-import { QueryableNodes } from './TreeRoot/NodeCollection/Query/QueryableNodes';
 import { useCurrentTreeNodes } from './UseCurrentTreeNodes';
 import { TreeNodeCheckState } from './Node/State/CheckState';
+import type { TreeRoot } from './TreeRoot/TreeRoot';
+import type { TreeNode } from './Node/TreeNode';
+import type { QueryableNodes } from './TreeRoot/NodeCollection/Query/QueryableNodes';
 
 export function useLeafNodeCheckedStateUpdater(
   treeRootRef: Readonly<Ref<TreeRoot>>,

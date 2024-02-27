@@ -1,6 +1,6 @@
-import { Dialog, FileType, SaveFileOutcome } from '@/presentation/common/Dialog';
+import type { Dialog, FileType, SaveFileOutcome } from '@/presentation/common/Dialog';
 import { FileSaverDialog } from './FileSaverDialog';
-import { BrowserSaveFileDialog } from './BrowserSaveFileDialog';
+import type { BrowserSaveFileDialog } from './BrowserSaveFileDialog';
 
 export class BrowserDialog implements Dialog {
   constructor(

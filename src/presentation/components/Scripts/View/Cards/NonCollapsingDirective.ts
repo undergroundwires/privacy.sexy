@@ -1,4 +1,4 @@
-import { ObjectDirective } from 'vue';
+import type { ObjectDirective } from 'vue';
 
 const attributeName = 'data-interaction-does-not-collapse';
 

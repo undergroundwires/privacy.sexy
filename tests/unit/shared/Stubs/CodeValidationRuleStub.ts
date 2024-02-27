@@ -1,5 +1,5 @@
-import { ICodeLine } from '@/application/Parser/Script/Validation/ICodeLine';
-import { ICodeValidationRule, IInvalidCodeLine } from '@/application/Parser/Script/Validation/ICodeValidationRule';
+import type { ICodeLine } from '@/application/Parser/Script/Validation/ICodeLine';
+import type { ICodeValidationRule, IInvalidCodeLine } from '@/application/Parser/Script/Validation/ICodeValidationRule';
 
 export class CodeValidationRuleStub implements ICodeValidationRule {
   public readonly receivedLines = new Array<readonly ICodeLine[]>();

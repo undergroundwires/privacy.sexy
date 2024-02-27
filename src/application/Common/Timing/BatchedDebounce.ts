@@ -1,5 +1,5 @@
 import { PlatformTimer } from './PlatformTimer';
-import { TimeoutType, Timer } from './Timer';
+import type { TimeoutType, Timer } from './Timer';
 
 export function batchedDebounce<T>(
   callback: (batches: readonly T[]) => void,

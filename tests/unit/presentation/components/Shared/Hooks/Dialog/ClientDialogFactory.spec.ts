@@ -1,13 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import {
-  createEnvironmentSpecificLoggedDialog, WindowDialogCreationFunction,
-  BrowserDialogCreationFunction, DialogLoggingDecorator,
+  createEnvironmentSpecificLoggedDialog, type WindowDialogCreationFunction,
+  type BrowserDialogCreationFunction, type DialogLoggingDecorator,
 } from '@/presentation/components/Shared/Hooks/Dialog/ClientDialogFactory';
-import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
+import type { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
 import { RuntimeEnvironmentStub } from '@tests/unit/shared/Stubs/RuntimeEnvironmentStub';
 import { DialogStub } from '@tests/unit/shared/Stubs/DialogStub';
 import { collectExceptionMessage } from '@tests/unit/shared/ExceptionCollector';
-import { Dialog } from '@/presentation/common/Dialog';
+import type { Dialog } from '@/presentation/common/Dialog';
 
 describe('ClientDialogFactory', () => {
   describe('createEnvironmentSpecificLoggedDialog', () => {

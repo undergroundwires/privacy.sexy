@@ -1,7 +1,7 @@
 import { BaseEntity } from '@/infrastructure/Entity/BaseEntity';
-import { IScript } from './IScript';
 import { RecommendationLevel } from './RecommendationLevel';
-import { IScriptCode } from './IScriptCode';
+import type { IScript } from './IScript';
+import type { IScriptCode } from './IScriptCode';
 
 export class Script extends BaseEntity<string> implements IScript {
   constructor(

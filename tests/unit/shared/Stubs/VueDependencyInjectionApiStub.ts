@@ -1,5 +1,5 @@
-import { InjectionKey } from 'vue';
-import { VueDependencyInjectionApi } from '@/presentation/bootstrapping/DependencyProvider';
+import type { VueDependencyInjectionApi } from '@/presentation/bootstrapping/DependencyProvider';
+import type { InjectionKey } from 'vue';
 
 export class VueDependencyInjectionApiStub implements VueDependencyInjectionApi {
   private readonly injections = new Map<unknown, unknown>();

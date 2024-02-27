@@ -1,5 +1,5 @@
-import { SingleNodeFocusManager } from './Focus/SingleNodeFocusManager';
-import { TreeNodeCollection } from './NodeCollection/TreeNodeCollection';
+import type { SingleNodeFocusManager } from './Focus/SingleNodeFocusManager';
+import type { TreeNodeCollection } from './NodeCollection/TreeNodeCollection';
 
 export interface TreeRoot {
   readonly collection: TreeNodeCollection;

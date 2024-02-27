@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { InlinePowerShell } from '@/application/Parser/Script/Compiler/Expressions/Pipes/PipeDefinitions/InlinePowerShell';
 import { getAbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
-import { IPipeTestCase, runPipeTests } from './PipeTestRunner';
+import { type IPipeTestCase, runPipeTests } from './PipeTestRunner';
 
 describe('InlinePowerShell', () => {
   // arrange

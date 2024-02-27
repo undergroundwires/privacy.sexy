@@ -1,12 +1,12 @@
-import { FunctionCall } from '../../FunctionCall';
-import { CompiledCode } from '../CompiledCode';
-import { FunctionCallCompilationContext } from '../FunctionCallCompilationContext';
-import { IReadOnlyFunctionCallArgumentCollection } from '../../Argument/IFunctionCallArgumentCollection';
-import { ISharedFunction } from '../../../ISharedFunction';
-import { SingleCallCompiler } from './SingleCallCompiler';
-import { SingleCallCompilerStrategy } from './SingleCallCompilerStrategy';
 import { InlineFunctionCallCompiler } from './Strategies/InlineFunctionCallCompiler';
 import { NestedFunctionCallCompiler } from './Strategies/NestedFunctionCallCompiler';
+import type { FunctionCall } from '../../FunctionCall';
+import type { CompiledCode } from '../CompiledCode';
+import type { FunctionCallCompilationContext } from '../FunctionCallCompilationContext';
+import type { IReadOnlyFunctionCallArgumentCollection } from '../../Argument/IFunctionCallArgumentCollection';
+import type { ISharedFunction } from '../../../ISharedFunction';
+import type { SingleCallCompiler } from './SingleCallCompiler';
+import type { SingleCallCompilerStrategy } from './SingleCallCompilerStrategy';
 
 export class AdaptiveFunctionCallCompiler implements SingleCallCompiler {
   public constructor(

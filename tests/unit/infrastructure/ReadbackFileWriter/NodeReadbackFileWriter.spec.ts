@@ -1,12 +1,12 @@
 import { constants } from 'node:fs';
 import { describe, it, expect } from 'vitest';
-import { Logger } from '@/application/Common/Log/Logger';
+import type { Logger } from '@/application/Common/Log/Logger';
 import { LoggerStub } from '@tests/unit/shared/Stubs/LoggerStub';
-import { FunctionKeys } from '@/TypeHelpers';
+import type { FunctionKeys } from '@/TypeHelpers';
 import { sequenceEqual } from '@/application/Common/Array';
-import { FileWriteErrorType } from '@/infrastructure/ReadbackFileWriter/ReadbackFileWriter';
+import type { FileWriteErrorType } from '@/infrastructure/ReadbackFileWriter/ReadbackFileWriter';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
-import { FileReadWriteOperations, NodeReadbackFileWriter } from '@/infrastructure/ReadbackFileWriter/NodeReadbackFileWriter';
+import { type FileReadWriteOperations, NodeReadbackFileWriter } from '@/infrastructure/ReadbackFileWriter/NodeReadbackFileWriter';
 import { FileReadWriteOperationsStub } from './FileReadWriteOperationsStub';
 
 describe('NodeReadbackFileWriter', () => {

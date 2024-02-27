@@ -1,7 +1,7 @@
 import { retryWithExponentialBackOff } from './ExponentialBackOffRetryHandler';
-import { IUrlStatus } from './IUrlStatus';
-import { fetchFollow, IFollowOptions, DefaultFollowOptions } from './FetchFollow';
+import { fetchFollow, type IFollowOptions, DefaultFollowOptions } from './FetchFollow';
 import { getRandomUserAgent } from './UserAgents';
+import type { IUrlStatus } from './IUrlStatus';
 
 export function getUrlStatus(
   url: string,

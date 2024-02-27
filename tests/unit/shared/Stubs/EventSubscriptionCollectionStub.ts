@@ -1,5 +1,5 @@
-import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
-import { IEventSubscriptionCollection } from '@/infrastructure/Events/IEventSubscriptionCollection';
+import type { IEventSubscription } from '@/infrastructure/Events/IEventSource';
+import type { IEventSubscriptionCollection } from '@/infrastructure/Events/IEventSubscriptionCollection';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class EventSubscriptionCollectionStub

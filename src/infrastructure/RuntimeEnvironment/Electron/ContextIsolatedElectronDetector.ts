@@ -1,4 +1,4 @@
-import { ElectronEnvironmentDetector, ElectronProcessType } from './ElectronEnvironmentDetector';
+import type { ElectronEnvironmentDetector, ElectronProcessType } from './ElectronEnvironmentDetector';
 
 export class ContextIsolatedElectronDetector implements ElectronEnvironmentDetector {
   constructor(

@@ -1,6 +1,6 @@
-import { IReadOnlyFunctionParameterCollection } from '../../Function/Parameter/IFunctionParameterCollection';
 import { ExpressionPosition } from './ExpressionPosition';
-import { IExpressionEvaluationContext } from './ExpressionEvaluationContext';
+import type { IReadOnlyFunctionParameterCollection } from '../../Function/Parameter/IFunctionParameterCollection';
+import type { IExpressionEvaluationContext } from './ExpressionEvaluationContext';
 
 export interface IExpression {
   readonly position: ExpressionPosition;

@@ -1,8 +1,8 @@
-import { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
-import { FunctionCallCompilationContext } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/FunctionCallCompilationContext';
-import { SingleCallCompilerStrategy } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/SingleCall/SingleCallCompilerStrategy';
-import { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
-import { ISharedFunction } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
+import type { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
+import type { FunctionCallCompilationContext } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/FunctionCallCompilationContext';
+import type { SingleCallCompilerStrategy } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/SingleCall/SingleCallCompilerStrategy';
+import type { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
+import type { ISharedFunction } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 import { CompiledCodeStub } from './CompiledCodeStub';
 

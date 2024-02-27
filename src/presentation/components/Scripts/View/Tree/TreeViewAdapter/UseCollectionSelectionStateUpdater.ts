@@ -1,6 +1,6 @@
 import { useUserSelectionState } from '@/presentation/components/Shared/Hooks/UseUserSelectionState';
 import { TreeNodeCheckState } from '../TreeView/Node/State/CheckState';
-import { TreeNodeStateChangedEmittedEvent } from '../TreeView/Bindings/TreeNodeStateChangedEmittedEvent';
+import type { TreeNodeStateChangedEmittedEvent } from '../TreeView/Bindings/TreeNodeStateChangedEmittedEvent';
 
 export function useCollectionSelectionStateUpdater(
   useSelectionStateHook: ReturnType<typeof useUserSelectionState>,

@@ -1,4 +1,4 @@
-import { CodeRunError } from '@/application/CodeRunner/CodeRunner';
+import type { CodeRunError } from '@/application/CodeRunner/CodeRunner';
 
 export interface ScriptDirectoryProvider {
   provideScriptDirectory(): Promise<ScriptDirectoryOutcome>;

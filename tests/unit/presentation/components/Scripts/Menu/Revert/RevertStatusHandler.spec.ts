@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { RevertStatusType } from '@/presentation/components/Scripts/Menu/Revert/RevertStatusType';
-import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { getCurrentRevertStatus, setCurrentRevertStatus } from '@/presentation/components/Scripts/Menu/Revert/RevertStatusHandler';
 import { ScriptSelectionStub } from '@tests/unit/shared/Stubs/ScriptSelectionStub';
-import { ScriptSelectionChange } from '@/application/Context/State/Selection/Script/ScriptSelectionChange';
+import type { ScriptSelectionChange } from '@/application/Context/State/Selection/Script/ScriptSelectionChange';
 
 describe('RevertStatusHandler', () => {
   describe('getCurrentRevertStatus', () => {

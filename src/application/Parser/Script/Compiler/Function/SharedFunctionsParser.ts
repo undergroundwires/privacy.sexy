@@ -1,21 +1,21 @@
 import type {
   FunctionData, CodeInstruction, CodeFunctionData, CallFunctionData, CallInstruction,
 } from '@/application/collections/';
-import { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
+import type { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
 import { CodeValidator } from '@/application/Parser/Script/Validation/CodeValidator';
 import { NoEmptyLines } from '@/application/Parser/Script/Validation/Rules/NoEmptyLines';
 import { NoDuplicatedLines } from '@/application/Parser/Script/Validation/Rules/NoDuplicatedLines';
-import { ICodeValidator } from '@/application/Parser/Script/Validation/ICodeValidator';
+import type { ICodeValidator } from '@/application/Parser/Script/Validation/ICodeValidator';
 import { isArray, isNullOrUndefined, isPlainObject } from '@/TypeHelpers';
 import { createFunctionWithInlineCode, createCallerFunction } from './SharedFunction';
 import { SharedFunctionCollection } from './SharedFunctionCollection';
-import { ISharedFunctionCollection } from './ISharedFunctionCollection';
-import { ISharedFunctionsParser } from './ISharedFunctionsParser';
 import { FunctionParameter } from './Parameter/FunctionParameter';
 import { FunctionParameterCollection } from './Parameter/FunctionParameterCollection';
-import { IReadOnlyFunctionParameterCollection } from './Parameter/IFunctionParameterCollection';
-import { ISharedFunction } from './ISharedFunction';
 import { parseFunctionCalls } from './Call/FunctionCallParser';
+import type { ISharedFunctionCollection } from './ISharedFunctionCollection';
+import type { ISharedFunctionsParser } from './ISharedFunctionsParser';
+import type { IReadOnlyFunctionParameterCollection } from './Parameter/IFunctionParameterCollection';
+import type { ISharedFunction } from './ISharedFunction';
 
 export class SharedFunctionsParser implements ISharedFunctionsParser {
   public static readonly instance: ISharedFunctionsParser = new SharedFunctionsParser();

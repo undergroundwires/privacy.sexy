@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { IExpression } from '@/application/Parser/Script/Compiler/Expressions/Expression/IExpression';
-import { IExpressionParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/IExpressionParser';
+import type { IExpression } from '@/application/Parser/Script/Compiler/Expressions/Expression/IExpression';
+import type { IExpressionParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/IExpressionParser';
 import { CompositeExpressionParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/CompositeExpressionParser';
 import { ExpressionStub } from '@tests/unit/shared/Stubs/ExpressionStub';
 import { itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';

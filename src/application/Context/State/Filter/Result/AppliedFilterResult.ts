@@ -1,6 +1,6 @@
-import { IScript } from '@/domain/IScript';
-import { ICategory } from '@/domain/ICategory';
-import { FilterResult } from './FilterResult';
+import type { IScript } from '@/domain/IScript';
+import type { ICategory } from '@/domain/ICategory';
+import type { FilterResult } from './FilterResult';
 
 export class AppliedFilterResult implements FilterResult {
   constructor(

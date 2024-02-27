@@ -1,6 +1,6 @@
-import { IEntity } from '../infrastructure/Entity/IEntity';
-import { IScript } from './IScript';
-import { IDocumentable } from './IDocumentable';
+import type { IEntity } from '../infrastructure/Entity/IEntity';
+import type { IScript } from './IScript';
+import type { IDocumentable } from './IDocumentable';
 
 export interface ICategory extends IEntity<number>, IDocumentable {
   readonly id: number;
@@ -11,5 +11,5 @@ export interface ICategory extends IEntity<number>, IDocumentable {
   getAllScriptsRecursively(): ReadonlyArray<IScript>;
 }
 
-export { IEntity } from '../infrastructure/Entity/IEntity';
-export { IScript } from './IScript';
+export type { IEntity } from '../infrastructure/Entity/IEntity';
+export type { IScript } from './IScript';

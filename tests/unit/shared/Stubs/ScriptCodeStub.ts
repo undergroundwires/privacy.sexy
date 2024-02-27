@@ -1,4 +1,4 @@
-import { IScriptCode } from '@/domain/IScriptCode';
+import type { IScriptCode } from '@/domain/IScriptCode';
 
 export class ScriptCodeStub implements IScriptCode {
   public execute = 'default execute code';

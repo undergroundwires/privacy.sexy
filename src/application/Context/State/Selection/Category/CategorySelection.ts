@@ -1,5 +1,5 @@
-import { ICategory } from '@/domain/ICategory';
-import { CategorySelectionChangeCommand } from './CategorySelectionChange';
+import type { ICategory } from '@/domain/ICategory';
+import type { CategorySelectionChangeCommand } from './CategorySelectionChange';
 
 export interface ReadonlyCategorySelection {
   areAllScriptsSelected(category: ICategory): boolean;

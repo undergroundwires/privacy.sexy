@@ -1,4 +1,4 @@
-import { ElectronFileDialogOperations } from '@/infrastructure/Dialog/Electron/NodeElectronSaveFileDialog';
+import type { ElectronFileDialogOperations } from '@/infrastructure/Dialog/Electron/NodeElectronSaveFileDialog';
 import { StubWithObservableMethodCalls } from '@tests/unit/shared/Stubs/StubWithObservableMethodCalls';
 
 export class ElectronFileDialogOperationsStub

@@ -1,5 +1,5 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { BrowserAccessor, MobileSafariActivePseudoClassEnabler } from '@/presentation/bootstrapping/Modules/MobileSafariActivePseudoClassEnabler';
+import { type BrowserAccessor, MobileSafariActivePseudoClassEnabler } from '@/presentation/bootstrapping/Modules/MobileSafariActivePseudoClassEnabler';
 import { RuntimeEnvironmentStub } from '@tests/unit/shared/Stubs/RuntimeEnvironmentStub';
 
 describe('MobileSafariActivePseudoClassEnabler', () => {

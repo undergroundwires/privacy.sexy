@@ -1,12 +1,12 @@
 import { shallowRef } from 'vue';
-import {
+import type {
   ContextModifier, IStateCallbackSettings, NewStateEventHandler,
   StateModifier, useCollectionState,
 } from '@/presentation/components/Shared/Hooks/UseCollectionState';
-import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
-import { FilterContext } from '@/application/Context/State/Filter/FilterContext';
-import { IApplicationContext } from '@/application/Context/IApplicationContext';
-import { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
+import type { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import type { FilterContext } from '@/application/Context/State/Filter/FilterContext';
+import type { IApplicationContext } from '@/application/Context/IApplicationContext';
+import type { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
 import { CategoryCollectionStateStub } from './CategoryCollectionStateStub';
 import { ApplicationContextStub } from './ApplicationContextStub';
 import { FilterContextStub } from './FilterContextStub';

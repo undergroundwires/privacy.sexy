@@ -1,5 +1,5 @@
-import { IEntity } from '../Entity/IEntity';
-import { Repository } from '../../application/Repository/Repository';
+import type { Repository } from '../../application/Repository/Repository';
+import type { IEntity } from '../Entity/IEntity';
 
 export class InMemoryRepository<TKey, TEntity extends IEntity<TKey>>
 implements Repository<TKey, TEntity> {

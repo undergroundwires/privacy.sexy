@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { IScriptingLanguageFactory } from '@/application/Common/ScriptingLanguage/IScriptingLanguageFactory';
+import type { IScriptingLanguageFactory } from '@/application/Common/ScriptingLanguage/IScriptingLanguageFactory';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
 

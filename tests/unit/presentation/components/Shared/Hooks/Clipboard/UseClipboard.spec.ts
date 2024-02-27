@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { useClipboard } from '@/presentation/components/Shared/Hooks/Clipboard/UseClipboard';
 import { BrowserClipboard } from '@/presentation/components/Shared/Hooks/Clipboard/BrowserClipboard';
 import { ClipboardStub } from '@tests/unit/shared/Stubs/ClipboardStub';
-import { FunctionKeys } from '@/TypeHelpers';
+import type { FunctionKeys } from '@/TypeHelpers';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 describe('useClipboard', () => {

@@ -4,7 +4,7 @@ import { NodeValidator } from '@/application/Parser/NodeValidation/NodeValidator
 import { expectDeepThrowsError } from '@tests/shared/Assertions/ExpectDeepThrowsError';
 import { CategoryDataStub } from '@tests/unit/shared/Stubs/CategoryDataStub';
 import { NodeDataErrorContextStub } from '@tests/unit/shared/Stubs/NodeDataErrorContextStub';
-import { NodeData } from '@/application/Parser/NodeValidation/NodeData';
+import type { NodeData } from '@/application/Parser/NodeValidation/NodeData';
 import { NodeValidationTestRunner } from './NodeValidatorTestRunner';
 
 describe('NodeValidator', () => {

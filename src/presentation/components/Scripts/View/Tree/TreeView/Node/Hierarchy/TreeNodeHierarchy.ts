@@ -1,5 +1,5 @@
-import { TreeNode } from '../TreeNode';
-import { HierarchyAccess } from './HierarchyAccess';
+import type { TreeNode } from '../TreeNode';
+import type { HierarchyAccess } from './HierarchyAccess';
 
 export class TreeNodeHierarchy implements HierarchyAccess {
   public parent: TreeNode | undefined = undefined;

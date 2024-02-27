@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
 import CodeCopyButton from '@/presentation/components/Code/CodeButtons/CodeCopyButton.vue';
 import { ClipboardStub } from '@tests/unit/shared/Stubs/ClipboardStub';
-import { Clipboard } from '@/presentation/components/Shared/Hooks/Clipboard/Clipboard';
+import type { Clipboard } from '@/presentation/components/Shared/Hooks/Clipboard/Clipboard';
 import { UseClipboardStub } from '@tests/unit/shared/Stubs/UseClipboardStub';
 import { UseCurrentCodeStub } from '@tests/unit/shared/Stubs/UseCurrentCodeStub';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';

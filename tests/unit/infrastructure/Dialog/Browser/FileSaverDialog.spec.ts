@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { FileSaverDialog, SaveAsFunction, WindowOpenFunction } from '@/infrastructure/Dialog/Browser/FileSaverDialog';
+import { FileSaverDialog, type SaveAsFunction, type WindowOpenFunction } from '@/infrastructure/Dialog/Browser/FileSaverDialog';
 import { FileType } from '@/presentation/common/Dialog';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 

@@ -1,7 +1,7 @@
-import { IApplication } from '@/domain/IApplication';
+import type { IApplication } from '@/domain/IApplication';
 import { AsyncLazy } from '@/infrastructure/Threading/AsyncLazy';
-import { IApplicationFactory } from './IApplicationFactory';
 import { parseApplication } from './Parser/ApplicationParser';
+import type { IApplicationFactory } from './IApplicationFactory';
 
 export type ApplicationGetterType = () => IApplication;
 const ApplicationGetter: ApplicationGetterType = parseApplication;

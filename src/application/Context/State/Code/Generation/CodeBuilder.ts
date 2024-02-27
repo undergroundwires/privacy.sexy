@@ -1,4 +1,4 @@
-import { ICodeBuilder } from './ICodeBuilder';
+import type { ICodeBuilder } from './ICodeBuilder';
 
 const TotalFunctionSeparatorChars = 58;
 

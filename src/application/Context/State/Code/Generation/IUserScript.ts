@@ -1,5 +1,5 @@
-import { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
-import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import type { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
+import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 
 export interface IUserScript {
   readonly code: string;

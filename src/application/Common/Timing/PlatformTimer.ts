@@ -1,4 +1,4 @@
-import { Timer } from './Timer';
+import type { Timer } from './Timer';
 
 export const PlatformTimer: Timer = {
   setTimeout: (callback, ms) => setTimeout(callback, ms),

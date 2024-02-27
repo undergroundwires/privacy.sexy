@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import type { CollectionData } from '@/application/collections/';
 import { parseProjectDetails } from '@/application/Parser/ProjectDetailsParser';
-import { CategoryCollectionParserType, parseApplication } from '@/application/Parser/ApplicationParser';
-import { IAppMetadata } from '@/infrastructure/EnvironmentVariables/IAppMetadata';
+import { type CategoryCollectionParserType, parseApplication } from '@/application/Parser/ApplicationParser';
+import type { IAppMetadata } from '@/infrastructure/EnvironmentVariables/IAppMetadata';
 import WindowsData from '@/application/collections/windows.yaml';
 import MacOsData from '@/application/collections/macos.yaml';
 import LinuxData from '@/application/collections/linux.yaml';

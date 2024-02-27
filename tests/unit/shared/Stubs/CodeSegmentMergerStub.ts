@@ -1,5 +1,5 @@
-import { CodeSegmentMerger } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CodeSegmentJoin/CodeSegmentMerger';
-import { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
+import type { CodeSegmentMerger } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CodeSegmentJoin/CodeSegmentMerger';
+import type { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
 import { CompiledCodeStub } from './CompiledCodeStub';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 

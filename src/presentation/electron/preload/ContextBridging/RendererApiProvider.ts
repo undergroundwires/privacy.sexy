@@ -1,6 +1,6 @@
 import { createElectronLogger } from '@/infrastructure/Log/ElectronLogger';
-import { Logger } from '@/application/Common/Log/Logger';
-import { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
+import type { Logger } from '@/application/Common/Log/Logger';
+import type { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
 import { convertPlatformToOs } from '@/infrastructure/RuntimeEnvironment/Node/NodeOsMapper';
 import { createIpcConsumerProxy } from '../../shared/IpcBridging/IpcProxy';
 import { IpcChannelDefinitions } from '../../shared/IpcBridging/IpcChannelDefinitions';

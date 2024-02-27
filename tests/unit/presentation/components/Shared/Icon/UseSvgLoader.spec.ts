@@ -2,8 +2,8 @@ import {
   describe, it, expect, beforeEach,
 } from 'vitest';
 import { ref } from 'vue';
-import { IconName } from '@/presentation/components/Shared/Icon/IconName';
-import { FileLoaders, clearIconCache, useSvgLoader } from '@/presentation/components/Shared/Icon/UseSvgLoader';
+import type { IconName } from '@/presentation/components/Shared/Icon/IconName';
+import { type FileLoaders, clearIconCache, useSvgLoader } from '@/presentation/components/Shared/Icon/UseSvgLoader';
 import { waitForValueChange } from '@tests/shared/WaitForValueChange';
 
 describe('useSvgLoader', () => {

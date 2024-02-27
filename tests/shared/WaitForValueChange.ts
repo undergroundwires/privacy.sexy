@@ -1,4 +1,4 @@
-import { WatchSource, watch } from 'vue';
+import { type WatchSource, watch } from 'vue';
 
 export function waitForValueChange<T>(
   valueWatcher: WatchSource<T>,

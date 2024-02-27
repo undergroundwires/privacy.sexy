@@ -3,8 +3,8 @@ import { CodeValidator } from '@/application/Parser/Script/Validation/CodeValida
 import { CodeValidationRuleStub } from '@tests/unit/shared/Stubs/CodeValidationRuleStub';
 import { itEachAbsentCollectionValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { itIsSingleton } from '@tests/unit/shared/TestCases/SingletonTests';
-import { ICodeLine } from '@/application/Parser/Script/Validation/ICodeLine';
-import { ICodeValidationRule, IInvalidCodeLine } from '@/application/Parser/Script/Validation/ICodeValidationRule';
+import type { ICodeLine } from '@/application/Parser/Script/Validation/ICodeLine';
+import type { ICodeValidationRule, IInvalidCodeLine } from '@/application/Parser/Script/Validation/ICodeValidationRule';
 
 describe('CodeValidator', () => {
   describe('instance', () => {

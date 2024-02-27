@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { IEventSubscriptionCollection } from '@/infrastructure/Events/IEventSubscriptionCollection';
+import type { IEventSubscriptionCollection } from '@/infrastructure/Events/IEventSubscriptionCollection';
 import { useCurrentCode } from '@/presentation/components/Shared/Hooks/UseCurrentCode';
 import { ApplicationCodeStub } from '@tests/unit/shared/Stubs/ApplicationCodeStub';
 import { CategoryCollectionStateStub } from '@tests/unit/shared/Stubs/CategoryCollectionStateStub';

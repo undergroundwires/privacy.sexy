@@ -1,13 +1,13 @@
 import { InMemoryRepository } from '@/infrastructure/Repository/InMemoryRepository';
-import { IScript } from '@/domain/IScript';
+import type { IScript } from '@/domain/IScript';
 import { EventSource } from '@/infrastructure/Events/EventSource';
-import { ReadonlyRepository, Repository } from '@/application/Repository/Repository';
-import { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ReadonlyRepository, Repository } from '@/application/Repository/Repository';
+import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { batchedDebounce } from '@/application/Common/Timing/BatchedDebounce';
-import { ScriptSelection } from './ScriptSelection';
-import { ScriptSelectionChange, ScriptSelectionChangeCommand } from './ScriptSelectionChange';
-import { SelectedScript } from './SelectedScript';
 import { UserSelectedScript } from './UserSelectedScript';
+import type { ScriptSelection } from './ScriptSelection';
+import type { ScriptSelectionChange, ScriptSelectionChangeCommand } from './ScriptSelectionChange';
+import type { SelectedScript } from './SelectedScript';
 
 const DEBOUNCE_DELAY_IN_MS = 100;
 

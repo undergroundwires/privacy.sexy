@@ -1,4 +1,4 @@
-import { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
+import type { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
 
 export function useCodeRunner(
   window: WindowVariables = globalThis.window,

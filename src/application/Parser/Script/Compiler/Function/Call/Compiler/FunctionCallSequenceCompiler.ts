@@ -1,12 +1,12 @@
-import { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
-import { ISharedFunctionCollection } from '../../ISharedFunctionCollection';
-import { FunctionCallCompiler } from './FunctionCallCompiler';
-import { CompiledCode } from './CompiledCode';
-import { FunctionCallCompilationContext } from './FunctionCallCompilationContext';
-import { SingleCallCompiler } from './SingleCall/SingleCallCompiler';
-import { AdaptiveFunctionCallCompiler } from './SingleCall/AdaptiveFunctionCallCompiler';
-import { CodeSegmentMerger } from './CodeSegmentJoin/CodeSegmentMerger';
+import type { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
 import { NewlineCodeSegmentMerger } from './CodeSegmentJoin/NewlineCodeSegmentMerger';
+import { AdaptiveFunctionCallCompiler } from './SingleCall/AdaptiveFunctionCallCompiler';
+import type { ISharedFunctionCollection } from '../../ISharedFunctionCollection';
+import type { FunctionCallCompiler } from './FunctionCallCompiler';
+import type { CompiledCode } from './CompiledCode';
+import type { FunctionCallCompilationContext } from './FunctionCallCompilationContext';
+import type { SingleCallCompiler } from './SingleCall/SingleCallCompiler';
+import type { CodeSegmentMerger } from './CodeSegmentJoin/CodeSegmentMerger';
 
 export class FunctionCallSequenceCompiler implements FunctionCallCompiler {
   public static readonly instance: FunctionCallCompiler = new FunctionCallSequenceCompiler();

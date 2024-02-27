@@ -1,5 +1,5 @@
-import { TreeInputNodeData } from '@/presentation/components/Scripts/View/Tree/TreeView/Bindings/TreeInputNodeData';
-import { TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
+import type { TreeInputNodeData } from '@/presentation/components/Scripts/View/Tree/TreeView/Bindings/TreeInputNodeData';
+import type { TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
 import { parseTreeInput } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/NodeCollection/TreeInputParser';
 import { TreeNodeStub } from './TreeNodeStub';
 

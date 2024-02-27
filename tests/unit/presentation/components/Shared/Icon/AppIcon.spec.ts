@@ -4,7 +4,7 @@ import {
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
-import { IconName } from '@/presentation/components/Shared/Icon/IconName';
+import type { IconName } from '@/presentation/components/Shared/Icon/IconName';
 import { UseSvgLoaderStub } from '@tests/unit/shared/Stubs/UseSvgLoaderStub';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 

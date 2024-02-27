@@ -1,8 +1,8 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { assertInRange } from '@/application/Common/Enum';
-import { BrowserEnvironment, BrowserOsDetector } from './BrowserOsDetector';
-import { BrowserCondition, TouchSupportExpectation } from './BrowserCondition';
+import { type BrowserCondition, TouchSupportExpectation } from './BrowserCondition';
 import { BrowserConditions } from './BrowserConditions';
+import type { BrowserEnvironment, BrowserOsDetector } from './BrowserOsDetector';
 
 export class ConditionBasedOsDetector implements BrowserOsDetector {
   constructor(private readonly conditions: readonly BrowserCondition[] = BrowserConditions) {

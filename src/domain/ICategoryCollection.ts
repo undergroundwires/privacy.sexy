@@ -1,8 +1,8 @@
-import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
-import { IScript } from '@/domain/IScript';
-import { ICategory } from '@/domain/ICategory';
+import type { IScript } from '@/domain/IScript';
+import type { ICategory } from '@/domain/ICategory';
 
 export interface ICategoryCollection {
   readonly scripting: IScriptingDefinition;

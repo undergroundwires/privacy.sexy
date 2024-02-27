@@ -1,6 +1,6 @@
 import { CustomError } from '@/application/Common/CustomError';
 import { NodeType } from './NodeType';
-import { NodeData } from './NodeData';
+import type { NodeData } from './NodeData';
 
 export class NodeDataError extends CustomError {
   constructor(message: string, public readonly context: INodeDataErrorContext) {

@@ -1,6 +1,6 @@
-import { IEventSource } from '@/infrastructure/Events/IEventSource';
-import { TreeNodeStateDescriptor } from './StateDescriptor';
+import type { IEventSource } from '@/infrastructure/Events/IEventSource';
 import { TreeNodeCheckState } from './CheckState';
+import type { TreeNodeStateDescriptor } from './StateDescriptor';
 
 export interface NodeStateChangedEvent {
   readonly oldState: TreeNodeStateDescriptor;

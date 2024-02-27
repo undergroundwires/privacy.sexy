@@ -1,4 +1,4 @@
-import { IFunctionCallArgument } from './IFunctionCallArgument';
+import type { IFunctionCallArgument } from './IFunctionCallArgument';
 
 export interface IReadOnlyFunctionCallArgumentCollection {
   getArgument(parameterName: string): IFunctionCallArgument;

@@ -1,6 +1,6 @@
 import { TreeNodeCheckState } from './CheckState';
-import { TreeNodeStateTransaction } from './StateAccess';
-import { TreeNodeStateDescriptor } from './StateDescriptor';
+import type { TreeNodeStateTransaction } from './StateAccess';
+import type { TreeNodeStateDescriptor } from './StateDescriptor';
 
 export class TreeNodeStateTransactionDescriber implements TreeNodeStateTransaction {
   constructor(public updatedState: Partial<TreeNodeStateDescriptor> = {}) { }

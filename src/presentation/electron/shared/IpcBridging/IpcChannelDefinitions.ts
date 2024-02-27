@@ -1,8 +1,8 @@
-import { FunctionKeys } from '@/TypeHelpers';
-import { CodeRunner } from '@/application/CodeRunner/CodeRunner';
-import { Dialog } from '@/presentation/common/Dialog';
-import { ScriptDiagnosticsCollector } from '@/application/ScriptDiagnostics/ScriptDiagnosticsCollector';
-import { IpcChannel } from './IpcChannel';
+import type { FunctionKeys } from '@/TypeHelpers';
+import type { CodeRunner } from '@/application/CodeRunner/CodeRunner';
+import type { Dialog } from '@/presentation/common/Dialog';
+import type { ScriptDiagnosticsCollector } from '@/application/ScriptDiagnostics/ScriptDiagnosticsCollector';
+import type { IpcChannel } from './IpcChannel';
 
 export const IpcChannelDefinitions = {
   CodeRunner: defineElectronIpcChannel<CodeRunner>('code-run', ['runCode']),

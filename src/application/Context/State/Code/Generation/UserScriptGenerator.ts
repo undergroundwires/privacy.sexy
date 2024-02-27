@@ -1,12 +1,12 @@
-import { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
-import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
-import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import type { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
+import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { CodePosition } from '../Position/CodePosition';
-import { IUserScriptGenerator } from './IUserScriptGenerator';
-import { IUserScript } from './IUserScript';
-import { ICodeBuilder } from './ICodeBuilder';
-import { ICodeBuilderFactory } from './ICodeBuilderFactory';
 import { CodeBuilderFactory } from './CodeBuilderFactory';
+import type { IUserScriptGenerator } from './IUserScriptGenerator';
+import type { IUserScript } from './IUserScript';
+import type { ICodeBuilder } from './ICodeBuilder';
+import type { ICodeBuilderFactory } from './ICodeBuilderFactory';
 
 export class UserScriptGenerator implements IUserScriptGenerator {
   constructor(private readonly codeBuilderFactory: ICodeBuilderFactory = new CodeBuilderFactory()) {

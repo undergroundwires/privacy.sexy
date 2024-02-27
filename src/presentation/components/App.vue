@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { defineAsyncComponent, defineComponent, Component } from 'vue';
+import { defineAsyncComponent, defineComponent, type Component } from 'vue';
 import TheHeader from '@/presentation/components/TheHeader.vue';
 import TheFooter from '@/presentation/components/TheFooter/TheFooter.vue';
 import TheCodeButtons from '@/presentation/components/Code/CodeButtons/TheCodeButtons.vue';

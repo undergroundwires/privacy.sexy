@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { buildContext } from '@/application/Context/ApplicationContextFactory';
-import { IApplicationFactory } from '@/application/IApplicationFactory';
-import { IApplication } from '@/domain/IApplication';
+import type { IApplicationFactory } from '@/application/IApplicationFactory';
+import type { IApplication } from '@/domain/IApplication';
 import { RuntimeEnvironmentStub } from '@tests/unit/shared/Stubs/RuntimeEnvironmentStub';
 import { ApplicationStub } from '@tests/unit/shared/Stubs/ApplicationStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';

@@ -1,4 +1,4 @@
-import { ICodePosition } from './ICodePosition';
+import type { ICodePosition } from './ICodePosition';
 
 export class CodePosition implements ICodePosition {
   public get totalLines(): number {

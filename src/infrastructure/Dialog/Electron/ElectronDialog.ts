@@ -1,7 +1,7 @@
 import { dialog } from 'electron/main';
-import { Dialog, FileType, SaveFileOutcome } from '@/presentation/common/Dialog';
+import type { Dialog, FileType, SaveFileOutcome } from '@/presentation/common/Dialog';
 import { NodeElectronSaveFileDialog } from './NodeElectronSaveFileDialog';
-import { ElectronSaveFileDialog } from './ElectronSaveFileDialog';
+import type { ElectronSaveFileDialog } from './ElectronSaveFileDialog';
 
 export class ElectronDialog implements Dialog {
   constructor(

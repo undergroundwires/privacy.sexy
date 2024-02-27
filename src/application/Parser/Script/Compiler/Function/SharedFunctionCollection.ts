@@ -1,5 +1,5 @@
-import { ISharedFunction } from './ISharedFunction';
-import { ISharedFunctionCollection } from './ISharedFunctionCollection';
+import type { ISharedFunction } from './ISharedFunction';
+import type { ISharedFunctionCollection } from './ISharedFunctionCollection';
 
 export class SharedFunctionCollection implements ISharedFunctionCollection {
   private readonly functionsByName = new Map<string, ISharedFunction>();

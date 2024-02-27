@@ -1,4 +1,4 @@
-import { IAppMetadata } from './IAppMetadata';
+import type { IAppMetadata } from './IAppMetadata';
 
 /**
  * Designed to decouple the process of retrieving environment variables

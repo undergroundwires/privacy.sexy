@@ -1,5 +1,5 @@
 import { it, expect } from 'vitest';
-import { IPipe } from '@/application/Parser/Script/Compiler/Expressions/Pipes/IPipe';
+import type { IPipe } from '@/application/Parser/Script/Compiler/Expressions/Pipes/IPipe';
 
 export interface IPipeTestCase {
   readonly name: string;

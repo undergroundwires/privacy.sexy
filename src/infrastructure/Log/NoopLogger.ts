@@ -1,4 +1,4 @@
-import { Logger } from '@/application/Common/Log/Logger';
+import type { Logger } from '@/application/Common/Log/Logger';
 
 export class NoopLogger implements Logger {
   public info(): void { /* NOOP */ }

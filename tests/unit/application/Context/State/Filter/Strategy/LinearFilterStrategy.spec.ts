@@ -2,10 +2,10 @@ import { describe, it, expect } from 'vitest';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
-import { ICategoryCollection } from '@/domain/ICategoryCollection';
-import { ICategory } from '@/domain/ICategory';
-import { IScript } from '@/domain/IScript';
-import { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
+import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategory } from '@/domain/ICategory';
+import type { IScript } from '@/domain/IScript';
+import type { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
 import { LinearFilterStrategy } from '@/application/Context/State/Filter/Strategy/LinearFilterStrategy';
 
 describe('LinearFilterStrategy', () => {

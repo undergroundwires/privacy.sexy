@@ -1,10 +1,10 @@
-import { CallFunctionBody, FunctionBodyType, ISharedFunction } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
-import { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
-import { FunctionCallCompilationContext } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/FunctionCallCompilationContext';
-import { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
-import { SingleCallCompilerStrategy } from '../SingleCallCompilerStrategy';
-import { ArgumentCompiler } from './Argument/ArgumentCompiler';
+import { type CallFunctionBody, FunctionBodyType, type ISharedFunction } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
+import type { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
+import type { FunctionCallCompilationContext } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/FunctionCallCompilationContext';
+import type { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
 import { NestedFunctionArgumentCompiler } from './Argument/NestedFunctionArgumentCompiler';
+import type { SingleCallCompilerStrategy } from '../SingleCallCompilerStrategy';
+import type { ArgumentCompiler } from './Argument/ArgumentCompiler';
 
 export class NestedFunctionCallCompiler implements SingleCallCompilerStrategy {
   public constructor(

@@ -1,6 +1,6 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { RuntimeEnvironment } from '../RuntimeEnvironment';
 import { convertPlatformToOs } from './NodeOsMapper';
+import type { RuntimeEnvironment } from '../RuntimeEnvironment';
 
 export class NodeRuntimeEnvironment implements RuntimeEnvironment {
   public readonly isRunningAsDesktopApplication: boolean;

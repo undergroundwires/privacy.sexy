@@ -1,4 +1,4 @@
-import { CommandOps } from '@/infrastructure/CodeRunner/System/SystemOperations';
+import type { CommandOps } from '@/infrastructure/CodeRunner/System/SystemOperations';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class CommandOpsStub

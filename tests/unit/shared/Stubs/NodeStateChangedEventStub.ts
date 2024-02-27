@@ -1,5 +1,5 @@
-import { NodeStateChangedEvent } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateAccess';
-import { TreeNodeStateDescriptor } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateDescriptor';
+import type { NodeStateChangedEvent } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateAccess';
+import type { TreeNodeStateDescriptor } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateDescriptor';
 import { TreeNodeStateDescriptorStub } from '@tests/unit/shared/Stubs/TreeNodeStateDescriptorStub';
 
 export class NodeStateChangedEventStub implements NodeStateChangedEvent {

@@ -1,6 +1,6 @@
 import type { CollectionData } from '@/application/collections/';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { CategoryCollection } from '@/domain/CategoryCollection';
 import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
 import { createEnumParser } from '../Common/Enum';

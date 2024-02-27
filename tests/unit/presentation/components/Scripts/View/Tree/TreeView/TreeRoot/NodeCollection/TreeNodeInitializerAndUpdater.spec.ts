@@ -5,8 +5,8 @@ import { itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/Absent
 import { createTreeNodeParserStub } from '@tests/unit/shared/Stubs/TreeNodeParserStub';
 import { TreeNodeStub } from '@tests/unit/shared/Stubs/TreeNodeStub';
 import { TreeInputNodeDataStub } from '@tests/unit/shared/Stubs/TreeInputNodeDataStub';
-import { QueryableNodes } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/NodeCollection/Query/QueryableNodes';
-import { TreeInputNodeData } from '@/presentation/components/Scripts/View/Tree/TreeView/Bindings/TreeInputNodeData';
+import type { QueryableNodes } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/NodeCollection/Query/QueryableNodes';
+import type { TreeInputNodeData } from '@/presentation/components/Scripts/View/Tree/TreeView/Bindings/TreeInputNodeData';
 
 describe('TreeNodeInitializerAndUpdater', () => {
   describe('updateRootNodes', () => {

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { EnvironmentVariablesStub } from '@tests/unit/shared/Stubs/EnvironmentVariablesStub';
 import { validateEnvironmentVariables } from '@/infrastructure/EnvironmentVariables/EnvironmentVariablesValidator';
-import { IEnvironmentVariables } from '@/infrastructure/EnvironmentVariables/IEnvironmentVariables';
+import type { IEnvironmentVariables } from '@/infrastructure/EnvironmentVariables/IEnvironmentVariables';
 
 describe('EnvironmentVariablesValidator', () => {
   it('does not throw if all environment keys have values', () => {

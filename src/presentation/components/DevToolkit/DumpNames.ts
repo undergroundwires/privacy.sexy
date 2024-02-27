@@ -1,4 +1,4 @@
-import { IApplication } from '@/domain/IApplication';
+import type { IApplication } from '@/domain/IApplication';
 import { ApplicationFactory } from '@/application/ApplicationFactory';
 
 export async function dumpNames(): Promise<string> {

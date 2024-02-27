@@ -1,6 +1,6 @@
 // eslint-disable-next-line max-classes-per-file
 import { describe, it, expect } from 'vitest';
-import { NodeJSProcessAccessor, NodeRuntimeEnvironment, PlatformToOperatingSystemConverter } from '@/infrastructure/RuntimeEnvironment/Node/NodeRuntimeEnvironment';
+import { type NodeJSProcessAccessor, NodeRuntimeEnvironment, type PlatformToOperatingSystemConverter } from '@/infrastructure/RuntimeEnvironment/Node/NodeRuntimeEnvironment';
 import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 

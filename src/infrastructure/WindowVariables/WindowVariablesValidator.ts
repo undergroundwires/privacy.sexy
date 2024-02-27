@@ -1,10 +1,10 @@
 import { ContextIsolatedElectronDetector } from '@/infrastructure/RuntimeEnvironment/Electron/ContextIsolatedElectronDetector';
-import { ElectronEnvironmentDetector } from '@/infrastructure/RuntimeEnvironment/Electron/ElectronEnvironmentDetector';
+import type { ElectronEnvironmentDetector } from '@/infrastructure/RuntimeEnvironment/Electron/ElectronEnvironmentDetector';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import {
-  PropertyKeys, isBoolean, isFunction, isNumber, isPlainObject,
+  type PropertyKeys, isBoolean, isFunction, isNumber, isPlainObject,
 } from '@/TypeHelpers';
-import { WindowVariables } from './WindowVariables';
+import type { WindowVariables } from './WindowVariables';
 
 /**
  * Checks for consistency in runtime environment properties injected by Electron preloader.

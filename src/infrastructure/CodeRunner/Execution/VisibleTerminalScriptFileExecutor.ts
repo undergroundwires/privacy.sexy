@@ -1,13 +1,13 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { CommandOps, SystemOperations } from '@/infrastructure/CodeRunner/System/SystemOperations';
-import { Logger } from '@/application/Common/Log/Logger';
+import type { CommandOps, SystemOperations } from '@/infrastructure/CodeRunner/System/SystemOperations';
+import type { Logger } from '@/application/Common/Log/Logger';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
-import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
+import type { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
 import { NodeElectronSystemOperations } from '@/infrastructure/CodeRunner/System/NodeElectronSystemOperations';
 import { CurrentEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironmentFactory';
-import { CodeRunErrorType } from '@/application/CodeRunner/CodeRunner';
+import type { CodeRunErrorType } from '@/application/CodeRunner/CodeRunner';
 import { isString } from '@/TypeHelpers';
-import { FailedScriptFileExecution, ScriptFileExecutionOutcome, ScriptFileExecutor } from './ScriptFileExecutor';
+import type { FailedScriptFileExecution, ScriptFileExecutionOutcome, ScriptFileExecutor } from './ScriptFileExecutor';
 
 export class VisibleTerminalScriptExecutor implements ScriptFileExecutor {
   constructor(

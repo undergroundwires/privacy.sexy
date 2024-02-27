@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { ScriptingDefinitionParser } from '@/application/Parser/ScriptingDefinition/ScriptingDefinitionParser';
-import { IEnumParser } from '@/application/Common/Enum';
-import { ICodeSubstituter } from '@/application/Parser/ScriptingDefinition/ICodeSubstituter';
-import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import type { IEnumParser } from '@/application/Common/Enum';
+import type { ICodeSubstituter } from '@/application/Parser/ScriptingDefinition/ICodeSubstituter';
+import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { ProjectDetailsStub } from '@tests/unit/shared/Stubs/ProjectDetailsStub';
 import { EnumParserStub } from '@tests/unit/shared/Stubs/EnumParserStub';
 import { ScriptingDefinitionDataStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionDataStub';

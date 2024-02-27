@@ -1,5 +1,5 @@
-import { ReadOnlyTreeNode } from '../../Node/TreeNode';
-import { RenderQueueOrderer } from './RenderQueueOrderer';
+import type { ReadOnlyTreeNode } from '../../Node/TreeNode';
+import type { RenderQueueOrderer } from './RenderQueueOrderer';
 
 export class CollapsedParentOrderer implements RenderQueueOrderer {
   public orderNodes(nodes: Iterable<ReadOnlyTreeNode>): ReadOnlyTreeNode[] {

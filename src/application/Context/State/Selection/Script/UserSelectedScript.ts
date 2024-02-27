@@ -1,6 +1,6 @@
 import { BaseEntity } from '@/infrastructure/Entity/BaseEntity';
-import { IScript } from '@/domain/IScript';
-import { SelectedScript } from './SelectedScript';
+import type { IScript } from '@/domain/IScript';
+import type { SelectedScript } from './SelectedScript';
 
 type SelectedScriptId = SelectedScript['id'];
 

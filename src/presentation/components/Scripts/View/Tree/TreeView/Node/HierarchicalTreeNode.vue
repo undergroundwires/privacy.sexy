@@ -51,13 +51,13 @@
 <script lang="ts">
 import { defineComponent, computed, toRef } from 'vue';
 import ExpandCollapseTransition from '@/presentation/components/Shared/ExpandCollapse/ExpandCollapseTransition.vue';
-import { TreeRoot } from '../TreeRoot/TreeRoot';
 import { useCurrentTreeNodes } from '../UseCurrentTreeNodes';
-import { NodeRenderingStrategy } from '../Rendering/Scheduling/NodeRenderingStrategy';
 import { useNodeState } from './UseNodeState';
-import { TreeNode } from './TreeNode';
 import LeafTreeNode from './LeafTreeNode.vue';
 import InteractableNode from './InteractableNode.vue';
+import type { TreeRoot } from '../TreeRoot/TreeRoot';
+import type { TreeNode } from './TreeNode';
+import type { NodeRenderingStrategy } from '../Rendering/Scheduling/NodeRenderingStrategy';
 import type { PropType } from 'vue';
 
 export default defineComponent({

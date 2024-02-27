@@ -1,4 +1,4 @@
-import { Dialog, SaveFileOutcome } from '@/presentation/common/Dialog';
+import type { Dialog, SaveFileOutcome } from '@/presentation/common/Dialog';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class DialogStub

@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, PropType } from 'vue';
+import { defineComponent, ref, type PropType } from 'vue';
 import ExpandCollapseTransition from '@/presentation/components/Shared/ExpandCollapse/ExpandCollapseTransition.vue';
 import DocumentationText from './DocumentationText.vue';
 import ToggleDocumentationButton from './ToggleDocumentationButton.vue';

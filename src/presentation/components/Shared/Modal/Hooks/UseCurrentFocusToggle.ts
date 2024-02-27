@@ -1,4 +1,4 @@
-import { Ref, watchEffect } from 'vue';
+import { type Ref, watchEffect } from 'vue';
 
 /**
  * Manages focus transitions, ensuring good usability and accessibility.

@@ -1,10 +1,10 @@
-import { ICategoryCollection } from '@/domain/ICategoryCollection';
-import { CategorySelection } from './Category/CategorySelection';
+import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { ScriptToCategorySelectionMapper } from './Category/ScriptToCategorySelectionMapper';
 import { DebouncedScriptSelection } from './Script/DebouncedScriptSelection';
-import { ScriptSelection } from './Script/ScriptSelection';
-import { UserSelection } from './UserSelection';
-import { SelectedScript } from './Script/SelectedScript';
+import type { CategorySelection } from './Category/CategorySelection';
+import type { ScriptSelection } from './Script/ScriptSelection';
+import type { UserSelection } from './UserSelection';
+import type { SelectedScript } from './Script/SelectedScript';
 
 export class UserSelectionFacade implements UserSelection {
   public readonly categories: CategorySelection;

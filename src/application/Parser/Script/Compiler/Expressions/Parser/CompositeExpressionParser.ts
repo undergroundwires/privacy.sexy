@@ -1,7 +1,7 @@
-import { IExpression } from '../Expression/IExpression';
 import { ParameterSubstitutionParser } from '../SyntaxParsers/ParameterSubstitutionParser';
 import { WithParser } from '../SyntaxParsers/WithParser';
-import { IExpressionParser } from './IExpressionParser';
+import type { IExpression } from '../Expression/IExpression';
+import type { IExpressionParser } from './IExpressionParser';
 
 const Parsers = [
   new ParameterSubstitutionParser(),

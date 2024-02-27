@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import {
-  BrowserRuntimeEnvironmentFactory, NodeRuntimeEnvironmentFactory,
+  type BrowserRuntimeEnvironmentFactory, type NodeRuntimeEnvironmentFactory,
   determineAndCreateRuntimeEnvironment,
 } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironmentFactory';
 import { RuntimeEnvironmentStub } from '@tests/unit/shared/Stubs/RuntimeEnvironmentStub';
-import { ElectronEnvironmentDetector } from '@/infrastructure/RuntimeEnvironment/Electron/ElectronEnvironmentDetector';
+import type { ElectronEnvironmentDetector } from '@/infrastructure/RuntimeEnvironment/Electron/ElectronEnvironmentDetector';
 import { ElectronEnvironmentDetectorStub } from '@tests/unit/shared/Stubs/ElectronEnvironmentDetectorStub';
 
 describe('RuntimeEnvironmentFactory', () => {

@@ -1,5 +1,5 @@
-import { Logger } from '@/application/Common/Log/Logger';
-import { Dialog, FileType } from '@/presentation/common/Dialog';
+import type { Logger } from '@/application/Common/Log/Logger';
+import type { Dialog, FileType } from '@/presentation/common/Dialog';
 
 export function decorateWithLogging(
   dialog: Dialog,

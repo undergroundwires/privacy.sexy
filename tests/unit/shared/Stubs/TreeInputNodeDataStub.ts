@@ -1,4 +1,4 @@
-import { TreeInputNodeData } from '@/presentation/components/Scripts/View/Tree/TreeView/Bindings/TreeInputNodeData';
+import type { TreeInputNodeData } from '@/presentation/components/Scripts/View/Tree/TreeView/Bindings/TreeInputNodeData';
 
 export class TreeInputNodeDataStub implements TreeInputNodeData {
   public id = 'stub-id';

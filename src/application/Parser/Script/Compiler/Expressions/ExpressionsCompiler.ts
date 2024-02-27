@@ -1,9 +1,9 @@
-import { IExpressionEvaluationContext, ExpressionEvaluationContext } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionEvaluationContext';
-import { IReadOnlyFunctionCallArgumentCollection } from '../Function/Call/Argument/IFunctionCallArgumentCollection';
-import { IExpressionsCompiler } from './IExpressionsCompiler';
-import { IExpression } from './Expression/IExpression';
-import { IExpressionParser } from './Parser/IExpressionParser';
+import { type IExpressionEvaluationContext, ExpressionEvaluationContext } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionEvaluationContext';
 import { CompositeExpressionParser } from './Parser/CompositeExpressionParser';
+import type { IReadOnlyFunctionCallArgumentCollection } from '../Function/Call/Argument/IFunctionCallArgumentCollection';
+import type { IExpressionsCompiler } from './IExpressionsCompiler';
+import type { IExpression } from './Expression/IExpression';
+import type { IExpressionParser } from './Parser/IExpressionParser';
 
 export class ExpressionsCompiler implements IExpressionsCompiler {
   public constructor(

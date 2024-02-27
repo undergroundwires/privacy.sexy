@@ -1,6 +1,6 @@
-import { IReadOnlyFunctionCallArgumentCollection } from '../../Function/Call/Argument/IFunctionCallArgumentCollection';
-import { IPipelineCompiler } from '../Pipes/IPipelineCompiler';
 import { PipelineCompiler } from '../Pipes/PipelineCompiler';
+import type { IReadOnlyFunctionCallArgumentCollection } from '../../Function/Call/Argument/IFunctionCallArgumentCollection';
+import type { IPipelineCompiler } from '../Pipes/IPipelineCompiler';
 
 export interface IExpressionEvaluationContext {
   readonly args: IReadOnlyFunctionCallArgumentCollection;

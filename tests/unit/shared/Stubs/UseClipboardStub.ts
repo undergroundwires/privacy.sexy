@@ -1,5 +1,5 @@
 import { useClipboard } from '@/presentation/components/Shared/Hooks/Clipboard/UseClipboard';
-import { Clipboard } from '@/presentation/components/Shared/Hooks/Clipboard/Clipboard';
+import type { Clipboard } from '@/presentation/components/Shared/Hooks/Clipboard/Clipboard';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 import { ClipboardStub } from './ClipboardStub';
 

@@ -1,7 +1,7 @@
 import { BaseEntity } from '@/infrastructure/Entity/BaseEntity';
-import { IScript } from '@/domain/IScript';
+import type { IScript } from '@/domain/IScript';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
-import { IScriptCode } from '@/domain/IScriptCode';
+import type { IScriptCode } from '@/domain/IScriptCode';
 import { SelectedScriptStub } from './SelectedScriptStub';
 
 export class ScriptStub extends BaseEntity<string> implements IScript {

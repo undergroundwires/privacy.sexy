@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { useScriptDiagnosticsCollector } from '@/presentation/components/Shared/Hooks/UseScriptDiagnosticsCollector';
 import { ScriptDiagnosticsCollectorStub } from '@tests/unit/shared/Stubs/ScriptDiagnosticsCollectorStub';
-import { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
+import type { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
 
 describe('useScriptDiagnosticsCollector', () => {
   it('returns undefined if collector is not present on the window object', () => {

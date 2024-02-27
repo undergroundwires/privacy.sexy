@@ -1,11 +1,11 @@
 import type { FunctionData } from '@/application/collections/';
-import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
-import { IScriptCompiler } from './Compiler/IScriptCompiler';
+import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { ScriptCompiler } from './Compiler/ScriptCompiler';
-import { ICategoryCollectionParseContext } from './ICategoryCollectionParseContext';
 import { SyntaxFactory } from './Validation/Syntax/SyntaxFactory';
-import { ISyntaxFactory } from './Validation/Syntax/ISyntaxFactory';
-import { ILanguageSyntax } from './Validation/Syntax/ILanguageSyntax';
+import type { ILanguageSyntax } from './Validation/Syntax/ILanguageSyntax';
+import type { IScriptCompiler } from './Compiler/IScriptCompiler';
+import type { ICategoryCollectionParseContext } from './ICategoryCollectionParseContext';
+import type { ISyntaxFactory } from './Validation/Syntax/ISyntaxFactory';
 
 export class CategoryCollectionParseContext implements ICategoryCollectionParseContext {
   public readonly compiler: IScriptCompiler;

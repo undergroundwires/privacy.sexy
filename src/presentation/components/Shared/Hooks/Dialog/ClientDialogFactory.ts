@@ -1,5 +1,5 @@
-import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
-import { Dialog } from '@/presentation/common/Dialog';
+import type { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
+import type { Dialog } from '@/presentation/common/Dialog';
 import { BrowserDialog } from '@/infrastructure/Dialog/Browser/BrowserDialog';
 import { decorateWithLogging } from '@/infrastructure/Dialog/LoggingDialogDecorator';
 import { ClientLoggerFactory } from '../Log/ClientLoggerFactory';

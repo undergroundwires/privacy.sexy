@@ -1,9 +1,9 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { Logger } from '@/application/Common/Log/Logger';
-import { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
-import { CodeRunner } from '@/application/CodeRunner/CodeRunner';
-import { Dialog } from '@/presentation/common/Dialog';
-import { ScriptDiagnosticsCollector } from '@/application/ScriptDiagnostics/ScriptDiagnosticsCollector';
+import type { Logger } from '@/application/Common/Log/Logger';
+import type { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
+import type { CodeRunner } from '@/application/CodeRunner/CodeRunner';
+import type { Dialog } from '@/presentation/common/Dialog';
+import type { ScriptDiagnosticsCollector } from '@/application/ScriptDiagnostics/ScriptDiagnosticsCollector';
 import { LoggerStub } from './LoggerStub';
 import { CodeRunnerStub } from './CodeRunnerStub';
 import { DialogStub } from './DialogStub';

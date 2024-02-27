@@ -1,8 +1,8 @@
-import { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { ReadonlyFilterContext, FilterContext } from './Filter/FilterContext';
-import { ReadonlyUserSelection, UserSelection } from './Selection/UserSelection';
-import { IApplicationCode } from './Code/IApplicationCode';
+import type { IApplicationCode } from './Code/IApplicationCode';
+import type { ReadonlyFilterContext, FilterContext } from './Filter/FilterContext';
+import type { ReadonlyUserSelection, UserSelection } from './Selection/UserSelection';
 
 export interface IReadOnlyCategoryCollectionState {
   readonly code: IApplicationCode;

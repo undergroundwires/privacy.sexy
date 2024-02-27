@@ -1,5 +1,5 @@
-import { IPipeFactory, PipeFactory } from './PipeFactory';
-import { IPipelineCompiler } from './IPipelineCompiler';
+import { type IPipeFactory, PipeFactory } from './PipeFactory';
+import type { IPipelineCompiler } from './IPipelineCompiler';
 
 export class PipelineCompiler implements IPipelineCompiler {
   constructor(private readonly factory: IPipeFactory = new PipeFactory()) { }

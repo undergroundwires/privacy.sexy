@@ -1,10 +1,10 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { IEnvironmentVariables } from '@/infrastructure/EnvironmentVariables/IEnvironmentVariables';
+import type { IEnvironmentVariables } from '@/infrastructure/EnvironmentVariables/IEnvironmentVariables';
 import { EnvironmentVariablesFactory } from '@/infrastructure/EnvironmentVariables/EnvironmentVariablesFactory';
-import { RuntimeEnvironment } from '../RuntimeEnvironment';
 import { ConditionBasedOsDetector } from './BrowserOs/ConditionBasedOsDetector';
-import { BrowserEnvironment, BrowserOsDetector } from './BrowserOs/BrowserOsDetector';
 import { isTouchEnabledDevice } from './TouchSupportDetection';
+import type { RuntimeEnvironment } from '../RuntimeEnvironment';
+import type { BrowserEnvironment, BrowserOsDetector } from './BrowserOs/BrowserOsDetector';
 
 export class BrowserRuntimeEnvironment implements RuntimeEnvironment {
   public readonly isRunningAsDesktopApplication: boolean;

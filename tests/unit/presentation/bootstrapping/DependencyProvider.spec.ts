@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { VueDependencyInjectionApiStub } from '@tests/unit/shared/Stubs/VueDependencyInjectionApiStub';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
-import { provideDependencies, VueDependencyInjectionApi } from '@/presentation/bootstrapping/DependencyProvider';
+import { provideDependencies, type VueDependencyInjectionApi } from '@/presentation/bootstrapping/DependencyProvider';
 import { ApplicationContextStub } from '@tests/unit/shared/Stubs/ApplicationContextStub';
 import { itIsSingleton } from '@tests/unit/shared/TestCases/SingletonTests';
 

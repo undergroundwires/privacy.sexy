@@ -1,9 +1,9 @@
-import { onMounted, onUnmounted, Ref } from 'vue';
-import { TreeRoot } from './TreeRoot/TreeRoot';
+import { onMounted, onUnmounted, type Ref } from 'vue';
 import { TreeNodeCheckState } from './Node/State/CheckState';
-import { SingleNodeFocusManager } from './TreeRoot/Focus/SingleNodeFocusManager';
-import { QueryableNodes } from './TreeRoot/NodeCollection/Query/QueryableNodes';
-import { TreeNode } from './Node/TreeNode';
+import type { TreeNode } from './Node/TreeNode';
+import type { TreeRoot } from './TreeRoot/TreeRoot';
+import type { SingleNodeFocusManager } from './TreeRoot/Focus/SingleNodeFocusManager';
+import type { QueryableNodes } from './TreeRoot/NodeCollection/Query/QueryableNodes';
 
 type TreeNavigationKeyCodes = 'ArrowLeft' | 'ArrowUp' | 'ArrowRight' | 'ArrowDown' | ' ' | 'Enter';
 

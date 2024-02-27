@@ -1,4 +1,4 @@
-import { IScriptingLanguageFactory } from '@/application/Common/ScriptingLanguage/IScriptingLanguageFactory';
-import { ICodeBuilder } from './ICodeBuilder';
+import type { IScriptingLanguageFactory } from '@/application/Common/ScriptingLanguage/IScriptingLanguageFactory';
+import type { ICodeBuilder } from './ICodeBuilder';
 
 export type ICodeBuilderFactory = IScriptingLanguageFactory<ICodeBuilder>;

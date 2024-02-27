@@ -4,13 +4,13 @@ import { CategoryCollectionState } from '@/application/Context/State/CategoryCol
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { ScriptingDefinitionStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionStub';
-import { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { ApplicationCodeStub } from '@tests/unit/shared/Stubs/ApplicationCodeStub';
-import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
-import { ReadonlyScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
+import type { ReadonlyScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
 import { ScriptSelectionStub } from '@tests/unit/shared/Stubs/ScriptSelectionStub';
-import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import type { CodeFactory, FilterFactory, SelectionFactory } from '@/application/Context/State/CategoryCollectionState';
 import { FilterContextStub } from '@tests/unit/shared/Stubs/FilterContextStub';
 

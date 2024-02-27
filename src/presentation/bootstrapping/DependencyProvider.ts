@@ -1,15 +1,15 @@
-import { InjectionKey, provide, inject } from 'vue';
+import { type InjectionKey, provide, inject } from 'vue';
 import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
 import { useApplication } from '@/presentation/components/Shared/Hooks/UseApplication';
 import { useAutoUnsubscribedEvents } from '@/presentation/components/Shared/Hooks/UseAutoUnsubscribedEvents';
 import { useClipboard } from '@/presentation/components/Shared/Hooks/Clipboard/UseClipboard';
 import { useCurrentCode } from '@/presentation/components/Shared/Hooks/UseCurrentCode';
-import { IApplicationContext } from '@/application/Context/IApplicationContext';
+import type { IApplicationContext } from '@/application/Context/IApplicationContext';
 import {
-  AnyLifetimeInjectionKey, InjectionKeySelector, InjectionKeys, SingletonKey,
-  TransientKey, injectKey,
+  type AnyLifetimeInjectionKey, type InjectionKeySelector, InjectionKeys, type SingletonKey,
+  type TransientKey, injectKey,
 } from '@/presentation/injectionSymbols';
-import { PropertyKeys } from '@/TypeHelpers';
+import type { PropertyKeys } from '@/TypeHelpers';
 import { useUserSelectionState } from '@/presentation/components/Shared/Hooks/UseUserSelectionState';
 import { useLogger } from '@/presentation/components/Shared/Hooks/Log/UseLogger';
 import { useCodeRunner } from '@/presentation/components/Shared/Hooks/UseCodeRunner';

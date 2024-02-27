@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { BrowserClipboard, NavigatorClipboard } from '@/presentation/components/Shared/Hooks/Clipboard/BrowserClipboard';
+import { BrowserClipboard, type NavigatorClipboard } from '@/presentation/components/Shared/Hooks/Clipboard/BrowserClipboard';
 import { StubWithObservableMethodCalls } from '@tests/unit/shared/Stubs/StubWithObservableMethodCalls';
 import { expectThrowsAsync } from '@tests/shared/Assertions/ExpectThrowsAsync';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';

@@ -1,5 +1,5 @@
-import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
-import { IScript } from '@/domain/IScript';
+import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import type { IScript } from '@/domain/IScript';
 
 export class SelectedScriptStub implements SelectedScript {
   public readonly script: IScript;

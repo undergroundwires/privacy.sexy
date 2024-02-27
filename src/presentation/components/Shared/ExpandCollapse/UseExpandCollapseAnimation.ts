@@ -1,5 +1,5 @@
 import { PlatformTimer } from '@/application/Common/Timing/PlatformTimer';
-import { Timer } from '@/application/Common/Timing/Timer';
+import type { Timer } from '@/application/Common/Timing/Timer';
 
 export type AnimationFunction = (element: Element) => Promise<void>;
 

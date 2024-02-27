@@ -1,16 +1,16 @@
 import {
   type Ref, shallowRef, triggerRef, watch,
 } from 'vue';
-import { ReadOnlyTreeNode } from '../Node/TreeNode';
 import { useNodeStateChangeAggregator } from '../UseNodeStateChangeAggregator';
-import { TreeRoot } from '../TreeRoot/TreeRoot';
 import { useCurrentTreeNodes } from '../UseCurrentTreeNodes';
-import { QueryableNodes } from '../TreeRoot/NodeCollection/Query/QueryableNodes';
-import { NodeRenderingStrategy } from './Scheduling/NodeRenderingStrategy';
-import { DelayScheduler } from './DelayScheduler';
 import { TimeoutDelayScheduler } from './Scheduling/TimeoutDelayScheduler';
-import { RenderQueueOrderer } from './Ordering/RenderQueueOrderer';
 import { CollapsedParentOrderer } from './Ordering/CollapsedParentOrderer';
+import type { ReadOnlyTreeNode } from '../Node/TreeNode';
+import type { TreeRoot } from '../TreeRoot/TreeRoot';
+import type { QueryableNodes } from '../TreeRoot/NodeCollection/Query/QueryableNodes';
+import type { NodeRenderingStrategy } from './Scheduling/NodeRenderingStrategy';
+import type { DelayScheduler } from './DelayScheduler';
+import type { RenderQueueOrderer } from './Ordering/RenderQueueOrderer';
 
 export interface NodeRenderingControl {
   readonly renderingStrategy: NodeRenderingStrategy;

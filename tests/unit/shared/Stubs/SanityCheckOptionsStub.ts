@@ -1,4 +1,4 @@
-import { ISanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/ISanityCheckOptions';
+import type { ISanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/ISanityCheckOptions';
 
 export class SanityCheckOptionsStub implements ISanityCheckOptions {
   public validateWindowVariables = false;

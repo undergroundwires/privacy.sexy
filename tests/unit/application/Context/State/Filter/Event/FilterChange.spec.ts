@@ -3,7 +3,7 @@ import { FilterChange } from '@/application/Context/State/Filter/Event/FilterCha
 import { FilterResultStub } from '@tests/unit/shared/Stubs/FilterResultStub';
 import { FilterActionType } from '@/application/Context/State/Filter/Event/FilterActionType';
 import { FilterChangeDetailsVisitorStub } from '@tests/unit/shared/Stubs/FilterChangeDetailsVisitorStub';
-import { ApplyFilterAction } from '@/application/Context/State/Filter/Event/FilterChangeDetails';
+import type { ApplyFilterAction } from '@/application/Context/State/Filter/Event/FilterChangeDetails';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 describe('FilterChange', () => {

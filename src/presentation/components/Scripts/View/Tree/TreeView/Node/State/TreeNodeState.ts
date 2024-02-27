@@ -1,8 +1,8 @@
 import { EventSource } from '@/infrastructure/Events/EventSource';
-import { NodeStateChangedEvent, TreeNodeStateAccess, TreeNodeStateTransaction } from './StateAccess';
-import { TreeNodeStateDescriptor } from './StateDescriptor';
-import { TreeNodeCheckState } from './CheckState';
 import { TreeNodeStateTransactionDescriber } from './TreeNodeStateTransactionDescriber';
+import { TreeNodeCheckState } from './CheckState';
+import type { NodeStateChangedEvent, TreeNodeStateAccess, TreeNodeStateTransaction } from './StateAccess';
+import type { TreeNodeStateDescriptor } from './StateDescriptor';
 
 export class TreeNodeState implements TreeNodeStateAccess {
   public current: TreeNodeStateDescriptor = {

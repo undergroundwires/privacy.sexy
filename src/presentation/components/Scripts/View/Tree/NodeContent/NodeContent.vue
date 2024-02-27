@@ -14,11 +14,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
-import { NodeMetadata } from './NodeMetadata';
+import { defineComponent, type PropType } from 'vue';
 import RevertToggle from './RevertToggle.vue';
 import DocumentableNode from './Documentation/DocumentableNode.vue';
 import NodeTitle from './NodeTitle.vue';
+import type { NodeMetadata } from './NodeMetadata';
 
 export default defineComponent({
   components: {

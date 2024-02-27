@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { ApiFacadeFactory, IpcConsumerProxyCreator, provideWindowVariables } from '@/presentation/electron/preload/ContextBridging/RendererApiProvider';
+import { type ApiFacadeFactory, type IpcConsumerProxyCreator, provideWindowVariables } from '@/presentation/electron/preload/ContextBridging/RendererApiProvider';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { Logger } from '@/application/Common/Log/Logger';
+import type { Logger } from '@/application/Common/Log/Logger';
 import { LoggerStub } from '@tests/unit/shared/Stubs/LoggerStub';
-import { PropertyKeys } from '@/TypeHelpers';
-import { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
+import type { PropertyKeys } from '@/TypeHelpers';
+import type { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
 import { IpcChannelDefinitions } from '@/presentation/electron/shared/IpcBridging/IpcChannelDefinitions';
-import { IpcChannel } from '@/presentation/electron/shared/IpcBridging/IpcChannel';
+import type { IpcChannel } from '@/presentation/electron/shared/IpcBridging/IpcChannel';
 
 describe('RendererApiProvider', () => {
   describe('provideWindowVariables', () => {

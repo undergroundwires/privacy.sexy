@@ -1,6 +1,6 @@
 import { ref } from 'vue';
-import { IApplicationCode } from '@/application/Context/State/Code/IApplicationCode';
-import { IEventSubscriptionCollection } from '@/infrastructure/Events/IEventSubscriptionCollection';
+import type { IApplicationCode } from '@/application/Context/State/Code/IApplicationCode';
+import type { IEventSubscriptionCollection } from '@/infrastructure/Events/IEventSubscriptionCollection';
 import { useCollectionState } from './UseCollectionState';
 
 export function useCurrentCode(

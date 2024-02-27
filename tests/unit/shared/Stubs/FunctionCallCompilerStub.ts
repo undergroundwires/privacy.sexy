@@ -1,7 +1,7 @@
-import { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
-import { FunctionCallCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/FunctionCallCompiler';
-import { ISharedFunctionCollection } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionCollection';
-import { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
+import type { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
+import type { FunctionCallCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/FunctionCallCompiler';
+import type { ISharedFunctionCollection } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionCollection';
+import type { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
 
 interface IScenario {
   calls: FunctionCall[];

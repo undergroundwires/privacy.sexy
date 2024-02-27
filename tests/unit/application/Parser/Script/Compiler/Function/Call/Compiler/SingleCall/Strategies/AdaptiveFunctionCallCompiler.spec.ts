@@ -4,13 +4,13 @@ import type { FunctionCallParametersData } from '@/application/collections/';
 import { FunctionCallStub } from '@tests/unit/shared/Stubs/FunctionCallStub';
 import { SharedFunctionCollectionStub } from '@tests/unit/shared/Stubs/SharedFunctionCollectionStub';
 import { AdaptiveFunctionCallCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/SingleCall/AdaptiveFunctionCallCompiler';
-import { SingleCallCompilerStrategy } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/SingleCall/SingleCallCompilerStrategy';
+import type { SingleCallCompilerStrategy } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/SingleCall/SingleCallCompilerStrategy';
 import { SingleCallCompilerStrategyStub } from '@tests/unit/shared/Stubs/SingleCallCompilerStrategyStub';
-import { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
-import { FunctionCallCompilationContext } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/FunctionCallCompilationContext';
+import type { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
+import type { FunctionCallCompilationContext } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/FunctionCallCompilationContext';
 import { FunctionCallCompilationContextStub } from '@tests/unit/shared/Stubs/FunctionCallCompilationContextStub';
 import { CompiledCodeStub } from '@tests/unit/shared/Stubs/CompiledCodeStub';
-import { SingleCallCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/SingleCall/SingleCallCompiler';
+import type { SingleCallCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/SingleCall/SingleCallCompiler';
 
 describe('AdaptiveFunctionCallCompiler', () => {
   describe('compileSingleCall', () => {

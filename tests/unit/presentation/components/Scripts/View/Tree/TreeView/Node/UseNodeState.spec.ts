@@ -3,7 +3,7 @@ import {
   shallowRef, defineComponent, nextTick, type Ref,
 } from 'vue';
 import { shallowMount } from '@vue/test-utils';
-import { ReadOnlyTreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
+import type { ReadOnlyTreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
 import { useNodeState } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/UseNodeState';
 import { TreeNodeStateDescriptorStub } from '@tests/unit/shared/Stubs/TreeNodeStateDescriptorStub';
 import { TreeNodeStub } from '@tests/unit/shared/Stubs/TreeNodeStub';

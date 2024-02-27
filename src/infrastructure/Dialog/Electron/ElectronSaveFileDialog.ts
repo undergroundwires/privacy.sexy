@@ -1,4 +1,4 @@
-import { FileType, SaveFileOutcome } from '@/presentation/common/Dialog';
+import type { FileType, SaveFileOutcome } from '@/presentation/common/Dialog';
 
 export interface ElectronSaveFileDialog {
   saveFile(

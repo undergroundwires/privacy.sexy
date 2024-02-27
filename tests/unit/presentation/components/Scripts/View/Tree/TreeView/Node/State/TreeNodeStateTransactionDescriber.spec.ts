@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { TreeNodeStateTransactionDescriber } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/TreeNodeStateTransactionDescriber';
-import { TreeNodeStateDescriptor } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateDescriptor';
-import { PropertyKeys } from '@/TypeHelpers';
-import { TreeNodeStateTransaction } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateAccess';
+import type { TreeNodeStateDescriptor } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateDescriptor';
+import type { PropertyKeys } from '@/TypeHelpers';
+import type { TreeNodeStateTransaction } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateAccess';
 import { TreeNodeCheckState } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/CheckState';
 
 describe('TreeNodeStateTransactionDescriber', () => {

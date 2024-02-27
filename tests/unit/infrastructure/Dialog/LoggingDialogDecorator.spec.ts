@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { Logger } from '@/application/Common/Log/Logger';
+import type { Logger } from '@/application/Common/Log/Logger';
 import { decorateWithLogging } from '@/infrastructure/Dialog/LoggingDialogDecorator';
-import { Dialog, FileType, SaveFileOutcome } from '@/presentation/common/Dialog';
+import { type Dialog, FileType, type SaveFileOutcome } from '@/presentation/common/Dialog';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { DialogStub } from '@tests/unit/shared/Stubs/DialogStub';
 import { LoggerStub } from '@tests/unit/shared/Stubs/LoggerStub';

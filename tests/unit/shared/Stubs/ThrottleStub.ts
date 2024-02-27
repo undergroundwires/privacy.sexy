@@ -1,4 +1,4 @@
-import { CallbackType, throttle } from '@/application/Common/Timing/Throttle';
+import type { CallbackType, throttle } from '@/application/Common/Timing/Throttle';
 
 export class ThrottleStub {
   public readonly throttleInitializationCallArgs: Array<Parameters<typeof throttle>> = [];

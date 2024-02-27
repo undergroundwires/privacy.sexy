@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import { FilterChangeDetailsStub } from '@tests/unit/shared/Stubs/FilterChangeDetailsStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
-import { FilterChangeDetails } from '@/application/Context/State/Filter/Event/FilterChangeDetails';
+import type { FilterChangeDetails } from '@/application/Context/State/Filter/Event/FilterChangeDetails';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { AdaptiveFilterContext } from '@/application/Context/State/Filter/AdaptiveFilterContext';
 import { FilterResultStub } from '@tests/unit/shared/Stubs/FilterResultStub';
 import { FilterStrategyStub } from '@tests/unit/shared/Stubs/FilterStrategyStub';
 import type { FilterStrategy } from '@/application/Context/State/Filter/Strategy/FilterStrategy';
-import { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
-import { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
+import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 
 describe('AdaptiveFilterContext', () => {
   describe('clearFilter', () => {

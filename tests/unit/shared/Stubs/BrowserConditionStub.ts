@@ -1,5 +1,5 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { BrowserCondition, TouchSupportExpectation } from '@/infrastructure/RuntimeEnvironment/Browser/BrowserOs/BrowserCondition';
+import type { BrowserCondition, TouchSupportExpectation } from '@/infrastructure/RuntimeEnvironment/Browser/BrowserOs/BrowserCondition';
 
 export class BrowserConditionStub implements BrowserCondition {
   public operatingSystem: OperatingSystem = OperatingSystem.Android;

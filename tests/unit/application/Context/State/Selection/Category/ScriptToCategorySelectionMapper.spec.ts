@@ -1,14 +1,14 @@
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
-import { ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
-import { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
+import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { ScriptToCategorySelectionMapper } from '@/application/Context/State/Selection/Category/ScriptToCategorySelectionMapper';
 import { ScriptSelectionStub } from '@tests/unit/shared/Stubs/ScriptSelectionStub';
-import { CategorySelectionChange } from '@/application/Context/State/Selection/Category/CategorySelectionChange';
-import { ScriptSelectionChange, ScriptSelectionChangeCommand } from '@/application/Context/State/Selection/Script/ScriptSelectionChange';
+import type { CategorySelectionChange } from '@/application/Context/State/Selection/Category/CategorySelectionChange';
+import type { ScriptSelectionChange, ScriptSelectionChangeCommand } from '@/application/Context/State/Selection/Script/ScriptSelectionChange';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
-import { ICategory, IScript } from '@/domain/ICategory';
+import type { ICategory, IScript } from '@/domain/ICategory';
 
 describe('ScriptToCategorySelectionMapper', () => {
   describe('areAllScriptsSelected', () => {

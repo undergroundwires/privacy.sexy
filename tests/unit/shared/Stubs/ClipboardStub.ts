@@ -1,4 +1,4 @@
-import { Clipboard } from '@/presentation/components/Shared/Hooks/Clipboard/Clipboard';
+import type { Clipboard } from '@/presentation/components/Shared/Hooks/Clipboard/Clipboard';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class ClipboardStub

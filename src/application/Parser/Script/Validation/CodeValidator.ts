@@ -1,6 +1,6 @@
-import { ICodeValidationRule, IInvalidCodeLine } from './ICodeValidationRule';
-import { ICodeValidator } from './ICodeValidator';
-import { ICodeLine } from './ICodeLine';
+import type { ICodeLine } from './ICodeLine';
+import type { ICodeValidationRule, IInvalidCodeLine } from './ICodeValidationRule';
+import type { ICodeValidator } from './ICodeValidator';
 
 export class CodeValidator implements ICodeValidator {
   public static readonly instance: ICodeValidator = new CodeValidator();

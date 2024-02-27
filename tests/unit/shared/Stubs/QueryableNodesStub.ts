@@ -1,5 +1,5 @@
-import { TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
-import { QueryableNodes } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/NodeCollection/Query/QueryableNodes';
+import type { TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
+import type { QueryableNodes } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/NodeCollection/Query/QueryableNodes';
 import { TreeNodeStub } from './TreeNodeStub';
 
 export class QueryableNodesStub implements QueryableNodes {

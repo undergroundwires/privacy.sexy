@@ -1,15 +1,15 @@
 import { describe, it, expect } from 'vitest';
 import { ApplicationCode } from '@/application/Context/State/Code/ApplicationCode';
-import { ICodeChangedEvent } from '@/application/Context/State/Code/Event/ICodeChangedEvent';
-import { IUserScriptGenerator } from '@/application/Context/State/Code/Generation/IUserScriptGenerator';
+import type { ICodeChangedEvent } from '@/application/Context/State/Code/Event/ICodeChangedEvent';
+import type { IUserScriptGenerator } from '@/application/Context/State/Code/Generation/IUserScriptGenerator';
 import { CodePosition } from '@/application/Context/State/Code/Position/CodePosition';
-import { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
-import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
-import { IUserScript } from '@/application/Context/State/Code/Generation/IUserScript';
+import type { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
+import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import type { IUserScript } from '@/application/Context/State/Code/Generation/IUserScript';
 import { ScriptingDefinitionStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
-import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { ScriptSelectionStub } from '@tests/unit/shared/Stubs/ScriptSelectionStub';
 
 describe('ApplicationCode', () => {

@@ -1,16 +1,16 @@
 import {
-  Ref, shallowReadonly, shallowRef,
+  type Ref, shallowReadonly, shallowRef,
 } from 'vue';
-import { IScript } from '@/domain/IScript';
-import { ICategory } from '@/domain/ICategory';
+import type { IScript } from '@/domain/IScript';
+import type { ICategory } from '@/domain/ICategory';
 import { injectKey } from '@/presentation/injectionSymbols';
-import { ReadonlyFilterContext } from '@/application/Context/State/Filter/FilterContext';
-import { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
-import { TreeViewFilterEvent, createFilterRemovedEvent, createFilterTriggeredEvent } from '../TreeView/Bindings/TreeInputFilterEvent';
-import { NodeMetadata } from '../NodeContent/NodeMetadata';
-import { ReadOnlyTreeNode } from '../TreeView/Node/TreeNode';
+import type { ReadonlyFilterContext } from '@/application/Context/State/Filter/FilterContext';
+import type { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
+import { type TreeViewFilterEvent, createFilterRemovedEvent, createFilterTriggeredEvent } from '../TreeView/Bindings/TreeInputFilterEvent';
 import { getNodeMetadata } from './TreeNodeMetadataConverter';
 import { getCategoryNodeId, getScriptNodeId } from './CategoryNodeMetadataConverter';
+import type { NodeMetadata } from '../NodeContent/NodeMetadata';
+import type { ReadOnlyTreeNode } from '../TreeView/Node/TreeNode';
 
 type TreeNodeFilterResultPredicate = (
   node: ReadOnlyTreeNode,

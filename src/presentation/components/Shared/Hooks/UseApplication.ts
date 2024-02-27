@@ -1,4 +1,4 @@
-import { IApplication } from '@/domain/IApplication';
+import type { IApplication } from '@/domain/IApplication';
 
 export function useApplication(application: IApplication) {
   return {

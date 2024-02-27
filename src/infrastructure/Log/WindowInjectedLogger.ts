@@ -1,5 +1,5 @@
-import { Logger } from '@/application/Common/Log/Logger';
-import { WindowVariables } from '../WindowVariables/WindowVariables';
+import type { Logger } from '@/application/Common/Log/Logger';
+import type { WindowVariables } from '../WindowVariables/WindowVariables';
 
 export class WindowInjectedLogger implements Logger {
   private readonly logger: Logger;

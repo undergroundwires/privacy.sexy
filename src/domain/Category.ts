@@ -1,6 +1,6 @@
 import { BaseEntity } from '../infrastructure/Entity/BaseEntity';
-import { IScript } from './IScript';
-import { ICategory } from './ICategory';
+import type { ICategory } from './ICategory';
+import type { IScript } from './IScript';
 
 export class Category extends BaseEntity<number> implements ICategory {
   private allSubScripts?: ReadonlyArray<IScript> = undefined;

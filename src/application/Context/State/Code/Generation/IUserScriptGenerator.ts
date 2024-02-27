@@ -1,6 +1,6 @@
-import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
-import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
-import { IUserScript } from './IUserScript';
+import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import type { IUserScript } from './IUserScript';
 
 export interface IUserScriptGenerator {
   buildCode(

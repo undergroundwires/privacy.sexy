@@ -17,10 +17,10 @@ import {
   defineComponent, onUnmounted, onMounted, ref,
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
-import { ICodeChangedEvent } from '@/application/Context/State/Code/Event/ICodeChangedEvent';
-import { IScript } from '@/domain/IScript';
+import type { ICodeChangedEvent } from '@/application/Context/State/Code/Event/ICodeChangedEvent';
+import type { IScript } from '@/domain/IScript';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
-import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import type { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { CodeBuilderFactory } from '@/application/Context/State/Code/Generation/CodeBuilderFactory';
 import SizeObserver from '@/presentation/components/Shared/SizeObserver.vue';
 import { NonCollapsing } from '@/presentation/components/Scripts/View/Cards/NonCollapsingDirective';

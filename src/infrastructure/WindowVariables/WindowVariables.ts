@@ -1,8 +1,8 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { Logger } from '@/application/Common/Log/Logger';
-import { CodeRunner } from '@/application/CodeRunner/CodeRunner';
-import { Dialog } from '@/presentation/common/Dialog';
-import { ScriptDiagnosticsCollector } from '@/application/ScriptDiagnostics/ScriptDiagnosticsCollector';
+import type { Logger } from '@/application/Common/Log/Logger';
+import type { CodeRunner } from '@/application/CodeRunner/CodeRunner';
+import type { Dialog } from '@/presentation/common/Dialog';
+import type { ScriptDiagnosticsCollector } from '@/application/ScriptDiagnostics/ScriptDiagnosticsCollector';
 
 /* Primary entry point for platform-specific injections */
 export interface WindowVariables {

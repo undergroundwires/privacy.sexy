@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { IEntity } from '@/infrastructure/Entity/IEntity';
+import type { IEntity } from '@/infrastructure/Entity/IEntity';
 import { parseCategoryCollection } from '@/application/Parser/CategoryCollectionParser';
 import { parseCategory } from '@/application/Parser/CategoryParser';
 import { OperatingSystem } from '@/domain/OperatingSystem';

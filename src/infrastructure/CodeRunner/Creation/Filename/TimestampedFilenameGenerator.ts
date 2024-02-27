@@ -1,5 +1,5 @@
-import { ScriptFilenameParts } from '../ScriptFileCreator';
-import { FilenameGenerator } from './FilenameGenerator';
+import type { FilenameGenerator } from './FilenameGenerator';
+import type { ScriptFilenameParts } from '../ScriptFileCreator';
 
 export class TimestampedFilenameGenerator implements FilenameGenerator {
   public generateFilename(

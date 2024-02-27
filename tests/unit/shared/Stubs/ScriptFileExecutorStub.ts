@@ -1,4 +1,4 @@
-import { ScriptFileExecutionOutcome, ScriptFileExecutor } from '@/infrastructure/CodeRunner/Execution/ScriptFileExecutor';
+import type { ScriptFileExecutionOutcome, ScriptFileExecutor } from '@/infrastructure/CodeRunner/Execution/ScriptFileExecutor';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class ScriptFileExecutorStub

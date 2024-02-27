@@ -1,5 +1,5 @@
-import { IFunctionCallArgument } from '@/application/Parser/Script/Compiler/Function/Call/Argument/IFunctionCallArgument';
-import { IFunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/Function/Call/Argument/IFunctionCallArgumentCollection';
+import type { IFunctionCallArgument } from '@/application/Parser/Script/Compiler/Function/Call/Argument/IFunctionCallArgument';
+import type { IFunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/Function/Call/Argument/IFunctionCallArgumentCollection';
 import { FunctionCallArgumentStub } from './FunctionCallArgumentStub';
 
 export class FunctionCallArgumentCollectionStub implements IFunctionCallArgumentCollection {

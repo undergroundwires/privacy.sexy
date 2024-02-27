@@ -1,4 +1,4 @@
-import { FileReadWriteOperations } from '@/infrastructure/ReadbackFileWriter/NodeReadbackFileWriter';
+import type { FileReadWriteOperations } from '@/infrastructure/ReadbackFileWriter/NodeReadbackFileWriter';
 import { StubWithObservableMethodCalls } from '@tests/unit/shared/Stubs/StubWithObservableMethodCalls';
 
 export class FileReadWriteOperationsStub

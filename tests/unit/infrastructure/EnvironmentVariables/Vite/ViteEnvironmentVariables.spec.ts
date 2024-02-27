@@ -2,8 +2,8 @@ import {
   describe, beforeEach, afterEach, expect,
 } from 'vitest';
 import { VITE_ENVIRONMENT_KEYS } from '@/infrastructure/EnvironmentVariables/Vite/ViteEnvironmentKeys';
-import { PropertyKeys } from '@/TypeHelpers';
-import { IEnvironmentVariables } from '@/infrastructure/EnvironmentVariables/IEnvironmentVariables';
+import type { PropertyKeys } from '@/TypeHelpers';
+import type { IEnvironmentVariables } from '@/infrastructure/EnvironmentVariables/IEnvironmentVariables';
 import { ViteEnvironmentVariables } from '@/infrastructure/EnvironmentVariables/Vite/ViteEnvironmentVariables';
 
 describe('ViteEnvironmentVariables', () => {

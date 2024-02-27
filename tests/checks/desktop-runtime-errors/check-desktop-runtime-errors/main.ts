@@ -16,7 +16,7 @@ import {
   SCREENSHOT_PATH,
 } from './config';
 import { indentText } from './utils/text';
-import { ExtractionResult } from './app/extractors/common/extraction-result';
+import type { ExtractionResult } from './app/extractors/common/extraction-result';
 
 export async function main(): Promise<void> {
   logCurrentArgs();

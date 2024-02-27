@@ -1,5 +1,5 @@
-import { IApplicationContextChangedEvent } from '@/application/Context/IApplicationContext';
-import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import type { IApplicationContextChangedEvent } from '@/application/Context/IApplicationContext';
+import type { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { CategoryCollectionStateStub } from './CategoryCollectionStateStub';
 
 export class ApplicationContextChangedEventStub implements IApplicationContextChangedEvent {

@@ -1,5 +1,5 @@
 import { useApplication } from '@/presentation/components/Shared/Hooks/UseApplication';
-import { IApplication } from '@/domain/IApplication';
+import type { IApplication } from '@/domain/IApplication';
 import { ApplicationStub } from './ApplicationStub';
 
 export class UseApplicationStub {

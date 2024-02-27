@@ -1,4 +1,4 @@
-import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
+import type { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 
 export class RuntimeEnvironmentStub implements RuntimeEnvironment {

@@ -1,7 +1,7 @@
 import {
   describe, it, expect, beforeEach,
 } from 'vitest';
-import { EventHandler, IEventSource, IEventSubscription } from '@/infrastructure/Events/IEventSource';
+import type { EventHandler, IEventSource, IEventSubscription } from '@/infrastructure/Events/IEventSource';
 import { EventSource } from '@/infrastructure/Events/EventSource';
 
 describe('EventSource', () => {

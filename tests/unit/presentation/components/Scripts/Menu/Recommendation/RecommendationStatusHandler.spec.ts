@@ -1,16 +1,16 @@
 import { describe, it, expect } from 'vitest';
 import {
-  SelectionCheckContext, SelectionMutationContext,
+  type SelectionCheckContext, type SelectionMutationContext,
   getCurrentRecommendationStatus, setCurrentRecommendationStatus,
 } from '@/presentation/components/Scripts/Menu/Recommendation/RecommendationStatusHandler';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
-import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import type { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
-import { ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
-import { MethodCall } from '@tests/unit/shared/Stubs/StubWithObservableMethodCalls';
+import type { ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
+import type { MethodCall } from '@tests/unit/shared/Stubs/StubWithObservableMethodCalls';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { scrambledEqual } from '@/application/Common/Array';
-import { IScript } from '@/domain/IScript';
+import type { IScript } from '@/domain/IScript';
 import { RecommendationStatusType } from '@/presentation/components/Scripts/Menu/Recommendation/RecommendationStatusType';
 import { RecommendationStatusTestScenario } from './RecommendationStatusTestScenario';
 

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ISanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/ISanityCheckOptions';
+import type { ISanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/ISanityCheckOptions';
 import { RuntimeSanityValidator } from '@/presentation/bootstrapping/Modules/RuntimeSanityValidator';
 import { expectDoesNotThrowAsync, expectThrowsAsync } from '@tests/shared/Assertions/ExpectThrowsAsync';
 

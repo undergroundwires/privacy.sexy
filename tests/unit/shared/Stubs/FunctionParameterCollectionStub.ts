@@ -1,5 +1,5 @@
-import { IFunctionParameter } from '@/application/Parser/Script/Compiler/Function/Parameter/IFunctionParameter';
-import { IFunctionParameterCollection } from '@/application/Parser/Script/Compiler/Function/Parameter/IFunctionParameterCollection';
+import type { IFunctionParameter } from '@/application/Parser/Script/Compiler/Function/Parameter/IFunctionParameter';
+import type { IFunctionParameterCollection } from '@/application/Parser/Script/Compiler/Function/Parameter/IFunctionParameterCollection';
 import { FunctionParameterStub } from './FunctionParameterStub';
 
 export class FunctionParameterCollectionStub implements IFunctionParameterCollection {

@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { getEnumValues } from '@/application/Common/Enum';
 import { Script } from '@/domain/Script';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
-import { IScriptCode } from '@/domain/IScriptCode';
+import type { IScriptCode } from '@/domain/IScriptCode';
 import { ScriptCodeStub } from '@tests/unit/shared/Stubs/ScriptCodeStub';
 
 describe('Script', () => {

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
-  TreeViewFilterAction, TreeViewFilterPredicate,
+  TreeViewFilterAction, type TreeViewFilterPredicate,
   createFilterRemovedEvent, createFilterTriggeredEvent,
 } from '@/presentation/components/Scripts/View/Tree/TreeView/Bindings/TreeInputFilterEvent';
 

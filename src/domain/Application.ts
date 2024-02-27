@@ -1,7 +1,7 @@
-import { IApplication } from './IApplication';
-import { ICategoryCollection } from './ICategoryCollection';
-import { ProjectDetails } from './Project/ProjectDetails';
 import { OperatingSystem } from './OperatingSystem';
+import type { IApplication } from './IApplication';
+import type { ICategoryCollection } from './ICategoryCollection';
+import type { ProjectDetails } from './Project/ProjectDetails';
 
 export class Application implements IApplication {
   constructor(

@@ -6,8 +6,8 @@ import { Category } from '@/domain/Category';
 import { NodeValidator } from '@/application/Parser/NodeValidation/NodeValidator';
 import { NodeType } from '@/application/Parser/NodeValidation/NodeType';
 import { parseDocs } from './DocumentationParser';
-import { ICategoryCollectionParseContext } from './Script/ICategoryCollectionParseContext';
 import { parseScript } from './Script/ScriptParser';
+import type { ICategoryCollectionParseContext } from './Script/ICategoryCollectionParseContext';
 
 let categoryIdCounter = 0;
 

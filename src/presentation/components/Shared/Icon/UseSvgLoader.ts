@@ -1,8 +1,8 @@
 import {
-  WatchSource, shallowReadonly, ref, watch,
+  type WatchSource, shallowReadonly, ref, watch,
 } from 'vue';
 import { AsyncLazy } from '@/infrastructure/Threading/AsyncLazy';
-import { IconName } from './IconName';
+import type { IconName } from './IconName';
 
 export function useSvgLoader(
   iconWatcher: WatchSource<IconName>,

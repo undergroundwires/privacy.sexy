@@ -1,15 +1,15 @@
 import { describe, it, expect } from 'vitest';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { AllSupportedOperatingSystems, SupportedOperatingSystem } from '@tests/shared/TestCases/SupportedOperatingSystems';
+import { AllSupportedOperatingSystems, type SupportedOperatingSystem } from '@tests/shared/TestCases/SupportedOperatingSystems';
 import { VisibleTerminalScriptExecutor } from '@/infrastructure/CodeRunner/Execution/VisibleTerminalScriptFileExecutor';
 import { RuntimeEnvironmentStub } from '@tests/unit/shared/Stubs/RuntimeEnvironmentStub';
 import { LoggerStub } from '@tests/unit/shared/Stubs/LoggerStub';
 import { SystemOperationsStub } from '@tests/unit/shared/Stubs/SystemOperationsStub';
 import { CommandOpsStub } from '@tests/unit/shared/Stubs/CommandOpsStub';
-import { SystemOperations } from '@/infrastructure/CodeRunner/System/SystemOperations';
+import type { SystemOperations } from '@/infrastructure/CodeRunner/System/SystemOperations';
 import { FileSystemOpsStub } from '@tests/unit/shared/Stubs/FileSystemOpsStub';
-import { CodeRunErrorType } from '@/application/CodeRunner/CodeRunner';
-import { Logger } from '@/application/Common/Log/Logger';
+import type { CodeRunErrorType } from '@/application/CodeRunner/CodeRunner';
+import type { Logger } from '@/application/Common/Log/Logger';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 describe('VisibleTerminalScriptFileExecutor', () => {

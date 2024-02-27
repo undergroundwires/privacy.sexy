@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { ApplicationContext } from '@/application/Context/ApplicationContext';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
-import { IApplicationContext, IApplicationContextChangedEvent } from '@/application/Context/IApplicationContext';
-import { IApplication } from '@/domain/IApplication';
+import type { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import type { IApplicationContext, IApplicationContextChangedEvent } from '@/application/Context/IApplicationContext';
+import type { IApplication } from '@/domain/IApplication';
 import { ApplicationStub } from '@tests/unit/shared/Stubs/ApplicationStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';

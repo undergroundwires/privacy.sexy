@@ -1,6 +1,6 @@
-import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
+import type { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 import { EventSource } from '@/infrastructure/Events/EventSource';
-import { TimeoutType, Timer } from '@/application/Common/Timing/Timer';
+import type { TimeoutType, Timer } from '@/application/Common/Timing/Timer';
 import { createMockTimeout } from './TimeoutStub';
 
 export class TimerStub implements Timer {

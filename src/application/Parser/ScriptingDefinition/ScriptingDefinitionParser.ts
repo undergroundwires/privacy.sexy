@@ -1,11 +1,11 @@
 import type { ScriptingDefinitionData } from '@/application/collections/';
-import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { ScriptingDefinition } from '@/domain/ScriptingDefinition';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
 import { createEnumParser } from '../../Common/Enum';
-import { ICodeSubstituter } from './ICodeSubstituter';
 import { CodeSubstituter } from './CodeSubstituter';
+import type { ICodeSubstituter } from './ICodeSubstituter';
 
 export class ScriptingDefinitionParser {
   constructor(

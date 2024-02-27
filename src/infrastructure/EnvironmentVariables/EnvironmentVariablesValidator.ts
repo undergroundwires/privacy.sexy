@@ -1,5 +1,5 @@
 import { isBoolean, isFunction } from '@/TypeHelpers';
-import { IEnvironmentVariables } from './IEnvironmentVariables';
+import type { IEnvironmentVariables } from './IEnvironmentVariables';
 
 /* Validation is externalized to keep the environment objects simple */
 export function validateEnvironmentVariables(environment: IEnvironmentVariables): void {

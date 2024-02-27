@@ -1,8 +1,8 @@
 import { expect } from 'vitest';
-import { ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
-import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
-import { IScript } from '@/domain/IScript';
-import { ScriptSelectionChange, ScriptSelectionChangeCommand } from '@/application/Context/State/Selection/Script/ScriptSelectionChange';
+import type { ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
+import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import type { IScript } from '@/domain/IScript';
+import type { ScriptSelectionChange, ScriptSelectionChangeCommand } from '@/application/Context/State/Selection/Script/ScriptSelectionChange';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 import { EventSourceStub } from './EventSourceStub';

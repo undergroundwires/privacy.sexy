@@ -1,5 +1,5 @@
-import { IEntity } from '@/infrastructure/Entity/IEntity';
-import { IScript } from '@/domain/IScript';
+import type { IEntity } from '@/infrastructure/Entity/IEntity';
+import type { IScript } from '@/domain/IScript';
 
 type ScriptId = IScript['id'];
 

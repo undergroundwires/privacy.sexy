@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { shallowMount } from '@vue/test-utils';
 import { defineComponent, nextTick } from 'vue';
 import {
-  WindowWithEventListeners, useKeyboardInteractionState,
+  type WindowWithEventListeners, useKeyboardInteractionState,
 } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/UseKeyboardInteractionState';
 
 describe('useKeyboardInteractionState', () => {

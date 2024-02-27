@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { CodeChangedEvent } from '@/application/Context/State/Code/Event/CodeChangedEvent';
-import { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
+import type { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
 import { CodePosition } from '@/application/Context/State/Code/Position/CodePosition';
 import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
-import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 
 describe('CodeChangedEvent', () => {
   describe('ctor', () => {

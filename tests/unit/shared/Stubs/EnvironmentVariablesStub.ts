@@ -1,4 +1,4 @@
-import { IEnvironmentVariables } from '@/infrastructure/EnvironmentVariables/IEnvironmentVariables';
+import type { IEnvironmentVariables } from '@/infrastructure/EnvironmentVariables/IEnvironmentVariables';
 import { AppMetadataStub } from './AppMetadataStub';
 
 export class EnvironmentVariablesStub extends AppMetadataStub implements IEnvironmentVariables {

@@ -1,5 +1,5 @@
-import { Logger } from '@/application/Common/Log/Logger';
-import { FunctionKeys, isString } from '@/TypeHelpers';
+import type { Logger } from '@/application/Common/Log/Logger';
+import { type FunctionKeys, isString } from '@/TypeHelpers';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 

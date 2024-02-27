@@ -1,6 +1,6 @@
-import { CategorySelection } from '@/application/Context/State/Selection/Category/CategorySelection';
-import { ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
-import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
+import type { CategorySelection } from '@/application/Context/State/Selection/Category/CategorySelection';
+import type { ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
+import type { UserSelection } from '@/application/Context/State/Selection/UserSelection';
 import { CategorySelectionStub } from './CategorySelectionStub';
 import { ScriptSelectionStub } from './ScriptSelectionStub';
 

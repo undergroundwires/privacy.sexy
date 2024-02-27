@@ -1,6 +1,6 @@
 import fileSaver from 'file-saver';
-import { FileType, SaveFileOutcome } from '@/presentation/common/Dialog';
-import { BrowserSaveFileDialog } from './BrowserSaveFileDialog';
+import { FileType, type SaveFileOutcome } from '@/presentation/common/Dialog';
+import type { BrowserSaveFileDialog } from './BrowserSaveFileDialog';
 
 export type SaveAsFunction = (data: Blob, filename?: string) => void;
 

@@ -1,4 +1,4 @@
-import { LocationOps } from '@/infrastructure/CodeRunner/System/SystemOperations';
+import type { LocationOps } from '@/infrastructure/CodeRunner/System/SystemOperations';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class LocationOpsStub

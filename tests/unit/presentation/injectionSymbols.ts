@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { InjectionKeySelector, InjectionKeys, injectKey } from '@/presentation/injectionSymbols';
+import { type InjectionKeySelector, InjectionKeys, injectKey } from '@/presentation/injectionSymbols';
 import { getAbsentObjectTestCases } from '../shared/TestCases/AbsentTests';
 
 describe('injectionSymbols', () => {

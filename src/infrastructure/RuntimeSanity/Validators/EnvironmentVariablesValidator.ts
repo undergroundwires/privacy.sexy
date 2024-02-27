@@ -1,7 +1,7 @@
-import { IEnvironmentVariables } from '@/infrastructure/EnvironmentVariables/IEnvironmentVariables';
+import type { IEnvironmentVariables } from '@/infrastructure/EnvironmentVariables/IEnvironmentVariables';
 import { EnvironmentVariablesFactory } from '@/infrastructure/EnvironmentVariables/EnvironmentVariablesFactory';
-import { ISanityCheckOptions } from '../Common/ISanityCheckOptions';
-import { FactoryValidator, FactoryFunction } from '../Common/FactoryValidator';
+import { FactoryValidator, type FactoryFunction } from '../Common/FactoryValidator';
+import type { ISanityCheckOptions } from '../Common/ISanityCheckOptions';
 
 export class EnvironmentVariablesValidator extends FactoryValidator<IEnvironmentVariables> {
   constructor(

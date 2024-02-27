@@ -1,9 +1,9 @@
 import { ExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/ExpressionsCompiler';
-import { IExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/IExpressionsCompiler';
-import { FunctionBodyType, ISharedFunction } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
-import { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
-import { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
-import { SingleCallCompilerStrategy } from '../SingleCallCompilerStrategy';
+import type { IExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/IExpressionsCompiler';
+import { FunctionBodyType, type ISharedFunction } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
+import type { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
+import type { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
+import type { SingleCallCompilerStrategy } from '../SingleCallCompilerStrategy';
 
 export class InlineFunctionCallCompiler implements SingleCallCompilerStrategy {
   public constructor(

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { INodeDataErrorContext, NodeDataError } from '@/application/Parser/NodeValidation/NodeDataError';
+import { type INodeDataErrorContext, NodeDataError } from '@/application/Parser/NodeValidation/NodeDataError';
 import { NodeDataErrorContextStub } from '@tests/unit/shared/Stubs/NodeDataErrorContextStub';
 import { NodeType } from '@/application/Parser/NodeValidation/NodeType';
 import { CustomError } from '@/application/Common/CustomError';

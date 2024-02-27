@@ -8,7 +8,7 @@ import { TreeNodeCheckState } from '@/presentation/components/Scripts/View/Tree/
 import { TreeNodeStub } from '@tests/unit/shared/Stubs/TreeNodeStub';
 import { HierarchyAccessStub } from '@tests/unit/shared/Stubs/HierarchyAccessStub';
 import { NodeStateChangeEventArgsStub, createChangeEvent } from '@tests/unit/shared/Stubs/NodeStateChangeEventArgsStub';
-import { TreeRoot } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/TreeRoot';
+import type { TreeRoot } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/TreeRoot';
 import { TreeNodeStateAccessStub, createAccessStubsFromCheckStates } from '@tests/unit/shared/Stubs/TreeNodeStateAccessStub';
 
 describe('useAutoUpdateParentCheckState', () => {

@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { shallowMount } from '@vue/test-utils';
 import { ref, nextTick, defineComponent } from 'vue';
 import { useLockBodyBackgroundScroll } from '@/presentation/components/Shared/Modal/Hooks/ScrollLock/UseLockBodyBackgroundScroll';
-import { ScrollDomStateAccessor } from '@/presentation/components/Shared/Modal/Hooks/ScrollLock/ScrollDomStateAccessor';
-import { PropertyKeys } from '@/TypeHelpers';
+import type { ScrollDomStateAccessor } from '@/presentation/components/Shared/Modal/Hooks/ScrollLock/ScrollDomStateAccessor';
+import type { PropertyKeys } from '@/TypeHelpers';
 
 describe('useLockBodyBackgroundScroll', () => {
   describe('initialization', () => {

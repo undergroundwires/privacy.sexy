@@ -3,7 +3,7 @@ import {
 } from 'vitest';
 import { shallowMount } from '@vue/test-utils';
 import FlatButton from '@/presentation/components/Shared/FlatButton.vue';
-import { IconName } from '@/presentation/components/Shared/Icon/IconName';
+import type { IconName } from '@/presentation/components/Shared/Icon/IconName';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { hasDirective } from '@/presentation/components/Scripts/View/Cards/NonCollapsingDirective';

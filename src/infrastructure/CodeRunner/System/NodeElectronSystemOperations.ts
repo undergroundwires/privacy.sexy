@@ -2,7 +2,7 @@ import { join } from 'node:path';
 import { chmod, mkdir } from 'node:fs/promises';
 import { exec } from 'node:child_process';
 import { app } from 'electron/main';
-import {
+import type {
   CommandOps, FileSystemOps, LocationOps, OperatingSystemOps, SystemOperations,
 } from './SystemOperations';
 

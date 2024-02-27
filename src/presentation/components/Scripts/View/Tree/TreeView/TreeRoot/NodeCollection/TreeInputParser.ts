@@ -1,7 +1,7 @@
 import { isArray } from '@/TypeHelpers';
-import { TreeInputNodeData } from '../../Bindings/TreeInputNodeData';
-import { TreeNode } from '../../Node/TreeNode';
 import { TreeNodeManager } from '../../Node/TreeNodeManager';
+import type { TreeInputNodeData } from '../../Bindings/TreeInputNodeData';
+import type { TreeNode } from '../../Node/TreeNode';
 
 export function parseTreeInput(
   input: readonly TreeInputNodeData[],

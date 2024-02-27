@@ -1,5 +1,5 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { BrowserEnvironment, BrowserOsDetector } from '@/infrastructure/RuntimeEnvironment/Browser/BrowserOs/BrowserOsDetector';
+import type { BrowserEnvironment, BrowserOsDetector } from '@/infrastructure/RuntimeEnvironment/Browser/BrowserOs/BrowserOsDetector';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class BrowserOsDetectorStub

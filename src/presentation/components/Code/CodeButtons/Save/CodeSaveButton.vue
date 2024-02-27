@@ -18,7 +18,7 @@ import {
 import { injectKey } from '@/presentation/injectionSymbols';
 import ModalDialog from '@/presentation/components/Shared/Modal/ModalDialog.vue';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
-import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import { type IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { ScriptFilename } from '@/application/CodeRunner/ScriptFilename';
 import { FileType } from '@/presentation/common/Dialog';
 import IconButton from '../IconButton.vue';

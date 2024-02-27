@@ -1,4 +1,4 @@
-import { IScript, ICategory } from '@/domain/ICategory';
+import type { IScript, ICategory } from '@/domain/ICategory';
 
 export interface FilterResult {
   readonly categoryMatches: ReadonlyArray<ICategory>;

@@ -1,6 +1,6 @@
-import { FunctionKeys } from '@/TypeHelpers';
+import type { FunctionKeys } from '@/TypeHelpers';
 import { BrowserClipboard } from './BrowserClipboard';
-import { Clipboard } from './Clipboard';
+import type { Clipboard } from './Clipboard';
 
 export function useClipboard(clipboard: Clipboard = new BrowserClipboard()) {
   // Bind functions for direct use from destructured assignments such as `const { .. } = ...`.

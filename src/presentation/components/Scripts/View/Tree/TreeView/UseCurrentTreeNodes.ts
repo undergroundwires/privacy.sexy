@@ -2,8 +2,8 @@ import {
   watch, shallowReadonly, shallowRef, type Ref,
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
-import { TreeRoot } from './TreeRoot/TreeRoot';
-import { QueryableNodes } from './TreeRoot/NodeCollection/Query/QueryableNodes';
+import type { TreeRoot } from './TreeRoot/TreeRoot';
+import type { QueryableNodes } from './TreeRoot/NodeCollection/Query/QueryableNodes';
 
 export function useCurrentTreeNodes(treeRef: Readonly<Ref<TreeRoot>>) {
   const { events } = injectKey((keys) => keys.useAutoUnsubscribedEvents);

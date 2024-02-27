@@ -1,4 +1,4 @@
-import { Clipboard } from './Clipboard';
+import type { Clipboard } from './Clipboard';
 
 export type NavigatorClipboard = typeof globalThis.navigator.clipboard;
 

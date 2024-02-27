@@ -1,12 +1,12 @@
 import { ScriptFileCodeRunner } from '@/infrastructure/CodeRunner/ScriptFileCodeRunner';
-import { CodeRunner } from '@/application/CodeRunner/CodeRunner';
-import { Dialog } from '@/presentation/common/Dialog';
+import type { CodeRunner } from '@/application/CodeRunner/CodeRunner';
+import type { Dialog } from '@/presentation/common/Dialog';
 import { ElectronDialog } from '@/infrastructure/Dialog/Electron/ElectronDialog';
-import { IpcChannel } from '@/presentation/electron/shared/IpcBridging/IpcChannel';
+import type { IpcChannel } from '@/presentation/electron/shared/IpcBridging/IpcChannel';
 import { ScriptEnvironmentDiagnosticsCollector } from '@/infrastructure/ScriptDiagnostics/ScriptEnvironmentDiagnosticsCollector';
-import { ScriptDiagnosticsCollector } from '@/application/ScriptDiagnostics/ScriptDiagnosticsCollector';
+import type { ScriptDiagnosticsCollector } from '@/application/ScriptDiagnostics/ScriptDiagnosticsCollector';
 import { registerIpcChannel } from '../shared/IpcBridging/IpcProxy';
-import { ChannelDefinitionKey, IpcChannelDefinitions } from '../shared/IpcBridging/IpcChannelDefinitions';
+import { type ChannelDefinitionKey, IpcChannelDefinitions } from '../shared/IpcBridging/IpcChannelDefinitions';
 
 export function registerAllIpcChannels(
   registrar: IpcChannelRegistrar = registerIpcChannel,

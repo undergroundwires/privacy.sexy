@@ -1,6 +1,6 @@
-import { App } from 'vue';
-import { Bootstrapper } from '@/presentation/bootstrapping/Bootstrapper';
+import type { Bootstrapper } from '@/presentation/bootstrapping/Bootstrapper';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
+import type { App } from 'vue';
 
 export class BootstrapperStub
   extends StubWithObservableMethodCalls<Bootstrapper>

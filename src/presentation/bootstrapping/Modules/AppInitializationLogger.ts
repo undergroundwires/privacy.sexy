@@ -1,6 +1,6 @@
-import { Logger } from '@/application/Common/Log/Logger';
+import type { Logger } from '@/application/Common/Log/Logger';
 import { ClientLoggerFactory } from '@/presentation/components/Shared/Hooks/Log/ClientLoggerFactory';
-import { Bootstrapper } from '../Bootstrapper';
+import type { Bootstrapper } from '../Bootstrapper';
 
 export class AppInitializationLogger implements Bootstrapper {
   constructor(

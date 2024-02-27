@@ -13,6 +13,7 @@
     "resolveJsonModule": true,
     "noUnusedLocals": true,
     "allowSyntheticDefaultImports": true,
+    "verbatimModuleSyntax": true,
     "skipLibCheck": true,
     "sourceMap": true,
     "baseUrl": ".",

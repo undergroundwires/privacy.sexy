@@ -1,6 +1,6 @@
-import { FunctionCall } from '../../FunctionCall';
-import { CompiledCode } from '../CompiledCode';
-import { FunctionCallCompilationContext } from '../FunctionCallCompilationContext';
+import type { FunctionCallCompilationContext } from '../FunctionCallCompilationContext';
+import type { FunctionCall } from '../../FunctionCall';
+import type { CompiledCode } from '../CompiledCode';
 
 export interface SingleCallCompiler {
   compileSingleCall(

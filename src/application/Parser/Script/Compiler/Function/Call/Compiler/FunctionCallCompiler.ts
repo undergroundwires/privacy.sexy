@@ -1,6 +1,6 @@
-import { ISharedFunctionCollection } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionCollection';
-import { FunctionCall } from '../FunctionCall';
-import { CompiledCode } from './CompiledCode';
+import type { ISharedFunctionCollection } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionCollection';
+import type { CompiledCode } from './CompiledCode';
+import type { FunctionCall } from '../FunctionCall';
 
 export interface FunctionCallCompiler {
   compileFunctionCalls(

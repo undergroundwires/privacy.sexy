@@ -1,7 +1,7 @@
 import { describe, it, afterEach } from 'vitest';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { MobileSafariActivePseudoClassEnabler } from '@/presentation/bootstrapping/Modules/MobileSafariActivePseudoClassEnabler';
-import { EventName, createWindowEventSpies } from '@tests/shared/Spies/WindowEventSpies';
+import { type EventName, createWindowEventSpies } from '@tests/shared/Spies/WindowEventSpies';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { isTouchEnabledDevice } from '@/infrastructure/RuntimeEnvironment/Browser/TouchSupportDetection';
 import { BrowserRuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/Browser/BrowserRuntimeEnvironment';

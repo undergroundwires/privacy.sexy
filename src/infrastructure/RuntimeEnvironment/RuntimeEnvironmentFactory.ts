@@ -1,8 +1,8 @@
-import { ElectronEnvironmentDetector } from './Electron/ElectronEnvironmentDetector';
 import { BrowserRuntimeEnvironment } from './Browser/BrowserRuntimeEnvironment';
 import { NodeRuntimeEnvironment } from './Node/NodeRuntimeEnvironment';
-import { RuntimeEnvironment } from './RuntimeEnvironment';
 import { ContextIsolatedElectronDetector } from './Electron/ContextIsolatedElectronDetector';
+import type { RuntimeEnvironment } from './RuntimeEnvironment';
+import type { ElectronEnvironmentDetector } from './Electron/ElectronEnvironmentDetector';
 
 export const CurrentEnvironment = determineAndCreateRuntimeEnvironment(globalThis.window);
 

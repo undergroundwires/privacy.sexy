@@ -1,7 +1,7 @@
 import { inject, type App } from 'vue';
 import { buildContext } from '@/application/Context/ApplicationContextFactory';
 import { provideDependencies } from '@/presentation/bootstrapping/DependencyProvider';
-import { Bootstrapper } from '../Bootstrapper';
+import type { Bootstrapper } from '../Bootstrapper';
 
 export class DependencyBootstrapper implements Bootstrapper {
   constructor(

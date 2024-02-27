@@ -1,6 +1,6 @@
-import { IPipe } from './IPipe';
 import { InlinePowerShell } from './PipeDefinitions/InlinePowerShell';
 import { EscapeDoubleQuotes } from './PipeDefinitions/EscapeDoubleQuotes';
+import type { IPipe } from './IPipe';
 
 const RegisteredPipes = [
   new EscapeDoubleQuotes(),

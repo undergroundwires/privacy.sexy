@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
-  AnimationFunction, TRANSITION_DURATION_MILLISECONDS,
-  useExpandCollapseAnimation, MutatedStyleProperties,
+  type AnimationFunction, TRANSITION_DURATION_MILLISECONDS,
+  useExpandCollapseAnimation, type MutatedStyleProperties,
 } from '@/presentation/components/Shared/ExpandCollapse/UseExpandCollapseAnimation';
 import { TimerStub } from '@tests/unit/shared/Stubs/TimerStub';
 import { watchPromiseState, flushPromiseResolutionQueue } from '@tests/unit/shared/PromiseInspection';

@@ -1,4 +1,4 @@
-import { ICodeValidationRule } from './ICodeValidationRule';
+import type { ICodeValidationRule } from './ICodeValidationRule';
 
 export interface ICodeValidator {
   throwIfInvalid(

@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import type { ScriptData } from '@/application/collections/';
-import { parseScript, ScriptFactoryType } from '@/application/Parser/Script/ScriptParser';
+import { parseScript, type ScriptFactoryType } from '@/application/Parser/Script/ScriptParser';
 import { parseDocs } from '@/application/Parser/DocumentationParser';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
-import { ICategoryCollectionParseContext } from '@/application/Parser/Script/ICategoryCollectionParseContext';
+import type { ICategoryCollectionParseContext } from '@/application/Parser/Script/ICategoryCollectionParseContext';
 import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { ScriptCompilerStub } from '@tests/unit/shared/Stubs/ScriptCompilerStub';
 import { createScriptDataWithCall, createScriptDataWithCode, createScriptDataWithoutCallOrCodes } from '@tests/unit/shared/Stubs/ScriptDataStub';
@@ -12,13 +12,13 @@ import { ScriptCodeStub } from '@tests/unit/shared/Stubs/ScriptCodeStub';
 import { CategoryCollectionParseContextStub } from '@tests/unit/shared/Stubs/CategoryCollectionParseContextStub';
 import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
 import { NodeType } from '@/application/Parser/NodeValidation/NodeType';
-import { expectThrowsNodeError, ITestScenario, NodeValidationTestRunner } from '@tests/unit/application/Parser/NodeValidation/NodeValidatorTestRunner';
+import { expectThrowsNodeError, type ITestScenario, NodeValidationTestRunner } from '@tests/unit/application/Parser/NodeValidation/NodeValidatorTestRunner';
 import { Script } from '@/domain/Script';
-import { IEnumParser } from '@/application/Common/Enum';
+import type { IEnumParser } from '@/application/Common/Enum';
 import { NoEmptyLines } from '@/application/Parser/Script/Validation/Rules/NoEmptyLines';
 import { NoDuplicatedLines } from '@/application/Parser/Script/Validation/Rules/NoDuplicatedLines';
 import { CodeValidatorStub } from '@tests/unit/shared/Stubs/CodeValidatorStub';
-import { ICodeValidator } from '@/application/Parser/Script/Validation/ICodeValidator';
+import type { ICodeValidator } from '@/application/Parser/Script/Validation/ICodeValidator';
 
 describe('ScriptParser', () => {
   describe('parseScript', () => {

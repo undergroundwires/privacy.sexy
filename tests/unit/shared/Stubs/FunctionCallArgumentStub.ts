@@ -1,4 +1,4 @@
-import { IFunctionCallArgument } from '@/application/Parser/Script/Compiler/Function/Call/Argument/IFunctionCallArgument';
+import type { IFunctionCallArgument } from '@/application/Parser/Script/Compiler/Function/Call/Argument/IFunctionCallArgument';
 
 export class FunctionCallArgumentStub implements IFunctionCallArgument {
   public parameterName = 'stub-parameter-name';

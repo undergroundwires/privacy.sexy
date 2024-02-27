@@ -1,9 +1,9 @@
 import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
 import { GitHubProjectDetails } from '@/domain/Project/GitHubProjectDetails';
-import { IAppMetadata } from '@/infrastructure/EnvironmentVariables/IAppMetadata';
+import type { IAppMetadata } from '@/infrastructure/EnvironmentVariables/IAppMetadata';
 import { Version } from '@/domain/Version';
 import { EnvironmentVariablesFactory } from '@/infrastructure/EnvironmentVariables/EnvironmentVariablesFactory';
-import { ConstructorArguments } from '@/TypeHelpers';
+import type { ConstructorArguments } from '@/TypeHelpers';
 
 export function
 parseProjectDetails(

@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { AppliedFilterResult } from '@/application/Context/State/Filter/Result/AppliedFilterResult';
-import { ICategory, IScript } from '@/domain/ICategory';
+import type { ICategory, IScript } from '@/domain/ICategory';
 
 describe('AppliedFilterResult', () => {
   describe('constructor', () => {

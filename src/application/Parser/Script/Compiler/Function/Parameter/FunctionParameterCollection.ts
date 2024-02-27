@@ -1,5 +1,5 @@
-import { IFunctionParameterCollection } from './IFunctionParameterCollection';
-import { IFunctionParameter } from './IFunctionParameter';
+import type { IFunctionParameterCollection } from './IFunctionParameterCollection';
+import type { IFunctionParameter } from './IFunctionParameter';
 
 export class FunctionParameterCollection implements IFunctionParameterCollection {
   private parameters = new Array<IFunctionParameter>();

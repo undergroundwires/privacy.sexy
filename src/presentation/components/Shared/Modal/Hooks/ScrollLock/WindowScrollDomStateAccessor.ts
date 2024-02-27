@@ -1,4 +1,4 @@
-import { ScrollDomStateAccessor } from './ScrollDomStateAccessor';
+import type { ScrollDomStateAccessor } from './ScrollDomStateAccessor';
 
 const HtmlElement = document.documentElement;
 const BodyElement = document.body;

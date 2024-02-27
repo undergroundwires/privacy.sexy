@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { ScriptDiagnosticsCollector } from '@/application/ScriptDiagnostics/ScriptDiagnosticsCollector';
+import type { ScriptDiagnosticsCollector } from '@/application/ScriptDiagnostics/ScriptDiagnosticsCollector';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { Dialog } from '@/presentation/common/Dialog';
-import { ScriptErrorDetails, createScriptErrorDialog } from '@/presentation/components/Code/CodeButtons/ScriptErrorDialog';
+import type { Dialog } from '@/presentation/common/Dialog';
+import { type ScriptErrorDetails, createScriptErrorDialog } from '@/presentation/components/Code/CodeButtons/ScriptErrorDialog';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { AllSupportedOperatingSystems } from '@tests/shared/TestCases/SupportedOperatingSystems';
 import { ScriptDiagnosticsCollectorStub } from '@tests/unit/shared/Stubs/ScriptDiagnosticsCollectorStub';

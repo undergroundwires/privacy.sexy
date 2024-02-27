@@ -1,5 +1,4 @@
 import { shell } from 'electron';
-import { UpdateInfo } from 'electron-updater';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import { GitHubProjectDetails } from '@/domain/Project/GitHubProjectDetails';
 import { Version } from '@/domain/Version';
@@ -12,9 +11,10 @@ import {
   DownloadErrorChoice, InstallerErrorChoice, IntegrityCheckChoice,
   ManualUpdateChoice, showUnexpectedError, UnexpectedErrorChoice,
 } from './Dialogs';
-import { DownloadUpdateResult, downloadUpdate } from './Downloader';
+import { type DownloadUpdateResult, downloadUpdate } from './Downloader';
 import { checkIntegrity } from './Integrity';
 import { startInstallation } from './Installer';
+import type { UpdateInfo } from 'electron-updater';
 
 export function requiresManualUpdate(): boolean {
   return process.platform === 'darwin';

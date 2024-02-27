@@ -1,4 +1,4 @@
-import { IPipe } from '../IPipe';
+import type { IPipe } from '../IPipe';
 
 export class EscapeDoubleQuotes implements IPipe {
   public readonly name: string = 'escapeDoubleQuotes';

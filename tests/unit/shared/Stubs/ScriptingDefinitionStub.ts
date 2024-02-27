@@ -1,4 +1,4 @@
-import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 
 export class ScriptingDefinitionStub implements IScriptingDefinition {

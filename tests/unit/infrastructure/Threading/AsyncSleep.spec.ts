@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { sleep, SchedulerType, SchedulerCallbackType } from '@/infrastructure/Threading/AsyncSleep';
+import { sleep, type SchedulerType, type SchedulerCallbackType } from '@/infrastructure/Threading/AsyncSleep';
 import { flushPromiseResolutionQueue, watchPromiseState } from '@tests/unit/shared/PromiseInspection';
 
 describe('AsyncSleep', () => {

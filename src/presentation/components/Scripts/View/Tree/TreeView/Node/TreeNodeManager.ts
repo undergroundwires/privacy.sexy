@@ -1,8 +1,8 @@
-import { TreeNode } from './TreeNode';
-import { TreeNodeStateAccess } from './State/StateAccess';
-import { TreeNodeState } from './State/TreeNodeState';
-import { HierarchyAccess } from './Hierarchy/HierarchyAccess';
 import { TreeNodeHierarchy } from './Hierarchy/TreeNodeHierarchy';
+import { TreeNodeState } from './State/TreeNodeState';
+import type { TreeNode } from './TreeNode';
+import type { TreeNodeStateAccess } from './State/StateAccess';
+import type { HierarchyAccess } from './Hierarchy/HierarchyAccess';
 
 export class TreeNodeManager implements TreeNode {
   public readonly state: TreeNodeStateAccess;

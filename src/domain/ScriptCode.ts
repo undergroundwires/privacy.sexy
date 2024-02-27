@@ -1,4 +1,4 @@
-import { IScriptCode } from './IScriptCode';
+import type { IScriptCode } from './IScriptCode';
 
 export class ScriptCode implements IScriptCode {
   constructor(

@@ -1,11 +1,11 @@
 import { EventSource } from '@/infrastructure/Events/EventSource';
-import { ICategoryCollection } from '@/domain/ICategoryCollection';
-import { FilterResult } from './Result/FilterResult';
-import { FilterContext } from './FilterContext';
-import { FilterChangeDetails } from './Event/FilterChangeDetails';
+import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { FilterChange } from './Event/FilterChange';
-import { FilterStrategy } from './Strategy/FilterStrategy';
 import { LinearFilterStrategy } from './Strategy/LinearFilterStrategy';
+import type { FilterResult } from './Result/FilterResult';
+import type { FilterContext } from './FilterContext';
+import type { FilterChangeDetails } from './Event/FilterChangeDetails';
+import type { FilterStrategy } from './Strategy/FilterStrategy';
 
 export class AdaptiveFilterContext implements FilterContext {
   public readonly filterChanged = new EventSource<FilterChangeDetails>();

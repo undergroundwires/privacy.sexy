@@ -1,13 +1,13 @@
 import { join } from 'node:path';
 import { app, dialog } from 'electron/main';
-import { Logger } from '@/application/Common/Log/Logger';
+import type { Logger } from '@/application/Common/Log/Logger';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import {
-  FileType, SaveFileError, SaveFileErrorType, SaveFileOutcome,
+  FileType, type SaveFileError, type SaveFileErrorType, type SaveFileOutcome,
 } from '@/presentation/common/Dialog';
-import { FileReadbackVerificationErrors, ReadbackFileWriter } from '@/infrastructure/ReadbackFileWriter/ReadbackFileWriter';
+import { FileReadbackVerificationErrors, type ReadbackFileWriter } from '@/infrastructure/ReadbackFileWriter/ReadbackFileWriter';
 import { NodeReadbackFileWriter } from '@/infrastructure/ReadbackFileWriter/NodeReadbackFileWriter';
-import { ElectronSaveFileDialog } from './ElectronSaveFileDialog';
+import type { ElectronSaveFileDialog } from './ElectronSaveFileDialog';
 
 export class NodeElectronSaveFileDialog implements ElectronSaveFileDialog {
   constructor(
@@ -16,7 +16,7 @@ export class NodeElectronSaveFileDialog implements ElectronSaveFileDialog {
       getUserDownloadsPath: () => app.getPath('downloads'),
       showSaveDialog: dialog.showSaveDialog.bind(dialog),
     },
-    private readonly node: NodeFileOperations = { join },
+    private readonly node: NodePathOperations = { join },
     private readonly fileWriter: ReadbackFileWriter = new NodeReadbackFileWriter(),
   ) { }
 
@@ -136,7 +136,7 @@ export interface ElectronFileDialogOperations {
   showSaveDialog(options: Electron.SaveDialogOptions): Promise<Electron.SaveDialogReturnValue>;
 }
 
-export interface NodeFileOperations {
+export interface NodePathOperations {
   readonly join: typeof join;
 }
 

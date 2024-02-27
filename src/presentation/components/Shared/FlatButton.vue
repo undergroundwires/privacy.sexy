@@ -15,9 +15,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, type PropType } from 'vue';
 import { NonCollapsing } from '@/presentation/components/Scripts/View/Cards/NonCollapsingDirective';
-import { IconName } from '@/presentation/components/Shared/Icon/IconName';
+import type { IconName } from '@/presentation/components/Shared/Icon/IconName';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 
 export default defineComponent({

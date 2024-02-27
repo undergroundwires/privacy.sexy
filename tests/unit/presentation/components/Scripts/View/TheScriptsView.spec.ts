@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { VueWrapper, shallowMount } from '@vue/test-utils';
-import { Component } from 'vue';
 import TheScriptsView from '@/presentation/components/Scripts/View/TheScriptsView.vue';
 import ScriptsTree from '@/presentation/components/Scripts/View/Tree/ScriptsTree.vue';
 import CardList from '@/presentation/components/Scripts/View/Cards/CardList.vue';
@@ -10,11 +9,12 @@ import { UseCollectionStateStub } from '@tests/unit/shared/Stubs/UseCollectionSt
 import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { UseApplicationStub } from '@tests/unit/shared/Stubs/UseApplicationStub';
 import { FilterResultStub } from '@tests/unit/shared/Stubs/FilterResultStub';
-import { FilterChangeDetails } from '@/application/Context/State/Filter/Event/FilterChangeDetails';
+import type { FilterChangeDetails } from '@/application/Context/State/Filter/Event/FilterChangeDetails';
 import { UseAutoUnsubscribedEventsStub } from '@tests/unit/shared/Stubs/UseAutoUnsubscribedEventsStub';
 import { FilterChangeDetailsStub } from '@tests/unit/shared/Stubs/FilterChangeDetailsStub';
 import { FilterContextStub } from '@tests/unit/shared/Stubs/FilterContextStub';
-import { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
+import type { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
+import type { Component } from 'vue';
 
 const DOM_SELECTOR_NO_MATCHES = '.search-no-matches';
 const DOM_SELECTOR_CLOSE_BUTTON = '.search__query__close-button';

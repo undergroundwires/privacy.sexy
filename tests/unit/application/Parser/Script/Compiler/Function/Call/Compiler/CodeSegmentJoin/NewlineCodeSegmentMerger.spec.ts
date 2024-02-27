@@ -2,7 +2,7 @@ import { expect, describe, it } from 'vitest';
 import { NewlineCodeSegmentMerger } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CodeSegmentJoin/NewlineCodeSegmentMerger';
 import { CompiledCodeStub } from '@tests/unit/shared/Stubs/CompiledCodeStub';
 import { getAbsentStringTestCases, itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';
-import { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
+import type { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
 
 describe('NewlineCodeSegmentMerger', () => {
   describe('mergeCodeParts', () => {

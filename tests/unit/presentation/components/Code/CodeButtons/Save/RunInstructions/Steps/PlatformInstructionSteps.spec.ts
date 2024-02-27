@@ -3,7 +3,7 @@ import PlatformInstructionSteps from '@/presentation/components/Code/CodeButtons
 import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { UseCollectionStateStub } from '@tests/unit/shared/Stubs/UseCollectionStateStub';
-import { AllSupportedOperatingSystems, SupportedOperatingSystem } from '@tests/shared/TestCases/SupportedOperatingSystems';
+import { AllSupportedOperatingSystems, type SupportedOperatingSystem } from '@tests/shared/TestCases/SupportedOperatingSystems';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CategoryCollectionStateStub } from '@tests/unit/shared/Stubs/CategoryCollectionStateStub';
 import WindowsInstructions from '@/presentation/components/Code/CodeButtons/Save/RunInstructions/Steps/Platforms/WindowsInstructions.vue';

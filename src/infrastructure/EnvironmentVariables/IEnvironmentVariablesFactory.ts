@@ -1,4 +1,4 @@
-import { IEnvironmentVariables } from './IEnvironmentVariables';
+import type { IEnvironmentVariables } from './IEnvironmentVariables';
 
 export interface IEnvironmentVariablesFactory {
   readonly instance: IEnvironmentVariables;

@@ -4,8 +4,8 @@ import { tmpdir } from 'node:os';
 import { exists } from '../../utils/io';
 import { log, die, LogLevel } from '../../utils/log';
 import { runCommand } from '../../utils/run-command';
-import { ExtractionResult } from './common/extraction-result';
 import { findByFilePattern } from './common/app-artifact-locator';
+import type { ExtractionResult } from './common/extraction-result';
 
 export async function prepareWindowsApp(
   desktopDistPath: string,

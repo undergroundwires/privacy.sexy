@@ -31,7 +31,7 @@
 
 <script lang="ts">
 import {
-  useFloating, arrow, shift, flip, Placement, offset, Side, Coords, autoUpdate,
+  useFloating, arrow, shift, flip, type Placement, offset, type Side, type Coords, autoUpdate,
 } from '@floating-ui/vue';
 import { defineComponent, shallowRef, computed } from 'vue';
 import { useResizeObserverPolyfill } from '@/presentation/components/Shared/Hooks/UseResizeObserverPolyfill';

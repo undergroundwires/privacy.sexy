@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { FileType, SaveFileOutcome } from '@/presentation/common/Dialog';
-import { BrowserDialog, WindowDialogAccessor } from '@/infrastructure/Dialog/Browser/BrowserDialog';
-import { BrowserSaveFileDialog } from '@/infrastructure/Dialog/Browser/BrowserSaveFileDialog';
+import { FileType, type SaveFileOutcome } from '@/presentation/common/Dialog';
+import { BrowserDialog, type WindowDialogAccessor } from '@/infrastructure/Dialog/Browser/BrowserDialog';
+import type { BrowserSaveFileDialog } from '@/infrastructure/Dialog/Browser/BrowserSaveFileDialog';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 describe('BrowserDialog', () => {

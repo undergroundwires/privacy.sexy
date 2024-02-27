@@ -1,5 +1,5 @@
-import { IEventSubscriptionCollection } from './IEventSubscriptionCollection';
-import { IEventSubscription } from './IEventSource';
+import type { IEventSubscriptionCollection } from './IEventSubscriptionCollection';
+import type { IEventSubscription } from './IEventSource';
 
 export class EventSubscriptionCollection implements IEventSubscriptionCollection {
   private readonly subscriptions = new Array<IEventSubscription>();

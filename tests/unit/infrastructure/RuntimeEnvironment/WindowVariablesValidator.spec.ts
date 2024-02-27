@@ -1,15 +1,15 @@
 import { describe, it, expect } from 'vitest';
 import { validateWindowVariables } from '@/infrastructure/WindowVariables/WindowVariablesValidator';
-import { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
+import type { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { getAbsentObjectTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 import { WindowVariablesStub } from '@tests/unit/shared/Stubs/WindowVariablesStub';
 import { CodeRunnerStub } from '@tests/unit/shared/Stubs/CodeRunnerStub';
-import { PropertyKeys } from '@/TypeHelpers';
+import type { PropertyKeys } from '@/TypeHelpers';
 import { LoggerStub } from '@tests/unit/shared/Stubs/LoggerStub';
 import { DialogStub } from '@tests/unit/shared/Stubs/DialogStub';
 import { ScriptDiagnosticsCollectorStub } from '@tests/unit/shared/Stubs/ScriptDiagnosticsCollectorStub';
-import { ElectronEnvironmentDetector } from '@/infrastructure/RuntimeEnvironment/Electron/ElectronEnvironmentDetector';
+import type { ElectronEnvironmentDetector } from '@/infrastructure/RuntimeEnvironment/Electron/ElectronEnvironmentDetector';
 import { ElectronEnvironmentDetectorStub } from '@tests/unit/shared/Stubs/ElectronEnvironmentDetectorStub';
 
 describe('WindowVariablesValidator', () => {

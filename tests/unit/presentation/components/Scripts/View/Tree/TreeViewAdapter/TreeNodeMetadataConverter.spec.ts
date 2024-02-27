@@ -3,7 +3,7 @@ import { getNodeMetadata, convertToNodeInput } from '@/presentation/components/S
 import { NodeMetadataStub } from '@tests/unit/shared/Stubs/NodeMetadataStub';
 import { TreeNodeStub } from '@tests/unit/shared/Stubs/TreeNodeStub';
 import { itEachAbsentObjectValue } from '@tests/unit/shared/TestCases/AbsentTests';
-import { NodeMetadata } from '@/presentation/components/Scripts/View/Tree/NodeContent/NodeMetadata';
+import type { NodeMetadata } from '@/presentation/components/Scripts/View/Tree/NodeContent/NodeMetadata';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 describe('TreeNodeMetadataConverter', () => {

@@ -1,8 +1,8 @@
 import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
-import { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { getEnumValues } from '@/application/Common/Enum';
 import type { CollectionData } from '@/application/collections/';
-import { CategoryCollectionParserType } from '@/application/Parser/ApplicationParser';
+import type { CategoryCollectionParserType } from '@/application/Parser/ApplicationParser';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CategoryCollectionStub } from './CategoryCollectionStub';
 

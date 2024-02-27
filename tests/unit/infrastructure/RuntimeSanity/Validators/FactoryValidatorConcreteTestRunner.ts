@@ -1,6 +1,6 @@
-import { PropertyKeys } from '@/TypeHelpers';
-import { FactoryFunction, FactoryValidator } from '@/infrastructure/RuntimeSanity/Common/FactoryValidator';
-import { ISanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/ISanityCheckOptions';
+import type { PropertyKeys } from '@/TypeHelpers';
+import type { FactoryFunction, FactoryValidator } from '@/infrastructure/RuntimeSanity/Common/FactoryValidator';
+import type { ISanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/ISanityCheckOptions';
 import { SanityCheckOptionsStub } from '@tests/unit/shared/Stubs/SanityCheckOptionsStub';
 
 interface ITestOptions<T> {

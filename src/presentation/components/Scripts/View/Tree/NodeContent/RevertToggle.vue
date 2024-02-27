@@ -8,11 +8,11 @@
 
 <script lang="ts">
 import {
-  PropType, defineComponent, computed,
+  type PropType, defineComponent, computed,
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
-import { NodeMetadata } from '@/presentation/components/Scripts/View/Tree/NodeContent/NodeMetadata';
-import { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { NodeMetadata } from '@/presentation/components/Scripts/View/Tree/NodeContent/NodeMetadata';
+import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { getReverter } from './Reverter/ReverterFactory';
 import ToggleSwitch from './ToggleSwitch.vue';
 import type { Reverter } from './Reverter/Reverter';

@@ -1,11 +1,11 @@
 // eslint-disable-next-line max-classes-per-file
 import { describe, it } from 'vitest';
-import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
-import { Logger } from '@/application/Common/Log/Logger';
+import type { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
+import type { Logger } from '@/application/Common/Log/Logger';
 import { RuntimeEnvironmentStub } from '@tests/unit/shared/Stubs/RuntimeEnvironmentStub';
 import { itIsSingleton } from '@tests/unit/shared/TestCases/SingletonTests';
 import { LoggerStub } from '@tests/unit/shared/Stubs/LoggerStub';
-import { ClientLoggerFactory, LoggerCreationFunction, WindowAccessor } from '@/presentation/components/Shared/Hooks/Log/ClientLoggerFactory';
+import { ClientLoggerFactory, type LoggerCreationFunction, type WindowAccessor } from '@/presentation/components/Shared/Hooks/Log/ClientLoggerFactory';
 
 describe('ClientLoggerFactory', () => {
   describe('Current', () => {

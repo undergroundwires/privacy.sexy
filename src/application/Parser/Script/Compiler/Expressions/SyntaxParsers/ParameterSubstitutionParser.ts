@@ -1,5 +1,5 @@
 import { FunctionParameter } from '@/application/Parser/Script/Compiler/Function/Parameter/FunctionParameter';
-import { RegexParser, IPrimitiveExpression } from '../Parser/Regex/RegexParser';
+import { RegexParser, type IPrimitiveExpression } from '../Parser/Regex/RegexParser';
 import { ExpressionRegexBuilder } from '../Parser/Regex/ExpressionRegexBuilder';
 
 export class ParameterSubstitutionParser extends RegexParser {

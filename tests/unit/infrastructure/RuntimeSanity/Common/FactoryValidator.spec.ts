@@ -1,5 +1,5 @@
 import { describe } from 'vitest';
-import { FactoryValidator, FactoryFunction } from '@/infrastructure/RuntimeSanity/Common/FactoryValidator';
+import { FactoryValidator, type FactoryFunction } from '@/infrastructure/RuntimeSanity/Common/FactoryValidator';
 
 describe('FactoryValidator', () => {
   describe('collectErrors', () => {

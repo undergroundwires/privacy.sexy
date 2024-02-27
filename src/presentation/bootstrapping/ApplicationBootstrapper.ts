@@ -1,8 +1,8 @@
-import { Bootstrapper } from './Bootstrapper';
 import { RuntimeSanityValidator } from './Modules/RuntimeSanityValidator';
 import { AppInitializationLogger } from './Modules/AppInitializationLogger';
 import { DependencyBootstrapper } from './Modules/DependencyBootstrapper';
 import { MobileSafariActivePseudoClassEnabler } from './Modules/MobileSafariActivePseudoClassEnabler';
+import type { Bootstrapper } from './Bootstrapper';
 import type { App } from 'vue';
 
 export class ApplicationBootstrapper implements Bootstrapper {

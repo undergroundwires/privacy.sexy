@@ -1,6 +1,6 @@
-import { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
+import type { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
 import { FilterActionType } from './FilterActionType';
-import {
+import type {
   FilterChangeDetails, FilterChangeDetailsVisitor,
   ApplyFilterAction, ClearFilterAction,
 } from './FilterChangeDetails';

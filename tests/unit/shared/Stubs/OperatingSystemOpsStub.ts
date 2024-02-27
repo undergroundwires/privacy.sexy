@@ -1,4 +1,4 @@
-import { OperatingSystemOps } from '@/infrastructure/CodeRunner/System/SystemOperations';
+import type { OperatingSystemOps } from '@/infrastructure/CodeRunner/System/SystemOperations';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class OperatingSystemOpsStub

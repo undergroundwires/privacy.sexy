@@ -1,7 +1,7 @@
 import { sleep } from '@/infrastructure/Threading/AsyncSleep';
-import { IUrlStatus } from './IUrlStatus';
-import { getUrlStatus, IRequestOptions } from './Requestor';
+import { getUrlStatus, type IRequestOptions } from './Requestor';
 import { groupUrlsByDomain } from './UrlPerDomainGrouper';
+import type { IUrlStatus } from './IUrlStatus';
 
 export async function getUrlStatusesInParallel(
   urls: string[],

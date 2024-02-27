@@ -2,10 +2,10 @@ import { existsSync, createWriteStream, type WriteStream } from 'node:fs';
 import { unlink, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import { app } from 'electron/main';
-import { UpdateInfo } from 'electron-updater';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import { UpdateProgressBar } from '../UpdateProgressBar';
 import { retryFileSystemAccess } from './RetryFileSystemAccess';
+import type { UpdateInfo } from 'electron-updater';
 import type { ReadableStream } from 'node:stream/web';
 
 const MAX_PROGRESS_LOG_ENTRIES = 10;

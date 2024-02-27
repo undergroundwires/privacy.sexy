@@ -1,5 +1,5 @@
 import { TreeNodeCheckState } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/CheckState';
-import { TreeNodeStateDescriptor } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateDescriptor';
+import type { TreeNodeStateDescriptor } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateDescriptor';
 
 export class TreeNodeStateDescriptorStub implements TreeNodeStateDescriptor {
   public checkState: TreeNodeCheckState = TreeNodeCheckState.Checked;

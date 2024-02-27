@@ -1,4 +1,4 @@
-import { FileWriteErrorType, FileWriteOutcome, ReadbackFileWriter } from '@/infrastructure/ReadbackFileWriter/ReadbackFileWriter';
+import type { FileWriteErrorType, FileWriteOutcome, ReadbackFileWriter } from '@/infrastructure/ReadbackFileWriter/ReadbackFileWriter';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class ReadbackFileWriterStub

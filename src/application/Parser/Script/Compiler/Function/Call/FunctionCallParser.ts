@@ -1,9 +1,9 @@
 import type { FunctionCallData, FunctionCallsData, FunctionCallParametersData } from '@/application/collections/';
 import { isArray, isPlainObject } from '@/TypeHelpers';
-import { FunctionCall } from './FunctionCall';
 import { FunctionCallArgumentCollection } from './Argument/FunctionCallArgumentCollection';
 import { FunctionCallArgument } from './Argument/FunctionCallArgument';
 import { ParsedFunctionCall } from './ParsedFunctionCall';
+import type { FunctionCall } from './FunctionCall';
 
 export function parseFunctionCalls(calls: FunctionCallsData): FunctionCall[] {
   const sequence = getCallSequence(calls);

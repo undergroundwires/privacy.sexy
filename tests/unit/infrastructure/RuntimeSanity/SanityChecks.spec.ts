@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { validateRuntimeSanity } from '@/infrastructure/RuntimeSanity/SanityChecks';
-import { ISanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/ISanityCheckOptions';
+import type { ISanityCheckOptions } from '@/infrastructure/RuntimeSanity/Common/ISanityCheckOptions';
 import { SanityCheckOptionsStub } from '@tests/unit/shared/Stubs/SanityCheckOptionsStub';
-import { ISanityValidator } from '@/infrastructure/RuntimeSanity/Common/ISanityValidator';
+import type { ISanityValidator } from '@/infrastructure/RuntimeSanity/Common/ISanityValidator';
 import { SanityValidatorStub } from '@tests/unit/shared/Stubs/SanityValidatorStub';
 import { itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { collectExceptionMessage } from '@tests/unit/shared/ExceptionCollector';

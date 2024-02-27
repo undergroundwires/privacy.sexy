@@ -1,13 +1,13 @@
 import type { CollectionData } from '@/application/collections/';
-import { IApplication } from '@/domain/IApplication';
+import type { IApplication } from '@/domain/IApplication';
 import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
-import { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 import WindowsData from '@/application/collections/windows.yaml';
 import MacOsData from '@/application/collections/macos.yaml';
 import LinuxData from '@/application/collections/linux.yaml';
 import { parseProjectDetails } from '@/application/Parser/ProjectDetailsParser';
 import { Application } from '@/domain/Application';
-import { IAppMetadata } from '@/infrastructure/EnvironmentVariables/IAppMetadata';
+import type { IAppMetadata } from '@/infrastructure/EnvironmentVariables/IAppMetadata';
 import { EnvironmentVariablesFactory } from '@/infrastructure/EnvironmentVariables/EnvironmentVariablesFactory';
 import { parseCategoryCollection } from './CategoryCollectionParser';
 

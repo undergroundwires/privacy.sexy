@@ -1,7 +1,7 @@
-import { IEnvironmentVariablesFactory } from './IEnvironmentVariablesFactory';
 import { validateEnvironmentVariables } from './EnvironmentVariablesValidator';
 import { ViteEnvironmentVariables } from './Vite/ViteEnvironmentVariables';
-import { IEnvironmentVariables } from './IEnvironmentVariables';
+import type { IEnvironmentVariablesFactory } from './IEnvironmentVariablesFactory';
+import type { IEnvironmentVariables } from './IEnvironmentVariables';
 
 export class EnvironmentVariablesFactory implements IEnvironmentVariablesFactory {
   public static readonly Current = new EnvironmentVariablesFactory();

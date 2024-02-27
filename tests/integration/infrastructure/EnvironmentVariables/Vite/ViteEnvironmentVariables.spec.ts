@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import packageJson from '@/../package.json' assert { type: 'json' };
-import { PropertyKeys } from '@/TypeHelpers';
-import { IAppMetadata } from '@/infrastructure/EnvironmentVariables/IAppMetadata';
+import type { PropertyKeys } from '@/TypeHelpers';
+import type { IAppMetadata } from '@/infrastructure/EnvironmentVariables/IAppMetadata';
 import { ViteEnvironmentVariables } from '@/infrastructure/EnvironmentVariables/Vite/ViteEnvironmentVariables';
 
 describe('ViteEnvironmentVariables', () => {

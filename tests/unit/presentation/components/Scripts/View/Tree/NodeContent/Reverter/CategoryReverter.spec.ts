@@ -6,9 +6,9 @@ import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { getCategoryNodeId } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/CategoryNodeMetadataConverter';
 import { UserSelectionStub } from '@tests/unit/shared/Stubs/UserSelectionStub';
 import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
-import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { CategorySelectionStub } from '@tests/unit/shared/Stubs/CategorySelectionStub';
-import { IScript } from '@/domain/IScript';
+import type { IScript } from '@/domain/IScript';
 
 describe('CategoryReverter', () => {
   describe('getState', () => {

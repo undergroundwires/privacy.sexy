@@ -1,5 +1,5 @@
 import { parseProjectDetails } from '@/application/Parser/ProjectDetailsParser';
-import { IAppMetadata } from '@/infrastructure/EnvironmentVariables/IAppMetadata';
+import type { IAppMetadata } from '@/infrastructure/EnvironmentVariables/IAppMetadata';
 import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
 import { ProjectDetailsStub } from './ProjectDetailsStub';
 

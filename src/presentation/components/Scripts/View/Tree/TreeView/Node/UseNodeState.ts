@@ -2,8 +2,8 @@ import {
   type Ref, shallowRef, watch, shallowReadonly,
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
-import { ReadOnlyTreeNode } from './TreeNode';
-import { TreeNodeStateDescriptor } from './State/StateDescriptor';
+import type { ReadOnlyTreeNode } from './TreeNode';
+import type { TreeNodeStateDescriptor } from './State/StateDescriptor';
 
 export function useNodeState(
   nodeRef: Readonly<Ref<ReadOnlyTreeNode>>,

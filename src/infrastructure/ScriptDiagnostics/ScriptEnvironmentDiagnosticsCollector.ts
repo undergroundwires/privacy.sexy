@@ -1,8 +1,8 @@
-import { ScriptDiagnosticData, ScriptDiagnosticsCollector } from '@/application/ScriptDiagnostics/ScriptDiagnosticsCollector';
-import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
+import type { ScriptDiagnosticData, ScriptDiagnosticsCollector } from '@/application/ScriptDiagnostics/ScriptDiagnosticsCollector';
+import type { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
 import { CurrentEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironmentFactory';
 import { PersistentDirectoryProvider } from '@/infrastructure/CodeRunner/Creation/Directory/PersistentDirectoryProvider';
-import { ScriptDirectoryProvider } from '../CodeRunner/Creation/Directory/ScriptDirectoryProvider';
+import type { ScriptDirectoryProvider } from '../CodeRunner/Creation/Directory/ScriptDirectoryProvider';
 
 export class ScriptEnvironmentDiagnosticsCollector implements ScriptDiagnosticsCollector {
   constructor(

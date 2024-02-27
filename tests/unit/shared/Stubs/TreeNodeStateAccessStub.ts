@@ -1,5 +1,5 @@
-import { NodeStateChangedEvent, TreeNodeStateAccess, TreeNodeStateTransaction } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateAccess';
-import { TreeNodeStateDescriptor } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateDescriptor';
+import type { NodeStateChangedEvent, TreeNodeStateAccess, TreeNodeStateTransaction } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateAccess';
+import type { TreeNodeStateDescriptor } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateDescriptor';
 import { TreeNodeCheckState } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/CheckState';
 import { TreeNodeStateDescriptorStub } from './TreeNodeStateDescriptorStub';
 import { EventSourceStub } from './EventSourceStub';

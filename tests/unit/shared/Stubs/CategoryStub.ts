@@ -1,5 +1,5 @@
 import { BaseEntity } from '@/infrastructure/Entity/BaseEntity';
-import { ICategory, IScript } from '@/domain/ICategory';
+import type { ICategory, IScript } from '@/domain/ICategory';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { ScriptStub } from './ScriptStub';
 

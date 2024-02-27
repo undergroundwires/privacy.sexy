@@ -1,14 +1,14 @@
 import { shallowMount } from '@vue/test-utils';
 import { describe, it, expect } from 'vitest';
 import { ref, nextTick, type Ref } from 'vue';
-import { CategoryNodeParser, useTreeViewNodeInput } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/UseTreeViewNodeInput';
+import { type CategoryNodeParser, useTreeViewNodeInput } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/UseTreeViewNodeInput';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { CategoryCollectionStateStub } from '@tests/unit/shared/Stubs/CategoryCollectionStateStub';
 import { UseCollectionStateStub } from '@tests/unit/shared/Stubs/UseCollectionStateStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
-import { ICategoryCollection } from '@/domain/ICategoryCollection';
-import { NodeMetadata } from '@/presentation/components/Scripts/View/Tree/NodeContent/NodeMetadata';
+import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { NodeMetadata } from '@/presentation/components/Scripts/View/Tree/NodeContent/NodeMetadata';
 import { NodeMetadataStub } from '@tests/unit/shared/Stubs/NodeMetadataStub';
 import { convertToNodeInput } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/TreeNodeMetadataConverter';
 import { TreeInputNodeDataStub as TreeInputNodeData, TreeInputNodeDataStub } from '@tests/unit/shared/Stubs/TreeInputNodeDataStub';

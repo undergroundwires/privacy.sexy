@@ -1,5 +1,5 @@
 import { it } from 'vitest';
-import { Logger } from '@/application/Common/Log/Logger';
+import type { Logger } from '@/application/Common/Log/Logger';
 
 export function itEachLoggingMethod(
   handler: (

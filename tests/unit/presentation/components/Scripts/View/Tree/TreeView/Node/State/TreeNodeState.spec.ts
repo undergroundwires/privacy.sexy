@@ -1,9 +1,9 @@
 import { expect } from 'vitest';
 import { TreeNodeState } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/TreeNodeState';
-import { TreeNodeStateDescriptor } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateDescriptor';
+import type { TreeNodeStateDescriptor } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateDescriptor';
 import { TreeNodeCheckState } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/CheckState';
-import { NodeStateChangedEvent, TreeNodeStateTransaction } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateAccess';
-import { PropertyKeys } from '@/TypeHelpers';
+import type { NodeStateChangedEvent, TreeNodeStateTransaction } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateAccess';
+import type { PropertyKeys } from '@/TypeHelpers';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 describe('TreeNodeState', () => {

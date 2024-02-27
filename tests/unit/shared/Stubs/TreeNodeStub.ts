@@ -1,6 +1,6 @@
-import { HierarchyAccess } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/Hierarchy/HierarchyAccess';
-import { TreeNodeStateAccess } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateAccess';
-import { TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
+import type { HierarchyAccess } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/Hierarchy/HierarchyAccess';
+import type { TreeNodeStateAccess } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateAccess';
+import type { TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
 import { NodeMetadataStub } from './NodeMetadataStub';
 import { HierarchyAccessStub } from './HierarchyAccessStub';
 import { TreeNodeStateAccessStub } from './TreeNodeStateAccessStub';

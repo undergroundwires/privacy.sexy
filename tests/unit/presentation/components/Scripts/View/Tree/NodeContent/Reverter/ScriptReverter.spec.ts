@@ -4,7 +4,7 @@ import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
 import { getScriptNodeId } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/CategoryNodeMetadataConverter';
 import { UserSelectionStub } from '@tests/unit/shared/Stubs/UserSelectionStub';
-import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { ScriptSelectionStub } from '@tests/unit/shared/Stubs/ScriptSelectionStub';
 
 describe('ScriptReverter', () => {

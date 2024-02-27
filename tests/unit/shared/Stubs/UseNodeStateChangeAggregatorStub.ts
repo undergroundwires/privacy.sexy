@@ -1,5 +1,5 @@
-import { TreeRoot } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/TreeRoot';
-import {
+import type { TreeRoot } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/TreeRoot';
+import type {
   NodeStateChangeEventArgs,
   NodeStateChangeEventCallback,
   useNodeStateChangeAggregator,

@@ -1,5 +1,5 @@
-import { ISanityCheckOptions } from './ISanityCheckOptions';
-import { ISanityValidator } from './ISanityValidator';
+import type { ISanityValidator } from './ISanityValidator';
+import type { ISanityCheckOptions } from './ISanityCheckOptions';
 
 export type FactoryFunction<T> = () => T;
 

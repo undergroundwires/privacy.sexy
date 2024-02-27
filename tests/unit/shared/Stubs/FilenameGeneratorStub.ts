@@ -1,5 +1,5 @@
-import { FilenameGenerator } from '@/infrastructure/CodeRunner/Creation/Filename/FilenameGenerator';
-import { ScriptFilenameParts } from '@/infrastructure/CodeRunner/Creation/ScriptFileCreator';
+import type { FilenameGenerator } from '@/infrastructure/CodeRunner/Creation/Filename/FilenameGenerator';
+import type { ScriptFilenameParts } from '@/infrastructure/CodeRunner/Creation/ScriptFileCreator';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class FilenameGeneratorStub

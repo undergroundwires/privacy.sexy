@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { CategoryData, CategoryOrScriptData } from '@/application/collections/';
-import { CategoryFactoryType, parseCategory } from '@/application/Parser/CategoryParser';
+import { type CategoryFactoryType, parseCategory } from '@/application/Parser/CategoryParser';
 import { parseScript } from '@/application/Parser/Script/ScriptParser';
 import { parseDocs } from '@/application/Parser/DocumentationParser';
 import { ScriptCompilerStub } from '@tests/unit/shared/Stubs/ScriptCompilerStub';
@@ -9,8 +9,8 @@ import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub'
 import { CategoryDataStub } from '@tests/unit/shared/Stubs/CategoryDataStub';
 import { itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { NodeType } from '@/application/Parser/NodeValidation/NodeType';
-import { expectThrowsNodeError, ITestScenario, NodeValidationTestRunner } from '@tests/unit/application/Parser/NodeValidation/NodeValidatorTestRunner';
-import { ICategoryCollectionParseContext } from '@/application/Parser/Script/ICategoryCollectionParseContext';
+import { expectThrowsNodeError, type ITestScenario, NodeValidationTestRunner } from '@tests/unit/application/Parser/NodeValidation/NodeValidatorTestRunner';
+import type { ICategoryCollectionParseContext } from '@/application/Parser/Script/ICategoryCollectionParseContext';
 import { Category } from '@/domain/Category';
 import { createScriptDataWithCall, createScriptDataWithCode, createScriptDataWithoutCallOrCodes } from '@tests/unit/shared/Stubs/ScriptDataStub';
 

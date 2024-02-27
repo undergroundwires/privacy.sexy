@@ -1,21 +1,21 @@
 import { describe, it, expect } from 'vitest';
 import { defineComponent, nextTick, shallowRef } from 'vue';
 import { shallowMount } from '@vue/test-utils';
-import { TreeRoot } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/TreeRoot';
+import type { TreeRoot } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/TreeRoot';
 import { useCurrentTreeNodes } from '@/presentation/components/Scripts/View/Tree/TreeView/UseCurrentTreeNodes';
-import { NodeStateChangeEventArgs, NodeStateChangeEventCallback, useNodeStateChangeAggregator } from '@/presentation/components/Scripts/View/Tree/TreeView/UseNodeStateChangeAggregator';
+import { type NodeStateChangeEventArgs, type NodeStateChangeEventCallback, useNodeStateChangeAggregator } from '@/presentation/components/Scripts/View/Tree/TreeView/UseNodeStateChangeAggregator';
 import { TreeRootStub } from '@tests/unit/shared/Stubs/TreeRootStub';
 import { UseCurrentTreeNodesStub } from '@tests/unit/shared/Stubs/UseCurrentTreeNodesStub';
 import { UseAutoUnsubscribedEventsStub } from '@tests/unit/shared/Stubs/UseAutoUnsubscribedEventsStub';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { TreeNodeStub } from '@tests/unit/shared/Stubs/TreeNodeStub';
 import { QueryableNodesStub } from '@tests/unit/shared/Stubs/QueryableNodesStub';
-import { TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
-import { TreeNodeStateDescriptor } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateDescriptor';
+import type { TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
+import type { TreeNodeStateDescriptor } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateDescriptor';
 import { TreeNodeStateDescriptorStub } from '@tests/unit/shared/Stubs/TreeNodeStateDescriptorStub';
 import { TreeNodeStateAccessStub } from '@tests/unit/shared/Stubs/TreeNodeStateAccessStub';
-import { IEventSubscriptionCollection } from '@/infrastructure/Events/IEventSubscriptionCollection';
-import { FunctionKeys } from '@/TypeHelpers';
+import type { IEventSubscriptionCollection } from '@/infrastructure/Events/IEventSubscriptionCollection';
+import type { FunctionKeys } from '@/TypeHelpers';
 import type { Ref } from 'vue';
 
 describe('useNodeStateChangeAggregator', () => {

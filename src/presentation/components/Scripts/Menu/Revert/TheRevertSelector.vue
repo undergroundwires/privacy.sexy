@@ -60,7 +60,7 @@ import {
 import { injectKey } from '@/presentation/injectionSymbols';
 import TooltipWrapper from '@/presentation/components/Shared/TooltipWrapper.vue';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
-import { IScript } from '@/domain/IScript';
+import type { IScript } from '@/domain/IScript';
 import MenuOptionList from '../MenuOptionList.vue';
 import MenuOptionListItem from '../MenuOptionListItem.vue';
 import RevertStatusDocumentation from './RevertStatusDocumentation.vue';

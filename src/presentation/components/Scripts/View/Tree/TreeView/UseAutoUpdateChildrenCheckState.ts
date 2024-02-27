@@ -1,7 +1,7 @@
-import { TreeRoot } from './TreeRoot/TreeRoot';
 import { useNodeStateChangeAggregator } from './UseNodeStateChangeAggregator';
-import { HierarchyAccess } from './Node/Hierarchy/HierarchyAccess';
 import { TreeNodeCheckState } from './Node/State/CheckState';
+import type { TreeRoot } from './TreeRoot/TreeRoot';
+import type { HierarchyAccess } from './Node/Hierarchy/HierarchyAccess';
 import type { Ref } from 'vue';
 
 export function useAutoUpdateChildrenCheckState(

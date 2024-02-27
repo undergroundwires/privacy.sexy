@@ -1,4 +1,4 @@
-import { FileSystemOps } from '@/infrastructure/CodeRunner/System/SystemOperations';
+import type { FileSystemOps } from '@/infrastructure/CodeRunner/System/SystemOperations';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class FileSystemOpsStub

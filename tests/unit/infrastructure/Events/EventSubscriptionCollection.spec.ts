@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { EventSubscriptionCollection } from '@/infrastructure/Events/EventSubscriptionCollection';
 import { EventSubscriptionStub } from '@tests/unit/shared/Stubs/EventSubscriptionStub';
 import { itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';
-import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
+import type { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 
 describe('EventSubscriptionCollection', () => {
   describe('register', () => {

@@ -1,5 +1,5 @@
 import { validateRuntimeSanity } from '@/infrastructure/RuntimeSanity/SanityChecks';
-import { Bootstrapper } from '../Bootstrapper';
+import type { Bootstrapper } from '../Bootstrapper';
 
 export class RuntimeSanityValidator implements Bootstrapper {
   constructor(private readonly validator = validateRuntimeSanity) {

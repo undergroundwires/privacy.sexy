@@ -1,7 +1,7 @@
-import { IEventSource } from '@/infrastructure/Events/IEventSource';
-import { IScript } from '@/domain/IScript';
-import { SelectedScript } from './SelectedScript';
-import { ScriptSelectionChangeCommand } from './ScriptSelectionChange';
+import type { IEventSource } from '@/infrastructure/Events/IEventSource';
+import type { IScript } from '@/domain/IScript';
+import type { SelectedScript } from './SelectedScript';
+import type { ScriptSelectionChangeCommand } from './ScriptSelectionChange';
 
 export interface ReadonlyScriptSelection {
   readonly changed: IEventSource<readonly SelectedScript[]>;

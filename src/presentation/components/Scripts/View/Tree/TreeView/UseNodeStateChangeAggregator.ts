@@ -2,11 +2,11 @@ import {
   watch, shallowRef, type Ref,
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
-import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
-import { TreeRoot } from './TreeRoot/TreeRoot';
-import { TreeNode } from './Node/TreeNode';
+import type { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 import { useCurrentTreeNodes } from './UseCurrentTreeNodes';
-import { TreeNodeStateDescriptor } from './Node/State/StateDescriptor';
+import type { TreeNodeStateDescriptor } from './Node/State/StateDescriptor';
+import type { TreeRoot } from './TreeRoot/TreeRoot';
+import type { TreeNode } from './Node/TreeNode';
 
 export type NodeStateChangeEventCallback = (args: NodeStateChangeEventArgs) => void;
 

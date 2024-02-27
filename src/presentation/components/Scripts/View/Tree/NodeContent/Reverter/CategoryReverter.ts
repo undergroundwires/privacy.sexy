@@ -1,9 +1,9 @@
-import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
-import { ICategoryCollection } from '@/domain/ICategoryCollection';
-import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import type { UserSelection } from '@/application/Context/State/Selection/UserSelection';
+import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { getCategoryId } from '../../TreeViewAdapter/CategoryNodeMetadataConverter';
-import { Reverter } from './Reverter';
 import { ScriptReverter } from './ScriptReverter';
+import type { Reverter } from './Reverter';
 
 export class CategoryReverter implements Reverter {
   private readonly categoryId: number;

@@ -1,4 +1,4 @@
-import { IFunctionParameter } from './IFunctionParameter';
+import type { IFunctionParameter } from './IFunctionParameter';
 
 export interface IReadOnlyFunctionParameterCollection {
   readonly all: readonly IFunctionParameter[];

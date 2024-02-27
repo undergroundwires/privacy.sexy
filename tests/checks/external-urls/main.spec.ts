@@ -1,8 +1,8 @@
 import { test, expect } from 'vitest';
 import { parseApplication } from '@/application/Parser/ApplicationParser';
-import { IApplication } from '@/domain/IApplication';
-import { IUrlStatus } from './StatusChecker/IUrlStatus';
-import { getUrlStatusesInParallel, IBatchRequestOptions } from './StatusChecker/BatchStatusChecker';
+import type { IApplication } from '@/domain/IApplication';
+import { getUrlStatusesInParallel, type IBatchRequestOptions } from './StatusChecker/BatchStatusChecker';
+import type { IUrlStatus } from './StatusChecker/IUrlStatus';
 
 const app = parseApplication();
 const urls = collectUniqueUrls(app);

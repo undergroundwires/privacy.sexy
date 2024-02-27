@@ -1,5 +1,5 @@
 import { ScriptingLanguage } from './ScriptingLanguage';
-import { IScriptingDefinition } from './IScriptingDefinition';
+import type { IScriptingDefinition } from './IScriptingDefinition';
 
 export class ScriptingDefinition implements IScriptingDefinition {
   public readonly fileExtension: string;

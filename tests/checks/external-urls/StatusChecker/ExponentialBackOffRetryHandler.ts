@@ -1,5 +1,5 @@
 import { sleep } from '@/infrastructure/Threading/AsyncSleep';
-import { IUrlStatus } from './IUrlStatus';
+import type { IUrlStatus } from './IUrlStatus';
 
 const DefaultBaseRetryIntervalInMs = 5 /* sec */ * 1000;
 

@@ -1,6 +1,6 @@
 import { describe, expect } from 'vitest';
 import { NoopLogger } from '@/infrastructure/Log/NoopLogger';
-import { Logger } from '@/application/Common/Log/Logger';
+import type { Logger } from '@/application/Common/Log/Logger';
 import { itEachLoggingMethod } from './LoggerTestRunner';
 
 describe('NoopLogger', () => {

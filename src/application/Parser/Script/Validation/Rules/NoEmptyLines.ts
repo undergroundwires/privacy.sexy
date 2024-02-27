@@ -1,5 +1,5 @@
-import { ICodeLine } from '../ICodeLine';
-import { ICodeValidationRule, IInvalidCodeLine } from '../ICodeValidationRule';
+import type { ICodeValidationRule, IInvalidCodeLine } from '../ICodeValidationRule';
+import type { ICodeLine } from '../ICodeLine';
 
 export class NoEmptyLines implements ICodeValidationRule {
   public analyze(lines: readonly ICodeLine[]): IInvalidCodeLine[] {

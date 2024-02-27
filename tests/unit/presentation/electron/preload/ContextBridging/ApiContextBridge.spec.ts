@@ -1,5 +1,5 @@
 import { it, describe, expect } from 'vitest';
-import { BridgeConnector, MethodContextBinder, connectApisWithContextBridge } from '@/presentation/electron/preload/ContextBridging/ApiContextBridge';
+import { type BridgeConnector, type MethodContextBinder, connectApisWithContextBridge } from '@/presentation/electron/preload/ContextBridging/ApiContextBridge';
 
 describe('ApiContextBridge', () => {
   describe('connectApisWithContextBridge', () => {

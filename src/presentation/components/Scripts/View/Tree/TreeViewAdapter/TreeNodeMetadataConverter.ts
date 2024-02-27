@@ -1,6 +1,6 @@
-import { NodeMetadata } from '../NodeContent/NodeMetadata';
-import { ReadOnlyTreeNode } from '../TreeView/Node/TreeNode';
-import { TreeInputNodeData } from '../TreeView/Bindings/TreeInputNodeData';
+import type { NodeMetadata } from '../NodeContent/NodeMetadata';
+import type { ReadOnlyTreeNode } from '../TreeView/Node/TreeNode';
+import type { TreeInputNodeData } from '../TreeView/Bindings/TreeInputNodeData';
 
 export function getNodeMetadata(
   treeNode: ReadOnlyTreeNode,

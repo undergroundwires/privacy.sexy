@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import {
-  defineComponent, PropType, computed,
+  defineComponent, type PropType, computed,
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import { OperatingSystem } from '@/domain/OperatingSystem';

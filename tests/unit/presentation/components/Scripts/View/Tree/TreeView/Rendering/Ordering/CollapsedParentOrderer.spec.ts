@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
+import type { TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
 import { CollapsedParentOrderer } from '@/presentation/components/Scripts/View/Tree/TreeView/Rendering/Ordering/CollapsedParentOrderer';
 import { HierarchyAccessStub } from '@tests/unit/shared/Stubs/HierarchyAccessStub';
 import { TreeNodeStateAccessStub } from '@tests/unit/shared/Stubs/TreeNodeStateAccessStub';

@@ -1,4 +1,4 @@
-import { ElectronEnvironmentDetector, ElectronProcessType } from '@/infrastructure/RuntimeEnvironment/Electron/ElectronEnvironmentDetector';
+import type { ElectronEnvironmentDetector, ElectronProcessType } from '@/infrastructure/RuntimeEnvironment/Electron/ElectronEnvironmentDetector';
 
 export class ElectronEnvironmentDetectorStub implements ElectronEnvironmentDetector {
   private isInsideElectron = true;

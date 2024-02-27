@@ -1,5 +1,5 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { BrowserCondition, TouchSupportExpectation } from './BrowserCondition';
+import { type BrowserCondition, TouchSupportExpectation } from './BrowserCondition';
 
 // They include "Android", "iPhone" in their user agents.
 const WindowsMobileIdentifiers: readonly string[] = [

@@ -1,4 +1,4 @@
-import { NodeFileOperations as NodePathOperations } from '@/infrastructure/Dialog/Electron/NodeElectronSaveFileDialog';
+import type { NodePathOperations } from '@/infrastructure/Dialog/Electron/NodeElectronSaveFileDialog';
 import { StubWithObservableMethodCalls } from '@tests/unit/shared/Stubs/StubWithObservableMethodCalls';
 
 export class NodePathOperationsStub

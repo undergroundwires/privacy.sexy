@@ -1,4 +1,4 @@
-import { ReadOnlyTreeNode, TreeNode } from '../../../Node/TreeNode';
+import type { ReadOnlyTreeNode, TreeNode } from '../../../Node/TreeNode';
 
 export interface ReadOnlyQueryableNodes {
   readonly rootNodes: readonly ReadOnlyTreeNode[];

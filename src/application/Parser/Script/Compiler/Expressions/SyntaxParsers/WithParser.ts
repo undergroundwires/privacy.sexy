@@ -1,11 +1,11 @@
 // eslint-disable-next-line max-classes-per-file
-import { IExpressionParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/IExpressionParser';
+import type { IExpressionParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/IExpressionParser';
 import { FunctionParameterCollection } from '@/application/Parser/Script/Compiler/Function/Parameter/FunctionParameterCollection';
 import { FunctionParameter } from '@/application/Parser/Script/Compiler/Function/Parameter/FunctionParameter';
-import { IExpression } from '../Expression/IExpression';
 import { ExpressionPosition } from '../Expression/ExpressionPosition';
 import { ExpressionRegexBuilder } from '../Parser/Regex/ExpressionRegexBuilder';
 import { createPositionFromRegexFullMatch } from '../Expression/ExpressionPositionFactory';
+import type { IExpression } from '../Expression/IExpression';
 
 export class WithParser implements IExpressionParser {
   public findExpressions(code: string): IExpression[] {

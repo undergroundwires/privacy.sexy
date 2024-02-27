@@ -1,7 +1,7 @@
-import { IEntity } from '../infrastructure/Entity/IEntity';
-import { IDocumentable } from './IDocumentable';
 import { RecommendationLevel } from './RecommendationLevel';
-import { IScriptCode } from './IScriptCode';
+import type { IEntity } from '../infrastructure/Entity/IEntity';
+import type { IDocumentable } from './IDocumentable';
+import type { IScriptCode } from './IScriptCode';
 
 export interface IScript extends IEntity<string>, IDocumentable {
   readonly name: string;

@@ -25,11 +25,11 @@
 
 <script lang="ts">
 import { defineComponent, computed, toRef } from 'vue';
-import { TreeRoot } from '../TreeRoot/TreeRoot';
 import { useCurrentTreeNodes } from '../UseCurrentTreeNodes';
-import { TreeNode } from './TreeNode';
 import NodeCheckbox from './NodeCheckbox.vue';
 import InteractableNode from './InteractableNode.vue';
+import type { TreeNode } from './TreeNode';
+import type { TreeRoot } from '../TreeRoot/TreeRoot';
 import type { PropType } from 'vue';
 
 export default defineComponent({

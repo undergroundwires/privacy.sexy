@@ -1,11 +1,11 @@
 import { type Ref, watch } from 'vue';
-import { TreeViewFilterAction, TreeViewFilterEvent, TreeViewFilterPredicate } from './Bindings/TreeInputFilterEvent';
-import { ReadOnlyTreeNode, TreeNode } from './Node/TreeNode';
-import { TreeRoot } from './TreeRoot/TreeRoot';
+import { TreeViewFilterAction, type TreeViewFilterEvent, type TreeViewFilterPredicate } from './Bindings/TreeInputFilterEvent';
 import { useCurrentTreeNodes } from './UseCurrentTreeNodes';
-import { QueryableNodes, ReadOnlyQueryableNodes } from './TreeRoot/NodeCollection/Query/QueryableNodes';
-import { TreeNodeStateTransaction } from './Node/State/StateAccess';
-import { TreeNodeStateDescriptor } from './Node/State/StateDescriptor';
+import type { QueryableNodes, ReadOnlyQueryableNodes } from './TreeRoot/NodeCollection/Query/QueryableNodes';
+import type { TreeNodeStateTransaction } from './Node/State/StateAccess';
+import type { TreeNodeStateDescriptor } from './Node/State/StateDescriptor';
+import type { ReadOnlyTreeNode, TreeNode } from './Node/TreeNode';
+import type { TreeRoot } from './TreeRoot/TreeRoot';
 
 export function useTreeQueryFilter(
   latestFilterEventRef: Readonly<Ref<TreeViewFilterEvent | undefined>>,

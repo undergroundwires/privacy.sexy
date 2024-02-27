@@ -4,7 +4,7 @@ import { useAutoUnsubscribedEvents } from '@/presentation/components/Shared/Hook
 import { EventSubscriptionCollectionStub } from '@tests/unit/shared/Stubs/EventSubscriptionCollectionStub';
 import { EventSubscriptionStub } from '@tests/unit/shared/Stubs/EventSubscriptionStub';
 import { EventSubscriptionCollection } from '@/infrastructure/Events/EventSubscriptionCollection';
-import { FunctionKeys } from '@/TypeHelpers';
+import type { FunctionKeys } from '@/TypeHelpers';
 
 describe('UseAutoUnsubscribedEvents', () => {
   describe('event collection handling', () => {

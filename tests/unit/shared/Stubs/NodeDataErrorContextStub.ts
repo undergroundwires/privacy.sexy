@@ -1,5 +1,5 @@
-import { NodeData } from '@/application/Parser/NodeValidation/NodeData';
-import { INodeDataErrorContext } from '@/application/Parser/NodeValidation/NodeDataError';
+import type { NodeData } from '@/application/Parser/NodeValidation/NodeData';
+import type { INodeDataErrorContext } from '@/application/Parser/NodeValidation/NodeDataError';
 import { NodeType } from '@/application/Parser/NodeValidation/NodeType';
 import { CategoryDataStub } from './CategoryDataStub';
 

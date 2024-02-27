@@ -1,5 +1,5 @@
 import type { ScriptData } from '@/application/collections/';
-import { IScriptCode } from '@/domain/IScriptCode';
+import type { IScriptCode } from '@/domain/IScriptCode';
 
 export interface IScriptCompiler {
   canCompile(script: ScriptData): boolean;

@@ -1,9 +1,9 @@
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { ScriptingLanguageFactory } from '@/application/Common/ScriptingLanguage/ScriptingLanguageFactory';
-import { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
+import type { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
 import { BatchFileSyntax } from './BatchFileSyntax';
 import { ShellScriptSyntax } from './ShellScriptSyntax';
-import { ISyntaxFactory } from './ISyntaxFactory';
+import type { ISyntaxFactory } from './ISyntaxFactory';
 
 export class SyntaxFactory
   extends ScriptingLanguageFactory<ILanguageSyntax>

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { ShellScriptSyntax } from '@/application/Parser/Script/Validation/Syntax/ShellScriptSyntax';
-import { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
+import type { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
 import { BatchFileSyntax } from '@/application/Parser/Script/Validation/Syntax/BatchFileSyntax';
 
 function getSystemsUnderTest(): ILanguageSyntax[] {

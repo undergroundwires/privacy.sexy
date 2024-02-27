@@ -19,16 +19,16 @@ import {
 } from 'vue';
 import { TreeRootManager } from './TreeRoot/TreeRootManager';
 import TreeRoot from './TreeRoot/TreeRoot.vue';
-import { TreeInputNodeData } from './Bindings/TreeInputNodeData';
-import { TreeViewFilterEvent } from './Bindings/TreeInputFilterEvent';
 import { useTreeQueryFilter } from './UseTreeQueryFilter';
 import { useTreeKeyboardNavigation } from './UseTreeKeyboardNavigation';
 import { useNodeStateChangeAggregator } from './UseNodeStateChangeAggregator';
 import { useLeafNodeCheckedStateUpdater } from './UseLeafNodeCheckedStateUpdater';
-import { TreeNodeStateChangedEmittedEvent } from './Bindings/TreeNodeStateChangedEmittedEvent';
 import { useAutoUpdateParentCheckState } from './UseAutoUpdateParentCheckState';
 import { useAutoUpdateChildrenCheckState } from './UseAutoUpdateChildrenCheckState';
-import { useGradualNodeRendering, NodeRenderingControl } from './Rendering/UseGradualNodeRendering';
+import { useGradualNodeRendering, type NodeRenderingControl } from './Rendering/UseGradualNodeRendering';
+import type { TreeNodeStateChangedEmittedEvent } from './Bindings/TreeNodeStateChangedEmittedEvent';
+import type { TreeInputNodeData } from './Bindings/TreeInputNodeData';
+import type { TreeViewFilterEvent } from './Bindings/TreeInputFilterEvent';
 import type { PropType } from 'vue';
 
 export default defineComponent({

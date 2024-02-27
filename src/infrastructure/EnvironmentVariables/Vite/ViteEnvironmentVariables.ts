@@ -1,4 +1,4 @@
-import { IEnvironmentVariables } from '../IEnvironmentVariables';
+import type { IEnvironmentVariables } from '../IEnvironmentVariables';
 
 /**
  * Provides the application's environment variables.

@@ -1,8 +1,8 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
-import { IScript } from '@/domain/IScript';
-import { ICategory } from '@/domain/ICategory';
-import { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import type { IScript } from '@/domain/IScript';
+import type { ICategory } from '@/domain/ICategory';
+import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { ScriptStub } from './ScriptStub';
 import { ScriptingDefinitionStub } from './ScriptingDefinitionStub';

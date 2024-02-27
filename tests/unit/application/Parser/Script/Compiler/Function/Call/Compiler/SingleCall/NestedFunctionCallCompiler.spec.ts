@@ -1,14 +1,14 @@
 import { expect, describe, it } from 'vitest';
 import { createSharedFunctionStubWithCalls, createSharedFunctionStubWithCode } from '@tests/unit/shared/Stubs/SharedFunctionStub';
 import { NestedFunctionCallCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/SingleCall/Strategies/NestedFunctionCallCompiler';
-import { ArgumentCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/SingleCall/Strategies/Argument/ArgumentCompiler';
+import type { ArgumentCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/SingleCall/Strategies/Argument/ArgumentCompiler';
 import { ArgumentCompilerStub } from '@tests/unit/shared/Stubs/ArgumentCompilerStub';
 import { FunctionCallStub } from '@tests/unit/shared/Stubs/FunctionCallStub';
 import { FunctionCallCompilationContextStub } from '@tests/unit/shared/Stubs/FunctionCallCompilationContextStub';
 import { SingleCallCompilerStub } from '@tests/unit/shared/Stubs/SingleCallCompilerStub';
 import { CompiledCodeStub } from '@tests/unit/shared/Stubs/CompiledCodeStub';
-import { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
-import { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
+import type { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
+import type { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
 import { expectDeepThrowsError } from '@tests/shared/Assertions/ExpectDeepThrowsError';
 
 describe('NestedFunctionCallCompiler', () => {

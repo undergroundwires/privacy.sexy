@@ -4,7 +4,7 @@ import {
 import { mount } from '@vue/test-utils';
 import { defineComponent, shallowRef } from 'vue';
 import TreeView from '@/presentation/components/Scripts/View/Tree/TreeView/TreeView.vue';
-import { TreeInputNodeData } from '@/presentation/components/Scripts/View/Tree/TreeView/Bindings/TreeInputNodeData';
+import type { TreeInputNodeData } from '@/presentation/components/Scripts/View/Tree/TreeView/Bindings/TreeInputNodeData';
 import { provideDependencies } from '@/presentation/bootstrapping/DependencyProvider';
 import { ApplicationContextStub } from '@tests/unit/shared/Stubs/ApplicationContextStub';
 

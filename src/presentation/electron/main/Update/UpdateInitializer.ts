@@ -1,4 +1,4 @@
-import { autoUpdater, UpdateInfo } from 'electron-updater';
+import { autoUpdater, type UpdateInfo } from 'electron-updater';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import { requiresManualUpdate, startManualUpdateProcess } from './ManualUpdater/ManualUpdateCoordinator';
 import { handleAutoUpdate } from './AutomaticUpdateCoordinator';

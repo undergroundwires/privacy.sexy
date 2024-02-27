@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import { VueWrapper, shallowMount } from '@vue/test-utils';
-import { ComponentPublicInstance } from 'vue';
 import CopyableCommand from '@/presentation/components/Code/CodeButtons/Save/RunInstructions/Steps/CopyableCommand.vue';
 import { expectThrowsAsync } from '@tests/shared/Assertions/ExpectThrowsAsync';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
-import { Clipboard } from '@/presentation/components/Shared/Hooks/Clipboard/Clipboard';
+import type { Clipboard } from '@/presentation/components/Shared/Hooks/Clipboard/Clipboard';
 import { UseClipboardStub } from '@tests/unit/shared/Stubs/UseClipboardStub';
 import { ClipboardStub } from '@tests/unit/shared/Stubs/ClipboardStub';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import FlatButton from '@/presentation/components/Shared/FlatButton.vue';
+import type { ComponentPublicInstance } from 'vue';
 
 const DOM_SELECTOR_CODE_SLOT = 'code > span:nth-of-type(2)';
 const COMPONENT_TOOLTIP_WRAPPER_NAME = 'TooltipWrapper';

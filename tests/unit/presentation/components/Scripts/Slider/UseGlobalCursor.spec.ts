@@ -1,9 +1,9 @@
 import { it, describe, expect } from 'vitest';
 import {
-  Ref, ref, defineComponent, nextTick,
+  type Ref, ref, defineComponent, nextTick,
 } from 'vue';
 import { shallowMount } from '@vue/test-utils';
-import { CursorStyleDomModifier, useGlobalCursor } from '@/presentation/components/Scripts/Slider/UseGlobalCursor';
+import { type CursorStyleDomModifier, useGlobalCursor } from '@/presentation/components/Scripts/Slider/UseGlobalCursor';
 
 describe('useGlobalCursor', () => {
   it('adds cursor style to head on activation', async () => {

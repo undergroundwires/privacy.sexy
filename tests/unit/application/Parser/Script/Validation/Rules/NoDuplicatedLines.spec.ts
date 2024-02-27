@@ -1,7 +1,7 @@
 import { describe } from 'vitest';
 import { NoDuplicatedLines } from '@/application/Parser/Script/Validation/Rules/NoDuplicatedLines';
 import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
-import { IInvalidCodeLine } from '@/application/Parser/Script/Validation/ICodeValidationRule';
+import type { IInvalidCodeLine } from '@/application/Parser/Script/Validation/ICodeValidationRule';
 import { testCodeValidationRule } from './CodeValidationRuleTestRunner';
 
 describe('NoDuplicatedLines', () => {

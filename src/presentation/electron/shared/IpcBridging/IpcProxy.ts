@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron/main';
 import { ipcRenderer } from 'electron/renderer';
-import { FunctionKeys, isFunction } from '@/TypeHelpers';
-import { IpcChannel } from './IpcChannel';
+import { type FunctionKeys, isFunction } from '@/TypeHelpers';
+import type { IpcChannel } from './IpcChannel';
 
 export function createIpcConsumerProxy<T>(
   channel: IpcChannel<T>,

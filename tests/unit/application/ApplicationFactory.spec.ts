@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ApplicationFactory, ApplicationGetterType } from '@/application/ApplicationFactory';
+import { ApplicationFactory, type ApplicationGetterType } from '@/application/ApplicationFactory';
 import { ApplicationStub } from '@tests/unit/shared/Stubs/ApplicationStub';
 
 describe('ApplicationFactory', () => {

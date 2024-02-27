@@ -1,5 +1,5 @@
 import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
-import { ICodeSubstituter } from '@/application/Parser/ScriptingDefinition/ICodeSubstituter';
+import type { ICodeSubstituter } from '@/application/Parser/ScriptingDefinition/ICodeSubstituter';
 
 export class CodeSubstituterStub implements ICodeSubstituter {
   private readonly scenarios = new Array<{

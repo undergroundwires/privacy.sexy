@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import { ScriptFileCodeRunner } from '@/infrastructure/CodeRunner/ScriptFileCodeRunner';
 import { LoggerStub } from '@tests/unit/shared/Stubs/LoggerStub';
-import { Logger } from '@/application/Common/Log/Logger';
+import type { Logger } from '@/application/Common/Log/Logger';
 import { ScriptFilename } from '@/application/CodeRunner/ScriptFilename';
-import { ScriptFileExecutor } from '@/infrastructure/CodeRunner/Execution/ScriptFileExecutor';
+import type { ScriptFileExecutor } from '@/infrastructure/CodeRunner/Execution/ScriptFileExecutor';
 import { ScriptFileExecutorStub } from '@tests/unit/shared/Stubs/ScriptFileExecutorStub';
-import { ScriptFileCreator } from '@/infrastructure/CodeRunner/Creation/ScriptFileCreator';
+import type { ScriptFileCreator } from '@/infrastructure/CodeRunner/Creation/ScriptFileCreator';
 import { ScriptFileCreatorStub } from '@tests/unit/shared/Stubs/ScriptFileCreatorStub';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
-import { CodeRunErrorType } from '@/application/CodeRunner/CodeRunner';
+import type { CodeRunErrorType } from '@/application/CodeRunner/CodeRunner';
 
 describe('ScriptFileCodeRunner', () => {
   describe('runCode', () => {

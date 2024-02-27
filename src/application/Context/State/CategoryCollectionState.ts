@@ -1,12 +1,12 @@
-import { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { AdaptiveFilterContext } from './Filter/AdaptiveFilterContext';
-import { FilterContext } from './Filter/FilterContext';
 import { ApplicationCode } from './Code/ApplicationCode';
-import { UserSelection } from './Selection/UserSelection';
-import { ICategoryCollectionState } from './ICategoryCollectionState';
-import { IApplicationCode } from './Code/IApplicationCode';
 import { UserSelectionFacade } from './Selection/UserSelectionFacade';
+import type { FilterContext } from './Filter/FilterContext';
+import type { UserSelection } from './Selection/UserSelection';
+import type { ICategoryCollectionState } from './ICategoryCollectionState';
+import type { IApplicationCode } from './Code/IApplicationCode';
 
 export class CategoryCollectionState implements ICategoryCollectionState {
   public readonly os: OperatingSystem;

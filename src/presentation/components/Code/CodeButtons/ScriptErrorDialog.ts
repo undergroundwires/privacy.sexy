@@ -1,6 +1,6 @@
-import { ScriptDiagnosticData, ScriptDiagnosticsCollector } from '@/application/ScriptDiagnostics/ScriptDiagnosticsCollector';
+import type { ScriptDiagnosticData, ScriptDiagnosticsCollector } from '@/application/ScriptDiagnostics/ScriptDiagnosticsCollector';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { Dialog } from '@/presentation/common/Dialog';
+import type { Dialog } from '@/presentation/common/Dialog';
 
 export async function createScriptErrorDialog(
   information: ScriptErrorDetails,

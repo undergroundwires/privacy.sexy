@@ -1,6 +1,6 @@
-import { ReadOnlyTreeNode, TreeNode } from '../../Node/TreeNode';
-import { TreeNodeCollection } from '../NodeCollection/TreeNodeCollection';
-import { SingleNodeFocusManager } from './SingleNodeFocusManager';
+import type { ReadOnlyTreeNode, TreeNode } from '../../Node/TreeNode';
+import type { TreeNodeCollection } from '../NodeCollection/TreeNodeCollection';
+import type { SingleNodeFocusManager } from './SingleNodeFocusManager';
 
 export class SingleNodeCollectionFocusManager implements SingleNodeFocusManager {
   public get currentSingleFocusedNode(): TreeNode | undefined {

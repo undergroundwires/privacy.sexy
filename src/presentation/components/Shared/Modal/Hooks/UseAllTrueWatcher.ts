@@ -1,4 +1,4 @@
-import { Ref, computed, watch } from 'vue';
+import { type Ref, computed, watch } from 'vue';
 
 /**
  * This function monitors a set of conditions (represented as refs) and

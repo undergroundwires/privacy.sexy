@@ -1,7 +1,7 @@
 import { describe, it } from 'vitest';
-import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { UserSelectionFacade } from '@/application/Context/State/Selection/UserSelectionFacade';
-import { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import type { ScriptsFactory, CategoriesFactory } from '@/application/Context/State/Selection/UserSelectionFacade';
 import { ScriptSelectionStub } from '@tests/unit/shared/Stubs/ScriptSelectionStub';
@@ -9,7 +9,7 @@ import { CategorySelectionStub } from '@tests/unit/shared/Stubs/CategorySelectio
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
-import { ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
+import type { ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
 
 describe('UserSelectionFacade', () => {
   describe('ctor', () => {

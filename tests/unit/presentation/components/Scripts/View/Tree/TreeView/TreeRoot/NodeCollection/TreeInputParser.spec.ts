@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { parseTreeInput } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/NodeCollection/TreeInputParser';
-import { TreeInputNodeData } from '@/presentation/components/Scripts/View/Tree/TreeView/Bindings/TreeInputNodeData';
+import type { TreeInputNodeData } from '@/presentation/components/Scripts/View/Tree/TreeView/Bindings/TreeInputNodeData';
 import { TreeNodeManager } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNodeManager';
 import { TreeInputNodeDataStub } from '@tests/unit/shared/Stubs/TreeInputNodeDataStub';
 

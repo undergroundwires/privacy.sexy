@@ -2,11 +2,11 @@ import { describe, it, expect } from 'vitest';
 import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCollectionState';
 import { CategoryCollectionStateStub } from '@tests/unit/shared/Stubs/CategoryCollectionStateStub';
 import { ApplicationContextStub } from '@tests/unit/shared/Stubs/ApplicationContextStub';
-import { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import type { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { ApplicationContextChangedEventStub } from '@tests/unit/shared/Stubs/ApplicationContextChangedEventStub';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { IApplicationContext } from '@/application/Context/IApplicationContext';
-import { IEventSubscriptionCollection } from '@/infrastructure/Events/IEventSubscriptionCollection';
+import type { IApplicationContext } from '@/application/Context/IApplicationContext';
+import type { IEventSubscriptionCollection } from '@/infrastructure/Events/IEventSubscriptionCollection';
 import { EventSubscriptionCollectionStub } from '@tests/unit/shared/Stubs/EventSubscriptionCollectionStub';
 
 describe('UseCollectionState', () => {

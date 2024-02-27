@@ -31,8 +31,8 @@ import NodeContent from './NodeContent/NodeContent.vue';
 import { useTreeViewFilterEvent } from './TreeViewAdapter/UseTreeViewFilterEvent';
 import { useTreeViewNodeInput } from './TreeViewAdapter/UseTreeViewNodeInput';
 import { useCollectionSelectionStateUpdater } from './TreeViewAdapter/UseCollectionSelectionStateUpdater';
-import { TreeNodeStateChangedEmittedEvent } from './TreeView/Bindings/TreeNodeStateChangedEmittedEvent';
 import { useSelectedScriptNodeIds } from './TreeViewAdapter/UseSelectedScriptNodeIds';
+import type { TreeNodeStateChangedEmittedEvent } from './TreeView/Bindings/TreeNodeStateChangedEmittedEvent';
 
 export default defineComponent({
   components: {

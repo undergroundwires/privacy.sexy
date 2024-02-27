@@ -1,4 +1,4 @@
-import { ScriptFileCreationOutcome, ScriptFileCreator, ScriptFilenameParts } from '@/infrastructure/CodeRunner/Creation/ScriptFileCreator';
+import type { ScriptFileCreationOutcome, ScriptFileCreator, ScriptFilenameParts } from '@/infrastructure/CodeRunner/Creation/ScriptFileCreator';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class ScriptFileCreatorStub

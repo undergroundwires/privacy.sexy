@@ -1,5 +1,5 @@
-import { IScriptCompiler } from './Compiler/IScriptCompiler';
-import { ILanguageSyntax } from './Validation/Syntax/ILanguageSyntax';
+import type { IScriptCompiler } from './Compiler/IScriptCompiler';
+import type { ILanguageSyntax } from './Validation/Syntax/ILanguageSyntax';
 
 export interface ICategoryCollectionParseContext {
   readonly compiler: IScriptCompiler;

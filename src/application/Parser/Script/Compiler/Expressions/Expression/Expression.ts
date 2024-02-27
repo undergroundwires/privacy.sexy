@@ -1,10 +1,10 @@
 import { FunctionParameterCollection } from '@/application/Parser/Script/Compiler/Function/Parameter/FunctionParameterCollection';
-import { IReadOnlyFunctionCallArgumentCollection } from '../../Function/Call/Argument/IFunctionCallArgumentCollection';
-import { IReadOnlyFunctionParameterCollection } from '../../Function/Parameter/IFunctionParameterCollection';
 import { FunctionCallArgumentCollection } from '../../Function/Call/Argument/FunctionCallArgumentCollection';
-import { IExpression } from './IExpression';
+import { ExpressionEvaluationContext, type IExpressionEvaluationContext } from './ExpressionEvaluationContext';
 import { ExpressionPosition } from './ExpressionPosition';
-import { ExpressionEvaluationContext, IExpressionEvaluationContext } from './ExpressionEvaluationContext';
+import type { IReadOnlyFunctionCallArgumentCollection } from '../../Function/Call/Argument/IFunctionCallArgumentCollection';
+import type { IReadOnlyFunctionParameterCollection } from '../../Function/Parameter/IFunctionParameterCollection';
+import type { IExpression } from './IExpression';
 
 export type ExpressionEvaluator = (context: IExpressionEvaluationContext) => string;
 export class Expression implements IExpression {

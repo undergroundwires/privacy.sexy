@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ISyntaxFactory } from '@/application/Parser/Script/Validation/Syntax/ISyntaxFactory';
+import type { ISyntaxFactory } from '@/application/Parser/Script/Validation/Syntax/ISyntaxFactory';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { CategoryCollectionParseContext } from '@/application/Parser/Script/CategoryCollectionParseContext';
 import { ScriptCompiler } from '@/application/Parser/Script/Compiler/ScriptCompiler';
@@ -7,7 +7,7 @@ import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub'
 import { ScriptingDefinitionStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionStub';
 import type { FunctionData } from '@/application/collections/';
 import { itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';
-import { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
+import type { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
 import { createFunctionDataWithCode } from '@tests/unit/shared/Stubs/FunctionDataStub';
 
 describe('CategoryCollectionParseContext', () => {

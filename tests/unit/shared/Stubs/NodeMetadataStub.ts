@@ -1,4 +1,4 @@
-import { NodeMetadata, NodeType } from '@/presentation/components/Scripts/View/Tree/NodeContent/NodeMetadata';
+import { type NodeMetadata, NodeType } from '@/presentation/components/Scripts/View/Tree/NodeContent/NodeMetadata';
 
 export class NodeMetadataStub implements NodeMetadata {
   public id = 'stub-id';

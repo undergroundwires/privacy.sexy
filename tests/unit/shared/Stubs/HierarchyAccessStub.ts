@@ -1,5 +1,5 @@
-import { HierarchyAccess } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/Hierarchy/HierarchyAccess';
-import { TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
+import type { HierarchyAccess } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/Hierarchy/HierarchyAccess';
+import type { TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
 
 export class HierarchyAccessStub implements HierarchyAccess {
   public parent: TreeNode | undefined = undefined;

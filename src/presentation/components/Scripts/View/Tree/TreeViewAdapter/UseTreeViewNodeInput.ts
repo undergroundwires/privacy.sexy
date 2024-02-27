@@ -1,12 +1,12 @@
 import {
   type Ref, computed, shallowReadonly,
 } from 'vue';
-import { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { injectKey } from '@/presentation/injectionSymbols';
-import { TreeInputNodeData } from '../TreeView/Bindings/TreeInputNodeData';
-import { NodeMetadata } from '../NodeContent/NodeMetadata';
-import { convertToNodeInput } from './TreeNodeMetadataConverter';
 import { parseSingleCategory, parseAllCategories } from './CategoryNodeMetadataConverter';
+import { convertToNodeInput } from './TreeNodeMetadataConverter';
+import type { TreeInputNodeData } from '../TreeView/Bindings/TreeInputNodeData';
+import type { NodeMetadata } from '../NodeContent/NodeMetadata';
 
 export function useTreeViewNodeInput(
   categoryIdRef: Readonly<Ref<number | undefined>>,

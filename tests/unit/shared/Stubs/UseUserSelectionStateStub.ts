@@ -1,7 +1,7 @@
 import { shallowRef } from 'vue';
 import type { SelectionModifier, useUserSelectionState } from '@/presentation/components/Shared/Hooks/UseUserSelectionState';
-import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
-import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import type { UserSelection } from '@/application/Context/State/Selection/UserSelection';
+import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 import { UserSelectionStub } from './UserSelectionStub';
 import { ScriptSelectionStub } from './ScriptSelectionStub';

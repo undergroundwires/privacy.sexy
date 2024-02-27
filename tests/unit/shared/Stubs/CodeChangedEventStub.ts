@@ -1,6 +1,6 @@
-import { ICodeChangedEvent } from '@/application/Context/State/Code/Event/ICodeChangedEvent';
-import { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
-import { IScript } from '@/domain/IScript';
+import type { ICodeChangedEvent } from '@/application/Context/State/Code/Event/ICodeChangedEvent';
+import type { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
+import type { IScript } from '@/domain/IScript';
 
 export class CodeChangedEventStub implements ICodeChangedEvent {
   public code: string;

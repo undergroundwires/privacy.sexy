@@ -1,7 +1,7 @@
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { IEventSource } from '@/infrastructure/Events/IEventSource';
-import { IApplication } from '@/domain/IApplication';
-import { ICategoryCollectionState, IReadOnlyCategoryCollectionState } from './State/ICategoryCollectionState';
+import type { IEventSource } from '@/infrastructure/Events/IEventSource';
+import type { IApplication } from '@/domain/IApplication';
+import type { ICategoryCollectionState, IReadOnlyCategoryCollectionState } from './State/ICategoryCollectionState';
 
 export interface IReadOnlyApplicationContext {
   readonly app: IApplication;

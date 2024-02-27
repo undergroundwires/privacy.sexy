@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { FileType, SaveFileOutcome } from '@/presentation/common/Dialog';
-import { ElectronSaveFileDialog } from '@/infrastructure/Dialog/Electron/ElectronSaveFileDialog';
-import { ElectronDialog, ElectronDialogAccessor } from '@/infrastructure/Dialog/Electron/ElectronDialog';
+import { FileType, type SaveFileOutcome } from '@/presentation/common/Dialog';
+import type { ElectronSaveFileDialog } from '@/infrastructure/Dialog/Electron/ElectronSaveFileDialog';
+import { ElectronDialog, type ElectronDialogAccessor } from '@/infrastructure/Dialog/Electron/ElectronDialog';
 
 describe('ElectronDialog', () => {
   describe('saveFile', () => {

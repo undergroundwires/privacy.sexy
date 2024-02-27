@@ -1,9 +1,9 @@
 import { EventSource } from '@/infrastructure/Events/EventSource';
-import { TreeInputNodeData } from '../../Bindings/TreeInputNodeData';
-import { TreeNodeCollection } from './TreeNodeCollection';
-import { parseTreeInput } from './TreeInputParser';
 import { TreeNodeNavigator } from './Query/TreeNodeNavigator';
-import { QueryableNodes } from './Query/QueryableNodes';
+import { parseTreeInput } from './TreeInputParser';
+import type { TreeInputNodeData } from '../../Bindings/TreeInputNodeData';
+import type { TreeNodeCollection } from './TreeNodeCollection';
+import type { QueryableNodes } from './Query/QueryableNodes';
 
 export class TreeNodeInitializerAndUpdater implements TreeNodeCollection {
   public nodes: QueryableNodes = new TreeNodeNavigator([]);

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { DialogFactory, useDialog } from '@/presentation/components/Shared/Hooks/Dialog/UseDialog';
+import { type DialogFactory, useDialog } from '@/presentation/components/Shared/Hooks/Dialog/UseDialog';
 import { DialogStub } from '@tests/unit/shared/Stubs/DialogStub';
 
 describe('UseDialog', () => {

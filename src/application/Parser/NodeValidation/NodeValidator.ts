@@ -1,6 +1,6 @@
 import { isString } from '@/TypeHelpers';
-import { INodeDataErrorContext, NodeDataError } from './NodeDataError';
-import { NodeData } from './NodeData';
+import { type INodeDataErrorContext, NodeDataError } from './NodeDataError';
+import type { NodeData } from './NodeData';
 
 export class NodeValidator {
   constructor(private readonly context: INodeDataErrorContext) {

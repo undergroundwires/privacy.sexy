@@ -1,4 +1,4 @@
-import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 
 export function expectEqualSelectedScripts(

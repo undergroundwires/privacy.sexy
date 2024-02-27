@@ -1,4 +1,4 @@
-import { Logger } from '@/application/Common/Log/Logger';
+import type { Logger } from '@/application/Common/Log/Logger';
 
 export class ConsoleLogger implements Logger {
   constructor(private readonly consoleProxy: ConsoleLogFunctions = globalThis.console) {

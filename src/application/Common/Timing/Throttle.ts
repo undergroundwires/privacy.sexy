@@ -1,5 +1,5 @@
-import { Timer, TimeoutType } from './Timer';
 import { PlatformTimer } from './PlatformTimer';
+import type { Timer, TimeoutType } from './Timer';
 
 export type CallbackType = (..._: readonly unknown[]) => void;
 

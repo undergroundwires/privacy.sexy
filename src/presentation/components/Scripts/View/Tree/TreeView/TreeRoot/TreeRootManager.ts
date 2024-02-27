@@ -1,8 +1,8 @@
-import { TreeRoot } from './TreeRoot';
-import { TreeNodeInitializerAndUpdater } from './NodeCollection/TreeNodeInitializerAndUpdater';
-import { TreeNodeCollection } from './NodeCollection/TreeNodeCollection';
-import { SingleNodeFocusManager } from './Focus/SingleNodeFocusManager';
 import { SingleNodeCollectionFocusManager } from './Focus/SingleNodeCollectionFocusManager';
+import { TreeNodeInitializerAndUpdater } from './NodeCollection/TreeNodeInitializerAndUpdater';
+import type { TreeRoot } from './TreeRoot';
+import type { TreeNodeCollection } from './NodeCollection/TreeNodeCollection';
+import type { SingleNodeFocusManager } from './Focus/SingleNodeFocusManager';
 
 export class TreeRootManager implements TreeRoot {
   public readonly collection: TreeNodeCollection;

@@ -1,5 +1,5 @@
-import { IReadOnlyFunctionParameterCollection } from './Parameter/IFunctionParameterCollection';
-import { FunctionCall } from './Call/FunctionCall';
+import type { IReadOnlyFunctionParameterCollection } from './Parameter/IFunctionParameterCollection';
+import type { FunctionCall } from './Call/FunctionCall';
 
 export interface ISharedFunction {
   readonly name: string;

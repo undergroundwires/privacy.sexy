@@ -2,7 +2,7 @@ import { expect, describe, it } from 'vitest';
 import { InlineFunctionCallCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/SingleCall/Strategies/InlineFunctionCallCompiler';
 import { createSharedFunctionStubWithCode, createSharedFunctionStubWithCalls } from '@tests/unit/shared/Stubs/SharedFunctionStub';
 import { ExpressionsCompilerStub } from '@tests/unit/shared/Stubs/ExpressionsCompilerStub';
-import { IExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/IExpressionsCompiler';
+import type { IExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/IExpressionsCompiler';
 import { FunctionCallStub } from '@tests/unit/shared/Stubs/FunctionCallStub';
 import { FunctionCallArgumentCollectionStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentCollectionStub';
 

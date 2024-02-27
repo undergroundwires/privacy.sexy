@@ -1,6 +1,6 @@
 import { EventSource } from '@/infrastructure/Events/EventSource';
-import { IEventSource } from '@/infrastructure/Events/IEventSource';
-import { FunctionKeys } from '@/TypeHelpers';
+import type { IEventSource } from '@/infrastructure/Events/IEventSource';
+import type { FunctionKeys } from '@/TypeHelpers';
 
 export abstract class StubWithObservableMethodCalls<T> {
   public readonly callHistory = new Array<MethodCall<T>>();

@@ -1,5 +1,5 @@
-import { CategorySelection, ReadonlyCategorySelection } from './Category/CategorySelection';
-import { ReadonlyScriptSelection, ScriptSelection } from './Script/ScriptSelection';
+import type { CategorySelection, ReadonlyCategorySelection } from './Category/CategorySelection';
+import type { ReadonlyScriptSelection, ScriptSelection } from './Script/ScriptSelection';
 
 export interface ReadonlyUserSelection {
   readonly categories: ReadonlyCategorySelection;

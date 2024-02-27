@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { CodeRunnerStub } from '@tests/unit/shared/Stubs/CodeRunnerStub';
-import { ChannelDefinitionKey, IpcChannelDefinitions } from '@/presentation/electron/shared/IpcBridging/IpcChannelDefinitions';
+import { type ChannelDefinitionKey, IpcChannelDefinitions } from '@/presentation/electron/shared/IpcBridging/IpcChannelDefinitions';
 import {
-  CodeRunnerFactory, DialogFactory, IpcChannelRegistrar,
-  ScriptDiagnosticsCollectorFactory, registerAllIpcChannels,
+  type CodeRunnerFactory, type DialogFactory, type IpcChannelRegistrar,
+  type ScriptDiagnosticsCollectorFactory, registerAllIpcChannels,
 } from '@/presentation/electron/main/IpcRegistration';
-import { IpcChannel } from '@/presentation/electron/shared/IpcBridging/IpcChannel';
+import type { IpcChannel } from '@/presentation/electron/shared/IpcBridging/IpcChannel';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { collectExceptionMessage } from '@tests/unit/shared/ExceptionCollector';
 import { DialogStub } from '@tests/unit/shared/Stubs/DialogStub';

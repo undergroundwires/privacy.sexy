@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { ApplicationContextStub } from '@tests/unit/shared/Stubs/ApplicationContextStub';
 import { DependencyBootstrapper } from '@/presentation/bootstrapping/Modules/DependencyBootstrapper';
-import { IApplicationContext } from '@/application/Context/IApplicationContext';
+import type { IApplicationContext } from '@/application/Context/IApplicationContext';
 import { VueDependencyInjectionApiStub } from '@tests/unit/shared/Stubs/VueDependencyInjectionApiStub';
 import { buildContext } from '@/application/Context/ApplicationContextFactory';
 import { provideDependencies } from '@/presentation/bootstrapping/DependencyProvider';

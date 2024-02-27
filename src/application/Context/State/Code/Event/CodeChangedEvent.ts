@@ -1,7 +1,7 @@
-import { IScript } from '@/domain/IScript';
-import { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
-import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
-import { ICodeChangedEvent } from './ICodeChangedEvent';
+import type { IScript } from '@/domain/IScript';
+import type { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
+import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import type { ICodeChangedEvent } from './ICodeChangedEvent';
 
 export class CodeChangedEvent implements ICodeChangedEvent {
   public readonly code: string;

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { UserScriptGenerator } from '@/application/Context/State/Code/Generation/UserScriptGenerator';
-import { ICodeBuilderFactory } from '@/application/Context/State/Code/Generation/ICodeBuilderFactory';
-import { ICodeBuilder } from '@/application/Context/State/Code/Generation/ICodeBuilder';
+import type { ICodeBuilderFactory } from '@/application/Context/State/Code/Generation/ICodeBuilderFactory';
+import type { ICodeBuilder } from '@/application/Context/State/Code/Generation/ICodeBuilder';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { ScriptingDefinitionStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionStub';
 import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';

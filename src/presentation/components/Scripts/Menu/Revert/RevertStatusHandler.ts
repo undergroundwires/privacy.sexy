@@ -1,6 +1,6 @@
-import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
-import { ReadonlyScriptSelection, ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
-import { ScriptSelectionChange } from '@/application/Context/State/Selection/Script/ScriptSelectionChange';
+import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import type { ReadonlyScriptSelection, ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
+import type { ScriptSelectionChange } from '@/application/Context/State/Selection/Script/ScriptSelectionChange';
 import { RevertStatusType } from './RevertStatusType';
 
 export function setCurrentRevertStatus(

@@ -1,7 +1,7 @@
-import { TreeNodeStateChangedEmittedEvent } from '@/presentation/components/Scripts/View/Tree/TreeView/Bindings/TreeNodeStateChangedEmittedEvent';
+import type { TreeNodeStateChangedEmittedEvent } from '@/presentation/components/Scripts/View/Tree/TreeView/Bindings/TreeNodeStateChangedEmittedEvent';
 import { TreeNodeCheckState } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/CheckState';
-import { TreeNodeStateDescriptor } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateDescriptor';
-import { ReadOnlyTreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
+import type { TreeNodeStateDescriptor } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateDescriptor';
+import type { ReadOnlyTreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
 import { TreeNodeStateDescriptorStub } from './TreeNodeStateDescriptorStub';
 
 export class TreeNodeStateChangedEmittedEventStub implements TreeNodeStateChangedEmittedEvent {

@@ -1,6 +1,6 @@
-import { ICategory, IScript } from '@/domain/ICategory';
-import { ICategoryCollection } from '@/domain/ICategoryCollection';
-import { NodeMetadata, NodeType } from '../NodeContent/NodeMetadata';
+import type { ICategory, IScript } from '@/domain/ICategory';
+import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import { type NodeMetadata, NodeType } from '../NodeContent/NodeMetadata';
 
 export function parseAllCategories(collection: ICategoryCollection): NodeMetadata[] {
   return createCategoryNodes(collection.actions);

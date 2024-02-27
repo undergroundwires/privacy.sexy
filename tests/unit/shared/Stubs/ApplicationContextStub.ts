@@ -1,6 +1,6 @@
-import { IApplicationContext, IApplicationContextChangedEvent } from '@/application/Context/IApplicationContext';
-import { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
-import { IApplication } from '@/domain/IApplication';
+import type { IApplicationContext, IApplicationContextChangedEvent } from '@/application/Context/IApplicationContext';
+import type { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import type { IApplication } from '@/domain/IApplication';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CategoryCollectionStateStub } from './CategoryCollectionStateStub';
 import { ApplicationStub } from './ApplicationStub';

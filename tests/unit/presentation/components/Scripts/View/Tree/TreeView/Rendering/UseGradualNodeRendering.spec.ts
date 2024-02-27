@@ -3,7 +3,7 @@ import {
   type Ref, shallowRef, watch, nextTick,
 } from 'vue';
 import { useGradualNodeRendering } from '@/presentation/components/Scripts/View/Tree/TreeView/Rendering/UseGradualNodeRendering';
-import { TreeRoot } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/TreeRoot';
+import type { TreeRoot } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/TreeRoot';
 import { TreeRootStub } from '@tests/unit/shared/Stubs/TreeRootStub';
 import { UseNodeStateChangeAggregatorStub } from '@tests/unit/shared/Stubs/UseNodeStateChangeAggregatorStub';
 import { UseCurrentTreeNodesStub } from '@tests/unit/shared/Stubs/UseCurrentTreeNodesStub';
@@ -13,10 +13,10 @@ import { QueryableNodesStub } from '@tests/unit/shared/Stubs/QueryableNodesStub'
 import { NodeStateChangeEventArgsStub } from '@tests/unit/shared/Stubs/NodeStateChangeEventArgsStub';
 import { TreeNodeStateDescriptorStub } from '@tests/unit/shared/Stubs/TreeNodeStateDescriptorStub';
 import { DelaySchedulerStub } from '@tests/unit/shared/Stubs/DelaySchedulerStub';
-import { DelayScheduler } from '@/presentation/components/Scripts/View/Tree/TreeView/Rendering/DelayScheduler';
-import { ReadOnlyTreeNode, TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
+import type { DelayScheduler } from '@/presentation/components/Scripts/View/Tree/TreeView/Rendering/DelayScheduler';
+import type { ReadOnlyTreeNode, TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
 import { RenderQueueOrdererStub } from '@tests/unit/shared/Stubs/RenderQueueOrdererStub';
-import { RenderQueueOrderer } from '@/presentation/components/Scripts/View/Tree/TreeView/Rendering/Ordering/RenderQueueOrderer';
+import type { RenderQueueOrderer } from '@/presentation/components/Scripts/View/Tree/TreeView/Rendering/Ordering/RenderQueueOrderer';
 
 describe('useGradualNodeRendering', () => {
   it('tracks nodes on specified tree', () => {

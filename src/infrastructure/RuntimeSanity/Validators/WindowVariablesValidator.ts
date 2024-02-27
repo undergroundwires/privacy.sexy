@@ -1,6 +1,6 @@
-import { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
-import { ISanityCheckOptions } from '../Common/ISanityCheckOptions';
-import { FactoryValidator, FactoryFunction } from '../Common/FactoryValidator';
+import type { WindowVariables } from '@/infrastructure/WindowVariables/WindowVariables';
+import { FactoryValidator, type FactoryFunction } from '../Common/FactoryValidator';
+import type { ISanityCheckOptions } from '../Common/ISanityCheckOptions';
 
 export class WindowVariablesValidator extends FactoryValidator<WindowVariables> {
   constructor(factory: FactoryFunction<WindowVariables> = () => window) {

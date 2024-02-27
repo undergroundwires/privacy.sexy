@@ -1,5 +1,5 @@
-import { TreeNode } from '../../../Node/TreeNode';
-import { QueryableNodes } from './QueryableNodes';
+import type { QueryableNodes } from './QueryableNodes';
+import type { TreeNode } from '../../../Node/TreeNode';
 
 export class TreeNodeNavigator implements QueryableNodes {
   public readonly flattenedNodes: readonly TreeNode[];

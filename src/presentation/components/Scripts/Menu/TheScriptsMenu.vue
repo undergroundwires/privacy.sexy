@@ -16,8 +16,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
-import { ReadonlyFilterContext } from '@/application/Context/State/Filter/FilterContext';
-import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
+import type { ReadonlyFilterContext } from '@/application/Context/State/Filter/FilterContext';
+import type { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 import TheOsChanger from './TheOsChanger.vue';
 import TheViewChanger from './View/TheViewChanger.vue';
 import { ViewType } from './View/ViewType';

@@ -1,4 +1,4 @@
-import { IEntity } from '@/infrastructure/Entity/IEntity';
+import type { IEntity } from '@/infrastructure/Entity/IEntity';
 
 export interface ReadonlyRepository<TKey, TEntity extends IEntity<TKey>> {
   readonly length: number;

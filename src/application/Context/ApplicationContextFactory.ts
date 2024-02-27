@@ -1,10 +1,10 @@
-import { IApplicationContext } from '@/application/Context/IApplicationContext';
+import type { IApplicationContext } from '@/application/Context/IApplicationContext';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { IApplication } from '@/domain/IApplication';
+import type { IApplication } from '@/domain/IApplication';
 import { CurrentEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironmentFactory';
-import { IApplicationFactory } from '../IApplicationFactory';
 import { ApplicationFactory } from '../ApplicationFactory';
 import { ApplicationContext } from './ApplicationContext';
+import type { IApplicationFactory } from '../IApplicationFactory';
 
 export async function buildContext(
   factory: IApplicationFactory = ApplicationFactory.Current,

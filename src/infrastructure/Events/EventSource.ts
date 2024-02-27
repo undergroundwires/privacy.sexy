@@ -1,4 +1,4 @@
-import { EventHandler, IEventSource, IEventSubscription } from './IEventSource';
+import type { EventHandler, IEventSource, IEventSubscription } from './IEventSource';
 
 export class EventSource<T> implements IEventSource<T> {
   private handlers = new Map<number, EventHandler<T>>();

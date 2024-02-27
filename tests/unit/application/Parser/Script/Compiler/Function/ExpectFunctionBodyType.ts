@@ -1,6 +1,7 @@
-import {
-  CallFunctionBody, CodeFunctionBody, FunctionBodyType, SharedFunctionBody,
+import type {
+  CallFunctionBody, CodeFunctionBody, SharedFunctionBody,
 } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
+import { FunctionBodyType } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 
 export function expectCodeFunctionBody(

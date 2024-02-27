@@ -1,8 +1,8 @@
 import { access, chmod } from 'node:fs/promises';
 import { constants } from 'node:fs';
 import { log } from '../../utils/log';
-import { ExtractionResult } from './common/extraction-result';
 import { findByFilePattern } from './common/app-artifact-locator';
+import type { ExtractionResult } from './common/extraction-result';
 
 export async function prepareLinuxApp(
   desktopDistPath: string,

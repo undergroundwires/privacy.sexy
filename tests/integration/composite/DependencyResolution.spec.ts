@@ -1,10 +1,10 @@
 import { it, describe, expect } from 'vitest';
 import { shallowMount } from '@vue/test-utils';
 import { defineComponent, inject } from 'vue';
-import { InjectionKeySelector, InjectionKeys, injectKey } from '@/presentation/injectionSymbols';
+import { type InjectionKeySelector, InjectionKeys, injectKey } from '@/presentation/injectionSymbols';
 import { provideDependencies } from '@/presentation/bootstrapping/DependencyProvider';
 import { buildContext } from '@/application/Context/ApplicationContextFactory';
-import { IApplicationContext } from '@/application/Context/IApplicationContext';
+import type { IApplicationContext } from '@/application/Context/IApplicationContext';
 
 describe('DependencyResolution', () => {
   describe('all dependencies can be injected', async () => {

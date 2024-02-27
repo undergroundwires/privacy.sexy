@@ -5,7 +5,7 @@ import { QueryableNodesStub } from '@tests/unit/shared/Stubs/QueryableNodesStub'
 import { TreeNodeStub } from '@tests/unit/shared/Stubs/TreeNodeStub';
 import { TreeNodeStateAccessStub } from '@tests/unit/shared/Stubs/TreeNodeStateAccessStub';
 import { TreeNodeStateDescriptorStub } from '@tests/unit/shared/Stubs/TreeNodeStateDescriptorStub';
-import { TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
+import type { TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
 
 describe('SingleNodeCollectionFocusManager', () => {
   describe('currentSingleFocusedNode', () => {

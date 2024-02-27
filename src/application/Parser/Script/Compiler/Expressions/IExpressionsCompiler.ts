@@ -1,4 +1,4 @@
-import { IReadOnlyFunctionCallArgumentCollection } from '../Function/Call/Argument/IFunctionCallArgumentCollection';
+import type { IReadOnlyFunctionCallArgumentCollection } from '../Function/Call/Argument/IFunctionCallArgumentCollection';
 
 export interface IExpressionsCompiler {
   compileExpressions(

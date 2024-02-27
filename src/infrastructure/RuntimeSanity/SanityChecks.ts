@@ -1,6 +1,6 @@
-import { ISanityCheckOptions } from './Common/ISanityCheckOptions';
-import { ISanityValidator } from './Common/ISanityValidator';
 import { EnvironmentVariablesValidator } from './Validators/EnvironmentVariablesValidator';
+import type { ISanityCheckOptions } from './Common/ISanityCheckOptions';
+import type { ISanityValidator } from './Common/ISanityValidator';
 
 const DefaultSanityValidators: ISanityValidator[] = [
   new EnvironmentVariablesValidator(),

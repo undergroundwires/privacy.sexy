@@ -1,7 +1,7 @@
 import {
-  WatchSource, computed, ref, watch,
+  type WatchSource, computed, ref, watch,
 } from 'vue';
-import { IconName } from '@/presentation/components/Shared/Icon/IconName';
+import type { IconName } from '@/presentation/components/Shared/Icon/IconName';
 import { useSvgLoader } from '@/presentation/components/Shared/Icon/UseSvgLoader';
 
 export class UseSvgLoaderStub {

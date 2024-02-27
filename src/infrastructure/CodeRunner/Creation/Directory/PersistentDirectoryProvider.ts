@@ -1,9 +1,9 @@
-import { Logger } from '@/application/Common/Log/Logger';
+import type { Logger } from '@/application/Common/Log/Logger';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
-import { CodeRunError, CodeRunErrorType } from '@/application/CodeRunner/CodeRunner';
-import { SystemOperations } from '../../System/SystemOperations';
+import type { CodeRunError, CodeRunErrorType } from '@/application/CodeRunner/CodeRunner';
 import { NodeElectronSystemOperations } from '../../System/NodeElectronSystemOperations';
-import { ScriptDirectoryOutcome, ScriptDirectoryProvider } from './ScriptDirectoryProvider';
+import type { SystemOperations } from '../../System/SystemOperations';
+import type { ScriptDirectoryOutcome, ScriptDirectoryProvider } from './ScriptDirectoryProvider';
 
 export const ExecutionSubdirectory = 'runs';
 

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { IScript } from '@/domain/IScript';
-import { ICategory } from '@/domain/ICategory';
+import type { IScript } from '@/domain/IScript';
+import type { ICategory } from '@/domain/ICategory';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
@@ -9,7 +9,7 @@ import {
   getScriptNodeId, parseAllCategories, parseSingleCategory,
 } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/CategoryNodeMetadataConverter';
 import { NodeType } from '@/application/Parser/NodeValidation/NodeType';
-import { NodeMetadata } from '@/presentation/components/Scripts/View/Tree/NodeContent/NodeMetadata';
+import type { NodeMetadata } from '@/presentation/components/Scripts/View/Tree/NodeContent/NodeMetadata';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 describe('CategoryNodeMetadataConverter', () => {

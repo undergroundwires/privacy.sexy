@@ -1,9 +1,9 @@
 import { ScriptingLanguageFactory } from '@/application/Common/ScriptingLanguage/ScriptingLanguageFactory';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
-import { ICodeBuilder } from './ICodeBuilder';
 import { BatchBuilder } from './Languages/BatchBuilder';
 import { ShellBuilder } from './Languages/ShellBuilder';
-import { ICodeBuilderFactory } from './ICodeBuilderFactory';
+import type { ICodeBuilder } from './ICodeBuilder';
+import type { ICodeBuilderFactory } from './ICodeBuilderFactory';
 
 export class CodeBuilderFactory
   extends ScriptingLanguageFactory<ICodeBuilder>

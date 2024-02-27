@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { parseProjectDetails, ProjectDetailsFactory } from '@/application/Parser/ProjectDetailsParser';
+import { parseProjectDetails, type ProjectDetailsFactory } from '@/application/Parser/ProjectDetailsParser';
 import { AppMetadataStub } from '@tests/unit/shared/Stubs/AppMetadataStub';
-import { PropertyKeys } from '@/TypeHelpers';
+import type { PropertyKeys } from '@/TypeHelpers';
 import { ProjectDetailsStub } from '@tests/unit/shared/Stubs/ProjectDetailsStub';
 import { Version } from '@/domain/Version';
 

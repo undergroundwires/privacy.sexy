@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { ref, Ref } from 'vue';
-import { DragDomModifier, useDragHandler } from '@/presentation/components/Scripts/Slider/UseDragHandler';
+import { ref, type Ref } from 'vue';
+import { useDragHandler, type DragDomModifier } from '@/presentation/components/Scripts/Slider/UseDragHandler';
 import { ThrottleStub } from '@tests/unit/shared/Stubs/ThrottleStub';
 import { throttle } from '@/application/Common/Timing/Throttle';
-import { ConstructorArguments } from '@/TypeHelpers';
+import type { ConstructorArguments } from '@/TypeHelpers';
 
 describe('useDragHandler', () => {
   describe('initially', () => {

@@ -19,9 +19,9 @@ import {
 import { injectKey } from '@/presentation/injectionSymbols';
 import { NonCollapsing } from '@/presentation/components/Scripts/View/Cards/NonCollapsingDirective';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
-import { ReadonlyFilterContext } from '@/application/Context/State/Filter/FilterContext';
-import { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
-import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
+import type { ReadonlyFilterContext } from '@/application/Context/State/Filter/FilterContext';
+import type { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
+import type { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 
 export default defineComponent({
   components: { AppIcon },

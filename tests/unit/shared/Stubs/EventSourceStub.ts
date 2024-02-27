@@ -1,4 +1,4 @@
-import { EventHandler, IEventSource, IEventSubscription } from '@/infrastructure/Events/IEventSource';
+import type { EventHandler, IEventSource, IEventSubscription } from '@/infrastructure/Events/IEventSource';
 import { EventSubscriptionStub } from './EventSubscriptionStub';
 
 export class EventSourceStub<T> implements IEventSource<T> {

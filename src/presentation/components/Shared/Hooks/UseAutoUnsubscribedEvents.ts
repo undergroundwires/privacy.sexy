@@ -1,6 +1,6 @@
 import { onUnmounted } from 'vue';
 import { EventSubscriptionCollection } from '@/infrastructure/Events/EventSubscriptionCollection';
-import { IEventSubscriptionCollection } from '@/infrastructure/Events/IEventSubscriptionCollection';
+import type { IEventSubscriptionCollection } from '@/infrastructure/Events/IEventSubscriptionCollection';
 
 export function useAutoUnsubscribedEvents(
   events: IEventSubscriptionCollection = new EventSubscriptionCollection(),

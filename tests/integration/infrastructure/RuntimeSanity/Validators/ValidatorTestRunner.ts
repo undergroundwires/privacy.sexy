@@ -1,5 +1,5 @@
 import { it, expect } from 'vitest';
-import { ISanityValidator } from '@/infrastructure/RuntimeSanity/Common/ISanityValidator';
+import type { ISanityValidator } from '@/infrastructure/RuntimeSanity/Common/ISanityValidator';
 
 export function itNoErrorsOnCurrentEnvironment(
   factory: () => ISanityValidator,

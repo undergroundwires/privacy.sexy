@@ -1,4 +1,4 @@
-import { IAppMetadata } from '@/infrastructure/EnvironmentVariables/IAppMetadata';
+import type { IAppMetadata } from '@/infrastructure/EnvironmentVariables/IAppMetadata';
 
 export class AppMetadataStub implements IAppMetadata {
   public version = '0.12.2';

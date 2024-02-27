@@ -1,11 +1,11 @@
-import { IApplication } from '@/domain/IApplication';
+import type { IApplication } from '@/domain/IApplication';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { EventSource } from '@/infrastructure/Events/EventSource';
 import { assertInRange } from '@/application/Common/Enum';
 import { CategoryCollectionState } from './State/CategoryCollectionState';
-import { ICategoryCollectionState } from './State/ICategoryCollectionState';
-import { IApplicationContext, IApplicationContextChangedEvent } from './IApplicationContext';
+import type { IApplicationContext, IApplicationContextChangedEvent } from './IApplicationContext';
+import type { ICategoryCollectionState } from './State/ICategoryCollectionState';
 
 type StateMachine = Map<OperatingSystem, ICategoryCollectionState>;
 

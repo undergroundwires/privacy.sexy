@@ -1,5 +1,5 @@
-import { CategorySelection } from '@/application/Context/State/Selection/Category/CategorySelection';
-import { CategorySelectionChangeCommand } from '@/application/Context/State/Selection/Category/CategorySelectionChange';
+import type { CategorySelection } from '@/application/Context/State/Selection/Category/CategorySelection';
+import type { CategorySelectionChangeCommand } from '@/application/Context/State/Selection/Category/CategorySelectionChange';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class CategorySelectionStub

@@ -11,11 +11,11 @@
 <script lang="ts">
 import {
   defineComponent,
-  PropType,
+  type PropType,
   inject,
 } from 'vue';
 import { useSvgLoader } from './UseSvgLoader';
-import { IconName } from './IconName';
+import type { IconName } from './IconName';
 
 export default defineComponent({
   props: {

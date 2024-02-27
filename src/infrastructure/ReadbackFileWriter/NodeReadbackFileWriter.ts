@@ -1,8 +1,8 @@
 import { writeFile, access, readFile } from 'node:fs/promises';
 import { constants } from 'node:fs';
-import { Logger } from '@/application/Common/Log/Logger';
+import type { Logger } from '@/application/Common/Log/Logger';
 import { ElectronLogger } from '../Log/ElectronLogger';
-import {
+import type {
   FailedFileWrite, ReadbackFileWriter, FileWriteErrorType,
   FileWriteOutcome, SuccessfulFileWrite,
 } from './ReadbackFileWriter';

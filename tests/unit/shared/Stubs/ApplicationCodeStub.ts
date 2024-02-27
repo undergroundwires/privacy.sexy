@@ -1,5 +1,5 @@
-import { ICodeChangedEvent } from '@/application/Context/State/Code/Event/ICodeChangedEvent';
-import { IApplicationCode } from '@/application/Context/State/Code/IApplicationCode';
+import type { ICodeChangedEvent } from '@/application/Context/State/Code/Event/ICodeChangedEvent';
+import type { IApplicationCode } from '@/application/Context/State/Code/IApplicationCode';
 import { EventSourceStub } from './EventSourceStub';
 
 export class ApplicationCodeStub implements IApplicationCode {

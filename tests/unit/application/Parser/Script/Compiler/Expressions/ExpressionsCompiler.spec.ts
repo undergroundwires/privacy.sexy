@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { ExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/ExpressionsCompiler';
-import { IExpressionParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/IExpressionParser';
+import type { IExpressionParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/IExpressionParser';
 import { ExpressionStub } from '@tests/unit/shared/Stubs/ExpressionStub';
 import { ExpressionParserStub } from '@tests/unit/shared/Stubs/ExpressionParserStub';
 import { FunctionCallArgumentCollectionStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentCollectionStub';
 import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
-import { IExpression } from '@/application/Parser/Script/Compiler/Expressions/Expression/IExpression';
+import type { IExpression } from '@/application/Parser/Script/Compiler/Expressions/Expression/IExpression';
 
 describe('ExpressionsCompiler', () => {
   describe('compileExpressions', () => {

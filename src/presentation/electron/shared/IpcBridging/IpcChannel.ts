@@ -1,4 +1,4 @@
-import { FunctionKeys } from '@/TypeHelpers';
+import type { FunctionKeys } from '@/TypeHelpers';
 
 export interface IpcChannel<T> {
   readonly namespace: string;

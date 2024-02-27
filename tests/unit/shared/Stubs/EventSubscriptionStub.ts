@@ -1,4 +1,4 @@
-import { IEventSubscription } from '@/infrastructure/Events/IEventSource';
+import type { IEventSubscription } from '@/infrastructure/Events/IEventSource';
 
 export class EventSubscriptionStub implements IEventSubscription {
   private currentState = SubscriptionState.Subscribed;

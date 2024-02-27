@@ -17,8 +17,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
-import { IconName } from '@/presentation/components/Shared/Icon/IconName';
+import { defineComponent, type PropType } from 'vue';
+import type { IconName } from '@/presentation/components/Shared/Icon/IconName';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 
 export default defineComponent({

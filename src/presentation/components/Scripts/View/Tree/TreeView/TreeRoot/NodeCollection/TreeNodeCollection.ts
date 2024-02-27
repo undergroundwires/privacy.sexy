@@ -1,6 +1,6 @@
-import { IEventSource } from '@/infrastructure/Events/IEventSource';
-import { TreeInputNodeData } from '../../Bindings/TreeInputNodeData';
-import { QueryableNodes, ReadOnlyQueryableNodes } from './Query/QueryableNodes';
+import type { IEventSource } from '@/infrastructure/Events/IEventSource';
+import type { TreeInputNodeData } from '../../Bindings/TreeInputNodeData';
+import type { QueryableNodes, ReadOnlyQueryableNodes } from './Query/QueryableNodes';
 
 export interface ReadOnlyTreeNodeCollection {
   readonly nodes: ReadOnlyQueryableNodes;

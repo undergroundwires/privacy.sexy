@@ -1,5 +1,5 @@
 import { it, expect } from 'vitest';
-import { EnumType } from '@/application/Common/Enum';
+import type { EnumType } from '@/application/Common/Enum';
 
 export class EnumRangeTestRunner<TEnumValue extends EnumType> {
   constructor(private readonly runner: (value: TEnumValue) => void) {

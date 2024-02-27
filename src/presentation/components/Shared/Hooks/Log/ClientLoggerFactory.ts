@@ -1,10 +1,10 @@
-import { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
+import type { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
 import { ConsoleLogger } from '@/infrastructure/Log/ConsoleLogger';
-import { Logger } from '@/application/Common/Log/Logger';
+import type { Logger } from '@/application/Common/Log/Logger';
 import { NoopLogger } from '@/infrastructure/Log/NoopLogger';
 import { WindowInjectedLogger } from '@/infrastructure/Log/WindowInjectedLogger';
 import { CurrentEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironmentFactory';
-import { LoggerFactory } from './LoggerFactory';
+import type { LoggerFactory } from './LoggerFactory';
 
 export class ClientLoggerFactory implements LoggerFactory {
   public static readonly Current: LoggerFactory = new ClientLoggerFactory();

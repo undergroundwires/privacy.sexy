@@ -1,6 +1,6 @@
-import { Ref, onBeforeUnmount, watch } from 'vue';
+import { type Ref, onBeforeUnmount, watch } from 'vue';
 import { getWindowDomState } from './WindowScrollDomStateAccessor';
-import { ScrollDomStateAccessor } from './ScrollDomStateAccessor';
+import type { ScrollDomStateAccessor } from './ScrollDomStateAccessor';
 
 export function useLockBodyBackgroundScroll(
   isActive: Ref<boolean>,

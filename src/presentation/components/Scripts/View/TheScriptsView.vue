@@ -37,14 +37,14 @@
 
 <script lang="ts">
 import {
-  defineComponent, PropType, ref, computed,
+  defineComponent, type PropType, ref, computed,
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import ScriptsTree from '@/presentation/components/Scripts/View/Tree/ScriptsTree.vue';
 import CardList from '@/presentation/components/Scripts/View/Cards/CardList.vue';
 import { ViewType } from '@/presentation/components/Scripts/Menu/View/ViewType';
-import { ReadonlyFilterContext } from '@/application/Context/State/Filter/FilterContext';
-import { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
+import type { ReadonlyFilterContext } from '@/application/Context/State/Filter/FilterContext';
+import type { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
 import FlatButton from '@/presentation/components/Shared/FlatButton.vue';
 
 export default defineComponent({

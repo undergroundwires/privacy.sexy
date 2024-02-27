@@ -1,8 +1,8 @@
-import { FilterContext } from '@/application/Context/State/Filter/FilterContext';
-import { IEventSource } from '@/infrastructure/Events/IEventSource';
-import { FilterChangeDetails } from '@/application/Context/State/Filter/Event/FilterChangeDetails';
+import type { FilterContext } from '@/application/Context/State/Filter/FilterContext';
+import type { IEventSource } from '@/infrastructure/Events/IEventSource';
+import type { FilterChangeDetails } from '@/application/Context/State/Filter/Event/FilterChangeDetails';
 import { FilterActionType } from '@/application/Context/State/Filter/Event/FilterActionType';
-import { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
+import type { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
 import { FilterResultStub } from './FilterResultStub';
 import { EventSourceStub } from './EventSourceStub';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';

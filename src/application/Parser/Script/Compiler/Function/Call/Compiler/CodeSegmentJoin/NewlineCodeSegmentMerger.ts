@@ -1,5 +1,5 @@
-import { CompiledCode } from '../CompiledCode';
-import { CodeSegmentMerger } from './CodeSegmentMerger';
+import type { CompiledCode } from '../CompiledCode';
+import type { CodeSegmentMerger } from './CodeSegmentMerger';
 
 export class NewlineCodeSegmentMerger implements CodeSegmentMerger {
   public mergeCodeParts(codeSegments: readonly CompiledCode[]): CompiledCode {

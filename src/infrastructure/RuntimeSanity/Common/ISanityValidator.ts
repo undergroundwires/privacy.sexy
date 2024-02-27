@@ -1,4 +1,4 @@
-import { ISanityCheckOptions } from './ISanityCheckOptions';
+import type { ISanityCheckOptions } from './ISanityCheckOptions';
 
 export interface ISanityValidator {
   readonly name: string;

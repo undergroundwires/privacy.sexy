@@ -1,4 +1,4 @@
-import { ScriptDiagnosticData, ScriptDiagnosticsCollector } from '@/application/ScriptDiagnostics/ScriptDiagnosticsCollector';
+import type { ScriptDiagnosticData, ScriptDiagnosticsCollector } from '@/application/ScriptDiagnostics/ScriptDiagnosticsCollector';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 
 export class ScriptDiagnosticsCollectorStub implements ScriptDiagnosticsCollector {

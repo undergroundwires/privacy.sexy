@@ -1,13 +1,13 @@
 import { EventSource } from '@/infrastructure/Events/EventSource';
-import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
-import { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
-import { ReadonlyScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
+import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import type { ReadonlyScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
 import { CodeChangedEvent } from './Event/CodeChangedEvent';
 import { CodePosition } from './Position/CodePosition';
-import { ICodeChangedEvent } from './Event/ICodeChangedEvent';
 import { UserScriptGenerator } from './Generation/UserScriptGenerator';
-import { IApplicationCode } from './IApplicationCode';
-import { IUserScriptGenerator } from './Generation/IUserScriptGenerator';
+import type { IUserScriptGenerator } from './Generation/IUserScriptGenerator';
+import type { ICodeChangedEvent } from './Event/ICodeChangedEvent';
+import type { IApplicationCode } from './IApplicationCode';
 
 export class ApplicationCode implements IApplicationCode {
   public readonly changed = new EventSource<ICodeChangedEvent>();

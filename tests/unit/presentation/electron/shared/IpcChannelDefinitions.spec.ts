@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { IpcChannel } from '@/presentation/electron/shared/IpcBridging/IpcChannel';
-import { ChannelDefinitionKey, IpcChannelDefinitions } from '@/presentation/electron/shared/IpcBridging/IpcChannelDefinitions';
+import type { IpcChannel } from '@/presentation/electron/shared/IpcBridging/IpcChannel';
+import { type ChannelDefinitionKey, IpcChannelDefinitions } from '@/presentation/electron/shared/IpcBridging/IpcChannelDefinitions';
 
 describe('IpcChannelDefinitions', () => {
   it('defines IPC channels correctly', () => {

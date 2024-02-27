@@ -1,5 +1,5 @@
-import { IReadOnlyFunctionCallArgumentCollection } from './Argument/IFunctionCallArgumentCollection';
-import { FunctionCall } from './FunctionCall';
+import type { FunctionCall } from './FunctionCall';
+import type { IReadOnlyFunctionCallArgumentCollection } from './Argument/IFunctionCallArgumentCollection';
 
 export class ParsedFunctionCall implements FunctionCall {
   constructor(

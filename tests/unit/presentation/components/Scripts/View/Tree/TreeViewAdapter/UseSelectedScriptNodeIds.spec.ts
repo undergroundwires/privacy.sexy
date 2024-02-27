@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { useSelectedScriptNodeIds } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/UseSelectedScriptNodeIds';
 import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
 import { getScriptNodeId } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/CategoryNodeMetadataConverter';
-import { IScript } from '@/domain/IScript';
+import type { IScript } from '@/domain/IScript';
 import { UseUserSelectionStateStub } from '@tests/unit/shared/Stubs/UseUserSelectionStateStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 

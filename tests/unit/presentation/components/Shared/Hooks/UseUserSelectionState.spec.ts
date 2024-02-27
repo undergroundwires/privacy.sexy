@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { nextTick, watch } from 'vue';
-import { SelectionModifier, useUserSelectionState } from '@/presentation/components/Shared/Hooks/UseUserSelectionState';
-import { UserSelection } from '@/application/Context/State/Selection/UserSelection';
+import { type SelectionModifier, useUserSelectionState } from '@/presentation/components/Shared/Hooks/UseUserSelectionState';
+import type { UserSelection } from '@/application/Context/State/Selection/UserSelection';
 import { UseCollectionStateStub } from '@tests/unit/shared/Stubs/UseCollectionStateStub';
 import { UseAutoUnsubscribedEventsStub } from '@tests/unit/shared/Stubs/UseAutoUnsubscribedEventsStub';
 import { UserSelectionStub } from '@tests/unit/shared/Stubs/UserSelectionStub';

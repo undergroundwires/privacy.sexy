@@ -1,6 +1,6 @@
-import { NodeStateChangeEventArgs } from '@/presentation/components/Scripts/View/Tree/TreeView/UseNodeStateChangeAggregator';
-import { TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
-import { TreeNodeStateDescriptor } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateDescriptor';
+import type { NodeStateChangeEventArgs } from '@/presentation/components/Scripts/View/Tree/TreeView/UseNodeStateChangeAggregator';
+import type { TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
+import type { TreeNodeStateDescriptor } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateDescriptor';
 import { TreeNodeStub } from './TreeNodeStub';
 import { TreeNodeStateDescriptorStub } from './TreeNodeStateDescriptorStub';
 import { HierarchyAccessStub } from './HierarchyAccessStub';

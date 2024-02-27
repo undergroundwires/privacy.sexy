@@ -1,9 +1,8 @@
-import { FunctionCall } from './Call/FunctionCall';
-
 import {
-  FunctionBodyType, IFunctionCode, ISharedFunction, SharedFunctionBody,
+  FunctionBodyType, type IFunctionCode, type ISharedFunction, type SharedFunctionBody,
 } from './ISharedFunction';
-import { IReadOnlyFunctionParameterCollection } from './Parameter/IFunctionParameterCollection';
+import type { FunctionCall } from './Call/FunctionCall';
+import type { IReadOnlyFunctionParameterCollection } from './Parameter/IFunctionParameterCollection';
 
 export function createCallerFunction(
   name: string,

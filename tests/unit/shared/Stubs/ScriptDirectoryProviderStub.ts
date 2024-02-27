@@ -1,4 +1,4 @@
-import { ScriptDirectoryOutcome, ScriptDirectoryProvider } from '@/infrastructure/CodeRunner/Creation/Directory/ScriptDirectoryProvider';
+import type { ScriptDirectoryOutcome, ScriptDirectoryProvider } from '@/infrastructure/CodeRunner/Creation/Directory/ScriptDirectoryProvider';
 
 export class ScriptDirectoryProviderStub implements ScriptDirectoryProvider {
   private directoryPath = `[${ScriptDirectoryProviderStub.name}]scriptDirectory`;

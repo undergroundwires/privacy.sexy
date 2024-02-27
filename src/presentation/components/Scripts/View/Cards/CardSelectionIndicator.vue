@@ -15,8 +15,8 @@
 import { defineComponent, computed } from 'vue';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import { injectKey } from '@/presentation/injectionSymbols';
-import { ICategory } from '@/domain/ICategory';
-import { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategory } from '@/domain/ICategory';
+import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 
 export default defineComponent({
   components: {

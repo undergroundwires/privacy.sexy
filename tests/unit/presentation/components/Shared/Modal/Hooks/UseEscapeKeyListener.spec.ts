@@ -4,7 +4,7 @@ import {
 import { shallowMount } from '@vue/test-utils';
 import { nextTick, defineComponent } from 'vue';
 import { useEscapeKeyListener } from '@/presentation/components/Shared/Modal/Hooks/UseEscapeKeyListener';
-import { EventName, createWindowEventSpies } from '@tests/shared/Spies/WindowEventSpies';
+import { type EventName, createWindowEventSpies } from '@tests/shared/Spies/WindowEventSpies';
 
 describe('useEscapeKeyListener', () => {
   it('executes the callback when the Escape key is pressed', async () => {

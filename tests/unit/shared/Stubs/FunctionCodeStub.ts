@@ -1,4 +1,4 @@
-import { IFunctionCode } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
+import type { IFunctionCode } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
 
 export class FunctionCodeStub implements IFunctionCode {
   public execute = 'execute code (function-code-stub)';

@@ -1,4 +1,4 @@
-import { IEnumParser } from '@/application/Common/Enum';
+import type { IEnumParser } from '@/application/Common/Enum';
 
 export class EnumParserStub<T> implements IEnumParser<T> {
   private readonly scenarios = new Array<{

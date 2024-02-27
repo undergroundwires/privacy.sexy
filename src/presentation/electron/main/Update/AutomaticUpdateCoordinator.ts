@@ -1,8 +1,8 @@
 import { app, dialog } from 'electron/main';
-import { autoUpdater, UpdateInfo } from 'electron-updater';
-import { ProgressInfo } from 'electron-builder';
+import { autoUpdater, type UpdateInfo } from 'electron-updater';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import { UpdateProgressBar } from './UpdateProgressBar';
+import type { ProgressInfo } from 'electron-builder';
 
 export async function handleAutoUpdate() {
   if (await askDownloadAndInstall() === DownloadDialogResult.NotNow) {

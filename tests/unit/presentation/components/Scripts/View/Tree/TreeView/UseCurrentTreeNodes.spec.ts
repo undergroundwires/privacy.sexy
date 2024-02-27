@@ -3,7 +3,7 @@ import {
   shallowRef, defineComponent, nextTick, type Ref,
 } from 'vue';
 import { shallowMount } from '@vue/test-utils';
-import { TreeRoot } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/TreeRoot';
+import type { TreeRoot } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/TreeRoot';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { UseAutoUnsubscribedEventsStub } from '@tests/unit/shared/Stubs/UseAutoUnsubscribedEventsStub';
 import { QueryableNodesStub } from '@tests/unit/shared/Stubs/QueryableNodesStub';

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { ExpressionEvaluator } from '@/application/Parser/Script/Compiler/Expressions/Expression/Expression';
-import { IPrimitiveExpression, RegexParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/Regex/RegexParser';
+import type { ExpressionEvaluator } from '@/application/Parser/Script/Compiler/Expressions/Expression/Expression';
+import { type IPrimitiveExpression, RegexParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/Regex/RegexParser';
 import { ExpressionPosition } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionPosition';
 import { FunctionParameterStub } from '@tests/unit/shared/Stubs/FunctionParameterStub';
 import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';

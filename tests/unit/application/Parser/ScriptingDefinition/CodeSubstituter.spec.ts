@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { CodeSubstituter } from '@/application/Parser/ScriptingDefinition/CodeSubstituter';
-import { IExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/IExpressionsCompiler';
+import type { IExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/IExpressionsCompiler';
 import { ProjectDetailsStub } from '@tests/unit/shared/Stubs/ProjectDetailsStub';
 import { ExpressionsCompilerStub } from '@tests/unit/shared/Stubs/ExpressionsCompilerStub';
 import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';

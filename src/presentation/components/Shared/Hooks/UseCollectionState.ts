@@ -1,7 +1,7 @@
 import { shallowRef, shallowReadonly } from 'vue';
-import { IApplicationContext, IReadOnlyApplicationContext } from '@/application/Context/IApplicationContext';
-import { ICategoryCollectionState, IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
-import { IEventSubscriptionCollection } from '@/infrastructure/Events/IEventSubscriptionCollection';
+import type { IApplicationContext, IReadOnlyApplicationContext } from '@/application/Context/IApplicationContext';
+import type { ICategoryCollectionState, IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
+import type { IEventSubscriptionCollection } from '@/infrastructure/Events/IEventSubscriptionCollection';
 
 export function useCollectionState(
   context: IApplicationContext,

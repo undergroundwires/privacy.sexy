@@ -3,16 +3,16 @@ import { describe, it, expect } from 'vitest';
 import { FunctionCallSequenceCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/FunctionCallSequenceCompiler';
 import { itIsSingleton } from '@tests/unit/shared/TestCases/SingletonTests';
 import { itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';
-import { SingleCallCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/SingleCall/SingleCallCompiler';
-import { CodeSegmentMerger } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CodeSegmentJoin/CodeSegmentMerger';
-import { ISharedFunctionCollection } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionCollection';
-import { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
+import type { SingleCallCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/SingleCall/SingleCallCompiler';
+import type { CodeSegmentMerger } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CodeSegmentJoin/CodeSegmentMerger';
+import type { ISharedFunctionCollection } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionCollection';
+import type { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
 import { FunctionCallStub } from '@tests/unit/shared/Stubs/FunctionCallStub';
 import { SharedFunctionCollectionStub } from '@tests/unit/shared/Stubs/SharedFunctionCollectionStub';
 import { SingleCallCompilerStub } from '@tests/unit/shared/Stubs/SingleCallCompilerStub';
 import { CodeSegmentMergerStub } from '@tests/unit/shared/Stubs/CodeSegmentMergerStub';
 import { CompiledCodeStub } from '@tests/unit/shared/Stubs/CompiledCodeStub';
-import { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
+import type { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 describe('FunctionCallSequenceCompiler', () => {

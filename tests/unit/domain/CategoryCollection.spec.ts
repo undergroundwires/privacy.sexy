@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { ICategory } from '@/domain/ICategory';
+import type { ICategory } from '@/domain/ICategory';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { RecommendationLevel } from '@/domain/RecommendationLevel';
 import { getEnumValues } from '@/application/Common/Enum';

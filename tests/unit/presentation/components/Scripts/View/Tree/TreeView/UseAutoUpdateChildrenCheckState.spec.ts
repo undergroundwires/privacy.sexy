@@ -1,13 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import { type Ref, shallowRef } from 'vue';
-import { TreeRoot } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/TreeRoot';
+import type { TreeRoot } from '@/presentation/components/Scripts/View/Tree/TreeView/TreeRoot/TreeRoot';
 import { useAutoUpdateChildrenCheckState } from '@/presentation/components/Scripts/View/Tree/TreeView/UseAutoUpdateChildrenCheckState';
 import { TreeNodeCheckState } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/CheckState';
 import { UseNodeStateChangeAggregatorStub } from '@tests/unit/shared/Stubs/UseNodeStateChangeAggregatorStub';
 import { TreeRootStub } from '@tests/unit/shared/Stubs/TreeRootStub';
 import { TreeNodeStateDescriptorStub } from '@tests/unit/shared/Stubs/TreeNodeStateDescriptorStub';
 import { TreeNodeStateAccessStub, createAccessStubsFromCheckStates } from '@tests/unit/shared/Stubs/TreeNodeStateAccessStub';
-import { TreeNodeStateDescriptor } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateDescriptor';
+import type { TreeNodeStateDescriptor } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/StateDescriptor';
 import { createChangeEvent } from '@tests/unit/shared/Stubs/NodeStateChangeEventArgsStub';
 import { TreeNodeStub } from '@tests/unit/shared/Stubs/TreeNodeStub';
 import { getAbsentObjectTestCases } from '@tests/unit/shared/TestCases/AbsentTests';

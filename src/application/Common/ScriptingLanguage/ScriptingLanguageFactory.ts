@@ -1,6 +1,6 @@
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { assertInRange } from '@/application/Common/Enum';
-import { IScriptingLanguageFactory } from './IScriptingLanguageFactory';
+import type { IScriptingLanguageFactory } from './IScriptingLanguageFactory';
 
 type Getter<T> = () => T;
 

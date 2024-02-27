@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest';
-import { Logger } from '@/application/Common/Log/Logger';
+import type { Logger } from '@/application/Common/Log/Logger';
 import { ExecutionSubdirectory, PersistentDirectoryProvider } from '@/infrastructure/CodeRunner/Creation/Directory/PersistentDirectoryProvider';
-import { SystemOperations } from '@/infrastructure/CodeRunner/System/SystemOperations';
+import type { SystemOperations } from '@/infrastructure/CodeRunner/System/SystemOperations';
 import { LocationOpsStub } from '@tests/unit/shared/Stubs/LocationOpsStub';
 import { LoggerStub } from '@tests/unit/shared/Stubs/LoggerStub';
 import { OperatingSystemOpsStub } from '@tests/unit/shared/Stubs/OperatingSystemOpsStub';
 import { SystemOperationsStub } from '@tests/unit/shared/Stubs/SystemOperationsStub';
 import { FileSystemOpsStub } from '@tests/unit/shared/Stubs/FileSystemOpsStub';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
-import { CodeRunErrorType } from '@/application/CodeRunner/CodeRunner';
+import type { CodeRunErrorType } from '@/application/CodeRunner/CodeRunner';
 import { expectTrue } from '@tests/shared/Assertions/ExpectTrue';
 
 describe('PersistentDirectoryProvider', () => {

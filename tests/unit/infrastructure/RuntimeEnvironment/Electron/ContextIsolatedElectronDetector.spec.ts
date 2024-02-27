@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { ContextIsolatedElectronDetector } from '@/infrastructure/RuntimeEnvironment/Electron/ContextIsolatedElectronDetector';
-import { ElectronProcessType } from '@/infrastructure/RuntimeEnvironment/Electron/ElectronEnvironmentDetector';
+import type { ElectronProcessType } from '@/infrastructure/RuntimeEnvironment/Electron/ElectronEnvironmentDetector';
 
 describe('ContextIsolatedElectronDetector', () => {
   describe('isRunningInsideElectron', () => {

@@ -4,8 +4,8 @@ import { OperatingSystem } from '@/domain/OperatingSystem';
 import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
 import { VersionStub } from '@tests/unit/shared/Stubs/VersionStub';
 import { Version } from '@/domain/Version';
-import { PropertyKeys } from '@/TypeHelpers';
-import { SupportedOperatingSystem, AllSupportedOperatingSystems } from '@tests/shared/TestCases/SupportedOperatingSystems';
+import type { PropertyKeys } from '@/TypeHelpers';
+import { type SupportedOperatingSystem, AllSupportedOperatingSystems } from '@tests/shared/TestCases/SupportedOperatingSystems';
 
 describe('GitHubProjectDetails', () => {
   describe('retrieval of property values', () => {

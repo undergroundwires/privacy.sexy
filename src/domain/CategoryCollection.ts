@@ -1,11 +1,11 @@
 import { getEnumValues, assertInRange } from '@/application/Common/Enum';
-import { IEntity } from '../infrastructure/Entity/IEntity';
-import { ICategory } from './ICategory';
-import { IScript } from './IScript';
 import { RecommendationLevel } from './RecommendationLevel';
 import { OperatingSystem } from './OperatingSystem';
-import { IScriptingDefinition } from './IScriptingDefinition';
-import { ICategoryCollection } from './ICategoryCollection';
+import type { IEntity } from '../infrastructure/Entity/IEntity';
+import type { ICategory } from './ICategory';
+import type { IScript } from './IScript';
+import type { IScriptingDefinition } from './IScriptingDefinition';
+import type { ICategoryCollection } from './ICategoryCollection';
 
 export class CategoryCollection implements ICategoryCollection {
   public get totalScripts(): number { return this.queryable.allScripts.length; }
