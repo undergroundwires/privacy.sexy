@@ -4438,10 +4438,10 @@ actions:
                             [6]: https://github.com/undergroundwires/privacy.sexy/issues/286 "[BUG]: Disabling IntelliCode data collection crashes VS · Issue #286 · undergroundwires/privacy.sexy | github.com/undergroundwires"
                         code: |-
                             :: Global policy
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\VisualStudio\IntelliCode" /v "DisableRemoteAnalysis" /d 1 /f
+                            reg add "HKLM\SOFTWARE\Policies\Microsoft\VisualStudio\IntelliCode" /v "DisableRemoteAnalysis" /d 1 /f /t REG_DWORD
                             :: Local policy
-                            reg add "HKCU\SOFTWARE\Microsoft\VSCommon\16.0\IntelliCode" /v "DisableRemoteAnalysis" /d 1 /f
-                            reg add "HKCU\SOFTWARE\Microsoft\VSCommon\17.0\IntelliCode" /v "DisableRemoteAnalysis" /d 1 /f
+                            reg add "HKCU\SOFTWARE\Microsoft\VSCommon\16.0\IntelliCode" /v "DisableRemoteAnalysis" /d 1 /f /t REG_DWORD
+                            reg add "HKCU\SOFTWARE\Microsoft\VSCommon\17.0\IntelliCode" /v "DisableRemoteAnalysis" /d 1 /f /t REG_DWORD
                         revertCode: |-
                             :: Global policy
                             reg delete "HKLM\SOFTWARE\Policies\Microsoft\VisualStudio\IntelliCode" /v "DisableRemoteAnalysis" /f 2>nul
