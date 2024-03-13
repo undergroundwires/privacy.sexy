@@ -1,19 +1,17 @@
 import { fetchWithTimeout } from './FetchWithTimeout';
+import { getDomainFromUrl } from './UrlDomainProcessing';
 
 export function fetchFollow(
   url: string,
   timeoutInMs: number,
-  fetchOptions: RequestInit,
-  followOptions: IFollowOptions | undefined,
+  fetchOptions?: Partial<RequestInit>,
+  followOptions?: Partial<FollowOptions>,
 ): Promise<Response> {
-  const defaultedFollowOptions = {
-    ...DefaultFollowOptions,
-    ...followOptions,
-  };
+  const defaultedFollowOptions = { ...DefaultFollowOptions, ...followOptions };
   if (followRedirects(defaultedFollowOptions)) {
     return fetchWithTimeout(url, timeoutInMs, fetchOptions);
   }
-  fetchOptions = { ...fetchOptions, redirect: 'manual' /* handled manually */ };
+  fetchOptions = { ...fetchOptions, redirect: 'manual' /* handled manually */, mode: 'cors' };
   const cookies = new CookieStorage(defaultedFollowOptions.enableCookies);
   return followRecursivelyWithCookies(
     url,
@@ -24,13 +22,15 @@ export function fetchFollow(
   );
 }
 
-export interface IFollowOptions {
-  followRedirects?: boolean;
-  maximumRedirectFollowDepth?: number;
-  enableCookies?: boolean;
+// "cors" | "navigate" | "no-cors" | "same-origin";
+
+export interface FollowOptions {
+  readonly followRedirects?: boolean;
+  readonly maximumRedirectFollowDepth?: number;
+  readonly enableCookies?: boolean;
 }
 
-export const DefaultFollowOptions: Required<IFollowOptions> = {
+const DefaultFollowOptions: Required<FollowOptions> = {
   followRedirects: true,
   maximumRedirectFollowDepth: 20,
   enableCookies: true,
@@ -64,6 +64,10 @@ async function followRecursivelyWithCookies(
   if (cookieHeader) {
     cookies.addHeader(cookieHeader);
   }
+  options.headers = {
+    ...options.headers,
+    Host: getDomainFromUrl(nextUrl),
+  };
   return followRecursivelyWithCookies(nextUrl, timeoutInMs, options, newFollowDepth, cookies);
 }
 
@@ -77,7 +81,7 @@ class CookieStorage {
   constructor(private readonly enabled: boolean) {
   }
 
-  public hasAny() {
+  public hasAny(): boolean {
     return this.enabled && this.cookies.length > 0;
   }
 
@@ -88,12 +92,12 @@ class CookieStorage {
     this.cookies.push(header);
   }
 
-  public getHeader() {
+  public getHeader(): string {
     return this.cookies.join(' ; ');
   }
 }
 
-function followRedirects(options: IFollowOptions) {
+function followRedirects(options: FollowOptions): boolean {
   if (!options.followRedirects) {
     return false;
   }

@@ -1,7 +1,7 @@
+import { filterEmpty } from '@tests/shared/Text';
 import { runCommand } from '../../utils/run-command';
 import { log, LogLevel } from '../../utils/log';
 import { SupportedPlatform, CURRENT_PLATFORM } from '../../utils/platform';
-import { filterEmpty } from '../../utils/text';
 
 export async function captureWindowTitles(processId: number) {
   if (!processId) { throw new Error('Missing process ID.'); }
