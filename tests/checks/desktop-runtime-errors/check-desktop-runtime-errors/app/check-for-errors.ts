@@ -1,4 +1,4 @@
-import { splitTextIntoLines, indentText } from '../utils/text';
+import { indentText, splitTextIntoLines } from '@tests/shared/Text';
 import { log, die } from '../utils/log';
 import { readAppLogFile } from './app-logs';
 import { STDERR_IGNORE_PATTERNS } from './error-ignore-patterns';

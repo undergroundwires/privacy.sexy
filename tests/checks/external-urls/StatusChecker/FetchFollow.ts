@@ -1,19 +1,22 @@
+import { indentText } from '@tests/shared/Text';
 import { fetchWithTimeout } from './FetchWithTimeout';
+import { getDomainFromUrl } from './UrlDomainProcessing';
 
 export function fetchFollow(
   url: string,
   timeoutInMs: number,
-  fetchOptions: RequestInit,
-  followOptions: IFollowOptions | undefined,
+  fetchOptions?: Partial<RequestInit>,
+  followOptions?: Partial<FollowOptions>,
 ): Promise<Response> {
-  const defaultedFollowOptions = {
+  const defaultedFollowOptions: Required<FollowOptions> = {
     ...DefaultFollowOptions,
     ...followOptions,
   };
-  if (followRedirects(defaultedFollowOptions)) {
+  console.log(indentText(`Follow options: ${JSON.stringify(defaultedFollowOptions)}`));
+  if (!followRedirects(defaultedFollowOptions)) {
     return fetchWithTimeout(url, timeoutInMs, fetchOptions);
   }
-  fetchOptions = { ...fetchOptions, redirect: 'manual' /* handled manually */ };
+  fetchOptions = { ...fetchOptions, redirect: 'manual' /* handled manually */, mode: 'cors' };
   const cookies = new CookieStorage(defaultedFollowOptions.enableCookies);
   return followRecursivelyWithCookies(
     url,
@@ -24,13 +27,13 @@ export function fetchFollow(
   );
 }
 
-export interface IFollowOptions {
-  followRedirects?: boolean;
-  maximumRedirectFollowDepth?: number;
-  enableCookies?: boolean;
+export interface FollowOptions {
+  readonly followRedirects?: boolean;
+  readonly maximumRedirectFollowDepth?: number;
+  readonly enableCookies?: boolean;
 }
 
-export const DefaultFollowOptions: Required<IFollowOptions> = {
+const DefaultFollowOptions: Required<FollowOptions> = {
   followRedirects: true,
   maximumRedirectFollowDepth: 20,
   enableCookies: true,
@@ -64,6 +67,10 @@ async function followRecursivelyWithCookies(
   if (cookieHeader) {
     cookies.addHeader(cookieHeader);
   }
+  options.headers = {
+    ...options.headers,
+    Host: getDomainFromUrl(nextUrl),
+  };
   return followRecursivelyWithCookies(nextUrl, timeoutInMs, options, newFollowDepth, cookies);
 }
 
@@ -77,7 +84,7 @@ class CookieStorage {
   constructor(private readonly enabled: boolean) {
   }
 
-  public hasAny() {
+  public hasAny(): boolean {
     return this.enabled && this.cookies.length > 0;
   }
 
@@ -88,17 +95,17 @@ class CookieStorage {
     this.cookies.push(header);
   }
 
-  public getHeader() {
+  public getHeader(): string {
     return this.cookies.join(' ; ');
   }
 }
 
-function followRedirects(options: IFollowOptions) {
-  if (!options.followRedirects) {
+function followRedirects(options: FollowOptions): boolean {
+  if (options.followRedirects !== true) {
     return false;
   }
-  if (options.maximumRedirectFollowDepth === 0) {
-    return false;
+  if (options.maximumRedirectFollowDepth === undefined || options.maximumRedirectFollowDepth <= 0) {
+    throw new Error('Invalid followRedirects configuration: maximumRedirectFollowDepth must be a positive integer');
   }
   return true;
 }

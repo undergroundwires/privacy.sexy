@@ -1,3 +1,4 @@
+import { indentText } from '@tests/shared/Text';
 import { logCurrentArgs, CommandLineFlag, hasCommandLineFlag } from './cli-args';
 import { log, die } from './utils/log';
 import { ensureNpmProjectDir, npmInstall, npmBuild } from './utils/npm';
@@ -15,7 +16,6 @@ import {
   APP_EXECUTION_DURATION_IN_SECONDS,
   SCREENSHOT_PATH,
 } from './config';
-import { indentText } from './utils/text';
 import type { ExtractionResult } from './app/extractors/common/extraction-result';
 
 export async function main(): Promise<void> {
