@@ -2,11 +2,11 @@
   "compilerOptions": {
     "target": "ES2017",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "module": "esnext",
+    "module": "ESNext",
     "importHelpers": true,
     "downlevelIteration": true,
     "jsx": "preserve",
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "strictNullChecks": true,
     "experimentalDecorators": true,
     "esModuleInterop": true,
