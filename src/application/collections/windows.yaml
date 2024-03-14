@@ -1174,7 +1174,7 @@ actions:
                                         parameters:
                                             fileGlob: '%SYSTEMROOT%\Logs\DISM\DISM.log'
                             -
-                                name: Clear Windows update files # Marked: stop-service-do-stuff-restart-service
+                                name: Clear Windows update files
                                 docs: |-
                                     This script clears the contents of the `%SYSTEMROOT%\SoftwareDistribution\` directory.
                                     This action is sometimes called *resetting the Windows Update Agent* or *resetting Windows Update components* by Microsoft [1].
@@ -1203,18 +1203,22 @@ actions:
                                     [8]: https://web.archive.org/web/20231027190213/https://support.microsoft.com/en-us/windows/troubleshoot-problems-updating-windows-188c2b0f-10a7-d72f-65b8-32d177eb136c#WindowsVersion=Windows_11 "Troubleshoot problems updating Windows - Microsoft Support | support.microsoft.com"
                                     [9]: https://web.archive.org/web/20231027190503/https://learn.microsoft.com/en-us/troubleshoot/mem/configmgr/update-management/troubleshoot-software-update-scan-failures "Troubleshoot software update scan failures - Configuration Manager | Microsoft Learn | learn.microsoft.com"
                                     [10]: https://web.archive.org/web/20231029172022/https://support.microsoft.com/en-us/topic/you-receive-an-administrators-only-error-message-in-windows-xp-when-you-try-to-visit-the-windows-update-web-site-or-the-microsoft-update-web-site-d2c732b6-21e0-a2ce-8d18-303ed71736c9 'You receive an "Administrators only" error message in Windows XP when you try to visit the Windows Update Web site or the Microsoft Update Web site - Microsoft Support | support.microsoft.com'
-                                code: |- # `sc queryex` output is the same in every OS language
-                                    setlocal EnableDelayedExpansion
-                                        SET /A wuau_service_running=0
-                                        SC queryex "wuauserv"|Find "STATE"|Find /v "RUNNING">Nul||(
-                                            SET /A wuau_service_running=1
-                                            net stop wuauserv
-                                        )
-                                        del /q /s /f "%SYSTEMROOT%\SoftwareDistribution\*"
-                                        IF !wuau_service_running! == 1 (
-                                            net start wuauserv
-                                        )
-                                    endlocal
+                                call:
+                                    -
+                                        function: StopService
+                                        parameters:
+                                            serviceName: wuauserv
+                                            waitUntilStopped: true
+                                            serviceRestartStateFile: '%APPDATA%\privacy.sexy-wuauserv' # Marked: refactor-with-variables (app dir should be unified, not using %TEMP% as it can be cleaned during operation)
+                                    -
+                                        function: ClearDirectoryContents
+                                        parameters:
+                                            directoryGlob: '%SYSTEMROOT%\SoftwareDistribution'
+                                    -
+                                        function: StartService
+                                        parameters:
+                                            serviceName: wuauserv
+                                            serviceRestartStateFile: '%APPDATA%\privacy.sexy-wuauserv' # Marked: refactor-with-variables (app dir should be unified, not using %TEMP% as it can be cleaned during operation)
                             -
                                 name: Clear Common Language Runtime system logs
                                 recommend: standard
@@ -1251,7 +1255,7 @@ actions:
                                     parameters:
                                         directoryGlob: '%SYSTEMROOT%\System32\LogFiles\setupcln'
                     -
-                        name: Clear diagnostics tracking logs # Marked: stop-service-do-stuff-restart-service ("DiagTrack")
+                        name: Clear diagnostics tracking logs
                         recommend: standard
                         docs: |-
                             This script deletes primary telemetry files in Windows.
@@ -1287,6 +1291,12 @@ actions:
                             [7]: https://web.archive.org/web/20240217185108/https://learn.microsoft.com/en-us/windows/privacy/configure-windows-diagnostic-data-in-your-organization "Configure Windows diagnostic data in your organization (Windows 10 and Windows 11) - Windows Privacy | Microsoft Learn | learn.microsoft.com"
                         call:
                             -
+                                function: StopService
+                                parameters:
+                                    serviceName: DiagTrack
+                                    waitUntilStopped: true
+                                    serviceRestartStateFile: '%APPDATA%\privacy.sexy-DiagTrack' # Marked: refactor-with-variables (app dir should be unified, not using %TEMP% as it can be cleaned during operation)
+                            -
                                 function: DeleteFiles
                                 parameters:
                                     fileGlob: '%PROGRAMDATA%\Microsoft\Diagnosis\ETLLogs\AutoLogger\AutoLogger-Diagtrack-Listener.etl'
@@ -1296,6 +1306,11 @@ actions:
                                 parameters:
                                     fileGlob: '%PROGRAMDATA%\Microsoft\Diagnosis\ETLLogs\ShutdownLogger\AutoLogger-Diagtrack-Listener.etl'
                                     grantPermissions: true
+                            -
+                                function: StartService
+                                parameters:
+                                    serviceName: DiagTrack
+                                    serviceRestartStateFile: '%APPDATA%\privacy.sexy-DiagTrack' # Marked: refactor-with-variables (app dir should be unified, not using %TEMP% as it can be cleaned during operation)
                     -
                         name: Clear event logs in Event Viewer application
                         docs: https://serverfault.com/questions/407838/do-windows-events-from-the-windows-event-log-have-sensitive-information
@@ -1452,7 +1467,7 @@ actions:
                 recommend: standard
                 code: dism /online /Remove-DefaultAppAssociations
             -
-                name: Clear System Resource Usage Monitor (SRUM) data # Marked: stop-service-do-stuff-restart-service
+                name: Clear System Resource Usage Monitor (SRUM) data
                 recommend: standard
                 docs: |-
                     This script deletes the Windows System Resource Usage Monitor (SRUM) database file.
@@ -1472,47 +1487,25 @@ actions:
                     [5]: https://web.archive.org/web/20231008135321/https://devblogs.microsoft.com/sustainable-software/measuring-your-application-power-and-carbon-impact-part-1/ "Measuring Your Application Power and Carbon Impact (Part 1) - Sustainable Software | devblogs.microsoft.com"
                     [6]: https://web.archive.org/web/20231008135333/https://www.sciencedirect.com/science/article/abs/pii/S1742287615000031 "Forensic implications of System Resource Usage Monitor (SRUM) data in Windows 8 | Yogesh Khatri | sciencedirect.com"
                 call:
-                    function: RunPowerShell
-                    parameters:
+                    -
                         # If the service is not stopped, following error is thrown:
                         #   Failed to delete SRUM database file at: "C:\Windows\System32\sru\SRUDB.dat". Error Details: The process cannot access
-                        #   the file 'C:\Windows\System32\sru\SRUDB.dat' because it is being used by another process.
-                        code: |-
-                            $srumDatabaseFilePath = "$env:WINDIR\System32\sru\SRUDB.dat"
-                            if (!(Test-Path -Path $srumDatabaseFilePath)) {
-                                Write-Output "Skipping, SRUM database file not found at `"$srumDatabaseFilePath`". No actions are required."
-                                exit 0
-                            }
-                            $dps = Get-Service -Name 'DPS' -ErrorAction Ignore
-                            $isDpsInitiallyRunning = $false
-                            if ($dps) {
-                                $isDpsInitiallyRunning = $dps.Status -eq [System.ServiceProcess.ServiceControllerStatus]::Running
-                                if ($isDpsInitiallyRunning) {
-                                    Write-Output "Stopping the Diagnostic Policy Service (DPS) to delete the SRUM database file."
-                                    $dps | Stop-Service -Force
-                                    $dps.WaitForStatus([System.ServiceProcess.ServiceControllerStatus]::Stopped)
-                                    Write-Output "Successfully stopped Diagnostic Policy Service (DPS)."
-                                }
-                            } else {
-                                Write-Output "Diagnostic Policy Service (DPS) not found. Proceeding without stopping the service."
-                            }
-                            try {
-                                Remove-Item -Path $srumDatabaseFilePath -Force -ErrorAction Stop
-                                Write-Output "Successfully deleted the SRUM database file at `"$srumDatabaseFilePath`"."
-                            } catch {
-                                throw "Failed to delete SRUM database file at: `"$srumDatabaseFilePath`". Error Details: $($_.Exception.Message)"
-                            } finally {
-                                if ($isDpsInitiallyRunning) {
-                                    try {
-                                        if ((Get-Service -Name 'DPS').Status -ne [System.ServiceProcess.ServiceControllerStatus]::Running) {
-                                            Write-Output "Restarting the Diagnostic Policy Service (DPS)."
-                                            $dps | Start-Service
-                                        }
-                                    } catch {
-                                        throw "Failed to restart the Diagnostic Policy Service (DPS). Error Details: $($_.Exception.Message)"
-                                    }
-                                }
-                            }
+                        #   the file 'C:\Windows\System32\sru\SRUDB.dat' because it is being used by another proces
+                        function: StopService
+                        parameters:
+                            serviceName: DPS
+                            waitUntilStopped: true
+                            serviceRestartStateFile: '%APPDATA%\privacy.sexy-DPS' # Marked: refactor-with-variables (app dir should be unified, not using %TEMP% as it can be cleaned during operation)
+                    -
+                        function: DeleteFiles
+                        parameters:
+                            fileGlob: '%WINDIR%\System32\sru\SRUDB.dat'
+                            grantPermissions: true
+                    -
+                        function: StartService
+                        parameters:
+                            serviceName: DPS
+                            serviceRestartStateFile: '%APPDATA%\privacy.sexy-DPS' # Marked: refactor-with-variables (app dir should be unified, not using %TEMP% as it can be cleaned during operation)
             -
                 name: Clear previous Windows installations
                 call:   
@@ -15882,10 +15875,12 @@ actions:
         category: Advanced settings
         children:
             -
-                name: Set NTP (time) server to `pool.ntp.org` # Marked: stop-service-do-stuff-restart-service
+                name: Set NTP (time) server to `pool.ntp.org`
                 docs: https://www.pool.ntp.org/en/use.html
                 recommend: strict
                  # `sc queryex` output is same in every OS language
+                 # Marked: refactor-with-revert-call, refactor-with-variables
+                 #  This would allow re-using `StartService` and `StopService`
                 code: |-
                     :: Configure time source
                     w32tm /config /syncfromflags:manual /manualpeerlist:"0.pool.ntp.org 1.pool.ntp.org 2.pool.ntp.org 3.pool.ntp.org"
@@ -15904,7 +15899,7 @@ actions:
                     SC queryex "w32time"|Find "STATE"|Find /v "RUNNING">Nul||(
                         net stop w32time
                     )
-                    :: Start time servie and sync now
+                    :: Start time service and sync now
                     net start w32time
                     w32tm /config /update
                     w32tm /resync
@@ -16717,6 +16712,8 @@ functions:
             - name: defaultStartupMode # Allowed values: Boot | System | Automatic | Manual
         call:
             function: RunPowerShell
+            # Marked: refactor-with-revert-call, refactor-with-variables
+            #   Implementation of those should share similar code: `DisableService`, `StopService`, `StartService`, `DisableServiceInRegistry`
             parameters:
                 code: |- # We do registry way because GUI, "sc config" or "Set-Service" won't not work
                     $serviceQuery = '{{ $serviceName }}'
@@ -16939,6 +16936,123 @@ functions:
                         exit 1
                     }
     -
+        name: StopService
+        parameters:
+            - name: serviceName
+            - name: serviceRestartStateFile     # This file is created only if the service is successfully stopped.
+              optional: true
+            - name: waitUntilStopped            # Makes the script wait until the service is stopped
+              optional: true
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: >-
+                        Stop service: {{ $serviceName }}
+                        {{ with $serviceRestartStateFile }}(with state flag){{ end }}
+                        {{ with $waitUntilStopped }}(wait until stopped){{ end }}
+            -
+                function: RunPowerShell
+                parameters:
+                    # Marked: refactor-with-variables
+                    #   Implementation of those should share similar code: `DisableService`, `StopService`, `StartService`, `DisableServiceInRegistry`
+                    code: |-
+                        $serviceName = '{{ $serviceName }}'
+                        Write-Host "Stopping service: `"$serviceName`"."
+                        $service = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
+                        if (!$service) {
+                            Write-Host "Skipping, service `"$serviceName`" could not be not found, no need to stop it."
+                            exit 0
+                        }
+                        if ($service.Status -ne [System.ServiceProcess.ServiceControllerStatus]::Running) {
+                            Write-Host "Skipping, `"$serviceName`" is not running, no need to stop."
+                            exit 0
+                        }
+                        Write-Host "`"$serviceName`" is running, stopping it."
+                        try {
+                            $service | Stop-Service -Force -ErrorAction Stop
+                            {{ with $waitUntilStopped }}
+                                $service.WaitForStatus([System.ServiceProcess.ServiceControllerStatus]::Stopped)
+                            {{ end }}
+                        } catch {
+                            throw "Failed to stop the service `"$serviceName`": $_"
+                        }
+                        Write-Host "Successfully stopped the service: `"$serviceName`"."
+                        {{ with $serviceRestartStateFile }}
+                            $stateFilePath = '{{ . }}'
+                            $expandedStateFilePath = [System.Environment]::ExpandEnvironmentVariables($stateFilePath)
+                            if (Test-Path -Path $expandedStateFilePath) {
+                                Write-Host "Skipping creating a service state file, it already exists: `"$expandedStateFilePath`"."
+                            } else {
+                                # Ensure the directory exists
+                                $parentDirectory = [System.IO.Path]::GetDirectoryName($expandedStateFilePath)
+                                if (-not (Test-Path $parentDirectory -PathType Container)) {
+                                    try {
+                                        New-Item -ItemType Directory -Path $parentDirectory -Force -ErrorAction Stop | Out-Null
+                                    }  catch {
+                                        Write-Warning "Failed to create parent directory of service state file `"$parentDirectory`": $_"
+                                    }
+                                }
+                                # Create the state file
+                                try {
+                                    New-Item -ItemType File -Path $expandedStateFilePath -Force -ErrorAction Stop | Out-Null
+                                    Write-Host 'The service will be started again.'
+                                } catch {
+                                    Write-Warning "Failed to create service state file `"$expandedStateFilePath`": $_"
+                                }
+                            }
+                        {{ end }}
+    -
+        name: StartService
+        parameters:
+            - name: serviceName
+            - name: serviceRestartStateFile     # Used for "check and delete": Starts the service only if file exists, always deletes the file.
+              optional: true
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: >-
+                        Start service: {{ $serviceName }}
+                        {{ with $serviceRestartStateFile }}(with state flag){{ end }}
+            -
+                function: RunPowerShell
+                parameters:
+                    # Marked: refactor-with-variables
+                    #   Implementation of those should share similar code: `DisableService`, `StopService`, `StartService`, `DisableServiceInRegistry`
+                    code: |-
+                        $serviceName = '{{ $serviceName }}'
+                        {{ with $serviceRestartStateFile }}
+                            $stateFilePath = '{{ . }}'
+                            $expandedStateFilePath = [System.Environment]::ExpandEnvironmentVariables($stateFilePath)
+                            if (-not (Test-Path -Path $expandedStateFilePath)) {
+                                Write-Host "Skipping starting the service: It was not running before."
+                            } else {
+                                try {
+                                    Remove-Item -Path $expandedStateFilePath -Force -ErrorAction Stop
+                                    Write-Host 'The service is expected to be started.'
+                                } catch {
+                                    Write-Warning "Failed to delete the service state file `"$expandedStateFilePath`": $_"
+                                }
+                            }
+                        {{ end }}
+                        $service = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
+                        if (!$service) {
+                            throw "Failed to start service `"$serviceName`": Service not found."
+                        }
+                        if ($service.Status -eq [System.ServiceProcess.ServiceControllerStatus]::Running) {
+                            Write-Host "Skipping, `"$serviceName`" is already running, no need to start."
+                            exit 0
+                        }
+                        Write-Host "`"$serviceName`" is not running, starting it."
+                        try {
+                            $service | Start-Service -ErrorAction Stop
+                            Write-Host "Successfully started the service: `"$serviceName`"."
+                        } catch {
+                            Write-Warning "Failed to start the service: `"$serviceName`"."
+                            exit 1
+                        }
+    -
         name: DisableService
         parameters:
             - name: serviceName
@@ -16950,6 +17064,8 @@ functions:
                     codeComment: "Disable service(s): `{{ $serviceName }}`"
                     revertCodeComment: "Restore service(s) to default state: `{{ $serviceName }}`"
             -
+                # Marked: refactor-with-revert-call, refactor-with-variables
+                #   Implementation of those should share similar code: `DisableService`, `StopService`, `StartService`, `DisableServiceInRegistry`
                 function: RunPowerShell
                 # Careful with Set-Service cmdlet:
                 #   1. It exits with positive code even if service is disabled
@@ -16959,7 +17075,7 @@ functions:
                 #           So "Disabled", "Automatic" and "Manual" are only consistent ones.
                 #       Read more:
                 #           https://github.com/PowerShell/PowerShell/blob/v7.2.0/src/Microsoft.PowerShell.Commands.Management/commands/management/Service.cs#L2966-L2978
-                #           https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-service?view=powershell-7.1
+                #           https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/set-service?view=powershell-7.4
                 parameters:
                     code: |-
                         $serviceName = '{{ $serviceName }}'
@@ -16982,7 +17098,6 @@ functions:
                         } else {
                             Write-Host "`"$serviceName`" is not running, no need to stop."
                         }
-
                         # -- 3. Skip if already disabled
                         $startupType = $service.StartType # Does not work before .NET 4.6.1
                         if(!$startupType) {
