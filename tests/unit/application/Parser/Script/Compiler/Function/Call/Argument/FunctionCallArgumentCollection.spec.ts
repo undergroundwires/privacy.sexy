@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { FunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/Function/Call/Argument/FunctionCallArgumentCollection';
 import { FunctionCallArgumentStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentStub';
 import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import type { IFunctionCallArgument } from '@/application/Parser/Script/Compiler/Function/Call/Argument/IFunctionCallArgument';
 
 describe('FunctionCallArgumentCollection', () => {
   describe('addArgument', () => {
@@ -20,21 +21,25 @@ describe('FunctionCallArgumentCollection', () => {
     });
   });
   describe('getAllParameterNames', () => {
-    it('returns as expected', () => {
+    describe('returns as expected', () => {
       // arrange
-      const testCases = [{
-        name: 'no args',
+      const testCases: ReadonlyArray<{
+        readonly description: string;
+        readonly args: readonly IFunctionCallArgument[];
+        readonly expectedParameterNames: string[];
+      }> = [{
+        description: 'no args',
         args: [],
-        expected: [],
+        expectedParameterNames: [],
       }, {
-        name: 'with some args',
+        description: 'with some args',
         args: [
           new FunctionCallArgumentStub().withParameterName('a-param-name'),
           new FunctionCallArgumentStub().withParameterName('b-param-name')],
-        expected: ['a-param-name', 'b-param-name'],
+        expectedParameterNames: ['a-param-name', 'b-param-name'],
       }];
       for (const testCase of testCases) {
-        it(testCase.name, () => {
+        it(testCase.description, () => {
           const sut = new FunctionCallArgumentCollection();
           // act
           for (const arg of testCase.args) {
@@ -42,7 +47,7 @@ describe('FunctionCallArgumentCollection', () => {
           }
           const actual = sut.getAllParameterNames();
           // assert
-          expect(actual).to.equal(testCase.expected);
+          expect(actual).to.deep.equal(testCase.expectedParameterNames);
         });
       }
     });

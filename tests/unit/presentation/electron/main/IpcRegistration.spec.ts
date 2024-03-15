@@ -13,7 +13,7 @@ import { ScriptDiagnosticsCollectorStub } from '../../../shared/Stubs/ScriptDiag
 
 describe('IpcRegistration', () => {
   describe('registerAllIpcChannels', () => {
-    it('registers all defined IPC channels', () => {
+    describe('registers all defined IPC channels', () => {
       Object.entries(IpcChannelDefinitions).forEach(([key, expectedChannel]) => {
         it(key, () => {
           // arrange

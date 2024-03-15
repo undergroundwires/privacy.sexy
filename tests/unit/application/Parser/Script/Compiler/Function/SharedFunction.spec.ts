@@ -25,7 +25,7 @@ describe('SharedFunction', () => {
           // assert
           expect(sut.name).equal(expected);
         });
-        it('throws when absent', () => {
+        describe('throws when absent', () => {
           itEachAbsentStringValue((absentValue) => {
             // arrange
             const expectedError = 'missing function name';

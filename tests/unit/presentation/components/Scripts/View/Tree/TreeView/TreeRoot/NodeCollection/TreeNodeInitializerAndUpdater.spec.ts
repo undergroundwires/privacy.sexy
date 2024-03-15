@@ -10,7 +10,7 @@ import type { TreeInputNodeData } from '@/presentation/components/Scripts/View/T
 
 describe('TreeNodeInitializerAndUpdater', () => {
   describe('updateRootNodes', () => {
-    it('should throw an error if no data is provided', () => {
+    describe('should throw an error if no data is provided', () => {
       itEachAbsentCollectionValue<TreeInputNodeData>((absentValue) => {
         // arrange
         const expectedError = 'missing data';

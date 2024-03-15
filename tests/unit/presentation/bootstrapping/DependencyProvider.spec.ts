@@ -4,6 +4,7 @@ import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { provideDependencies, type VueDependencyInjectionApi } from '@/presentation/bootstrapping/DependencyProvider';
 import { ApplicationContextStub } from '@tests/unit/shared/Stubs/ApplicationContextStub';
 import { itIsSingleton } from '@tests/unit/shared/TestCases/SingletonTests';
+import type { IApplicationContext } from '@/application/Context/IApplicationContext';
 
 describe('DependencyProvider', () => {
   describe('provideDependencies', () => {
@@ -74,30 +75,35 @@ function createSingletonTests() {
       const registeredObject = api.inject(injectionKey);
       expect(registeredObject).to.be.instanceOf(Object);
     });
-    it('should return the same instance for singleton dependency', () => {
+    describe('should return the same instance for singleton dependency', () => {
+      // arrange
+      const singletonContext = new ApplicationContextStub();
+      const api = new VueDependencyInjectionApiStub();
+      new ProvideDependenciesBuilder()
+        .withContext(singletonContext)
+        .withApi(api)
+        .provideDependencies();
+      // act
+      const getRegisteredInstance = () => api.inject(injectionKey);
+      // assert
       itIsSingleton({
-        getter: () => {
-          // arrange
-          const api = new VueDependencyInjectionApiStub();
-          // act
-          new ProvideDependenciesBuilder()
-            .withApi(api)
-            .provideDependencies();
-          // expect
-          const registeredObject = api.inject(injectionKey);
-          return registeredObject;
-        },
+        getter: getRegisteredInstance,
       });
     });
   };
 }
 class ProvideDependenciesBuilder {
-  private context = new ApplicationContextStub();
+  private context: IApplicationContext = new ApplicationContextStub();
 
   private api: VueDependencyInjectionApi = new VueDependencyInjectionApiStub();
 
   public withApi(api: VueDependencyInjectionApi): this {
     this.api = api;
+    return this;
+  }
+
+  public withContext(context: IApplicationContext): this {
+    this.context = context;
     return this;
   }
 
