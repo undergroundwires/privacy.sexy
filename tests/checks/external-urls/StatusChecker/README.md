@@ -13,7 +13,10 @@ A CLI and SDK for checking the availability of external URLs.
 - 😇 **Rate Limiting**: Queues requests by domain to be polite.
 - 🔁 **Retries**: Implements retry pattern with exponential back-off.
 - ⌚ **Timeouts**: Configurable timeout for each request.
-- 🎭️ **User-Agent Rotation**: Change user agents for each request.
+- 🎭️ **Impersonation**: Impersonate different browsers for each request.
+  - **🌐 User-Agent Rotation**: Change user agents.
+  - **🔑 TLS Handshakes**: Perform TLS and HTTP handshakes that are identical to that of a real browser.
+- 🫙 **Cookie jar**: Preserve cookies during redirects to mimic real browser.
 
 ## CLI
 
@@ -54,6 +57,7 @@ const statuses = await getUrlStatusesInParallel([ 'https://privacy.sexy', /* ...
   - **`sameDomainDelayInMs`** (*number*), default: `3000` (3 seconds)
     - Sets the delay between requests to the same domain.
 - `requestOptions` (*object*): See [request options](#request-options).
+- `followOptions` (*object*): See [follow options](#follow-options).
 
 ### `getUrlStatus`
 
@@ -72,7 +76,6 @@ console.log(`Status code: ${status.code}`);
   - The longer the base time, the greater the intervals between retries.
 - **`additionalHeaders`** (*object*), default: `false`
   - Additional HTTP headers to send along with the default headers. Overrides default headers if specified.
-- **`followOptions`** (*object*): See [follow options](#follow-options).
 - **`requestTimeoutInMs`**  (*number*), default: `60000` (60 seconds)
   - Time limit to abort the request if no response is received within the specified time frame.
 
@@ -83,19 +86,7 @@ Follows `3XX` redirects while preserving cookies.
 Same fetch API except third parameter that specifies [follow options](#follow-options), `redirect: 'follow' | 'manual' | 'error'` is discarded in favor of the third parameter.
 
 ```js
-const status = await fetchFollow('https://privacy.sexy', {
-        // First argument is same options as fetch API, except `redirect` options
-        // that's discarded in favor of next argument follow options
-        headers: {
-            'user-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0'
-        },
-    }, {
-        // Second argument sets the redirect behavior
-        followRedirects: true,
-        maximumRedirectFollowDepth: 20,
-        enableCookies: true,
-    }
-);
+const status = await fetchFollow('https://privacy.sexy', 1000 /* timeout in milliseconds */);
 console.log(`Status code: ${status.code}`); 
 ```
 
@@ -109,3 +100,10 @@ console.log(`Status code: ${status.code}`);
 - **`enableCookies`** (*boolean*), default: `true`
   - Enables cookie storage to facilitate seamless navigation through login or other authentication challenges.
   - 💡 Helps to over-come sign-in challenges with callbacks.
+- **`forceHttpGetForUrlPatterns`** (*array*), default: `[]`
+  - Specifies URL patterns that should always use an HTTP GET request instead of the default HTTP HEAD.
+  - This is useful for websites that do not respond to HEAD requests, such as those behind certain CDN or web application firewalls.
+  - Provide patterns as regular expressions (`RegExp`), allowing them to match any part of a URL.
+  - Examples:
+    - To match any URL starting with "https://example.com/api": `/^https:\/\/example\.com\/api/`
+    - To match any domain ending with "cloudflare.com": `/^https:\/\/.*\.cloudflare\.com\//`
