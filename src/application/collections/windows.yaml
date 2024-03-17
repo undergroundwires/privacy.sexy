@@ -14212,361 +14212,480 @@ actions:
                                         packageName: Windows.PrintDialog # Get-AppxPackage Windows.PrintDialog
                                         publisherId: cw5n1h2txyewy
             - 
-              category: Remove OneDrive
-              docs: |-
-                Microsoft OneDrive (formerly SkyDrive) is a file hosting service operated by Microsoft [1].
-                First launched in August 2007, it enables registered users to share and synchronize their files [1].
+                category: Remove OneDrive
+                docs: |-
+                    Microsoft OneDrive (formerly SkyDrive) is a file hosting service operated by Microsoft [1].
+                    First launched in August 2007, it enables registered users to share and synchronize their files [1].
 
-                Data stored on OneDrive is subject to monitoring by Microsoft [2].
-                There's been reports of Microsoft accessing and altering your personal files when syncing on OneDrive [3] [4].
+                    Data stored on OneDrive is subject to monitoring by Microsoft [2].
+                    There's been reports of Microsoft accessing and altering your personal files when syncing on OneDrive [3] [4].
 
-                Uninstalling OneDrive is recommended by Microsoft to optimize Windows VDIs [5].
+                    Uninstalling OneDrive is recommended by Microsoft to optimize Windows VDIs [5].
 
-                [1]: https://en.wikipedia.org/wiki/OneDrive "OneDrive | Wikipedia"
-                [2]: https://en.wikipedia.org/w/index.php?title=OneDrive&oldid=1111615560#Privacy_concerns "OneDrive | Privacy concerns | Wikipedia"
-                [3]: https://web.archive.org/web/20191002180755/https://www.intralinks.com/blog/2014/04/microsoft-onedrive-business-can-alter-files-syncs   "Microsoft OneDrive for Business can Alter Your Files as It Syncs | Intralinks"
-                [4]: https://thehackernews.com/2014/04/microsoft-onedrive-secretly-modifies.html "Microsoft OneDrive Secretly Modifies your BackUp Files | thehackernews.com"
-                [5]: https://web.archive.org/web/20231002162808/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#remove-onedrive-components "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn"
-              children:
-                -
-                    name: Kill OneDrive process
-                    recommend: strict
-                    docs: |-
-                        It stops the execution of OneDrive.
-                        Main OneDrive process is `OneDrive.exe` and it is installed in `<local-app-data>\Microsoft\OneDrive\OneDrive.exe` [1] [2] [3] [4].
+                    [1]: https://en.wikipedia.org/wiki/OneDrive "OneDrive | Wikipedia"
+                    [2]: https://en.wikipedia.org/w/index.php?title=OneDrive&oldid=1111615560#Privacy_concerns "OneDrive | Privacy concerns | Wikipedia"
+                    [3]: https://web.archive.org/web/20191002180755/https://www.intralinks.com/blog/2014/04/microsoft-onedrive-business-can-alter-files-syncs   "Microsoft OneDrive for Business can Alter Your Files as It Syncs | Intralinks"
+                    [4]: https://thehackernews.com/2014/04/microsoft-onedrive-secretly-modifies.html "Microsoft OneDrive Secretly Modifies your BackUp Files | thehackernews.com"
+                    [5]: https://web.archive.org/web/20231002162808/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#remove-onedrive-components "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn"
+                children:
+                    -
+                        name: Kill OneDrive process
+                        recommend: strict
+                        docs: |-
+                            It stops the execution of OneDrive.
+                            Main OneDrive process is `OneDrive.exe` and it is installed in `<local-app-data>\Microsoft\OneDrive\OneDrive.exe` [1] [2] [3] [4].
 
-                        [1]: https://answers.microsoft.com/en-us/windows/forum/all/onedrive-wont-sync-and-wont-uninstall-so-i-can-re/6182d0a5-e7ea-46bb-a058-c0a4fd5e299a "Onedrive wont sync and wont uninstall so I can re-install the latest - Microsoft Community | answers.microsoft.com"
-                        [2]: https://social.technet.microsoft.com/Forums/scriptcenter/en-US/9bd33f03-62dd-4c4f-9d29-970c1016f2f9/better-onedrive-detection-method?forum=configmanagerapps "Better OneDrive detection method | social.technet.microsoft.com"
-                        [3]: https://social.msdn.microsoft.com/Forums/en-US/072e3577-d0ff-4950-9e0b-40b037853881/starting-and-stopping-sharepoint-library-sync-with-onedrive?forum=sharepointdevelopmentprevious "Starting and stopping SharePoint library sync with OneDrive | social.msdn.microsoft.com"
-                        [4]: https://learn.microsoft.com/en-us/answers/questions/473995/onedrive-was-previously-disabled-and-now-i-can39t.html "OneDrive was previously disabled and now I can't enable it with GPO - Microsoft Q&A | learn.microsoft.com"
-                    call:
-                        function: TerminateRunningProcess
-                        parameters:
-                            executableNameWithExtension: OneDrive.exe
-                            revertExecutablePath: '%LOCALAPPDATA%\Microsoft\OneDrive\OneDrive.exe'
-                            revertExecutableArgs: /background
-                -
-                    name: Remove OneDrive from startup
-                    recommend: strict
-                    docs: |-
-                        OneDrive starts on every boot in both Windows 10 and 11.
-                        It's started through `OneDrive` `REG_SZ` entry in `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` [1].
-                        The startup command is `"<local-app-data>\Microsoft\OneDrive\OneDrive.exe" /background` [1].
+                            [1]: https://answers.microsoft.com/en-us/windows/forum/all/onedrive-wont-sync-and-wont-uninstall-so-i-can-re/6182d0a5-e7ea-46bb-a058-c0a4fd5e299a "Onedrive wont sync and wont uninstall so I can re-install the latest - Microsoft Community | answers.microsoft.com"
+                            [2]: https://social.technet.microsoft.com/Forums/scriptcenter/en-US/9bd33f03-62dd-4c4f-9d29-970c1016f2f9/better-onedrive-detection-method?forum=configmanagerapps "Better OneDrive detection method | social.technet.microsoft.com"
+                            [3]: https://social.msdn.microsoft.com/Forums/en-US/072e3577-d0ff-4950-9e0b-40b037853881/starting-and-stopping-sharepoint-library-sync-with-onedrive?forum=sharepointdevelopmentprevious "Starting and stopping SharePoint library sync with OneDrive | social.msdn.microsoft.com"
+                            [4]: https://learn.microsoft.com/en-us/answers/questions/473995/onedrive-was-previously-disabled-and-now-i-can39t.html "OneDrive was previously disabled and now I can't enable it with GPO - Microsoft Q&A | learn.microsoft.com"
+                        call:
+                            function: TerminateRunningProcess
+                            parameters:
+                                executableNameWithExtension: OneDrive.exe
+                                revertExecutablePath: '%LOCALAPPDATA%\Microsoft\OneDrive\OneDrive.exe'
+                                revertExecutableArgs: /background
+                    -
+                        name: Remove OneDrive from startup
+                        recommend: strict
+                        docs: |-
+                            OneDrive starts on every boot in both Windows 10 and 11.
+                            It's started through `OneDrive` `REG_SZ` entry in `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` [1].
+                            The startup command is `"<local-app-data>\Microsoft\OneDrive\OneDrive.exe" /background` [1].
 
-                        [1]: https://techcommunity.microsoft.com/t5/azure-virtual-desktop/start-onedrive-when-using-a-remoteapp-in-wvd/m-p/899331 "Re: Start OneDrive when using a RemoteApp in WVD - Page 2 - Microsoft Tech Community | techcommunity.microsoft.com"
-                    code: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "OneDrive" /f 2>nul
-                    revertCode: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "OneDrive" /t REG_SZ /d "\"%LOCALAPPDATA%\Microsoft\OneDrive\OneDrive.exe\" /background" /f
-                -
-                    name: Remove OneDrive through official installer
-                    docs: |-
-                        This script will call official Microsoft uninstaller that will uninstall the application but residual files will be left.
-                        You won't lose data by uninstalling OneDrive from computer because they will be stored in cloud [1].
+                            [1]: https://techcommunity.microsoft.com/t5/azure-virtual-desktop/start-onedrive-when-using-a-remoteapp-in-wvd/m-p/899331 "Re: Start OneDrive when using a RemoteApp in WVD - Page 2 - Microsoft Tech Community | techcommunity.microsoft.com"
+                        code: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "OneDrive" /f 2>nul
+                        revertCode: reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "OneDrive" /t REG_SZ /d "\"%LOCALAPPDATA%\Microsoft\OneDrive\OneDrive.exe\" /background" /f
+                    -
+                        name: Remove OneDrive through official installer
+                        docs: |-
+                            This script will call official Microsoft uninstaller that will uninstall the application but residual files will be left.
+                            You won't lose data by uninstalling OneDrive from computer because they will be stored in cloud [1].
 
-                        Running OneDrive client setup package (`OneDriveSetup.exe`) with the `/uninstall` command line switch uninstalls OneDrive [2] [3].
-                        On Windows 10, the setup package is found on different folders (`System32` or `SysWOW64`) based on the CPU architecture [4].
-                        On Windows 11, the setup package is always inside `System32` regarding of the CPU architecture.
+                            Running OneDrive client setup package (`OneDriveSetup.exe`) with the `/uninstall` command line switch uninstalls OneDrive [2] [3].
+                            On Windows 10, the setup package is found on different folders (`System32` or `SysWOW64`) based on the CPU architecture [4].
+                            On Windows 11, the setup package is always inside `System32` regarding of the CPU architecture.
 
-                        Uninstalling OneDrive is recommended by Microsoft to optimize Windows VDIs [5].
+                            Uninstalling OneDrive is recommended by Microsoft to optimize Windows VDIs [5].
 
-                        [1]: https://support.microsoft.com/en-us/office/turn-off-disable-or-uninstall-onedrive-f32a17ce-3336-40fe-9c38-6efb09f944b0 "Turn off, disable, or uninstall OneDrive | support.microsoft.com"
-                        [2]: https://web.archive.org/web/20231002162805/https://learn.microsoft.com/en-us/sharepoint/troubleshoot/installation-and-setup/how-to-block-onedrive-from-being-advertised-after-install-office-2016#method-2-uninstall-onedriveexe "How to block OneDrive.exe from being advertised after you install Office 2016 - SharePoint | Microsoft Learn"
-                        [3]: https://learn.microsoft.com/en-us/sharepoint/troubleshoot/lists-and-libraries/cannot-open-onedrive-on-images-using-sysprep#how-to-correctly-deploy-onedrive-via-sysprep "Can't open OneDrive on images using Sysprep - SharePoint | Microsoft Learn"
-                        [4]: https://answers.microsoft.com/en-us/windows/forum/all/onedrive-on-windows-11-does-not-appear-in-file/250c679b-9d02-410f-8c8f-41cca112ccfa "OneDrive on Windows 11 - Does Not Appear in File Explorer - Microsoft Community | answers.microsoft.com"
-                        [5]: https://web.archive.org/web/20231002162808/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#remove-onedrive-components "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn"
-                    recommend: strict
-                    code: |-
-                        if exist "%SYSTEMROOT%\System32\OneDriveSetup.exe" (
-                            "%SYSTEMROOT%\System32\OneDriveSetup.exe" /uninstall
-                        ) else (
-                            if exist "%SYSTEMROOT%\SysWOW64\OneDriveSetup.exe" (
-                                "%SYSTEMROOT%\SysWOW64\OneDriveSetup.exe" /uninstall
+                            [1]: https://support.microsoft.com/en-us/office/turn-off-disable-or-uninstall-onedrive-f32a17ce-3336-40fe-9c38-6efb09f944b0 "Turn off, disable, or uninstall OneDrive | support.microsoft.com"
+                            [2]: https://web.archive.org/web/20231002162805/https://learn.microsoft.com/en-us/sharepoint/troubleshoot/installation-and-setup/how-to-block-onedrive-from-being-advertised-after-install-office-2016#method-2-uninstall-onedriveexe "How to block OneDrive.exe from being advertised after you install Office 2016 - SharePoint | Microsoft Learn"
+                            [3]: https://learn.microsoft.com/en-us/sharepoint/troubleshoot/lists-and-libraries/cannot-open-onedrive-on-images-using-sysprep#how-to-correctly-deploy-onedrive-via-sysprep "Can't open OneDrive on images using Sysprep - SharePoint | Microsoft Learn"
+                            [4]: https://answers.microsoft.com/en-us/windows/forum/all/onedrive-on-windows-11-does-not-appear-in-file/250c679b-9d02-410f-8c8f-41cca112ccfa "OneDrive on Windows 11 - Does Not Appear in File Explorer - Microsoft Community | answers.microsoft.com"
+                            [5]: https://web.archive.org/web/20231002162808/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#remove-onedrive-components "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn"
+                        recommend: strict
+                        code: |-
+                            if exist "%SYSTEMROOT%\System32\OneDriveSetup.exe" (
+                                "%SYSTEMROOT%\System32\OneDriveSetup.exe" /uninstall
                             ) else (
-                                echo Failed to uninstall, uninstaller could not be found. 1>&2
+                                if exist "%SYSTEMROOT%\SysWOW64\OneDriveSetup.exe" (
+                                    "%SYSTEMROOT%\SysWOW64\OneDriveSetup.exe" /uninstall
+                                ) else (
+                                    echo Failed to uninstall, uninstaller could not be found. 1>&2
+                                )
                             )
-                        )
-                    revertCode: |-
-                        if exist "%SYSTEMROOT%\System32\OneDriveSetup.exe" (
-                            "%SYSTEMROOT%\System32\OneDriveSetup.exe" /silent
-                        ) else (
-                            if exist "%SYSTEMROOT%\SysWOW64\OneDriveSetup.exe" (
-                                "%SYSTEMROOT%\SysWOW64\OneDriveSetup.exe" /silent
+                        revertCode: |-
+                            if exist "%SYSTEMROOT%\System32\OneDriveSetup.exe" (
+                                "%SYSTEMROOT%\System32\OneDriveSetup.exe" /silent
                             ) else (
-                                echo Failed to install, installer could not be found. 1>&2
+                                if exist "%SYSTEMROOT%\SysWOW64\OneDriveSetup.exe" (
+                                    "%SYSTEMROOT%\SysWOW64\OneDriveSetup.exe" /silent
+                                ) else (
+                                    echo Failed to install, installer could not be found. 1>&2
+                                )
                             )
-                        )
-                -
-                    name: Remove OneDrive residual files
-                    recommend: strict
-                    docs: |-
-                        This script cleans OneDrive files such as installation directories, application data,
-                        and temporary files and cache.
+                    -
+                        name: Remove OneDrive user data and synced folders
+                        recommend: strict
+                        docs: |-
+                            This script deletes the OneDrive directory and all stored data from your profile.
 
-                        - `C:\OneDriveCache`: Temporary cache location [1].
-                        - `C:\ProgramData\Microsoft OneDrive`: Program data, used during setup [2] [3].
-                        - `C:\Users\<username>\OneDrive`: OneDrive root directory [4].
-                        - `C:\Users\<username>\AppData\Local\Microsoft\OneDrive`: OneDrive installation directory [5].
+                            OneDrive usually saves your data in the `%USERPROFILE%\OneDrive` directory [1] [2], also known as the *OneDrive folder*
+                            or *OneDrive root directory* [2].
+                            By default, OneDrive stores user data in folder called *OneDrive* [1].
+                            For multiple accounts, files may be in *OneDrive - Personal* or *OneDrive - CompanyName* folders [1] [3].
 
-                        The folders are reported by the community [1]. According to the tests:
+                            OneDrive can synchronize default Windows folders like *Documents*, *Pictures*, *Music*, and *Desktop* [4] [5] [6] [7].
+                            These folders are known as *user shell folders* [6] or *Windows system folders* [7].
+                            Upon synchronization, these folders are moved within the OneDrive user data directory [5] [8].
 
-                        | Directory | Windows 11 (since 22H2) | Windows 10 (since 22H2) |
-                        | --------- |:-----------------------:|:-----------------------:|
-                        | `%SYSTEMDRIVE%C:\OneDriveCache` | ❌ Missing | ❌ Missing |
-                        | `%PROGRAMDATA%\Microsoft OneDrive` | ✅ Exists | ✅ Exists |
-                        | `%LOCALAPPDATA%\Microsoft\OneDrive` | ✅ Exists | ✅ Exists |
-                        | `%USERPROFILE%\OneDrive` | ✅ Exists | ✅ Exists |
+                            Users may enable this synchronization unknowingly during Windows setup by choosing *Save files to OneDrive* option [9] [10].
+                            Alternatively, synchronization can be enabled later through OneDrive settings [4]. OneDrive
+                            may also prompt users to *set up protection of important folders* [11], a feature also referred to as *protect your folders* or *Known
+                            Folder Move (KFM)* [11]. Additionally, an organization may move files of their managed computers to OneDrive using methods such as the
+                            *Windows Folder Redirection Group Policy* [8].
 
-                        [1]: https://social.microsoft.com/Forums/en-US/53263a51-856f-4e64-bc0e-a689d4cc5a8b/release-notes-for-1907-build-29711727413?forum=FSLogix "Release Notes for 1907 - build 2.9.7117.27413 | social.microsoft.com"
-                        [2]: https://techcommunity.microsoft.com/t5/sharepoint/onedrive-setup-fails-to-complete/m-p/2072446 "OneDrive setup fails to complete - Microsoft Tech Community"
-                        [3]: https://answers.microsoft.com/en-us/msoffice/forum/all/why-does-onedrive-act-as-ransomware/288e5940-b92b-493c-91ff-dafd26279bee "Why does OneDrive act as Ransomware? - Microsoft Community"
-                        [4]: https://techcommunity.microsoft.com/t5/onedrive-for-business/change-onedrive-installation-location/m-p/225064 "Change OneDrive installation location - Microsoft Tech Community | techcommunity.microsoft.com"
-                        [5]: https://learn.microsoft.com/en-us/sharepoint/install/configure-syncing-with-the-onedrive-sync-app "Configure syncing with the new OneDrive sync app - SharePoint Server | Microsoft Learn | learn.microsoft.com"
-                    call:
-                        -
+                            This script contains safeguards to protect against unintended consequences:
+
+                            1. **System Integrity Protection**:
+
+                               The script verifies if any user shell folders are linked to the OneDrive directory.
+                               This is crucial as redirecting these folders to OneDrive can cause system integrity issues.
+                               For instance, if the *Desktop* folder is redirected to OneDrive, deleting the OneDrive folder could make the *Desktop* inaccessible.
+                               The script stops and warns if any user shell folders are found within OneDrive.
+
+                               > 💡 Move these folders back to their original locations using the
+                               > `HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders` registry key [6] before proceeding.
+
+                            2. **Data Loss Prevention**:
+
+                               The script avoids deleting files or non-empty directories to prevent accidental data loss.
+
+                               > 💡 Manually empty these directories before running the script or opt to delete them afterward if needed.
+
+                            The OneDrive folder has been confirmed to exist in modern versions of Windows, tested since Windows 11 (since 22H2)
+                            and Windows 10 (since 22H2).
+
+                            [1]: https://web.archive.org/web/20231025220524/https://support.microsoft.com/en-us/office/sync-onedrive-files-and-folders-3b8246e0-cc3c-4ae7-b4e1-4b4b37d27f68 "Sync OneDrive files and folders - Microsoft Support | support.microsoft.com"
+                            [2]: https://web.archive.org/web/20220812205500/https://admx.help/?Category=OneDrive&Policy=Microsoft.Policies.OneDriveNGSC::DefaultRootDir "Set the default location for the OneDrive folder | admx.help"
+                            [3]: https://web.archive.org/web/20231025220530/https://support.microsoft.com/en-us/office/sync-files-with-onedrive-in-windows-615391c4-2bd3-4aae-a42a-858262e42a49 "Sync files with OneDrive in Windows | support.microsoft.com"
+                            [4]: https://web.archive.org/web/20231025220541/https://support.microsoft.com/en-us/office/choose-which-onedrive-folders-to-sync-to-your-computer-98b8b011-8b94-419b-aa95-a14ff2415e85 "Choose which OneDrive folders to sync to your computer - Microsoft Support | support.microsoft.com"
+                            [5]: https://web.archive.org/web/20240317200014/https://support.microsoft.com/en-us/office/back-up-your-folders-with-onedrive-d61a7930-a6fb-4b95-b28a-6552e77c3057 "Back up your folders with OneDrive - Microsoft Support | support.microsoft.com"
+                            [6]: https://web.archive.org/web/20231025220843/https://support.microsoft.com/en-us/topic/how-to-redirect-user-shell-folders-to-a-specified-path-by-using-profile-maker-ed6289ae-1f9c-b874-4e8c-20d23ea65b2e "How to redirect user shell folders to a specified path by using Profile Maker - Microsoft Support | support.microsoft.com"
+                            [7]: https://web.archive.org/web/20231025220733/https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/controlled-folders?view=o365-worldwide#windows-system-folders-are-protected-by-default "Protect important folders from ransomware from encrypting your files with controlled folder access | Microsoft Learn | learn.microsoft.com"
+                            [8]: https://web.archive.org/web/20231025220852/https://learn.microsoft.com/en-us/sharepoint/redirect-known-folders "Redirect and move Windows known folders to OneDrive - SharePoint in Microsoft 365 | Microsoft Learn | learn.microsoft.com"
+                            [9]: https://web.archive.org/web/20231025220728/https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/customize-oobe-in-windows-11 "Customize the Out of Box experience (OOBE) | Microsoft Learn | learn.microsoft.com"
+                            [10]: https://web.archive.org/web/20231025220741/https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/customize-oobe "Customize OOBE | Microsoft Learn | learn.microsoft.com"
+                            [11]: https://web.archive.org/web/20231025220711/https://techcommunity.microsoft.com/t5/microsoft-onedrive-blog/migrate-your-files-to-onedrive-easily-with-known-folder-move/ba-p/207076 "Migrate Your Files to OneDrive Easily with Known Folder Move - Microsoft Community Hub | techcommunity.microsoft.com"
+                        call:
                             function: DeleteDirectory
                             parameters:
-                                directoryGlob: '%USERPROFILE%\OneDrive'
-                        -
-                            function: DeleteDirectory
-                            parameters:
-                                directoryGlob: '%LOCALAPPDATA%\Microsoft\OneDrive'
-                                grantPermissions: true
-                        -
-                            function: DeleteDirectory
-                            parameters:
-                                directoryGlob: '%PROGRAMDATA%\Microsoft OneDrive'
-                        -
-                            function: DeleteDirectory
-                            parameters:
-                                directoryGlob: '%SYSTEMDRIVE%\OneDriveTemp'
-                -
-                    name: Remove OneDrive shortcuts
-                    recommend: strict
-                    docs: |-
-                        This script ensures the removal of all OneDrive shortcuts from your system, even after uninstallation or cleanup.
-
-                        Erasing these shortcuts improves the security and privacy of your computer system, lessening the potential access points for
-                        unwanted entities.
-
-                        Moreover, the removal of unused shortcuts results in a more organized and efficient system, enhancing your user experience by
-                        preventing any confusion from dead shortcuts.
-
-                        Shortcuts that link to OneDrive are stored in various locations, such as:
-
-                        - `Start Menu\Programs\Microsoft OneDrive.lnk`, `Start Menu\Programs\OneDrive.lnk`, `Links\OneDrive.lnk` [1],
-                        - `ServiceProfiles\LocalService` and `ServiceProfiles\NetworkService` [1]
-
-                        Below are the tested shortcut file locations on default installation (since Windows 10 22H2 and Windows 11 22H2):
-
-                        | Path | Windows 11 | Windows 10 |
-                        | ---- |:----------:|:----------:|
-                        | `%APPDATA%\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk` | ✅ Exists | ✅ Exists |
-                        | `%USERPROFILE%\Links\OneDrive.lnk` | ❌ Missing | ❌ Missing |
-                        | `%WINDIR%\ServiceProfiles\LocalService\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk` | ❌ Missing | ✅ Exists |
-                        | `%WINDIR%\ServiceProfiles\NetworkService\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk` | ❌ Missing | ✅ Exists |
-
-                        In Windows 10 and higher, additional steps are necessary to delete the OneDrive icon from the navigation pane in Windows
-                        Explorer [2], which is executed by this script.
-
-                        [1]: https://web.archive.org/web/20231002162808/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#remove-onedrive-components "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn"
-                        [2]: https://web.archive.org/web/20231002162805/https://learn.microsoft.com/en-us/sharepoint/troubleshoot/installation-and-setup/how-to-block-onedrive-from-being-advertised-after-install-office-2016 "How to block OneDrive.exe from being advertised after you install Office 2016 - SharePoint | Microsoft Learn"
-                    call:
-                        -
-                            function: RemoveShortcutFiles
-                            parameters:
-                                targetFile: C:\Users\undergroundwires\AppData\Local\Microsoft\OneDrive\OneDrive.exe
-                                shortcutItems: |-
-                                    @{ Revert = $True;  Path = "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"; }
-                                    @{ Revert = $False; Path = "$env:USERPROFILE\Links\OneDrive.lnk"; }
-                                    @{ Revert = $False; Path = "$env:WINDIR\ServiceProfiles\LocalService\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"; }
-                                    @{ Revert = $False; Path = "$env:WINDIR\ServiceProfiles\NetworkService\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"; }
-                        -
-                            function: RunPowerShell
-                            parameters:
-                                code: |-
-                                    Set-Location "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace"
-                                    Get-ChildItem | ForEach-Object {Get-ItemProperty $_.pspath} | ForEach-Object {
-                                        $leftnavNodeName = $_."(default)";
-                                    if (($leftnavNodeName -eq "OneDrive") -Or ($leftnavNodeName -eq "OneDrive - Personal")) {
-                                            if (Test-Path $_.pspath) {
-                                                Write-Host "Deleting $($_.pspath)."
-                                                Remove-Item $_.pspath;
+                                directoryGlob: '%USERPROFILE%\OneDrive*'
+                                # System Integrity Guard: Verifying user shell folders
+                                #   This section checks if any user shell folders are set to the OneDrive directory.
+                                #   It ensures the system's integrity by verifying the registry path and entries for user shell folders.
+                                #   If any user shell folder is found in OneDrive, a warning is issued, and the script stops to avoid system disruptions.
+                                beforeIteration: |-
+                                    $oneDriveUserFolderPattern = [System.Environment]::ExpandEnvironmentVariables('%USERPROFILE%\OneDrive') + '*'
+                                    while ($true) { # Loop to control the execution of the subsequent code
+                                        try {
+                                            $userShellFoldersRegistryPath = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders'
+                                            if (-not (Test-Path $userShellFoldersRegistryPath)) {
+                                                Write-Output "Skipping verification: The registry path for user shell folders is missing: `"$userShellFoldersRegistryPath`""
+                                                break;
                                             }
+                                            $userShellFoldersRegistryKeys = Get-ItemProperty -Path $userShellFoldersRegistryPath
+                                            $userShellFoldersEntries = @($userShellFoldersRegistryKeys.PSObject.Properties)
+                                            if ($userShellFoldersEntries.Count -eq 0) {
+                                                Write-Warning "Skipping verification: No entries found for user shell folders in the registry: `"$userShellFoldersRegistryPath`""
+                                                break;
+                                            }
+                                            Write-Output "Initiating verification: Checking if any of the ${userShellFoldersEntries.Count} user shell folders point to the OneDrive user folder pattern ($oneDriveUserFolderPattern)."
+                                            $userShellFoldersInOneDrive = @()
+                                            foreach ($registryEntry in $userShellFoldersEntries) {
+                                                $userShellFolderName = $registryEntry.Name
+                                                $userShellFolderPath = $registryEntry.Value
+                                                if (!$userShellFolderPath) {
+                                                    Write-Output "Skipping: The user shell folder `"$userShellFolderName`" does not have a defined path."
+                                                    continue
+                                                }
+                                                $expandedUserShellFolderPath = [System.Environment]::ExpandEnvironmentVariables($userShellFolderPath)
+                                                if(-not ($expandedUserShellFolderPath -like $oneDriveUserFolderPattern)) {
+                                                    continue
+                                                }
+                                                $userShellFoldersInOneDrive += [PSCustomObject]@{ Name = $userShellFolderName;  Path = $expandedUserShellFolderPath }
+                                            }
+                                            if ($userShellFoldersInOneDrive.Count -gt 0) {
+                                                $warningMessage = 'To keep your computer running smoothly, OneDrive user folder will not be deleted.'
+                                                $warningMessage += "`nIt's being used by the OS as a user shell directory for the following folders:"
+                                                $userShellFoldersInOneDrive.ForEach({
+                                                    $warningMessage += "`n- $($_.Name): $($_.Path)"
+                                                })
+                                                Write-Warning $warningMessage
+                                                exit 0
+                                            }
+                                            Write-Output "Successfully verified that none of the $($userShellFoldersEntries.Count) user shell folders point to the OneDrive user folder pattern."
+                                            break;
+                                        } catch {
+                                            Write-Warning "An error occurred during verification of user shell folders. Skipping prevent potential issues. Error: $($_.Exception.Message)"
+                                            exit 0
                                         }
                                     }
-                -
-                    name: Disable OneDrive usage
-                    recommend: strict
-                    docs: |-
-                        This script prevents [1]:
-
-                        - Keeping OneDrive files in sync with the cloud.
-                        - Users from automatically uploading photos and videos from the camera roll folder.
-                        - Users from accessing OneDrive from the OneDrive app and file picker.
-                        - Windows Store apps from accessing OneDrive using the WinRT API.
-                        - OneDrive from appearing in the navigation pane in File Explorer.
-
-                        Setting `DisableFileSyncNGSC` group policy prevents OneDrive from working on both Windows 10 and 11 [1] [2].
-                        Windows 8 uses older `DisableFileSync` key [3].
-
-                        These policies do not exist by default in clean installations.
-
-                        [1]: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.OneDrive::PreventOnedriveFileSync "Prevent the usage of OneDrive for file storage | admx.help"
-                        [2]: https://support.microsoft.com/en-us/office/onedrive-won-t-start-0c158fa6-0cd8-4373-98c8-9179e24f10f2 "OneDrive won't start | support.microsoft.com"
-                        [3]: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.OneDrive::PreventOnedriveFileSyncForBlue "Prevent the usage of OneDrive for file storage on Windows 8.1 | admx.help"
-                    code: |-
-                        reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /t REG_DWORD /v "DisableFileSyncNGSC" /d 1 /f
-                        reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /t REG_DWORD /v "DisableFileSync" /d 1 /f
-                    revertCode: |-
-                        reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableFileSyncNGSC" /f 2>nul
-                        reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableFileSync" /f 2>nul
-                -
-                    name: Disable automatic OneDrive installation
-                    docs: |-
-                        Windows 10 comes with `OneDriveSetup` entry in startup for automatic reinstallations even though
-                        OneDrive is uninstalled. This entry is missing in Windows 11 by default.
-
-                        `OneDriveSetup` is registered to reinstall OneDrive and can be removed using registry [1],
-                        as recommended by Microsoft for optimizing Windows VDIs [1].
-
-                        [1]: https://web.archive.org/web/20231002162808/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#remove-onedrive-components "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn"
-                    recommend: strict
-                    call:
-                        function: RunPowerShell
-                        parameters:
-                            code: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "OneDriveSetup" /f 2>$null
-                            revertCode: |-
-                                function Test-IsWindows11 { ($osVersion.Major -gt 10) -or (($osVersion.Major -eq 10) -and ($osVersion.Build -ge 22000)) }
-                                if (Test-IsWindows11) {
-                                    Write-Host 'Skipping, no action needed on Windows 11.'
-                                } else {
-                                    if([Environment]::Is64BitOperatingSystem) {
-                                        reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /V "OneDriveSetup" /t REG_SZ /d "%SYSTEMROOT%\SysWOW64\OneDriveSetup.exe /silent" /f
-                                    } else {
-                                        reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /V "OneDriveSetup" /t REG_SZ /d "%SYSTEMROOT%\System32\OneDriveSetup.exe /silent" /f
+                                # Data Loss Prevention Guard: Checking directory contents
+                                #   This guard ensures that no file or non-empty directory is accidentally deleted.
+                                #   It checks each path; if it's a file or a non-empty directory, the script skips deletion for that path.
+                                #   This step is designed to prevent unintended data loss during script execution.
+                                duringIteration: |-
+                                    try {
+                                        if (Test-Path -Path $path -PathType Leaf) {
+                                            Write-Warning "Retaining file `"$path`" to safeguard your data."
+                                            continue;
+                                        } elseif (Test-Path -Path $path -PathType Container) {
+                                            if ((Get-ChildItem "$path" -Recurse | Measure-Object).Count -gt 0) {
+                                                Write-Warning "Preserving non-empty folder `"$path`" to protect your files."
+                                                continue;
+                                            }
+                                        }
+                                    } catch {
+                                        Write-Warning "An error occurred while processing `"$path`". Skipping to protect your data. Error: $($_.Exception.Message)"
+                                        continue;
                                     }
-                                }
-                -
-                    name: Remove OneDrive folder from File Explorer
-                    recommend: strict
-                    docs: |-
-                        File Explorer shows OneDrive to allow you to access files stored in OneDrive (stored online and locally cached) [1].
+                    -
+                        name: Remove OneDrive installation files and cache
+                        recommend: strict
+                        docs: |-
+                            This script removes OneDrive installation directories, application data, temporary files, and cache.
 
-                        [CLSID](https://learn.microsoft.com/en-us/windows/win32/com/clsid-key-hklm) for OneDrive is `018D5C66-4533-4307-9B53-224DE2ED1FE6` [2] for
-                        both Windows 10 and 11. Changing pinning option for this key removed OneDrive from navigation file in File Explorer [2].
+                            - `C:\OneDriveCache`: A location for temporary cache files [1].
+                            - `C:\ProgramData\Microsoft OneDrive`: Stores data used in setting up OneDrive [2] [3].
+                            - `C:\Users\<username>\AppData\Local\Microsoft\OneDrive`: OneDrive installation directory [4].
 
-                        This CLSID includes `System.IsPinnedToNameSpaceTree` as value as `1` after clean installation in both Windows 10 and Windows 11.
+                            Identified by the community [1] and confirmed through testing, these folders include:
 
-                        [1]: https://support.microsoft.com/en-us/office/sync-files-with-onedrive-in-windows-615391c4-2bd3-4aae-a42a-858262e42a49 "Sync files with OneDrive in Windows | support.microsoft.com"
-                        [2]: https://answers.microsoft.com/en-us/windows/forum/all/remove-onedrive-from-file-explorer-navigation-pane/38ac7524-2b35-4ffc-baab-40ad61dc5d79 "Remove OneDrive from File Explorer navigation pane - Microsoft Community | answers.microsoft.com"
-                    code: |-
-                        reg add "HKCR\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v "System.IsPinnedToNameSpaceTree" /d "0" /t REG_DWORD /f
-                        reg add "HKCR\Wow6432Node\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v "System.IsPinnedToNameSpaceTree" /d "0" /t REG_DWORD /f
-                    revertCode: |-
-                        reg add "HKCR\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v "System.IsPinnedToNameSpaceTree" /d "1" /t REG_DWORD /f
-                        reg add "HKCR\Wow6432Node\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v "System.IsPinnedToNameSpaceTree" /d "1" /t REG_DWORD /f
-                -
-                    name: Disable OneDrive scheduled tasks
-                    recommend: strict
-                    docs: |-
-                        This script disables the scheduled tasks associated with Microsoft OneDrive that typically
-                        run maintenance activities such as auto-updates [1] [2] [3] and data collection [2].
-                        Disabling these tasks impacts OneDrive's automatic background update process [1] [2] [3].
+                            | Directory | Windows 11 (since 22H2) | Windows 10 (since 22H2) |
+                            | --------- |:-----------------------:|:-----------------------:|
+                            | `%SYSTEMDRIVE%\OneDriveCache` | ❌ Missing | ❌ Missing |
+                            | `%PROGRAMDATA%\Microsoft OneDrive` | ✅ Exists | ✅ Exists |
+                            | `%LOCALAPPDATA%\Microsoft\OneDrive` | ✅ Exists | ✅ Exists |
 
-                        By default, Windows 10 (since 22H2) and Windows 11 (since 22H2) include the following tasks:
-                        - `OneDrive Standalone Update Task` [1] [2] [3]
-                        - `OneDrive Reporting Task` [1]
+                            [1]: https://web.archive.org/web/20231206213533/https://social.microsoft.com/Forums/en-US/53263a51-856f-4e64-bc0e-a689d4cc5a8b/release-notes-for-1907-build-29711727413?forum=FSLogix "Release Notes for 1907 - build 2.9.7117.27413 | social.microsoft.com"
+                            [2]: https://web.archive.org/web/20231231134443/https://techcommunity.microsoft.com/t5/sharepoint/onedrive-setup-fails-to-complete/m-p/2072446 "OneDrive setup fails to complete - Microsoft Tech Community"
+                            [3]: https://web.archive.org/web/20231231134548/https://answers.microsoft.com/en-us/msoffice/forum/all/why-does-onedrive-act-as-ransomware/288e5940-b92b-493c-91ff-dafd26279bee "Why does OneDrive act as Ransomware? - Microsoft Community"
+                            [4]: https://web.archive.org/web/20231231134612/https://learn.microsoft.com/en-us/sharepoint/install/configure-syncing-with-the-onedrive-sync-app "Configure syncing with the new OneDrive sync app - SharePoint Server | Microsoft Learn | learn.microsoft.com"
+                        call:
+                            -
+                                function: DeleteDirectory
+                                parameters:
+                                    directoryGlob: '%LOCALAPPDATA%\Microsoft\OneDrive'
+                                    grantPermissions: true
+                            -
+                                function: DeleteDirectory
+                                parameters:
+                                    directoryGlob: '%PROGRAMDATA%\Microsoft OneDrive'
+                            -
+                                function: DeleteDirectory
+                                parameters:
+                                    directoryGlob: '%SYSTEMDRIVE%\OneDriveTemp'
+                    -
+                        name: Remove OneDrive shortcuts
+                        recommend: strict
+                        docs: |-
+                            This script ensures the removal of all OneDrive shortcuts from your system, even after uninstallation or cleanup.
 
-                        These tasks are enabled by default and lack official documentation from Microsoft. They can be identified
-                        by executing `Get-ScheduledTask 'OneDrive *' | Select -ExpandProperty TaskName` in PowerShell.
-                        These tasks are observed to persist even after OneDrive is uninstalled.
+                            Erasing these shortcuts improves the security and privacy of your computer system, lessening the potential access points for
+                            unwanted entities.
 
-                        The tasks appear with a Security Identifier (SID) unique to each installation [1], following this pattern:
-                        - `OneDrive Reporting Task-S-1-5-21-xxxxxx`
-                        - `OneDrive Standalone Update Task-S-1-5-21-xxxxxx`
+                            Moreover, the removal of unused shortcuts results in a more organized and efficient system, enhancing your user experience by
+                            preventing any confusion from dead shortcuts.
 
-                        The SID, denoted by 'xxxxxx', varies per installation and represents the user account associated with the task.
-                        SID of user accounts always start with `S-1-5-21` [4], the rest of the number chages per user.
-                        To see all user SIDs, you can run `wmic useraccount get Name,sid`.
-                        The SID for your account can be confirmed using `whoami /user`.
-                        A SID which doesn't correspond to any user account may appear.
-                        This is be due to system preparation processes (`sysprep`) that use different SIDs for tasks to prevent duplication [5].
+                            Shortcuts that link to OneDrive are stored in various locations, such as:
 
-                        Disabling tasks with standard user SIDs is straightforward, but attempting to disable tasks with unpredictable SIDs can
-                        result in an error message: `Catastrophic failure (Exception from HRESULT: 0x80000FFF (E_UNEXPECTED))`.
+                            - `Start Menu\Programs\Microsoft OneDrive.lnk`, `Start Menu\Programs\OneDrive.lnk`, `Links\OneDrive.lnk` [1],
+                            - `ServiceProfiles\LocalService` and `ServiceProfiles\NetworkService` [1]
 
-                        Nonetheless, disabling tasks with the correct SID is achievable using the provided script, which locates the full task names
-                        including the SIDs.
+                            Below are the tested shortcut file locations on default installation (since Windows 10 22H2 and Windows 11 22H2):
 
-                        If OneDrive is installed for all users on a machine (which is not the default behavior [6]), an additional task is present:
-                        - `OneDrive Per-Machine Standalone Update` [1] [7].
+                            | Path | Windows 11 | Windows 10 |
+                            | ---- |:----------:|:----------:|
+                            | `%APPDATA%\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk` | ✅ Exists | ✅ Exists |
+                            | `%USERPROFILE%\Links\OneDrive.lnk` | ❌ Missing | ❌ Missing |
+                            | `%WINDIR%\ServiceProfiles\LocalService\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk` | ❌ Missing | ✅ Exists |
+                            | `%WINDIR%\ServiceProfiles\NetworkService\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk` | ❌ Missing | ✅ Exists |
 
-                        Disabling the `OneDrive Standalone Update Task` is recommended by Microsoft to improve system performance and reduce
-                        unnecessary data collection [2].
+                            In Windows 10 and higher, additional steps are necessary to delete the OneDrive icon from the navigation pane in Windows
+                            Explorer [2], which is executed by this script.
 
-                        ### Overview of default task statuses
+                            [1]: https://web.archive.org/web/20231002162808/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#remove-onedrive-components "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn"
+                            [2]: https://web.archive.org/web/20231002162805/https://learn.microsoft.com/en-us/sharepoint/troubleshoot/installation-and-setup/how-to-block-onedrive-from-being-advertised-after-install-office-2016 "How to block OneDrive.exe from being advertised after you install Office 2016 - SharePoint | Microsoft Learn"
+                        call:
+                            -
+                                function: RemoveShortcutFiles
+                                parameters:
+                                    targetFile: C:\Users\undergroundwires\AppData\Local\Microsoft\OneDrive\OneDrive.exe
+                                    shortcutItems: |-
+                                        @{ Revert = $True;  Path = "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"; }
+                                        @{ Revert = $False; Path = "$env:USERPROFILE\Links\OneDrive.lnk"; }
+                                        @{ Revert = $False; Path = "$env:WINDIR\ServiceProfiles\LocalService\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"; }
+                                        @{ Revert = $False; Path = "$env:WINDIR\ServiceProfiles\NetworkService\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"; }
+                            -
+                                function: RunPowerShell
+                                parameters:
+                                    code: |-
+                                        Set-Location "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace"
+                                        Get-ChildItem | ForEach-Object {Get-ItemProperty $_.pspath} | ForEach-Object {
+                                            $leftnavNodeName = $_."(default)";
+                                        if (($leftnavNodeName -eq "OneDrive") -Or ($leftnavNodeName -eq "OneDrive - Personal")) {
+                                                if (Test-Path $_.pspath) {
+                                                    Write-Host "Deleting $($_.pspath)."
+                                                    Remove-Item $_.pspath;
+                                                }
+                                            }
+                                        }
+                    -
+                        name: Disable OneDrive usage
+                        recommend: strict
+                        docs: |-
+                            This script prevents [1]:
 
-                        `\OneDrive Reporting Task-$SID`:
+                            - Keeping OneDrive files in sync with the cloud.
+                            - Users from automatically uploading photos and videos from the camera roll folder.
+                            - Users from accessing OneDrive from the OneDrive app and file picker.
+                            - Windows Store apps from accessing OneDrive using the WinRT API.
+                            - OneDrive from appearing in the navigation pane in File Explorer.
 
-                        | OS Version       | Default status |
-                        | ---------------- | -------------- |
-                        | Windows 10 22H2  | 🟢 Ready |
-                        | Windows 11 22H2  | 🟢 Ready |
+                            Setting `DisableFileSyncNGSC` group policy prevents OneDrive from working on both Windows 10 and 11 [1] [2].
+                            Windows 8 uses older `DisableFileSync` key [3].
 
-                        `\OneDrive Standalone Update Task-$SID`:
+                            These policies do not exist by default in clean installations.
 
-                        | OS Version       | Default status |
-                        | ---------------- | -------------- |
-                        | Windows 10 22H2  | 🟢 Ready |
-                        | Windows 11 22H2  | 🟢 Ready |
+                            [1]: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.OneDrive::PreventOnedriveFileSync "Prevent the usage of OneDrive for file storage | admx.help"
+                            [2]: https://support.microsoft.com/en-us/office/onedrive-won-t-start-0c158fa6-0cd8-4373-98c8-9179e24f10f2 "OneDrive won't start | support.microsoft.com"
+                            [3]: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.OneDrive::PreventOnedriveFileSyncForBlue "Prevent the usage of OneDrive for file storage on Windows 8.1 | admx.help"
+                        code: |-
+                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /t REG_DWORD /v "DisableFileSyncNGSC" /d 1 /f
+                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /t REG_DWORD /v "DisableFileSync" /d 1 /f
+                        revertCode: |-
+                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableFileSyncNGSC" /f 2>nul
+                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\OneDrive" /v "DisableFileSync" /f 2>nul
+                    -
+                        name: Disable automatic OneDrive installation
+                        docs: |-
+                            Windows 10 comes with `OneDriveSetup` entry in startup for automatic reinstallations even though
+                            OneDrive is uninstalled. This entry is missing in Windows 11 by default.
 
-                        `\OneDrive Per-Machine Standalone Update`:
+                            `OneDriveSetup` is registered to reinstall OneDrive and can be removed using registry [1],
+                            as recommended by Microsoft for optimizing Windows VDIs [1].
 
-                        | OS Version       | Default status |
-                        | ---------------- | -------------- |
-                        | Windows 10 22H2  | 🟡 N/A (missing) |
-                        | Windows 11 22H2  | 🟡 N/A (missing) |
-
-                        [1]: https://web.archive.org/web/20231104142218/https://docs.fra.me/blog/2023/08/04/application-optimizations-microsoft-onedrive/#scheduled-tasks "Application Optimization Essentials: Microsoft OneDrive | Frame Platform Documentation | docs.fra.me"
-                        [2]: https://web.archive.org/web/20231104142209/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds-vdi-recommendations-1803 "Optimizing Windows 10, version 1803, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn | learn.microsoft.com"
-                        [3]: https://web.archive.org/web/20231104142301/http://windows.fyicenter.com/5623_OneDrive_Standalone_Update_Task-S-1-_Scheduled_Task_on_Windows_7.html '"OneDrive Standalone Update Task-S-1-..." Scheduled Task on Windows 7 | windows.fyicenter.com'
-                        [4]: https://web.archive.org/web/20231104133125/https://renenyffenegger.ch/notes/Windows/security/SID/index "Windows security identifiers (SID) | renenyffenegger.ch"
-                        [5]: https://en.wikipedia.org/w/index.php?title=Windows_Task_Scheduler&oldid=1086196699#Bugs "Windows Task Scheduler - Wikipedia | wikipedia.rg"
-                        [6]: https://web.archive.org/web/20231104142412/https://learn.microsoft.com/en-us/sharepoint/per-machine-installation "Install the sync app per-machine (Windows) - SharePoint in Microsoft 365 | Microsoft Learn | learn.microsoft.com"
-                        [7]: https://web.archive.org/web/20231104142343/https://docs.citrix.com/en-us/tech-zone/build/deployment-guides/microsoft-365-citrix.html "Deployment Guide: Microsoft 365 with Citrix Virtual Apps and Desktops | docs.citrix.com"
-                    call:
-                        -
-                            function: DisableScheduledTask
+                            [1]: https://web.archive.org/web/20231002162808/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds_vdi-recommendations-1909#remove-onedrive-components "Optimizing Windows 10, version 1909, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn"
+                        recommend: strict
+                        call:
+                            function: RunPowerShell
                             parameters:
-                                # Check: Get-ScheduledTask -TaskPath '\' -TaskName 'OneDrive Reporting Task-*'
-                                taskPathPattern: \
-                                taskNamePattern: OneDrive Reporting Task-*
-                        -
-                            function: DisableScheduledTask
-                            parameters:
-                                # Check: Get-ScheduledTask -TaskPath '\' -TaskName 'OneDrive Standalone Update Task-*'
-                                taskPathPattern: \
-                                taskNamePattern: OneDrive Standalone Update Task-*
-                        -
-                            function: DisableScheduledTask
-                            parameters:
-                                # Check: Get-ScheduledTask -TaskPath '\' -TaskName 'OneDrive Per-Machine Standalone Update'
-                                taskPathPattern: \
-                                taskNamePattern: OneDrive Per-Machine Standalone Update
-                -
-                    name: Clear OneDrive environment variable
-                    recommend: strict
-                    docs: |-
-                        Since Windows 10 1809, Microsoft introduced `%OneDrive%` environment variable to
-                        reach OneDrive through an alias [1]. This variable is redundant when OneDrive is
-                        undesired.
+                                code: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "OneDriveSetup" /f 2>$null
+                                revertCode: |-
+                                    $osVersion = [System.Environment]::OSVersion.Version
+                                    function Test-IsWindows11 { ($osVersion.Major -gt 10) -or (($osVersion.Major -eq 10) -and ($osVersion.Build -ge 22000)) }
+                                    if (Test-IsWindows11) {
+                                        Write-Host 'Skipping, no action needed on Windows 11.'
+                                    } else {
+                                        if([Environment]::Is64BitOperatingSystem) {
+                                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /V "OneDriveSetup" /t REG_SZ /d "%SYSTEMROOT%\SysWOW64\OneDriveSetup.exe /silent" /f
+                                        } else {
+                                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /V "OneDriveSetup" /t REG_SZ /d "%SYSTEMROOT%\System32\OneDriveSetup.exe /silent" /f
+                                        }
+                                    }
+                    -
+                        name: Remove OneDrive folder from File Explorer
+                        recommend: strict
+                        docs: |-
+                            File Explorer shows OneDrive to allow you to access files stored in OneDrive (stored online and locally cached) [1].
 
-                        This script deletes `OneDrive` environment variable [2].
+                            [CLSID](https://learn.microsoft.com/en-us/windows/win32/com/clsid-key-hklm) for OneDrive is `018D5C66-4533-4307-9B53-224DE2ED1FE6` [2] for
+                            both Windows 10 and 11. Changing pinning option for this key removed OneDrive from navigation file in File Explorer [2].
 
-                        `OneDrive` key at `HKCU\Environment` is found on both Windows 10 and Windows 11.
+                            This CLSID includes `System.IsPinnedToNameSpaceTree` as value as `1` after clean installation in both Windows 10 and Windows 11.
 
-                        [1]: https://superuser.com/a/1397495 "Determine OneDrive synchronisation folders - Super User | superuser.com"
-                        [2]: https://stackoverflow.com/questions/46744840/export-registry-value-to-file-and-then-set-a-variable-in-batch "Export registry value to file and then set a variable in Batch - Stack Overflow | stackoverflow.com"
-                    code: reg delete "HKCU\Environment" /v "OneDrive" /f 2>nul
+                            [1]: https://web.archive.org/web/20231025220530/https://support.microsoft.com/en-us/office/sync-files-with-onedrive-in-windows-615391c4-2bd3-4aae-a42a-858262e42a49 "Sync files with OneDrive in Windows | support.microsoft.com"
+                            [2]: https://answers.microsoft.com/en-us/windows/forum/all/remove-onedrive-from-file-explorer-navigation-pane/38ac7524-2b35-4ffc-baab-40ad61dc5d79 "Remove OneDrive from File Explorer navigation pane - Microsoft Community | answers.microsoft.com"
+                        code: |-
+                            reg add "HKCR\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v "System.IsPinnedToNameSpaceTree" /d "0" /t REG_DWORD /f
+                            reg add "HKCR\Wow6432Node\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v "System.IsPinnedToNameSpaceTree" /d "0" /t REG_DWORD /f
+                        revertCode: |-
+                            reg add "HKCR\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v "System.IsPinnedToNameSpaceTree" /d "1" /t REG_DWORD /f
+                            reg add "HKCR\Wow6432Node\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v "System.IsPinnedToNameSpaceTree" /d "1" /t REG_DWORD /f
+                    -
+                        name: Disable OneDrive scheduled tasks
+                        recommend: strict
+                        docs: |-
+                            This script disables the scheduled tasks associated with Microsoft OneDrive that typically
+                            run maintenance activities such as auto-updates [1] [2] [3] and data collection [2].
+                            Disabling these tasks impacts OneDrive's automatic background update process [1] [2] [3].
+
+                            By default, Windows 10 (since 22H2) and Windows 11 (since 22H2) include the following tasks:
+                            - `OneDrive Standalone Update Task` [1] [2] [3]
+                            - `OneDrive Reporting Task` [1]
+
+                            These tasks are enabled by default and lack official documentation from Microsoft. They can be identified
+                            by executing `Get-ScheduledTask 'OneDrive *' | Select -ExpandProperty TaskName` in PowerShell.
+                            These tasks are observed to persist even after OneDrive is uninstalled.
+
+                            The tasks appear with a Security Identifier (SID) unique to each installation [1], following this pattern:
+                            - `OneDrive Reporting Task-S-1-5-21-xxxxxx`
+                            - `OneDrive Standalone Update Task-S-1-5-21-xxxxxx`
+
+                            The SID, denoted by 'xxxxxx', varies per installation and represents the user account associated with the task.
+                            SID of user accounts always start with `S-1-5-21` [4], the rest of the number chages per user.
+                            To see all user SIDs, you can run `wmic useraccount get Name,sid`.
+                            The SID for your account can be confirmed using `whoami /user`.
+                            A SID which doesn't correspond to any user account may appear.
+                            This is be due to system preparation processes (`sysprep`) that use different SIDs for tasks to prevent duplication [5].
+
+                            Disabling tasks with standard user SIDs is straightforward, but attempting to disable tasks with unpredictable SIDs can
+                            result in an error message: `Catastrophic failure (Exception from HRESULT: 0x80000FFF (E_UNEXPECTED))`.
+
+                            Nonetheless, disabling tasks with the correct SID is achievable using the provided script, which locates the full task names
+                            including the SIDs.
+
+                            If OneDrive is installed for all users on a machine (which is not the default behavior [6]), an additional task is present:
+                            - `OneDrive Per-Machine Standalone Update` [1] [7].
+
+                            Disabling the `OneDrive Standalone Update Task` is recommended by Microsoft to improve system performance and reduce
+                            unnecessary data collection [2].
+
+                            ### Overview of default task statuses
+
+                            `\OneDrive Reporting Task-$SID`:
+
+                            | OS Version       | Default status |
+                            | ---------------- | -------------- |
+                            | Windows 10 22H2  | 🟢 Ready |
+                            | Windows 11 22H2  | 🟢 Ready |
+
+                            `\OneDrive Standalone Update Task-$SID`:
+
+                            | OS Version       | Default status |
+                            | ---------------- | -------------- |
+                            | Windows 10 22H2  | 🟢 Ready |
+                            | Windows 11 22H2  | 🟢 Ready |
+
+                            `\OneDrive Per-Machine Standalone Update`:
+
+                            | OS Version       | Default status |
+                            | ---------------- | -------------- |
+                            | Windows 10 22H2  | 🟡 N/A (missing) |
+                            | Windows 11 22H2  | 🟡 N/A (missing) |
+
+                            [1]: https://web.archive.org/web/20231104142218/https://docs.fra.me/blog/2023/08/04/application-optimizations-microsoft-onedrive/#scheduled-tasks "Application Optimization Essentials: Microsoft OneDrive | Frame Platform Documentation | docs.fra.me"
+                            [2]: https://web.archive.org/web/20231104142209/https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/rds-vdi-recommendations-1803 "Optimizing Windows 10, version 1803, for a Virtual Desktop Infrastructure (VDI) role | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20231104142301/http://windows.fyicenter.com/5623_OneDrive_Standalone_Update_Task-S-1-_Scheduled_Task_on_Windows_7.html '"OneDrive Standalone Update Task-S-1-..." Scheduled Task on Windows 7 | windows.fyicenter.com'
+                            [4]: https://web.archive.org/web/20231104133125/https://renenyffenegger.ch/notes/Windows/security/SID/index "Windows security identifiers (SID) | renenyffenegger.ch"
+                            [5]: https://en.wikipedia.org/w/index.php?title=Windows_Task_Scheduler&oldid=1086196699#Bugs "Windows Task Scheduler - Wikipedia | wikipedia.rg"
+                            [6]: https://web.archive.org/web/20231104142412/https://learn.microsoft.com/en-us/sharepoint/per-machine-installation "Install the sync app per-machine (Windows) - SharePoint in Microsoft 365 | Microsoft Learn | learn.microsoft.com"
+                            [7]: https://web.archive.org/web/20231104142343/https://docs.citrix.com/en-us/tech-zone/build/deployment-guides/microsoft-365-citrix.html "Deployment Guide: Microsoft 365 with Citrix Virtual Apps and Desktops | docs.citrix.com"
+                        call:
+                            -
+                                function: DisableScheduledTask
+                                parameters:
+                                    # Check: Get-ScheduledTask -TaskPath '\' -TaskName 'OneDrive Reporting Task-*'
+                                    taskPathPattern: \
+                                    taskNamePattern: OneDrive Reporting Task-*
+                            -
+                                function: DisableScheduledTask
+                                parameters:
+                                    # Check: Get-ScheduledTask -TaskPath '\' -TaskName 'OneDrive Standalone Update Task-*'
+                                    taskPathPattern: \
+                                    taskNamePattern: OneDrive Standalone Update Task-*
+                            -
+                                function: DisableScheduledTask
+                                parameters:
+                                    # Check: Get-ScheduledTask -TaskPath '\' -TaskName 'OneDrive Per-Machine Standalone Update'
+                                    taskPathPattern: \
+                                    taskNamePattern: OneDrive Per-Machine Standalone Update
+                    -
+                        name: Clear OneDrive environment variable
+                        recommend: strict
+                        docs: |-
+                            Since Windows 10 1809, Microsoft introduced `%OneDrive%` environment variable to
+                            reach OneDrive through an alias [1]. This variable is redundant when OneDrive is
+                            undesired.
+
+                            This script deletes `OneDrive` environment variable [2].
+
+                            `OneDrive` key at `HKCU\Environment` is found on both Windows 10 and Windows 11.
+
+                            [1]: https://superuser.com/a/1397495 "Determine OneDrive synchronisation folders - Super User | superuser.com"
+                            [2]: https://stackoverflow.com/questions/46744840/export-registry-value-to-file-and-then-set-a-variable-in-batch "Export registry value to file and then set a variable in Batch - Stack Overflow | stackoverflow.com"
+                        code: reg delete "HKCU\Environment" /v "OneDrive" /f 2>nul
             -
                 category: Remove Edge (Chromium)
                 docs: |-
@@ -17785,6 +17904,10 @@ functions:
             - name: directoryGlob       # The directory to delete along with its files and subdirectories
             - name: grantPermissions    # Grants permission on the parent directory and its sub-items recursively (including all files and directories) to be able to delete them.
               optional: true
+            - name: beforeIteration     # (Iteration callback) Code to run before iteration.
+              optional: true
+            - name: duringIteration     # (Iteration callback) Code to run for each found item.
+              optional: true
         call:
             -
                 function: Comment
@@ -17803,6 +17926,8 @@ functions:
                         $($directoryGlob = '{{ $directoryGlob }}'; if (-Not $directoryGlob.EndsWith('\')) { $directoryGlob += '\' }; $directoryGlob )
                     grantPermissions: '{{ with $grantPermissions }}true{{ end }}'
                     recurse: 'true' # Logs every deleted file name
+                    beforeIteration: '{{ with $beforeIteration }}{{ . }}{{ end }}'
+                    duringIteration: '{{ with $duringIteration }}{{ . }}{{ end }}'
     -
         name: DeleteFiles
         # 💡 Purpose:
