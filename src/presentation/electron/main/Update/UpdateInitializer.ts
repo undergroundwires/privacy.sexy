@@ -1,13 +1,16 @@
-import { autoUpdater, type UpdateInfo } from 'electron-updater';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import { requiresManualUpdate, startManualUpdateProcess } from './ManualUpdater/ManualUpdateCoordinator';
 import { handleAutoUpdate } from './AutomaticUpdateCoordinator';
+import { getAutoUpdater } from './ElectronAutoUpdaterFactory';
+import type { UpdateInfo } from 'electron-updater';
 
 interface Updater {
   checkForUpdates(): Promise<void>;
 }
 
 export function setupAutoUpdater(): Updater {
+  const autoUpdater = getAutoUpdater();
+
   autoUpdater.logger = ElectronLogger;
 
   // Auto-downloads are disabled to allow separate handling of 'check' and 'download' actions,

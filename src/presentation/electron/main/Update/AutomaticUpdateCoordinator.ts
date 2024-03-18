@@ -1,18 +1,20 @@
 import { app, dialog } from 'electron/main';
-import { autoUpdater, type UpdateInfo } from 'electron-updater';
 import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
 import { UpdateProgressBar } from './UpdateProgressBar';
+import { getAutoUpdater } from './ElectronAutoUpdaterFactory';
+import type { AppUpdater, UpdateInfo } from 'electron-updater';
 import type { ProgressInfo } from 'electron-builder';
 
 export async function handleAutoUpdate() {
+  const autoUpdater = getAutoUpdater();
   if (await askDownloadAndInstall() === DownloadDialogResult.NotNow) {
     return;
   }
-  startHandlingUpdateProgress();
+  startHandlingUpdateProgress(autoUpdater);
   await autoUpdater.downloadUpdate();
 }
 
-function startHandlingUpdateProgress() {
+function startHandlingUpdateProgress(autoUpdater: AppUpdater) {
   const progressBar = new UpdateProgressBar();
   progressBar.showIndeterminateState();
   autoUpdater.on('error', (e) => {
@@ -29,11 +31,11 @@ function startHandlingUpdateProgress() {
   autoUpdater.on('update-downloaded', async (info: UpdateInfo) => {
     ElectronLogger.info('@update-downloaded@\n', info);
     progressBar.close();
-    await handleUpdateDownloaded();
+    await handleUpdateDownloaded(autoUpdater);
   });
 }
 
-async function handleUpdateDownloaded() {
+async function handleUpdateDownloaded(autoUpdater: AppUpdater) {
   if (await askRestartAndInstall() === InstallDialogResult.NotNow) {
     return;
   }

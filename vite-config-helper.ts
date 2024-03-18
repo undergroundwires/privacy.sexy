@@ -55,7 +55,7 @@ function getPathAliasesFromTsConfig(): ViteAliasDefinitions {
 }
 
 function getElectronProcessSpecificModuleAliases(): ViteAliasDefinitions {
-  // Workaround for scoped Electron module imports due to https://github.com/alex8088/electron-vite/issues/372
+  // Workaround for Vite not being able to build tests with scoped Electron module imports.
   const electronProcessScopedModuleAliases = [
     'electron/main',
     'electron/renderer',

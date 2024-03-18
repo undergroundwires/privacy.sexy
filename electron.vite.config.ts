@@ -14,7 +14,7 @@ const ELECTRON_DIST_SUBDIRECTORIES = {
   renderer: resolveElectronDistSubdirectory('renderer'),
 };
 
-process.env.ELECTRON_ENTRY = resolve(ELECTRON_DIST_SUBDIRECTORIES.main, 'index.cjs');
+process.env.ELECTRON_ENTRY = resolve(ELECTRON_DIST_SUBDIRECTORIES.main, 'index.mjs');
 
 export default defineConfig({
   main: getSharedElectronConfig({
@@ -54,13 +54,23 @@ function getSharedElectronConfig(options: {
       },
       rollupOptions: {
         output: {
-          // Mark: electron-esm-support
-          //  This is needed so `type="module"` works
-          entryFileNames: '[name].cjs',
+          format: 'es',
+
+          // Ensure all generated files use '.mjs' for module consistency.
+          // Otherwise, preloader process get `.mjs` extension but main process get `.js` extension, see https://github.com/alex8088/electron-vite/issues/397.
+          entryFileNames: '[name].mjs',
         },
       },
     },
-    plugins: [externalizeDepsPlugin()],
+    plugins: [externalizeDepsPlugin({
+      exclude: [
+        // Keep 'electron-log' in bundling process.
+        // This is a workaround for inability of Electron's ESM loader to resolve subpath imports.
+        // Do not externalize `electron-log` so subpath imports such as `electron-log/main` works.
+        // See https://github.com/electron/electron/issues/41241, https://github.com/alex8088/electron-vite/issues/401
+        'electron-log',
+      ],
+    })],
     define: {
       ...getClientEnvironmentVariables(),
     },

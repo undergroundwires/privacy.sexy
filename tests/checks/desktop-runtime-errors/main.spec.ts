@@ -1,6 +1,7 @@
 import {
   describe, it, beforeAll, afterAll,
 } from 'vitest';
+import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { main } from './check-desktop-runtime-errors/main';
 import { COMMAND_LINE_FLAGS, CommandLineFlag } from './check-desktop-runtime-errors/cli-args';
 
@@ -14,7 +15,10 @@ describe('desktop runtime error checks', () => {
       () => main(),
     );
     // assert
-    expect(exitCode).to.equal(0);
+    expect(exitCode).to.equal(0, formatAssertionMessage([
+      `Test failed with exit code ${exitCode}; expected 0.`,
+      'Examine preceding logs to identify errors.',
+    ]));
   }, {
     timeout: 60 /* minutes */ * 60000,
   });

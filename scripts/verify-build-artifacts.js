@@ -44,8 +44,8 @@ function getBuildVerificationConfigs() {
     '--electron-unbundled': {
       printDistDirScriptArgument: '--electron-unbundled',
       filePatterns: [
-        /main[/\\]index\.cjs/,
-        /preload[/\\]index\.cjs/,
+        /main[/\\]index\.(cjs|mjs|js)/,
+        /preload[/\\]index\.(cjs|mjs|js)/,
         /renderer[/\\]index\.htm(l)?/,
       ],
     },
