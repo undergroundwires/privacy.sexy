@@ -21,9 +21,7 @@ $base-spacing: 1em;
 
 body {
   background: $color-background;
-  font-family: $font-family-main;
-  font-size: $font-size-absolute-normal;
-
+  @include base-font-style;
   @include apply-uniform-spacing($base-spacing: $base-spacing)
 }
 

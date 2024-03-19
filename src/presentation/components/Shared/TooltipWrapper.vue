@@ -220,7 +220,9 @@ $color-tooltip-background: $color-primary-darkest;
   color: $color-on-primary;
   border-radius: 16px;
   padding: 12px 10px;
-  font-size: $font-size-absolute-normal;
+
+  // Explicitly set font styling for tooltips to prevent inconsistent appearances due to style inheritance from trigger elements.
+  @include base-font-style;
 
   /*
     This margin creates a visual buffer between the tooltip and the edges of the document.

@@ -128,3 +128,8 @@
   $calculated-width-in-em: calc(#{$estimated-width-per-character-in-em} * #{$value-in-ch});
   #{$property}: $calculated-width-in-em;
 }
+
+@mixin base-font-style {
+  font-family: $font-family-main;
+  font-size: $font-size-absolute-normal;
+}
