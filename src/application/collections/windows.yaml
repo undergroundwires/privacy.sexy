@@ -4643,7 +4643,7 @@ actions:
                             function: SetVsCodeSetting
                             parameters:
                                 setting: update.mode
-                                powerShellValue: manual
+                                powerShellValue: "'manual'" # The double quotes around 'manual' is important for PowerShell to correctly interpret the value.
                     -
                         name: Disable fetching release notes from Microsoft servers after an update
                         call:
