@@ -81,10 +81,15 @@ jobs:
         uses: actions/checkout@v4
       -
         name: Install Docker on macOS
-        if: matrix.os == 'macos' # macOS runner is missing Docker
+        if: matrix.os == 'macos' # macOS runner is missing Docker (see actions/runner-images#17)
         run: |-
           # Install Docker
           brew install docker
+          # Install `buildx` (`docker build` without `buildx` is deprecated)
+          brew install docker-buildx
+          mkdir -p ~/.docker/cli-plugins
+          ln -sfn $(which docker-buildx) ~/.docker/cli-plugins/docker-buildx
+          # docker buildx install # Allow running `docker build` instead of `docker buildx build`
           # Docker on macOS misses daemon due to licensing, so install colima as runtime
           brew install colima
           # Start the daemon
