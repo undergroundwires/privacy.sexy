@@ -95,7 +95,7 @@ function getLines(code: string): string[] {
 
 /*
   Merges inline here-strings to a single lined string with Windows line terminator (\r\n)
-  https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_quoting_rules#here-strings
+  https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_quoting_rules?view=powershell-7.4#here-strings
 */
 function mergeHereStrings(code: string) {
   const regex = /@(['"])\s*(?:\r\n|\r|\n)((.|\n|\r)+?)(\r\n|\r|\n)\1@/g;
