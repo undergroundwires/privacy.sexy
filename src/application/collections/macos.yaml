@@ -108,7 +108,7 @@ actions:
                         name: Clear user activity audit logs (login, logout, authentication, etc.)
                         docs:
                             - https://papers.put.as/papers/macosx/2012/Mac_Log_Analysis_Sarah_Edwards_DFIRSummit2012.pdf
-                            - http://macadmins.psu.edu/wp-content/uploads/sites/24696/2016/06/psumac2016-19-osxlogs_macadmins_2016.pdf
+                            - https://web.archive.org/web/20240314054514/https://bpb-us-e1.wpmucdn.com/sites.psu.edu/dist/4/24696/files/2016/06/psumac2016-19-osxlogs_macadmins_2016.pdf
                         code: |-
                             sudo rm -rfv /var/audit/*
                             sudo rm -rfv /private/var/audit/*
@@ -171,7 +171,7 @@ actions:
                             -
                                 name: Clear Safari last session (open tabs) history
                                 docs:
-                                    - https://apple.stackexchange.com/a/374116
+                                    - https://web.archive.org/web/20240314061752/https://apple.stackexchange.com/questions/374099/where-does-safari-store-the-open-tabs/374116#374116
                                     - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2013-7127
                                 code: rm -f ~/Library/Safari/LastSession.plist
                             -
@@ -191,7 +191,7 @@ actions:
                                         name: Clear Safari webpage previews (thumbnails)
                                         docs:
                                           - https://davidkoepi.wordpress.com/2013/04/20/safariforensic/
-                                          - https://www.reddit.com/r/apple/comments/18lp92/your_apple_computer_keeps_a_screen_shot_of_nearly/
+                                          - https://archive.ph/2024.03.14-100910/https://www.reddit.com/r/apple/comments/18lp92/your_apple_computer_keeps_a_screen_shot_of_nearly/?rdt=59921
                                         code: rm -rfv ~/Library/Caches/com.apple.Safari/Webpage\ Previews
                             -
                                 name: Clear Safari history copy
@@ -204,8 +204,8 @@ actions:
                             -
                                 name: Clear Safari cookies
                                 docs:
-                                  - https://www.toolbox.com/tech/operating-systems/blogs/understanding-the-safari-cookiesbinarycookies-file-format-010712/
-                                  - https://link.springer.com/content/pdf/10.1007/0-387-36891-4_13.pdf
+                                  - https://web.archive.org/web/20240314132018/https://community.spiceworks.com/t/understanding-the-safari-cookies-binarycookies-file-format/928827
+                                  - https://web.archive.org/web/20240314060318/https://link.springer.com/content/pdf/10.1007/0-387-36891-4_13.pdf
                                 code: |-
                                     rm -f ~/Library/Cookies/Cookies.binarycookies
                                     # Used before Safari 5.1
@@ -520,7 +520,7 @@ actions:
                     you'll be prompted to grant or deny permission. It's a proactive step to ensure that your sensitive information
                     or system services are accessed only with your current and informed consent.
                 children:
-                    # Main documentation: https://archive.ph/26Hlq (https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services)
+                    # Main documentation: https://archive.ph/2023.11.24-170934/https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services
                     -
                         name: Clear **"All"** permissions
                         docs: |-
@@ -536,7 +536,7 @@ actions:
                             This script resets permissions for camera access [1].
                             It ensures no application can access the system camera without explicit user permission, protecting against unauthorized surveillance and data breaches.
 
-                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                            [1]: https://archive.ph/2023.11.24-170934/https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
                         call:
                             function: ResetServicePermissions
                             parameters:
@@ -547,7 +547,7 @@ actions:
                             This script resets permissions for microphone access [1].
                             It revokes all granted access to the microphone, protecting against eavesdropping and unauthorized audio recording by applications.
 
-                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                            [1]: https://archive.ph/2023.11.24-170934/https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
                         call:
                             function: ResetServicePermissions
                             parameters:
@@ -558,7 +558,7 @@ actions:
                             This script resets permissions for accessibility features [1].
                             It revokes application access to accessibility services, preventing misuse and ensuring these features are used only with user consent.
 
-                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                            [1]: https://archive.ph/2023.11.24-170934/https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
                         call:
                             function: ResetServicePermissions
                             parameters:
@@ -569,7 +569,7 @@ actions:
                             This script resets permissions for screen capture [1].
                             It ensures applications cannot capture screen content without user authorization, protecting sensitive information displayed on the screen.
 
-                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                            [1]: https://archive.ph/2023.11.24-170934/https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
                         call:
                             function: ResetServicePermissions
                             parameters:
@@ -580,7 +580,7 @@ actions:
                             This script resets permissions for accessing reminders information managed by the Reminders app [1].
                             It ensures applications cannot access or modify reminders data without explicit user permission, maintaining the privacy of personal reminders.
 
-                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                            [1]: https://archive.ph/2023.11.24-170934/https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
                         call:
                             function: ResetServicePermissions
                             parameters:
@@ -591,7 +591,7 @@ actions:
                             This script resets permissions for accessing the pictures managed by the Photos app [1].
                             It revokes all permissions granted to applications, safeguarding personal photos and media from unauthorized access.
 
-                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                            [1]: https://archive.ph/2023.11.24-170934/https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
                         call:
                             function: ResetServicePermissions
                             parameters:
@@ -602,7 +602,7 @@ actions:
                             This script resets permissions for accessing the calendar information managed by the Calendar app [1].
                             It ensures that applications cannot access calendar data without user consent, protecting personal and sensitive calendar information.
 
-                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                            [1]: https://archive.ph/2023.11.24-170934/https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
                         call:
                             function: ResetServicePermissions
                             parameters:
@@ -614,7 +614,7 @@ actions:
                             Full disk access allows the application access to all protected files, including system administration files [1].
                             It revokes broad file access from applications, significantly reducing the risk of data exposure and enhancing overall system security.
 
-                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                            [1]: https://archive.ph/2023.11.24-170934/https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
                         call:
                             function: ResetServicePermissions
                             parameters:
@@ -626,7 +626,7 @@ actions:
                             The contact information managed by the Contacts app [1].
                             It ensures that applications cannot access the user's contact list without explicit permission, maintaining the confidentiality of personal contacts.
 
-                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                            [1]: https://archive.ph/2023.11.24-170934/https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
                         call:
                             function: ResetServicePermissions
                             parameters:
@@ -637,7 +637,7 @@ actions:
                             This script resets permissions for accessing the Desktop folder [1].
                             It revokes application access to files on the desktop, protecting personal and work-related documents from unauthorized access.
 
-                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                            [1]: https://archive.ph/2023.11.24-170934/https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
                         call:
                             function: ResetServicePermissions
                             parameters:
@@ -648,7 +648,7 @@ actions:
                             This script resets permissions for accessing the Documents folder [1].
                             It prevents applications from accessing files in this folder without user consent, safeguarding important and private documents.
 
-                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                            [1]: https://archive.ph/2023.11.24-170934/https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
                         call:
                             function: ResetServicePermissions
                             parameters:
@@ -659,7 +659,7 @@ actions:
                             This script resets permissions for accessing the Downloads folder [1].
                             It ensures that applications cannot access downloaded files without user authorization, protecting downloaded content from misuse.
 
-                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                            [1]: https://archive.ph/2023.11.24-170934/https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
                         call:
                             function: ResetServicePermissions
                             parameters:
@@ -670,7 +670,7 @@ actions:
                             This script resets permissions for Apple Events [1].
                             It revokes permissions for applications to send restricted Apple Events to other processes [1], enhancing privacy and security.
 
-                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                            [1]: https://archive.ph/2023.11.24-170934/https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
                         call:
                             function: ResetServicePermissions
                             parameters:
@@ -681,7 +681,7 @@ actions:
                             This script resets permissions for File Provider Presence [1].
                             It revokes the ability of File Provider applications to know when the user is accessing their managed files [1], enhancing user privacy.
 
-                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                            [1]: https://archive.ph/2023.11.24-170934/https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
                         call:
                             function: ResetServicePermissions
                             parameters:
@@ -692,7 +692,7 @@ actions:
                             This script resets "ListenEvent" permissions [1].
                             It revokes application access to listen to system events [1], preventing unauthorized monitoring of user interactions with the system.
 
-                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                            [1]: https://archive.ph/2023.11.24-170934/https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
                         call:
                             function: ResetServicePermissions
                             parameters:
@@ -703,7 +703,7 @@ actions:
                             This script resets permissions for accessing the Media Library [1].
                             It ensures that applications cannot access Apple Music, music and video activity, and the media library [1] without user consent.
 
-                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                            [1]: https://archive.ph/2023.11.24-170934/https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
                         call:
                             function: ResetServicePermissions
                             parameters:
@@ -714,7 +714,7 @@ actions:
                             This script resets permissions for sending "PostEvent" [1].
                             It prevents applications from using CoreGraphics APIs to send system events [1], safeguarding against potential misuse.
 
-                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                            [1]: https://archive.ph/2023.11.24-170934/https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
                         call:
                             function: ResetServicePermissions
                             parameters:
@@ -726,7 +726,7 @@ actions:
                             This script resets permissions for using Speech Recognition [1].
                             It revokes application access to the speech recognition facility and sending speech data to Apple [1], protecting user privacy.
 
-                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                            [1]: https://archive.ph/2023.11.24-170934/https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
                         call:
                             function: ResetServicePermissions
                             parameters:
@@ -737,7 +737,7 @@ actions:
                             This script resets permissions for modifying other apps [1].
                             It prevents applications from updating or deleting other apps [1], maintaining system integrity and user control.
 
-                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                            [1]: https://archive.ph/2023.11.24-170934/https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
                         call:
                             function: ResetServicePermissions
                             parameters:
@@ -748,7 +748,7 @@ actions:
                             This script resets permissions for accessing application data [1].
                             It revokes application access to specific application data, enhancing privacy and data security.
 
-                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                            [1]: https://archive.ph/2023.11.24-170934/https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
                         call:
                             function: ResetServicePermissions
                             parameters:
@@ -759,7 +759,7 @@ actions:
                             This script resets permissions for accessing files on network volumes [1].
                             It ensures applications cannot access network files without user authorization.
 
-                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                            [1]: https://archive.ph/2023.11.24-170934/https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
                         call:
                             function: ResetServicePermissions
                             parameters:
@@ -770,7 +770,7 @@ actions:
                             This script resets permissions for accessing files on removable volumes [1].
                             It protects data on external drives from unauthorized application access.
 
-                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                            [1]: https://archive.ph/2023.11.24-170934/https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
                         call:
                             function: ResetServicePermissions
                             parameters:
@@ -781,7 +781,7 @@ actions:
                             This script resets permissions for accessing system administration files [1].
                             It enhances system security by restricting application access to critical system files.
 
-                            [1]: https://archive.ph/26Hlq "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
+                            [1]: https://archive.ph/2023.11.24-170934/https://developer.apple.com/documentation/devicemanagement/privacypreferencespolicycontrol/services "PrivacyPreferencesPolicyControl.Services | Apple Developer Documentation | apple.com"
                         call:
                             function: ResetServicePermissions
                             parameters:
@@ -877,7 +877,7 @@ actions:
                             There is also `WelcomeScreenPromo.PromoOff` setting that's pre-configured to `1` (`no` as
                             default). It's undocumented but still kept disabled by this script.
 
-                            [1]: https://web.archive.org/save/https://forum.parallels.com/threads/unable-to-process-the-upgrade-request.345603/ "Unable to process the upgrade request | Parallels Forums | forum.parallels.com"
+                            [1]: https://web.archive.org/web/20240314062932/https://forum.parallels.com/threads/unable-to-process-the-upgrade-request.345603/ "Unable to process the upgrade request | Parallels Forums | forum.parallels.com"
                             [2]: https://web.archive.org/web/20221012151800/https://kb.parallels.com/114422 "How do I turn off notifications in Parallels Desktop and Parallels Access? | Knowledge Base | parallels.com"
                         code: |-
                             defaults write 'com.parallels.Parallels Desktop' 'ProductPromo.ForcePromoOff' -bool yes
@@ -988,16 +988,16 @@ actions:
                                 recommend: strict
                                 docs:
                                     - https://github.com/privacysexy-forks/starter/blob/master/system/siri.sh
-                                    - https://machippie.github.io/system/
+                                    - https://web.archive.org/web/20201002133713/https://machippie.github.io/system/
                                 code: defaults write com.apple.assistant.backedup 'Use device speaker for TTS' -int 3
                                 revertCode: defaults write com.apple.assistant.backedup 'Use device speaker for TTS' -int 2
                             -
                                 name: Disable Siri services (Siri and assistantd)
                                 recommend: strict
                                 docs:
-                                    - https://apple.stackexchange.com/questions/57514/what-is-assistantd
-                                    - https://www.jamf.com/jamf-nation/discussions/22757/kill-siri#responseChild137563
-                                    - https://apple.stackexchange.com/a/370426
+                                    - https://web.archive.org/web/20240314060540/https://apple.stackexchange.com/questions/57514/what-is-assistantd
+                                    - https://archive.ph/2024.03.14-055010/https://community.jamf.com/t5/jamf-pro/kill-siri/td-p/171543
+                                    - https://web.archive.org/web/20240314060501/https://apple.stackexchange.com/questions/258816/how-to-completely-disable-siri-on-sierra/370426#370426
                                 # To see status: • `launchctl print-disabled system` • `launchctl print-disabled user/$UID` • `launchctl print-disabled gui/$UID`
                                 code: |-
                                     launchctl disable "user/$UID/com.apple.assistantd"
@@ -1021,10 +1021,20 @@ actions:
                                     fi
                             -
                                 name: Disable "Do you want to enable Siri?" pop-up
-                                docs:
-                                    - https://discussions.apple.com/thread/7694127?answerId=30752577022#30752577022
-                                    - https://windowsreport.com/mac/siri-keeps-popping-up/
-                                    - https://www.jamf.com/jamf-nation/discussions/21783/disable-siri-setup-assistant-in-macos-sierra#responseChild131588
+                                docs: |-
+                                    This script stops the "Enable Siri" pop-up [1] from appearing the first time a user logs into macOS [2].
+                                    
+                                    Introduced in macOS version 10.12 [2], this pop-up asks, "Do you want to enable Siri?" [1]
+                                    which could lead to Siri being enabled unintentionally.
+                                    
+                                    This script configures the `com.apple.SetupAssistant!DidSeeSiriSetup` setting to suppress this pop-up [1] [2] [3] [4].
+                                    This command tells the system that the Siri setup is complete, preventing the pop-up in future sessions and
+                                    enhancing privacy by avoiding unintended Siri activation.
+
+                                    [1]: https://archive.ph/2024.03.14-053325/https://discussions.apple.com/thread/7694127?answerId=30752577022&sortBy=best%2330752577022 "macOS keeps nagging me about enabling Siri - Apple Community | discussions.apple.com"
+                                    [2]: https://web.archive.org/web/20240314052600/https://derflounder.wordpress.com/2016/09/20/supressing-siri-pop-up-windows-on-macos-sierra/ "Suppressing Siri pop-up windows on macOS Sierra | Der Flounder"
+                                    [3]: https://web.archive.org/web/20240314052901/https://windowsreport.com/mac/siri-keeps-popping-up/ "Siri keeps popping up on Mac? Here's how to easily fix that • MacTips | windowsreport.com"
+                                    [4]: https://web.archive.org/web/20240314052247/https://community.jamf.com/t5/jamf-pro/disable-siri-setup-assistant-in-macos-sierra/m-p/205836/highlight/true#M194536 "Solved: Re: Disable Siri setup assistant in macOS Sierra - Jamf Nation Community - 205834 | community.jamf.com"
                                 code: defaults write com.apple.SetupAssistant 'DidSeeSiriSetup' -bool True
                                 revertCode: defaults delete com.apple.SetupAssistant 'DidSeeSiriSetup'
                     -
@@ -1084,7 +1094,7 @@ actions:
                     by default.
 
                     [1]: https://web.archive.org/web/20230731152633/https://www.apple.com/legal/privacy/data/en/apple-advertising/ "Legal - Apple Advertising & Privacy - Apple"
-                    [2]: https://web.archive.org/web/20220805052411/https://support.apple.com/en-sg/guide/mac-help/mh32356/mac: "Change Privacy preferences on Mac - Apple Support (SG)"
+                    [2]: https://web.archive.org/web/20220805052411/https://support.apple.com/en-sg/guide/mac-help/mh32356/mac "Change Privacy preferences on Mac - Apple Support (SG)"
                     [3]: https://web.archive.org/web/20230731155827/https://developer.apple.com/documentation/devicemanagement/restrictions "Restrictions | Apple Developer Documentation"
                     [4]: https://web.archive.org/web/20230731155653/https://paper.bobylive.com/Security/CIS/CIS_Apple_macOS_11_0_Big_Sur_Benchmark_v2_0_0.pdf "CIS Apple macOS 11.0 Big Sur Benchmark"
                     [5]: https://web.archive.org/web/20230731155131/https://developer.apple.com/documentation/adsupport/asidentifiermanager/1614151-advertisingidentifier "advertisingIdentifier | Apple Developer Documentation"
@@ -1280,7 +1290,7 @@ actions:
                 # OS tracks downloaded files with help of quarantine-aware applications
                 # (such as Safari, Chrome) adding quarantine extended attributes to files.
                 # then OS warns and asks if you really want to open it
-                docs: https://support.apple.com/en-gb/HT202491
+                docs: https://web.archive.org/web/20210319081714/https://support.apple.com/en-gb/HT202491
                 children:
                     -
                         category: Clean File Quarantine from downloaded files
@@ -1391,7 +1401,7 @@ actions:
                         name: Disable Gatekeeper's automatic reactivation
                         docs:
                             - https://osxdaily.com/2015/11/05/stop-gatekeeper-auto-rearm-mac-os-x/
-                            - https://www.cnet.com/tech/computing/how-to-disable-gatekeeper-permanently-on-os-x/
+                            - https://web.archive.org/web/20230327050142/https://www.cnet.com/tech/computing/how-to-disable-gatekeeper-permanently-on-os-x/
                         code: sudo defaults write /Library/Preferences/com.apple.security GKAutoRearm -bool true
                         revertCode: sudo defaults write /Library/Preferences/com.apple.security GKAutoRearm -bool false
                     -
@@ -1450,13 +1460,19 @@ actions:
                 revertCode: sudo defaults write /Library/Preferences/com.apple.security.libraryvalidation.plist 'DisableLibraryValidation' -bool false
             -
                 category: Disable automatic updates
-                docs:
-                    - https://developer.apple.com/documentation/devicemanagement/deviceinformationresponse/queryresponses/osupdatesettings
-                    - https://macadminsdoc.readthedocs.io/en/master/Profiles-and-Settings/OS-X-Updates.html
+                docs: |-
+                    This category contains scripts to disable automatic operating system updates.
+
+                    Disabling automatic updates gives users full control over when and which updates are applied to their system.
+                    It improves privacy by preventing unwanted data collection, new vulnerabilities and unapproved changes to system settings.
+
+                    > **Caution**:
+                    > Disabling automatic updates can leave your system vulnerable to unpatched exploits.
+                    > Manually check and and apply updates to stay protected.
                 children:
                     -
                         name: Disable automatic checks for updates
-                        docs: https://developer.apple.com/documentation/devicemanagement/softwareupdate
+                        docs: https://archive.ph/2024.03.21-180353/https://developer.apple.com/documentation/devicemanagement/softwareupdate
                         code: |-
                             # For OS X Yosemite and newer (>= 10.10)
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AutomaticCheckEnabled' -bool false
@@ -1465,7 +1481,7 @@ actions:
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AutomaticCheckEnabled' -bool true
                     -
                         name: Disable automatic downloads for updates
-                        docs: https://developer.apple.com/documentation/devicemanagement/softwareupdate
+                        docs: https://archive.ph/2024.03.21-180353/https://developer.apple.com/documentation/devicemanagement/softwareupdate
                         code: |-
                             # For OS X Yosemite and newer (>= 10.10)
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AutomaticDownload' -bool false
@@ -1474,12 +1490,41 @@ actions:
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AutomaticDownload' -bool true
                     -
                         name: Disable automatic installation of macOS updates
-                        docs:
-                            # References for AutoUpdateRestartRequired
-                                - https://kb.vmware.com/s/article/2960635
-                                - https://derflounder.wordpress.com/2018/12/28/enabling-automatic-macos-software-updates-for-os-x-yosemite-through-macos-mojave/
-                            # References for AutomaticallyInstallMacOSUpdates
-                                - https://developer.apple.com/documentation/devicemanagement/softwareupdate
+                        docs: |-
+                            This script stops macOS from automatically installing updates.
+
+                            This script improves privacy by reducing unwanted data collection and ensuring updates don't change
+                            settings or data without your approval.
+
+                            The Center for Internet Security (CIS) advises against automatic updates in scenarios where changes require
+                            thorough testing and approval processes to avoid operational disruptions [1] [2] [3] [4].
+
+                            This script configures following to stop macOS from installing updates automatically:
+
+                            1. `/Library/Preferences/com.apple.commerce!AutoUpdateRestartRequired`:
+                                This preference stops the system from automatically installing macOS updates [1] [2] [3] [4] [5] [6] [7] [8].
+                                By doing this, updates will only be installed when you decide, giving you a chance to check them first [1] [2] [3] [4] [5] [6] [7] [8].
+                                This setting applies to OS X Yosemite through macOS High Sierra [7] [9].
+
+                            2. `/Library/Preferences/com.apple.commerce!AutomaticallyInstallMacOSUpdates`:
+                                Changing this setting stops macOS from installing updates automatically [3] [5] [9] [10], giving you control over when to update.
+                                If restricts the *Install macOS Updates* option and prevents the user from changing the option [10].
+                                While this setting enhances privacy, it's generally not advised by NIST due to potential security risks [9].
+                                This setting applies to macOS Mojave and newer versions [9].
+
+                            > **Caution**: Disabling automatic updates requires you to manually check and apply updates to stay protected against security threats [1] [2] [3] [4].
+
+                            [1]: https://web.archive.org/web/20240321165149/https://www.tenable.com/audits/items/CIS_Apple_macOS_10.12_v1.1.0_Level_1.audit:e02dfdd6bec9556a3ce537f60b91b549 "CIS Apple macOS 10.12 L1 v1.1.0 | 1.5 Enable OS X update installs | Tenable®"
+                            [2]: https://web.archive.org/web/20240321165851/https://paper.bobylive.com/Security/CIS/CIS_Apple_macOS_10_13_Benchmark_v1_1_0---PDF.pdf "CIS Apple macOS 10.13 Benchmark v1.1.0 | paper.bobylive.com"
+                            [3]: https://web.archive.org/web/20240321170400/https://www.tenable.com/audits/items/CIS_Apple_macOS_13.0_Ventura_v1.0.0_L1.audit:fe03c59a39c7c949507ff20d07f89993 "1.4 Ensure Install of macOS Updates Is Enabled | Tenable® | www.tenable.com"
+                            [4]: https://web.archive.org/web/20240321170036/https://paper.bobylive.com/Security/CIS/CIS_Apple_macOS_10_14_Benchmark_v1_4_0_PDF.pdf "CIS Apple macOS 10.14 Benchmark v1.4.0 | paper.bobylive.com"
+                            [5]: https://web.archive.org/web/20240321164917/https://www.ncsc.gov.uk/files/macos_provisioning_script.sh_.txt "macOS provisioning script | UK National Cyber Security Centre | www.ncsc.gov.uk"
+                            [6]: https://web.archive.org/web/20240321165118/https://macadminsdoc.readthedocs.io/en/master/Profiles-and-Settings/OS-X-Updates.html "macOS Updates — MacAdmins Community Documentation documentation | macadminsdoc.readthedocs.io"
+                            [7]: https://web.archive.org/web/20240321165304/https://derflounder.wordpress.com/2014/12/29/managing-automatic-app-store-and-os-x-update-installation-on-yosemite/ "Managing automatic App Store and OS X update installation on Yosemite | Der Flounder | derflounder.wordpress.com"
+                            [8]: https://web.archive.org/web/20240321170034/https://krypted.com/mac-os-x/app-store-preferences-set-server-5-4-macos-high-sierra/ "App Store Preferences To Set In On Server 5.4 for macOS High Sierra – krypted | krypted.com"
+                            [9]: https://web.archive.org/web/20240321170251/https://derflounder.wordpress.com/2018/12/28/enabling-automatic-macos-software-updates-for-os-x-yosemite-through-macos-mojave/ "Enabling automatic macOS software updates for OS X Yosemite through macOS Mojave | Der Flounder | derflounder.wordpress.com"
+                            [10]: https://archive.ph/2024.03.21-180353/https://developer.apple.com/documentation/devicemanagement/softwareupdate "SoftwareUpdate | Apple Developer Documentation | developer.apple.com"
+                            [11]: https://web.archive.org/web/20240321165931/https://csrc.nist.gov/CSRC/media/Projects/national-vulnerability-database/documents/CCE/CCE-macos_monterey.xls "CCE-91129-7 | CCE-macos_monterey.xls | Sheet 1 - NIST Computer Security Resource Center | csrc.nist.gov"
                         code: |-
                             # For OS X Yosemite through macOS High Sierra (>= 10.10 && < 10.14)
                             sudo defaults write /Library/Preferences/com.apple.commerce 'AutoUpdateRestartRequired' -bool false
@@ -1492,9 +1537,44 @@ actions:
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AutomaticallyInstallMacOSUpdates' -bool true
                     -
                         name: Disable automatic app updates from the App Store
-                        docs:
-                            - https://kb.vmware.com/s/article/2960635
-                            - https://derflounder.wordpress.com/2018/12/28/enabling-automatic-macos-software-updates-for-os-x-yosemite-through-macos-mojave/
+                        docs: |-
+                            This script disables automatic app updates [1] [2] [3] [4] from the App Store [5] [6] [7] [8] [9] [10] [11] [12] [13].
+                            It prevents automatic installation of application updates as soon as they become available from Apple [2] [3] [6] [9] [11] [12] [13].
+                            Thus, applications are updated only when you choose to do so [5].
+
+                            Disabling automatic updates prevents unexpected app behavior or settings changes.
+                            It helps you to maintain your current app configurations and privacy settings.
+                            It also protects against potential zero-day vulnerabilities in your apps.
+                            This gives you the ability to choose which updates to install and when, enabling you to review the details of updates before deciding to proceed.
+
+                            The script modifies the following settings:
+
+                            1. `/Library/Preferences/com.apple.commerce!AutoUpdate`:
+                                Disables automated app updates [1] [2] [3] [6] [9] [10] [13] from the App Store [7] [8].
+                                This setting applies to OS X Yosemite and newer versions [1].
+                            2. `/Library/Preferences/com.apple.SoftwareUpdate!AutomaticallyInstallAppUpdates`:
+                                Stops the automatic installation of app updates [1] [4] from App Store [9] [10] [11] [12] [13].
+                                It deselects the *Install app updates from the App Store* option and prevents the user from changing the option [10].
+                                While this setting enhances privacy, it's generally not advised by NIST due to potential security risks [4].
+                                This setting applies to macOS Mojave and newer versions [1].
+
+                            > **Caution**:
+                            > Disabling app updates means you should manually check for and install important security patches for every application
+                            > to protect against vulnerabilities [2] [3] [5] [6] [9] [11] [12] [13].
+
+                            [1]: https://web.archive.org/web/20240321170251/https://derflounder.wordpress.com/2018/12/28/enabling-automatic-macos-software-updates-for-os-x-yosemite-through-macos-mojave/ "Enabling automatic macOS software updates for OS X Yosemite through macOS Mojave | Der Flounder | derflounder.wordpress.com"
+                            [2]: https://web.archive.org/web/20240321190032/https://www.irs.gov/pub/irs-utl/safeguards-scsem-macosx-v6-1-093021.xlsx "SCSEM OSX 10.14 | Internal Revenue Service Office of Safeguards | www.irs.gov"
+                            [3]: https://web.archive.org/web/20240321170036/https://paper.bobylive.com/Security/CIS/CIS_Apple_macOS_10_14_Benchmark_v1_4_0_PDF.pdf "CIS Apple macOS 10.14 Benchmark v1.4.0 | paper.bobylive.com"
+                            [5]: https://web.archive.org/web/20240321190244/https://github-wiki-see.page/m/edamametechnologies/threatmodels/wiki/threatmodel-macOS-EN "threatmodel macOS EN - edamametechnologies/threatmodels GitHub Wiki | github-wiki-see.page"
+                            [6]: https://web.archive.org/web/20240321190315/https://www.tenable.com/audits/items/CIS_Apple_macOS_14.0_Sonoma_v1.0.0_L1.audit:66d3b86318384ba7947a3409e0c6e902 "1.5 Ensure Install Application Updates from the App Store Is E... | Tenable® | www.tenable.com"
+                            [7]: https://web.archive.org/web/20240321165304/https://derflounder.wordpress.com/2014/12/29/managing-automatic-app-store-and-os-x-update-installation-on-yosemite/ "Managing automatic App Store and OS X update installation on Yosemite | Der Flounder | derflounder.wordpress.com"
+                            [8]: https://web.archive.org/web/20240321190410/https://krypted.com/mac-security/app-store-preferences-set-server-5-2-macos-sierra/ "App Store Preferences To Set In On Server 5.2 for macOS Sierra – krypted | krypted.com"
+                            [4]: https://web.archive.org/web/20240321165931/https://csrc.nist.gov/CSRC/media/Projects/national-vulnerability-database/documents/CCE/CCE-macos_monterey.xls "CCE-91129-7 | CCE-macos_monterey.xls | Sheet 1 - NIST Computer Security Resource Center | csrc.nist.gov"
+                            [9]: https://web.archive.org/web/20240321190114/https://www.irs.gov/pub/irs-utl/safeguards-scsem-macosx.xlsx "SCSEM OSX 13.0 | Internal Revenue Service Office of Safeguards | www.irs.gov"
+                            [10]: https://archive.ph/2024.03.21-180353/https://developer.apple.com/documentation/devicemanagement/softwareupdate "SoftwareUpdate | Apple Developer Documentation | developer.apple.com"
+                            [11]: https://web.archive.org/web/20240321190122/https://paper.bobylive.com/Security/CIS/CIS_Apple_macOS_12_0_Monterey_Benchmark_v1_0_0.pdf "CIS Apple macOS 12.0 Monterey | CIS Benchmarks | paper.bobylive.com"
+                            [12]: https://web.archive.org/web/20240321190537/https://www.tenable.com/audits/items/CIS_Apple_macOS_11_v2.0.0_L1.audit:55e8759872dce781b8dbc5a3f42e23b9 "1.4 Ensure Installation of App Update Is Enabled | Tenable® | www.tenable.com"
+                            [13]: https://web.archive.org/web/20240321164917/https://www.ncsc.gov.uk/files/macos_provisioning_script.sh_.txt "macOS provisioning script | UK National Cyber Security Centre | www.ncsc.gov.uk"
                         code: |-
                             # For OS X Yosemite and newer (>= 10.10)
                             sudo defaults write /Library/Preferences/com.apple.commerce 'AutoUpdate' -bool false
@@ -1507,7 +1587,7 @@ actions:
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AutomaticallyInstallAppUpdates' -bool true
                     -
                         name: Disable macOS beta release installation
-                        docs: https://support.apple.com/en-gb/HT203018
+                        docs: https://web.archive.org/web/20170106103856/https://support.apple.com/en-gb/HT203018
                         code: |-
                             # For OS X Yosemite and newer (>= 10.10)
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AllowPreReleaseInstallation' -bool false
@@ -1516,7 +1596,7 @@ actions:
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'AllowPreReleaseInstallation' -bool true
                     -
                         name: Disable automatic installation for configuration data (e.g. XProtect, Gatekeeper, MRT)
-                        docs: https://derflounder.wordpress.com/2018/12/28/enabling-automatic-macos-software-updates-for-os-x-yosemite-through-macos-mojave/
+                        docs: https://web.archive.org/web/20240321170251/https://derflounder.wordpress.com/2018/12/28/enabling-automatic-macos-software-updates-for-os-x-yosemite-through-macos-mojave/
                         code: |-
                             # For OS X Yosemite and newer (>= 10.10)
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'ConfigDataInstall' -bool false
@@ -1525,12 +1605,47 @@ actions:
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'ConfigDataInstall' -bool true
                     -
                         name: Disable automatic installation for system data files and security updates
-                        docs:
-                            # References for CriticalUpdateInstall
-                                - https://derflounder.wordpress.com/2014/12/24/managing-os-xs-automatic-security-updates/
-                                - https://developer.apple.com/documentation/devicemanagement/softwareupdate
-                            # References for softwareupdate --background-critical
-                                - https://managingosx.wordpress.com/2013/04/30/undocumented-options/
+                        docs: |-
+                            This script stops automatic installations of critical updates [1],
+                            including security [1] [2] [3] [4] [5] [6] [7] and system data file [1] [8] updates.
+
+                            It improves privacy by providing:
+
+                            - **Control Over Update Timing**:
+                              Users can review updates before installation to ensure they meet privacy standards and do not introduce
+                              unwanted telemetry or changes.
+                            - **Reduced External Communications**:
+                              Reduces how often it connects to update servers, potentially protection user information.
+
+                            The script configures the `/Library/Preferences/com.apple.SoftwareUpdate!CriticalUpdateInstall` setting [1] [4] [5] [7] [8].
+                            This action prevents automatic downloads and installations of updates [1].
+                            It also prevents users from changing the Install system data files and security updates option manually [1].
+                            This script is compatible with OS X Yosemite and later versions [6] [8].
+
+                            The revert script triggers `softwareupdate --background-critical` to install any pending critical updates directly [2] [9].
+
+                            > **Caution:**
+                            > Only disable automatic updates if you're committed to manually installing them quickly to maintain your computer's security [4] [5] [8].
+                            > It's important to install updates soon to protect your computer. [4] [5] [8].
+                            >
+                            > This script disables:
+                            >
+                            > - Definition updates for **XProtect** and **Gatekeeper** that keep your computer safe from new threats [5].
+                            > - **Rapid Security Response** [10] [11].
+                            >   **Rapid Security Responses** are software releases providing important security improvements between standard updates [12].
+
+                            [1]: https://archive.ph/2024.03.21-180353/https://developer.apple.com/documentation/devicemanagement/softwareupdate "SoftwareUpdate | Apple Developer Documentation | developer.apple.com"
+                            [2]: https://web.archive.org/web/20240321201417/https://derflounder.wordpress.com/2014/12/24/managing-os-xs-automatic-security-updates/ "Managing OS X’s automatic security updates | Der Flounder | derflounder.wordpress.com"
+                            [3]: https://web.archive.org/web/20240321165118/https://macadminsdoc.readthedocs.io/en/master/Profiles-and-Settings/OS-X-Updates.html "macOS Updates — MacAdmins Community Documentation documentation | macadminsdoc.readthedocs.io"
+                            [4]: https://web.archive.org/web/20240321165931/https://csrc.nist.gov/CSRC/media/Projects/national-vulnerability-database/documents/CCE/CCE-macos_monterey.xls "CCE-91129-7 | CCE-macos_monterey.xls | Sheet 1 - NIST Computer Security Resource Center | csrc.nist.gov"
+                            [5]: https://web.archive.org/web/20240321201450/https://paper.bobylive.com/Security/CIS/CIS_Apple_OSX_10_9_Benchmark_v1_3_0.pdf "CIS Apple OSX 10.9 Benchmark | paper.bobylive.com"
+                            [6]: https://web.archive.org/web/20240321201643/https://derflounder.wordpress.com/2014/12/27/managing-automatic-installation-of-configdata-and-security-software-updates-on-yosemite/ "Managing automatic installation of ConfigData and security software updates on Yosemite | Der Flounder | derflounder.wordpress.com"
+                            [7]: https://web.archive.org/web/20240321201652/https://ss64.com/mac/syntax-defaults.html "System preference settings for macOS - macOS - SS64.com | ss64.com"
+                            [8]: https://web.archive.org/web/20240321201436/https://www.tenable.com/audits/items/CIS_OSX_10.10_v1.2.0_L1.audit:97f36c2eaa06045e85a1beff1a76a088 "1.4 Enable system data files and security update installs - 'C... | Tenable® | www.tenable.com"
+                            [9]: https://web.archive.org/web/20240321201406/https://managingosx.wordpress.com/2013/04/30/undocumented-options/ "Undocumented options – Managing OS X | managingosx.wordpress.com"
+                            [10]: https://web.archive.org/web/20240321201558/https://www.intuneirl.com/rapid-security-response/ "Managing Rapid Security Response on Apple Devices | www.intuneirl.com"
+                            [11]: https://web.archive.org/web/20240321201614/https://onsitegroup.co.za/rapid-security-response/ "Rapid security response - Onsite | onsitegroup.co.za"
+                            [12]: https://web.archive.org/web/20240321201623/https://support.apple.com/en-us/102657 "About Rapid Security Responses for iOS, iPadOS, and macOS - Apple Support | support.apple.com"
                         code: |-
                             # For OS X Yosemite and newer (>= 10.10)
                             sudo defaults write /Library/Preferences/com.apple.SoftwareUpdate 'CriticalUpdateInstall' -bool false

@@ -74,7 +74,7 @@ actions:
                 - [tcsh source code](https://web.archive.org/web/20221029212024/https://github.com/tcsh-org/tcsh).
 
                 [1]: https://web.archive.org/web/20221029134950/https://linux.die.net/man/1/tcsh "tcsh(1) - Linux man page | linux.die.net"
-                [2]: https://web.archive.org/web/20221029135041/https://books.google.com/books?id=LyDP5b2xzaMC&pg=PA56 "Sams Teach Yourself FreeBSD in 24 Hours - Michael Urban, Brian Tiemann - Google Books | books.google.com"
+                [2]: https://web.archive.org/web/20221029135007/https://books.google.com/books?id=LyDP5b2xzaMC&pg=PA56#v=onepage&q&f=false "Sams Teach Yourself FreeBSD in 24 Hours - Michael Urban, Brian Tiemann - Google Books | books.google.com"
               call:
                 function: DeleteFileFromUserAndRootHome
                 parameters:
@@ -1733,7 +1733,7 @@ actions:
               See also:
               - [Source code for the Ubuntu Report tool | github.com](https://web.archive.org/web/20221029221854/https://github.com/ubuntu/ubuntu-report/)
               - [Statistics gathered and visualized | ubuntu.com/desktop/statistics](https://web.archive.org/web/20221029221910/https://ubuntu.com/desktop/statistics)
-              - [ubuntu-devel mailing list thread where ubuntu-report was first proposed, | lists.ubuntu.com ](https://web.archive.org/web/20221029221924/https://lists.ubuntu.com/archives/ubuntu-devel/2018-February/040139.html)
+              - [ubuntu-devel mailing list thread where ubuntu-report was first proposed | lists.ubuntu.com](https://web.archive.org/web/20221029162523/https://lists.ubuntu.com/archives/ubuntu-devel/2018-February/040139.html)
 
               [1]: https://web.archive.org/web/20221029162505/https://github.com/ubuntu/ubuntu-report/blob/30e902ebc17e4e10d83392d7cd3dc05fc9e35cc4/README.md "ubuntu-report/README.md at master · ubuntu/ubuntu-report | github.com"
               [2]: https://web.archive.org/web/20221029162538/https://github.com/ubuntu/ubuntu-report/blob/8e6030ff9bbeacacf41a9b58ea638a5c9a6f864d/README.md "More diagnostics data from desktop | lists.ubuntu.com"
@@ -1974,10 +1974,10 @@ actions:
 
           Read more about Zeitgeist:
 
-          - [Official website | zeitgeist.freedesktop.org](https://web.archive.org/web/20221029222739/https://zeitgeist.freedesktop.org/)
+          - [Official website | zeitgeist.freedesktop.org](https://web.archive.org/web/20221029150843/https://zeitgeist.freedesktop.org/)
           - [Wikipedia article | en.wikipedia.org](https://web.archive.org/web/20221029222921/https://en.wikipedia.org/wiki/Zeitgeist_%28free_software%29)
           - [Launchpad project page | launchpad.net](https://web.archive.org/web/20221029223026/https://launchpad.net/zeitgeist/)
-          - [ArchWiki article | wiki.archlinux.org](https://web.archive.org/web/20221029223033/https://wiki.archlinux.org/title/Zeitgeist)
+          - [ArchWiki article | wiki.archlinux.org](https://web.archive.org/web/20221029164539/https://wiki.archlinux.org/title/Zeitgeist)
 
           [1]: https://web.archive.org/web/20221029163704/https://packages.debian.org/en/sid/libdevel/libzeitgeist-2.0-dev "libzeitgeist-2.0-dev | Debian Packages | packages.debian.org"
           [2]: https://web.archive.org/web/20221029163817/https://gitlab.gnome.org/crvi/gnome-activity-journal "crvi / GNOME Activity Journal · GitLab | gitlab.gnome.org"
@@ -2116,7 +2116,7 @@ actions:
           [3]: https://web.archive.org/web/20221029170026/https://packages.ubuntu.com/bionic/all/network-manager-config-connectivity-ubuntu/filelist "Ubuntu - File list of package network-manager-config-connectivity-ubuntu/bionic/all | packages.ubuntu.com"
           [4]: https://web.archive.org/web/20221029170108/https://github.com/pop-os/connectivity/blob/master/debian/20-connectivity-pop.conf "connectivity/20-connectivity-pop.conf at master · pop-os/connectivity | github.com"
           [5]: https://web.archive.org/web/20221029170202/https://cgit.freedesktop.org/NetworkManager/NetworkManager/tree/contrib/fedora/rpm/20-connectivity-fedora.conf "20-connectivity-fedora.conf\rpm\fedora\contrib - NetworkManager/NetworkManager - Network connection manager and user applications | reedesktop.org"
-          [6]: https://web.archive.org/web/20221029170207/https://fedora.pkgs.org/35/fedora-updates-testing-x86_64/NetworkManager-config-connectivity-fedora-1.32.12-1.fc35.noarch.rpm.html "NetworkManager-config-connectivity-fedora | fedora.pkgs.org"
+          [6]: https://archive.ph/2023.12.06-185917/https://pkgs.org/download/NetworkManager-config-connectivity-fedora "Networkmanager-config-connectivity-fedora Download (RPM) | pkgs.org"
         call:
           function: RunIfCommandExists
           parameters:
@@ -2202,7 +2202,7 @@ actions:
             - Diagnostic information about your system and usage is sent to Microsoft servers [3].
             - Your usage data and data about feature performance [3].
 
-            [1]: https://web.archive.org/web/20221029170818/https://en.wikipedia.org/wiki/Visual_Studio_Code "Visual Studio Code - Wikipedia | en.wikipedia.org"
+            [1]: https://web.archive.org/web/20221029142001/https://en.wikipedia.org/wiki/Visual_Studio_Code "Visual Studio Code - Wikipedia | en.wikipedia.org"
             [2]: https://web.archive.org/web/20221029170840/https://code.visualstudio.com/updates/v1_26#_offline-mode "Visual Studio Code July 2018 | code.visualstudio.com"
             [3]: https://web.archive.org/web/20221029171138/https://code.visualstudio.com/docs/getstarted/telemetry "Visual Studio Code Telemetry | code.visualstudio.com"
         children:
@@ -2697,7 +2697,7 @@ actions:
                       [2]: https://web.archive.org/web/20231003094154/https://bugzilla.mozilla.org/show_bug.cgi?id=1746646 "1746646 - (tcp-mochitests) [meta] Make mochitests work with TCP enabled (cookieBehavior = 5) | bugzilla.mozilla.org"
                       [3]: https://web.archive.org/web/20230918172155/https://developer.mozilla.org/en-US/docs/Web/Privacy/State_Partitioning#disable_dynamic_state_partitioning "State Partitioning - Privacy on the web | MDN"
                       [4]: https://web.archive.org/web/20231003094207/https://bugzilla.mozilla.org/show_bug.cgi?id=1649876#c5 "1649876 - Migrate FPI users to dFPI | bugzilla.mozilla.org"
-                      [5]: https://blog.mozilla.org/en/products/firefox/firefox-rolls-out-total-cookie-protection-by-default-to-all-users-worldwide/ "Firefox Rolls Out Total Cookie Protection By Default"
+                      [5]: https://web.archive.org/web/20231207105610/https://blog.mozilla.org/en/products/firefox/firefox-rolls-out-total-cookie-protection-by-default-to-all-users-worldwide/ "Firefox Rolls Out Total Cookie Protection By Default"
                       [6]: https://web.archive.org/web/20231003094350/https://bugzilla.mozilla.org/show_bug.cgi?id=1631676#c25 "1631676 - Disable dfpi when privacy.firstparty.isolate=true | bugzilla.mozilla.org"
                     call:
                       function: AddFirefoxPrefs
@@ -2887,7 +2887,7 @@ actions:
                   setting [4].
 
                   [1]: https://web.archive.org/web/20221015102124/https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/internals/preferences.html "Preferences and Defines — Firefox Source Docs documentation | firefox-source-docs.mozilla.org"
-                  [2]: https://web.archive.org/web/20221015102305/https://searchfox.org/mozilla-central/source/modules/libpref/Preferences.cpp#3213
+                  [2]: https://web.archive.org/web/20221015102338/https://searchfox.org/mozilla-central/source/modules/libpref/Preferences.cpp#3213
                   [3]: https://web.archive.org/web/20221015102419/https://bugzilla.mozilla.org/show_bug.cgi?id=1422689#c1
                   [4]: https://web.archive.org/web/20221015102604/https://stigviewer.com/stig/mozilla_firefox/2020-12-10/finding/V-223170
                 call:
@@ -3173,7 +3173,7 @@ actions:
               portal is in place and blocking traffic, this feature prevents all other connection attempts,
               possibly revealing your usage habits.
 
-              See also: [Captive portal | Wikipedia](https://web.archive.org/web/20221029223534/https://en.wikipedia.org/wiki/Captive_portal).
+              See also: [Captive portal | Wikipedia](https://web.archive.org/web/20221029163002/https://en.wikipedia.org/wiki/Captive_portal).
 
               This script sets `network.captive-portal-service.enabled` to 'false', thereby disabling automatic
               connections [1].
@@ -3207,7 +3207,7 @@ actions:
               There have been concerns about the potential for Google Safe Browsing to be used for censorship
               in the future, although this has not occurred as of yet [3].
 
-              [1]: https://web.archive.org/web/20221025192643/https://wiki.mozilla.org/Security/Safe_Browsing "Security/Safe Browsing - MozillaWiki | wiki.mozilla.org"
+              [1]: https://web.archive.org/web/20221026164502/https://wiki.mozilla.org/Security/Safe_Browsing "Security/Safe Browsing - MozillaWiki | wiki.mozilla.org"
               [2]: https://web.archive.org/web/20221025193000/https://support.mozilla.org/en-US/kb/how-does-phishing-and-malware-protection-work#w_what-information-is-sent-to-mozilla-or-its-partners-when-phishing-and-malware-protection-is-enabled
               [3]: https://web.archive.org/web/20221025192516/https://www.usnews.com/opinion/articles/2016-06-22/google-is-the-worlds-biggest-censor-and-its-power-must-be-regulated "Google Is the World's Biggest Censor and Its Power Must Be Regulated | usnews.com"
             children:
@@ -3226,7 +3226,7 @@ actions:
 
                   If this blocking is removed, the user should be knowledgeable about the potential risks and will take precautions.
 
-                  [1]: https://web.archive.org/web/20221025192643/https://wiki.mozilla.org/Security/Safe_Browsing#Prefs "Security/Safe Browsing - MozillaWiki | wiki.mozilla.org"
+                  [1]: https://web.archive.org/web/20221026164502/https://wiki.mozilla.org/Security/Safe_Browsing#Prefs "Security/Safe Browsing - MozillaWiki | wiki.mozilla.org"
                   [2]: https://web.archive.org/web/20230811024650/https://blog.mozilla.org/addons/2020/08/24/introducing-a-scalable-add-ons-blocklist/ "Introducing a scalable add-ons blocklist | Mozilla Add-ons Community Blog"
                 call:
                   function: AddFirefoxPrefs
@@ -3286,7 +3286,7 @@ actions:
 
                   It is active by default [2].
 
-                  [1]: https://web.archive.org/web/20221025192643/https://wiki.mozilla.org/Security/Safe_Browsing#Prefs "Security/Safe Browsing - MozillaWiki | wiki.mozilla.org"
+                  [1]: https://web.archive.org/web/20221026164502/https://wiki.mozilla.org/Security/Safe_Browsing#Prefs "Security/Safe Browsing - MozillaWiki | wiki.mozilla.org"
                   [2]: https://web.archive.org/web/20221029173442/https://github.com/mozilla/policy-templates/blob/master/README.md#preferences "policy-templates/README.md at master · mozilla/policy-templates · GitHub | github.com"
                 call:
                   function: AddFirefoxPrefs
