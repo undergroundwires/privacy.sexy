@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.13.1 (2024-03-22)
+
+* ci/cd: Fix cross-platform git command compability | [255c51c](https://github.com/undergroundwires/privacy.sexy/commit/255c51c8a0524d3ea8a3b16ffc1b178650525010)
+* Fix tooltip falling behind elements on fade out | [1964524](https://github.com/undergroundwires/privacy.sexy/commit/19645248ab7bc78dc872fa176c1a3650d7d6d644)
+* Improve VSCode detection in `configure_vscode.py` | [98845e6](https://github.com/undergroundwires/privacy.sexy/commit/98845e6caee168db131aaf0736533e450827a52c)
+* Bump TypeScript to 5.3 with `verbatimModuleSyntax` | [a721e82](https://github.com/undergroundwires/privacy.sexy/commit/a721e82a4fb603c0732ccfdffc87396c2a01363e)
+* Migrate to Vite 5 and adjust configurations | [4ac1425](https://github.com/undergroundwires/privacy.sexy/commit/4ac1425f76079352268c488f3ff607d1fdc1beb2)
+* win: improve and unify service start/stop logic | [adc2089](https://github.com/undergroundwires/privacy.sexy/commit/adc20898873d50a8873ffc74c48257e69a45d367)
+* Upgrade vitest to v1 and fix test definitions | [e721885](https://github.com/undergroundwires/privacy.sexy/commit/e7218850ba62a7bebaf4768b13e46cba0dedd906)
+* Improve URL checks to reduce false-negatives | [5abf8ff](https://github.com/undergroundwires/privacy.sexy/commit/5abf8ff216a1da737fd489864eeee880f78d6601)
+* win: improve OneDrive data deletion safety | [5eff3a0](https://github.com/undergroundwires/privacy.sexy/commit/5eff3a04886d0d23a6e4c13a0178bb247105c5cb)
+* Bump Electron to latest and use native ESM | [840adf9](https://github.com/undergroundwires/privacy.sexy/commit/840adf9429ed47f9e88c05e90f1d3ab930c2dfc4)
+* Fix tooltip styling inconsistency | [ec34ac1](https://github.com/undergroundwires/privacy.sexy/commit/ec34ac1124e8b8ae53bf31a4dbdc88bb078b3d4e)
+* win: fix VSCode manual update switch script #312 | [b71ad79](https://github.com/undergroundwires/privacy.sexy/commit/b71ad797a3af0db45143249903cb5e178692de7c)
+* mac, linux, win: fix dead URLs and improve docs | [abec9de](https://github.com/undergroundwires/privacy.sexy/commit/abec9def075d82fdaee9663ef8fe1a488911f45b)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.13.0...0.13.1)
+
 ## 0.13.0 (2024-02-11)
 
 * win: add disabling clipboard features #251, #247 | [c6ebba8](https://github.com/undergroundwires/privacy.sexy/commit/c6ebba85fb1b362be0d81d3078f19db71e0528b2)
