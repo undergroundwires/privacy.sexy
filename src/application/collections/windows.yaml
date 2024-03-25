@@ -12528,17 +12528,39 @@ actions:
                     -
                         category: Remove Phone apps
                         docs: |-
-                            The "Phone" category contains scripts focused on managing phone-related Windows apps. These scripts cater to apps designed to connect smartphones with Windows, telecommunication tools like
-                            dialer apps, and older or substituted phone-associated apps. The scripts' objective is to provide users the flexibility to decide on the existence and functionalities of these apps, enhancing
-                            their control over personal preferences.
-                        children:
-                            -
-                                name: Remove "Your Phone Companion" app
-                                docs: |-
-                                    It was initially released in October 2018 [1]. It allows synchronization between your phone and PC [2].
+                            This category features scripts for managing Windows apps related to smartphones.
+                            These scripts are for apps that connect smartphones to Windows, including dialer and other phone-related apps, even those that are outdated or replaced.
+                            The scripts aim to let users control whether these apps stay or go, improving their control over personal settings.
 
-                                    It is replaced by "Phone Link" app since March 2022 [1].
-                                    It does not exist in newer versions of Windows.
+                            These applications may pose privacy concerns due to their data sharing and synchronization capabilities.
+                            Removing these apps improves privacy by stopping unwanted data sharing with Microsoft and reducing security risks.
+                            This also improves system performance by reducing process count.
+
+                            > **Caution:** Removal might affect smartphone integration features.
+                            > Ensure you understand the implications and have alternative solutions if you rely on these features for your daily tasks.
+                        children:
+                            # Excluding:
+                            #   - `Microsoft.Windows.Phone`:
+                            #       Although occasionally mentioned in online scripts, there's no verifiable evidence of this package.
+                            #       References like "Windows Phone" (an operating system, not an app) and "Windows Phone Connector" (an app exclusively for macOS)
+                            #       suggest a mix-up with unrelated products.
+                            -
+                                name: Remove "Phone Companion" app # Deprecated in newer Windows
+                                recommend: standard # Deprecated, impact on modern systems would be minimal
+                                docs: |-
+                                    This script removes the "Phone Companion" app.
+                                    This app is also known as *Microsoft Phone Companion* [1] or, technically, `Microsoft.WindowsPhone` [2].
+
+                                    This integrates Windows PCs with mobile devices (Android, iPhone, and iPad) [1].
+                                    It enabled synchronization of music, photos, Word documents, and Cortana reminders across devices [1].
+                                    It provided setup instructions and syncing tips [1].
+                                    The app enabled users to check their device's battery and storage status and transfer files [1].
+                                    It supported Windows, Android, and iOS devices [1].
+
+                                    This app has been absent in Windows versions since October 2018, replaced by the *Phone Link* app [3].
+                                    Removing this app enhances privacy and system performance.
+
+                                    > **Caution:** Removal may impact device synchronization on older Windows versions reliant on this app's unique features.
 
                                     ### Overview of default preinstallation
 
@@ -12552,25 +12574,30 @@ actions:
                                     | Windows 11 | 22H2 | ❌ |
                                     | Windows 11 | 23H2 | ❌ |
 
-                                    [1]: https://web.archive.org/web/20231006204400/https://support.microsoft.com/en-us/topic/introducing-microsoft-phone-link-and-link-to-windows-2e4bb4c0-f99a-4464-92a8-5264c7c39734 "Introducing Microsoft Phone Link and Link to Windows - Microsoft Support"
-                                    [2]: https://archive.ph/2023.10.09-121535/https://github.com/microsoftdocs/windows-insider/blob/public/wip/apps/your-phone.md%23june-10-2020#june-10-2020 "windows-insider/wip/apps/your-phone.md at public · MicrosoftDocs/windows-insider | github.com"
+                                    [1]: https://web.archive.org/web/20161230070534/https://www.microsoft.com/en-us/store/p/microsoft-phone-companion/9wzdncrfj3pm "Microsoft Phone Companion – Windows Apps on Microsoft Store | web.archive.org"
+                                    [2]: https://web.archive.org/web/20240323103312/https://bspmts.mp.microsoft.com/v1/public/catalog/Retail/Products/9wzdncrfj3pm/applockerdata "Microsoft.WindowsPhone | bspmts.mp.microsoft.com API |  | bspmts.mp.microsoft.com"
+                                    [3]: https://web.archive.org/web/20231006204400/https://support.microsoft.com/en-us/topic/introducing-microsoft-phone-link-and-link-to-windows-2e4bb4c0-f99a-4464-92a8-5264c7c39734 "Introducing Microsoft Phone Link and Link to Windows - Microsoft Support"
                                 call:
-                                    -
-                                        function: UninstallStoreApp
-                                        parameters:
-                                            packageName: Microsoft.WindowsPhone # Get-AppxPackage Microsoft.WindowsPhone
-                                            publisherId: 8wekyb3d8bbwe
-                                    -
-                                        function: UninstallStoreApp
-                                        parameters:
-                                            packageName: Microsoft.Windows.Phone # Get-AppxPackage Microsoft.Windows.Phone
-                                            publisherId: 8wekyb3d8bbwe
+                                    function: UninstallStoreApp
+                                    parameters:
+                                        packageName: Microsoft.WindowsPhone # Get-AppxPackage Microsoft.WindowsPhone
+                                        publisherId: 8wekyb3d8bbwe
                             -
-                                name: Remove "Communications - Phone" app # Deprecated in newer Windows 10
+                                name: Remove "Microsoft Phone" app # Windows 10 Mobile app, deprecated in newer Windows
+                                recommend: standard # Deprecated, impact on modern systems would be minimal
                                 docs: |-
-                                    This app is also known as "Phone (dialer)" app [1].
+                                    This script removes the "Microsoft Phone" app.
+                                    This app is known as *Phone (dialer)* [1], *Microsoft Phone* [2], or `Microsoft.CommsPhone` [3].
 
-                                    This app comes pre-installed on certain versions of Windows [1].
+                                    This app enabled voice and video calls over cellular networks or Wi-Fi on Windows 10 Mobile [2].
+                                    It offered smart contact search, voicemail management, call recording, and call blocking [2].
+
+                                    This app comes pre-installed on certain versions of Windows [1] [4].
+                                    Windows 10 Mobile has reached end of support and is an outdated operating system [5].
+                                    Removing outdated and unsupported apps improves privacy and performance.
+
+                                    > **Caution:** If you are using a device still running on Windows 10 Mobile, uninstalling this app will remove your ability to make or receive phone
+                                    > calls, manage voicemail, or block unwanted calls directly from your device.
 
                                     ### Overview of default preinstallation
 
@@ -12585,6 +12612,10 @@ actions:
                                     | Windows 11 | 23H2 | ❌ |
 
                                     [1]: https://web.archive.org/web/20231006175115/https://learn.microsoft.com/en-us/windows/client-management/mdm/applocker-csp "AppLocker CSP - Windows Client Management | Microsoft Learn"
+                                    [2]: https://web.archive.org/web/20240324180612/https://www.microsoft.com/en-us/p/microsoft-phone/9wzdncrdtbwp?activetab=pivot:overviewtab "Get Microsoft Phone - Microsoft Store | www.microsoft.com"
+                                    [3]: https://web.archive.org/web/20240324180601/https://bspmts.mp.microsoft.com/v1/public/catalog/Retail/Products/9wzdncrdtbwp/applockerdata "Microsoft.CommsPhone | bspmts.mp.microsoft.com API |  | bspmts.mp.microsoft.com"
+                                    [4]: https://web.archive.org/web/20190420022129/https://docs.microsoft.com/en-us/windows/configuration/mobile-devices/product-ids-in-windows-10-mobile "Product IDs in Windows 10 Mobile (Windows 10) | Microsoft Docs | docs.microsoft.com"
+                                    [5]: https://web.archive.org/web/20240325084146/https://support.microsoft.com/en-us/windows/windows-10-mobile-end-of-support-faq-8c2dd1cf-a571-00f0-0881-bb83926d05c5 "Windows 10 Mobile End of Support: FAQ - Microsoft Support | support.microsoft.com"
                                 call:
                                     function: UninstallStoreApp
                                     parameters:
@@ -12592,12 +12623,49 @@ actions:
                                         publisherId: 8wekyb3d8bbwe
                             -
                                 name: Remove "Phone Link" app
+                                recommend: strict
                                 docs: |-
-                                    [Microsoft Store Page](https://archive.ph/2023.10.06-204308/https://apps.microsoft.com/detail/phone-link/9NMPJ99VJBWV?hl=en-us&gl=us)
+                                    This script removes the "Phone Link" app.
+                                    Known technically as `Microsoft.YourPhone` [1] [2] [3],
+                                    previously *Your Phone* [2] [3] [4] [5] [6] and *Your Phone Companion* [4].
 
-                                    It was initially released as "Your Phone" app in October 2018 [1].
+                                    The app links your phone and Windows PC.
+                                    It allows you to share and manage content and communications across devices [5] [7] [8].
+                                    The app lets you text, make calls, use mobile apps, get notifications, and transfer files over Wi-Fi [5] [7] [8].
+
+                                    Launched in October 2018 as *Your Phone* and *Your Phone Companion* [4],
+                                    it was rebranded to *Microsoft Phone Link* in March 2022 [4] [9].
+                                    Originally developed for Android [8], through collaboration between Microsoft and Samsung [8],
+                                    it has extended support to iOS devices since April 26, 2023 [10].
+
+                                    Privacy concerns arise from personal data handling, unencrypted data transfer, and potential misuse:
+
+                                    - **No End-to-End Encryption:**
+                                        It is not end-to-end encrypted, raising doubts about data privacy and security during transfers [11].
+                                    - **Microsoft personal data collection:**
+                                        Personal data, including text messages, clipboard contents, photos, and notifications, are collected by Microsoft [6].
+                                        Microsoft confirms it stores and processes such data [6].
+                                    - **Malicious Usage**:
+                                        Misuse of the app, such as setting it up on a victim's phone to monitor communications without consent [12] [13], increases data leakage risks.
+                                    - **Lack of Privacy Transparency:**
+                                        The Microsoft Privacy Statement does not explicitly clarify that personal data is relayed through its servers, leading to possible
+                                        misconceptions about data handling [6] [14].
+                                        Microsoft's approach to privacy is criticized for lacking transparency [6] [11].
+                                    - **Sensitive Information Exposure:**
+                                        Data exposed to Microsoft, or can be received by an attacker can include sensitive information such as the content of private messages, security
+                                        codes from authentication apps, caller identities, and more [6] [12].
+                                        This can contain personal, financial, or security-related data [6] [12].
+                                    - **Diagnostic Data Collection:**
+                                        The app collects diagnostic data, including potentially sensitive information about app usage [6].
+                                    - **Account Takeover:**
+                                        The app could be used in account takeover attempts by intercepting multi-factor authentication notifications [12].
+                                    - **Attack vector surface on Android:**
+                                        Android devices face more potential attack vectors than iOS devices due to internet-based connectivity [12].
 
                                     This app comes pre-installed on certain versions of Windows [2] [3].
+
+                                    > **Caution:** Its absence may affect your workflow if you rely on its features for daily tasks.
+                                    > Consider [KDE Connect](https://kdeconnect.kde.org/) for similar, privacy-friendly features.
 
                                     ### Overview of default preinstallation
 
@@ -12611,14 +12679,64 @@ actions:
                                     | Windows 11 | 22H2 | ✅ |
                                     | Windows 11 | 23H2 | ✅ |
 
-                                    [1]: https://web.archive.org/web/20231006204400/https://support.microsoft.com/en-us/topic/introducing-microsoft-phone-link-and-link-to-windows-2e4bb4c0-f99a-4464-92a8-5264c7c39734 "Introducing Microsoft Phone Link and Link to Windows - Microsoft Support"
+                                    [1]: https://web.archive.org/web/20240324181147/https://bspmts.mp.microsoft.com/v1/public/catalog/Retail/Products/9NMPJ99VJBWV/applockerdata "Microsoft.YourPhone | bspmts.mp.microsoft.com API |  | bspmts.mp.microsoft.com"
                                     [2]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
                                     [3]: https://web.archive.org/web/20221101231811/https://learn.microsoft.com/en-us/windows/application-management/provisioned-apps-windows-client-os "Get the provisioned apps on Windows client operating system - Windows Application Management | Microsoft Learn"
+                                    [4]: https://web.archive.org/web/20231006204400/https://support.microsoft.com/en-us/topic/introducing-microsoft-phone-link-and-link-to-windows-2e4bb4c0-f99a-4464-92a8-5264c7c39734 "Introducing Microsoft Phone Link and Link to Windows - Microsoft Support"
+                                    [5]: https://archive.ph/2024.03.24-181742/https://github.com/microsoftdocs/windows-insider/blob/public/wip/apps/your-phone.md "windows-insider/wip/apps/your-phone.md at public · MicrosoftDocs/windows-insider | github.com"
+                                    [6]: https://web.archive.org/web/20240325075627/https://www.ctrl.blog/entry/microsoft-phone-link-privacy.html "Phone Link relays your personal data through Microsoft servers | Ctrl blog | ctrl.blog"
+                                    [7]: https://archive.ph/2023.10.06-204308/https://apps.microsoft.com/detail/phone-link/9NMPJ99VJBWV?hl=en-us&gl=us "Phone Link - Microsoft Apps | apps.microsoft.com"
+                                    [8]: https://web.archive.org/web/20240324183306/https://blogs.windows.com/windowsexperience/2020/08/05/microsoft-and-samsung-expand-partnership-empowering-you-across-work-and-play/ "Microsoft and Samsung expand partnership, empowering you across work and play | Windows Experience Blog | blogs.windows.com"
+                                    [9]: https://web.archive.org/web/20240324183451/https://www.windowscentral.com/your-phone-renamed-phone-link "Microsoft renames Your Phone to Phone Link, partners with Honor for an expanded experience | Windows Central | windowscentral.com"
+                                    [10]: https://web.archive.org/web/20240324184511/https://blogs.windows.com/windowsexperience/2023/04/26/phone-link-for-ios-is-now-rolling-out-to-all-windows-11-customers/ "Phone Link for iOS is now rolling out to all Windows 11 customers | Windows Experience Blog | blogs.windows.com"
+                                    [11]: https://web.archive.org/web/20240325080949/https://www.windowscentral.com/software-apps/windows-11/microsofts-phone-link-is-the-best-new-windows-feature-of-the-past-decade "Microsoft's 'Phone Link' is the best new Windows feature of the past decade | Windows Central | www.windowscentral.com"
+                                    [12]: https://web.archive.org/web/20240325084649/https://irradiate.com.au/blog/securing-microsoft-phone-link "Navigating Security Challenges in Microsoft's Phone Link for Organization - Irradiate Security | irradiate.com.au"
+                                    [13]: https://web.archive.org/web/20240325080335/https://www.foxbusiness.com/technology/windows-11-phone-link-feature-could-exploited-cyberstalkers-spy-iphones-report "Windows 11 Phone Link feature could be exploited by cyberstalkers to spy on iPhones: report | Fox Business | foxbusiness.com"
+                                    [14]: https://web.archive.org/web/20230406235344/https://privacy.microsoft.com/en-us/privacystatement#mainyourphonemodule "Microsoft Privacy Statement – Microsoft privacy | privacy.microsoft.com"
                                 call:
                                     function: UninstallStoreApp
                                     parameters:
                                         packageName: Microsoft.YourPhone # Get-AppxPackage Microsoft.YourPhone
                                         publisherId: 8wekyb3d8bbwe
+                            -
+                                name: Remove "Call" app
+                                recommend: strict
+                                docs: |-
+                                    This script removes the "Call" application, also known as the *Calling Shell App* [1].
+
+                                    This app enables transferring and managing phone calls from a mobile to a Windows desktop, including playback
+                                    through PC speakers [2].
+                                    The main executable of this app is `CallingShellApp.exe`, which Microsoft describes as the
+                                    "Calling App to host call progress on shell" [3].
+
+                                    The script is safe to use if you don't need your PC to handle phone calls [3].
+                                    Removing this app does not affect the core functionalities of Windows.
+
+                                    > **Caution**:
+                                    > Removing the "Call" app disables transferring phone calls from a mobile to your PC [2].
+
+                                    ### Overview of default preinstallation
+
+                                    This app comes pre-installed on certain versions of Windows [3].
+
+                                    | OS | Version | Existence |
+                                    | -- | ------- | --------- |
+                                    | Windows 10 | 19H2 | ✅ |
+                                    | Windows 10 | 20H2 | ✅ |
+                                    | Windows 10 | 21H2 | ✅ |
+                                    | Windows 10 | 22H2 | ✅ |
+                                    | Windows 11 | 21H2 | ✅ |
+                                    | Windows 11 | 22H2 | ✅ |
+                                    | Windows 11 | 23H2 | ✅ |
+
+                                    [1]: https://archive.ph/2024.03.25-093648/https://twitter.com/ALumia_Italia/status/1088739425738244096?lang=en 'Aggiornamenti Lumia on X: "Windows Calling Shell App (aka Call) got a new "Store Logo"" / X | twitter.com'
+                                    [2]: https://web.archive.org/web/20240103144719/https://www.aggiornamentilumia.it/2018/11/05/windows-10-19h1-in-arrivo-una-nuova-applicazione-per-il-mirroring-chiamate-indiscrezione/ "Windows 10 19H1 | In arrivo una nuova applicazione per il mirroring chiamate [Indiscrezione] - Aggiornamenti Lumia | www.aggiornamentilumia.it"
+                                    [3]: https://web.archive.org/web/20240103144732/https://strontic.github.io/xcyclopedia/library/CallingShellApp.exe-C5415F104A4060D90CE1675383308A66.html "CallingShellApp.exe | Calling App to host call progress on shell | STRONTIC | strontic.github.io"
+                                call:
+                                    function: UninstallNonRemovableStoreApp
+                                    parameters:
+                                        packageName: Microsoft.Windows.CallingShellApp # Get-AppxPackage Microsoft.Windows.CallingShellApp
+                                        publisherId: cw5n1h2txyewy
                     -
                         name: Remove "Microsoft Remote Desktop" app
                         docs: |-
