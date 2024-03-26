@@ -248,7 +248,6 @@ $card-horizontal-gap    : $card-gap;
     }
 
     .card__expander {
-      min-height: 200px;
       margin-top: $expanded-margin-top;
       opacity: 1;
     }
