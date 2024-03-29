@@ -96,6 +96,9 @@ jobs:
         name: Run Docker image on port 8080
         run: docker run -d -p 8080:80 --rm --name privacy.sexy undergroundwires/privacy.sexy:latest
       -
+        name: Enforce IPv4 Connectivity # Used due to GitHub runners' lack of IPv6 support, preventing request timeouts.
+        uses: ./.github/actions/force-ipv4
+      -
         name: Check server is up and returns HTTP 200
         run: >-
           node ./scripts/verify-web-server-status.js \

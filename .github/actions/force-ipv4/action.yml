@@ -1,0 +1,12 @@
+inputs:
+  project-root:
+    required: false
+    default: '.'
+runs:
+  using: composite
+  steps:
+    -
+      name: Run prefer IPv4 script
+      shell: bash
+      run: ./.github/actions/force-ipv4/force-ipv4.sh
+      working-directory: ${{ inputs.project-root }}

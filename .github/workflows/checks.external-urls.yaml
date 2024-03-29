@@ -18,5 +18,8 @@ jobs:
         name: Install dependencies
         uses: ./.github/actions/npm-install-dependencies
       -
+        name: Enforce IPv4 Connectivity # Used due to GitHub runners' lack of IPv6 support, preventing request timeouts.
+        uses: ./.github/actions/force-ipv4
+      -
         name: Test
         run: npm run check:external-urls
