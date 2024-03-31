@@ -1,6 +1,7 @@
 name: checks.external-urls
 
 on:
+  push:
   schedule:
     - cron: '0 0 * * 0' # at 00:00 on every Sunday
 
@@ -23,3 +24,7 @@ jobs:
       -
         name: Test
         run: npm run check:external-urls
+        env:
+          RANDOMIZED_URL_CHECK_LIMIT: "${{ github.event_name == 'push' && '100' || '3000' }}"
+          # - Scheduled checks has high limit for thorough testing.
+          # - For push events, triggered by code changes, the amount of URLs are limited to provide quick feedback.

@@ -1,19 +1,26 @@
 import { test, expect } from 'vitest';
 import { parseApplication } from '@/application/Parser/ApplicationParser';
-import type { IApplication } from '@/domain/IApplication';
 import { indentText } from '@tests/shared/Text';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
+import { shuffle } from '@/application/Common/Shuffle';
 import { type UrlStatus, formatUrlStatus } from './StatusChecker/UrlStatus';
 import { getUrlStatusesInParallel, type BatchRequestOptions } from './StatusChecker/BatchStatusChecker';
+import { TestExecutionDetailsLogger } from './TestExecutionDetailsLogger';
+import { extractDocumentationUrls } from './DocumentationUrlExtractor';
 
 // arrange
+const logger = new TestExecutionDetailsLogger();
+logger.logTestSectionStartDelimiter();
 const app = parseApplication();
-const urls = collectUniqueUrls({
-  application: app,
-  excludePatterns: [
+let urls = extractDocumentationUrls({
+  logger,
+  urlExclusionPatterns: [
     /^https:\/\/archive\.ph/, // Drops HEAD/GET requests via fetch/curl, responding to Postman/Chromium.
   ],
+  application: app,
 });
+urls = filterUrlsToEnvironmentCheckLimit(urls);
+logger.logLabeledInformation('URLs submitted for testing', urls.length.toString());
 const requestOptions: BatchRequestOptions = {
   domainOptions: {
     sameDomainParallelize: false, // be nice to our third-party servers
@@ -30,55 +37,65 @@ const requestOptions: BatchRequestOptions = {
     enableCookies: true,
   },
 };
+logger.logLabeledInformation('HTTP request options', JSON.stringify(requestOptions, null, 2));
 const testTimeoutInMs = urls.length * 60 /* seconds */ * 1000;
+logger.logLabeledInformation('Scheduled test duration', convertMillisecondsToHumanReadableFormat(testTimeoutInMs));
+logger.logTestSectionEndDelimiter();
 test(`all URLs (${urls.length}) should be alive`, async () => {
   // act
+  console.log('URLS', urls); // TODO: Delete
   const results = await getUrlStatusesInParallel(urls, requestOptions);
   // assert
   const deadUrls = results.filter((r) => r.code === undefined || !isOkStatusCode(r.code));
-  expect(deadUrls).to.have.lengthOf(0, formatAssertionMessage([formatUrlStatusReport(deadUrls)]));
+  expect(deadUrls).to.have.lengthOf(
+    0,
+    formatAssertionMessage([createReportForDeadUrlStatuses(deadUrls)]),
+  );
 }, testTimeoutInMs);
 
 function isOkStatusCode(statusCode: number): boolean {
   return statusCode >= 200 && statusCode < 300;
 }
 
-function collectUniqueUrls(
-  options: {
-    readonly application: IApplication,
-    readonly excludePatterns?: readonly RegExp[],
-  },
-): string[] {
-  return [ // Get all nodes
-    ...options.application.collections.flatMap((c) => c.getAllCategories()),
-    ...options.application.collections.flatMap((c) => c.getAllScripts()),
-  ]
-    // Get all docs
-    .flatMap((documentable) => documentable.docs)
-    // Parse all URLs
-    .flatMap((docString) => extractUrls(docString))
-    // Remove duplicates
-    .filter((url, index, array) => array.indexOf(url) === index)
-    // Exclude certain URLs based on patterns
-    .filter((url) => !shouldExcludeUrl(url, options.excludePatterns ?? []));
-}
-
-function shouldExcludeUrl(url: string, patterns: readonly RegExp[]): boolean {
-  return patterns.some((pattern) => pattern.test(url));
-}
-
-function formatUrlStatusReport(deadUrlStatuses: readonly UrlStatus[]): string {
+function createReportForDeadUrlStatuses(deadUrlStatuses: readonly UrlStatus[]): string {
   return `\n${deadUrlStatuses.map((status) => indentText(formatUrlStatus(status))).join('\n---\n')}\n`;
 }
 
-function extractUrls(textWithInlineCode: string): string[] {
-  /*
-    Matches URLs:
-    - Excludes inline code blocks as they may contain URLs not intended for user interaction
-      and not guaranteed to support expected HTTP methods, leading to false-negatives.
-    - Supports URLs containing parentheses, avoiding matches within code that might not represent
-      actual links.
-  */
-  const nonCodeBlockUrlRegex = /(?<!`)(https?:\/\/[^\s`"<>()]+(?:\([^\s`"<>()]*\))?[^\s`"<>()]*)/g;
-  return textWithInlineCode.match(nonCodeBlockUrlRegex) || [];
+function filterUrlsToEnvironmentCheckLimit(originalUrls: string[]): string[] {
+  const { RANDOMIZED_URL_CHECK_LIMIT } = process.env;
+  logger.logLabeledInformation('URL check limit', RANDOMIZED_URL_CHECK_LIMIT || 'Unlimited');
+  if (RANDOMIZED_URL_CHECK_LIMIT !== undefined && RANDOMIZED_URL_CHECK_LIMIT !== '') {
+    const maxUrlsInTest = parseInt(RANDOMIZED_URL_CHECK_LIMIT, 10);
+    if (Number.isNaN(maxUrlsInTest)) {
+      throw new Error(`Invalid URL limit: ${RANDOMIZED_URL_CHECK_LIMIT}`);
+    }
+    if (maxUrlsInTest < originalUrls.length) {
+      return shuffle(originalUrls).slice(0, maxUrlsInTest);
+    }
+  }
+  return originalUrls;
+}
+
+function convertMillisecondsToHumanReadableFormat(milliseconds: number): string {
+  const timeParts: string[] = [];
+  const addTimePart = (amount: number, label: string) => {
+    if (amount === 0) {
+      return;
+    }
+    timeParts.push(`${amount} ${label}`);
+  };
+
+  const hours = milliseconds / (1000 * 60 * 60);
+  const absoluteHours = Math.floor(hours);
+  addTimePart(absoluteHours, 'hours');
+
+  const minutes = (hours - absoluteHours) * 60;
+  const absoluteMinutes = Math.floor(minutes);
+  addTimePart(absoluteMinutes, 'minutes');
+
+  const seconds = (minutes - absoluteMinutes) * 60;
+  const absoluteSeconds = Math.floor(seconds);
+  addTimePart(absoluteSeconds, 'seconds');
+
+  return timeParts.join(', ');
 }
