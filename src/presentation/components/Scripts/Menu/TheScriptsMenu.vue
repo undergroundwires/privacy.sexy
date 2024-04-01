@@ -1,13 +1,13 @@
 <template>
-  <div id="container">
-    <div class="item rows">
-      <TheRecommendationSelector class="item" />
-      <TheRevertSelector class="item" />
+  <div class="scripts-menu">
+    <div class="scripts-menu-item scripts-menu-rows">
+      <TheRecommendationSelector class="scripts-menu-item" />
+      <TheRevertSelector class="scripts-menu-item" />
     </div>
-    <TheOsChanger class="item" />
+    <TheOsChanger class="scripts-menu-item" />
     <TheViewChanger
       v-if="!isSearching"
-      class="item"
+      class="scripts-menu-item"
       @view-changed="$emit('viewChanged', $event)"
     />
   </div>
@@ -67,29 +67,46 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-$margin-between-lines: 7px;
-#container {
+@use "@/presentation/assets/styles/main" as *;
+@use 'sass:math';
+
+$spacing-small: math.div($base-spacing, 2);
+
+@mixin center-middle-flex-item {
+  &:first-child, &:last-child {
+    flex-grow: 1;
+    flex-basis: 0;
+  }
+  &:last-child {
+    justify-content: flex-end;
+  }
+}
+
+$responsive-alignment-breakpoint: $media-screen-medium-width;
+
+.scripts-menu {
   display: flex;
   flex-wrap: wrap;
-  margin-top: -$margin-between-lines;
-  .item {
-    flex: 1;
-    white-space: nowrap;
+  column-gap: $base-spacing;
+  row-gap: $base-spacing;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-left: $spacing-small;
+  margin-right: $spacing-small;
+  @media screen and (max-width: $responsive-alignment-breakpoint) {
+    justify-content: space-around;
+  }
+  .scripts-menu-item {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: $margin-between-lines 5px 0 5px;
-    &:first-child {
-      justify-content: flex-start;
-    }
-    &:last-child {
-      justify-content: flex-end;
+    @media screen and (min-width: $responsive-alignment-breakpoint) {
+      @include center-middle-flex-item;
     }
   }
-  .rows {
+  .scripts-menu-rows {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    row-gap: 0.5em;
   }
 }
 </style>
