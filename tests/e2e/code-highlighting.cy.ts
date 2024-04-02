@@ -1,4 +1,6 @@
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
+import { getCurrentHighlightRange } from './support/interactions/code-area';
+import { selectAllScripts } from './support/interactions/script-selection';
 import { openCard } from './support/interactions/card';
 
 describe('script selection highlighting', () => {
@@ -6,17 +8,27 @@ describe('script selection highlighting', () => {
   it('highlights more when multiple scripts are selected', () => {
     cy.visit('/');
     selectLastScript();
-    getCurrentHighlightRange((lastScriptHighlightRange) => {
+    getNonZeroCurrentHighlightRangeValue().then((lastScriptHighlightRange) => {
       cy.log(`Highlight height for last script: ${lastScriptHighlightRange}`);
+      expect(lastScriptHighlightRange).to.be.greaterThan(0);
       cy.visit('/');
       selectAllScripts();
-      getCurrentHighlightRange((allScriptsHighlightRange) => {
+      getNonZeroCurrentHighlightRangeValue().then((allScriptsHighlightRange) => {
         cy.log(`Highlight height for all scripts: ${allScriptsHighlightRange}`);
         expect(allScriptsHighlightRange).to.be.greaterThan(lastScriptHighlightRange);
       });
     });
   });
 });
+
+function getNonZeroCurrentHighlightRangeValue() {
+  return getCurrentHighlightRange()
+    .should('not.equal', '0')
+    .then((rangeValue) => {
+      expectExists(rangeValue);
+      return parseInt(rangeValue, 10);
+    });
+}
 
 function selectLastScript() {
   openCard({
@@ -25,23 +37,4 @@ function selectLastScript() {
   cy.get('.node')
     .last()
     .click({ force: true });
-}
-
-function selectAllScripts() {
-  cy.contains('span', 'All')
-    .click();
-}
-
-function getCurrentHighlightRange(
-  callback: (highlightedRange: number) => void,
-) {
-  cy
-    .get('#codeEditor')
-    .invoke('attr', 'data-test-highlighted-range')
-    .should('not.be.empty')
-    .and('not.equal', '0')
-    .then((range) => {
-      expectExists(range);
-      callback(parseInt(range, 10));
-    });
 }

@@ -50,17 +50,36 @@ function getOptionalDevToolkitComponent(): Component | undefined {
 
 <style lang="scss">
 @use "@/presentation/assets/styles/main" as *;
+@use 'sass:math';
+
+@mixin responsive-spacing {
+  $spacing-absolute-small: math.div($base-spacing, 2);
+  $spacing-absolute-extra-small: math.div($base-spacing, 4);
+  // Avoid using percentage-based values for spacing the avoid unintended layout shifts.
+  margin-left: $base-spacing;
+  margin-right: $base-spacing;
+  @media screen and (max-width: $media-screen-big-width) {
+    margin-left: $spacing-absolute-small;
+    margin-right: $spacing-absolute-small;
+  }
+  @media screen and (max-width: $media-screen-medium-width) {
+    margin-left: $spacing-absolute-extra-small;
+    margin-right: $spacing-absolute-extra-small;
+  }
+  padding: $spacing-absolute-small;
+}
 
 #app {
   margin-right: auto;
   margin-left: auto;
   max-width: 1600px;
   .app__wrapper {
-    margin: 0% 2% 0% 2%;
     background-color: $color-surface;
     color: $color-on-surface;
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.06);
-    padding: 2%;
+
+    @include responsive-spacing;
+
     display:flex;
     flex-direction: column;
     .app__row {

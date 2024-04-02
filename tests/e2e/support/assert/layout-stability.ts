@@ -1,38 +1,37 @@
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
-import { ViewportTestScenarios } from './support/scenarios/viewport-test-scenarios';
 
-describe('Modal interaction and layout stability', () => {
-  ViewportTestScenarios.forEach(({ // some shifts are observed only on extra small or large screens
-    name, width, height,
-  }) => {
-    it(name, () => {
-      cy.viewport(width, height);
-      cy.visit('/');
-
-      let metricsBeforeModal: ViewportMetrics | undefined;
-
-      captureViewportMetrics((metrics) => {
-        metricsBeforeModal = metrics;
-      });
-
-      cy
-        .contains('button', 'Privacy')
-        .click();
-
-      cy
-        .get('.modal-content')
-        .should('be.visible');
-
-      captureViewportMetrics((metrics) => {
-        const metricsAfterModal = metrics;
-        expect(metricsBeforeModal).to.deep.equal(metricsAfterModal, formatAssertionMessage([
-          `Expected (initial metrics before modal): ${JSON.stringify(metricsBeforeModal)}`,
-          `Actual (metrics after modal is opened): ${JSON.stringify(metricsAfterModal)}`,
-        ]));
-      });
-    });
+export function assertLayoutStability(selector: string, action: ()=> void): void {
+  // arrange
+  let initialMetrics: ViewportMetrics | undefined;
+  captureViewportMetrics(selector, (metrics) => {
+    initialMetrics = metrics;
   });
-});
+  // act
+  action();
+  // assert
+  captureViewportMetrics(selector, (metrics) => {
+    const finalMetrics = metrics;
+    expect(initialMetrics).to.deep.equal(finalMetrics, formatAssertionMessage([
+      `Expected (initial metrics before action): ${JSON.stringify(initialMetrics)}`,
+      `Actual (final metrics after action): ${JSON.stringify(finalMetrics)}`,
+    ]));
+  });
+}
+
+function captureViewportMetrics(
+  selector: string,
+  callback: (metrics: ViewportMetrics) => void,
+): void {
+  cy.window().then((win) => {
+    cy.get(selector)
+      .then((elements) => {
+        const element = elements[0];
+        const position = getElementViewportMetrics(element, win);
+        cy.log(`Captured metrics (\`${selector}\`): ${JSON.stringify(position)}`);
+        callback(position);
+      });
+  });
+}
 
 interface ViewportMetrics {
   readonly x: number;
@@ -42,17 +41,6 @@ interface ViewportMetrics {
     Height and width measurements can lead to false negatives due to layout shifts caused by
     delayed loading of fonts and icons.
   */
-}
-
-function captureViewportMetrics(callback: (metrics: ViewportMetrics) => void): void {
-  cy.window().then((win) => {
-    cy.get('body')
-      .then((body) => {
-        const position = getElementViewportMetrics(body[0], win);
-        cy.log(`Captured metrics: ${JSON.stringify(position)}`);
-        callback(position);
-      });
-  });
 }
 
 function getElementViewportMetrics(element: HTMLElement, win: Window): ViewportMetrics {
