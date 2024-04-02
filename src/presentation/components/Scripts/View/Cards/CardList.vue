@@ -7,9 +7,9 @@
         <!-- <div id="responsivity-debug">
           Width: {{ width || 'undefined' }}
           Size:
-            <span v-if="width <= 500">small</span>
-            <span v-if="width > 500 && width < 750">medium</span>
-            <span v-if="width >= 750">big</span>
+          <span v-if="width <= 500">small</span>
+          <span v-if="width > 500 && width < 750">medium</span>
+          <span v-if="width >= 750">big</span>
         </div> -->
         <div
           v-if="categoryIds.length > 0"
@@ -27,6 +27,7 @@
             :data-category="categoryId"
             :category-id="categoryId"
             :active-category-id="activeCategoryId"
+            :card-layout="cardLayout"
             @card-expansion-changed="onSelected(categoryId, $event)"
           />
         </div>
@@ -46,6 +47,7 @@ import { injectKey } from '@/presentation/injectionSymbols';
 import SizeObserver from '@/presentation/components/Shared/SizeObserver.vue';
 import { hasDirective } from './NonCollapsingDirective';
 import CardListItem from './CardListItem.vue';
+import { useCardLayout } from './UseCardLayout';
 
 export default defineComponent({
   components: {
@@ -61,7 +63,13 @@ export default defineComponent({
     const categoryIds = computed<readonly number[]>(
       () => currentState.value.collection.actions.map((category) => category.id),
     );
+
     const activeCategoryId = ref<number | undefined>(undefined);
+
+    const cardLayout = useCardLayout({
+      containerWidth: computed(() => width.value ?? 0),
+      totalCards: computed(() => categoryIds.value.length),
+    });
 
     function onSelected(categoryId: number, isExpanded: boolean) {
       activeCategoryId.value = isExpanded ? categoryId : undefined;
@@ -101,6 +109,7 @@ export default defineComponent({
       width,
       categoryIds,
       activeCategoryId,
+      cardLayout,
       onSelected,
     };
   },

@@ -29,26 +29,12 @@
       />
     </div>
     <CardExpandTransition>
-      <div v-show="isExpanded">
-        <CardExpansionArrow />
-        <div
-          class="card__expander"
-          @click.stop
-        >
-          <div class="card__expander__close-button">
-            <FlatButton
-              icon="xmark"
-              @click="collapse()"
-            />
-          </div>
-          <div class="card__expander__content">
-            <ScriptsTree
-              :category-id="categoryId"
-              :has-top-padding="false"
-            />
-          </div>
-        </div>
-      </div>
+      <CardExpansionPanel
+        v-show="isExpanded"
+        :category-id="categoryId"
+        @on-collapse="collapse"
+        @click.stop
+      />
     </CardExpandTransition>
   </div>
 </template>
@@ -56,28 +42,30 @@
 <script lang="ts">
 import {
   defineComponent, computed, shallowRef,
+  type PropType,
 } from 'vue';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
-import FlatButton from '@/presentation/components/Shared/FlatButton.vue';
 import { injectKey } from '@/presentation/injectionSymbols';
-import ScriptsTree from '@/presentation/components/Scripts/View/Tree/ScriptsTree.vue';
 import { sleep } from '@/infrastructure/Threading/AsyncSleep';
 import CardSelectionIndicator from './CardSelectionIndicator.vue';
 import CardExpandTransition from './CardExpandTransition.vue';
-import CardExpansionArrow from './CardExpansionArrow.vue';
+import CardExpansionPanel from './CardExpansionPanel.vue';
+import type { CardLayout } from './UseCardLayout';
 
 export default defineComponent({
   components: {
-    ScriptsTree,
     AppIcon,
     CardSelectionIndicator,
-    FlatButton,
+    CardExpansionPanel,
     CardExpandTransition,
-    CardExpansionArrow,
   },
   props: {
     categoryId: {
       type: Number,
+      required: true,
+    },
+    cardLayout: {
+      type: Object as PropType<CardLayout>,
       required: true,
     },
     activeCategoryId: {
@@ -129,6 +117,7 @@ export default defineComponent({
       cardTitle,
       isExpanded,
       cardElement,
+      totalColumns: props.cardLayout.totalColumns,
       collapse,
     };
   },
@@ -141,7 +130,6 @@ export default defineComponent({
 @use "./card-gap" as *;
 
 $card-inner-padding     : $spacing-absolute-xx-large;
-$expanded-margin-top    : $spacing-absolute-xx-large;
 $card-horizontal-gap    : $card-gap;
 
 .card {
@@ -190,44 +178,13 @@ $card-horizontal-gap    : $card-gap;
       font-size: $font-size-absolute-normal;
     }
   }
-  .card__expander {
-    position: relative;
-    background-color: $color-primary-darker;
-    color: $color-on-primary;
-
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-
-    .card__expander__content {
-      display: flex;
-      justify-content: center;
-      word-break: break-word;
-      max-width: 100%; // Prevents horizontal expansion of inner content (e.g., when a code block is shown)
-      width: 100%; // Expands the container to fill available horizontal space, enabling alignment of child items.
-    }
-
-    .card__expander__close-button {
-      font-size: $font-size-absolute-large;
-      align-self: flex-end;
-      margin-right: $spacing-absolute-small;
-      @include clickable;
-      color: $color-primary-light;
-      @include hover-or-touch {
-        color: $color-primary;
-      }
-    }
-  }
 
   &.is-expanded {
     .card__inner {
       height: auto;
       background-color: $color-secondary;
       color: $color-on-secondary;
-    }
-
-    .card__expander {
-      margin-top: $expanded-margin-top;
+      margin-bottom: $spacing-absolute-xx-large;
     }
 
     @include hover-or-touch {
@@ -253,36 +210,32 @@ $card-horizontal-gap    : $card-gap;
     }
   }
 }
-@mixin adaptive-card($cards-in-row) {
-  &.card {
-    $total-times-gap-is-used-in-row: $cards-in-row - 1;
-    $total-gap-width-in-row: $total-times-gap-is-used-in-row * $card-horizontal-gap;
-    $available-row-width-for-cards: calc(100% - #{$total-gap-width-in-row});
-    $available-width-per-card: calc(#{$available-row-width-for-cards} / #{$cards-in-row});
-    width:$available-width-per-card;
-    .card__expander {
-      $all-cards-width: 100% * $cards-in-row;
-      $additional-padding-width: $card-horizontal-gap * ($cards-in-row - 1);
-      width: calc(#{$all-cards-width} + #{$additional-padding-width});
-    }
-    @for $nth-card from 2 through $cards-in-row { // From second card to rest
-      &:nth-of-type(#{$cards-in-row}n+#{$nth-card}) {
-        .card__expander {
-          $card-left: -100% * ($nth-card - 1);
-          $additional-space: $card-horizontal-gap * ($nth-card - 1);
-          margin-left: calc(#{$card-left} - #{$additional-space});
-        }
-      }
-    }
-    // Ensure new line after last row
-    $card-after-last: $cards-in-row + 1;
-    &:nth-of-type(#{$cards-in-row}n+#{$card-after-last}) {
-      clear: left;
-    }
+
+.card {
+  $total-columns: v-bind(totalColumns);
+  $total-times-gap-is-used-in-row: calc($total-columns - 1);
+  $total-gap-width-in-row: calc($total-times-gap-is-used-in-row * $card-horizontal-gap);
+  $available-row-width-for-cards: calc(100% - #{$total-gap-width-in-row});
+  $available-width-per-card: calc(#{$available-row-width-for-cards} / $total-columns);
+  width:$available-width-per-card;
+  :deep(.card__expander) {
+    $all-cards-width: calc(100% * $total-columns);
+    $additional-padding-width: calc($card-horizontal-gap * ($total-columns - 1));
+    width: calc(#{$all-cards-width} + #{$additional-padding-width});
+  }
+  // @for $nth-card from 2 through $total-columns { // From second card to rest
+  //   &:nth-of-type(#{$total-columns}n+#{$nth-card}) {
+  //     :deep(.card__expander) {
+  //       $card-left: -100% * ($nth-card - 1);
+  //       $additional-space: $card-horizontal-gap * ($nth-card - 1);
+  //       margin-left: calc(#{$card-left} - #{$additional-space});
+  //     }
+  //   }
+  // }
+  // Ensure new line after last row
+  $card-after-last: $total-columns + 1;
+  &:nth-of-type(#{$total-columns}n+#{$card-after-last}) {
+    clear: left;
   }
 }
-
-.big-screen     {   @include adaptive-card(3);  }
-.medium-screen  {   @include adaptive-card(2);  }
-.small-screen   {   @include adaptive-card(1);  }
 </style>
