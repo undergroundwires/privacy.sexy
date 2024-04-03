@@ -8,7 +8,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'InstructionSteps', // Define component name for empty component for Vue build and ESLint compatibility.
+  // Empty component for ESLint compatibility, workaround for https://github.com/vuejs/vue-eslint-parser/issues/125.
 });
 </script>
 

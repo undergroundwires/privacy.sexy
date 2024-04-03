@@ -3,7 +3,6 @@
     ref="cardElement"
     class="card"
     :class="{
-      'is-collapsed': !isExpanded,
       'is-inactive': activeCategoryId && activeCategoryId !== categoryId,
       'is-expanded': isExpanded,
     }"
@@ -29,20 +28,26 @@
         :category-id="categoryId"
       />
     </div>
-    <div class="card__expander" @click.stop>
-      <div class="card__expander__close-button">
-        <FlatButton
-          icon="xmark"
-          @click="collapse()"
-        />
+    <CardExpandTransition>
+      <div
+        v-show="isExpanded"
+        class="card__expander"
+        @click.stop
+      >
+        <div class="card__expander__close-button">
+          <FlatButton
+            icon="xmark"
+            @click="collapse()"
+          />
+        </div>
+        <div class="card__expander__content">
+          <ScriptsTree
+            :category-id="categoryId"
+            :has-top-padding="false"
+          />
+        </div>
       </div>
-      <div class="card__expander__content">
-        <ScriptsTree
-          :category-id="categoryId"
-          :has-top-padding="false"
-        />
-      </div>
-    </div>
+    </CardExpandTransition>
   </div>
 </template>
 
@@ -56,6 +61,7 @@ import { injectKey } from '@/presentation/injectionSymbols';
 import ScriptsTree from '@/presentation/components/Scripts/View/Tree/ScriptsTree.vue';
 import { sleep } from '@/infrastructure/Threading/AsyncSleep';
 import CardSelectionIndicator from './CardSelectionIndicator.vue';
+import CardExpandTransition from './CardExpandTransition.vue';
 
 export default defineComponent({
   components: {
@@ -63,6 +69,7 @@ export default defineComponent({
     AppIcon,
     CardSelectionIndicator,
     FlatButton,
+    CardExpandTransition,
   },
   props: {
     categoryId: {
@@ -134,8 +141,6 @@ $expanded-margin-top    : 30px;
 $card-horizontal-gap    : $card-gap;
 
 .card {
-  transition: all 0.2s ease-in-out;
-
   &__inner {
     padding-top: $card-inner-padding;
     padding-right: $card-inner-padding;
@@ -149,7 +154,7 @@ $card-horizontal-gap    : $card-gap;
     width: 100%;
     text-transform: uppercase;
     text-align: center;
-    transition: all 0.2s ease-in-out;
+    transition: transform 0.2s ease-in-out;
 
     display:flex;
     flex-direction: column;
@@ -159,9 +164,6 @@ $card-horizontal-gap    : $card-gap;
       background-color: $color-secondary;
       color: $color-on-secondary;
       transform: scale(1.05);
-    }
-    &:after {
-      transition: all 0.3s ease-in-out;
     }
     .card__inner__title {
       display: flex;
@@ -185,7 +187,6 @@ $card-horizontal-gap    : $card-gap;
     }
   }
   .card__expander {
-    transition: all 0.2s ease-in-out;
     position: relative;
     background-color: $color-primary-darker;
     color: $color-on-primary;
@@ -214,22 +215,6 @@ $card-horizontal-gap    : $card-gap;
     }
   }
 
-  &.is-collapsed {
-    .card__inner {
-      &:after {
-        content: "";
-        opacity: 0;
-      }
-    }
-
-    .card__expander {
-      max-height: 0;
-      min-height: 0;
-      overflow: hidden;
-      opacity: 0;
-    }
-  }
-
   &.is-expanded {
     .card__inner {
       height: auto;
@@ -249,7 +234,6 @@ $card-horizontal-gap    : $card-gap;
 
     .card__expander {
       margin-top: $expanded-margin-top;
-      opacity: 1;
     }
 
     @include hover-or-touch {
