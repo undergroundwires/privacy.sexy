@@ -5877,36 +5877,91 @@ actions:
                 category: Secure cryptography on IIS (Internet Information Services) server
                 children:
                     -
-                        name: Increase Diffie-Hellman key (DHK) exchange to 4096 bits
-                        code: |-
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\KeyExchangeAlgorithms\Diffie-Hellman" /f /v ServerMinKeyBitLength /t REG_DWORD /d 0x00001000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\KeyExchangeAlgorithms\Diffie-Hellman" /f /v ClientMinKeyBitLength /t REG_DWORD /d 0x00001000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\KeyExchangeAlgorithms\Diffie-Hellman" /f /v Enabled /t REG_DWORD /d 0x00000001
-                        revertCode: |-
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\KeyExchangeAlgorithms\Diffie-Hellman" /v "ServerMinKeyBitLength" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\KeyExchangeAlgorithms\Diffie-Hellman" /v "ClientMinKeyBitLength" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\KeyExchangeAlgorithms\Diffie-Hellman" /v "Enabled" /f
-                    -
-                        name: Increase RSA key exchange to 2048 bits
-                        docs: |-
-                            In 2012, Microsoft began transitioning minimum RSA key length across various applications from 1024 to 2048 bits.
-                            1024-Bit key exchange algorithms are still supported in Windows despite being considered deprecated for some time.
-                            NIST 800-131A Rev. 2 cites RSA Key Agreement and Key Transport schemes with len(n) < 2048 are disallowed. Generally,
-                            RSA 2048-bit+ key exchange algorithms are widely supported. While supported cipher suites remain a roundabout way to
-                            address supported key exchange algorithms, these can also be specified independently (although there are still constraints
-                            based on negotiated cipher suite) and provide a supplemental baseline to enforce using strong cryptography.
+                        category: Enable strong secret key requirements
+                        docs: |- # refactor-with-variables: Same **Caution** text as rest of the `RequireMinimumKeySize` scripts.
+                            This category contains scripts that enhance system security by implementing stronger encryption key lengths.
+                            Stronger keys help prevent unauthorized data access and potential leaks.
+                            These scripts aim to protect your data when sent over network (Internet), making sure your security matches up with the
+                            latest guidelines and practices.
 
-                            This script works by creating the non-default key and value called PKCS at
-                            `HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\KeyExchangeAlgorithms\` with a name of `ClientMinKeyBitLength`
-                            and value of `0x00000800` (2048). The revert deletes the `ClientMinKeyBitLength` value.
+                            > **Caution**:
+                            > Using bigger keys increases security but may not work with some old or less secure apps.
+                            > This can make your device slower and drain the battery faster.
+                        children:
+                            -
+                                name: Enable strong Diffie-Hellman key requirement
+                                recommend: standard # Default on modern Windows, less size considered insecure
+                                docs: |- # refactor-with-variables: Same **Caution** text as rest of the `RequireMinimumKeySize` scripts.
+                                    This script improves your security by setting the `Diffie-Hellman` [1] [2] [3] key exchange
+                                    to a minimum of 2048 bits.
+                                    This is a secure way to exchange keys over public networks.
 
-                            See also:
-                            - [Transport Layer Security (TLS) registry settings | learn.microsoft.com](https://learn.microsoft.com/en-us/windows-server/security/tls/tls-registry-settings#keyexchangealgorithm---client-rsa-key-sizes)
-                            - [Pull request by bricedobson | undergroundwires/privacy.sexy | GitHub.com](https://github.com/undergroundwires/privacy.sexy/pull/165)
-                        code: |-
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\KeyExchangeAlgorithms\PKCS" /f /v ClientMinKeyBitLength /t REG_DWORD /d 0x00000800
-                        revertCode: |-
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\KeyExchangeAlgorithms\PKCS" /v "ClientMinKeyBitLength" /f
+                                    By default, modern Windows versions use a 2048-bit size for Diffie-Hellman key exchanges [1].
+                                    Sizes under 1024 bits are considered weak [4] [5].
+                                    NIST in USA [4] and Federal Office for Information Security (BSI) in Germany [3] disallows usage of sizes
+                                    under 2048 bits.
+
+                                    This script hardens your system's security by using keys of adequate strength, following best practices.
+
+                                    > **Caution**:
+                                    > Using bigger keys increases security but may not work with some old or less secure apps.
+                                    > This can make your device slower and drain the battery faster.
+
+                                    [1]: https://web.archive.org/web/20240402105325/https://learn.microsoft.com/en-us/security-updates/securityadvisories/2016/3174644 "Microsoft Security Advisory 3174644 | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240402112853/https://learn.microsoft.com/en-us/windows-server/security/tls/tls-registry-settings "Transport Layer Security (TLS) registry settings | Microsoft Learn | learn.microsoft.com"
+                                    [3]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
+                                    [4]: https://web.archive.org/web/20240402105205/https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf "NIST Special Publication 800-131A Revision 2 | Transitioning the Use of Cryptographic Algorithms and Key Lengths | nvlpubs.nist.gov"
+                                    [5]: https://web.archive.org/web/20240402112905/https://weakdh.org/ "Weak Diffie-Hellman and the Logjam Attack | weakdh.org"
+                                call:
+                                    function: RequireMinimumKeySize
+                                    parameters:
+                                        algorithmName: Diffie-Hellman
+                                        keySizeInBits: 2048
+                            -
+                                name: Enable strong RSA key requirement
+                                recommend: standard # Microsoft deprecated it and will end support
+                                docs: |- # refactor-with-variables: Same **Caution** text as rest of the `RequireMinimumKeySize` scripts.
+                                    This script improves your security by enforcing a minimum of 2048 bits for RSA encryption keys (`PKCS` [1] [2]).
+                                    RSA encryption keys play a crucial role in securing communications over the internet.
+                                    The Public-Key Cryptography Standards (PKCS) define how to use RSA keys for secure communication encryption.
+                                    Using keys that are too weak can expose your data to unauthorized access.
+
+                                    From Windows 10, version 1507, and Windows Server 2016 onwards, the default RSA key size is 1024 bits [2].
+                                    However, this script raises the client-side minimum to 2048 bits, aligning with modern security standards.
+                                    Server-side RSA key strength relies on the server certificate [2].
+
+                                    Since 2013, internet standards and regulatory bodies have banned 1024-bit RSA keys due to security vulnerabilities [3].
+                                    These entities, including the Federal Office for Information Security (BSI) in Germany [2] and the National Institute of Standards
+                                    and Technology (NIST) in the USA [4] [5], now recommend the use of keys that are 2048 bits or longer.
+                                    RSA key exchanges of 2048 bits or are widely accepted.
+                                    In 2012, Microsoft deprecated 1024-bit RSA keys for their applications [5] [6] and will end support for them in
+                                    Windows by March 2024 [3].
+
+                                    While 2048-bit keys balances security with efficiency [7], a shift towards stronger 4096-bit RSA keys is emerging.
+                                    Projects like Debian [8], Fedora [9], and CaCert.org [10] use larger keys for long-term tasks.
+
+                                    This script helps to protect the privacy and integrity of your data.
+
+                                    > **Caution**:
+                                    > Using bigger keys increases security but may not work with some old or less secure apps.
+                                    > This can make your device slower and drain the battery faster.
+
+                                    [1]: https://web.archive.org/web/20240403064025/https://learn.microsoft.com/en-us/windows-server/security/tls/tls-registry-settings?tabs=rsa "Transport Layer Security (TLS) registry settings | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
+                                    [3]: https://web.archive.org/web/20240403064138/https://learn.microsoft.com/en-us/windows/whats-new/deprecated-features "Deprecated features in the Windows client - What's new in Windows | Microsoft Learn | learn.microsoft.com"
+                                    [4]: https://web.archive.org/web/20240402105205/https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf "NIST Special Publication 800-131A Revision 2 | Transitioning the Use of Cryptographic Algorithms and Key Lengths | nvlpubs.nist.gov"
+                                    [5]: https://web.archive.org/web/20240403064107/https://github.com/undergroundwires/privacy.sexy/pull/165 "request by bricedobson | undergroundwires/privacy.sexy | GitHub.com"
+                                    [6]: https://web.archive.org/web/20240403064204/https://techcommunity.microsoft.com/t5/core-infrastructure-and-security/rsa-keys-under-1024-bits-are-blocked/ba-p/1128997 "RSA keys under 1024 bits are blocked - Microsoft Community Hub | techcommunity.microsoft.com"
+                                    [7]: https://web.archive.org/web/20240402113046/https://danielpocock.com/rsa-key-sizes-2048-or-4096-bits/ "RSA Key Sizes: 2048 or 4096 bits? | danielpocock.com"
+                                    [8]: https://web.archive.org/web/20240402105239/https://wiki.debian.org/Keysigning#Step_1:_Create_a_RSA_keypair "Keysigning - Debian Wiki | wiki.debian.org"
+                                    [9]: https://web.archive.org/web/20240402105244/https://fedoraproject.org/security/ "Fedora keeps you safe | The Fedora Project | fedoraproject.org"
+                                    [10]: https://web.archive.org/web/20240402112840/http://www.cacert.org/policy/CertificationPracticeStatement.html#p6.1.5 "Certification Practice Statement (CPS) | cacert.org"
+                                call:
+                                    function: RequireMinimumKeySize
+                                    parameters:
+                                        algorithmName: PKCS
+                                        keySizeInBits: 2048
+                                        ignoreServerSide: true # Controlled by the specified server certificate
                     -
                         name: Disable RC2 cipher
                         code: |-
@@ -18460,3 +18515,43 @@ functions:
                             continue
                         }
                     }
+    -
+        name: RequireMinimumKeySize
+        parameters:
+            - name: algorithmName       # Specifies the cryptographic algorithm to configure.
+            - name: keySizeInBits       # Determines the minimum key size in bits for the specified algorithm.
+            - name: ignoreServerSide    # If set, the function will not configure the server-side minimum key size.
+              optional: true
+        docs: |-
+            This function configures the minimum key sizes for cryptographic algorithms,
+            enhancing the security of the Transport Layer Security (TLS) protocol on system level [1].
+
+            The function modifies Windows Registry settings to enforce the minimum key size for both client and
+            server-side TLS key exchange. All versions of Windows 10 and newer support these settings [1].
+
+            To set the minimum key size, add the `ServerMinKeyBitLength` and/or `ClientMinKeyBitLength` DWORD values
+            in the registry under the appropriate `KeyExchangeAlgorithms` subkey for the specified algorithm [1].
+
+            [1]: https://web.archive.org/web/20240402112853/https://learn.microsoft.com/en-us/windows-server/security/tls/tls-registry-settings "Transport Layer Security (TLS) registry settings | Microsoft Learn | learn.microsoft.com"
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: Require "{{ $algorithmName }}" key exchange algorithm to have at "{{ $keySizeInBits }}" least bits keys
+                    revertCodeComment: Revert key size requirement for "{{ $algorithmName }}"
+            -
+                function: RunInlineCode
+                # Marked: refactor-with-if-syntax
+                #   Only run if `ignoreServerSide !== false`
+                parameters:
+                    code: >-
+                        {{ with $ignoreServerSide }}:: {{ end }} reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\KeyExchangeAlgorithms\{{ $algorithmName }}" /v "ServerMinKeyBitLength" /t "REG_DWORD" /d "{{ $keySizeInBits }}" /f
+                    revertCode: >- # Missing key since Windows 10 22H2 Pro and Windows 11 23H2 Pro
+                        {{ with $ignoreServerSide }}:: {{ end }} reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\KeyExchangeAlgorithms\{{ $algorithmName }}" /v "ServerMinKeyBitLength" /f 2>nul
+            -
+                function: RunInlineCode
+                parameters:
+                    code: >-
+                        reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\KeyExchangeAlgorithms\{{ $algorithmName }}" /v "ClientMinKeyBitLength" /t "REG_DWORD" /d "{{ $keySizeInBits }}" /f
+                    revertCode: >- # Missing key since Windows 10 22H2 Pro and Windows 11 23H2 Pro
+                        reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\KeyExchangeAlgorithms\{{ $algorithmName }}" /v "ClientMinKeyBitLength" /f 2>nul
