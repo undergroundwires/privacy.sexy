@@ -29,22 +29,24 @@
       />
     </div>
     <CardExpandTransition>
-      <div
-        v-show="isExpanded"
-        class="card__expander"
-        @click.stop
-      >
-        <div class="card__expander__close-button">
-          <FlatButton
-            icon="xmark"
-            @click="collapse()"
-          />
-        </div>
-        <div class="card__expander__content">
-          <ScriptsTree
-            :category-id="categoryId"
-            :has-top-padding="false"
-          />
+      <div v-show="isExpanded">
+        <CardExpansionArrow />
+        <div
+          class="card__expander"
+          @click.stop
+        >
+          <div class="card__expander__close-button">
+            <FlatButton
+              icon="xmark"
+              @click="collapse()"
+            />
+          </div>
+          <div class="card__expander__content">
+            <ScriptsTree
+              :category-id="categoryId"
+              :has-top-padding="false"
+            />
+          </div>
         </div>
       </div>
     </CardExpandTransition>
@@ -62,6 +64,7 @@ import ScriptsTree from '@/presentation/components/Scripts/View/Tree/ScriptsTree
 import { sleep } from '@/infrastructure/Threading/AsyncSleep';
 import CardSelectionIndicator from './CardSelectionIndicator.vue';
 import CardExpandTransition from './CardExpandTransition.vue';
+import CardExpansionArrow from './CardExpansionArrow.vue';
 
 export default defineComponent({
   components: {
@@ -70,6 +73,7 @@ export default defineComponent({
     CardSelectionIndicator,
     FlatButton,
     CardExpandTransition,
+    CardExpansionArrow,
   },
   props: {
     categoryId: {
@@ -136,12 +140,11 @@ export default defineComponent({
 @use "@/presentation/assets/styles/main" as *;
 
 $card-inner-padding     : 30px;
-$arrow-size             : 15px;
 $expanded-margin-top    : 30px;
 $card-horizontal-gap    : $card-gap;
 
 .card {
-  &__inner {
+  .card__inner {
     padding-top: $card-inner-padding;
     padding-right: $card-inner-padding;
     padding-bottom: 0;
@@ -220,16 +223,6 @@ $card-horizontal-gap    : $card-gap;
       height: auto;
       background-color: $color-secondary;
       color: $color-on-secondary;
-      &:after { // arrow
-        content: "";
-        display: block;
-        position: absolute;
-        bottom: calc(-1 * #{$expanded-margin-top});
-        left: calc(50% - #{$arrow-size});
-        border-left: #{$arrow-size} solid transparent;
-        border-right: #{$arrow-size} solid transparent;
-        border-bottom: #{$arrow-size} solid $color-primary-darker;
-      }
     }
 
     .card__expander {
