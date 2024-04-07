@@ -5834,25 +5834,93 @@ actions:
                     -
                         name: Disable unsafe SMBv1 protocol
                         recommend: standard
-                        docs: https://techcommunity.microsoft.com/t5/storage-at-microsoft/stop-using-smb1/ba-p/425858
-                        code: |-
-                            dism /online /Disable-Feature /FeatureName:"SMB1Protocol" /NoRestart
-                            dism /Online /Disable-Feature /FeatureName:"SMB1Protocol-Client" /NoRestart
-                            dism /Online /Disable-Feature /FeatureName:"SMB1Protocol-Server" /NoRestart
-                        revertCode: |-
-                            dism /online /Enable-Feature /FeatureName:"SMB1Protocol" /NoRestart
-                            dism /Online /Enable-Feature /FeatureName:"SMB1Protocol-Client" /NoRestart
-                            dism /Online /Enable-Feature /FeatureName:"SMB1Protocol-Server" /NoRestart
+                        docs: |-
+                            See: [Stop using SMB1 | techcommunity.microsoft.com](https://techcommunity.microsoft.com/t5/storage-at-microsoft/stop-using-smb1/ba-p/425858)
+
+                            ### Overview of default feature statuses
+
+                            `SMB1Protocol`:
+
+                            | | |
+                            | ---- | --- |
+                            | **Feature name**  | `SMB1Protocol` |
+                            | **Display name**  | SMB 1.0/CIFS File Sharing Support |
+                            | **Description**  | Support for the SMB 1.0/CIFS file sharing protocol, and the Computer Browser protocol. |
+                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                            | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
+
+                            `SMB1Protocol-Client`:
+
+                            | | |
+                            | ---- | --- |
+                            | **Feature name**  | `SMB1Protocol-Client` |
+                            | **Display name**  | SMB 1.0/CIFS Client |
+                            | **Description**  | Support for the SMB 1.0/CIFS client for accessing legacy servers. |
+                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                            | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
+
+                            `SMB1Protocol-Server`:
+
+                            | | |
+                            | ---- | --- |
+                            | **Feature name**  | `SMB1Protocol-Server` |
+                            | **Display name**  | SMB 1.0/CIFS Server |
+                            | **Description**  | Support for the SMB 1.0/CIFS file server for sharing data with legacy clients and browsing the network neighborhood. |
+                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                            | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
+
+                        call:
+                            -
+                                function: DisableWindowsFeature
+                                parameters:
+                                    featureName: SMB1Protocol # Get-WindowsOptionalFeature -FeatureName 'SMB1Protocol' -Online
+                                    disabledByDefault: true
+                            -
+                                function: DisableWindowsFeature
+                                parameters:
+                                    featureName: SMB1Protocol-Client # Get-WindowsOptionalFeature -FeatureName 'SMB1Protocol-Client' -Online
+                                    disabledByDefault: true
+                            -
+                                function: DisableWindowsFeature
+                                parameters:
+                                    featureName: SMB1Protocol-Server # Get-WindowsOptionalFeature -FeatureName 'SMB1Protocol-Server' -Online
+                                    disabledByDefault: true
                     -
                         name: Enable security against PowerShell 2.0 downgrade attacks
                         recommend: standard
-                        docs: https://www.stigviewer.com/stig/windows_10/2017-02-21/finding/V-70637
-                        code: |-
-                            dism /online /Disable-Feature /FeatureName:"MicrosoftWindowsPowerShellV2Root" /NoRestart
-                            dism /online /Disable-Feature /FeatureName:"MicrosoftWindowsPowerShellV2" /NoRestart
-                        revertCode: |-
-                            dism /online /Enable-Feature /FeatureName:"MicrosoftWindowsPowerShellV2Root" /NoRestart
-                            dism /online /Enable-Feature /FeatureName:"MicrosoftWindowsPowerShellV2" /NoRestart
+                        docs: |-
+                            See: [The Windows PowerShell 2.0 feature must be disabled on the system. | stigviewer.com](https://web.archive.org/web/20240406114721/https://www.stigviewer.com/stig/windows_10/2017-02-21/finding/V-70637)
+
+                            ### Overview of default feature statuses
+
+                            `MicrosoftWindowsPowerShellV2`:
+
+                            | | |
+                            | ---- | --- |
+                            | **Feature name**  | `MicrosoftWindowsPowerShellV2` |
+                            | **Display name**  | Windows PowerShell 2.0 Engine |
+                            | **Description**  | Adds or Removes Windows PowerShell 2.0 Engine |
+                            | **Default** (Windows 11 ≥ 23H2) | 🟢 Enabled |
+                            | **Default** (Windows 10 ≥ 22H2) | 🟢 Enabled |
+
+                            `MicrosoftWindowsPowerShellV2Root`:
+
+                            | | |
+                            | ---- | --- |
+                            | **Feature name**  | `MicrosoftWindowsPowerShellV2Root` |
+                            | **Display name**  | Windows PowerShell 2.0 |
+                            | **Description**  | Adds or Removes Windows PowerShell 2.0 |
+                            | **Default** (Windows 11 ≥ 23H2) | 🟢 Enabled |
+                            | **Default** (Windows 10 ≥ 22H2) | 🟢 Enabled |
+                        call:
+                            -
+                                function: DisableWindowsFeature
+                                parameters:
+                                    featureName: MicrosoftWindowsPowerShellV2 # Get-WindowsOptionalFeature -FeatureName 'MicrosoftWindowsPowerShellV2' -Online
+                            -
+                                function: DisableWindowsFeature
+                                parameters:
+                                    featureName: MicrosoftWindowsPowerShellV2Root # Get-WindowsOptionalFeature -FeatureName 'MicrosoftWindowsPowerShellV2Root' -Online
             -
                 name: Disable "Windows Connect Now" wizard
                 recommend: standard
@@ -15024,31 +15092,66 @@ actions:
                 children:
                     -
                         name: Disable "Direct Play" feature
+                        docs: |-
+                            ### Overview of default feature statuses
+
+                            | | |
+                            | ---- | --- |
+                            | **Feature name**  | `DirectPlay` |
+                            | **Display name**  | DirectPlay |
+                            | **Description**  | Enables the installation of DirectPlay component. |
+                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                            | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
                         call:
-                            function: DisableFeature
+                            function: DisableWindowsFeature
                             parameters:
-                                featureName: DirectPlay
+                                featureName: DirectPlay # Get-WindowsOptionalFeature -FeatureName 'DirectPlay' -Online
+                                disabledByDefault: true
                     -
                         name: Disable "Internet Explorer" feature
+                        docs: |-
+                            ### Overview of default feature statuses
+
+                            | | |
+                            | ---- | --- |
+                            | **Feature name**  | `Internet-Explorer-Optional-amd64`, `Internet-Explorer-Optional-x84`, `Internet-Explorer-Optional-x64` |
+                            | **Display name**  | Internet Explorer 11 |
+                            | **Description**  | Finds and displays information and Web sites on the Internet. |
+                            | **Default** (Windows 11 ≥ 23H2) | 🟡 Missing |
+                            | **Default** (Windows 10 ≥ 22H2) | 🟢 Enabled (or 🟡 Missing based on architecture) |
                         call:
                             -
-                                function: DisableFeature
+                                function: DisableWindowsFeature
                                 parameters:
-                                    featureName: Internet-Explorer-Optional-x64
+                                    featureName: Internet-Explorer-Optional-x64 # Get-WindowsOptionalFeature -FeatureName 'Internet-Explorer-Optional-x64' -Online
+                                    treatMissingStateAsOk: true
                             -
-                                function: DisableFeature
+                                function: DisableWindowsFeature
                                 parameters:
-                                    featureName: Internet-Explorer-Optional-x84
+                                    featureName: Internet-Explorer-Optional-x84 # Get-WindowsOptionalFeature -FeatureName 'Internet-Explorer-Optional-x84' -Online
+                                    treatMissingStateAsOk: true
                             -
-                                function: DisableFeature
+                                function: DisableWindowsFeature
                                 parameters:
-                                    featureName: Internet-Explorer-Optional-amd64
+                                    featureName: Internet-Explorer-Optional-amd64 # Get-WindowsOptionalFeature -FeatureName 'Internet-Explorer-Optional-amd64' -Online
+                                    treatMissingStateAsOk: true
                     -
                         name: Disable "Legacy Components" feature
+                        docs: |-
+                            ### Overview of default feature statuses
+
+                            | | |
+                            | ---- | --- |
+                            | **Feature name**  | `LegacyComponents` |
+                            | **Display name**  | Legacy Components |
+                            | **Description**  | Controls legacy components in Windows. |
+                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                            | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
                         call:
-                            function: DisableFeature
+                            function: DisableWindowsFeature
                             parameters:
-                                featureName: LegacyComponents
+                                featureName: LegacyComponents # Get-WindowsOptionalFeature -FeatureName 'LegacyComponents' -Online
+                                disabledByDefault: true
                     -
                         category: Disable server features
                         children:
@@ -15057,55 +15160,144 @@ actions:
                                 children:
                                     -
                                         name: Disable "Hyper-V" feature
+                                        docs: |-
+                                            ### Overview of default feature statuses
+
+                                            | | |
+                                            | ---- | --- |
+                                            | **Feature name**  | `Microsoft-Hyper-V-All` |
+                                            | **Display name**  | Hyper-V |
+                                            | **Description**  | Provides services and management tools for creating and running virtual machines and their resources. |
+                                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                                            | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
                                         call:
-                                            function: DisableFeature
+                                            function: DisableWindowsFeature
                                             parameters:
-                                                featureName: Microsoft-Hyper-V-All
+                                                featureName: Microsoft-Hyper-V-All # Get-WindowsOptionalFeature -FeatureName 'Microsoft-Hyper-V-All' -Online
+                                                disabledByDefault: true
                                     -
                                         name: Disable "Hyper-V GUI Management Tools" feature
+                                        docs: |-
+                                            ### Overview of default feature statuses
+
+                                            | | |
+                                            | ---- | --- |
+                                            | **Feature name**  | `Microsoft-Hyper-V-Management-Clients` |
+                                            | **Display name**  | Hyper-V GUI Management Tools |
+                                            | **Description**  | Includes the Hyper-V Manager snap-in and Virtual Machine Connection tool. |
+                                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                                            | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
                                         call:
-                                            function: DisableFeature
+                                            function: DisableWindowsFeature
                                             parameters:
-                                                featureName: Microsoft-Hyper-V-Management-Clients
+                                                featureName: Microsoft-Hyper-V-Management-Clients # Get-WindowsOptionalFeature -FeatureName 'Microsoft-Hyper-V-Management-Clients' -Online
+                                                disabledByDefault: true
                                     -
                                         name: Disable "Hyper-V Management Tools" feature
+                                        docs: |-
+                                            ### Overview of default feature statuses
+
+                                            | | |
+                                            | ---- | --- |
+                                            | **Feature name**  | `Microsoft-Hyper-V-Tools-All` |
+                                            | **Display name**  | Hyper-V Management Tools |
+                                            | **Description**  | Includes GUI and command-line tools for managing Hyper-V. |
+                                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                                            | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
                                         call:
-                                            function: DisableFeature
+                                            function: DisableWindowsFeature
                                             parameters:
-                                                featureName: Microsoft-Hyper-V-Tools-All
+                                                featureName: Microsoft-Hyper-V-Tools-All # Get-WindowsOptionalFeature -FeatureName 'Microsoft-Hyper-V-Tools-All' -Online
+                                                disabledByDefault: true # Default: Disabled (tested: Windows 10 22H2, Windows 11 23H2)
                                     -
                                         name: Disable "Hyper-V Module for Windows PowerShell" feature
+                                        docs: |-
+                                            ### Overview of default feature statuses
+
+                                            | | |
+                                            | ---- | --- |
+                                            | **Feature name**  | `Microsoft-Hyper-V-Management-PowerShell` |
+                                            | **Display name**  | Hyper-V Module for Windows PowerShell |
+                                            | **Description**  | Includes Windows PowerShell cmdlets for managing Hyper-V. |
+                                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                                            | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
                                         call:
-                                            function: DisableFeature
+                                            function: DisableWindowsFeature
                                             parameters:
-                                                featureName: Microsoft-Hyper-V-Management-PowerShell
+                                                featureName: Microsoft-Hyper-V-Management-PowerShell # Get-WindowsOptionalFeature -FeatureName 'Microsoft-Hyper-V-Management-PowerShell' -Online
+                                                disabledByDefault: true
                             -
                                 name: Disable "Telnet Client" feature
-                                docs: https://web.archive.org/web/20231207105605/https://social.technet.microsoft.com/wiki/contents/articles/38433.windows-10-enabling-telnet-client.aspx
+                                docs: |-
+                                    See: [Windows 10: Enabling Telnet Client - TechNet Articles - United States (English) - TechNet Wiki | social.technet.microsoft.com](https://web.archive.org/web/20231207105605/https://social.technet.microsoft.com/wiki/contents/articles/38433.windows-10-enabling-telnet-client.aspx)
+
+                                    ### Overview of default feature statuses
+
+                                    | | |
+                                    | ---- | --- |
+                                    | **Feature name**  | `TelnetClient` |
+                                    | **Display name**  | Telnet Client |
+                                    | **Description**  | Allows you to connect to other computers remotely. |
+                                    | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                                    | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
                                 call:
-                                    function: DisableFeature
+                                    function: DisableWindowsFeature
                                     parameters:
-                                        featureName: TelnetClient
+                                        featureName: TelnetClient # Get-WindowsOptionalFeature -FeatureName 'TelnetClient' -Online
+                                        disabledByDefault: true
                             -
                                 name: Disable "Net.TCP Port Sharing" feature
-                                docs: https://web.archive.org/web/20240314102452/https://learn.microsoft.com/en-us/dotnet/framework/wcf/feature-details/net-tcp-port-sharing
+                                docs: |-
+                                    See: [Net.TCP Port Sharing - WCF | Microsoft Learn | learn.microsoft.com](https://web.archive.org/web/20240314102452/https://learn.microsoft.com/en-us/dotnet/framework/wcf/feature-details/net-tcp-port-sharing)
+
+                                    ### Overview of default feature statuses
+
+                                    | | |
+                                    | ---- | --- |
+                                    | **Feature name**  | `WCF-TCP-PortSharing45` |
+                                    | **Display name**  | TCP Port Sharing |
+                                    | **Description**  | TCP Port Sharing |
+                                    | **Default** (Windows 11 ≥ 23H2) | 🟢 Enabled |
+                                    | **Default** (Windows 10 ≥ 22H2) | 🟢 Enabled |
                                 call:
-                                    function: DisableFeature
+                                    function: DisableWindowsFeature
                                     parameters:
-                                        featureName: WCF-TCP-PortSharing45
+                                        featureName: WCF-TCP-PortSharing45 # Get-WindowsOptionalFeature -FeatureName 'WCF-TCP-PortSharing45' -Online
                             -
                                 name: Disable "SMB Direct" feature
-                                docs: https://web.archive.org/web/20240314102437/https://learn.microsoft.com/en-us/windows-server/storage/file-server/smb-direct?tabs=disable
+                                docs: |-
+                                    [Improve performance of a file server with SMB Direct | Microsoft Learn | learn.microsoft.com](https://web.archive.org/web/20240314102437/https://learn.microsoft.com/en-us/windows-server/storage/file-server/smb-direct?tabs=disable)
+
+                                    ### Overview of default feature statuses
+
+                                    | | |
+                                    | ---- | --- |
+                                    | **Feature name**  | `SMB Direct` |
+                                    | **Display name**  | SMB Direct |
+                                    | **Description**  | Remote Direct Memory Access (RDMA) support for the SMB 3.x file sharing protocol |
+                                    | **Default** (Windows 11 ≥ 23H2) | 🟢 Enabled |
+                                    | **Default** (Windows 10 ≥ 22H2) | 🟢 Enabled |
                                 call:
-                                    function: DisableFeature
+                                    function: DisableWindowsFeature
                                     parameters:
-                                        featureName: SmbDirect
+                                        featureName: SmbDirect # Get-WindowsOptionalFeature -FeatureName 'SmbDirect' -Online
                             -
                                 name: Disable "TFTP Client" feature
+                                docs: |-
+                                    ### Overview of default feature statuses
+
+                                    | | |
+                                    | ---- | --- |
+                                    | **Feature name**  | `TFTP` |
+                                    | **Display name**  | TFTP Client |
+                                    | **Description**  | Transfer files using the Trivial File Transfer Protocol |
+                                    | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                                    | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
                                 call:
-                                    function: DisableFeature
+                                    function: DisableWindowsFeature
                                     parameters:
-                                        featureName: TFTP
+                                        featureName: TFTP # Get-WindowsOptionalFeature -FeatureName 'TFTP' -Online
+                                        disabledByDefault: true
                     -
                         category: Disable printing features
                         children:
@@ -15114,86 +15306,238 @@ actions:
                                 children:
                                     -
                                         name: Disable "Internet Printing Client" feature
+                                        docs: |-
+                                            ### Overview of default feature statuses
+
+                                            | | |
+                                            | ---- | --- |
+                                            | **Feature name**  | `Printing-Foundation-InternetPrinting-Client` |
+                                            | **Display name**  | Internet Printing Client |
+                                            | **Description**  | Enables clients to use HTTP to connect to printers on Web print servers |
+                                            | **Default** (Windows 11 ≥ 23H2) | 🟢 Enabled |
+                                            | **Default** (Windows 10 ≥ 22H2) | 🟢 Enabled |
                                         call:
-                                            function: DisableFeature
+                                            function: DisableWindowsFeature
                                             parameters:
-                                                featureName: Printing-Foundation-InternetPrinting-Client
+                                                featureName: Printing-Foundation-InternetPrinting-Client # Get-WindowsOptionalFeature -FeatureName 'Printing-Foundation-InternetPrinting-Client' -Online
                                     -
                                         name: Disable "LPD Print Service" feature
+                                        docs: |-
+                                            ### Overview of default feature statuses
+
+                                            | | |
+                                            | ---- | --- |
+                                            | **Feature name**  | `Printing-Foundation-LPDPrintService` |
+                                            | **Display name**  | LPD Print Service |
+                                            | **Description**  | Makes your Windows computer work as a Line Printer Daemon (LPD) and Remote Line Printer client |
+                                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                                            | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
                                         call:
-                                            function: DisableFeature
+                                            function: DisableWindowsFeature
                                             parameters:
-                                                featureName: LPDPrintService
+                                                featureName: Printing-Foundation-LPDPrintService # Get-WindowsOptionalFeature -FeatureName 'Printing-Foundation-LPDPrintService' -Online
+                                                disabledByDefault: true
                                     -
                                         name: Disable "LPR Port Monitor" feature
+                                        docs: |-
+                                            ### Overview of default feature statuses
+
+                                            | | |
+                                            | ---- | --- |
+                                            | **Feature name**  | `Printing-Foundation-LPRPortMonitor` |
+                                            | **Display name**  | LPR Port Monitor |
+                                            | **Description**  | Enables clients to print to TCP/IP printers connected to a Unix (or VAX) server |
+                                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                                            | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
                                         call:
-                                            function: DisableFeature
+                                            function: DisableWindowsFeature
                                             parameters:
-                                                featureName: Printing-Foundation-LPRPortMonitor
+                                                featureName: Printing-Foundation-LPRPortMonitor # Get-WindowsOptionalFeature -FeatureName 'Printing-Foundation-LPRPortMonitor' -Online
+                                                disabledByDefault: true
                                     -
                                         name: Disable "Microsoft Print to PDF" feature
+                                        docs: |-
+                                            ### Overview of default feature statuses
+
+                                            | | |
+                                            | ---- | --- |
+                                            | **Feature name**  | `Printing-PrintToPDFServices-Features` |
+                                            | **Display name**  | Microsoft Print to PDF |
+                                            | **Description**  | Provides binaries on the system for creating the Microsoft Print to PDF Print Queue |
+                                            | **Default** (Windows 11 ≥ 23H2) | 🟢 Enabled |
+                                            | **Default** (Windows 10 ≥ 22H2) | 🟢 Enabled |
                                         call:
-                                            function: DisableFeature
+                                            function: DisableWindowsFeature
                                             parameters:
-                                                featureName: Printing-PrintToPDFServices-Features
+                                                featureName: Printing-PrintToPDFServices-Features # Get-WindowsOptionalFeature -FeatureName 'Printing-PrintToPDFServices-Features' -Online
                             -
                                 name: Disable "Print and Document Services" feature
+                                docs: |-
+                                    ### Overview of default feature statuses
+
+                                    | | |
+                                    | ---- | --- |
+                                    | **Feature name**  | `Printing-Foundation-Features` |
+                                    | **Display name**  | Print and Document Services |
+                                    | **Description**  | Enable print, fax, and scan tasks on this computer |
+                                    | **Default** (Windows 11 ≥ 23H2) | 🟢 Enabled |
+                                    | **Default** (Windows 10 ≥ 22H2) | 🟢 Enabled |
                                 call:
-                                    function: DisableFeature
+                                    function: DisableWindowsFeature
                                     parameters:
-                                        featureName: Printing-Foundation-Features
+                                        featureName: Printing-Foundation-Features # Get-WindowsOptionalFeature -FeatureName 'Printing-Foundation-Features' -Online
                             -
                                 name: Disable "Work Folders Client" feature
-                                docs: https://web.archive.org/web/20240314102358/https://learn.microsoft.com/en-us/windows-server/storage/work-folders/work-folders-overview
+                                docs: |-
+                                    See: [Work Folders overview | Microsoft Learn | learn.microsoft.com](https://web.archive.org/web/20240314102358/https://learn.microsoft.com/en-us/windows-server/storage/work-folders/work-folders-overview)
+
+                                    ### Overview of default feature statuses
+
+                                    | | |
+                                    | ---- | --- |
+                                    | **Feature name**  | `WorkFolders-Client` |
+                                    | **Display name**  | Work Folders Client |
+                                    | **Description**  | Allows file synchronization with a configured file server. |
+                                    | **Default** (Windows 11 ≥ 23H2) | 🟢 Enabled |
+                                    | **Default** (Windows 10 ≥ 22H2) | 🟢 Enabled |
                                 call:
-                                    function: DisableFeature
+                                    function: DisableWindowsFeature
                                     parameters:
-                                        featureName: WorkFolders-Client
+                                        featureName: WorkFolders-Client # Get-WindowsOptionalFeature -FeatureName 'WorkFolders-Client' -Online
                             -
                                 category: Disable XPS support features
                                 children:
-                                -
-                                    name: Disable "XPS Services" feature
-                                    call:
-                                        function: DisableFeature
-                                        parameters:
-                                            featureName: Printing-XPSServices-Features
-                                -
-                                    name: Disable "XPS Viewer" feature
-                                    call:
-                                        function: DisableFeature
-                                        parameters:
-                                            featureName: Xps-Foundation-Xps-Viewer
+                                    -
+                                        name: Disable "Microsoft XPS Document Writer" feature
+                                        docs: |-
+                                            ### Overview of default feature statuses
+
+                                            | | |
+                                            | ---- | --- |
+                                            | **Feature name**  | `Printing-XPSServices-Features` |
+                                            | **Display name**  | Microsoft XPS Document Writer |
+                                            | **Description**  | Provides binaries on the system for creating the XPS Document Writer Print Queue. |
+                                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                                            | **Default** (Windows 10 ≥ 22H2) | 🟢 Enabled |
+                                        call:
+                                            function: DisableWindowsFeature
+                                            parameters:
+                                                featureName: Printing-XPSServices-Features # Get-WindowsOptionalFeature -FeatureName 'Printing-XPSServices-Features' -Online
+                                                disabledByDefault: true
+                                    -
+                                        name: Disable "XPS Viewer" feature
+                                        recommend: standard # Deprecated and missing on modern versions of Windows
+                                        docs: |-
+                                            This feature has been part of older versions on Windows [1].
+
+                                            ### Overview of default feature statuses
+
+                                            | | |
+                                            | ---- | --- |
+                                            | **Feature name**  | `Xps-Foundation-Xps-Viewer` |
+                                            | **Display name**  | XPS Viewer |
+                                            | **Description**  | Allows you to read, copy, print, sign, and set permissions for XPS documents. |
+                                            | **Default** (Windows 11 ≥ 23H2) | 🟡 Missing |
+                                            | **Default** (Windows 10 ≥ 22H2) | 🟡 Missing |
+
+                                            [1]: "Unattended Windows Setup Reference | systemscenter.ru" https://web.archive.org/web/20240406125031/https://systemscenter.ru/unattend.en/index.html?page=html%2Fdb43485b-ffad-476f-9b22-97bde41ceb47.htm
+                                        call:
+                                            function: DisableWindowsFeature
+                                            parameters:
+                                                featureName: Xps-Foundation-Xps-Viewer # Get-WindowsOptionalFeature -FeatureName 'Xps-Foundation-Xps-Viewer' -Online
+                                                treatMissingStateAsOk: true
                     -
                         name: Disable "Media Features" feature
+                        docs: |-
+                            ### Overview of default feature statuses
+
+                            | | |
+                            | ---- | --- |
+                            | **Feature name**  | `MediaPlayback` |
+                            | **Display name**  | Media Features |
+                            | **Description**  | Controls media features such as Windows Media Player. |
+                            | **Default** (Windows 11 ≥ 23H2) | 🟢 Enabled |
+                            | **Default** (Windows 10 ≥ 22H2) | 🟢 Enabled |
                         call:
-                            function: DisableFeature
+                            function: DisableWindowsFeature
                             parameters:
-                                featureName: MediaPlayback
+                                featureName: MediaPlayback # Get-WindowsOptionalFeature -FeatureName 'MediaPlayback' -Online
                     -
                         name: Disable "Scan Management" feature
+                        recommend: standard # Deprecated and missing on modern versions of Windows
+                        docs: |-
+                            This feature has been part of older versions on Windows [1].
+
+                            ### Overview of default feature statuses
+
+                            | | |
+                            | ---- | --- |
+                            | **Feature name**  | `ScanManagementConsole` |
+                            | **Display name**  | Scan Management |
+                            | **Description**  | Manages distributed scanners, scan processes, and scan servers. |
+                            | **Default** (Windows 11 ≥ 23H2) | 🟡 Missing |
+                            | **Default** (Windows 10 ≥ 22H2) | 🟡 Missing |
+                            
+                            [1]: "Unattended Windows Setup Reference | systemscenter.ru" https://web.archive.org/web/20240406125031/https://systemscenter.ru/unattend.en/index.html?page=html%2Fdb43485b-ffad-476f-9b22-97bde41ceb47.htm
                         call:
-                            function: DisableFeature
+                            function: DisableWindowsFeature
                             parameters:
-                                featureName: ScanManagementConsole
+                                featureName: ScanManagementConsole # Get-WindowsOptionalFeature -FeatureName 'ScanManagementConsole' -Online
+                                treatMissingStateAsOk: true
                     -
                         name: Disable "Windows Fax and Scan" feature
+                        recommend: standard # Deprecated and missing on modern versions of Windows
+                        docs: |-
+                            This feature has been part of older versions on Windows [1].
+
+                            ### Overview of default feature statuses
+
+                            | | |
+                            | ---- | --- |
+                            | **Feature name**  | `FaxServicesClientPackage` |
+                            | **Display name**  | Windows Fax and Scan |
+                            | **Description**  | Enable fax and scan tasks on this computer |
+                            | **Default** (Windows 11 ≥ 23H2) | 🟡 Missing |
+                            | **Default** (Windows 10 ≥ 22H2) | 🟡 Missing |
+
+                            [1]: "Unattended Windows Setup Reference | systemscenter.ru" https://web.archive.org/web/20240406125031/https://systemscenter.ru/unattend.en/index.html?page=html%2Fdb43485b-ffad-476f-9b22-97bde41ceb47.htm
                         call:
-                            function: DisableFeature
+                            function: DisableWindowsFeature
                             parameters:
-                                featureName: FaxServicesClientPackage
+                                featureName: FaxServicesClientPackage # Get-WindowsOptionalFeature -FeatureName 'FaxServicesClientPackage' -Online
+                                treatMissingStateAsOk: true
                     -
                         name: Disable "Windows Media Player" feature
+                        docs: |-
+                            ### Overview of default feature statuses
+
+                            | | |
+                            | ---- | --- |
+                            | **Feature name**  | `WindowsMediaPlayer` |
+                            | **Display name**  | Windows Media Player |
+                            | **Description**  | Windows Media Player |
+                            | **Default** (Windows 11 ≥ 23H2) | 🟢 Enabled |
+                            | **Default** (Windows 10 ≥ 22H2) | 🟢 Enabled |
                         call:
-                            function: DisableFeature
+                            function: DisableWindowsFeature
                             parameters:
-                                featureName: WindowsMediaPlayer
+                                featureName: WindowsMediaPlayer # Get-WindowsOptionalFeature -FeatureName 'WindowsMediaPlayer' -Online
                     -
                         name: Disable "Windows Search" feature
+                        docs: |-
+                            ### Overview of default feature statuses
+
+                            | | |
+                            | ---- | --- |
+                            | **Feature name**  | `SearchEngine-Client-Package` |
+                            | **Display name**  | Windows Search |
+                            | **Description**  | Provides content indexing, property caching, and search results for files, e-mail, and other content. |
+                            | **Default** (Windows 11 ≥ 23H2) | 🟢 Enabled |
+                            | **Default** (Windows 10 ≥ 22H2) | 🟢 Enabled |
                         call:
-                            function: DisableFeature
+                            function: DisableWindowsFeature
                             parameters:
-                                featureName: SearchEngine-Client-Package
+                                featureName: SearchEngine-Client-Package # Get-WindowsOptionalFeature -FeatureName 'SearchEngine-Client-Package' -Online
             -
                 category: Remove on-demand capabilities and features
                 docs: https://web.archive.org/web/20240314062310/https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/features-on-demand-non-language-fod?view=windows-11#fods-that-are-not-preinstalled-but-may-need-to-be-preinstalled
@@ -16269,11 +16613,98 @@ functions:
                     code: reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\{{ $executableNameWithExtension }}" /v "Debugger" /t REG_SZ /d "%WINDIR%\System32\taskkill.exe" /f
                     revertCode: reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\{{ $executableNameWithExtension }}" /v "Debugger" /f 2>nul
     -
-        name: DisableFeature
+        name: DisableWindowsFeature
+        docs: |-
+            This function manages the enabling and disabling of specified Windows features.
+            Its primary role is to disable a target feature, with options to handle cases where the feature is
+            absent or to maintain its default state upon reversal.
         parameters:
-            - name: featureName
-        code: dism /Online /Disable-Feature /FeatureName:"{{ $featureName }}" /NoRestart
-        revertCode: dism /Online /Enable-Feature /FeatureName:"{{ $featureName }}" /NoRestart
+            - name: featureName             # The name of the Windows feature to be disabled
+            - name: disabledByDefault       # Specifies whether the feature is disabled by default in the operating system.
+                                            # If set to true, the function will not re-enable the feature during a revert operation.
+              optional: true
+            - name: treatMissingStateAsOk   # Determines how to handle scenarios where the target feature is missing. When set to true,'
+                                            # the function gracefully exits if the feature cannot be found, rather than throwing an error.
+              optional: false
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: Disable the "{{ $featureName }}" feature
+                    revertCodeComment: Revert the '{{ $featureName }}' feature to its default settings
+            -
+                function: RunPowerShell
+                parameters:
+                    code: |-
+                        $featureName = '{{ $featureName }}'
+                        $feature = Get-WindowsOptionalFeature `
+                            -FeatureName "$featureName" `
+                            -Online `
+                            -ErrorAction Stop
+                        if (-Not $feature) {
+                            Write-Output "Skipping: The feature `"$featureName`" is not found. No action required."
+                            Exit 0
+                        }
+                        if ($feature.State -eq [Microsoft.Dism.Commands.FeatureState]::Disabled) {
+                            Write-Output "Skipping: The feature `"$featureName`" is already disabled. No action required."
+                            Exit 0
+                        }
+                        try {
+                            Write-Host "Disabling feature: `"$featureName`"."
+                            Disable-WindowsOptionalFeature `
+                                -FeatureName "$featureName" `
+                                -Online `
+                                -NoRestart `
+                                -LogLevel ([Microsoft.Dism.Commands.LogLevel]::Errors) `
+                                -WarningAction SilentlyContinue `
+                                -ErrorAction Stop `
+                                | Out-Null
+                        } catch {
+                            Write-Error "Failed to disable the feature `"$featureName`": $($_.Exception.Message)"
+                            Exit 1
+                        }
+                        Write-Output "Successfully disabled the feature `"$featureName`"."
+                        Exit 0
+                    revertCode: |-
+                        $featureName = '{{ $featureName }}'
+                        $treatMissingStateAsOk = {{ with $treatMissingStateAsOk }} $true # {{ end }} $false
+                        $disabledByDefault = {{ with $disabledByDefault }} $true # {{ end }} $false
+                        $feature = Get-WindowsOptionalFeature `
+                            -FeatureName "$featureName" `
+                            -Online `
+                            -ErrorAction Stop
+                        if (-Not $feature) {
+                            if ($treatMissingStateAsOk) {
+                                Write-Output "Skipping: The feature `"$featureName`" is not found. No action required."
+                                Exit 0
+                            }
+                            Write-Error "Failed to revert changes to the feature `"$featureName`". The feature is not found."
+                            Exit 1
+                        }
+                        if ($feature.State -eq [Microsoft.Dism.Commands.FeatureState]::Enabled) {
+                            Write-Output "Skipping: The feature `"$featureName`" is already enabled. No action required."
+                            Exit 0
+                        }
+                        if ($disabledByDefault) {
+                            Write-Output "Skipping: The feature `"$featureName`" is already disabled and this is the default configuration."
+                            Exit 0
+                        }
+                        try {
+                            Write-Host "Enabling feature: `"$featureName`"."
+                            Enable-WindowsOptionalFeature `
+                                -FeatureName "$featureName" `
+                                -Online `
+                                -NoRestart `
+                                -LogLevel ([Microsoft.Dism.Commands.LogLevel]::Errors) `
+                                -WarningAction SilentlyContinue `
+                                -ErrorAction Stop `
+                                | Out-Null
+                        } catch {
+                            Write-Error "Failed to enable feature `"$featureName`": $($_.Exception.Message)"
+                            Exit 1
+                        }
+                        Write-Output "Successfully enabled the feature `"$featureName`"."
+                        Exit 0
     -
         name: UninstallStoreApp
         parameters:
