@@ -4416,33 +4416,32 @@ actions:
                                 reg add "HKLM\Software\Microsoft\VisualStudio\DiagnosticsHub" /v "LogLevel" /t REG_SZ /d "All" /f
                             )
                     -
-                        name: Disable participation in IntelliCode data collection (breaks Visual Studio 2022)
-                        # recommend: standard (This script has been reported to cause issues with Visual Studio 2022, potentially leading to hangs or unresponsiveness)
+                        name: Disable participation in IntelliCode data collection
+                        recommend: standard
                         docs: |-
-                            This script disables data collection by IntelliCode in Visual Studio, a feature that offers AI-based code suggestions [1].
-                            IntelliCode captures anonymized usage and error-reporting data to improve the product [1].
-                            It generally does not send user-defined code to Microsoft, except when using team completion model training [2] [3] [4].
-                            This script opts out of such data collection without affecting IntelliCode's functionality based on local models [3] [4].
+                            This script prevents IntelliCode in Visual Studio from collecting data.
+                            IntelliCode uses AI to suggest code improvements by analyzing usage and error reports [1].
+                            In scenarios like team model training, user code is shared with Microsoft [2] [3] [4].
+                            Opting out does not affect IntelliCode's local suggestion capabilities [3] [4].
 
-                            By modifying specific registry keys, this script deactivates the remote analysis feature of IntelliCode [3]. These keys
-                            are not present by default in Visual Studio 2022 installations. This action ensures that IntelliCode relies solely on
-                            local models, enhancing user privacy by limiting data sent to Microsoft.
+                            By relying on local data models [3] [4], this script improves privacy, reducing the amount of data shared with Microsoft.
+                            The script works by modifying registry keys to disable the feature that sends data to Microsoft for remote analysis [3].
+                            By default, Visual Studio 2022 and newer versions do not contain these registry keys.
 
-                            > **Caution:** Users have reported that enabling this script may cause Visual Studio 2022 to hang or become unresponsive [5] [6].
-                            > Despite its official documentation [4], due to these user experiences, careful consideration is recommended before applying this script.
+                            The backend servers for IntelliCode model training are discontinued, making the data collection feature outdated [5].
+                            Thus, this script provides peace of mind for users of older Visual Studio 2022 versions, even though the feature is outdated.
 
                             [1]: https://web.archive.org/web/20231112024816/https://learn.microsoft.com/en-us/visualstudio/ide/intellicode-visual-studio?view=vs-2022 "IntelliCode for Visual Studio | Microsoft Learn | learn.microsoft.com"
                             [2]: https://web.archive.org/web/20231112024456/https://learn.microsoft.com/en-us/visualstudio/ide/intellicode-privacy?view=vs-2022 "IntelliCode privacy - Visual Studio IntelliCode | Microsoft Learn | docs.microsoft.com"
-                            [3]: https://web.archive.org/web/20231112024639/https://raw.githubusercontent.com/MicrosoftDocs/intellicode/50ea60c91a7175e749ed5e094403568a583a292e/docs/intellicode-privacy.md "intellicode/docs/intellicode-privacy.md at 50ea60c91a7175e749ed5e094403568a583a292e · MicrosoftDocs/intellicode | github.com/MicrosoftDocs"
-                            [4]: https://web.archive.org/web/20231122105835/https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/csharp/intellicode.md "vscode-docs/docs/csharp/intellicode.md at main · microsoft/vscode-docs | github.com/microsoft/vscode-docs"
-                            [5]: https://github.com/undergroundwires/privacy.sexy/issues/267 "[BUG]: Visual Studio 2022 hangs with `Opt-out from IntelliCode data collection` · Issue #267 · undergroundwires/privacy.sexy | github.com/undergroundwires"
-                            [6]: https://github.com/undergroundwires/privacy.sexy/issues/286 "[BUG]: Disabling IntelliCode data collection crashes VS · Issue #286 · undergroundwires/privacy.sexy | github.com/undergroundwires"
+                            [3]: https://web.archive.org/web/20231112024639/https://raw.githubusercontent.com/MicrosoftDocs/intellicode/50ea60c91a7175e749ed5e094403568a583a292e/docs/intellicode-privacy.md "intellicode/docs/intellicode-privacy.md at 50ea60c91a7175e749ed5e094403568a583a292e · MicrosoftDocs/intellicode | github.com"
+                            [4]: https://web.archive.org/web/20231122105835/https://raw.githubusercontent.com/microsoft/vscode-docs/main/docs/csharp/intellicode.md "vscode-docs/docs/csharp/intellicode.md at main · microsoft/vscode-docs | github.com"
+                            [5]: https://web.archive.org/web/20240409110051/https://github.com/MicrosoftDocs/intellicode/issues/510#issuecomment-1982513204 "Is `DisableRemoteAnalysis` no longer supported? · Issue #510 · MicrosoftDocs/intellicode · GitHub | github.com"
                         code: |-
                             :: Global policy
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\VisualStudio\IntelliCode" /v "DisableRemoteAnalysis" /d 1 /f
+                            reg add "HKLM\SOFTWARE\Policies\Microsoft\VisualStudio\IntelliCode" /v "DisableRemoteAnalysis" /t "REG_DWORD" /d "1" /f
                             :: Local policy
-                            reg add "HKCU\SOFTWARE\Microsoft\VSCommon\16.0\IntelliCode" /v "DisableRemoteAnalysis" /d 1 /f
-                            reg add "HKCU\SOFTWARE\Microsoft\VSCommon\17.0\IntelliCode" /v "DisableRemoteAnalysis" /d 1 /f
+                            reg add "HKCU\SOFTWARE\Microsoft\VSCommon\16.0\IntelliCode" /v "DisableRemoteAnalysis" /t "REG_DWORD" /d "1" /f
+                            reg add "HKCU\SOFTWARE\Microsoft\VSCommon\17.0\IntelliCode" /v "DisableRemoteAnalysis" /t "REG_DWORD" /d "1" /f
                         revertCode: |-
                             :: Global policy
                             reg delete "HKLM\SOFTWARE\Policies\Microsoft\VisualStudio\IntelliCode" /v "DisableRemoteAnalysis" /f 2>nul
