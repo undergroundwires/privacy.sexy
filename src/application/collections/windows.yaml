@@ -7029,32 +7029,156 @@ actions:
         children:
             -
                 category: Disable Microsoft Defender
-                docs: https://en.wikipedia.org/wiki/Windows_Firewall
+                docs: |-
+                    This category offers scripts to disable Windows security components known as *Microsoft Defender*.
+                    Although designed to protect you, these features may compromise your privacy and decrease computer performance.
+
+                    Privacy concerns include:
+
+                    - Sending personal data to Microsoft for analysis [1] [2] [3].
+                    - The labeling of efforts to block telemetry (data collection by Microsoft) as security threats [4] [5].
+                    - The incorrect flagging of privacy-enhancing scripts from privacy.sexy as malicious software [6].
+
+                    Turning off Microsoft Defender improves your computer's speed by freeing up system resources [7].
+
+                    However, disabling these features could result in:
+
+                    - Potential program malfunctions [8], as these security features are integral to Windows [9].
+                    - Lowered defenses against malware and other online threats.
+
+                    These scripts target only the Defender features built into Windows and do not impact other Defender services available
+                    with Microsoft 365 subscriptions [10] [11].
+
+                    > **Caution**:
+                    > These scripts **may reduce your security** and **cause issues with software** relying on them.
+                    > Consider an alternative security solutions to maintain protection.
+
+                    [1]: https://web.archive.org/web/20240409170914/https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/cloud-protection-microsoft-defender-antivirus?view=o365-worldwide "Cloud protection and Microsoft Defender Antivirus | Microsoft Learn | learn.microsoft.com"
+                    [2]: https://web.archive.org/web/20240409170815/https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/data-storage-privacy?view=o365-worldwide "Microsoft Defender for Endpoint data storage and privacy | Microsoft Learn | learn.microsoft.com"
+                    [3]: https://web.archive.org/web/20231006103250/https://privacy.microsoft.com/en-US/privacystatement "Microsoft Privacy Statement – Microsoft privacy | privacy.microsoft.com"
+                    [4]: https://web.archive.org/web/20240409170735/https://www.bleepingcomputer.com/news/microsoft/windows-10-hosts-file-blocking-telemetry-is-now-flagged-as-a-risk/ "Windows 10: HOSTS file blocking telemetry is now flagged as a risk | www.bleepingcomputer.com"
+                    [5]: https://web.archive.org/web/20240409171701/https://www.zdnet.com/article/windows-10-telemetry-secrets/ "Windows 10 telemetry secrets: Where, when, and why Microsoft collects your data | ZDNET | www.zdnet.com"
+                    [6]: https://web.archive.org/web/20240409171415/https://github.com/undergroundwires/privacy.sexy/issues/296#issuecomment-1858704482 "Recent Windows 11 Security Update marks \"privacy-script\" as Virus or unwanted Software [BUG]: · Issue #296 · undergroundwires/privacy.sexy · GitHub | github.com"
+                    [7]: https://web.archive.org/web/20240409171447/https://support.microsoft.com/en-us/windows/turn-off-defender-antivirus-protection-in-windows-security-99e6004f-c54c-8509-773c-a4d776b77960 "Turn off Defender antivirus protection in Windows Security - Microsoft Support"
+                    [8]: https://web.archive.org/web/20240326143148/https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/configure-with-command-line?tabs=powershell#disable-windows-firewall "Manage Windows Firewall with the command line - Windows Security | Microsoft Learn | learn.microsoft.com"
+                    [9]: https://web.archive.org/web/20240409171217/https://borncity.com/win/2023/10/17/windows-10-11-microsoft-defender-can-no-longer-be-disabled/ "Windows 10/11: Microsoft Defender can no longer be disabled | Born's Tech and Windows World | borncity.com"
+                    [10]: https://web.archive.org/web/20240409164749/https://support.microsoft.com/en-us/topic/getting-started-with-microsoft-defender-9df0cb0f-4866-4433-9cbc-f83e5cf77693 "Getting started with Microsoft Defender - Microsoft Support | support.microsoft.com"
+                    [11]: https://web.archive.org/web/20240409171421/https://learn.microsoft.com/en-us/defender/ "Microsoft Defender products and services | Microsoft Learn"
                 # See defender status: Get-MpComputerStatus
                 children:
                     -
-                        category: Disable Microsoft Defender firewall # Also known as Windows Firewall, Microsoft Defender Firewall
+                        category: Disable Microsoft Defender firewall
+                        docs: |-
+                            This category provides scripts to disable the Microsoft Defender Firewall.
+
+                            This firewall serves as a security gate for your computer.
+                            It controls network traffic to and from a computer [1] [2] [3] [4] [5].
+                            It blocks all incoming traffic by default and allows outgoing traffic [1].
+                            It enables users to block connections [1] [3] [5] [6] [7].
+                            For enhanced security, users can require a VPN for all connections with IPSec rules [1] [3] [7].
+                            This can protect your computer from unauthorized access [1] [4] [6] [8].
+
+                            Microsoft has renamed the firewall several times to reflect branding changes:
+
+                            1. **Internet Connection Firewall** initially [3].
+                            2. **Windows Firewall** with the release of Windows XP Service Pack 2 [3].
+                            3. **Windows Defender Firewall** starting with Windows 10 build 1709 (September 2017) [4] [5].
+                            4. **Microsoft Defender Firewall** from Windows 10 version 2004 onwards [5] [6].
+                            5. **Windows Firewall** again in 2023 [9].
+
+                            Considerations:
+
+                            - Malware or unauthorized users can bypass it if they gain direct access to the computer [10].
+                            - Default firewall settings often provide limited security unless properly configured [10].
+                              This is the case for most users.
+                            - The firewall is enabled by default [1] [2] [4] [5].
+                              It still operates in the background when turned off [7].
+                              This can compromise privacy.
+                            - Firewall logs detail user behavior [11].
+                              They fall under [Microsoft's privacy policy](https://web.archive.org/web/20231006103250/https://privacy.microsoft.com/en-US/privacystatement).
+                              This allows Microsoft to access and analyze these logs to study your behavior.
+
+                            Turning off this firewall may optimize system performance by reducing background tasks [7].
+                            It enhances privacy by preventing the collection of firewall logs [11].
+                            However, this could increase security risks by exposing your system to more threats [1] [4] [6] [8].
+
+                            > **Caution**:
+                            > Turning off the Microsoft Defender Firewall **may reduce your security**.
+                            > Consider an alternative security solution to maintain protection.
+
+                            [1]: https://web.archive.org/web/20240406233704/https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/ "Windows Firewall overview - Windows Security | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20240408093812/https://support.microsoft.com/en-us/topic/getting-started-with-microsoft-defender-9df0cb0f-4866-4433-9cbc-f83e5cf77693 "Getting started with Microsoft Defender - Microsoft Support | support.microsoft.com"
+                            [3]: https://web.archive.org/web/20041020065757/http://support.microsoft.com/kb/875357 "Troubleshooting Windows Firewall settings in Windows XP Service Pack 2 | support.microsoft.com"
+                            [4]: https://web.archive.org/web/20240408093959/https://microsoft.fandom.com/wiki/Windows_Firewall "Windows Firewall | Microsoft Wiki | Fandom | microsoft.fandom.com"
+                            [5]: https://web.archive.org/web/20240408094033/https://www.tenforums.com/tutorials/70699-how-turn-off-microsoft-defender-firewall-windows-10-a.html "How to Turn On or Off Microsoft Defender Firewall in Windows 10 | Tutorials | www.tenforums.com"
+                            [6]: https://web.archive.org/web/20240408094038/https://support.microsoft.com/en-us/windows/turn-microsoft-defender-firewall-on-or-off-ec0844f7-aebd-0583-67fe-601ecf5d774f "Turn Microsoft Defender Firewall on or off - Microsoft Support | support.microsoft.com"
+                            [7]: https://web.archive.org/web/20240326143148/https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/configure-with-command-line?tabs=powershell#disable-windows-firewall "Manage Windows Firewall with the command line - Windows Security | Microsoft Learn | learn.microsoft.com"
+                            [8]: https://web.archive.org/web/20240408094004/https://learn.microsoft.com/en-us/mem/intune/user-help/you-need-to-enable-defender-firewall-windows "Enable Windows Defender Firewall | Microsoft Learn | learn.microsoft.com"
+                            [9]: https://web.archive.org/web/20240408093851/https://learn.microsoft.com/en-us/mem/intune/fundamentals/whats-new#microsoft-defender-firewall-profiles-are-renamed-to-windows-firewall "What's new in Microsoft Intune | Microsoft Learn | learn.microsoft.com"
+                            [10]: https://web.archive.org/web/20240408101037/https://softwareg.com.au/blogs/internet-security/what-is-a-major-weakness-with-a-network-host-based-firewall "What Is A Major Weakness With A Network Host-Based Firewall | softwareg.com.au"
+                            [11]: https://web.archive.org/web/20240409085528/https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/configure-logging?tabs=intune "Configure Windows Firewall logging - Windows Security | Microsoft Learn | learn.microsoft.com"
                         children:
-                            -
+                            - 
                                 category: Disable Microsoft Defender Firewall services and drivers
+                                docs: |-
+                                    This section contains scripts to disable the essential services and drivers of Microsoft Defender Firewall.
+
+                                    Microsoft Defender Firewall uses services and drivers to operate.
+                                    Services run background tasks, while drivers help hardware and software communicate.
+
+                                    Even with the firewall disabled in settings, its services and drivers continue running [1],
+                                    potentially monitoring network traffic and consuming resources.
+                                    These scripts directly disable these components, bypassing standard Windows settings and their limitations.
+
+                                    Disabling these firewall services and drivers can enhance privacy by preventing potential network traffic monitoring by Microsoft.
+                                    Additionally, it may improve system performance by freeing up system resources otherwise consumed by these components.
+
+                                    However, this can pose security risks and disrupt other software.
+                                    Microsoft Defender Firewall blocks unauthorized network access to protect against malicious attacks [2].
+                                    Disabling it can leave your system vulnerable to such threats.
+                                    Additionally, this could affect software relying on the firewall [1].
+
+                                    > **Caution**: These scripts **may reduce your security** and **cause issues with software** relying on the firewall [1].
+
+                                    [1]: https://web.archive.org/web/20240326143148/https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/configure-with-command-line?tabs=powershell#disable-windows-firewall "Manage Windows Firewall with the command line - Windows Security | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240406233704/https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/ "Windows Firewall overview - Windows Security | Microsoft Learn | learn.microsoft.com"
                                 children:
                                     -
-                                        name: Disable "Windows Defender Firewall Authorization Driver" service
-                                        docs:
-                                            - https://web.archive.org/web/20240314091039/https://batcmd.com/windows/10/services/mpsdrv/
-                                            # ❗️ Breaks: `netsh advfirewall set`
-                                            #   Disabling and stopping it breaks "netsh advfirewall set" commands such as
-                                            #   `netsh advfirewall set allprofiles state on`, `netsh advfirewall set allprofiles state off`.
-                                            #   More about `netsh firewall` context: https://web.archive.org/web/20240314125017/https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/netsh-advfirewall-firewall-control-firewall-behavior
-                                            # ! Breaks: Windows Store
-                                            #   The Windows Defender Firewall service depends on this service.
-                                            #   Disabling this will also disable the Windows Defender Firewall service, breaking Microsoft Store.
-                                            #   https://i.imgur.com/zTmtSwT.png
+                                        name: Disable "Windows Defender Firewall Authorization Driver" service (breaks Microsoft Store, `netsh advfirewall`, `winget`)
+                                        docs: |- # refactor-with-variables: Same caution text as `MpsSvc`
+                                            This script disables the **Windows Defender Firewall Authorization Driver** service.
+
+                                            This service is a kernel mode driver crucial for inspecting network traffic entering and exiting your computer [1] [2].
+
+                                            Disabling this service can enhance privacy by reducing Microsoft's capability to monitor and analyze your network traffic.
+                                            It also improves system performance by decreasing background resource consumption.
+
+                                            The driver is identified by the file `mpsdrv.sys` [1] [2] [3].
+                                            This file is a component of **Microsoft Protection Service** [3].
+                                            This service encompasses the **Windows Defender Firewall** (`mpssvc`) [4] [5].
+                                            Disabling this driver will also disable **Windows Defender Firewall** [1] [2].
+                                            This action can significantly increase security risks [6].
+
+                                            > **Caution**: Disabling this service causes problems with software that depends on it [11] such as:
+                                            > - Prevents **Microsoft Store** app downloads [8] [9], impacting **`winget` CLI functionality [10].
+                                            > - Disables **`netsh advfirewall`** commands, used for Windows Firewall management [11].
+
+                                            [1]: https://web.archive.org/web/20240314091039/https://batcmd.com/windows/10/services/mpsdrv/ "Windows Defender Firewall Authorization Driver - Windows 10 Service - batcmd.com | batcmd.com"
+                                            [2]: https://web.archive.org/web/20240406223537/https://revertservice.com/10/mpsdrv/ "Windows Defender Firewall Authorization Driver (mpsdrv) Service Defaults in Windows 10 | revertservice.com"
+                                            [3]: https://web.archive.org/web/20240406223542/https://www.file.net/process/mpsdrv.sys.html "mpsdrv.sys Windows process - What is it? | www.file.net"
+                                            [4]: https://web.archive.org/web/20231122132150/https://strontic.github.io/xcyclopedia/library/MPSSVC.dll-AA441F7C99AAACBA2538E90D7693637A.html "MPSSVC.dll | Microsoft Protection Service | STRONTIC | strontic.github.io"
+                                            [5]: https://web.archive.org/web/20231122132143/https://batcmd.com/windows/10/services/mpssvc/ "Windows Defender Firewall - Windows 10 Service - batcmd.com | batcmd.com"
+                                            [6]: https://web.archive.org/web/20121106033255/http://technet.microsoft.com/en-us/library/cc753180.aspx "Basic Firewall Policy Design | technet.microsoft.com"
+                                            [7]: https://web.archive.org/web/20240326143148/https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/configure-with-command-line?tabs=powershell#disable-windows-firewall "Manage Windows Firewall with the command line - Windows Security | Microsoft Learn | learn.microsoft.com"
+                                            [8]: https://web.archive.org/web/20240406224105/https://github.com/undergroundwires/privacy.sexy/issues/104#issuecomment-962651791 "[BUG][help wanted]: Cannot enable Windows Defender · Issue #104 · undergroundwires/privacy.sexy | github.com/undergroundwires/privacy.sexy"
+                                            [9]: https://web.archive.org/web/20200620033533/https://www.walkernews.net/2012/09/23/how-to-fix-windows-store-app-update-error-code-0x80073d0a/ "How To Fix Windows Store App Update Error Code 0x80073D0A? – Walker News | www.walkernews.net"
+                                            [10]: https://web.archive.org/web/20240406223635/https://github.com/undergroundwires/privacy.sexy/issues/142 "[BUG]: \"Standard\" profile limits Winget CLI Functionality · Issue #142 · undergroundwires/privacy.sexy · GitHub | github.com"
+                                            [11]: https://web.archive.org/web/20240314125017/https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/netsh-advfirewall-firewall-control-firewall-behavior "Use netsh advfirewall firewall context - Windows Server | Microsoft Learn | learn.microsoft.com"
                                         call:
                                             -
                                                 function: DisableServiceInRegistry # We must disable it on registry level, "Access is denied" for sc config
                                                 parameters:
-                                                    serviceName: mpsdrv # Check: (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\mpsdrv").Start
+                                                    serviceName: mpsdrv # Check: (Get-Service -Name 'mpsdrv').StartType
                                                     defaultStartupMode: Manual # Allowed values: Boot | System | Automatic | Manual
                                             -
                                                 function: SoftDeleteFiles
@@ -7062,43 +7186,48 @@ actions:
                                                     fileGlob: '%SYSTEMROOT%\System32\drivers\mpsdrv.sys'
                                                     grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
                                     -
-                                        name: Disable "Windows Defender Firewall" service (breaks Microsoft Store downloads and `netsh advfirewall` CLI)
-                                        docs: |-
-                                            This script disables the "Windows Defender Firewall" service, also known as `MpsSvc` [1] [2] [3].
+                                        name: Disable "Windows Defender Firewall" service (breaks Microsoft Store, `netsh advfirewall`, `winget`)
+                                        docs: |- # refactor-with-variables: Same caution text as `mpsdrv`
+                                            This script disables the **Windows Defender Firewall** service (identified as `MpsSvc` [1] [2] [3] [4]).
+                                            This component acts as a gatekeeper for your computer, filtering incoming and outgoing network traffic based on
+                                            established security rules [1] [5] to prevent unauthorized access [3] [4].
 
-                                            The Windows Defender Firewall, previously known as Windows Firewall [4], is a component that helps protect against unauthorized network access [3] [4].
-                                            It operates by filtering both incoming and outgoing network traffic based on predefined security rules [1].
+                                            This service runs the firewall component of Windows [4].
+                                            It starts automatically [3] and runs the `%WINDIR%\System32\MPSSVC.dll` driver [3].
+                                            This file is also referred to as **Microsoft Protection Service** [6].
 
-                                            Disabling the Windows Defender Firewall has significant impacts, including:
+                                            Beyond firewall functionality, it plays an important role in **Windows Service Hardening** to protect Windows services
+                                            [7] [8]. It also enforces **network isolation** in virtualized environments [7] [9].
 
-                                            - **Microsoft Store app downloads**: Disabling this service prevents updates and installations from the Microsoft Store, resulting in error code `0x80073D0A` [5] [6].
-                                            - **`netsh advfirewall` commands**: The script renders the `netsh advfirewall` command-line context, which manages Windows Firewall settings [7], becomes inoperative.
-                                            - **Activation of boot-time filters**: Deactivating the service may trigger boot-time filters that protect the computer during startup or when the firewall service stops unexpectedly [2].
-                                            This feature was introduced to minimize vulnerabilities during startup [2].
+                                            Disabling this service can enhance privacy by reducing Microsoft's capability to monitor and analyze your network traffic.
+                                            It also improves system performance by decreasing background resource consumption.
+                                            However, it may expose the system to substantial security threats [10].
+                                            This risk is partly mitigated by boot-time filters that are triggered to protect the computer during startup or when the
+                                            firewall service stops unexpectedly [2].
 
-                                            Beyond firewall functionality, the MpsSvc service is integral to Windows Service hardening and network isolation [6], essential for Windows Store applications [6]. As a result, third-party
-                                            firewalls typically interact with Windows Firewall via public APIs, rather than disabling the service outright [6].
-
-                                            The `MpsSvc` service is set to start automatically by default [3] and runs the `%WINDIR%\System32\MPSSVC.dll` driver [3]. This file is also referred to as "Microsoft Protection Service" [8].
-
-                                            > **Caution:** Disabling this service significantly compromises system security [9] and is not recommended by Microsoft [9].
-                                            > It affects not only the firewall's protective capabilities but also the functionality of other Windows components like the Store [5] [6] and command-line utilities.
-                                            > Users should be aware of these considerable trade-offs when considering this script for privacy enhancement.
+                                            > **Caution**: Disabling this service causes problems with software that depends on it [11] such as:
+                                            > - Prevents **Microsoft Store** app downloads (error code `0x80073D0A` [7] [12]), impacting **`winget` CLI functionality [13].
+                                            > - Disables **`netsh advfirewall`** commands, used for Windows Firewall management [14].
 
                                             [1]: https://web.archive.org/web/20231206185904/https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-r2-and-2008/dd349801%28v=ws.10%29 "Windows Firewall Service | learn.microsoft.com"
                                             [2]: https://web.archive.org/web/20110131034058/http://blogs.technet.com:80/b/networking/archive/2009/03/24/stopping-the-windows-authenticating-firewall-service-and-the-boot-time-policy.aspx "Stopping the Windows Authenticating Firewall Service and the boot time policy - Microsoft Enterprise Networking Team - Site Home - TechNet Blogs | blogs.technet.com"
                                             [3]: https://web.archive.org/web/20231122132143/https://batcmd.com/windows/10/services/mpssvc/ "Windows Defender Firewall - Windows 10 Service - batcmd.com | batcmd.com"
-                                            [4]: https://en.wikipedia.org/w/index.php?title=Windows_Firewall&oldid=1183396285 "Windows Firewall - Wikipedia | wikipedia.org"
-                                            [5]: https://github.com/undergroundwires/privacy.sexy/issues/104#issuecomment-962651791 "[BUG][help wanted]: Cannot enable Windows Defender · Issue #104 · undergroundwires/privacy.sexy | github.com/undergroundwires/privacy.sexy"
-                                            [6]: https://web.archive.org/web/20200620033533/https://www.walkernews.net/2012/09/23/how-to-fix-windows-store-app-update-error-code-0x80073d0a/ "How To Fix Windows Store App Update Error Code 0x80073D0A? – Walker News | www.walkernews.net"
-                                            [7]: https://web.archive.org/web/20240314125017/https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/netsh-advfirewall-firewall-control-firewall-behavior "Use netsh advfirewall firewall context - Windows Server | Microsoft Learn | learn.microsoft.com"
-                                            [8]: https://web.archive.org/web/20231122132150/https://strontic.github.io/xcyclopedia/library/MPSSVC.dll-AA441F7C99AAACBA2538E90D7693637A.html "MPSSVC.dll | Microsoft Protection Service | STRONTIC | strontic.github.io"
-                                            [9]: https://web.archive.org/web/20121106033255/http://technet.microsoft.com/en-us/library/cc753180.aspx "Basic Firewall Policy Design | technet.microsoft.com"
+                                            [4]: https://web.archive.org/web/20240406233529/https://en.wikipedia.org/wiki/Windows_Firewall "Windows Firewall - Wikipedia | wikipedia.org"
+                                            [5]: https://web.archive.org/web/20240406233704/https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/ "Windows Firewall overview - Windows Security | Microsoft Learn | learn.microsoft.com"
+                                            [6]: https://web.archive.org/web/20231122132150/https://strontic.github.io/xcyclopedia/library/MPSSVC.dll-AA441F7C99AAACBA2538E90D7693637A.html "MPSSVC.dll | Microsoft Protection Service | STRONTIC | strontic.github.io"
+                                            [7]: https://web.archive.org/web/20200620033533/https://www.walkernews.net/2012/09/23/how-to-fix-windows-store-app-update-error-code-0x80073d0a/ "How To Fix Windows Store App Update Error Code 0x80073D0A? – Walker News | www.walkernews.net"
+                                            [8]: https://web.archive.org/web/20240406232832/https://techcommunity.microsoft.com/t5/ask-the-performance-team/ws2008-windows-service-hardening/ba-p/372702 "WS2008: Windows Service Hardening - Microsoft Community Hub | techcommunity.microsoft."
+                                            [9]: https://web.archive.org/web/20240406232844/https://learn.microsoft.com/en-us/virtualization/windowscontainers/container-networking/network-isolation-security "Network isolation and security | Microsoft Learn | learn.microsoft.com"
+                                            [10]: https://web.archive.org/web/20121106033255/http://technet.microsoft.com/en-us/library/cc753180.aspx "Basic Firewall Policy Design | technet.microsoft.com"
+                                            [11]: https://web.archive.org/web/20240326143148/https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/configure-with-command-line?tabs=powershell#disable-windows-firewall "Manage Windows Firewall with the command line - Windows Security | Microsoft Learn | learn.microsoft.com"
+                                            [12]: https://web.archive.org/web/20240406224105/https://github.com/undergroundwires/privacy.sexy/issues/104#issuecomment-962651791 "[BUG][help wanted]: Cannot enable Windows Defender · Issue #104 · undergroundwires/privacy.sexy | github.com/undergroundwires/privacy.sexy"
+                                            [13]: https://web.archive.org/web/20240406223635/https://github.com/undergroundwires/privacy.sexy/issues/142 "[BUG]: \"Standard\" profile limits Winget CLI Functionality · Issue #142 · undergroundwires/privacy.sexy · GitHub | github.com"
+                                            [14]: https://web.archive.org/web/20240314125017/https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/netsh-advfirewall-firewall-control-firewall-behavior "Use netsh advfirewall firewall context - Windows Server | Microsoft Learn | learn.microsoft.com"
                                         call:
                                             -
                                                 function: DisableServiceInRegistry # We must disable it on registry level, "Access is denied" for sc config
                                                 parameters:
-                                                    serviceName: MpsSvc # Check: (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\MpsSvc").Start
+                                                    serviceName: MpsSvc # Check: (Get-Service -Name 'MpsSvc').StartType
                                                     defaultStartupMode: Automatic # Allowed values: Boot | System | Automatic | Manual
                                             -
                                                 function: SoftDeleteFiles
@@ -7212,7 +7341,7 @@ actions:
                             -
                                 category: Disable Defender Antivirus cloud protection service
                                 docs: https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/enable-cloud-protection-microsoft-defender-antivirus?view=o365-worldwide
-                                # Also known as Microsoft MAPS (Microsoft Active Protection Service) or Microsoft SpyNet
+                                # Formerly known as: Microsoft MAPS (Microsoft Active Protection Service), Microsoft SpyNet
                                 children:
                                     -
                                         category: Disable Defender cloud protection features
