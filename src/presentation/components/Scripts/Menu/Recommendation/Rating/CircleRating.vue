@@ -37,8 +37,10 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@use "@/presentation/assets/styles/main" as *;
+
 .circle-rating {
   display: inline-flex;
-  gap: 0.2em;
+  gap: $spacing-relative-x-small;
 }
 </style>

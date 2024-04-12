@@ -81,7 +81,7 @@ $cursor         : v-bind(cursorCssValue);
   .icon {
     color: $color;
   }
-  margin-right: 5px;
-  margin-left: 5px;
+  margin-right: $spacing-absolute-small;
+  margin-left: $spacing-absolute-small;
 }
 </style>

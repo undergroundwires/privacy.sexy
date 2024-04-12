@@ -77,7 +77,7 @@ interface DevAction {
   right: 0;
   background-color: rgba($color-on-surface, 0.5);
   color: $color-on-primary;
-  padding: 10px;
+  padding: $spacing-absolute-medium;
   z-index: 10000;
 
   display:flex;
@@ -113,14 +113,14 @@ interface DevAction {
   .action-buttons {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: $spacing-absolute-medium;
     @include reset-ul;
 
     .action-button {
       @include reset-button;
 
       display: block;
-      padding: 5px 10px;
+      padding: $spacing-absolute-x-small $spacing-absolute-medium;
       background-color: $color-primary;
       color: $color-on-primary;
       border: none;

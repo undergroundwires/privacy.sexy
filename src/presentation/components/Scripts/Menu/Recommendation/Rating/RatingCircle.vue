@@ -1,19 +1,17 @@
 <template>
-  <svg
-    :style="{
-      '--circle-stroke-width': `${circleStrokeWidthInPx}px`,
-    }"
-    :viewBox="viewBox"
-  >
-    <circle
-      :cx="circleRadiusInPx"
-      :cy="circleRadiusInPx"
-      :r="circleRadiusWithoutStrokeInPx"
-      :class="{
-        filled,
-      }"
-    />
-  </svg>
+  <span class="circle-container">
+    <svg :viewBox="viewBox">
+      <circle
+        :cx="circleRadiusInPx"
+        :cy="circleRadiusInPx"
+        :r="circleRadiusWithoutStrokeInPx"
+        :stroke-width="circleStrokeWidthStyleValue"
+        :class="{
+          filled,
+        }"
+      />
+    </svg>
+  </span>
 </template>
 
 <script lang="ts">
@@ -43,10 +41,13 @@ export default defineComponent({
       const height = circleDiameterInPx + circleStrokeWidthInPx;
       return `${minX} ${minY} ${width} ${height}`;
     });
+    const circleStrokeWidthStyleValue = computed(() => {
+      return `${circleStrokeWidthInPx}px`;
+    });
     return {
       circleRadiusInPx,
       circleDiameterInPx,
-      circleStrokeWidthInPx,
+      circleStrokeWidthStyleValue,
       circleRadiusWithoutStrokeInPx,
       viewBox,
     };
@@ -55,17 +56,18 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-$circleColor: currentColor;
-$circleHeight: 0.8em;
-$circleStrokeWidth: var(--circle-stroke-width);
+@use "@/presentation/assets/styles/main" as *;
+
+$circle-color: currentColor;
+$circle-height: $font-size-relative-smaller;
 
 svg {
-  height: $circleHeight;
+  font-size: $circle-height;
+  height: 1em;
   circle {
-    stroke: $circleColor;
-    stroke-width: $circleStrokeWidth;
+    stroke: $circle-color;
     &.filled {
-      fill: $circleColor;
+      fill: $circle-color;
     }
   }
 }

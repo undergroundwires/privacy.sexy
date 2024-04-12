@@ -125,6 +125,7 @@ function isClickable(element: Element) {
 
 <style scoped lang="scss">
 @use "@/presentation/assets/styles/main" as *;
+@use "./card-gap" as *;
 
 .cards {
   display: flex;
@@ -135,7 +136,7 @@ function isClickable(element: Element) {
     It ensures that there's room to grow, so the animation is shown without overflowing
     with scrollbars.
   */
-  padding: 10px;
+  padding: $spacing-absolute-medium;
 }
 
 .error {

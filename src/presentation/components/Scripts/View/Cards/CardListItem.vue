@@ -138,9 +138,10 @@ export default defineComponent({
 
 <style scoped lang="scss">
 @use "@/presentation/assets/styles/main" as *;
+@use "./card-gap" as *;
 
-$card-inner-padding     : 30px;
-$expanded-margin-top    : 30px;
+$card-inner-padding     : $spacing-absolute-xx-large;
+$expanded-margin-top    : $spacing-absolute-xx-large;
 $card-horizontal-gap    : $card-gap;
 
 .card {
@@ -178,13 +179,13 @@ $card-horizontal-gap    : $card-gap;
     .card__inner__selection_indicator {
       height: $card-inner-padding;
       margin-right: -$card-inner-padding;
-      padding-right: 10px;
+      padding-right: $spacing-absolute-medium;
       display: flex;
       justify-content: flex-end;
     }
     .card__inner__expand-icon {
       width: 100%;
-      margin-top: .25em;
+      margin-top: $spacing-relative-x-small;
       vertical-align: middle;
       font-size: $font-size-absolute-normal;
     }
@@ -209,7 +210,7 @@ $card-horizontal-gap    : $card-gap;
     .card__expander__close-button {
       font-size: $font-size-absolute-large;
       align-self: flex-end;
-      margin-right: 0.25em;
+      margin-right: $spacing-absolute-small;
       @include clickable;
       color: $color-primary-light;
       @include hover-or-touch {

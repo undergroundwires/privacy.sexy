@@ -76,18 +76,18 @@ export default defineComponent({
   }
 }
 .node {
-  margin-bottom: 3px;
-  margin-top: 3px;
-  padding-bottom: 3px;
-  padding-top: 3px;
-  padding-right: 6px;
+  margin-bottom: $spacing-absolute-xx-small;
+  margin-top: $spacing-absolute-xx-small;
+  padding-bottom: $spacing-absolute-xx-small;
+  padding-top: $spacing-absolute-xx-small;
+  padding-right: $spacing-absolute-small;
   box-sizing: border-box;
 
   .content {
     display: flex; // We could provide `block`, but `flex` is more versatile.
     color: $color-node-fg;
-    padding-left: 9px;
-    padding-right: 6px;
+    padding-left: $spacing-relative-small;
+    padding-right: $spacing-absolute-x-small;
     text-decoration: none;
     user-select: none;
   }

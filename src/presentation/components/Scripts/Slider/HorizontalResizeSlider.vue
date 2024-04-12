@@ -1,13 +1,5 @@
 <template>
-  <div
-    class="slider"
-    :style="{
-      '--vertical-margin': verticalMargin,
-      '--first-min-width': firstMinWidth,
-      '--first-initial-width': firstInitialWidth,
-      '--second-min-width': secondMinWidth,
-    }"
-  >
+  <div class="slider">
     <div ref="firstElement" class="first">
       <slot name="first" />
     </div>
@@ -27,10 +19,6 @@ export default defineComponent({
     SliderHandle,
   },
   props: {
-    verticalMargin: {
-      type: String,
-      required: true,
-    },
     firstMinWidth: {
       type: String,
       required: true,
@@ -71,20 +59,17 @@ export default defineComponent({
   display: flex;
   flex-direction: row;
   .first {
-    min-width: var(--first-min-width);
-    width: var(--first-initial-width);
+    min-width: v-bind(firstMinWidth);
+    width: v-bind(firstInitialWidth);
   }
   .second {
     flex: 1;
-    min-width: var(--second-min-width);
+    min-width: v-bind(secondMinWidth);
   }
   @media screen and (max-width: $media-vertical-view-breakpoint) {
     flex-direction: column;
     .first {
       width: auto !important;
-    }
-    .second {
-      margin-top: var(--vertical-margin);
     }
     .handle {
       display: none;

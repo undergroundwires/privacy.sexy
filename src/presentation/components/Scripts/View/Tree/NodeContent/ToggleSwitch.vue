@@ -83,12 +83,12 @@ $color-text-unchecked         : $color-on-primary;
 $color-text-checked           : $color-on-secondary;
 $color-bg-unchecked           : $color-primary;
 $color-bg-checked             : $color-secondary;
-$padding-horizontal           : calc($font-size * 0.4);
-$padding-vertical             : calc($font-size * 0.3);
+$padding-horizontal           : $spacing-relative-small;
+$padding-vertical             : $spacing-absolute-small;
 $size-height                  : calc($font-size + ($padding-vertical * 2));
-$size-circle                  : math.div($size-height * 2, 3);
+$size-circle                  : calc($size-height * 2/3);
 
-$gap-between-circle-and-text  : 0.25em;
+$gap-between-circle-and-text  : $spacing-relative-x-small;
 
 @mixin locateNearCircle($direction: 'left') {
   $circle-width: calc(#{$size-circle} + #{$padding-horizontal});

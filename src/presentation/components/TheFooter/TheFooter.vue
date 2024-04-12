@@ -104,7 +104,7 @@ export default defineComponent({
 @use "@/presentation/assets/styles/main" as *;
 
 .icon {
-  margin-right: 0.5em;
+  margin-right: $spacing-relative-small;
 }
 
 .footer {
@@ -119,18 +119,19 @@ export default defineComponent({
     @media screen and (max-width: $media-screen-big-width) {
       justify-content: space-around;
       width: 100%;
+      column-gap: $spacing-relative-medium;
       &:not(:first-child) {
-        margin-top: 0.7em;
+        margin-top: $spacing-relative-small;
       }
     }
     flex-wrap: wrap;
     &__item:not(:first-child) {
       &::before {
         content: "|";
-        padding: 0 5px;
+        padding: 0 $spacing-relative-small;
       }
       @media screen and (max-width: $media-screen-big-width) {
-        margin-top: 3px;
+        margin-top: $spacing-absolute-xx-small;
         &::before {
           content: "";
           padding: 0;

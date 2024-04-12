@@ -55,7 +55,7 @@ export default defineComponent({
 $modal-content-transition-duration: 400ms;
 $modal-content-color-shadow: $color-on-surface;
 $modal-content-color-background: $color-surface;
-$modal-content-offset-upward: 20px;
+$modal-content-offset-upward: $spacing-absolute-x-large;
 
 @mixin scrollable() {
   overflow-y: auto;

@@ -74,7 +74,6 @@ export default defineComponent({
   color: $color-on-secondary;
 
   border: none;
-  padding: 20px;
   transition-duration: 0.4s;
   overflow: hidden;
   box-shadow: 0 3px 9px $color-primary-darkest;

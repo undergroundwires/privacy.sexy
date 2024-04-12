@@ -2,8 +2,7 @@
   <div class="script-area">
     <TheScriptsMenu @view-changed="currentView = $event" />
     <HorizontalResizeSlider
-      class="row"
-      vertical-margin="15px"
+      class="horizontal-slider"
       first-initial-width="55%"
       first-min-width="20%"
       second-min-width="20%"
@@ -42,9 +41,17 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@use "@/presentation/assets/styles/main" as *;
+
 .script-area {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: $spacing-absolute-medium;
+}
+
+.horizontal-slider {
+  // Add row gap between lines on mobile (smaller screens)
+  // when the slider turns into rows.
+  row-gap: $spacing-absolute-large;
 }
 </style>

@@ -53,20 +53,25 @@ function getOptionalDevToolkitComponent(): Component | undefined {
 @use 'sass:math';
 
 @mixin responsive-spacing {
-  $spacing-absolute-small: math.div($base-spacing, 2);
-  $spacing-absolute-extra-small: math.div($base-spacing, 4);
   // Avoid using percentage-based values for spacing the avoid unintended layout shifts.
-  margin-left: $base-spacing;
-  margin-right: $base-spacing;
+  margin-left: $spacing-absolute-medium;
+  margin-right: $spacing-absolute-medium;
+  padding: $spacing-absolute-xx-large;
   @media screen and (max-width: $media-screen-big-width) {
     margin-left: $spacing-absolute-small;
     margin-right: $spacing-absolute-small;
+    padding: $spacing-absolute-x-large;
   }
   @media screen and (max-width: $media-screen-medium-width) {
-    margin-left: $spacing-absolute-extra-small;
-    margin-right: $spacing-absolute-extra-small;
+    margin-left: $spacing-absolute-x-small;
+    margin-right: $spacing-absolute-x-small;
+    padding: $spacing-absolute-medium;
   }
-  padding: $spacing-absolute-small;
+  @media screen and (max-width: $media-screen-small-width) {
+    margin-left: 0;
+    margin-right: 0;
+    padding: $spacing-absolute-small;
+  }
 }
 
 #app {
@@ -83,10 +88,10 @@ function getOptionalDevToolkitComponent(): Component | undefined {
     display:flex;
     flex-direction: column;
     .app__row {
-      margin-bottom: 10px;
+      margin-bottom: $spacing-absolute-large;
     }
     .app__code-buttons {
-      padding-bottom: 10px;
+      padding-bottom: $spacing-absolute-medium;
     }
   }
 }

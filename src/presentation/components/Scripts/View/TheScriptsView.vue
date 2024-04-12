@@ -128,10 +128,7 @@ export default defineComponent({
 <style scoped lang="scss">
 @use "@/presentation/assets/styles/main" as *;
 
-$margin-inner: 4px;
-
 .scripts-view {
-  margin-top: $margin-inner;
   @media screen and (min-width: $media-vertical-view-breakpoint) {
     // so the current code is always visible
     overflow: auto;
@@ -143,16 +140,17 @@ $margin-inner: 4px;
   display: flex;
   flex-direction: column;
   background-color: $color-scripts-bg;
+  padding-top: $spacing-absolute-large;
+  padding-bottom:$spacing-absolute-large;
   .search__query {
     display: flex;
     justify-content: center;
     flex-direction: row;
     align-items: center;
-    margin-top: 1em;
     color: $color-primary-light;
     .search__query__close-button {
       font-size: $font-size-absolute-large;
-      margin-left: 0.25rem;
+      margin-left: $spacing-relative-x-small;
     }
   }
   .search-no-matches {
@@ -161,11 +159,9 @@ $margin-inner: 4px;
     word-break:break-word;
     color: $color-on-primary;
     font-size: $font-size-absolute-large;
-    padding:10px;
+    padding: $spacing-absolute-medium;
     text-align:center;
-    > div {
-      padding-bottom:13px;
-    }
+    gap: $spacing-relative-small;
     a {
       color: $color-primary;
     }

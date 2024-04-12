@@ -43,7 +43,6 @@ logger.logLabeledInformation('Scheduled test duration', convertMillisecondsToHum
 logger.logTestSectionEndDelimiter();
 test(`all URLs (${urls.length}) should be alive`, async () => {
   // act
-  console.log('URLS', urls); // TODO: Delete
   const results = await getUrlStatusesInParallel(urls, requestOptions);
   // assert
   const deadUrls = results.filter((r) => r.code === undefined || !isOkStatusCode(r.code));

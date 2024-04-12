@@ -54,14 +54,14 @@ export default defineComponent({
 
 .copyable-command {
   display: inline-flex;
-  padding: 0.25em;
+  padding: $spacing-relative-x-small;
   font-size: $font-size-absolute-small;
   .dollar {
-    margin-right: 0.5rem;
+    margin-right: $spacing-relative-small;
     user-select: none;
   }
   .copy-action-container {
-    margin-left: 1rem;
+    margin-left: $spacing-relative-medium;
   }
 }
 </style>

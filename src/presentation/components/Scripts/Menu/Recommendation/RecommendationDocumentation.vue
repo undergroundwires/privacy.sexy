@@ -88,7 +88,7 @@ export default defineComponent({
 
 @mixin horizontal-stack {
   display: flex;
-  gap: 0.5em;
+  gap: $spacing-relative-small;
 }
 
 @mixin apply-icon-color($color) {

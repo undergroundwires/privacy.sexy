@@ -34,12 +34,15 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@use "@/presentation/assets/styles/main" as *;
+
 .container {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  gap: 30px;
+  gap: $spacing-absolute-xx-large;
 }
+
 .code-button {
   width: 10%;
   min-width: 90px;

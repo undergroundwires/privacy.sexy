@@ -219,7 +219,7 @@ $color-tooltip-background: $color-primary-darkest;
   background: $color-tooltip-background;
   color: $color-on-primary;
   border-radius: 16px;
-  padding: 12px 10px;
+  padding: $spacing-absolute-large $spacing-absolute-medium;
 
   // Explicitly set font styling for tooltips to prevent inconsistent appearances due to style inheritance from trigger elements.
   @include base-font-style;
@@ -230,8 +230,8 @@ $color-tooltip-background: $color-primary-darkest;
     and balanced layout.
     Avoiding setting vertical margin as it disrupts the arrow rendering.
   */
-  margin-left: 2px;
-  margin-right: 2px;
+  margin-left: $spacing-absolute-xx-small;
+  margin-right: $spacing-absolute-xx-small;
 
   // Setting max-width increases readability and consistency reducing overlap and clutter.
   @include set-property-ch-value-with-fallback(

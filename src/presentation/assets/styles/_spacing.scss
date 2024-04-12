@@ -1,0 +1,16 @@
+// Use for fixed-size elements where consistent spacing is important
+// regardless of context.
+$spacing-absolute-xx-small: 3px;
+$spacing-absolute-x-small : 4px;
+$spacing-absolute-small   : 6px;
+$spacing-absolute-medium  : 10px;
+$spacing-absolute-large   : 15px;
+$spacing-absolute-x-large : 20px;
+$spacing-absolute-xx-large: 30px;
+
+// Use for elements with text content where spacing should
+// scale with text size.
+$spacing-relative-x-small : 0.25em;
+$spacing-relative-small   : 0.5em;
+$spacing-relative-medium  : 1em;
+$spacing-relative-large   : 2em;

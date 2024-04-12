@@ -55,7 +55,7 @@ export default defineComponent({
     flex-wrap: wrap;
 
     .node-content-item:not(:first-child) {
-      margin-left: 5px;
+      margin-left: $spacing-relative-small;
     }
   }
 }

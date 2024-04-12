@@ -63,19 +63,25 @@ export default defineComponent({
 @use "@/presentation/assets/styles/main" as *;
 
 .dialog {
-  margin-bottom: 10px;
+  margin-bottom: $spacing-absolute-medium;
   display: flex;
   flex-direction: row;
 
   &__content {
-    margin: 5%;
+    margin: $spacing-absolute-xx-large;
+    @media screen and (max-width: $media-screen-big-width) {
+      margin: $spacing-absolute-x-large;
+    }
+    @media screen and (max-width: $media-screen-medium-width) {
+      margin: $spacing-absolute-large;
+    }
   }
 
   .dialog__close-button {
     color: $color-primary-dark;
     width: auto;
     font-size: $font-size-absolute-large;
-    margin-right: 0.25em;
+    margin-right: $spacing-absolute-small;
     align-self: flex-start;
   }
 }

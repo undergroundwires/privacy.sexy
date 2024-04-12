@@ -25,7 +25,7 @@ export default defineComponent({
 <style scoped lang="scss">
 @use "@/presentation/assets/styles/main" as *;
 
-$gap: 0.25rem;
+$gap: $spacing-relative-x-small;
 .list {
   display: flex;
   :deep(.items) {

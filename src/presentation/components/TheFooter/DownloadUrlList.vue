@@ -67,10 +67,10 @@ export default defineComponent({
   }
   .description {
     &__icon {
-      margin-right: 0.5em;
+      margin-right: $spacing-relative-small;
     }
     &__text {
-      margin-right: 0.3em;
+      margin-right: $spacing-relative-x-small;
     }
   }
 }
@@ -79,7 +79,7 @@ export default defineComponent({
     &:not(:first-child)::before {
       content: "|";
       font-size: $font-size-absolute-x-small;
-      padding: 0 5px;
+      padding: 0 $spacing-relative-small;
     }
   }
 }

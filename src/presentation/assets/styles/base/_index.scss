@@ -5,15 +5,14 @@
   CSS Base applies a style foundation for HTML elements that is consistent for baseline browsers
 */
 
-@use "@/presentation/assets/styles/colors" as *;
-@use "@/presentation/assets/styles/mixins" as *;
-@use "@/presentation/assets/styles/vite-path" as *;
-@use "@/presentation/assets/styles/typography" as *;
+@use "../colors" as *;
+@use "../mixins" as *;
+@use "../vite-path" as *;
+@use "../typography" as *;
+@use "../spacing" as *;
 @use "_code-styling" as *;
 @use "_margin-padding" as *;
 @use "_link-styling" as *;
-
-$base-spacing: 1em;
 
 * {
   box-sizing: border-box;
@@ -22,7 +21,7 @@ $base-spacing: 1em;
 body {
   background: $color-background;
   @include base-font-style;
-  @include apply-uniform-spacing($base-spacing: $base-spacing)
+  @include apply-uniform-spacing;
 }
 
 input {
@@ -30,12 +29,12 @@ input {
 }
 
 blockquote {
-  padding: 0 $base-spacing;
-  border-left: .25em solid $color-primary;
+  padding: 0 $spacing-relative-medium;
+  border-left: $spacing-absolute-x-small solid $color-primary;
 }
 
 @include style-code-elements(
-  $code-block-padding: $base-spacing,
+  $code-block-padding: $spacing-relative-medium,
   $color-background: $color-primary-darker,
 );
 

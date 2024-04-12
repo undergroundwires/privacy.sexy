@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { shallowMount } from '@vue/test-utils';
 import RatingCircle from '@/presentation/components/Scripts/Menu/Recommendation/Rating/RatingCircle.vue';
+import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 
 const DOM_SVG_SELECTOR = 'svg';
 const DOM_CIRCLE_SELECTOR = `${DOM_SVG_SELECTOR} > circle`;
@@ -39,12 +40,6 @@ describe('RatingCircle.vue', () => {
   });
 
   describe('SVG and circle styles', () => {
-    it('sets --circle-stroke-width style correctly', () => {
-      const wrapper = shallowMount(RatingCircle);
-      const svgElement = wrapper.find(DOM_SVG_SELECTOR).element;
-      expect(svgElement.style.getPropertyValue('--circle-stroke-width')).to.equal('2px');
-    });
-
     it('renders circle with correct fill attribute when filled prop is true', () => {
       const wrapper = shallowMount(RatingCircle, {
         propsData: {
@@ -58,32 +53,49 @@ describe('RatingCircle.vue', () => {
 
     it('renders circle with the correct viewBox property', () => {
       const wrapper = shallowMount(RatingCircle);
-      const circle = wrapper.find(DOM_SVG_SELECTOR);
+      const circleElement = wrapper.find(DOM_SVG_SELECTOR);
 
-      expect(circle.attributes('viewBox')).to.equal('-1 -1 22 22');
+      expect(circleElement.attributes('viewBox')).to.equal('-1 -1 22 22');
     });
   });
 
   describe('circle attributes', () => {
-    it('renders circle with the correct cx attribute', () => {
-      const wrapper = shallowMount(RatingCircle);
-      const circleElement = wrapper.find(DOM_CIRCLE_SELECTOR);
-
-      expect(circleElement.attributes('cx')).to.equal('10'); // Based on circleDiameterInPx = 20
-    });
-
-    it('renders circle with the correct cy attribute', () => {
-      const wrapper = shallowMount(RatingCircle);
-      const circleElement = wrapper.find(DOM_CIRCLE_SELECTOR);
-
-      expect(circleElement.attributes('cy')).to.equal('10'); // Based on circleDiameterInPx = 20
-    });
-
-    it('renders circle with the correct r attribute', () => {
-      const wrapper = shallowMount(RatingCircle);
-      const circleElement = wrapper.find(DOM_CIRCLE_SELECTOR);
-
-      expect(circleElement.attributes('r')).to.equal('9'); // Based on circleRadiusWithoutStrokeInPx = circleDiameterInPx / 2 - circleStrokeWidthInPx / 2
+    const testScenarios: ReadonlyArray<{
+      readonly attributeKey: string;
+      readonly expectedValue: string;
+    }> = [
+      {
+        attributeKey: 'stroke-width',
+        expectedValue: '2px', // Based on circleStrokeWidthInPx = 2
+      },
+      {
+        attributeKey: 'cx',
+        expectedValue: '10', // Based on circleDiameterInPx = 20
+      },
+      {
+        attributeKey: 'cy',
+        expectedValue: '10', // Based on circleStrokeWidthInPx = 2
+      },
+      {
+        attributeKey: 'r',
+        expectedValue: '9', // Based on circleRadiusWithoutStrokeInPx = circleDiameterInPx / 2 - circleStrokeWidthInPx / 2
+      },
+    ];
+    testScenarios.forEach(({
+      attributeKey, expectedValue,
+    }) => {
+      it(`renders circle with the correct ${attributeKey} attribute`, () => {
+        // act
+        const wrapper = shallowMount(RatingCircle);
+        const circleElement = wrapper.find(DOM_CIRCLE_SELECTOR);
+        const actualValue = circleElement.attributes(attributeKey);
+        // assert
+        expect(actualValue).to.equal(expectedValue, formatAssertionMessage([
+          `Expected value: ${expectedValue}`,
+          `Actual value: ${actualValue}`,
+          `Attribute: ${attributeKey}`,
+        ]));
+      });
     });
   });
 });

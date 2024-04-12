@@ -14,14 +14,13 @@ The presentation layer uses an event-driven architecture for bidirectional react
   - [**`main.ts`**](./../src/presentation/main.ts): Starts Vue app.
   - [**`index.html`**](./../src/presentation/index.html): The `index.html` entry file, located at the root of the project as required by Vite
   - [**`bootstrapping/`**](./../src/presentation/bootstrapping/): Registers Vue components and plugins.
-  - [**`components/`**](./../src/presentation/components/): Contains Vue components and helpers.
+  - [**`components/`**](./../src/presentation/components/): Contains Vue components, helpers and styles coupled to Vue components.
     - [**`Shared/`**](./../src/presentation/components/Shared): Contains shared Vue components and helpers.
       - [**`Hooks`**](../src/presentation/components/Shared/Hooks): Hooks used by components through [dependency injection](#dependency-injections).
   - [**`/public/`**](../src/presentation/public/): Contains static assets.
   - [**`assets/`**](./../src/presentation/assets/styles/): Contains assets processed by Vite.
     - [**`fonts/`**](./../src/presentation/assets/fonts/): Contains fonts.
     - [**`styles/`**](./../src/presentation/assets/styles/): Contains shared styles.
-      - [**`components/`**](./../src/presentation/assets/styles/components): Contains styles coupled to Vue components.
       - [**`main.scss`**](./../src/presentation/assets/styles/main.scss): Main Sass file, imported by other components as single entrypoint..
   - [**`electron/`**](./../src/presentation/electron/): Contains Electron code.
     - [`/main/` **`index.ts`**](./../src/presentation/main.ts): Main entry for Electron, managing application windows and lifecycle events.
@@ -38,6 +37,13 @@ The presentation layer uses an event-driven architecture for bidirectional react
   They should also have different visual state when hovering/touching on them that indicates that they are being clicked, which helps with accessibility.
 - **Borders**:
   privacy.sexy prefers sharper edges in its design language.
+- **Fonts**:
+  - Use the primary font for regular text and monospace font for code or specific data.
+  - Use cursive and logo fonts solely for branding.
+  - Refer to [standardized font size variables](../src/presentation/assets/styles/_typography.scss) for font sizing, avoiding arbitrary `px`, `em`, `rem`, or percentage values.
+- **Spacing**:
+  Use [global spacing variables](../src/presentation/assets/styles/_spacing.scss) for consistent margin, padding, and gap definitions.
+  This provides uniform spatial distribution and alignment of elements, enhancing visual harmony and making the UI more scalable and maintainable.
 
 ## Application data
 
