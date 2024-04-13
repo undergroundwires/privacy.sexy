@@ -2181,13 +2181,19 @@ actions:
 
                                     By running this script, you prevent the continuous surveillance and data gathering activities conducted by PCA.
 
+                                    ### Overview of default service statuses
+
+                                    | OS Version | Status | Start type |
+                                    | ---------- | -------| ---------- |
+                                    | Windows 10 (≥ 21H1) | 🟢 Running | Automatic |
+                                    | Windows 11 (≥ 22H2) | 🟢 Running | Automatic |
+
                                     [1]: https://web.archive.org/web/20230905120815/https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services#program-compatibility-assistant-service "Guidance on disabling system services on Windows IoT Enterprise | Microsoft Learn"
                                     [2]: https://web.archive.org/web/20231017234102/https://learn.microsoft.com/en-us/mem/configmgr/desktop-analytics/monitor-connection-health#appraiser-data-collection "Monitor connection health - Configuration Manager | Microsoft Learn"
                                 call:
                                     function: DisableService
                                     parameters:
                                         serviceName: PcaSvc # Check: (Get-Service -Name 'PcaSvc').StartType
-                                        # Windows 10 21H1: Manual | Windows 11 22H2: Automatic
                                         defaultStartupMode: Automatic # Allowed values: Automatic | Manual
             -
                 category: Disable Windows telemetry and data collection
@@ -2204,7 +2210,15 @@ actions:
                             -
                                 name: Disable "Connected User Experiences and Telemetry" (`DiagTrack`) service # Connected User Experiences and Telemetry
                                 recommend: standard
-                                docs: https://web.archive.org/web/20240314062548/https://batcmd.com/windows/10/services/diagtrack/
+                                docs: |-
+                                    Details: [Connected User Experiences and Telemetry - Windows 10 Service - batcmd.com | batcmd.com](https://web.archive.org/web/20240314062548/https://batcmd.com/windows/10/services/diagtrack/)
+
+                                    ### Overview of default service statuses
+
+                                    | OS Version | Status | Start type |
+                                    | ---------- | -------| ---------- |
+                                    | Windows 10 (≥ 21H1) | 🟢 Running | Automatic |
+                                    | Windows 11 (≥ 22H2) | 🟢 Running | Automatic |
                                 call:
                                     function: DisableService
                                     parameters:
@@ -2213,7 +2227,15 @@ actions:
                             -
                                 name: Disable WAP push notification routing service # Device Management Wireless Application Protocol (WAP) Push message Routing Service
                                 recommend: standard
-                                docs: https://web.archive.org/web/20240314090537/http://batcmd.com/windows/10/services/dmwappushservice/
+                                docs: |-
+                                    Details: [Device Management Wireless Application Protocol (WAP) Push message Routing Service - Windows 10 Service - batcmd.com | batcmd.com](https://web.archive.org/web/20240314090537/http://batcmd.com/windows/10/services/dmwappushservice/)
+
+                                    ### Overview of default service statuses
+
+                                    | OS Version | Status | Start type |
+                                    | ---------- | -------| ---------- |
+                                    | Windows 10 (≥ 21H1) | 🔴 Stopped | Manual |
+                                    | Windows 11 (≥ 22H2) | 🔴 Stopped | Manual |
                                 call:
                                     function: DisableService
                                     parameters:
@@ -2221,7 +2243,15 @@ actions:
                                         defaultStartupMode: Manual # Allowed values: Automatic | Manual
                             -
                                 name: Disable "Diagnostics Hub Standard Collector" service
-                                docs: https://web.archive.org/web/20240314090703/https://batcmd.com/windows/10/services/diagnosticshub-standardcollector-service/
+                                docs: |-
+                                    Details: [Microsoft (R) Diagnostics Hub Standard Collector Service - Windows 10 Service - batcmd.com | batcmd.com](https://web.archive.org/web/20240314090703/https://batcmd.com/windows/10/services/diagnosticshub-standardcollector-service/)
+
+                                    ### Overview of default service statuses
+
+                                    | OS Version | Status | Start type |
+                                    | ---------- | -------| ---------- |
+                                    | Windows 10 (≥ 21H1) | 🔴 Stopped | Manual |
+                                    | Windows 11 (≥ 22H2) | 🔴 Stopped | Manual |
                                 call:
                                     function: DisableService
                                     parameters:
@@ -2229,7 +2259,15 @@ actions:
                                         defaultStartupMode: Manual # Allowed values: Automatic | Manual
                             -
                                 name: Disable "Diagnostic Execution Service" (`diagsvc`)
-                                docs: https://web.archive.org/web/20240314091013/https://batcmd.com/windows/10/services/diagsvc/
+                                docs: |-
+                                    Details: [Diagnostic Execution Service - Windows 10 Service - batcmd.com](https://web.archive.org/web/20240314091013/https://batcmd.com/windows/10/services/diagsvc/)
+
+                                    ### Overview of default service statuses
+
+                                    | OS Version | Status | Start type |
+                                    | ---------- | -------| ---------- |
+                                    | Windows 10 (≥ 21H1) | 🔴 Stopped | Manual |
+                                    | Windows 11 (≥ 22H2) | 🔴 Stopped | Manual |
                                 call:
                                     function: DisableService
                                     parameters:
@@ -2629,10 +2667,21 @@ actions:
                             - `HKLM\SOFTWARE\Microsoft\Windows\Windows Error Reporting!Disabled` [2]
                             - `HKLM\Software\Policies\Microsoft\Windows\Windows Error Reporting` [3]
 
-                            ### Services
+                            ### Overview of default service statuses
 
-                            - Windows Error Reporting Service [4]
-                            - Problem Reports Control Panel Support [5]
+                            Windows Error Reporting Service (`wersvc`) [4]:
+
+                            | OS Version | Status | Start type |
+                            | ---------- | -------| ---------- |
+                            | Windows 10 (≥ 21H1) | 🔴 Stopped | Manual |
+                            | Windows 11 (≥ 22H2) | 🔴 Stopped | Manual |
+
+                            Problem Reports Control Panel Support (`wercplsupport) [5]:
+
+                            | OS Version | Status | Start type |
+                            | ---------- | -------| ---------- |
+                            | Windows 10 (≥ 21H1) | 🔴 Stopped | Manual |
+                            | Windows 11 (≥ 22H2) | 🔴 Stopped | Manual |
 
                             ### Overview of default task statuses
 
@@ -2812,6 +2861,13 @@ actions:
 
                                     > **Caution:** Disabling this service affects the functionality of Windows Store. It plays a role not just in Windows Updates but also in Microsoft Store app
                                     downloads, especially since Windows 11 [7]. There have been reported issues with some app downloads on Windows 10 [8].
+
+                                    ### Overview of default service statuses
+
+                                    | OS Version | Status | Start type |
+                                    | ---------- | -------| ---------- |
+                                    | Windows 10 (≥ 21H1) | 🟢 Running | Automatic |
+                                    | Windows 11 (≥ 22H2) | 🟢 Running | Automatic |
 
                                     [1]: https://web.archive.org/web/20230914164204/https://learn.microsoft.com/en-us/windows/deployment/do/waas-delivery-optimization "What is Delivery Optimization? - Windows Deployment | Microsoft Learn"
                                     [2]: https://web.archive.org/web/20230905120815/https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services#delivery-optimization "Guidance on disabling system services on Windows IoT Enterprise | Microsoft Learn"
@@ -4103,11 +4159,20 @@ actions:
                         code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Biometrics\Credential Provider" /v "Enabled" /t "REG_DWORD" /d "0" /f
                         revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Biometrics\Credential Provider" /v "Enabled" /t "REG_DWORD" /d "1" /f
                     -
-                        name: Disable Windows Biometric Service
+                        name: Disable "Windows Biometric Service"
                         recommend: strict
-                        docs:
-                            - https://web.archive.org/web/20240218231654/https://learn.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server#windows-biometric-service
-                            - https://web.archive.org/web/20240314062512/https://batcmd.com/windows/10/services/wbiosrvc/
+                        docs: |-
+                            Details:
+
+                            - [Security guidelines for system services in Windows Server 2016 | Microsoft Learn | learn.microsoft.com](https://web.archive.org/web/20240218231654/https://learn.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server#windows-biometric-service)
+                            - [Windows Biometric Service - Windows 10 Service - batcmd.com | batcmd.com](https://web.archive.org/web/20240314062512/https://batcmd.com/windows/10/services/wbiosrvc/)
+
+                            ### Overview of default service statuses
+
+                            | OS Version | Status | Start type |
+                            | ---------- | -------| ---------- |
+                            | Windows 10 (≥ 21H1) | 🔴 Stopped | Manual |
+                            | Windows 11 (≥ 22H2) | 🔴 Stopped | Manual |
                         call:
                             function: DisableService
                             parameters:
@@ -4170,10 +4235,19 @@ actions:
                 category: Disable Windows Insider Program
                 children:
                     -
-                        name: Disable Windows Insider Service
-                        docs:
-                            - https://web.archive.org/web/20240218231654/https://learn.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server#windows-insider-service
-                            - https://web.archive.org/web/20240314062528/https://batcmd.com/windows/10/services/wisvc/
+                        name: Disable "Windows Insider Service"
+                        docs: |-
+                            Details:
+
+                            - [Security guidelines for system services in Windows Server 2016 | Microsoft Learn | learn.microsoft.com](https://web.archive.org/web/20240218231654/https://learn.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server#windows-insider-service)
+                            - [Windows Insider Service - Windows 10 Service - batcmd.com | batcmd.com](https://web.archive.org/web/20240314062528/https://batcmd.com/windows/10/services/wisvc/)
+
+                            ### Overview of default service statuses
+
+                            | OS Version | Status | Start type |
+                            | ---------- | -------| ---------- |
+                            | Windows 10 (≥ 21H1) | 🔴 Stopped | Manual |
+                            | Windows 11 (≥ 22H2) | 🔴 Stopped | Manual |
                         recommend: standard
                         call:
                             function: DisableService
@@ -4376,21 +4450,30 @@ actions:
                             reg delete "HKLM\SOFTWARE\Policies\Microsoft\VisualStudio\Feedback" /v "DisableEmailInput" /f 2>nul
                             reg delete "HKLM\SOFTWARE\Policies\Microsoft\VisualStudio\Feedback" /v "DisableScreenshotCapture" /f 2>nul
                     -
-                        name: Stop and disable Visual Studio Standard Collector Service
+                        name: Disable "Visual Studio Standard Collector Service"
+                        recommend: standard
                         docs: |-
                             Visual Studio Standard Collector Service is a service that is part of
                             [Microsoft Visual Studio and .NET Log Collection Tool](https://web.archive.org/web/20231207105404/https://www.microsoft.com/en-us/download/details.aspx?id=12493) [1].
                             This service collects logs for Diagnostics Hub just like Diagnostic Hub Standard Collector [2].
-                            It has been known to be vulnerable to privilege elavation [3].
+                            It has been known to be vulnerable to privilege elavation [3] [4].
 
                             Disabling this service is recommended because otherwise it would:
                             - Increase the attack surface of your computer, making it open to potential future vulnerabilities.
                             - Use computer resources in favor of collecting more data about you and your behavior.
 
+                            ### Overview of default service statuses
+
+                            `VSStandardCollectorService150` (tested on Microsoft Visual Studio Community 2022):
+
+                            | OS Version | Status | Start type |
+                            | ---------- | -------| ---------- |
+                            | Windows 11 (≥ 21H2) | 🟡 Missing | N/A |
+
                             [1]: https://web.archive.org/web/20240314123619/https://learn.microsoft.com/en-us/answers/questions/891356/i-cant-start-vsstandardcollectorservice150#answer-929168 "I can't start VSStandardCollectorService150 | Microsoft Q&A | learn.microsoft.com"
-                            [2]: https://www.atredis.com/blog/cve-2018-0952-privilege-escalation-vulnerability-in-windows-standard-collector-service "CVE-2018-0952: Privilege Escalation Vulnerability in Windows Standard Collector Service | Atredis Partners"
-                            [3]: https://msrc.microsoft.com/update-guide/en-US/vulnerability/CVE-2018-0952 "Diagnostic Hub Standard Collector Elevation of Privilege Vulnerability"
-                        recommend: standard
+                            [2]: https://web.archive.org/web/20240413105955/https://www.atredis.com/blog/cve-2018-0952-privilege-escalation-vulnerability-in-windows-standard-collector-service "CVE-2018-0952: Privilege Escalation Vulnerability in Windows Standard Collector Service | Atredis Partners"
+                            [3]: https://web.archive.org/web/20240413105849/https://msrc.microsoft.com/update-guide/en-US/vulnerability/CVE-2018-0952 "Diagnostic Hub Standard Collector Elevation of Privilege Vulnerability"
+                            [4]: https://web.archive.org/web/20240413105849/https://msrc.microsoft.com/update-guide/en-US/vulnerability/CVE-2018-0952 "CVE-2024-20656 - Local Privilege Escalation in the VSStandardCollectorService150 Service - MDSec | www.mdsec.co.uk"
                         call:
                             function: DisableService
                             parameters:
@@ -4515,13 +4598,21 @@ actions:
                                     reg delete "HKLM\SOFTWARE\NVIDIA Corporation\Global\FTS" /v "EnableRID66610" /f
                                     reg delete "HKLM\SYSTEM\CurrentControlSet\Services\nvlddmkm\Global\Startup" /v "SendTelemetryData" /f
                     -
-                        name: Disable Nvidia Telemetry Container service
+                        name: Disable "Nvidia Telemetry Container" service
                         docs: |-
                             [Disable Nvidia Telemetry tracking on Windows - gHacks Tech News](https://web.archive.org/web/20231019222346/https://www.ghacks.net/2016/11/07/nvidia-telemetry-tracking/)
+
+                            ### Overview of default service statuses
+
+                            `NvTelemetryContainer` (tested on driver version 497.09 on Windows 11 23H2):
+
+                            | OS Version | Status | Start type |
+                            | ---------- | -------| ---------- |
+                            | Windows 11 (≥ 21H2) | 🟡 Missing | N/A |
                         call:
                             function: DisableService
                             parameters:
-                                serviceName: NvTelemetryContainer
+                                serviceName: NvTelemetryContainer # (Get-Service -Name NvTelemetryContainer).StartType
                                 # Display name: "NVIDIA Telemetry Container"
                                 # Description: "Container service for NVIDIA Telemetry"
                                 defaultStartupMode: Automatic
@@ -5122,6 +5213,22 @@ actions:
                             By disabling these services, this script aims to give users more control over their system and mitigate potential privacy and security risks, albeit at the cost
                             of not receiving automatic software updates from Google.
 
+                            ### Overview of default service statuses
+
+                            Google Update Service (`gupdate`) (tested on version Chrome 123.0.6312.106):
+
+                            | OS Version | Status | Start type |
+                            | ---------- | -------| ---------- |
+                            | Windows 10 (≥ 21H1) | 🔴 Stopped | Automatic |
+                            | Windows 11 (≥ 22H2) | 🔴 Stopped | Automatic |
+
+                            Google Update Service (`gupdatem`) (tested on version Chrome 123.0.6312.106):
+
+                            | OS Version | Status | Start type |
+                            | ---------- | -------| ---------- |
+                            | Windows 10 (≥ 21H1) | 🔴 Stopped | Manual |
+                            | Windows 11 (≥ 22H2) | 🔴 Stopped | Manual |
+
                             [1]: https://archive.ph/2023.10.26-231300/https://github.com/google/omaha/blob/8fa5322c5c35d0cede28f4c32454cb0285490b6d/omaha/goopdate/omaha3_idl.idl%23L178-L186 "omaha/omaha/goopdate/omaha3_idl.idl at 8fa5322c5c35d0cede28f4c32454cb0285490b6d · google/omaha | github.com/google"
                             [2]: https://archive.ph/2023.10.26-231313/https://github.com/google/omaha/blob/8fa5322c5c35d0cede28f4c32454cb0285490b6d/omaha/common/omaha_customization_unittest.cc%23L290-L299 "omaha/omaha/common/omaha_customization_unittest.cc at 8fa5322c5c35d0cede28f4c32454cb0285490b6d · google/omaha | github.com/google"
                             [3]: https://archive.ph/2023.10.26-224813/https://github.com/google/omaha/blob/8fa5322c5c35d0cede28f4c32454cb0285490b6d/omaha/internal/grit/goopdateres.grd%23L166-L177 "omaha/omaha/internal/grit/goopdateres.grd at 8fa5322c5c35d0cede28f4c32454cb0285490b6d · google/omaha · GitHub | github.com/google"
@@ -5149,7 +5256,7 @@ actions:
                                 function: DisableService
                                 parameters:
                                     serviceName: gupdatem # Check: (Get-Service -Name gupdatem).StartType
-                                    defaultStartupMode: Automatic # Allowed values: Automatic | Manual
+                                    defaultStartupMode: Manual # Allowed values: Automatic | Manual
                     -
                         name: Disable Google automatic updates scheduled tasks (breaks Google Credential Provider)
                         recommend: strict
@@ -5272,10 +5379,10 @@ actions:
 
                             `AdobeARMservice` (tested on Adobe Acrobat version 23.006):
 
-                            | OS Version       | Default status |
-                            | ---------------- | -------------- |
-                            | Windows 10 22H2  | 🟢 Running     |
-                            | Windows 11 22H2  | 🟢 Running     |
+                            | OS Version | Status | Start type |
+                            | ---------- | -------| ---------- |
+                            | Windows 10 (≥ 22H2) | 🟢 Running | Automatic |
+                            | Windows 11 (≥ 22H2) | 🟢 Running | Automatic |
 
                             [1]: https://web.archive.org/web/20231027145411/https://www.shouldiblockit.com/armsvc.exe-2873.aspx "armsvc.exe - Should I Block It? (Adobe Acrobat Update Service) | shouldiblockit.com"
                             [2]: https://web.archive.org/web/20231027145343/https://www.file.net/process/armsvc.exe.html "armsvc.exe Windows process - What is it? | file.net"
@@ -5297,16 +5404,17 @@ actions:
                             This service has had vulnerabilities in the past, including the Privilege Escalation Unquoted Service Path
                             vulnerability [4], making it a potential security risk.
 
-                            The service's executable is typically found at `C:\Program Files (x86)\Common Files\Adobe\Adobe Desktop Common\ElevationManager\AdobeUpdateService.exe` [1] [2].
+                            The service's executable is typically found at
+                            `C:\Program Files (x86)\Common Files\Adobe\Adobe Desktop Common\ElevationManager\AdobeUpdateService.exe` [1] [2].
 
                             ### Overview of default service statuses
 
                             `adobeupdateservice` (tested on Adobe Acrobat version 23.006):
 
-                            | OS Version       | Default status |
-                            | ---------------- | -------------- |
-                            | Windows 10 22H2  | 🟡 N/A (Missing) |
-                            | Windows 11 22H2  | 🟡 N/A (Missing) |
+                            | OS Version | Status | Start type |
+                            | ---------- | -------| ---------- |
+                            | Windows 10 (≥ 21H1) | 🟡 Missing | N/A |
+                            | Windows 11 (≥ 22H2) | 🟡 Missing | N/A |
 
                             [1]: https://web.archive.org/web/20231027145409/https://helpx.adobe.com/creative-cloud/kb/all-apps-displayed-aam.html "Not all apps displayed for download | Creative Cloud desktop app"
                             [2]: https://web.archive.org/web/20231027145700/https://helpx.adobe.com/se/xd/kb/adobe-xd-not-compatible-on-windows-machine.html "Adobe XD appears as not compatible on Creative Cloud desktop app | helpx.adobe.com"
@@ -5317,6 +5425,7 @@ actions:
                             parameters:
                                 serviceName: adobeupdateservice # Check: (Get-Service -Name adobeupdateservice).StartType
                                 defaultStartupMode: Automatic # Allowed values: Automatic | Manual
+                                ignoreMissingOnRevert: true
                     -
                         name: Disable "Adobe Acrobat Update Task" scheduled task
                         recommend: standard
@@ -5346,14 +5455,33 @@ actions:
             -
                 name: Disable "Razer Game Scanner Service"
                 recommend: standard
+                docs: |-
+                    ### Overview of default task statuses
+
+                    `\Adobe Acrobat Update Task` [1] (tested with Razer Synapse 3.9.311 and Razer Cortex 10.12.6.0):
+
+                    | OS Version | Status | Start type |
+                    | ---------- | -------| ---------- |
+                    | Windows 10 (≥ 21H1) | 🟡 Missing | N/A |
+                    | Windows 11 (≥ 22H2) | 🟡 Missing | N/A |
                 call:
                     function: DisableService
                     parameters:
                         serviceName: Razer Game Scanner Service # Check: (Get-Service -Name 'Razer Game Scanner Service').StartType
                         defaultStartupMode: Manual # Allowed values: Automatic | Manual
+                        ignoreMissingOnRevert: true
             -
                 name: Disable "Logitech Gaming Registry Service"
                 recommend: standard
+                docs: |-
+                    ### Overview of default service statuses
+
+                    `LogiRegistryService` (tested on Logitech Gaming Software version on 04.49):
+
+                    | OS Version | Status | Start type |
+                    | ---------- | -------| ---------- |
+                    | Windows 10 (≥ 22H2) | 🟢 Running | Automatic |
+                    | Windows 11 (≥ 22H2) | 🟢 Running | Automatic |
                 call:
                     function: DisableService
                     parameters:
@@ -5378,17 +5506,17 @@ actions:
 
                             `dbupdate` (Dropbox Update Service, tested on Dropbox version 184.4):
 
-                            | OS Version       | Default status |
-                            | ---------------- | -------------- |
-                            | Windows 10 22H2  | 🔴 Stopped     |
-                            | Windows 11 22H2  | 🔴 Stopped     |
+                            | OS Version | Status | Start type |
+                            | ---------- | -------| ---------- |
+                            | Windows 10 (≥ 22H2) | 🔴 Stopped | Automatic |
+                            | Windows 11 (≥ 22H2) | 🔴 Stopped | Automatic |
 
                             `dbupdatem` (Dropbox Update Service, tested on Dropbox version 184.4):
 
-                            | OS Version       | Default status |
-                            | ---------------- | -------------- |
-                            | Windows 10 22H2  | 🔴 Stopped |
-                            | Windows 11 22H2  | 🔴 Stopped |
+                            | OS Version | Status | Start type |
+                            | ---------- | -------| ---------- |
+                            | Windows 10 (≥ 22H2) | 🔴 Stopped | Automatic |
+                            | Windows 11 (≥ 22H2) | 🔴 Stopped | Automatic |
 
                             [1]: https://web.archive.org/web/20231101153431/https://belkasoft.com/investigating_dropbox_desktop_app "Investigating the Dropbox Desktop App for Windows with Belkasoft X | belkasoft.com"
                         call:
@@ -5460,8 +5588,16 @@ actions:
                             reg add "HKLM\SOFTWARE\Policies\Microsoft\WMDRM" /v "DisableOnline" /t REG_DWORD /d 1 /f
                     -
                         name: Disable "Windows Media Player Network Sharing Service" (`WMPNetworkSvc`)
-                        docs: https://web.archive.org/web/20240314091022/https://batcmd.com/windows/10/services/wmpnetworksvc/
                         recommend: standard
+                        docs: |-
+                            Details: [Windows Media Player Network Sharing Service - Windows 10 Service - batcmd.com | batcmd.com](https://web.archive.org/web/20240314091022/https://batcmd.com/windows/10/services/wmpnetworksvc/)
+
+                            ### Overview of default service statuses
+
+                            | OS Version | Status | Start type |
+                            | ---------- | -------| ---------- |
+                            | Windows 10 (≥ 22H2) | 🔴 Stopped | Manual |
+                            | Windows 11 (≥ 22H2) | 🔴 Stopped | Manual |
                         call:
                             function: DisableService
                             parameters:
@@ -7163,6 +7299,13 @@ actions:
                                             > - Prevents **Microsoft Store** app downloads [8] [9], impacting **`winget` CLI functionality [10].
                                             > - Disables **`netsh advfirewall`** commands, used for Windows Firewall management [11].
 
+                                            ### Overview of default service statuses
+
+                                            | OS Version | Status | Start type |
+                                            | ---------- | -------| ---------- |
+                                            | Windows 10 (≥ 22H2) | 🟢 Running | Manual |
+                                            | Windows 11 (≥ 23H2) | 🟢 Running | Manual |
+
                                             [1]: https://web.archive.org/web/20240314091039/https://batcmd.com/windows/10/services/mpsdrv/ "Windows Defender Firewall Authorization Driver - Windows 10 Service - batcmd.com | batcmd.com"
                                             [2]: https://web.archive.org/web/20240406223537/https://revertservice.com/10/mpsdrv/ "Windows Defender Firewall Authorization Driver (mpsdrv) Service Defaults in Windows 10 | revertservice.com"
                                             [3]: https://web.archive.org/web/20240406223542/https://www.file.net/process/mpsdrv.sys.html "mpsdrv.sys Windows process - What is it? | www.file.net"
@@ -7208,6 +7351,13 @@ actions:
                                             > **Caution**: Disabling this service causes problems with software that depends on it [11] such as:
                                             > - Prevents **Microsoft Store** app downloads (error code `0x80073D0A` [7] [12]), impacting **`winget` CLI functionality [13].
                                             > - Disables **`netsh advfirewall`** commands, used for Windows Firewall management [14].
+
+                                            ### Overview of default service statuses
+
+                                            | OS Version | Status | Start type |
+                                            | ---------- | -------| ---------- |
+                                            | Windows 10 (≥ 22H2) | 🟢 Running | Automatic |
+                                            | Windows 11 (≥ 23H2) | 🟢 Running | Automatic |
 
                                             [1]: https://web.archive.org/web/20231206185904/https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-r2-and-2008/dd349801%28v=ws.10%29 "Windows Firewall Service | learn.microsoft.com"
                                             [2]: https://web.archive.org/web/20110131034058/http://blogs.technet.com:80/b/networking/archive/2009/03/24/stopping-the-windows-authenticating-firewall-service-and-the-boot-time-policy.aspx "Stopping the Windows Authenticating Firewall Service and the boot time policy - Microsoft Enterprise Networking Team - Site Home - TechNet Blogs | blogs.technet.com"
@@ -9342,6 +9492,13 @@ actions:
                                     > won't automatically receive important updates, which could leave it vulnerable to specific security risks and performance issues
                                     > over time.
 
+                                    ### Overview of default service statuses
+
+                                    | OS Version | Status | Start type |
+                                    | ---------- | -------| ---------- |
+                                    | Windows 10 (≥ 22H2) | 🔴 Stopped | Manual |
+                                    | Windows 11 (≥ 23H2) | 🔴 Stopped | Manual |
+
                                     [1]: https://web.archive.org/web/20230902020255/https://learn.microsoft.com/en-us/troubleshoot/windows-client/deployment/additional-resources-for-windows-update "Additional resources for Windows Update - Windows Client | Microsoft Learn | learn.microsoft.com"
                                     [2]: https://web.archive.org/web/20231027190503/https://learn.microsoft.com/en-us/troubleshoot/mem/configmgr/update-management/troubleshoot-software-update-scan-failures "Troubleshoot software update scan failures - Configuration Manager | Microsoft Learn | learn.microsoft.com"
                                     [3]: https://web.archive.org/web/20230905120348/https://learn.microsoft.com/en-us/troubleshoot/windows-client/performance/windows-devices-fail-boot-after-installing-kb4041676-kb4041691 "Windows devices may fail to boot after installing October 10 version of KB 4041676 or 4041691 that contained a publishing issue - Windows Client | Microsoft Learn"
@@ -9371,6 +9528,13 @@ actions:
                                     > **Caution**: This script directly affects the orchestration and scheduling of Windows updates. This can lead to
                                     > irregularities in receiving updates, potentially causing delays or failures in obtaining critical security patches and
                                     > feature updates specific to Windows functionalities.
+
+                                    ### Overview of default service statuses
+
+                                    | OS Version | Status | Start type |
+                                    | ---------- | -------| ---------- |
+                                    | Windows 10 (≥ 22H2) | 🟢 Running | Automatic |
+                                    | Windows 11 (≥ 23H2) | 🟢 Running | Automatic |
 
                                     [1]: https://web.archive.org/web/20231004161147/https://learn.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server "Security guidelines for system services in Windows Server 2016 | Microsoft Learn"
                                     [2]: https://web.archive.org/web/20230905120348/https://learn.microsoft.com/en-us/troubleshoot/windows-client/performance/windows-devices-fail-boot-after-installing-kb4041676-kb4041691 "Windows devices may fail to boot after installing October 10 version of KB 4041676 or 4041691 that contained a publishing issue - Windows Client | Microsoft Learn"
@@ -9408,6 +9572,13 @@ actions:
                                     > privacy by limiting unsolicited data transmission to Microsoft, it's important to be aware of the potential
                                     > impacts on system stability and update integrity. Disabling the Windows Update Medic Service prevents the
                                     > self-healing capability of Windows Updates, favoring the maintenance of user-defined update preferences.
+
+                                    ### Overview of default service statuses
+
+                                    | OS Version | Status | Start type |
+                                    | ---------- | -------| ---------- |
+                                    | Windows 10 (≥ 22H2) | 🔴 Stopped | Manual |
+                                    | Windows 11 (≥ 23H2) | 🔴 Stopped | Manual |
 
                                     [1]: https://web.archive.org/web/20230905120805/https://support.microsoft.com/en-us/topic/kb5005322-some-devices-cannot-install-new-updates-after-installing-kb5003214-may-25-2021-and-kb5003690-june-21-2021-66edf7cf-5d3c-401f-bd32-49865343144f "KB5005322—Some devices cannot install new updates after installing KB5003214 (May 25, 2021) and KB5003690 (June 21, 2021) - Microsoft Support"
                                     [2]: https://web.archive.org/web/20231001150100/https://learn.microsoft.com/en-us/windows/deployment/update/prepare-deploy-windows "Prepare to deploy Windows - Windows Deployment | Microsoft Learn"
@@ -15252,17 +15423,17 @@ actions:
                                 function: DisableWindowsFeature
                                 parameters:
                                     featureName: Internet-Explorer-Optional-x64 # Get-WindowsOptionalFeature -FeatureName 'Internet-Explorer-Optional-x64' -Online
-                                    treatMissingStateAsOk: true
+                                    ignoreMissingOnRevert: true
                             -
                                 function: DisableWindowsFeature
                                 parameters:
                                     featureName: Internet-Explorer-Optional-x84 # Get-WindowsOptionalFeature -FeatureName 'Internet-Explorer-Optional-x84' -Online
-                                    treatMissingStateAsOk: true
+                                    ignoreMissingOnRevert: true
                             -
                                 function: DisableWindowsFeature
                                 parameters:
                                     featureName: Internet-Explorer-Optional-amd64 # Get-WindowsOptionalFeature -FeatureName 'Internet-Explorer-Optional-amd64' -Online
-                                    treatMissingStateAsOk: true
+                                    ignoreMissingOnRevert: true
                     -
                         name: Disable "Legacy Components" feature
                         docs: |-
@@ -15573,7 +15744,7 @@ actions:
                                             function: DisableWindowsFeature
                                             parameters:
                                                 featureName: Xps-Foundation-Xps-Viewer # Get-WindowsOptionalFeature -FeatureName 'Xps-Foundation-Xps-Viewer' -Online
-                                                treatMissingStateAsOk: true
+                                                ignoreMissingOnRevert: true
                     -
                         name: Disable "Media Features" feature
                         docs: |-
@@ -15611,7 +15782,7 @@ actions:
                             function: DisableWindowsFeature
                             parameters:
                                 featureName: ScanManagementConsole # Get-WindowsOptionalFeature -FeatureName 'ScanManagementConsole' -Online
-                                treatMissingStateAsOk: true
+                                ignoreMissingOnRevert: true
                     -
                         name: Disable "Windows Fax and Scan" feature
                         recommend: standard # Deprecated and missing on modern versions of Windows
@@ -15633,7 +15804,7 @@ actions:
                             function: DisableWindowsFeature
                             parameters:
                                 featureName: FaxServicesClientPackage # Get-WindowsOptionalFeature -FeatureName 'FaxServicesClientPackage' -Online
-                                treatMissingStateAsOk: true
+                                ignoreMissingOnRevert: true
                     -
                         name: Disable "Windows Media Player" feature
                         docs: |-
@@ -16309,6 +16480,13 @@ actions:
                             >   Feature updates, which add new functionalities to Windows [12], will not be offered [3] [13] [14] [15] [16].
                             >   Disabling this service disrupts feature updates by impacting Subscription Activation (license authentication) [16].
 
+                            ### Overview of default service statuses
+
+                            | OS Version | Status | Start type |
+                            | ---------- | -------| ---------- |
+                            | Windows 10 (≥ 22H2) | 🔴 Stopped | Manual |
+                            | Windows 11 (≥ 23H2) | 🔴 Stopped | Manual |
+
                             [1]: https://web.archive.org/web/20240218231654/https://learn.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server#microsoft-account-sign-in-assistant "Security guidelines for system services in Windows Server 2016 | Microsoft Learn | learn.microsoft.com"
                             [2]: https://web.archive.org/web/20240218232041/https://batcmd.com/windows/10/services/wlidsvc/ "Microsoft Account Sign-in Assistant - Windows 10 Service - batcmd.com | batcmd.com"
                             [3]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#12-microsoft-account "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
@@ -16342,6 +16520,13 @@ actions:
 
                             > **Caution**: This may affect apps that rely on downloaded maps but prioritizes user privacy [1].
 
+                            ### Overview of default service statuses
+
+                            | OS Version | Status | Start type |
+                            | ---------- | -------| ---------- |
+                            | Windows 10 (≥ 22H2) | 🔴 Stopped | Automatic |
+                            | Windows 11 (≥ 23H2) | 🔴 Stopped | Automatic |
+
                             [1]: https://web.archive.org/web/20240219135016/https://batcmd.com/windows/10/services/mapsbroker/ "Downloaded Maps Manager - Windows 10 Service - batcmd.com | batcmd.com"
                         call:
                             function: DisableService
@@ -16359,6 +16544,13 @@ actions:
                             For personal use, this service is generally redundant, and disabling it strengthens privacy.
                             By turning off this service, you prevent the potential misuse of demo content and settings, ensuring that your
                             device operates under standard conditions without unnecessary exposure to retail demo features.
+
+                            ### Overview of default service statuses
+
+                            | OS Version | Status | Start type |
+                            | ---------- | -------| ---------- |
+                            | Windows 10 (≥ 22H2) | 🔴 Stopped | Manual |
+                            | Windows 11 (≥ 23H2) | 🔴 Stopped | Manual |
 
                             [1]: https://web.archive.org/web/20240219135100/https://batcmd.com/windows/10/services/retaildemo/ "Retail Demo Service - Windows 10 Service - batcmd.com | batcmd.com"
                         call:
@@ -16480,6 +16672,13 @@ actions:
                             > **Caution**: Disabling the `WpnUserService` system-wide impacts access to network settings on Windows 10,
                             > possibly causing issues with managing network connections [5] [6]. This issue does not occur on Windows 11 [5].
 
+                            ### Overview of default service statuses
+
+                            | OS Version | Status | Start type |
+                            | ---------- | -------| ---------- |
+                            | Windows 10 (≥ 22H2) | 🟢 Running | Automatic |
+                            | Windows 11 (≥ 23H2) | 🟢 Running | Automatic |
+
                             [1]: https://web.archive.org/web/20240218223751/https://learn.microsoft.com/en-us/windows/apps/design/shell/tiles-and-notifications/windows-push-notification-services--wns--overview "Windows Push Notification Services (WNS) overview - Windows apps | Microsoft Learn | learn.microsoft.com"
                             [2]: https://web.archive.org/web/20240218223848/https://en.wikipedia.org/w/index.php?title=Windows_Push_Notification_Service&oldid=1012335551#Privacy_Issue "Windows Push Notification Service - Wikipedia | en.wikipedia.org"
                             [3]: https://web.archive.org/web/20240218223841/https://batcmd.com/windows/10/services/wpnservice/ "Windows Push Notifications System Service - Windows 10 Service - batcmd.com | batcmd.com"
@@ -16526,6 +16725,13 @@ actions:
 
                                     > **Caution:** Disabling this service could impact apps needing Xbox Live login.
 
+                                    ### Overview of default service statuses
+
+                                    | OS Version | Status | Start type |
+                                    | ---------- | -------| ---------- |
+                                    | Windows 10 (≥ 22H2) | 🔴 Stopped | Manual |
+                                    | Windows 11 (≥ 23H2) | 🔴 Stopped | Manual |
+
                                     [1]: https://web.archive.org/web/20240219142010/https://batcmd.com/windows/10/services/xblauthmanager/ "Xbox Live Auth Manager - Windows 10 Service - batcmd.com | batcmd.com"
                                 call:
                                     function: DisableService
@@ -16544,6 +16750,13 @@ actions:
 
                                     > **Caution:** Be aware that stopping this service will prevent game save synchronization with Xbox Live [1],
                                     > affecting users who play Xbox Live-enabled games.
+
+                                    ### Overview of default service statuses
+
+                                    | OS Version | Status | Start type |
+                                    | ---------- | -------| ---------- |
+                                    | Windows 10 (≥ 22H2) | 🔴 Stopped | Manual |
+                                    | Windows 11 (≥ 23H2) | 🔴 Stopped | Manual |
 
                                     [1]: https://web.archive.org/web/20240219141930/https://batcmd.com/windows/10/services/xblgamesave/ "Xbox Live Game Save - Windows 10 Service - batcmd.com | batcmd.com"
                                 call:
@@ -16566,6 +16779,13 @@ actions:
                                     resource use.
 
                                     > **Caution:** Turning off this service could impact apps and games using Xbox Live network features.
+
+                                    ### Overview of default service statuses
+
+                                    | OS Version | Status | Start type |
+                                    | ---------- | -------| ---------- |
+                                    | Windows 10 (≥ 22H2) | 🔴 Stopped | Manual |
+                                    | Windows 11 (≥ 23H2) | 🔴 Stopped | Manual |
 
                                     [1]: https://web.archive.org/web/20240219141939/https://www.tenable.com/audits/items/CIS_MS_Windows_10_Enterprise_Level_1_v1.12.0.audit:413ad68866cc396f0bd1dd4ead7deb97 "5.45 Ensure 'Xbox Live Networking Service (XboxNetApiSvc)' is ... | Tenable® | www.tenable.com"
                                 call:
@@ -16602,6 +16822,13 @@ actions:
                             > Disabling this service will make shadow copies unavailable for backup, which could cause backup processes to fail [3].
                             > Services that depend on VSS will not start, affecting features like Windows Server Backup [1], Shadow Copies of Shared Folders [1],
                             > System Center Data Protection Manager [1], and System Restore [1] [8].
+
+                            ### Overview of default service statuses
+
+                            | OS Version | Status | Start type |
+                            | ---------- | -------| ---------- |
+                            | Windows 10 (≥ 22H2) | 🔴 Stopped | Manual |
+                            | Windows 11 (≥ 23H2) | 🔴 Stopped | Manual |
 
                             [1]: https://web.archive.org/web/20240218220458/https://learn.microsoft.com/en-us/windows-server/storage/file-server/volume-shadow-copy-service "Volume Shadow Copy Service | Microsoft Learn | learn.microsoft.com"
                             [2]: https://web.archive.org/web/20240218220517/https://learn.microsoft.com/en-us/windows/win32/vss/volume-shadow-copy-service-overview?redirectedfrom=MSDN "Volume Shadow Copy Service Overview - Win32 apps | Microsoft Learn | learn.microsoft.com"
@@ -16749,10 +16976,8 @@ functions:
         parameters:
             - name: featureName             # The name of the Windows feature to be disabled
             - name: disabledByDefault       # Specifies whether the feature is disabled by default in the operating system.
-                                            # If set to true, the function will not re-enable the feature during a revert operation.
-              optional: true
-            - name: treatMissingStateAsOk   # Determines how to handle scenarios where the target feature is missing. When set to true,'
-                                            # the function gracefully exits if the feature cannot be found, rather than throwing an error.
+              optional: true                # If set to true, the function will not re-enable the feature during a revert operation.
+            - name: ignoreMissingOnRevert   # When set to true, the revert operation will skip any actions for services that cannot be found, instead of failing.
               optional: false
         call:
             -
@@ -16795,14 +17020,14 @@ functions:
                         Exit 0
                     revertCode: |-
                         $featureName = '{{ $featureName }}'
-                        $treatMissingStateAsOk = {{ with $treatMissingStateAsOk }} $true # {{ end }} $false
+                        $ignoreMissingOnRevert = {{ with $ignoreMissingOnRevert }} $true # {{ end }} $false
                         $disabledByDefault = {{ with $disabledByDefault }} $true # {{ end }} $false
                         $feature = Get-WindowsOptionalFeature `
                             -FeatureName "$featureName" `
                             -Online `
                             -ErrorAction Stop
                         if (-Not $feature) {
-                            if ($treatMissingStateAsOk) {
+                            if ($ignoreMissingOnRevert) {
                                 Write-Output "Skipping: The feature `"$featureName`" is not found. No action required."
                                 Exit 0
                             }
@@ -17888,7 +18113,9 @@ functions:
         name: DisableService
         parameters:
             - name: serviceName
-            - name: defaultStartupMode # Allowed values: Automatic | Manual
+            - name: defaultStartupMode      # Allowed values: Automatic | Manual
+            - name: ignoreMissingOnRevert   # When set to true, the revert operation will skip any actions for services that cannot be found, instead of failing.
+              optional: true
         call:
             -
                 function: Comment
@@ -17951,11 +18178,16 @@ functions:
                     revertCode: |-
                         $serviceName = '{{ $serviceName }}'
                         $defaultStartupMode = '{{ $defaultStartupMode }}'
+                        $ignoreMissingOnRevert = {{ with $ignoreMissingOnRevert }} $true # {{ end }} $false
                         Write-Host "Enabling service: `"$serviceName`" with `"$defaultStartupMode`" start."
                         # -- 1. Skip if service does not exist
                         $service = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
-                        if(!$service) {
-                            Write-Warning "Service `"$serviceName`" could not be not found, cannot enable it."
+                        if (!$service) {
+                            if ($ignoreMissingOnRevert) {
+                                Write-Output "Skipping: The service `"$serviceName`" is not found. No action required."
+                                Exit 0
+                            }
+                            Write-Warning "Failed to revert changes to the service `"$serviceName`". The service is not found."
                             Exit 1
                         }
                         # -- 2. Enable or skip if already enabled
