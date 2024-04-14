@@ -12,7 +12,9 @@ describe('TreeView', () => {
   it('renders all provided root nodes correctly', async () => {
     // arrange
     const nodes = createSampleNodes();
-    const wrapper = createTreeViewWrapper(nodes);
+    const { wrapper } = mountWrapperComponent({
+      initialNodeData: nodes,
+    });
 
     // act
     await waitForStableDom(wrapper.element);
@@ -33,10 +35,12 @@ describe('TreeView', () => {
     const secondNodeLabel = 'Node 2';
     const initialNodes: TreeInputNodeDataWithMetadata[] = [{ id: 'node1', data: { label: firstNodeLabel } }];
     const updatedNodes: TreeInputNodeDataWithMetadata[] = [{ id: 'node2', data: { label: secondNodeLabel } }];
-    const wrapper = createTreeViewWrapper(initialNodes);
+    const { wrapper, nodes } = mountWrapperComponent({
+      initialNodeData: initialNodes,
+    });
 
     // act
-    await wrapper.setProps({ nodes: updatedNodes });
+    nodes.value = updatedNodes;
     await waitForStableDom(wrapper.element);
 
     // assert
@@ -45,15 +49,17 @@ describe('TreeView', () => {
   });
 });
 
-function createTreeViewWrapper(initialNodeData: readonly TreeInputNodeDataWithMetadata[]) {
-  return mount(defineComponent({
+function mountWrapperComponent(options?: {
+  readonly initialNodeData?: readonly TreeInputNodeDataWithMetadata[],
+}) {
+  const nodes = shallowRef(options?.initialNodeData ?? createSampleNodes());
+  const wrapper = mount(defineComponent({
     components: {
       TreeView,
     },
     setup() {
       provideDependencies(new ApplicationContextStub());
 
-      const nodes = shallowRef(initialNodeData);
       const selectedLeafNodeIds = shallowRef<readonly string[]>([]);
 
       return {
@@ -72,6 +78,10 @@ function createTreeViewWrapper(initialNodeData: readonly TreeInputNodeDataWithMe
       </TreeView>
     `,
   }));
+  return {
+    wrapper,
+    nodes,
+  };
 }
 
 interface TreeInputMetadata {

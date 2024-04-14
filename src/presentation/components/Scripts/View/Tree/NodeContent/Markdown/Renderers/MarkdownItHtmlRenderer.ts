@@ -1,6 +1,6 @@
 import MarkdownIt from 'markdown-it';
 import type { MarkdownRenderer } from '../MarkdownRenderer';
-import type { RenderRule } from 'markdown-it/lib/renderer';
+import type { RenderRule } from 'markdown-it/lib/renderer.mjs'; // eslint-disable-line import/extensions
 
 export class MarkdownItHtmlRenderer implements MarkdownRenderer {
   public render(markdownContent: string): string {
