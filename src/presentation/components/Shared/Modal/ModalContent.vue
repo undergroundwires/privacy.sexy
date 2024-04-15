@@ -59,7 +59,7 @@ $modal-content-offset-upward: $spacing-absolute-x-large;
 
 @mixin scrollable() {
   overflow-y: auto;
-  max-height: 90vh;
+  max-height: 100%;
 }
 
 .modal-content-wrapper {
@@ -74,6 +74,17 @@ $modal-content-offset-upward: $spacing-absolute-x-large;
   right: 0;
   bottom: 0;
   left: 0;
+
+  // Margin around modal content ensures visual comfort and consistency across devices.
+  // It provides:
+  // - A visually comfortable space preventing a claustrophobic feeling, especially on smaller screens.
+  // - Consistent appearance on various screen sizes by using absolute spacing.
+  // - Focus on the modal by dimming the background and emphasizing the task.
+  // - Sufficient space on small devices for users to tap outside and close the modal.
+  margin: $spacing-absolute-xx-large;
+  @media screen and (max-width: $media-screen-small-width) {
+    margin: $spacing-absolute-x-large; // Google and Apple recommend at least 44x44px for touch targets
+  }
 }
 
 .modal-content-content {

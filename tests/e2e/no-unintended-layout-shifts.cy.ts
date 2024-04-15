@@ -19,7 +19,7 @@ describe('Layout stability', () => {
             .contains('button', 'Privacy')
             .click();
           cy
-            .get('.modal-content')
+            .get('.modal-content-content')
             .should('be.visible');
         });
       });

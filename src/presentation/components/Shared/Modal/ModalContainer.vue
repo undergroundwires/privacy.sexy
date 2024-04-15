@@ -9,7 +9,6 @@
       @click="onBackgroundOverlayClick"
     />
     <ModalContent
-      class="modal-content"
       :show="isOpen"
       @transitioned-out="onContentTransitionedOut"
     >
@@ -138,6 +137,8 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@use "@/presentation/assets/styles/main" as *;
+
 .modal-container {
   position: fixed;
   box-sizing: border-box;
