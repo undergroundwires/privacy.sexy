@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.13.2 (2024-04-15)
+
+* Update documentation for `logo-update.js` script | [4a9b430](https://github.com/undergroundwires/privacy.sexy/commit/4a9b430702bc6082426b50ecc3a06362b5720796)
+* win: improve and document removing Phone apps #279 | [8924337](https://github.com/undergroundwires/privacy.sexy/commit/89243371faa5d6aef5fce52b0d54a442143cdd39)
+* Fix bottom gap in card expansion panel | [79183d6](https://github.com/undergroundwires/privacy.sexy/commit/79183d64173e588d88bf074d5b50a52a71c2d885)
+* ci/cd: Fix macOS Docker build reliability issues | [8a5592f](https://github.com/undergroundwires/privacy.sexy/commit/8a5592f92be4366a806afc9eee9135696a1dd993)
+* ci/cd: fix IPv6 timeouts with `force-ipv4` action | [52fadcd](https://github.com/undergroundwires/privacy.sexy/commit/52fadcd6177ed06216be9c67dad57192ae02a4f9)
+* ci/cd: bump Node.js environment to 20.x | [59decd1](https://github.com/undergroundwires/privacy.sexy/commit/59decd17e273bada1493eaa855c43cbabf90308f)
+* ci/cd: trigger URL checks more, and limit amount | [4fb6302](https://github.com/undergroundwires/privacy.sexy/commit/4fb6302c67f2a3fedff419e8c22872593cf800ef)
+* Fix overflow in tree node content on small screens | [557cea3](https://github.com/undergroundwires/privacy.sexy/commit/557cea3f4866dc33236874f5fe4d2d69ee963dae)
+* Fix horizontal layout shift after script selection | [bc7e1fa](https://github.com/undergroundwires/privacy.sexy/commit/bc7e1faa1c3f2b61bf2046fdd6d6a4141b484662)
+* Fix card header expansion glitch on card collapse | [5d940b5](https://github.com/undergroundwires/privacy.sexy/commit/5d940b57ef2a4c219932cd15201401f8550cfb41)
+* Ignore `ResizeObserver` errors in Cypress tests | [4472c28](https://github.com/undergroundwires/privacy.sexy/commit/4472c2852e4b87083bda7979471ab9f377d17a01)
+* win: improve and document secret key scripts | [49f22f0](https://github.com/undergroundwires/privacy.sexy/commit/49f22f048f39e7388633c488b5fe59101b831984)
+* Fix card arrow not being animated in sync | [7b546c5](https://github.com/undergroundwires/privacy.sexy/commit/7b546c567c4683a37fe94595362f4c2bf92ffd59)
+* win: improve Windows feature disablement scripts | [b68711e](https://github.com/undergroundwires/privacy.sexy/commit/b68711ef88982c0ee2b1d41b4452e899821adc64)
+* Fix top script menu overflow on small screens | [b7a20d9](https://github.com/undergroundwires/privacy.sexy/commit/b7a20d9d41ea8bcefdd553b87641f3c22b4cde97)
+* win: fix Visual Studio remote analysis script #327 | [4142d08](https://github.com/undergroundwires/privacy.sexy/commit/4142d084f64a3b540487ff68b28032977d12006d)
+* win: improve firewall docs /w `winget` impact #142 | [ffd647d](https://github.com/undergroundwires/privacy.sexy/commit/ffd647d1529375474b81900cc7bee4c32fbf861f)
+* Centralize and use global spacing variables | [ae17200](https://github.com/undergroundwires/privacy.sexy/commit/ae172000a64416e5a3e2b2e32b7846f039f445f0)
+* win: improve service revert and docs | [b87b7aa](https://github.com/undergroundwires/privacy.sexy/commit/b87b7aac7d118a23a0d1bfb881e385347de4adb7)
+* Bump dependencies to latest, hold ESLint | [f3571ab](https://github.com/undergroundwires/privacy.sexy/commit/f3571abeafdbe1e6d152958fab26de91a9c08bc3)
+* Fix inability to tap outside modal on mobile | [cb144ae](https://github.com/undergroundwires/privacy.sexy/commit/cb144ae47273deeb7058d4b1380e480ebccdaf81)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.13.1...0.13.2)
+
 ## 0.13.1 (2024-03-22)
 
 * ci/cd: Fix cross-platform git command compability | [255c51c](https://github.com/undergroundwires/privacy.sexy/commit/255c51c8a0524d3ea8a3b16ffc1b178650525010)
