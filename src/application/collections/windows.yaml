@@ -5967,60 +5967,6 @@ actions:
                 category: Disable unsafe features
                 children:
                     -
-                        name: Disable unsafe SMBv1 protocol
-                        recommend: standard
-                        docs: |-
-                            See: [Stop using SMB1 | techcommunity.microsoft.com](https://techcommunity.microsoft.com/t5/storage-at-microsoft/stop-using-smb1/ba-p/425858)
-
-                            ### Overview of default feature statuses
-
-                            `SMB1Protocol`:
-
-                            | | |
-                            | ---- | --- |
-                            | **Feature name**  | `SMB1Protocol` |
-                            | **Display name**  | SMB 1.0/CIFS File Sharing Support |
-                            | **Description**  | Support for the SMB 1.0/CIFS file sharing protocol, and the Computer Browser protocol. |
-                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
-                            | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
-
-                            `SMB1Protocol-Client`:
-
-                            | | |
-                            | ---- | --- |
-                            | **Feature name**  | `SMB1Protocol-Client` |
-                            | **Display name**  | SMB 1.0/CIFS Client |
-                            | **Description**  | Support for the SMB 1.0/CIFS client for accessing legacy servers. |
-                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
-                            | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
-
-                            `SMB1Protocol-Server`:
-
-                            | | |
-                            | ---- | --- |
-                            | **Feature name**  | `SMB1Protocol-Server` |
-                            | **Display name**  | SMB 1.0/CIFS Server |
-                            | **Description**  | Support for the SMB 1.0/CIFS file server for sharing data with legacy clients and browsing the network neighborhood. |
-                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
-                            | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
-
-                        call:
-                            -
-                                function: DisableWindowsFeature
-                                parameters:
-                                    featureName: SMB1Protocol # Get-WindowsOptionalFeature -FeatureName 'SMB1Protocol' -Online
-                                    disabledByDefault: true
-                            -
-                                function: DisableWindowsFeature
-                                parameters:
-                                    featureName: SMB1Protocol-Client # Get-WindowsOptionalFeature -FeatureName 'SMB1Protocol-Client' -Online
-                                    disabledByDefault: true
-                            -
-                                function: DisableWindowsFeature
-                                parameters:
-                                    featureName: SMB1Protocol-Server # Get-WindowsOptionalFeature -FeatureName 'SMB1Protocol-Server' -Online
-                                    disabledByDefault: true
-                    -
                         name: Enable security against PowerShell 2.0 downgrade attacks
                         recommend: standard
                         docs: |-
@@ -6166,152 +6112,316 @@ actions:
                                         keySizeInBits: 2048
                                         ignoreServerSide: true # Controlled by the specified server certificate
                     -
-                        name: Disable RC2 cipher
-                        code: |-
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 40/128" /f /v Enabled /t REG_DWORD /d 0x00000000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 56/128" /f /v Enabled /t REG_DWORD /d 0x00000000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 128/128" /f /v Enabled /t REG_DWORD /d 0x00000000
-                        revertCode: |-
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 40/128" /v "Enabled" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 56/128" /v "Enabled" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 128/128" /v "Enabled" /f
-                    -
-                        name: Disable RC4 cipher
-                        code: |-
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 128/128" /f /v Enabled /t REG_DWORD /d 0x00000000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 64/128" /f /v Enabled /t REG_DWORD /d 0x00000000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 56/128" /f /v Enabled /t REG_DWORD /d 0x00000000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 40/128" /f /v Enabled /t REG_DWORD /d 0x00000000
-                        revertCode: |-
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 128/128" /v "Enabled" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 64/128" /v "Enabled" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 56/128" /v "Enabled" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 40/128" /v "Enabled" /f
-                    -
-                        name: Disable DES cipher
-                        code: |-
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\DES 56" /f /v Enabled /t REG_DWORD /d 0x00000000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\DES 56/56" /f /v Enabled /t REG_DWORD /d 0x00000000
-                        revertCode: |-
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\DES 56" /v "Enabled" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\DES 56/56" /v "Enabled" /f
-                    -
-                        name: Disable 3DES (Triple DES) cipher
-                        code: |-
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\Triple DES 168" /f /v Enabled /t REG_DWORD /d 0x00000000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\Triple DES 168/168" /f /v Enabled /t REG_DWORD /d 0x00000000
-                        revertCode: |-
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\Triple DES 168" /v "Enabled" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\Triple DES 168/168" /v "Enabled" /f
-                    -
-                        name: Disable MD5 hash function
-                        code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\MD5" /f /v Enabled /t REG_DWORD /d 0x00000000
-                        revertCode: reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\MD5" /v "Enabled" /f
-                    -
-                        name: Disable SHA1
-                        code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\SHA" /f /v Enabled /t REG_DWORD /d 0x00000000
-                        revertCode: reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\SHA" /v "Enabled" /f
-                    -
-                        name: Disable null cipher
-                        code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\NULL" /f /v Enabled /t REG_DWORD /d 0x00000000
-                        revertCode: reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\NULL" /v "Enabled" /f
-                    -
-                        name: Disable response to renegotiation requests
-                        code: |-
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /f /v AllowInsecureRenegoClients /t REG_DWORD /d 0x00000000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /f /v AllowInsecureRenegoServers /t REG_DWORD /d 0x00000000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /f /v DisableRenegoOnServer /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /f /v UseScsvForTls /t REG_DWORD /d 0x00000001
-                        revertCode: |-
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /v "AllowInsecureRenegoClients" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /v "AllowInsecureRenegoServers" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /v "DisableRenegoOnServer" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /v "UseScsvForTls" /f
-                    -
-                        name: Disable DTLS 1.0
-                        code: |-
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.0\Server" /f /v Enabled /t REG_DWORD /d 0x00000000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.0\Server" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.0\Client" /f /v Enabled /t REG_DWORD /d 0x00000000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.0\Client" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
-                        revertCode: |-
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.0\Server" /v "Enabled" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.0\Server" /v "DisabledByDefault" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.0\Client" /v "Enabled" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.0\Client" /v "DisabledByDefault" /f
-                    -
-                        name: Disable DTLS 1.1
-                        code: |-
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.1\Server" /f /v Enabled /t REG_DWORD /d 0x00000000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.1\Server" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.1\Client" /f /v Enabled /t REG_DWORD /d 0x00000000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.1\Client" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
-                        revertCode: |-
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.1\Server" /v "Enabled" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.1\Server" /v "DisabledByDefault" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.1\Client" /v "Enabled" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.1\Client" /v "DisabledByDefault" /f
-                    -
-                        name: Enable DTLS 1.3 # Windows 10 and Windows Server 10 version 1903 and newer support DTLS 1.3
-                        code: |-
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Server" /f /v Enabled /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Server" /f /v DisabledByDefault /t REG_DWORD /d 0x00000000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Client" /f /v Enabled /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Client" /f /v DisabledByDefault /t REG_DWORD /d 0x00000000
-                        revertCode: |-
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Server" /v "Enabled" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Server" /v "DisabledByDefault" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Client" /v "Enabled" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Client" /v "DisabledByDefault" /f
-                    -
-                        name: Disable TLS 1.0
-                        docs: https://web.archive.org/web/20240314125059/https://learn.microsoft.com/en-us/dotnet/framework/network-programming/tls # After disabling TLS 1.0 must be (will be) activated SchUseStrongCrypto for .NET apps
-                        code: |-
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Server" /f /v Enabled /t REG_DWORD /d 0x00000000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Server" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Client" /f /v Enabled /t REG_DWORD /d 0x00000000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Client" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SOFTWARE\Microsoft\.NETFramework\v2.0.50727" /f /v SchUseStrongCrypto /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SOFTWARE\Microsoft\.NETFramework\v2.0.50727" /f /v SystemDefaultTlsVersions /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v2.0.50727" /f /v SchUseStrongCrypto /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v2.0.50727" /f /v SystemDefaultTlsVersions /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SOFTWARE\Microsoft\.NETFramework\v3.0" /f /v SchUseStrongCrypto /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SOFTWARE\Microsoft\.NETFramework\v3.0" /f /v SystemDefaultTlsVersions /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v3.0" /f /v SchUseStrongCrypto /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v3.0" /f /v SystemDefaultTlsVersions /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SOFTWARE\Microsoft\.NETFramework\v4.0.30319" /f /v SchUseStrongCrypto /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SOFTWARE\Microsoft\.NETFramework\v4.0.30319" /f /v SystemDefaultTlsVersions /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v4.0.30319" /f /v SchUseStrongCrypto /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v4.0.30319" /f /v SystemDefaultTlsVersions /t REG_DWORD /d 0x00000001
-                        revertCode: |-
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Server" /v "Enabled" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Server" /v "DisabledByDefault" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Client" /v "Enabled" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Client" /v "DisabledByDefault" /f
-                            reg delete "HKLM\SOFTWARE\Microsoft\.NETFramework\v2.0.50727" /v "SchUseStrongCrypto" /f
-                            reg delete "HKLM\SOFTWARE\Microsoft\.NETFramework\v2.0.50727" /v "SystemDefaultTlsVersions" /f
-                            reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v2.0.50727" /v "SchUseStrongCrypto" /f
-                            reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v2.0.50727" /v "SystemDefaultTlsVersions" /f
-                            reg delete "HKLM\SOFTWARE\Microsoft\.NETFramework\v3.0" /v "SchUseStrongCrypto" /f
-                            reg delete "HKLM\SOFTWARE\Microsoft\.NETFramework\v3.0" /v "SystemDefaultTlsVersions" /f
-                            reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v3.0" /v "SchUseStrongCrypto" /f
-                            reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v3.0" /v "SystemDefaultTlsVersions" /f
-                            reg delete "HKLM\SOFTWARE\Microsoft\.NETFramework\v4.0.30319" /v "SchUseStrongCrypto" /f
-                            reg delete "HKLM\SOFTWARE\Microsoft\.NETFramework\v4.0.30319" /v "SystemDefaultTlsVersions" /f
-                            reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v4.0.30319" /v "SchUseStrongCrypto" /f
-                            reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v4.0.30319" /v "SystemDefaultTlsVersions" /f
-                    -
-                        name: Disable TLS 1.1
-                        code: |-
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Server" /f /v Enabled /t REG_DWORD /d 0x00000000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Server" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Client" /f /v Enabled /t REG_DWORD /d 0x00000000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Client" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
-                        revertCode: |-
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Server" /v "Enabled" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Server" /v "DisabledByDefault" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Client" /v "Enabled" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Client" /v "DisabledByDefault" /f
+                        category: Disable insecure connections
+                        docs: |- # refactor-with-variables: Same **Caution** text as others.
+                            This category includes scripts designed to enhance users' security and privacy by disabling outdated or
+                            vulnerable connections across the system.
+                            It safeguards data against interception, unauthorized access, and attacks that exploit outdated technology
+                            vulnerabilities, including man-in-the-middle attacks and data breaches.
+
+                            By disabling these insecure connections, these scripts follow cybersecurity best practices and recommendations.
+                            Although Windows supports insecure connections for compatibility, prioritizing security, these scripts disable them
+
+                            > **Caution:** This may cause compatibility issues with older devices or software.
+                        children:
+                            -
+                                name: Disable unsafe SMBv1 protocol
+                                recommend: standard # Recommended by Microsoft, very old, has significant security vulnerabilities
+                                docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                    See: [Stop using SMB1 | techcommunity.microsoft.com](https://techcommunity.microsoft.com/t5/storage-at-microsoft/stop-using-smb1/ba-p/425858)
+
+                                    > **Caution:** This may cause compatibility issues with older devices or software.
+
+                                    ### Overview of default feature statuses
+
+                                    `SMB1Protocol`:
+
+                                    | | |
+                                    | ---- | --- |
+                                    | **Feature name**  | `SMB1Protocol` |
+                                    | **Display name**  | SMB 1.0/CIFS File Sharing Support |
+                                    | **Description**  | Support for the SMB 1.0/CIFS file sharing protocol, and the Computer Browser protocol. |
+                                    | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                                    | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
+
+                                    `SMB1Protocol-Client`:
+
+                                    | | |
+                                    | ---- | --- |
+                                    | **Feature name**  | `SMB1Protocol-Client` |
+                                    | **Display name**  | SMB 1.0/CIFS Client |
+                                    | **Description**  | Support for the SMB 1.0/CIFS client for accessing legacy servers. |
+                                    | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                                    | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
+
+                                    `SMB1Protocol-Server`:
+
+                                    | | |
+                                    | ---- | --- |
+                                    | **Feature name**  | `SMB1Protocol-Server` |
+                                    | **Display name**  | SMB 1.0/CIFS Server |
+                                    | **Description**  | Support for the SMB 1.0/CIFS file server for sharing data with legacy clients and browsing the network neighborhood. |
+                                    | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                                    | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
+                                call:
+                                    -
+                                        function: DisableWindowsFeature
+                                        parameters:
+                                            featureName: SMB1Protocol # Get-WindowsOptionalFeature -FeatureName 'SMB1Protocol' -Online
+                                            disabledByDefault: true
+                                    -
+                                        function: DisableWindowsFeature
+                                        parameters:
+                                            featureName: SMB1Protocol-Client # Get-WindowsOptionalFeature -FeatureName 'SMB1Protocol-Client' -Online
+                                            disabledByDefault: true
+                                    -
+                                        function: DisableWindowsFeature
+                                        parameters:
+                                            featureName: SMB1Protocol-Server # Get-WindowsOptionalFeature -FeatureName 'SMB1Protocol-Server' -Online
+                                            disabledByDefault: true
+                            -
+                                name: Disable RC2 cipher
+                                docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                    > **Caution:** This may cause compatibility issues with older devices or software.
+                                code: |-
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 40/128" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 56/128" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 128/128" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                revertCode: |-
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 40/128" /v "Enabled" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 56/128" /v "Enabled" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 128/128" /v "Enabled" /f
+                            -
+                                name: Disable RC4 cipher
+                                docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                    > **Caution:** This may cause compatibility issues with older devices or software.
+                                code: |-
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 128/128" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 64/128" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 56/128" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 40/128" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                revertCode: |-
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 128/128" /v "Enabled" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 64/128" /v "Enabled" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 56/128" /v "Enabled" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 40/128" /v "Enabled" /f
+                            -
+                                name: Disable DES cipher
+                                docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                    > **Caution:** This may cause compatibility issues with older devices or software.
+                                code: |-
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\DES 56" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\DES 56/56" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                revertCode: |-
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\DES 56" /v "Enabled" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\DES 56/56" /v "Enabled" /f
+                            -
+                                name: Disable 3DES (Triple DES) cipher
+                                docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                    > **Caution:** This may cause compatibility issues with older devices or software.
+                                code: |-
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\Triple DES 168" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\Triple DES 168/168" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                revertCode: |-
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\Triple DES 168" /v "Enabled" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\Triple DES 168/168" /v "Enabled" /f
+                            -
+                                name: Disable MD5 hash function
+                                docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                    > **Caution:** This may cause compatibility issues with older devices or software.
+                                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\MD5" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                revertCode: reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\MD5" /v "Enabled" /f
+                            -
+                                name: Disable SHA1
+                                docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                    > **Caution:** This may cause compatibility issues with older devices or software.
+                                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\SHA" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                revertCode: reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\SHA" /v "Enabled" /f
+                            -
+                                name: Disable null cipher
+                                docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                    > **Caution:** This may cause compatibility issues with older devices or software.
+                                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\NULL" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                revertCode: reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\NULL" /v "Enabled" /f
+                            -
+                                name: Disable response to renegotiation requests
+                                docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                    > **Caution:** This may cause compatibility issues with older devices or software.
+                                code: |-
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /f /v AllowInsecureRenegoClients /t REG_DWORD /d 0x00000000
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /f /v AllowInsecureRenegoServers /t REG_DWORD /d 0x00000000
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /f /v DisableRenegoOnServer /t REG_DWORD /d 0x00000001
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /f /v UseScsvForTls /t REG_DWORD /d 0x00000001
+                                revertCode: |-
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /v "AllowInsecureRenegoClients" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /v "AllowInsecureRenegoServers" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /v "DisableRenegoOnServer" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /v "UseScsvForTls" /f
+                            -
+                                name: Disable DTLS 1.0
+                                docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                    > **Caution:** This may cause compatibility issues with older devices or software.
+                                code: |-
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.0\Server" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.0\Server" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.0\Client" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.0\Client" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
+                                revertCode: |-
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.0\Server" /v "Enabled" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.0\Server" /v "DisabledByDefault" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.0\Client" /v "Enabled" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.0\Client" /v "DisabledByDefault" /f
+                            -
+                                name: Disable DTLS 1.1
+                                docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                    > **Caution:** This may cause compatibility issues with older devices or software.
+                                code: |-
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.1\Server" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.1\Server" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.1\Client" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.1\Client" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
+                                revertCode: |-
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.1\Server" /v "Enabled" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.1\Server" /v "DisabledByDefault" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.1\Client" /v "Enabled" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.1\Client" /v "DisabledByDefault" /f
+                            -
+                                name: Enable DTLS 1.3 # Windows 10 and Windows Server 10 version 1903 and newer support DTLS 1.3
+                                docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                    > **Caution:** This may cause compatibility issues with older devices or software.
+                                code: |-
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Server" /f /v Enabled /t REG_DWORD /d 0x00000001
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Server" /f /v DisabledByDefault /t REG_DWORD /d 0x00000000
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Client" /f /v Enabled /t REG_DWORD /d 0x00000001
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Client" /f /v DisabledByDefault /t REG_DWORD /d 0x00000000
+                                revertCode: |-
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Server" /v "Enabled" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Server" /v "DisabledByDefault" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Client" /v "Enabled" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Client" /v "DisabledByDefault" /f
+                            -
+                                name: Disable TLS 1.0
+                                docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                    https://web.archive.org/web/20240314125059/https://learn.microsoft.com/en-us/dotnet/framework/network-programming/tls
+
+                                    > **Caution:** This may cause compatibility issues with older devices or software.
+                                code: |- # After disabling TLS 1.0 must be (will be) activated SchUseStrongCrypto for .NET apps
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Server" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Server" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Client" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Client" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
+                                    reg add "HKLM\SOFTWARE\Microsoft\.NETFramework\v2.0.50727" /f /v SchUseStrongCrypto /t REG_DWORD /d 0x00000001
+                                    reg add "HKLM\SOFTWARE\Microsoft\.NETFramework\v2.0.50727" /f /v SystemDefaultTlsVersions /t REG_DWORD /d 0x00000001
+                                    reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v2.0.50727" /f /v SchUseStrongCrypto /t REG_DWORD /d 0x00000001
+                                    reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v2.0.50727" /f /v SystemDefaultTlsVersions /t REG_DWORD /d 0x00000001
+                                    reg add "HKLM\SOFTWARE\Microsoft\.NETFramework\v3.0" /f /v SchUseStrongCrypto /t REG_DWORD /d 0x00000001
+                                    reg add "HKLM\SOFTWARE\Microsoft\.NETFramework\v3.0" /f /v SystemDefaultTlsVersions /t REG_DWORD /d 0x00000001
+                                    reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v3.0" /f /v SchUseStrongCrypto /t REG_DWORD /d 0x00000001
+                                    reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v3.0" /f /v SystemDefaultTlsVersions /t REG_DWORD /d 0x00000001
+                                    reg add "HKLM\SOFTWARE\Microsoft\.NETFramework\v4.0.30319" /f /v SchUseStrongCrypto /t REG_DWORD /d 0x00000001
+                                    reg add "HKLM\SOFTWARE\Microsoft\.NETFramework\v4.0.30319" /f /v SystemDefaultTlsVersions /t REG_DWORD /d 0x00000001
+                                    reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v4.0.30319" /f /v SchUseStrongCrypto /t REG_DWORD /d 0x00000001
+                                    reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v4.0.30319" /f /v SystemDefaultTlsVersions /t REG_DWORD /d 0x00000001
+                                revertCode: |-
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Server" /v "Enabled" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Server" /v "DisabledByDefault" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Client" /v "Enabled" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Client" /v "DisabledByDefault" /f
+                                    reg delete "HKLM\SOFTWARE\Microsoft\.NETFramework\v2.0.50727" /v "SchUseStrongCrypto" /f
+                                    reg delete "HKLM\SOFTWARE\Microsoft\.NETFramework\v2.0.50727" /v "SystemDefaultTlsVersions" /f
+                                    reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v2.0.50727" /v "SchUseStrongCrypto" /f
+                                    reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v2.0.50727" /v "SystemDefaultTlsVersions" /f
+                                    reg delete "HKLM\SOFTWARE\Microsoft\.NETFramework\v3.0" /v "SchUseStrongCrypto" /f
+                                    reg delete "HKLM\SOFTWARE\Microsoft\.NETFramework\v3.0" /v "SystemDefaultTlsVersions" /f
+                                    reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v3.0" /v "SchUseStrongCrypto" /f
+                                    reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v3.0" /v "SystemDefaultTlsVersions" /f
+                                    reg delete "HKLM\SOFTWARE\Microsoft\.NETFramework\v4.0.30319" /v "SchUseStrongCrypto" /f
+                                    reg delete "HKLM\SOFTWARE\Microsoft\.NETFramework\v4.0.30319" /v "SystemDefaultTlsVersions" /f
+                                    reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v4.0.30319" /v "SchUseStrongCrypto" /f
+                                    reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v4.0.30319" /v "SystemDefaultTlsVersions" /f
+                            -
+                                name: Disable TLS 1.1
+                                docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                    > **Caution:** This may cause compatibility issues with older devices or software.
+                                code: |-
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Server" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Server" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Client" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Client" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
+                                revertCode: |-
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Server" /v "Enabled" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Server" /v "DisabledByDefault" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Client" /v "Enabled" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Client" /v "DisabledByDefault" /f
+                            -
+                                name: Disable SSLv2
+                                docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                    > **Caution:** This may cause compatibility issues with older devices or software.
+                                code: |-
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Client" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Client" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
+                                revertCode: |-
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server" /v "Enabled" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server" /v "DisabledByDefault" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Client" /v "Enabled" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Client" /v "DisabledByDefault" /f
+                            -
+                                name: Disable SSLv3
+                                docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                    > **Caution:** This may cause compatibility issues with older devices or software.
+                                code: |-
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Server" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Server" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Client" /f /v Enabled /t REG_DWORD /d 0x00000000
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Client" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
+                                revertCode: |-
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Server" /v "Enabled" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Server" /v "DisabledByDefault" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Client" /v "Enabled" /f
+                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Client" /v "DisabledByDefault" /f
+                            -
+                                name: Disable NetBios for all interfaces
+                                recommend: standard
+                                docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                    This script enhances your network's security by turning off NetBIOS over TCP/IP for all network interfaces.
+
+                                    NetBIOS is a protocol primarily used for backward compatibility with older Windows systems [1] [2].
+                                    NetBIOS and LLMNR are susceptible to hacking techniques like spoofing [1] [2] [3] [4] [5] and man-in-the-middle
+                                    attacks [1] [2] [6], risking your credentials and unauthorized network access [2] [5] [6].
+
+                                    NetBIOS was initially created for communication between applications in small networks [1] [3] [5] [7].
+                                    Its lack of authentication makes it easy for attackers to redirect traffic or fake network services [1] [2] [3] [4] [5] [6].
+
+                                    Disabling NetBIOS helps protect against these security risks and reduces the exposure of Windows-specific services
+                                    to potential attackers.
+
+                                    The script disables NetBIOS by changing a specific registry values
+                                    (`HKLM\SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces\{Interface}!NetbiosOptions` [1] [8]) from their default
+                                    of `0` (enabled) [5] to `2` (disabled) [5] [8] for each network interface.
+
+                                    [1]: https://web.archive.org/web/20240218210552/https://bobcares.com/blog/disable-netbios-and-llmnr-protocols-in-windows-using-gpo/ "Disable NetBIOS and LLMNR Protocols in Windows Using GPO | bobcares.com"
+                                    [5]: https://web.archive.org/web/20240218210635/https://10dsecurity.com/blog-saying-goodbye-netbios.html "Saying Goodbye To NetBIOS | 10-D Security | 10dsecurity.com"
+                                    [3]: https://web.archive.org/web/20240218210736/https://4sysops.com/archives/disable-netbios-in-windows-networks/ "Disable NetBIOS in Windows networks – 4sysops | 4sysops.com"
+                                    [4]: https://web.archive.org/web/20240218211817/https://www.sternsecurity.com/blog/local-network-attacks-llmnr-and-nbt-ns-poisoning/ "Local Network Attacks: LLMNR and NBT-NS Poisoning - Stern Security | www.sternsecurity.com"
+                                    [2]: https://web.archive.org/web/20240218211748/https://en.wikipedia.org/wiki/NetBIOS_over_TCP/IP "NetBIOS over TCP/IP - Wikipedia | en.wikipedia.org"
+                                    [6]: https://web.archive.org/web/20240218210724/http://www.packetstan.com/2011/03/nbns-spoofing-on-your-way-to-world.html "Packetstan: NBNS Spoofing on your way to World Domination | www.packetstan.com"
+                                    [7]: https://web.archive.org/web/20240218211730/https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-2000-server/cc940063%28v=technet.10%29?redirectedfrom=MSDN "NetBIOS Over TCP/IP | Microsoft Learn | learn.microsoft.com"
+                                    [8]: https://web.archive.org/web/20240218210626/https://learn.microsoft.com/en-us/archive/msdn-technet-forums/c5f3c095-1ad2-4963-b075-787f800b81f2 "Disabling NETBIOS via GP | Microsoft Learn | social.technet.microsoft.com"
+                                call:
+                                    function: RunPowerShell
+                                    parameters:
+                                        code: |-
+                                            $key = 'HKLM:SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces'
+                                            Get-ChildItem $key | ForEach {
+                                                Set-ItemProperty -Path "$key\$($_.PSChildName)" -Name NetbiosOptions -Value 2 -Verbose
+                                            }
+                                        revertCode: |-
+                                            $key = 'HKLM:SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces'
+                                            Get-ChildItem $key | ForEach {
+                                                Set-ItemProperty -Path "$key\$($_.PSChildName)" -Name NetbiosOptions -Value 0 -Verbose
+                                            }
                     -
                         name: Enable TLS 1.3
                         code: |-
@@ -6353,71 +6463,6 @@ actions:
                             reg delete "HKLM\SOFTWARE\Microsoft\.NETFramework\v4.0.30319" /v "SystemDefaultTlsVersions" /f
                             reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v4.0.30319" /v "SchUseStrongCrypto" /f
                             reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v4.0.30319" /v "SystemDefaultTlsVersions" /f
-                    -
-                        name: Disable SSLv2
-                        code: |-
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server" /f /v Enabled /t REG_DWORD /d 0x00000000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Client" /f /v Enabled /t REG_DWORD /d 0x00000000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Client" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
-                        revertCode: |-
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server" /v "Enabled" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server" /v "DisabledByDefault" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Client" /v "Enabled" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Client" /v "DisabledByDefault" /f
-                    -
-                        name: Disable SSLv3
-                        code: |-
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Server" /f /v Enabled /t REG_DWORD /d 0x00000000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Server" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Client" /f /v Enabled /t REG_DWORD /d 0x00000000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Client" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
-                        revertCode: |-
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Server" /v "Enabled" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Server" /v "DisabledByDefault" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Client" /v "Enabled" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Client" /v "DisabledByDefault" /f
-            -
-                name: Disable NetBios for all interfaces
-                recommend: standard
-                docs: |-
-                    This script enhances your network's security by turning off NetBIOS over TCP/IP for all network interfaces.
-
-                    NetBIOS is a protocol primarily used for backward compatibility with older Windows systems [1] [2].
-                    NetBIOS and LLMNR are susceptible to hacking techniques like spoofing [1] [2] [3] [4] [5] and man-in-the-middle
-                    attacks [1] [2] [6], risking your credentials and unauthorized network access [2] [5] [6].
-
-                    NetBIOS was initially created for communication between applications in small networks [1] [3] [5] [7].
-                    Its lack of authentication makes it easy for attackers to redirect traffic or fake network services [1] [2] [3] [4] [5] [6].
-
-                    Disabling NetBIOS helps protect against these security risks and reduces the exposure of Windows-specific services
-                    to potential attackers.
-
-                    The script disables NetBIOS by changing a specific registry values
-                    (`HKLM\SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces\{Interface}!NetbiosOptions` [1] [8]) from their default
-                    of `0` (enabled) [5] to `2` (disabled) [5] [8] for each network interface.
-
-                    [1]: https://web.archive.org/web/20240218210552/https://bobcares.com/blog/disable-netbios-and-llmnr-protocols-in-windows-using-gpo/ "Disable NetBIOS and LLMNR Protocols in Windows Using GPO | bobcares.com"
-                    [5]: https://web.archive.org/web/20240218210635/https://10dsecurity.com/blog-saying-goodbye-netbios.html "Saying Goodbye To NetBIOS | 10-D Security | 10dsecurity.com"
-                    [3]: https://web.archive.org/web/20240218210736/https://4sysops.com/archives/disable-netbios-in-windows-networks/ "Disable NetBIOS in Windows networks – 4sysops | 4sysops.com"
-                    [4]: https://web.archive.org/web/20240218211817/https://www.sternsecurity.com/blog/local-network-attacks-llmnr-and-nbt-ns-poisoning/ "Local Network Attacks: LLMNR and NBT-NS Poisoning - Stern Security | www.sternsecurity.com"
-                    [2]: https://web.archive.org/web/20240218211748/https://en.wikipedia.org/wiki/NetBIOS_over_TCP/IP "NetBIOS over TCP/IP - Wikipedia | en.wikipedia.org"
-                    [6]: https://web.archive.org/web/20240218210724/http://www.packetstan.com/2011/03/nbns-spoofing-on-your-way-to-world.html "Packetstan: NBNS Spoofing on your way to World Domination | www.packetstan.com"
-                    [7]: https://web.archive.org/web/20240218211730/https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-2000-server/cc940063%28v=technet.10%29?redirectedfrom=MSDN "NetBIOS Over TCP/IP | Microsoft Learn | learn.microsoft.com"
-                    [8]: https://web.archive.org/web/20240218210626/https://learn.microsoft.com/en-us/archive/msdn-technet-forums/c5f3c095-1ad2-4963-b075-787f800b81f2 "Disabling NETBIOS via GP | Microsoft Learn | social.technet.microsoft.com"
-                call:
-                    function: RunPowerShell
-                    parameters:
-                        code: |-
-                            $key = 'HKLM:SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces'
-                            Get-ChildItem $key | ForEach {
-                                Set-ItemProperty -Path "$key\$($_.PSChildName)" -Name NetbiosOptions -Value 2 -Verbose
-                            }
-                        revertCode: |-
-                            $key = 'HKLM:SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces'
-                            Get-ChildItem $key | ForEach {
-                                Set-ItemProperty -Path "$key\$($_.PSChildName)" -Name NetbiosOptions -Value 0 -Verbose
-                            }
     -
         category: Block tracking hosts
         docs: |-
@@ -15526,77 +15571,156 @@ actions:
                                                 featureName: Microsoft-Hyper-V-Management-PowerShell # Get-WindowsOptionalFeature -FeatureName 'Microsoft-Hyper-V-Management-PowerShell' -Online
                                                 disabledByDefault: true
                             -
-                                name: Disable "Telnet Client" feature
+                                category: Disable networking features
                                 docs: |-
-                                    See: [Windows 10: Enabling Telnet Client - TechNet Articles - United States (English) - TechNet Wiki | social.technet.microsoft.com](https://web.archive.org/web/20231207105605/https://social.technet.microsoft.com/wiki/contents/articles/38433.windows-10-enabling-telnet-client.aspx)
+                                    This category focuses on disabling specific networking features in Windows.
+                                    These are generally considered unnecessary or less secure for most users.
 
-                                    ### Overview of default feature statuses
+                                    Disabling these features can significantly reduce the system's exposure to potential
+                                    cyber threats by minimizing the attack surface.
+                                    Many of these features utilize outdated protocols or lack robust encryption and
+                                    authentication methods, making them vulnerable to cyberattacks.
+                                    If these features are not essential for your daily operations, it is
+                                    advisable to disable them to enhance your system's security.
 
-                                    | | |
-                                    | ---- | --- |
-                                    | **Feature name**  | `TelnetClient` |
-                                    | **Display name**  | Telnet Client |
-                                    | **Description**  | Allows you to connect to other computers remotely. |
-                                    | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
-                                    | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
-                                call:
-                                    function: DisableWindowsFeature
-                                    parameters:
-                                        featureName: TelnetClient # Get-WindowsOptionalFeature -FeatureName 'TelnetClient' -Online
-                                        disabledByDefault: true
-                            -
-                                name: Disable "Net.TCP Port Sharing" feature
-                                docs: |-
-                                    See: [Net.TCP Port Sharing - WCF | Microsoft Learn | learn.microsoft.com](https://web.archive.org/web/20240314102452/https://learn.microsoft.com/en-us/dotnet/framework/wcf/feature-details/net-tcp-port-sharing)
+                                    > **Caution**: Disabling a networking feature may cause connectivity issues if required for specific operations.
+                                children:
+                                    -
+                                        name: Disable "Telnet Client" feature
+                                        docs: |-
+                                            This script disables the **Telnet Client** feature in Windows.
 
-                                    ### Overview of default feature statuses
+                                            The Telnet Client enables remote server connections [1].
+                                            It is inherently insecure because it transmits all data, including sensitive credentials,
+                                            in clear text without encryption [2] [3].
+                                            This lack of encryption makes it vulnerable to interception and misuse [3].
+                                            Due to these security flaws, entities such as NIST [2], Department of Defense [2]
+                                            and Microsoft [1] recommend removing or disabling this feature.
 
-                                    | | |
-                                    | ---- | --- |
-                                    | **Feature name**  | `WCF-TCP-PortSharing45` |
-                                    | **Display name**  | TCP Port Sharing |
-                                    | **Description**  | TCP Port Sharing |
-                                    | **Default** (Windows 11 ≥ 23H2) | 🟢 Enabled |
-                                    | **Default** (Windows 10 ≥ 22H2) | 🟢 Enabled |
-                                call:
-                                    function: DisableWindowsFeature
-                                    parameters:
-                                        featureName: WCF-TCP-PortSharing45 # Get-WindowsOptionalFeature -FeatureName 'WCF-TCP-PortSharing45' -Online
-                            -
-                                name: Disable "SMB Direct" feature
-                                docs: |-
-                                    [Improve performance of a file server with SMB Direct | Microsoft Learn | learn.microsoft.com](https://web.archive.org/web/20240314102437/https://learn.microsoft.com/en-us/windows-server/storage/file-server/smb-direct?tabs=disable)
+                                            Although this feature is disabled by default in newer versions of Windows [1], ensuring
+                                            that it remains disabled can prevent accidental or unauthorized use.
 
-                                    ### Overview of default feature statuses
+                                            [1]: https://web.archive.org/web/20231207105605/https://social.technet.microsoft.com/wiki/contents/articles/38433.windows-10-enabling-telnet-client.aspx "Windows 10: Enabling Telnet Client - TechNet Articles - United States (English) - TechNet Wiki | social.technet.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240413140012/https://www.stigviewer.com/stig/microsoft_windows_10/2023-09-29/finding/V-220721 "The Telnet Client must not be installed on the system. | stigviewer.com"
+                                            [3]: https://web.archive.org/web/20240413140230/https://it.mst.edu/policies/secure-telnet/ "Secure Telnet – Information Technology | Missouri S&T | it.mst.edu"
 
-                                    | | |
-                                    | ---- | --- |
-                                    | **Feature name**  | `SMB Direct` |
-                                    | **Display name**  | SMB Direct |
-                                    | **Description**  | Remote Direct Memory Access (RDMA) support for the SMB 3.x file sharing protocol |
-                                    | **Default** (Windows 11 ≥ 23H2) | 🟢 Enabled |
-                                    | **Default** (Windows 10 ≥ 22H2) | 🟢 Enabled |
-                                call:
-                                    function: DisableWindowsFeature
-                                    parameters:
-                                        featureName: SmbDirect # Get-WindowsOptionalFeature -FeatureName 'SmbDirect' -Online
-                            -
-                                name: Disable "TFTP Client" feature
-                                docs: |-
-                                    ### Overview of default feature statuses
+                                            > **Caution**: Disabling a networking feature may cause connectivity issues if required for specific operations.
 
-                                    | | |
-                                    | ---- | --- |
-                                    | **Feature name**  | `TFTP` |
-                                    | **Display name**  | TFTP Client |
-                                    | **Description**  | Transfer files using the Trivial File Transfer Protocol |
-                                    | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
-                                    | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
-                                call:
-                                    function: DisableWindowsFeature
-                                    parameters:
-                                        featureName: TFTP # Get-WindowsOptionalFeature -FeatureName 'TFTP' -Online
-                                        disabledByDefault: true
+                                            ### Overview of default feature statuses
+
+                                            | | |
+                                            | ---- | --- |
+                                            | **Feature name**  | `TelnetClient` |
+                                            | **Display name**  | Telnet Client |
+                                            | **Description**  | Allows you to connect to other computers remotely. |
+                                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                                            | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
+                                        call:
+                                            function: DisableWindowsFeature
+                                            parameters:
+                                                featureName: TelnetClient # Get-WindowsOptionalFeature -FeatureName 'TelnetClient' -Online
+                                                disabledByDefault: true
+                                    -
+                                        name: Disable "Net.TCP Port Sharing" feature
+                                        docs: |-
+                                            This script disables the **Net.TCP Port Sharing** feature.
+
+                                            This feature is part of Windows Communication Foundation (WCF) [1].
+
+                                            This feature enables multiple WCF applications to share the same TCP port [1].
+                                            It manages incoming connections and routes them to the appropriate application based on
+                                            the destination address found in the message stream [1].
+
+                                            This increases the system's attack surface [2]:
+
+                                            - When applications share the same port, more applications are exposed to network traffic.
+                                            - It runs under a system account with high permissions, making the system vulnerable to extensive
+                                              access by attackers if compromised [2].
+                                            - Poor application configuration can increase risk of serious damage if an application is compromised [1].
+                                            - The security of the system depends significantly on how well each individual application handles security.
+
+                                            It's disabled by default on Windows due to security concerns [1].
+
+                                            > **Caution**: Disabling a networking feature may cause connectivity issues if required for specific operations.
+
+                                            ### Overview of default feature statuses
+
+                                            | | |
+                                            | ---- | --- |
+                                            | **Feature name**  | `WCF-TCP-PortSharing45` |
+                                            | **Display name**  | TCP Port Sharing |
+                                            | **Description**  | TCP Port Sharing |
+                                            | **Default** (Windows 11 ≥ 23H2) | 🟢 Enabled |
+                                            | **Default** (Windows 10 ≥ 22H2) | 🟢 Enabled |
+
+                                            [1]: https://web.archive.org/web/20240314102452/https://learn.microsoft.com/en-us/dotnet/framework/wcf/feature-details/net-tcp-port-sharing "Net.TCP Port Sharing - WCF | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240413140234/https://www.stigviewer.com/stig/windows_server_2008_r2_member_server/2015-03-09/finding/V-3487 "Services will be documented and unnecessary services will not be installed or will be disabled. | stigviewer.com"
+                                        call:
+                                            function: DisableWindowsFeature
+                                            parameters:
+                                                featureName: WCF-TCP-PortSharing45 # Get-WindowsOptionalFeature -FeatureName 'WCF-TCP-PortSharing45' -Online
+                                    -
+                                        name: Disable "SMB Direct" feature
+                                        docs: |-
+                                            This script disables **SMB Direct** feature.
+
+                                            SMB Direct improves file transfer speeds across networks by utilizing network adapters that are 
+                                            Remote Direct Memory Access (RDMA) capable [1].
+
+                                            Although not inherently insecure [2], maintaining unnecessary software can increase the attack surface,
+                                            especially if the underlying RDMA hardware has vulnerabilities.
+
+                                            > **Caution**: Disabling a networking feature may cause connectivity issues if required for specific operations.
+
+                                            ### Overview of default feature statuses
+
+                                            | | |
+                                            | ---- | --- |
+                                            | **Feature name**  | `SMB Direct` |
+                                            | **Display name**  | SMB Direct |
+                                            | **Description**  | Remote Direct Memory Access (RDMA) support for the SMB 3.x file sharing protocol |
+                                            | **Default** (Windows 11 ≥ 23H2) | 🟢 Enabled |
+                                            | **Default** (Windows 10 ≥ 22H2) | 🟢 Enabled |
+
+                                            [1]: https://web.archive.org/web/20240314102437/https://learn.microsoft.com/en-us/windows-server/storage/file-server/smb-direct?tabs=disable "Improve performance of a file server with SMB Direct | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240413124106/https://techcommunity.microsoft.com/t5/storage-at-microsoft/stop-using-smb1/ba-p/425858 "Stop using SMB1 - Microsoft Community Hub | techcommunity.microsoft.com"
+                                        call:
+                                            function: DisableWindowsFeature
+                                            parameters:
+                                                featureName: SmbDirect # Get-WindowsOptionalFeature -FeatureName 'SmbDirect' -Online
+                                    -
+                                        name: Disable "TFTP Client" feature
+                                        docs: |-
+                                            This script disables the **TFTP Client** feature.
+
+                                            The TFTP Client supports file transfers using the *Trivial File Transfer Protocol (TFTP)*.
+                                            TFTP protocol is insecure because it lacks authentication and encryption capabilities [1] [2] [3].
+                                            This makes data transferred via TFTP vulnerable to eavesdropping and tampering [2] [3].
+
+                                            Although TFTP's simplicity can be advantageous in certain contexts, such as configuring network devices,
+                                            its security risks generally outweigh these benefits.
+                                            Disabling it helps mitigate the risk of unauthorized data access and simplifies system security management [1] [2].
+
+                                            > **Caution**: Disabling a networking feature may cause connectivity issues if required for specific operations.
+
+                                            [1]: https://web.archive.org/web/20240413142327/https://www.stigviewer.com/stig/windows_server_2016/2018-03-07/finding/V-73297 "The TFTP Client must not be installed. | www.stigviewer.com"
+                                            [2]: https://web.archive.org/web/20240413142325/https://www.tenable.com/audits/items/Juniper_Hardening_Junos_Devices.audit:0343769f1ea790c8345e961c9a442ec6 "Access Security - Disable insecure or unnecessary access servi...<!-- --> | Tenable® | www.tenable.com"
+                                            [3]: https://archive.ph/2024.04.13-142535/https://www.infosecinstitute.com/resources/incident-response-resources/network-traffic-analysis-for-ir-tftp-with-wireshark/ "Network traffic analysis for IR: TFTP with Wireshark | Infosec | www.infosecinstitute.com"
+
+                                            ### Overview of default feature statuses
+
+                                            | | |
+                                            | ---- | --- |
+                                            | **Feature name**  | `TFTP` |
+                                            | **Display name**  | TFTP Client |
+                                            | **Description**  | Transfer files using the Trivial File Transfer Protocol |
+                                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                                            | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
+                                        call:
+                                            function: DisableWindowsFeature
+                                            parameters:
+                                                featureName: TFTP # Get-WindowsOptionalFeature -FeatureName 'TFTP' -Online
+                                                disabledByDefault: true
                     -
                         category: Disable printing features
                         children:
@@ -15987,27 +16111,98 @@ actions:
                                         capabilityName: Msix.PackagingTool.Driver
                             -
                                 category: Remove networking capabilities
+                                docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                    This category focuses on the removal of certain networking capabilities.
+                                    These capabilities are usually not pre-installed on Windows [1].
+
+                                    Removing these features can contribute to a more secure and privacy-focused
+                                    environment by eliminating potential vulnerabilities and reducing the
+                                    system's attack surface.
+
+                                    The scripts target specific networking tools and protocols, ideal for users who
+                                    don't need these features, thus streamlining the system and potentially improving
+                                    performance.
+
+                                    > **Caution:**
+                                    > Removing networking capabilities could disrupt remote connections and network management tasks.
+                                    > These features may be critical for enterprise environments or specific operations.
+
+                                    [1]: https://web.archive.org/web/20240411120309/https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/features-on-demand-non-language-fod?view=windows-11#networking-tools "Available features on demand | Microsoft Learn | learn.microsoft.com"
                                 children:
                                     -
                                         name: Remove "RAS Connection Manager Administration Kit (CMAK)" capability
+                                        docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                            This script removes the "RAS Connection Manager Administration Kit (CMAK)" (`RasCMAK.Client` [1]) capability.
+
+                                            CMAK is a tool that allows the creation of profiles for connecting to remote servers and networks [1].
+
+                                            Though useful for remote connections, this capability might be unnecessary for many users.
+                                            Removing it can simplify the system's network configuration and enhance security by reducing potential attack vectors.
+
+                                            > **Caution:**
+                                            > Removing networking capabilities could disrupt remote connections and network management tasks.
+                                            > These features may be critical for enterprise environments or specific operations.
+
+                                            [1]: https://web.archive.org/web/20240411120309/https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/features-on-demand-non-language-fod?view=windows-11#networking-tools "Available features on demand | Microsoft Learn | learn.microsoft.com"
                                         call:
                                             function: UninstallCapability
                                             parameters:
                                                 capabilityName: RasCMAK.Client
                                     -
                                         name: Remove "RIP Listener" capability
+                                        docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                            This script removes the "RIP Listener" (`RIP.Listener` [1]) capability.
+
+                                            The RIP Listener listens for route updates from routers using the Routing Information Protocol version 1 (RIPV1) [1].
+
+                                            RIPV1 is an older protocol that might be redundant in modern networks, despite its specific utilities.
+                                            Removing this feature can contribute to a more secure system by eliminating unnecessary network
+                                            listening capabilities.
+
+                                            > **Caution:**
+                                            > Removing networking capabilities could disrupt remote connections and network management tasks.
+                                            > These features may be critical for enterprise environments or specific operations.
+
+                                            [1]: https://web.archive.org/web/20240411120309/https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/features-on-demand-non-language-fod?view=windows-11#networking-tools "Available features on demand | Microsoft Learn | learn.microsoft.com"
                                         call:
                                             function: UninstallCapability
                                             parameters:
                                                 capabilityName: RIP.Listener
                                     -
                                         name: Remove "Simple Network Management Protocol (SNMP)" capability
+                                        docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                            This script removes the "Simple Network Management Protocol (SNMP)" (`SNMP.Client` [1]) capability.
+
+                                            SNMP is used for monitoring and managing network devices [1].
+
+                                            While it provides valuable information for network administration, it may not be essential for
+                                            all users and can expose the system to additional network traffic and potential vulnerabilities.
+
+                                            > **Caution:**
+                                            > Removing networking capabilities could disrupt remote connections and network management tasks.
+                                            > These features may be critical for enterprise environments or specific operations.
+
+                                            [1]: https://web.archive.org/web/20240411120309/https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/features-on-demand-non-language-fod?view=windows-11#networking-tools "Available features on demand | Microsoft Learn | learn.microsoft.com"
                                         call:
                                             function: UninstallCapability
                                             parameters:
                                                 capabilityName: SNMP.Client
                                     -
                                         name: Remove "SNMP WMI Provider" capability
+                                        docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                            This script removes the "SNMP WMI Provider" (`WMI-SNMP-Provider.Client` [1]) capability.
+
+                                            This feature enables Windows Management Instrumentation (WMI) clients to access SNMP information [1].
+
+                                            Integrating SNMP data into WMI, this capability may be extraneous for those not needing SNMP monitoring.
+                                            Removing this capability can simplify the system's management interfaces and improve its security posture
+                                            by limiting the ways in which network information is accessed and exposed.
+
+                                            > **Caution:**
+                                            > Removing networking capabilities could disrupt remote connections and network management tasks.
+                                            > These features may be critical for enterprise environments or specific operations.
+
+                                            [1]: https://web.archive.org/web/20240411120309/https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/features-on-demand-non-language-fod?view=windows-11#networking-tools "Available features on demand | Microsoft Learn | learn.microsoft.com"
                                         call:
                                             function: UninstallCapability
                                             parameters:
