@@ -6128,7 +6128,45 @@ actions:
                                 name: Disable unsafe SMBv1 protocol
                                 recommend: standard # Recommended by Microsoft, very old, has significant security vulnerabilities
                                 docs: |- # refactor-with-variables: Same **Caution** text as others.
-                                    See: [Stop using SMB1 | techcommunity.microsoft.com](https://techcommunity.microsoft.com/t5/storage-at-microsoft/stop-using-smb1/ba-p/425858)
+                                    This script improves network security by disabling the outdated SMBv1 protocol.
+
+                                    **SMBv1**, or **Server Message Block version 1**, is an outdated network protocol developed
+                                    for file and printer sharing across networks [1] [2].
+                                    This protocol is well-known for its vulnerabilities to cyber attacks [1] [2] [3] [4] [5].
+                                    Microsoft deprecated SMBv1 in 2014 [6] [7].
+                                    Since 2007, newer and more secure versions of this protocol have
+                                    replaced SMBv1 in modern versions of Windows [6].
+                                    It is still enabled by default in older Windows versions [1].
+                                    Microsoft advises disabling this protocol to strengthen security [1] [8].
+                                    SMB1 is not necessary for most users, as Microsoft ensures vendor support for at least SMB 2.0 [2].
+
+                                    The primary reasons for disabling SMBv1 include:
+
+                                    - It uses the outdated MD5 hashing algorithm, vulnerable to security attacks [3].
+                                    - It fails to meet modern security standards set by FIPS [3], CISA (US-CERT) [5],
+                                    CIS (Department of Defense) [3], and Microsoft Security Baseline [8].
+                                    - It lacks the efficiency and performance improvements present in newer versions of the protocol [2].
+                                    - It is vulnerable to various cyber threats [1] [2] [3] [4] [5],
+                                    , including ransomware and malware [1] [2].
+
+                                    Disabling SMBv1 may lead to compatibility issues with older network devices and software [1] [3] [6] [9].
+                                    This may affect file sharing and print services on systems like Windows Server 2003 [3]
+                                    and some older Network Attached Storage (NAS) devices [3].
+                                    These systems are insecure and are no longer supported.
+
+                                    This script makes the following changes to your system:
+
+                                    - Removal of SMBv1 components:
+                                    - `SMB1Protocol` [2] [3] [4] [10] (also known as `FS-SMB1` [2] [11])
+                                    - `SMB1Protocol-Client` [10]
+                                    - `SMB1Protocol-Server` [10].
+                                    - Disabling the `mrxsmb10` (SMB 1.x MiniRedirector [12]) driver,
+                                      linked with SMBv1 [1] [4] [13],
+                                      and adjusting related settings to keep older systems stable [1] [4] [13].
+                                    - Disabling server side processing of SMBv1 protocol using
+                                    `HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters!SMBv1` registry key [1] [14] [15].
+
+                                    These changes require a system reboot to take effect [1] [4] [9].
 
                                     > **Caution:** This may cause compatibility issues with older devices or software.
 
@@ -6163,6 +6201,31 @@ actions:
                                     | **Description**  | Support for the SMB 1.0/CIFS file server for sharing data with legacy clients and browsing the network neighborhood. |
                                     | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
                                     | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
+
+                                    ### Overview of default service statuses
+
+                                    SMB 1.x MiniRedirector (`mrxsmb10`):
+
+                                    | OS Version | Status | Start type |
+                                    | ---------- | -------| ---------- |
+                                    | Windows 11 (≥ 23H2) | 🟡 Missing | N/A |
+                                    | Windows 10 (≥ 22H2) | 🟡 Missing | N/A |
+
+                                    [1]: https://web.archive.org/web/20240413122756/https://learn.microsoft.com/en-us/archive/blogs/secguide/disabling-smbv1-through-group-policy "Disabling SMBv1 through Group Policy | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240413124106/https://techcommunity.microsoft.com/t5/storage-at-microsoft/stop-using-smb1/ba-p/425858 "Stop using SMB1 - Microsoft Community Hub | techcommunity.microsoft.com"
+                                    [3]: https://web.archive.org/web/20240413124245/https://www.stigviewer.com/stig/microsoft_windows_10/2023-09-29/finding/V-220729 "The Server Message Block (SMB) v1 protocol must be disabled on the system. | www.stigviewer.com"
+                                    [4]: https://web.archive.org/web/20240413122807/https://learn.microsoft.com/en-US/windows-server/storage/file-server/troubleshoot/detect-enable-and-disable-smbv1-v2-v3?tabs=server "Server | How to detect, enable and disable SMBv1, SMBv2, and SMBv3 in Windows | Microsoft Learn | learn.microsoft.com"
+                                    [5]: https://web.archive.org/web/20240413124050/https://www.cisa.gov/news-events/alerts/2017/01/16/smb-security-best-practices "SMB Security Best Practices | CISA | www.cisa.gov"
+                                    [6]: https://web.archive.org/web/20240413122812/https://learn.microsoft.com/en-us/windows-server/storage/file-server/troubleshoot/smbv1-not-installed-by-default-in-windows "SMBv1 is not installed by default in Windows 10 version 1709, Windows Server version 1709 and later versions | Microsoft Learn | learn.microsoft.com"
+                                    [7]: https://web.archive.org/web/20240413124101/https://learn.microsoft.com/en-us/archive/blogs/josebda/the-deprecation-of-smb1-you-should-be-planning-to-get-rid-of-this-old-smb-dialect "The Deprecation of SMB1 – You should be planning to get rid of this old SMB dialect | Microsoft Learn | learn.microsoft.com"
+                                    [8]: https://web.archive.org/web/20240413122800/https://learn.microsoft.com/en-us/archive/blogs/secguide/security-baseline-for-windows-10-creators-update-v1703-draft "Security baseline for Windows 10 \"Creators Update\" (v1703) – DRAFT | Microsoft Learn | learn.microsoft.com"
+                                    [9]: https://web.archive.org/web/20240413125713/https://learn.microsoft.com/en-US/windows-server/storage/file-server/troubleshoot/detect-enable-and-disable-smbv1-v2-v3?tabs=client "Client | How to detect, enable and disable SMBv1, SMBv2, and SMBv3 in Windows | Microsoft Learn | learn.microsoft.com"
+                                    [10]: https://web.archive.org/web/20240413124113/https://learn.microsoft.com/en-us/powershell/module/smbshare/remove-smbcomponent?view=windowsserver2025-ps&wt.mc_id=ps-gethelp "Remove-SmbComponent (SmbShare) | Microsoft Learn | learn.microsoft.com"
+                                    [11]: https://web.archive.org/web/20240413124320/https://www.stigviewer.com/stig/windows_server_2016/2020-06-16/finding/V-73299 "The Server Message Block (SMB) v1 protocol must be uninstalled. | www.stigviewer.com"
+                                    [12]: https://web.archive.org/web/20240413124418/https://revertservice.com/10/mrxsmb10/ "SMB 1.x MiniRedirector (mrxsmb10) Service Defaults in Windows 10 | revertservice.com"
+                                    [13]: https://web.archive.org/web/20240413124409/https://www.stigviewer.com/stig/windows_server_20122012_r2_domain_controller/2019-01-16/finding/V-73523 "The Server Message Block (SMB) v1 protocol must be disabled on the SMB client. | www.stigviewer.com"
+                                    [14]: https://web.archive.org/web/20240413124606/https://admx.help/?Category=security-compliance-toolkit&Policy=Microsoft.Policies.SecGuide::Pol_SecGuide_0001_SMBv1_Server "Configure SMB v1 server | admx.help"
+                                    [15]: https://web.archive.org/web/20240418073214/https://support.microsoft.com/en-us/topic/908332b7-49de-a86c-dba3-401b9fe8116f "Server service configuration and tuning - Microsoft Support | support.microsoft.com"
                                 call:
                                     -
                                         function: DisableWindowsFeature
@@ -6179,6 +6242,27 @@ actions:
                                         parameters:
                                             featureName: SMB1Protocol-Server # Get-WindowsOptionalFeature -FeatureName 'SMB1Protocol-Server' -Online
                                             disabledByDefault: true
+                                    -
+                                        function: DisableService
+                                        parameters:
+                                            serviceName: mrxsmb10 # Check: (Get-Service -Name 'mrxsmb10').StartType
+                                            defaultStartupMode: Automatic # Allowed values: Boot | System | Automatic | Manual
+                                            ignoreMissingOnRevert: true # This service is only available when SMB1 feature is installed
+                                    -
+                                        function: RunInlineCode
+                                        # This ensures that `lanmanworkstation` does not depend on `mrxsmb10` to avoid potential system issues.
+                                        # Its configuration is already the OS default on modern versions of Windows, see: `sc qc lanmanworkstation`.
+                                        parameters:
+                                            code: sc.exe config lanmanworkstation depend= bowser/mrxsmb20/nsi
+                                            revertCode: sc.exe config lanmanworkstation depend= bowser/mrxsmb20/nsi
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "SMBv1" /t "REG_DWORD" /d "0" /f
+                                            revertCode: >- # Key does not exist (tested: Windows 10 22H2 and Windows 11 23H2)
+                                                reg delete "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "SMBv1" /f 2>nul
+                                    -
+                                        function: ShowComputerRestartSuggestion
                             -
                                 name: Disable RC2 cipher
                                 docs: |- # refactor-with-variables: Same **Caution** text as others.
