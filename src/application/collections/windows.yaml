@@ -6328,19 +6328,89 @@ actions:
                                 code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\NULL" /f /v Enabled /t REG_DWORD /d 0x00000000
                                 revertCode: reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\NULL" /v "Enabled" /f
                             -
-                                name: Disable response to renegotiation requests
+                                name: Disable insecure renegotiation
+                                recommend: strict # Important security improvement, but may limit compatibility with older software.
                                 docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                    This script enhances your security by reducing risks associated with secure communications.
+                                    By running this script, you proactively enhance your online privacy and secure against
+                                    well-known TLS vulnerabilities.
+
+                                    TLS secures internet communications.
+                                    It allows parties such as browsers and websites to update their encryption settings through **renegotiation** [2].
+                                    Without safeguards, attackers could intercept and compromise these
+                                    communications [1] [2] [3] [4] [5] [6].
+
+                                    Insecure renegotiation can let attackers hijack communications from the start, enabling
+                                    unauthorized control [1],
+                                    data manipulation [3] [6],
+                                    DoS attacks [3],
+                                    and identity spoofing [4] [5] [6].
+
+                                    To counter these threats, this script implements measures standardized in RFC 5746 [1] [2], effectively
+                                    closing the loophole that allowed these vulnerabilities.
+
+                                    This script enhances security by blocking insecure renegotiation attempts and
+                                    aims to improve compatibility with older software.
+                                    It modifies the following system settings to achieve this:
+
+                                    - `HKLM\System\CurrentControlSet\Control\SecurityProviders\SCHANNEL!AllowInsecureRenegoClients` [1] [3]:
+                                      Stops the client from responding to insecure renegotiation attempts [1] [3].
+                                    - `HKLM\System\CurrentControlSet\Control\SecurityProviders\SCHANNEL!AllowInsecureRenegoServers` [1] [3]:
+                                      Stops the server from responding to insecure renegotiation attempts [1] [3].
+                                    - `HKLM\System\CurrentControlSet\Control\SecurityProviders\SCHANNEL!DisableRenegoOnClient` [3] [4]:
+                                      Prevents the client from initiating or responding to insecure renegotiation requests [3] [4].
+                                    - `HKLM\System\CurrentControlSet\Control\SecurityProviders\SCHANNEL!DisableRenegoOnServer` [3] [4]:
+                                      Prevents the server from initiating or responding to insecure renegotiation requests [3] [4].
+                                    - `HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL!UseScsvForTls` [1]:
+                                      Enhances compatibility with older software, preventing potential communication issues [1].
+
+                                    This script may impact the functionality of software using outdated and insecure communication methods [3].
+                                    Affected software includes older versions of:
+
+                                    - Internet Explorer [3] [4]
+                                    - Internet Information Services (IIS) [3] [4]
+                                    - Exchange ActiveSync [3] [4]
+                                    - Outlook [3]
+
                                     > **Caution:** This may cause compatibility issues with older devices or software.
-                                code: |-
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /f /v AllowInsecureRenegoClients /t REG_DWORD /d 0x00000000
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /f /v AllowInsecureRenegoServers /t REG_DWORD /d 0x00000000
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /f /v DisableRenegoOnServer /t REG_DWORD /d 0x00000001
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /f /v UseScsvForTls /t REG_DWORD /d 0x00000001
-                                revertCode: |-
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /v "AllowInsecureRenegoClients" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /v "AllowInsecureRenegoServers" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /v "DisableRenegoOnServer" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /v "UseScsvForTls" /f
+
+                                    [1]: https://web.archive.org/web/20240329131258/https://support.microsoft.com/en-us/topic/ms10-049-vulnerabilities-in-schannel-could-allow-remote-code-execution-d4258037-ad3a-c00c-250f-6c67a408bd7c "MS10-049: Vulnerabilities in SChannel could allow remote code execution - Microsoft Support | support.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240329131244/https://datatracker.ietf.org/doc/html/rfc5746 "RFC 5746 - Transport Layer Security (TLS) Renegotiation Indication Extension | ietf.org"
+                                    [3]: https://web.archive.org/web/20240329131420/https://blogs.iis.net/windowsserver/isa-2006-tmg-2010-disable-client-initiated-ssl-renegotiation-protecting-against-dos-attacks-and-malicious-data-injection "Windows Server team Blog - ISA 2006 / TMG 2010: DISABLE CLIENT-INITIATED SSL RENEGOTIATION, PROTECTING AGAINST DOS ATTACKS AND MALICIOUS DATA INJECTION | blogs.iis.net"
+                                    [4]: https://web.archive.org/web/20100213193718/http://support.microsoft.com/kb/977377 "Microsoft Security Advisory: Vulnerability in TLS/SSL could allow spoofing | support.microsoft.com"
+                                    [6]: https://web.archive.org/web/20240329131308/https://nvd.nist.gov/vuln/detail/cve-2009-3555 "NVD - cve-2009-3555 | nvd.nist.gov"
+                                    [5]: https://web.archive.org/web/20100212053756/http://www.microsoft.com/technet/security/advisory/977377.mspx "Microsoft Security Advisory (977377): Vulnerability in TLS/SSL Could Allow Spoofing | www.microsoft.com"
+                                call:
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /v "AllowInsecureRenegoClients" /t REG_DWORD /d "0" /f
+                                            revertCode: >- # Missing key since Windows 10 22H2 Pro and Windows 11 23H2 Pro
+                                                reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /v "AllowInsecureRenegoClients" /f 2>nul
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /v "AllowInsecureRenegoServers" /t REG_DWORD /d "0" /f
+                                            revertCode: >- # Missing key since Windows 10 22H2 Pro and Windows 11 23H2 Pro
+                                                reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /v "AllowInsecureRenegoServers" /f 2>nul
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /f /v "DisableRenegoOnServer" /t REG_DWORD /d "1" /f
+                                            revertCode: >- # Missing key since Windows 10 22H2 Pro and Windows 11 23H2 Pro
+                                                reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /v "DisableRenegoOnServer" /f 2>nul
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /f /v "DisableRenegoOnClient" /t REG_DWORD /d "1" /f
+                                            revertCode: >- # Missing key since Windows 10 22H2 Pro and Windows 11 23H2 Pro
+                                                reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /v "DisableRenegoOnClient" /f 2>nul
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /f /v "UseScsvForTls" /t REG_DWORD /d "1" /f
+                                            revertCode: >- # Missing key since Windows 10 22H2 Pro and Windows 11 23H2 Pro
+                                                reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /v "UseScsvForTls" /f 2>nul
                             -
                                 name: Disable DTLS 1.0
                                 docs: |- # refactor-with-variables: Same **Caution** text as others.
