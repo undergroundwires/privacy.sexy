@@ -6264,51 +6264,242 @@ actions:
                                     -
                                         function: ShowComputerRestartSuggestion
                             -
-                                name: Disable RC2 cipher
+                                category: Disable insecure ciphers
                                 docs: |- # refactor-with-variables: Same **Caution** text as others.
-                                    > **Caution:** This may cause compatibility issues with older devices or software.
-                                code: |-
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 40/128" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 56/128" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 128/128" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                revertCode: |-
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 40/128" /v "Enabled" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 56/128" /v "Enabled" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC2 128/128" /v "Enabled" /f
-                            -
-                                name: Disable RC4 cipher
-                                docs: |- # refactor-with-variables: Same **Caution** text as others.
-                                    > **Caution:** This may cause compatibility issues with older devices or software.
-                                code: |-
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 128/128" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 64/128" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 56/128" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 40/128" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                revertCode: |-
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 128/128" /v "Enabled" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 64/128" /v "Enabled" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 56/128" /v "Enabled" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\RC4 40/128" /v "Enabled" /f
-                            -
-                                name: Disable DES cipher
-                                docs: |- # refactor-with-variables: Same **Caution** text as others.
-                                    > **Caution:** This may cause compatibility issues with older devices or software.
-                                code: |-
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\DES 56" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\DES 56/56" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                revertCode: |-
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\DES 56" /v "Enabled" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\DES 56/56" /v "Enabled" /f
-                            -
-                                name: Disable 3DES (Triple DES) cipher
-                                docs: |- # refactor-with-variables: Same **Caution** text as others.
-                                    > **Caution:** This may cause compatibility issues with older devices or software.
-                                code: |-
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\Triple DES 168" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\Triple DES 168/168" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                revertCode: |-
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\Triple DES 168" /v "Enabled" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\Triple DES 168/168" /v "Enabled" /f
+                                    This category improves network security by disabling outdated and less secure cipher suites.
+
+                                    **Cipher suites** are sets of cryptographic algorithms used to secure network connections [1].
+                                    They include **ciphers**, known as **bulk encryption algorithms** [1] or simply **bulk ciphers** [2].
+                                    Ciphers encrypt messages exchanged between clients and servers [1].
+                                    Using outdated cipher suites exposes data to risks of interception and tampering during transmission [2].
+
+                                    Disabling insecure ciphers meets security standards set by NIST [3], CIS [4], IRS [5], OWASP [6]
+                                    and Germany's Federal Office for Information Security (BSI) [7].
+                                    This enhances data confidentiality and integrity [4].
+                                    It also protects against threats such as attackers exploiting cryptographic weaknesses, malicious insiders,
+                                    state actors, and cybercriminals [8].
+
+                                    > **Caution:** Disabling a cipher may cause compatibility issues with older devices or software.
+
+                                    [1]: https://web.archive.org/web/20240421101955/https://learn.microsoft.com/en-us/windows/win32/secauthn/cipher-suites-in-schannel "Cipher Suites in TLS/SSL (Schannel SSP) - Win32 apps | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240421102018/https://www.acunetix.com/blog/articles/tls-ssl-cipher-hardening/ "Recommendations for TLS/SSL Cipher Hardening | Acunetix | www.acunetix.com"
+                                    [3]: https://web.archive.org/web/20240420183152/https://learn.microsoft.com/en-us/troubleshoot/windows-server/certificates-and-public-key-infrastructure-pki/restrict-cryptographic-algorithms-protocols-schannel "Restrict cryptographic algorithms and protocols - Windows Server | Microsoft Learn | learn.microsoft.com"
+                                    [4]: https://web.archive.org/web/20240421101142/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_IIS_8_Benchmark_v1_4_0.pdf "CIS Microsoft IIS 8 Benchmark v1.4.0 | paper.bobylive.com"
+                                    [5]: https://web.archive.org/web/20240404112509/https://www.irs.gov/privacy-disclosure/encryption-requirements-of-publication-1075 "Encryption Requirements of Publication 1075 | Internal Revenue Service | www.irs.gov"
+                                    [6]: https://web.archive.org/web/20240421101557/https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/09-Testing_for_Weak_Cryptography/04-Testing_for_Weak_Encryption.html "WSTG - v4.2 | OWASP Foundation | owasp.org"
+                                    [7]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
+                                    [8]: https://web.archive.org/web/20240421102031/https://owasp.org/www-project-mobile-top-10/2023-risks/m10-insufficient-cryptography "M10: Insufficient Cryptography | OWASP Foundation | owasp.org"
+                                children:
+                                    -
+                                        name: Disable insecure "RC2" ciphers
+                                        recommend: strict # Considered weak and vulnerable by numerous authoritative sources, may be incompatible with third-party apps.
+                                        docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                            This script disables RC2 ciphers.
+
+                                            Authorities like Microsoft [1] [2] [3], NIST (FIPS) [4], CIS [5], Federal Office for Information Security
+                                            (BSI) [6], and OWASP [7] classify this cipher as weak and recommend against its use.
+
+                                            By disabling RC2, the script enhances network security and data integrity [5], as these ciphers are
+                                            susceptible to cryptographic attacks.
+
+                                            This script disables these cipher algorithms:
+
+                                            - `RC2 40/128` [1] [4] [5] [6] (40-bit RC2 [4])
+                                              - Enabled by default [4].
+                                              - Disabling it disallows the following cipher suites:
+                                                - `SSL_RSA_EXPORT_WITH_RC2_CBC_40_MD5` [1] [4]
+                                                - `TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5` [1] [4]
+                                            - `RC2 56/128` [2] [4] [5] [6] (56-bit RC2 [4])
+                                              - Enabled by default [4].
+                                              - Disabling it disallows the following cipher suites:
+                                                - `SSL_RSA_WITH_DES_CBC_SHA` [2]
+                                                - `TLS_RSA_WITH_DES_CBC_SHA` [2]
+                                            - `RC2 128/128` [3] [4] [6] (128-bit RC2 [4])
+                                              - Enabled by default [4].
+
+                                            > **Caution:** Disabling a cipher may cause compatibility issues with older devices or software.
+
+                                            [1]: https://web.archive.org/web/20240421111726/https://admx.help/?Category=Schannel&Policy=JMU.Policies.Schannel::RC2_40 "RC2 40/128 | admx.help"
+                                            [2]: https://web.archive.org/web/20240421111927/https://admx.help/?Category=Schannel&Policy=JMU.Policies.Schannel::RC2_56 "RC2 56/128 | admx.help"
+                                            [3]: https://web.archive.org/web/20240421111841/https://admx.help/?Category=Schannel&Policy=JMU.Policies.Schannel::RC2_128 "RC2 128/128 | admx.help"
+                                            [4]: https://web.archive.org/web/20240420183152/https://learn.microsoft.com/en-us/troubleshoot/windows-server/certificates-and-public-key-infrastructure-pki/restrict-cryptographic-algorithms-protocols-schannel "Restrict cryptographic algorithms and protocols - Windows Server | Microsoft Learn | learn.microsoft.com"
+                                            [5]: https://web.archive.org/web/20240421101142/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_IIS_8_Benchmark_v1_4_0.pdf "CIS Microsoft IIS 8 Benchmark v1.4.0 | paper.bobylive.com"
+                                            [6]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
+                                            [7]: https://web.archive.org/web/20240421101557/https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/09-Testing_for_Weak_Cryptography/04-Testing_for_Weak_Encryption.html "WSTG - v4.2 | OWASP Foundation | owasp.org"
+                                        call:
+                                            -
+                                                function: DisableCipherAlgorithm
+                                                parameters:
+                                                    algorithmName: RC2 40/128
+                                            -
+                                                function: DisableCipherAlgorithm
+                                                parameters:
+                                                    algorithmName: RC2 56/128
+                                            -
+                                                function: DisableCipherAlgorithm
+                                                parameters:
+                                                    algorithmName: RC2 128/128
+                                    -
+                                        name: Disable insecure "RC4" ciphers
+                                        recommend: strict # Considered weak and vulnerable by numerous authoritative sources, may be incompatible with third-party apps.
+                                        docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                            This script disables the RC4 ciphers.
+
+                                            Authorities like Microsoft [1] [2] [3] [4] [5], NIST (FIPS) [6], CIS [7], Federal Office for Information
+                                            Security (BSI) [8], and OWASP [9] classify this cipher as weak and recommend against its use.
+
+                                            This script disables these cipher algorithms:
+
+                                            - `RC4 128/128` [1] [6] [7] [8] (128-bit RC4 [6]):
+                                              - Enabled by default [6] [7].
+                                              - Disabling it disallows the following cipher suites:
+                                                - `SSL_RSA_WITH_RC4_128_MD5` [1] [6]
+                                                - `SSL_RSA_WITH_RC4_128_SHA` [1] [6]
+                                                - `TLS_RSA_WITH_RC4_128_MD5` [1] [6]
+                                                - `TLS_RSA_WITH_RC4_128_SHA` [1] [6]
+                                            - `RC4 64/128` [2] [6] [7] [8] (64-bit RC4 [6]):
+                                              - Enabled by default [6].
+                                              - Disabling it affects the functionality of the **Microsoft Money application [6].
+                                            - `RC4 56/128` [3] [6] [7] [8] (56-bit RC4 [6]):
+                                              - Enabled by default [6].
+                                              - Disabling it disallows the following cipher suites:
+                                                - `TLS_RSA_EXPORT1024_WITH_RC4_56_SHA` [3] [6]
+                                            - `RC4 40/128` [4] [6] [7] [8] (40-bit RC4 [6]):
+                                              - Enabled by default [6].
+                                              - Disabling this algorithm will disallow the following cipher suites:
+                                                - `SSL_RSA_EXPORT_WITH_RC4_40_MD5` [4] [6]
+                                                - `TLS_RSA_EXPORT_WITH_RC4_40_MD5` [4] [6]
+
+                                            > **Caution:** Disabling a cipher may cause compatibility issues with older devices or software.
+
+                                            [1]: https://web.archive.org/web/20240421101752/https://admx.help/?Category=Schannel&Policy=JMU.Policies.Schannel::RC4_128 "RC4 128/128 | admx.help"
+                                            [2]: https://web.archive.org/web/20240421101700/https://admx.help/?Category=Schannel&Policy=JMU.Policies.Schannel::RC4_64 "RC4 64/128 | admx.help"
+                                            [3]: https://web.archive.org/web/20240421101714/https://admx.help/?Category=Schannel&Policy=JMU.Policies.Schannel::RC4_56 "RC4 56/128 | admx.help"
+                                            [4]: https://web.archive.org/web/20240421101730/https://admx.help/?Category=Schannel&Policy=JMU.Policies.Schannel::RC4_40 "RC4 40/128 | admx.help"
+                                            [5]: https://web.archive.org/web/20150315105026/http://blogs.technet.com/b/srd/archive/2013/11/12/security-advisory-2868725-recommendation-to-disable-rc4.aspx "Security Advisory 2868725: Recommendation to disable RC4 - Security Research & Defense - Site Home - TechNet Blogs"
+                                            [6]: https://web.archive.org/web/20240420183152/https://learn.microsoft.com/en-us/troubleshoot/windows-server/certificates-and-public-key-infrastructure-pki/restrict-cryptographic-algorithms-protocols-schannel "Restrict cryptographic algorithms and protocols - Windows Server | Microsoft Learn | learn.microsoft.com"
+                                            [7]: https://web.archive.org/web/20240421101142/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_IIS_8_Benchmark_v1_4_0.pdf "CIS Microsoft IIS 8 Benchmark v1.4.0 | paper.bobylive.com"
+                                            [8]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
+                                            [9]: https://web.archive.org/web/20240421101557/https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/09-Testing_for_Weak_Cryptography/04-Testing_for_Weak_Encryption.html "WSTG - v4.2 | OWASP Foundation | owasp.org"
+                                        call:
+                                            -
+                                                function: DisableCipherAlgorithm
+                                                parameters:
+                                                    algorithmName: RC4 128/128
+                                            -
+                                                function: DisableCipherAlgorithm
+                                                parameters:
+                                                    algorithmName: RC4 64/128
+                                            -
+                                                function: DisableCipherAlgorithm
+                                                parameters:
+                                                    algorithmName: RC4 56/128
+                                            -
+                                                function: DisableCipherAlgorithm
+                                                parameters:
+                                                    algorithmName: RC4 40/128
+                                    -
+                                        name: Disable insecure "DES" cipher
+                                        recommend: strict # Considered weak and vulnerable by numerous authoritative sources, may be incompatible with third-party apps.
+                                        docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                            This script disables the `DES 56/56` [1] [2] [3] [4] cipher, also known as *DES 56* [2] or *56-bit DES* [2].
+
+                                            Authorities like Microsoft [1], NIST (FIPS) [2], CIS [3], Federal Office for Information Security (BSI) [4]
+                                            and OWASP [5] consider this cipher weak and either discourage or disallow its use
+
+                                            This cipher is enabled by default [2].
+
+                                            Disabling RC2 ciphers helps maintain data confidentiality and integrity by preventing the
+                                            use of these weak encryption methods in network communications [3].
+
+                                            Disabling this algorithm will disallow the following cipher suites:
+
+                                            - `SSL_RSA_WITH_DES_CBC_SHA` [1] [2]
+                                            - `TLS_RSA_WITH_DES_CBC_SHA` [1] [2]
+
+                                            > **Caution:** Disabling a cipher may cause compatibility issues with older devices or software.
+
+                                            [1]: https://web.archive.org/web/20240421101711/https://admx.help/?Category=Schannel&Policy=JMU.Policies.Schannel::DES_56 "DES 56/56 | admx.help"
+                                            [2]: https://web.archive.org/web/20240420183152/https://learn.microsoft.com/en-us/troubleshoot/windows-server/certificates-and-public-key-infrastructure-pki/restrict-cryptographic-algorithms-protocols-schannel "Restrict cryptographic algorithms and protocols - Windows Server | Microsoft Learn | learn.microsoft.com"
+                                            [3]: https://web.archive.org/web/20240421101142/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_IIS_8_Benchmark_v1_4_0.pdf "CIS Microsoft IIS 8 Benchmark v1.4.0 | paper.bobylive.com"
+                                            [4]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
+                                            [5]: https://web.archive.org/web/20240421101557/https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/09-Testing_for_Weak_Cryptography/04-Testing_for_Weak_Encryption.html "WSTG - v4.2 | OWASP Foundation | owasp.org"
+                                        call:
+                                            function: DisableCipherAlgorithm
+                                            parameters:
+                                                algorithmName: DES 56/56
+                                                # Some sources on Internet mention existence of `DES 56` value, but it there is no official documentation pointing to it.
+                                    -
+                                        name: Disable insecure "Triple DES" cipher
+                                        recommend: strict # Considered weak and vulnerable by numerous authoritative sources, may be incompatible with third-party apps.
+                                        docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                            This script disables the `Triple DES 168` [1] [2] [3] (`Triple DES 168/168` before Windows Vista [2] [4]) cipher,
+                                            also known as *3DES* [1] [3] [5] and *The Triple Data Encryption Algorithm (TDEA)* [6].
+
+                                            Authorities like Apple [5], NIST [5] [6] and Federal Office for Information Security (BSI) [4]
+                                            classify this cipher as weak and recommend against its use.
+
+                                            This cipher is enabled by default [2].
+
+                                            Disabling 3DES secures your communication by mitigating vulnerabilities like Sweet32 Birthday attacks [5].
+
+                                            Disabling this algorithm will disallow the following cipher suites:
+
+                                            - `SSL_CK_DES_192_EDE_CBC_WITH_MD5` [1]
+                                            - `SSL_RSA_WITH_3DES_EDE_CBC_SHA` [2]
+                                            - `SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA` [2]
+                                            - `TLS_RSA_WITH_3DES_EDE_CBC_SHA` [1] [2]
+                                            - `TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA` [1] [2]
+
+                                            > **Caution:** Disabling a cipher may cause compatibility issues with older devices or software.
+
+                                            [1]: https://web.archive.org/web/20240421101519/https://admx.help/?Category=Schannel&Policy=JMU.Policies.Schannel::3DES "Triple DES 168 | admx.help"
+                                            [2]: https://web.archive.org/web/20240420183152/https://learn.microsoft.com/en-us/troubleshoot/windows-server/certificates-and-public-key-infrastructure-pki/restrict-cryptographic-algorithms-protocols-schannel "Restrict cryptographic algorithms and protocols - Windows Server | Microsoft Learn | learn.microsoft.com"
+                                            [3]: https://web.archive.org/web/20240421101142/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_IIS_8_Benchmark_v1_4_0.pdf "CIS Microsoft IIS 8 Benchmark v1.4.0 | paper.bobylive.com"
+                                            [4]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
+                                            [5]: https://web.archive.org/web/20240421101545/https://sweet32.info/ "Sweet32: Birthday attacks on 64-bit block ciphers in TLS and OpenVPN"
+                                            [6]: https://web.archive.org/web/20240402105205/https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf "NIST Special Publication 800-131A Revision 2 | Transitioning the Use of Cryptographic Algorithms and Key Lengths | nvlpubs.nist.gov"
+                                        call:
+                                            -
+                                                function: DisableCipherAlgorithm
+                                                parameters:
+                                                    algorithmName: Triple DES 168 # After Windows Vista
+                                            -
+                                                function: DisableCipherAlgorithm
+                                                parameters:
+                                                    algorithmName: Triple DES 168/168 # Before Windows Vista
+                                    -
+                                        name: Disable insecure "NULL" cipher
+                                        recommend: standard # Disables encryption, turned off by default.
+                                        docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                            This script disables the `NULL` [1] [2] [3] [4] cipher.
+
+                                            This algorithm provides no encryption [1] [5], leaving data completely unprotected.
+
+                                            Authorities like Microsoft [2], NIST (FIPS) [1], CIS [3], and Federal Office for
+                                            Information Security (BSI) [4] classify this cipher as weak and recommend against its use.
+
+                                            This cipher is disabled by default [1].
+
+                                            Disabling these ciphers ensures that no data is transmitted in plaintext, which is crucial for
+                                            maintaining data confidentiality and integrity [3].
+
+                                            Disabling this algorithm will disallow the following cipher suites:
+
+                                            - `TLS_RSA_WITH_NULL_SHA` [2]
+                                            - `TLS_RSA_WITH_NULL_SHA256` [2]
+
+                                            > **Caution:** Disabling a cipher may cause compatibility issues with older devices or software.
+
+                                            [1]: https://web.archive.org/web/20240420183152/https://learn.microsoft.com/en-us/troubleshoot/windows-server/certificates-and-public-key-infrastructure-pki/restrict-cryptographic-algorithms-protocols-schannel "Restrict cryptographic algorithms and protocols - Windows Server | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240421101539/https://admx.help/?Category=Schannel&Policy=JMU.Policies.Schannel::NULL "NULL | admx.help"
+                                            [3]: https://web.archive.org/web/20240421101142/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_IIS_8_Benchmark_v1_4_0.pdf "CIS Microsoft IIS 8 Benchmark v1.4.0 | paper.bobylive.com"
+                                            [4]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
+                                            [5]: https://web.archive.org/web/20240421101051/https://datatracker.ietf.org/doc/html/rfc2410 "RFC 2410 - The NULL Encryption Algorithm and Its Use With IPsec | datatracker.ietf.org"
+                                        call:
+                                            function: DisableCipherAlgorithm
+                                            parameters:
+                                                algorithmName: 'NULL'
                             -
                                 name: Disable MD5 hash function
                                 docs: |- # refactor-with-variables: Same **Caution** text as others.
@@ -6321,12 +6512,6 @@ actions:
                                     > **Caution:** This may cause compatibility issues with older devices or software.
                                 code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\SHA" /f /v Enabled /t REG_DWORD /d 0x00000000
                                 revertCode: reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\SHA" /v "Enabled" /f
-                            -
-                                name: Disable null cipher
-                                docs: |- # refactor-with-variables: Same **Caution** text as others.
-                                    > **Caution:** This may cause compatibility issues with older devices or software.
-                                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\NULL" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                revertCode: reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\NULL" /v "Enabled" /f
                             -
                                 name: Disable insecure renegotiation
                                 recommend: strict # Important security improvement, but may limit compatibility with older software.
@@ -19695,3 +19880,29 @@ functions:
                         reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\KeyExchangeAlgorithms\{{ $algorithmName }}" /v "ClientMinKeyBitLength" /t "REG_DWORD" /d "{{ $keySizeInBits }}" /f
                     revertCode: >- # Missing key since Windows 10 22H2 Pro and Windows 11 23H2 Pro
                         reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\KeyExchangeAlgorithms\{{ $algorithmName }}" /v "ClientMinKeyBitLength" /f 2>nul
+    -
+        name: DisableCipherAlgorithm
+        parameters:
+            - name: algorithmName
+        docs: |-
+            This function disables specified symmetric cipher algorithms by modifying the
+            `SCHANNEL\Ciphers` subkey in the registry [1] [2] [3].
+
+            Setting the `Enabled` registry value to `0` disables the cipher [1] [2]
+            If this value is not configured [1] or set to `1` [1] [2].
+
+            [1]: https://web.archive.org/web/20240420183152/https://learn.microsoft.com/en-us/troubleshoot/windows-server/certificates-and-public-key-infrastructure-pki/restrict-cryptographic-algorithms-protocols-schannel "Restrict cryptographic algorithms and protocols - Windows Server | Microsoft Learn | learn.microsoft.com"
+            [2]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
+            [3]: https://web.archive.org/web/20240420182953/https://owasp.org/www-project-web-security-testing-guide/assets/archive/OWASP_Testing_Guide_v2.pdf "OWASP TESTING GUIDE 2007 V2 | owasp.org"
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: Disable the use of "{{ $algorithmName }}" cipher algorithm
+                    revertCodeComment: Restore the use of "{{ $algorithmName }}" cipher algorithm
+            -
+                function: RunInlineCode
+                parameters:
+                    code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\{{ $algorithmName }}" /v "Enabled" /t REG_DWORD /d "0" /f
+                    revertCode: >- # Missing subkeys under `Ciphers` since Windows 10 22H2 Pro and Windows 11 23H2 Pro
+                        reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\{{ $algorithmName }}" /v "Enabled" /f 2>nul
