@@ -28,3 +28,22 @@ jobs:
       -
         name: Lint
         run: ${{ matrix.lint-command }}
+
+  todo-check:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Scan latest commit for TODO comments
+        shell: bash
+        run: |-
+          readonly todo_comment_search_pattern='TODO'':' # Define search pattern in parts to prevent IDE from flagging this script line as a TODO item
+          if git grep "$todo_comment_search_pattern" HEAD; then
+            echo 'TODO comments found in the latest commit.'
+            exit 1
+          else
+            echo 'No TODO comments found in the latest commit.'
+            exit 0
+          fi
