@@ -3585,7 +3585,7 @@ actions:
                                             reg delete "HKCU\Software\Microsoft\Speech_OneCore\Preferences" /v "VoiceActivationOn" /f 2>nul
                                             reg delete "HKLM\Software\Microsoft\Speech_OneCore\Preferences" /v "VoiceActivationDefaultOn" /f 2>nul
                                     -
-                                        name: Disable Cortana listening to commands on Windows key + C
+                                        name: Disable Cortana keyboard shortcut (**Windows logo key** + **C**)
                                         recommend: standard
                                         call:
                                             -
@@ -12737,34 +12737,6 @@ actions:
                                 packageName: Microsoft.Wallet # Get-AppxPackage Microsoft.Wallet
                                 publisherId: 8wekyb3d8bbwe
                     -
-                        name: Remove "Snipping Tool" app
-                        docs: |-
-                            [Microsoft Store Page](https://web.archive.org/web/20231004133447/https://apps.microsoft.com/store/detail/snipping-tool/9MZ95KL8MR0L)
-
-                            This app was formerly named as "Snip & Sketch" [1] [2].
-
-                            This app comes pre-installed on certain versions of Windows [1] [2].
-
-                            ### Overview of default preinstallation
-
-                            | OS | Version | Existence |
-                            | -- |:-------:|:---------:|
-                            | Windows 10 | 19H2 | ✅ |
-                            | Windows 10 | 20H2 | ✅ |
-                            | Windows 10 | 21H2 | ✅ |
-                            | Windows 10 | 22H2 | ✅ |
-                            | Windows 11 | 21H2 | ✅ |
-                            | Windows 11 | 22H2 | ✅ |
-                            | Windows 11 | 23H2 | ✅ |
-
-                            [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
-                            [2]: https://web.archive.org/web/20221101231811/https://learn.microsoft.com/en-us/windows/application-management/provisioned-apps-windows-client-os "Get the provisioned apps on Windows client operating system - Windows Application Management | Microsoft Learn"
-                        call:
-                            function: UninstallStoreApp
-                            parameters:
-                                packageName: Microsoft.ScreenSketch # Get-AppxPackage Microsoft.ScreenSketch
-                                publisherId: 8wekyb3d8bbwe
-                    -
                         name: Remove "Print 3D" app
                         docs: |-
                             [Microsoft Store Page](https://web.archive.org/web/20211207041221/https://www.microsoft.com/en-us/p/print-3d/9pbpch085s3s?activetab=pivot:overviewtab)
@@ -17377,6 +17349,159 @@ actions:
                             parameters:
                                 serviceName: VSS # Check: (Get-Service -Name 'VSS').StartType
                                 defaultStartupMode: Manual # Allowed values: Automatic | Manual
+            -
+                category: Remove Snipping Tool
+                docs: |-
+                    This category addresses privacy risks related to the **Snipping Tool** [1] [2]
+                    (also called **screen capture** [3]) and its earlier forms, **Snip & Sketch** [1] [4]
+                    and **Screen Sketch** [4].
+
+                    The Snipping Tool enables users to capture screenshots [2] [5] and record their screens [2].
+                    This capability can expose sensitive information displayed on the screen unintentionally.
+
+                    Earlier versions had significant privacy vulnerabilities, allowing recovery of cropped
+                    screenshot portions [6] [7].
+                    For example, bank details edited out of a saved screenshot could still be extracted by
+                    malicious entities [6].
+                    Although updates have remedied these issues in modern versions [6], the potential for
+                    data exposure remains a concern.
+
+                    Disabling this tool enhances privacy by preventing unintentional capture of sensitive
+                    information and protecting against vulnerabilities.
+
+                    [1]: https://archive.ph/2024.04.24-100718/https://apps.microsoft.com/detail/9mz95kl8mr0l?hl=en-US&gl=US "Snipping Tool - Microsoft Apps | apps.microsoft.com"
+                    [2]: https://web.archive.org/web/20240424101014/https://www.microsoft.com/en-us/windows/learning-center/how-to-record-screen-windows-11 "How to Record Your Screen on Windows 11 | Microsoft Windows | www.microsoft.com"
+                    [3]: https://web.archive.org/web/20240424100904/https://github.com/undergroundwires/privacy.sexy/issues/343 "[BUG]: Snipping Tool still can be executable via its keyboard shortcut · Issue #343 · undergroundwires/privacy.sexy · GitHub | github.com"
+                    [4]: https://web.archive.org/web/20240424100700/https://blogs.windows.com/windowsexperience/2018/10/02/find-out-whats-new-in-windows-and-office-in-october/ "Find out what’s new in Windows and Office in October | Windows Experience Blog | blogs.windows.com"
+                    [5]: https://web.archive.org/web/20240424101031/https://support.microsoft.com/en-us/windows/open-snipping-tool-and-take-a-screenshot-a35ac9ff-4a58-24c9-3253-f12bac9f9d44 "Open Snipping Tool and take a screenshot - Microsoft Support | support.microsoft.com"
+                    [6]: https://archive.ph/2024.04.24-100742/https://msrc.microsoft.com/update-guide/vulnerability/CVE-2023-28303 "CVE-2023-28303 - Security Update Guide - Microsoft - Windows Snipping Tool Information Disclosure Vulnerability | msrc.microsoft.com"
+                    [7]: https://web.archive.org/web/20240424100805/https://www.bleepingcomputer.com/news/microsoft/windows-11-snipping-tool-privacy-bug-exposes-cropped-image-content/ "Windows 11 Snipping Tool privacy bug exposes cropped image content | www.bleepingcomputer.com"
+                children:
+                    -
+                        name: Remove outdated "Snipping Tool" app
+                        docs: |-
+                            This script removes the outdated **Snipping Tool** app.
+                            It was previously known as **Snip & Sketch** [1] [2] [3].
+
+                            It allows users to capture, edit, and share screenshots [3].
+
+                            In recent Windows versions, this app is part of the *Windows Feature Experience Pack*
+                            (`MicrosoftWindows.Client.Core`) and is no longer a separate application [4] [5] [6] [7].
+                            This script disables snipping functionality on older Windows versions.
+                            privacy.sexy does not remove the entire Windows Feature Experience Pack,
+                            as it contains many other essential functions [7].
+
+                            This app comes pre-installed on certain versions of Windows [1] [2].
+
+                            ### Overview of default preinstallation
+
+                            | OS | Version | Existence |
+                            | -- |:-------:|:---------:|
+                            | Windows 10 | 19H2 | ✅ |
+                            | Windows 10 | 20H2 | ✅ |
+                            | Windows 10 | 21H2 | ✅ |
+                            | Windows 10 | 22H2 | ✅ |
+                            | Windows 11 | 21H2 | ✅ |
+                            | Windows 11 | 22H2 | ✅ |
+                            | Windows 11 | 23H2 | ✅ |
+
+                            [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
+                            [2]: https://web.archive.org/web/20221101231811/https://learn.microsoft.com/en-us/windows/application-management/provisioned-apps-windows-client-os "Get the provisioned apps on Windows client operating system - Windows Application Management | Microsoft Learn"
+                            [3]: https://archive.ph/2024.04.24-100718/https://apps.microsoft.com/detail/9mz95kl8mr0l?hl=en-US&gl=US "Snipping Tool - Microsoft Apps | apps.microsoft.com"
+                            [4]: https://web.archive.org/web/20240320082149/https://blogs.windows.com/windows-insider/2020/11/30/releasing-windows-feature-experience-pack-120-2212-1070-0-to-the-beta-channel/ "Releasing Windows Feature Experience Pack 120.2212.1070.0 to the Beta Channel | Windows Insider Blog | blogs.windows.com"
+                            [5]: https://archive.ph/2024.03.20-082058/https://twitter.com/XenoPanther/status/1504870414702592003 "Xeno on X: \"Parts of https://t.co/w2Ys4Es9T0 have been moved to MicrosoftWindows.Client.Core https://t.co/LQ1k2iDzwz\" / X | twitter.com/XenoPanther"
+                            [6]: https://web.archive.org/web/20240320082048/https://answers.microsoft.com/en-us/insider/forum/all/snipping-tool-issues-with-build-25295/065a6718-70a0-4e3b-ab1b-21f6315c0296 "Snipping Tool issues with Build 25295 - Microsoft Community | answers.microsoft.com"
+                            [7]: https://web.archive.org/web/20240424100904/https://github.com/undergroundwires/privacy.sexy/issues/343 "[BUG]: Snipping Tool still can be executable via its keyboard shortcut · Issue #343 · undergroundwires/privacy.sexy · GitHub | github.com"
+                        call:
+                            function: UninstallStoreApp
+                            parameters:
+                                packageName: Microsoft.ScreenSketch # Get-AppxPackage Microsoft.ScreenSketch
+                                publisherId: 8wekyb3d8bbwe
+                    -
+                        name: Disable outdated Snipping Tool
+                        docs: |-
+                            This script disables the outdated Snipping Tool [1] [2].
+                            This app is enabled by default [1] [2].
+
+                            The script modifies the `HKLM\SOFTWARE\Policies\Microsoft\TabletPC!DisableSnippingTool` [1] [2]
+                            registry key, preventing the tool from launching [1] [2] [3] and disabling the print screen
+                            key activation [3].
+
+                            After running this script, any attempt to open the Snipping Tool will show this message [4],
+                            confirming its deactivation (tested on Windows 11 and 10):
+
+                            > Windows cannot open this program because it has been prevented by a software restriction policy.
+                            > For more information please contact your system administrator.
+
+                            This script does not affect the new Snipping Tool in Windows 11, only the store app version.
+
+                            [1]: https://web.archive.org/web/20240424103745/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.TabletPCShell::DisableSnippingTool_2 "Do not allow Snipping Tool to run | admx.help"
+                            [2]: https://web.archive.org/web/20240424103728/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-tabletshell#disablesnippingtool_1 "ADMX_TabletShell Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20240424103901/https://www.thewindowsclub.com/disable-snipping-tool-in-windows-10 "How to Disable Snipping Tool or Print Screen in Windows 11/10 | www.thewindowsclub.com"
+                            [4]: https://web.archive.org/web/20240424103809/https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/hh994599(v=ws.11)#windows-cannot-open-a-program "Troubleshoot Software Restriction Policies | Microsoft Learn | learn.microsoft.com"
+                        call:
+                            function: RunInlineCode
+                            parameters:
+                                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\TabletPC" /v "DisableSnippingTool" /t "REG_DWORD" /d "1" /f
+                                # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\TabletPC" /v "DisableSnippingTool" /f 2>nul
+                    -
+                        name: Disable Snipping Tool keyboard shortcut (**Windows logo key** + **Shift** + **S**)
+                        docs: |-
+                            This script disables the **Windows logo key** + **Shift** + **S** keyboard shortcut.
+
+                            This keyboard shortcut by default launches the Snipping Tool to capture screenshots [1] [2].
+                            During the screenshot process, the screen darkens to indicate the selected area [1].
+
+                            By preventing Windows Explorer from recognizing this keyboard shortcut [3], the script enhances privacy by
+                            reducing the risk of unintended data exposure through screenshots.
+
+                            This script also disables the **Windows logo key** + **S** keyboard shortcut [4], which by default
+                            activates search functions on Windows [5].
+
+                            > **Caution**: Due to limitation of configuring disabled keys on Windows [6],
+                            > this will also disable the other Windows logo keyboard shortcuts including **S** button.
+
+                            [1]: https://web.archive.org/web/20240424101031/https://support.microsoft.com/en-us/windows/open-snipping-tool-and-take-a-screenshot-a35ac9ff-4a58-24c9-3253-f12bac9f9d44 "Open Snipping Tool and take a screenshot - Microsoft Support | support.microsoft.com"
+                            [2]: https://web.archive.org/web/20240424105319/https://support.lenovo.com/us/sv/solutions/ht117622 "How to take a screenshot using the Snipping Tool in Windows 10 and 11 - Lenovo Support US | support.lenovo.com"
+                            [3]: https://web.archive.org/web/20240424100904/https://github.com/undergroundwires/privacy.sexy/issues/343 "[BUG]: Snipping Tool still can be executable via its keyboard shortcut · Issue #343 · undergroundwires/privacy.sexy · GitHub | github.com"
+                            [4]: https://web.archive.org/web/20240424105243/https://github.com/microsoft/PowerToys/issues/18450#issuecomment-1204728155 "[PowerToys Run] Win+S hotkey won't gain focus when Start menu is open · Issue #18450 · microsoft/PowerToys · GitHub | github.com"
+                            [5]: https://web.archive.org/web/20240424105403/https://support.microsoft.com/en-us/windows/keyboard-shortcuts-in-windows-dcc61a57-8ff0-cffe-9796-cb9706c75eec "Keyboard shortcuts in Windows - Microsoft Support | support.microsoft.com"
+                            [6]: https://web.archive.org/web/20240424104551/https://www.geoffchappell.com/notes/windows/shell/explorer/globalhotkeys.htm "Disable Global Hot Keys | www.geoffchappell.com"
+                        call:
+                            function: DisableWindowsKeyPlusCharacterHotkey
+                            parameters:
+                                characterKeyToDisable: S
+                    -
+                        name: Disable Print Screen keyboard shortcut for Snipping Tool
+                        docs: |-
+                            This script prevents the Print Screen key from launching the Snipping Tool.
+
+                            This is the default Windows behavior starting from Windows 11 22H2 [1].
+
+                            The script targets the `HKCU\Control Panel\Keyboard\PrintScreenKeyForSnippingEnabled` registry key.
+                            This key toggles the setting "Use the Print screen button to open screen snipping" in the control panel [1] [2] [3].
+                            Changing this setting through the user interface also modifies this registry entry [3].
+                            This key is absent by default in modern Windows versions, confirmed through testing starting with Windows
+                            10 22H2 and Windows 11 22H3, which indicates that the Print Screen shortcut is enabled.
+
+                            Applying these changes requires restarting File Explorer (`explorer.exe`) [3].
+                            Both `explorer.exe` [4] and `Taskbar.dll` [5] reads this configuration at startup.
+
+                            [1]: https://web.archive.org/web/20240424111406/https://blogs.windows.com/windows-insider/2023/04/07/announcing-windows-11-insider-preview-build-22621-1546-and-22624-1546/ "Announcing Windows 11 Insider Preview Build 22621.1546 and 22624.1546 | Windows Insider Blog | blogs.windows.com"
+                            [2]: https://web.archive.org/web/20240424111351/https://www.elevenforum.com/t/enable-or-disable-use-print-screen-key-to-open-screen-snipping-in-windows-11.520/ "Enable or Disable Use Print Screen Key to Open Screen Snipping in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+                            [3]: https://web.archive.org/web/20240424100904/https://github.com/undergroundwires/privacy.sexy/issues/343 "[BUG]: Snipping Tool still can be executable via its keyboard shortcut · Issue #343 · undergroundwires/privacy.sexy · GitHub | github.com"
+                            [4]: https://github.com/privacysexy-forks/10_0_22622_601/blob/c598035e1a6627384d646140fe9e4d234b36b11d/C/Windows/System32/Taskbar.dll.strings#L9711 "10_0_22622_601/C/Windows/System32/Taskbar.dll.strings at c598035e1a6627384d646140fe9e4d234b36b11d · WinDLLsExports/10_0_22622_601 · GitHub | github.com"
+                            [5]: https://github.com/privacysexy-forks/10_0_22621_891/blob/fde7af7776698377aceb48a54bcf7bedaadd5c2d/C/Windows/explorer.exe.strings#L7645 "10_0_22621_891/C/Windows/explorer.exe.strings at fde7af7776698377aceb48a54bcf7bedaadd5c2d · WinDLLsExports/10_0_22621_891 · GitHub"
+                        call:
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: reg add "HKCU\Control Panel\Keyboard" /v "PrintScreenKeyForSnippingEnabled" /t "REG_DWORD" /d "0" /f
+                                    # This key does not exist (tested since Windows 10 22H2, and Windows 11 22H3)
+                                    revertCode: reg delete "HKCU\Control Panel\Keyboard" /v "PrintScreenKeyForSnippingEnabled" /f 2>nul
+                            -
+                                function: ShowExplorerRestartSuggestion
     -
         category: Advanced settings
         children:
@@ -19906,3 +20031,134 @@ functions:
                     code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\{{ $algorithmName }}" /v "Enabled" /t REG_DWORD /d "0" /f
                     revertCode: >- # Missing subkeys under `Ciphers` since Windows 10 22H2 Pro and Windows 11 23H2 Pro
                         reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Ciphers\{{ $algorithmName }}" /v "Enabled" /f 2>nul
+    -
+        name: DisableWindowsKeyPlusCharacterHotkey
+        parameters:
+            - name: characterKeyToDisable
+        docs: |-
+            This function disables specific hotkeys that combine the Windows key with another key.
+
+            Windows Explorer registers nearly two dozen such combinations as global hotkeys, primarily
+            for taskbar-related functionalities [1].
+            Although these settings are not extensively documented [1], they are acknowledged by Microsoft [2].
+
+            The function modifies the registry key `HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer!DisabledHotkeys` [1] [3] [4].
+            The specified alphabetical character must be provided in uppercase for the registry data [1].
+            This adjustment requires a restart of the explorer process (`explorer.exe`) [3] [5] or a system restart [4].
+
+            > **Caution**:
+            > Disabling a character will block all hotkey combinations that use it [1] [4].
+            > For example, disabling "V" affects both `Win-V` and `Win-Shift-V` [1] [4].
+            > See the [Microsoft Support page](https://web.archive.org/web/20240424105403/https://support.microsoft.com/en-us/windows/keyboard-shortcuts-in-windows-dcc61a57-8ff0-cffe-9796-cb9706c75eec)
+            > on keyboard shortcuts to understand which Windows key combinations will be affected.
+
+            [1]: https://web.archive.org/web/20240424104551/https://www.geoffchappell.com/notes/windows/shell/explorer/globalhotkeys.htm "Disable Global Hot Keys | www.geoffchappell.com"
+            [2]: https://web.archive.org/web/20240424112600/https://github.com/microsoft/PowerToys/issues/12928#issuecomment-999819246 "Shortcut overlay disregard `DisabledHotkeys` registry setting. · Issue #12928 · microsoft/PowerToys · GitHub"
+            [3]: https://web.archive.org/web/20240424112650/https://www.nextofwindows.com/how-to-disable-any-specific-win-keyboard-shortcut-in-windows "How To Disable Any Specific Win Keyboard Shortcut in Windows - NEXTOFWINDOWS.COM | www.nextofwindows.com"
+            [4]: https://web.archive.org/web/20240424113022/https://www.ghacks.net/2015/03/22/how-to-disable-specific-global-hotkeys-in-windows/ "How to disable specific global hotkeys in Windows - gHacks Tech News | www.ghacks.net"
+            [5]: https://web.archive.org/web/20240424100904/https://github.com/undergroundwires/privacy.sexy/issues/343#issuecomment-2056279298 "[BUG]: Snipping Tool still can be executable via its keyboard shortcut · Issue #343 · undergroundwires/privacy.sexy · GitHub | github.com"
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: Disable the global Windows hotkey "{{ $characterKeyToDisable }}" to prevent its default action.
+                    revertCodeComment: Restore the global Windows hotkey "{{ $characterKeyToDisable }}" to re-enable its default functionality.
+            -
+                function: RunPowerShell
+                parameters:
+                    code: |-
+                        $keyToDisable='{{ $characterKeyToDisable }}'
+                        $keyToDisableInUppercase = $keyToDisable.ToUpper()
+                        $registryPath = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
+                        $propertyName = 'DisabledHotkeys'
+                        $disabledKeys = Get-ItemProperty `
+                            -Path $registryPath `
+                            -Name $propertyName `
+                            -ErrorAction SilentlyContinue `
+                            | Select-Object -ExpandProperty "$propertyName"
+                        if ($disabledKeys) {
+                            if ($disabledKeys.Contains($keyToDisableInUppercase)) {
+                                Write-Host "Skipping: Key `"$keyToDisableInUppercase`" is already disabled. All disabled keys: `"$disabledKeys`". No action needed."
+                                exit 0
+                            }
+                            $newKeysToDisable = "$($disabledKeys)$($keyToDisableInUppercase)"
+                            Write-Host "Some keys are already disabled: `"$disabledKeys`", but not `"$keyToDisableInUppercase`", disabling it too, new disabled keys: `"$newKeysToDisable`"."
+                            try {
+                                Set-ItemProperty `
+                                    -Path $registryPath `
+                                    -Name $propertyName `
+                                    -Value "$newKeysToDisable" `
+                                    -Force `
+                                    -ErrorAction Stop
+                                Write-Host "Successfully disabled,`"$keyToDisableInUppercase`", all disabled keys: `"$newKeysToDisable`"."
+                                Exit 0
+                            } catch {
+                                Write-Error "Failed to disable `"$newKeysToDisable`": $_"
+                                Exit 1
+                            }
+                        } else {
+                            Write-Host "No keys has been disabled before, disabling: `"$keyToDisableInUppercase`"."
+                            try {
+                                Set-ItemProperty `
+                                    -Path $registryPath `
+                                    -Name $propertyName `
+                                    -Value "$keyToDisableInUppercase" `
+                                    -Force `
+                                    -ErrorAction Stop
+                                Write-Host "Successfully disabled `"$keyToDisableInUppercase`"."
+                                Exit 0
+                            } catch {
+                                Write-Error "Failed to disable `"$keyToDisableInUppercase`": $_"
+                                Exit 1
+                            }
+                        }
+                    revertCode: |-
+                        $keyToRestore='{{ $characterKeyToDisable }}'
+                        $keyToRestoreInUppercase = $keyToRestore.ToUpper()
+                        $registryPath = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
+                        $propertyName = 'DisabledHotkeys'
+                        $disabledKeys = Get-ItemProperty `
+                            -Path $registryPath `
+                            -Name $propertyName `
+                            -ErrorAction SilentlyContinue `
+                            | Select-Object -ExpandProperty "$propertyName"
+                        if (-Not $disabledKeys) {
+                            Write-Host "Skipping: No keys has been disabled before, no need to restore `"$keyToRestoreInUppercase`"."
+                            Exit 0
+                        }
+                        if (-Not $disabledKeys.Contains($keyToRestoreInUppercase)) {
+                            Write-Host "Skipping: Key `"$keyToRestoreInUppercase`" is not disabled. All disabled keys: `"$disabledKeys`". No action needed."
+                            Exit 0
+                        }
+                        $newKeysToDisable = $disabledKeys.Replace($keyToRestoreInUppercase, "")
+                        if (-Not $newKeysToDisable) {
+                            Write-Host "Removing all entries from the disabled keys as the last key `"$keyToRestoreInUppercase`" is being restored."
+                            try {
+                                Remove-ItemProperty `
+                                    -Path $registryPath `
+                                    -Name $propertyName `
+                                    -Force `
+                                    -ErrorAction Stop
+                                Write-Host "Successfully removed the `"$propertyName`" property from the registry, no disabled keys remain."
+                                Exit 0
+                            } catch {
+                                Write-Error "Failed to remove the empty `"$propertyName`" property from the registry: $_"
+                                Exit 1
+                            }
+                        }
+                        try {
+                            Write-Host "Restoring `"$keyToRestoreInUppercase`", all disabled keys: `"$disabledKeys`", new disabled keys: `"$newKeysToDisable`"."
+                            Set-ItemProperty `
+                                -Path $registryPath `
+                                -Name $propertyName `
+                                -Value "$newKeysToDisable" `
+                                -Force `
+                                -ErrorAction Stop
+                            Write-Host "Successfully restored `"$keyToRestoreInUppercase`", disabled keys now: `"$newKeysToDisable`"."
+                            Exit 0
+                        } catch {
+                            Write-Error "Failed to restore `"$keysToDisable`": $_"
+                            Exit 1
+                        }
+            -
+                function: ShowExplorerRestartSuggestion
