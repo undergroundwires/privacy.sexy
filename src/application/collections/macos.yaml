@@ -1468,7 +1468,7 @@ actions:
 
                     > **Caution**:
                     > Disabling automatic updates can leave your system vulnerable to unpatched exploits.
-                    > Manually check and and apply updates to stay protected.
+                    > Manually check and apply updates to stay protected.
                 children:
                     -
                         name: Disable automatic checks for updates

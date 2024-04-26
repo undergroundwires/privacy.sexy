@@ -609,7 +609,7 @@ actions:
                                     - https://web.archive.org/web/20240314101459/https://kb.digital-detective.net/display/BF/Location+of+Internet+Explorer+Data
                                     - https://web.archive.org/web/20240314175030/https://kb.digital-detective.net/display/BF/Location+of+Internet+Explorer+11+Data
                                     - https://web.archive.org/web/20240314100550/https://forensafe.com/blogs/internetexplorer.html
-                                # Includes Internet Explorer cache, tab recovery data, persistance storage (DOMStore, indexed DB etc.)
+                                # Includes Internet Explorer cache, tab recovery data, persistence storage (DOMStore, indexed DB etc.)
                                 # Folders:  CacheStorage\, Tracking Protection\, Tiles\, TabRoaming\, IECompatData\
                                 #           DOMStore\, Recovery\ (that includes browser history), DomainSuggestions\,
                                 #           VersionManager\, UrlBlockManager\, Indexed DB\, imagestore\, IEFlipAheadCache\
@@ -1495,7 +1495,7 @@ actions:
                     -
                         # If the service is not stopped, following error is thrown:
                         #   Failed to delete SRUM database file at: "C:\Windows\System32\sru\SRUDB.dat". Error Details: The process cannot access
-                        #   the file 'C:\Windows\System32\sru\SRUDB.dat' because it is being used by another proces
+                        #   the file 'C:\Windows\System32\sru\SRUDB.dat' because it is being used by another process
                         function: StopService
                         parameters:
                             serviceName: DPS
@@ -8491,7 +8491,7 @@ actions:
                                             -
                                                 name: Maximize days until mandatory catch-up scan
                                                 docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsDefender::Scan_MissedScheduledScanCountBeforeCatchup
-                                                # Default and minumum is 2, maximum is 20
+                                                # Default and minimum is 2, maximum is 20
                                                 code: reg add "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "MissedScheduledScanCountBeforeCatchup" /t REG_DWORD /d "20" /f
                                                 revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows Defender\Scan" /v "MissedScheduledScanCountBeforeCatchup" /f 2>nul
                                             -
@@ -9495,7 +9495,7 @@ actions:
                                                     -
                                                         function: RunInlineCodeAsTrustedInstaller
                                                         parameters:
-                                                            # "net stop" is used to stop dependend services as well, "sc stop" fails
+                                                            # "net stop" is used to stop dependent services as well, "sc stop" fails
                                                             code: net stop "WdNisDrv" /yes >nul & reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisDrv" /v "Start" /t REG_DWORD /d "4" /f
                                                             revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\WdNisDrv" /v "Start" /t REG_DWORD /d "3" /f & sc start "WdNisDrv" >nul
                                                     -
@@ -11247,8 +11247,8 @@ actions:
             -
                 category: Configure how downloaded files are handled
                 docs: |-
-                    These scripts configures Attachment Manager included in Windows that that takes further actions for
-                    files that you receive or download such as storing classification metadata and notfying other software [1].
+                    These scripts configures Attachment Manager included in Windows that takes further actions for
+                    files that you receive or download such as storing classification metadata and notifying other software [1].
 
                     [1]: https://support.microsoft.com/en-us/topic/information-about-the-attachment-manager-in-microsoft-windows-c48a4dcd-8de5-2af5-ee9b-cd795ae42738 "Information about the Attachment Manager in Microsoft Windows | support.microsoft.com"
                 children:
@@ -11262,7 +11262,7 @@ actions:
                             intranet, local, or restricted zone [1].
 
                             It is used by Attachment Manager that is included in Windows to help protect the computer from
-                            unsafe attachments that can be recieved with e-mail message or downloaded from Internet [2].
+                            unsafe attachments that can be received with e-mail message or downloaded from Internet [2].
                             If the Attachment Manager identifies an attachment that might be unsafe, it prevents you from
                             opening the file, or it warns you before you open the file [2].
 
@@ -18590,7 +18590,7 @@ functions:
                 #       - By default, `Remove-MpPreference` sets default values for settings for all cases.
                 #       - `setDefaultOnWindows11` parameter changes this behavior to set the default value using `Set-MpPreference`
                 #   On Windows 10:
-                #       - If `default` argument is is provided, it's set using `Set-MpPreference`
+                #       - If `default` argument is provided, it's set using `Set-MpPreference`
                 #       - `default` argument should not be provided if `Remove-MpPreference` is supported in Windows 10.
                 revertCode: |-
                     $propertyName = '{{ $property }}'
@@ -18951,7 +18951,7 @@ functions:
         call:
             -
                 function: RunPowerShell
-                # See all default OS assocations:
+                # See all default OS associations:
                 #   1. Open an elevated prompt
                 #   2. Run `dism /online /export-defaultappassociations:C:\appassoc.xml`
                 #   3. Inspect `C:\appassoc.xml`

@@ -161,7 +161,7 @@ describe('VisibleTerminalScriptFileExecutor', () => {
         ): ScriptFileExecutorTestSetup;
       }> = [
         {
-          description: 'unindentified os',
+          description: 'unidentified os',
           expectedErrorType: 'UnsupportedOperatingSystem',
           expectedErrorMessage: 'Operating system could not be identified from environment',
           buildFaultyContext: (setup) => {
