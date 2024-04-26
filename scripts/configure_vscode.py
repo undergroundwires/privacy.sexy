@@ -98,7 +98,8 @@ def locate_vscode_cli() -> Optional[str]:
     if vscode_alias:
         return vscode_alias
     potential_vscode_cli_paths = [
-        '/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code' # macOS VS Code may not register 'code' command in PATH
+        # VS Code on macOS may not register 'code' command in PATH
+        '/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code'
     ]
     for vscode_cli_candidate_path in potential_vscode_cli_paths:
         if Path(vscode_cli_candidate_path).is_file():

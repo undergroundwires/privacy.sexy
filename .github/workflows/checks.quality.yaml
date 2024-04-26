@@ -1,4 +1,4 @@
-name: quality-checks
+name: checks.quality
 
 on: [ push, pull_request ]
 
@@ -47,3 +47,30 @@ jobs:
             echo 'No TODO comments found in the latest commit.'
             exit 0
           fi
+
+  pylint:
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      matrix:
+        os: [ macos, ubuntu, windows ]
+      fail-fast: false # Still interested to see results from other combinations
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Setup node
+        uses: ./.github/actions/setup-node
+      -
+        name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      -
+        name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pylint
+      -
+        name: Analyzing the code with pylint
+        run: npm run lint:pylint

@@ -60,8 +60,8 @@
   <br />
   <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.quality.yaml" target="_blank" rel="noopener noreferrer">
     <img
-      alt="Quality checks status"
-      src="https://github.com/undergroundwires/privacy.sexy/workflows/quality-checks/badge.svg"
+      alt="Status of quality checks"
+      src="https://github.com/undergroundwires/privacy.sexy/workflows/checks.quality/badge.svg"
     />
   </a>
   <a href="https://github.com/undergroundwires/privacy.sexy/actions/workflows/checks.build.yaml" target="_blank" rel="noopener noreferrer">
