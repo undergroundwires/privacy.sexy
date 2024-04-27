@@ -6027,7 +6027,7 @@ actions:
                 children:
                     -
                         category: Enable strong secret key requirements
-                        docs: |- # refactor-with-variables: Same **Caution** text as rest of the `RequireMinimumKeySize` scripts.
+                        docs: |- # refactor-with-variables: Same **Caution** text as rest of the `RequireTLSMinimumKeySize` scripts.
                             This category contains scripts that enhance system security by implementing stronger encryption key lengths.
                             Stronger keys help prevent unauthorized data access and potential leaks.
                             These scripts aim to protect your data when sent over network (Internet), making sure your security matches up with the
@@ -6040,10 +6040,14 @@ actions:
                             -
                                 name: Enable strong Diffie-Hellman key requirement
                                 recommend: standard # Default on modern Windows, less size considered insecure
-                                docs: |- # refactor-with-variables: Same **Caution** text as rest of the `RequireMinimumKeySize` scripts.
+                                docs: |- # refactor-with-variables: Same • Caution • handshake text as others.
                                     This script improves your security by setting the `Diffie-Hellman` [1] [2] [3] key exchange
                                     to a minimum of 2048 bits.
                                     This is a secure way to exchange keys over public networks.
+
+                                    This script only afects the *SSL/TLS handshake* process.
+                                    The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
+                                    By disabling this weak algorithm, the script improves the security of the connection.
 
                                     By default, modern Windows versions use a 2048-bit size for Diffie-Hellman key exchanges [1].
                                     Sizes under 1024 bits are considered weak [4] [5].
@@ -6062,18 +6066,22 @@ actions:
                                     [4]: https://web.archive.org/web/20240402105205/https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf "NIST Special Publication 800-131A Revision 2 | Transitioning the Use of Cryptographic Algorithms and Key Lengths | nvlpubs.nist.gov"
                                     [5]: https://web.archive.org/web/20240402112905/https://weakdh.org/ "Weak Diffie-Hellman and the Logjam Attack | weakdh.org"
                                 call:
-                                    function: RequireMinimumKeySize
+                                    function: RequireTLSMinimumKeySize
                                     parameters:
                                         algorithmName: Diffie-Hellman
                                         keySizeInBits: 2048
                             -
                                 name: Enable strong RSA key requirement
                                 recommend: standard # Microsoft deprecated it and will end support
-                                docs: |- # refactor-with-variables: Same **Caution** text as rest of the `RequireMinimumKeySize` scripts.
+                                docs: |- # refactor-with-variables: Same • Caution • handshake text as others.
                                     This script improves your security by enforcing a minimum of 2048 bits for RSA encryption keys (`PKCS` [1] [2]).
                                     RSA encryption keys play a crucial role in securing communications over the internet.
                                     The Public-Key Cryptography Standards (PKCS) define how to use RSA keys for secure communication encryption.
                                     Using keys that are too weak can expose your data to unauthorized access.
+
+                                    This script only afects the *SSL/TLS handshake* process.
+                                    The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
+                                    By disabling this weak algorithm, the script improves the security of the connection.
 
                                     From Windows 10, version 1507, and Windows Server 2016 onwards, the default RSA key size is 1024 bits [2].
                                     However, this script raises the client-side minimum to 2048 bits, aligning with modern security standards.
@@ -6106,7 +6114,7 @@ actions:
                                     [9]: https://web.archive.org/web/20240402105244/https://fedoraproject.org/security/ "Fedora keeps you safe | The Fedora Project | fedoraproject.org"
                                     [10]: https://web.archive.org/web/20240402112840/http://www.cacert.org/policy/CertificationPracticeStatement.html#p6.1.5 "Certification Practice Statement (CPS) | cacert.org"
                                 call:
-                                    function: RequireMinimumKeySize
+                                    function: RequireTLSMinimumKeySize
                                     parameters:
                                         algorithmName: PKCS
                                         keySizeInBits: 2048
@@ -6142,7 +6150,7 @@ actions:
 
                                     The primary reasons for disabling SMBv1 include:
 
-                                    - It uses the outdated MD5 hashing algorithm, vulnerable to security attacks [3].
+                                    - It uses the outdated MD5 hash algorithm, vulnerable to security attacks [3].
                                     - It fails to meet modern security standards set by FIPS [3], CISA (US-CERT) [5],
                                     CIS (Department of Defense) [3], and Microsoft Security Baseline [8].
                                     - It lacks the efficiency and performance improvements present in newer versions of the protocol [2].
@@ -6293,11 +6301,15 @@ actions:
                                     -
                                         name: Disable insecure "RC2" ciphers
                                         recommend: strict # Considered weak and vulnerable by numerous authoritative sources, may be incompatible with third-party apps.
-                                        docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                        docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite text as others.
                                             This script disables RC2 ciphers.
 
+                                            This script only afects the *SSL/TLS handshake* process.
+                                            The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
+                                            By disabling this weak algorithm, the script improves the security of the connection.
+
                                             Authorities like Microsoft [1] [2] [3], NIST (FIPS) [4], CIS [5], Federal Office for Information Security
-                                            (BSI) [6], and OWASP [7] classify this cipher as weak and recommend against its use.
+                                            (BSI) [6], and OWASP [7] classify this algorithm as weak and recommend against its use.
 
                                             By disabling RC2, the script enhances network security and data integrity [5], as these ciphers are
                                             susceptible to cryptographic attacks.
@@ -6328,25 +6340,29 @@ actions:
                                             [7]: https://web.archive.org/web/20240421101557/https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/09-Testing_for_Weak_Cryptography/04-Testing_for_Weak_Encryption.html "WSTG - v4.2 | OWASP Foundation | owasp.org"
                                         call:
                                             -
-                                                function: DisableCipherAlgorithm
+                                                function: DisableTLSCipher
                                                 parameters:
                                                     algorithmName: RC2 40/128
                                             -
-                                                function: DisableCipherAlgorithm
+                                                function: DisableTLSCipher
                                                 parameters:
                                                     algorithmName: RC2 56/128
                                             -
-                                                function: DisableCipherAlgorithm
+                                                function: DisableTLSCipher
                                                 parameters:
                                                     algorithmName: RC2 128/128
                                     -
                                         name: Disable insecure "RC4" ciphers
                                         recommend: strict # Considered weak and vulnerable by numerous authoritative sources, may be incompatible with third-party apps.
-                                        docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                        docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite text as others.
                                             This script disables the RC4 ciphers.
 
+                                            This script only afects the *SSL/TLS handshake* process.
+                                            The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
+                                            By disabling this weak algorithm, the script improves the security of the connection.
+
                                             Authorities like Microsoft [1] [2] [3] [4] [5], NIST (FIPS) [6], CIS [7], Federal Office for Information
-                                            Security (BSI) [8], and OWASP [9] classify this cipher as weak and recommend against its use.
+                                            Security (BSI) [8], and OWASP [9] classify this algorithm as weak and recommend against its use.
 
                                             This script disables these cipher algorithms:
 
@@ -6383,31 +6399,35 @@ actions:
                                             [9]: https://web.archive.org/web/20240421101557/https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/09-Testing_for_Weak_Cryptography/04-Testing_for_Weak_Encryption.html "WSTG - v4.2 | OWASP Foundation | owasp.org"
                                         call:
                                             -
-                                                function: DisableCipherAlgorithm
+                                                function: DisableTLSCipher
                                                 parameters:
                                                     algorithmName: RC4 128/128
                                             -
-                                                function: DisableCipherAlgorithm
+                                                function: DisableTLSCipher
                                                 parameters:
                                                     algorithmName: RC4 64/128
                                             -
-                                                function: DisableCipherAlgorithm
+                                                function: DisableTLSCipher
                                                 parameters:
                                                     algorithmName: RC4 56/128
                                             -
-                                                function: DisableCipherAlgorithm
+                                                function: DisableTLSCipher
                                                 parameters:
                                                     algorithmName: RC4 40/128
                                     -
                                         name: Disable insecure "DES" cipher
                                         recommend: strict # Considered weak and vulnerable by numerous authoritative sources, may be incompatible with third-party apps.
-                                        docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                        docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite text as others.
                                             This script disables the `DES 56/56` [1] [2] [3] [4] cipher, also known as *DES 56* [2] or *56-bit DES* [2].
+
+                                            This script only afects the *SSL/TLS handshake* process.
+                                            The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
+                                            By disabling this weak algorithm, the script improves the security of the connection.
 
                                             Authorities like Microsoft [1], NIST (FIPS) [2], CIS [3], Federal Office for Information Security (BSI) [4]
                                             and OWASP [5] consider this cipher weak and either discourage or disallow its use
 
-                                            This cipher is enabled by default [2].
+                                            This algorithm is enabled by default on Windows [2].
 
                                             Disabling RC2 ciphers helps maintain data confidentiality and integrity by preventing the
                                             use of these weak encryption methods in network communications [3].
@@ -6425,21 +6445,25 @@ actions:
                                             [4]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
                                             [5]: https://web.archive.org/web/20240421101557/https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/09-Testing_for_Weak_Cryptography/04-Testing_for_Weak_Encryption.html "WSTG - v4.2 | OWASP Foundation | owasp.org"
                                         call:
-                                            function: DisableCipherAlgorithm
+                                            function: DisableTLSCipher
                                             parameters:
                                                 algorithmName: DES 56/56
                                                 # Some sources on Internet mention existence of `DES 56` value, but it there is no official documentation pointing to it.
                                     -
                                         name: Disable insecure "Triple DES" cipher
                                         recommend: strict # Considered weak and vulnerable by numerous authoritative sources, may be incompatible with third-party apps.
-                                        docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                        docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite text as others.
                                             This script disables the `Triple DES 168` [1] [2] [3] (`Triple DES 168/168` before Windows Vista [2] [4]) cipher,
                                             also known as *3DES* [1] [3] [5] and *The Triple Data Encryption Algorithm (TDEA)* [6].
 
-                                            Authorities like Apple [5], NIST [5] [6] and Federal Office for Information Security (BSI) [4]
-                                            classify this cipher as weak and recommend against its use.
+                                            This script only afects the *SSL/TLS handshake* process.
+                                            The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
+                                            By disabling this weak algorithm, the script improves the security of the connection.
 
-                                            This cipher is enabled by default [2].
+                                            Authorities like Apple [5], NIST [5] [6] and Federal Office for Information Security (BSI) [4]
+                                            classify this algorithm as weak and recommend against its use.
+
+                                            This algorithm is enabled by default on Windows [2].
 
                                             Disabling 3DES secures your communication by mitigating vulnerabilities like Sweet32 Birthday attacks [5].
 
@@ -6461,23 +6485,27 @@ actions:
                                             [6]: https://web.archive.org/web/20240402105205/https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf "NIST Special Publication 800-131A Revision 2 | Transitioning the Use of Cryptographic Algorithms and Key Lengths | nvlpubs.nist.gov"
                                         call:
                                             -
-                                                function: DisableCipherAlgorithm
+                                                function: DisableTLSCipher
                                                 parameters:
                                                     algorithmName: Triple DES 168 # After Windows Vista
                                             -
-                                                function: DisableCipherAlgorithm
+                                                function: DisableTLSCipher
                                                 parameters:
                                                     algorithmName: Triple DES 168/168 # Before Windows Vista
                                     -
                                         name: Disable insecure "NULL" cipher
                                         recommend: standard # Disables encryption, turned off by default.
-                                        docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                        docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite text as others.
                                             This script disables the `NULL` [1] [2] [3] [4] cipher.
+
+                                            This script only afects the *SSL/TLS handshake* process.
+                                            The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
+                                            By disabling this weak algorithm, the script improves the security of the connection.
 
                                             This algorithm provides no encryption [1] [5], leaving data completely unprotected.
 
                                             Authorities like Microsoft [2], NIST (FIPS) [1], CIS [3], and Federal Office for
-                                            Information Security (BSI) [4] classify this cipher as weak and recommend against its use.
+                                            Information Security (BSI) [4] classify this algorithm as weak and recommend against its use.
 
                                             This cipher is disabled by default [1].
 
@@ -6497,21 +6525,151 @@ actions:
                                             [4]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
                                             [5]: https://web.archive.org/web/20240421101051/https://datatracker.ietf.org/doc/html/rfc2410 "RFC 2410 - The NULL Encryption Algorithm and Its Use With IPsec | datatracker.ietf.org"
                                         call:
-                                            function: DisableCipherAlgorithm
+                                            function: DisableTLSCipher
                                             parameters:
                                                 algorithmName: 'NULL'
                             -
-                                name: Disable MD5 hash function
-                                docs: |- # refactor-with-variables: Same **Caution** text as others.
-                                    > **Caution:** This may cause compatibility issues with older devices or software.
-                                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\MD5" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                revertCode: reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\MD5" /v "Enabled" /f
-                            -
-                                name: Disable SHA1
-                                docs: |- # refactor-with-variables: Same **Caution** text as others.
-                                    > **Caution:** This may cause compatibility issues with older devices or software.
-                                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\SHA" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                revertCode: reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\SHA" /v "Enabled" /f
+                                category: Disable insecure hashes
+                                docs: |- # refactor-with-variables: Same • Caution • vulnerability text as others.
+                                    This category includes scripts to disable insecure hash algorithms during cryptographic operations.
+
+                                    Hash algorithms are essential for internet security, electronic banking, and document signing.
+                                    Insecure hashes, however, are susceptible to collision attacks [1] [2].
+                                    This vulnerability enables attackers to spoof content, perform phishing, or execute man-in-the-middle attacks [3] [4].
+                                    Consequently, an attacker could intercept or modify data transmitted over what is believed to be a secure connection, without being detected.
+                                    For instance, attackers could exploit this to divert your payments to their accounts, creating significant risks.
+
+                                    > **Caution:** Disabling a hash algorithm may cause compatibility issues with older devices or software.
+
+                                    [1]: https://web.archive.org/web/20240426084410/https://www.win.tue.nl/hashclash/rogue-ca/ "MD5 considered harmful today | win.tue.nl"
+                                    [2]: https://web.archive.org/web/20240426084414/https://phys.org/news/2017-02-cwi-google-collision-industry-standard.html "CWI, Google announce first collision for Industry Security Standard SHA-1 | phys.org"
+                                    [3]: https://web.archive.org/web/20240426084414/https://learn.microsoft.com/en-us/archive/technet-wiki/32288.windows-enforcement-of-sha1-certificates#microsoft-sha-1-plan "Windows Enforcement of SHA1 Certificates | Microsoft Learn | learn.microsoft.com"
+                                    [4]: https://web.archive.org/web/20240426084436/https://learn.microsoft.com/en-us/security-updates/SecurityAdvisories/2014/2862973 "Microsoft Security Advisory 2862973 | Microsoft Learn | learn.microsoft.com"
+                                children:
+                                    -
+                                        name: Disable insecure "MD5" hash
+                                        recommend: strict # Considered weak and vulnerable by numerous authoritative sources, incompatible with third-party apps such as MEGA.
+                                        docs: |- # refactor-with-variables: Same • Caution • handshake • vulnerability • authorities • cipher suite text as others.
+                                            This script disables the use of the `MD5` [1] [2] [3] hash algorithm during the SSL/TLS handshake process.
+
+                                            This script only afects the *SSL/TLS handshake* process.
+                                            The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
+                                            By disabling this weak algorithm, the script improves the security of the connection.
+
+                                            This algorithm is vulnerable to collision attacks [4] [5].
+                                            This vulnerability enables attackers to spoof content, perform phishing, or execute man-in-the-middle attacks [6].
+                                            Consequently, an attacker could intercept or modify data transmitted over what is believed to be a secure connection, without being detected.
+                                            For instance, attackers could exploit this to divert your payments to their accounts, creating significant risks.
+
+                                            Authorities like NIST (FIPS) [2], Federal Office for Information Security (BSI) [3], Microsoft [6],
+                                            OWASP [4] [7], Internet Engineering Task Force (IETF) [8], Google [9] [10], Firefox [11] and OpenVPN [12]
+                                            classify this algorithm as weak and recommend against its use.
+
+                                            This algorithm is enabled by default on Windows [2].
+
+                                            Disabling this algorithm disallows the following cipher suites:
+
+                                            - `SSL_CK_DES_192_EDE3_CBC_WITH_MD5` [1]
+                                            - `SSL_CK_DES_64_CBC_WITH_MD5` [1]
+                                            - `SSL_CK_RC4_128_EXPORT40_MD5` [1]
+                                            - `SSL_CK_RC4_128_WITH_MD5` [1]
+                                            - `SSL_RSA_EXPORT_WITH_RC4_40_MD5` [2]
+                                            - `SSL_RSA_WITH_RC4_128_MD5` [2]
+                                            - `SSL_RSA_EXPORT_WITH_RC2_CBC_40_MD5` [2]
+                                            - `TLS_RSA_EXPORT_WITH_RC4_40_MD5` [1] [2]
+                                            - `TLS_RSA_WITH_NULL_MD5` [1]
+                                            - `TLS_RSA_WITH_RC4_128_MD5` [1] [2]
+                                            - `TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5` [2]
+
+                                            > **Caution:** Disabling a hash algorithm may cause compatibility issues with older devices or software.
+
+                                            [1]: https://web.archive.org/web/20240426090518/https://admx.help/?Category=Schannel&Policy=JMU.Policies.Schannel::MD5 "MD5 | admx.help"
+                                            [2]: https://web.archive.org/web/20240423073705/https://learn.microsoft.com/en-US/troubleshoot/windows-server/certificates-and-public-key-infrastructure-pki/restrict-cryptographic-algorithms-protocols-schannel "Restrict cryptographic algorithms and protocols - Windows Server | Microsoft Learn | learn.microsoft.com"
+                                            [3]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
+                                            [4]: https://web.archive.org/web/20240426090555/https://owasp.org/www-project-web-security-testing-guide/v41/4-Web_Application_Security_Testing/09-Testing_for_Weak_Cryptography/01-Testing_for_Weak_SSL_TLS_Ciphers_Insufficient_Transport_Layer_Protection "WSTG - v4.1 | OWASP Foundation | owasp.org"
+                                            [5]: https://web.archive.org/web/20240426090632/https://link.springer.com/chapter/10.1007/11426639_2 "How to Break MD5 and Other Hash Functions | SpringerLink | link.springer.com"
+                                            [6]: https://web.archive.org/web/20240426084436/https://learn.microsoft.com/en-us/security-updates/SecurityAdvisories/2014/2862973 "Microsoft Security Advisory 2862973 | Microsoft Learn | learn.microsoft.com"
+                                            [7]: https://web.archive.org/web/20240426090632/https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/09-Testing_for_Weak_Cryptography/04-Testing_for_Weak_Encryption.html "WSTG - v4.2 | OWASP Foundation | owasp.org"
+                                            [8]: https://web.archive.org/web/20240426090640/https://www.rfc-editor.org/rfc/rfc9155.html "RFC 9155: Deprecating MD5 and SHA-1 Signature Hashes in TLS 1.2 and DTLS 1.2 | www.rfc-editor.org"
+                                            [9]: https://web.archive.org/web/20240426090758/https://security.googleblog.com/2018/10/modernizing-transport-security.html "Google Online Security Blog: Modernizing Transport Security | security.googleblog.com"
+                                            [10]: https://archive.ph/2024.04.26-145435/https://chromestatus.com/feature/5759116003770368 "TLS 1.0 and TLS 1.1 - Chrome Platform Status | chromestatus.com"
+                                            [11]: https://web.archive.org/web/20240426090747/https://wiki.mozilla.org/CA:MD5and1024 "CA:MD5and1024 - MozillaWiki | wiki.mozilla.org"
+                                            [12]: https://web.archive.org/web/20240426090919/https://openvpn.net/faq/md5-signature-algorithm-support/ "MD5 Signature Algorithm Support | OpenVPN | openvpn.net"
+                                        call:
+                                            function: DisableTLSHash
+                                            parameters:
+                                                algorithmName: MD5
+                                    -
+                                        name: Disable insecure "SHA-1" hash
+                                        recommend: strict # Considered weak and vulnerable by numerous authoritative sources, may be incompatible with third-party apps
+                                        docs: |- # refactor-with-variables: Same • Caution • handshake • vulnerability • authorities • cipher suite text as others.
+                                            This script disables `SHA` [1] [2] [3] hash algorithm, also known as *Secure Hash Algorithm (SHA-1)* [2].
+
+                                            This script only afects the *SSL/TLS handshake* process.
+                                            The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
+                                            By disabling this weak algorithm, the script improves the security of the connection.
+
+                                            This algorithm is vulnerable to collision attacks [4] [5] [6] [7].
+                                            This vulnerability enables attackers to spoof content, perform phishing, or execute man-in-the-middle attacks [8].
+                                            Consequently, an attacker could intercept or modify data transmitted over what is believed to be a secure connection, without being detected.
+                                            For instance, attackers could exploit this to divert your payments to their accounts, creating significant risks.
+
+                                            Authorities like NIST (FIPS) [2], Federal Office for Information Security (BSI) [3], Mozilla [5], Microsoft [8],
+                                            Google [4] [9] [10], OWASP [11], Internet Engineering Task Force (IETF) [12], and Apple [13]
+                                            classify this algorithm as weak and recommend against its use.
+
+                                            Disabling this algorithm disallows the following cipher suites:
+
+                                            - `SSL_RSA_WITH_RC4_128_SHA` [2]
+                                            - `SSL_RSA_WITH_DES_CBC_SHA` [2]
+                                            - `SSL_RSA_WITH_3DES_EDE_CBC_SHA` [2]
+                                            - `SSL_RSA_EXPORT1024_WITH_DES_CBC_SHA` [2]
+                                            - `SSL_RSA_EXPORT1024_WITH_RC4_56_SHA` [2]
+                                            - `TLS_DHE_DSS_EXPORT1024_WITH_DES_CBC_SHA` [1]
+                                            - `TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA` [1]
+                                            - `TLS_DHE_DSS_WITH_AES_128_CBC_SHA` [1]
+                                            - `TLS_DHE_DSS_WITH_AES_256_CBC_SHA` [1]
+                                            - `TLS_DHE_DSS_WITH_DES_CBC_SHA` [1]
+                                            - `TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA_P256` [1]
+                                            - `TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA_P384` [1]
+                                            - `TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA_P521` [1]
+                                            - `TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA_P256` [1]
+                                            - `TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA_P384` [1]
+                                            - `TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA_P521` [1]
+                                            - `TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA_P256` [1]
+                                            - `TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA_P384` [1]
+                                            - `TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA_P521` [1]
+                                            - `TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA_P256` [1]
+                                            - `TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA_P384` [1]
+                                            - `TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA_P521` [1]
+                                            - `TLS_RSA_EXPORT1024_WITH_DES_CBC_SHA` [1] [2]
+                                            - `TLS_RSA_EXPORT1024_WITH_RC4_56_SHA` [1] [2]
+                                            - `TLS_RSA_WITH_3DES_EDE_CBC_SHA` [1] [2]
+                                            - `TLS_RSA_WITH_AES_128_CBC_SHA` [1]
+                                            - `TLS_RSA_WITH_AES_256_CBC_SHA` [1]
+                                            - `TLS_RSA_WITH_DES_CBC_SHA` [1] [2]
+                                            - `TLS_RSA_WITH_NULL_SHA` [1]
+                                            - `TLS_RSA_WITH_RC4_128_SHA` [1] [2]
+
+                                            > **Caution:** Disabling a hash algorithm may cause compatibility issues with older devices or software.
+
+                                            [1]: https://web.archive.org/web/20240426091852/https://admx.help/?Category=Schannel&Policy=JMU.Policies.Schannel::SHA "SHA | admx.help"
+                                            [2]: https://web.archive.org/web/20240423073705/https://learn.microsoft.com/en-US/troubleshoot/windows-server/certificates-and-public-key-infrastructure-pki/restrict-cryptographic-algorithms-protocols-schannel "Restrict cryptographic algorithms and protocols - Windows Server | Microsoft Learn | learn.microsoft.com"
+                                            [3]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
+                                            [4]: https://web.archive.org/web/20240426091847/https://chromestatus.com/feature/4832850040324096 "Deprecate TLS SHA-1 server signatures - Chrome Platform Status | chromestatus.com"
+                                            [5]: https://web.archive.org/web/20240426091939/https://blog.mozilla.org/security/2017/02/23/the-end-of-sha-1-on-the-public-web/ "The end of SHA-1 on the Public Web - Mozilla Security Blog | blog.mozilla.org"
+                                            [6]: https://web.archive.org/web/20240426084414/https://phys.org/news/2017-02-cwi-google-collision-industry-standard.html "CWI, Google announce first collision for Industry Security Standard SHA-1 | phys.org"
+                                            [7]: https://web.archive.org/web/20240426092016/https://security.googleblog.com/2017/02/announcing-first-sha1-collision.html "Google Online Security Blog: Announcing the first SHA1 collision | security.googleblog.com"
+                                            [8]: https://web.archive.org/web/20240426084414/https://learn.microsoft.com/en-us/archive/technet-wiki/32288.windows-enforcement-of-sha1-certificates#microsoft-sha-1-plan "Windows Enforcement of SHA1 Certificates | Microsoft Learn | learn.microsoft.com"
+                                            [9]: https://web.archive.org/web/20240426091810/https://chromium.googlesource.com/chromium/src/+/main/docs/security/tls-sha1-server-signatures.md "Chromium Docs - TLS SHA-1 Server Signatures | chromium.googlesource.com"
+                                            [10]: https://web.archive.org/web/20240426090758/https://security.googleblog.com/2018/10/modernizing-transport-security.html "Google Online Security Blog: Modernizing Transport Security | security.googleblog.com"
+                                            [11]: https://web.archive.org/web/20240421101557/https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/09-Testing_for_Weak_Cryptography/04-Testing_for_Weak_Encryption.html "WSTG - v4.2 | OWASP Foundation | owasp.org"
+                                            [12]: https://web.archive.org/web/20240426090640/https://www.rfc-editor.org/rfc/rfc9155.html "RFC 9155: Deprecating MD5 and SHA-1 Signature Hashes in TLS 1.2 and DTLS 1.2 | www.rfc-editor.org"
+                                            [13]: https://web.archive.org/web/20240426092153/https://developer.apple.com/library/archive/releasenotes/MacOSX/WhatsNewInOSX/Articles/OSXv10.html "macOS Sierra 10.12 | developer.apple.com"
+                                        call:
+                                            function: DisableTLSHash
+                                            parameters:
+                                                algorithmName: SHA
                             -
                                 name: Disable insecure renegotiation
                                 recommend: strict # Important security improvement, but may limit compatibility with older software.
@@ -19966,7 +20124,7 @@ functions:
                         }
                     }
     -
-        name: RequireMinimumKeySize
+        name: RequireTLSMinimumKeySize
         parameters:
             - name: algorithmName       # Specifies the cryptographic algorithm to configure.
             - name: keySizeInBits       # Determines the minimum key size in bits for the specified algorithm.
@@ -19976,19 +20134,20 @@ functions:
             This function configures the minimum key sizes for cryptographic algorithms,
             enhancing the security of the Transport Layer Security (TLS) protocol on system level [1].
 
-            The function modifies Windows Registry settings to enforce the minimum key size for both client and
+            The function modifies registry keys to enforce the minimum key size for both client and
             server-side TLS key exchange. All versions of Windows 10 and newer support these settings [1].
 
             To set the minimum key size, add the `ServerMinKeyBitLength` and/or `ClientMinKeyBitLength` DWORD values
-            in the registry under the appropriate `KeyExchangeAlgorithms` subkey for the specified algorithm [1].
+            in the registry under the appropriate `KeyExchangeAlgorithms` subkey for the specified algorithm [1] [2].
 
             [1]: https://web.archive.org/web/20240402112853/https://learn.microsoft.com/en-us/windows-server/security/tls/tls-registry-settings "Transport Layer Security (TLS) registry settings | Microsoft Learn | learn.microsoft.com"
+            [2]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
         call:
             -
                 function: Comment
                 parameters:
-                    codeComment: Require "{{ $algorithmName }}" key exchange algorithm to have at "{{ $keySizeInBits }}" least bits keys
-                    revertCodeComment: Revert key size requirement for "{{ $algorithmName }}"
+                    codeComment: Require "{{ $algorithmName }}" key exchange algorithm to have at "{{ $keySizeInBits }}" least bits keys during a TLS/SSL handshake
+                    revertCodeComment: Restore key size requirement for "{{ $algorithmName }}" during a TLS/SSL handshake
             -
                 function: RunInlineCode
                 # Marked: refactor-with-if-syntax
@@ -20006,25 +20165,27 @@ functions:
                     revertCode: >- # Missing key since Windows 10 22H2 Pro and Windows 11 23H2 Pro
                         reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\KeyExchangeAlgorithms\{{ $algorithmName }}" /v "ClientMinKeyBitLength" /f 2>nul
     -
-        name: DisableCipherAlgorithm
+        name: DisableTLSCipher
         parameters:
             - name: algorithmName
         docs: |-
             This function disables specified symmetric cipher algorithms by modifying the
-            `SCHANNEL\Ciphers` subkey in the registry [1] [2] [3].
+            `SCHANNEL\Ciphers` subkey in the registry [1] [2] [3] [4].
+            Changes to this key apply instantly and do not require a system restart. [1].
 
             Setting the `Enabled` registry value to `0` disables the cipher [1] [2]
             If this value is not configured [1] or set to `1` [1] [2].
 
-            [1]: https://web.archive.org/web/20240420183152/https://learn.microsoft.com/en-us/troubleshoot/windows-server/certificates-and-public-key-infrastructure-pki/restrict-cryptographic-algorithms-protocols-schannel "Restrict cryptographic algorithms and protocols - Windows Server | Microsoft Learn | learn.microsoft.com"
+            [1]: https://web.archive.org/web/20240423073705/https://learn.microsoft.com/en-US/troubleshoot/windows-server/certificates-and-public-key-infrastructure-pki/restrict-cryptographic-algorithms-protocols-schannel "Restrict cryptographic algorithms and protocols - Windows Server | Microsoft Learn | learn.microsoft.com"
             [2]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
             [3]: https://web.archive.org/web/20240420182953/https://owasp.org/www-project-web-security-testing-guide/assets/archive/OWASP_Testing_Guide_v2.pdf "OWASP TESTING GUIDE 2007 V2 | owasp.org"
+            [4]: https://web.archive.org/web/20240426092730/https://techcommunity.microsoft.com/t5/core-infrastructure-and-security/demystifying-schannel/ba-p/259233 "Demystifying Schannel - Microsoft Community Hub"
         call:
             -
                 function: Comment
                 parameters:
-                    codeComment: Disable the use of "{{ $algorithmName }}" cipher algorithm
-                    revertCodeComment: Restore the use of "{{ $algorithmName }}" cipher algorithm
+                    codeComment: Disable the use of "{{ $algorithmName }}" cipher algorithm during a TLS/SSL handshake
+                    revertCodeComment: Restore the use of "{{ $algorithmName }}" cipher algorithm during a TLS/SSL handshake
             -
                 function: RunInlineCode
                 parameters:
@@ -20162,3 +20323,32 @@ functions:
                         }
             -
                 function: ShowExplorerRestartSuggestion
+    -
+        name: DisableTLSHash
+        parameters:
+            - name: algorithmName
+        docs: |-
+            This function disables specified hash algorithm by modifying the `SCHANNEL\HASHES`
+            subkey in the registry [1] [2] [3].
+            This subkey is used to control the use of hash algorithms such as SHA-1 and MD5 [1].
+            Changes to this key apply instantly and do not require a system restart. [1].
+
+            Setting the `Enabled` registry value to `0` disables the cipher [1] [2]
+            If this value is not configured [1] or set to `1` [1] [2].
+
+            [1]: https://web.archive.org/web/20240423073705/https://learn.microsoft.com/en-US/troubleshoot/windows-server/certificates-and-public-key-infrastructure-pki/restrict-cryptographic-algorithms-protocols-schannel "Restrict cryptographic algorithms and protocols - Windows Server | Microsoft Learn | learn.microsoft.com"
+            [2]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
+            [3]: https://web.archive.org/web/20240426092730/https://techcommunity.microsoft.com/t5/core-infrastructure-and-security/demystifying-schannel/ba-p/259233 "Demystifying Schannel - Microsoft Community Hub"
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: Disable usage of "{{ $algorithmName }}" hash algorithm during a TLS/SSL handshake
+                    revertCodeComment: Restore usage of "{{ $algorithmName }}" hash algorithm during a TLS/SSL handshake
+            -
+                function: RunInlineCode
+                parameters:
+                    code: >-
+                        reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\{{ $algorithmName }}" /v "Enabled" /t REG_DWORD /d "0" /f
+                    revertCode: >- # Missing subkeys under `Hashes` since Windows 10 22H2 Pro and Windows 11 23H2 Pro
+                        reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\{{ $algorithmName }}" /v "Enabled" /f 2>nul
