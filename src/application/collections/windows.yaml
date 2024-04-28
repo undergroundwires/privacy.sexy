@@ -1459,7 +1459,7 @@ actions:
                 name: Remove Windows product key from registry
                 # Helps to protect it from being stolen and used for identity theft or identifying you.
                 docs: https://web.archive.org/web/20240314100853/https://winaero.com/remove-windows-10-product-key-from-registry-and-protect-it-from-being-stolen/
-                # We use cscript.exe to execute instead of `slmgr` command directly to keep the output but surpress the dialogs.
+                # We use cscript.exe to execute instead of `slmgr` command directly to keep the output but suppress the dialogs.
                 code: cscript.exe //nologo "%SYSTEMROOT%\System32\slmgr.vbs" /cpky
             -
                 name: Clear volume backups (shadow copies)
@@ -14226,7 +14226,7 @@ actions:
                                     function: UninstallNonRemovableStoreAppWithCleanup
                                     parameters:
                                         packageName: Microsoft.AAD.BrokerPlugin # Get-AppxPackage Microsoft.AAD.BrokerPlugin
-                                        # Offical docs point to wrong "Microsoft.AAD.Broker.Plugin"
+                                        # Official docs point to wrong "Microsoft.AAD.Broker.Plugin"
                                         publisherId: cw5n1h2txyewy
                             -
                                 name: Remove "Microsoft Accounts Control" app
@@ -14864,7 +14864,7 @@ actions:
                                             function: UninstallNonRemovableStoreAppWithCleanup
                                             parameters:
                                                 packageName: Microsoft.Windows.OOBENetworkCaptivePortal # Get-AppxPackage Microsoft.Windows.OOBENetworkCaptivePortal
-                                                # Offical docs point to wrong "Microsoft.Windows.OOBENetworkCaptivePort"
+                                                # Official docs point to wrong "Microsoft.Windows.OOBENetworkCaptivePort"
                                                 publisherId: cw5n1h2txyewy
                                     -
                                         name: Remove "OOBE Network Connection Flow" app
