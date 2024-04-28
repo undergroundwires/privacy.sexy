@@ -1,6 +1,6 @@
 # Desktop vs. Web Features
 
-This table highlights differences between the desktop and web versions of `privacy.sexy`.
+This table outlines the differences between the desktop and web versions of `privacy.sexy`.
 
 | Feature | Desktop | Web |
 | ------- | ------- | --- |
@@ -30,11 +30,11 @@ Desktop version inherently allows offline usage.
 
 ### Auto-updates
 
-Both the desktop and web versions of privacy.sexy provide timely access to the latest features and security improvements. The updates are automatically deployed from source code, reflecting the latest changes for enhanced security and reliability. For more details, see [CI/CD documentation](./ci-cd.md).
+Both the desktop and web versions of privacy.sexy provide timely access to the latest features and security improvements. The updates are automatically deployed from source code, reflecting the latest changes for enhanced security and reliability. For more details, see [CI/CD documentation](./../ci-cd.md).
 
 The desktop version ensures secure delivery through cryptographic signatures and version checks.
 
-[Security is a top priority](./../SECURITY.md#update-security-and-integrity) at privacy.sexy.
+[Security is a top priority](./../../SECURITY.md#update-security-and-integrity) at privacy.sexy.
 
 > **Note for macOS users:** On macOS, the desktop version's auto-update process involves manual steps due to Apple's code signing costs.
 > Users get notified about updates but might need to complete the installation manually.
