@@ -3711,7 +3711,7 @@ functions:
     #   User-specific:
     #     [~/.profile]
     #       User-specific shell initialization scripts.
-    #       ✅ Recomended by Debian to edit for user-specific environment variables.
+    #       ✅ Recommended by Debian to edit for user-specific environment variables.
     #     [~/.bashrc]
     #       User-based configuration file to set environment variables for Bash shell.
     #       ❌ Bash-specific.
@@ -3783,7 +3783,7 @@ functions:
       if [[ -f "$cronjob_path" ]]; then
         if [[ -x "$cronjob_path" ]]; then
           sudo chmod -x "$cronjob_path"
-          echo "Succesfully disabled cronjob \"$job_name\"."
+          echo "Successfully disabled cronjob \"$job_name\"."
         else
           echo "Skipping, cronjob \"$job_name\" is already disabled."
         fi
@@ -3797,7 +3797,7 @@ functions:
           echo "Skipping, cronjob \"$job_name\" is already enabled."
         else
           sudo chmod +x "$cronjob_path"
-          echo "Succesfully enabled cronjob \"$job_name\"."
+          echo "Successfully enabled cronjob \"$job_name\"."
         fi
       else
         >&2 echo "Failed to enable cronjob \"$job_name\" because it's missing."
@@ -3939,7 +3939,7 @@ functions:
         echo "Backup file exists: $file."
         sudo mv "$backup_file" "$file"
         echo "Moved to: $file."
-        echo "Succesfully restored."
+        echo "Successfully restored."
       else
         >&2 echo "Failed to restore, backup file could not be found at $backup_file."
         >&2 echo "Was the change initially applied by privacy.sexy?"

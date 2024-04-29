@@ -4,7 +4,7 @@ import { TimerStub } from '@tests/unit/shared/Stubs/TimerStub';
 
 describe('batchedDebounce', () => {
   describe('immediate invocation', () => {
-    it('does not call the the callback immediately on the first call', () => {
+    it('does not call the callback immediately on the first call', () => {
       // arrange
       const { calledBatches, callback } = createObservableCallback();
       const callArg = 'first';
