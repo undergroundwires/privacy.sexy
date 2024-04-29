@@ -7838,7 +7838,7 @@ actions:
                                             This action can significantly increase security risks [6].
 
                                             > **Caution**: Disabling this service causes problems with software that depends on it [11] such as:
-                                            > - Prevents **Microsoft Store** app downloads [8] [9], impacting **`winget` CLI functionality [10].
+                                            > - Prevents **Microsoft Store** app downloads [8] [9], impacting **`winget`** CLI functionality [10].
                                             > - Disables **`netsh advfirewall`** commands, used for Windows Firewall management [11].
 
                                             ### Overview of default service statuses
@@ -7891,7 +7891,7 @@ actions:
                                             firewall service stops unexpectedly [2].
 
                                             > **Caution**: Disabling this service causes problems with software that depends on it [11] such as:
-                                            > - Prevents **Microsoft Store** app downloads (error code `0x80073D0A` [7] [12]), impacting **`winget` CLI functionality [13].
+                                            > - Prevents **Microsoft Store** app downloads (error code `0x80073D0A` [7] [12]), impacting **`winget`** CLI functionality [13].
                                             > - Disables **`netsh advfirewall`** commands, used for Windows Firewall management [14].
 
                                             ### Overview of default service statuses
