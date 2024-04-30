@@ -1,21 +1,28 @@
+import type { CodeRunErrorType } from '@/application/CodeRunner/CodeRunner';
 import type { ScriptDiagnosticData, ScriptDiagnosticsCollector } from '@/application/ScriptDiagnostics/ScriptDiagnosticsCollector';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import type { Dialog } from '@/presentation/common/Dialog';
+import type { Dialog, SaveFileErrorType } from '@/presentation/common/Dialog';
+
+type ErrorDialogParameters = Parameters<Dialog['showError']>;
 
 export async function createScriptErrorDialog(
   information: ScriptErrorDetails,
   scriptDiagnosticsCollector: ScriptDiagnosticsCollector | undefined,
-): Promise<Parameters<Dialog['showError']>> {
+): Promise<ErrorDialogParameters> {
   const diagnostics = await scriptDiagnosticsCollector?.collectDiagnosticInformation();
   if (information.isFileReadbackError) {
     return createAntivirusErrorDialog(information, diagnostics);
+  }
+  if (information.errorContext === 'run'
+    && information.errorType === 'ExternalProcessTermination') {
+    return createScriptInterruptedDialog(information);
   }
   return createGenericErrorDialog(information, diagnostics);
 }
 
 export interface ScriptErrorDetails {
   readonly errorContext: 'run' | 'save';
-  readonly errorType: string;
+  readonly errorType: CodeRunErrorType | SaveFileErrorType;
   readonly errorMessage: string;
   readonly isFileReadbackError: boolean;
 }
@@ -23,7 +30,7 @@ export interface ScriptErrorDetails {
 function createGenericErrorDialog(
   information: ScriptErrorDetails,
   diagnostics: ScriptDiagnosticData | undefined,
-): Parameters<Dialog['showError']> {
+): ErrorDialogParameters {
   return [
     selectBasedOnErrorContext({
       runningScript: 'Error Running Script',
@@ -66,7 +73,7 @@ function createGenericErrorDialog(
 function createAntivirusErrorDialog(
   information: ScriptErrorDetails,
   diagnostics: ScriptDiagnosticData | undefined,
-): Parameters<Dialog['showError']> {
+): ErrorDialogParameters {
   const defenderSteps = generateDefenderSteps(information, diagnostics);
   return [
     'Possible Antivirus Script Block',
@@ -111,6 +118,33 @@ function createAntivirusErrorDialog(
           'Reach out to the community for further assistance.',
         ],
       }),
+      '\n',
+      generateTechnicalDetails(information),
+    ].join('\n'),
+  ];
+}
+
+function createScriptInterruptedDialog(
+  information: ScriptErrorDetails,
+): ErrorDialogParameters {
+  return [
+    'Script Stopped',
+    [
+      'The script stopped before it could finish.',
+      'This happens if the script is cancelled manually or if the system terminates the process.',
+      '\n',
+      generateUnorderedSolutionList({
+        title: 'To ensure successful script completion:',
+        solutions: [
+          'Keep the terminal window open during script execution.',
+          'If the script closed unexpectedly, try running it again.',
+          'Check for sufficient memory (RAM) and system resources.',
+          'Avoid running tasks that might disrupt the script.',
+        ],
+      }),
+      '\n',
+      'If you intentionally stopped the script, ignore this message.',
+      'Reach out to the community for further assistance.',
       '\n',
       generateTechnicalDetails(information),
     ].join('\n'),

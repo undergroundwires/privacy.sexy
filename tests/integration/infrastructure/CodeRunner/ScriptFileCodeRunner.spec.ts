@@ -8,8 +8,8 @@ import { ScriptFileCreationOrchestrator } from '@/infrastructure/CodeRunner/Crea
 import { ScriptFileCodeRunner } from '@/infrastructure/CodeRunner/ScriptFileCodeRunner';
 import { CurrentEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironmentFactory';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { LinuxTerminalEmulator } from '@/infrastructure/CodeRunner/Execution/VisibleTerminalScriptFileExecutor';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
+import { LinuxTerminalEmulator } from '@/infrastructure/CodeRunner/Execution/CommandDefinition/Commands/LinuxVisibleTerminalCommand';
 
 describe('ScriptFileCodeRunner', () => {
   it('executes simple script correctly', async ({ skip }) => {

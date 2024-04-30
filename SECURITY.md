@@ -43,10 +43,17 @@ privacy.sexy adopts a defense in depth strategy to protect users on multiple lay
   elevation of privileges for system modifications with explicit user consent and logs every action taken with high privileges. This
   approach actively minimizes potential security risks by limiting privileged operations and aligning with the principle of least privilege.
 - **Secure Script Execution/Storage:**
-  Before executing any script, the desktop application stores a copy to allow antivirus software to perform scans. This safeguards against
-  any unwanted modifications. Furthermore, the application incorporates integrity checks for tamper protection. If the script file differs from
-  the user's selected script, the application will not execute or save the script, ensuring the processing of authentic scripts.
-  Recognizing that some users prefer not to keep these records, privacy.sexy provides specialized scripts for deletion of these scripts.
+  - **Antivirus scans:**
+    Before executing any script, the desktop application stores a copy to allow antivirus software to perform scans.
+    This step allows confirming that the scripts are secure and safe to use.
+  - **Tamper protection:**
+    The application incorporates integrity checks for tamper protection.
+    If the script file differs from the user's selected script, the application will not execute or save the script, ensuring the processing
+    of authentic scripts.
+    This safeguards against any unwanted modifications.
+  - **Clean-up:**
+    Recognizing that some users prefer not to keep these records, privacy.sexy provides specialized scripts for deletion of these scripts.
+    This allows users to maintain their privacy by removing traces of their usage patterns or script preferences.
 
 ### Update Security and Integrity
 

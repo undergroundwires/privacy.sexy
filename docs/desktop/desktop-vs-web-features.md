@@ -8,10 +8,8 @@ This table outlines the differences between the desktop and web versions of `pri
 | [Offline usage](#offline-usage) | 🟢 Available | 🟡 Partially available |
 | [Auto-updates](#auto-updates) | 🟢 Available | 🟢 Available |
 | [Logging](#logging) | 🟢 Available | 🔴 Not available |
-| [Script execution](#script-execution) | 🟢 Available | 🔴 Not available |
-| [Error handling](#error-handling) | 🟢 Advanced | 🟡 Limited |
-| [Native dialogs](#native-dialogs) | 🟢 Available | 🔴 Not available |
 | [Secure script execution/storage](#secure-script-executionstorage) | 🟢 Available | 🔴 Not available |
+| [Native dialogs](#native-dialogs) | 🟢 Available | 🔴 Not available |
 
 ## Feature descriptions
 
@@ -53,7 +51,7 @@ Log file locations vary by operating system:
 
 > 💡 privacy.sexy provides scripts to securely erase these logs.
 
-### Script execution
+### Secure script execution/storage
 
 The desktop version of privacy.sexy enables direct script execution, providing a seamless and integrated experience.
 This direct execution capability isn't available in the web version due to inherent browser restrictions.
@@ -69,31 +67,27 @@ These locations vary based on the operating system:
 
 > 💡 privacy.sexy provides scripts to securely erase your script execution history.
 
-### Error handling
+**Script antivirus scans:**
 
-The desktop version of privacy.sexy features advanced error handling capabilities.
-It employs robust and reliable execution strategies, including self-healing mechanisms, and provides guidance and troubleshooting information to resolve issues effectively.
-In contrast, the web version has more basic error handling due to browser limitations and the nature of web applications.
+To enhance system protection, the desktop version of privacy.sexy automatically verifies the security of script
+execution files by reading them back.
+This process triggers antivirus scans to verify that scripts are safe before the execution.
 
-### Native dialogs
-
-The desktop version uses native dialogs, offering more features and reliability compared to the browser's file system dialogs.
-These native dialogs provide a more integrated and user-friendly experience, aligning with the operating system's standard interface and functionalities.
-
-### Secure script execution/storage
-
-**Integrity checks:**
+**Script integrity checks:**
 
 The desktop version of privacy.sexy implements robust integrity checks for both script execution and storage.
 Featuring tamper protection, the application actively verifies the integrity of script files before executing or saving them.
 If the actual contents of a script file do not align with the expected contents, the application refuses to execute or save the script.
 This proactive approach ensures only unaltered and verified scripts undergo processing, thereby enhancing both security and reliability.
-Due to browser constraints, this feature is absent in the web version.
 
 **Error handling:**
 
+The desktop version of privacy.sexy features advanced error handling capabilities.
 In scenarios where script execution or storage encounters failure, the desktop application initiates automated troubleshooting and self-healing processes.
-It also guides users through potential issues with filesystem or third-party software, such as antivirus interventions.
-Specifically, the application is capable of identifying when antivirus software blocks or removes a script, providing users with tailored error messages
-and detailed resolution steps. This level of proactive error handling and user guidance enhances the application's security and reliability,
-offering a feature not achievable in the web version due to browser limitations.
+It employs robust and reliable execution strategies, including self-healing mechanisms, and provides guidance and troubleshooting information to resolve issues effectively.
+This proactive error handling and user guidance enhances the application's security and reliability.
+
+### Native dialogs
+
+The desktop version uses native dialogs, offering more features and reliability compared to the browser's file system dialogs.
+These native dialogs provide a more integrated and user-friendly experience, aligning with the operating system's standard interface and functionalities.

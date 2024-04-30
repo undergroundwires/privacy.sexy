@@ -8,32 +8,70 @@ import { AllSupportedOperatingSystems } from '@tests/shared/TestCases/SupportedO
 import { ScriptDiagnosticsCollectorStub } from '@tests/unit/shared/Stubs/ScriptDiagnosticsCollectorStub';
 
 describe('ScriptErrorDialog', () => {
-  describe('handles readback error type', () => {
-    it('handles file readback error', async () => {
-      // arrange
-      const errorDetails = createErrorDetails({ isFileReadbackError: true });
-      const context = new CreateScriptErrorDialogTestSetup()
-        .withDetails(errorDetails);
-      // act
-      const dialog = await context.createScriptErrorDialog();
-      // assert
-      assertValidDialog(dialog);
-    });
-    it('handles generic error', async () => {
-      // arrange
-      const errorDetails = createErrorDetails({ isFileReadbackError: false });
-      const context = new CreateScriptErrorDialogTestSetup()
-        .withDetails(errorDetails);
-      // act
-      const dialog = await context.createScriptErrorDialog();
-      // assert
-      assertValidDialog(dialog);
+  describe('handling different error types', () => {
+    const testScenarios: readonly {
+      readonly description: string,
+      readonly givenErrorDetails: ScriptErrorDetails;
+      readonly expectedDialogTitle: string;
+    }[] = [
+      {
+        description: 'generic error when running',
+        givenErrorDetails: createErrorDetails({
+          isFileReadbackError: false,
+          errorContext: 'run',
+        }),
+        expectedDialogTitle: 'Error Running Script',
+      },
+      {
+        description: 'generic error when saving',
+        givenErrorDetails: createErrorDetails({
+          isFileReadbackError: false,
+          errorContext: 'save',
+        }),
+        expectedDialogTitle: 'Error Saving Script',
+      },
+      {
+        description: 'file readback failure',
+        givenErrorDetails: createErrorDetails({ isFileReadbackError: true }),
+        expectedDialogTitle: 'Possible Antivirus Script Block',
+      },
+      {
+        description: 'script interruption',
+        givenErrorDetails: createErrorDetails({
+          errorContext: 'run',
+          errorType: 'ExternalProcessTermination',
+        }),
+        expectedDialogTitle: 'Script Stopped',
+      },
+    ];
+    testScenarios.forEach((
+      { description, givenErrorDetails, expectedDialogTitle },
+    ) => {
+      it(`creates dialog for "${description}"`, async () => {
+        // arrange
+        const context = new CreateScriptErrorDialogTestSetup()
+          .withDetails(givenErrorDetails);
+        // act
+        const dialog = await context.createScriptErrorDialog();
+        // assert
+        assertValidDialog(dialog);
+      });
+      it(`creates dialog for "${description}" with title "${expectedDialogTitle}"`, async () => {
+        // arrange
+        const context = new CreateScriptErrorDialogTestSetup()
+          .withDetails(givenErrorDetails);
+        // act
+        const dialog = await context.createScriptErrorDialog();
+        // assert
+        const [actualDialogTitle] = dialog;
+        expect(actualDialogTitle).to.equal(expectedDialogTitle);
+      });
     });
   });
 
-  describe('handles supported operatingSystems', () => {
+  describe('handling supported operating systems', () => {
     AllSupportedOperatingSystems.forEach((operatingSystem) => {
-      it(`${OperatingSystem[operatingSystem]}`, async () => {
+      it(`creates dialog for ${OperatingSystem[operatingSystem]}`, async () => {
         // arrange
         const diagnostics = new ScriptDiagnosticsCollectorStub()
           .withOperatingSystem(operatingSystem);
@@ -47,46 +85,48 @@ describe('ScriptErrorDialog', () => {
     });
   });
 
-  it('handles undefined diagnostics collector', async () => {
-    const diagnostics = undefined;
-    const context = new CreateScriptErrorDialogTestSetup()
-      .withDiagnostics(diagnostics);
-    // act
-    const dialog = await context.createScriptErrorDialog();
-    // assert
-    assertValidDialog(dialog);
+  describe('handling missing inputs', () => {
+    it('creates dialog when diagnostics collector is undefined', async () => {
+      const diagnostics = undefined;
+      const context = new CreateScriptErrorDialogTestSetup()
+        .withDiagnostics(diagnostics);
+      // act
+      const dialog = await context.createScriptErrorDialog();
+      // assert
+      assertValidDialog(dialog);
+    });
+
+    it('creates dialog when operating system is undefined', async () => {
+      // arrange
+      const undefinedOperatingSystem = undefined;
+      const diagnostics = new ScriptDiagnosticsCollectorStub()
+        .withOperatingSystem(undefinedOperatingSystem);
+      const context = new CreateScriptErrorDialogTestSetup()
+        .withDiagnostics(diagnostics);
+      // act
+      const dialog = await context.createScriptErrorDialog();
+      // assert
+      assertValidDialog(dialog);
+    });
+
+    it('creates dialog when script directory path is undefined', async () => {
+      // arrange
+      const undefinedScriptsDirectory = undefined;
+      const diagnostics = new ScriptDiagnosticsCollectorStub()
+        .withScriptDirectoryPath(undefinedScriptsDirectory);
+      const context = new CreateScriptErrorDialogTestSetup()
+        .withDiagnostics(diagnostics);
+      // act
+      const dialog = await context.createScriptErrorDialog();
+      // assert
+      assertValidDialog(dialog);
+    });
   });
 
-  it('handles undefined operating system', async () => {
-    // arrange
-    const undefinedOperatingSystem = undefined;
-    const diagnostics = new ScriptDiagnosticsCollectorStub()
-      .withOperatingSystem(undefinedOperatingSystem);
-    const context = new CreateScriptErrorDialogTestSetup()
-      .withDiagnostics(diagnostics);
-    // act
-    const dialog = await context.createScriptErrorDialog();
-    // assert
-    assertValidDialog(dialog);
-  });
-
-  it('handles directory path', async () => {
-    // arrange
-    const undefinedScriptsDirectory = undefined;
-    const diagnostics = new ScriptDiagnosticsCollectorStub()
-      .withScriptDirectoryPath(undefinedScriptsDirectory);
-    const context = new CreateScriptErrorDialogTestSetup()
-      .withDiagnostics(diagnostics);
-    // act
-    const dialog = await context.createScriptErrorDialog();
-    // assert
-    assertValidDialog(dialog);
-  });
-
-  describe('handles all contexts', () => {
+  describe('handling all error contexts', () => {
     const possibleContexts: ScriptErrorDetails['errorContext'][] = ['run', 'save'];
     possibleContexts.forEach((dialogContext) => {
-      it(`${dialogContext} context`, async () => {
+      it(`creates dialog for '${dialogContext}' context`, async () => {
         // arrange
         const undefinedScriptsDirectory = undefined;
         const diagnostics = new ScriptDiagnosticsCollectorStub()
@@ -114,7 +154,7 @@ function assertValidDialog(dialog: Parameters<Dialog['showError']>): void {
 function createErrorDetails(partialDetails?: Partial<ScriptErrorDetails>): ScriptErrorDetails {
   const defaultDetails: ScriptErrorDetails = {
     errorContext: 'run',
-    errorType: 'test-error-type',
+    errorType: 'UnsupportedPlatform',
     errorMessage: 'test error message',
     isFileReadbackError: false,
   };

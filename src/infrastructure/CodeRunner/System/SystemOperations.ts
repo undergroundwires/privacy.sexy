@@ -1,3 +1,5 @@
+import type { exec } from 'node:child_process';
+
 export interface SystemOperations {
   readonly operatingSystem: OperatingSystemOps;
   readonly location: LocationOps;
@@ -14,7 +16,7 @@ export interface LocationOps {
 }
 
 export interface CommandOps {
-  exec(command: string): Promise<void>;
+  exec(command: string): ReturnType<typeof exec>;
 }
 
 export interface FileSystemOps {

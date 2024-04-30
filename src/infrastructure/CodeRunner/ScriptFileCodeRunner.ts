@@ -4,15 +4,15 @@ import type {
   CodeRunError, CodeRunOutcome, CodeRunner, FailedCodeRun,
 } from '@/application/CodeRunner/CodeRunner';
 import { ElectronLogger } from '../Log/ElectronLogger';
-import { VisibleTerminalScriptExecutor } from './Execution/VisibleTerminalScriptFileExecutor';
 import { ScriptFileCreationOrchestrator } from './Creation/ScriptFileCreationOrchestrator';
+import { VisibleTerminalFileRunner } from './Execution/VisibleTerminalFileRunner';
 import type { ScriptFileExecutor } from './Execution/ScriptFileExecutor';
 import type { ScriptFileCreator } from './Creation/ScriptFileCreator';
 
 export class ScriptFileCodeRunner implements CodeRunner {
   constructor(
     private readonly scriptFileExecutor
-    : ScriptFileExecutor = new VisibleTerminalScriptExecutor(),
+    : ScriptFileExecutor = new VisibleTerminalFileRunner(),
     private readonly scriptFileCreator: ScriptFileCreator = new ScriptFileCreationOrchestrator(),
     private readonly logger: Logger = ElectronLogger,
   ) { }

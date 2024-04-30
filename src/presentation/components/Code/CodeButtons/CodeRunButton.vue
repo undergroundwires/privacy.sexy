@@ -11,6 +11,7 @@
 import { defineComponent, computed } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import { OperatingSystem } from '@/domain/OperatingSystem';
+import type { CodeRunError } from '@/application/CodeRunner/CodeRunner';
 import IconButton from './IconButton.vue';
 import { createScriptErrorDialog } from './ScriptErrorDialog';
 
@@ -38,13 +39,17 @@ export default defineComponent({
         currentContext.state.collection.scripting.fileExtension,
       );
       if (!success) {
-        dialog.showError(...(await createScriptErrorDialog({
-          errorContext: 'run',
-          errorType: error.type,
-          errorMessage: error.message,
-          isFileReadbackError: error.type === 'FileReadbackVerificationError',
-        }, scriptDiagnosticsCollector)));
+        await handleCodeRunFailure(error);
       }
+    }
+
+    async function handleCodeRunFailure(error: CodeRunError) {
+      dialog.showError(...(await createScriptErrorDialog({
+        errorContext: 'run',
+        errorType: error.type,
+        errorMessage: error.message,
+        isFileReadbackError: error.type === 'FileReadbackVerificationError',
+      }, scriptDiagnosticsCollector)));
     }
 
     return {

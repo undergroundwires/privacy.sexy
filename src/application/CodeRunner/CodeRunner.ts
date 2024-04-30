@@ -11,10 +11,11 @@ export type CodeRunErrorType =
   | 'FileWriteError'
   | 'FileReadbackVerificationError'
   | 'FilePathGenerationError'
-  | 'UnsupportedOperatingSystem'
-  | 'FileExecutionError'
+  | 'UnsupportedPlatform'
   | 'DirectoryCreationError'
-  | 'UnexpectedError';
+  | 'FilePermissionChangeError'
+  | 'FileExecutionError'
+  | 'ExternalProcessTermination';
 
 interface CodeRunStatus {
   readonly success: boolean;

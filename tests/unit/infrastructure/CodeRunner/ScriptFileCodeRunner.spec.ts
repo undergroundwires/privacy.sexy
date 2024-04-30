@@ -124,7 +124,7 @@ describe('ScriptFileCodeRunner', () => {
       }> = [
         {
           description: 'execution failure',
-          expectedErrorType: 'FileExecutionError',
+          expectedErrorType: 'FilePermissionChangeError',
           expectedErrorMessage: 'execution error',
           buildFaultyContext: (setup, errorMessage, errorType) => {
             const executor = new ScriptFileExecutorStub();

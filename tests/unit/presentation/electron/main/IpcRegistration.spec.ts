@@ -49,7 +49,7 @@ describe('IpcRegistration', () => {
         ScriptDiagnosticsCollector: (() => {
           const expectedInstance = new ScriptDiagnosticsCollectorStub();
           return {
-            buildContext: (c) => c.witScriptDiagnosticsCollectorFactory(() => expectedInstance),
+            buildContext: (c) => c.withScriptDiagnosticsCollectorFactory(() => expectedInstance),
             expectedInstance,
           };
         })(),
@@ -112,7 +112,7 @@ class IpcRegistrationTestSetup {
     return this;
   }
 
-  public witScriptDiagnosticsCollectorFactory(
+  public withScriptDiagnosticsCollectorFactory(
     scriptDiagnosticsCollectorFactory: ScriptDiagnosticsCollectorFactory,
   ): this {
     this.scriptDiagnosticsCollectorFactory = scriptDiagnosticsCollectorFactory;
