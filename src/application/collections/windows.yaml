@@ -6053,6 +6053,7 @@ actions:
                                     Sizes under 1024 bits are considered weak [4] [5].
                                     NIST in USA [4] and Federal Office for Information Security (BSI) in Germany [3] disallows usage of sizes
                                     under 2048 bits.
+                                    NSA (National Security Agency) recommends at least 3072 bits [6].
 
                                     This script hardens your system's security by using keys of adequate strength, following best practices.
 
@@ -6065,6 +6066,7 @@ actions:
                                     [3]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
                                     [4]: https://web.archive.org/web/20240402105205/https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf "NIST Special Publication 800-131A Revision 2 | Transitioning the Use of Cryptographic Algorithms and Key Lengths | nvlpubs.nist.gov"
                                     [5]: https://web.archive.org/web/20240402112905/https://weakdh.org/ "Weak Diffie-Hellman and the Logjam Attack | weakdh.org"
+                                    [6]: https://web.archive.org/web/20240429194121/https://media.defense.gov/2021/Jan/05/2002560140/-1/-1/0/ELIMINATING_OBSOLETE_TLS_UOO197443-20.PDF "Eliminating Obsolete Transport Layer Security (TLS) Protocol Configurations | National Security Agency | Cybersecurity Information | media.defense.gov"
                                 call:
                                     function: RequireTLSMinimumKeySize
                                     parameters:
@@ -6128,149 +6130,10 @@ actions:
                             vulnerabilities, including man-in-the-middle attacks and data breaches.
 
                             By disabling these insecure connections, these scripts follow cybersecurity best practices and recommendations.
-                            Although Windows supports insecure connections for compatibility, prioritizing security, these scripts disable them
+                            Although Windows supports insecure connections for compatibility, prioritizing security, these scripts disable them.
 
                             > **Caution:** This may cause compatibility issues with older devices or software.
                         children:
-                            -
-                                name: Disable unsafe SMBv1 protocol
-                                recommend: standard # Recommended by Microsoft, very old, has significant security vulnerabilities
-                                docs: |- # refactor-with-variables: Same **Caution** text as others.
-                                    This script improves network security by disabling the outdated SMBv1 protocol.
-
-                                    **SMBv1**, or **Server Message Block version 1**, is an outdated network protocol developed
-                                    for file and printer sharing across networks [1] [2].
-                                    This protocol is well-known for its vulnerabilities to cyber attacks [1] [2] [3] [4] [5].
-                                    Microsoft deprecated SMBv1 in 2014 [6] [7].
-                                    Since 2007, newer and more secure versions of this protocol have
-                                    replaced SMBv1 in modern versions of Windows [6].
-                                    It is still enabled by default in older Windows versions [1].
-                                    Microsoft advises disabling this protocol to strengthen security [1] [8].
-                                    SMB1 is not necessary for most users, as Microsoft ensures vendor support for at least SMB 2.0 [2].
-
-                                    The primary reasons for disabling SMBv1 include:
-
-                                    - It uses the outdated MD5 hash algorithm, vulnerable to security attacks [3].
-                                    - It fails to meet modern security standards set by FIPS [3], CISA (US-CERT) [5],
-                                    CIS (Department of Defense) [3], and Microsoft Security Baseline [8].
-                                    - It lacks the efficiency and performance improvements present in newer versions of the protocol [2].
-                                    - It is vulnerable to various cyber threats [1] [2] [3] [4] [5],
-                                    , including ransomware and malware [1] [2].
-
-                                    Disabling SMBv1 may lead to compatibility issues with older network devices and software [1] [3] [6] [9].
-                                    This may affect file sharing and print services on systems like Windows Server 2003 [3]
-                                    and some older Network Attached Storage (NAS) devices [3].
-                                    These systems are insecure and are no longer supported.
-
-                                    This script makes the following changes to your system:
-
-                                    - Removal of SMBv1 components:
-                                    - `SMB1Protocol` [2] [3] [4] [10] (also known as `FS-SMB1` [2] [11])
-                                    - `SMB1Protocol-Client` [10]
-                                    - `SMB1Protocol-Server` [10].
-                                    - Disabling the `mrxsmb10` (SMB 1.x MiniRedirector [12]) driver,
-                                      linked with SMBv1 [1] [4] [13],
-                                      and adjusting related settings to keep older systems stable [1] [4] [13].
-                                    - Disabling server side processing of SMBv1 protocol using
-                                    `HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters!SMBv1` registry key [1] [14] [15].
-
-                                    These changes require a system reboot to take effect [1] [4] [9].
-
-                                    > **Caution:** This may cause compatibility issues with older devices or software.
-
-                                    ### Overview of default feature statuses
-
-                                    `SMB1Protocol`:
-
-                                    | | |
-                                    | ---- | --- |
-                                    | **Feature name**  | `SMB1Protocol` |
-                                    | **Display name**  | SMB 1.0/CIFS File Sharing Support |
-                                    | **Description**  | Support for the SMB 1.0/CIFS file sharing protocol, and the Computer Browser protocol. |
-                                    | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
-                                    | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
-
-                                    `SMB1Protocol-Client`:
-
-                                    | | |
-                                    | ---- | --- |
-                                    | **Feature name**  | `SMB1Protocol-Client` |
-                                    | **Display name**  | SMB 1.0/CIFS Client |
-                                    | **Description**  | Support for the SMB 1.0/CIFS client for accessing legacy servers. |
-                                    | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
-                                    | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
-
-                                    `SMB1Protocol-Server`:
-
-                                    | | |
-                                    | ---- | --- |
-                                    | **Feature name**  | `SMB1Protocol-Server` |
-                                    | **Display name**  | SMB 1.0/CIFS Server |
-                                    | **Description**  | Support for the SMB 1.0/CIFS file server for sharing data with legacy clients and browsing the network neighborhood. |
-                                    | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
-                                    | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
-
-                                    ### Overview of default service statuses
-
-                                    SMB 1.x MiniRedirector (`mrxsmb10`):
-
-                                    | OS Version | Status | Start type |
-                                    | ---------- | -------| ---------- |
-                                    | Windows 11 (≥ 23H2) | 🟡 Missing | N/A |
-                                    | Windows 10 (≥ 22H2) | 🟡 Missing | N/A |
-
-                                    [1]: https://web.archive.org/web/20240413122756/https://learn.microsoft.com/en-us/archive/blogs/secguide/disabling-smbv1-through-group-policy "Disabling SMBv1 through Group Policy | Microsoft Learn | learn.microsoft.com"
-                                    [2]: https://web.archive.org/web/20240413124106/https://techcommunity.microsoft.com/t5/storage-at-microsoft/stop-using-smb1/ba-p/425858 "Stop using SMB1 - Microsoft Community Hub | techcommunity.microsoft.com"
-                                    [3]: https://web.archive.org/web/20240413124245/https://www.stigviewer.com/stig/microsoft_windows_10/2023-09-29/finding/V-220729 "The Server Message Block (SMB) v1 protocol must be disabled on the system. | www.stigviewer.com"
-                                    [4]: https://web.archive.org/web/20240413122807/https://learn.microsoft.com/en-US/windows-server/storage/file-server/troubleshoot/detect-enable-and-disable-smbv1-v2-v3?tabs=server "Server | How to detect, enable and disable SMBv1, SMBv2, and SMBv3 in Windows | Microsoft Learn | learn.microsoft.com"
-                                    [5]: https://web.archive.org/web/20240413124050/https://www.cisa.gov/news-events/alerts/2017/01/16/smb-security-best-practices "SMB Security Best Practices | CISA | www.cisa.gov"
-                                    [6]: https://web.archive.org/web/20240413122812/https://learn.microsoft.com/en-us/windows-server/storage/file-server/troubleshoot/smbv1-not-installed-by-default-in-windows "SMBv1 is not installed by default in Windows 10 version 1709, Windows Server version 1709 and later versions | Microsoft Learn | learn.microsoft.com"
-                                    [7]: https://web.archive.org/web/20240413124101/https://learn.microsoft.com/en-us/archive/blogs/josebda/the-deprecation-of-smb1-you-should-be-planning-to-get-rid-of-this-old-smb-dialect "The Deprecation of SMB1 – You should be planning to get rid of this old SMB dialect | Microsoft Learn | learn.microsoft.com"
-                                    [8]: https://web.archive.org/web/20240413122800/https://learn.microsoft.com/en-us/archive/blogs/secguide/security-baseline-for-windows-10-creators-update-v1703-draft "Security baseline for Windows 10 \"Creators Update\" (v1703) – DRAFT | Microsoft Learn | learn.microsoft.com"
-                                    [9]: https://web.archive.org/web/20240413125713/https://learn.microsoft.com/en-US/windows-server/storage/file-server/troubleshoot/detect-enable-and-disable-smbv1-v2-v3?tabs=client "Client | How to detect, enable and disable SMBv1, SMBv2, and SMBv3 in Windows | Microsoft Learn | learn.microsoft.com"
-                                    [10]: https://web.archive.org/web/20240413124113/https://learn.microsoft.com/en-us/powershell/module/smbshare/remove-smbcomponent?view=windowsserver2025-ps&wt.mc_id=ps-gethelp "Remove-SmbComponent (SmbShare) | Microsoft Learn | learn.microsoft.com"
-                                    [11]: https://web.archive.org/web/20240413124320/https://www.stigviewer.com/stig/windows_server_2016/2020-06-16/finding/V-73299 "The Server Message Block (SMB) v1 protocol must be uninstalled. | www.stigviewer.com"
-                                    [12]: https://web.archive.org/web/20240413124418/https://revertservice.com/10/mrxsmb10/ "SMB 1.x MiniRedirector (mrxsmb10) Service Defaults in Windows 10 | revertservice.com"
-                                    [13]: https://web.archive.org/web/20240413124409/https://www.stigviewer.com/stig/windows_server_20122012_r2_domain_controller/2019-01-16/finding/V-73523 "The Server Message Block (SMB) v1 protocol must be disabled on the SMB client. | www.stigviewer.com"
-                                    [14]: https://web.archive.org/web/20240413124606/https://admx.help/?Category=security-compliance-toolkit&Policy=Microsoft.Policies.SecGuide::Pol_SecGuide_0001_SMBv1_Server "Configure SMB v1 server | admx.help"
-                                    [15]: https://web.archive.org/web/20240418073214/https://support.microsoft.com/en-us/topic/908332b7-49de-a86c-dba3-401b9fe8116f "Server service configuration and tuning - Microsoft Support | support.microsoft.com"
-                                call:
-                                    -
-                                        function: DisableWindowsFeature
-                                        parameters:
-                                            featureName: SMB1Protocol # Get-WindowsOptionalFeature -FeatureName 'SMB1Protocol' -Online
-                                            disabledByDefault: true
-                                    -
-                                        function: DisableWindowsFeature
-                                        parameters:
-                                            featureName: SMB1Protocol-Client # Get-WindowsOptionalFeature -FeatureName 'SMB1Protocol-Client' -Online
-                                            disabledByDefault: true
-                                    -
-                                        function: DisableWindowsFeature
-                                        parameters:
-                                            featureName: SMB1Protocol-Server # Get-WindowsOptionalFeature -FeatureName 'SMB1Protocol-Server' -Online
-                                            disabledByDefault: true
-                                    -
-                                        function: DisableService
-                                        parameters:
-                                            serviceName: mrxsmb10 # Check: (Get-Service -Name 'mrxsmb10').StartType
-                                            defaultStartupMode: Automatic # Allowed values: Boot | System | Automatic | Manual
-                                            ignoreMissingOnRevert: true # This service is only available when SMB1 feature is installed
-                                    -
-                                        function: RunInlineCode
-                                        # This ensures that `lanmanworkstation` does not depend on `mrxsmb10` to avoid potential system issues.
-                                        # Its configuration is already the OS default on modern versions of Windows, see: `sc qc lanmanworkstation`.
-                                        parameters:
-                                            code: sc.exe config lanmanworkstation depend= bowser/mrxsmb20/nsi
-                                            revertCode: sc.exe config lanmanworkstation depend= bowser/mrxsmb20/nsi
-                                    -
-                                        function: RunInlineCode
-                                        parameters:
-                                            code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "SMBv1" /t "REG_DWORD" /d "0" /f
-                                            revertCode: >- # Key does not exist (tested: Windows 10 22H2 and Windows 11 23H2)
-                                                reg delete "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "SMBv1" /f 2>nul
-                                    -
-                                        function: ShowComputerRestartSuggestion
                             -
                                 category: Disable insecure ciphers
                                 docs: |- # refactor-with-variables: Same **Caution** text as others.
@@ -6309,7 +6172,8 @@ actions:
                                             By disabling this weak algorithm, the script improves the security of the connection.
 
                                             Authorities like Microsoft [1] [2] [3], NIST (FIPS) [4], CIS [5], Federal Office for Information Security
-                                            (BSI) [6], and OWASP [7] classify this algorithm as weak and recommend against its use.
+                                            (BSI) [6], OWASP [7], and NSA (National Security Agency) [8]
+                                            classify this algorithm as weak and recommend against its use.
 
                                             By disabling RC2, the script enhances network security and data integrity [5], as these ciphers are
                                             susceptible to cryptographic attacks.
@@ -6338,6 +6202,7 @@ actions:
                                             [5]: https://web.archive.org/web/20240421101142/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_IIS_8_Benchmark_v1_4_0.pdf "CIS Microsoft IIS 8 Benchmark v1.4.0 | paper.bobylive.com"
                                             [6]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
                                             [7]: https://web.archive.org/web/20240421101557/https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/09-Testing_for_Weak_Cryptography/04-Testing_for_Weak_Encryption.html "WSTG - v4.2 | OWASP Foundation | owasp.org"
+                                            [8]: https://web.archive.org/web/20240429194121/https://media.defense.gov/2021/Jan/05/2002560140/-1/-1/0/ELIMINATING_OBSOLETE_TLS_UOO197443-20.PDF "Eliminating Obsolete Transport Layer Security (TLS) Protocol Configurations | National Security Agency | Cybersecurity Information | media.defense.gov"
                                         call:
                                             -
                                                 function: DisableTLSCipher
@@ -6362,7 +6227,8 @@ actions:
                                             By disabling this weak algorithm, the script improves the security of the connection.
 
                                             Authorities like Microsoft [1] [2] [3] [4] [5], NIST (FIPS) [6], CIS [7], Federal Office for Information
-                                            Security (BSI) [8], and OWASP [9] classify this algorithm as weak and recommend against its use.
+                                            Security (BSI) [8], OWASP [9], and NSA (National Security Agency) [10]
+                                            classify this algorithm as weak and recommend against its use.
 
                                             This script disables these cipher algorithms:
 
@@ -6397,6 +6263,7 @@ actions:
                                             [7]: https://web.archive.org/web/20240421101142/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_IIS_8_Benchmark_v1_4_0.pdf "CIS Microsoft IIS 8 Benchmark v1.4.0 | paper.bobylive.com"
                                             [8]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
                                             [9]: https://web.archive.org/web/20240421101557/https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/09-Testing_for_Weak_Cryptography/04-Testing_for_Weak_Encryption.html "WSTG - v4.2 | OWASP Foundation | owasp.org"
+                                            [10]: https://web.archive.org/web/20240429194121/https://media.defense.gov/2021/Jan/05/2002560140/-1/-1/0/ELIMINATING_OBSOLETE_TLS_UOO197443-20.PDF "Eliminating Obsolete Transport Layer Security (TLS) Protocol Configurations | National Security Agency | Cybersecurity Information | media.defense.gov"
                                         call:
                                             -
                                                 function: DisableTLSCipher
@@ -6424,8 +6291,9 @@ actions:
                                             The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
                                             By disabling this weak algorithm, the script improves the security of the connection.
 
-                                            Authorities like Microsoft [1], NIST (FIPS) [2], CIS [3], Federal Office for Information Security (BSI) [4]
-                                            and OWASP [5] consider this cipher weak and either discourage or disallow its use
+                                            Authorities like Microsoft [1], NIST (FIPS) [2], CIS [3], Federal Office for Information Security (BSI) [4],
+                                            OWASP [5], and NSA (National Security Agency) [6]
+                                            consider this cipher weak and either discourage or disallow its use
 
                                             This algorithm is enabled by default on Windows [2].
 
@@ -6444,6 +6312,7 @@ actions:
                                             [3]: https://web.archive.org/web/20240421101142/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_IIS_8_Benchmark_v1_4_0.pdf "CIS Microsoft IIS 8 Benchmark v1.4.0 | paper.bobylive.com"
                                             [4]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
                                             [5]: https://web.archive.org/web/20240421101557/https://owasp.org/www-project-web-security-testing-guide/v42/4-Web_Application_Security_Testing/09-Testing_for_Weak_Cryptography/04-Testing_for_Weak_Encryption.html "WSTG - v4.2 | OWASP Foundation | owasp.org"
+                                            [6]: https://web.archive.org/web/20240429194121/https://media.defense.gov/2021/Jan/05/2002560140/-1/-1/0/ELIMINATING_OBSOLETE_TLS_UOO197443-20.PDF "Eliminating Obsolete Transport Layer Security (TLS) Protocol Configurations | National Security Agency | Cybersecurity Information | media.defense.gov"
                                         call:
                                             function: DisableTLSCipher
                                             parameters:
@@ -6454,18 +6323,20 @@ actions:
                                         recommend: strict # Considered weak and vulnerable by numerous authoritative sources, may be incompatible with third-party apps.
                                         docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite text as others.
                                             This script disables the `Triple DES 168` [1] [2] [3] (`Triple DES 168/168` before Windows Vista [2] [4]) cipher,
-                                            also known as *3DES* [1] [3] [5] and *The Triple Data Encryption Algorithm (TDEA)* [6].
+                                            also known as *3DES* [1] [3] [5] [6], *The Triple Data Encryption Algorithm (TDEA)* [6] [7] and **TDES** [8].
 
                                             This script only afects the *SSL/TLS handshake* process.
                                             The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
                                             By disabling this weak algorithm, the script improves the security of the connection.
 
-                                            Authorities like Apple [5], NIST [5] [6] and Federal Office for Information Security (BSI) [4]
-                                            classify this algorithm as weak and recommend against its use.
+                                            Authorities like Apple [5] [9], NIST [5] [7] Federal Office for Information Security (BSI) [4],
+                                            NSA (National Security Agency) [8], and Office of the Chief Information Security Officer [6]
+                                            classify this cipher as weak and recommend against its use.
 
                                             This algorithm is enabled by default on Windows [2].
 
-                                            Disabling 3DES secures your communication by mitigating vulnerabilities like Sweet32 Birthday attacks [5].
+                                            Disabling 3DES secures your communication by mitigating vulnerabilities like Sweet32 Birthday attacks [5],
+                                            and the limited amount of data that can be processed under a single key [6].
 
                                             Disabling this algorithm will disallow the following cipher suites:
 
@@ -6482,7 +6353,10 @@ actions:
                                             [3]: https://web.archive.org/web/20240421101142/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_IIS_8_Benchmark_v1_4_0.pdf "CIS Microsoft IIS 8 Benchmark v1.4.0 | paper.bobylive.com"
                                             [4]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
                                             [5]: https://web.archive.org/web/20240421101545/https://sweet32.info/ "Sweet32: Birthday attacks on 64-bit block ciphers in TLS and OpenVPN"
-                                            [6]: https://web.archive.org/web/20240402105205/https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf "NIST Special Publication 800-131A Revision 2 | Transitioning the Use of Cryptographic Algorithms and Key Lengths | nvlpubs.nist.gov"
+                                            [6]: https://web.archive.org/web/20240429201312/https://www.gsa.gov/system/files?file=SSL-TLS-Implementation-%5BCIO-IT-Security-14-69-Rev-7%5D-06-12-2023.pdf
+                                            [7]: https://web.archive.org/web/20240402105205/https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf "NIST Special Publication 800-131A Revision 2 | Transitioning the Use of Cryptographic Algorithms and Key Lengths | nvlpubs.nist.gov"
+                                            [8]: https://web.archive.org/web/20240429194121/https://media.defense.gov/2021/Jan/05/2002560140/-1/-1/0/ELIMINATING_OBSOLETE_TLS_UOO197443-20.PDF "Eliminating Obsolete Transport Layer Security (TLS) Protocol Configurations | National Security Agency | Cybersecurity Information | media.defense.gov"
+                                            [9]: https://developer.apple.com/library/archive/releasenotes/MacOSX/WhatsNewInOSX/Articles/OSXv10.html
                                         call:
                                             -
                                                 function: DisableTLSCipher
@@ -6505,7 +6379,8 @@ actions:
                                             This algorithm provides no encryption [1] [5], leaving data completely unprotected.
 
                                             Authorities like Microsoft [2], NIST (FIPS) [1], CIS [3], and Federal Office for
-                                            Information Security (BSI) [4] classify this algorithm as weak and recommend against its use.
+                                            Information Security (BSI) [4], NSA (National Security Agency) [6]
+                                            classify this algorithm as weak and recommend against its use.
 
                                             This cipher is disabled by default [1].
 
@@ -6524,6 +6399,7 @@ actions:
                                             [3]: https://web.archive.org/web/20240421101142/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_IIS_8_Benchmark_v1_4_0.pdf "CIS Microsoft IIS 8 Benchmark v1.4.0 | paper.bobylive.com"
                                             [4]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
                                             [5]: https://web.archive.org/web/20240421101051/https://datatracker.ietf.org/doc/html/rfc2410 "RFC 2410 - The NULL Encryption Algorithm and Its Use With IPsec | datatracker.ietf.org"
+                                            [6]: https://web.archive.org/web/20240429194121/https://media.defense.gov/2021/Jan/05/2002560140/-1/-1/0/ELIMINATING_OBSOLETE_TLS_UOO197443-20.PDF "Eliminating Obsolete Transport Layer Security (TLS) Protocol Configurations | National Security Agency | Cybersecurity Information | media.defense.gov"
                                         call:
                                             function: DisableTLSCipher
                                             parameters:
@@ -6755,170 +6631,418 @@ actions:
                                             revertCode: >- # Missing key since Windows 10 22H2 Pro and Windows 11 23H2 Pro
                                                 reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /v "UseScsvForTls" /f 2>nul
                             -
-                                name: Disable DTLS 1.0
-                                docs: |- # refactor-with-variables: Same **Caution** text as others.
-                                    > **Caution:** This may cause compatibility issues with older devices or software.
-                                code: |-
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.0\Server" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.0\Server" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.0\Client" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.0\Client" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
-                                revertCode: |-
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.0\Server" /v "Enabled" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.0\Server" /v "DisabledByDefault" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.0\Client" /v "Enabled" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.0\Client" /v "DisabledByDefault" /f
-                            -
-                                name: Disable DTLS 1.1
-                                docs: |- # refactor-with-variables: Same **Caution** text as others.
-                                    > **Caution:** This may cause compatibility issues with older devices or software.
-                                code: |-
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.1\Server" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.1\Server" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.1\Client" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.1\Client" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
-                                revertCode: |-
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.1\Server" /v "Enabled" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.1\Server" /v "DisabledByDefault" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.1\Client" /v "Enabled" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.1\Client" /v "DisabledByDefault" /f
-                            -
-                                name: Enable DTLS 1.3 # Windows 10 and Windows Server 10 version 1903 and newer support DTLS 1.3
-                                docs: |- # refactor-with-variables: Same **Caution** text as others.
-                                    > **Caution:** This may cause compatibility issues with older devices or software.
-                                code: |-
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Server" /f /v Enabled /t REG_DWORD /d 0x00000001
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Server" /f /v DisabledByDefault /t REG_DWORD /d 0x00000000
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Client" /f /v Enabled /t REG_DWORD /d 0x00000001
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Client" /f /v DisabledByDefault /t REG_DWORD /d 0x00000000
-                                revertCode: |-
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Server" /v "Enabled" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Server" /v "DisabledByDefault" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Client" /v "Enabled" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Client" /v "DisabledByDefault" /f
-                            -
-                                name: Disable TLS 1.0
-                                docs: |- # refactor-with-variables: Same **Caution** text as others.
-                                    https://web.archive.org/web/20240314125059/https://learn.microsoft.com/en-us/dotnet/framework/network-programming/tls
+                                category: Disable insecure protocols
+                                docs: |- # refactor-with-variables: Same • Caution • authorities as others.
+                                    This category focuses on enhancing user privacy by disabling legacy and insecure communication
+                                    protocols.
+                                    It targets protocols that expose users to security vulnerabilities due to their outdated nature.
+
+                                    Retaining obsolete protocols creates a false sense of security because they may seem secure but are
+                                    vulnerable to exploitation [1].
+
+                                    Authorities like NIST [1] (FIPS [2]), NSA (National Security Agency) [1],
+                                    Office of the Chief Information Security Officer [2], Microsoft [3], Mozilla [4],
+                                    PCI Security Standards Council [5], the Center for Internet Security [6],
+                                    and IETF [9]
+                                    recommend disabling insecure and obsolete protocols.
+
+                                    Most modern operating systems [3] and browsers [4] disable these protocols by default.
+                                    However, certain protocols remain active on some Windows systems [3] [7], posing security risks.
+                                    It is crucial to disable these protocols to mitigate risks from well-known attacks such as
+                                    POODLE [5] and BEAST [5].
+
+                                    This category excludes the following protocols:
+
+                                    - **DTLS 1.1**:
+                                      DTLS 1.1 does not exist [8] [9];
+                                      its numbering was skipped to align with TLS versioning [8].
+                                    - **TLS 1.2**, and **DTLS 1.2** (based on TLS 1.2 [8]):
+                                      Although TLS 1.2 and DTLS 1.2 remain active on Windows [7] and are approved by NIST [2],
+                                      they are not endorsed by the German Federal Office for Information Security due to
+                                      vulnerabilities [10].
+                                      Disabling them could affect application functionality, and earlier versions are not
+                                      widely supported by Windows [7].
 
                                     > **Caution:** This may cause compatibility issues with older devices or software.
-                                code: |- # After disabling TLS 1.0 must be (will be) activated SchUseStrongCrypto for .NET apps
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Server" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Server" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Client" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Client" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
-                                    reg add "HKLM\SOFTWARE\Microsoft\.NETFramework\v2.0.50727" /f /v SchUseStrongCrypto /t REG_DWORD /d 0x00000001
-                                    reg add "HKLM\SOFTWARE\Microsoft\.NETFramework\v2.0.50727" /f /v SystemDefaultTlsVersions /t REG_DWORD /d 0x00000001
-                                    reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v2.0.50727" /f /v SchUseStrongCrypto /t REG_DWORD /d 0x00000001
-                                    reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v2.0.50727" /f /v SystemDefaultTlsVersions /t REG_DWORD /d 0x00000001
-                                    reg add "HKLM\SOFTWARE\Microsoft\.NETFramework\v3.0" /f /v SchUseStrongCrypto /t REG_DWORD /d 0x00000001
-                                    reg add "HKLM\SOFTWARE\Microsoft\.NETFramework\v3.0" /f /v SystemDefaultTlsVersions /t REG_DWORD /d 0x00000001
-                                    reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v3.0" /f /v SchUseStrongCrypto /t REG_DWORD /d 0x00000001
-                                    reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v3.0" /f /v SystemDefaultTlsVersions /t REG_DWORD /d 0x00000001
-                                    reg add "HKLM\SOFTWARE\Microsoft\.NETFramework\v4.0.30319" /f /v SchUseStrongCrypto /t REG_DWORD /d 0x00000001
-                                    reg add "HKLM\SOFTWARE\Microsoft\.NETFramework\v4.0.30319" /f /v SystemDefaultTlsVersions /t REG_DWORD /d 0x00000001
-                                    reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v4.0.30319" /f /v SchUseStrongCrypto /t REG_DWORD /d 0x00000001
-                                    reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v4.0.30319" /f /v SystemDefaultTlsVersions /t REG_DWORD /d 0x00000001
-                                revertCode: |-
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Server" /v "Enabled" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Server" /v "DisabledByDefault" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Client" /v "Enabled" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.0\Client" /v "DisabledByDefault" /f
-                                    reg delete "HKLM\SOFTWARE\Microsoft\.NETFramework\v2.0.50727" /v "SchUseStrongCrypto" /f
-                                    reg delete "HKLM\SOFTWARE\Microsoft\.NETFramework\v2.0.50727" /v "SystemDefaultTlsVersions" /f
-                                    reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v2.0.50727" /v "SchUseStrongCrypto" /f
-                                    reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v2.0.50727" /v "SystemDefaultTlsVersions" /f
-                                    reg delete "HKLM\SOFTWARE\Microsoft\.NETFramework\v3.0" /v "SchUseStrongCrypto" /f
-                                    reg delete "HKLM\SOFTWARE\Microsoft\.NETFramework\v3.0" /v "SystemDefaultTlsVersions" /f
-                                    reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v3.0" /v "SchUseStrongCrypto" /f
-                                    reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v3.0" /v "SystemDefaultTlsVersions" /f
-                                    reg delete "HKLM\SOFTWARE\Microsoft\.NETFramework\v4.0.30319" /v "SchUseStrongCrypto" /f
-                                    reg delete "HKLM\SOFTWARE\Microsoft\.NETFramework\v4.0.30319" /v "SystemDefaultTlsVersions" /f
-                                    reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v4.0.30319" /v "SchUseStrongCrypto" /f
-                                    reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v4.0.30319" /v "SystemDefaultTlsVersions" /f
-                            -
-                                name: Disable TLS 1.1
-                                docs: |- # refactor-with-variables: Same **Caution** text as others.
-                                    > **Caution:** This may cause compatibility issues with older devices or software.
-                                code: |-
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Server" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Server" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Client" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Client" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
-                                revertCode: |-
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Server" /v "Enabled" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Server" /v "DisabledByDefault" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Client" /v "Enabled" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.1\Client" /v "DisabledByDefault" /f
-                            -
-                                name: Disable SSLv2
-                                docs: |- # refactor-with-variables: Same **Caution** text as others.
-                                    > **Caution:** This may cause compatibility issues with older devices or software.
-                                code: |-
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Client" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Client" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
-                                revertCode: |-
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server" /v "Enabled" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Server" /v "DisabledByDefault" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Client" /v "Enabled" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 2.0\Client" /v "DisabledByDefault" /f
-                            -
-                                name: Disable SSLv3
-                                docs: |- # refactor-with-variables: Same **Caution** text as others.
-                                    > **Caution:** This may cause compatibility issues with older devices or software.
-                                code: |-
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Server" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Server" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Client" /f /v Enabled /t REG_DWORD /d 0x00000000
-                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Client" /f /v DisabledByDefault /t REG_DWORD /d 0x00000001
-                                revertCode: |-
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Server" /v "Enabled" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Server" /v "DisabledByDefault" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Client" /v "Enabled" /f
-                                    reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\SSL 3.0\Client" /v "DisabledByDefault" /f
-                            -
-                                name: Disable NetBios for all interfaces
-                                recommend: standard
-                                docs: |- # refactor-with-variables: Same **Caution** text as others.
-                                    This script enhances your network's security by turning off NetBIOS over TCP/IP for all network interfaces.
 
-                                    NetBIOS is a protocol primarily used for backward compatibility with older Windows systems [1] [2].
-                                    NetBIOS and LLMNR are susceptible to hacking techniques like spoofing [1] [2] [3] [4] [5] and man-in-the-middle
-                                    attacks [1] [2] [6], risking your credentials and unauthorized network access [2] [5] [6].
+                                    [1]: https://web.archive.org/web/20240429194121/https://media.defense.gov/2021/Jan/05/2002560140/-1/-1/0/ELIMINATING_OBSOLETE_TLS_UOO197443-20.PDF "Eliminating Obsolete Transport Layer Security (TLS) Protocol Configurations | National Security Agency | Cybersecurity Information | media.defense.gov"
+                                    [2]: https://web.archive.org/web/20240429201312/https://www.gsa.gov/system/files?file=SSL-TLS-Implementation-%5BCIO-IT-Security-14-69-Rev-7%5D-06-12-2023.pdf "IT Security Procedural Guide: SSL/TLS Implementation CIO-IT Security-14-69 | www.gsa.gov"
+                                    [3]: https://web.archive.org/web/20240429200538/https://learn.microsoft.com/en-us/windows/win32/secauthn/tls-10-11-deprecation-in-windows "TLS 1.0 and TLS 1.1 deprecation in Windows - Win32 apps | Microsoft Learn | learn.microsoft.com"
+                                    [4]: https://web.archive.org/web/20240429202616/https://blog.mozilla.org/security/2018/10/15/removing-old-versions-of-tls/ "Removing Old Versions of TLS - Mozilla Security Blog | blog.mozilla.org"
+                                    [5]: https://web.archive.org/web/20240429194236/https://blog.pcisecuritystandards.org/are-you-ready-for-30-june-2018-sayin-goodbye-to-ssl-early-tls "Are You Ready for 30 June 2018? Saying Goodbye to SSL/early TLS | blog.pcisecuritystandards.org"
+                                    [6]: https://web.archive.org/web/20240429201328/https://www.tenable.com/audits/items/CIS_NGINX_v2.0.1_Level_1_Webserver.audit:fc59c7d0c53f27720fcbca1df8f8fcc2 "4.1.4 Ensure only modern TLS protocols are used | Tenable® | www.tenable.com"
+                                    [7]: https://web.archive.org/web/20240429193908/https://learn.microsoft.com/en-us/windows/win32/secauthn/protocols-in-tls-ssl--schannel-ssp- "Protocols in TLS/SSL (Schannel SSP) - Win32 apps | Microsoft Learn | learn.microsoft.com"
+                                    [8]: https://web.archive.org/web/20240429193737/https://datatracker.ietf.org/doc/html/rfc6347 "RFC 6347 - Datagram Transport Layer Security Version 1.2 | datatracker.ietf.org"
+                                    [9]: https://web.archive.org/web/20240429200613/https://datatracker.ietf.org/doc/html/rfc8996/ "RFC 8996 - Deprecating TLS 1.0 and TLS 1.1 | datatracker.ietf.org"
+                                    [10]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
+                                children:
+                                    -
+                                        name: Disable insecure "SMBv1" protocol
+                                        recommend: standard # Recommended by Microsoft, very old, has significant security vulnerabilities
+                                        docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                            This script improves network security by disabling the outdated SMBv1 protocol.
 
-                                    NetBIOS was initially created for communication between applications in small networks [1] [3] [5] [7].
-                                    Its lack of authentication makes it easy for attackers to redirect traffic or fake network services [1] [2] [3] [4] [5] [6].
+                                            **SMBv1**, or **Server Message Block version 1**, is an outdated network protocol developed
+                                            for file and printer sharing across networks [1] [2].
+                                            This protocol is well-known for its vulnerabilities to cyber attacks [1] [2] [3] [4] [5].
+                                            Microsoft deprecated SMBv1 in 2014 [6] [7].
+                                            Since 2007, newer and more secure versions of this protocol have
+                                            replaced SMBv1 in modern versions of Windows [6].
+                                            It is still enabled by default in older Windows versions [1].
+                                            Microsoft advises disabling this protocol to strengthen security [1] [8].
+                                            SMB1 is not necessary for most users, as Microsoft ensures vendor support for at least SMB 2.0 [2].
 
-                                    Disabling NetBIOS helps protect against these security risks and reduces the exposure of Windows-specific services
-                                    to potential attackers.
+                                            The primary reasons for disabling SMBv1 include:
 
-                                    The script disables NetBIOS by changing a specific registry values
-                                    (`HKLM\SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces\{Interface}!NetbiosOptions` [1] [8]) from their default
-                                    of `0` (enabled) [5] to `2` (disabled) [5] [8] for each network interface.
+                                            - It uses the outdated MD5 hash algorithm, vulnerable to security attacks [3].
+                                            - It fails to meet modern security standards set by FIPS [3], CISA (US-CERT) [5],
+                                            CIS (Department of Defense) [3], and Microsoft Security Baseline [8].
+                                            - It lacks the efficiency and performance improvements present in newer versions of the protocol [2].
+                                            - It is vulnerable to various cyber threats [1] [2] [3] [4] [5],
+                                            , including ransomware and malware [1] [2].
 
-                                    [1]: https://web.archive.org/web/20240218210552/https://bobcares.com/blog/disable-netbios-and-llmnr-protocols-in-windows-using-gpo/ "Disable NetBIOS and LLMNR Protocols in Windows Using GPO | bobcares.com"
-                                    [5]: https://web.archive.org/web/20240218210635/https://10dsecurity.com/blog-saying-goodbye-netbios.html "Saying Goodbye To NetBIOS | 10-D Security | 10dsecurity.com"
-                                    [3]: https://web.archive.org/web/20240218210736/https://4sysops.com/archives/disable-netbios-in-windows-networks/ "Disable NetBIOS in Windows networks – 4sysops | 4sysops.com"
-                                    [4]: https://web.archive.org/web/20240218211817/https://www.sternsecurity.com/blog/local-network-attacks-llmnr-and-nbt-ns-poisoning/ "Local Network Attacks: LLMNR and NBT-NS Poisoning - Stern Security | www.sternsecurity.com"
-                                    [2]: https://web.archive.org/web/20240218211748/https://en.wikipedia.org/wiki/NetBIOS_over_TCP/IP "NetBIOS over TCP/IP - Wikipedia | en.wikipedia.org"
-                                    [6]: https://web.archive.org/web/20240218210724/http://www.packetstan.com/2011/03/nbns-spoofing-on-your-way-to-world.html "Packetstan: NBNS Spoofing on your way to World Domination | www.packetstan.com"
-                                    [7]: https://web.archive.org/web/20240218211730/https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-2000-server/cc940063%28v=technet.10%29?redirectedfrom=MSDN "NetBIOS Over TCP/IP | Microsoft Learn | learn.microsoft.com"
-                                    [8]: https://web.archive.org/web/20240218210626/https://learn.microsoft.com/en-us/archive/msdn-technet-forums/c5f3c095-1ad2-4963-b075-787f800b81f2 "Disabling NETBIOS via GP | Microsoft Learn | social.technet.microsoft.com"
-                                call:
-                                    function: RunPowerShell
-                                    parameters:
-                                        code: |-
-                                            $key = 'HKLM:SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces'
-                                            Get-ChildItem $key | ForEach {
-                                                Set-ItemProperty -Path "$key\$($_.PSChildName)" -Name NetbiosOptions -Value 2 -Verbose
-                                            }
-                                        revertCode: |-
-                                            $key = 'HKLM:SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces'
-                                            Get-ChildItem $key | ForEach {
-                                                Set-ItemProperty -Path "$key\$($_.PSChildName)" -Name NetbiosOptions -Value 0 -Verbose
-                                            }
+                                            Disabling SMBv1 may lead to compatibility issues with older network devices and software [1] [3] [6] [9].
+                                            This may affect file sharing and print services on systems like Windows Server 2003 [3]
+                                            and some older Network Attached Storage (NAS) devices [3].
+                                            These systems are insecure and are no longer supported.
+
+                                            This script makes the following changes to your system:
+
+                                            - Removal of SMBv1 components:
+                                            - `SMB1Protocol` [2] [3] [4] [10] (also known as `FS-SMB1` [2] [11])
+                                            - `SMB1Protocol-Client` [10]
+                                            - `SMB1Protocol-Server` [10].
+                                            - Disabling the `mrxsmb10` (SMB 1.x MiniRedirector [12]) driver,
+                                            linked with SMBv1 [1] [4] [13],
+                                            and adjusting related settings to keep older systems stable [1] [4] [13].
+                                            - Disabling server side processing of SMBv1 protocol using
+                                            `HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters!SMBv1` registry key [1] [14] [15].
+
+                                            These changes require a system reboot to take effect [1] [4] [9].
+
+                                            > **Caution:** This may cause compatibility issues with older devices or software.
+
+                                            ### Overview of default feature statuses
+
+                                            `SMB1Protocol`:
+
+                                            | | |
+                                            | ---- | --- |
+                                            | **Feature name**  | `SMB1Protocol` |
+                                            | **Display name**  | SMB 1.0/CIFS File Sharing Support |
+                                            | **Description**  | Support for the SMB 1.0/CIFS file sharing protocol, and the Computer Browser protocol. |
+                                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                                            | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
+
+                                            `SMB1Protocol-Client`:
+
+                                            | | |
+                                            | ---- | --- |
+                                            | **Feature name**  | `SMB1Protocol-Client` |
+                                            | **Display name**  | SMB 1.0/CIFS Client |
+                                            | **Description**  | Support for the SMB 1.0/CIFS client for accessing legacy servers. |
+                                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                                            | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
+
+                                            `SMB1Protocol-Server`:
+
+                                            | | |
+                                            | ---- | --- |
+                                            | **Feature name**  | `SMB1Protocol-Server` |
+                                            | **Display name**  | SMB 1.0/CIFS Server |
+                                            | **Description**  | Support for the SMB 1.0/CIFS file server for sharing data with legacy clients and browsing the network neighborhood. |
+                                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                                            | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
+
+                                            ### Overview of default service statuses
+
+                                            SMB 1.x MiniRedirector (`mrxsmb10`):
+
+                                            | OS Version | Status | Start type |
+                                            | ---------- | -------| ---------- |
+                                            | Windows 11 (≥ 23H2) | 🟡 Missing | N/A |
+                                            | Windows 10 (≥ 22H2) | 🟡 Missing | N/A |
+
+                                            [1]: https://web.archive.org/web/20240413122756/https://learn.microsoft.com/en-us/archive/blogs/secguide/disabling-smbv1-through-group-policy "Disabling SMBv1 through Group Policy | Microsoft Learn | learn.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240413124106/https://techcommunity.microsoft.com/t5/storage-at-microsoft/stop-using-smb1/ba-p/425858 "Stop using SMB1 - Microsoft Community Hub | techcommunity.microsoft.com"
+                                            [3]: https://web.archive.org/web/20240413124245/https://www.stigviewer.com/stig/microsoft_windows_10/2023-09-29/finding/V-220729 "The Server Message Block (SMB) v1 protocol must be disabled on the system. | www.stigviewer.com"
+                                            [4]: https://web.archive.org/web/20240413122807/https://learn.microsoft.com/en-US/windows-server/storage/file-server/troubleshoot/detect-enable-and-disable-smbv1-v2-v3?tabs=server "Server | How to detect, enable and disable SMBv1, SMBv2, and SMBv3 in Windows | Microsoft Learn | learn.microsoft.com"
+                                            [5]: https://web.archive.org/web/20240413124050/https://www.cisa.gov/news-events/alerts/2017/01/16/smb-security-best-practices "SMB Security Best Practices | CISA | www.cisa.gov"
+                                            [6]: https://web.archive.org/web/20240413122812/https://learn.microsoft.com/en-us/windows-server/storage/file-server/troubleshoot/smbv1-not-installed-by-default-in-windows "SMBv1 is not installed by default in Windows 10 version 1709, Windows Server version 1709 and later versions | Microsoft Learn | learn.microsoft.com"
+                                            [7]: https://web.archive.org/web/20240413124101/https://learn.microsoft.com/en-us/archive/blogs/josebda/the-deprecation-of-smb1-you-should-be-planning-to-get-rid-of-this-old-smb-dialect "The Deprecation of SMB1 – You should be planning to get rid of this old SMB dialect | Microsoft Learn | learn.microsoft.com"
+                                            [8]: https://web.archive.org/web/20240413122800/https://learn.microsoft.com/en-us/archive/blogs/secguide/security-baseline-for-windows-10-creators-update-v1703-draft "Security baseline for Windows 10 \"Creators Update\" (v1703) – DRAFT | Microsoft Learn | learn.microsoft.com"
+                                            [9]: https://web.archive.org/web/20240413125713/https://learn.microsoft.com/en-US/windows-server/storage/file-server/troubleshoot/detect-enable-and-disable-smbv1-v2-v3?tabs=client "Client | How to detect, enable and disable SMBv1, SMBv2, and SMBv3 in Windows | Microsoft Learn | learn.microsoft.com"
+                                            [10]: https://web.archive.org/web/20240413124113/https://learn.microsoft.com/en-us/powershell/module/smbshare/remove-smbcomponent?view=windowsserver2025-ps&wt.mc_id=ps-gethelp "Remove-SmbComponent (SmbShare) | Microsoft Learn | learn.microsoft.com"
+                                            [11]: https://web.archive.org/web/20240413124320/https://www.stigviewer.com/stig/windows_server_2016/2020-06-16/finding/V-73299 "The Server Message Block (SMB) v1 protocol must be uninstalled. | www.stigviewer.com"
+                                            [12]: https://web.archive.org/web/20240413124418/https://revertservice.com/10/mrxsmb10/ "SMB 1.x MiniRedirector (mrxsmb10) Service Defaults in Windows 10 | revertservice.com"
+                                            [13]: https://web.archive.org/web/20240413124409/https://www.stigviewer.com/stig/windows_server_20122012_r2_domain_controller/2019-01-16/finding/V-73523 "The Server Message Block (SMB) v1 protocol must be disabled on the SMB client. | www.stigviewer.com"
+                                            [14]: https://web.archive.org/web/20240413124606/https://admx.help/?Category=security-compliance-toolkit&Policy=Microsoft.Policies.SecGuide::Pol_SecGuide_0001_SMBv1_Server "Configure SMB v1 server | admx.help"
+                                            [15]: https://web.archive.org/web/20240418073214/https://support.microsoft.com/en-us/topic/908332b7-49de-a86c-dba3-401b9fe8116f "Server service configuration and tuning - Microsoft Support | support.microsoft.com"
+                                        call:
+                                            -
+                                                function: DisableWindowsFeature
+                                                parameters:
+                                                    featureName: SMB1Protocol # Get-WindowsOptionalFeature -FeatureName 'SMB1Protocol' -Online
+                                                    disabledByDefault: true
+                                            -
+                                                function: DisableWindowsFeature
+                                                parameters:
+                                                    featureName: SMB1Protocol-Client # Get-WindowsOptionalFeature -FeatureName 'SMB1Protocol-Client' -Online
+                                                    disabledByDefault: true
+                                            -
+                                                function: DisableWindowsFeature
+                                                parameters:
+                                                    featureName: SMB1Protocol-Server # Get-WindowsOptionalFeature -FeatureName 'SMB1Protocol-Server' -Online
+                                                    disabledByDefault: true
+                                            -
+                                                function: DisableService
+                                                parameters:
+                                                    serviceName: mrxsmb10 # Check: (Get-Service -Name 'mrxsmb10').StartType
+                                                    defaultStartupMode: Automatic # Allowed values: Boot | System | Automatic | Manual
+                                                    ignoreMissingOnRevert: true # This service is only available when SMB1 feature is installed
+                                            -
+                                                function: RunInlineCode
+                                                # This ensures that `lanmanworkstation` does not depend on `mrxsmb10` to avoid potential system issues.
+                                                # Its configuration is already the OS default on modern versions of Windows, see: `sc qc lanmanworkstation`.
+                                                parameters:
+                                                    code: sc.exe config lanmanworkstation depend= bowser/mrxsmb20/nsi
+                                                    revertCode: sc.exe config lanmanworkstation depend= bowser/mrxsmb20/nsi
+                                            -
+                                                function: RunInlineCode
+                                                parameters:
+                                                    code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "SMBv1" /t "REG_DWORD" /d "0" /f
+                                                    revertCode: >- # Key does not exist (tested: Windows 10 22H2 and Windows 11 23H2)
+                                                        reg delete "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "SMBv1" /f 2>nul
+                                            -
+                                                function: ShowComputerRestartSuggestion
+                                    -
+                                        name: Disable insecure "NetBios" protocol
+                                        recommend: standard
+                                        docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                            This script enhances your network's security by turning off NetBIOS over TCP/IP for all network interfaces.
+
+                                            NetBIOS is a protocol primarily used for backward compatibility with older Windows systems [1] [2].
+                                            NetBIOS and LLMNR are susceptible to hacking techniques like spoofing [1] [2] [3] [4] [5] and man-in-the-middle
+                                            attacks [1] [2] [6], risking your credentials and unauthorized network access [2] [5] [6].
+
+                                            NetBIOS was initially created for communication between applications in small networks [1] [3] [5] [7].
+                                            Its lack of authentication makes it easy for attackers to redirect traffic or fake network services [1] [2] [3] [4] [5] [6].
+
+                                            Disabling NetBIOS helps protect against these security risks and reduces the exposure of Windows-specific services
+                                            to potential attackers.
+
+                                            The script disables NetBIOS by changing a specific registry values
+                                            (`HKLM\SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces\{Interface}!NetbiosOptions` [1] [8]) from their default
+                                            of `0` (enabled) [5] to `2` (disabled) [5] [8] for each network interface.
+
+                                            [1]: https://web.archive.org/web/20240218210552/https://bobcares.com/blog/disable-netbios-and-llmnr-protocols-in-windows-using-gpo/ "Disable NetBIOS and LLMNR Protocols in Windows Using GPO | bobcares.com"
+                                            [5]: https://web.archive.org/web/20240218210635/https://10dsecurity.com/blog-saying-goodbye-netbios.html "Saying Goodbye To NetBIOS | 10-D Security | 10dsecurity.com"
+                                            [3]: https://web.archive.org/web/20240218210736/https://4sysops.com/archives/disable-netbios-in-windows-networks/ "Disable NetBIOS in Windows networks – 4sysops | 4sysops.com"
+                                            [4]: https://web.archive.org/web/20240218211817/https://www.sternsecurity.com/blog/local-network-attacks-llmnr-and-nbt-ns-poisoning/ "Local Network Attacks: LLMNR and NBT-NS Poisoning - Stern Security | www.sternsecurity.com"
+                                            [2]: https://web.archive.org/web/20240218211748/https://en.wikipedia.org/wiki/NetBIOS_over_TCP/IP "NetBIOS over TCP/IP - Wikipedia | en.wikipedia.org"
+                                            [6]: https://web.archive.org/web/20240218210724/http://www.packetstan.com/2011/03/nbns-spoofing-on-your-way-to-world.html "Packetstan: NBNS Spoofing on your way to World Domination | www.packetstan.com"
+                                            [7]: https://web.archive.org/web/20240218211730/https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-2000-server/cc940063%28v=technet.10%29?redirectedfrom=MSDN "NetBIOS Over TCP/IP | Microsoft Learn | learn.microsoft.com"
+                                            [8]: https://web.archive.org/web/20240218210626/https://learn.microsoft.com/en-us/archive/msdn-technet-forums/c5f3c095-1ad2-4963-b075-787f800b81f2 "Disabling NETBIOS via GP | Microsoft Learn | social.technet.microsoft.com"
+                                        call:
+                                            function: RunPowerShell
+                                            parameters:
+                                                code: |-
+                                                    $key = 'HKLM:SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces'
+                                                    Get-ChildItem $key | ForEach {
+                                                        Set-ItemProperty -Path "$key\$($_.PSChildName)" -Name NetbiosOptions -Value 2 -Verbose
+                                                    }
+                                                revertCode: |-
+                                                    $key = 'HKLM:SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces'
+                                                    Get-ChildItem $key | ForEach {
+                                                        Set-ItemProperty -Path "$key\$($_.PSChildName)" -Name NetbiosOptions -Value 0 -Verbose
+                                                    }
+                                    -
+                                        name: Disable insecure "SSL 2.0" protocol
+                                        recommend: standard # Outdated protocol, removed from Windows
+                                        docs: |- # refactor-with-variables: Same • Caution • identified as • authorities • previously enabled as others.
+                                            This script disables the SSL 2.0 protocol.
+                                            This protocol is identified as `SSL 2.0` on Windows [1] [2] [3],
+                                            and also known as *SSL2* [4] [5].
+
+                                            Modern Windows systems no longer include SSL 2.0 due to its security flaws [2] [4].
+                                            It was previously enabled by default [4],
+                                            posing significant security risks from well-known vulnerabilities [5].
+
+                                            Authorities like NIST (FIPS) [6], NSA (National Security Agency) [7],
+                                            PCI Security Standards Council [8], IETF [5],
+                                            and Federal Office for Information Security (BSI) [3]
+                                            recommend disabling this insecure and obsolete protocol.
+
+                                            > **Caution:** This may cause compatibility issues with older devices or software.
+
+                                            [1]: https://web.archive.org/web/20240429203554/https://admx.help/?Category=Schannel&Policy=Microsoft.Policies.SSLControl::PROTO_Enable_SSL_2_0 "Secure Sockets Layer (SSL) 2.0 | admx.help"
+                                            [2]: https://web.archive.org/web/20180228160431/https://docs.microsoft.com/en-us/windows-server/security/tls/tls-registry-settings#ssl-20 "Transport Layer Security (TLS) registry settings | Microsoft Docs | docs.microsoft.com"
+                                            [3]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
+                                            [4]: https://web.archive.org/web/20240429193908/https://learn.microsoft.com/en-us/windows/win32/secauthn/protocols-in-tls-ssl--schannel-ssp- "Protocols in TLS/SSL (Schannel SSP) - Win32 apps | Microsoft Learn | learn.microsoft.com"
+                                            [5]: https://web.archive.org/web/20240429203545/https://datatracker.ietf.org/doc/html/rfc6176 "RFC 6176 - Prohibiting Secure Sockets Layer (SSL) Version 2.0 | datatracker.ietf.org"
+                                            [6]: https://web.archive.org/web/20240429201312/https://www.gsa.gov/system/files?file=SSL-TLS-Implementation-%5BCIO-IT-Security-14-69-Rev-7%5D-06-12-2023.pdf "IT Security Procedural Guide: SSL/TLS Implementation CIO-IT Security-14-69 | www.gsa.gov"
+                                            [7]: https://web.archive.org/web/20240429194121/https://media.defense.gov/2021/Jan/05/2002560140/-1/-1/0/ELIMINATING_OBSOLETE_TLS_UOO197443-20.PDF "Eliminating Obsolete Transport Layer Security (TLS) Protocol Configurations | National Security Agency | Cybersecurity Information | media.defense.gov"
+                                            [8]: https://web.archive.org/web/20240429194236/https://blog.pcisecuritystandards.org/are-you-ready-for-30-june-2018-sayin-goodbye-to-ssl-early-tls "Are You Ready for 30 June 2018? Saying Goodbye to SSL/early TLS | blog.pcisecuritystandards.org"
+                                        call:
+                                            function: DisableTLSProtocol
+                                            parameters:
+                                                protocolName: SSL 2.0
+                                    -
+                                        name: Disable insecure "SSL 3.0" protocol
+                                        recommend: standard # Outdated protocol, disabled by default
+                                        docs: |- # refactor-with-variables: Same • Caution • identified as • authorities • previously enabled as others.
+                                            This script disables the SSL 3.0.
+                                            This protocol is identified as `SSL 3.0` on Windows [1] [2] [3],
+                                            and also known as *SSL3* [4] or *SSLv3* [5].
+
+                                            Modern Windows systems disable SSL 3.0 by default due to its security flaws [2] [4].
+                                            It was previously enabled by default [4],
+                                            posing significant security risks from well-known vulnerabilities [6],
+                                            including the POODLE [6] [7] [8] and BEAST [7] attacks.
+
+                                            Authorities like NIST (FIPS) [8], IETF [6], Apple [5], PCI Security Standards Council [7],
+                                            Federal Office for Information Security (BSI) [3], Office of the Chief Information Security Officer [8]
+                                            and NSA (National Security Agency) [9]
+                                            recommend disabling this insecure and obsolete protocol.
+
+                                            > **Caution:** This may cause compatibility issues with older devices or software.
+
+                                            [1]: https://web.archive.org/web/20240429205252/https://admx.help/?Category=Schannel&Policy=Microsoft.Policies.SSLControl::PROTO_Enable_SSL_3_0 "Secure Sockets Layer (SSL) 3.0 | admx.help"
+                                            [2]: https://web.archive.org/web/20180228160431/https://docs.microsoft.com/en-us/windows-server/security/tls/tls-registry-settings#ssl-30 "Transport Layer Security (TLS) registry settings | Microsoft Docs | docs.microsoft.com"
+                                            [3]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
+                                            [4]: https://web.archive.org/web/20240429193908/https://learn.microsoft.com/en-us/windows/win32/secauthn/protocols-in-tls-ssl--schannel-ssp- "Protocols in TLS/SSL (Schannel SSP) - Win32 apps | Microsoft Learn | learn.microsoft.com"
+                                            [5]: https://web.archive.org/web/20240426092153/https://developer.apple.com/library/archive/releasenotes/MacOSX/WhatsNewInOSX/Articles/OSXv10.html "macOS Sierra 10.12 | developer.apple.com"
+                                            [6]: https://web.archive.org/web/20240429205513/https://datatracker.ietf.org/doc/html/rfc7568 "RFC 7568 - Deprecating Secure Sockets Layer Version 3.0 | datatracker.ietf.org"
+                                            [7]: https://web.archive.org/web/20240429194236/https://blog.pcisecuritystandards.org/are-you-ready-for-30-june-2018-sayin-goodbye-to-ssl-early-tls "Are You Ready for 30 June 2018? Saying Goodbye to SSL/early TLS | blog.pcisecuritystandards.org"
+                                            [8]: https://web.archive.org/web/20240429201312/https://www.gsa.gov/system/files?file=SSL-TLS-Implementation-%5BCIO-IT-Security-14-69-Rev-7%5D-06-12-2023.pdf "IT Security Procedural Guide: SSL/TLS Implementation CIO-IT Security-14-69 | www.gsa.gov"
+                                            [9]: https://web.archive.org/web/20240429194121/https://media.defense.gov/2021/Jan/05/2002560140/-1/-1/0/ELIMINATING_OBSOLETE_TLS_UOO197443-20.PDF "Eliminating Obsolete Transport Layer Security (TLS) Protocol Configurations | National Security Agency | Cybersecurity Information | media.defense.gov"
+                                        call:
+                                            function: DisableTLSProtocol
+                                            parameters:
+                                                protocolName: SSL 3.0
+                                    -
+                                        name: Disable insecure "TLS 1.0" protocol
+                                        recommend: strict # Newly disabled by Microsoft, but may lead to compatibility issues
+                                        docs: |- # refactor-with-variables: Same • Caution • identified as • authorities • browsers • previously enabled as others.
+                                            This script disables the TLS 1.0 [1] [2] [3] protocol.
+                                            This protocol is identified as `TLS 1.0` on Windows [1] [2] [3].
+
+                                            Although deprecated and unsupported in newer Windows versions [4],
+                                            it remains enabled by default in older versions [5].
+                                            This protocol has well-documented security vulnerabilities [6],
+                                            including security attacks such as BEAST and Klima [7].
+
+                                            Major browsers, including Safari [8], Firefox [9], Chrome [10] and Edge [11],
+                                            now disable this protocol by default.
+
+                                            Authorities like NIST (FIPS) [7], IETF [6] [9], NSA (National Security Agency) [7] [12],
+                                            Apple [8], Mozilla [9], Microsoft [4] [11], Google [10], PCI Security Standards Council [13],
+                                            Federal Office for Information Security (BSI) in Germany [3], and
+                                            Office of the Chief Information Security Officer [11]
+                                            recommend disabling this insecure and obsolete protocol.
+
+                                            While disabling TLS 1.0 improves security, it may disrupt certain older applications that
+                                            depend on this protocol [4] [7].
+
+                                            > **Caution:** This may cause compatibility issues with older devices or software.
+
+                                            [1]: https://web.archive.org/web/20240429210356/https://admx.help/?Category=Schannel&Policy=Microsoft.Policies.SSLControl::PROTO_Enable_TLS_1_0 "Transport Layer Security (TLS) 1.0 | admx.help"
+                                            [2]: https://web.archive.org/web/20180228160431/https://docs.microsoft.com/en-us/windows-server/security/tls/tls-registry-settings#dtls-10 "Transport Layer Security (TLS) registry settings | Microsoft Docs | docs.microsoft.com"
+                                            [3]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
+                                            [4]: https://web.archive.org/web/20240429200538/https://learn.microsoft.com/en-us/windows/win32/secauthn/tls-10-11-deprecation-in-windows "TLS 1.0 and TLS 1.1 deprecation in Windows - Win32 apps | Microsoft Learn | learn.microsoft.com"
+                                            [5]: https://web.archive.org/web/20240429193908/https://learn.microsoft.com/en-us/windows/win32/secauthn/protocols-in-tls-ssl--schannel-ssp- "Protocols in TLS/SSL (Schannel SSP) - Win32 apps | Microsoft Learn | learn.microsoft.com"
+                                            [6]: https://web.archive.org/web/20240429200613/https://datatracker.ietf.org/doc/html/rfc8996/ "RFC 8996 - Deprecating TLS 1.0 and TLS 1.1 | datatracker.ietf.org"
+                                            [7]: https://web.archive.org/web/20240429201312/https://www.gsa.gov/system/files?file=SSL-TLS-Implementation-%5BCIO-IT-Security-14-69-Rev-7%5D-06-12-2023.pdf "IT Security Procedural Guide: SSL/TLS Implementation CIO-IT Security-14-69 | www.gsa.gov"
+                                            [8]: https://web.archive.org/web/20240429210701/https://webkit.org/blog/8462/deprecation-of-legacy-tls-1-0-and-1-1-versions/ "Deprecation of Legacy TLS 1.0 and 1.1 Versions | WebKit | webkit.org"
+                                            [9]: https://web.archive.org/web/20240429202616/https://blog.mozilla.org/security/2018/10/15/removing-old-versions-of-tls/ "Removing Old Versions of TLS - Mozilla Security Blog | blog.mozilla.org"
+                                            [10]: https://archive.ph/2024.04.26-145435/https://chromestatus.com/feature/5759116003770368 "TLS 1.0 and TLS 1.1 - Chrome Platform Status | chromestatus.com"
+                                            [11]: https://web.archive.org/web/20240429210548/https://blogs.windows.com/msedgedev/2018/10/15/modernizing-tls-edge-ie11/ "Modernizing TLS connections in Microsoft Edge and Internet Explorer 11 - Microsoft Edge Blog | blogs.windows.com"
+                                            [12]: https://web.archive.org/web/20240429194121/https://media.defense.gov/2021/Jan/05/2002560140/-1/-1/0/ELIMINATING_OBSOLETE_TLS_UOO197443-20.PDF "Eliminating Obsolete Transport Layer Security (TLS) Protocol Configurations | National Security Agency | Cybersecurity Information | media.defense.gov"
+                                            [13]: https://web.archive.org/web/20240429194236/https://blog.pcisecuritystandards.org/are-you-ready-for-30-june-2018-sayin-goodbye-to-ssl-early-tls "Are You Ready for 30 June 2018? Saying Goodbye to SSL/early TLS | blog.pcisecuritystandards.org"
+                                        call:
+                                            function: DisableTLSProtocol
+                                            parameters:
+                                                protocolName: TLS 1.0
+                                    -
+                                        name: Disable insecure "TLS 1.1" protocol
+                                        recommend: strict # Deprecated by Microsoft, but may lead to compatibility issues
+                                        docs: |- # refactor-with-variables: Same • Caution • identified as • authorities • browsers • previously enabled as others.
+                                            This script disables the TLS 1.1 protocol.
+                                            This protocol is identified as `TLS 1.1` on Windows [1] [2] [3].
+
+                                            Although deprecated and unsupported in newer Windows versions [4],
+                                            it remains enabled by default in older versions [5].
+                                            This protocol contains fundamental well-documented security vulnerabilities [6].
+
+                                            Major browsers, including Safari [7], Firefox [8], Chrome [9] and Edge [10],
+                                            now disable this protocol by default.
+
+                                            Authorities like NIST (FIPS) [11], IETF [6] [8], NSA (National Security Agency) [11] [12],
+                                            Apple [7], Mozilla [8], Microsoft [4] [10], Google [9], PCI Security Standards Council [3],
+                                            Federal Office for Information Security (BSI) in Germany [3],
+                                            and Office of the Chief Information Security Officer [11]
+                                            recommend disabling this insecure and obsolete protocol.
+
+                                            While disabling TLS 1.1 improves security, it may disrupt certain older applications that
+                                            depend on this protocol [4] [11].
+
+                                            > **Caution:** This may cause compatibility issues with older devices or software.
+
+                                            [1]: https://web.archive.org/web/20240429211424/https://admx.help/?Category=Schannel&Policy=Microsoft.Policies.SSLControl::PROTO_Enable_TLS_1_1 "Transport Layer Security (TLS) 1.1 | admx.help"
+                                            [2]: https://web.archive.org/web/20180228160431/https://docs.microsoft.com/en-us/windows-server/security/tls/tls-registry-settings#tls-11 "Transport Layer Security (TLS) registry settings | Microsoft Docs | docs.microsoft.com"
+                                            [3]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
+                                            [4]: https://web.archive.org/web/20240429200538/https://learn.microsoft.com/en-us/windows/win32/secauthn/tls-10-11-deprecation-in-windows "TLS 1.0 and TLS 1.1 deprecation in Windows - Win32 apps | Microsoft Learn | learn.microsoft.com"
+                                            [5]: https://web.archive.org/web/20240429193908/https://learn.microsoft.com/en-us/windows/win32/secauthn/protocols-in-tls-ssl--schannel-ssp- "Protocols in TLS/SSL (Schannel SSP) - Win32 apps | Microsoft Learn | learn.microsoft.com"
+                                            [6]: https://web.archive.org/web/20240429200613/https://datatracker.ietf.org/doc/html/rfc8996/ "RFC 8996 - Deprecating TLS 1.0 and TLS 1.1 | datatracker.ietf.org"
+                                            [7]: https://web.archive.org/web/20240429210701/https://webkit.org/blog/8462/deprecation-of-legacy-tls-1-0-and-1-1-versions/ "Deprecation of Legacy TLS 1.0 and 1.1 Versions | WebKit | webkit.org"
+                                            [8]: https://web.archive.org/web/20240429202616/https://blog.mozilla.org/security/2018/10/15/removing-old-versions-of-tls/ "Removing Old Versions of TLS - Mozilla Security Blog | blog.mozilla.org"
+                                            [9]: https://archive.ph/2024.04.26-145435/https://chromestatus.com/feature/5759116003770368 "TLS 1.0 and TLS 1.1 - Chrome Platform Status | chromestatus.com"
+                                            [10]: https://web.archive.org/web/20240429210548/https://blogs.windows.com/msedgedev/2018/10/15/modernizing-tls-edge-ie11/ "Modernizing TLS connections in Microsoft Edge and Internet Explorer 11 - Microsoft Edge Blog | blogs.windows.com"
+                                            [11]: https://web.archive.org/web/20240429201312/https://www.gsa.gov/system/files?file=SSL-TLS-Implementation-%5BCIO-IT-Security-14-69-Rev-7%5D-06-12-2023.pdf "IT Security Procedural Guide: SSL/TLS Implementation CIO-IT Security-14-69 | www.gsa.gov"
+                                            [12]: https://web.archive.org/web/20240429194121/https://media.defense.gov/2021/Jan/05/2002560140/-1/-1/0/ELIMINATING_OBSOLETE_TLS_UOO197443-20.PDF "Eliminating Obsolete Transport Layer Security (TLS) Protocol Configurations | National Security Agency | Cybersecurity Information | media.defense.gov"
+                                        call:
+                                            function: DisableTLSProtocol
+                                            parameters:
+                                                protocolName: TLS 1.1
+                                    -
+                                        name: Disable insecure "DTLS 1.0" protocol
+                                        docs: |- # refactor-with-variables: Same • Caution • identified as • authorities as others.
+                                            This script disables the DTLS 1.0 protocol.
+                                            This protocol is identified as `DTLS 1.0` on Windows [1] [2].
+                                            It is enabled by default [2].
+
+                                            It is considered insecure [3] [4] and has been deprecated by Microsoft due to its vulnerabilities [5].
+                                            It's based on TLS 1.1 [3], which is also deprecated and insecure [3] [4] [5] [6].
+
+                                            Authorities like NIST (FIPS) [6], IETF [3], Microsoft [5], and NSA (National Security Agency) [4]
+                                            recommend disabling this insecure and obsolete protocol.
+
+                                            > **Caution:** This may cause compatibility issues with older devices or software.
+
+                                            [1]: https://web.archive.org/web/20180228160431/https://docs.microsoft.com/en-us/windows-server/security/tls/tls-registry-settings#dtls-10 "Transport Layer Security (TLS) registry settings | Microsoft Docs | docs.microsoft.com"
+                                            [2]: https://web.archive.org/web/20240429193908/https://learn.microsoft.com/en-us/windows/win32/secauthn/protocols-in-tls-ssl--schannel-ssp- "Protocols in TLS/SSL (Schannel SSP) - Win32 apps | Microsoft Learn | learn.microsoft.com"
+                                            [3]: https://web.archive.org/web/20240429200613/https://datatracker.ietf.org/doc/html/rfc8996/ "RFC 8996 - Deprecating TLS 1.0 and TLS 1.1 | datatracker.ietf.org"
+                                            [4]: https://web.archive.org/web/20240429194121/https://media.defense.gov/2021/Jan/05/2002560140/-1/-1/0/ELIMINATING_OBSOLETE_TLS_UOO197443-20.PDF "Eliminating Obsolete Transport Layer Security (TLS) Protocol Configurations | National Security Agency | Cybersecurity Information | media.defense.gov"
+                                            [5]: https://web.archive.org/web/20240429200538/https://learn.microsoft.com/en-us/windows/win32/secauthn/tls-10-11-deprecation-in-windows "TLS 1.0 and TLS 1.1 deprecation in Windows - Win32 apps | Microsoft Learn | learn.microsoft.com"
+                                            [6]: https://web.archive.org/web/20240429201312/https://www.gsa.gov/system/files?file=SSL-TLS-Implementation-%5BCIO-IT-Security-14-69-Rev-7%5D-06-12-2023.pdf "IT Security Procedural Guide: SSL/TLS Implementation CIO-IT Security-14-69 | www.gsa.gov"
+                                        call:
+                                            function: DisableTLSProtocol
+                                            parameters:
+                                                protocolName: DTLS 1.0
+                    -
+                        name: Enable DTLS 1.3 # Windows 10 and Windows Server 10 version 1903 and newer support DTLS 1.3
+                        docs: |- # refactor-with-variables: Same **Caution** text as others.
+                            > **Caution:** This may cause compatibility issues with older devices or software.
+                        code: |-
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Server" /f /v Enabled /t REG_DWORD /d 0x00000001
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Server" /f /v DisabledByDefault /t REG_DWORD /d 0x00000000
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Client" /f /v Enabled /t REG_DWORD /d 0x00000001
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Client" /f /v DisabledByDefault /t REG_DWORD /d 0x00000000
+                        revertCode: |-
+                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Server" /v "Enabled" /f
+                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Server" /v "DisabledByDefault" /f
+                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Client" /v "Enabled" /f
+                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Client" /v "DisabledByDefault" /f
                     -
                         name: Enable TLS 1.3
                         code: |-
@@ -20146,8 +20270,8 @@ functions:
             -
                 function: Comment
                 parameters:
-                    codeComment: Require "{{ $algorithmName }}" key exchange algorithm to have at "{{ $keySizeInBits }}" least bits keys during a TLS/SSL handshake
-                    revertCodeComment: Restore key size requirement for "{{ $algorithmName }}" during a TLS/SSL handshake
+                    codeComment: Require "{{ $algorithmName }}" key exchange algorithm to have at "{{ $keySizeInBits }}" least bits keys for TLS/SSL handshakes
+                    revertCodeComment: Restore key size requirement for "{{ $algorithmName }}" for TLS/SSL handshakes
             -
                 function: RunInlineCode
                 # Marked: refactor-with-if-syntax
@@ -20184,8 +20308,8 @@ functions:
             -
                 function: Comment
                 parameters:
-                    codeComment: Disable the use of "{{ $algorithmName }}" cipher algorithm during a TLS/SSL handshake
-                    revertCodeComment: Restore the use of "{{ $algorithmName }}" cipher algorithm during a TLS/SSL handshake
+                    codeComment: Disable the use of "{{ $algorithmName }}" cipher algorithm for TLS/SSL handshakes
+                    revertCodeComment: Restore the use of "{{ $algorithmName }}" cipher algorithm for TLS/SSL handshakes
             -
                 function: RunInlineCode
                 parameters:
@@ -20343,8 +20467,8 @@ functions:
             -
                 function: Comment
                 parameters:
-                    codeComment: Disable usage of "{{ $algorithmName }}" hash algorithm during a TLS/SSL handshake
-                    revertCodeComment: Restore usage of "{{ $algorithmName }}" hash algorithm during a TLS/SSL handshake
+                    codeComment: Disable usage of "{{ $algorithmName }}" hash algorithm for TLS/SSL handshakes
+                    revertCodeComment: Restore usage of "{{ $algorithmName }}" hash algorithm for TLS/SSL handshakes
             -
                 function: RunInlineCode
                 parameters:
@@ -20352,3 +20476,44 @@ functions:
                         reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\{{ $algorithmName }}" /v "Enabled" /t REG_DWORD /d "0" /f
                     revertCode: >- # Missing subkeys under `Hashes` since Windows 10 22H2 Pro and Windows 11 23H2 Pro
                         reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Hashes\{{ $algorithmName }}" /v "Enabled" /f 2>nul
+    -
+        name: DisableTLSProtocol
+        parameters:
+            - name: protocolName
+        docs: |-
+            This function disables the specified TLS protocol by modifying the registry
+            settings under the `SCHANNEL\Protocols` subkey [1] [2] [3] [4].
+
+            This action prevents the Windows operating system from using the protocol during
+            SSL/TLS communications, enhancing system security by eliminating older or less secure
+            protocols that might be susceptible to attacks.
+
+            The function executes several commands to update the Windows registry.
+            It sets `Enabled` and `DisabledByDefault` for both `Server` and `Client` configurations
+            as recommended in various security guidelines [1] [2] [3] [4].
+
+            [1]: https://web.archive.org/web/20240423073705/https://learn.microsoft.com/en-US/troubleshoot/windows-server/certificates-and-public-key-infrastructure-pki/restrict-cryptographic-algorithms-protocols-schannel "Restrict cryptographic algorithms and protocols - Windows Server | Microsoft Learn | learn.microsoft.com"
+            [2]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
+            [3]: https://web.archive.org/web/20240402112853/https://learn.microsoft.com/en-us/windows-server/security/tls/tls-registry-settings "Transport Layer Security (TLS) registry settings | Microsoft Learn | learn.microsoft.com"
+            [4]: https://web.archive.org/web/20240426092730/https://techcommunity.microsoft.com/t5/core-infrastructure-and-security/demystifying-schannel/ba-p/259233 "Demystifying Schannel - Microsoft Community Hub"
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: Disable usage of "{{ $protocolName }}" protocol for TLS/SSL handshakes
+                    revertCodeComment: Restore usage of "{{ $protocolName }}" protocol for TLS/SSL handshakes
+            -
+                function: RunInlineCode
+                parameters:
+                    code: |-
+                        reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\{{ $protocolName }}\Server" /v "Enabled" /t "REG_DWORD" /d "0" /f
+                        reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\{{ $protocolName }}\Server" /v "DisabledByDefault" /t "REG_DWORD" /d "1" /f
+                        reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\{{ $protocolName }}\Client" /v "Enabled" /t "REG_DWORD" /d "0" /f
+                        reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\{{ $protocolName }}\Client" /v "DisabledByDefault" /t "REG_DWORD" /d "1" /f
+                    # Marked: refactor-with-variables, refactor-with-if-syntax
+                    #   - `revertCode` is same as `EnableLSProtocol` (reuse it or introduce `ToggleTLSProtocolState`?)
+                    revertCode: |- # Missing subkeys under `Ciphers` since Windows 10 22H2 Pro and Windows 11 23H2 Pro
+                        reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\{{ $protocolName }}\Server" /v "Enabled" /f 2>nul
+                        reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\{{ $protocolName }}\Server" /v "DisabledByDefault" /f 2>nul
+                        reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\{{ $protocolName }}\Client" /v "Enabled" /f 2>nul
+                        reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\{{ $protocolName }}\Client" /v "DisabledByDefault" /f 2>nul
