@@ -7104,7 +7104,9 @@ actions:
             > Balance privacy with functionality according to your preferences and needs.
         children:
             # Excluded hosts:
-            #   - browser.events.data.microsoft.com: Seems to break "Secure File Exchange", "Windows Admin Center" among other things
+            #   - browser.events.data.microsoft.com
+            #       Breaks "Windows Admin Center": https://web.archive.org/web/20240502104500/https://learn.microsoft.com/en-us/windows-server/manage/windows-admin-center/deploy/network-requirements
+            #       Breaks "Secure File Exchange": https://www.kuketz-forum.de/t/ms-teams-und-die-verbindungen-dorthin/537/4, https://web.archive.org/web/20240502104821/https://github.com/easylist/easylist/issues/15697
             -
                 name: Block Windows crash report hosts
                 recommend: standard
@@ -7161,6 +7163,8 @@ actions:
                     private.
 
                     > **Caution**: This script may prevent receiving automatic solutions or feedback for reported errors [1].
+
+                    ### Blocked Hosts
 
                     The blocked hosts are:
 
@@ -7251,6 +7255,8 @@ actions:
 
                     > **Caution**: This script may impact the delivery of diagnostic and usage-based solutions from
                     Microsoft [1] [2].
+
+                    ### Blocked Hosts
 
                     The blocked hosts are:
 
@@ -7352,6 +7358,8 @@ actions:
                     > **Caution**: Using this script might disrupt the normal operation of applications that depend on syncing their
                     > configurations online, leading to potential functionality issues [1].
 
+                    ### Blocked Hosts
+
                     The blocked hosts are:
 
                     - `settings-win.data.microsoft.com` [1] [2] [3] [4] [5]
@@ -7401,6 +7409,8 @@ actions:
 
                             Applying this script significantly reduces the data Dropbox collects, directly enhancing your privacy protection.
 
+                            ### Blocked Hosts
+
                             The blocked hosts are:
 
                             - `telemetry.dropbox.com` [3] 
@@ -7421,15 +7431,22 @@ actions:
                                     domain: telemetry.v.dropbox.com
                     -
                         name: Block Spotify Live Tile hosts
-                        docs: |-
+                        docs: |- # refactor-with-variables: • live tiles
                             This script enhances privacy by preventing the Spotify application from fetching and displaying live updates on its Live Tile [1].
 
                             Spotify, known for being pre-installed with Windows [2], can collect data in the background without user consent.
 
                             This script stops the transmission of real-time data to the Spotify Live Tile [1], which may contain user-specific content or usage patterns.
 
+                            **Live Tiles**, a feature within UWP apps, automatically collect and display updated information
+                            directly on the Start menu, without opening the app [3].
+                            The Live Tiles feature, once available on Windows 8.1 and 10 [4], has been replaced by the
+                            **Widgets** feature in Windows 11 [5].
+
                             > **Caution**: Using this script may have side effects on Spotify functionalities beyond the Live Tile, potentially influencing other app
-                            > features or the Spotify website experience [3].
+                            > features or the Spotify website experience [6].
+
+                            ### Blocked Hosts
 
                             The blocked hosts are:
 
@@ -7437,7 +7454,10 @@ actions:
 
                             [1]: https://web.archive.org/web/20240217185950/https://learn.microsoft.com/en-us/windows/privacy/windows-11-endpoints-non-enterprise-editions "Windows 11 connection endpoints for non-Enterprise editions - Windows Privacy | Microsoft Learn | learn.microsoft.com"
                             [2]: https://web.archive.org/web/20240219224242/https://www.windowslatest.com/2022/09/28/spotify-app-is-automatically-getting-installed-on-windows-10-windows-11/ "Spotify app is automatically getting installed on Windows 10 & Windows 11 | windowslatest.com"
-                            [3]: https://web.archive.org/web/20240219205516/https://wiki.archlinux.org/title/spotify "Spotify - ArchWiki | wiki.archlinux.org"
+                            [3]: https://web.archive.org/web/20240502092842/https://learn.microsoft.com/en-us/archive/msdn-magazine/2017/april/uwp-apps-develop-hosted-web-apps-for-uwp#getting-started "UWP Apps - Develop Hosted Web Apps for UWP | Microsoft Learn | learn.microsoft.com"
+                            [4]: https://web.archive.org/web/20240502095239/https://answers.microsoft.com/en-us/windows/forum/all/live-tiles-what-are-they/71084023-f50b-4531-973d-3ba03d2c0d44 "Live Tiles, what are they? - Microsoft Community | answers.microsoft.com"
+                            [5]: https://web.archive.org/web/20240502093116/https://www.microsoft.com/en-ca/windows/windows-11-specifications "Windows 11 Specs and System Requirements | Microsoft | www.microsoft.com"
+                            [6]: https://web.archive.org/web/20240219205516/https://wiki.archlinux.org/title/spotify "Spotify - ArchWiki | wiki.archlinux.org"
                         call:
                             function: BlockViaHostsFile
                             parameters:
@@ -7464,6 +7484,8 @@ actions:
                     > **Caution**: This script may impact the functionality of apps that rely on location data [1] [3] [4] [5].
                     > Users should weigh the benefits of enhanced privacy against the potential loss of location-based features in certain applications.
 
+                    ### Blocked Hosts
+
                     The blocked hosts are:
 
                     - `inference.location.live.net` [1] [2] [3] [4] [6] [7]
@@ -7487,29 +7509,49 @@ actions:
                             domain: location-inference-westus.cloudapp.net
             -
                 name: Block maps data and updates hosts
-                recommend: strict
+                recommend: strict  # refactor-with-variables: Same excluded host: `r.bing.com`
                 docs: |-
-                    This script blocks connections to servers updating offline maps [1] [2] and Bing Maps APIs [3] [4] [5],
-                    responsible for geospatial [3] and location [4] [5] services.
-                    By doing so, it enhances your privacy by stopping the transmission of location data to Microsoft.
+                    This script blocks servers that update offline maps [1] [2] and provide Bing Maps APIs for
+                    geospatial [3] and location services [4] [5].
+                    This action enhances privacy by preventing the transmission of your location data to Microsoft.
 
-                    > **Caution:** This script may have several side effects:
+                    > **Caution:**
+                    > This script has potential side effects:
                     > - Impacts apps and websites using Bing Maps for location services, including third-party ones.
-                    > - Stops offline map updates [1] [2], potentially leading to less accurate and outdated maps.
+                    > - Disables offline map updates [1] [2], potentially leading to less accurate and outdated maps.
+
+                    ### Blocked Hosts
 
                     The blocked hosts are:
 
                     - `maps.windows.com` [1] [2]
-                    - `dev.virtualearth.net` [2] [4]
+                    - `dev.virtualearth.net` [2] [4] [6]
                     - `ecn.dev.virtualearth.net` [1] [2] [3]
-                    - `ecn-us.dev.virtualearth.net` [1]
+                    - `ecn-us.dev.virtualearth.net` [1] [6]
                     - `weathermapdata.blob.core.windows.net` [1]
+
+                    The following hosts are excluded (not blocked):
+
+                    - `r.bing.com` [6] [7] [8]:
+                      Blocking this host impacts several features, including Cortana [1] [2], Live Tiles [1] [2],
+                      Copilot [9] [10] [11], and Bing Maps [6] [7] [8].
+                    - `ssl.bing.com` [2]:
+                      This host is not only associated with Maps but also other functionality such as viewing and
+                      deleting search history for your privacy [12] and Bing Webmaster APIs [13].
 
                     [1]: https://web.archive.org/web/20240217185904/https://learn.microsoft.com/en-us/windows/privacy/manage-windows-11-endpoints "Connection endpoints for Windows 11 Enterprise - Windows Privacy | Microsoft Learn | learn.microsoft.com"
                     [2]: https://web.archive.org/web/20240217185950/https://learn.microsoft.com/en-us/windows/privacy/windows-11-endpoints-non-enterprise-editions "Windows 11 connection endpoints for non-Enterprise editions - Windows Privacy | Microsoft Learn | learn.microsoft.com"
                     [3]: https://web.archive.org/web/20240217220311/https://learn.microsoft.com/en-us/bingmaps/articles/geospatial-endpoint-service "Geospatial Endpoint Service - Bing Maps | Microsoft Learn | learn.microsoft.com"
                     [4]: https://web.archive.org/web/20240217220300/https://learn.microsoft.com/en-us/bingmaps/rest-services/locations/find-a-location-by-address "Find a Location by Address - Bing Maps | Microsoft Learn | learn.microsoft.com"
                     [5]: https://web.archive.org/web/20240217220332/https://learn.microsoft.com/en-us/bingmaps/rest-services/common-parameters-and-types/base-url-structure "Bing Maps REST URL Structure - Bing Maps | Microsoft Learn | learn.microsoft.com"
+                    [6]: https://web.archive.org/web/20240426134902/https://learn.microsoft.com/en-us/fabric/security/power-bi-allow-list-urls "Add Power BI URLs to allowlist - Microsoft Fabric | Microsoft Learn | learn.microsoft.com"
+                    [7]: https://web.archive.org/web/20240426134243/https://stackoverflow.com/questions/73457359/how-do-i-catch-an-error-due-to-wrong-latitude-or-longitude-in-bing-maps-v8-web-c "javascript - How do I catch an error due to wrong latitude or longitude in Bing Maps V8 Web Control? - Stack Overflow | stackoverflow.com"
+                    [8]: https://web.archive.org/web/20240426134404/https://answers.microsoft.com/en-us/bing/forum/all/bing-maps-not-working-in-edge-or-chrome/55092382-e1a0-466c-ac83-f5ff25eacff1 "Bing maps not working in Edge or Chrome - Microsoft Community | answers.microsoft.com"
+                    [9]: https://web.archive.org/web/20240426133944/https://github.com/undergroundwires/privacy.sexy/issues/329#issuecomment-2062563970 "[BUG]: Bing (search engine) is broken · Issue #329 · undergroundwires/privacy.sexy"
+                    [10]: https://archive.ph/2024.04.26-134254/https://github.com/privacysexy-forks/ios_rule_script/blob/f0ec2a3c74940ba7f54557439f943a2359e9f792/rule/Clash/Copilot/Copilot.yaml "ios_rule_script/rule/Clash/Copilot/Copilot.yaml at f0ec2a3c74940ba7f54557439f943a2359e9f792 · privacysexy-forks/ios_rule_script | github.com"
+                    [11]: https://web.archive.org/web/20240426134112/https://urlscan.io/result/5c8c89a7-4d4a-4030-8bf2-381fded08b51#transactions "copilot.microsoft.com - urlscan.io | urlscan.io"
+                    [12]: https://web.archive.org/web/20240502094006/https://ssl.bing.com/profile/history "Search - Search History | ssl.bing.com"
+                    [13]: https://web.archive.org/web/20240502094210/https://learn.microsoft.com/en-us/bingwebmaster/getting-started#webmaster-api-interface "Getting Started with Webmaster API | Microsoft Learn | learn.microsoft.com"
                 call:
                     -
                         function: BlockViaHostsFile
@@ -7540,9 +7582,11 @@ actions:
                     By blocking these hosts, the script effectively prevents Windows Spotlight from downloading new lock screen
                     images, app suggestions, account notifications, and tips [1] [2] [3].
                     It improves your privacy by reducing unsolicited content and potential data collection.
-                    
+
                     > **Caution:** While Spotlight attempts to update content, suggested apps,
                     Microsoft account notifications, and Windows tips won't be downloaded once the script is in place [1] [3].
+
+                    ### Blocked Hosts
 
                     The blocked hosts are:
 
@@ -7618,37 +7662,71 @@ actions:
                             domain: query.prod.cms.rt.microsoft.com
             -
                 name: Block Cortana and Live Tiles hosts
-                recommend: strict
+                recommend: strict # refactor-with-variables: • Same excluded host: `r.bing.com` • live tiles
                 docs: |-
-                    This script blocks specific hosts related to Cortana and Live Tiles, enhancing your privacy by stopping
-                    updates to Cortana greetings, tips, and Live Tiles [1].
+                    This script blocks specific hosts associated with Cortana and Live Tiles,
+                    thereby enhancing your preventing updates to Cortana's greetings, tips, and Live Tiles [1].
+
+                    **Cortana** and **Live Tiles**, part of the Universal Windows Platform (UWP), enable voice-activated
+                    app control and deliver timely information directly to users [2]:
+
+                    - **Live Tiles**, a feature within UWP apps, automatically collect and display updated information
+                      directly on the Start menu, without opening the app [2].
+                      The Live Tiles feature, once available on Windows 8.1 and 10 [3], has been replaced by the
+                      **Widgets** feature in Windows 11 [4].
+                    - **Cortana** is a voice-based interactive digital assistant on Windows devices [2].
+                      Cortana listens to commands, activates the relevant app, passes the speech to/text commands to app [2].
+
+                    > **Caution**:
+                    > Blocking these hosts may reduce functionality, affecting not only Cortana and Live Tiles but also voice
+                    > commands and voice-activated apps [2].
+
+                    ### Blocked Hosts
 
                     The blocked hosts are:
 
-                    - `business.bing.com` [1] [2]
-                    - `c.bing.com` [1] [2]
+                    - `business.bing.com` [1] [5]
+                    - `c.bing.com` [1] [5]
                     - `th.bing.com` [1]
-                    - `edgeassetservice.azureedge.net` [1] [2]
+                    - `edgeassetservice.azureedge.net` [1] [5]
                     - `c-ring.msedge.net` [1]
-                    - `fp.msedge.net` [1] [2]
+                    - `fp.msedge.net` [1] [5]
                     - `I-ring.msedge.net` [1]
-                    - `s-ring.msedge.net` [1] [2]
+                    - `s-ring.msedge.net` [1] [5]
                     - `dual-s-ring.msedge.net` [1]
                     - `creativecdn.com` [1]
-                    - `r.bing.com` [1] [2]
                     - `a-ring-fallback.msedge.net` [1]
                     - `fp-afd-nocache-ccp.azureedge.net` [1]
-                    - `prod-azurecdn-akamai-iris.azureedge.net` [1] [2]
-                    - `widgetcdn.azureedge.net` [1] [2]
-                    - `widgetservice.azurefd.net` [1] [2]
-                    - `fp-vs.azureedge.net` [2]
-                    - `ln-ring.msedge.net` [2]
-                    - `t-ring.msedge.net` [2]
-                    - `t-ring-fdv2.msedge.net` [2]
-                    - `tse1.mm.bing.net` [2]
+                    - `prod-azurecdn-akamai-iris.azureedge.net` [1] [5]
+                    - `widgetcdn.azureedge.net` [1] [5]
+                    - `widgetservice.azurefd.net` [1] [5]
+                    - `fp-vs.azureedge.net` [5]
+                    - `ln-ring.msedge.net` [5]
+                    - `t-ring.msedge.net` [5]
+                    - `t-ring-fdv2.msedge.net` [5]
+                    - `tse1.mm.bing.net` [5]
+
+                    The following hosts are excluded (not blocked):
+
+                    - `r.bing.com` [1] [5]:
+                      Blocking this host impacts several features, including Cortana [1] [5], Live Tiles [1] [5],
+                      Copilot [6] [7] [8], and Bing Maps [9] [10] [11].
+                    - `www.bing.com` [1] [5]:
+                      Blocking this host prevents access to the Bing search engine and its associated tools [12],
+                      impacting more than just Cortana and Live Tiles.
 
                     [1]: https://web.archive.org/web/20240217185904/https://learn.microsoft.com/en-us/windows/privacy/manage-windows-11-endpoints "Connection endpoints for Windows 11 Enterprise - Windows Privacy | Microsoft Learn | learn.microsoft.com"
-                    [2]: https://web.archive.org/web/20240217185950/https://learn.microsoft.com/en-us/windows/privacy/windows-11-endpoints-non-enterprise-editions "Windows 11 connection endpoints for non-Enterprise editions - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [2]: https://web.archive.org/web/20240502092842/https://learn.microsoft.com/en-us/archive/msdn-magazine/2017/april/uwp-apps-develop-hosted-web-apps-for-uwp#getting-started "UWP Apps - Develop Hosted Web Apps for UWP | Microsoft Learn | learn.microsoft.com"
+                    [3]: https://web.archive.org/web/20240502095239/https://answers.microsoft.com/en-us/windows/forum/all/live-tiles-what-are-they/71084023-f50b-4531-973d-3ba03d2c0d44 "Live Tiles, what are they? - Microsoft Community | answers.microsoft.com"
+                    [4]: https://web.archive.org/web/20240502093116/https://www.microsoft.com/en-ca/windows/windows-11-specifications "Windows 11 Specs and System Requirements | Microsoft | www.microsoft.com"
+                    [5]: https://web.archive.org/web/20240217185950/https://learn.microsoft.com/en-us/windows/privacy/windows-11-endpoints-non-enterprise-editions "Windows 11 connection endpoints for non-Enterprise editions - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [6]: https://web.archive.org/web/20240426133944/https://github.com/undergroundwires/privacy.sexy/issues/329#issuecomment-2062563970 "[BUG]: Bing (search engine) is broken · Issue #329 · undergroundwires/privacy.sexy"
+                    [7]: https://archive.ph/2024.04.26-134254/https://github.com/privacysexy-forks/ios_rule_script/blob/f0ec2a3c74940ba7f54557439f943a2359e9f792/rule/Clash/Copilot/Copilot.yaml "ios_rule_script/rule/Clash/Copilot/Copilot.yaml at f0ec2a3c74940ba7f54557439f943a2359e9f792 · privacysexy-forks/ios_rule_script | github.com"
+                    [8]: https://web.archive.org/web/20240426134112/https://urlscan.io/result/5c8c89a7-4d4a-4030-8bf2-381fded08b51#transactions "copilot.microsoft.com - urlscan.io | urlscan.io"
+                    [9]: https://web.archive.org/web/20240426134902/https://learn.microsoft.com/en-us/fabric/security/power-bi-allow-list-urls "Add Power BI URLs to allowlist - Microsoft Fabric | Microsoft Learn | learn.microsoft.com"
+                    [10]: https://web.archive.org/web/20240426134243/https://stackoverflow.com/questions/73457359/how-do-i-catch-an-error-due-to-wrong-latitude-or-longitude-in-bing-maps-v8-web-c "javascript - How do I catch an error due to wrong latitude or longitude in Bing Maps V8 Web Control? - Stack Overflow | stackoverflow.com"
+                    [11]: https://web.archive.org/web/20240426134404/https://answers.microsoft.com/en-us/bing/forum/all/bing-maps-not-working-in-edge-or-chrome/55092382-e1a0-466c-ac83-f5ff25eacff1 "Bing maps not working in Edge or Chrome - Microsoft Community | answers.microsoft.com"
+                    [12]: https://web.archive.org/web/20240502092817/https://en.wikipedia.org/wiki/Microsoft_Bing "Microsoft Bing - Wikipedia | en.wikipedia.org"
                 call:
                     -
                         function: BlockViaHostsFile
@@ -7690,10 +7768,6 @@ actions:
                         function: BlockViaHostsFile
                         parameters:
                             domain: creativecdn.com
-                    -
-                        function: BlockViaHostsFile
-                        parameters:
-                            domain: r.bing.com
                     -
                         function: BlockViaHostsFile
                         parameters:
@@ -7753,6 +7827,8 @@ actions:
                     It enhances user privacy by limiting exposure to experimental features and configurations that may collect data or alter
                     the browsing experience without the user's explicit consent.
 
+                    ### Blocked Hosts
+
                     The blocked hosts are:
 
                     - `config.edge.skype.com` [2]
@@ -7773,6 +7849,8 @@ actions:
                     > **Caution**: This script may affect the Photos app's ability to download configuration files and connect to Office 365 [1] [2],
                     > potentially impacting its functionality.
 
+                    ### Blocked Hosts
+
                     The blocked hosts are:
 
                     - `evoke-windowsservices-tas.msedge.net` [1] [2]
@@ -7785,35 +7863,52 @@ actions:
                         domain: evoke-windowsservices-tas.msedge.net
             -
                 name: Block OneNote Live Tile hosts
-                recommend: strict
+                recommend: strict # refactor-with-variables: • live tiles
                 docs: |-
                     This script blocks the communication used by OneNote Live Tile [1].
 
                     It enhances privacy by preventing OneNote from retrieving live data updates [1], which might include user-specific content
                     or usage patterns.
 
+                    **Live Tiles**, a feature within UWP apps, automatically collect and display updated information
+                    directly on the Start menu, without opening the app [2].
+                    The Live Tiles feature, once available on Windows 8.1 and 10 [3], has been replaced by the
+                    **Widgets** feature in Windows 11 [4].
+
                     > **Caution**: This script could lead to broader implications beyond the Live Tile functionality.
                     > It may affect OneNote's overall performance and features, such as the ability to use stickers add-ins and access certain assets
-                    > within the Office suite [2]. This could potentially hinder the user experience by limiting the functionality of OneNote's dynamic
+                    > within the Office suite [5]. This could potentially hinder the user experience by limiting the functionality of OneNote's dynamic
                     > content and integrations.
+
+                    ### Blocked Hosts
 
                     The blocked hosts are:
 
                     - `cdn.onenote.net` [1]
 
                     [1]: https://web.archive.org/web/20240217185950/https://learn.microsoft.com/en-us/windows/privacy/windows-11-endpoints-non-enterprise-editions "Windows 11 connection endpoints for non-Enterprise editions - Windows Privacy | Microsoft Learn | learn.microsoft.com"
-                    [2]: https://web.archive.org/web/20240219212903/https://macadmins.software/docs/Network_Traffic.pdf "Microsoft Word - Network_Traffic.docx | macadmins.software"
+                    [2]: https://web.archive.org/web/20240502092842/https://learn.microsoft.com/en-us/archive/msdn-magazine/2017/april/uwp-apps-develop-hosted-web-apps-for-uwp#getting-started "UWP Apps - Develop Hosted Web Apps for UWP | Microsoft Learn | learn.microsoft.com"
+                    [3]: https://web.archive.org/web/20240502095239/https://answers.microsoft.com/en-us/windows/forum/all/live-tiles-what-are-they/71084023-f50b-4531-973d-3ba03d2c0d44 "Live Tiles, what are they? - Microsoft Community | answers.microsoft.com"
+                    [4]: https://web.archive.org/web/20240502093116/https://www.microsoft.com/en-ca/windows/windows-11-specifications "Windows 11 Specs and System Requirements | Microsoft | www.microsoft.com"
+                    [5]: https://web.archive.org/web/20240219212903/https://macadmins.software/docs/Network_Traffic.pdf "Microsoft Word - Network_Traffic.docx | macadmins.software"
                 call:
                     function: BlockViaHostsFile
                     parameters:
                         domain: cdn.onenote.net
             -
                 name: Block Weather Live Tile hosts
-                recommend: strict
+                recommend: strict # refactor-with-variables: • live tiles
                 docs: |-
-                    The endpoints listed below are for the Weather app [1] [2] and its Live Tile feature [3].
+                    This script blocks the communication used by Weather app [1] [2] and its Live Tile feature [3].
+
+                    **Live Tiles**, a feature within UWP apps, automatically collect and display updated information
+                    directly on the Start menu, without opening the app [4].
+                    The Live Tiles feature, once available on Windows 8.1 and 10 [5], has been replaced by the
+                    **Widgets** feature in Windows 11 [6].
 
                     > **Caution:** This script breaks Weather app [1] [2] and its tile [3].
+
+                    ### Blocked Hosts
 
                     The blocked hosts are:
 
@@ -7822,6 +7917,9 @@ actions:
                     [1]: https://web.archive.org/web/20240217185950/https://learn.microsoft.com/en-us/windows/privacy/windows-11-endpoints-non-enterprise-editions "Windows 11 connection endpoints for non-Enterprise editions - Windows Privacy | Microsoft Learn | learn.microsoft.com"
                     [2]: https://web.archive.org/web/20240217185904/https://learn.microsoft.com/en-us/windows/privacy/manage-windows-11-endpoints "Connection endpoints for Windows 11 Enterprise - Windows Privacy | Microsoft Learn | learn.microsoft.com"
                     [3]: https://web.archive.org/web/20240219205201/https://learn.microsoft.com/en-us/windows/privacy/windows-endpoints-2004-non-enterprise-editions "Windows 10, version 2004, connection endpoints for non-Enterprise editions - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                    [4]: https://web.archive.org/web/20240502092842/https://learn.microsoft.com/en-us/archive/msdn-magazine/2017/april/uwp-apps-develop-hosted-web-apps-for-uwp#getting-started "UWP Apps - Develop Hosted Web Apps for UWP | Microsoft Learn | learn.microsoft.com"
+                    [5]: https://web.archive.org/web/20240502095239/https://answers.microsoft.com/en-us/windows/forum/all/live-tiles-what-are-they/71084023-f50b-4531-973d-3ba03d2c0d44 "Live Tiles, what are they? - Microsoft Community | answers.microsoft.com"
+                    [6]: https://web.archive.org/web/20240502093116/https://www.microsoft.com/en-ca/windows/windows-11-specifications "Windows 11 Specs and System Requirements | Microsoft | www.microsoft.com"
                 call:
                     function: BlockViaHostsFile
                     parameters:
