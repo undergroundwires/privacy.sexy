@@ -14,6 +14,8 @@ import {
 } from './ElectronConfig';
 import { registerAllIpcChannels } from './IpcRegistration';
 
+const hideWindowUntilLoaded = true;
+const openDevToolsOnDevelopment = true;
 const isDevelopment = !app.isPackaged;
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -48,12 +50,12 @@ function createWindow() {
       preload: PRELOADER_SCRIPT_PATH,
     },
     icon: APP_ICON_PATH,
+    show: !hideWindowUntilLoaded,
   });
-
+  focusAndShowOnceLoaded(win);
   win.setMenuBarVisibility(false);
   configureExternalsUrlsOpenBrowser(win);
   loadApplication(win);
-
   win.on('closed', () => {
     win = null;
   });
@@ -101,9 +103,8 @@ function loadApplication(window: BrowserWindow) {
   } else {
     loadUrlWithNodeWorkaround(window, RENDERER_HTML_PATH);
   }
-  if (isDevelopment) {
-    window.webContents.openDevTools();
-  } else {
+  openDevTools(window);
+  if (!isDevelopment) {
     const updater = setupAutoUpdater();
     updater.checkForUpdates();
   }
@@ -164,4 +165,30 @@ function configureAppQuitBehavior() {
       macOsQuit = true;
     });
   }
+}
+
+function focusAndShowOnceLoaded(window: BrowserWindow) {
+  window.once('ready-to-show', () => {
+    window.show(); // Shows and focuses
+    bringToFront(window);
+  });
+}
+
+function bringToFront(window: BrowserWindow) {
+  // Only needed for Windows, tested on GNOME 42.5, Windows 11 23H2 Pro and macOS Sonoma 14.4.1.
+  // Some report it's also needed for some versions of GNOME.
+  // - https://github.com/electron/electron/issues/2867#issuecomment-409858459
+  // - https://github.com/signalapp/Signal-Desktop/blob/0999df2d6e93da805b2135f788ffc739ba69832d/app/SystemTrayService.ts#L277-L284
+  window.setAlwaysOnTop(true);
+  window.setAlwaysOnTop(false);
+}
+
+function openDevTools(window: BrowserWindow) {
+  if (!isDevelopment) {
+    return;
+  }
+  if (!openDevToolsOnDevelopment) {
+    return;
+  }
+  window.webContents.openDevTools();
 }
