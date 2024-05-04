@@ -23,8 +23,10 @@ The presentation layer uses an event-driven architecture for bidirectional react
     - [**`styles/`**](./../src/presentation/assets/styles/): Contains shared styles.
       - [**`main.scss`**](./../src/presentation/assets/styles/main.scss): Main Sass file, imported by other components as single entrypoint..
   - [**`electron/`**](./../src/presentation/electron/): Contains Electron code.
-    - [`/main/` **`index.ts`**](./../src/presentation/main.ts): Main entry for Electron, managing application windows and lifecycle events.
-    - [`/preload/` **`index.ts`**](./../src/presentation/main.ts): Script executed before the renderer, securing Node.js features for renderer use.
+    - [`/main/` **`index.ts`**](./../src/presentation/electron/main/index.ts): Main entry for Electron, managing application windows and lifecycle events.
+    - [`/preload/` **`index.ts`**](./../src/presentation/electron/preload/index.ts): Script executed before the renderer, securing Node.js features for renderer use.
+    - [**`/shared/`**](./../src/presentation/electron/shared/): Shared logic between different Electron processes.
+    - [**`/build/`**](./../src/presentation/electron/build/): `electron-builder` build resources directory, [README.md](./../src/presentation/electron/build/README.md).
 - [**`/vite.config.ts`**](./../vite.config.ts): Contains Vite configurations for building web application.
 - [**`/electron.vite.config.ts`**](./../electron.vite.config.ts): Contains Vite configurations for building desktop applications.
 - [**`/postcss.config.cjs`**](./../postcss.config.cjs): Contains PostCSS configurations for Vite.

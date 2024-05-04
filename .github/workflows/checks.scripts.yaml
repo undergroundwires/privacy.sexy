@@ -16,6 +16,10 @@ jobs:
         name: Checkout
         uses: actions/checkout@v4
       -
+        name: Install ImageMagick on macOS
+        if: matrix.os == 'macos'
+        run: brew install imagemagick
+      -
         name: Setup node
         uses: ./.github/actions/setup-node
       -

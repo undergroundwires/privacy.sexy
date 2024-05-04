@@ -1,7 +1,7 @@
 /* eslint-disable no-template-curly-in-string */
 
-const { join } = require('node:path');
-const { readdirSync } = require('fs');
+const { join, resolve } = require('node:path');
+const { readdirSync, existsSync } = require('node:fs');
 const { electronBundled, electronUnbundled } = require('./dist-dirs.json');
 
 /**
@@ -17,6 +17,7 @@ module.exports = {
   },
   directories: {
     output: electronBundled,
+    buildResources: resolvePathFromProjectRoot('src/presentation/electron/build'),
   },
   extraMetadata: {
     main: findMainEntryFile(
@@ -53,10 +54,18 @@ module.exports = {
  * Finds by accommodating different JS file extensions and module formats.
  */
 function findMainEntryFile(parentDirectory) {
-  const files = readdirSync(parentDirectory);
+  const absoluteParentDirectory = resolvePathFromProjectRoot(parentDirectory);
+  if (!existsSync(absoluteParentDirectory)) {
+    return null; // Avoid disrupting other processes such `npm install`.
+  }
+  const files = readdirSync(absoluteParentDirectory);
   const entryFile = files.find((file) => /^index\.(cjs|mjs|js)$/.test(file));
   if (!entryFile) {
-    throw new Error(`Main entry file not found in ${parentDirectory}.`);
+    throw new Error(`Main entry file not found in ${absoluteParentDirectory}.`);
   }
   return join(parentDirectory, entryFile);
+}
+
+function resolvePathFromProjectRoot(pathSegment) {
+  return resolve(__dirname, pathSegment);
 }

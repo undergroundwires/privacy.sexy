@@ -2,94 +2,119 @@
  * Description:
  *  This script updates the logo images across the project based on the primary
  *  logo file ('img/logo.svg' file).
+ *
  *  It handles the creation and update of various icon sizes for different purposes,
  *  including desktop launcher icons, tray icons, and web favicons from a single source
  *  SVG logo file.
  *
  * Usage:
- *   node ./scripts/logo-update.js
+ *    node ./scripts/logo-update.js
+ *
+ * Notes:
+ *    ImageMagick must be installed and accessible in the system's PATH
  */
 
-import { resolve, join } from 'node:path';
-import { rm, mkdtemp, stat } from 'node:fs/promises';
+import { resolve, join, dirname } from 'node:path';
+import { stat } from 'node:fs/promises';
 import { spawn } from 'node:child_process';
 import { URL, fileURLToPath } from 'node:url';
+import electronBuilderConfig from '../electron-builder.cjs';
 
-class Paths {
-  constructor(selfDirectory) {
-    const projectRoot = resolve(selfDirectory, '../');
+class ImageAssetPaths {
+  constructor(currentScriptDirectory) {
+    const projectRoot = resolve(currentScriptDirectory, '../');
     this.sourceImage = join(projectRoot, 'img/logo.svg');
     this.publicDirectory = join(projectRoot, 'src/presentation/public');
-    this.electronBuildDirectory = join(projectRoot, 'build');
+    this.electronBuildResourcesDirectory = electronBuilderConfig.directories.buildResources;
+  }
+
+  get electronTrayIconFile() {
+    return join(this.publicDirectory, 'icon.png');
+  }
+
+  get webFaviconFile() {
+    return join(this.publicDirectory, 'favicon.ico');
   }
 
   toString() {
-    return `Source image: ${this.sourceImage}\n`
-      + `Public directory: ${this.publicDirectory}\n`
-      + `Electron build directory: ${this.electronBuildDirectory}`;
+    return `Source image: ${this.sourceImage}`
+      + `\nPublic directory: ${this.publicDirectory}`
+      + `\n\t Electron tray icon file: ${this.electronTrayIconFile}`
+      + `\n\t Web favicon file: ${this.webFaviconFile}`
+      + `\nElectron build directory: ${this.electronBuildResourcesDirectory}`;
   }
 }
 
 async function main() {
-  const paths = new Paths(getCurrentScriptDirectory());
+  const paths = new ImageAssetPaths(getCurrentScriptDirectory());
   console.log(`Paths:\n\t${paths.toString().replaceAll('\n', '\n\t')}`);
-  await updateDesktopLauncherAndTrayIcon(paths.sourceImage, paths.publicDirectory);
-  await updateWebFavicon(paths.sourceImage, paths.publicDirectory);
-  await updateDesktopIcons(paths.sourceImage, paths.electronBuildDirectory);
+  const convertCommand = await findAvailableImageMagickCommand();
+  await generateDesktopAndTrayIcons(
+    paths.sourceImage,
+    paths.electronTrayIconFile,
+    convertCommand,
+  );
+  await generateWebFavicon(
+    paths.sourceImage,
+    paths.webFaviconFile,
+    convertCommand,
+  );
+  await generateDesktopIcons(
+    paths.sourceImage,
+    paths.electronBuildResourcesDirectory,
+    convertCommand,
+  );
   console.log('🎉 (Re)created icons successfully.');
 }
 
-async function updateDesktopLauncherAndTrayIcon(sourceImage, publicFolder) {
+async function generateDesktopAndTrayIcons(sourceImage, targetFile, convertCommand) {
+  // Reference: https://web.archive.org/web/20240502124306/https://www.electronjs.org/docs/latest/api/tray
+  console.log(`Updating desktop launcher and tray icon at ${targetFile}.`);
   await ensureFileExists(sourceImage);
-  await ensureFolderExists(publicFolder);
-  const electronTrayIconFile = join(publicFolder, 'icon.png');
-  console.log(`Updating desktop launcher and tray icon at ${electronTrayIconFile}.`);
-  await runCommand(
-    'npx',
-    'svgexport',
+  await ensureParentFolderExists(targetFile);
+  await convertFromSvgToPng(
+    convertCommand,
     sourceImage,
-    electronTrayIconFile,
+    targetFile,
+    '512x512',
   );
 }
 
-async function updateWebFavicon(sourceImage, faviconFolder) {
-  console.log('Updating favicon');
+async function generateWebFavicon(sourceImage, faviconFilePath, convertCommand) {
+  console.log(`Updating favicon at ${faviconFilePath}.`);
   await ensureFileExists(sourceImage);
-  await ensureFolderExists(faviconFolder);
-  await runCommand(
-    'npx',
-    'icon-gen',
-    `--input ${sourceImage}`,
-    `--output ${faviconFolder}`,
-    '--ico',
-    '--ico-name \'favicon\'',
-    '--report',
+  await ensureParentFolderExists(faviconFilePath);
+  await convertFromSvgToIco(
+    convertCommand,
+    sourceImage,
+    faviconFilePath,
+    [16, 24, 32, 48, 64, 128, 256],
   );
 }
 
-async function updateDesktopIcons(sourceImage, electronIconsDir) {
+async function generateDesktopIcons(sourceImage, electronBuildResourcesDirectory, convertCommand) {
+  console.log(`Creating Electron icon files to ${electronBuildResourcesDirectory}.`);
+  // Reference: https://web.archive.org/web/20240501103645/https://www.electron.build/icons.html
+  await ensureFolderExists(electronBuildResourcesDirectory);
   await ensureFileExists(sourceImage);
-  await ensureFolderExists(electronIconsDir);
-  const temporaryDir = await mkdtemp('icon-');
-  const temporaryPngFile = join(temporaryDir, 'icon.png');
-  console.log(`Converting from SVG (${sourceImage}) to PNG: ${temporaryPngFile}`); // required by `icon-builder`
-  await runCommand(
-    'npx',
-    'svgexport',
+  const electronMainIconFile = join(electronBuildResourcesDirectory, 'icon.png');
+  await convertFromSvgToPng(
+    convertCommand,
     sourceImage,
-    temporaryPngFile,
-    '1024:1024',
+    electronMainIconFile,
+    '1024x1024', // Should be at least 512x512
   );
-  console.log(`Creating electron icons to ${electronIconsDir}.`);
-  await runCommand(
-    'npx',
-    'electron-icon-builder',
-    `--input="${temporaryPngFile}"`,
-    `--output="${electronIconsDir}"`,
-    '--flatten',
+  // Relying on `electron-builder`s conversion from png to ico results in pixelated look on Windows
+  // 10 and 11 according to tests, see:
+  //  - https://web.archive.org/web/20240502114650/https://github.com/electron-userland/electron-builder/issues/7328
+  //  - https://web.archive.org/web/20240502115448/https://github.com/electron-userland/electron-builder/issues/3867
+  const electronWindowsIconFile = join(electronBuildResourcesDirectory, 'icon.ico');
+  await convertFromSvgToIco(
+    convertCommand,
+    sourceImage,
+    electronWindowsIconFile,
+    [16, 24, 32, 48, 64, 128, 256],
   );
-  console.log('Cleaning up temporary directory.');
-  await rm(temporaryDir, { recursive: true, force: true });
 }
 
 async function ensureFileExists(filePath) {
@@ -100,10 +125,58 @@ async function ensureFileExists(filePath) {
 }
 
 async function ensureFolderExists(folderPath) {
+  if (!folderPath) {
+    throw new Error('Path is missing');
+  }
   const path = await stat(folderPath);
   if (!path.isDirectory()) {
     throw new Error(`Not a directory: ${folderPath}`);
   }
+}
+
+function ensureParentFolderExists(filePath) {
+  return ensureFolderExists(dirname(filePath));
+}
+
+const BaseImageMagickConvertArguments = Object.freeze([
+  '-background none', // Transparent, so they do not get filled with white.
+  '-strip', // Strip metadata.
+  '-gravity Center', // Center the image when there's empty space
+]);
+
+async function convertFromSvgToIco(
+  convertCommand,
+  inputFile,
+  outputFile,
+  sizes,
+) {
+  await runCommand(
+    convertCommand,
+    ...BaseImageMagickConvertArguments,
+    `-density ${Math.max(...sizes).toString()}`, // High enough for sharpness
+    `-define icon:auto-resize=${sizes.map((s) => s.toString()).join(',')}`, // Automatically store multiple sizes in an ico image
+    '-compress None',
+    inputFile,
+    outputFile,
+  );
+}
+
+async function convertFromSvgToPng(
+  convertCommand,
+  inputFile,
+  outputFile,
+  size = undefined,
+) {
+  await runCommand(
+    convertCommand,
+    ...BaseImageMagickConvertArguments,
+    ...(size === undefined ? [] : [
+      `-resize ${size}`,
+      `-density ${size}`, // High enough for sharpness
+    ]),
+    inputFile,
+    outputFile,
+  );
 }
 
 async function runCommand(...args) {
@@ -133,6 +206,29 @@ async function runCommand(...args) {
 
 function getCurrentScriptDirectory() {
   return fileURLToPath(new URL('.', import.meta.url));
+}
+
+async function findAvailableImageMagickCommand() {
+  // Reference: https://web.archive.org/web/20240502120041/https://imagemagick.org/script/convert.php
+  const potentialBaseCommands = [
+    'convert', // Legacy command, usually available on Linux/macOS installations
+    'magick convert', // Newer command, available on Windows installations
+  ];
+  for (const baseCommand of potentialBaseCommands) {
+    const testCommand = `${baseCommand} -version`;
+    try {
+      await runCommand(testCommand); // eslint-disable-line no-await-in-loop
+      console.log(`Confirmed: ImageMagick command '${baseCommand}' is available and operational.`);
+      return baseCommand;
+    } catch (err) {
+      console.log(`Error: The command '${baseCommand}' is not found or failed to execute. Detailed error: ${err.message}"`);
+    }
+  }
+  throw new Error([
+    'Unable to locate any operational ImageMagick command.',
+    `Attempted commands were: ${potentialBaseCommands.join(', ')}.`,
+    'Please ensure ImageMagick is correctly installed and accessible.',
+  ].join('\n'));
 }
 
 await main();
