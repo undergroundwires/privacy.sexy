@@ -6040,7 +6040,7 @@ actions:
                             -
                                 name: Enable strong Diffie-Hellman key requirement
                                 recommend: standard # Default on modern Windows, less size considered insecure
-                                docs: |- # refactor-with-variables: Same • Caution • handshake text as others.
+                                docs: |- # refactor-with-variables: Same • Caution • handshake
                                     This script improves your security by setting the `Diffie-Hellman` [1] [2] [3] key exchange
                                     to a minimum of 2048 bits.
                                     This is a secure way to exchange keys over public networks.
@@ -6063,7 +6063,7 @@ actions:
 
                                     [1]: https://web.archive.org/web/20240402105325/https://learn.microsoft.com/en-us/security-updates/securityadvisories/2016/3174644 "Microsoft Security Advisory 3174644 | Microsoft Learn | learn.microsoft.com"
                                     [2]: https://web.archive.org/web/20240402112853/https://learn.microsoft.com/en-us/windows-server/security/tls/tls-registry-settings "Transport Layer Security (TLS) registry settings | Microsoft Learn | learn.microsoft.com"
-                                    [3]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
+                                    [3]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderugen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
                                     [4]: https://web.archive.org/web/20240402105205/https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf "NIST Special Publication 800-131A Revision 2 | Transitioning the Use of Cryptographic Algorithms and Key Lengths | nvlpubs.nist.gov"
                                     [5]: https://web.archive.org/web/20240402112905/https://weakdh.org/ "Weak Diffie-Hellman and the Logjam Attack | weakdh.org"
                                     [6]: https://web.archive.org/web/20240429194121/https://media.defense.gov/2021/Jan/05/2002560140/-1/-1/0/ELIMINATING_OBSOLETE_TLS_UOO197443-20.PDF "Eliminating Obsolete Transport Layer Security (TLS) Protocol Configurations | National Security Agency | Cybersecurity Information | media.defense.gov"
@@ -6075,7 +6075,7 @@ actions:
                             -
                                 name: Enable strong RSA key requirement
                                 recommend: standard # Microsoft deprecated it and will end support
-                                docs: |- # refactor-with-variables: Same • Caution • handshake text as others.
+                                docs: |- # refactor-with-variables: Same • Caution • handshake
                                     This script improves your security by enforcing a minimum of 2048 bits for RSA encryption keys (`PKCS` [1] [2]).
                                     RSA encryption keys play a crucial role in securing communications over the internet.
                                     The Public-Key Cryptography Standards (PKCS) define how to use RSA keys for secure communication encryption.
@@ -6123,7 +6123,7 @@ actions:
                                         ignoreServerSide: true # Controlled by the specified server certificate
                     -
                         category: Disable insecure connections
-                        docs: |- # refactor-with-variables: Same **Caution** text as others.
+                        docs: |- # refactor-with-variables: Same • Caution
                             This category includes scripts designed to enhance users' security and privacy by disabling outdated or
                             vulnerable connections across the system.
                             It safeguards data against interception, unauthorized access, and attacks that exploit outdated technology
@@ -6136,7 +6136,7 @@ actions:
                         children:
                             -
                                 category: Disable insecure ciphers
-                                docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                docs: |- # refactor-with-variables: Same • Caution
                                     This category improves network security by disabling outdated and less secure cipher suites.
 
                                     **Cipher suites** are sets of cryptographic algorithms used to secure network connections [1].
@@ -6164,7 +6164,7 @@ actions:
                                     -
                                         name: Disable insecure "RC2" ciphers
                                         recommend: strict # Considered weak and vulnerable by numerous authoritative sources, may be incompatible with third-party apps.
-                                        docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite text as others.
+                                        docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite
                                             This script disables RC2 ciphers.
 
                                             This script only afects the *SSL/TLS handshake* process.
@@ -6219,7 +6219,7 @@ actions:
                                     -
                                         name: Disable insecure "RC4" ciphers
                                         recommend: strict # Considered weak and vulnerable by numerous authoritative sources, may be incompatible with third-party apps.
-                                        docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite text as others.
+                                        docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite
                                             This script disables the RC4 ciphers.
 
                                             This script only afects the *SSL/TLS handshake* process.
@@ -6284,7 +6284,7 @@ actions:
                                     -
                                         name: Disable insecure "DES" cipher
                                         recommend: strict # Considered weak and vulnerable by numerous authoritative sources, may be incompatible with third-party apps.
-                                        docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite text as others.
+                                        docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite
                                             This script disables the `DES 56/56` [1] [2] [3] [4] cipher, also known as *DES 56* [2] or *56-bit DES* [2].
 
                                             This script only afects the *SSL/TLS handshake* process.
@@ -6321,7 +6321,7 @@ actions:
                                     -
                                         name: Disable insecure "Triple DES" cipher
                                         recommend: strict # Considered weak and vulnerable by numerous authoritative sources, may be incompatible with third-party apps.
-                                        docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite text as others.
+                                        docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite
                                             This script disables the `Triple DES 168` [1] [2] [3] (`Triple DES 168/168` before Windows Vista [2] [4]) cipher,
                                             also known as *3DES* [1] [3] [5] [6], *The Triple Data Encryption Algorithm (TDEA)* [6] [7] and **TDES** [8].
 
@@ -6353,10 +6353,10 @@ actions:
                                             [3]: https://web.archive.org/web/20240421101142/https://paper.bobylive.com/Security/CIS/CIS_Microsoft_IIS_8_Benchmark_v1_4_0.pdf "CIS Microsoft IIS 8 Benchmark v1.4.0 | paper.bobylive.com"
                                             [4]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
                                             [5]: https://web.archive.org/web/20240421101545/https://sweet32.info/ "Sweet32: Birthday attacks on 64-bit block ciphers in TLS and OpenVPN"
-                                            [6]: https://web.archive.org/web/20240429201312/https://www.gsa.gov/system/files?file=SSL-TLS-Implementation-%5BCIO-IT-Security-14-69-Rev-7%5D-06-12-2023.pdf
+                                            [6]: https://web.archive.org/web/20240429201312/https://www.gsa.gov/system/files?file=SSL-TLS-Implementation-%5BCIO-IT-Security-14-69-Rev-7%5D-06-12-2023.pdf "IT Security Procedural Guide: SSL/TLS Implementation CIO-IT Security-14-69 | www.gsa.gov"
                                             [7]: https://web.archive.org/web/20240402105205/https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-131Ar2.pdf "NIST Special Publication 800-131A Revision 2 | Transitioning the Use of Cryptographic Algorithms and Key Lengths | nvlpubs.nist.gov"
                                             [8]: https://web.archive.org/web/20240429194121/https://media.defense.gov/2021/Jan/05/2002560140/-1/-1/0/ELIMINATING_OBSOLETE_TLS_UOO197443-20.PDF "Eliminating Obsolete Transport Layer Security (TLS) Protocol Configurations | National Security Agency | Cybersecurity Information | media.defense.gov"
-                                            [9]: https://developer.apple.com/library/archive/releasenotes/MacOSX/WhatsNewInOSX/Articles/OSXv10.html
+                                            [9]: https://web.archive.org/web/20240426092153/https://developer.apple.com/library/archive/releasenotes/MacOSX/WhatsNewInOSX/Articles/OSXv10.html "macOS Sierra 10.12 | developer.apple.com"
                                         call:
                                             -
                                                 function: DisableTLSCipher
@@ -6369,7 +6369,7 @@ actions:
                                     -
                                         name: Disable insecure "NULL" cipher
                                         recommend: standard # Disables encryption, turned off by default.
-                                        docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite text as others.
+                                        docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite
                                             This script disables the `NULL` [1] [2] [3] [4] cipher.
 
                                             This script only afects the *SSL/TLS handshake* process.
@@ -6406,7 +6406,7 @@ actions:
                                                 algorithmName: 'NULL'
                             -
                                 category: Disable insecure hashes
-                                docs: |- # refactor-with-variables: Same • Caution • vulnerability text as others.
+                                docs: |- # refactor-with-variables: Same • Caution • vulnerability
                                     This category includes scripts to disable insecure hash algorithms during cryptographic operations.
 
                                     Hash algorithms are essential for internet security, electronic banking, and document signing.
@@ -6425,7 +6425,7 @@ actions:
                                     -
                                         name: Disable insecure "MD5" hash
                                         recommend: strict # Considered weak and vulnerable by numerous authoritative sources, incompatible with third-party apps such as MEGA.
-                                        docs: |- # refactor-with-variables: Same • Caution • handshake • vulnerability • authorities • cipher suite text as others.
+                                        docs: |- # refactor-with-variables: Same • Caution • handshake • vulnerability • authorities • cipher suite
                                             This script disables the use of the `MD5` [1] [2] [3] hash algorithm during the SSL/TLS handshake process.
 
                                             This script only afects the *SSL/TLS handshake* process.
@@ -6478,7 +6478,7 @@ actions:
                                     -
                                         name: Disable insecure "SHA-1" hash
                                         recommend: strict # Considered weak and vulnerable by numerous authoritative sources, may be incompatible with third-party apps
-                                        docs: |- # refactor-with-variables: Same • Caution • handshake • vulnerability • authorities • cipher suite text as others.
+                                        docs: |- # refactor-with-variables: Same • Caution • handshake • vulnerability • authorities • cipher suite
                                             This script disables `SHA` [1] [2] [3] hash algorithm, also known as *Secure Hash Algorithm (SHA-1)* [2].
 
                                             This script only afects the *SSL/TLS handshake* process.
@@ -6549,7 +6549,7 @@ actions:
                             -
                                 name: Disable insecure renegotiation
                                 recommend: strict # Important security improvement, but may limit compatibility with older software.
-                                docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                docs: |- # refactor-with-variables: Same • Caution
                                     This script enhances your security by reducing risks associated with secure communications.
                                     By running this script, you proactively enhance your online privacy and secure against
                                     well-known TLS vulnerabilities.
@@ -6632,7 +6632,7 @@ actions:
                                                 reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL" /v "UseScsvForTls" /f 2>nul
                             -
                                 category: Disable insecure protocols
-                                docs: |- # refactor-with-variables: Same • Caution • authorities as others.
+                                docs: |- # refactor-with-variables: Same • Caution • authorities
                                     This category focuses on enhancing user privacy by disabling legacy and insecure communication
                                     protocols.
                                     It targets protocols that expose users to security vulnerabilities due to their outdated nature.
@@ -6657,11 +6657,10 @@ actions:
                                       DTLS 1.1 does not exist [8] [9];
                                       its numbering was skipped to align with TLS versioning [8].
                                     - **TLS 1.2**, and **DTLS 1.2** (based on TLS 1.2 [8]):
-                                      Although TLS 1.2 and DTLS 1.2 remain active on Windows [7] and are approved by NIST [2],
-                                      they are not endorsed by the German Federal Office for Information Security due to
-                                      vulnerabilities [10].
+                                      TLS 1.2 and DTLS 1.2 are enabled by default on Windows [7] and are approved by authorities like
+                                      NIST [2], and German Federal Office for Information Security [10].
                                       Disabling them could affect application functionality, and earlier versions are not
-                                      widely supported by Windows [7].
+                                      widely supported by Windows [7] [10].
 
                                     > **Caution:** This may cause compatibility issues with older devices or software.
 
@@ -6679,7 +6678,7 @@ actions:
                                     -
                                         name: Disable insecure "SMBv1" protocol
                                         recommend: standard # Recommended by Microsoft, very old, has significant security vulnerabilities
-                                        docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                        docs: |- # refactor-with-variables: Same • Caution
                                             This script improves network security by disabling the outdated SMBv1 protocol.
 
                                             **SMBv1**, or **Server Message Block version 1**, is an outdated network protocol developed
@@ -6818,7 +6817,7 @@ actions:
                                     -
                                         name: Disable insecure "NetBios" protocol
                                         recommend: standard
-                                        docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                        docs: |- # refactor-with-variables: Same • Caution
                                             This script enhances your network's security by turning off NetBIOS over TCP/IP for all network interfaces.
 
                                             NetBIOS is a protocol primarily used for backward compatibility with older Windows systems [1] [2].
@@ -6859,7 +6858,7 @@ actions:
                                     -
                                         name: Disable insecure "SSL 2.0" protocol
                                         recommend: standard # Outdated protocol, removed from Windows
-                                        docs: |- # refactor-with-variables: Same • Caution • identified as • authorities • previously enabled as others.
+                                        docs: |- # refactor-with-variables: Same • Caution • identified as • authorities • previously enabled 
                                             This script disables the SSL 2.0 protocol.
                                             This protocol is identified as `SSL 2.0` on Windows [1] [2] [3],
                                             and also known as *SSL2* [4] [5].
@@ -6890,19 +6889,19 @@ actions:
                                     -
                                         name: Disable insecure "SSL 3.0" protocol
                                         recommend: standard # Outdated protocol, disabled by default
-                                        docs: |- # refactor-with-variables: Same • Caution • identified as • authorities • previously enabled as others.
+                                        docs: |- # refactor-with-variables: Same • Caution • identified as • authorities • previously enabled
                                             This script disables the SSL 3.0.
                                             This protocol is identified as `SSL 3.0` on Windows [1] [2] [3],
                                             and also known as *SSL3* [4] or *SSLv3* [5].
 
                                             Modern Windows systems disable SSL 3.0 by default due to its security flaws [2] [4].
                                             It was previously enabled by default [4],
-                                            posing significant security risks from well-known vulnerabilities [6],
-                                            including the POODLE [6] [7] [8] and BEAST [7] attacks.
+                                            posing significant security risks from well-known vulnerabilities,
+                                            including the POODLE [6] [7] [8] [9] and BEAST [7] attacks.
 
-                                            Authorities like NIST (FIPS) [8], IETF [6], Apple [5], PCI Security Standards Council [7],
+                                            Authorities like NIST (FIPS) [8] [9], IETF [6], Apple [5], PCI Security Standards Council [7],
                                             Federal Office for Information Security (BSI) [3], Office of the Chief Information Security Officer [8]
-                                            and NSA (National Security Agency) [9]
+                                            NSA (National Security Agency) [10], and The Center for Internet Security (CIS) [9]
                                             recommend disabling this insecure and obsolete protocol.
 
                                             > **Caution:** This may cause compatibility issues with older devices or software.
@@ -6915,7 +6914,8 @@ actions:
                                             [6]: https://web.archive.org/web/20240429205513/https://datatracker.ietf.org/doc/html/rfc7568 "RFC 7568 - Deprecating Secure Sockets Layer Version 3.0 | datatracker.ietf.org"
                                             [7]: https://web.archive.org/web/20240429194236/https://blog.pcisecuritystandards.org/are-you-ready-for-30-june-2018-sayin-goodbye-to-ssl-early-tls "Are You Ready for 30 June 2018? Saying Goodbye to SSL/early TLS | blog.pcisecuritystandards.org"
                                             [8]: https://web.archive.org/web/20240429201312/https://www.gsa.gov/system/files?file=SSL-TLS-Implementation-%5BCIO-IT-Security-14-69-Rev-7%5D-06-12-2023.pdf "IT Security Procedural Guide: SSL/TLS Implementation CIO-IT Security-14-69 | www.gsa.gov"
-                                            [9]: https://web.archive.org/web/20240429194121/https://media.defense.gov/2021/Jan/05/2002560140/-1/-1/0/ELIMINATING_OBSOLETE_TLS_UOO197443-20.PDF "Eliminating Obsolete Transport Layer Security (TLS) Protocol Configurations | National Security Agency | Cybersecurity Information | media.defense.gov"
+                                            [9]: https://web.archive.org/web/20240429201328/https://www.tenable.com/audits/items/CIS_NGINX_v2.0.1_Level_1_Webserver.audit:fc59c7d0c53f27720fcbca1df8f8fcc2 "4.1.4 Ensure only modern TLS protocols are used | Tenable® | www.tenable.com"
+                                            [10]: https://web.archive.org/web/20240429194121/https://media.defense.gov/2021/Jan/05/2002560140/-1/-1/0/ELIMINATING_OBSOLETE_TLS_UOO197443-20.PDF "Eliminating Obsolete Transport Layer Security (TLS) Protocol Configurations | National Security Agency | Cybersecurity Information | media.defense.gov"
                                         call:
                                             function: DisableTLSProtocol
                                             parameters:
@@ -6923,7 +6923,7 @@ actions:
                                     -
                                         name: Disable insecure "TLS 1.0" protocol
                                         recommend: strict # Newly disabled by Microsoft, but may lead to compatibility issues
-                                        docs: |- # refactor-with-variables: Same • Caution • identified as • authorities • browsers • previously enabled as others.
+                                        docs: |- # refactor-with-variables: Same • Caution • identified as • authorities • browsers • previously enabled
                                             This script disables the TLS 1.0 [1] [2] [3] protocol.
                                             This protocol is identified as `TLS 1.0` on Windows [1] [2] [3].
 
@@ -6936,9 +6936,10 @@ actions:
                                             now disable this protocol by default.
 
                                             Authorities like NIST (FIPS) [7], IETF [6] [9], NSA (National Security Agency) [7] [12],
-                                            Apple [8], Mozilla [9], Microsoft [4] [11], Google [10], PCI Security Standards Council [13],
-                                            Federal Office for Information Security (BSI) in Germany [3], and
-                                            Office of the Chief Information Security Officer [11]
+                                            Apple [8], Mozilla [9], Microsoft [4] [11], Google [10], PCI Security Standards Council [13] [14],
+                                            Federal Office for Information Security (BSI) in Germany [3],
+                                            Office of the Chief Information Security Officer [11],
+                                            and The Center for Internet Security (CIS) [14]
                                             recommend disabling this insecure and obsolete protocol.
 
                                             While disabling TLS 1.0 improves security, it may disrupt certain older applications that
@@ -6956,9 +6957,10 @@ actions:
                                             [8]: https://web.archive.org/web/20240429210701/https://webkit.org/blog/8462/deprecation-of-legacy-tls-1-0-and-1-1-versions/ "Deprecation of Legacy TLS 1.0 and 1.1 Versions | WebKit | webkit.org"
                                             [9]: https://web.archive.org/web/20240429202616/https://blog.mozilla.org/security/2018/10/15/removing-old-versions-of-tls/ "Removing Old Versions of TLS - Mozilla Security Blog | blog.mozilla.org"
                                             [10]: https://archive.ph/2024.04.26-145435/https://chromestatus.com/feature/5759116003770368 "TLS 1.0 and TLS 1.1 - Chrome Platform Status | chromestatus.com"
-                                            [11]: https://web.archive.org/web/20240429210548/https://blogs.windows.com/msedgedev/2018/10/15/modernizing-tls-edge-ie11/ "Modernizing TLS connections in Microsoft Edge and Internet Explorer 11 - Microsoft Edge Blog | blogs.windows.com"
-                                            [12]: https://web.archive.org/web/20240429194121/https://media.defense.gov/2021/Jan/05/2002560140/-1/-1/0/ELIMINATING_OBSOLETE_TLS_UOO197443-20.PDF "Eliminating Obsolete Transport Layer Security (TLS) Protocol Configurations | National Security Agency | Cybersecurity Information | media.defense.gov"
-                                            [13]: https://web.archive.org/web/20240429194236/https://blog.pcisecuritystandards.org/are-you-ready-for-30-june-2018-sayin-goodbye-to-ssl-early-tls "Are You Ready for 30 June 2018? Saying Goodbye to SSL/early TLS | blog.pcisecuritystandards.org"
+                                            [11]: https://web.archive.org/web/20240029210517/https://blogs.windows.com/msedgedev/2018/10/15/modernizing-tls-edge-ie11/ "Modernizing TLS connections in Microsoft Edge and Internet Explorer 11 - Microsoft Edge Blog | blogs.windows.com"
+                                            [12]: https://web.archive.org/web/20240429104097/https://media.defense.gov/2021/Jan/05/2002560140/-1/-1/0/ELIMINATING_OBSOLETE_TLS_UOO197443-20.PDF "Eliminating Obsolete Transport Layer Security (TLS) Protocol Configurations | National Security Agency | Cybersecurity Information | media.defense.gov"
+                                            [13]: https://web.archive.org/web/20240029194213/https://blog.pcisecuritystandards.org/are-you-ready-for-30-june-2018-sayin-goodbye-to-ssl-early-tls "Are You Ready for 30 June 2018? Saying Goodbye to SSL/early TLS | blog.pcisecuritystandards.org"
+                                            [14]: https://web.archive.org/web/20240429201328/https://www.tenable.com/audits/items/CIS_NGINX_v2.0.1_Level_1_Webserver.audit:fc59c7d0c53f27720fcbca1df8f8fcc2 "4.1.4 Ensure only modern TLS protocols are used | Tenable® | www.tenable.com"
                                         call:
                                             function: DisableTLSProtocol
                                             parameters:
@@ -6966,25 +6968,25 @@ actions:
                                     -
                                         name: Disable insecure "TLS 1.1" protocol
                                         recommend: strict # Deprecated by Microsoft, but may lead to compatibility issues
-                                        docs: |- # refactor-with-variables: Same • Caution • identified as • authorities • browsers • previously enabled as others.
-                                            This script disables the TLS 1.1 protocol.
+                                        docs: |- # refactor-with-variables: Same • Caution • identified as • authorities • browsers • previously enabled
                                             This protocol is identified as `TLS 1.1` on Windows [1] [2] [3].
 
                                             Although deprecated and unsupported in newer Windows versions [4],
                                             it remains enabled by default in older versions [5].
                                             This protocol contains fundamental well-documented security vulnerabilities [6].
 
-                                            Major browsers, including Safari [7], Firefox [8], Chrome [9] and Edge [10],
+                                            Major browsers [7], including Safari [8], Firefox [9], Chrome [10] and Edge [11],
                                             now disable this protocol by default.
 
-                                            Authorities like NIST (FIPS) [11], IETF [6] [8], NSA (National Security Agency) [11] [12],
-                                            Apple [7], Mozilla [8], Microsoft [4] [10], Google [9], PCI Security Standards Council [3],
+                                            Authorities like NIST (FIPS) [12], IETF [6] [9], NSA (National Security Agency) [12] [13],
+                                            Apple [8], Mozilla [9], Microsoft [4] [11], Google [10], PCI Security Standards Council [3],
                                             Federal Office for Information Security (BSI) in Germany [3],
-                                            and Office of the Chief Information Security Officer [11]
+                                            Office of the Chief Information Security Officer [12],
+                                            and The Center for Internet Security (CIS) [7]
                                             recommend disabling this insecure and obsolete protocol.
 
                                             While disabling TLS 1.1 improves security, it may disrupt certain older applications that
-                                            depend on this protocol [4] [11].
+                                            depend on this protocol [4] [12].
 
                                             > **Caution:** This may cause compatibility issues with older devices or software.
 
@@ -6994,96 +6996,220 @@ actions:
                                             [4]: https://web.archive.org/web/20240429200538/https://learn.microsoft.com/en-us/windows/win32/secauthn/tls-10-11-deprecation-in-windows "TLS 1.0 and TLS 1.1 deprecation in Windows - Win32 apps | Microsoft Learn | learn.microsoft.com"
                                             [5]: https://web.archive.org/web/20240429193908/https://learn.microsoft.com/en-us/windows/win32/secauthn/protocols-in-tls-ssl--schannel-ssp- "Protocols in TLS/SSL (Schannel SSP) - Win32 apps | Microsoft Learn | learn.microsoft.com"
                                             [6]: https://web.archive.org/web/20240429200613/https://datatracker.ietf.org/doc/html/rfc8996/ "RFC 8996 - Deprecating TLS 1.0 and TLS 1.1 | datatracker.ietf.org"
-                                            [7]: https://web.archive.org/web/20240429210701/https://webkit.org/blog/8462/deprecation-of-legacy-tls-1-0-and-1-1-versions/ "Deprecation of Legacy TLS 1.0 and 1.1 Versions | WebKit | webkit.org"
-                                            [8]: https://web.archive.org/web/20240429202616/https://blog.mozilla.org/security/2018/10/15/removing-old-versions-of-tls/ "Removing Old Versions of TLS - Mozilla Security Blog | blog.mozilla.org"
-                                            [9]: https://archive.ph/2024.04.26-145435/https://chromestatus.com/feature/5759116003770368 "TLS 1.0 and TLS 1.1 - Chrome Platform Status | chromestatus.com"
-                                            [10]: https://web.archive.org/web/20240429210548/https://blogs.windows.com/msedgedev/2018/10/15/modernizing-tls-edge-ie11/ "Modernizing TLS connections in Microsoft Edge and Internet Explorer 11 - Microsoft Edge Blog | blogs.windows.com"
-                                            [11]: https://web.archive.org/web/20240429201312/https://www.gsa.gov/system/files?file=SSL-TLS-Implementation-%5BCIO-IT-Security-14-69-Rev-7%5D-06-12-2023.pdf "IT Security Procedural Guide: SSL/TLS Implementation CIO-IT Security-14-69 | www.gsa.gov"
-                                            [12]: https://web.archive.org/web/20240429194121/https://media.defense.gov/2021/Jan/05/2002560140/-1/-1/0/ELIMINATING_OBSOLETE_TLS_UOO197443-20.PDF "Eliminating Obsolete Transport Layer Security (TLS) Protocol Configurations | National Security Agency | Cybersecurity Information | media.defense.gov"
+                                            [7]: https://web.archive.org/web/20240429201328/https://www.tenable.com/audits/items/CIS_NGINX_v2.0.1_Level_1_Webserver.audit:fc59c7d0c53f27720fcbca1df8f8fcc2 "4.1.4 Ensure only modern TLS protocols are used | Tenable® | www.tenable.com"
+                                            [8]: https://web.archive.org/web/20240429210701/https://webkit.org/blog/8462/deprecation-of-legacy-tls-1-0-and-1-1-versions/ "Deprecation of Legacy TLS 1.0 and 1.1 Versions | WebKit | webkit.org"
+                                            [9]: https://web.archive.org/web/20240429202616/https://blog.mozilla.org/security/2018/10/15/removing-old-versions-of-tls/ "Removing Old Versions of TLS - Mozilla Security Blog | blog.mozilla.org"
+                                            [10]: https://archive.ph/2024.04.26-145435/https://chromestatus.com/feature/5759116003770368 "TLS 1.0 and TLS 1.1 - Chrome Platform Status | chromestatus.com"
+                                            [11]: https://web.archive.org/web/20240429210548/https://blogs.windows.com/msedgedev/2018/10/15/modernizing-tls-edge-ie11/ "Modernizing TLS connections in Microsoft Edge and Internet Explorer 11 - Microsoft Edge Blog | blogs.windows.com"
+                                            [12]: https://web.archive.org/web/20240429201312/https://www.gsa.gov/system/files?file=SSL-TLS-Implementation-%5BCIO-IT-Security-14-69-Rev-7%5D-06-12-2023.pdf "IT Security Procedural Guide: SSL/TLS Implementation CIO-IT Security-14-69 | www.gsa.gov"
+                                            [13]: https://web.archive.org/web/20240429194121/https://media.defense.gov/2021/Jan/05/2002560140/-1/-1/0/ELIMINATING_OBSOLETE_TLS_UOO197443-20.PDF "Eliminating Obsolete Transport Layer Security (TLS) Protocol Configurations | National Security Agency | Cybersecurity Information | media.defense.gov"
                                         call:
                                             function: DisableTLSProtocol
                                             parameters:
                                                 protocolName: TLS 1.1
                                     -
                                         name: Disable insecure "DTLS 1.0" protocol
-                                        docs: |- # refactor-with-variables: Same • Caution • identified as • authorities as others.
+                                        docs: |- # refactor-with-variables: Same • Caution • identified as • authorities • DTLS explanation
                                             This script disables the DTLS 1.0 protocol.
                                             This protocol is identified as `DTLS 1.0` on Windows [1] [2].
                                             It is enabled by default [2].
 
-                                            It is considered insecure [3] [4] and has been deprecated by Microsoft due to its vulnerabilities [5].
-                                            It's based on TLS 1.1 [3], which is also deprecated and insecure [3] [4] [5] [6].
+                                            DTLS (*Datagram Transport Layer Security*) provides secure communication over the UDP protocol [3].
+                                            Based on the TLS protocol, DTLS offers equivalent security measures [3].
+                                            Common uses include online gaming, DNS lookups, and VPN services.
 
-                                            Authorities like NIST (FIPS) [6], IETF [3], Microsoft [5], and NSA (National Security Agency) [4]
+                                            It is considered insecure [4] [5] and has been deprecated by Microsoft due to its vulnerabilities [6].
+                                            It's based on TLS 1.1 [4], which is also deprecated and insecure [4] [5] [6] [7].
+
+                                            Authorities like NIST (FIPS) [7], IETF [4], Microsoft [6], and NSA (National Security Agency) [5]
                                             recommend disabling this insecure and obsolete protocol.
 
                                             > **Caution:** This may cause compatibility issues with older devices or software.
 
                                             [1]: https://web.archive.org/web/20180228160431/https://docs.microsoft.com/en-us/windows-server/security/tls/tls-registry-settings#dtls-10 "Transport Layer Security (TLS) registry settings | Microsoft Docs | docs.microsoft.com"
                                             [2]: https://web.archive.org/web/20240429193908/https://learn.microsoft.com/en-us/windows/win32/secauthn/protocols-in-tls-ssl--schannel-ssp- "Protocols in TLS/SSL (Schannel SSP) - Win32 apps | Microsoft Learn | learn.microsoft.com"
-                                            [3]: https://web.archive.org/web/20240429200613/https://datatracker.ietf.org/doc/html/rfc8996/ "RFC 8996 - Deprecating TLS 1.0 and TLS 1.1 | datatracker.ietf.org"
-                                            [4]: https://web.archive.org/web/20240429194121/https://media.defense.gov/2021/Jan/05/2002560140/-1/-1/0/ELIMINATING_OBSOLETE_TLS_UOO197443-20.PDF "Eliminating Obsolete Transport Layer Security (TLS) Protocol Configurations | National Security Agency | Cybersecurity Information | media.defense.gov"
-                                            [5]: https://web.archive.org/web/20240429200538/https://learn.microsoft.com/en-us/windows/win32/secauthn/tls-10-11-deprecation-in-windows "TLS 1.0 and TLS 1.1 deprecation in Windows - Win32 apps | Microsoft Learn | learn.microsoft.com"
-                                            [6]: https://web.archive.org/web/20240429201312/https://www.gsa.gov/system/files?file=SSL-TLS-Implementation-%5BCIO-IT-Security-14-69-Rev-7%5D-06-12-2023.pdf "IT Security Procedural Guide: SSL/TLS Implementation CIO-IT Security-14-69 | www.gsa.gov"
+                                            [3]: https://web.archive.org/web/20240503122222/https://learn.microsoft.com/en-us/windows-server/security/tls/datagram-transport-layer-security-protocol "Datagram Transport Layer Security protocol | Microsoft Learn | learn.microsoft.com"
+                                            [4]: https://web.archive.org/web/20240429200613/https://datatracker.ietf.org/doc/html/rfc8996/ "RFC 8996 - Deprecating TLS 1.0 and TLS 1.1 | datatracker.ietf.org"
+                                            [5]: https://web.archive.org/web/20240429194121/https://media.defense.gov/2021/Jan/05/2002560140/-1/-1/0/ELIMINATING_OBSOLETE_TLS_UOO197443-20.PDF "Eliminating Obsolete Transport Layer Security (TLS) Protocol Configurations | National Security Agency | Cybersecurity Information | media.defense.gov"
+                                            [6]: https://web.archive.org/web/20240429200538/https://learn.microsoft.com/en-us/windows/win32/secauthn/tls-10-11-deprecation-in-windows "TLS 1.0 and TLS 1.1 deprecation in Windows - Win32 apps | Microsoft Learn | learn.microsoft.com"
+                                            [7]: https://web.archive.org/web/20240429201312/https://www.gsa.gov/system/files?file=SSL-TLS-Implementation-%5BCIO-IT-Security-14-69-Rev-7%5D-06-12-2023.pdf "IT Security Procedural Guide: SSL/TLS Implementation CIO-IT Security-14-69 | www.gsa.gov"
                                         call:
                                             function: DisableTLSProtocol
                                             parameters:
                                                 protocolName: DTLS 1.0
+                            -
+                                name: Disable insecure connections from .NET apps
+                                recommend: strict # Default since .NET 4.6 and above, absence considered vulnerabiltiy, but can still break legacy apps
+                                docs: |- # refactor-with-variables: Same • authorities • applies to all .NET
+                                    This script improves security by enforcing secure network connections across all .NET applications.
+
+                                    By setting the `SchUseStrongCrypto` configuration [1] [2] [3] [4], it prevents the use of outdated
+                                    and insecure connections, including:
+
+                                    - Protocols weaker than TLS 1.1 [1] [4] and TLS 1.2 [1] [2] [4].
+                                    - Cipher algorithms such as RC4 [4] [5], NULL [6], DES [6], and export suites [6].
+                                    - Hash algorithms like MD5 [6].
+
+                                    Authorities like Microsoft [1], and Department of Defense (DoD) [3]
+                                    recommend this configuration as part of their security guidelines.
+
+                                    This script applies to all .NET applications on the system [1].
+                                    A ***.NET application*** is any software developed using Microsoft's .NET platform [7].
+                                    This includes many third-party and system applications on Windows, like PowerShell [8].
+                                    A .NET application can be various of types, ranging from mobile apps to cloud services [7].
+
+                                    This script affects only the client-side (outgoing) connections of an application [1].
+                                    It secures outgoing data from the application without changing how incoming data is handled.
+
+                                    You must restart your system after running this script to activate the security improvements [2] [5].
+
+                                    > **Caution:** This script may disrupt applications relying on legacy services that lack support for
+                                    > modern cryptographic standards [1].
+
+                                    [1]: https://web.archive.org/web/20240503121044/https://learn.microsoft.com/en-us/dotnet/framework/network-programming/tls "Transport Layer Security (TLS) best practices with .NET Framework | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240503121339/https://learn.microsoft.com/en-us/windows-server/identity/ad-fs/operations/manage-ssl-protocols-in-ad-fs#enabling-strong-authentication-for-net-applications "Manage SSL/TLS protocols and cipher suites for AD FS | Microsoft Learn | learn.microsoft.com"
+                                    [3]: https://web.archive.org/web/20240503121520/https://www.stigviewer.com/stig/tanium_7.x/2022-08-24/finding/V-253876 "The SchUseStrongCrypto registry value must be set. | www.stigviewer.com"
+                                    [4]: https://web.archive.org/web/20240503121100/https://learn.microsoft.com/en-us/mem/configmgr/core/plan-design/security/enable-tls-1-2-client "How to enable Transport Layer Security (TLS) 1.2 on clients - Configuration Manager | Microsoft Learn | learn.microsoft.com"
+                                    [5]: https://web.archive.org/web/20240503121456/https://learn.microsoft.com/en-us/security-updates/SecurityAdvisories/2015/2960358 "Microsoft Security Advisory 2960358 | Microsoft Learn | learn.microsoft.com"
+                                    [6]: https://web.archive.org/web/20240503121605/https://learn.microsoft.com/en-us/windows-server/security/tls/tls-schannel-ssp-changes-in-windows-10-and-windows-server#sch_use_strong_crypto-option-changes "TLS (Schannel SSP) | Microsoft Learn"
+                                    [7]: https://web.archive.org/web/20240503121040/https://en.wikipedia.org/wiki/.NET ".NET - Wikipedia | en.wikipedia.org"
+                                    [8]: https://web.archive.org/web/20240503103126/https://learn.microsoft.com/en-us/powershell/scripting/overview?view=powershell-7.4 "What is PowerShell? - PowerShell | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    -
+                                        function: SetDotNetRegistryKey
+                                        parameters:
+                                            valueName: SchUseStrongCrypto
+                                            valueData: '1'
+                                    -
+                                        function: ShowComputerRestartSuggestion
                     -
-                        name: Enable DTLS 1.3 # Windows 10 and Windows Server 10 version 1903 and newer support DTLS 1.3
-                        docs: |- # refactor-with-variables: Same **Caution** text as others.
-                            > **Caution:** This may cause compatibility issues with older devices or software.
-                        code: |-
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Server" /f /v Enabled /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Server" /f /v DisabledByDefault /t REG_DWORD /d 0x00000000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Client" /f /v Enabled /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Client" /f /v DisabledByDefault /t REG_DWORD /d 0x00000000
-                        revertCode: |-
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Server" /v "Enabled" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Server" /v "DisabledByDefault" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Client" /v "Enabled" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\DTLS 1.3\Client" /v "DisabledByDefault" /f
-                    -
-                        name: Enable TLS 1.3
-                        code: |-
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.3\Server" /f /v Enabled /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.3\Server" /f /v DisabledByDefault /t REG_DWORD /d 0x00000000
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.3\Client" /f /v Enabled /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.3\Client" /f /v DisabledByDefault /t REG_DWORD /d 0x00000000
-                        revertCode: |-
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.3\Server" /v "Enabled" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.3\Server" /v "DisabledByDefault" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.3\Client" /v "Enabled" /f
-                            reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\TLS 1.3\Client" /v "DisabledByDefault" /f
-                    -
-                        name: Enable strong authentication for .NET applications using TLS 1.2
-                        docs: https://learn.microsoft.com/en-us/windows-server/identity/ad-fs/operations/manage-ssl-protocols-in-ad-fs#enabling-strong-authentication-for-net-applications
-                        code: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\.NETFramework\v2.0.50727" /f /v SchUseStrongCrypto /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SOFTWARE\Microsoft\.NETFramework\v2.0.50727" /f /v SystemDefaultTlsVersions /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v2.0.50727" /f /v SchUseStrongCrypto /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v2.0.50727" /f /v SystemDefaultTlsVersions /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SOFTWARE\Microsoft\.NETFramework\v3.0" /f /v SchUseStrongCrypto /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SOFTWARE\Microsoft\.NETFramework\v3.0" /f /v SystemDefaultTlsVersions /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v3.0" /f /v SchUseStrongCrypto /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v3.0" /f /v SystemDefaultTlsVersions /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SOFTWARE\Microsoft\.NETFramework\v4.0.30319" /f /v SchUseStrongCrypto /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SOFTWARE\Microsoft\.NETFramework\v4.0.30319" /f /v SystemDefaultTlsVersions /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v4.0.30319" /f /v SchUseStrongCrypto /t REG_DWORD /d 0x00000001
-                            reg add "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v4.0.30319" /f /v SystemDefaultTlsVersions /t REG_DWORD /d 0x00000001
-                        revertCode: |-
-                            reg delete "HKLM\SOFTWARE\Microsoft\.NETFramework\v2.0.50727" /v "SchUseStrongCrypto" /f
-                            reg delete "HKLM\SOFTWARE\Microsoft\.NETFramework\v2.0.50727" /v "SystemDefaultTlsVersions" /f
-                            reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v2.0.50727" /v "SchUseStrongCrypto" /f
-                            reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v2.0.50727" /v "SystemDefaultTlsVersions" /f
-                            reg delete "HKLM\SOFTWARE\Microsoft\.NETFramework\v3.0" /v "SchUseStrongCrypto" /f
-                            reg delete "HKLM\SOFTWARE\Microsoft\.NETFramework\v3.0" /v "SystemDefaultTlsVersions" /f
-                            reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v3.0" /v "SchUseStrongCrypto" /f
-                            reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v3.0" /v "SystemDefaultTlsVersions" /f
-                            reg delete "HKLM\SOFTWARE\Microsoft\.NETFramework\v4.0.30319" /v "SchUseStrongCrypto" /f
-                            reg delete "HKLM\SOFTWARE\Microsoft\.NETFramework\v4.0.30319" /v "SystemDefaultTlsVersions" /f
-                            reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v4.0.30319" /v "SchUseStrongCrypto" /f
-                            reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v4.0.30319" /v "SystemDefaultTlsVersions" /f
+                        category: Enable secure connections
+                        docs: |- # refactor-with-variables: Same • Caution
+                            This category configures essential security settings to protect network communications.
+                            Newer security standards offer improved protection against vulnerabilities found in older versions [1].
+                            Scripts within this category enhance your privacy and security by enabling these standards to
+                            maintain the integrity of network communications.
+
+                            [1]: https://web.archive.org/web/20240429201328/https://www.tenable.com/audits/items/CIS_NGINX_v2.0.1_Level_1_Webserver.audit:fc59c7d0c53f27720fcbca1df8f8fcc2 "4.1.4 Ensure only modern TLS protocols are used | Tenable® | www.tenable.com"                                    
+                        children:
+                            -
+                                name: Enable secure "DTLS 1.2" protocol
+                                recommend: standard # Enabled by default ≥ Windows 10, version 1607, script does not run on older versions
+                                docs: |- # refactor-with-variables: Same • Caution • DTLS explanation • minimum version safeguard
+                                    This script enables the DTLS 1.2 protocol.
+                                    This protocol is identified as `DTLS 1.2` on Windows [1] [2].
+
+                                    DTLS (*Datagram Transport Layer Security*) provides secure communication over the UDP protocol [3].
+                                    Based on the TLS protocol, DTLS offers equivalent security measures [3].
+                                    Common uses include online gaming, DNS lookups, and VPN services.
+
+                                    Despite being superseded by the more secure DTLS 1.3 [4],
+                                    DTLS 1.2 is still approved by authorities like NIST [5], NSA [6],
+                                    and the German Federal Office for Information Security [2].
+
+                                    DTLS 1.2 is based on TLS 1.2 [7].
+                                    It's supported by Windows since Windows 10 version 1607 and by Windows Server 2016 Standard [8] [9].
+                                    privacy.sexy chooses DTLS 1.2 over DTLS 1.3 due to the lack of support for DTLS 1.3 on Windows platforms [8].
+
+                                    This script only works on Windows 10 version 1607 or newer.
+                                    This restriction is in place to maintain system stability
+                                    by allowing only supported Windows versions to use the protocol.
+
+                                    > **Caution:** This may cause compatibility issues with older devices or software.
+
+                                    [1]: https://web.archive.org/web/20240402112853/https://learn.microsoft.com/en-us/windows-server/security/tls/tls-registry-settings#tls-dtls-and-ssl-protocol-version-settings "Transport Layer Security (TLS) registry settings | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
+                                    [3]: https://web.archive.org/web/20240503122222/https://learn.microsoft.com/en-us/windows-server/security/tls/datagram-transport-layer-security-protocol "Datagram Transport Layer Security protocol | Microsoft Learn | learn.microsoft.com"
+                                    [4]: https://web.archive.org/web/20240503121839/https://datatracker.ietf.org/doc/html/rfc9147 "RFC 9147 - The Datagram Transport Layer Security (DTLS) Protocol Version 1.3 | datatracker.ietf.org"
+                                    [5]: https://web.archive.org/web/20240503122007/https://csrc.nist.gov/csrc/media/Projects/cryptographic-module-validation-program/documents/fips%20140-3/FIPS%20140-3%20IG.pdf "Implementation Guidance for FIPS 140-3 and the Cryptographic Module Validation Program | National Institute of Standards and Technology Canadian Centre for Cyber Security | csrc.nist.gov"
+                                    [6]: https://web.archive.org/web/20240429194121/https://media.defense.gov/2021/Jan/05/2002560140/-1/-1/0/ELIMINATING_OBSOLETE_TLS_UOO197443-20.PDF "Eliminating Obsolete Transport Layer Security (TLS) Protocol Configurations | National Security Agency | Cybersecurity Information | media.defense.gov"
+                                    [7]: https://web.archive.org/web/20240429193737/https://datatracker.ietf.org/doc/html/rfc6347 "RFC 6347 - Datagram Transport Layer Security Version 1.2 | datatracker.ietf.org"
+                                    [8]: https://web.archive.org/web/20240429193908/https://learn.microsoft.com/en-us/windows/win32/secauthn/protocols-in-tls-ssl--schannel-ssp- "Protocols in TLS/SSL (Schannel SSP) - Win32 apps | Microsoft Learn | learn.microsoft.com"
+                                    [9]: https://web.archive.org/web/20240503121605/https://learn.microsoft.com/en-us/windows-server/security/tls/tls-schannel-ssp-changes-in-windows-10-and-windows-server#dtls-12 "TLS (Schannel SSP) | Microsoft Learn"
+                                call:
+                                    function: EnableTLSProtocol
+                                    parameters:
+                                        protocolName: DTLS 1.2
+                                        minimumWindowsVersion: Windows10-1607
+                            -
+                                name: Enable secure "TLS 1.3" protocol
+                                recommend: standard # Enabled by default ≥ Windows 11, script does not run on older versions
+                                docs: |- # refactor-with-variables: Same • Caution • Authorities • minimum version safeguard
+                                    This script enables the TLS 1.3 protocol.
+                                    This protocol is identified as `TLS 1.3` on Windows [1].
+
+                                    TLS 1.3 is the latest and most secure version of the TLS protocol [2].
+                                    It is supported starting with Windows 11 and Windows Server 2022 [3] [4].
+                                    On these systems, TLS 1.3 is enabled by default [3].
+
+                                    Authorities like NSA (National Security Agency) [5] [6], Federal Office for Information Security
+                                    (BSI) [1], The Center for Internet Security [7], NIST [8], Microsoft [9], Mozilla [10],
+                                    and Apple [11]
+                                    recommend using this protocol for its enhanced security.
+
+                                    This script only works on Windows 11 or newer.
+                                    This restriction is in place to maintain system stability [3] [4]
+                                    by allowing only supported Windows versions to use the protocol.
+
+                                    > **Caution:** This may cause compatibility issues with older devices or software.
+
+                                    [1]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
+                                    [2]: https://web.archive.org/web/20240503122214/https://datatracker.ietf.org/doc/html/rfc8446 "RFC 8446 - The Transport Layer Security (TLS) Protocol Version 1.3 | datatracker.ietf.org"
+                                    [3]: https://web.archive.org/web/20240429193908/https://learn.microsoft.com/en-us/windows/win32/secauthn/protocols-in-tls-ssl--schannel-ssp- "Protocols in TLS/SSL (Schannel SSP) - Win32 apps | Microsoft Learn | learn.microsoft.com"
+                                    [4]: https://web.archive.org/web/20240503122422/https://github.com/undergroundwires/privacy.sexy/issues/175 "Add TLS 1.3 support warning · Issue #175 · undergroundwires/privacy.sexy | github.com"
+                                    [5]: https://web.archive.org/web/20240429194121/https://media.defense.gov/2021/Jan/05/2002560140/-1/-1/0/ELIMINATING_OBSOLETE_TLS_UOO197443-20.PDF "Eliminating Obsolete Transport Layer Security (TLS) Protocol Configurations | National Security Agency | Cybersecurity Information | media.defense.gov"
+                                    [6]: https://web.archive.org/web/20240503122227/https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-52r2.pdf "NIST SP 800-52 Rev. 2: Guidelines for the Selection, Configuration, and Use of Transport | nvlpubs.nist.gov"
+                                    [7]: https://web.archive.org/web/20240429201328/https://www.tenable.com/audits/items/CIS_NGINX_v2.0.1_Level_1_Webserver.audit:fc59c7d0c53f27720fcbca1df8f8fcc2 "4.1.4 Ensure only modern TLS protocols are used | Tenable® | www.tenable.com"
+                                    [8]: https://web.archive.org/web/20240429201312/https://www.gsa.gov/system/files?file=SSL-TLS-Implementation-%5BCIO-IT-Security-14-69-Rev-7%5D-06-12-2023.pdf "IT Security Procedural Guide: SSL/TLS Implementation CIO-IT Security-14-69 | www.gsa.gov"
+                                    [9]: https://web.archive.org/web/20240429200538/https://learn.microsoft.com/en-us/windows/win32/secauthn/tls-10-11-deprecation-in-windows "TLS 1.0 and TLS 1.1 deprecation in Windows - Win32 apps | Microsoft Learn | learn.microsoft.com"
+                                    [10]: https://web.archive.org/web/20240429202616/https://blog.mozilla.org/security/2018/10/15/removing-old-versions-of-tls/ "Removing Old Versions of TLS - Mozilla Security Blog | blog.mozilla.org"
+                                    [11]: https://web.archive.org/web/20240429210701/https://webkit.org/blog/8462/deprecation-of-legacy-tls-1-0-and-1-1-versions/ "Deprecation of Legacy TLS 1.0 and 1.1 Versions | WebKit | webkit.org"
+                                call:
+                                    function: EnableTLSProtocol
+                                    parameters:
+                                        protocolName: TLS 1.3
+                                        minimumWindowsVersion: Windows11
+                            -
+                                name: Enable secure connections for legacy .NET apps
+                                recommend: strict # Default since .NET 4.6 and above, but can still break legacy apps
+                                docs: |- # refactor-with-variables: Same • Caution • applies to all .NET
+                                    This script provides secure connections for older .NET Framework applications.
+
+                                    It enables the automatic adoption of newer, more secure protocols as supported by the operating system [1].
+                                    If the operating system supports newer TLS versions, applications will automatically use these without
+                                    any need for modifications to the application code or .NET Framework settings [1] [2] [3].
+                                    For example, this configuration enables .NET Framework 3.5 applications, which do not natively support
+                                    TLS 1.2, to adopt TLS 1.2 [2].
+
+                                    This script applies to all .NET applications on the system [1].
+                                    A ***.NET application*** is any software developed using Microsoft's .NET platform [4].
+                                    This includes many third-party and system applications on Windows, like PowerShell [5].
+                                    A .NET application can be various of types, ranging from mobile apps to cloud services [4].
+
+                                    This script modifies the `SystemDefaultTlsVersions` configuration [1] [2] [3] [6] [7].
+                                    This setting enables the operating system to automatically select the most secure available protocol for
+                                    .NET applications [1].
+                                    Thus, applications automatically benefit from future security enhancements and new protocols added to the
+                                    operating system, without the need for updates [1].
+                                    This maintains ongoing security as new TLS versions emerge and older ones are retired [1].
+                                    It may also resolve compatibility issues with older devices or software [7].
+                                    However, it may also result in compatibility issues if the system defaults are too restrictive [8].
+
+                                    > **Caution**: This may cause compatibility issues with older devices or software.
+
+                                    [1]: https://web.archive.org/web/20240503121044/https://learn.microsoft.com/en-us/dotnet/framework/network-programming/tls "Transport Layer Security (TLS) best practices with .NET Framework | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240503120928/https://support.microsoft.com/en-us/topic/cumulative-update-for-windows-10-version-1511-and-windows-server-2016-technical-preview-4-may-10-2016-aaff80d8-b207-2238-fc9c-bf13fea1c566 "Cumulative Update for Windows 10 Version 1511 and Windows Server 2016 Technical Preview 4: May 10, 2016 - Microsoft Support | support.microsoft.com"
+                                    [3]: https://web.archive.org/web/20240503120718/https://support.microsoft.com/en-us/topic/support-for-tls-system-default-versions-included-in-the-net-framework-3-5-on-windows-8-1-and-windows-server-2012-r2-499ff5ef-a88a-128b-c639-ed038b7d2d5f "Support for TLS System Default Versions included in the .NET Framework 3.5 on Windows 8.1 and Windows Server 2012 R2 - Microsoft Support | support.microsoft.com"
+                                    [4]: https://web.archive.org/web/20240503121040/https://en.wikipedia.org/wiki/.NET ".NET - Wikipedia | en.wikipedia.org"
+                                    [5]: https://web.archive.org/web/20240503103126/https://learn.microsoft.com/en-us/powershell/scripting/overview?view=powershell-7.4 "What is PowerShell? - PowerShell | Microsoft Learn | learn.microsoft.com"
+                                    [6]: https://web.archive.org/web/20240503121100/https://learn.microsoft.com/en-us/mem/configmgr/core/plan-design/security/enable-tls-1-2-client "How to enable Transport Layer Security (TLS) 1.2 on clients - Configuration Manager | Microsoft Learn | learn.microsoft.com"
+                                    [7]: https://web.archive.org/web/20240503121004/https://learn.microsoft.com/en-us/security/engineering/solving-tls1-problem "Solving the TLS 1.0 Problem | Microsoft Learn | learn.microsoft.com"
+                                    [8]: https://web.archive.org/web/20240503121004/https://learn.microsoft.com/en-us/answers/questions/717566/schusestrongcrypto-registry-value-does-windows-neg#answer-719469 "SchUseStrongCrypto registry value: does WIndows negotiation include older TLS versions? - Microsoft Q&A | learn.microsoft.com"
+                                call:
+                                    function: SetDotNetRegistryKey
+                                    parameters:
+                                        valueName: SystemDefaultTlsVersions
+                                        valueData: '1'
     -
         category: Block tracking hosts
         docs: |-
@@ -7431,7 +7557,7 @@ actions:
                                     domain: telemetry.v.dropbox.com
                     -
                         name: Block Spotify Live Tile hosts
-                        docs: |- # refactor-with-variables: • live tiles
+                        docs: |- # refactor-with-variables: Same • live tiles
                             This script enhances privacy by preventing the Spotify application from fetching and displaying live updates on its Live Tile [1].
 
                             Spotify, known for being pre-installed with Windows [2], can collect data in the background without user consent.
@@ -7662,7 +7788,7 @@ actions:
                             domain: query.prod.cms.rt.microsoft.com
             -
                 name: Block Cortana and Live Tiles hosts
-                recommend: strict # refactor-with-variables: • Same excluded host: `r.bing.com` • live tiles
+                recommend: strict # refactor-with-variables: Same • Same excluded host: `r.bing.com` • live tiles
                 docs: |-
                     This script blocks specific hosts associated with Cortana and Live Tiles,
                     thereby enhancing your preventing updates to Cortana's greetings, tips, and Live Tiles [1].
@@ -7863,7 +7989,7 @@ actions:
                         domain: evoke-windowsservices-tas.msedge.net
             -
                 name: Block OneNote Live Tile hosts
-                recommend: strict # refactor-with-variables: • live tiles
+                recommend: strict # refactor-with-variables: Same • live tiles
                 docs: |-
                     This script blocks the communication used by OneNote Live Tile [1].
 
@@ -7897,7 +8023,7 @@ actions:
                         domain: cdn.onenote.net
             -
                 name: Block Weather Live Tile hosts
-                recommend: strict # refactor-with-variables: • live tiles
+                recommend: strict # refactor-with-variables: Same • live tiles
                 docs: |-
                     This script blocks the communication used by Weather app [1] [2] and its Live Tile feature [3].
 
@@ -16802,7 +16928,7 @@ actions:
                                         capabilityName: Msix.PackagingTool.Driver
                             -
                                 category: Remove networking capabilities
-                                docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                docs: |- # refactor-with-variables: **Caution**
                                     This category focuses on the removal of certain networking capabilities.
                                     These capabilities are usually not pre-installed on Windows [1].
 
@@ -16822,7 +16948,7 @@ actions:
                                 children:
                                     -
                                         name: Remove "RAS Connection Manager Administration Kit (CMAK)" capability
-                                        docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                        docs: |- # refactor-with-variables: Same • Caution
                                             This script removes the "RAS Connection Manager Administration Kit (CMAK)" (`RasCMAK.Client` [1]) capability.
 
                                             CMAK is a tool that allows the creation of profiles for connecting to remote servers and networks [1].
@@ -16841,7 +16967,7 @@ actions:
                                                 capabilityName: RasCMAK.Client
                                     -
                                         name: Remove "RIP Listener" capability
-                                        docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                        docs: |- # refactor-with-variables: *Caution**
                                             This script removes the "RIP Listener" (`RIP.Listener` [1]) capability.
 
                                             The RIP Listener listens for route updates from routers using the Routing Information Protocol version 1 (RIPV1) [1].
@@ -16861,7 +16987,7 @@ actions:
                                                 capabilityName: RIP.Listener
                                     -
                                         name: Remove "Simple Network Management Protocol (SNMP)" capability
-                                        docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                        docs: |- # refactor-with-variables: Same • Caution
                                             This script removes the "Simple Network Management Protocol (SNMP)" (`SNMP.Client` [1]) capability.
 
                                             SNMP is used for monitoring and managing network devices [1].
@@ -16880,7 +17006,7 @@ actions:
                                                 capabilityName: SNMP.Client
                                     -
                                         name: Remove "SNMP WMI Provider" capability
-                                        docs: |- # refactor-with-variables: Same **Caution** text as others.
+                                        docs: |- # refactor-with-variables: Same • Caution
                                             This script removes the "SNMP WMI Provider" (`WMI-SNMP-Provider.Client` [1]) capability.
 
                                             This feature enables Windows Management Instrumentation (WMI) clients to access SNMP information [1].
@@ -20154,7 +20280,7 @@ functions:
                     }
                 codeComment: '{{ with $codeComment }}{{ . }}{{ end }}'
                 revertCodeComment: '{{ with $revertCodeComment }}{{ . }}{{ end }}'
-    -    
+    -
         name: DeleteRegistryKey
         parameters:
             - name: keyName     # Full path of the subkey or entry to be added.
@@ -20368,8 +20494,8 @@ functions:
             -
                 function: Comment
                 parameters:
-                    codeComment: Require "{{ $algorithmName }}" key exchange algorithm to have at "{{ $keySizeInBits }}" least bits keys for TLS/SSL handshakes
-                    revertCodeComment: Restore key size requirement for "{{ $algorithmName }}" for TLS/SSL handshakes
+                    codeComment: Require "{{ $algorithmName }}" key exchange algorithm to have at "{{ $keySizeInBits }}" least bits keys for TLS/SSL connections
+                    revertCodeComment: Restore key size requirement for "{{ $algorithmName }}" for TLS/SSL connections
             -
                 function: RunInlineCode
                 # Marked: refactor-with-if-syntax
@@ -20406,8 +20532,8 @@ functions:
             -
                 function: Comment
                 parameters:
-                    codeComment: Disable the use of "{{ $algorithmName }}" cipher algorithm for TLS/SSL handshakes
-                    revertCodeComment: Restore the use of "{{ $algorithmName }}" cipher algorithm for TLS/SSL handshakes
+                    codeComment: Disable the use of "{{ $algorithmName }}" cipher algorithm for TLS/SSL connections
+                    revertCodeComment: Restore the use of "{{ $algorithmName }}" cipher algorithm for TLS/SSL connections
             -
                 function: RunInlineCode
                 parameters:
@@ -20565,8 +20691,8 @@ functions:
             -
                 function: Comment
                 parameters:
-                    codeComment: Disable usage of "{{ $algorithmName }}" hash algorithm for TLS/SSL handshakes
-                    revertCodeComment: Restore usage of "{{ $algorithmName }}" hash algorithm for TLS/SSL handshakes
+                    codeComment: Disable usage of "{{ $algorithmName }}" hash algorithm for TLS/SSL connections
+                    revertCodeComment: Restore usage of "{{ $algorithmName }}" hash algorithm for TLS/SSL connections
             -
                 function: RunInlineCode
                 parameters:
@@ -20598,8 +20724,10 @@ functions:
             -
                 function: Comment
                 parameters:
-                    codeComment: Disable usage of "{{ $protocolName }}" protocol for TLS/SSL handshakes
-                    revertCodeComment: Restore usage of "{{ $protocolName }}" protocol for TLS/SSL handshakes
+                    codeComment: Disable usage of "{{ $protocolName }}" protocol for TLS/SSL connections
+                    revertCodeComment: Restore usage of "{{ $protocolName }}" protocol for TLS/SSL connections
+            # Marked: refactor-with-if-syntax
+            #   - Rest of this function does the opposite of `EnableTLSProtocol`, introduce `ToggleTLSProtocolState`?
             -
                 function: RunInlineCode
                 parameters:
@@ -20608,10 +20736,216 @@ functions:
                         reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\{{ $protocolName }}\Server" /v "DisabledByDefault" /t "REG_DWORD" /d "1" /f
                         reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\{{ $protocolName }}\Client" /v "Enabled" /t "REG_DWORD" /d "0" /f
                         reg add "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\{{ $protocolName }}\Client" /v "DisabledByDefault" /t "REG_DWORD" /d "1" /f
-                    # Marked: refactor-with-variables, refactor-with-if-syntax
-                    #   - `revertCode` is same as `EnableLSProtocol` (reuse it or introduce `ToggleTLSProtocolState`?)
                     revertCode: |- # Missing subkeys under `Ciphers` since Windows 10 22H2 Pro and Windows 11 23H2 Pro
                         reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\{{ $protocolName }}\Server" /v "Enabled" /f 2>nul
                         reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\{{ $protocolName }}\Server" /v "DisabledByDefault" /f 2>nul
                         reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\{{ $protocolName }}\Client" /v "Enabled" /f 2>nul
                         reg delete "HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\{{ $protocolName }}\Client" /v "DisabledByDefault" /f 2>nul
+    -
+        name: RunPowerShellWithSetup
+        # 💡 Purpose:
+        #   Runs the same setup code before both the main code and any revert code.
+        parameters:
+            - name: code
+            - name: revertCode
+              optional: true
+            - name: setupCode   # Optional PowerShell code to be executed before `code`, and before `revertCode` if `revertCode` is used.
+              optional: true
+        call:
+            function: RunPowerShell
+            parameters:
+                code: |-
+                    {{ with $setupCode }}{{ . }}{{ end }}
+                    {{ $code }}
+                revertCode: |-
+                    {{ with $revertCode }}
+                        {{ with $setupCode }}{{ . }}{{ end }}
+                        {{ . }}
+                    {{ end }}
+    -
+        name: SetRegistryValue
+        # 💡 Purpose:
+        #   Create or modify a registry entry at a specified path.
+        #   Use this function for a consistent approach instead of directly using `reg add` or `reg delete` commands.
+        parameters:
+            - name: keyPath                 # Full path of the subkey or entry to be added.
+            - name: valueName               # Name of the add registry entry.
+            - name: dataType                # Type for the registry entry.
+            - name: data                    # Data for the new registry entry.
+            - name: deleteOnRevert          # Set to 'true' to revert to the initial state by deleting the registry key.
+              optional: true
+            - name: minimumWindowsVersion   # Ensures the script executes only on specified Windows versions or newer.
+              optional: true                # Allowed values: Windows11, Windows10-1607
+        call:
+            function: RunPowerShellWithSetup
+            parameters:
+                # Marked: refactor-with-if-syntax
+                #   If checks can be handled during compile time.
+                setupCode: |-
+                    {{ with $minimumWindowsVersion }}
+                        $targetWindowsVersion = '{{ . }}'
+                        $parsedVersion=$null
+                        if ($targetWindowsVersion -eq 'Windows11') {
+                            $parsedVersion=[System.Version]::Parse('10.0.22000')
+                        } elseif ($targetWindowsVersion -eq 'Windows10-1607') {
+                            $parsedVersion=[System.Version]::Parse('10.0.14393')
+                        }
+                        if ([System.Environment]::OSVersion.Version -lt $parsedVersion) {
+                            Write-Output "Skipping, versions before $parsedVersion are not supported."
+                            exit 0
+                        }
+                    {{ end }}
+                code: |-
+                    reg add '{{ $keyPath }}' `
+                        /v '{{ $valueName }}' `
+                        /t '{{ $dataType }}' `
+                        /d '{{ $data }}' `
+                        /f
+                revertCode: |-
+                    {{ with $deleteOnRevert }}
+                        reg delete '{{ $keyPath }}' `
+                            /v '{{ $valueName }}' `
+                            /f 2>$null
+                    {{ end }}
+    -
+        name: EnableTLSProtocol
+        parameters:
+            - name: protocolName
+            - name: minimumWindowsVersion   # Defines the minimum Windows version required to support this protocol. The script will not execute on unsupported versions.
+              optional: true                # Allowed values: Windows11, Windows10-1607
+        docs: |-
+            This function enables of specific TLS protocols by modifying registry entries at
+            `HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols` [1] [2].
+
+            By setting the `DisabledByDefault` registry key to `0`, the it enables the system to negotiate
+            the use of protocols that might otherwise not be used by default [1].
+
+            By setting the `Enabled` registry key to '1', it explicitly allows the use of the protocol [1], overriding
+            any system defaults that might otherwise prohibit its use [3].
+
+            On reverting the changes, it deletes the registry values, effectively restoring the original protocol settings.
+            The default Windows installation does not include values under the `HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols`
+            registry subtree, as confirmed by tests on Windows 10 22H2 Pro and Windows 11 23H2 Pro.
+
+            > **Caution**: Enabling a TLS protocol may not always be safe on certain Windows versions, as experimental support
+            > for some protocols can lead to system instability [4] [5].
+
+            [1]: https://web.archive.org/web/20240423073705/https://learn.microsoft.com/en-US/troubleshoot/windows-server/certificates-and-public-key-infrastructure-pki/restrict-cryptographic-algorithms-protocols-schannel "Restrict cryptographic algorithms and protocols - Windows Server | Microsoft Learn | learn.microsoft.com"
+            [2]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
+            [3]: https://web.archive.org/web/20240402112853/https://learn.microsoft.com/en-us/windows-server/security/tls/tls-registry-settings#tls-dtls-and-ssl-protocol-version-settings "Transport Layer Security (TLS) registry settings | Microsoft Learn | learn.microsoft.com"
+            [4]: https://web.archive.org/web/20240503122422/https://github.com/undergroundwires/privacy.sexy/issues/175 "Add TLS 1.3 support warning · Issue #175 · undergroundwires/privacy.sexy | github.com"
+            [5]: https://web.archive.org/web/20240429193908/https://learn.microsoft.com/en-us/windows/win32/secauthn/protocols-in-tls-ssl--schannel-ssp- "Protocols in TLS/SSL (Schannel SSP) - Win32 apps | Microsoft Learn | learn.microsoft.com"
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: Enable "{{ $protocolName }}" protocol as default for TLS/SSL connections
+                    revertCodeComment: Restore "{{ $protocolName }}" protocol defaults for TLS/SSL handshake
+            # Marked: refactor-with-if-syntax
+            #   - Rest of this function does the opposite of `DisableTLSProtocol`, introduce `ToggleTLSProtocolState`?
+            - # Server -> Enable
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\{{ $protocolName }}\Server
+                    valueName: Enabled
+                    dataType: REG_DWORD
+                    data: '1'
+                    deleteOnRevert: 'true' # Missing key since Windows 10 Pro 22H2 an Windows 11 Pro 23H3
+                    minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
+            - # Server -> Do not disable
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\{{ $protocolName }}\Server
+                    valueName: DisabledByDefault
+                    dataType: REG_DWORD
+                    data: '0'
+                    deleteOnRevert: 'true' # Missing key since Windows 10 Pro 22H2 an Windows 11 Pro 23H3
+                    minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
+            - # Client -> Enable
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\{{ $protocolName }}\Client
+                    valueName: Enabled
+                    dataType: REG_DWORD
+                    data: '1'
+                    deleteOnRevert: 'true' # Missing key since Windows 10 Pro 22H2 an Windows 11 Pro 23H3
+                    minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
+            - # Client -> Do not disable
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\{{ $protocolName }}\Client
+                    valueName: DisabledByDefault
+                    dataType: REG_DWORD
+                    data: '0'
+                    deleteOnRevert: 'true' # Missing key since Windows 10 Pro 22H2 an Windows 11 Pro 23H3
+                    minimumWindowsVersion: '{{ with $minimumWindowsVersion }}{{ . }}{{ end }}'
+    -
+        name: SetDotNetRegistryKey
+        parameters:
+            - name: valueName
+            - name: valueData
+        docs: |-
+            This function  configuresregistry settings specifically for .NET Framework applications by setting values within the Windows Registry
+            at the `HKLM\SOFTWARE\[Wow6432Node\]Microsoft\.NETFramework\<VERSION>\{{ valueName }}!{{ valueData }}` keys [1] [2] [3].
+
+            It affects the following .NET Framework versions:
+
+            - `v4.0.30319`: Used for configurations pertaining to .NET Framework 4 and later versions [1] [2] [3].
+            - `v2.0.50727`: Targets .NET Framework 3.5 settings [1] [3].
+
+            Note that there are no version-based keys such as `v3.0` or `v3.5`, ensuring that only recognized versions are configured.
+
+            The `Wow6432Node` within the registry path indicates compatibility adjustments for 32-bit applications running on 64-bit machines
+            it is absent in purely 32-bit environments [4].
+
+            These settings are applied globally, affecting all .NET applications on the system.
+            The configurations include enabling features or protocols that might not be active by default, depending on the framework version.
+
+            It configures settings globally, affecting all .NET applications [1].
+
+            When reverting changes, the function removes the specified keys to restore settings to their original state.
+            On standard Windows installations, no other subkeys exist under the `.NETFramework\{version}\` registry path besides
+            `v4.0.30319\AspNetEnforceViewStateMac!AspNetEnforceViewStateMac` [3], as tested since Windows 10 Pro 22H2 and Windows 11 23H2 Pro.
+
+            [1]: https://web.archive.org/web/20240503121044/https://learn.microsoft.com/en-us/dotnet/framework/network-programming/tls "Transport Layer Security (TLS) best practices with .NET Framework | Microsoft Learn | learn.microsoft.com"
+            [2]: https://web.archive.org/web/20240504125305/https://learn.microsoft.com/en-us/officeonlineserver/enable-tls-1-1-and-tls-1-2-support-in-office-online-server#enable-strong-cryptography-in-net-framework-45-or-higher "Enable TLS 1.1 and TLS 1.2 support in Office Online Server - Office Online Server | Microsoft Learn | learn.microsoft.com"
+            [3]: https://web.archive.org/web/20240504125553/https://learn.microsoft.com/en-us/troubleshoot/sql/database-engine/connect/ssl-pe-no-cipher-error-endpoint-5022 "SSL_PE_NO_CIPHER error at endpoint 5022 - SQL Server | Microsoft Learn | learn.microsoft.com"
+            [4]: https://web.archive.org/web/20240504125535/https://learn.microsoft.com/en-us/troubleshoot/windows-client/application-management/wow6432node-registry-key-present-32-bit-machine "WOW6432Node listed in 32-bit version of Windows - Windows Client | Microsoft Learn | learn.microsoft.com"
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: Configure "{{ $valueName }}" for .NET applications
+                    revertCodeComment: Restore "{{ $valueName }}" configuration for .NET applications
+            - # x86 | = .NET Framework 3.5
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKLM\SOFTWARE\Microsoft\.NETFramework\v2.0.50727
+                    valueName: "{{ $valueName }}"
+                    dataType: REG_DWORD
+                    data: '{{ $valueData }}'
+                    deleteOnRevert: 'true' # Missing key since Windows 10 Pro 22H2 an Windows 11 Pro 23H3
+            - # x64 | = .NET Framework 3.5
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v2.0.50727
+                    valueName: "{{ $valueName }}"
+                    dataType: REG_DWORD
+                    data: '{{ $valueData }}'
+                    deleteOnRevert: 'true' # Missing key since Windows 10 Pro 22H2 an Windows 11 Pro 23H3
+            - # x86 | ≥ .NET Framework 4
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKLM\SOFTWARE\Microsoft\.NETFramework\v4.0.30319
+                    valueName: "{{ $valueName }}"
+                    dataType: REG_DWORD
+                    data: '{{ $valueData }}'
+                    deleteOnRevert: 'true' # Missing key since Windows 10 Pro 22H2 an Windows 11 Pro 23H3
+            -  # x64 | ≥ .NET Framework 4
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKLM\SOFTWARE\WOW6432Node\Microsoft\.NETFramework\v4.0.30319
+                    valueName: "{{ $valueName }}"
+                    dataType: REG_DWORD
+                    data: '{{ $valueData }}'
+                    deleteOnRevert: 'true' # Missing key since Windows 10 Pro 22H2 an Windows 11 Pro 23H3
