@@ -1,6 +1,10 @@
 """
-This script configures project-level VSCode settings in '.vscode/settings.json' for 
-development and installs recommended extensions from '.vscode/extensions.json'.
+Description:
+  This script configures project-level VSCode settings in '.vscode/settings.json' for
+  development and installs recommended extensions from '.vscode/extensions.json'.
+
+Usage:
+  python3 ./scripts/configure_vscode.py
 """
 # pylint: disable=missing-function-docstring
 
@@ -40,7 +44,7 @@ def ensure_setting_file_exists() -> None:
             print_success(f"Created empty {VSCODE_SETTINGS_JSON_FILE}")
     except IOError as error:
         print_error(f"Error creating file {VSCODE_SETTINGS_JSON_FILE}: {error}")
-    print(f"📄 Created empty {VSCODE_SETTINGS_JSON_FILE}")
+    print_success(f"Created empty {VSCODE_SETTINGS_JSON_FILE}")
 
 def add_or_update_settings() -> None:
     configure_setting_key('eslint.validate', ['vue', 'javascript', 'typescript'])
@@ -110,7 +114,7 @@ def remove_json_comments(json_like: str) -> str:
     pattern: str = r'(?:"(?:\\.|[^"\\])*"|/\*[\s\S]*?\*/|//.*)|([^:]//.*$)'
     return re.sub(
         pattern,
-        lambda m: '' if m.group(1) else m.agroup(0), json_like, flags=re.MULTILINE,
+        lambda m: '' if m.group(1) else m.group(0), json_like, flags=re.MULTILINE,
     )
 
 def install_vscode_extensions(vscode_cli_path: str, extensions: list[str]) -> None:
@@ -167,16 +171,16 @@ def print_installation_results(successful_installations: int, total_extensions: 
         print_error("Failed to install any of the recommended extensions.")
 
 def print_error(message: str) -> None:
-    print(f"💀 Error: {message}", file=sys.stderr)
+    print(f"[ERROR] {message}", file=sys.stderr)
 
 def print_success(message: str) -> None:
-    print(f"✅ Success: {message}")
+    print(f"[SUCCESS] {message}")
 
 def print_skip(message: str) -> None:
-    print(f"⏩ Skipped: {message}")
+    print(f"[SKIPPED] {message}")
 
 def print_warning(message: str) -> None:
-    print(f"⚠️ Warning: {message}", file=sys.stderr)
+    print(f"[WARNING] {message}", file=sys.stderr)
 
 if __name__ == "__main__":
     main()

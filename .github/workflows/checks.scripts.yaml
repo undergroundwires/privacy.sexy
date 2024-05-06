@@ -57,3 +57,31 @@ jobs:
       -
         name: Run install-deps
         run: ${{ matrix.install-command }}
+
+  configure-vscode:
+    runs-on: ${{ matrix.os.name }}-latest
+    strategy:
+      matrix:
+        os:
+          - name: macos
+            install-vscode-command: brew install --cask visual-studio-code
+          - name: ubuntu
+            install-vscode-command: sudo snap install code --classic
+          - name: windows
+            install-vscode-command: choco install vscode
+      fail-fast: false # Still interested to see results from other combinations
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      -
+        name: Install VSCode
+        run: ${{ matrix.os.install-vscode-command }}
+      -
+        name: Configure VSCode
+        run: python3 ./scripts/configure_vscode.py
