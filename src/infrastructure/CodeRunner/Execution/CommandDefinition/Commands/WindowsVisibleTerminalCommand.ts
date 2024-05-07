@@ -1,22 +1,29 @@
-import { CmdShellArgumentEscaper } from './ShellArgument/CmdShellArgumentEscaper';
+import type { Logger } from '@/application/Common/Log/Logger';
+import { ElectronLogger } from '@/infrastructure/Log/ElectronLogger';
+import { PowerShellArgumentEscaper } from './ShellArgument/PowerShellArgumentEscaper';
+import { EncodedPowerShellInvokeCmdCommandCreator } from './PowerShellInvoke/EncodedPowerShellInvokeCmdCommandCreator';
 import type { ShellArgumentEscaper } from './ShellArgument/ShellArgumentEscaper';
 import type { CommandDefinition } from '../CommandDefinition';
+import type { PowerShellInvokeShellCommandCreator } from './PowerShellInvoke/PowerShellInvokeShellCommandCreator';
 
 export class WindowsVisibleTerminalCommand implements CommandDefinition {
   constructor(
-    private readonly escaper: ShellArgumentEscaper = new CmdShellArgumentEscaper(),
+    private readonly escaper: ShellArgumentEscaper = new PowerShellArgumentEscaper(),
+    private readonly powershellCommandCreator: PowerShellInvokeShellCommandCreator
+    = new EncodedPowerShellInvokeCmdCommandCreator(),
+    private readonly logger: Logger = ElectronLogger,
   ) { }
 
   public buildShellCommand(filePath: string): string {
-    const command = [
-      'PowerShell',
+    const powershellCommand = [
       'Start-Process',
       '-Verb RunAs', // Run as administrator with GUI sudo prompt
       `-FilePath ${this.escaper.escapePathArgument(filePath)}`,
     ].join(' ');
-    return command;
     /*
-      📝 Options:
+      Running PowerShell command is preferred due to its flexibility and the way it provides
+      GUI sudo prompt through `RunAs` argument.
+      Other options considered:
         `child_process.execFile()`
         "path", `cmd.exe /c "path"`
           ❌  Script execution in the background without a visible terminal.
@@ -36,6 +43,8 @@ export class WindowsVisibleTerminalCommand implements CommandDefinition {
               `%COMSPEC%` environment variable should be checked before defaulting to `cmd.exe.
       Related docs: https://web.archive.org/web/20240106002357/https://nodejs.org/api/child_process.html#spawning-bat-and-cmd-files-on-windows
     */
+    this.logger.info(`Building command for PowerShell execution:\n\tCommand: ${powershellCommand}`);
+    return this.powershellCommandCreator.createCommandToInvokePowerShell(powershellCommand);
   }
 
   public isExecutionTerminatedExternally(): boolean {

@@ -300,7 +300,7 @@ actions:
                             > - Logs are valuable for diagnosing issues and understanding past actions [1].
                             > - Script files can help review changes made to the system and aid in reverting those changes if needed.
 
-                            [1]: https://github.com/undergroundwires/privacy.sexy/blob/master/docs/desktop-vs-web-features.md "Desktop vs. Web Features | privacy.sexy | github.com"
+                            [1]: https://github.com/undergroundwires/privacy.sexy/blob/master/docs/desktop/desktop-vs-web-features.md "Desktop vs. Web Features | privacy.sexy | github.com"
                             [2]: https://github.com/undergroundwires/privacy.sexy/blob/master/SECURITY.md "SECURITY.md  | privacy.sexy | github.com"
                         children:
                             -
@@ -318,7 +318,7 @@ actions:
                                     > - This action is irreversible. Deleted script files cannot be retrieved.
                                     > - These files might be necessary for troubleshooting if you experience issues after using privacy.sexy scripts.
 
-                                    [1]: https://github.com/undergroundwires/privacy.sexy/blob/master/docs/desktop-vs-web-features.md "Desktop vs. Web Features | privacy.sexy | github.com"
+                                    [1]: https://github.com/undergroundwires/privacy.sexy/blob/master/docs/desktop/desktop-vs-web-features.md "Desktop vs. Web Features | privacy.sexy | github.com"
                                     [2]: https://github.com/undergroundwires/privacy.sexy/blob/master/SECURITY.md "SECURITY.md  | privacy.sexy | github.com"
                                 call:
                                     function: ClearDirectoryContents
@@ -339,7 +339,7 @@ actions:
                                     > - Removing logs will prevent you from reviewing the application's activities, which could be helpful in diagnosing issues.
                                     > - Logs can contain valuable information for technical support should you need assistance.
 
-                                    [1]: https://github.com/undergroundwires/privacy.sexy/blob/master/docs/desktop-vs-web-features.md "Desktop vs. Web Features | privacy.sexy | github.com"
+                                    [1]: https://github.com/undergroundwires/privacy.sexy/blob/master/docs/desktop/desktop-vs-web-features.md "Desktop vs. Web Features | privacy.sexy | github.com"
                                     [2]: https://github.com/undergroundwires/privacy.sexy/blob/master/SECURITY.md "SECURITY.md  | privacy.sexy | github.com"
                                 call:
                                     function: ClearDirectoryContents

@@ -184,7 +184,7 @@ actions:
               > - Logs are valuable for diagnosing issues and understanding past actions [1].
               > - Script files can help review changes made to the system and aid in reverting those changes if needed.
 
-              [1]: https://github.com/undergroundwires/privacy.sexy/blob/master/docs/desktop-vs-web-features.md "Desktop vs. Web Features | privacy.sexy | github.com"
+              [1]: https://github.com/undergroundwires/privacy.sexy/blob/master/docs/desktop/desktop-vs-web-features.md "Desktop vs. Web Features | privacy.sexy | github.com"
               [2]: https://github.com/undergroundwires/privacy.sexy/blob/master/SECURITY.md "SECURITY.md  | privacy.sexy | github.com"
             children:
               -
@@ -202,7 +202,7 @@ actions:
                   > - This action is irreversible. Deleted script files cannot be retrieved.
                   > - These files might be necessary for troubleshooting if you experience issues after using privacy.sexy scripts.
 
-                  [1]: https://github.com/undergroundwires/privacy.sexy/blob/master/docs/desktop-vs-web-features.md "Desktop vs. Web Features | privacy.sexy | github.com"
+                  [1]: https://github.com/undergroundwires/privacy.sexy/blob/master/docs/desktop/desktop-vs-web-features.md "Desktop vs. Web Features | privacy.sexy | github.com"
                   [2]: https://github.com/undergroundwires/privacy.sexy/blob/master/SECURITY.md "SECURITY.md  | privacy.sexy | github.com"
                 call:
                   function: ClearDirectoryContents
@@ -223,7 +223,7 @@ actions:
                   > - Removing logs will prevent you from reviewing the application's activities, which could be helpful in diagnosing issues.
                   > - Logs can contain valuable information for technical support should you need assistance.
 
-                  [1]: https://github.com/undergroundwires/privacy.sexy/blob/master/docs/desktop-vs-web-features.md "Desktop vs. Web Features | privacy.sexy | github.com"
+                  [1]: https://github.com/undergroundwires/privacy.sexy/blob/master/docs/desktop/desktop-vs-web-features.md "Desktop vs. Web Features | privacy.sexy | github.com"
                   [2]: https://github.com/undergroundwires/privacy.sexy/blob/master/SECURITY.md "SECURITY.md  | privacy.sexy | github.com"
                 call:
                   function: ClearDirectoryContents
@@ -2761,7 +2761,7 @@ actions:
                 docs: |-
                   Firefox provides an option for Enhanced Tracking Protection [1], which blocks trackers that
                   gather information about your browsing behavior without disrupting site functionality [1].
-                  This feature also includes protections against harmful scripts such as malware that drains
+                  This feature also includes protections against harmful scripts such as malware that drain
                   your battery [1].
 
                   This script enables the `privacy.resistFingerprinting` preference,
@@ -2791,7 +2791,7 @@ actions:
                   This script enables the `privacy.resistFingerprinting` preference, activating
                   anti-fingerprinting [1][2].
 
-                  As an experimental feature, it might cause some website breakage [2], such as impacting web
+                  As an experimental feature, it might cause some website breakages [2], such as impacting web
                   speech functionality [3] and favicons [4].
 
                   [1]: https://web.archive.org/web/20221025201025/https://support.mozilla.org/en-US/kb/firefox-protection-against-fingerprinting "Firefox's protection against fingerprinting | Firefox Help | support.mozilla.org"
@@ -2876,7 +2876,7 @@ actions:
 
                   It's configured to be enabled in nightly, aurora, beta, or default (developer) builds.
                   In release builds, however, it's set to false [1]. This setting is hard-coded into the C++
-                  code to prevent easy disabling [2]. Developers have been approached about this issue but
+                  code to prevent easy disabling [2]. Developers have been approached about this issue, but
                   have rejected proposals to unlock it [3].
 
                   Mozilla's plan is to deprecate this setting eventually, followed by removal [1].
@@ -3012,7 +3012,7 @@ actions:
                     recommend: standard
                     docs: |-
                       This script sets `toolkit.telemetry.server` to be empty.
-                      This preference defines the server to which Telemetry pings are sent [1].
+                      This preference defines the server to which telemetry pings are sent [1].
 
                       [1]: https://web.archive.org/web/20221015102124/https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/internals/preferences.html "Preferences and Defines — Firefox Source Docs documentation | firefox-source-docs.mozilla.org"
                     call:
@@ -3133,7 +3133,7 @@ actions:
                 name: Disable Firefox Pioneer study monitoring
                 recommend: standard
                 docs: |-
-                  This script configures `toolkit.telemetry.pioneer-new-studies-available` to be disabled to opt out.
+                  This script configures `toolkit.telemetry.pioneer-new-studies-available` to be disabled to opt out
                   Firefox Pioneer program.
 
                   This setting disables availability check for Firefox Pioneer studies [1].
