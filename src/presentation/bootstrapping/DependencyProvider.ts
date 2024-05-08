@@ -16,6 +16,7 @@ import { useCodeRunner } from '@/presentation/components/Shared/Hooks/UseCodeRun
 import { CurrentEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironmentFactory';
 import { useDialog } from '@/presentation/components/Shared/Hooks/Dialog/UseDialog';
 import { useScriptDiagnosticsCollector } from '@/presentation/components/Shared/Hooks/UseScriptDiagnosticsCollector';
+import { useAutoUnsubscribedEventListener } from '@/presentation/components/Shared/Hooks/UseAutoUnsubscribedEventListener';
 
 export function provideDependencies(
   context: IApplicationContext,
@@ -76,6 +77,10 @@ export function provideDependencies(
     useScriptDiagnosticsCollector: (di) => di.provide(
       InjectionKeys.useScriptDiagnosticsCollector,
       useScriptDiagnosticsCollector,
+    ),
+    useAutoUnsubscribedEventListener: (di) => di.provide(
+      InjectionKeys.useAutoUnsubscribedEventListener,
+      useAutoUnsubscribedEventListener,
     ),
   };
   registerAll(Object.values(resolvers), api);

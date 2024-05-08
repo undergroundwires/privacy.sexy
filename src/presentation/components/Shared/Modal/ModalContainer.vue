@@ -19,7 +19,8 @@
 
 <script lang="ts">
 import {
-  defineComponent, ref, watchEffect, nextTick,
+  defineComponent, ref, watchEffect,
+  nextTick, inject,
 } from 'vue';
 import ModalOverlay from './ModalOverlay.vue';
 import ModalContent from './ModalContent.vue';
@@ -27,6 +28,8 @@ import { useLockBodyBackgroundScroll } from './Hooks/ScrollLock/UseLockBodyBackg
 import { useCurrentFocusToggle } from './Hooks/UseCurrentFocusToggle';
 import { useEscapeKeyListener } from './Hooks/UseEscapeKeyListener';
 import { useAllTrueWatcher } from './Hooks/UseAllTrueWatcher';
+
+export const INJECTION_KEY_ESCAPE_LISTENER = Symbol('useEscapeKeyListener');
 
 export default defineComponent({
   components: {
@@ -49,6 +52,11 @@ export default defineComponent({
     /* eslint-enable @typescript-eslint/no-unused-vars */
   },
   setup(props, { emit }) {
+    const listenEscapeKey: typeof useEscapeKeyListener = inject(
+      INJECTION_KEY_ESCAPE_LISTENER,
+      useEscapeKeyListener,
+    );
+
     const isRendered = ref(false);
     const isOpen = ref(false);
     const overlayTransitionedOut = ref(false);
@@ -56,7 +64,7 @@ export default defineComponent({
 
     useLockBodyBackgroundScroll(isOpen);
     useCurrentFocusToggle(isOpen);
-    useEscapeKeyListener(() => handleEscapeKeyUp());
+    listenEscapeKey(() => handleEscapeKeyUp());
 
     const {
       onAllConditionsMet: onModalFullyTransitionedOut,

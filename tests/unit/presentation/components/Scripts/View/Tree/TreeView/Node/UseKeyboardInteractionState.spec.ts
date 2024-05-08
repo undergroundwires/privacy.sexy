@@ -1,120 +1,81 @@
 import { describe, it, expect } from 'vitest';
-import { shallowMount } from '@vue/test-utils';
-import { defineComponent, nextTick } from 'vue';
-import {
-  type WindowWithEventListeners, useKeyboardInteractionState,
-} from '@/presentation/components/Scripts/View/Tree/TreeView/Node/UseKeyboardInteractionState';
+import { useKeyboardInteractionState } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/UseKeyboardInteractionState';
+import type { UseEventListener } from '@/presentation/components/Shared/Hooks/UseAutoUnsubscribedEventListener';
+import { UseEventListenerStub } from '@tests/unit/shared/Stubs/UseEventListenerStub';
 
 describe('useKeyboardInteractionState', () => {
   describe('isKeyboardBeingUsed', () => {
-    it('should initialize as `false`', () => {
+    it('initializes as `false`', () => {
       // arrange
-      const { windowStub } = createWindowStub();
+      const expectedValue = false;
+      const context = new TestContext();
       // act
-      const { returnObject } = mountWrapperComponent(windowStub);
+      const { isKeyboardBeingUsed } = context.get();
       // assert
-      expect(returnObject.isKeyboardBeingUsed.value).to.equal(false);
+      expect(isKeyboardBeingUsed.value).to.equal(expectedValue);
     });
 
-    it('should set to `true` on keydown event', () => {
+    it('becomes `true` on `keydown` event', () => {
       // arrange
-      const { triggerEvent, windowStub } = createWindowStub();
+      const expectedValue = true;
+      const eventTarget = new EventTarget();
+      const context = new TestContext()
+        .withEventTarget(eventTarget);
       // act
-      const { returnObject } = mountWrapperComponent(windowStub);
-      triggerEvent('keydown');
+      const { isKeyboardBeingUsed } = context.get();
+      eventTarget.dispatchEvent(new Event('keydown'));
       // assert
-      expect(returnObject.isKeyboardBeingUsed.value).to.equal(true);
+      expect(isKeyboardBeingUsed.value).to.equal(expectedValue);
     });
 
-    it('should stay `false` on click event', () => {
+    it('remains `false` on `click` event', () => {
       // arrange
-      const { triggerEvent, windowStub } = createWindowStub();
+      const expectedValue = false;
+      const eventTarget = new EventTarget();
+      const context = new TestContext()
+        .withEventTarget(eventTarget);
       // act
-      const { returnObject } = mountWrapperComponent(windowStub);
-      triggerEvent('click');
+      const { isKeyboardBeingUsed } = context.get();
+      eventTarget.dispatchEvent(new Event('click'));
       // assert
-      expect(returnObject.isKeyboardBeingUsed.value).to.equal(false);
+      expect(isKeyboardBeingUsed.value).to.equal(expectedValue);
     });
 
-    it('should transition to `false` on click event after keydown event', () => {
+    it('transitions back to `false` on `click` event after `keydown` event', () => {
       // arrange
-      const { triggerEvent, windowStub } = createWindowStub();
+      const expectedValue = false;
+      const eventTarget = new EventTarget();
+      const context = new TestContext()
+        .withEventTarget(eventTarget);
       // act
-      const { returnObject } = mountWrapperComponent(windowStub);
-      triggerEvent('keydown');
-      triggerEvent('click');
+      const { isKeyboardBeingUsed } = context.get();
+      eventTarget.dispatchEvent(new Event('keydown'));
+      eventTarget.dispatchEvent(new Event('click'));
       // assert
-      expect(returnObject.isKeyboardBeingUsed.value).to.equal(false);
-    });
-  });
-
-  describe('attach/detach', () => {
-    it('should attach keydown and click events on mounted', () => {
-      // arrange
-      const { listeners, windowStub } = createWindowStub();
-      // act
-      mountWrapperComponent(windowStub);
-      // assert
-      expect(listeners.keydown).to.have.lengthOf(1);
-      expect(listeners.click).to.have.lengthOf(1);
-    });
-
-    it('should detach keydown and click events on unmounted', async () => {
-      // arrange
-      const { listeners, windowStub } = createWindowStub();
-      // act
-      const { wrapper } = mountWrapperComponent(windowStub);
-      wrapper.unmount();
-      await nextTick();
-      // assert
-      expect(listeners.keydown).to.have.lengthOf(0);
-      expect(listeners.click).to.have.lengthOf(0);
+      expect(isKeyboardBeingUsed.value).to.equal(expectedValue);
     });
   });
 });
 
-function mountWrapperComponent(window: WindowWithEventListeners) {
-  let returnObject: ReturnType<typeof useKeyboardInteractionState> | undefined;
-  const wrapper = shallowMount(defineComponent({
-    setup() {
-      returnObject = useKeyboardInteractionState(window);
-    },
-    template: '<div></div>',
-  }));
-  if (!returnObject) {
-    throw new Error('missing hook result');
+class TestContext {
+  private eventTarget: EventTarget = new EventTarget();
+
+  private useEventListener: UseEventListener = new UseEventListenerStub().get();
+
+  public withEventTarget(eventTarget: EventTarget): this {
+    this.eventTarget = eventTarget;
+    return this;
   }
-  return {
-    returnObject,
-    wrapper,
-  };
-}
 
-type EventListenerWindowFunction = (ev: Event) => unknown;
-type WindowEventKey = keyof WindowEventMap;
+  public withUseEventListener(useEventListener: UseEventListener): this {
+    this.useEventListener = useEventListener;
+    return this;
+  }
 
-function createWindowStub() {
-  const listeners: Partial<Record<WindowEventKey, EventListenerWindowFunction[]>> = {};
-  const windowStub: WindowWithEventListeners = {
-    addEventListener: (eventName: string, fn: EventListenerWindowFunction) => {
-      if (!listeners[eventName]) {
-        listeners[eventName] = [];
-      }
-      listeners[eventName].push(fn);
-    },
-    removeEventListener: (eventName: string, fn: EventListenerWindowFunction) => {
-      if (!listeners[eventName]) return;
-      const index = listeners[eventName].indexOf(fn);
-      if (index > -1) {
-        listeners[eventName].splice(index, 1);
-      }
-    },
-  };
-  return {
-    windowStub,
-    triggerEvent: (eventName: WindowEventKey) => {
-      listeners[eventName]?.forEach((fn) => fn(new Event(eventName)));
-    },
-    listeners,
-  };
+  public get() {
+    return useKeyboardInteractionState(
+      this.eventTarget,
+      this.useEventListener,
+    );
+  }
 }

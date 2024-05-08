@@ -1,6 +1,11 @@
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref } from 'vue';
+import { useAutoUnsubscribedEventListener, type UseEventListener } from '@/presentation/components/Shared/Hooks/UseAutoUnsubscribedEventListener';
 
-export function useKeyboardInteractionState(window: WindowWithEventListeners = globalThis.window) {
+export function useKeyboardInteractionState(
+  eventTarget: EventTarget = DefaultEventSource,
+  useEventListener: UseEventListener = useAutoUnsubscribedEventListener,
+) {
+  const { startListening } = useEventListener();
   const isKeyboardBeingUsed = ref(false);
 
   const enableKeyboardFocus = () => {
@@ -17,20 +22,10 @@ export function useKeyboardInteractionState(window: WindowWithEventListeners = g
     isKeyboardBeingUsed.value = false;
   };
 
-  onMounted(() => {
-    window.addEventListener('keydown', enableKeyboardFocus, true);
-    window.addEventListener('click', disableKeyboardFocus, true);
-  });
-
-  onUnmounted(() => {
-    window.removeEventListener('keydown', enableKeyboardFocus);
-    window.removeEventListener('click', disableKeyboardFocus);
-  });
+  startListening(eventTarget, 'keydown', enableKeyboardFocus);
+  startListening(eventTarget, 'click', disableKeyboardFocus);
 
   return { isKeyboardBeingUsed };
 }
 
-export interface WindowWithEventListeners {
-  addEventListener: typeof global.window.addEventListener;
-  removeEventListener: typeof global.window.removeEventListener;
-}
+export const DefaultEventSource = document;

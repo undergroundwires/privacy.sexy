@@ -1,78 +1,79 @@
 import {
-  describe, it, expect, afterEach,
+  describe, it, expect,
 } from 'vitest';
-import { shallowMount } from '@vue/test-utils';
-import { nextTick, defineComponent } from 'vue';
 import { useEscapeKeyListener } from '@/presentation/components/Shared/Modal/Hooks/UseEscapeKeyListener';
-import { type EventName, createWindowEventSpies } from '@tests/shared/Spies/WindowEventSpies';
+import type { UseEventListener } from '@/presentation/components/Shared/Hooks/UseAutoUnsubscribedEventListener';
+import { UseEventListenerStub } from '@tests/unit/shared/Stubs/UseEventListenerStub';
 
 describe('useEscapeKeyListener', () => {
-  it('executes the callback when the Escape key is pressed', async () => {
+  it('executes the callback when the Escape key is pressed', () => {
     // arrange
     let callbackCalled = false;
     const callback = () => {
       callbackCalled = true;
     };
-    createComponent(callback);
+    const escapeEvent = new KeyboardEvent('keyup', { key: 'Escape' });
+    const eventTarget = new EventTarget();
+    const context = new TestContext()
+      .withEventTarget(eventTarget)
+      .withCallback(callback);
 
     // act
-    const event = new KeyboardEvent('keyup', { key: 'Escape' });
-    window.dispatchEvent(event);
-    await nextTick();
+    context.get();
+    eventTarget.dispatchEvent(escapeEvent);
 
     // assert
     expect(callbackCalled).to.equal(true);
   });
 
-  it('does not execute the callback for other key presses', async () => {
+  it('does not execute the callback for other key presses', () => {
     // arrange
     let callbackCalled = false;
     const callback = () => {
       callbackCalled = true;
     };
-    createComponent(callback);
+    const enterKeyEvent = new KeyboardEvent('keyup', { key: 'Enter' });
+    const eventTarget = new EventTarget();
+    const context = new TestContext()
+      .withEventTarget(eventTarget)
+      .withCallback(callback);
 
     // act
-    const event = new KeyboardEvent('keyup', { key: 'Enter' });
-    window.dispatchEvent(event);
-    await nextTick();
+    context.get();
+    eventTarget.dispatchEvent(enterKeyEvent);
 
     // assert
     expect(callbackCalled).to.equal(false);
   });
-
-  it('adds an event listener on component mount', () => {
-    // arrange
-    const expectedEventType: EventName = 'keyup';
-    const { isAddEventCalled } = createWindowEventSpies(afterEach);
-
-    // act
-    createComponent();
-
-    // assert
-    expect(isAddEventCalled(expectedEventType)).to.equal(true);
-  });
-
-  it('removes the event listener on component unmount', async () => {
-    // arrange
-    const expectedEventType: EventName = 'keyup';
-    const { isRemoveEventCalled } = createWindowEventSpies(afterEach);
-
-    // act
-    const wrapper = createComponent();
-    wrapper.unmount();
-    await nextTick();
-
-    // assert
-    expect(isRemoveEventCalled(expectedEventType)).to.equal(true);
-  });
 });
 
-function createComponent(callback = () => {}) {
-  return shallowMount(defineComponent({
-    setup() {
-      useEscapeKeyListener(callback);
-    },
-    template: '<div></div>',
-  }));
+class TestContext {
+  private callback: () => void = () => { /* NOOP */ };
+
+  private useEventListener: UseEventListener = new UseEventListenerStub().get();
+
+  private eventTarget: EventTarget = new EventTarget();
+
+  public withCallback(callback: () => void): this {
+    this.callback = callback;
+    return this;
+  }
+
+  public withUseEventListener(useEventListener: UseEventListener): this {
+    this.useEventListener = useEventListener;
+    return this;
+  }
+
+  public withEventTarget(eventTarget: EventTarget = new EventTarget()): this {
+    this.eventTarget = eventTarget;
+    return this;
+  }
+
+  public get(): ReturnType<typeof useEscapeKeyListener> {
+    return useEscapeKeyListener(
+      this.callback,
+      this.eventTarget,
+      this.useEventListener,
+    );
+  }
 }

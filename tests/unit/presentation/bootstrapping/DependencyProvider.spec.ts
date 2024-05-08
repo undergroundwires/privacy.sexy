@@ -22,6 +22,7 @@ describe('DependencyProvider', () => {
       useCodeRunner: createTransientTests(),
       useDialog: createTransientTests(),
       useScriptDiagnosticsCollector: createTransientTests(),
+      useAutoUnsubscribedEventListener: createTransientTests(),
     };
     Object.entries(testCases).forEach(([key, runTests]) => {
       const registeredKey = InjectionKeys[key].key;

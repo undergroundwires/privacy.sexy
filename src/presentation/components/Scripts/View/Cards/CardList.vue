@@ -40,7 +40,7 @@
 
 <script lang="ts">
 import {
-  defineComponent, ref, onMounted, onUnmounted, computed,
+  defineComponent, ref, computed,
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import SizeObserver from '@/presentation/components/Shared/SizeObserver.vue';
@@ -54,6 +54,7 @@ export default defineComponent({
   },
   setup() {
     const { currentState, onStateChange } = injectKey((keys) => keys.useCollectionState);
+    const { startListening } = injectKey((keys) => keys.useAutoUnsubscribedEventListener);
 
     const width = ref<number | undefined>();
 
@@ -70,7 +71,7 @@ export default defineComponent({
       collapseAllCards();
     }, { immediate: true });
 
-    const outsideClickListener = (event: PointerEvent): void => {
+    startListening(document, 'click', (event) => {
       if (areAllCardsCollapsed()) {
         return;
       }
@@ -79,14 +80,6 @@ export default defineComponent({
       if (element && !element.contains(target)) {
         onOutsideOfActiveCardClicked(target);
       }
-    };
-
-    onMounted(() => {
-      document.addEventListener('click', outsideClickListener);
-    });
-
-    onUnmounted(() => {
-      document.removeEventListener('click', outsideClickListener);
     });
 
     function onOutsideOfActiveCardClicked(clickedElement: Element): void {

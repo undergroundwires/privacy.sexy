@@ -6,6 +6,7 @@ import { useCollectionState } from '@/presentation/components/Shared/Hooks/UseCo
 import { UseCollectionStateStub } from '@tests/unit/shared/Stubs/UseCollectionStateStub';
 import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { createSizeObserverStub } from '@tests/unit/shared/Stubs/SizeObserverStub';
+import { UseEventListenerStub } from '@tests/unit/shared/Stubs/UseEventListenerStub';
 
 const DOM_SELECTOR_CARDS = '.cards';
 
@@ -54,6 +55,7 @@ function mountComponent(options?: {
       provide: {
         [InjectionKeys.useCollectionState.key]:
           () => options?.useCollectionState ?? new UseCollectionStateStub().get(),
+        [InjectionKeys.useAutoUnsubscribedEventListener.key]: new UseEventListenerStub().get(),
       },
       stubs: {
         [sizeObserverName]: sizeObserverStub,

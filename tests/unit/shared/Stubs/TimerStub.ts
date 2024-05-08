@@ -24,7 +24,8 @@ export class TimerStub implements Timer {
   }
 
   public clearTimeout(timeoutId: TimeoutType): void {
-    this.subscriptions[+timeoutId].unsubscribe();
+    const subscriptionIndex = +timeoutId;
+    this.subscriptions[subscriptionIndex].unsubscribe();
   }
 
   public dateNow(): number {

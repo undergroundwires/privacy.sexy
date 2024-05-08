@@ -1,7 +1,7 @@
 import { describe, it, afterEach } from 'vitest';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { MobileSafariActivePseudoClassEnabler } from '@/presentation/bootstrapping/Modules/MobileSafariActivePseudoClassEnabler';
-import { type EventName, createWindowEventSpies } from '@tests/shared/Spies/WindowEventSpies';
+import { createEventSpies } from '@tests/shared/Spies/EventTargetSpy';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { isTouchEnabledDevice } from '@/infrastructure/RuntimeEnvironment/Browser/TouchSupportDetection';
 import { BrowserRuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/Browser/BrowserRuntimeEnvironment';
@@ -14,9 +14,9 @@ describe('MobileSafariActivePseudoClassEnabler', () => {
     }) => {
       it(description, () => {
         // arrange
-        const expectedEvent: EventName = 'touchstart';
+        const expectedEvent: keyof WindowEventMap = 'touchstart';
         patchUserAgent(userAgent, afterEach);
-        const { isAddEventCalled, currentListeners } = createWindowEventSpies(afterEach);
+        const { isAddEventCalled, formatListeners } = createEventSpies(window, afterEach);
         const patchedEnvironment = new TouchSupportControlledBrowserEnvironment(supportsTouch);
         const sut = new MobileSafariActivePseudoClassEnabler(patchedEnvironment);
         // act
@@ -30,7 +30,7 @@ describe('MobileSafariActivePseudoClassEnabler', () => {
           `Touch supported\t\t: ${supportsTouch}`,
           `Current OS\t\t: ${patchedEnvironment.os === undefined ? 'unknown' : OperatingSystem[patchedEnvironment.os]}`,
           `Is desktop?\t\t: ${patchedEnvironment.isRunningAsDesktopApplication ? 'Yes (Desktop app)' : 'No (Browser)'}`,
-          `Listeners (${currentListeners.length})\t\t: ${JSON.stringify(currentListeners)}`,
+          `Listeners\t\t: ${formatListeners()}`,
         ]));
       });
     });

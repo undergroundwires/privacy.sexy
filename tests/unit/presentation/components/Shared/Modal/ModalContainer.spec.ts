@@ -1,10 +1,11 @@
 import {
-  describe, it, expect, afterEach,
+  describe, it, expect,
 } from 'vitest';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import ModalContainer from '@/presentation/components/Shared/Modal/ModalContainer.vue';
-import { createWindowEventSpies } from '@tests/shared/Spies/WindowEventSpies';
+import ModalContainer, { INJECTION_KEY_ESCAPE_LISTENER } from '@/presentation/components/Shared/Modal/ModalContainer.vue';
+import type { useEscapeKeyListener } from '@/presentation/components/Shared/Modal/Hooks/UseEscapeKeyListener';
+import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 const DOM_MODAL_CONTAINER_SELECTOR = '.modal-container';
 const COMPONENT_MODAL_OVERLAY_NAME = 'ModalOverlay';
@@ -73,15 +74,23 @@ describe('ModalContainer.vue', () => {
 
     it('closes on pressing ESC key', async () => {
       // arrange
-      createWindowEventSpies(afterEach);
-      const wrapper = mountComponent({ modelValue: true });
+      let escapeKeyCallback: (() => void) | undefined;
+      const escapeKeyListenerStub: typeof useEscapeKeyListener = (callback) => {
+        escapeKeyCallback = callback;
+      };
+      const wrapper = mountComponent({
+        modelValue: true,
+        escapeListener: escapeKeyListenerStub,
+      });
 
       // act
-      const escapeEvent = new KeyboardEvent('keyup', { key: 'Escape' });
-      window.dispatchEvent(escapeEvent);
-      await wrapper.vm.$nextTick();
+      if (escapeKeyCallback) {
+        escapeKeyCallback();
+      }
+      await nextTick();
 
       // assert
+      expectExists(escapeKeyCallback);
       expect(wrapper.emitted('update:modelValue')).to.deep.equal([[false]]);
     });
 
@@ -94,7 +103,7 @@ describe('ModalContainer.vue', () => {
       // act
       overlayMock.vm.$emit('transitionedOut');
       contentMock.vm.$emit('transitionedOut');
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       // assert
       expect(wrapper.emitted('update:modelValue')).to.deep.equal([[false]]);
@@ -126,7 +135,7 @@ describe('ModalContainer.vue', () => {
       // act
       const overlayMock = wrapper.findComponent({ name: COMPONENT_MODAL_OVERLAY_NAME });
       overlayMock.vm.$emit('click');
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       // assert
       expect(wrapper.emitted('update:modelValue')).to.equal(undefined);
@@ -139,7 +148,7 @@ describe('ModalContainer.vue', () => {
       // act
       const overlayMock = wrapper.findComponent({ name: COMPONENT_MODAL_OVERLAY_NAME });
       overlayMock.vm.$emit('click');
-      await wrapper.vm.$nextTick();
+      await nextTick();
 
       // assert
       expect(wrapper.emitted('update:modelValue')).to.deep.equal([[false]]);
@@ -151,7 +160,7 @@ function mountComponent(options: {
   readonly modelValue: boolean,
   readonly closeOnOutsideClick?: boolean,
   readonly slotHtml?: string,
-  readonly attachToDocument?: boolean,
+  readonly escapeListener?: typeof useEscapeKeyListener,
 }) {
   return shallowMount(ModalContainer, {
     props: {
@@ -162,6 +171,10 @@ function mountComponent(options: {
     },
     slots: options.slotHtml !== undefined ? { default: options.slotHtml } : undefined,
     global: {
+      provide: {
+        [INJECTION_KEY_ESCAPE_LISTENER]:
+          options?.escapeListener ?? (() => { /* NOP */ }),
+      },
       stubs: {
         [COMPONENT_MODAL_OVERLAY_NAME]: {
           name: COMPONENT_MODAL_OVERLAY_NAME,

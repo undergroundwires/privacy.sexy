@@ -35,6 +35,9 @@ import {
 } from '@floating-ui/vue';
 import { defineComponent, shallowRef, computed } from 'vue';
 import { useResizeObserverPolyfill } from '@/presentation/components/Shared/Hooks/UseResizeObserverPolyfill';
+import { throttle } from '@/application/Common/Timing/Throttle';
+import { type TargetEventListener } from '@/presentation/components/Shared/Hooks/UseAutoUnsubscribedEventListener';
+import { injectKey } from '@/presentation/injectionSymbols';
 import type { CSSProperties } from 'vue';
 
 const GAP_BETWEEN_TOOLTIP_AND_TRIGGER_IN_PX = 2;
@@ -48,9 +51,12 @@ export default defineComponent({
     const triggeringElement = shallowRef<HTMLElement | undefined>();
     const arrowElement = shallowRef<HTMLElement | undefined>();
 
+    const eventListener = injectKey((keys) => keys.useAutoUnsubscribedEventListener);
     useResizeObserverPolyfill();
 
-    const { floatingStyles, middlewareData, placement } = useFloating(
+    const {
+      floatingStyles, middlewareData, placement, update,
+    } = useFloating(
       triggeringElement,
       tooltipDisplayElement,
       {
@@ -67,6 +73,17 @@ export default defineComponent({
         whileElementsMounted: autoUpdate,
       },
     );
+
+    /*
+      Not using `float-ui`'s `autoUpdate` with `animationFrame: true` because it updates tooltips on
+      every frame through `requestAnimationFrame`. This behavior is analogous to a continuous loop
+      (often 60 updates per second and more depending on the refresh rate), which can be excessively
+      performance-intensive. It's overkill for the application needs and a monkey solution due to
+      its brute-force nature.
+    */
+    setupTransitionEndEvents(throttle(() => {
+      update();
+    }, 400, { excludeLeadingCall: true }), eventListener);
 
     const arrowStyles = computed<CSSProperties>(() => {
       if (!middlewareData.value.arrow) {
@@ -125,6 +142,19 @@ function getCounterpartBoxOffsetProperty(placement: Placement): keyof CSSPropert
   };
   const currentSide = placement.split('-')[0] as Side;
   return sideCounterparts[currentSide];
+}
+
+function setupTransitionEndEvents(
+  handler: () => void,
+  listener: TargetEventListener,
+) {
+  const transitionEndEvents: readonly (keyof HTMLElementEventMap)[] = [
+    'transitionend',
+    'transitioncancel',
+  ];
+  transitionEndEvents.forEach((eventName) => {
+    listener.startListening(document.body, eventName, handler);
+  });
 }
 </script>
 

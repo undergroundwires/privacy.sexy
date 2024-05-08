@@ -1,4 +1,5 @@
-import { onMounted, onUnmounted, type Ref } from 'vue';
+import { type Ref } from 'vue';
+import { useAutoUnsubscribedEventListener, type UseEventListener } from '@/presentation/components/Shared/Hooks/UseAutoUnsubscribedEventListener';
 import { TreeNodeCheckState } from './Node/State/CheckState';
 import type { TreeNode } from './Node/TreeNode';
 import type { TreeRoot } from './TreeRoot/TreeRoot';
@@ -10,8 +11,10 @@ type TreeNavigationKeyCodes = 'ArrowLeft' | 'ArrowUp' | 'ArrowRight' | 'ArrowDow
 export function useTreeKeyboardNavigation(
   treeRootRef: Readonly<Ref<TreeRoot>>,
   treeElementRef: Readonly<Ref<HTMLElement | undefined>>,
+  useEventListener: UseEventListener = useAutoUnsubscribedEventListener,
 ) {
-  useKeyboardListener(treeElementRef, (event) => {
+  const { startListening } = useEventListener();
+  startListening(treeElementRef, 'keydown', (event) => {
     if (!treeElementRef.value) {
       return; // Not yet initialized?
     }
@@ -37,19 +40,6 @@ export function useTreeKeyboardNavigation(
       focus: treeRoot.focus,
       nodes: treeRoot.collection.nodes,
     });
-  });
-}
-
-function useKeyboardListener(
-  elementRef: Readonly<Ref<HTMLElement | undefined>>,
-  handleKeyboardEvent: (event: KeyboardEvent) => void,
-) {
-  onMounted(() => {
-    elementRef.value?.addEventListener('keydown', handleKeyboardEvent, true);
-  });
-
-  onUnmounted(() => {
-    elementRef.value?.removeEventListener('keydown', handleKeyboardEvent);
   });
 }
 
