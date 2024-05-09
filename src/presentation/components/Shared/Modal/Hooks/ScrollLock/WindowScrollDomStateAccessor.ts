@@ -61,4 +61,8 @@ class WindowScrollDomState implements ScrollDomStateAccessor {
   get htmlClientWidth(): number { return HtmlElement.clientWidth; }
 
   get htmlClientHeight(): number { return HtmlElement.clientHeight; }
+
+  get htmlOffsetWidth(): number { return HtmlElement.offsetWidth; }
+
+  get htmlOffsetHeight(): number { return HtmlElement.offsetHeight; }
 }

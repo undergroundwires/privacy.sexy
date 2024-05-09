@@ -103,7 +103,6 @@ const BodyStyleLeft: DomPropertyMutator<{
   storeInitialState: (dom) => ({
     htmlScrollLeft: dom.htmlScrollLeft,
     bodyStyleLeft: dom.bodyStyleLeft,
-    bodyMarginLeft: dom.bodyComputedMarginLeft,
   }),
   onBlock: (initialState, dom) => {
     if (initialState.htmlScrollLeft === 0) {
@@ -206,13 +205,21 @@ const BodyPositionFixed: DomPropertyMutator<{
 
 const BodyWidth100Percent: DomPropertyMutator<{
   readonly bodyStyleWidth: string;
+  readonly htmlOffsetWidth: number;
+  readonly htmlClientWidth: number;
 }> = {
   storeInitialState: (dom) => ({
     bodyStyleWidth: dom.bodyStyleWidth,
+    htmlOffsetWidth: dom.htmlOffsetWidth,
+    htmlClientWidth: dom.htmlClientWidth,
   }),
-  onBlock: (_, dom) => {
-    dom.bodyStyleWidth = calculateBodyViewportStyleWithMargins(
-      [dom.bodyComputedMarginLeft, dom.bodyComputedMarginRight],
+  onBlock: (initialState, dom) => {
+    dom.bodyStyleWidth = calculateAdjustedStyle(
+      [
+        dom.bodyComputedMarginLeft,
+        dom.bodyComputedMarginRight,
+        calculateScrollbarGutterStyle(initialState.htmlClientWidth, initialState.htmlOffsetWidth),
+      ],
     );
     return ScrollRevertAction.RestoreRequired;
   },
@@ -223,13 +230,21 @@ const BodyWidth100Percent: DomPropertyMutator<{
 
 const BodyHeight100Percent: DomPropertyMutator<{
   readonly bodyStyleHeight: string;
+  readonly htmlOffsetHeight: number;
+  readonly htmlClientHeight: number;
 }> = {
   storeInitialState: (dom) => ({
     bodyStyleHeight: dom.bodyStyleHeight,
+    htmlOffsetHeight: dom.htmlOffsetHeight,
+    htmlClientHeight: dom.htmlClientHeight,
   }),
-  onBlock: (_, dom) => {
-    dom.bodyStyleHeight = calculateBodyViewportStyleWithMargins(
-      [dom.bodyComputedMarginTop, dom.bodyComputedMarginBottom],
+  onBlock: (initialState, dom) => {
+    dom.bodyStyleHeight = calculateAdjustedStyle(
+      [
+        dom.bodyComputedMarginTop,
+        dom.bodyComputedMarginBottom,
+        calculateScrollbarGutterStyle(initialState.htmlClientHeight, initialState.htmlOffsetHeight),
+      ],
     );
     return ScrollRevertAction.RestoreRequired;
   },
@@ -280,11 +295,20 @@ interface DomPropertyMutator<TInitialStateValue> {
   restoreStateOnUnblock(storedState: TInitialStateValue, dom: ScrollDomStateAccessor): void;
 }
 
-function calculateBodyViewportStyleWithMargins(
-  margins: readonly string[],
+/** Calculates allocated scrollbar gutter, adjusting for `scrollbar-gutter: stable` */
+function calculateScrollbarGutterStyle(
+  clientSize: number,
+  offsetSize: number,
+): string {
+  const scrollbarGutterSize = clientSize - offsetSize;
+  return scrollbarGutterSize !== 0 ? `${scrollbarGutterSize}px` : '';
+}
+
+function calculateAdjustedStyle(
+  spaceOffsets: readonly string[],
 ): string {
   let value = '100%';
-  const calculatedMargin = margins
+  const calculatedMargin = spaceOffsets
     .filter((marginText) => marginText.length > 0)
     .join(' + '); // without setting margins, it leads to layout shift if body has margin
   if (calculatedMargin) {

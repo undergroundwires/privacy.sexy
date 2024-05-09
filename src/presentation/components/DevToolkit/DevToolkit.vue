@@ -31,6 +31,7 @@ import { defineComponent, ref } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import FlatButton from '@/presentation/components/Shared/FlatButton.vue';
 import { dumpNames } from './DumpNames';
+import { useScrollbarGutterWidth } from './UseScrollbarGutterWidth';
 
 export default defineComponent({
   components: {
@@ -39,6 +40,7 @@ export default defineComponent({
   setup() {
     const { log } = injectKey((keys) => keys.useLogger);
     const isOpen = ref(true);
+    const scrollbarGutterWidth = useScrollbarGutterWidth();
 
     const devActions: readonly DevAction[] = [
       {
@@ -58,6 +60,7 @@ export default defineComponent({
       devActions,
       isOpen,
       close,
+      scrollbarGutterWidth,
     };
   },
 });
@@ -71,10 +74,14 @@ interface DevAction {
 <style scoped lang="scss">
 @use "@/presentation/assets/styles/main" as *;
 
+$viewport-edge-offset: $spacing-absolute-large; // close to Chromium gutter width (15px)
+
 .dev-toolkit-container {
   position: fixed;
-  top: 0;
-  right: 0;
+
+  top: $viewport-edge-offset;
+  right: max(v-bind(scrollbarGutterWidth), $viewport-edge-offset);
+
   background-color: rgba($color-on-surface, 0.5);
   color: $color-on-primary;
   padding: $spacing-absolute-medium;

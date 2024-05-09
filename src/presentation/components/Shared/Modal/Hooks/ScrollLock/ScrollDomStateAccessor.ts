@@ -16,4 +16,6 @@ export interface ScrollDomStateAccessor {
   readonly htmlScrollHeight: number;
   readonly htmlClientWidth: number;
   readonly htmlClientHeight: number;
+  readonly htmlOffsetWidth: number;
+  readonly htmlOffsetHeight: number;
 }

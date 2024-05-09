@@ -1,7 +1,19 @@
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 
-export function assertLayoutStability(selector: string, action: ()=> void): void {
+interface LayoutStabilityTestOptions {
+  excludeWidth: boolean;
+  excludeHeight: boolean;
+}
+
+export function assertLayoutStability(
+  selector: string,
+  action: ()=> void,
+  options: Partial<LayoutStabilityTestOptions> | undefined = undefined,
+): void {
   // arrange
+  if (options?.excludeWidth === true && options?.excludeHeight === true) {
+    throw new Error('Invalid test configuration: both width and height exclusions specified.');
+  }
   let initialMetrics: ViewportMetrics | undefined;
   captureViewportMetrics(selector, (metrics) => {
     initialMetrics = metrics;
@@ -11,10 +23,22 @@ export function assertLayoutStability(selector: string, action: ()=> void): void
   // assert
   captureViewportMetrics(selector, (metrics) => {
     const finalMetrics = metrics;
-    expect(initialMetrics).to.deep.equal(finalMetrics, formatAssertionMessage([
+    const assertionContext = [
       `Expected (initial metrics before action): ${JSON.stringify(initialMetrics)}`,
       `Actual (final metrics after action): ${JSON.stringify(finalMetrics)}`,
-    ]));
+    ];
+    if (options?.excludeWidth !== true) {
+      expect(initialMetrics?.x).to.equal(finalMetrics.x, formatAssertionMessage([
+        'Width instability detected',
+        ...assertionContext,
+      ]));
+    }
+    if (options?.excludeHeight !== true) {
+      expect(initialMetrics?.x).to.equal(finalMetrics.x, formatAssertionMessage([
+        'Height instability detected',
+        ...assertionContext,
+      ]));
+    }
   });
 }
 

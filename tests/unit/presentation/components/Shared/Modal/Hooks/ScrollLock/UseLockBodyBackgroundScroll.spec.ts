@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import { ref, nextTick, defineComponent } from 'vue';
 import { useLockBodyBackgroundScroll } from '@/presentation/components/Shared/Modal/Hooks/ScrollLock/UseLockBodyBackgroundScroll';
 import type { ScrollDomStateAccessor } from '@/presentation/components/Shared/Modal/Hooks/ScrollLock/ScrollDomStateAccessor';
-import type { PropertyKeys } from '@/TypeHelpers';
+import { DomStateChangeTestScenarios } from './DomStateChangeTestScenarios';
 
 describe('useLockBodyBackgroundScroll', () => {
   describe('initialization', () => {
@@ -87,7 +87,7 @@ function createComponent(
 }
 
 function itEachScrollBlockEffect(act: (dom: ScrollDomStateAccessor) => Promise<void>) {
-  testScenarios.forEach((m) => {
+  DomStateChangeTestScenarios.forEach((m) => {
     const description = m.description ? ` (${m.description})` : '';
     it(`handles '${m.propertyName}'${description}`, async () => {
       // arrange
@@ -105,161 +105,6 @@ function itEachScrollBlockEffect(act: (dom: ScrollDomStateAccessor) => Promise<v
     });
   });
 }
-
-type DomPropertyType = string | number;
-
-interface DomStateChange {
-  readonly propertyName: PropertyKeys<ScrollDomStateAccessor>;
-  readonly description?: string;
-  readonly prepare?: (dom: Writable<ScrollDomStateAccessor>) => void;
-  getExpectedValueOnBlock(
-    initialDom: Readonly<ScrollDomStateAccessor>,
-    actualDom: Readonly<ScrollDomStateAccessor>,
-  ): DomPropertyType;
-}
-
-const testScenarios: ReadonlyArray<DomStateChange> = [
-  {
-    propertyName: 'bodyStyleOverflowX',
-    description: 'visible horizontal scrollbar',
-    prepare: (dom) => {
-      dom.htmlClientWidth = 5;
-      dom.htmlScrollWidth = 10;
-    },
-    getExpectedValueOnBlock: () => 'scroll',
-  },
-  {
-    propertyName: 'bodyStyleOverflowX',
-    description: 'invisible horizontal scrollbar',
-    prepare: (dom) => {
-      dom.htmlClientWidth = 10;
-      dom.htmlScrollWidth = 5;
-    },
-    getExpectedValueOnBlock: (initialDom) => initialDom.bodyStyleOverflowX,
-  },
-  {
-    propertyName: 'bodyStyleOverflowY',
-    description: 'visible vertical scrollbar',
-    prepare: (dom) => {
-      dom.htmlScrollHeight = 10;
-      dom.htmlClientHeight = 5;
-    },
-    getExpectedValueOnBlock: () => 'scroll',
-  },
-  {
-    propertyName: 'bodyStyleOverflowY',
-    description: 'invisible vertical scrollbar',
-    prepare: (dom) => {
-      dom.htmlScrollHeight = 5;
-      dom.htmlClientHeight = 10;
-    },
-    getExpectedValueOnBlock: (initialDom) => initialDom.bodyStyleOverflowY,
-  },
-  {
-    propertyName: 'htmlScrollLeft',
-    getExpectedValueOnBlock: (initialDom) => initialDom.htmlScrollLeft,
-  },
-  {
-    propertyName: 'htmlScrollTop',
-    getExpectedValueOnBlock: (initialDom) => initialDom.htmlScrollTop,
-  },
-  {
-    propertyName: 'bodyStyleLeft',
-    description: 'adjusts for scrolled position',
-    prepare: (dom) => {
-      dom.htmlScrollLeft = 22;
-    },
-    getExpectedValueOnBlock: () => '-22px',
-  },
-  {
-    propertyName: 'bodyStyleLeft',
-    description: 'unaffected by no horizontal scroll',
-    prepare: (dom) => {
-      dom.htmlScrollLeft = 0;
-    },
-    getExpectedValueOnBlock: (initialDom) => initialDom.bodyStyleLeft,
-  },
-  {
-    propertyName: 'bodyStyleTop',
-    description: 'adjusts for scrolled position',
-    prepare: (dom) => {
-      dom.htmlScrollTop = 12;
-    },
-    getExpectedValueOnBlock: () => '-12px',
-  },
-  {
-    propertyName: 'bodyStyleTop',
-    description: 'unaffected by no vertical scroll',
-    prepare: (dom) => {
-      dom.htmlScrollTop = 0;
-    },
-    getExpectedValueOnBlock: (initialDom) => initialDom.bodyStyleTop,
-  },
-  {
-    propertyName: 'bodyStylePosition',
-    getExpectedValueOnBlock: () => 'fixed',
-  },
-  {
-    propertyName: 'bodyStyleWidth',
-    description: 'no margin',
-    getExpectedValueOnBlock: () => '100%',
-  },
-  {
-    propertyName: 'bodyStyleWidth',
-    description: 'margin on left',
-    prepare: (dom) => {
-      dom.bodyComputedMarginLeft = '3px';
-    },
-    getExpectedValueOnBlock: () => 'calc(100% - (3px))',
-  },
-  {
-    propertyName: 'bodyStyleWidth',
-    description: 'margin on right',
-    prepare: (dom) => {
-      dom.bodyComputedMarginRight = '4px';
-    },
-    getExpectedValueOnBlock: () => 'calc(100% - (4px))',
-  },
-  {
-    propertyName: 'bodyStyleWidth',
-    description: 'margin on left and right',
-    prepare: (dom) => {
-      dom.bodyComputedMarginLeft = '5px';
-      dom.bodyComputedMarginRight = '5px';
-    },
-    getExpectedValueOnBlock: () => 'calc(100% - (5px + 5px))',
-  },
-  {
-    propertyName: 'bodyStyleHeight',
-    description: 'no margin',
-    getExpectedValueOnBlock: () => '100%',
-  },
-  {
-    propertyName: 'bodyStyleHeight',
-    description: 'margin on top',
-    prepare: (dom) => {
-      dom.bodyComputedMarginTop = '3px';
-    },
-    getExpectedValueOnBlock: () => 'calc(100% - (3px))',
-  },
-  {
-    propertyName: 'bodyStyleHeight',
-    description: 'margin on bottom',
-    prepare: (dom) => {
-      dom.bodyComputedMarginBottom = '4px';
-    },
-    getExpectedValueOnBlock: () => 'calc(100% - (4px))',
-  },
-  {
-    propertyName: 'bodyStyleHeight',
-    description: 'margin on top and bottom',
-    prepare: (dom) => {
-      dom.bodyComputedMarginTop = '5px';
-      dom.bodyComputedMarginBottom = '5px';
-    },
-    getExpectedValueOnBlock: () => 'calc(100% - (5px + 5px))',
-  },
-];
 
 function createMockDomStateAccessor(): ScrollDomStateAccessor {
   return {
@@ -280,9 +125,7 @@ function createMockDomStateAccessor(): ScrollDomStateAccessor {
     htmlScrollHeight: 0,
     htmlClientWidth: 0,
     htmlClientHeight: 0,
+    htmlOffsetHeight: 0,
+    htmlOffsetWidth: 0,
   };
 }
-
-type Writable<T> = {
-  -readonly [P in keyof T]: T[P];
-};

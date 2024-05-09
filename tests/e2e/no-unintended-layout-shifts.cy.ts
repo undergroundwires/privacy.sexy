@@ -1,4 +1,4 @@
-import { ViewportTestScenarios } from './support/scenarios/viewport-test-scenarios';
+import { ViewportTestScenarios, LargeScreen } from './support/scenarios/viewport-test-scenarios';
 import { openCard } from './support/interactions/card';
 import { selectAllScripts, unselectAllScripts } from './support/interactions/script-selection';
 import { assertLayoutStability } from './support/assert/layout-stability';
@@ -61,5 +61,19 @@ describe('Layout stability', () => {
         });
       });
     });
+  });
+
+  // Regression test for bug on Chromium where horizontal scrollbar visibility causes layout shifts.
+  it('Scrollbar visibility', () => {
+    // arrange
+    cy.viewport(LargeScreen.width, LargeScreen.height);
+    cy.visit('/');
+    openCard({
+      cardIndex: 0,
+    });
+    // act
+    assertLayoutStability('.app__wrapper', () => {
+      cy.viewport(LargeScreen.width, 100); // Set small height to trigger horizontal scrollbar.
+    }, { excludeHeight: true });
   });
 });

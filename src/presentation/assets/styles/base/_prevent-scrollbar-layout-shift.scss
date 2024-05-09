@@ -1,0 +1,19 @@
+// This mixin prevents layout shifts caused by the appearance of a vertical scrollbar
+// in Chromium-based browsers on Linux and Windows.
+// It creates a reserved space for the scrollbar, ensuring content remains stable and does
+// not shift horizontally when the scrollbar appears.
+@mixin prevent-scrollbar-layout-shift {
+  scrollbar-gutter: stable;
+
+  @supports not (scrollbar-gutter: stable) { // https://caniuse.com/mdn-css_properties_scrollbar-gutter
+    // Safari workaround: Shift content to accommodate non-overlay scrollbar.
+    // An issue: On small screens, the appearance of the scrollbar can shift content, due to limited space for
+    // both content and scrollbar.
+    $full-width-including-scrollbar: 100vw;
+    $full-width-excluding-scrollbar: 100%;
+    $scrollbar-width: calc($full-width-including-scrollbar - $full-width-excluding-scrollbar);
+    padding-inline-start: $scrollbar-width; // Allows both right-to-left (RTL) and left-to-right (LTR) text direction support
+  }
+
+  // More details: https://web.archive.org/web/20240509122237/https://stackoverflow.com/questions/1417934/how-to-prevent-scrollbar-from-repositioning-web-page
+}

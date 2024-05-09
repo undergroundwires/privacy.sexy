@@ -13,9 +13,14 @@
 @use "_code-styling" as *;
 @use "_margin-padding" as *;
 @use "_link-styling" as *;
+@use "_prevent-scrollbar-layout-shift" as *;
 
 * {
   box-sizing: border-box;
+}
+
+html {
+  @include prevent-scrollbar-layout-shift;
 }
 
 body {
