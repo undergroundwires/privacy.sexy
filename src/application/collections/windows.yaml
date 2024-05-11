@@ -5638,392 +5638,17 @@ actions:
             These scripts help protect your system against various types of cyber threats and unauthorized access.
         children:
             -
-                category: Disable clipboard data collection
+                category: Improve network security
                 docs: |-
-                    This category includes scripts that focus on disabling various aspects of clipboard data collection in Windows.
-                    The clipboard is a critical component of the operating system, often containing sensitive data such as usernames, passwords, and other
-                    personal information [1].
-                    However, features such as clipboard history and device synchronization can significantly increase privacy and security risks.
+                    This category is dedicated to improving network security.
 
-                    By default, Windows tends to store clipboard data in an unencrypted format [2], making it easily accessible to malicious applications or scripts.
-                    Additionally, data synchronization features can lead to sensitive information being stored on remote servers or shared across devices, increasing the
-                    risk of data exposure.
+                    It aims to minimize vulnerabilities by offering various settings that improve the integrity and confidentiality
+                    of data transmitted over the network.
+                    It features a range of measures to protect data transmission from unauthorized access, interception, and other
+                    cyber threats to maintain a secure and private communication environment.
 
-                    The scripts in this category address these risks by disabling the related features..
-                    While these features offer convenience and productivity benefits, they can inadvertently compromise user privacy and security.
-                    
-                    > **Caution**: Applying these scripts may lead to a loss of certain functionalities. Users who rely on these features for their daily tasks should
-                    > consider the trade-offs before proceeding with these changes.
-
-                    [1]: https://web.archive.org/web/20240119160347/https://github.com/undergroundwires/privacy.sexy/issues/247 "Disable Clipboard History · Issue #247 · undergroundwires/privacy.sexy · GitHub | github.com"
-                    [2]: https://web.archive.org/web/20240119151846/https://ghostvolt.com/blog/Is-the-Windows-Clipboard-Function-History-or-Sync-Secure.html "Is the Windows Clipboard Function, History or Sync Secure | ghostvolt.com"
-                children:
-                    -
-                        name: Disable Cloud Clipboard (breaks clipboard sync)
-                        recommend: strict
-                        docs: |-
-                            This script disables the Cloud Clipboard feature [1], also known as the cross-device clipboard [2].
-                            The Cloud Clipboard, introduced in the Windows 10 October 2018 Update [3], synchronizes clipboard contents across Windows
-                            devices [1] [2] [4]. While this feature enhances usability, it can pose a privacy risk as sensitive information like passwords or credit card
-                            details [5] might be inadvertently synchronized and stored on Microsoft servers.
-
-                            Disabling Cloud Clipboard is recommended in secure environments where clipboard data should remain local to the system, avoiding
-                            potential exposure or misuse of sensitive information [6]. The Center for Internet Security (CIS) recommends disabling this feature in
-                            such settings for enhanced security [6]. Moreover, Microsoft acknowledges that disabling network connections linked to the Cloud Clipboard
-                            can improve privacy [1]. This script secures your clipboard data by preventing unauthorized access from other processes on your computer
-                            or network, reducing the risk of data theft.
-
-                            The script configures the following registry keys:
-
-                            - `HKLM\SOFTWARE\Policies\Microsoft\Windows\System!AllowCrossDeviceClipboard`: Disables the Cloud Clipboard feature, preventing
-                            clipboard synchronization across devices [1] [2] [6].
-                            - `HKCU\SOFTWARE\Microsoft\Clipboard!CloudClipboardAutomaticUpload`: Stops the automatic upload of clipboard data to the cloud [7].
-
-                            > **Caution**: After running this script, clipboard contents will not synchronize across devices [1] [2] [6].
-                            > Text or images copied on one device will not be accessible on other devices [3] [4] [5].
-                            > This enhances privacy and security but limits the clipboard's functionality across your Windows devices.
-
-                            [1]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#30-cloud-clipboard "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
-                            [2]: https://web.archive.org/web/20240119150031/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#allowcrossdeviceclipboard "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
-                            [3]: https://web.archive.org/web/20210619004804/https://community.windows.com/en-us/stories/cloud-clipboard-windows-10 "Copy and paste across Windows 10 devices using cloud clipboard | Windows Community | community.windows.com"
-                            [4]: https://web.archive.org/web/20240119150040/https://support.microsoft.com/en-us/windows/clipboard-in-windows-c436501e-985d-1c8d-97ea-fe46ddf338c6 "Clipboard in Windows - Microsoft Support | support.microsoft.com"
-                            [5]: https://web.archive.org/web/20240119160347/https://github.com/undergroundwires/privacy.sexy/issues/247 "Disable Clipboard History · Issue #247 · undergroundwires/privacy.sexy · GitHub | github.com"
-                            [6]: https://web.archive.org/web/20240119145854/https://www.tenable.com/audits/items/CIS_MS_InTune_for_Windows_11_Level_2_BitLocker_v1.0.0.audit:19bea796bd6a86f37028214bbed97ffd "18.8.31.1 Ensure 'Allow Clipboard synchronization across devic... | Tenable® | www.tenable.com"
-                            [7]: https://web.archive.org/web/20240119145950/https://www.elevenforum.com/t/enable-or-disable-clipboard-sync-across-devices-in-windows-11.976/ "Enable or Disable Clipboard Sync Across Devices in Windows 11 Tutorial | Windows 11 Forum | elevenforum.com"
-                        call:
-                            -
-                                function: RunInlineCode
-                                parameters:
-                                    code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "AllowCrossDeviceClipboard" /t "REG_DWORD" /d "0" /f
-                                    # This key does not exist by default since Windows 10 22H2 and Windows 11 23H2
-                                    revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "AllowCrossDeviceClipboard" /f 2>nul
-                            -
-                                function: RunInlineCode
-                                parameters:
-                                    code: reg add "HKCU\Software\Microsoft\Clipboard" /v "CloudClipboardAutomaticUpload" /t "REG_DWORD" /d "0" /f
-                                    # This key does not exist by default since Windows 10 22H2 and Windows 11 23H2
-                                    revertCode: reg delete "HKCU\Software\Microsoft\Clipboard" /v "CloudClipboardAutomaticUpload" /f 2>nul
-                    -
-                        name: Disable clipboard history
-                        recommend: standard
-                        docs: |-
-                            This script deactivates the clipboard history feature in Windows, a feature that is enabled by default [1] [2].
-                            Regularly, users copy sensitive data such as usernames and passwords to their clipboard, making clipboard history
-                            valuable to attackers for gathering information for post-exploitation activities like lateral movement.
-
-                            Microsoft introduced clipboard history in the Windows 10 October 2018 Update [1], offering enhanced functionality, including
-                            multi-device sync and customizable history management [1].
-                            Despite these benefits, clipboard history poses several security risks:
-
-                            - **Plain Text Storage**: Clipboard data is stored unencrypted, making it vulnerable to access by malicious applications [3].
-                            - **Persistent Memory**: The data remains in memory until overwritten or the machine restarts, exposing it to unauthorized access
-                            by other users or malware [3].
-                            - **Process Accessibility**: Most running processes and applications can access clipboard data, increasing the risk if any are malicious [3].
-                            - **Open Network Threats**: Malicious website scripts could potentially access clipboard data, leading to data theft [3].
-                            - **Windows Clipboard History**: Stores the last 25 copied text and image items, which could include sensitive information [3].
-                            - **Increased Attack Surface**: Clipboard history is susceptible to exploitation by malware that silently accesses and logs clipboard data [3].
-
-                            Microsoft's privacy statement also indicates that clipboard data could be used for marketing and advertising purposes [4].
-
-                            Given these risks, especially when handling sensitive data like passwords or credit card numbers [5], it is advisable for
-                            users concerned about security to disable clipboard history to safeguard their privacy.
-
-                            This script modifies Windows Registry keys to turn off clipboard history and sync features:
-
-                            - `HKCU\Software\Microsoft\Clipboard!EnableClipboardHistory`: Disables the local clipboard history for the current user [6] [7] [8].
-                            - `HKLM\SOFTWARE\Policies\Microsoft\Windows\System!AllowClipboardHistory`: Disables the policy for storing clipboard contents [2] [9].
-
-                            [1]: https://web.archive.org/web/20210619004804/https://community.windows.com/en-us/stories/cloud-clipboard-windows-10 "Copy and paste across Windows 10 devices using cloud clipboard | Windows Community | community.windows.com"
-                            [2]: https://web.archive.org/web/20240119153212/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience#allowclipboardhistory "Experience Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
-                            [3]: https://web.archive.org/web/20240119151846/https://ghostvolt.com/blog/Is-the-Windows-Clipboard-Function-History-or-Sync-Secure.html "Is the Windows Clipboard Function, History or Sync Secure | ghostvolt.com"
-                            [4]: https://web.archive.org/web/20231006103250/https://privacy.microsoft.com/en-US/privacystatement "Microsoft Privacy Statement – Microsoft privacy | privacy.microsoft.com"
-                            [5]: https://web.archive.org/web/20240119160347/https://github.com/undergroundwires/privacy.sexy/issues/247 "Disable Clipboard History · Issue #247 · undergroundwires/privacy.sexy · GitHub | github.com"
-                            [6]: https://web.archive.org/web/20240119153118/https://www.elevenforum.com/t/enable-or-disable-clipboard-history-in-windows-11.973/ "Enable or Disable Clipboard History in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
-                            [7]: https://web.archive.org/web/20240119153113/https://itechbrand.com/how-to-enable-and-use-clipboard-history-on-windows-10/ "How to: Enable and Use Clipboard History on Windows 10 | ITechBrand | itechbrand.com"
-                            [8]: https://web.archive.org/web/20240119153250/https://labs.withsecure.com/tools/sharpcliphistory "SharpClipHistory | WithSecure™ Labs | labs.withsecure.com"
-                            [9]: https://web.archive.org/web/20240119153231/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.OSPolicy::AllowClipboardHistory "Allow Clipboard History | admx.help"
-                        call:
-                            -
-                                function: RunInlineCode
-                                parameters:
-                                    code: reg add "HKCU\Software\Microsoft\Clipboard" /v "EnableClipboardHistory" /t REG_DWORD /d 0 /f
-                                    # This key does not exist by default since Windows 10 22H2 and Windows 11 23H2
-                                    revertCode: reg delete "HKCU\Software\Microsoft\Clipboard" /v "EnableClipboardHistory" /f 2>nul
-                            -
-                                function: RunInlineCode
-                                parameters:
-                                    code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "AllowClipboardHistory" /t "REG_DWORD" /d "0" /f
-                                    # This key does not exist by default since Windows 10 22H2 and Windows 11 23H2
-                                    revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "AllowClipboardHistory" /f 2>nul
-                    -
-                        name: Disable background clipboard data collection (`cbdhsvc`) (breaks clipboard history and sync)
-                        recommend: strict
-                        docs: |-
-                            This script disables `cbdhsvc` also known as "Clipboard User Service" [1].
-                            This service is responsible for clipboard history and synchronization across devices [1].
-
-                            Microsoft acknowledges that disabling this service does not adversely affect the system's core functionality [2].
-
-                            Disabling this service enhances your security by reducing your system's
-                            vulnerability surface. This service has been historically susceptible to vulnerabilities such as Privilege Escalation vulnerability [3].
-                            Turning off `cbdhsvc` also helps improve system performance by reducing the number of background processes as `cbdhsvc` runs automatically
-                            in the background [1].
-                            Additionally, it enhances privacy by preventing the storage and sharing of clipboard history with Microsoft servers.
-                            Clipboard data often contains sensitive information, including passwords and credit card numbers [4].
-                            
-                            > **Caution**: Disabling this service will remove the functionalities for clipboard history and synchronization across devices.
-                            > If you depend on these features, you should weigh the benefits against the loss of these functionalities.
-
-                            [1]: https://web.archive.org/web/20240119153912/https://learn.microsoft.com/en-us/windows/application-management/per-user-services-in-windows "Per-user services - Windows Application Management | Microsoft Learn | learn.microsoft.com"
-                            [2]: https://web.archive.org/web/20230905120815/https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services#per-user-services "Guidance on disabling system services on Windows IoT Enterprise | Microsoft Learn"
-                            [3]: https://archive.ph/2024.01.19-154717/https://msrc.microsoft.com/update-guide/vulnerability/CVE-2022-21869 "CVE-2022-21869 - Security Update Guide - Microsoft - Clipboard User Service Elevation of Privilege Vulnerability | rc.microsoft.com"
-                            [4]: https://web.archive.org/web/20240119160347/https://github.com/undergroundwires/privacy.sexy/issues/247 "Disable Clipboard History · Issue #247 · undergroundwires/privacy.sexy · GitHub | github.com"
-                        call:
-                            function: DisablePerUserService
-                            parameters:
-                                # Check (system-wide):  (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\cbdhsvc").Start
-                                # Check (per-user):     (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\cbdhsvc_*").Start
-                                serviceName: cbdhsvc
-                                defaultStartupMode: Automatic
-            -
-                name: Disable hidden remote file access via administrative shares (breaks remote system management software)
-                recommend: strict
-                docs: |-
-                    This script improves your privacy and security by disabling Windows administrative shares,
-                    which are typically used for remote access to your computer's file system.
-
-                    Windows automatically creates hidden administrative shares, such as `C$` and `D$`, that allow system administrators remote access to
-                    every disk volume on your computer [1] [2]. These shares are often targeted as potential attack vectors [3].
-
-                    Disabling administrative shares is generally a good practice for enhancing security. It is recommended by various security standards
-                    and compliance frameworks, including some government standards [3], PCI-DSS [4], and CIS [2]. It reduces the system's vulnerability
-                    to unauthorized remote access.
-
-                    These shares are often used for system administrators to perform tasks like software installation and vulnerability scanning
-                    remotely [1]. Disabling them may limit remote management capabilities. This might require setting up network shares manually
-                    for specific folders or drives, which is more secure but requires additional effort.
-
-                    Some software, such as Microsoft Systems Management Server (SMS) [2], Microsoft Operations Manager [2], Microsoft PsTools [5],
-                    and certain third-party network backup applications [2], rely on administrative shares. Therefore, disabling these shares could
-                    disrupt their functionality.
-
-                    > **Caution**: Disabling administrative shares can impact remote management software and may interrupt the ability to remotely control
-                    > machines. Consider your operational and security needs before making this change.
-
-                    [1]: https://web.archive.org/web/20230831114315/https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/remove-administrative-shares "Remove administrative shares - Windows Server | Microsoft Learn | learn.microsoft.com"
-                    [2]: https://web.archive.org/web/20231206152703/http://www.itref.ir/uploads/editor/1edad0.pdf "CIS Microsoft Windows 8 Benchmark | itref.ir"
-                    [3]: https://web.archive.org/web/20230831124304/https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/Business-Partner-System-Security-Manual-BPSSM.pdf "CMS Manual System | Pub 100-17 Medicare Business Partners | Department of Health & Human Services (DHHS) & Centers for Medicare & Medicaid Services (CMS) | cms.gov"
-                    [4]: https://web.archive.org/web/20230831124324/https://www.unifiedcompliance.com/products/search-authority-documents/authority-document/1071/ "Payment Card Organizations > PCI Security Standards Council | Unified Compliance | www.unifiedcompliance.com"
-                    [5]: https://github.com/undergroundwires/privacy.sexy/issues/249 "Disabling administrative shares breaks PsTools | undergroundwires/privacy.sexy | github.com"
-                code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareWks" /t REG_DWORD /d 0 /f
-                revertCode: reg delete "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareWks" /f # Key does not exist since Windows 11 22H2
-            -
-                category: Enable protection against Meltdown and Spectre
-                docs: https://support.microsoft.com/en-us/topic/kb4072698-windows-server-and-azure-stack-hci-guidance-to-protect-against-silicon-based-microarchitectural-and-speculative-execution-side-channel-vulnerabilities-2f965763-00e2-8f98-b632-0d96f30c8c8e
-                children:
-                    -
-                        name: Mitigate Spectre Variant 2 and Meltdown in host operating system
-                        code: |-
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "FeatureSettingsOverrideMask" /t REG_DWORD /d 3 /f
-                            wmic cpu get name | findstr "Intel" >nul && (
-                                reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "FeatureSettingsOverride" /t REG_DWORD /d 0 /f
-                            )
-                            wmic cpu get name | findstr "AMD" >nul && (
-                                reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "FeatureSettingsOverride" /t REG_DWORD /d 64 /f
-                            )
-                        revertCode: |-
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "FeatureSettingsOverrideMask" /t REG_DWORD /d 3 /f
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "FeatureSettingsOverride" /t REG_DWORD /d 3 /f
-                    -
-                        name: Mitigate Spectre Variant 2 and Meltdown in Hyper-V
-                        code: reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Virtualization" /v MinVmVersionForCpuBasedMitigations /t REG_SZ /d "1.0" /f
-                        revertCode: reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Virtualization" /v MinVmVersionForCpuBasedMitigations /f
-            - 
-                name: Enable Data Execution Prevention (DEP)
-                code: |-
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoDataExecutionPrevention" /t REG_DWORD /d 0 /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "DisableHHDEP" /t REG_DWORD /d 0 /f
-                revertCode: |-
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoDataExecutionPrevention" /t REG_DWORD /d 1 /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "DisableHHDEP" /t REG_DWORD /d 1 /f
-            -
-                name: Disable AutoPlay and AutoRun
-                docs:
-                    - https://en.wikipedia.org/wiki/AutoRun
-                    - https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63667
-                    - https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63671
-                    - https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63673
-                recommend: standard
-                code: |-
-                    :: 255 (0xff) means all drives
-                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoDriveTypeAutoRun" /t REG_DWORD /d 255 /f
-                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoAutorun" /t REG_DWORD /d 1 /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoAutoplayfornonVolume" /t REG_DWORD /d 1 /f
-                revertCode: |-
-                    reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoDriveTypeAutoRun" /f
-                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoAutorun" /t REG_DWORD /d 2 /f
-                    reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoAutoplayfornonVolume" /f
-            -
-                name: Disable remote assistance feature
-                recommend: standard
-                docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63651
-                code: |-
-                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v "fAllowToGetHelp" /t REG_DWORD /d 0 /f
-                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v "fAllowFullControl" /t REG_DWORD /d 0 /f
-                revertCode: |-
-                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v "fAllowToGetHelp" /t REG_DWORD /d 1 /f
-                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v "fAllowFullControl" /t REG_DWORD /d 1 /f
-            -
-                name: Disable lock screen camera access
-                recommend: standard
-                docs: https://www.stigviewer.com/stig/windows_8_8.1/2014-06-27/finding/V-43237
-                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization" /v "NoLockScreenCamera" /t REG_DWORD /d 1 /f
-                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows\Personalization" /v NoLockScreenCamera /f
-            -
-                name: Disable storage of the LAN Manager password hashes
-                recommend: standard
-                docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63797
-                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v "NoLMHash" /t REG_DWORD /d 1 /f
-                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v "NoLMHash" /t REG_DWORD /d 0 /f
-            -
-                name: Disable "Always install with elevated privileges" in Windows Installer
-                recommend: standard
-                docs: https://www.stigviewer.com/stig/windows_8/2013-07-03/finding/V-34974
-                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer" /v "AlwaysInstallElevated" /t REG_DWORD /d 0 /f
-                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer" /v "AlwaysInstallElevated" /t REG_DWORD /d 1 /f
-            -
-                name: Disable Basic Authentication usage in WinRM
-                recommend: standard
-                docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63335
-                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client" /v "AllowBasic" /t REG_DWORD /d 0 /f
-                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client" /v "AllowBasic" /t REG_DWORD /d 1 /f
-            -
-                name: Disable anonymous enumeration of shares
-                recommend: standard
-                docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63749
-                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\LSA" /v "RestrictAnonymous" /t REG_DWORD /d 1 /f
-                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Control\LSA" /v "RestrictAnonymous" /t REG_DWORD /d 0 /f
-            -
-                name: Disable usage of insecure authentication
-                recommend: standard
-                docs:
-                    - https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63801
-                    - https://web.archive.org/web/20240315114408/https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/security-policy-settings/network-security-lan-manager-authentication-level
-                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v "LmCompatibilityLevel" /t REG_DWORD /d 5 /f
-                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v "LmCompatibilityLevel" /t REG_DWORD /d 3 /f
-            -
-                name: Enable Structured Exception Handling Overwrite Protection (SEHOP)
-                recommend: standard
-                docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-68849
-                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "DisableExceptionChainValidation" /t REG_DWORD /d 0 /f
-                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "DisableExceptionChainValidation" /t REG_DWORD /d 1 /f
-            -
-                name: Disable unauthorized user account discovery (anonymous SAM enumeration)
-                recommend: standard
-                docs: |-
-                    This script increases your system's security by preventing unauthorized users from seeing account names in the
-                    Security Accounts Manager (SAM) [1] [2] [3] [4] [5] [6].
-                    When account names are exposed, attackers might use them for guessing passwords or tricking people into revealing
-                    sensitive information [4] [6] [7] [8].
-                    This is a security action recommended by organizations like the Department of Defense [1], NASA [2], IRS [8],
-                    NIST [6], CIS [4], and Microsoft [3].
-
-                    The change is enacted through the `HKLM\SYSTEM\CurrentControlSet\Control\Lsa!RestrictAnonymousSAM` registry
-                    value [1] [2] [4] [5]. By default, it's enabled [4] and Windows restricts this setting if the registry value does
-                    not exist [3].
-
-                    While the script secures the system from these threats, it also has implications for interoperability with older systems.
-                    It will prevent the establishment of trusts with Windows NT 4.0 domains [4] [5] [7] [9] and cause issues for older
-                    client operating systems, like Windows NT 3.51 and Windows 95, when they try to access server resources [4] [5] [7].
-                    Typically, anonymous connections are requested by earlier versions of clients (down-level clients) during SMB session setup [7].
-
-                    The script has no impact on domain controllers since their behavior in this aspect is controlled by different settings [5] [7].
-                    The policy setting does not require a restart to become effective [5], and there is no impact on current systems
-                    where the default behavior already includes this restriction [4].
-
-                    Despite the potential interoperability issues with older systems, the script maintains a security posture that is
-                    important in modern networks to minimize unauthorized access and protect user privacy.
-
-                    [1]: https://web.archive.org/web/20231105200434/https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63745 "Anonymous enumeration of SAM accounts must not be allowed. | www.stigviewer.com"
-                    [2]: https://web.archive.org/web/20231105200713/https://asapdata.arc.nasa.gov/share/Paul/CIS_Microsoft_Windows_Server_2016_RTM_Release_1607_Benchmark_v1.1.0.pdf "CIS Microsoft Windows Server 2016 RTM (Release 1607) Benchmark | nasa.gov"
-                    [3]: https://web.archive.org/web/20231105200918/https://learn.microsoft.com/en-us/azure/governance/policy/samples/guest-configuration-baseline-windows#security-options---network-access "Reference - Azure Policy guest configuration baseline for Windows - Azure Policy | Microsoft Learn | learn.microsoft.com"
-                    [4]: https://web.archive.org/web/20231105201133/https://community.mis.temple.edu/mis5170sec001sec701sp2018/files/2018/02/CIS_Microsoft_Windows_Server_2012_R2_Benchmark_v2.2.1.pdf "CIS Microsoft Windows Server 2012 R2 Benchmark | temple.edu"
-                    [5]: https://web.archive.org/web/20231105201446/https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/jj852230%28v=ws.11%29 "Network access: Do not allow anonymous enumeration of SAM accounts | Microsoft Learn | learn.microsoft.com"
-                    [6]: https://web.archive.org/web/20230927174843/https://csrc.nist.gov/CSRC/media/Projects/United-States-Government-Configuration-Baseline/data/documentation/USGCB-Windows-Settings.xls "USGCB Windows Settings | nist.gov"
-                    [7]: https://web.archive.org/web/20231105201346/https://support.microsoft.com/en-us/topic/client-service-and-program-issues-can-occur-if-you-change-security-settings-and-user-rights-assignments-0cb6901b-dcbf-d1a9-e9ea-f1b49a56d53a "Client, service, and program issues can occur if you change security settings and user rights assignments - Microsoft Support | support.microsoft.com"
-                    [8]: https://web.archive.org/web/20231105200853/https://www.irs.gov/pub/irs-utl/safeguards-scsem-win-server2016.xlsx "IRS Office of Safeguards SCSEM | irs.gov"
-                    [9]: https://web.archive.org/web/20231105201413/https://learn.microsoft.com/en-us/troubleshoot/windows-server/windows-security/trust-between-windows-ad-domain-not-work-correctly "Trust between a Windows NT domain and an Active Directory domain can't be established or it doesn't work as expected - Windows Server | Microsoft Learn | learn.microsoft.com"
-                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v "RestrictAnonymousSAM" /t REG_DWORD /d 1 /f
-                revertCode: |-
-                    :: Default value is `1` on modern Windows versions (Windows 10 since 22H2, Windows 11 since 22H2)
-                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v "RestrictAnonymousSAM" /t REG_DWORD /d 1 /f
-            -
-                name: Disable anonymous access to named pipes and shares
-                recommend: standard
-                docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63759
-                code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanManServer\Parameters" /v "RestrictNullSessAccess" /t REG_DWORD /d 1 /f
-                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanManServer\Parameters" /v "RestrictNullSessAccess" /t REG_DWORD /d 0 /f
-            -
-                category: Disable unsafe features
-                children:
-                    -
-                        name: Enable security against PowerShell 2.0 downgrade attacks
-                        recommend: standard
-                        docs: |-
-                            See: [The Windows PowerShell 2.0 feature must be disabled on the system. | stigviewer.com](https://web.archive.org/web/20240406114721/https://www.stigviewer.com/stig/windows_10/2017-02-21/finding/V-70637)
-
-                            ### Overview of default feature statuses
-
-                            `MicrosoftWindowsPowerShellV2`:
-
-                            | | |
-                            | ---- | --- |
-                            | **Feature name**  | `MicrosoftWindowsPowerShellV2` |
-                            | **Display name**  | Windows PowerShell 2.0 Engine |
-                            | **Description**  | Adds or Removes Windows PowerShell 2.0 Engine |
-                            | **Default** (Windows 11 ≥ 23H2) | 🟢 Enabled |
-                            | **Default** (Windows 10 ≥ 22H2) | 🟢 Enabled |
-
-                            `MicrosoftWindowsPowerShellV2Root`:
-
-                            | | |
-                            | ---- | --- |
-                            | **Feature name**  | `MicrosoftWindowsPowerShellV2Root` |
-                            | **Display name**  | Windows PowerShell 2.0 |
-                            | **Description**  | Adds or Removes Windows PowerShell 2.0 |
-                            | **Default** (Windows 11 ≥ 23H2) | 🟢 Enabled |
-                            | **Default** (Windows 10 ≥ 22H2) | 🟢 Enabled |
-                        call:
-                            -
-                                function: DisableWindowsFeature
-                                parameters:
-                                    featureName: MicrosoftWindowsPowerShellV2 # Get-WindowsOptionalFeature -FeatureName 'MicrosoftWindowsPowerShellV2' -Online
-                            -
-                                function: DisableWindowsFeature
-                                parameters:
-                                    featureName: MicrosoftWindowsPowerShellV2Root # Get-WindowsOptionalFeature -FeatureName 'MicrosoftWindowsPowerShellV2Root' -Online
-            -
-                name: Disable "Windows Connect Now" wizard
-                recommend: standard
-                docs:
-                    - https://web.archive.org/web/20240314130322/https://learn.microsoft.com/en-us/windows/win32/wcn/about-windows-connect-now
-                    - https://www.stigviewer.com/stig/windows_server_20122012_r2_domain_controller/2019-01-16/finding/V-15698
-                code: |-
-                    reg add "HKLM\Software\Policies\Microsoft\Windows\WCN\UI" /v "DisableWcnUi" /t REG_DWORD /d 1 /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableFlashConfigRegistrar" /t REG_DWORD /d 0 /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableInBand802DOT11Registrar" /t REG_DWORD /d 0 /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableUPnPRegistrar" /t REG_DWORD /d 0 /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableWPDRegistrar" /t REG_DWORD /d 0 /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "EnableRegistrars" /t REG_DWORD /d 0 /f
-                revertCode: |-
-                    reg add "HKLM\Software\Policies\Microsoft\Windows\WCN\UI" /v "DisableWcnUi" /t REG_DWORD /d 0 /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableFlashConfigRegistrar" /t REG_DWORD /d 1 /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableInBand802DOT11Registrar" /t REG_DWORD /d 1 /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableUPnPRegistrar" /t REG_DWORD /d 1 /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableWPDRegistrar" /t REG_DWORD /d 1 /f
-                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "EnableRegistrars" /t REG_DWORD /d 1 /f
-            -
-                category: Secure cryptography on IIS (Internet Information Services) server
+                    By improving network security, you secure your system and data from attackers, ISPs, VPN companies,
+                    and state actors.
                 children:
                     -
                         category: Enable strong secret key requirements
@@ -6150,7 +5775,7 @@ actions:
                                     It also protects against threats such as attackers exploiting cryptographic weaknesses, malicious insiders,
                                     state actors, and cybercriminals [8].
 
-                                    > **Caution:** Disabling a cipher may cause compatibility issues with older devices or software.
+                                    > **Caution:** This may cause compatibility issues with older devices or software.
 
                                     [1]: https://web.archive.org/web/20240421101955/https://learn.microsoft.com/en-us/windows/win32/secauthn/cipher-suites-in-schannel "Cipher Suites in TLS/SSL (Schannel SSP) - Win32 apps | Microsoft Learn | learn.microsoft.com"
                                     [2]: https://web.archive.org/web/20240421102018/https://www.acunetix.com/blog/articles/tls-ssl-cipher-hardening/ "Recommendations for TLS/SSL Cipher Hardening | Acunetix | www.acunetix.com"
@@ -6181,19 +5806,19 @@ actions:
                                             This script disables these cipher algorithms:
 
                                             - `RC2 40/128` [1] [4] [5] [6] (40-bit RC2 [4])
-                                              - Enabled by default [4].
-                                              - Disabling it disallows the following cipher suites:
+                                            - Enabled by default [4].
+                                            - Disabling it disallows the following cipher suites:
                                                 - `SSL_RSA_EXPORT_WITH_RC2_CBC_40_MD5` [1] [4]
                                                 - `TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5` [1] [4]
                                             - `RC2 56/128` [2] [4] [5] [6] (56-bit RC2 [4])
-                                              - Enabled by default [4].
-                                              - Disabling it disallows the following cipher suites:
+                                            - Enabled by default [4].
+                                            - Disabling it disallows the following cipher suites:
                                                 - `SSL_RSA_WITH_DES_CBC_SHA` [2]
                                                 - `TLS_RSA_WITH_DES_CBC_SHA` [2]
                                             - `RC2 128/128` [3] [4] [6] (128-bit RC2 [4])
-                                              - Enabled by default [4].
+                                            - Enabled by default [4].
 
-                                            > **Caution:** Disabling a cipher may cause compatibility issues with older devices or software.
+                                            > **Caution:** This may cause compatibility issues with older devices or software.
 
                                             [1]: https://web.archive.org/web/20240421111726/https://admx.help/?Category=Schannel&Policy=JMU.Policies.Schannel::RC2_40 "RC2 40/128 | admx.help"
                                             [2]: https://web.archive.org/web/20240421111927/https://admx.help/?Category=Schannel&Policy=JMU.Policies.Schannel::RC2_56 "RC2 56/128 | admx.help"
@@ -6233,26 +5858,26 @@ actions:
                                             This script disables these cipher algorithms:
 
                                             - `RC4 128/128` [1] [6] [7] [8] (128-bit RC4 [6]):
-                                              - Enabled by default [6] [7].
-                                              - Disabling it disallows the following cipher suites:
+                                            - Enabled by default [6] [7].
+                                            - Disabling it disallows the following cipher suites:
                                                 - `SSL_RSA_WITH_RC4_128_MD5` [1] [6]
                                                 - `SSL_RSA_WITH_RC4_128_SHA` [1] [6]
                                                 - `TLS_RSA_WITH_RC4_128_MD5` [1] [6]
                                                 - `TLS_RSA_WITH_RC4_128_SHA` [1] [6]
                                             - `RC4 64/128` [2] [6] [7] [8] (64-bit RC4 [6]):
-                                              - Enabled by default [6].
-                                              - Disabling it affects the functionality of the **Microsoft Money application [6].
+                                            - Enabled by default [6].
+                                            - Disabling it affects the functionality of the **Microsoft Money application [6].
                                             - `RC4 56/128` [3] [6] [7] [8] (56-bit RC4 [6]):
-                                              - Enabled by default [6].
-                                              - Disabling it disallows the following cipher suites:
+                                            - Enabled by default [6].
+                                            - Disabling it disallows the following cipher suites:
                                                 - `TLS_RSA_EXPORT1024_WITH_RC4_56_SHA` [3] [6]
                                             - `RC4 40/128` [4] [6] [7] [8] (40-bit RC4 [6]):
-                                              - Enabled by default [6].
-                                              - Disabling this algorithm will disallow the following cipher suites:
+                                            - Enabled by default [6].
+                                            - Disabling this algorithm will disallow the following cipher suites:
                                                 - `SSL_RSA_EXPORT_WITH_RC4_40_MD5` [4] [6]
                                                 - `TLS_RSA_EXPORT_WITH_RC4_40_MD5` [4] [6]
 
-                                            > **Caution:** Disabling a cipher may cause compatibility issues with older devices or software.
+                                            > **Caution:** This may cause compatibility issues with older devices or software.
 
                                             [1]: https://web.archive.org/web/20240421101752/https://admx.help/?Category=Schannel&Policy=JMU.Policies.Schannel::RC4_128 "RC4 128/128 | admx.help"
                                             [2]: https://web.archive.org/web/20240421101700/https://admx.help/?Category=Schannel&Policy=JMU.Policies.Schannel::RC4_64 "RC4 64/128 | admx.help"
@@ -6305,7 +5930,7 @@ actions:
                                             - `SSL_RSA_WITH_DES_CBC_SHA` [1] [2]
                                             - `TLS_RSA_WITH_DES_CBC_SHA` [1] [2]
 
-                                            > **Caution:** Disabling a cipher may cause compatibility issues with older devices or software.
+                                            > **Caution:** This may cause compatibility issues with older devices or software.
 
                                             [1]: https://web.archive.org/web/20240421101711/https://admx.help/?Category=Schannel&Policy=JMU.Policies.Schannel::DES_56 "DES 56/56 | admx.help"
                                             [2]: https://web.archive.org/web/20240420183152/https://learn.microsoft.com/en-us/troubleshoot/windows-server/certificates-and-public-key-infrastructure-pki/restrict-cryptographic-algorithms-protocols-schannel "Restrict cryptographic algorithms and protocols - Windows Server | Microsoft Learn | learn.microsoft.com"
@@ -6346,7 +5971,7 @@ actions:
                                             - `TLS_RSA_WITH_3DES_EDE_CBC_SHA` [1] [2]
                                             - `TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA` [1] [2]
 
-                                            > **Caution:** Disabling a cipher may cause compatibility issues with older devices or software.
+                                            > **Caution:** This may cause compatibility issues with older devices or software.
 
                                             [1]: https://web.archive.org/web/20240421101519/https://admx.help/?Category=Schannel&Policy=JMU.Policies.Schannel::3DES "Triple DES 168 | admx.help"
                                             [2]: https://web.archive.org/web/20240420183152/https://learn.microsoft.com/en-us/troubleshoot/windows-server/certificates-and-public-key-infrastructure-pki/restrict-cryptographic-algorithms-protocols-schannel "Restrict cryptographic algorithms and protocols - Windows Server | Microsoft Learn | learn.microsoft.com"
@@ -6392,7 +6017,7 @@ actions:
                                             - `TLS_RSA_WITH_NULL_SHA` [2]
                                             - `TLS_RSA_WITH_NULL_SHA256` [2]
 
-                                            > **Caution:** Disabling a cipher may cause compatibility issues with older devices or software.
+                                            > **Caution:** This may cause compatibility issues with older devices or software.
 
                                             [1]: https://web.archive.org/web/20240420183152/https://learn.microsoft.com/en-us/troubleshoot/windows-server/certificates-and-public-key-infrastructure-pki/restrict-cryptographic-algorithms-protocols-schannel "Restrict cryptographic algorithms and protocols - Windows Server | Microsoft Learn | learn.microsoft.com"
                                             [2]: https://web.archive.org/web/20240421101539/https://admx.help/?Category=Schannel&Policy=JMU.Policies.Schannel::NULL "NULL | admx.help"
@@ -6415,7 +6040,7 @@ actions:
                                     Consequently, an attacker could intercept or modify data transmitted over what is believed to be a secure connection, without being detected.
                                     For instance, attackers could exploit this to divert your payments to their accounts, creating significant risks.
 
-                                    > **Caution:** Disabling a hash algorithm may cause compatibility issues with older devices or software.
+                                    > **Caution:** This may cause compatibility issues with older devices or software.
 
                                     [1]: https://web.archive.org/web/20240426084410/https://www.win.tue.nl/hashclash/rogue-ca/ "MD5 considered harmful today | win.tue.nl"
                                     [2]: https://web.archive.org/web/20240426084414/https://phys.org/news/2017-02-cwi-google-collision-industry-standard.html "CWI, Google announce first collision for Industry Security Standard SHA-1 | phys.org"
@@ -6457,7 +6082,7 @@ actions:
                                             - `TLS_RSA_WITH_RC4_128_MD5` [1] [2]
                                             - `TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5` [2]
 
-                                            > **Caution:** Disabling a hash algorithm may cause compatibility issues with older devices or software.
+                                            > **Caution:** This may cause compatibility issues with older devices or software.
 
                                             [1]: https://web.archive.org/web/20240426090518/https://admx.help/?Category=Schannel&Policy=JMU.Policies.Schannel::MD5 "MD5 | admx.help"
                                             [2]: https://web.archive.org/web/20240423073705/https://learn.microsoft.com/en-US/troubleshoot/windows-server/certificates-and-public-key-infrastructure-pki/restrict-cryptographic-algorithms-protocols-schannel "Restrict cryptographic algorithms and protocols - Windows Server | Microsoft Learn | learn.microsoft.com"
@@ -6527,7 +6152,7 @@ actions:
                                             - `TLS_RSA_WITH_NULL_SHA` [1]
                                             - `TLS_RSA_WITH_RC4_128_SHA` [1] [2]
 
-                                            > **Caution:** Disabling a hash algorithm may cause compatibility issues with older devices or software.
+                                            > **Caution:** This may cause compatibility issues with older devices or software.
 
                                             [1]: https://web.archive.org/web/20240426091852/https://admx.help/?Category=Schannel&Policy=JMU.Policies.Schannel::SHA "SHA | admx.help"
                                             [2]: https://web.archive.org/web/20240423073705/https://learn.microsoft.com/en-US/troubleshoot/windows-server/certificates-and-public-key-infrastructure-pki/restrict-cryptographic-algorithms-protocols-schannel "Restrict cryptographic algorithms and protocols - Windows Server | Microsoft Learn | learn.microsoft.com"
@@ -6573,15 +6198,15 @@ actions:
                                     It modifies the following system settings to achieve this:
 
                                     - `HKLM\System\CurrentControlSet\Control\SecurityProviders\SCHANNEL!AllowInsecureRenegoClients` [1] [3]:
-                                      Stops the client from responding to insecure renegotiation attempts [1] [3].
+                                    Stops the client from responding to insecure renegotiation attempts [1] [3].
                                     - `HKLM\System\CurrentControlSet\Control\SecurityProviders\SCHANNEL!AllowInsecureRenegoServers` [1] [3]:
-                                      Stops the server from responding to insecure renegotiation attempts [1] [3].
+                                    Stops the server from responding to insecure renegotiation attempts [1] [3].
                                     - `HKLM\System\CurrentControlSet\Control\SecurityProviders\SCHANNEL!DisableRenegoOnClient` [3] [4]:
-                                      Prevents the client from initiating or responding to insecure renegotiation requests [3] [4].
+                                    Prevents the client from initiating or responding to insecure renegotiation requests [3] [4].
                                     - `HKLM\System\CurrentControlSet\Control\SecurityProviders\SCHANNEL!DisableRenegoOnServer` [3] [4]:
-                                      Prevents the server from initiating or responding to insecure renegotiation requests [3] [4].
+                                    Prevents the server from initiating or responding to insecure renegotiation requests [3] [4].
                                     - `HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL!UseScsvForTls` [1]:
-                                      Enhances compatibility with older software, preventing potential communication issues [1].
+                                    Enhances compatibility with older software, preventing potential communication issues [1].
 
                                     This script may impact the functionality of software using outdated and insecure communication methods [3].
                                     Affected software includes older versions of:
@@ -6654,13 +6279,13 @@ actions:
                                     This category excludes the following protocols:
 
                                     - **DTLS 1.1**:
-                                      DTLS 1.1 does not exist [8] [9];
-                                      its numbering was skipped to align with TLS versioning [8].
+                                    DTLS 1.1 does not exist [8] [9];
+                                    its numbering was skipped to align with TLS versioning [8].
                                     - **TLS 1.2**, and **DTLS 1.2** (based on TLS 1.2 [8]):
-                                      TLS 1.2 and DTLS 1.2 are enabled by default on Windows [7] and are approved by authorities like
-                                      NIST [2], and German Federal Office for Information Security [10].
-                                      Disabling them could affect application functionality, and earlier versions are not
-                                      widely supported by Windows [7] [10].
+                                    TLS 1.2 and DTLS 1.2 are enabled by default on Windows [7] and are approved by authorities like
+                                    NIST [2], and German Federal Office for Information Security [10].
+                                    Disabling them could affect application functionality, and earlier versions are not
+                                    widely supported by Windows [7] [10].
 
                                     > **Caution:** This may cause compatibility issues with older devices or software.
 
@@ -6833,6 +6458,8 @@ actions:
                                             The script disables NetBIOS by changing a specific registry values
                                             (`HKLM\SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces\{Interface}!NetbiosOptions` [1] [8]) from their default
                                             of `0` (enabled) [5] to `2` (disabled) [5] [8] for each network interface.
+
+                                            > **Caution:** This may cause compatibility issues with older devices or software.
 
                                             [1]: https://web.archive.org/web/20240218210552/https://bobcares.com/blog/disable-netbios-and-llmnr-protocols-in-windows-using-gpo/ "Disable NetBIOS and LLMNR Protocols in Windows Using GPO | bobcares.com"
                                             [5]: https://web.archive.org/web/20240218210635/https://10dsecurity.com/blog-saying-goodbye-netbios.html "Saying Goodbye To NetBIOS | 10-D Security | 10dsecurity.com"
@@ -7037,6 +6664,32 @@ actions:
                                             function: DisableTLSProtocol
                                             parameters:
                                                 protocolName: DTLS 1.0
+                                    -
+                                        name: Disable insecure "LM & NTLM" protocols
+                                        recommend: standard
+                                        docs: |-
+                                            This script improves security by setting the LanMan authentication level to send NTLMv2 responses only,
+                                            refusing LM and NTLM [1] [2], which are older and less secure methods [1] [3].
+
+                                            While Kerberos v5 is the default authentication protocol for domain accounts, NTLM is still used for compatibility
+                                            with older systems and for authenticating logons to standalone computers [1].
+
+                                            The script modifies the `HKLM\System\CurrentControlSet\Control\Lsa!LmCompatibilityLevel` registry key to enforce
+                                            this security measure [1] [2].
+
+                                            > **Caution:** This may cause compatibility issues with older devices or software.
+
+                                            [1]: https://web.archive.org/web/20240510175526/https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63801 "The LanMan authentication level must be set to send NTLMv2 response only, and to refuse LM and NTLM. | www.stigviewer.com"
+                                            [2]: https://web.archive.org/web/20240315114408/https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/security-policy-settings/network-security-lan-manager-authentication-level "Network security LAN Manager authentication level - Windows 10 | Microsoft Learn | learn.microsoft.com"
+                                            [3]: https://web.archive.org/web/20240510182417/https://support.microsoft.com/en-us/topic/security-guidance-for-ntlmv1-and-lm-network-authentication-da2168b6-4a31-0088-fb03-f081acde6e73 "Security guidance for NTLMv1 and LM network authentication - Microsoft Support | support.microsoft.com"
+                                        call:
+                                            function: SetRegistryValue
+                                            parameters:
+                                                keyPath: HKLM\SYSTEM\CurrentControlSet\Control\Lsa
+                                                valueName: LmCompatibilityLevel
+                                                dataType: REG_DWORD
+                                                data: 5
+                                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Windows 10 Pro (≥ 23H2)
                             -
                                 name: Disable insecure connections from .NET apps
                                 recommend: strict # Default since .NET 4.6 and above, absence considered vulnerabiltiy, but can still break legacy apps
@@ -7195,7 +6848,7 @@ actions:
                                     It may also resolve compatibility issues with older devices or software [7].
                                     However, it may also result in compatibility issues if the system defaults are too restrictive [8].
 
-                                    > **Caution**: This may cause compatibility issues with older devices or software.
+                                    > **Caution:** This may cause compatibility issues with older devices or software.
 
                                     [1]: https://web.archive.org/web/20240503121044/https://learn.microsoft.com/en-us/dotnet/framework/network-programming/tls "Transport Layer Security (TLS) best practices with .NET Framework | Microsoft Learn | learn.microsoft.com"
                                     [2]: https://web.archive.org/web/20240503120928/https://support.microsoft.com/en-us/topic/cumulative-update-for-windows-10-version-1511-and-windows-server-2016-technical-preview-4-may-10-2016-aaff80d8-b207-2238-fc9c-bf13fea1c566 "Cumulative Update for Windows 10 Version 1511 and Windows Server 2016 Technical Preview 4: May 10, 2016 - Microsoft Support | support.microsoft.com"
@@ -7210,6 +6863,742 @@ actions:
                                     parameters:
                                         valueName: SystemDefaultTlsVersions
                                         valueData: '1'
+                    -
+                        category: Disable insecure remote administration access
+                        docs: |- # refactor-with-variables: Same • Caution
+                            This category improves security by disabling insecure remote administration features.
+                            Organizations use remote administration tools to manage multiple systems from a central location,
+                            performing tasks such as software updates, system checks, and configuration changes.
+
+                            However, if not properly secured, unauthorized users could exploit these tools to access sensitive data
+                            or control systems.
+                            This category addresses such vulnerabilities by disabling outdated or insecure remote access methods,
+                            thus securing systems against potential cyber threats.
+
+                            While these measures maintain information confidentiality and integrity, they may restrict some remote
+                            management functionalities.
+
+                            > **Caution:**
+                            > This may lead to reduced functionality or connectivity issues, particularly in enterprise environments where remote
+                            > administration is necessary.
+                        children:
+                            -
+                                name: Disable basic authentication in WinRM
+                                recommend: standard
+                                docs: |- # refactor-with-variables: Same • Caution
+                                    This script configures the Windows Remote Management (WinRM) client to disable **basic authentication** [1] [2].
+                                    Basic authentication is a security protocol where a user provides a username and password in plain text for verification [3].
+                                    It improves security by preventing the interception and misuse of plain text passwords [1].
+
+                                    It achieves this by modifying the `HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client!AllowBasic`
+                                    registry key [1] [2].
+
+                                    While WinRM clients do not use Basic authentication by default [2], this script ensures that this less
+                                    secure method remains disabled.
+
+                                    > **Caution:**
+                                    > This may lead to reduced functionality or connectivity issues, particularly in enterprise environments where remote
+                                    > administration is necessary.
+
+                                    [1]: https://web.archive.org/web/20240510175428/https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63335 "The Windows Remote Management (WinRM) client must not use Basic authentication. | www.stigviewer.com"
+                                    [2]: https://web.archive.org/web/20240510175528/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-remotemanagement#allowbasicauthentication_client "RemoteManagement Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                    [3]: https://web.archive.org/web/20240510223209/https://datatracker.ietf.org/doc/html/rfc7617 "RFC 7617 - The 'Basic' HTTP Authentication Scheme | datatracker.ietf.org"
+                                call:
+                                    function: SetRegistryValue
+                                    parameters:
+                                        keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows\WinRM\Client
+                                        valueName: AllowBasic
+                                        dataType: REG_DWORD
+                                        data: '0'
+                                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Windows 10 Pro (≥ 23H2)
+                            -
+                                name: Disable unauthorized user account discovery (anonymous SAM enumeration)
+                                recommend: standard
+                                docs: |- # refactor-with-variables: Same • Caution
+                                    This script increases your system's security by preventing unauthorized users from seeing account names in the
+                                    Security Accounts Manager (SAM) [1] [2] [3] [4] [5] [6].
+                                    The Security Accounts Manager (SAM) is a database in Windows that stores user account information and
+                                    is critical for user authentication processes.
+                                    When account names are exposed, attackers might use them for guessing passwords or tricking people into revealing
+                                    sensitive information [4] [6] [7] [8].
+                                    This is a security action recommended by organizations like the Department of Defense [1], NASA [2], IRS [8],
+                                    NIST [6], CIS [4], and Microsoft [3].
+
+                                    The change is enacted through the `HKLM\SYSTEM\CurrentControlSet\Control\Lsa!RestrictAnonymousSAM` registry
+                                    value [1] [2] [4] [5]. By default, it's enabled [4] and Windows restricts this setting if the registry value does
+                                    not exist [3].
+
+                                    While the script protects against these threats, it may also affect compatibility with older systems.
+                                    It prevents trust with Windows NT 4.0 domains [4] [5] [7] [9] and causes issues for older systems such as Windows NT 3.51
+                                    and Windows 95 when accessing server resources [4] [5] [7].
+                                    Typically, anonymous connections are requested by earlier versions of clients (down-level clients) during SMB session setup [7].
+
+                                    The script has no impact on domain controllers since their behavior in this aspect is controlled by different settings [5] [7].
+                                    The policy setting does not require a restart to become effective [5], and there is no impact on current systems
+                                    where the default behavior already includes this restriction [4].
+
+                                    Despite the potential interoperability issues with older systems, the script maintains a security posture that is
+                                    important in modern networks to minimize unauthorized access and protect user privacy.
+
+                                    > **Caution:**
+                                    > This may lead to reduced functionality or connectivity issues, particularly in enterprise environments where remote
+                                    > administration is necessary.
+
+                                    [1]: https://web.archive.org/web/20231105200434/https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63745 "Anonymous enumeration of SAM accounts must not be allowed. | www.stigviewer.com"
+                                    [2]: https://web.archive.org/web/20231105200713/https://asapdata.arc.nasa.gov/share/Paul/CIS_Microsoft_Windows_Server_2016_RTM_Release_1607_Benchmark_v1.1.0.pdf "CIS Microsoft Windows Server 2016 RTM (Release 1607) Benchmark | nasa.gov"
+                                    [3]: https://web.archive.org/web/20231105200918/https://learn.microsoft.com/en-us/azure/governance/policy/samples/guest-configuration-baseline-windows#security-options---network-access "Reference - Azure Policy guest configuration baseline for Windows - Azure Policy | Microsoft Learn | learn.microsoft.com"
+                                    [4]: https://web.archive.org/web/20231105201133/https://community.mis.temple.edu/mis5170sec001sec701sp2018/files/2018/02/CIS_Microsoft_Windows_Server_2012_R2_Benchmark_v2.2.1.pdf "CIS Microsoft Windows Server 2012 R2 Benchmark | temple.edu"
+                                    [5]: https://web.archive.org/web/20231105201446/https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/jj852230%28v=ws.11%29 "Network access: Do not allow anonymous enumeration of SAM accounts | Microsoft Learn | learn.microsoft.com"
+                                    [6]: https://web.archive.org/web/20230927174843/https://csrc.nist.gov/CSRC/media/Projects/United-States-Government-Configuration-Baseline/data/documentation/USGCB-Windows-Settings.xls "USGCB Windows Settings | nist.gov"
+                                    [7]: https://web.archive.org/web/20231105201346/https://support.microsoft.com/en-us/topic/client-service-and-program-issues-can-occur-if-you-change-security-settings-and-user-rights-assignments-0cb6901b-dcbf-d1a9-e9ea-f1b49a56d53a "Client, service, and program issues can occur if you change security settings and user rights assignments - Microsoft Support | support.microsoft.com"
+                                    [8]: https://web.archive.org/web/20231105200853/https://www.irs.gov/pub/irs-utl/safeguards-scsem-win-server2016.xlsx "IRS Office of Safeguards SCSEM | irs.gov"
+                                    [9]: https://web.archive.org/web/20231105201413/https://learn.microsoft.com/en-us/troubleshoot/windows-server/windows-security/trust-between-windows-ad-domain-not-work-correctly "Trust between a Windows NT domain and an Active Directory domain can't be established or it doesn't work as expected - Windows Server | Microsoft Learn | learn.microsoft.com"
+                                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v "RestrictAnonymousSAM" /t REG_DWORD /d 1 /f
+                                revertCode: |-
+                                    :: Default value is `1` on modern Windows versions (Windows 10 since 22H2, Windows 11 since 22H2)
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v "RestrictAnonymousSAM" /t REG_DWORD /d 1 /f
+                            -
+                                name: Disable anonymous access to named pipes and shares
+                                recommend: standard
+                                docs: |- # refactor-with-variables: Same • Caution
+                                    This script restricts anonymous access to Named Pipes and Shares [1] [2].
+                                    It reduces security risks by preventing unauthorized access [1] [2].
+                                    *Named Pipes* allow programs on a computer or network to communicate with each other.
+                                    *Anonymous access* lets users connect to services without a username or password, increasing
+                                    the risk of unauthorized access.
+
+                                    It configures the `HKLM\SYSTEM\CurrentControlSet\Services\LanManServer\Parameters!RestrictNullSessAccess` registry
+                                    setting [1] [2] to control null session access, which is a common exploit method via shared folders [2].
+
+                                    > **Caution:**
+                                    > This may lead to reduced functionality or connectivity issues, particularly in enterprise environments where remote
+                                    > administration is necessary.
+
+                                    [1]: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63759 "Anonymous access to Named Pipes and Shares must be restricted. | www.stigviewer.com"
+                                    [2]: https://web.archive.org/web/20240510180133/https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/security-policy-settings/network-access-restrict-anonymous-access-to-named-pipes-and-shares "Network access Restrict anonymous access to Named Pipes and Shares - Windows 10 | Microsoft Learn | learn.microsoft.com"
+                                code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanManServer\Parameters" /v "RestrictNullSessAccess" /t REG_DWORD /d 1 /f
+                                revertCode: |-
+                                    :: Default value is `1` on modern Windows versions (Windows 10 since 22H2, Windows 11 since 23H2)
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanManServer\Parameters" /v "RestrictNullSessAccess" /t REG_DWORD /d 1 /f
+                            -
+                                name: Disable hidden remote file access via administrative shares (breaks remote system management software)
+                                recommend: strict
+                                docs: |- # refactor-with-variables: Same • Caution
+                                    This script improves your privacy and security by disabling Windows administrative shares,
+                                    which are typically used for remote access to your computer's file system.
+
+                                    Windows automatically creates hidden administrative shares, such as `C$` and `D$`, that allow system administrators remote access to
+                                    every disk volume on your computer [1] [2]. These shares are often targeted as potential attack vectors [3].
+
+                                    Disabling administrative shares is generally a good practice for enhancing security. It is recommended by various security standards
+                                    and compliance frameworks, including some government standards [3], PCI-DSS [4], and CIS [2]. It reduces the system's vulnerability
+                                    to unauthorized remote access.
+
+                                    These shares are often used for system administrators to perform tasks like software installation and vulnerability scanning
+                                    remotely [1]. Disabling them may limit remote management capabilities. This might require setting up network shares manually
+                                    for specific folders or drives, which is more secure but requires additional effort.
+
+                                    Some software, such as Microsoft Systems Management Server (SMS) [2], Microsoft Operations Manager [2], Microsoft PsTools [5],
+                                    and certain third-party network backup applications [2], rely on administrative shares. Therefore, disabling these shares could
+                                    disrupt their functionality.
+
+                                    > **Caution:**
+                                    > This may lead to reduced functionality or connectivity issues, particularly in enterprise environments where remote
+                                    > administration is necessary.
+
+                                    [1]: https://web.archive.org/web/20230831114315/https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/remove-administrative-shares "Remove administrative shares - Windows Server | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20231206152703/http://www.itref.ir/uploads/editor/1edad0.pdf "CIS Microsoft Windows 8 Benchmark | itref.ir"
+                                    [3]: https://web.archive.org/web/20230831124304/https://www.cms.gov/Research-Statistics-Data-and-Systems/CMS-Information-Technology/InformationSecurity/Downloads/Business-Partner-System-Security-Manual-BPSSM.pdf "CMS Manual System | Pub 100-17 Medicare Business Partners | Department of Health & Human Services (DHHS) & Centers for Medicare & Medicaid Services (CMS) | cms.gov"
+                                    [4]: https://web.archive.org/web/20230831124324/https://www.unifiedcompliance.com/products/search-authority-documents/authority-document/1071/ "Payment Card Organizations > PCI Security Standards Council | Unified Compliance | www.unifiedcompliance.com"
+                                    [5]: https://web.archive.org/web/20240510180222/https://github.com/undergroundwires/privacy.sexy/issues/249 "Disabling administrative shares breaks PsTools | undergroundwires/privacy.sexy | github.com"
+                                code: reg add "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareWks" /t REG_DWORD /d 0 /f
+                                revertCode: reg delete "HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v "AutoShareWks" /f # Key does not exist since Windows 11 22H2
+                            -
+                                name: Disable anonymous enumeration of shares
+                                recommend: standard
+                                docs: |- # refactor-with-variables: Same • Caution
+                                    This script disables the anonymous enumeration of shares to prevent unauthorized users from
+                                    listing account names and shared resources, which could serve as a roadmap for attackers [1].
+
+                                    It configures the `HKLM\SYSTEM\CurrentControlSet\Control\LSA!RestrictAnonymous` registry key to ensure that
+                                    such enumeration is blocked, improving system security against potential breaches [1].
+
+                                    > **Caution:**
+                                    > This may lead to reduced functionality or connectivity issues, particularly in enterprise environments where remote
+                                    > administration is necessary.
+
+                                    [1]: https://web.archive.org/web/20240510180528/https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63749 "Anonymous enumeration of shares must be restricted. | www.stigviewer.com"
+                                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\LSA" /v "RestrictAnonymous" /t REG_DWORD /d "1" /f
+                                revertCode: |- # 0 by default since Windows 10 Pro (≥ 22H2) and Windows 11 Windows 10 Pro (≥ 23H2)
+                                    reg add "HKLM\SYSTEM\CurrentControlSet\Control\LSA" /v "RestrictAnonymous" /t REG_DWORD /d "0" /f
+                            -
+                                name: Disable "Telnet Client" feature
+                                recommend: standard # Already disabled by default in Windows
+                                docs: |- # refactor-with-variables: Same • Caution
+                                    This script disables the **Telnet Client** feature in Windows.
+
+                                    The Telnet Client enables remote server connections [1].
+                                    It is inherently insecure because it transmits all data, including sensitive credentials,
+                                    in clear text without encryption [2] [3].
+                                    This lack of encryption makes it vulnerable to interception and misuse [3].
+                                    Due to these security flaws, entities such as NIST [2], Department of Defense [2]
+                                    and Microsoft [1] recommend removing or disabling this feature.
+
+                                    Although this feature is disabled by default in newer versions of Windows [1], ensuring
+                                    that it remains disabled can prevent accidental or unauthorized use.
+
+                                    > **Caution:**
+                                    > This may lead to reduced functionality or connectivity issues, particularly in enterprise environments where remote
+                                    > administration is necessary.
+
+                                    ### Overview of default feature statuses
+
+                                    | | |
+                                    | ---- | --- |
+                                    | **Feature name**  | `TelnetClient` |
+                                    | **Display name**  | Telnet Client |
+                                    | **Description**  | Allows you to connect to other computers remotely. |
+                                    | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                                    | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
+
+                                    [1]: https://web.archive.org/web/20231207105605/https://social.technet.microsoft.com/wiki/contents/articles/38433.windows-10-enabling-telnet-client.aspx "Windows 10: Enabling Telnet Client - TechNet Articles - United States (English) - TechNet Wiki | social.technet.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240413140012/https://www.stigviewer.com/stig/microsoft_windows_10/2023-09-29/finding/V-220721 "The Telnet Client must not be installed on the system. | stigviewer.com"
+                                    [3]: https://web.archive.org/web/20240413140230/https://it.mst.edu/policies/secure-telnet/ "Secure Telnet – Information Technology | Missouri S&T | it.mst.edu"
+                                call:
+                                    function: DisableWindowsFeature
+                                    parameters:
+                                        featureName: TelnetClient # Get-WindowsOptionalFeature -FeatureName 'TelnetClient' -Online
+                                        disabledByDefault: true
+                            -
+                                name: Remove "RAS Connection Manager Administration Kit (CMAK)" capability
+                                docs: |- # refactor-with-variables: Same • Caution
+                                    This script removes the "RAS Connection Manager Administration Kit (CMAK)" (`RasCMAK.Client` [1]) capability.
+
+                                    CMAK is a tool that allows the creation of profiles for connecting to remote servers and networks [1].
+
+                                    Though useful for remote connections, this capability might be unnecessary for many users.
+                                    Removing it can simplify the system's network configuration and enhance security by reducing potential attack vectors.
+
+                                    This capability is not included in the standard installation of Windows [1].
+
+                                    > **Caution:**
+                                    > This may lead to reduced functionality or connectivity issues, particularly in enterprise environments where remote
+                                    > administration is necessary.
+
+                                    [1]: https://web.archive.org/web/20240411120309/https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/features-on-demand-non-language-fod?view=windows-11#networking-tools "Available features on demand | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    function: UninstallCapability
+                                    parameters:
+                                        capabilityName: RasCMAK.Client
+                            -
+                                name: Disable Windows Remote Assistance feature
+                                recommend: standard
+                                docs: |-
+                                    This script disables the Windows Remote Assistance feature to improve your system's privacy and security.
+                                    Windows Remote Assistance allows a third party to remotely access your PC [1].
+                                    This capability, known as *Solicited Remote Assistance* [2], enables another user to view or take
+                                    control of your computer [2] [3] [4] [5].
+
+                                    Disabling Remote Assistance improves security by:
+
+                                    - Preventing others from remotely viewing or controlling your computer [2].
+                                    - Reducing the risk of exploitation from RDP-related vulnerabilities [5].
+                                    - Reducing the attack surface by eliminating unnecessary remote access functionalities.
+
+                                    The script modifies the following settings to achieve this:
+
+                                    - It configures `fAllowToGetHelp` to block users from requesting remote assistance [3].
+                                    - It configures `fAllowFullControl` to prevent remote users from gaining full control of the system [4].
+
+                                    These changes are applied via:
+
+                                    - The application setting in the Windows registry at `HKLM\System\CurrentControlSet\Control\Remote Assistance` [6].
+                                    - The Group Policy setting at `HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services` [2].
+
+                                    > **Caution:**
+                                    > This may lead to reduced functionality or connectivity issues, particularly in enterprise environments where remote
+                                    > administration is necessary.
+
+                                    [1]: https://web.archive.org/web/20240510233757/https://support.microsoft.com/en-us/windows/solve-pc-problems-remotely-with-remote-assistance-and-easy-connect-cf384ff4-6269-d86e-bcfe-92d72ed55922 "Solve PC problems remotely with Remote Assistance and Easy Connect - Microsoft Support | support.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240510233343/https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63651 "Solicited Remote Assistance must not be allowed. | www.stigviewer.com"
+                                    [3]: https://web.archive.org/web/20240510233528/https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/microsoft-windows-remoteassistance-exe-fallowtogethelp "fAllowToGetHelp | Microsoft Learn | learn.microsoft.com"
+                                    [4]: https://web.archive.org/web/20240510233541/https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/microsoft-windows-remoteassistance-exe-fallowfullcontrol "fAllowFullControl | Microsoft Learn | learn.microsoft.com"
+                                    [5]: https://web.archive.org/web/20240510233611/https://learn.microsoft.com/en-us/security-updates/securitybulletins/2012/ms12-053 "Microsoft Security Bulletin MS12-053 - Critical | Microsoft Learn | learn.microsoft.com"
+                                    [6]: https://web.archive.org/web/20240510233842/https://support.microsoft.com/en-us/topic/an-update-to-disable-the-chat-feature-in-remote-assistance-msra-exe-is-available-for-windows-7-sp1-and-windows-server-2008-r2-sp1-a29674bc-ea7b-d5ab-1314-95cd3b93fcb3 "An update to disable the Chat feature in Remote Assistance (MSRA.exe) is available for Windows 7 SP1 and Windows Server 2008 R2 SP1 - Microsoft Support | support.microsoft.com"
+                                call:
+                                    -
+                                        function: RunInlineCode
+                                        parameters:
+                                            code: |-
+                                                reg add "HKLM\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v "fAllowToGetHelp" /t REG_DWORD /d 0 /f
+                                                reg add "HKLM\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v "fAllowFullControl" /t REG_DWORD /d 0 /f
+                                            revertCode: |- # 1 by default since Windows 10 Pro (≥ 22H2) and Windows 11 Windows 10 Pro (≥ 23H2)
+                                                reg add "HKLM\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v "fAllowToGetHelp" /t REG_DWORD /d 1 /f
+                                                reg add "HKLM\SYSTEM\CurrentControlSet\Control\Remote Assistance" /v "fAllowFullControl" /t REG_DWORD /d 1 /f
+                                    -
+                                        function: SetRegistryValue
+                                        parameters:
+                                            keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services
+                                            valueName: AllowBasic
+                                            dataType: REG_DWORD
+                                            data: '0'
+                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Windows 10 Pro (≥ 23H2)
+                    -
+                        category: Disable non-essential network components
+                        docs: |-
+                            This category focuses on disabling or removal of specific networking features.
+                            These are generally considered unnecessary or less secure for most users.
+
+                            Disabling these features contributes to a more secure and privacy-focused environment by
+                            eliminating potential vulnerabilities and reducing the system's attack surface.
+                            These features may utilize outdated protocols or lack robust encryption and
+                            authentication methods, making them vulnerable to cyberattacks.
+                            If these features are not essential for your daily operations, it is
+                            advisable to disable them to enhance your system's security.
+
+                            The scripts target specific networking tools and protocols, ideal for users who don't need these
+                            features, thus streamlining the system and potentially improving performance.
+
+                            > **Caution:** Disabling a networking component may cause connectivity issues if required for specific operations.
+                        children:
+                            -
+                                name: Disable "Net.TCP Port Sharing" feature
+                                recommend: strict
+                                docs: |- # refactor-with-variables: Same • Caution
+                                    This script disables the "Net.TCP Port Sharing" feature.
+
+                                    This feature is part of Windows Communication Foundation (WCF) [1].
+
+                                    This feature enables multiple WCF applications to share the same TCP port [1].
+                                    It manages incoming connections and routes them to the appropriate application based on
+                                    the destination address found in the message stream [1].
+
+                                    This increases the system's attack surface [2]:
+
+                                    - When applications share the same port, more applications are exposed to network traffic.
+                                    - It runs under a system account with high permissions, making the system vulnerable to extensive
+                                        access by attackers if compromised [2].
+                                    - Poor application configuration can increase risk of serious damage if an application is compromised [1].
+                                    - The security of the system depends significantly on how well each individual application handles security.
+
+                                    It's disabled by default on Windows due to security concerns [1].
+
+                                    > **Caution:** Disabling a networking component may cause connectivity issues if required for specific operations.
+
+                                    ### Overview of default feature statuses
+
+                                    | | |
+                                    | ---- | --- |
+                                    | **Feature name**  | `WCF-TCP-PortSharing45` |
+                                    | **Display name**  | TCP Port Sharing |
+                                    | **Description**  | TCP Port Sharing |
+                                    | **Default** (Windows 11 ≥ 23H2) | 🟢 Enabled |
+                                    | **Default** (Windows 10 ≥ 22H2) | 🟢 Enabled |
+
+                                    [1]: https://web.archive.org/web/20240314102452/https://learn.microsoft.com/en-us/dotnet/framework/wcf/feature-details/net-tcp-port-sharing "Net.TCP Port Sharing - WCF | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240413140234/https://www.stigviewer.com/stig/windows_server_2008_r2_member_server/2015-03-09/finding/V-3487 "Services will be documented and unnecessary services will not be installed or will be disabled. | stigviewer.com"
+                                call:
+                                    function: DisableWindowsFeature
+                                    parameters:
+                                        featureName: WCF-TCP-PortSharing45 # Get-WindowsOptionalFeature -FeatureName 'WCF-TCP-PortSharing45' -Online
+                            -
+                                name: Disable "SMB Direct" feature
+                                recommend: strict
+                                docs: |- # refactor-with-variables: Same • Caution
+                                    This script disables "SMB Direct" feature.
+
+                                    SMB Direct improves file transfer speeds across networks by utilizing network adapters that are
+                                    Remote Direct Memory Access (RDMA) capable [1].
+
+                                    Although not inherently insecure [2], maintaining unnecessary software can increase the attack surface,
+                                    especially if the underlying RDMA hardware has vulnerabilities.
+
+                                    > **Caution:** Disabling a networking component may cause connectivity issues if required for specific operations.
+
+                                    ### Overview of default feature statuses
+
+                                    | | |
+                                    | ---- | --- |
+                                    | **Feature name**  | `SMB Direct` |
+                                    | **Display name**  | SMB Direct |
+                                    | **Description**  | Remote Direct Memory Access (RDMA) support for the SMB 3.x file sharing protocol |
+                                    | **Default** (Windows 11 ≥ 23H2) | 🟢 Enabled |
+                                    | **Default** (Windows 10 ≥ 22H2) | 🟢 Enabled |
+
+                                    [1]: https://web.archive.org/web/20240314102437/https://learn.microsoft.com/en-us/windows-server/storage/file-server/smb-direct?tabs=disable "Improve performance of a file server with SMB Direct | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240413124106/https://techcommunity.microsoft.com/t5/storage-at-microsoft/stop-using-smb1/ba-p/425858 "Stop using SMB1 - Microsoft Community Hub | techcommunity.microsoft.com"
+                                call:
+                                    function: DisableWindowsFeature
+                                    parameters:
+                                        featureName: SmbDirect # Get-WindowsOptionalFeature -FeatureName 'SmbDirect' -Online
+                            -
+                                name: Disable "TFTP Client" feature
+                                recommend: standard # Disabled by default
+                                docs: |- # refactor-with-variables: Same • Caution
+                                    This script disables the "TFTP Client" feature.
+
+                                    The TFTP Client supports file transfers using the *Trivial File Transfer Protocol (TFTP)*.
+                                    TFTP protocol is insecure because it lacks authentication and encryption capabilities [1] [2] [3].
+                                    This makes data transferred via TFTP vulnerable to eavesdropping and tampering [2] [3].
+
+                                    Although TFTP's simplicity can be advantageous in certain contexts, such as configuring network devices,
+                                    its security risks generally outweigh these benefits.
+                                    Disabling it helps mitigate the risk of unauthorized data access and simplifies system security management [1] [2].
+
+                                    > **Caution:** Disabling a networking component may cause connectivity issues if required for specific operations.
+
+                                    ### Overview of default feature statuses
+
+                                    | | |
+                                    | ---- | --- |
+                                    | **Feature name**  | `TFTP` |
+                                    | **Display name**  | TFTP Client |
+                                    | **Description**  | Transfer files using the Trivial File Transfer Protocol |
+                                    | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                                    | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
+
+                                    [1]: https://web.archive.org/web/20240413142327/https://www.stigviewer.com/stig/windows_server_2016/2018-03-07/finding/V-73297 "The TFTP Client must not be installed. | www.stigviewer.com"
+                                    [2]: https://web.archive.org/web/20240413142325/https://www.tenable.com/audits/items/Juniper_Hardening_Junos_Devices.audit:0343769f1ea790c8345e961c9a442ec6 "Access Security - Disable insecure or unnecessary access servi...<!-- --> | Tenable® | www.tenable.com"
+                                    [3]: https://archive.ph/2024.04.13-142535/https://www.infosecinstitute.com/resources/incident-response-resources/network-traffic-analysis-for-ir-tftp-with-wireshark/ "Network traffic analysis for IR: TFTP with Wireshark | Infosec | www.infosecinstitute.com"
+                                call:
+                                    function: DisableWindowsFeature
+                                    parameters:
+                                        featureName: TFTP # Get-WindowsOptionalFeature -FeatureName 'TFTP' -Online
+                                        disabledByDefault: true
+                            -
+                                name: Remove "RIP Listener" capability
+                                docs: |- # refactor-with-variables: *Caution**
+                                    This script removes the "RIP Listener" (`RIP.Listener` [1]) capability.
+
+                                    The RIP Listener listens for route updates from routers using the Routing Information Protocol version 1 (RIPV1) [1].
+
+                                    RIPV1 is an older protocol that might be redundant in modern networks, despite its specific utilities.
+                                    Removing this feature can contribute to a more secure system by eliminating unnecessary network
+                                    listening capabilities.
+
+                                    This capability is not included in the standard installation of Windows [1].
+
+                                    > **Caution:** Disabling a networking component may cause connectivity issues if required for specific operations.
+
+                                    [1]: https://web.archive.org/web/20240411120309/https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/features-on-demand-non-language-fod?view=windows-11#networking-tools "Available features on demand | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    function: UninstallCapability
+                                    parameters:
+                                        capabilityName: RIP.Listener
+                            -
+                                name: Remove "Simple Network Management Protocol (SNMP)" capability
+                                docs: |- # refactor-with-variables: Same • Caution
+                                    This script removes the "Simple Network Management Protocol (SNMP)" (`SNMP.Client` [1]) capability.
+
+                                    SNMP is used for monitoring and managing network devices [1].
+
+                                    While it provides valuable information for network administration, it may not be essential for
+                                    all users and can expose the system to additional network traffic and potential vulnerabilities.
+
+                                    This capability is not included in the standard installation of Windows [1].
+
+                                    > **Caution:** Disabling a networking component may cause connectivity issues if required for specific operations.
+
+                                    [1]: https://web.archive.org/web/20240411120309/https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/features-on-demand-non-language-fod?view=windows-11#networking-tools "Available features on demand | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    function: UninstallCapability
+                                    parameters:
+                                        capabilityName: SNMP.Client
+                            -
+                                name: Remove "SNMP WMI Provider" capability
+                                docs: |- # refactor-with-variables: Same • Caution
+                                    This script removes the "SNMP WMI Provider" (`WMI-SNMP-Provider.Client` [1]) capability.
+
+                                    This feature enables Windows Management Instrumentation (WMI) clients to access SNMP information [1].
+                                    SNMP is used for monitoring and managing network devices [1].
+
+                                    Integrating SNMP data into WMI, this capability may be extraneous for those not needing SNMP monitoring.
+                                    Removing this capability can simplify the system's management interfaces and improve its security posture
+                                    by limiting the ways in which network information is accessed and exposed.
+
+                                    This capability is not included in the standard installation of Windows [1].
+
+                                    > **Caution:** Disabling a networking component may cause connectivity issues if required for specific operations.
+
+                                    [1]: https://web.archive.org/web/20240411120309/https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/features-on-demand-non-language-fod?view=windows-11#networking-tools "Available features on demand | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    function: UninstallCapability
+                                    parameters:
+                                        capabilityName: WMI-SNMP-Provider.Client
+            -
+                category: Disable clipboard data collection
+                docs: |-
+                    This category includes scripts that focus on disabling various aspects of clipboard data collection in Windows.
+                    The clipboard is a critical component of the operating system, often containing sensitive data such as usernames, passwords, and other
+                    personal information [1].
+                    However, features such as clipboard history and device synchronization can significantly increase privacy and security risks.
+
+                    By default, Windows tends to store clipboard data in an unencrypted format [2], making it easily accessible to malicious applications or scripts.
+                    Additionally, data synchronization features can lead to sensitive information being stored on remote servers or shared across devices, increasing the
+                    risk of data exposure.
+
+                    The scripts in this category address these risks by disabling the related features..
+                    While these features offer convenience and productivity benefits, they can inadvertently compromise user privacy and security.
+
+                    > **Caution**: Applying these scripts may lead to a loss of certain functionalities. Users who rely on these features for their daily tasks should
+                    > consider the trade-offs before proceeding with these changes.
+
+                    [1]: https://web.archive.org/web/20240119160347/https://github.com/undergroundwires/privacy.sexy/issues/247 "Disable Clipboard History · Issue #247 · undergroundwires/privacy.sexy · GitHub | github.com"
+                    [2]: https://web.archive.org/web/20240119151846/https://ghostvolt.com/blog/Is-the-Windows-Clipboard-Function-History-or-Sync-Secure.html "Is the Windows Clipboard Function, History or Sync Secure | ghostvolt.com"
+                children:
+                    -
+                        name: Disable Cloud Clipboard (breaks clipboard sync)
+                        recommend: strict
+                        docs: |-
+                            This script disables the Cloud Clipboard feature [1], also known as the cross-device clipboard [2].
+                            The Cloud Clipboard, introduced in the Windows 10 October 2018 Update [3], synchronizes clipboard contents across Windows
+                            devices [1] [2] [4]. While this feature enhances usability, it can pose a privacy risk as sensitive information like passwords or credit card
+                            details [5] might be inadvertently synchronized and stored on Microsoft servers.
+
+                            Disabling Cloud Clipboard is recommended in secure environments where clipboard data should remain local to the system, avoiding
+                            potential exposure or misuse of sensitive information [6]. The Center for Internet Security (CIS) recommends disabling this feature in
+                            such settings for enhanced security [6]. Moreover, Microsoft acknowledges that disabling network connections linked to the Cloud Clipboard
+                            can improve privacy [1]. This script secures your clipboard data by preventing unauthorized access from other processes on your computer
+                            or network, reducing the risk of data theft.
+
+                            The script configures the following registry keys:
+
+                            - `HKLM\SOFTWARE\Policies\Microsoft\Windows\System!AllowCrossDeviceClipboard`: Disables the Cloud Clipboard feature, preventing
+                            clipboard synchronization across devices [1] [2] [6].
+                            - `HKCU\SOFTWARE\Microsoft\Clipboard!CloudClipboardAutomaticUpload`: Stops the automatic upload of clipboard data to the cloud [7].
+
+                            > **Caution**: After running this script, clipboard contents will not synchronize across devices [1] [2] [6].
+                            > Text or images copied on one device will not be accessible on other devices [3] [4] [5].
+                            > This enhances privacy and security but limits the clipboard's functionality across your Windows devices.
+
+                            [1]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#30-cloud-clipboard "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
+                            [2]: https://web.archive.org/web/20240119150031/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#allowcrossdeviceclipboard "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20210619004804/https://community.windows.com/en-us/stories/cloud-clipboard-windows-10 "Copy and paste across Windows 10 devices using cloud clipboard | Windows Community | community.windows.com"
+                            [4]: https://web.archive.org/web/20240119150040/https://support.microsoft.com/en-us/windows/clipboard-in-windows-c436501e-985d-1c8d-97ea-fe46ddf338c6 "Clipboard in Windows - Microsoft Support | support.microsoft.com"
+                            [5]: https://web.archive.org/web/20240119160347/https://github.com/undergroundwires/privacy.sexy/issues/247 "Disable Clipboard History · Issue #247 · undergroundwires/privacy.sexy · GitHub | github.com"
+                            [6]: https://web.archive.org/web/20240119145854/https://www.tenable.com/audits/items/CIS_MS_InTune_for_Windows_11_Level_2_BitLocker_v1.0.0.audit:19bea796bd6a86f37028214bbed97ffd "18.8.31.1 Ensure 'Allow Clipboard synchronization across devic... | Tenable® | www.tenable.com"
+                            [7]: https://web.archive.org/web/20240119145950/https://www.elevenforum.com/t/enable-or-disable-clipboard-sync-across-devices-in-windows-11.976/ "Enable or Disable Clipboard Sync Across Devices in Windows 11 Tutorial | Windows 11 Forum | elevenforum.com"
+                        call:
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "AllowCrossDeviceClipboard" /t "REG_DWORD" /d "0" /f
+                                    # This key does not exist by default since Windows 10 22H2 and Windows 11 23H2
+                                    revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "AllowCrossDeviceClipboard" /f 2>nul
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: reg add "HKCU\Software\Microsoft\Clipboard" /v "CloudClipboardAutomaticUpload" /t "REG_DWORD" /d "0" /f
+                                    # This key does not exist by default since Windows 10 22H2 and Windows 11 23H2
+                                    revertCode: reg delete "HKCU\Software\Microsoft\Clipboard" /v "CloudClipboardAutomaticUpload" /f 2>nul
+                    -
+                        name: Disable clipboard history
+                        recommend: standard
+                        docs: |-
+                            This script deactivates the clipboard history feature in Windows, a feature that is enabled by default [1] [2].
+                            Regularly, users copy sensitive data such as usernames and passwords to their clipboard, making clipboard history
+                            valuable to attackers for gathering information for post-exploitation activities like lateral movement.
+
+                            Microsoft introduced clipboard history in the Windows 10 October 2018 Update [1], offering enhanced functionality, including
+                            multi-device sync and customizable history management [1].
+                            Despite these benefits, clipboard history poses several security risks:
+
+                            - **Plain Text Storage**: Clipboard data is stored unencrypted, making it vulnerable to access by malicious applications [3].
+                            - **Persistent Memory**: The data remains in memory until overwritten or the machine restarts, exposing it to unauthorized access
+                            by other users or malware [3].
+                            - **Process Accessibility**: Most running processes and applications can access clipboard data, increasing the risk if any are malicious [3].
+                            - **Open Network Threats**: Malicious website scripts could potentially access clipboard data, leading to data theft [3].
+                            - **Windows Clipboard History**: Stores the last 25 copied text and image items, which could include sensitive information [3].
+                            - **Increased Attack Surface**: Clipboard history is susceptible to exploitation by malware that silently accesses and logs clipboard data [3].
+
+                            Microsoft's privacy statement also indicates that clipboard data could be used for marketing and advertising purposes [4].
+
+                            Given these risks, especially when handling sensitive data like passwords or credit card numbers [5], it is advisable for
+                            users concerned about security to disable clipboard history to safeguard their privacy.
+
+                            This script modifies Windows Registry keys to turn off clipboard history and sync features:
+
+                            - `HKCU\Software\Microsoft\Clipboard!EnableClipboardHistory`: Disables the local clipboard history for the current user [6] [7] [8].
+                            - `HKLM\SOFTWARE\Policies\Microsoft\Windows\System!AllowClipboardHistory`: Disables the policy for storing clipboard contents [2] [9].
+
+                            [1]: https://web.archive.org/web/20210619004804/https://community.windows.com/en-us/stories/cloud-clipboard-windows-10 "Copy and paste across Windows 10 devices using cloud clipboard | Windows Community | community.windows.com"
+                            [2]: https://web.archive.org/web/20240119153212/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-experience#allowclipboardhistory "Experience Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20240119151846/https://ghostvolt.com/blog/Is-the-Windows-Clipboard-Function-History-or-Sync-Secure.html "Is the Windows Clipboard Function, History or Sync Secure | ghostvolt.com"
+                            [4]: https://web.archive.org/web/20231006103250/https://privacy.microsoft.com/en-US/privacystatement "Microsoft Privacy Statement – Microsoft privacy | privacy.microsoft.com"
+                            [5]: https://web.archive.org/web/20240119160347/https://github.com/undergroundwires/privacy.sexy/issues/247 "Disable Clipboard History · Issue #247 · undergroundwires/privacy.sexy · GitHub | github.com"
+                            [6]: https://web.archive.org/web/20240119153118/https://www.elevenforum.com/t/enable-or-disable-clipboard-history-in-windows-11.973/ "Enable or Disable Clipboard History in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+                            [7]: https://web.archive.org/web/20240119153113/https://itechbrand.com/how-to-enable-and-use-clipboard-history-on-windows-10/ "How to: Enable and Use Clipboard History on Windows 10 | ITechBrand | itechbrand.com"
+                            [8]: https://web.archive.org/web/20240119153250/https://labs.withsecure.com/tools/sharpcliphistory "SharpClipHistory | WithSecure™ Labs | labs.withsecure.com"
+                            [9]: https://web.archive.org/web/20240119153231/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.OSPolicy::AllowClipboardHistory "Allow Clipboard History | admx.help"
+                        call:
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: reg add "HKCU\Software\Microsoft\Clipboard" /v "EnableClipboardHistory" /t REG_DWORD /d 0 /f
+                                    # This key does not exist by default since Windows 10 22H2 and Windows 11 23H2
+                                    revertCode: reg delete "HKCU\Software\Microsoft\Clipboard" /v "EnableClipboardHistory" /f 2>nul
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "AllowClipboardHistory" /t "REG_DWORD" /d "0" /f
+                                    # This key does not exist by default since Windows 10 22H2 and Windows 11 23H2
+                                    revertCode: reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "AllowClipboardHistory" /f 2>nul
+                    -
+                        name: Disable background clipboard data collection (`cbdhsvc`) (breaks clipboard history and sync)
+                        recommend: strict
+                        docs: |-
+                            This script disables `cbdhsvc` also known as "Clipboard User Service" [1].
+                            This service is responsible for clipboard history and synchronization across devices [1].
+
+                            Microsoft acknowledges that disabling this service does not adversely affect the system's core functionality [2].
+
+                            Disabling this service enhances your security by reducing your system's
+                            vulnerability surface. This service has been historically susceptible to vulnerabilities such as Privilege Escalation vulnerability [3].
+                            Turning off `cbdhsvc` also helps improve system performance by reducing the number of background processes as `cbdhsvc` runs automatically
+                            in the background [1].
+                            Additionally, it enhances privacy by preventing the storage and sharing of clipboard history with Microsoft servers.
+                            Clipboard data often contains sensitive information, including passwords and credit card numbers [4].
+                            
+                            > **Caution**: Disabling this service will remove the functionalities for clipboard history and synchronization across devices.
+                            > If you depend on these features, you should weigh the benefits against the loss of these functionalities.
+
+                            [1]: https://web.archive.org/web/20240119153912/https://learn.microsoft.com/en-us/windows/application-management/per-user-services-in-windows "Per-user services - Windows Application Management | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20230905120815/https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services#per-user-services "Guidance on disabling system services on Windows IoT Enterprise | Microsoft Learn"
+                            [3]: https://archive.ph/2024.01.19-154717/https://msrc.microsoft.com/update-guide/vulnerability/CVE-2022-21869 "CVE-2022-21869 - Security Update Guide - Microsoft - Clipboard User Service Elevation of Privilege Vulnerability | rc.microsoft.com"
+                            [4]: https://web.archive.org/web/20240119160347/https://github.com/undergroundwires/privacy.sexy/issues/247 "Disable Clipboard History · Issue #247 · undergroundwires/privacy.sexy · GitHub | github.com"
+                        call:
+                            function: DisablePerUserService
+                            parameters:
+                                # Check (system-wide):  (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\cbdhsvc").Start
+                                # Check (per-user):     (Get-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\cbdhsvc_*").Start
+                                serviceName: cbdhsvc
+                                defaultStartupMode: Automatic
+            -
+                category: Enable protection against Meltdown and Spectre
+                docs: https://support.microsoft.com/en-us/topic/kb4072698-windows-server-and-azure-stack-hci-guidance-to-protect-against-silicon-based-microarchitectural-and-speculative-execution-side-channel-vulnerabilities-2f965763-00e2-8f98-b632-0d96f30c8c8e
+                children:
+                    -
+                        name: Mitigate Spectre Variant 2 and Meltdown in host operating system
+                        code: |-
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "FeatureSettingsOverrideMask" /t REG_DWORD /d 3 /f
+                            wmic cpu get name | findstr "Intel" >nul && (
+                                reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "FeatureSettingsOverride" /t REG_DWORD /d 0 /f
+                            )
+                            wmic cpu get name | findstr "AMD" >nul && (
+                                reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "FeatureSettingsOverride" /t REG_DWORD /d 64 /f
+                            )
+                        revertCode: |-
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "FeatureSettingsOverrideMask" /t REG_DWORD /d 3 /f
+                            reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "FeatureSettingsOverride" /t REG_DWORD /d 3 /f
+                    -
+                        name: Mitigate Spectre Variant 2 and Meltdown in Hyper-V
+                        code: reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Virtualization" /v MinVmVersionForCpuBasedMitigations /t REG_SZ /d "1.0" /f
+                        revertCode: reg delete "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Virtualization" /v MinVmVersionForCpuBasedMitigations /f
+            -
+                name: Enable Data Execution Prevention (DEP)
+                code: |-
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoDataExecutionPrevention" /t REG_DWORD /d 0 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "DisableHHDEP" /t REG_DWORD /d 0 /f
+                revertCode: |-
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoDataExecutionPrevention" /t REG_DWORD /d 1 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\System" /v "DisableHHDEP" /t REG_DWORD /d 1 /f
+            -
+                name: Disable AutoPlay and AutoRun
+                docs:
+                    - https://en.wikipedia.org/wiki/AutoRun
+                    - https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63667
+                    - https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63671
+                    - https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63673
+                recommend: standard
+                code: |-
+                    :: 255 (0xff) means all drives
+                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoDriveTypeAutoRun" /t REG_DWORD /d 255 /f
+                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoAutorun" /t REG_DWORD /d 1 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoAutoplayfornonVolume" /t REG_DWORD /d 1 /f
+                revertCode: |-
+                    reg delete "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoDriveTypeAutoRun" /f
+                    reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "NoAutorun" /t REG_DWORD /d 2 /f
+                    reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "NoAutoplayfornonVolume" /f
+            -
+                name: Disable lock screen camera access
+                recommend: standard
+                docs: https://www.stigviewer.com/stig/windows_8_8.1/2014-06-27/finding/V-43237
+                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Personalization" /v "NoLockScreenCamera" /t REG_DWORD /d 1 /f
+                revertCode: reg delete "HKLM\Software\Policies\Microsoft\Windows\Personalization" /v NoLockScreenCamera /f
+            -
+                name: Disable storage of the LAN Manager password hashes
+                recommend: standard
+                docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-63797
+                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v "NoLMHash" /t REG_DWORD /d 1 /f
+                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v "NoLMHash" /t REG_DWORD /d 0 /f
+            -
+                name: Disable "Always install with elevated privileges" in Windows Installer
+                recommend: standard
+                docs: https://www.stigviewer.com/stig/windows_8/2013-07-03/finding/V-34974
+                code: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer" /v "AlwaysInstallElevated" /t REG_DWORD /d 0 /f
+                revertCode: reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer" /v "AlwaysInstallElevated" /t REG_DWORD /d 1 /f
+            -
+                name: Enable Structured Exception Handling Overwrite Protection (SEHOP)
+                recommend: standard
+                docs: https://www.stigviewer.com/stig/windows_10/2019-01-04/finding/V-68849
+                code: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "DisableExceptionChainValidation" /t REG_DWORD /d 0 /f
+                revertCode: reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel" /v "DisableExceptionChainValidation" /t REG_DWORD /d 1 /f
+            -
+                name: Enable security against PowerShell 2.0 downgrade attacks
+                recommend: standard
+                docs: |-
+                    See: [The Windows PowerShell 2.0 feature must be disabled on the system. | stigviewer.com](https://web.archive.org/web/20240406114721/https://www.stigviewer.com/stig/windows_10/2017-02-21/finding/V-70637)
+
+                    ### Overview of default feature statuses
+
+                    `MicrosoftWindowsPowerShellV2`:
+
+                    | | |
+                    | ---- | --- |
+                    | **Feature name**  | `MicrosoftWindowsPowerShellV2` |
+                    | **Display name**  | Windows PowerShell 2.0 Engine |
+                    | **Description**  | Adds or Removes Windows PowerShell 2.0 Engine |
+                    | **Default** (Windows 11 ≥ 23H2) | 🟢 Enabled |
+                    | **Default** (Windows 10 ≥ 22H2) | 🟢 Enabled |
+
+                    `MicrosoftWindowsPowerShellV2Root`:
+
+                    | | |
+                    | ---- | --- |
+                    | **Feature name**  | `MicrosoftWindowsPowerShellV2Root` |
+                    | **Display name**  | Windows PowerShell 2.0 |
+                    | **Description**  | Adds or Removes Windows PowerShell 2.0 |
+                    | **Default** (Windows 11 ≥ 23H2) | 🟢 Enabled |
+                    | **Default** (Windows 10 ≥ 22H2) | 🟢 Enabled |
+                call:
+                    -
+                        function: DisableWindowsFeature
+                        parameters:
+                            featureName: MicrosoftWindowsPowerShellV2 # Get-WindowsOptionalFeature -FeatureName 'MicrosoftWindowsPowerShellV2' -Online
+                    -
+                        function: DisableWindowsFeature
+                        parameters:
+                            featureName: MicrosoftWindowsPowerShellV2Root # Get-WindowsOptionalFeature -FeatureName 'MicrosoftWindowsPowerShellV2Root' -Online
+            -
+                name: Disable "Windows Connect Now" wizard
+                recommend: standard
+                docs:
+                    - https://web.archive.org/web/20240314130322/https://learn.microsoft.com/en-us/windows/win32/wcn/about-windows-connect-now
+                    - https://www.stigviewer.com/stig/windows_server_20122012_r2_domain_controller/2019-01-16/finding/V-15698
+                code: |-
+                    reg add "HKLM\Software\Policies\Microsoft\Windows\WCN\UI" /v "DisableWcnUi" /t REG_DWORD /d 1 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableFlashConfigRegistrar" /t REG_DWORD /d 0 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableInBand802DOT11Registrar" /t REG_DWORD /d 0 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableUPnPRegistrar" /t REG_DWORD /d 0 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableWPDRegistrar" /t REG_DWORD /d 0 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "EnableRegistrars" /t REG_DWORD /d 0 /f
+                revertCode: |-
+                    reg add "HKLM\Software\Policies\Microsoft\Windows\WCN\UI" /v "DisableWcnUi" /t REG_DWORD /d 0 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableFlashConfigRegistrar" /t REG_DWORD /d 1 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableInBand802DOT11Registrar" /t REG_DWORD /d 1 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableUPnPRegistrar" /t REG_DWORD /d 1 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "DisableWPDRegistrar" /t REG_DWORD /d 1 /f
+                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WCN\Registrars" /v "EnableRegistrars" /t REG_DWORD /d 1 /f
     -
         category: Block tracking hosts
         docs: |-
@@ -16314,230 +16703,76 @@ actions:
                                 featureName: LegacyComponents # Get-WindowsOptionalFeature -FeatureName 'LegacyComponents' -Online
                                 disabledByDefault: true
                     -
-                        category: Disable server features
+                        category: Disable Hyper-V virtualization features
                         children:
                             -
-                                category: Disable Hyper-V virtualization features
-                                children:
-                                    -
-                                        name: Disable "Hyper-V" feature
-                                        docs: |-
-                                            ### Overview of default feature statuses
-
-                                            | | |
-                                            | ---- | --- |
-                                            | **Feature name**  | `Microsoft-Hyper-V-All` |
-                                            | **Display name**  | Hyper-V |
-                                            | **Description**  | Provides services and management tools for creating and running virtual machines and their resources. |
-                                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
-                                            | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
-                                        call:
-                                            function: DisableWindowsFeature
-                                            parameters:
-                                                featureName: Microsoft-Hyper-V-All # Get-WindowsOptionalFeature -FeatureName 'Microsoft-Hyper-V-All' -Online
-                                                disabledByDefault: true
-                                    -
-                                        name: Disable "Hyper-V GUI Management Tools" feature
-                                        docs: |-
-                                            ### Overview of default feature statuses
-
-                                            | | |
-                                            | ---- | --- |
-                                            | **Feature name**  | `Microsoft-Hyper-V-Management-Clients` |
-                                            | **Display name**  | Hyper-V GUI Management Tools |
-                                            | **Description**  | Includes the Hyper-V Manager snap-in and Virtual Machine Connection tool. |
-                                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
-                                            | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
-                                        call:
-                                            function: DisableWindowsFeature
-                                            parameters:
-                                                featureName: Microsoft-Hyper-V-Management-Clients # Get-WindowsOptionalFeature -FeatureName 'Microsoft-Hyper-V-Management-Clients' -Online
-                                                disabledByDefault: true
-                                    -
-                                        name: Disable "Hyper-V Management Tools" feature
-                                        docs: |-
-                                            ### Overview of default feature statuses
-
-                                            | | |
-                                            | ---- | --- |
-                                            | **Feature name**  | `Microsoft-Hyper-V-Tools-All` |
-                                            | **Display name**  | Hyper-V Management Tools |
-                                            | **Description**  | Includes GUI and command-line tools for managing Hyper-V. |
-                                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
-                                            | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
-                                        call:
-                                            function: DisableWindowsFeature
-                                            parameters:
-                                                featureName: Microsoft-Hyper-V-Tools-All # Get-WindowsOptionalFeature -FeatureName 'Microsoft-Hyper-V-Tools-All' -Online
-                                                disabledByDefault: true # Default: Disabled (tested: Windows 10 22H2, Windows 11 23H2)
-                                    -
-                                        name: Disable "Hyper-V Module for Windows PowerShell" feature
-                                        docs: |-
-                                            ### Overview of default feature statuses
-
-                                            | | |
-                                            | ---- | --- |
-                                            | **Feature name**  | `Microsoft-Hyper-V-Management-PowerShell` |
-                                            | **Display name**  | Hyper-V Module for Windows PowerShell |
-                                            | **Description**  | Includes Windows PowerShell cmdlets for managing Hyper-V. |
-                                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
-                                            | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
-                                        call:
-                                            function: DisableWindowsFeature
-                                            parameters:
-                                                featureName: Microsoft-Hyper-V-Management-PowerShell # Get-WindowsOptionalFeature -FeatureName 'Microsoft-Hyper-V-Management-PowerShell' -Online
-                                                disabledByDefault: true
-                            -
-                                category: Disable networking features
+                                name: Disable "Hyper-V" feature
                                 docs: |-
-                                    This category focuses on disabling specific networking features in Windows.
-                                    These are generally considered unnecessary or less secure for most users.
+                                    ### Overview of default feature statuses
 
-                                    Disabling these features can significantly reduce the system's exposure to potential
-                                    cyber threats by minimizing the attack surface.
-                                    Many of these features utilize outdated protocols or lack robust encryption and
-                                    authentication methods, making them vulnerable to cyberattacks.
-                                    If these features are not essential for your daily operations, it is
-                                    advisable to disable them to enhance your system's security.
+                                    | | |
+                                    | ---- | --- |
+                                    | **Feature name**  | `Microsoft-Hyper-V-All` |
+                                    | **Display name**  | Hyper-V |
+                                    | **Description**  | Provides services and management tools for creating and running virtual machines and their resources. |
+                                    | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                                    | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
+                                call:
+                                    function: DisableWindowsFeature
+                                    parameters:
+                                        featureName: Microsoft-Hyper-V-All # Get-WindowsOptionalFeature -FeatureName 'Microsoft-Hyper-V-All' -Online
+                                        disabledByDefault: true
+                            -
+                                name: Disable "Hyper-V GUI Management Tools" feature
+                                docs: |-
+                                    ### Overview of default feature statuses
 
-                                    > **Caution**: Disabling a networking feature may cause connectivity issues if required for specific operations.
-                                children:
-                                    -
-                                        name: Disable "Telnet Client" feature
-                                        docs: |-
-                                            This script disables the **Telnet Client** feature in Windows.
+                                    | | |
+                                    | ---- | --- |
+                                    | **Feature name**  | `Microsoft-Hyper-V-Management-Clients` |
+                                    | **Display name**  | Hyper-V GUI Management Tools |
+                                    | **Description**  | Includes the Hyper-V Manager snap-in and Virtual Machine Connection tool. |
+                                    | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                                    | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
+                                call:
+                                    function: DisableWindowsFeature
+                                    parameters:
+                                        featureName: Microsoft-Hyper-V-Management-Clients # Get-WindowsOptionalFeature -FeatureName 'Microsoft-Hyper-V-Management-Clients' -Online
+                                        disabledByDefault: true
+                            -
+                                name: Disable "Hyper-V Management Tools" feature
+                                docs: |-
+                                    ### Overview of default feature statuses
 
-                                            The Telnet Client enables remote server connections [1].
-                                            It is inherently insecure because it transmits all data, including sensitive credentials,
-                                            in clear text without encryption [2] [3].
-                                            This lack of encryption makes it vulnerable to interception and misuse [3].
-                                            Due to these security flaws, entities such as NIST [2], Department of Defense [2]
-                                            and Microsoft [1] recommend removing or disabling this feature.
+                                    | | |
+                                    | ---- | --- |
+                                    | **Feature name**  | `Microsoft-Hyper-V-Tools-All` |
+                                    | **Display name**  | Hyper-V Management Tools |
+                                    | **Description**  | Includes GUI and command-line tools for managing Hyper-V. |
+                                    | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                                    | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
+                                call:
+                                    function: DisableWindowsFeature
+                                    parameters:
+                                        featureName: Microsoft-Hyper-V-Tools-All # Get-WindowsOptionalFeature -FeatureName 'Microsoft-Hyper-V-Tools-All' -Online
+                                        disabledByDefault: true # Default: Disabled (tested: Windows 10 22H2, Windows 11 23H2)
+                            -
+                                name: Disable "Hyper-V Module for Windows PowerShell" feature
+                                docs: |-
+                                    ### Overview of default feature statuses
 
-                                            Although this feature is disabled by default in newer versions of Windows [1], ensuring
-                                            that it remains disabled can prevent accidental or unauthorized use.
-
-                                            [1]: https://web.archive.org/web/20231207105605/https://social.technet.microsoft.com/wiki/contents/articles/38433.windows-10-enabling-telnet-client.aspx "Windows 10: Enabling Telnet Client - TechNet Articles - United States (English) - TechNet Wiki | social.technet.microsoft.com"
-                                            [2]: https://web.archive.org/web/20240413140012/https://www.stigviewer.com/stig/microsoft_windows_10/2023-09-29/finding/V-220721 "The Telnet Client must not be installed on the system. | stigviewer.com"
-                                            [3]: https://web.archive.org/web/20240413140230/https://it.mst.edu/policies/secure-telnet/ "Secure Telnet – Information Technology | Missouri S&T | it.mst.edu"
-
-                                            > **Caution**: Disabling a networking feature may cause connectivity issues if required for specific operations.
-
-                                            ### Overview of default feature statuses
-
-                                            | | |
-                                            | ---- | --- |
-                                            | **Feature name**  | `TelnetClient` |
-                                            | **Display name**  | Telnet Client |
-                                            | **Description**  | Allows you to connect to other computers remotely. |
-                                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
-                                            | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
-                                        call:
-                                            function: DisableWindowsFeature
-                                            parameters:
-                                                featureName: TelnetClient # Get-WindowsOptionalFeature -FeatureName 'TelnetClient' -Online
-                                                disabledByDefault: true
-                                    -
-                                        name: Disable "Net.TCP Port Sharing" feature
-                                        docs: |-
-                                            This script disables the **Net.TCP Port Sharing** feature.
-
-                                            This feature is part of Windows Communication Foundation (WCF) [1].
-
-                                            This feature enables multiple WCF applications to share the same TCP port [1].
-                                            It manages incoming connections and routes them to the appropriate application based on
-                                            the destination address found in the message stream [1].
-
-                                            This increases the system's attack surface [2]:
-
-                                            - When applications share the same port, more applications are exposed to network traffic.
-                                            - It runs under a system account with high permissions, making the system vulnerable to extensive
-                                              access by attackers if compromised [2].
-                                            - Poor application configuration can increase risk of serious damage if an application is compromised [1].
-                                            - The security of the system depends significantly on how well each individual application handles security.
-
-                                            It's disabled by default on Windows due to security concerns [1].
-
-                                            > **Caution**: Disabling a networking feature may cause connectivity issues if required for specific operations.
-
-                                            ### Overview of default feature statuses
-
-                                            | | |
-                                            | ---- | --- |
-                                            | **Feature name**  | `WCF-TCP-PortSharing45` |
-                                            | **Display name**  | TCP Port Sharing |
-                                            | **Description**  | TCP Port Sharing |
-                                            | **Default** (Windows 11 ≥ 23H2) | 🟢 Enabled |
-                                            | **Default** (Windows 10 ≥ 22H2) | 🟢 Enabled |
-
-                                            [1]: https://web.archive.org/web/20240314102452/https://learn.microsoft.com/en-us/dotnet/framework/wcf/feature-details/net-tcp-port-sharing "Net.TCP Port Sharing - WCF | Microsoft Learn | learn.microsoft.com"
-                                            [2]: https://web.archive.org/web/20240413140234/https://www.stigviewer.com/stig/windows_server_2008_r2_member_server/2015-03-09/finding/V-3487 "Services will be documented and unnecessary services will not be installed or will be disabled. | stigviewer.com"
-                                        call:
-                                            function: DisableWindowsFeature
-                                            parameters:
-                                                featureName: WCF-TCP-PortSharing45 # Get-WindowsOptionalFeature -FeatureName 'WCF-TCP-PortSharing45' -Online
-                                    -
-                                        name: Disable "SMB Direct" feature
-                                        docs: |-
-                                            This script disables **SMB Direct** feature.
-
-                                            SMB Direct improves file transfer speeds across networks by utilizing network adapters that are 
-                                            Remote Direct Memory Access (RDMA) capable [1].
-
-                                            Although not inherently insecure [2], maintaining unnecessary software can increase the attack surface,
-                                            especially if the underlying RDMA hardware has vulnerabilities.
-
-                                            > **Caution**: Disabling a networking feature may cause connectivity issues if required for specific operations.
-
-                                            ### Overview of default feature statuses
-
-                                            | | |
-                                            | ---- | --- |
-                                            | **Feature name**  | `SMB Direct` |
-                                            | **Display name**  | SMB Direct |
-                                            | **Description**  | Remote Direct Memory Access (RDMA) support for the SMB 3.x file sharing protocol |
-                                            | **Default** (Windows 11 ≥ 23H2) | 🟢 Enabled |
-                                            | **Default** (Windows 10 ≥ 22H2) | 🟢 Enabled |
-
-                                            [1]: https://web.archive.org/web/20240314102437/https://learn.microsoft.com/en-us/windows-server/storage/file-server/smb-direct?tabs=disable "Improve performance of a file server with SMB Direct | Microsoft Learn | learn.microsoft.com"
-                                            [2]: https://web.archive.org/web/20240413124106/https://techcommunity.microsoft.com/t5/storage-at-microsoft/stop-using-smb1/ba-p/425858 "Stop using SMB1 - Microsoft Community Hub | techcommunity.microsoft.com"
-                                        call:
-                                            function: DisableWindowsFeature
-                                            parameters:
-                                                featureName: SmbDirect # Get-WindowsOptionalFeature -FeatureName 'SmbDirect' -Online
-                                    -
-                                        name: Disable "TFTP Client" feature
-                                        docs: |-
-                                            This script disables the **TFTP Client** feature.
-
-                                            The TFTP Client supports file transfers using the *Trivial File Transfer Protocol (TFTP)*.
-                                            TFTP protocol is insecure because it lacks authentication and encryption capabilities [1] [2] [3].
-                                            This makes data transferred via TFTP vulnerable to eavesdropping and tampering [2] [3].
-
-                                            Although TFTP's simplicity can be advantageous in certain contexts, such as configuring network devices,
-                                            its security risks generally outweigh these benefits.
-                                            Disabling it helps mitigate the risk of unauthorized data access and simplifies system security management [1] [2].
-
-                                            > **Caution**: Disabling a networking feature may cause connectivity issues if required for specific operations.
-
-                                            [1]: https://web.archive.org/web/20240413142327/https://www.stigviewer.com/stig/windows_server_2016/2018-03-07/finding/V-73297 "The TFTP Client must not be installed. | www.stigviewer.com"
-                                            [2]: https://web.archive.org/web/20240413142325/https://www.tenable.com/audits/items/Juniper_Hardening_Junos_Devices.audit:0343769f1ea790c8345e961c9a442ec6 "Access Security - Disable insecure or unnecessary access servi...<!-- --> | Tenable® | www.tenable.com"
-                                            [3]: https://archive.ph/2024.04.13-142535/https://www.infosecinstitute.com/resources/incident-response-resources/network-traffic-analysis-for-ir-tftp-with-wireshark/ "Network traffic analysis for IR: TFTP with Wireshark | Infosec | www.infosecinstitute.com"
-
-                                            ### Overview of default feature statuses
-
-                                            | | |
-                                            | ---- | --- |
-                                            | **Feature name**  | `TFTP` |
-                                            | **Display name**  | TFTP Client |
-                                            | **Description**  | Transfer files using the Trivial File Transfer Protocol |
-                                            | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
-                                            | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
-                                        call:
-                                            function: DisableWindowsFeature
-                                            parameters:
-                                                featureName: TFTP # Get-WindowsOptionalFeature -FeatureName 'TFTP' -Online
-                                                disabledByDefault: true
+                                    | | |
+                                    | ---- | --- |
+                                    | **Feature name**  | `Microsoft-Hyper-V-Management-PowerShell` |
+                                    | **Display name**  | Hyper-V Module for Windows PowerShell |
+                                    | **Description**  | Includes Windows PowerShell cmdlets for managing Hyper-V. |
+                                    | **Default** (Windows 11 ≥ 23H2) | 🔴 Disabled |
+                                    | **Default** (Windows 10 ≥ 22H2) | 🔴 Disabled |
+                                call:
+                                    function: DisableWindowsFeature
+                                    parameters:
+                                        featureName: Microsoft-Hyper-V-Management-PowerShell # Get-WindowsOptionalFeature -FeatureName 'Microsoft-Hyper-V-Management-PowerShell' -Online
+                                        disabledByDefault: true
                     -
                         category: Disable printing features
                         children:
@@ -16926,104 +17161,6 @@ actions:
                                     function: UninstallCapability
                                     parameters:
                                         capabilityName: Msix.PackagingTool.Driver
-                            -
-                                category: Remove networking capabilities
-                                docs: |- # refactor-with-variables: **Caution**
-                                    This category focuses on the removal of certain networking capabilities.
-                                    These capabilities are usually not pre-installed on Windows [1].
-
-                                    Removing these features can contribute to a more secure and privacy-focused
-                                    environment by eliminating potential vulnerabilities and reducing the
-                                    system's attack surface.
-
-                                    The scripts target specific networking tools and protocols, ideal for users who
-                                    don't need these features, thus streamlining the system and potentially improving
-                                    performance.
-
-                                    > **Caution:**
-                                    > Removing networking capabilities could disrupt remote connections and network management tasks.
-                                    > These features may be critical for enterprise environments or specific operations.
-
-                                    [1]: https://web.archive.org/web/20240411120309/https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/features-on-demand-non-language-fod?view=windows-11#networking-tools "Available features on demand | Microsoft Learn | learn.microsoft.com"
-                                children:
-                                    -
-                                        name: Remove "RAS Connection Manager Administration Kit (CMAK)" capability
-                                        docs: |- # refactor-with-variables: Same • Caution
-                                            This script removes the "RAS Connection Manager Administration Kit (CMAK)" (`RasCMAK.Client` [1]) capability.
-
-                                            CMAK is a tool that allows the creation of profiles for connecting to remote servers and networks [1].
-
-                                            Though useful for remote connections, this capability might be unnecessary for many users.
-                                            Removing it can simplify the system's network configuration and enhance security by reducing potential attack vectors.
-
-                                            > **Caution:**
-                                            > Removing networking capabilities could disrupt remote connections and network management tasks.
-                                            > These features may be critical for enterprise environments or specific operations.
-
-                                            [1]: https://web.archive.org/web/20240411120309/https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/features-on-demand-non-language-fod?view=windows-11#networking-tools "Available features on demand | Microsoft Learn | learn.microsoft.com"
-                                        call:
-                                            function: UninstallCapability
-                                            parameters:
-                                                capabilityName: RasCMAK.Client
-                                    -
-                                        name: Remove "RIP Listener" capability
-                                        docs: |- # refactor-with-variables: *Caution**
-                                            This script removes the "RIP Listener" (`RIP.Listener` [1]) capability.
-
-                                            The RIP Listener listens for route updates from routers using the Routing Information Protocol version 1 (RIPV1) [1].
-
-                                            RIPV1 is an older protocol that might be redundant in modern networks, despite its specific utilities.
-                                            Removing this feature can contribute to a more secure system by eliminating unnecessary network
-                                            listening capabilities.
-
-                                            > **Caution:**
-                                            > Removing networking capabilities could disrupt remote connections and network management tasks.
-                                            > These features may be critical for enterprise environments or specific operations.
-
-                                            [1]: https://web.archive.org/web/20240411120309/https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/features-on-demand-non-language-fod?view=windows-11#networking-tools "Available features on demand | Microsoft Learn | learn.microsoft.com"
-                                        call:
-                                            function: UninstallCapability
-                                            parameters:
-                                                capabilityName: RIP.Listener
-                                    -
-                                        name: Remove "Simple Network Management Protocol (SNMP)" capability
-                                        docs: |- # refactor-with-variables: Same • Caution
-                                            This script removes the "Simple Network Management Protocol (SNMP)" (`SNMP.Client` [1]) capability.
-
-                                            SNMP is used for monitoring and managing network devices [1].
-
-                                            While it provides valuable information for network administration, it may not be essential for
-                                            all users and can expose the system to additional network traffic and potential vulnerabilities.
-
-                                            > **Caution:**
-                                            > Removing networking capabilities could disrupt remote connections and network management tasks.
-                                            > These features may be critical for enterprise environments or specific operations.
-
-                                            [1]: https://web.archive.org/web/20240411120309/https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/features-on-demand-non-language-fod?view=windows-11#networking-tools "Available features on demand | Microsoft Learn | learn.microsoft.com"
-                                        call:
-                                            function: UninstallCapability
-                                            parameters:
-                                                capabilityName: SNMP.Client
-                                    -
-                                        name: Remove "SNMP WMI Provider" capability
-                                        docs: |- # refactor-with-variables: Same • Caution
-                                            This script removes the "SNMP WMI Provider" (`WMI-SNMP-Provider.Client` [1]) capability.
-
-                                            This feature enables Windows Management Instrumentation (WMI) clients to access SNMP information [1].
-
-                                            Integrating SNMP data into WMI, this capability may be extraneous for those not needing SNMP monitoring.
-                                            Removing this capability can simplify the system's management interfaces and improve its security posture
-                                            by limiting the ways in which network information is accessed and exposed.
-
-                                            > **Caution:**
-                                            > Removing networking capabilities could disrupt remote connections and network management tasks.
-                                            > These features may be critical for enterprise environments or specific operations.
-
-                                            [1]: https://web.archive.org/web/20240411120309/https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/features-on-demand-non-language-fod?view=windows-11#networking-tools "Available features on demand | Microsoft Learn | learn.microsoft.com"
-                                        call:
-                                            function: UninstallCapability
-                                            parameters:
-                                                capabilityName: WMI-SNMP-Provider.Client
                             -
                                 name: Remove "OpenSSH Server" capability
                                 call:

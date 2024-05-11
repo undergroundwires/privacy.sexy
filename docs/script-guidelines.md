@@ -27,6 +27,7 @@ Key attributes of a good script:
   - `Minimize` over `Limit`, `Reduce`
   - `Maximize` over `Extend`, `Delay`, `Postpone`, `Prolong`
   - `Remove` over `Uninstall`
+  - `Improve` over `Increase`
 - Structure your phrases for clarity, examples:
   - Prefer `Disable XX telemetry` over `Disable telemetry in XX`
   - Prefer `Clear XX data` over `Clear data from XX`, or `Clear data of XX`.
