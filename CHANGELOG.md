@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.13.3 (2024-05-11)
+
+* win: organize and document network disablement | [2eed6f4](https://github.com/undergroundwires/privacy.sexy/commit/2eed6f4afb6cf85fdc1d6acb808f82405a35cafd)
+* win: improve disabling SMBv1 protocol | [f584fab](https://github.com/undergroundwires/privacy.sexy/commit/f584fabb50c7de70ba43751d721af94d8fa2fa8a)
+* win: improve disabling insecure renegotiations | [f261ab4](https://github.com/undergroundwires/privacy.sexy/commit/f261ab4cd9a53e31325e5c6da9129542971fe84b)
+* win: doc, improve, encourage cipher disabling | [8b224ee](https://github.com/undergroundwires/privacy.sexy/commit/8b224eefe71be6a556a1085d8fe20dbd4b889430)
+* ci/cd: add check for TODO comments | [4e21f05](https://github.com/undergroundwires/privacy.sexy/commit/4e21f05031d6cc90cda684bd598bec4735f8103b)
+* win: improve 'Snipping Tool' removal #343 | [e18907c](https://github.com/undergroundwires/privacy.sexy/commit/e18907ca91e483255b44d14d7d923d7eef92afbd)
+* ci/cd: lint Python scripts using `pylint` | [23bac0f](https://github.com/undergroundwires/privacy.sexy/commit/23bac0fc76ad697abb34f3fb327df5cdeb40286a)
+* win: improve disabling insecure hashes #131 | [d19dde6](https://github.com/undergroundwires/privacy.sexy/commit/d19dde603ddac47022ee2e0ea865d53857560c26)
+* Add system requirements documentation #134 | [0fc2ffc](https://github.com/undergroundwires/privacy.sexy/commit/0fc2ffc1ea36a9248c6a92da85a29f7b04b33796)
+* win, linux, mac: fix various typos #349 | [694bf1a](https://github.com/undergroundwires/privacy.sexy/commit/694bf1a74d935531d7cd46891823af1fa58c3c8c)
+* Fix script cancellation with new dialog on Linux | [8c17396](https://github.com/undergroundwires/privacy.sexy/commit/8c173962857a39dc0c9e5886cb2af4937e6618e7)
+* win: improve disabling protocols | [4ef16ce](https://github.com/undergroundwires/privacy.sexy/commit/4ef16cea56789120cd041412d86b5577cccf0725)
+* win: fix Copilot by excluding `r.bing.com` #329 | [66a5688](https://github.com/undergroundwires/privacy.sexy/commit/66a56888a4b3ead1a6bfef0feffa0218535701fe)
+* Fix blank window on load on desktop version #348 | [813d820](https://github.com/undergroundwires/privacy.sexy/commit/813d820b85e1b623c50f8e0325ad372bf2f344f9)
+* Improve desktop icon quality and generation | [ab25e0a](https://github.com/undergroundwires/privacy.sexy/commit/ab25e0a066be14ea979dafd0f80e1091bd5d33f8)
+* win: improve enabling secure connections #175 | [c75df1c](https://github.com/undergroundwires/privacy.sexy/commit/c75df1c8c1151b64cbf014383dea0b748a8c78b3)
+* Fix VSCode script issues with added CI/CD tests | [1d7cafc](https://github.com/undergroundwires/privacy.sexy/commit/1d7cafc831dcc339a10646794410dad7096bfe60)
+* Fix win execution with whitespace in username #351 | [a334320](https://github.com/undergroundwires/privacy.sexy/commit/a3343205b1196d5a81fd3cee2ae661ce871a7bef)
+* Fix misaligned tooltip positions in modal dialogs | [dd71536](https://github.com/undergroundwires/privacy.sexy/commit/dd71536316ec819caeb418b8635d544ac80e58ad)
+* Fix Chromium scrollbar-induced layout shifts | [bc4879c](https://github.com/undergroundwires/privacy.sexy/commit/bc4879cfe97becac3c54f6b40780a89464d3b772)
+* ci/cd: remove `check-latest` from `setup-node` | [52a4730](https://github.com/undergroundwires/privacy.sexy/commit/52a4730073b8ebfb2ce9d530b44e4a179f5849fe)
+* win: categorize and rename network security #131 | [9fd193e](https://github.com/undergroundwires/privacy.sexy/commit/9fd193e676f1f0646898f5130fbfaaf25050b2e3)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.13.2...0.13.3)
+
 ## 0.13.2 (2024-04-15)
 
 * Update documentation for `logo-update.js` script | [4a9b430](https://github.com/undergroundwires/privacy.sexy/commit/4a9b430702bc6082426b50ecc3a06362b5720796)
