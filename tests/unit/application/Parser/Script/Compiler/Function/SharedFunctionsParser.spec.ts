@@ -26,6 +26,27 @@ describe('SharedFunctionsParser', () => {
   });
   describe('parseFunctions', () => {
     describe('validates functions', () => {
+      it('throws when functions have no names', () => {
+        // arrange
+        const invalidFunctions = [
+          createFunctionDataWithCode()
+            .withCode('test function 1')
+            .withName(' '), // Whitespace,
+          createFunctionDataWithCode()
+            .withCode('test function 2')
+            .withName(undefined as unknown as string), // Undefined
+          createFunctionDataWithCode()
+            .withCode('test function 3')
+            .withName(''), // Empty
+        ];
+        const expectedError = `Some function(s) have no names:\n${invalidFunctions.map((f) => JSON.stringify(f)).join('\n')}`;
+        // act
+        const act = () => new ParseFunctionsCallerWithDefaults()
+          .withFunctions(invalidFunctions)
+          .parseFunctions();
+        // assert
+        expect(act).to.throw(expectedError);
+      });
       it('throws when functions have same names', () => {
         // arrange
         const name = 'same-func-name';

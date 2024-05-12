@@ -98,6 +98,7 @@ function hasCall(data: FunctionData): data is CallFunctionData {
 }
 
 function ensureValidFunctions(functions: readonly FunctionData[]) {
+  ensureNoUnnamedFunctions(functions);
   ensureNoDuplicatesInFunctionNames(functions);
   ensureEitherCallOrCodeIsDefined(functions);
   ensureNoDuplicateCode(functions);
@@ -106,6 +107,16 @@ function ensureValidFunctions(functions: readonly FunctionData[]) {
 
 function printList(list: readonly string[]): string {
   return `"${list.join('","')}"`;
+}
+
+function ensureNoUnnamedFunctions(functions: readonly FunctionData[]) {
+  const functionsWithoutNames = functions.filter(
+    (func) => !func.name || func.name.trim().length === 0,
+  );
+  if (functionsWithoutNames.length) {
+    const invalidFunctions = functionsWithoutNames.map((f) => JSON.stringify(f));
+    throw new Error(`Some function(s) have no names:\n${invalidFunctions.join('\n')}`);
+  }
 }
 
 function ensureEitherCallOrCodeIsDefined(holders: readonly FunctionData[]) {
