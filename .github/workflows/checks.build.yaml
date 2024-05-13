@@ -72,16 +72,19 @@ jobs:
   build-docker:
     strategy:
       matrix:
-        os: [ macos, ubuntu ] # Windows runners do not support Linux containers
+        os:
+          - macos-13 # Downgraded due to lack of nested virtualization support in ARM-based runners (See: actions/runner-images#9460, actions/runner-images#9741, abiosoft/colima#1023)
+          - ubuntu-latest
+          # - windows-latest # Windows runners do not support Linux containers
       fail-fast: false # Allows to see results from other combinations
-    runs-on: ${{ matrix.os }}-latest
+    runs-on: ${{ matrix.os }}
     steps:
       -
         name: Checkout
         uses: actions/checkout@v4
       -
         name: Install Docker on macOS
-        if: matrix.os == 'macos' # macOS runner is missing Docker
+        if: contains(matrix.os, 'macos') # macOS runner is missing Docker
         run: |-
           # Install Docker
           brew install docker
