@@ -10,6 +10,7 @@ describe('revert toggle', () => {
         cardIndex: 1, // first is often cleanup that may lack revert button
       });
       cy.get('.toggle-switch')
+        .filter(':visible') // Avoid side-effects from hidden cards
         .first()
         .as('toggleSwitch');
     });
