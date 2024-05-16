@@ -9,9 +9,13 @@ jobs:
   run-check:
     strategy:
       matrix:
-        os: [ macos, ubuntu, windows ]
+        os:
+          - macos-latest  # Apple silicon (ARM64)
+          - macos-13      # Intel-based (x86-64)
+          - ubuntu-latest
+          - windows-latest
       fail-fast: false # Allows to see results from other combinations
-    runs-on: ${{ matrix.os }}-latest
+    runs-on: ${{ matrix.os }}
     steps:
       -
         name: Checkout
@@ -24,7 +28,7 @@ jobs:
         uses: ./.github/actions/npm-install-dependencies
       -
         name: Configure Ubuntu
-        if: matrix.os == 'ubuntu'
+        if: contains(matrix.os, 'ubuntu') # macOS runner is missing Docker
         shell: bash
         run: |-
           sudo apt update

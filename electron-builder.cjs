@@ -43,7 +43,10 @@ module.exports = {
 
   // macOS
   mac: {
-    target: 'dmg',
+    target: {
+      target: 'dmg',
+      arch: 'universal',
+    },
   },
   dmg: {
     artifactName: '${name}-${version}.${ext}',
