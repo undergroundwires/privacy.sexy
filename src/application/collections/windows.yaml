@@ -8273,7 +8273,7 @@ actions:
                                                 deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                             -
                                 name: Disable insecure connections from .NET apps
-                                recommend: strict # Default since .NET 4.6 and above, absence considered vulnerabiltiy, but can still break legacy apps
+                                recommend: strict # Default since .NET 4.6 and above, absence considered vulnerability, but can still break legacy apps
                                 docs: |- # refactor-with-variables: Same • authorities • applies to all .NET
                                     This script improves security by enforcing secure network connections across all .NET applications.
 
