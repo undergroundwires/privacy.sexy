@@ -1,0 +1,104 @@
+name: "Bug Report: General"
+description: 🐛 Report general issues to enhance privacy.sexy
+labels: [ 'bug' ]
+title: '[Bug]: '
+body:
+  -
+    type: markdown
+    attributes:
+      value: |-
+        Thank you for contributing to privacy.sexy and guiding our direction! 🌟
+        Please complete as much of the form below as possible.
+        Your feedback is valuable, even if you can't provide all details.
+  -
+    type: textarea
+    attributes:
+      label: Description
+      description: Provide a clear and concise description of the issue.
+      placeholder: >-
+        For example: "I cannot select any scripts."
+    validations:
+      required: true
+  -
+    type: textarea
+    attributes:
+      label: Reproduction steps
+      description: |-
+        This is the most important information in the bug report.
+        Bugs that cannot be reproduced cannot be fixed or verified.
+      placeholder: |-
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: true
+  -
+    type: textarea
+    attributes:
+      label: Expected behavior
+      description: Describe what you expected to happen when the error occurred.
+      placeholder: >-
+        For example: "I expected the settings menu to open smoothly without crashing.".
+    validations:
+      required: true
+  -
+    type: textarea
+    attributes:
+      label: Screenshots
+      description: |-
+        If applicable, add screenshots to help explain your problem.
+
+        > **💡 Tip:** You can attach screenshots by clicking this area to highlight it and then pasting them or dragging files in.
+      placeholder: >-
+        Attach screenshots here or link to image hosting.
+    validations:
+      required: false
+  -
+    type: textarea
+    attributes:
+      label: privacy.sexy environment details
+      description: |-
+        If applicable, mention how you were using privacy.sexy when the bug occurred:
+
+        - Web (on which operating system and browser?)
+        - Or desktop (Windows, macOS, or Linux?)
+      placeholder: >-
+        For example: "The web version on Edge browser on Windows 11 23H2."
+    validations:
+      required: false
+  -
+    type: textarea
+    attributes:
+      label: Additional context
+      description: |-
+        If applicable, add any other context about the problem here.
+
+        Helpful information includes:
+
+        - Application logs (desktop version only), see: [how to find application logs](https://github.com/undergroundwires/privacy.sexy/blob/master/docs/desktop/desktop-vs-web-features.md#logging).
+        - Terminal output
+        - Proposed solutions
+        - Other related context such as related issues, software behavior, etc.
+
+        > **💡 Tip:** You can attach log files by dragging them into this area.
+      placeholder: >-
+        For example: "Here are the logs I get from the privacy.sexy 0.13.2 desktop application: ..."
+    validations:
+      required: false
+  -
+    type: markdown
+    attributes:
+      value: |-
+        ---
+
+        **✉️ A friendly note from the maintainer:**
+
+        > [!NOTE]
+        > We are a small open-source project with a small community.
+        > It can sometimes take a long time for issues to be addressed, so please be patient.
+        > Consider [donating](https://undergroundwires.dev/donate) to keep privacy.sexy alive and improve support ❤️.
+        > But your issue will eventually get attention regardless.
+        > <p align="right">@undergroundwires</p>
+
+        ---

@@ -1,0 +1,73 @@
+name: "Suggestion: Feature"
+description: 💡 Suggest new ideas to enhance privacy.sexy
+labels: [ 'enhancement' ]
+title: '[Feature]: '
+body:
+  -
+    type: markdown
+    attributes:
+      value: |-
+        Thank you for contributing to privacy.sexy and guiding our direction! 🌟
+        Please complete as much of the form below as possible.
+        Your feedback is valuable, even if you can't provide all details.
+  -
+    type: textarea
+    attributes:
+      label: Problem statement
+      description: |-
+        What are we trying to solve?
+
+        Please add a clear and concise description of the problem you are seeking to solve with this feature request.
+      placeholder: >-
+        For example: "Every time I use the app, I struggle with..."
+    validations:
+      required: true
+  -
+    type: textarea
+    attributes:
+      label: Proposed solution
+      description: |-
+        Describe the solution you'd like in a clear and concise manner.
+      placeholder: >-
+        For example: "It would be great if the app could..."
+    validations:
+      required: true
+  -
+    type: textarea
+    attributes:
+      label: Alternatives considered
+      description: |-
+        Have you considered any alternative solutions or features?
+        Different perspectives can inspire new ideas.
+      placeholder: >-
+        For example: "We could also solve it by...".
+    validations:
+      required: false
+  -
+    type: textarea
+    attributes:
+      label: Additional information
+      description: |-
+        If applicable, add any other context or screenshots about the feature request here.
+
+        > **💡 Tip:** You can attach files or screenshots by dragging them into this area.
+      placeholder: >-
+        For example: "Challenges can be ..., but I'm unsure about ..., here is some documentation about it: ..."
+    validations:
+      required: false
+  -
+    type: markdown
+    attributes:
+      value: |-
+        ---
+
+        **✉️ A friendly note from the maintainer:**
+
+        > [!NOTE]
+        > We are a small open-source project with a small community.
+        > It can sometimes take a long time for issues to be addressed, so please be patient.
+        > Consider [donating](https://undergroundwires.dev/donate) to keep privacy.sexy alive and improve support ❤️.
+        > But your issue will eventually get attention regardless.
+        > <p align="right">@undergroundwires</p>
+
+        ---

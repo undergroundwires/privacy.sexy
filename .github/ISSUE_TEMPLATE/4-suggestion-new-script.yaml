@@ -1,0 +1,133 @@
+name: "Suggestion: New Script"
+description: 💡 Suggest new scripts to enhance privacy.sexy
+labels: [ 'enhancement' ]
+title: '[New script]: '
+body:
+  -
+    type: markdown
+    attributes:
+      value: |-
+        Thank you for contributing to privacy.sexy and guiding our direction! 🌟
+        Please complete as much of the form below as possible.
+        Your feedback is valuable, even if you can't provide all details.
+
+        For guidance, see our [script guidelines](https://github.com/undergroundwires/privacy.sexy/blob/master/docs/script-guidelines.md).
+        Consider submitting a PR to get your script added more quickly: (see [CONTRIBUTING.md](https://github.com/undergroundwires/privacy.sexy/blob/master/CONTRIBUTING.md#extend-scripts))
+  -
+    type: dropdown
+    attributes:
+      label: Operating system
+      description: Which operating system will the new script configure?
+      options:
+        - macOS
+        - Windows
+        - Linux
+        - All of them
+    validations:
+      required: false
+  -
+    type: textarea
+    attributes:
+      label: Name of the script
+      description: |-
+        Suggest a name for the script that clearly describes its function.
+
+        See [script naming conventions](https://github.com/undergroundwires/privacy.sexy/blob/master/docs/script-guidelines.md#name) for best practices.
+      placeholder: E.g, "Disable error data submission"
+    validations:
+      required: true
+  -
+    type: textarea
+    attributes:
+      label: Documentation/References
+      description: |-
+        Provide any relevant documentation or references.
+        Prefer high-quality sources such as vendor documentation.
+
+        See [documentation guidelines](https://github.com/undergroundwires/privacy.sexy/blob/master/docs/script-guidelines.md#documentation) for best practices.
+      placeholder: >-
+        For example: "This script will disable the error data submission, see https://microsoft.com/...".
+    validations:
+      required: true
+  -
+    type: textarea
+    attributes:
+      label: Code
+      description: |-
+        If possible, provide or explain the code that the script should execute.
+
+        See [script code guidelines](https://github.com/undergroundwires/privacy.sexy/blob/master/docs/script-guidelines.md#code).
+      placeholder: |-
+        For example: "Set registry key like this `reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v "AllowTelemetry" /t "REG_DWORD" /d "1"`".
+    validations:
+      required: false
+  -
+    type: textarea
+    attributes:
+      label: Revert code
+      description: |-
+        If applicable, provide revert code to restore the changes made by the script.
+
+        The revert code restores changes to their default state before script execution.
+
+        Leave blank for non-reversible scripts.
+      placeholder: |-
+        For example: "Revert to operating system default like this `reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\DataCollection" /v "AllowTelemetry" /t "REG_DWORD" /d "0"`".
+    validations:
+      required: false
+  -
+    type: textarea
+    attributes:
+      label: Suggested category
+      description: |-
+        Suggest a category for the script.
+
+        If unsure, leave blank for maintainers to decide.
+      placeholder: >-
+        For example: "Privacy Cleanup > Clear system logs"
+  -
+    type: dropdown
+    attributes:
+      label: Recommendation level
+      description: |-
+        Suggest a recommendation level for the script:
+
+        - **Standard**: Recommended for most users without side-effects.
+        - **Strict**: Provides improved privacy at the cost of some functionality.
+        - **None**: For advanced users or specific needs.
+
+        If unsure, leave blank for maintainers to decide.
+      options:
+        - Standard
+        - Strict
+        - None (do not recommend)
+    validations:
+      required: false
+  -
+    type: textarea
+    attributes:
+      label: Additional information
+      description: |-
+        If applicable, add any other context or screenshots about the script request here.
+
+        > **💡 Tip:** You can attach additional documents or screenshots by dragging them into this area or pasting directly.
+      placeholder: >-
+        For example: "Challenges can be ..., but I am unsure about ..."
+    validations:
+      required: false
+  -
+    type: markdown
+    attributes:
+      value: |-
+        ---
+
+        **✉️ A friendly note from the maintainer:**
+
+        > [!NOTE]
+        > We are a small open-source project with a small community.
+        > It can sometimes take a long time for issues to be addressed, so please be patient.
+        > Consider [donating](https://undergroundwires.dev/donate) to keep privacy.sexy alive and improve support ❤️.
+        > But your issue will eventually get attention regardless.
+        > <p align="right">@undergroundwires</p>
+
+        ---
