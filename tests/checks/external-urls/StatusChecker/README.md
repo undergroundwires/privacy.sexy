@@ -105,5 +105,5 @@ console.log(`Status code: ${status.code}`);
   - This is useful for websites that do not respond to HEAD requests, such as those behind certain CDN or web application firewalls.
   - Provide patterns as regular expressions (`RegExp`), allowing them to match any part of a URL.
   - Examples:
-    - To match any URL starting with "https://example.com/api": `/^https:\/\/example\.com\/api/`
-    - To match any domain ending with "cloudflare.com": `/^https:\/\/.*\.cloudflare\.com\//`
+    - To match any URL starting with `https://example.com/api`: `/^https:\/\/example\.com\/api/`
+    - To match any domain ending with `cloudflare.com`: `/^https:\/\/.*\.cloudflare\.com\//`
