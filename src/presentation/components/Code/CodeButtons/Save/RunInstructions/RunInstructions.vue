@@ -17,7 +17,7 @@
       <p>
         This requires you to do additional manual
         steps. If you are unsure how to follow the instructions, tap or hover on information
-        <InfoTooltip>Engage with icons like this for extra wisdom!</InfoTooltip>
+        <InfoTooltipInline>Engage with icons like this for extra wisdom!</InfoTooltipInline>
         icons near the steps, or follow the easy alternative described above.
       </p>
       <p>
@@ -32,12 +32,12 @@ import { defineComponent, computed } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { getOperatingSystemDisplayName } from '@/presentation/components/Shared/OperatingSystemNames';
-import InfoTooltip from './InfoTooltip.vue';
+import InfoTooltipInline from './Help/InfoTooltipInline.vue';
 import PlatformInstructionSteps from './Steps/PlatformInstructionSteps.vue';
 
 export default defineComponent({
   components: {
-    InfoTooltip,
+    InfoTooltipInline,
     PlatformInstructionSteps,
   },
   props: {

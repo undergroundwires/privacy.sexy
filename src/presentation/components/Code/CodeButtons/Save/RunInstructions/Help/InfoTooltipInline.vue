@@ -1,5 +1,7 @@
 <template>
-  <span class="info-container">
+  <span
+    class="info-container"
+  >
     <TooltipWrapper>
       <AppIcon icon="circle-info" />
       <template #tooltip>
@@ -19,27 +21,17 @@ export default defineComponent({
     TooltipWrapper,
     AppIcon,
   },
+  props: {
+    hasLeftMargin: {
+      type: Boolean,
+      default: false,
+    },
+  },
 });
 </script>
 
-<style scoped lang="scss">
-@use "@/presentation/assets/styles/main" as *;
-
-@mixin apply-style-when-placed-after-non-text {
-  * + & {
-    @content;
-  }
-}
-
+<style lang="scss">
 .info-container {
   vertical-align: text-top;
-
-  * + & { // If it's followed by any other element
-    vertical-align: middle;
-    @include set-property-ch-value-with-fallback(
-      $property: margin-left,
-      $value-in-ch: 0.5,
-    )
-  }
 }
 </style>

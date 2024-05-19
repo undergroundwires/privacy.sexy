@@ -68,9 +68,7 @@ export default defineComponent({
   flex-direction: column;
   flex: 1; // Expands the container to fill available horizontal space, enabling alignment of child items.
   max-width: 100%; // Prevents horizontal expansion of inner content (e.g., when a code block is shown)
-  *:not(:first-child) {
-    margin-left: $spacing-absolute-small;
-  }
+
   .header {
     display: flex;
     flex-direction: row;
@@ -80,6 +78,7 @@ export default defineComponent({
   }
   .docs {
     background: $color-primary-darkest;
+    margin-left: $spacing-absolute-small;
     margin-top: $spacing-relative-x-small;
     color: $color-on-primary;
     text-transform: none;
