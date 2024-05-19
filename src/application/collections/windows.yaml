@@ -7235,7 +7235,7 @@ actions:
                                     to a minimum of 2048 bits.
                                     This is a secure way to exchange keys over public networks.
 
-                                    This script only afects the *SSL/TLS handshake* process.
+                                    This script only affects the *SSL/TLS handshake* process.
                                     The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
                                     By disabling this weak algorithm, the script improves the security of the connection.
 
@@ -7271,7 +7271,7 @@ actions:
                                     The Public-Key Cryptography Standards (PKCS) define how to use RSA keys for secure communication encryption.
                                     Using keys that are too weak can expose your data to unauthorized access.
 
-                                    This script only afects the *SSL/TLS handshake* process.
+                                    This script only affects the *SSL/TLS handshake* process.
                                     The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
                                     By disabling this weak algorithm, the script improves the security of the connection.
 
@@ -7361,7 +7361,7 @@ actions:
                                         docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite
                                             This script disables RC2 ciphers.
 
-                                            This script only afects the *SSL/TLS handshake* process.
+                                            This script only affects the *SSL/TLS handshake* process.
                                             The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
                                             By disabling this weak algorithm, the script improves the security of the connection.
 
@@ -7416,7 +7416,7 @@ actions:
                                         docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite
                                             This script disables the RC4 ciphers.
 
-                                            This script only afects the *SSL/TLS handshake* process.
+                                            This script only affects the *SSL/TLS handshake* process.
                                             The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
                                             By disabling this weak algorithm, the script improves the security of the connection.
 
@@ -7481,7 +7481,7 @@ actions:
                                         docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite
                                             This script disables the `DES 56/56` [1] [2] [3] [4] cipher, also known as *DES 56* [2] or *56-bit DES* [2].
 
-                                            This script only afects the *SSL/TLS handshake* process.
+                                            This script only affects the *SSL/TLS handshake* process.
                                             The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
                                             By disabling this weak algorithm, the script improves the security of the connection.
 
@@ -7519,7 +7519,7 @@ actions:
                                             This script disables the `Triple DES 168` [1] [2] [3] (`Triple DES 168/168` before Windows Vista [2] [4]) cipher,
                                             also known as *3DES* [1] [3] [5] [6], *The Triple Data Encryption Algorithm (TDEA)* [6] [7] and **TDES** [8].
 
-                                            This script only afects the *SSL/TLS handshake* process.
+                                            This script only affects the *SSL/TLS handshake* process.
                                             The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
                                             By disabling this weak algorithm, the script improves the security of the connection.
 
@@ -7566,7 +7566,7 @@ actions:
                                         docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite
                                             This script disables the `NULL` [1] [2] [3] [4] cipher.
 
-                                            This script only afects the *SSL/TLS handshake* process.
+                                            This script only affects the *SSL/TLS handshake* process.
                                             The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
                                             By disabling this weak algorithm, the script improves the security of the connection.
 
@@ -7622,7 +7622,7 @@ actions:
                                         docs: |- # refactor-with-variables: Same • Caution • handshake • vulnerability • authorities • cipher suite
                                             This script disables the use of the `MD5` [1] [2] [3] hash algorithm during the SSL/TLS handshake process.
 
-                                            This script only afects the *SSL/TLS handshake* process.
+                                            This script only affects the *SSL/TLS handshake* process.
                                             The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
                                             By disabling this weak algorithm, the script improves the security of the connection.
 
@@ -7675,7 +7675,7 @@ actions:
                                         docs: |- # refactor-with-variables: Same • Caution • handshake • vulnerability • authorities • cipher suite
                                             This script disables `SHA` [1] [2] [3] hash algorithm, also known as *Secure Hash Algorithm (SHA-1)* [2].
 
-                                            This script only afects the *SSL/TLS handshake* process.
+                                            This script only affects the *SSL/TLS handshake* process.
                                             The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
                                             By disabling this weak algorithm, the script improves the security of the connection.
 
