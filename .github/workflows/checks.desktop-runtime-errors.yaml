@@ -10,8 +10,8 @@ jobs:
     strategy:
       matrix:
         os:
-          - macos-latest  # Apple silicon (ARM64)
-          - macos-13      # Intel-based (x86-64)
+          - macos-latest  # Latest Apple silicon (ARM64)
+          - macos-12      # Latest Intel-based (x86-64)
           - ubuntu-latest
           - windows-latest
       fail-fast: false # Allows to see results from other combinations

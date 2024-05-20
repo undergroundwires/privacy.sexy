@@ -86,9 +86,21 @@ jobs:
         name: Install Docker on macOS
         if: contains(matrix.os, 'macos') # macOS runner is missing Docker
         run: |-
+          # Verify Intel-based macOS
+          arch=$(uname -m)
+          case "$arch" in
+            i386|x86_64)
+              echo "Supported architecture: $arch"
+              ;;
+            *)
+              >&2 echo 'The macOS is not running on a supported Intel architecture. Virtualization is not supported.'
+              exit 1
+              ;;
+          esac
           # Install Docker
           brew install docker
-          # Docker on macOS misses daemon due to licensing, so install colima as runtime
+          # Docker on macOS does not include the Docker daemon due to licensing issues.
+          # Install Colima to use as the Docker runtime.
           brew install colima
           # Start the daemon
           colima start
