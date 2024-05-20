@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { TimerStub } from '@tests/unit/shared/Stubs/TimerStub';
-import { throttle, type ThrottleOptions } from '@/application/Common/Timing/Throttle';
+import { throttle, type ThrottleFunction, type ThrottleOptions } from '@/application/Common/Timing/Throttle';
 import type { Timer } from '@/application/Common/Timing/Timer';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 
@@ -275,7 +275,7 @@ describe('throttle', () => {
   });
 });
 
-type CallbackType = Parameters<typeof throttle>[0];
+type CallbackType = Parameters<ThrottleFunction>[0];
 
 class TestContext {
   private options: Partial<ThrottleOptions> | undefined = {
@@ -315,7 +315,7 @@ class TestContext {
     return this;
   }
 
-  public throttle(): ReturnType<typeof throttle> {
+  public throttle(): ReturnType<ThrottleFunction> {
     return throttle(
       this.callback,
       this.waitInMs,

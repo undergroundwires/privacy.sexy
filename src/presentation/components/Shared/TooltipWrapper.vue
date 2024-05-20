@@ -34,7 +34,7 @@ import {
   useFloating, arrow, shift, flip, type Placement, offset, type Side, type Coords, autoUpdate,
 } from '@floating-ui/vue';
 import { defineComponent, shallowRef, computed } from 'vue';
-import { useResizeObserverPolyfill } from '@/presentation/components/Shared/Hooks/UseResizeObserverPolyfill';
+import { useResizeObserverPolyfill } from '@/presentation/components/Shared/Hooks/Resize/UseResizeObserverPolyfill';
 import { throttle } from '@/application/Common/Timing/Throttle';
 import { type TargetEventListener } from '@/presentation/components/Shared/Hooks/UseAutoUnsubscribedEventListener';
 import { injectKey } from '@/presentation/injectionSymbols';

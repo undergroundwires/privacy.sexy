@@ -15,18 +15,26 @@ const DefaultOptions: ThrottleOptions = {
   timer: PlatformTimer,
 };
 
-export function throttle(
+export interface ThrottleFunction {
+  (
+    callback: CallbackType,
+    waitInMs: number,
+    options?: Partial<ThrottleOptions>,
+  ): CallbackType;
+}
+
+export const throttle: ThrottleFunction = (
   callback: CallbackType,
   waitInMs: number,
   options: Partial<ThrottleOptions> = DefaultOptions,
-): CallbackType {
+): CallbackType => {
   const defaultedOptions: ThrottleOptions = {
     ...DefaultOptions,
     ...options,
   };
   const throttler = new Throttler(waitInMs, callback, defaultedOptions);
   return (...args: unknown[]) => throttler.invoke(...args);
-}
+};
 
 class Throttler {
   private lastExecutionTime: number | null = null;

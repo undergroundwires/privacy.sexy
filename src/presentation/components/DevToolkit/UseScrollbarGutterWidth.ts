@@ -1,8 +1,9 @@
 import {
-  computed, readonly, ref, watch,
+  computed, readonly, ref, shallowRef, watch,
 } from 'vue';
 import { throttle } from '@/application/Common/Timing/Throttle';
 import { useAutoUnsubscribedEventListener } from '../Shared/Hooks/UseAutoUnsubscribedEventListener';
+import { useResizeObserver } from '../Shared/Hooks/Resize/UseResizeObserver';
 
 const RESIZE_EVENT_THROTTLE_MS = 200;
 
@@ -29,11 +30,17 @@ function getScrollbarGutterWidth(): number {
 
 function useBodyWidth() {
   const width = ref(document.body.offsetWidth);
-  const observer = new ResizeObserver((entries) => throttle(() => {
-    for (const entry of entries) {
-      width.value = entry.borderBoxSize[0].inlineSize;
-    }
-  }, RESIZE_EVENT_THROTTLE_MS));
-  observer.observe(document.body, { box: 'border-box' });
+  useResizeObserver(
+    {
+      observedElementRef: shallowRef(document.body),
+      throttleInMs: RESIZE_EVENT_THROTTLE_MS,
+      observeCallback: (entries) => {
+        for (const entry of entries) {
+          width.value = entry.borderBoxSize[0].inlineSize;
+        }
+      },
+      observeOptions: { box: 'border-box' },
+    },
+  );
   return readonly(width);
 }

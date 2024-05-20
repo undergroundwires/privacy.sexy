@@ -16,11 +16,17 @@ async function polyfillResizeObserver(): Promise<typeof ResizeObserver> {
   return polyfillLoader.getValue();
 }
 
+interface ResizeObserverCreator {
+  (
+    ...args: ConstructorParameters<typeof ResizeObserver>
+  ): ResizeObserver;
+}
+
 export function useResizeObserverPolyfill() {
-  const resizeObserverReady = new Promise<void>((resolve) => {
+  const resizeObserverReady = new Promise<ResizeObserverCreator>((resolve) => {
     onMounted(async () => {
       await polyfillResizeObserver();
-      resolve();
+      resolve((args) => new ResizeObserver(args));
     });
   });
   return { resizeObserverReady };

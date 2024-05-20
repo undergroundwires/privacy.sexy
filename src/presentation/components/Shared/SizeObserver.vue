@@ -6,10 +6,9 @@
 
 <script lang="ts">
 import {
-  defineComponent, shallowRef, onMounted, onBeforeUnmount, watch,
+  defineComponent, shallowRef, onMounted, watch,
 } from 'vue';
-import { useResizeObserverPolyfill } from '@/presentation/components/Shared/Hooks/UseResizeObserverPolyfill';
-import { throttle } from '@/application/Common/Timing/Throttle';
+import { useResizeObserver } from './Hooks/Resize/UseResizeObserver';
 
 export default defineComponent({
   emits: {
@@ -20,31 +19,21 @@ export default defineComponent({
     /* eslint-enable @typescript-eslint/no-unused-vars */
   },
   setup(_, { emit }) {
-    const { resizeObserverReady } = useResizeObserverPolyfill();
-
     const containerElement = shallowRef<HTMLElement>();
 
     let width = 0;
     let height = 0;
-    let observer: ResizeObserver | undefined;
 
-    onMounted(() => {
-      watch(() => containerElement.value, async (element) => {
-        if (!element) {
-          disposeObserver();
-          return;
-        }
-        resizeObserverReady.then(() => {
-          disposeObserver();
-          observer = new ResizeObserver(throttle(updateSize, 200));
-          observer.observe(element);
-        });
-        updateSize(); // Do not throttle, immediately inform new width
-      }, { immediate: true });
+    useResizeObserver({
+      observedElementRef: containerElement,
+      observeCallback: updateSize,
+      throttleInMs: 200,
     });
 
-    onBeforeUnmount(() => {
-      disposeObserver();
+    onMounted(() => {
+      watch(() => containerElement.value, async () => {
+        updateSize();
+      }, { immediate: true });
     });
 
     function updateSize() {
@@ -79,11 +68,6 @@ export default defineComponent({
       height = newHeight;
       emit('heightChanged', newHeight);
       return { isChanged: true };
-    }
-
-    function disposeObserver() {
-      observer?.disconnect();
-      observer = undefined;
     }
 
     return {

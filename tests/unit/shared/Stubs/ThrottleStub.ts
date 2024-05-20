@@ -1,13 +1,13 @@
-import type { CallbackType, throttle } from '@/application/Common/Timing/Throttle';
+import type { CallbackType, ThrottleFunction } from '@/application/Common/Timing/Throttle';
 
 export class ThrottleStub {
-  public readonly throttleInitializationCallArgs: Array<Parameters<typeof throttle>> = [];
+  public readonly throttleInitializationCallArgs: Array<Parameters<ThrottleFunction>> = [];
 
   public readonly throttledFunctionCallArgs = new Array<readonly unknown[]>();
 
   private executeImmediately: boolean = false;
 
-  public func = (callback: CallbackType, waitInMs: number): ReturnType<typeof throttle> => {
+  public func = (callback: CallbackType, waitInMs: number): ReturnType<ThrottleFunction> => {
     this.throttleInitializationCallArgs.push([callback, waitInMs]);
     return (...args: readonly unknown[]) => {
       this.throttledFunctionCallArgs.push([...args]);

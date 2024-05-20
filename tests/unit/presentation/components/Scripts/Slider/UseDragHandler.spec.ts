@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { ref, type Ref } from 'vue';
 import { useDragHandler, type DragDomModifier } from '@/presentation/components/Scripts/Slider/UseDragHandler';
 import { ThrottleStub } from '@tests/unit/shared/Stubs/ThrottleStub';
-import { throttle } from '@/application/Common/Timing/Throttle';
+import { type ThrottleFunction } from '@/application/Common/Timing/Throttle';
 import type { ConstructorArguments } from '@/TypeHelpers';
 
 describe('useDragHandler', () => {
@@ -235,7 +235,7 @@ describe('useDragHandler', () => {
 function initializeDragHandlerWithMocks(mocks?: {
   readonly dragDomModifier?: DragDomModifier;
   readonly draggableElementRef?: Ref<HTMLElement>;
-  readonly throttler?: typeof throttle,
+  readonly throttler?: ThrottleFunction,
 }) {
   return useDragHandler(
     mocks?.draggableElementRef ?? ref(document.createElement('div')),
