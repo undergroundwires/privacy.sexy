@@ -1527,6 +1527,980 @@ actions:
         category: Disable OS data collection
         children:
             -
+                category: Disable app access to personal information
+                docs: |-
+                    This category enhances your privacy by restricting app access to sensitive personal data.
+                    These scripts enable you to enforce the *principle of least privilege* ensuring that apps only have
+                    access to the information absolutely necessary for their legitimate function, thereby minimizing potential
+                    data misuse.
+
+                    It only targets UWP (Universal Windows Platform) apps.
+                    These apps can be both native system apps [1] and third-party apps [2].
+                    They are typically available through the Microsoft Store [1] [2].
+                    These scripts only affect UWP apps, not desktop applications outside the UWP ecosystem.
+
+                    By disabling default app access to personal information and requiring explicit user permission,
+                    these scripts protect your security and privacy.
+
+                    [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                    [2]: https://web.archive.org/web/20240427123038/https://learn.microsoft.com/en-us/windows/uwp/get-started/universal-application-platform-guide "What's a Universal Windows Platform (UWP) app? - UWP applications | Microsoft Learn | learn.microsoft.com"
+                children:
+                    -
+                        name: Disable app access to location
+                        recommend: standard
+                        docs: |-
+                            This script prevents Windows apps from accessing your location [1].
+                            It restricts access to location-specific network information [2] and sensors [2] [3],
+                            enhancing your privacy and security.
+
+                            This script configures:
+
+                            - Windows policy (`LetAppsAccessLocation` [1] [3])
+                            - Privacy settings user interface (`BFA794E4-F964-4FDB-90F6-51056BFE4B44` [4], `location` [2] [5])
+                            - Location Services (`E6AD100E-5F4E-44CD-BE0F-2265D88D14F5` [4], `lfsvc` [6])
+
+                            [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccesslocation "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#182-location "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                            [4]: https://web.archive.org/web/20240427103845/https://www.c-amie.co.uk/technical/windows-10-registry-paths-for-privacy-settings/ "Windows 10 Registry Paths for Privacy Settings - C:Amie (not) Com! | c-amie.co.uk"
+                            [5]: https://web.archive.org/web/20240427114500/https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ "Registry Keys for Windows 10 Application Privacy Settings - Jose Espitia | joseespitia.com"
+                            [6]: https://web.archive.org/web/20231206211616/https://social.technet.microsoft.com/Forums/en-US/63904312-04af-41e5-8b57-1dd446ea45c5/privacy-settings-reg-keys?forum=win10itprosetup "Privacy Settings Reg Keys | social.technet.microsoft.com"
+                        call:
+                            -
+                                function: BlockUWPAccessViaGPO
+                                parameters:
+                                    policyName: LetAppsAccessLocation
+                            -
+                                function: BlockUWPAccessViaConsentStore
+                                parameters:
+                                    appCapability: location
+                            -
+                                function: RunInlineCode
+                                parameters:
+                                    code: |-
+                                        :: Disable "Location Services"
+                                        reg add "HKLM\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration" /v "Status" /d "0" /t REG_DWORD /f
+                                    # The default value is `1` by default since Windows 10 22H2 and Windows 11 23H2.
+                                    revertCode: |-
+                                        :: Restore "Location Services"
+                                        reg add "HKLM\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration" /v "Status" /d "1" /t REG_DWORD /f
+                            -
+                                function: BlockUWPLegacyDeviceAccess
+                                parameters:
+                                    deviceAccessId: '{BFA794E4-F964-4FDB-90F6-51056BFE4B44}'
+                            -
+                                function: BlockUWPLegacyDeviceAccess
+                                parameters:
+                                    deviceAccessId: '{E6AD100E-5F4E-44CD-BE0F-2265D88D14F5}'
+                    -
+                        name: Disable app access to account information, name, and picture
+                        recommend: standard
+                        docs: |-
+                            This script prevents Windows apps from accessing account information [1].
+                            This includes your name and picture [2] [3].
+                            By limiting this access, the script enhances your privacy by protecting against potential
+                            misuse of personal details by apps.
+
+                            This script configures:
+
+                            - Windows policy (`LetAppsAccessAccountInfo` [1] [2])
+                            - Privacy settings user interface (`C1D23ACC-752B-43E5-8448-8D0E519CD6D6` [4], `userAccountInformation` [3] [5])
+
+                            [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessaccountinfo "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#187-account-info "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                            [4]: https://web.archive.org/web/20240427103845/https://www.c-amie.co.uk/technical/windows-10-registry-paths-for-privacy-settings/ "Windows 10 Registry Paths for Privacy Settings - C:Amie (not) Com! | c-amie.co.uk"
+                            [5]: https://web.archive.org/web/20240427114500/https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ "Registry Keys for Windows 10 Application Privacy Settings - Jose Espitia | joseespitia.com"
+                        call:
+                            -
+                                function: BlockUWPAccessViaGPO
+                                parameters:
+                                    policyName: LetAppsAccessAccountInfo
+                            -
+                                function: BlockUWPAccessViaConsentStore
+                                parameters:
+                                    appCapability: userAccountInformation
+                            -
+                                function: BlockUWPLegacyDeviceAccess
+                                parameters:
+                                    deviceAccessId: '{C1D23ACC-752B-43E5-8448-8D0E519CD6D6}'
+                    -
+                        name: Disable app access to motion activity
+                        recommend: standard
+                        docs: |-
+                            This script prevents Windows apps from accessing motion data [1] [2] [3].
+
+                            By running this script, you improve your privacy by preventing apps from
+                            automatically tracking physical movements without permission.
+
+                            This script configures:
+
+                            - Windows policy (`LetAppsAccessMotion` [1] [2]).
+                            - Privacy settings user interface (`activity` [3] [4]).
+
+                            [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessmotion "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#1818-motion "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                            [4]: https://web.archive.org/web/20240427114500/https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ "Registry Keys for Windows 10 Application Privacy Settings - Jose Espitia | joseespitia.com"
+                        call:
+                            -
+                                function: BlockUWPAccessViaGPO
+                                parameters:
+                                    policyName: LetAppsAccessMotion
+                            -
+                                function: BlockUWPAccessViaConsentStore
+                                parameters:
+                                    appCapability: activity
+                    -
+                        name: Disable app access to trusted devices
+                        recommend: standard
+                        docs: |-
+                            This script prevents Windows apps from accessing trusted devices [1].
+                            It restricts apps from automatically connecting to or controlling trusted devices without your
+                            permission, enhancing privacy protection.
+
+                            This script configures:
+
+                            - Windows policy (`LetAppsAccessTrustedDevices` [1])
+
+                            [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccesstrusteddevices "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                        call:
+                            function: BlockUWPAccessViaGPO
+                            parameters:
+                                policyName: LetAppsAccessTrustedDevices
+                    -
+                        name: Disable app access to unpaired wireless devices
+                        recommend: standard
+                        docs: |-
+                            This script prevents Windows apps from communicating with unpaired wireless devices [1].
+                            It prevents automatic sharing and synchronization of information with devices that aren't paired [2] [3] [4].
+                            For example, these devices can be gaming consoles (e.g., Xbox One [2]), phones, TVs, tablets.
+                            By preventing apps from sending or receiving data from such devices, this script protects your security
+                            and privacy.
+
+                            This script configures:
+
+                            - Windows policy (`LetAppsSyncWithDevices` [1] [2])
+                            - Privacy settings user interface (`LooselyCoupled` [3] [4]).
+
+                            [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappssyncwithdevices "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#1815-other-devices "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20240427103845/https://www.c-amie.co.uk/technical/windows-10-registry-paths-for-privacy-settings/ "Windows 10 Registry Paths for Privacy Settings - C:Amie (not) Com! | c-amie.co.uk"
+                            [4]: https://web.archive.org/web/20240427100504/https://4sysops.com/archives/windows-10-privacy-settings/#rtoc-18 "Windows 10 privacy settings – 4sysops | 4sysops.com"
+                        call:
+                            -
+                                function: BlockUWPAccessViaGPO
+                                parameters:
+                                    policyName: LetAppsSyncWithDevices
+                            -
+                                function: BlockUWPLegacyDeviceAccess
+                                parameters:
+                                    deviceAccessId: LooselyCoupled
+                    -
+                        name: Disable app access to camera
+                        docs: |-
+                            This script prevents Windows apps from accessing the camera [1] [2].
+
+                            By disabling access, it ensures that no app can use the camera to capture photos or videos [3]
+                            without explicit user permission, thereby protecting privacy.
+
+                            This script configures:
+
+                            - Windows policy (`LetAppsAccessCamera` [1] [2])
+                            - Privacy settings user interface (`E5323777-F976-4f5b-9B55-B94699C46E44` [4], `webcam` [3] [5])
+
+                            [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccesscamera "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#182-location "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                            [4]: https://web.archive.org/web/20240427103845/https://www.c-amie.co.uk/technical/windows-10-registry-paths-for-privacy-settings/ "Windows 10 Registry Paths for Privacy Settings - C:Amie (not) Com! | c-amie.co.uk"
+                            [5]: https://web.archive.org/web/20240427114500/https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ "Registry Keys for Windows 10 Application Privacy Settings - Jose Espitia | joseespitia.com"
+                        call:
+                            -
+                                function: BlockUWPAccessViaGPO
+                                parameters:
+                                    policyName: LetAppsAccessCamera
+                            -
+                                function: BlockUWPAccessViaConsentStore
+                                parameters:
+                                    appCapability: webcam
+                            -
+                                function: BlockUWPLegacyDeviceAccess
+                                parameters:
+                                    deviceAccessId: '{E5323777-F976-4f5b-9B55-B94699C46E44}'
+                    -
+                        name: Disable app access to microphone (breaks Sound Recorder)
+                        docs: |-
+                            This script prevents Windows apps from accessing the microphone [1] [2].
+                            It enhances privacy by preventing apps from recording audio [3], which may include sensitive conversations.
+
+                            This script configures:
+
+                            - Windows policy (`LetAppsAccessMicrophone` [1] [2])
+                            - Privacy settings user interface (`2EEF81BE-33FA-4800-9670-1CD474972C3F` [4], `microphone` [3] [5])
+
+                            > **Caution**: Disabling microphone access will impact recording sounds with built-in
+                            > Sound Recorder (formerly Voice Recorder) app [6].
+
+                            [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessmicrophone "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#184-microphone "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                            [4]: https://web.archive.org/web/20240427103845/https://www.c-amie.co.uk/technical/windows-10-registry-paths-for-privacy-settings/ "Windows 10 Registry Paths for Privacy Settings - C:Amie (not) Com! | c-amie.co.uk"
+                            [5]: https://web.archive.org/web/20240427114500/https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ "Registry Keys for Windows 10 Application Privacy Settings - Jose Espitia | joseespitia.com"
+                            [6]: https://web.archive.org/web/20240427140021/https://learn.microsoft.com/en-us/hololens/hololens-cortana "Use your voice to operate HoloLens | Microsoft Learn | learn.microsoft.com"
+                        call:
+                            -
+                                function: BlockUWPAccessViaGPO
+                                parameters:
+                                    policyName: LetAppsAccessMicrophone
+                            -
+                                function: BlockUWPAccessViaConsentStore
+                                parameters:
+                                    appCapability: microphone
+                            -
+                                function: BlockUWPLegacyDeviceAccess
+                                parameters:
+                                    deviceAccessId: '{2EEF81BE-33FA-4800-9670-1CD474972C3F}'
+                    -
+                        name: Disable app access to information about other apps
+                        recommend: standard
+                        docs: |-
+                            This script prevents Windows apps from accessing diagnostic information about other apps [1] [2] [3] [4].
+                            This includes details like user names [1], package information, memory usage, and account
+                            names for any running UWP apps [2].
+
+                            This script configures:
+
+                            - Windows policy (`LetAppsGetDiagnosticInfo` [1] [3])
+                            - Privacy settings user interface (`2297E4E2-5DBE-466D-A12B-0F8286F0D9CA` [4], `appDiagnostics` [2] [5])
+
+                            [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsgetdiagnosticinfo "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#1820-app-diagnostics "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                            [4]: https://web.archive.org/web/20240427103845/https://www.c-amie.co.uk/technical/windows-10-registry-paths-for-privacy-settings/ "Windows 10 Registry Paths for Privacy Settings - C:Amie (not) Com! | c-amie.co.uk"
+                            [5]: https://web.archive.org/web/20240427114500/https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ "Registry Keys for Windows 10 Application Privacy Settings - Jose Espitia | joseespitia.com"
+                        call:
+                            -
+                                function: BlockUWPAccessViaGPO
+                                parameters:
+                                    policyName: LetAppsGetDiagnosticInfo
+                            -
+                                function: BlockUWPAccessViaConsentStore
+                                parameters:
+                                    appCapability: appDiagnostics
+                            -
+                                function: BlockUWPLegacyDeviceAccess
+                                parameters:
+                                    deviceAccessId: '{2297E4E2-5DBE-466D-A12B-0F8286F0D9CA}'
+                    -
+                        category: Disable app access to your files
+                        docs: |-
+                            This category limits the access of Windows apps to various user-specific folders and other file systems.
+                            It enhances privacy by restricting apps from accessing and manipulating files without explicit user permission.
+                        children:
+                            -
+                                name: Disable app access to "Documents" folder
+                                recommend: standard
+                                docs: |- # refactor-with-variable: Similar template to other file access restriction scripts
+                                    This script prevents Windows apps from accessing the Documents folder [1] [2].
+                                    It restricts app access to document files without user consent [1].
+                                    After running this script, apps can still access the files when explicitly permitted [1].
+                                    This script enhances your privacy and security by preventing unauthorized app access.
+
+                                    This script configures:
+
+                                    - Privacy settings user interface (`documentsLibrary` [1] [2])
+
+                                    [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240427114500/https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ "Registry Keys for Windows 10 Application Privacy Settings - Jose Espitia | joseespitia.com"
+                                call:
+                                    function: BlockUWPAccessViaConsentStore
+                                    parameters:
+                                        appCapability: documentsLibrary
+                            -
+                                name: Disable app access to "Pictures" folder
+                                recommend: standard
+                                docs: |- # refactor-with-variable: Similar template to other file access restriction scripts
+                                    This script prevents Windows apps from accessing the Pictures folder [1] [2].
+                                    It restricts app access to photos and images without user consent [1].
+                                    After running this script, apps can still access the files when explicitly permitted [1].
+                                    This script enhances your privacy and security by preventing unauthorized app access.
+
+                                    This script configures:
+
+                                    - Privacy settings user interface (`picturesLibrary` [1] [2])
+
+                                    > **Caution**: Disabling access may affect the functionality of photo apps [1].
+
+                                    [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240427114500/https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ "Registry Keys for Windows 10 Application Privacy Settings - Jose Espitia | joseespitia.com"
+                                call:
+                                    function: BlockUWPAccessViaConsentStore
+                                    parameters:
+                                        appCapability: picturesLibrary
+                            -
+                                name: Disable app access to "Videos" folder
+                                recommend: standard
+                                docs: |- # refactor-with-variable: Similar template to other file access restriction scripts
+                                    This script prevents Windows apps from accessing the Videos folder [1] [2].
+                                    It restricts app access to video files without user consent [1].
+                                    After running this script, apps can still access the files when explicitly permitted [1].
+                                    This script enhances your privacy and security by preventing unauthorized app access.
+
+                                    This script configures:
+
+                                    - Privacy settings user interface (`videosLibrary` [1] [2])
+
+                                    > **Caution**: Disabling access may affect the functionality of movie playback apps [1].
+
+                                    [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240427114500/https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ "Registry Keys for Windows 10 Application Privacy Settings - Jose Espitia | joseespitia.com"
+                                call:
+                                    function: BlockUWPAccessViaConsentStore
+                                    parameters:
+                                        appCapability: videosLibrary
+                            -
+                                name: Disable app access to "Music" folder
+                                recommend: standard
+                                docs: |- # refactor-with-variable: Similar template to other file access restriction scripts
+                                    This script prevents Windows apps from accessing the Music folder [1].
+                                    It restricts app access to audio files without user consent [1].
+                                    After running this script, apps can still access the files when explicitly permitted [1].
+                                    This script enhances your privacy and security by preventing unauthorized app access.
+
+                                    This script configures:
+
+                                    - Privacy settings user interface (`musicLibrary` [1])
+
+                                    [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    function: BlockUWPAccessViaConsentStore
+                                    parameters:
+                                        appCapability: musicLibrary
+                            -
+                                name: Disable app access to personal files
+                                recommend: standard
+                                docs: |- # refactor-with-variable: Similar template to other file access restriction scripts
+                                    This script restricts app access to the broader file system [1] [2].
+                                    It restricts app access to files that the user has access to without user consent [2].
+                                    After running this script, apps can still access the files when explicitly permitted [1].
+                                    This script enhances your privacy and security by preventing unauthorized app access.
+
+                                    This script configures:
+
+                                    - Privacy settings user interface (`broadFileSystemAccess` [1] [2])
+
+                                    [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240427114500/https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ "Registry Keys for Windows 10 Application Privacy Settings - Jose Espitia | joseespitia.com"
+                                call:
+                                    function: BlockUWPAccessViaConsentStore
+                                    parameters:
+                                        appCapability: broadFileSystemAccess
+                    -
+                        name: Disable app access to your contacts
+                        recommend: standard
+                        docs: |-
+                            This script prevents Windows apps from accessing your contact list [1] [2] [3] [4] [5].
+                            Your contact list may include sensitive details synced from various networks [2].
+                            This script improves privacy by safeguarding personal and sensitive details in your contact list
+                            by restrictings applications from automatically accessing it.
+
+                            This script configures:
+
+                            - Windows policy (`LetAppsAccessContacts` [1] [3])
+                            - Privacy settings user interface (`7D7E8402-7C54-4821-A34E-AEEFD62DED93` [4], `contacts` [2] [5])
+
+                            [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccesscontacts "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#188-contacts "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                            [4]: https://web.archive.org/web/20240427103845/https://www.c-amie.co.uk/technical/windows-10-registry-paths-for-privacy-settings/ "Windows 10 Registry Paths for Privacy Settings - C:Amie (not) Com! | c-amie.co.uk"
+                            [5]: https://web.archive.org/web/20240427114500/https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ "Registry Keys for Windows 10 Application Privacy Settings - Jose Espitia | joseespitia.com"
+                        call:
+                            -
+                                function: BlockUWPAccessViaGPO
+                                parameters:
+                                    policyName: LetAppsAccessContacts
+                            -
+                                function: BlockUWPAccessViaConsentStore
+                                parameters:
+                                    appCapability: contacts
+                            -
+                                function: BlockUWPLegacyDeviceAccess
+                                parameters:
+                                    deviceAccessId: '{7D7E8402-7C54-4821-A34E-AEEFD62DED93}'
+                    -
+                        name: Disable app access to notifications
+                        recommend: standard
+                        docs: |- # refactor-with-variable: Similar template to other file access restriction scripts
+                            This script prevents Windows apps from accessing notifications [1] [2] [3].
+                            It enhances privacy by ensuring that apps cannot access [1] [2] [3] or manage [4] notifications
+                            without explicit user permission.
+
+                            This script configures:
+
+                            - Windows policy (`LetAppsAccessNotifications` [1] [2])
+                            - Privacy settings user interface (`52079E78-A92B-413F-B213-E8FE35712E72` [3], `userNotificationListener` [4] [5])
+
+                            [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessnotifications "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#185-notifications "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20240427103845/https://www.c-amie.co.uk/technical/windows-10-registry-paths-for-privacy-settings/ "Windows 10 Registry Paths for Privacy Settings - C:Amie (not) Com! | c-amie.co.uk"
+                            [4]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                            [5]: https://web.archive.org/web/20240427114500/https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ "Registry Keys for Windows 10 Application Privacy Settings - Jose Espitia | joseespitia.com"
+                            [6]: https://web.archive.org/web/20240428104000/https://github.com/undergroundwires/privacy.sexy/issues/339 "[BUG]: Ran the standard protection and now my Windows does not display notifications to apps like Instagram and Whatsapp · Issue #339 · undergroundwires/privacy.sexy · GitHub | github.com"
+                        call:
+                            -
+                                function: BlockUWPAccessViaGPO
+                                parameters:
+                                    policyName: LetAppsAccessNotifications
+                            -
+                                function: BlockUWPAccessViaConsentStore
+                                parameters:
+                                    appCapability: userNotificationListener
+                            -
+                                function: BlockUWPLegacyDeviceAccess
+                                parameters:
+                                    deviceAccessId: '{52079E78-A92B-413F-B213-E8FE35712E72}'
+                    -
+                        name: Disable app access to calendar
+                        recommend: standard
+                        docs: |- # refactor-with-variable: Similar template to other file access restriction scripts
+                            This script prevents Windows apps from accessing the calendar data [1] [2] [3] [4] [5].
+                            This includes information about appointments from your synced network accounts [2].
+                            It protects personal schedule by preventing apps from automatically creating [2],
+                            reading [1] [2] [3] [4] [5] or writing to calendars [2] without explicit user permission.
+
+                            This script configures:
+
+                            - Windows policy (`LetAppsAccessCalendar` [1] [3])
+                            - Privacy settings user interface (`D89823BA-7180-4B81-B50C-7E471E6121A3` [4], `appointments` [2] [5])
+
+                            [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccesscalendar "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#189-calendar "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                            [4]: https://web.archive.org/web/20240427103845/https://www.c-amie.co.uk/technical/windows-10-registry-paths-for-privacy-settings/ "Windows 10 Registry Paths for Privacy Settings - C:Amie (not) Com! | c-amie.co.uk"
+                            [5]: https://web.archive.org/web/20240427114500/https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ "Registry Keys for Windows 10 Application Privacy Settings - Jose Espitia | joseespitia.com"
+                        call:
+                            -
+                                function: BlockUWPAccessViaGPO
+                                parameters:
+                                    policyName: LetAppsAccessCalendar
+                            -
+                                function: BlockUWPAccessViaConsentStore
+                                parameters:
+                                    appCapability: appointments
+                            -
+                                function: BlockUWPLegacyDeviceAccess
+                                parameters:
+                                    deviceAccessId: '{D89823BA-7180-4B81-B50C-7E471E6121A3}'
+                    -
+                        category: Disable app access to phone
+                        docs: |-
+                            This category contains scripts that restrict app access to phone-related functionalities.
+
+                            They protect your privacy and security by ensuring communication details remain private and
+                            are accessible only when necessary.
+                        children:
+                            -
+                                name: Disable app access to call history
+                                recommend: standard
+                                docs: |-
+                                    This script prevents Windows apps from accessing your call history [1] [2] [3] [4] [5].
+                                    It protects past communication records by blocking apps from
+                                    automatically reading and deleting call history [1] without explicit user permission.
+
+                                    This script configures:
+
+                                    - Windows policy (`LetAppsAccessCallHistory` [2] [3])
+                                    - Privacy settings user interface (`8BC668CF-7728-45BD-93F8-CF2B3B41D7AB` [4], `phoneCallHistory`  [1] [5])
+
+                                    [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccesscallhistory "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                    [3]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#1810-call-history "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                                    [4]: https://web.archive.org/web/20240427103845/https://www.c-amie.co.uk/technical/windows-10-registry-paths-for-privacy-settings/ "Windows 10 Registry Paths for Privacy Settings - C:Amie (not) Com! | c-amie.co.uk"
+                                    [5]: https://web.archive.org/web/20240427114500/https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ "Registry Keys for Windows 10 Application Privacy Settings - Jose Espitia | joseespitia.com"
+                                call:
+                                    -
+                                        function: BlockUWPAccessViaGPO
+                                        parameters:
+                                            policyName: LetAppsAccessCallHistory
+                                    -
+                                        function: BlockUWPAccessViaConsentStore
+                                        parameters:
+                                            appCapability: phoneCallHistory
+                                    -
+                                        function: BlockUWPLegacyDeviceAccess
+                                        parameters:
+                                            deviceAccessId: '{8BC668CF-7728-45BD-93F8-CF2B3B41D7AB}'
+                            -
+                                name: Disable app access to phone calls
+                                recommend: standard
+                                docs: |-
+                                    This script prevents Windows apps from accessing phone calls [1] [2] [3].
+                                    This includes reading phone call data [1] and making phone calls [1] [2] [3].
+
+                                    By controlling app permissions related to phone functionalities, it ensures that your personal
+                                    communication remains private and secure, requiring explicit user approval before any app
+                                    can interact with phone calls.
+
+                                    The restrictions include:
+
+                                    - Preventing apps from accessing phone call data, including metadata and call triggers [1].
+                                    - Disallowing apps from managing spam filters, such as modifying block lists or call origin details [1].
+                                    - Blocking apps from initiating calls [1] [2] [3] or displaying the system dialer [1] without user consent.
+
+                                    This script configures:
+
+                                    - Windows policy (`LetAppsAccessPhone` [2] [3])
+                                    - Privacy settings user interface (`phoneCall` [1])
+
+                                    [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#1813-phone-calls "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                                    [3]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessphone "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    -
+                                        function: BlockUWPAccessViaGPO
+                                        parameters:
+                                            policyName: LetAppsAccessPhone
+                                    -
+                                        function: BlockUWPAccessViaConsentStore
+                                        parameters:
+                                            appCapability: phoneCall
+                            -
+                                name: Disable app access to messaging (SMS / MMS)
+                                recommend: standard
+                                docs: |-
+                                    This script prevents Windows apps from accessing messages [1] [2] [3] [4] [5],
+                                    securing message content from unauthorized access and improving privacy.
+
+                                    It protects your privacy by blocking apps from automatically reading [1] [2] [3] [4],
+                                    storing [1], sending [2] [3] [4], or deleting [1] SMS/MMS messages without your permission.
+
+                                    This script configures:
+
+                                    - Windows policy (`LetAppsAccessMessaging` [2] [3])
+                                    - Privacy settings user interface (`992AFA70-6F47-4148-B3E9-3003349C1548` [4], `21157C1F-2651-4CC1-90CA-1F28B02263F6` [4], `chat` [1] [5])
+
+                                    [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessmessaging "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                    [3]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#1812-messaging "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                                    [4]: https://web.archive.org/web/20240427103845/https://www.c-amie.co.uk/technical/windows-10-registry-paths-for-privacy-settings/ "Windows 10 Registry Paths for Privacy Settings - C:Amie (not) Com! | c-amie.co.uk"
+                                    [5]: https://web.archive.org/web/20240427114500/https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ "Registry Keys for Windows 10 Application Privacy Settings - Jose Espitia | joseespitia.com"
+                                call:
+                                    -
+                                        function: BlockUWPAccessViaGPO
+                                        parameters:
+                                            policyName: LetAppsAccessMessaging
+                                    -
+                                        function: BlockUWPAccessViaConsentStore
+                                        parameters:
+                                            appCapability: chat
+                                    -
+                                        function: BlockUWPLegacyDeviceAccess
+                                        parameters:
+                                            deviceAccessId: '{992AFA70-6F47-4148-B3E9-3003349C1548}'
+                                    -
+                                        function: BlockUWPLegacyDeviceAccess
+                                        parameters:
+                                            deviceAccessId: '{21157C1F-2651-4CC1-90CA-1F28B02263F6}'
+                    -
+                        name: Disable app access to email
+                        recommend: standard
+                        docs: |-
+                            This script prevents Windows apps from accessing email [1] [2] [3] [4] [5].
+
+                            It protects your privacy by blocking apps from automatically reading [1],
+                            sending [1] [2], organizing [1] emails without your permission.
+
+                            This script configures:
+
+                            - Windows policy (`LetAppsAccessEmail` [2] [3])
+                            - Privacy settings user interface (`9231CB4C-BF57-4AF3-8C55-FDA7BFCC04C5` [4], `email` [1] [5])
+
+                            [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#1811-email "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessemail "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [4]: https://web.archive.org/web/20240427103845/https://www.c-amie.co.uk/technical/windows-10-registry-paths-for-privacy-settings/ "Windows 10 Registry Paths for Privacy Settings - C:Amie (not) Com! | c-amie.co.uk"
+                            [5]: https://web.archive.org/web/20240427114500/https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ "Registry Keys for Windows 10 Application Privacy Settings - Jose Espitia | joseespitia.com"
+                        call:
+                            -
+                                function: BlockUWPAccessViaGPO
+                                parameters:
+                                    policyName: LetAppsAccessEmail
+                            -
+                                function: BlockUWPAccessViaConsentStore
+                                parameters:
+                                    appCapability: email
+                            -
+                                function: BlockUWPLegacyDeviceAccess
+                                parameters:
+                                    deviceAccessId: '{9231CB4C-BF57-4AF3-8C55-FDA7BFCC04C5}'
+                    -
+                        name: Disable app access to tasks
+                        recommend: standard
+                        docs: |-
+                            This script prevents Windows apps from accessing task data [1] [2] [3] [4] [5].
+                            These task items may be stored by Exchange ActiveSync (EAS) connections and other provider apps [1].
+
+                            This script protects your privacy by preventing unauthorized access without your permission
+                            to your task information.
+
+                            This script configures:
+
+                            - Windows policy (`LetAppsAccessTasks` [2] [3])
+                            - Privacy settings user interface (`E390DF20-07DF-446D-B962-F5C953062741` [4], `userDataTasks` [1] [5])
+
+                            [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccesstasks "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#1819-tasks "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                            [4]: https://web.archive.org/web/20240427103845/https://www.c-amie.co.uk/technical/windows-10-registry-paths-for-privacy-settings/ "Windows 10 Registry Paths for Privacy Settings - C:Amie (not) Com! | c-amie.co.uk"
+                            [5]: https://web.archive.org/web/20240427114500/https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ "Registry Keys for Windows 10 Application Privacy Settings - Jose Espitia | joseespitia.com"
+                        call:
+                            -
+                                function: BlockUWPAccessViaGPO
+                                parameters:
+                                    policyName: LetAppsAccessTasks
+                            -
+                                function: BlockUWPAccessViaConsentStore
+                                parameters:
+                                    appCapability: userDataTasks
+                            -
+                                function: BlockUWPLegacyDeviceAccess
+                                parameters:
+                                    deviceAccessId: '{E390DF20-07DF-446D-B962-F5C953062741}'
+                    -
+                        name: Disable app access to radios
+                        recommend: standard
+                        docs: |-
+                            This script prevents Windows apps from controlling radios [1] [2] [3] [4] [5],
+                            improving privacy by preventing unauthorized use or toggling of these components.
+
+                            This script ensures that apps cannot toggle device radios [1] [2] such as Wi-Fi
+                            and Bluetooth [1] without your explicit consent.
+
+                            This script configures:
+
+                            - Windows policy (`LetAppsAccessRadios` [2] [3])
+                            - Privacy settings user interface (`A8804298-2D5F-42E3-9531-9C8C39EB29CE` [4], `radios` [1] [5])
+
+                            [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#1814-radios "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessradios "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [4]: https://web.archive.org/web/20240427103845/https://www.c-amie.co.uk/technical/windows-10-registry-paths-for-privacy-settings/ "Windows 10 Registry Paths for Privacy Settings - C:Amie (not) Com! | c-amie.co.uk"
+                            [5]: https://web.archive.org/web/20240427114500/https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ "Registry Keys for Windows 10 Application Privacy Settings - Jose Espitia | joseespitia.com"
+                        call:
+                            -
+                                function: BlockUWPAccessViaGPO
+                                parameters:
+                                    policyName: LetAppsAccessRadios
+                            -
+                                function: BlockUWPAccessViaConsentStore
+                                parameters:
+                                    appCapability: radios
+                            -
+                                function: BlockUWPLegacyDeviceAccess
+                                parameters:
+                                    deviceAccessId: '{A8804298-2D5F-42E3-9531-9C8C39EB29CE}'
+                    -
+                        category: Disable app access to Bluetooth devices
+                        docs: |-
+                            This category enhances user privacy by blocking unauthorized access to Bluetooth devices through Windows apps.
+                            It restricts Bluetooth connections, preventing apps from initiating unwanted communication or data exchange.
+                        children:
+                            -
+                                name: Disable app access to paired Bluetooth devices
+                                recommend: standard
+                                docs: |-
+                                    This script prevents Windows apps from accessing paired Bluetooth devices [1].
+
+                                    This script improves your privacy by preventing apps from automatically interacting
+                                    with paired Bluetooth devices [1], thus blocking unauthorized data exchanges without
+                                    your permission.
+
+                                    This script configures:
+
+                                    - Privacy settings user interface (`bluetooth` [1])
+
+                                    [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    function: BlockUWPAccessViaConsentStore
+                                    parameters:
+                                        appCapability: bluetooth
+                            -
+                                name: Disable app access to unpaired Bluetooth devices
+                                recommend: standard
+                                docs: |-
+                                    This script prevents Windows apps from accessing unpaired Bluetooth devices [1] [2].
+
+                                    This script protects your privacy by blocking apps from automatically sharing and synchronizing
+                                    information with wireless devices that don't explicitly pair with your PC [2], preventing unauthorized
+                                    data exchange without your permission.
+
+                                    This script configures:
+
+                                    - Privacy settings user interface (`bluetoothSync` [1] [2])
+
+                                    [1]: https://web.archive.org/web/20240427114500/https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ "Registry Keys for Windows 10 Application Privacy Settings - Jose Espitia | joseespitia.com"
+                                    [2]: https://web.archive.org/web/20240427192428/https://www.tenforums.com/tutorials/85048-turn-off-apps-communicate-unpaired-devices-windows-10-a.html "Turn On or Off Apps Communicate with Unpaired Devices in Windows 10 | Tutorials | www.tenforums.com"
+                                call:
+                                    function: BlockUWPAccessViaConsentStore
+                                    parameters:
+                                        appCapability: bluetoothSync
+                    -
+                        category: Disable app access to voice activation
+                        docs: |-
+                            This category safeguards against unauthorized app activation via voice commands.
+
+                            It includes measures to disable voice activation for apps, ensuring that apps cannot be triggered
+                            by voice and start listening without explicit user permission.
+                            This protects your security against potential eavesdropping or accidental triggering of applications.
+                        children:
+                            -
+                                name: Disable app access to voice activation
+                                recommend: standard
+                                docs: |-
+                                    This script prevents Windows apps from voice activation [1] [2] [3] [4].
+
+                                    This script improves privacy by preventing apps from being activated [1] [2] [3] [4]
+                                    and from continuing to listen [3] [4] automatically while the device is locked without explicit user instruction.
+                                    This protects your security against potential eavesdropping or accidental triggering of applications.
+
+                                    This script configures:
+
+                                    - Windows policy (`LetAppsActivateWithVoice` [1] [2] [4])
+                                    - Privacy settings user interface (`AgentActivationEnabled` [3])
+
+                                    > **Caution**: This script applies to Cortana and may impact its functionality [1] [2].
+
+                                    [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsactivatewithvoice "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240427115516/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.AppPrivacy::LetAppsActivateWithVoice "Let Windows apps activate with voice | admx.help"
+                                    [3]: https://web.archive.org/web/20240427115515/https://www.tenforums.com/tutorials/130122-allow-deny-apps-access-use-voice-activation-windows-10-a.html "Allow or Deny Apps Access to Use Voice Activation in Windows 10 | Tutorials | www.tenforums.com"
+                                    [4]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#1823-voice-activation "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    -
+                                        function: BlockUWPAccessViaGPO
+                                        parameters:
+                                            policyName: LetAppsActivateWithVoice
+                                    -
+                                        function: SetRegistryValue
+                                        parameters:
+                                            keyPath: HKCU\Software\Microsoft\Speech_OneCore\Settings\VoiceActivation\UserPreferenceForAllApps
+                                            valueName: AgentActivationEnabled
+                                            dataType: REG_DWORD
+                                            data: "0"
+                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                            -
+                                name: Disable app access to voice activation on locked system
+                                recommend: standard
+                                docs: |-
+                                    This script prevents Windows apps from voice activation when the system is locked [1] [2] [3] [4].
+
+                                    This script improves privacy by preventing apps from being activated [1] [2] [3] [4]
+                                    and from continuing to listen [3] [4] automatically while the device is locked without explicit user instruction.
+                                    This protects your security against potential eavesdropping or accidental triggering of applications.
+
+                                    This script configures:
+
+                                    - Windows policy (`LetAppsActivateWithVoiceAboveLock` [1] [2])
+                                    - Privacy settings user interface (`AgentActivationEnabled` [3])
+
+                                    > **Caution**: This script applies to Cortana and may impact its functionality [1] [2].
+
+                                    [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsactivatewithvoiceabovelock "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240427115725/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.AppPrivacy::LetAppsActivateWithVoiceAboveLock "Let Windows apps activate with voice while the system is locked | admx.help"
+                                    [3]: https://web.archive.org/web/20240427115515/https://www.tenforums.com/tutorials/130122-allow-deny-apps-access-use-voice-activation-windows-10-a.html "Allow or Deny Apps Access to Use Voice Activation in Windows 10 | Tutorials | www.tenforums.com"
+                                    [4]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#1823-voice-activation "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                                call:
+                                    -
+                                        function: BlockUWPAccessViaGPO
+                                        parameters:
+                                            policyName: LetAppsActivateWithVoiceAboveLock
+                                    -
+                                        function: SetRegistryValue
+                                        parameters:
+                                            keyPath: HKCU\Software\Microsoft\Speech_OneCore\Settings\VoiceActivation\UserPreferenceForAllApps
+                                            valueName: AgentActivationOnLockScreenEnabled
+                                            dataType: REG_DWORD
+                                            data: "0"
+                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)                                            
+                    -
+                        name: Disable app access to physical movement
+                        recommended: standard
+                        docs: |-
+                            This script prevents Windows apps from accessing spatial perception data [1] [2].
+                            This includes movement of the user's head, hands, motion controllers, and other tracked objects [1],
+                            as well as nearby surfaces [2].
+                            This data may be accessed while the apps are running in the background [1] [2].
+                            
+                            This script enhances privacy by preventing apps from accessing body-related data automatically [1] [2]
+                            , without explicit user permission.
+
+                            This script configures:
+
+                            - Windows policy (`LetAppsAccessBackgroundSpatialPerception` [1])
+                            - Privacy settings user interface (`spatialPerception` [2], `backgroundSpatialPerception` [2])
+
+                            > **Caution**: Disabling access may impact the functionality of mixed reality apps that use this data [2].
+
+                            [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessbackgroundspatialperception "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                        call:
+                            -
+                                function: BlockUWPAccessViaGPO
+                                parameters:
+                                    policyName: LetAppsAccessBackgroundSpatialPerception
+                            -
+                                function: BlockUWPAccessViaConsentStore
+                                parameters:
+                                    appCapability: spatialPerception
+                            -
+                                function: BlockUWPAccessViaConsentStore
+                                parameters:
+                                    appCapability: backgroundSpatialPerception
+                    -
+                        name: Disable app access to eye tracking
+                        recommended: standard
+                        docs: |-
+                            This script prevents Windows apps from accessing the eye tracker [1] [2].
+
+                            This script improves privacy by blocking apps from tracking users' eye automatically
+                            without explicit user instruction.
+
+                            This script configures:
+
+                            - Windows policy (`LetAppsAccessGazeInput` [1])
+                            - Privacy settings user interface (`gazeInput` [2])
+
+                            > **Caution**:
+                            > Disabling access may impact the functionality of mixed reality apps that use this data [2].
+                            > They may not be able to detect where a user is looking within the application bounds when a compatible
+                            > eye-tracking device is connected [2].
+
+                            [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessgazeinput "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                        call:
+                            -
+                                function: BlockUWPAccessViaGPO
+                                parameters:
+                                    policyName: LetAppsAccessGazeInput
+                            -
+                                function: BlockUWPAccessViaConsentStore
+                                parameters:
+                                    appCapability: gazeInput
+                    -
+                        name: Disable app access to human presence
+                        recommended: standard
+                        docs: |-
+                            This script prevents Windows apps from accessing presence sensing [1] [2].
+
+                            Presence data includes information on user presence and engagement [2].
+                            This data could potentially be used to infer user behavior or activities.
+
+                            This script improves privacy by blocking apps from Presence Sensors on the device [2]
+                            without explicit user instruction.
+
+                            This script configures:
+
+                            - Windows policy (`LetAppsAccessHumanPresence` [1])
+                            - Privacy settings user interface (`humanPresence` [2])
+
+                            [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccesshumanpresence "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                        call:
+                            -
+                                function: BlockUWPAccessViaGPO
+                                parameters:
+                                    policyName: LetAppsAccessHumanPresence
+                            -
+                                function: BlockUWPAccessViaConsentStore
+                                parameters:
+                                    appCapability: humanPresence
+                    -
+                        name: Disable app access to screen capture
+                        recommended: standard # It does not affect built-in Snipping Tool
+                        docs: |-
+                            This script restricts Windows apps from taking screenshots of the user's screen [1] [2] [3].
+
+                            This script improves privacy by blocking apps from taking screenshots programatically [1] [3],
+                            and without showing a screenshot border [3], without explicit user instruction.
+
+                            This script configures:
+
+                            - Windows policy (`LetAppsAccessGraphicsCaptureProgrammatic` [1], `LetAppsAccessGraphicsCaptureWithoutBorder` [2])
+                            - Privacy settings user interface (`graphicsCaptureProgrammatic` [3], `graphicsCaptureWithoutBorder` [3])
+
+                            [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessgraphicscaptureprogrammatic "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessgraphicscapturewithoutborder "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                        call:
+                            -
+                                function: BlockUWPAccessViaGPO
+                                parameters:
+                                    policyName: LetAppsAccessGraphicsCaptureProgrammatic
+                            -
+                                function: BlockUWPAccessViaConsentStore
+                                parameters:
+                                    appCapability: graphicsCaptureProgrammatic
+                            -
+                                function: BlockUWPAccessViaGPO
+                                parameters:
+                                    policyName: LetAppsAccessGraphicsCaptureWithoutBorder
+                            -
+                                function: BlockUWPAccessViaConsentStore
+                                parameters:
+                                    appCapability: graphicsCaptureWithoutBorder
+                    -
+                        name: Disable app access to background activity (breaks Cortana, Search, live tiles, notifications)
+                        recommend: strict # It may affect notifications and system services
+                        docs: |-
+                            This script prevents Windows apps from running in the background [1] [2] [3].
+
+                            This script may improve system performance by reducing resource usage.
+
+                            This script configures:
+
+                            - Windows policy (`LetAppsRunInBackground` [1] [2])
+                            - Privacy settings user interface (`BackgroundAccessApplications!GlobalUserDisabled` [3])
+
+                            > **Caution:**
+                            > This may impact the functionality of apps that rely on background tasks, such as Cortana and Search [2].
+                            > It may also impact live tile updates, along with notifications such as text messages, email and voicemail [3].
+
+                            [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsruninbackground "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#1817-background-apps "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
+                            [3]: https://web.archive.org/web/20240427103845/https://www.c-amie.co.uk/technical/windows-10-registry-paths-for-privacy-settings/ "Windows 10 Registry Paths for Privacy Settings - C:Amie (not) Com! | c-amie.co.uk"
+                        call:
+                            -
+                                function: BlockUWPAccessViaGPO
+                                parameters:
+                                    policyName: LetAppsRunInBackground
+                            -
+                                function: SetRegistryValue
+                                parameters:
+                                    keyPath: HKCU\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications
+                                    valueName: GlobalUserDisabled
+                                    dataType: REG_DWORD
+                                    data: "1"
+                                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+                    -
+                        name: Disable app access to input devices
+                        recommend: standard
+                        docs: |-
+                            This script prevents apps from accessing Human Interface Device (HID) capabilities [1].
+                            HIDs include a wide range of devices such as keyboards, mice, and other input devices that can
+                            communicate directly with the system.
+
+                            By restricting access, the script ensures that applications cannot intercept or record input data
+                            from these devices, thereby safeguarding user interactions.
+
+                            This script configures:
+
+                            - Privacy settings user interface (`humanInterfaceDevice` [1])
+
+                            [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
+                        call:
+                            function: BlockUWPAccessViaConsentStore
+                            parameters:
+                                appCapability: humanInterfaceDevice
+            -
                 category: Disable Application Experience data collection
                 docs: |-
                     Application Experience comprises services and tasks that help applications, including older ones, run smoothly.
@@ -3161,433 +4135,7 @@ actions:
                         parameters:
                             code: reg add "HKCU\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" /v "HarvestContacts" /t REG_DWORD /d 0 /f
                             revertCode: |- # Default value: `1` since Windows 10 21H2, Windows 11 23H2
-                                reg add "HKCU\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" /v "HarvestContacts" /t REG_DWORD /d 1 /f
-            -
-                category: Disable app access to personal information
-                children:
-                    -
-                        name: Disable app access to location
-                        recommend: standard
-                        docs:
-                            # LetAppsAccessLocation:
-                            - https://web.archive.org/web/20240119150031/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccesslocation
-                            # ConsentStore\location:
-                            - https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/
-                            # lfsvc\Service\Configuration:
-                            - https://web.archive.org/web/20231206211616/https://social.technet.microsoft.com/Forums/en-US/63904312-04af-41e5-8b57-1dd446ea45c5/privacy-settings-reg-keys?forum=win10itprosetup
-                        code: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location" /v "Value" /d "Deny" /f
-                            :: For older Windows (before 1903)
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration" /v "Status" /d "0" /t REG_DWORD /f
-                            :: Using GPO (re-activation through GUI is not possible)
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessLocation" /t REG_DWORD /d 2 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessLocation_UserInControlOfTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessLocation_ForceAllowTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessLocation_ForceDenyTheseApps" /t REG_MULTI_SZ /f
-                        revertCode: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location" /v "Value" /d "Allow" /f
-                            :: For older Windows (before 1903)
-                            reg add "HKLM\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration" /v "Status" /d "1" /t REG_DWORD /f
-                            :: Using GPO
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessLocation" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessLocation_UserInControlOfTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessLocation_ForceAllowTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessLocation_ForceDenyTheseApps" /f
-                    -
-                        name: Disable app access to account information, name, and picture
-                        recommend: standard
-                        docs: https://web.archive.org/web/20240119150031/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessaccountinfo
-                        code: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userAccountInformation" /v "Value" /d "Deny" /f
-                            :: For older Windows (before 1903)
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{C1D23ACC-752B-43E5-8448-8D0E519CD6D6}" /t REG_SZ /v "Value" /d "Deny" /f
-                            :: Using GPO (re-activation through GUI is not possible)
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessAccountInfo" /t REG_DWORD /d 2 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessAccountInfo_UserInControlOfTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessAccountInfo_ForceAllowTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessAccountInfo_ForceDenyTheseApps" /t REG_MULTI_SZ /f
-                        revertCode: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userAccountInformation" /v "Value" /d "Allow" /f
-                            :: For older Windows (before 1903)
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{C1D23ACC-752B-43E5-8448-8D0E519CD6D6}" /t REG_SZ /v "Value" /d "Allow" /f
-                            :: GPO
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessAccountInfo" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessAccountInfo_UserInControlOfTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessAccountInfo_ForceAllowTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessAccountInfo_ForceDenyTheseApps" /f
-                    -
-                        name: Disable app access to motion data
-                        recommend: standard
-                        docs: https://web.archive.org/web/20240119150031/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessmotion
-                        code: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\activity" /v "Value" /d "Deny" /f
-                            :: Using GPO (re-activation through GUI is not possible)
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMotion" /t REG_DWORD /d 2 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMotion_UserInControlOfTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMotion_ForceAllowTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMotion_ForceDenyTheseApps" /t REG_MULTI_SZ /f
-                        revertCode: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\activity" /v "Value" /d "Allow" /f
-                            :: GPO
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMotion" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMotion_UserInControlOfTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMotion_ForceAllowTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMotion_ForceDenyTheseApps" /f
-                    -
-                        name: Disable app access to phone
-                        recommend: standard
-                        docs: https://web.archive.org/web/20240119150031/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessphone
-                        code: |-
-                            :: Using GPO (re-activation through GUI is not possible)
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessPhone" /t REG_DWORD /d 2 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessPhone_UserInControlOfTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessPhone_ForceAllowTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessPhone_ForceDenyTheseApps" /t REG_MULTI_SZ /f
-                        revertCode: |-
-                            :: GPO
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessPhone" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessPhone_UserInControlOfTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessPhone_ForceAllowTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessPhone_ForceDenyTheseApps" /f
-                    -
-                        name: Disable app access to trusted devices
-                        docs: https://web.archive.org/web/20240119150031/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccesstrusteddevices
-                        recommend: standard
-                        code: |-
-                            :: For older Windows (before 1903)
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{C1D23ACC-752B-43E5-8448-8D0E519CD6D6}" /t REG_SZ /v "Value" /d "Deny" /f
-                            :: Using GPO (re-activation through GUI is not possible)
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessTrustedDevices" /t REG_DWORD /d 2 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessTrustedDevices_UserInControlOfTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessTrustedDevices_ForceAllowTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessTrustedDevices_ForceDenyTheseApps" /t REG_MULTI_SZ /f
-                        revertCode: |-
-                            :: For older Windows (before 1903)
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{C1D23ACC-752B-43E5-8448-8D0E519CD6D6}" /t REG_SZ /v "Value" /d "Allow" /f
-                            :: GPO
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessTrustedDevices" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessTrustedDevices_UserInControlOfTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessTrustedDevices_ForceAllowTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessTrustedDevices_ForceDenyTheseApps" /f
-                    -
-                        name: Disable app sync with devices (unpaired, beacons, TVs, etc.)
-                        recommend: standard
-                        docs: https://web.archive.org/web/20240119150031/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappssyncwithdevices
-                        code: |-
-                            :: Using GPO (re-activation through GUI is not possible)
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsSyncWithDevices" /t REG_DWORD /d 2 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsSyncWithDevices_UserInControlOfTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsSyncWithDevices_ForceAllowTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsSyncWithDevices_ForceDenyTheseApps" /t REG_MULTI_SZ /f
-                        revertCode: |-
-                            :: GPO
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsSyncWithDevices" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsSyncWithDevices_UserInControlOfTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsSyncWithDevices_ForceAllowTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsSyncWithDevices_ForceDenyTheseApps" /f
-                    -
-                        name: Disable app access to camera
-                        docs:
-                            - https://web.archive.org/web/20240314130000/https://learn.microsoft.com/en-us/windows-hardware/drivers/install/kscategory-video-camera
-                            - https://web.archive.org/web/20240119150031/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccesscamera
-                        code: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam" /v "Value" /d "Deny" /t REG_SZ /f
-                            :: For older Windows (before 1903)
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{E5323777-F976-4f5b-9B55-B94699C46E44}" /t REG_SZ /v "Value" /d "Deny" /f
-                            :: Using GPO (re-activation through GUI is not possible)
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCamera" /t REG_DWORD /d 2 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCamera_UserInControlOfTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCamera_ForceAllowTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCamera_ForceDenyTheseApps" /t REG_MULTI_SZ /f
-                        revertCode: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam" /v "Value" /d "Allow" /t REG_SZ /f
-                            :: For older Windows (before 1903)
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{E5323777-F976-4f5b-9B55-B94699C46E44}" /t REG_SZ /v "Value" /d "Allow" /f
-                            :: GPO
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCamera" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCamera_UserInControlOfTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCamera_ForceAllowTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCamera_ForceDenyTheseApps" /f
-                    -
-                        name: Disable app access to microphone
-                        docs: https://web.archive.org/web/20240119150031/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessmicrophone
-                        code: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\microphone" /v "Value" /d "Deny" /t REG_SZ /f
-                            :: For older Windows (before 1903)
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{2EEF81BE-33FA-4800-9670-1CD474972C3F}" /v "Value" /t REG_SZ /d "Deny" /f
-                            :: Using GPO (re-activation through GUI is not possible)
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMicrophone" /t REG_DWORD /d 2 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMicrophone_UserInControlOfTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMicrophone_ForceAllowTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMicrophone_ForceDenyTheseApps" /t REG_MULTI_SZ /f
-                        revertCode: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\microphone" /v "Value" /d "Allow" /t REG_SZ /f
-                            :: For older Windows (before 1903)
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{2EEF81BE-33FA-4800-9670-1CD474972C3F}" /t REG_SZ /v "Value" /d "Allow" /f
-                            :: GPO
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMicrophone" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMicrophone_UserInControlOfTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMicrophone_ForceAllowTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMicrophone_ForceDenyTheseApps" /f
-                    -
-                        name: Disable app share and sync for non-explicitly paired wireless devices
-                        call:
-                            function: SetRegistryValue
-                            parameters:
-                                keyPath: HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\LooselyCoupled
-                                valueName: Value
-                                dataType: REG_SZ
-                                data: "Deny"
-                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 21H1) and Windows 11 Pro (≥ 22H2)
-                    -
-                        name: Disable app access to diagnostic information about other apps
-                        recommend: standard
-                        docs: https://web.archive.org/web/20240119150031/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsgetdiagnosticinfo
-                        code: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appDiagnostics" /v "Value" /d "Deny" /t REG_SZ /f
-                            :: Using GPO (re-activation through GUI is not possible)
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsGetDiagnosticInfo" /t REG_DWORD /d 2 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsGetDiagnosticInfo_UserInControlOfTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsGetDiagnosticInfo_ForceAllowTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsGetDiagnosticInfo_ForceDenyTheseApps" /t REG_MULTI_SZ /f
-                        revertCode: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appDiagnostics" /v "Value" /d "Allow" /t REG_SZ /f
-                            :: GPO
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsGetDiagnosticInfo" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsGetDiagnosticInfo_UserInControlOfTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsGetDiagnosticInfo_ForceAllowTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsGetDiagnosticInfo_ForceDenyTheseApps" /f
-                    -
-                        category: Disable app access to your file system
-                        children:
-                            -
-                                name: Disable app access to "Documents" folder
-                                recommend: standard
-                                code: reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\documentsLibrary" /v "Value" /d "Deny" /t REG_SZ /f
-                                revertCode: reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\documentsLibrary" /v "Value" /d "Allow" /t REG_SZ /f
-                            -
-                                name: Disable app access to "Pictures" folder
-                                recommend: standard
-                                code: reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\picturesLibrary" /v "Value" /d "Deny" /t REG_SZ /f
-                                revertCode: reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\picturesLibrary" /v "Value" /d "Allow" /t REG_SZ /f
-                            -
-                                name: Disable app access to "Videos" folder
-                                recommend: standard
-                                code: reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\videosLibrary" /v "Value" /d "Deny" /t REG_SZ /f
-                                revertCode: reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\videosLibrary" /v "Value" /d "Allow" /t REG_SZ /f
-                            -
-                                name: Disable app access to other filesystems
-                                recommend: standard
-                                code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\broadFileSystemAccess" /v "Value" /d "Deny" /t REG_SZ /f
-                                revertCode: reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\broadFileSystemAccess" /v "Value" /d "Allow" /t REG_SZ /f
-                    -
-                        name: Disable app access to your contacts
-                        recommend: standard
-                        docs: https://web.archive.org/web/20240119150031/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccesscontacts
-                        code: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\contacts" /v "Value" /d "Deny" /t REG_SZ /f
-                            :: For older Windows (before 1903)
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{7D7E8402-7C54-4821-A34E-AEEFD62DED93}" /t REG_SZ /v "Value" /d "Deny" /f
-                            :: Using GPO (re-activation through GUI is not possible)
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessContacts" /t REG_DWORD /d 2 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessContacts_UserInControlOfTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessContacts_ForceAllowTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessContacts_ForceDenyTheseApps" /t REG_MULTI_SZ /f
-                        revertCode: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\contacts" /v "Value" /d "Allow" /t REG_SZ /f
-                            :: For older Windows (before 1903)
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{7D7E8402-7C54-4821-A34E-AEEFD62DED93}" /t REG_SZ /v "Value" /d "Allow" /f
-                            :: GPO
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessContacts" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessContacts_UserInControlOfTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessContacts_ForceAllowTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessContacts_ForceDenyTheseApps" /f
-                    -
-                        name: Disable app access to Notifications
-                        recommend: standard
-                        docs: https://web.archive.org/web/20240119150031/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessnotifications
-                        code: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userNotificationListener" /v "Value" /d "Deny" /t REG_SZ /f
-                            :: For older Windows (before 1903)
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{52079E78-A92B-413F-B213-E8FE35712E72}" /t REG_SZ /v "Value" /d "Deny" /f
-                            :: Using GPO (re-activation through GUI is not possible)
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessNotifications" /t REG_DWORD /d 2 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessNotifications_UserInControlOfTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessNotifications_ForceAllowTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessNotifications_ForceDenyTheseApps" /t REG_MULTI_SZ /f
-                        revertCode: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userNotificationListener" /v "Value" /d "Allow" /t REG_SZ /f
-                            :: For older Windows (before 1903)
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{52079E78-A92B-413F-B213-E8FE35712E72}" /t REG_SZ /v "Value" /d "Allow" /f
-                            :: Using GPO (re-activation through GUI is not possible)
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessNotifications" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessNotifications_UserInControlOfTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessNotifications_ForceAllowTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessNotifications_ForceDenyTheseApps" /f
-                    -
-                        name: Disable app access to Calendar
-                        recommend: standard
-                        docs: https://web.archive.org/web/20240119150031/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccesscalendar
-                        code: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appointments" /v "Value" /d "Deny" /t REG_SZ /f
-                            :: For older Windows (before 1903)
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{D89823BA-7180-4B81-B50C-7E471E6121A3}" /t REG_SZ /v "Value" /d "Deny" /f
-                            :: Using GPO (re-activation through GUI is not possible)
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCalendar" /t REG_DWORD /d 2 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCalendar_UserInControlOfTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCalendar_ForceAllowTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCalendar_ForceDenyTheseApps" /t REG_MULTI_SZ /f
-                        revertCode: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\appointments" /v "Value" /d "Allow" /t REG_SZ /f
-                            :: For older Windows (before 1903)
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{D89823BA-7180-4B81-B50C-7E471E6121A3}" /t REG_SZ /v "Value" /d "Allow" /f
-                            :: Using GPO
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCalendar" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCalendar_UserInControlOfTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCalendar_ForceAllowTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCalendar_ForceDenyTheseApps" /f
-                    -
-                        name: Disable app access to call history
-                        recommend: standard
-                        docs: https://web.archive.org/web/20240119150031/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccesscallhistory
-                        code: |-
-                            :: Using GPO (re-activation through GUI is not possible)
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\phoneCallHistory" /v "Value" /d "Deny" /t REG_SZ /f
-                            :: For older Windows (before 1903)
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{8BC668CF-7728-45BD-93F8-CF2B3B41D7AB}" /t REG_SZ /v "Value" /d "Deny" /f
-                            :: Using GPO (re-activation through GUI is not possible)
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCallHistory" /t REG_DWORD /d 2 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCallHistory_UserInControlOfTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCallHistory_ForceAllowTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCallHistory_ForceDenyTheseApps" /t REG_MULTI_SZ /f
-                        revertCode: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\phoneCallHistory" /v "Value" /d "Allow" /t REG_SZ /f
-                            :: For older Windows (before 1903)
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{8BC668CF-7728-45BD-93F8-CF2B3B41D7AB}" /t REG_SZ /v "Value" /d "Allow" /f
-                            :: Using GPO
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCallHistory" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCallHistory_UserInControlOfTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCallHistory_ForceAllowTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessCallHistory_ForceDenyTheseApps" /f
-                    -
-                        name: Disable app access to email
-                        recommend: standard
-                        docs: https://web.archive.org/web/20240119150031/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessemail
-                        code: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\email" /v "Value" /d "Deny" /t REG_SZ /f
-                            :: For older Windows (before 1903)
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{9231CB4C-BF57-4AF3-8C55-FDA7BFCC04C5}" /t REG_SZ /v "Value" /d "Deny" /f
-                            :: Using GPO (re-activation through GUI is not possible)
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessEmail" /t REG_DWORD /d 2 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessEmail_UserInControlOfTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessEmail_ForceAllowTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessEmail_ForceDenyTheseApps" /t REG_MULTI_SZ /f
-                        revertCode: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\email" /v "Value" /d "Allow" /t REG_SZ /f
-                            :: For older Windows (before 1903)
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{9231CB4C-BF57-4AF3-8C55-FDA7BFCC04C5}" /t REG_SZ /v "Value" /d "Allow" /f
-                            :: Using GPO
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessEmail" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessEmail_UserInControlOfTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessEmail_ForceAllowTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessEmail_ForceDenyTheseApps" /f
-                    -
-                        name: Disable app access to tasks
-                        recommend: standard
-                        docs: https://web.archive.org/web/20240119150031/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccesstasks
-                        code: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userDataTasks" /v "Value" /d "Deny" /t REG_SZ /f
-                            :: Using GPO (re-activation through GUI is not possible)
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessTasks" /t REG_DWORD /d 2 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessTasks_UserInControlOfTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessTasks_ForceAllowTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessTasks_ForceDenyTheseApps" /t REG_MULTI_SZ /f
-                        revertCode: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\userDataTasks" /v "Value" /d "Allow" /t REG_SZ /f
-                            :: Using GPO
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessTasks" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessTasks_UserInControlOfTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessTasks_ForceAllowTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessTasks_ForceDenyTheseApps" /f
-                    -
-                        name: Disable app access to messaging (SMS / MMS)
-                        recommend: standard
-                        docs: https://web.archive.org/web/20240119150031/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessmessaging
-                        code: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\chat" /v "Value" /d "Deny" /t REG_SZ /f
-                            :: For older Windows (before 1903)
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{992AFA70-6F47-4148-B3E9-3003349C1548}" /t REG_SZ /v "Value" /d "Deny" /f
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{21157C1F-2651-4CC1-90CA-1F28B02263F6}" /t REG_SZ /v "Value" /d "Deny" /f
-                            :: Using GPO (re-activation through GUI is not possible)
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMessaging" /t REG_DWORD /d 2 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMessaging_UserInControlOfTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMessaging_ForceAllowTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMessaging_ForceDenyTheseApps" /t REG_MULTI_SZ /f
-                        revertCode: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\chat" /v "Value" /d "Allow" /t REG_SZ /f
-                            :: For older Windows (before 1903)
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{992AFA70-6F47-4148-B3E9-3003349C1548}" /t REG_SZ /v "Value" /d "Allow" /f
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{21157C1F-2651-4CC1-90CA-1F28B02263F6}" /t REG_SZ /v "Value" /d "Allow" /f
-                            :: Using GPO
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMessaging" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMessaging_UserInControlOfTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMessaging_ForceAllowTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessMessaging_ForceDenyTheseApps" /f
-                    -
-                        name: Disable app access to radios
-                        recommend: standard
-                        docs: https://web.archive.org/web/20240119150031/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessradios
-                        code: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\radios" /v "Value" /d "Deny" /t REG_SZ /f
-                            :: For older Windows (before 1903)
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{A8804298-2D5F-42E3-9531-9C8C39EB29CE}" /t REG_SZ /v "Value" /d DENY /f
-                            :: Using GPO (re-activation through GUI is not possible)
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessRadios" /t REG_DWORD /d 2 /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessRadios_UserInControlOfTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessRadios_ForceAllowTheseApps" /t REG_MULTI_SZ /f
-                            reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessRadios_ForceDenyTheseApps" /t REG_MULTI_SZ /f
-                        revertCode: |-
-                            reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\radios" /v "Value" /d "Allow" /t REG_SZ /f
-                            :: For older Windows (before 1903)
-                            reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{A8804298-2D5F-42E3-9531-9C8C39EB29CE}" /t REG_SZ /v "Value" /d "Allow" /f
-                            :: Using GPO
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessRadios" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessRadios_UserInControlOfTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessRadios_ForceAllowTheseApps" /f
-                            reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsAccessRadios_ForceDenyTheseApps" /f
-                    -
-                        name: Disable app access to Bluetooth devices
-                        recommend: standard
-                        code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\bluetoothSync" /v "Value" /d "Deny" /t REG_SZ /f
-                        revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\bluetoothSync" /v "Value" /d "Allow" /t REG_SZ /f
-                    -
-                        category: Disable app access to voice activation
-                        children:
-                            -
-                                name: Disable voice activation for apps including Cortana
-                                recommend: standard
-                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.AppPrivacy::LetAppsActivateWithVoice
-                                code: |-
-                                    reg add "HKCU\Software\Microsoft\Speech_OneCore\Settings\VoiceActivation\UserPreferenceForAllApps" /v "AgentActivationEnabled" /t REG_DWORD /d 0 /f
-                                    :: Using GPO (re-activation through GUI is not possible)
-                                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsActivateWithVoice" /t REG_DWORD /d 2 /f
-                                revertCode: |-
-                                    reg add "HKCU\Software\Microsoft\Speech_OneCore\Settings\VoiceActivation\UserPreferenceForAllApps" /v "AgentActivationEnabled" /t REG_DWORD /d 1 /f
-                                    :: Using GPO
-                                    reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsActivateWithVoice" /f
-                            -
-                                name: Disable voice activation for apps including Cortana on locked system
-                                recommend: standard
-                                docs: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.AppPrivacy::LetAppsActivateWithVoiceAboveLock
-                                code: |-
-                                    reg add "HKCU\Software\Microsoft\Speech_OneCore\Settings\VoiceActivation\UserPreferenceForAllApps" /v "AgentActivationOnLockScreenEnabled" /t REG_DWORD /d 0 /f
-                                    :: Using GPO (re-activation through GUI is not possible)
-                                    reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsActivateWithVoiceAboveLock" /t REG_DWORD /d 2 /f
-                                revertCode: |-
-                                    reg add "HKCU\Software\Microsoft\Speech_OneCore\Settings\VoiceActivation\UserPreferenceForAllApps" /v "AgentActivationOnLockScreenEnabled" /t REG_DWORD /d 1 /f
-                                    :: Using GPO
-                                    reg delete "HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" /v "LetAppsActivateWithVoiceAboveLock" /f
-            -
+                                reg add "HKCU\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" /v "HarvestContacts" /t REG_DWORD /d 1 /f            -
                 category: Disable location access
                 children:
                     -
@@ -22978,4 +23526,115 @@ functions:
                     valueName: "{{ $valueName }}"
                     dataType: REG_DWORD
                     data: '{{ $valueData }}'
+                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+    -
+        name: BlockUWPAccessViaGPO
+        parameters:
+            - name: policyName
+        docs: |-
+            This function blocks UWP apps from accessing the specified OS feature.
+
+            It uses Group Policy Objects (GPO) using `HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy` registry keys [1] [2].
+            This policies prevent user modification of these settings via the graphical user interface.
+
+            Additionally, the script configures exceptions using the `UserInControlOfTheseApps`, `ForceAllowTheseApps`, and
+            `ForceDenyTheseApps` keys [2]. These keys, of type `REG_MULTI_SZ`, manage lists of null-terminated strings [3]
+            The script sets these to `NULL`, ensuring that even empty lists are properly terminated with a null character to
+            maintain registry integrity [3] [4].
+
+            [1]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#31-services-configuration "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn"
+            [2]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+            [3]: https://web.archive.org/web/20240521092322/https://learn.microsoft.com/en-us/windows/win32/sysinfo/registry-value-types "Registry value types - Win32 apps | Microsoft Learn | learn.microsoft.com"
+            [4]: https://web.archive.org/web/20240521092438/https://learn.microsoft.com/en-us/windows/win32/api/winreg/nf-winreg-regsetvalueexa "[in] cbData must include the size of the terminating null character or characters. | RegSetValueExA function (winreg.h) - Win32 apps | Microsoft Learn"
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: Disable app access ({{ $policyName }}) using GPO (re-activation through GUI is not possible)
+                    revertCodeComment: Restore app access ({{ $policyName }}) using GPO
+            -
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy
+                    valueName: "{{ $policyName }}"
+                    dataType: REG_DWORD
+                    data: '2'
+                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+            -
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy
+                    valueName: "{{ $policyName }}_UserInControlOfTheseApps"
+                    dataType: REG_MULTI_SZ
+                    data: '\0' # `REG_MULTI_SZ` means null terminated string list, empty list should also be terminated with null character
+                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+            -
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy
+                    valueName: "{{ $policyName }}_ForceAllowTheseApps"
+                    dataType: REG_MULTI_SZ
+                    data: '\0' # `REG_MULTI_SZ` means null terminated string list, empty list should also be terminated with null character
+                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+            -
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy
+                    valueName: "{{ $policyName }}_ForceDenyTheseApps"
+                    dataType: REG_MULTI_SZ
+                    data: '\0' # `REG_MULTI_SZ` means null terminated string list, empty list should also be terminated with null character
+                    deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+    -
+        name: BlockUWPAccessViaConsentStore
+        parameters:
+            - name: appCapability
+        docs: |-
+            This function blocks UWP apps from accessing the specified OS feature.
+
+            This function restricts UWP apps from utilizing certain OS features by modifying settings in the
+            `CapabilityAccessManager\ConsentStore` [1]. It sets the specified app capability to "Deny", overriding the
+            default "Allow" setting present in Windows versions since 10 22H2 and Windows 11 23H2.
+
+            Run following command to see all available settings:
+
+            > `reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore`
+
+            [1]: https://web.archive.org/web/20240427114500/https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ "Registry Keys for Windows 10 Application Privacy Settings - Jose Espitia | joseespitia.com"
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: Disable app capability ({{ $appCapability }}) using user privacy settings
+                    revertCodeComment: Restore app capability ({{ $appCapability }}) using user privacy settings
+            -
+                function: RunInlineCode
+                parameters:
+                    code: >-
+                        reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\{{ $appCapability }}" /v "Value" /d "Deny" /t REG_SZ /f
+                    revertCode: >- # All subkeys have `Allow` value since Windows 10 22H2 Pro and Windows 11 23H2 Pro
+                        reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\{{ $appCapability }}" /v "Value" /d "Allow" /t "REG_SZ" /f
+    -
+        name: BlockUWPLegacyDeviceAccess
+        parameters:
+            - name: deviceAccessId
+        docs: |-
+            This function blocks UWP apps from accessing the specified OS feature.
+
+            It applies to older versions of Windows [1].
+            It modifies registry settings in the `HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global` [1].
+
+            [1]: https://web.archive.org/web/20240427103845/https://www.c-amie.co.uk/technical/windows-10-registry-paths-for-privacy-settings/ "Windows 10 Registry Paths for Privacy Settings - C:Amie (not) Com! | c-amie.co.uk"
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: Disable app access ({{ $deviceAccessId }}) in older Windows versions (before 1903)
+                    revertCodeComment: Restore app access ({{ $deviceAccessId }}) in older Windows versions (before 1903)
+            -
+                function: SetRegistryValue
+                parameters:
+                    keyPath: HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\DeviceAccess\Global\{{ $deviceAccessId }}
+                    valueName: "Value"
+                    dataType: REG_SZ
+                    data: 'Deny'
                     deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
