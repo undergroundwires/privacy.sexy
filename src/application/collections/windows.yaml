@@ -7120,8 +7120,8 @@ actions:
                             latest guidelines and practices.
 
                             > **Caution**:
-                            > Using bigger keys increases security but may not work with some old or less secure apps.
-                            > This can make your device slower and drain the battery faster.
+                            > - Using bigger keys increases security but may not work with some old or less secure apps.
+                            > - This can make your device slower and drain the battery faster.
                         children:
                             -
                                 name: Enable strong Diffie-Hellman key requirement
@@ -7144,8 +7144,8 @@ actions:
                                     This script hardens your system's security by using keys of adequate strength, following best practices.
 
                                     > **Caution**:
-                                    > Using bigger keys increases security but may not work with some old or less secure apps.
-                                    > This can make your device slower and drain the battery faster.
+                                    > - Using bigger keys increases security but may not work with some old or less secure apps.
+                                    > - This can make your device slower and drain the battery faster.
 
                                     [1]: https://web.archive.org/web/20240402105325/https://learn.microsoft.com/en-us/security-updates/securityadvisories/2016/3174644 "Microsoft Security Advisory 3174644 | Microsoft Learn | learn.microsoft.com"
                                     [2]: https://web.archive.org/web/20240402112853/https://learn.microsoft.com/en-us/windows-server/security/tls/tls-registry-settings "Transport Layer Security (TLS) registry settings | Microsoft Learn | learn.microsoft.com"
@@ -7159,8 +7159,8 @@ actions:
                                         algorithmName: Diffie-Hellman
                                         keySizeInBits: 2048
                             -
-                                name: Enable strong RSA key requirement
-                                recommend: standard # Microsoft deprecated it and will end support
+                                name: Enable strong RSA key requirement (breaks Hyper-V VMs)
+                                recommend: strict # Microsoft deprecated it and will end support; but breaks Hyper-V VMs, see #363
                                 docs: |- # refactor-with-variables: Same • Caution • handshake
                                     This script improves your security by enforcing a minimum of 2048 bits for RSA encryption keys (`PKCS` [1] [2]).
                                     RSA encryption keys play a crucial role in securing communications over the internet.
@@ -7179,17 +7179,20 @@ actions:
                                     These entities, including the Federal Office for Information Security (BSI) in Germany [2] and the National Institute of Standards
                                     and Technology (NIST) in the USA [4] [5], now recommend the use of keys that are 2048 bits or longer.
                                     RSA key exchanges of 2048 bits or are widely accepted.
+
                                     In 2012, Microsoft deprecated 1024-bit RSA keys for their applications [5] [6] and will end support for them in
                                     Windows by March 2024 [3].
 
                                     While 2048-bit keys balances security with efficiency [7], a shift towards stronger 4096-bit RSA keys is emerging.
                                     Projects like Debian [8], Fedora [9], and CaCert.org [10] use larger keys for long-term tasks.
 
-                                    This script helps to protect the privacy and integrity of your data.
+                                    However, this script disrupts connections to Hyper-V virtual machines, which still require 1024-bit keys [11].
+                                    It does not affect other virtual environments such as Docker, WSL, or Windows Sandbox [11].
 
                                     > **Caution**:
-                                    > Using bigger keys increases security but may not work with some old or less secure apps.
-                                    > This can make your device slower and drain the battery faster.
+                                    > - The script prevents access to Hyper-V VMs.
+                                    > - Using bigger keys increases security but may not work with some old or less secure apps.
+                                    > - This can make your device slower and drain the battery faster.
 
                                     [1]: https://web.archive.org/web/20240403064025/https://learn.microsoft.com/en-us/windows-server/security/tls/tls-registry-settings?tabs=rsa "Transport Layer Security (TLS) registry settings | Microsoft Learn | learn.microsoft.com"
                                     [2]: https://web.archive.org/web/20240402183249/https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/Hilfsmittel/Hilfsmittel_Anforderungen_des_IT_Grundschutzes_fuer_Windows_10.pdf?__blob=publicationFile&v=2 "Hilfsmittel zur Umsetzung von Anforderungen des IT Grundschutzes für Windows 10 | Bundesamt für Sicherheit in der Informationstechnik | bsi.bund.de"
@@ -7201,6 +7204,7 @@ actions:
                                     [8]: https://web.archive.org/web/20240402105239/https://wiki.debian.org/Keysigning#Step_1:_Create_a_RSA_keypair "Keysigning - Debian Wiki | wiki.debian.org"
                                     [9]: https://web.archive.org/web/20240402105244/https://fedoraproject.org/security/ "Fedora keeps you safe | The Fedora Project | fedoraproject.org"
                                     [10]: https://web.archive.org/web/20240402112840/http://www.cacert.org/policy/CertificationPracticeStatement.html#p6.1.5 "Certification Practice Statement (CPS) | cacert.org"
+                                    [11]: https://web.archive.org/web/20240519131322/https://github.com/undergroundwires/privacy.sexy/issues/363 "Hyper-V VM connection issues after running \"Standard\" · Issue #363 · undergroundwires/privacy.sexy"
                                 call:
                                     function: RequireTLSMinimumKeySize
                                     parameters:
