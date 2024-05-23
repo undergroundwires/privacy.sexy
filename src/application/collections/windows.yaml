@@ -14958,13 +14958,49 @@ actions:
                             These apps, while useful for certain users, might not be required by everyone, thus providing the option to uninstall them.
                         children:
                             -
-                                name: Remove "Microsoft 3D Builder" app
+                                name: Remove insecure "Print 3D" app
+                                recommend: standard # Deprecated application with known security vulnerabilities; removal does not impact essential system functionality
                                 docs: |-
-                                    [Microsoft Store Page](https://web.archive.org/web/20231003172322/https://apps.microsoft.com/store/detail/3d-builder/9WZDNCRFJ3T6?hl=en-us)
+                                    This script uninstalls the "Print 3D" application.
 
-                                    This app comes pre-installed on certain versions of Windows [1] [2] [3].
+                                    This app enhances 3D printing by supporting network printers, optimizing settings, and rendering objects realistically [1].
+
+                                    However, this app poses certain risks.
+                                    The application can access the Internet, home or work networksm and your 3D objects [1].
+                                    It has known serious security vulnerabilities such as "Remote Code Execution Vulnerability" [2].
+                                    These vulnerabilities allow attackers to remotely execute malicious code on your system.
+                                    This app is no longer supported [3], and Microsoft does not plan to issue patches [2].
+
+                                    Removing this app mitigates security risks, enhances privacy by reducing data exposure,
+                                    and frees up system resources, potentially improving performance.
+
+                                    Microsoft has deprecated the "Print 3D" app in favor of the "Microsoft 3D Builder" app [3].
+                                    It is recommended to upgrade to this newer application for ongoing support and features.
+
+                                    This script removes both the legacy `Windows.Print3D` and the current `Microsoft.Print3D` packages from your system.
+                                    `Windows.Print3D` package name is changed to `Microsoft.Print3D` since Windows 1903 [4].
+
+                                    See also: [Microsoft Store Page](https://web.archive.org/web/20211207041221/https://www.microsoft.com/en-us/p/print-3d/9pbpch085s3s?activetab=pivot:overviewtab)
 
                                     ### Overview of default preinstallation
+
+                                    `Microsoft.Print3D`:
+
+                                    This app comes pre-installed on certain versions of Windows [4] [5] [6] [7].
+
+                                    | OS | Version | Existence |
+                                    | -- |:-------:|:---------:|
+                                    | Windows 10 | 19H2 | ✅ |
+                                    | Windows 10 | 20H2 | ❌ |
+                                    | Windows 10 | 21H2 | ❌ |
+                                    | Windows 10 | 22H2 | ❌ |
+                                    | Windows 11 | 21H2 | ❌ |
+                                    | Windows 11 | 22H2 | ❌ |
+                                    | Windows 11 | 23H2 | ❌ |
+
+                                    `Windows.Print3D`:
+
+                                    This app comes pre-installed on certain versions of Windows [4] [5] [8].
 
                                     | OS | Version | Existence |
                                     | -- |:-------:|:---------:|
@@ -14976,9 +15012,62 @@ actions:
                                     | Windows 11 | 22H2 | ❌ |
                                     | Windows 11 | 23H2 | ❌ |
 
-                                    [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
-                                    [2]: https://web.archive.org/web/20221101231811/https://learn.microsoft.com/en-us/windows/application-management/provisioned-apps-windows-client-os "Get the provisioned apps on Windows client operating system - Windows Application Management | Microsoft Learn"
-                                    [3]: https://web.archive.org/web/20231230073627/https://learn.microsoft.com/en-us/windows/application-management/remove-provisioned-apps-during-update "Keep removed apps from returning during an update - Windows Application Management | Microsoft Learn"
+                                    [1]: https://web.archive.org/web/20231003172322/https://apps.microsoft.com/store/detail/3d-builder/9WZDNCRFJ3T6?hl=en-us "3D Builder - Microsoft Store Apps | apps.microsoft.com"
+                                    [2]: https://archive.today/2024.05.20-104104/https://msrc.microsoft.com/update-guide/vulnerability/CVE-2023-23378 "CVE-2023-23378 - Security Update Guide - Microsoft - Print 3D Remote Code Execution Vulnerability | msrc.microsoft.com"
+                                    [3]: https://web.archive.org/web/20240403064138/https://learn.microsoft.com/en-us/windows/whats-new/deprecated-features "Deprecated features in the Windows client - What's new in Windows | Microsoft Learn | learn.microsoft.com"
+                                    [4]: https://web.archive.org/web/20240520104135/https://github.com/MicrosoftDocs/windows-itpro-docs/pull/4153#issuecomment-519160643 "Provisioned Apps list + System Apps list for Windows 10 1903 by RAJU2529 · Pull Request #4153 · MicrosoftDocs/windows-itpro-docs | github.com"
+                                    [5]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
+                                    [6]: https://web.archive.org/web/20221101231811/https://learn.microsoft.com/en-us/windows/application-management/provisioned-apps-windows-client-os "Get the provisioned apps on Windows client operating system - Windows Application Management | Microsoft Learn"
+                                    [7]: https://web.archive.org/web/20231230073627/https://learn.microsoft.com/en-us/windows/application-management/remove-provisioned-apps-during-update "Keep removed apps from returning during an update - Windows Application Management | Microsoft Learn"
+                                    [8]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
+                                call:
+                                    -
+                                        function: UninstallStoreApp
+                                        parameters:
+                                            packageName: Microsoft.Print3D # Get-AppxPackage Microsoft.Print3D
+                                            publisherId: 8wekyb3d8bbwe
+                                    -
+                                        function: UninstallNonRemovableStoreAppWithCleanup
+                                        parameters:
+                                            packageName: Windows.Print3D # Get-AppxPackage Windows.Print3D
+                                            publisherId: cw5n1h2txyewy
+                            -
+                                name: Remove "Microsoft 3D Builder" app
+                                docs: |-
+                                    This script uninstalls the "Microsoft 3D Builder" app.
+
+                                    Microsoft 3D Builder offers tools for creating, viewing, and printing 3D objects [1].
+                                    It supports editing various 3D file types with features like material rendering, texture layering, 
+                                    and includes tools to prepare models for 3D printing [1].
+
+                                    This app succeeded the older "Print 3D" app as the default 3D printing software starting with the Windows 10 version 19H1 [2].
+
+                                    This application uses your webcam, microphone, and internet connection [1], posing privacy risks due to potential data exposure.
+                                    Uninstalling this app reduces privacy risks, frees up system resources, and minimizes the attack surface, thereby enhancing security.
+
+                                    See also: [Microsoft Store Page](https://archive.ph/2024.05.23-070639/https://apps.microsoft.com/detail/9wzdncrfj3t6?hl=en-us&gl=US)
+
+                                    ### Overview of default preinstallation
+
+                                    This app comes pre-installed on certain versions of Windows [3] [4] [5].
+                                    Since the Windows 10 version 1709, it has not been installed by default [6].
+
+                                    | OS | Version | Existence |
+                                    | -- |:-------:|:---------:|
+                                    | Windows 10 | 19H2 | ❌ |
+                                    | Windows 10 | 20H2 | ❌ |
+                                    | Windows 10 | 21H2 | ❌ |
+                                    | Windows 10 | 22H2 | ❌ |
+                                    | Windows 11 | 21H2 | ❌ |
+                                    | Windows 11 | 22H2 | ❌ |
+                                    | Windows 11 | 23H2 | ❌ |
+
+                                    [1]: https://archive.ph/2024.05.23-070639/https://apps.microsoft.com/detail/9wzdncrfj3t6?hl=en-us&gl=US "3D Builder - Microsoft Store Apps | apps.microsoft.com"
+                                    [2]: https://web.archive.org/web/20240403064138/https://learn.microsoft.com/en-us/windows/whats-new/deprecated-features "Deprecated features in the Windows client - What's new in Windows | Microsoft Learn | learn.microsoft.com"
+                                    [3]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
+                                    [4]: https://web.archive.org/web/20221101231811/https://learn.microsoft.com/en-us/windows/application-management/provisioned-apps-windows-client-os "Get the provisioned apps on Windows client operating system - Windows Application Management | Microsoft Learn"
+                                    [5]: https://web.archive.org/web/20231230073627/https://learn.microsoft.com/en-us/windows/application-management/remove-provisioned-apps-during-update "Keep removed apps from returning during an update - Windows Application Management | Microsoft Learn"
+                                    [6]: https://web.archive.org/web/20240520103449/https://learn.microsoft.com/en-us/windows/whats-new/removed-features "Features and functionality removed in Windows client - What's new in Windows | Microsoft Learn | learn.microsoft.com"
                                 call:
                                     function: UninstallStoreApp
                                     parameters:
@@ -15994,33 +16083,6 @@ actions:
                             function: UninstallStoreApp
                             parameters:
                                 packageName: Microsoft.Wallet # Get-AppxPackage Microsoft.Wallet
-                                publisherId: 8wekyb3d8bbwe
-                    -
-                        name: Remove "Print 3D" app
-                        docs: |-
-                            [Microsoft Store Page](https://web.archive.org/web/20211207041221/https://www.microsoft.com/en-us/p/print-3d/9pbpch085s3s?activetab=pivot:overviewtab)
-
-                            This app comes pre-installed on certain versions of Windows [1] [2] [3].
-
-                            ### Overview of default preinstallation
-
-                            | OS | Version | Existence |
-                            | -- |:-------:|:---------:|
-                            | Windows 10 | 19H2 | ✅ |
-                            | Windows 10 | 20H2 | ❌ |
-                            | Windows 10 | 21H2 | ❌ |
-                            | Windows 10 | 22H2 | ❌ |
-                            | Windows 11 | 21H2 | ❌ |
-                            | Windows 11 | 22H2 | ❌ |
-                            | Windows 11 | 23H2 | ❌ |
-
-                            [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
-                            [2]: https://web.archive.org/web/20221101231811/https://learn.microsoft.com/en-us/windows/application-management/provisioned-apps-windows-client-os "Get the provisioned apps on Windows client operating system - Windows Application Management | Microsoft Learn"
-                            [3]: https://web.archive.org/web/20231230073627/https://learn.microsoft.com/en-us/windows/application-management/remove-provisioned-apps-during-update "Keep removed apps from returning during an update - Windows Application Management | Microsoft Learn"
-                        call:
-                            function: UninstallStoreApp
-                            parameters:
-                                packageName: Microsoft.Print3D # Get-AppxPackage Microsoft.Print3D
                                 publisherId: 8wekyb3d8bbwe
                     -
                         name: Remove "Mobile Plans" app
@@ -18300,53 +18362,134 @@ actions:
                                         packageName: Windows.ContactSupport # Get-AppxPackage Windows.ContactSupport
                                         publisherId: cw5n1h2txyewy
                             -
-                                name: Remove "Windows Print 3D" app
-                                docs: |-
-                                    This app comes pre-installed on certain versions of Windows [1] [2].
+                                category: Remove printing user interface
+                                docs: |- # refactor-with-variables: • Caution
+                                    This category includes scripts that remove applications providing printing-related user interfaces.
+                                    These interfaces manage printing tasks from the desktop environment.
+                                    Both system and third-party applications use these interfaces.
 
-                                    ### Overview of default preinstallation
+                                    Removing these apps benefits users who do not use physical printing or prefer alternative methods.
+                                    This can streamline system operations and enhance security by reducing the attack surface.
+                                    Additionally, removing these apps enhances your data privacy by preventing unauthorized printing of sensitive documents.
 
-                                    | OS | Version | Existence |
-                                    | -- |:-------:|:---------:|
-                                    | Windows 10 | 19H2 | ❌ |
-                                    | Windows 10 | 20H2 | ❌ |
-                                    | Windows 10 | 21H2 | ❌ |
-                                    | Windows 10 | 22H2 | ❌ |
-                                    | Windows 11 | 21H2 | ❌ |
-                                    | Windows 11 | 22H2 | ❌ |
-                                    | Windows 11 | 23H2 | ❌ |
+                                    However, removing these essential printing interfaces can disrupt normal printing functions for dependent applications.
+                                    Users should assess whether these apps are essential to their workflow before removal.
+                                    Do not run these scripts if you rely on the operating system's printing functionality.
 
-                                    [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
-                                    [2]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
-                                call:
-                                    function: UninstallNonRemovableStoreAppWithCleanup
-                                    parameters:
-                                        packageName: Windows.Print3D # Get-AppxPackage Windows.Print3D
-                                        publisherId: cw5n1h2txyewy
-                            -
-                                name: Remove "Print UI" app
-                                docs: |-
-                                    This app comes pre-installed on certain versions of Windows [1] [2].
+                                    > **Caution:**
+                                    > This may significantly impair your ability to print.
+                                children:
+                                    -
+                                        name: Remove "Print Queue" app (breaks printing)
+                                        docs: |- # refactor-with-variables: • Caution
+                                            This script removes the "Print Queue" app [1] [2] [3],
+                                            also known as the *Print Queue Action Center* [1] [2] [3] [4] [5].
 
-                                    ### Overview of default preinstallation
+                                            This app replaces the older print queue dialog with a modern user interface (UI) [3] [5].
+                                            It enables users to view and manage their print jobs, including pausing and resuming them [1] [2].
 
-                                    | OS | Version | Existence |
-                                    | -- |:-------:|:---------:|
-                                    | Windows 10 | 19H2 | ✅ |
-                                    | Windows 10 | 20H2 | ✅ |
-                                    | Windows 10 | 21H2 | ✅ |
-                                    | Windows 10 | 22H2 | ✅ |
-                                    | Windows 11 | 21H2 | ✅ |
-                                    | Windows 11 | 22H2 | ✅ |
-                                    | Windows 11 | 23H2 | ✅ |
+                                            The app first appeared in an early version of Windows 11 (build 22567.1) [5].
+                                            It became fully functional in later updates (starting with build 22572.1) [3].
+                                            The Windows 11 22H2 update includes it for general users [6].
 
-                                    [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
-                                    [2]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
-                                call:
-                                    function: UninstallNonRemovableStoreAppWithCleanup
-                                    parameters:
-                                        packageName: Windows.PrintDialog # Get-AppxPackage Windows.PrintDialog
-                                        publisherId: cw5n1h2txyewy
+                                            To determine if this app is essential for your workflow, launch it from the terminal using the following
+                                            command to explore its features before deciding on its removal [1] [2]:
+
+                                            ```
+                                            explorer.exe shell:appsFolder\Microsoft.Windows.PrintQueueActionCenter_cw5n1h2txyewy!App
+                                            ```
+
+                                            This app comes pre-installed on certain versions of Windows [4] [2] [5] [3] [6].
+
+                                            Uninstalling this app can improve system performance by reducing background processes.
+
+                                            > **Caution:**
+                                            > This may significantly impair your ability to print.
+                                            > Be cautious about removing this app if you rely on printing services.
+                                            > This app is essential for printing in Windows 11 [1].
+                                            > Switching back to older interfaces might not be possible [6].
+
+                                            ### Overview of default preinstallation
+
+                                            | OS | Version | Existence |
+                                            | -- | ------- | --------- |
+                                            | Windows 10 | 19H2 | ❌ |
+                                            | Windows 10 | 20H2 | ❌ |
+                                            | Windows 10 | 21H2 | ❌ |
+                                            | Windows 10 | 22H2 | ❌ |
+                                            | Windows 11 | 21H2 | ❌ |
+                                            | Windows 11 | 22H2 | ✅ |
+                                            | Windows 11 | 23H2 | ✅ |
+
+                                            [1]: https://web.archive.org/web/20240322115140/https://www.elevenforum.com/t/pause-and-resume-printing-in-windows-11.11913/ "Pause and Resume Printing in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
+                                            [2]: https://web.archive.org/web/20240322115355/https://blogs.windows.com/windows-insider/2024/01/03/announcing-windows-11-insider-preview-build-26020-canary-channel/ "Announcing Windows 11 Insider Preview Build 26020 (Canary Channel) | Windows Insider Blog | blogs.windows.com"
+                                            [3]: https://web.archive.org/web/20240322115428/https://betawiki.net/wiki/Windows_11_build_22572.1 "Windows 11 build 22572.1 - BetaWiki | betawiki.net"
+                                            [4]: https://web.archive.org/web/20230610014325/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn | learn.microsoft.com"
+                                            [5]: https://web.archive.org/web/20240322115338/https://betawiki.net/wiki/Windows_11_build_22567.1 "Windows 11 build 22567.1 - BetaWiki | betawiki.net"
+                                            [6]: https://web.archive.org/web/20240322115646/https://answers.microsoft.com/en-us/windows/forum/all/windows-11-22h2-update-issue-with-printer-queue-in/52c8eb48-a9d1-41c7-9e97-616713bfab81 "Windows 11 22H2 Update Issue with Printer Queue in Lower right hand - Microsoft Community | answers.microsoft.com"
+                                        call:
+                                            function: UninstallNonRemovableStoreApp
+                                            parameters:
+                                                packageName: Microsoft.Windows.PrintQueueActionCenter # Get-AppxPackage Microsoft.Windows.PrintQueueActionCenter
+                                                publisherId: cw5n1h2txyewy
+                                    -
+                                        name: Remove "Print UI" app (breaks printing for some apps)
+                                        docs: |- # refactor-with-variables: • Caution
+                                            This script removes the "Print UI" system application.
+                                            This app comes pre-installed on certain versions of Windows [1] [2].
+
+                                            First introduced in early development builds of Windows 10 [3] [4] [5], the "Print UI" app
+                                            is crucial for the native printing experience in Windows. When users click the Print button in
+                                            apps such as Photos or early versions of Edge browser (before Chromium), this UI is displayed [6] [7].
+                                            Since the release of Windows 11 22H2, Microsoft has replaced the legacy print dialog for all
+                                            classic apps (like Notepad and WordPad) with this newer interface [8].
+
+                                            To determine if this app is essential for your workflow, launch it from the terminal using the following
+                                            command to explore its features before deciding on its removal [3] [4] [5]:
+
+                                            ```
+                                            explorer.exe shell:AppsFolder\Windows.PrintDialog_cw5n1h2txyewy!Microsoft.Windows.PrintDialog
+                                            ```
+
+                                            The app is located at `C:\Windows\PrintDialog` [6] [7].
+
+                                            Removing it may enhance system performance and security by reducing unnecessary components and the attack surface.
+                                            It's safe to remove if you use applications that have their own printing dialogs or that directly request a
+                                            different user interface from the operating system.
+
+                                            However, applications like the Photos app, which depend on hard-coded calls to this UI, may lose printing
+                                            functionality if the app is removed [6] [7].
+                                            Therefore, it is advisable not to remove this app if you rely on such applications for printing.
+
+                                            > **Caution**:
+                                            > This may significantly impair your ability to print.
+                                            > Removing this application may disrupt the ability of other apps to initiate printing tasks.
+
+                                            ### Overview of default preinstallation
+
+                                            | OS | Version | Existence |
+                                            | -- |:-------:|:---------:|
+                                            | Windows 10 | 19H2 | ✅ |
+                                            | Windows 10 | 20H2 | ✅ |
+                                            | Windows 10 | 21H2 | ✅ |
+                                            | Windows 10 | 22H2 | ✅ |
+                                            | Windows 11 | 21H2 | ✅ |
+                                            | Windows 11 | 22H2 | ✅ |
+                                            | Windows 11 | 23H2 | ✅ |
+
+                                            [1]: https://web.archive.org/web/20210727081048/https://docs.microsoft.com/en-us/windows/application-management/apps-in-windows-10 "Windows 10 - Apps - Windows Application Management | Microsoft Docs"
+                                            [2]: https://web.archive.org/web/20221101233445/https://learn.microsoft.com/en-us/windows/application-management/system-apps-windows-client-os "Get the system apps on Windows client operating system - Windows Application Management | Microsoft Learn"
+                                            [3]: https://web.archive.org/web/20240515081857/https://betawiki.net/wiki/Windows_10_build_10041_(fbl_impressive) "Windows 10 build 10041 (fbl_impressive) - BetaWiki | betawiki.net"
+                                            [4]: https://archive.today/2024.05.15-082810/https://thecollectionbook.info/windows/10/1432 "Microsoft Windows 10, 10.0.9909.0 - The Collection Book | thecollectionbook.info"
+                                            [5]: https://archive.today/2024.05.15-082800/https://www.betaworld.cn/index.php?title=Windows_10:10.0.9909.0.fbl_awesome1501.141213-2119&mobileaction=toggle_view_desktop "Windows 10:10.0.9909.0.fbl_awesome1501.141213-2119 - BetaWorld 百科 | betaworld.cn"
+                                            [6]: https://web.archive.org/web/20240515081804/https://github.com/microsoft/microsoft-ui-xaml/issues/2669 "Faulting module name: Windows.UI.Xaml.dll, version: 10.0.18362.815 · Issue #2669 · microsoft/microsoft-ui-xaml | github.com"
+                                            [7]: https://web.archive.org/web/20240515081814/https://administrator.de/forum/drucken-aus-microsoft-windows-photos-funktioniert-nicht-3790564489.html "Drucken aus Microsoft.Windows.Photos funktioniert nicht - Administrator | administrator.de"
+                                            [8]: https://web.archive.org/web/20240515081823/https://www.winhelponline.com/blog/restore-legacy-print-dialog-windows-11/?expand_article=1 "Restore the Legacy Print Dialog in Windows 11 22H2 » Winhelponline | winhelponline.com"
+                                        call:
+                                            function: UninstallNonRemovableStoreAppWithCleanup
+                                            parameters:
+                                                packageName: Windows.PrintDialog # Get-AppxPackage Windows.PrintDialog
+                                                publisherId: cw5n1h2txyewy
             - 
                 category: Remove OneDrive
                 docs: |-
