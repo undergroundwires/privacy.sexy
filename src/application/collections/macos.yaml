@@ -1408,7 +1408,7 @@ actions:
                         name: Disable Gatekeeper
                         docs:
                             # References for spctl --master-disable
-                                - https://www.manpagez.com/man/8/spctl/
+                                - https://web.archive.org/web/20240523173608/https://www.manpagez.com/man/8/spctl/
                             # References for /var/db/SystemPolicy-prefs.plist
                                 - https://krypted.com/mac-security/manage-gatekeeper-from-the-command-line-in-mountain-lion/
                                 - https://community.jamf.com/t5/jamf-pro/users-can-t-change-password-greyed-out/m-p/54228
