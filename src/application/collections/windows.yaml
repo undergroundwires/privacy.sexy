@@ -1528,19 +1528,22 @@ actions:
         children:
             -
                 category: Disable app access to personal information
-                docs: |-
+                docs: |- # refactor-with-variables: Same • Caution
                     This category enhances your privacy by restricting app access to sensitive personal data.
                     These scripts enable you to enforce the *principle of least privilege* ensuring that apps only have
                     access to the information absolutely necessary for their legitimate function, thereby minimizing potential
                     data misuse.
 
-                    It only targets UWP (Universal Windows Platform) apps.
-                    These apps can be both native system apps [1] and third-party apps [2].
+                    It specifically targets UWP (Universal Windows Platform) apps.
+                    These apps can be both native system apps [1] and third-party apps [2] [3].
                     They are typically available through the Microsoft Store [1] [2].
                     These scripts only affect UWP apps, not desktop applications outside the UWP ecosystem.
 
                     By disabling default app access to personal information and requiring explicit user permission,
                     these scripts protect your security and privacy.
+
+                    > **Caution:**
+                    > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
 
                     [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
                     [2]: https://web.archive.org/web/20240427123038/https://learn.microsoft.com/en-us/windows/uwp/get-started/universal-application-platform-guide "What's a Universal Windows Platform (UWP) app? - UWP applications | Microsoft Learn | learn.microsoft.com"
@@ -1548,7 +1551,7 @@ actions:
                     -
                         name: Disable app access to location
                         recommend: standard
-                        docs: |-
+                        docs: |-  # refactor-with-variables: Same • Caution
                             This script prevents Windows apps from accessing your location [1].
                             It restricts access to location-specific network information [2] and sensors [2] [3],
                             enhancing your privacy and security.
@@ -1558,6 +1561,9 @@ actions:
                             - Windows policy (`LetAppsAccessLocation` [1] [3])
                             - Privacy settings user interface (`BFA794E4-F964-4FDB-90F6-51056BFE4B44` [4], `location` [2] [5])
                             - Location Services (`E6AD100E-5F4E-44CD-BE0F-2265D88D14F5` [4], `lfsvc` [6])
+
+                            > **Caution:**
+                            > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
 
                             [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccesslocation "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
                             [2]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
@@ -1594,7 +1600,7 @@ actions:
                                     deviceAccessId: '{E6AD100E-5F4E-44CD-BE0F-2265D88D14F5}'
                     -
                         name: Disable app access to account information, name, and picture
-                        recommend: standard
+                        recommend: standard # refactor-with-variables: Same • Caution
                         docs: |-
                             This script prevents Windows apps from accessing account information [1].
                             This includes your name and picture [2] [3].
@@ -1605,6 +1611,9 @@ actions:
 
                             - Windows policy (`LetAppsAccessAccountInfo` [1] [2])
                             - Privacy settings user interface (`C1D23ACC-752B-43E5-8448-8D0E519CD6D6` [4], `userAccountInformation` [3] [5])
+
+                            > **Caution:**
+                            > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
 
                             [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessaccountinfo "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
                             [2]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#187-account-info "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
@@ -1626,7 +1635,7 @@ actions:
                                     deviceAccessId: '{C1D23ACC-752B-43E5-8448-8D0E519CD6D6}'
                     -
                         name: Disable app access to motion activity
-                        recommend: standard
+                        recommend: standard # refactor-with-variables: Same • Caution
                         docs: |-
                             This script prevents Windows apps from accessing motion data [1] [2] [3].
 
@@ -1637,6 +1646,9 @@ actions:
 
                             - Windows policy (`LetAppsAccessMotion` [1] [2]).
                             - Privacy settings user interface (`activity` [3] [4]).
+
+                            > **Caution:**
+                            > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
 
                             [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessmotion "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
                             [2]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#1818-motion "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
@@ -1653,7 +1665,7 @@ actions:
                                     appCapability: activity
                     -
                         name: Disable app access to trusted devices
-                        recommend: standard
+                        recommend: standard # refactor-with-variables: Same • Caution
                         docs: |-
                             This script prevents Windows apps from accessing trusted devices [1].
                             It restricts apps from automatically connecting to or controlling trusted devices without your
@@ -1663,6 +1675,9 @@ actions:
 
                             - Windows policy (`LetAppsAccessTrustedDevices` [1])
 
+                            > **Caution:**
+                            > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
+
                             [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccesstrusteddevices "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
                         call:
                             function: BlockUWPAccessViaGPO
@@ -1670,7 +1685,7 @@ actions:
                                 policyName: LetAppsAccessTrustedDevices
                     -
                         name: Disable app access to unpaired wireless devices
-                        recommend: standard
+                        recommend: standard # refactor-with-variables: Same • Caution
                         docs: |-
                             This script prevents Windows apps from communicating with unpaired wireless devices [1].
                             It prevents automatic sharing and synchronization of information with devices that aren't paired [2] [3] [4].
@@ -1682,6 +1697,9 @@ actions:
 
                             - Windows policy (`LetAppsSyncWithDevices` [1] [2])
                             - Privacy settings user interface (`LooselyCoupled` [3] [4]).
+
+                            > **Caution:**
+                            > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
 
                             [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappssyncwithdevices "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
                             [2]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#1815-other-devices "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
@@ -1698,7 +1716,7 @@ actions:
                                     deviceAccessId: LooselyCoupled
                     -
                         name: Disable app access to camera
-                        docs: |-
+                        docs: |- # refactor-with-variables: Same • Caution
                             This script prevents Windows apps from accessing the camera [1] [2].
 
                             By disabling access, it ensures that no app can use the camera to capture photos or videos [3]
@@ -1708,6 +1726,9 @@ actions:
 
                             - Windows policy (`LetAppsAccessCamera` [1] [2])
                             - Privacy settings user interface (`E5323777-F976-4f5b-9B55-B94699C46E44` [4], `webcam` [3] [5])
+
+                            > **Caution:**
+                            > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
 
                             [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccesscamera "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
                             [2]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#182-location "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
@@ -1729,7 +1750,7 @@ actions:
                                     deviceAccessId: '{E5323777-F976-4f5b-9B55-B94699C46E44}'
                     -
                         name: Disable app access to microphone (breaks Sound Recorder)
-                        docs: |-
+                        docs: |- # refactor-with-variables: Same • Caution
                             This script prevents Windows apps from accessing the microphone [1] [2].
                             It enhances privacy by preventing apps from recording audio [3], which may include sensitive conversations.
 
@@ -1738,8 +1759,9 @@ actions:
                             - Windows policy (`LetAppsAccessMicrophone` [1] [2])
                             - Privacy settings user interface (`2EEF81BE-33FA-4800-9670-1CD474972C3F` [4], `microphone` [3] [5])
 
-                            > **Caution**: Disabling microphone access will impact recording sounds with built-in
-                            > Sound Recorder (formerly Voice Recorder) app [6].
+                            > **Caution:**
+                            > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
+                            > Disabling microphone access will impact recording sounds with built-in Sound Recorder (formerly Voice Recorder) app [6].
 
                             [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessmicrophone "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
                             [2]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#184-microphone "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
@@ -1762,7 +1784,7 @@ actions:
                                     deviceAccessId: '{2EEF81BE-33FA-4800-9670-1CD474972C3F}'
                     -
                         name: Disable app access to information about other apps
-                        recommend: standard
+                        recommend: standard # refactor-with-variables: Same • Caution
                         docs: |-
                             This script prevents Windows apps from accessing diagnostic information about other apps [1] [2] [3] [4].
                             This includes details like user names [1], package information, memory usage, and account
@@ -1772,6 +1794,9 @@ actions:
 
                             - Windows policy (`LetAppsGetDiagnosticInfo` [1] [3])
                             - Privacy settings user interface (`2297E4E2-5DBE-466D-A12B-0F8286F0D9CA` [4], `appDiagnostics` [2] [5])
+
+                            > **Caution:**
+                            > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
 
                             [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsgetdiagnosticinfo "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
                             [2]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
@@ -1793,9 +1818,12 @@ actions:
                                     deviceAccessId: '{2297E4E2-5DBE-466D-A12B-0F8286F0D9CA}'
                     -
                         category: Disable app access to your files
-                        docs: |-
+                        docs: |- # refactor-with-variables: Same • Caution
                             This category limits the access of Windows apps to various user-specific folders and other file systems.
                             It enhances privacy by restricting apps from accessing and manipulating files without explicit user permission.
+
+                            > **Caution:**
+                            > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
                         children:
                             -
                                 name: Disable app access to "Documents" folder
@@ -1809,6 +1837,9 @@ actions:
                                     This script configures:
 
                                     - Privacy settings user interface (`documentsLibrary` [1] [2])
+
+                                    > **Caution:**
+                                    > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
 
                                     [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
                                     [2]: https://web.archive.org/web/20240427114500/https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ "Registry Keys for Windows 10 Application Privacy Settings - Jose Espitia | joseespitia.com"
@@ -1829,7 +1860,9 @@ actions:
 
                                     - Privacy settings user interface (`picturesLibrary` [1] [2])
 
-                                    > **Caution**: Disabling access may affect the functionality of photo apps [1].
+                                    > **Caution:**
+                                    > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
+                                    > This may specifically impact photo-related apps. [1].
 
                                     [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
                                     [2]: https://web.archive.org/web/20240427114500/https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ "Registry Keys for Windows 10 Application Privacy Settings - Jose Espitia | joseespitia.com"
@@ -1850,7 +1883,9 @@ actions:
 
                                     - Privacy settings user interface (`videosLibrary` [1] [2])
 
-                                    > **Caution**: Disabling access may affect the functionality of movie playback apps [1].
+                                    > **Caution:**
+                                    > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
+                                    > This may specifically impact movie playback apps [1].
 
                                     [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
                                     [2]: https://web.archive.org/web/20240427114500/https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ "Registry Keys for Windows 10 Application Privacy Settings - Jose Espitia | joseespitia.com"
@@ -1871,6 +1906,9 @@ actions:
 
                                     - Privacy settings user interface (`musicLibrary` [1])
 
+                                    > **Caution:**
+                                    > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
+
                                     [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
                                 call:
                                     function: BlockUWPAccessViaConsentStore
@@ -1879,7 +1917,7 @@ actions:
                             -
                                 name: Disable app access to personal files
                                 recommend: standard
-                                docs: |- # refactor-with-variable: Similar template to other file access restriction scripts
+                                docs: |- # refactor-with-variable: Same • Caution • Template as other other file access restriction scripts
                                     This script restricts app access to the broader file system [1] [2].
                                     It restricts app access to files that the user has access to without user consent [2].
                                     After running this script, apps can still access the files when explicitly permitted [1].
@@ -1889,6 +1927,9 @@ actions:
 
                                     - Privacy settings user interface (`broadFileSystemAccess` [1] [2])
 
+                                    > **Caution:**
+                                    > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
+
                                     [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
                                     [2]: https://web.archive.org/web/20240427114500/https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ "Registry Keys for Windows 10 Application Privacy Settings - Jose Espitia | joseespitia.com"
                                 call:
@@ -1897,7 +1938,7 @@ actions:
                                         appCapability: broadFileSystemAccess
                     -
                         name: Disable app access to your contacts
-                        recommend: standard
+                        recommend: standard # refactor-with-variable: Same • Caution
                         docs: |-
                             This script prevents Windows apps from accessing your contact list [1] [2] [3] [4] [5].
                             Your contact list may include sensitive details synced from various networks [2].
@@ -1908,6 +1949,9 @@ actions:
 
                             - Windows policy (`LetAppsAccessContacts` [1] [3])
                             - Privacy settings user interface (`7D7E8402-7C54-4821-A34E-AEEFD62DED93` [4], `contacts` [2] [5])
+
+                            > **Caution:**
+                            > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
 
                             [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccesscontacts "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
                             [2]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
@@ -1929,16 +1973,21 @@ actions:
                                     deviceAccessId: '{7D7E8402-7C54-4821-A34E-AEEFD62DED93}'
                     -
                         name: Disable app access to notifications
-                        recommend: standard
-                        docs: |- # refactor-with-variable: Similar template to other file access restriction scripts
+                        recommend: strict # User may be in need of notifications from apps like Instagram and Whatsapp #339
+                        docs: |- # refactor-with-variable: Same • Caution
                             This script prevents Windows apps from accessing notifications [1] [2] [3].
                             It enhances privacy by ensuring that apps cannot access [1] [2] [3] or manage [4] notifications
                             without explicit user permission.
+                            Notifications can contain personal or sensitive information.
 
                             This script configures:
 
                             - Windows policy (`LetAppsAccessNotifications` [1] [2])
                             - Privacy settings user interface (`52079E78-A92B-413F-B213-E8FE35712E72` [3], `userNotificationListener` [4] [5])
+
+                            > **Caution:**
+                            > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
+                            > This may disrupt essential functions, such as receiving alerts from messaging apps including Instagram and WhatsApp [6].
 
                             [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessnotifications "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
                             [2]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#185-notifications "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
@@ -1961,8 +2010,8 @@ actions:
                                     deviceAccessId: '{52079E78-A92B-413F-B213-E8FE35712E72}'
                     -
                         name: Disable app access to calendar
-                        recommend: standard
-                        docs: |- # refactor-with-variable: Similar template to other file access restriction scripts
+                        recommend: standard # refactor-with-variable: Same • Caution
+                        docs: |-
                             This script prevents Windows apps from accessing the calendar data [1] [2] [3] [4] [5].
                             This includes information about appointments from your synced network accounts [2].
                             It protects personal schedule by preventing apps from automatically creating [2],
@@ -1972,6 +2021,9 @@ actions:
 
                             - Windows policy (`LetAppsAccessCalendar` [1] [3])
                             - Privacy settings user interface (`D89823BA-7180-4B81-B50C-7E471E6121A3` [4], `appointments` [2] [5])
+
+                            > **Caution:**
+                            > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
 
                             [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccesscalendar "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
                             [2]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
@@ -1993,16 +2045,19 @@ actions:
                                     deviceAccessId: '{D89823BA-7180-4B81-B50C-7E471E6121A3}'
                     -
                         category: Disable app access to phone
-                        docs: |-
+                        docs: |- # refactor-with-variable: Same • Caution
                             This category contains scripts that restrict app access to phone-related functionalities.
 
                             They protect your privacy and security by ensuring communication details remain private and
                             are accessible only when necessary.
+
+                            > **Caution:**
+                            > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
                         children:
                             -
                                 name: Disable app access to call history
                                 recommend: standard
-                                docs: |-
+                                docs: |- # refactor-with-variable: Same • Caution
                                     This script prevents Windows apps from accessing your call history [1] [2] [3] [4] [5].
                                     It protects past communication records by blocking apps from
                                     automatically reading and deleting call history [1] without explicit user permission.
@@ -2011,6 +2066,9 @@ actions:
 
                                     - Windows policy (`LetAppsAccessCallHistory` [2] [3])
                                     - Privacy settings user interface (`8BC668CF-7728-45BD-93F8-CF2B3B41D7AB` [4], `phoneCallHistory`  [1] [5])
+
+                                    > **Caution:**
+                                    > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
 
                                     [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
                                     [2]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccesscallhistory "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
@@ -2031,9 +2089,9 @@ actions:
                                         parameters:
                                             deviceAccessId: '{8BC668CF-7728-45BD-93F8-CF2B3B41D7AB}'
                             -
-                                name: Disable app access to phone calls
-                                recommend: standard
-                                docs: |-
+                                name: Disable app access to phone calls (breaks phone calls through Phone Link)
+                                recommend: strict # Breaks "Calls" feature (making and receiving phone calls) of Microsoft Phone Link #350
+                                docs: |- # refactor-with-variable: Same • Caution
                                     This script prevents Windows apps from accessing phone calls [1] [2] [3].
                                     This includes reading phone call data [1] and making phone calls [1] [2] [3].
 
@@ -2052,9 +2110,15 @@ actions:
                                     - Windows policy (`LetAppsAccessPhone` [2] [3])
                                     - Privacy settings user interface (`phoneCall` [1])
 
+                                    > **Caution:**
+                                    > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
+                                    > This will disable the Calls feature in the Microsoft Phone Link app, preventing the ability to make and receive
+                                    > phone calls through your PC [4].
+
                                     [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
                                     [2]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#1813-phone-calls "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
                                     [3]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessphone "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                                    [4]: https://github.com/undergroundwires/privacy.sexy/issues/350 "[BUG]: After applying Standard selection Phone Link is broken · Issue #350 · undergroundwires/privacy.sexy".
                                 call:
                                     -
                                         function: BlockUWPAccessViaGPO
@@ -2067,7 +2131,7 @@ actions:
                             -
                                 name: Disable app access to messaging (SMS / MMS)
                                 recommend: standard
-                                docs: |-
+                                docs: |- # refactor-with-variable: Same • Caution
                                     This script prevents Windows apps from accessing messages [1] [2] [3] [4] [5],
                                     securing message content from unauthorized access and improving privacy.
 
@@ -2078,6 +2142,9 @@ actions:
 
                                     - Windows policy (`LetAppsAccessMessaging` [2] [3])
                                     - Privacy settings user interface (`992AFA70-6F47-4148-B3E9-3003349C1548` [4], `21157C1F-2651-4CC1-90CA-1F28B02263F6` [4], `chat` [1] [5])
+
+                                    > **Caution:**
+                                    > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
 
                                     [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
                                     [2]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessmessaging "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
@@ -2104,7 +2171,7 @@ actions:
                     -
                         name: Disable app access to email
                         recommend: standard
-                        docs: |-
+                        docs: |- # refactor-with-variable: Same • Caution
                             This script prevents Windows apps from accessing email [1] [2] [3] [4] [5].
 
                             It protects your privacy by blocking apps from automatically reading [1],
@@ -2114,6 +2181,9 @@ actions:
 
                             - Windows policy (`LetAppsAccessEmail` [2] [3])
                             - Privacy settings user interface (`9231CB4C-BF57-4AF3-8C55-FDA7BFCC04C5` [4], `email` [1] [5])
+
+                            > **Caution:**
+                            > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
 
                             [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
                             [2]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#1811-email "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
@@ -2136,7 +2206,7 @@ actions:
                     -
                         name: Disable app access to tasks
                         recommend: standard
-                        docs: |-
+                        docs: |- # refactor-with-variable: Same • Caution
                             This script prevents Windows apps from accessing task data [1] [2] [3] [4] [5].
                             These task items may be stored by Exchange ActiveSync (EAS) connections and other provider apps [1].
 
@@ -2147,6 +2217,9 @@ actions:
 
                             - Windows policy (`LetAppsAccessTasks` [2] [3])
                             - Privacy settings user interface (`E390DF20-07DF-446D-B962-F5C953062741` [4], `userDataTasks` [1] [5])
+
+                            > **Caution:**
+                            > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
 
                             [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
                             [2]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccesstasks "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
@@ -2169,7 +2242,7 @@ actions:
                     -
                         name: Disable app access to radios
                         recommend: standard
-                        docs: |-
+                        docs: |- # refactor-with-variable: Same • Caution
                             This script prevents Windows apps from controlling radios [1] [2] [3] [4] [5],
                             improving privacy by preventing unauthorized use or toggling of these components.
 
@@ -2180,6 +2253,9 @@ actions:
 
                             - Windows policy (`LetAppsAccessRadios` [2] [3])
                             - Privacy settings user interface (`A8804298-2D5F-42E3-9531-9C8C39EB29CE` [4], `radios` [1] [5])
+
+                            > **Caution:**
+                            > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
 
                             [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
                             [2]: https://web.archive.org/web/20230911110911/https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services#1814-radios "Manage connections from Windows 10 and Windows 11 Server/Enterprise editions operating system components to Microsoft services - Windows Privacy | Microsoft Learn | learn.microsoft.com"
@@ -2201,14 +2277,17 @@ actions:
                                     deviceAccessId: '{A8804298-2D5F-42E3-9531-9C8C39EB29CE}'
                     -
                         category: Disable app access to Bluetooth devices
-                        docs: |-
+                        docs: |- # refactor-with-variable: Same • Caution
                             This category enhances user privacy by blocking unauthorized access to Bluetooth devices through Windows apps.
                             It restricts Bluetooth connections, preventing apps from initiating unwanted communication or data exchange.
+
+                            > **Caution:**
+                            > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
                         children:
                             -
                                 name: Disable app access to paired Bluetooth devices
                                 recommend: standard
-                                docs: |-
+                                docs: |- # refactor-with-variable: Same • Caution
                                     This script prevents Windows apps from accessing paired Bluetooth devices [1].
 
                                     This script improves your privacy by preventing apps from automatically interacting
@@ -2219,6 +2298,9 @@ actions:
 
                                     - Privacy settings user interface (`bluetooth` [1])
 
+                                    > **Caution:**
+                                    > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
+
                                     [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
                                 call:
                                     function: BlockUWPAccessViaConsentStore
@@ -2227,7 +2309,7 @@ actions:
                             -
                                 name: Disable app access to unpaired Bluetooth devices
                                 recommend: standard
-                                docs: |-
+                                docs: |- # refactor-with-variable: Same • Caution
                                     This script prevents Windows apps from accessing unpaired Bluetooth devices [1] [2].
 
                                     This script protects your privacy by blocking apps from automatically sharing and synchronizing
@@ -2238,6 +2320,9 @@ actions:
 
                                     - Privacy settings user interface (`bluetoothSync` [1] [2])
 
+                                    > **Caution:**
+                                    > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
+
                                     [1]: https://web.archive.org/web/20240427114500/https://www.joseespitia.com/2019/07/24/registry-keys-for-windows-10-application-privacy-settings/ "Registry Keys for Windows 10 Application Privacy Settings - Jose Espitia | joseespitia.com"
                                     [2]: https://web.archive.org/web/20240427192428/https://www.tenforums.com/tutorials/85048-turn-off-apps-communicate-unpaired-devices-windows-10-a.html "Turn On or Off Apps Communicate with Unpaired Devices in Windows 10 | Tutorials | www.tenforums.com"
                                 call:
@@ -2246,17 +2331,20 @@ actions:
                                         appCapability: bluetoothSync
                     -
                         category: Disable app access to voice activation
-                        docs: |-
+                        docs: |- # refactor-with-variable: Same • Caution
                             This category safeguards against unauthorized app activation via voice commands.
 
                             It includes measures to disable voice activation for apps, ensuring that apps cannot be triggered
                             by voice and start listening without explicit user permission.
                             This protects your security against potential eavesdropping or accidental triggering of applications.
+
+                            > **Caution:**
+                            > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
                         children:
                             -
                                 name: Disable app access to voice activation
                                 recommend: standard
-                                docs: |-
+                                docs: |- # refactor-with-variable: Same • Caution
                                     This script prevents Windows apps from voice activation [1] [2] [3] [4].
 
                                     This script improves privacy by preventing apps from being activated [1] [2] [3] [4]
@@ -2268,7 +2356,9 @@ actions:
                                     - Windows policy (`LetAppsActivateWithVoice` [1] [2] [4])
                                     - Privacy settings user interface (`AgentActivationEnabled` [3])
 
-                                    > **Caution**: This script applies to Cortana and may impact its functionality [1] [2].
+                                    > **Caution:**
+                                    > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
+                                    > This affects Cortana and may impact its functionality [1] [2].
 
                                     [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsactivatewithvoice "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
                                     [2]: https://web.archive.org/web/20240427115516/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.AppPrivacy::LetAppsActivateWithVoice "Let Windows apps activate with voice | admx.help"
@@ -2290,7 +2380,7 @@ actions:
                             -
                                 name: Disable app access to voice activation on locked system
                                 recommend: standard
-                                docs: |-
+                                docs: |- # refactor-with-variable: Same • Caution
                                     This script prevents Windows apps from voice activation when the system is locked [1] [2] [3] [4].
 
                                     This script improves privacy by preventing apps from being activated [1] [2] [3] [4]
@@ -2302,7 +2392,9 @@ actions:
                                     - Windows policy (`LetAppsActivateWithVoiceAboveLock` [1] [2])
                                     - Privacy settings user interface (`AgentActivationEnabled` [3])
 
-                                    > **Caution**: This script applies to Cortana and may impact its functionality [1] [2].
+                                    > **Caution:**
+                                    > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
+                                    > This affects Cortana and may impact its functionality [1] [2].
 
                                     [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsactivatewithvoiceabovelock "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
                                     [2]: https://web.archive.org/web/20240427115725/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.AppPrivacy::LetAppsActivateWithVoiceAboveLock "Let Windows apps activate with voice while the system is locked | admx.help"
@@ -2320,11 +2412,11 @@ actions:
                                             valueName: AgentActivationOnLockScreenEnabled
                                             dataType: REG_DWORD
                                             data: "0"
-                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)                                            
+                                            deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                     -
                         name: Disable app access to physical movement
                         recommended: standard
-                        docs: |-
+                        docs: |- # refactor-with-variable: Same • Caution
                             This script prevents Windows apps from accessing spatial perception data [1] [2].
                             This includes movement of the user's head, hands, motion controllers, and other tracked objects [1],
                             as well as nearby surfaces [2].
@@ -2338,7 +2430,9 @@ actions:
                             - Windows policy (`LetAppsAccessBackgroundSpatialPerception` [1])
                             - Privacy settings user interface (`spatialPerception` [2], `backgroundSpatialPerception` [2])
 
-                            > **Caution**: Disabling access may impact the functionality of mixed reality apps that use this data [2].
+                            > **Caution:**
+                            > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
+                            > Disabling access to physical movement may impact the functionality of mixed reality apps that use this data [2].
 
                             [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessbackgroundspatialperception "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
                             [2]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
@@ -2358,7 +2452,7 @@ actions:
                     -
                         name: Disable app access to eye tracking
                         recommended: standard
-                        docs: |-
+                        docs: |- # refactor-with-variable: Same • Caution
                             This script prevents Windows apps from accessing the eye tracker [1] [2].
 
                             This script improves privacy by blocking apps from tracking users' eye automatically
@@ -2369,10 +2463,11 @@ actions:
                             - Windows policy (`LetAppsAccessGazeInput` [1])
                             - Privacy settings user interface (`gazeInput` [2])
 
-                            > **Caution**:
-                            > Disabling access may impact the functionality of mixed reality apps that use this data [2].
-                            > They may not be able to detect where a user is looking within the application bounds when a compatible
-                            > eye-tracking device is connected [2].
+                            > **Caution:**
+                            > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
+                            > This may significantly impact the functionality of mixed reality apps that rely on this data [2].
+                            > These apps may be unable to detect where a user is looking within the application bounds when an eye-tracking
+                            > device is connected [2].
 
                             [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessgazeinput "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
                             [2]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
@@ -2388,7 +2483,7 @@ actions:
                     -
                         name: Disable app access to human presence
                         recommended: standard
-                        docs: |-
+                        docs: |- # refactor-with-variable: Same • Caution
                             This script prevents Windows apps from accessing presence sensing [1] [2].
 
                             Presence data includes information on user presence and engagement [2].
@@ -2401,6 +2496,9 @@ actions:
 
                             - Windows policy (`LetAppsAccessHumanPresence` [1])
                             - Privacy settings user interface (`humanPresence` [2])
+
+                            > **Caution:**
+                            > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
 
                             [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccesshumanpresence "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
                             [2]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
@@ -2416,7 +2514,7 @@ actions:
                     -
                         name: Disable app access to screen capture
                         recommended: standard # It does not affect built-in Snipping Tool
-                        docs: |-
+                        docs: |- # refactor-with-variable: Same • Caution
                             This script restricts Windows apps from taking screenshots of the user's screen [1] [2] [3].
 
                             This script improves privacy by blocking apps from taking screenshots programatically [1] [3],
@@ -2426,6 +2524,9 @@ actions:
 
                             - Windows policy (`LetAppsAccessGraphicsCaptureProgrammatic` [1], `LetAppsAccessGraphicsCaptureWithoutBorder` [2])
                             - Privacy settings user interface (`graphicsCaptureProgrammatic` [3], `graphicsCaptureWithoutBorder` [3])
+
+                            > **Caution:**
+                            > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
 
                             [1]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessgraphicscaptureprogrammatic "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
                             [2]: https://web.archive.org/web/20240427110714/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-privacy#letappsaccessgraphicscapturewithoutborder "Privacy Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
@@ -2449,8 +2550,7 @@ actions:
                                     appCapability: graphicsCaptureWithoutBorder
                     -
                         name: Disable app access to background activity (breaks Cortana, Search, live tiles, notifications)
-                        recommend: strict # It may affect notifications and system services
-                        docs: |-
+                        docs: |- # refactor-with-variable: Same • Caution
                             This script prevents Windows apps from running in the background [1] [2] [3].
 
                             This script may improve system performance by reducing resource usage.
@@ -2461,6 +2561,7 @@ actions:
                             - Privacy settings user interface (`BackgroundAccessApplications!GlobalUserDisabled` [3])
 
                             > **Caution:**
+                            > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
                             > This may impact the functionality of apps that rely on background tasks, such as Cortana and Search [2].
                             > It may also impact live tile updates, along with notifications such as text messages, email and voicemail [3].
 
@@ -2483,7 +2584,7 @@ actions:
                     -
                         name: Disable app access to input devices
                         recommend: standard
-                        docs: |-
+                        docs: |- # refactor-with-variable: Same • Caution
                             This script prevents apps from accessing Human Interface Device (HID) capabilities [1].
                             HIDs include a wide range of devices such as keyboards, mice, and other input devices that can
                             communicate directly with the system.
@@ -2494,6 +2595,9 @@ actions:
                             This script configures:
 
                             - Privacy settings user interface (`humanInterfaceDevice` [1])
+
+                            > **Caution:**
+                            > Disabling app access may affect the functionality of certain Microsoft Store, third-party, and system applications.
 
                             [1]: https://web.archive.org/web/20240427120219/https://learn.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations "App capability declarations - UWP applications | Microsoft Learn | learn.microsoft.com"
                         call:
