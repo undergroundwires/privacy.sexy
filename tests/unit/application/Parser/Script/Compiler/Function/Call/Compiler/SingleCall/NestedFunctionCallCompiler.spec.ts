@@ -9,7 +9,9 @@ import { SingleCallCompilerStub } from '@tests/unit/shared/Stubs/SingleCallCompi
 import { CompiledCodeStub } from '@tests/unit/shared/Stubs/CompiledCodeStub';
 import type { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
 import type { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
-import { expectDeepThrowsError } from '@tests/shared/Assertions/ExpectDeepThrowsError';
+import { itThrowsContextualError } from '@tests/unit/application/Parser/ContextualErrorTester';
+import type { ErrorWithContextWrapper } from '@/application/Parser/ContextualError';
+import { errorWithContextWrapperStub } from '@tests/unit/shared/Stubs/ErrorWithContextWrapperStub';
 
 describe('NestedFunctionCallCompiler', () => {
   describe('canCompile', () => {
@@ -43,12 +45,12 @@ describe('NestedFunctionCallCompiler', () => {
         // arrange
         const argumentCompiler = new ArgumentCompilerStub();
         const expectedContext = new FunctionCallCompilationContextStub();
-        const { frontFunc, callToFrontFunc } = createSingleFuncCallingAnotherFunc();
+        const { frontFunction, callToFrontFunc } = createSingleFuncCallingAnotherFunc();
         const compiler = new NestedFunctionCallCompilerBuilder()
           .withArgumentCompiler(argumentCompiler)
           .build();
         // act
-        compiler.compileFunction(frontFunc, callToFrontFunc, expectedContext);
+        compiler.compileFunction(frontFunction, callToFrontFunc, expectedContext);
         // assert
         const calls = argumentCompiler.callHistory.filter((call) => call.methodName === 'createCompiledNestedCall');
         expect(calls).have.lengthOf(1);
@@ -59,33 +61,37 @@ describe('NestedFunctionCallCompiler', () => {
         // arrange
         const argumentCompiler = new ArgumentCompilerStub();
         const expectedContext = new FunctionCallCompilationContextStub();
-        const { frontFunc, callToFrontFunc } = createSingleFuncCallingAnotherFunc();
+        const { frontFunction, callToFrontFunc } = createSingleFuncCallingAnotherFunc();
+        const expectedParentCall = callToFrontFunc;
         const compiler = new NestedFunctionCallCompilerBuilder()
           .withArgumentCompiler(argumentCompiler)
           .build();
         // act
-        compiler.compileFunction(frontFunc, callToFrontFunc, expectedContext);
+        compiler.compileFunction(frontFunction, callToFrontFunc, expectedContext);
         // assert
         const calls = argumentCompiler.callHistory.filter((call) => call.methodName === 'createCompiledNestedCall');
         expect(calls).have.lengthOf(1);
         const [,actualParentCall] = calls[0].args;
-        expect(actualParentCall).to.equal(callToFrontFunc);
+        expect(actualParentCall).to.equal(expectedParentCall);
       });
       it('uses correct nested call', () => {
         // arrange
         const argumentCompiler = new ArgumentCompilerStub();
         const expectedContext = new FunctionCallCompilationContextStub();
-        const { frontFunc, callToFrontFunc } = createSingleFuncCallingAnotherFunc();
+        const {
+          frontFunction, callToDeepFunc, callToFrontFunc,
+        } = createSingleFuncCallingAnotherFunc();
+        const expectedNestedCall = callToDeepFunc;
         const compiler = new NestedFunctionCallCompilerBuilder()
           .withArgumentCompiler(argumentCompiler)
           .build();
         // act
-        compiler.compileFunction(frontFunc, callToFrontFunc, expectedContext);
+        compiler.compileFunction(frontFunction, callToFrontFunc, expectedContext);
         // assert
         const calls = argumentCompiler.callHistory.filter((call) => call.methodName === 'createCompiledNestedCall');
         expect(calls).have.lengthOf(1);
         const [actualNestedCall] = calls[0].args;
-        expect(actualNestedCall).to.deep.equal(callToFrontFunc);
+        expect(actualNestedCall).to.deep.equal(expectedNestedCall);
       });
     });
     describe('re-compilation with compiled args', () => {
@@ -94,11 +100,11 @@ describe('NestedFunctionCallCompiler', () => {
         const singleCallCompilerStub = new SingleCallCompilerStub();
         const expectedContext = new FunctionCallCompilationContextStub()
           .withSingleCallCompiler(singleCallCompilerStub);
-        const { frontFunc, callToFrontFunc } = createSingleFuncCallingAnotherFunc();
+        const { frontFunction, callToFrontFunc } = createSingleFuncCallingAnotherFunc();
         const compiler = new NestedFunctionCallCompilerBuilder()
           .build();
         // act
-        compiler.compileFunction(frontFunc, callToFrontFunc, expectedContext);
+        compiler.compileFunction(frontFunction, callToFrontFunc, expectedContext);
         // assert
         const calls = singleCallCompilerStub.callHistory.filter((call) => call.methodName === 'compileSingleCall');
         expect(calls).have.lengthOf(1);
@@ -113,12 +119,12 @@ describe('NestedFunctionCallCompiler', () => {
         const singleCallCompilerStub = new SingleCallCompilerStub();
         const context = new FunctionCallCompilationContextStub()
           .withSingleCallCompiler(singleCallCompilerStub);
-        const { frontFunc, callToFrontFunc } = createSingleFuncCallingAnotherFunc();
+        const { frontFunction, callToFrontFunc } = createSingleFuncCallingAnotherFunc();
         const compiler = new NestedFunctionCallCompilerBuilder()
           .withArgumentCompiler(argumentCompilerStub)
           .build();
         // act
-        compiler.compileFunction(frontFunc, callToFrontFunc, context);
+        compiler.compileFunction(frontFunction, callToFrontFunc, context);
         // assert
         const calls = singleCallCompilerStub.callHistory.filter((call) => call.methodName === 'compileSingleCall');
         expect(calls).have.lengthOf(1);
@@ -140,9 +146,9 @@ describe('NestedFunctionCallCompiler', () => {
         .withScenario({ givenNestedFunctionCall: callToDeepFunc1, result: callToDeepFunc1 })
         .withScenario({ givenNestedFunctionCall: callToDeepFunc2, result: callToDeepFunc2 });
       const expectedFlattenedCodes = [...singleCallCompilationScenario.values()].flat();
-      const frontFunc = createSharedFunctionStubWithCalls()
+      const frontFunction = createSharedFunctionStubWithCalls()
         .withCalls(callToDeepFunc1, callToDeepFunc2);
-      const callToFrontFunc = new FunctionCallStub().withFunctionName(frontFunc.name);
+      const callToFrontFunc = new FunctionCallStub().withFunctionName(frontFunction.name);
       const singleCallCompilerStub = new SingleCallCompilerStub()
         .withCallCompilationScenarios(singleCallCompilationScenario);
       const expectedContext = new FunctionCallCompilationContextStub()
@@ -151,73 +157,105 @@ describe('NestedFunctionCallCompiler', () => {
         .withArgumentCompiler(argumentCompiler)
         .build();
       // act
-      const actualCodes = compiler.compileFunction(frontFunc, callToFrontFunc, expectedContext);
+      const actualCodes = compiler.compileFunction(frontFunction, callToFrontFunc, expectedContext);
       // assert
       expect(actualCodes).have.lengthOf(expectedFlattenedCodes.length);
       expect(actualCodes).to.have.members(expectedFlattenedCodes);
     });
     describe('error handling', () => {
-      it('handles argument compiler errors', () => {
+      describe('rethrows error from argument compiler', () => {
         // arrange
-        const argumentCompilerError = new Error('Test error');
+        const expectedInnerError = new Error(`Expected error from ${ArgumentCompilerStub.name}`);
+        const calleeFunctionName = 'expectedCalleeFunctionName';
+        const callerFunctionName = 'expectedCallerFunctionName';
+        const expectedErrorMessage = buildRethrowErrorMessage({
+          callee: calleeFunctionName,
+          caller: callerFunctionName,
+        });
+        const { frontFunction, callToFrontFunc } = createSingleFuncCallingAnotherFunc({
+          frontFunctionName: callerFunctionName,
+          deepFunctionName: calleeFunctionName,
+        });
         const argumentCompilerStub = new ArgumentCompilerStub();
         argumentCompilerStub.createCompiledNestedCall = () => {
-          throw argumentCompilerError;
+          throw expectedInnerError;
         };
-        const { frontFunc, callToFrontFunc } = createSingleFuncCallingAnotherFunc();
-        const expectedError = new AggregateError(
-          [argumentCompilerError],
-          `Error with call to "${callToFrontFunc.functionName}" function from "${callToFrontFunc.functionName}" function`,
-        );
-        const compiler = new NestedFunctionCallCompilerBuilder()
-          .withArgumentCompiler(argumentCompilerStub)
-          .build();
-        // act
-        const act = () => compiler.compileFunction(
-          frontFunc,
-          callToFrontFunc,
-          new FunctionCallCompilationContextStub(),
-        );
-        // assert
-        expectDeepThrowsError(act, expectedError);
+        const builder = new NestedFunctionCallCompilerBuilder()
+          .withArgumentCompiler(argumentCompilerStub);
+        itThrowsContextualError({
+          // act
+          throwingAction: (wrapError) => {
+            builder
+              .withErrorWrapper(wrapError)
+              .build()
+              .compileFunction(
+                frontFunction,
+                callToFrontFunc,
+                new FunctionCallCompilationContextStub(),
+              );
+          },
+          // assert
+          expectedWrappedError: expectedInnerError,
+          expectedContextMessage: expectedErrorMessage,
+        });
       });
-      it('handles single call compiler errors', () => {
+      describe('rethrows error from single call compiler', () => {
         // arrange
-        const singleCallCompilerError = new Error('Test error');
+        const expectedInnerError = new Error(`Expected error from ${SingleCallCompilerStub.name}`);
+        const calleeFunctionName = 'expectedCalleeFunctionName';
+        const callerFunctionName = 'expectedCallerFunctionName';
+        const expectedErrorMessage = buildRethrowErrorMessage({
+          callee: calleeFunctionName,
+          caller: callerFunctionName,
+        });
+        const { frontFunction, callToFrontFunc } = createSingleFuncCallingAnotherFunc({
+          frontFunctionName: callerFunctionName,
+          deepFunctionName: calleeFunctionName,
+        });
         const singleCallCompiler = new SingleCallCompilerStub();
         singleCallCompiler.compileSingleCall = () => {
-          throw singleCallCompilerError;
+          throw expectedInnerError;
         };
         const context = new FunctionCallCompilationContextStub()
           .withSingleCallCompiler(singleCallCompiler);
-        const { frontFunc, callToFrontFunc } = createSingleFuncCallingAnotherFunc();
-        const expectedError = new AggregateError(
-          [singleCallCompilerError],
-          `Error with call to "${callToFrontFunc.functionName}" function from "${callToFrontFunc.functionName}" function`,
-        );
-        const compiler = new NestedFunctionCallCompilerBuilder()
-          .build();
-        // act
-        const act = () => compiler.compileFunction(
-          frontFunc,
-          callToFrontFunc,
-          context,
-        );
-        // assert
-        expectDeepThrowsError(act, expectedError);
+        const builder = new NestedFunctionCallCompilerBuilder();
+        itThrowsContextualError({
+          // act
+          throwingAction: (wrapError) => {
+            builder
+              .withErrorWrapper(wrapError)
+              .build()
+              .compileFunction(
+                frontFunction,
+                callToFrontFunc,
+                context,
+              );
+          },
+          // assert
+          expectedWrappedError: expectedInnerError,
+          expectedContextMessage: expectedErrorMessage,
+        });
       });
     });
   });
 });
 
-function createSingleFuncCallingAnotherFunc() {
-  const deepFunc = createSharedFunctionStubWithCode();
-  const callToDeepFunc = new FunctionCallStub().withFunctionName(deepFunc.name);
-  const frontFunc = createSharedFunctionStubWithCalls().withCalls(callToDeepFunc);
-  const callToFrontFunc = new FunctionCallStub().withFunctionName(frontFunc.name);
+function createSingleFuncCallingAnotherFunc(
+  functionNames?: {
+    readonly frontFunctionName?: string;
+    readonly deepFunctionName?: string;
+  },
+) {
+  const deepFunction = createSharedFunctionStubWithCode()
+    .withName(functionNames?.deepFunctionName ?? 'deep-function (is called by front-function)');
+  const callToDeepFunc = new FunctionCallStub().withFunctionName(deepFunction.name);
+  const frontFunction = createSharedFunctionStubWithCalls()
+    .withCalls(callToDeepFunc)
+    .withName(functionNames?.frontFunctionName ?? 'front-function (calls deep-function)');
+  const callToFrontFunc = new FunctionCallStub().withFunctionName(frontFunction.name);
   return {
-    deepFunc,
-    frontFunc,
+    deepFunction,
+    frontFunction,
     callToFrontFunc,
     callToDeepFunc,
   };
@@ -226,14 +264,31 @@ function createSingleFuncCallingAnotherFunc() {
 class NestedFunctionCallCompilerBuilder {
   private argumentCompiler: ArgumentCompiler = new ArgumentCompilerStub();
 
+  private wrapError: ErrorWithContextWrapper = errorWithContextWrapperStub;
+
   public withArgumentCompiler(argumentCompiler: ArgumentCompiler): this {
     this.argumentCompiler = argumentCompiler;
+    return this;
+  }
+
+  public withErrorWrapper(wrapError: ErrorWithContextWrapper): this {
+    this.wrapError = wrapError;
     return this;
   }
 
   public build(): NestedFunctionCallCompiler {
     return new NestedFunctionCallCompiler(
       this.argumentCompiler,
+      this.wrapError,
     );
   }
+}
+
+function buildRethrowErrorMessage(
+  functionNames: {
+    readonly caller: string;
+    readonly callee: string;
+  },
+) {
+  return `Failed to call '${functionNames.callee}' (callee function) from '${functionNames.caller}' (caller function).`;
 }

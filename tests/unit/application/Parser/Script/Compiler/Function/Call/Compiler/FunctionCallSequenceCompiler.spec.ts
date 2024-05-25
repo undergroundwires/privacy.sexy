@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file */
 import { describe, it, expect } from 'vitest';
 import { FunctionCallSequenceCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/FunctionCallSequenceCompiler';
-import { itIsSingleton } from '@tests/unit/shared/TestCases/SingletonTests';
+import { itIsSingletonFactory } from '@tests/unit/shared/TestCases/SingletonFactoryTests';
 import { itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import type { SingleCallCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/SingleCall/SingleCallCompiler';
 import type { CodeSegmentMerger } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CodeSegmentJoin/CodeSegmentMerger';
@@ -17,7 +17,7 @@ import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
 describe('FunctionCallSequenceCompiler', () => {
   describe('instance', () => {
-    itIsSingleton({
+    itIsSingletonFactory({
       getter: () => FunctionCallSequenceCompiler.instance,
       expectedType: FunctionCallSequenceCompiler,
     });

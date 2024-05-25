@@ -1,8 +1,13 @@
 import { ExpressionPosition } from './ExpressionPosition';
 
-export function createPositionFromRegexFullMatch(
-  match: RegExpMatchArray,
-): ExpressionPosition {
+export interface ExpressionPositionFactory {
+  (
+    match: RegExpMatchArray,
+  ): ExpressionPosition
+}
+
+export const createPositionFromRegexFullMatch
+: ExpressionPositionFactory = (match) => {
   const startPos = match.index;
   if (startPos === undefined) {
     throw new Error(`Regex match did not yield any results: ${JSON.stringify(match)}`);
@@ -13,4 +18,4 @@ export function createPositionFromRegexFullMatch(
   }
   const endPos = startPos + fullMatch.length;
   return new ExpressionPosition(startPos, endPos);
-}
+};

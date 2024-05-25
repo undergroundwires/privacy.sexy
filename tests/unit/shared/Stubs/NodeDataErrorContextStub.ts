@@ -1,12 +1,11 @@
-import type { NodeData } from '@/application/Parser/NodeValidation/NodeData';
-import type { INodeDataErrorContext } from '@/application/Parser/NodeValidation/NodeDataError';
-import { NodeType } from '@/application/Parser/NodeValidation/NodeType';
+import type { NodeDataErrorContext } from '@/application/Parser/NodeValidation/NodeDataErrorContext';
+import { NodeDataType } from '@/application/Parser/NodeValidation/NodeDataType';
 import { CategoryDataStub } from './CategoryDataStub';
 
-export class NodeDataErrorContextStub implements INodeDataErrorContext {
-  public readonly type: NodeType = NodeType.Script;
-
-  public readonly selfNode: NodeData = new CategoryDataStub();
-
-  public readonly parentNode?: NodeData;
+export function createNodeDataErrorContextStub(): NodeDataErrorContext {
+  return {
+    type: NodeDataType.Category,
+    selfNode: new CategoryDataStub(),
+    parentNode: new CategoryDataStub(),
+  };
 }

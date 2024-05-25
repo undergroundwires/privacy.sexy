@@ -1,12 +1,18 @@
 export function collectExceptionMessage(action: () => unknown): string {
-  let message: string | undefined;
+  return collectException(action).message;
+}
+
+function collectException(
+  action: () => unknown,
+): Error {
+  let error: Error | undefined;
   try {
     action();
-  } catch (e) {
-    message = e.message;
+  } catch (err) {
+    error = err;
   }
-  if (!message) {
+  if (!error) {
     throw new Error('action did not throw');
   }
-  return message;
+  return error;
 }

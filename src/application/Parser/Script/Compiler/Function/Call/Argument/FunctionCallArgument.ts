@@ -8,7 +8,7 @@ export class FunctionCallArgument implements IFunctionCallArgument {
   ) {
     ensureValidParameterName(parameterName);
     if (!argumentValue) {
-      throw new Error(`missing argument value for "${parameterName}"`);
+      throw new Error(`Missing argument value for the parameter "${parameterName}".`);
     }
   }
 }

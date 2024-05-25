@@ -3,14 +3,14 @@ import { describe, it } from 'vitest';
 import type { RuntimeEnvironment } from '@/infrastructure/RuntimeEnvironment/RuntimeEnvironment';
 import type { Logger } from '@/application/Common/Log/Logger';
 import { RuntimeEnvironmentStub } from '@tests/unit/shared/Stubs/RuntimeEnvironmentStub';
-import { itIsSingleton } from '@tests/unit/shared/TestCases/SingletonTests';
+import { itIsSingletonFactory } from '@tests/unit/shared/TestCases/SingletonFactoryTests';
 import { LoggerStub } from '@tests/unit/shared/Stubs/LoggerStub';
 import { ClientLoggerFactory, type LoggerCreationFunction, type WindowAccessor } from '@/presentation/components/Shared/Hooks/Log/ClientLoggerFactory';
 
 describe('ClientLoggerFactory', () => {
   describe('Current', () => {
     describe('singleton behavior', () => {
-      itIsSingleton({
+      itIsSingletonFactory({
         getter: () => ClientLoggerFactory.Current,
         expectedType: ClientLoggerFactory,
       });

@@ -1,22 +1,21 @@
 import { describe, it, expect } from 'vitest';
 import { createPositionFromRegexFullMatch } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionPositionFactory';
 import { ExpressionPosition } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionPosition';
+import { itIsTransientFactory } from '@tests/unit/shared/TestCases/TransientFactoryTests';
 
 describe('ExpressionPositionFactory', () => {
   describe('createPositionFromRegexFullMatch', () => {
-    it(`creates ${ExpressionPosition.name} instance`, () => {
+    describe('it is a transient factory', () => {
       // arrange
-      const expectedType = ExpressionPosition;
-      const fakeMatch = createRegexMatch({
-        fullMatch: 'matched string',
-        matchIndex: 5,
-      });
+      const fakeMatch = createRegexMatch();
       // act
-      const position = createPositionFromRegexFullMatch(fakeMatch);
+      const create = () => createPositionFromRegexFullMatch(fakeMatch);
       // assert
-      expect(position).to.be.instanceOf(expectedType);
+      itIsTransientFactory({
+        getter: create,
+        expectedType: ExpressionPosition,
+      });
     });
-
     it('creates a position with the correct start position', () => {
       // arrange
       const expectedStartPosition = 5;
@@ -63,10 +62,8 @@ describe('ExpressionPositionFactory', () => {
     describe('invalid values', () => {
       it('throws an error if match.index is undefined', () => {
         // arrange
-        const fakeMatch = createRegexMatch({
-          fullMatch: 'matched string',
-          matchIndex: undefined,
-        });
+        const fakeMatch = createRegexMatch();
+        fakeMatch.index = undefined;
         const expectedError = `Regex match did not yield any results: ${JSON.stringify(fakeMatch)}`;
         // act
         const act = () => createPositionFromRegexFullMatch(fakeMatch);
@@ -94,9 +91,9 @@ function createRegexMatch(options?: {
   readonly capturingGroups?: readonly string[],
   readonly matchIndex?: number,
 }): RegExpMatchArray {
-  const fullMatch = options?.fullMatch ?? 'fake match';
+  const fullMatch = options?.fullMatch ?? 'default fake match';
   const capturingGroups = options?.capturingGroups ?? [];
   const fakeMatch: RegExpMatchArray = [fullMatch, ...capturingGroups];
-  fakeMatch.index = options?.matchIndex;
+  fakeMatch.index = options?.matchIndex ?? 0;
   return fakeMatch;
 }

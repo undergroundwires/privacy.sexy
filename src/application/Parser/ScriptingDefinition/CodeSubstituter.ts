@@ -5,6 +5,7 @@ import { ExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expres
 import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
 import { FunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/Function/Call/Argument/FunctionCallArgumentCollection';
 import { FunctionCallArgument } from '@/application/Parser/Script/Compiler/Function/Call/Argument/FunctionCallArgument';
+import type { IExpressionParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/IExpressionParser';
 import type { ICodeSubstituter } from './ICodeSubstituter';
 
 export class CodeSubstituter implements ICodeSubstituter {
@@ -29,7 +30,9 @@ export class CodeSubstituter implements ICodeSubstituter {
 }
 
 function createSubstituteCompiler(): IExpressionsCompiler {
-  const parsers = [new ParameterSubstitutionParser()];
+  const parsers: readonly IExpressionParser[] = [
+    new ParameterSubstitutionParser(),
+  ] as const;
   const parser = new CompositeExpressionParser(parsers);
   const expressionCompiler = new ExpressionsCompiler(parser);
   return expressionCompiler;

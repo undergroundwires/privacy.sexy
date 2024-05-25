@@ -7,38 +7,44 @@ import type { IExpressionsCompiler } from '@/application/Parser/Script/Compiler/
 import { ExpressionsCompilerStub } from '@tests/unit/shared/Stubs/ExpressionsCompilerStub';
 import { FunctionCallCompilationContextStub } from '@tests/unit/shared/Stubs/FunctionCallCompilationContextStub';
 import { FunctionCallStub } from '@tests/unit/shared/Stubs/FunctionCallStub';
-import { expectDeepThrowsError } from '@tests/shared/Assertions/ExpectDeepThrowsError';
 import { FunctionCallArgumentCollectionStub } from '@tests/unit/shared/Stubs/FunctionCallArgumentCollectionStub';
 import { createSharedFunctionStubWithCode } from '@tests/unit/shared/Stubs/SharedFunctionStub';
 import { FunctionParameterCollectionStub } from '@tests/unit/shared/Stubs/FunctionParameterCollectionStub';
 import { SharedFunctionCollectionStub } from '@tests/unit/shared/Stubs/SharedFunctionCollectionStub';
+import { itThrowsContextualError } from '@tests/unit/application/Parser/ContextualErrorTester';
+import type { ErrorWithContextWrapper } from '@/application/Parser/ContextualError';
+import { errorWithContextWrapperStub } from '@tests/unit/shared/Stubs/ErrorWithContextWrapperStub';
 
 describe('NestedFunctionArgumentCompiler', () => {
   describe('createCompiledNestedCall', () => {
-    it('should handle error from expressions compiler', () => {
+    describe('rethrows error from expressions compiler', () => {
       // arrange
+      const expectedInnerError = new Error('child-');
       const parameterName = 'parameterName';
+      const expectedErrorMessage = `Error when compiling argument for "${parameterName}"`;
       const nestedCall = new FunctionCallStub()
         .withFunctionName('nested-function-call')
         .withArgumentCollection(new FunctionCallArgumentCollectionStub()
           .withArgument(parameterName, 'unimportant-value'));
       const parentCall = new FunctionCallStub()
         .withFunctionName('parent-function-call');
-      const expressionsCompilerError = new Error('child-');
-      const expectedError = new AggregateError(
-        [expressionsCompilerError],
-        `Error when compiling argument for "${parameterName}"`,
-      );
       const expressionsCompiler = new ExpressionsCompilerStub();
-      expressionsCompiler.compileExpressions = () => { throw expressionsCompilerError; };
+      expressionsCompiler.compileExpressions = () => { throw expectedInnerError; };
       const builder = new NestedFunctionArgumentCompilerBuilder()
         .withParentFunctionCall(parentCall)
         .withNestedFunctionCall(nestedCall)
         .withExpressionsCompiler(expressionsCompiler);
-      // act
-      const act = () => builder.createCompiledNestedCall();
-      // assert
-      expectDeepThrowsError(act, expectedError);
+      itThrowsContextualError({
+        // act
+        throwingAction: (wrapError) => {
+          builder
+            .withErrorWrapper(wrapError)
+            .createCompiledNestedCall();
+        },
+        // assert
+        expectedWrappedError: expectedInnerError,
+        expectedContextMessage: expectedErrorMessage,
+      });
     });
     describe('compilation', () => {
       describe('without arguments', () => {
@@ -258,6 +264,8 @@ class NestedFunctionArgumentCompilerBuilder implements ArgumentCompiler {
 
   private context: FunctionCallCompilationContext = new FunctionCallCompilationContextStub();
 
+  private wrapError: ErrorWithContextWrapper = errorWithContextWrapperStub;
+
   public withExpressionsCompiler(expressionsCompiler: IExpressionsCompiler): this {
     this.expressionsCompiler = expressionsCompiler;
     return this;
@@ -278,8 +286,16 @@ class NestedFunctionArgumentCompilerBuilder implements ArgumentCompiler {
     return this;
   }
 
+  public withErrorWrapper(wrapError: ErrorWithContextWrapper): this {
+    this.wrapError = wrapError;
+    return this;
+  }
+
   public createCompiledNestedCall(): FunctionCall {
-    const compiler = new NestedFunctionArgumentCompiler(this.expressionsCompiler);
+    const compiler = new NestedFunctionArgumentCompiler(
+      this.expressionsCompiler,
+      this.wrapError,
+    );
     return compiler.createCompiledNestedCall(
       this.nestedFunctionCall,
       this.parentFunctionCall,

@@ -8,7 +8,7 @@ import { ScriptCodeStub } from '@tests/unit/shared/Stubs/ScriptCodeStub';
 describe('Script', () => {
   describe('ctor', () => {
     describe('scriptCode', () => {
-      it('sets as expected', () => {
+      it('assigns code correctly', () => {
         // arrange
         const expected = new ScriptCodeStub();
         const sut = new ScriptBuilder()
@@ -43,7 +43,7 @@ describe('Script', () => {
       });
     });
     describe('level', () => {
-      it('cannot construct with invalid wrong value', () => {
+      it('throws when constructed with invalid level', () => {
         // arrange
         const invalidValue: RecommendationLevel = 55 as never;
         const expectedError = 'invalid level';
@@ -54,7 +54,7 @@ describe('Script', () => {
         // assert
         expect(construct).to.throw(expectedError);
       });
-      it('sets undefined as expected', () => {
+      it('handles undefined level correctly', () => {
         // arrange
         const expected = undefined;
         // act
@@ -64,7 +64,7 @@ describe('Script', () => {
         // assert
         expect(sut.level).to.equal(expected);
       });
-      it('sets as expected', () => {
+      it('correctly assigns valid recommendation levels', () => {
         // arrange
         for (const expected of getEnumValues(RecommendationLevel)) {
           // act
@@ -78,7 +78,7 @@ describe('Script', () => {
       });
     });
     describe('docs', () => {
-      it('sets as expected', () => {
+      it('correctly assigns docs', () => {
         // arrange
         const expected = ['doc1', 'doc2'];
         // act
@@ -130,11 +130,11 @@ class ScriptBuilder {
   }
 
   public build(): Script {
-    return new Script(
-      this.name,
-      this.code,
-      this.docs,
-      this.level,
-    );
+    return new Script({
+      name: this.name,
+      code: this.code,
+      docs: this.docs,
+      level: this.level,
+    });
   }
 }

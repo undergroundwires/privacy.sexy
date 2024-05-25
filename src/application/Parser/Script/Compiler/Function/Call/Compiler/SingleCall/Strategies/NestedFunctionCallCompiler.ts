@@ -1,14 +1,21 @@
-import { type CallFunctionBody, FunctionBodyType, type ISharedFunction } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
+import {
+  type CallFunctionBody, FunctionBodyType,
+  type ISharedFunction,
+} from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
 import type { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
 import type { FunctionCallCompilationContext } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/FunctionCallCompilationContext';
 import type { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
+import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/ContextualError';
 import { NestedFunctionArgumentCompiler } from './Argument/NestedFunctionArgumentCompiler';
 import type { SingleCallCompilerStrategy } from '../SingleCallCompilerStrategy';
 import type { ArgumentCompiler } from './Argument/ArgumentCompiler';
 
 export class NestedFunctionCallCompiler implements SingleCallCompilerStrategy {
   public constructor(
-    private readonly argumentCompiler: ArgumentCompiler = new NestedFunctionArgumentCompiler(),
+    private readonly argumentCompiler: ArgumentCompiler
+    = new NestedFunctionArgumentCompiler(),
+    private readonly wrapError: ErrorWithContextWrapper
+    = wrapErrorWithAdditionalContext,
   ) {
   }
 
@@ -29,8 +36,11 @@ export class NestedFunctionCallCompiler implements SingleCallCompilerStrategy {
         const compiledNestedCall = context.singleCallCompiler
           .compileSingleCall(compiledParentCall, context);
         return compiledNestedCall;
-      } catch (err) {
-        throw new AggregateError([err], `Error with call to "${nestedCall.functionName}" function from "${callToFunction.functionName}" function`);
+      } catch (error) {
+        throw this.wrapError(
+          error,
+          `Failed to call '${nestedCall.functionName}' (callee function) from '${callToFunction.functionName}' (caller function).`,
+        );
       }
     }).flat();
   }

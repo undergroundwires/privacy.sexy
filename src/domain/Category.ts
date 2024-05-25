@@ -5,15 +5,21 @@ import type { IScript } from './IScript';
 export class Category extends BaseEntity<number> implements ICategory {
   private allSubScripts?: ReadonlyArray<IScript> = undefined;
 
-  constructor(
-    id: number,
-    public readonly name: string,
-    public readonly docs: ReadonlyArray<string>,
-    public readonly subCategories: ReadonlyArray<ICategory>,
-    public readonly scripts: ReadonlyArray<IScript>,
-  ) {
-    super(id);
-    validateCategory(this);
+  public readonly name: string;
+
+  public readonly docs: ReadonlyArray<string>;
+
+  public readonly subCategories: ReadonlyArray<ICategory>;
+
+  public readonly scripts: ReadonlyArray<IScript>;
+
+  constructor(parameters: CategoryInitParameters) {
+    super(parameters.id);
+    validateParameters(parameters);
+    this.name = parameters.name;
+    this.docs = parameters.docs;
+    this.subCategories = parameters.subcategories;
+    this.scripts = parameters.scripts;
   }
 
   public includes(script: IScript): boolean {
@@ -28,6 +34,14 @@ export class Category extends BaseEntity<number> implements ICategory {
   }
 }
 
+export interface CategoryInitParameters {
+  readonly id: number;
+  readonly name: string;
+  readonly docs: ReadonlyArray<string>;
+  readonly subcategories: ReadonlyArray<ICategory>;
+  readonly scripts: ReadonlyArray<IScript>;
+}
+
 function parseScriptsRecursively(category: ICategory): ReadonlyArray<IScript> {
   return [
     ...category.scripts,
@@ -35,11 +49,11 @@ function parseScriptsRecursively(category: ICategory): ReadonlyArray<IScript> {
   ];
 }
 
-function validateCategory(category: ICategory) {
-  if (!category.name) {
+function validateParameters(parameters: CategoryInitParameters) {
+  if (!parameters.name) {
     throw new Error('missing name');
   }
-  if (category.subCategories.length === 0 && category.scripts.length === 0) {
+  if (parameters.subcategories.length === 0 && parameters.scripts.length === 0) {
     throw new Error('A category must have at least one sub-category or script');
   }
 }

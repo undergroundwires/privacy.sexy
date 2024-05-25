@@ -1,4 +1,4 @@
-import { isFunction } from '@/TypeHelpers';
+import { isFunction, type ConstructorArguments } from '@/TypeHelpers';
 
 /*
   Provides a unified and resilient way to extend errors across platforms.
@@ -12,8 +12,8 @@ import { isFunction } from '@/TypeHelpers';
     > https://web.archive.org/web/20230810014143/https://github.com/Microsoft/TypeScript-wiki/blob/main/Breaking-Changes.md#extending-built-ins-like-error-array-and-map-may-no-longer-work
 */
 export abstract class CustomError extends Error {
-  constructor(message?: string, options?: ErrorOptions) {
-    super(message, options);
+  constructor(...args: ConstructorArguments<typeof Error>) {
+    super(...args);
 
     fixPrototype(this, new.target.prototype);
     ensureStackTrace(this);

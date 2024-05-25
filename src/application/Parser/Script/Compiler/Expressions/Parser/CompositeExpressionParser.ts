@@ -3,10 +3,10 @@ import { WithParser } from '../SyntaxParsers/WithParser';
 import type { IExpression } from '../Expression/IExpression';
 import type { IExpressionParser } from './IExpressionParser';
 
-const Parsers = [
+const Parsers: readonly IExpressionParser[] = [
   new ParameterSubstitutionParser(),
   new WithParser(),
-];
+] as const;
 
 export class CompositeExpressionParser implements IExpressionParser {
   public constructor(private readonly leafs: readonly IExpressionParser[] = Parsers) {

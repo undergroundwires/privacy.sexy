@@ -1,7 +1,7 @@
 import type { DocumentableData, DocumentationData } from '@/application/collections/';
 import { isString, isArray } from '@/TypeHelpers';
 
-export function parseDocs(documentable: DocumentableData): readonly string[] {
+export const parseDocs: DocsParser = (documentable) => {
   const { docs } = documentable;
   if (!docs) {
     return [];
@@ -9,6 +9,12 @@ export function parseDocs(documentable: DocumentableData): readonly string[] {
   let result = new DocumentationContainer();
   result = addDocs(docs, result);
   return result.getAll();
+};
+
+export interface DocsParser {
+  (
+    documentable: DocumentableData,
+  ): readonly string[];
 }
 
 function addDocs(

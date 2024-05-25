@@ -72,7 +72,7 @@ function throwIfUnexpectedParametersExist(
     // eslint-disable-next-line prefer-template
     `Function "${functionName}" has unexpected parameter(s) provided: `
       + `"${unexpectedParameters.join('", "')}"`
-      + '. Expected parameter(s): '
-      + (expectedParameters.length ? `"${expectedParameters.join('", "')}"` : 'none'),
+      + '.\nExpected parameter(s): '
+      + (expectedParameters.length ? `"${expectedParameters.join('", "')}".` : 'none'),
   );
 }

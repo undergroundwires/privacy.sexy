@@ -1,25 +1,29 @@
 import { describe, it, expect } from 'vitest';
 import type { FunctionData, CodeInstruction } from '@/application/collections/';
 import type { ISharedFunction } from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
-import { SharedFunctionsParser } from '@/application/Parser/Script/Compiler/Function/SharedFunctionsParser';
+import { SharedFunctionsParser, type FunctionParameterFactory } from '@/application/Parser/Script/Compiler/Function/SharedFunctionsParser';
 import { createFunctionDataWithCode, createFunctionDataWithoutCallOrCode } from '@tests/unit/shared/Stubs/FunctionDataStub';
 import { ParameterDefinitionDataStub } from '@tests/unit/shared/Stubs/ParameterDefinitionDataStub';
-import { FunctionParameter } from '@/application/Parser/Script/Compiler/Function/Parameter/FunctionParameter';
 import { FunctionCallDataStub } from '@tests/unit/shared/Stubs/FunctionCallDataStub';
 import { itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import type { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
 import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
-import { itIsSingleton } from '@tests/unit/shared/TestCases/SingletonTests';
+import { itIsSingletonFactory } from '@tests/unit/shared/TestCases/SingletonFactoryTests';
 import { CodeValidatorStub } from '@tests/unit/shared/Stubs/CodeValidatorStub';
 import type { ICodeValidator } from '@/application/Parser/Script/Validation/ICodeValidator';
 import { NoEmptyLines } from '@/application/Parser/Script/Validation/Rules/NoEmptyLines';
 import { NoDuplicatedLines } from '@/application/Parser/Script/Validation/Rules/NoDuplicatedLines';
-import { collectExceptionMessage } from '@tests/unit/shared/ExceptionCollector';
+import type { ErrorWithContextWrapper } from '@/application/Parser/ContextualError';
+import { FunctionParameterStub } from '@tests/unit/shared/Stubs/FunctionParameterStub';
+import { errorWithContextWrapperStub } from '@tests/unit/shared/Stubs/ErrorWithContextWrapperStub';
+import { itThrowsContextualError } from '@tests/unit/application/Parser/ContextualErrorTester';
+import type { FunctionParameterCollectionFactory } from '@/application/Parser/Script/Compiler/Function/Parameter/FunctionParameterCollectionFactory';
+import { FunctionParameterCollectionStub } from '@tests/unit/shared/Stubs/FunctionParameterCollectionStub';
 import { expectCallsFunctionBody, expectCodeFunctionBody } from './ExpectFunctionBodyType';
 
 describe('SharedFunctionsParser', () => {
   describe('instance', () => {
-    itIsSingleton({
+    itIsSingletonFactory({
       getter: () => SharedFunctionsParser.instance,
       expectedType: SharedFunctionsParser,
     });
@@ -127,7 +131,7 @@ describe('SharedFunctionsParser', () => {
         });
       });
       describe('throws when parameters type is not as expected', () => {
-        const testCases = [
+        const testScenarios = [
           {
             state: 'when not an array',
             invalidType: 5,
@@ -137,7 +141,7 @@ describe('SharedFunctionsParser', () => {
             invalidType: ['a', { a: 'b' }],
           },
         ];
-        for (const testCase of testCases) {
+        for (const testCase of testScenarios) {
           it(testCase.state, () => {
             // arrange
             const func = createFunctionDataWithCode()
@@ -170,25 +174,33 @@ describe('SharedFunctionsParser', () => {
           rules: expectedRules,
         });
       });
-      it('rethrows including function name when FunctionParameter throws', () => {
-        // arrange
-        const invalidParameterName = 'invalid function p@r4meter name';
-        const functionName = 'functionName';
-        const message = collectExceptionMessage(
-          () => new FunctionParameter(invalidParameterName, false),
-        );
-        const expectedError = `"${functionName}": ${message}`;
-        const functionData = createFunctionDataWithCode()
-          .withName(functionName)
-          .withParameters(new ParameterDefinitionDataStub().withName(invalidParameterName));
-
-        // act
-        const act = () => new ParseFunctionsCallerWithDefaults()
-          .withFunctions([functionData])
-          .parseFunctions();
-
-        // assert
-        expect(act).to.throw(expectedError);
+      describe('parameter creation', () => {
+        describe('rethrows including function name when creating parameter throws', () => {
+          // arrange
+          const invalidParameterName = 'invalid-function-parameter-name';
+          const functionName = 'functionName';
+          const expectedErrorMessage = `Failed to create parameter: ${invalidParameterName} for function "${functionName}"`;
+          const expectedInnerError = new Error('injected error');
+          const parameterFactory: FunctionParameterFactory = () => {
+            throw expectedInnerError;
+          };
+          const functionData = createFunctionDataWithCode()
+            .withName(functionName)
+            .withParameters(new ParameterDefinitionDataStub().withName(invalidParameterName));
+          itThrowsContextualError({
+            // act
+            throwingAction: (wrapError) => {
+              new ParseFunctionsCallerWithDefaults()
+                .withFunctions([functionData])
+                .withFunctionParameterFactory(parameterFactory)
+                .withErrorWrapper(wrapError)
+                .parseFunctions();
+            },
+            // assert
+            expectedWrappedError: expectedInnerError,
+            expectedContextMessage: expectedErrorMessage,
+          });
+        });
       });
     });
     describe('given empty functions, returns empty collection', () => {
@@ -282,6 +294,18 @@ class ParseFunctionsCallerWithDefaults {
 
   private functions: readonly FunctionData[] = [createFunctionDataWithCode()];
 
+  private wrapError: ErrorWithContextWrapper = errorWithContextWrapperStub;
+
+  private parameterFactory: FunctionParameterFactory = (
+    name: string,
+    isOptional: boolean,
+  ) => new FunctionParameterStub()
+    .withName(name)
+    .withOptional(isOptional);
+
+  private parameterCollectionFactory
+  : FunctionParameterCollectionFactory = () => new FunctionParameterCollectionStub();
+
   public withSyntax(syntax: ILanguageSyntax) {
     this.syntax = syntax;
     return this;
@@ -297,8 +321,32 @@ class ParseFunctionsCallerWithDefaults {
     return this;
   }
 
+  public withErrorWrapper(wrapError: ErrorWithContextWrapper): this {
+    this.wrapError = wrapError;
+    return this;
+  }
+
+  public withFunctionParameterFactory(parameterFactory: FunctionParameterFactory): this {
+    this.parameterFactory = parameterFactory;
+    return this;
+  }
+
+  public withParameterCollectionFactory(
+    parameterCollectionFactory: FunctionParameterCollectionFactory,
+  ): this {
+    this.parameterCollectionFactory = parameterCollectionFactory;
+    return this;
+  }
+
   public parseFunctions() {
-    const sut = new SharedFunctionsParser(this.codeValidator);
+    const sut = new SharedFunctionsParser(
+      {
+        codeValidator: this.codeValidator,
+        wrapError: this.wrapError,
+        createParameter: this.parameterFactory,
+        createParameterCollection: this.parameterCollectionFactory,
+      },
+    );
     return sut.parseFunctions(this.functions, this.syntax);
   }
 }

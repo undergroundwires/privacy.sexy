@@ -3,8 +3,9 @@ import { VueDependencyInjectionApiStub } from '@tests/unit/shared/Stubs/VueDepen
 import { InjectionKeys } from '@/presentation/injectionSymbols';
 import { provideDependencies, type VueDependencyInjectionApi } from '@/presentation/bootstrapping/DependencyProvider';
 import { ApplicationContextStub } from '@tests/unit/shared/Stubs/ApplicationContextStub';
-import { itIsSingleton } from '@tests/unit/shared/TestCases/SingletonTests';
+import { itIsSingletonFactory } from '@tests/unit/shared/TestCases/SingletonFactoryTests';
 import type { IApplicationContext } from '@/application/Context/IApplicationContext';
+import { itIsTransientFactory } from '@tests/unit/shared/TestCases/TransientFactoryTests';
 
 describe('DependencyProvider', () => {
   describe('provideDependencies', () => {
@@ -46,19 +47,22 @@ function createTransientTests() {
       const registeredObject = api.inject(injectionKey);
       expect(registeredObject).to.be.instanceOf(Function);
     });
-    it('should return different instances for transient dependency', () => {
+    describe('should return different instances for transient dependency', () => {
       // arrange
       const api = new VueDependencyInjectionApiStub();
-      // act
       new ProvideDependenciesBuilder()
         .withApi(api)
         .provideDependencies();
-      // expect
-      const registeredObject = api.inject(injectionKey);
-      const factory = registeredObject as () => unknown;
-      const firstResult = factory();
-      const secondResult = factory();
-      expect(firstResult).to.not.equal(secondResult);
+      // act
+      const getFactoryResult = () => {
+        const registeredObject = api.inject(injectionKey);
+        const factory = registeredObject as () => unknown;
+        return factory();
+      };
+      // assert
+      itIsTransientFactory({
+        getter: getFactoryResult,
+      });
     });
   };
 }
@@ -87,7 +91,7 @@ function createSingletonTests() {
       // act
       const getRegisteredInstance = () => api.inject(injectionKey);
       // assert
-      itIsSingleton({
+      itIsSingletonFactory({
         getter: getRegisteredInstance,
       });
     });

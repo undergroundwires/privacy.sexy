@@ -17,7 +17,7 @@ describe('FunctionCallArgument', () => {
       itEachAbsentStringValue((absentValue) => {
         // arrange
         const parameterName = 'paramName';
-        const expectedError = `missing argument value for "${parameterName}"`;
+        const expectedError = `Missing argument value for the parameter "${parameterName}".`;
         const argumentValue = absentValue;
         // act
         const act = () => new FunctionCallArgumentBuilder()

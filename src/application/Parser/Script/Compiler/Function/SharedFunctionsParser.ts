@@ -1,5 +1,6 @@
 import type {
-  FunctionData, CodeInstruction, CodeFunctionData, CallFunctionData, CallInstruction,
+  FunctionData, CodeInstruction, CodeFunctionData, CallFunctionData,
+  CallInstruction, ParameterDefinitionData,
 } from '@/application/collections/';
 import type { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
 import { CodeValidator } from '@/application/Parser/Script/Validation/CodeValidator';
@@ -7,20 +8,30 @@ import { NoEmptyLines } from '@/application/Parser/Script/Validation/Rules/NoEmp
 import { NoDuplicatedLines } from '@/application/Parser/Script/Validation/Rules/NoDuplicatedLines';
 import type { ICodeValidator } from '@/application/Parser/Script/Validation/ICodeValidator';
 import { isArray, isNullOrUndefined, isPlainObject } from '@/TypeHelpers';
+import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/ContextualError';
 import { createFunctionWithInlineCode, createCallerFunction } from './SharedFunction';
 import { SharedFunctionCollection } from './SharedFunctionCollection';
 import { FunctionParameter } from './Parameter/FunctionParameter';
-import { FunctionParameterCollection } from './Parameter/FunctionParameterCollection';
 import { parseFunctionCalls } from './Call/FunctionCallParser';
+import { createFunctionParameterCollection, type FunctionParameterCollectionFactory } from './Parameter/FunctionParameterCollectionFactory';
 import type { ISharedFunctionCollection } from './ISharedFunctionCollection';
 import type { ISharedFunctionsParser } from './ISharedFunctionsParser';
 import type { IReadOnlyFunctionParameterCollection } from './Parameter/IFunctionParameterCollection';
 import type { ISharedFunction } from './ISharedFunction';
 
+const DefaultSharedFunctionsParsingUtilities: SharedFunctionsParsingUtilities = {
+  wrapError: wrapErrorWithAdditionalContext,
+  createParameter: (...args) => new FunctionParameter(...args),
+  codeValidator: CodeValidator.instance,
+  createParameterCollection: createFunctionParameterCollection,
+};
+
 export class SharedFunctionsParser implements ISharedFunctionsParser {
   public static readonly instance: ISharedFunctionsParser = new SharedFunctionsParser();
 
-  constructor(private readonly codeValidator: ICodeValidator = CodeValidator.instance) { }
+  constructor(
+    private readonly utilities = DefaultSharedFunctionsParsingUtilities,
+  ) { }
 
   public parseFunctions(
     functions: readonly FunctionData[],
@@ -32,7 +43,7 @@ export class SharedFunctionsParser implements ISharedFunctionsParser {
     }
     ensureValidFunctions(functions);
     return functions
-      .map((func) => parseFunction(func, syntax, this.codeValidator))
+      .map((func) => parseFunction(func, syntax, this.utilities))
       .reduce((acc, func) => {
         acc.addFunction(func);
         return acc;
@@ -40,15 +51,26 @@ export class SharedFunctionsParser implements ISharedFunctionsParser {
   }
 }
 
+interface SharedFunctionsParsingUtilities {
+  readonly wrapError: ErrorWithContextWrapper;
+  readonly createParameter: FunctionParameterFactory;
+  readonly codeValidator: ICodeValidator;
+  readonly createParameterCollection: FunctionParameterCollectionFactory;
+}
+
+export type FunctionParameterFactory = (
+  ...args: ConstructorParameters<typeof FunctionParameter>
+) => FunctionParameter;
+
 function parseFunction(
   data: FunctionData,
   syntax: ILanguageSyntax,
-  validator: ICodeValidator,
+  utilities: SharedFunctionsParsingUtilities,
 ): ISharedFunction {
   const { name } = data;
-  const parameters = parseParameters(data);
+  const parameters = parseParameters(data, utilities);
   if (hasCode(data)) {
-    validateCode(data, syntax, validator);
+    validateCode(data, syntax, utilities.codeValidator);
     return createFunctionWithInlineCode(name, parameters, data.code, data.revertCode);
   }
   // Has call
@@ -71,22 +93,38 @@ function validateCode(
     );
 }
 
-function parseParameters(data: FunctionData): IReadOnlyFunctionParameterCollection {
+function parseParameters(
+  data: FunctionData,
+  utilities: SharedFunctionsParsingUtilities,
+): IReadOnlyFunctionParameterCollection {
   return (data.parameters || [])
-    .map((parameter) => {
-      try {
-        return new FunctionParameter(
-          parameter.name,
-          parameter.optional || false,
-        );
-      } catch (err) {
-        throw new Error(`"${data.name}": ${err.message}`);
-      }
-    })
+    .map((parameter) => createFunctionParameter(
+      data.name,
+      parameter,
+      utilities,
+    ))
     .reduce((parameters, parameter) => {
       parameters.addParameter(parameter);
       return parameters;
-    }, new FunctionParameterCollection());
+    }, utilities.createParameterCollection());
+}
+
+function createFunctionParameter(
+  functionName: string,
+  parameterData: ParameterDefinitionData,
+  utilities: SharedFunctionsParsingUtilities,
+): FunctionParameter {
+  try {
+    return utilities.createParameter(
+      parameterData.name,
+      parameterData.optional || false,
+    );
+  } catch (err) {
+    throw utilities.wrapError(
+      err,
+      `Failed to create parameter: ${parameterData.name} for function "${functionName}"`,
+    );
+  }
 }
 
 function hasCode(data: FunctionData): data is CodeFunctionData {

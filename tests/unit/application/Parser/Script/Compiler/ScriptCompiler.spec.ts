@@ -1,9 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import type { FunctionData } from '@/application/collections/';
-import { ScriptCode } from '@/domain/ScriptCode';
 import { ScriptCompiler } from '@/application/Parser/Script/Compiler/ScriptCompiler';
 import type { ISharedFunctionsParser } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionsParser';
-import type { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
 import type { FunctionCallCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/FunctionCallCompiler';
 import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
 import { createFunctionDataWithCode } from '@tests/unit/shared/Stubs/FunctionDataStub';
@@ -17,8 +15,13 @@ import type { ICodeValidator } from '@/application/Parser/Script/Validation/ICod
 import { CodeValidatorStub } from '@tests/unit/shared/Stubs/CodeValidatorStub';
 import { NoEmptyLines } from '@/application/Parser/Script/Validation/Rules/NoEmptyLines';
 import { CompiledCodeStub } from '@tests/unit/shared/Stubs/CompiledCodeStub';
-import { collectExceptionMessage } from '@tests/unit/shared/ExceptionCollector';
 import { createScriptDataWithCall, createScriptDataWithCode } from '@tests/unit/shared/Stubs/ScriptDataStub';
+import type { ErrorWithContextWrapper } from '@/application/Parser/ContextualError';
+import { errorWithContextWrapperStub } from '@tests/unit/shared/Stubs/ErrorWithContextWrapperStub';
+import { ScriptCodeStub } from '@tests/unit/shared/Stubs/ScriptCodeStub';
+import type { ScriptCodeFactory } from '@/domain/ScriptCodeFactory';
+import { createScriptCodeFactoryStub } from '@tests/unit/shared/Stubs/ScriptCodeFactoryStub';
+import { itThrowsContextualError } from '../../ContextualErrorTester';
 
 describe('ScriptCompiler', () => {
   describe('canCompile', () => {
@@ -58,31 +61,59 @@ describe('ScriptCompiler', () => {
       // assert
       expect(act).to.throw(expectedError);
     });
-    it('returns code as expected', () => {
-      // arrange
-      const expected: CompiledCode = {
-        code: 'expected-code',
-        revertCode: 'expected-revert-code',
-      };
-      const call = new FunctionCallDataStub();
-      const script = createScriptDataWithCall(call);
-      const functions = [createFunctionDataWithCode().withName('existing-func')];
-      const compiledFunctions = new SharedFunctionCollectionStub();
-      const functionParserMock = new SharedFunctionsParserStub();
-      functionParserMock.setup(functions, compiledFunctions);
-      const callCompilerMock = new FunctionCallCompilerStub();
-      callCompilerMock.setup(parseFunctionCalls(call), compiledFunctions, expected);
-      const sut = new ScriptCompilerBuilder()
-        .withFunctions(...functions)
-        .withSharedFunctionsParser(functionParserMock)
-        .withFunctionCallCompiler(callCompilerMock)
-        .build();
-      // act
-      const code = sut.compile(script);
-      // assert
-      expect(code.execute).to.equal(expected.code);
-      expect(code.revert).to.equal(expected.revertCode);
+    describe('code construction', () => {
+      it('returns code from the factory', () => {
+        // arrange
+        const expectedCode = new ScriptCodeStub();
+        const scriptCodeFactory = () => expectedCode;
+        const sut = new ScriptCompilerBuilder()
+          .withSomeFunctions()
+          .withScriptCodeFactory(scriptCodeFactory)
+          .build();
+        // act
+        const actualCode = sut.compile(createScriptDataWithCall());
+        // assert
+        expect(actualCode).to.equal(expectedCode);
+      });
+      it('creates code correctly', () => {
+        // arrange
+        const expectedCode = 'expected-code';
+        const expectedRevertCode = 'expected-revert-code';
+        let actualCode: string | undefined;
+        let actualRevertCode: string | undefined;
+        const scriptCodeFactory = (code: string, revertCode: string) => {
+          actualCode = code;
+          actualRevertCode = revertCode;
+          return new ScriptCodeStub();
+        };
+        const call = new FunctionCallDataStub();
+        const script = createScriptDataWithCall(call);
+        const functions = [createFunctionDataWithCode().withName('existing-func')];
+        const compiledFunctions = new SharedFunctionCollectionStub();
+        const functionParserMock = new SharedFunctionsParserStub();
+        functionParserMock.setup(functions, compiledFunctions);
+        const callCompilerMock = new FunctionCallCompilerStub();
+        callCompilerMock.setup(
+          parseFunctionCalls(call),
+          compiledFunctions,
+          new CompiledCodeStub()
+            .withCode(expectedCode)
+            .withRevertCode(expectedRevertCode),
+        );
+        const sut = new ScriptCompilerBuilder()
+          .withFunctions(...functions)
+          .withSharedFunctionsParser(functionParserMock)
+          .withFunctionCallCompiler(callCompilerMock)
+          .withScriptCodeFactory(scriptCodeFactory)
+          .build();
+        // act
+        sut.compile(script);
+        // assert
+        expect(actualCode).to.equal(expectedCode);
+        expect(actualRevertCode).to.equal(expectedRevertCode);
+      });
     });
+
     describe('parses functions as expected', () => {
       it('parses functions with expected syntax', () => {
         // arrange
@@ -116,49 +147,57 @@ describe('ScriptCompiler', () => {
         expect(parser.callHistory[0].functions).to.deep.equal(expectedFunctions);
       });
     });
-    it('rethrows error with script name', () => {
+    describe('rethrows error with script name', () => {
       // arrange
       const scriptName = 'scriptName';
-      const innerError = 'innerError';
-      const expectedError = `Script "${scriptName}" ${innerError}`;
+      const expectedErrorMessage = `Failed to compile script: ${scriptName}`;
+      const expectedInnerError = new Error();
       const callCompiler: FunctionCallCompiler = {
-        compileFunctionCalls: () => { throw new Error(innerError); },
+        compileFunctionCalls: () => { throw expectedInnerError; },
       };
       const scriptData = createScriptDataWithCall()
         .withName(scriptName);
-      const sut = new ScriptCompilerBuilder()
+      const builder = new ScriptCompilerBuilder()
         .withSomeFunctions()
-        .withFunctionCallCompiler(callCompiler)
-        .build();
-      // act
-      const act = () => sut.compile(scriptData);
-      // assert
-      expect(act).to.throw(expectedError);
+        .withFunctionCallCompiler(callCompiler);
+      itThrowsContextualError({
+        // act
+        throwingAction: (wrapError) => {
+          builder
+            .withErrorWrapper(wrapError)
+            .build()
+            .compile(scriptData);
+        },
+        // assert
+        expectedWrappedError: expectedInnerError,
+        expectedContextMessage: expectedErrorMessage,
+      });
     });
-    it('rethrows error from ScriptCode with script name', () => {
+    describe('rethrows error from script code factory with script name', () => {
       // arrange
       const scriptName = 'scriptName';
-      const syntax = new LanguageSyntaxStub();
-      const invalidCode = new CompiledCodeStub()
-        .withCode('' /* invalid code (empty string) */);
-      const realExceptionMessage = collectExceptionMessage(
-        () => new ScriptCode(invalidCode.code, invalidCode.revertCode),
-      );
-      const expectedError = `Script "${scriptName}" ${realExceptionMessage}`;
-      const callCompiler: FunctionCallCompiler = {
-        compileFunctionCalls: () => invalidCode,
+      const expectedErrorMessage = `Failed to compile script: ${scriptName}`;
+      const expectedInnerError = new Error();
+      const scriptCodeFactory: ScriptCodeFactory = () => {
+        throw expectedInnerError;
       };
       const scriptData = createScriptDataWithCall()
         .withName(scriptName);
-      const sut = new ScriptCompilerBuilder()
+      const builder = new ScriptCompilerBuilder()
         .withSomeFunctions()
-        .withFunctionCallCompiler(callCompiler)
-        .withSyntax(syntax)
-        .build();
-      // act
-      const act = () => sut.compile(scriptData);
-      // assert
-      expect(act).to.throw(expectedError);
+        .withScriptCodeFactory(scriptCodeFactory);
+      itThrowsContextualError({
+        // act
+        throwingAction: (wrapError) => {
+          builder
+            .withErrorWrapper(wrapError)
+            .build()
+            .compile(scriptData);
+        },
+        // assert
+        expectedWrappedError: expectedInnerError,
+        expectedContextMessage: expectedErrorMessage,
+      });
     });
     it('validates compiled code as expected', () => {
       // arrange
@@ -166,17 +205,27 @@ describe('ScriptCompiler', () => {
         NoEmptyLines,
         // Allow duplicated lines to enable calling same function multiple times
       ];
+      const expectedExecuteCode = 'execute code to be validated';
+      const expectedRevertCode = 'revert code to be validated';
       const scriptData = createScriptDataWithCall();
       const validator = new CodeValidatorStub();
       const sut = new ScriptCompilerBuilder()
         .withSomeFunctions()
         .withCodeValidator(validator)
+        .withFunctionCallCompiler(
+          new FunctionCallCompilerStub()
+            .withDefaultCompiledCode(
+              new CompiledCodeStub()
+                .withCode(expectedExecuteCode)
+                .withRevertCode(expectedRevertCode),
+            ),
+        )
         .build();
       // act
-      const compilationResult = sut.compile(scriptData);
+      sut.compile(scriptData);
       // assert
       validator.assertHistory({
-        validatedCodes: [compilationResult.execute, compilationResult.revert],
+        validatedCodes: [expectedExecuteCode, expectedRevertCode],
         rules: expectedRules,
       });
     });
@@ -199,6 +248,12 @@ class ScriptCompilerBuilder {
   private callCompiler: FunctionCallCompiler = new FunctionCallCompilerStub();
 
   private codeValidator: ICodeValidator = new CodeValidatorStub();
+
+  private wrapError: ErrorWithContextWrapper = errorWithContextWrapperStub;
+
+  private scriptCodeFactory: ScriptCodeFactory = createScriptCodeFactoryStub({
+    defaultCodePrefix: ScriptCompilerBuilder.name,
+  });
 
   public withFunctions(...functions: FunctionData[]): this {
     this.functions = functions;
@@ -244,6 +299,16 @@ class ScriptCompilerBuilder {
     return this;
   }
 
+  public withErrorWrapper(wrapError: ErrorWithContextWrapper): this {
+    this.wrapError = wrapError;
+    return this;
+  }
+
+  public withScriptCodeFactory(scriptCodeFactory: ScriptCodeFactory): this {
+    this.scriptCodeFactory = scriptCodeFactory;
+    return this;
+  }
+
   public build(): ScriptCompiler {
     if (!this.functions) {
       throw new Error('Function behavior not defined');
@@ -254,6 +319,8 @@ class ScriptCompilerBuilder {
       this.sharedFunctionsParser,
       this.callCompiler,
       this.codeValidator,
+      this.wrapError,
+      this.scriptCodeFactory,
     );
   }
 }

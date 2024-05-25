@@ -16,7 +16,7 @@ export class FunctionParameterCollectionStub implements IFunctionParameterCollec
   public withParameterName(parameterName: string, isOptional = true) {
     const parameter = new FunctionParameterStub()
       .withName(parameterName)
-      .withOptionality(isOptional);
+      .withOptional(isOptional);
     this.addParameter(parameter);
     return this;
   }

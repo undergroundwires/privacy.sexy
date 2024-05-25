@@ -10,7 +10,7 @@ export class FunctionParameterStub implements IFunctionParameter {
     return this;
   }
 
-  public withOptionality(isOptional: boolean) {
+  public withOptional(isOptional: boolean) {
     this.isOptional = isOptional;
     return this;
   }

@@ -7,8 +7,8 @@ describe('FunctionParameterCollection', () => {
     // arrange
     const expected = [
       new FunctionParameterStub().withName('1'),
-      new FunctionParameterStub().withName('2').withOptionality(true),
-      new FunctionParameterStub().withName('3').withOptionality(false),
+      new FunctionParameterStub().withName('2').withOptional(true),
+      new FunctionParameterStub().withName('3').withOptional(false),
     ];
     const sut = new FunctionParameterCollection();
     for (const parameter of expected) {

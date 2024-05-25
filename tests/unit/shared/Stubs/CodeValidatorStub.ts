@@ -19,16 +19,16 @@ export class CodeValidatorStub implements ICodeValidator {
     });
   }
 
-  public assertHistory(expected: {
+  public assertHistory(expectation: {
     validatedCodes: readonly (string | undefined)[],
     rules: readonly Constructible<ICodeValidationRule>[],
   }) {
-    expect(this.callHistory).to.have.lengthOf(expected.validatedCodes.length);
+    expect(this.callHistory).to.have.lengthOf(expectation.validatedCodes.length);
     const actualValidatedCodes = this.callHistory.map((args) => args.code);
-    expect(actualValidatedCodes.sort()).deep.equal([...expected.validatedCodes].sort());
+    expect(actualValidatedCodes.sort()).deep.equal([...expectation.validatedCodes].sort());
     for (const call of this.callHistory) {
       const actualRules = call.rules.map((rule) => rule.constructor);
-      expect(actualRules.sort()).to.deep.equal([...expected.rules].sort());
+      expect(actualRules.sort()).to.deep.equal([...expectation.rules].sort());
     }
   }
 }

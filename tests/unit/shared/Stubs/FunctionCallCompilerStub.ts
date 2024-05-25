@@ -2,22 +2,33 @@ import type { CompiledCode } from '@/application/Parser/Script/Compiler/Function
 import type { FunctionCallCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/FunctionCallCompiler';
 import type { ISharedFunctionCollection } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionCollection';
 import type { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
+import { CompiledCodeStub } from './CompiledCodeStub';
 
-interface IScenario {
-  calls: FunctionCall[];
-  functions: ISharedFunctionCollection;
-  result: CompiledCode;
+interface FunctionCallCompilationTestScenario {
+  readonly calls: FunctionCall[];
+  readonly functions: ISharedFunctionCollection;
+  readonly result: CompiledCode;
 }
 
 export class FunctionCallCompilerStub implements FunctionCallCompiler {
-  public scenarios = new Array<IScenario>();
+  public scenarios = new Array<FunctionCallCompilationTestScenario>();
+
+  private defaultCompiledCode: CompiledCode = new CompiledCodeStub()
+    .withCode(`[${FunctionCallCompilerStub.name}] function code`)
+    .withRevertCode(`[${FunctionCallCompilerStub.name}] function revert code`);
 
   public setup(
     calls: FunctionCall[],
     functions: ISharedFunctionCollection,
     result: CompiledCode,
-  ) {
+  ): this {
     this.scenarios.push({ calls, functions, result });
+    return this;
+  }
+
+  public withDefaultCompiledCode(defaultCompiledCode: CompiledCode): this {
+    this.defaultCompiledCode = defaultCompiledCode;
+    return this;
   }
 
   public compileFunctionCalls(
@@ -29,10 +40,7 @@ export class FunctionCallCompilerStub implements FunctionCallCompiler {
     if (predefined) {
       return predefined.result;
     }
-    return {
-      code: 'function code [FunctionCallCompilerStub]',
-      revertCode: 'function revert code [FunctionCallCompilerStub]',
-    };
+    return this.defaultCompiledCode;
   }
 }
 

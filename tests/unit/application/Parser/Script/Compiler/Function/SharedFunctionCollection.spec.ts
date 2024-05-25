@@ -35,7 +35,7 @@ describe('SharedFunctionCollection', () => {
     it('throws if function does not exist', () => {
       // arrange
       const name = 'unique-name';
-      const expectedError = `called function is not defined "${name}"`;
+      const expectedError = `Called function is not defined: "${name}"`;
       const func = createSharedFunctionStubWithCode()
         .withName('unexpected-name');
       const sut = new SharedFunctionCollection();

@@ -7,15 +7,18 @@ import type { IReadOnlyFunctionParameterCollection } from '../../Function/Parame
 import type { IExpression } from './IExpression';
 
 export type ExpressionEvaluator = (context: IExpressionEvaluationContext) => string;
+
 export class Expression implements IExpression {
   public readonly parameters: IReadOnlyFunctionParameterCollection;
 
-  constructor(
-    public readonly position: ExpressionPosition,
-    public readonly evaluator: ExpressionEvaluator,
-    parameters?: IReadOnlyFunctionParameterCollection,
-  ) {
-    this.parameters = parameters ?? new FunctionParameterCollection();
+  public readonly position: ExpressionPosition;
+
+  public readonly evaluator: ExpressionEvaluator;
+
+  constructor(parameters: ExpressionInitParameters) {
+    this.parameters = parameters.parameters ?? new FunctionParameterCollection();
+    this.evaluator = parameters.evaluator;
+    this.position = parameters.position;
   }
 
   public evaluate(context: IExpressionEvaluationContext): string {
@@ -24,6 +27,12 @@ export class Expression implements IExpression {
     const filteredContext = new ExpressionEvaluationContext(args, context.pipelineCompiler);
     return this.evaluator(filteredContext);
   }
+}
+
+export interface ExpressionInitParameters {
+  readonly position: ExpressionPosition,
+  readonly evaluator: ExpressionEvaluator,
+  readonly parameters?: IReadOnlyFunctionParameterCollection,
 }
 
 function validateThatAllRequiredParametersAreSatisfied(

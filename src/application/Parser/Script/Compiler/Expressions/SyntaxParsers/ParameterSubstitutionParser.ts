@@ -1,5 +1,5 @@
 import { FunctionParameter } from '@/application/Parser/Script/Compiler/Function/Parameter/FunctionParameter';
-import { RegexParser, type IPrimitiveExpression } from '../Parser/Regex/RegexParser';
+import { RegexParser, type PrimitiveExpression } from '../Parser/Regex/RegexParser';
 import { ExpressionRegexBuilder } from '../Parser/Regex/ExpressionRegexBuilder';
 
 export class ParameterSubstitutionParser extends RegexParser {
@@ -12,7 +12,7 @@ export class ParameterSubstitutionParser extends RegexParser {
     .expectExpressionEnd()
     .buildRegExp();
 
-  protected buildExpression(match: RegExpMatchArray): IPrimitiveExpression {
+  protected buildExpression(match: RegExpMatchArray): PrimitiveExpression {
     const parameterName = match[1];
     const pipeline = match[2];
     return {

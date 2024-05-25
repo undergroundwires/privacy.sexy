@@ -6,11 +6,14 @@ import type { IExpressionsCompiler } from '@/application/Parser/Script/Compiler/
 import type { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
 import type { FunctionCallCompilationContext } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/FunctionCallCompilationContext';
 import { ParsedFunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/ParsedFunctionCall';
+import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/ContextualError';
 import type { ArgumentCompiler } from './ArgumentCompiler';
 
 export class NestedFunctionArgumentCompiler implements ArgumentCompiler {
   constructor(
     private readonly expressionsCompiler: IExpressionsCompiler = new ExpressionsCompiler(),
+    private readonly wrapError: ErrorWithContextWrapper
+    = wrapErrorWithAdditionalContext,
   ) { }
 
   public createCompiledNestedCall(
@@ -22,18 +25,26 @@ export class NestedFunctionArgumentCompiler implements ArgumentCompiler {
       nestedFunction,
       parentFunction.args,
       context,
-      this.expressionsCompiler,
+      {
+        expressionsCompiler: this.expressionsCompiler,
+        wrapError: this.wrapError,
+      },
     );
     const compiledCall = new ParsedFunctionCall(nestedFunction.functionName, compiledArgs);
     return compiledCall;
   }
 }
 
+interface ArgumentCompilationUtilities {
+  readonly expressionsCompiler: IExpressionsCompiler,
+  readonly wrapError: ErrorWithContextWrapper;
+}
+
 function compileNestedFunctionArguments(
   nestedFunction: FunctionCall,
   parentFunctionArgs: IReadOnlyFunctionCallArgumentCollection,
   context: FunctionCallCompilationContext,
-  expressionsCompiler: IExpressionsCompiler,
+  utilities: ArgumentCompilationUtilities,
 ): IReadOnlyFunctionCallArgumentCollection {
   const requiredParameterNames = context
     .allFunctions
@@ -47,7 +58,7 @@ function compileNestedFunctionArguments(
         paramName,
         nestedFunction,
         parentFunctionArgs,
-        expressionsCompiler,
+        utilities,
       ),
     }))
     // Filter out arguments with absent values
@@ -89,13 +100,13 @@ function compileArgument(
   parameterName: string,
   nestedFunction: FunctionCall,
   parentFunctionArgs: IReadOnlyFunctionCallArgumentCollection,
-  expressionsCompiler: IExpressionsCompiler,
+  utilities: ArgumentCompilationUtilities,
 ): string {
   try {
     const { argumentValue: codeInArgument } = nestedFunction.args.getArgument(parameterName);
-    return expressionsCompiler.compileExpressions(codeInArgument, parentFunctionArgs);
-  } catch (err) {
-    throw new AggregateError([err], `Error when compiling argument for "${parameterName}"`);
+    return utilities.expressionsCompiler.compileExpressions(codeInArgument, parentFunctionArgs);
+  } catch (error) {
+    throw utilities.wrapError(error, `Error when compiling argument for "${parameterName}"`);
   }
 }
 

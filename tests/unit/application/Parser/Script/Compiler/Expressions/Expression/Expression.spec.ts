@@ -229,7 +229,11 @@ class ExpressionBuilder {
   }
 
   public build() {
-    return new Expression(this.position, this.evaluator, this.parameters);
+    return new Expression({
+      position: this.position,
+      evaluator: this.evaluator,
+      parameters: this.parameters,
+    });
   }
 
   private evaluator: ExpressionEvaluator = () => `[${ExpressionBuilder.name}] evaluated-expression`;

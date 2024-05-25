@@ -11,6 +11,7 @@ import type { FunctionCallCompilationContext } from '@/application/Parser/Script
 import { FunctionCallCompilationContextStub } from '@tests/unit/shared/Stubs/FunctionCallCompilationContextStub';
 import { CompiledCodeStub } from '@tests/unit/shared/Stubs/CompiledCodeStub';
 import type { SingleCallCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/SingleCall/SingleCallCompiler';
+import { collectExceptionMessage } from '@tests/unit/shared/ExceptionCollector';
 
 describe('AdaptiveFunctionCallCompiler', () => {
   describe('compileSingleCall', () => {
@@ -28,40 +29,40 @@ describe('AdaptiveFunctionCallCompiler', () => {
           functionParameters: ['expected-parameter'],
           callParameters: ['unexpected-parameter'],
           expectedError:
-            `Function "${functionName}" has unexpected parameter(s) provided: "unexpected-parameter"`
-            + '. Expected parameter(s): "expected-parameter"',
+            `Function "${functionName}" has unexpected parameter(s) provided: "unexpected-parameter".`
+            + '\nExpected parameter(s): "expected-parameter"',
         },
         {
           description: 'provided: multiple unexpected parameters, when: different one is expected',
           functionParameters: ['expected-parameter'],
           callParameters: ['unexpected-parameter1', 'unexpected-parameter2'],
           expectedError:
-            `Function "${functionName}" has unexpected parameter(s) provided: "unexpected-parameter1", "unexpected-parameter2"`
-            + '. Expected parameter(s): "expected-parameter"',
+            `Function "${functionName}" has unexpected parameter(s) provided: "unexpected-parameter1", "unexpected-parameter2".`
+            + '\nExpected parameter(s): "expected-parameter"',
         },
         {
           description: 'provided: an unexpected parameter, when: multiple parameters are expected',
           functionParameters: ['expected-parameter1', 'expected-parameter2'],
           callParameters: ['expected-parameter1', 'expected-parameter2', 'unexpected-parameter'],
           expectedError:
-            `Function "${functionName}" has unexpected parameter(s) provided: "unexpected-parameter"`
-            + '. Expected parameter(s): "expected-parameter1", "expected-parameter2"',
+            `Function "${functionName}" has unexpected parameter(s) provided: "unexpected-parameter".`
+            + '\nExpected parameter(s): "expected-parameter1", "expected-parameter2"',
         },
         {
           description: 'provided: an unexpected parameter, when: none required',
           functionParameters: [],
           callParameters: ['unexpected-call-parameter'],
           expectedError:
-            `Function "${functionName}" has unexpected parameter(s) provided: "unexpected-call-parameter"`
-            + '. Expected parameter(s): none',
+            `Function "${functionName}" has unexpected parameter(s) provided: "unexpected-call-parameter".`
+            + '\nExpected parameter(s): none',
         },
         {
           description: 'provided: expected and unexpected parameter, when: one of them is expected',
           functionParameters: ['expected-parameter'],
           callParameters: ['expected-parameter', 'unexpected-parameter'],
           expectedError:
-            `Function "${functionName}" has unexpected parameter(s) provided: "unexpected-parameter"`
-            + '. Expected parameter(s): "expected-parameter"',
+            `Function "${functionName}" has unexpected parameter(s) provided: "unexpected-parameter".`
+            + '\nExpected parameter(s): "expected-parameter"',
         },
       ];
       testCases.forEach(({
@@ -88,7 +89,8 @@ describe('AdaptiveFunctionCallCompiler', () => {
           // act
           const act = () => builder.compileSingleCall();
           // assert
-          expect(act).to.throw(expectedError);
+          const errorMessage = collectExceptionMessage(act);
+          expect(errorMessage).to.include(expectedError);
         });
       });
     });

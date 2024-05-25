@@ -1,12 +1,12 @@
 import { it, expect } from 'vitest';
 import type { Constructible } from '@/TypeHelpers';
 
-interface ISingletonTestData<T> {
+interface SingletonTestData<T> {
   readonly getter: () => T;
   readonly expectedType?: Constructible<T>;
 }
 
-export function itIsSingleton<T>(test: ISingletonTestData<T>): void {
+export function itIsSingletonFactory<T>(test: SingletonTestData<T>): void {
   if (test.expectedType !== undefined) {
     it('gets the expected type', () => {
       // act

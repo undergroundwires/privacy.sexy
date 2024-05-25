@@ -1,9 +1,9 @@
 import type { IScriptCode } from '@/domain/IScriptCode';
 
 export class ScriptCodeStub implements IScriptCode {
-  public execute = 'default execute code';
+  public execute = `[${ScriptCodeStub.name}] default execute code`;
 
-  public revert = 'default revert code';
+  public revert = `[${ScriptCodeStub.name}] default revert code`;
 
   public withExecute(code: string) {
     this.execute = code;

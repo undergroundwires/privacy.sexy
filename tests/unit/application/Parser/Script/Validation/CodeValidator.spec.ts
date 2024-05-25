@@ -2,13 +2,13 @@ import { describe, it, expect } from 'vitest';
 import { CodeValidator } from '@/application/Parser/Script/Validation/CodeValidator';
 import { CodeValidationRuleStub } from '@tests/unit/shared/Stubs/CodeValidationRuleStub';
 import { itEachAbsentCollectionValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
-import { itIsSingleton } from '@tests/unit/shared/TestCases/SingletonTests';
+import { itIsSingletonFactory } from '@tests/unit/shared/TestCases/SingletonFactoryTests';
 import type { ICodeLine } from '@/application/Parser/Script/Validation/ICodeLine';
 import type { ICodeValidationRule, IInvalidCodeLine } from '@/application/Parser/Script/Validation/ICodeValidationRule';
 
 describe('CodeValidator', () => {
   describe('instance', () => {
-    itIsSingleton({
+    itIsSingletonFactory({
       getter: () => CodeValidator.instance,
       expectedType: CodeValidator,
     });

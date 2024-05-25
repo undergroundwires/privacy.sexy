@@ -15,7 +15,7 @@ export class SharedFunctionCollection implements ISharedFunctionCollection {
     if (!name) { throw Error('missing function name'); }
     const func = this.functionsByName.get(name);
     if (!func) {
-      throw new Error(`called function is not defined "${name}"`);
+      throw new Error(`Called function is not defined: "${name}"`);
     }
     return func;
   }

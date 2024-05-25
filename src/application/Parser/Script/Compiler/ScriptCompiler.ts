@@ -1,10 +1,11 @@
 import type { FunctionData, ScriptData, CallInstruction } from '@/application/collections/';
 import type { IScriptCode } from '@/domain/IScriptCode';
-import { ScriptCode } from '@/domain/ScriptCode';
 import type { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
 import { CodeValidator } from '@/application/Parser/Script/Validation/CodeValidator';
 import { NoEmptyLines } from '@/application/Parser/Script/Validation/Rules/NoEmptyLines';
 import type { ICodeValidator } from '@/application/Parser/Script/Validation/ICodeValidator';
+import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/ContextualError';
+import { createScriptCode, type ScriptCodeFactory } from '@/domain/ScriptCodeFactory';
 import { SharedFunctionsParser } from './Function/SharedFunctionsParser';
 import { FunctionCallSequenceCompiler } from './Function/Call/Compiler/FunctionCallSequenceCompiler';
 import { parseFunctionCalls } from './Function/Call/FunctionCallParser';
@@ -23,6 +24,8 @@ export class ScriptCompiler implements IScriptCompiler {
     sharedFunctionsParser: ISharedFunctionsParser = SharedFunctionsParser.instance,
     private readonly callCompiler: FunctionCallCompiler = FunctionCallSequenceCompiler.instance,
     private readonly codeValidator: ICodeValidator = CodeValidator.instance,
+    private readonly wrapError: ErrorWithContextWrapper = wrapErrorWithAdditionalContext,
+    private readonly scriptCodeFactory: ScriptCodeFactory = createScriptCode,
   ) {
     this.functions = sharedFunctionsParser.parseFunctions(functions, syntax);
   }
@@ -39,12 +42,12 @@ export class ScriptCompiler implements IScriptCompiler {
       const calls = parseFunctionCalls(script.call);
       const compiledCode = this.callCompiler.compileFunctionCalls(calls, this.functions);
       validateCompiledCode(compiledCode, this.codeValidator);
-      return new ScriptCode(
+      return this.scriptCodeFactory(
         compiledCode.code,
         compiledCode.revertCode,
       );
     } catch (error) {
-      throw Error(`Script "${script.name}" ${error.message}`);
+      throw this.wrapError(error, `Failed to compile script: ${script.name}`);
     }
   }
 }
