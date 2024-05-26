@@ -10242,7 +10242,9 @@ actions:
                                     [2]: https://web.archive.org/web/20240406233704/https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/ "Windows Firewall overview - Windows Security | Microsoft Learn | learn.microsoft.com"
                                 children:
                                     -
-                                        name: Disable "Windows Defender Firewall Authorization Driver" service (breaks Microsoft Store, `netsh advfirewall`, `winget`)
+                                        name: >-
+                                            Disable "Windows Defender Firewall Authorization Driver" service
+                                            (breaks Microsoft Store, `netsh advfirewall`, winget, Windows Sandbox, Docker, WSL)
                                         docs: |- # refactor-with-variables: Same caution text as `MpsSvc`
                                             This script disables the **Windows Defender Firewall Authorization Driver** service.
 
@@ -10254,12 +10256,17 @@ actions:
                                             The driver is identified by the file `mpsdrv.sys` [1] [2] [3].
                                             This file is a component of **Microsoft Protection Service** [3].
                                             This service encompasses the **Windows Defender Firewall** (`mpssvc`) [4] [5].
-                                            Disabling this driver will also disable **Windows Defender Firewall** [1] [2].
+                                            Disabling this driver disables **Windows Defender Firewall** [1] [2].
                                             This action can significantly increase security risks [6].
 
-                                            > **Caution**: Disabling this service causes problems with software that depends on it [11] such as:
-                                            > - Prevents **Microsoft Store** app downloads [8] [9], impacting **`winget`** CLI functionality [10].
-                                            > - Disables **`netsh advfirewall`** commands, used for Windows Firewall management [11].
+                                            Restart your computer after running this script to ensure all changes take effect [7].
+
+                                            > **Caution**: Disabling this service causes problems with software that depends on it [8] such as:
+                                            > - Prevents **Microsoft Store** app downloads [9] [10], impacting **winget** CLI functionality [11].
+                                            > - Disables **`netsh advfirewall`** commands, used for Windows Firewall management [8].
+                                            > - Disables **Windows Sandbox** [7] [12], an isolated environment for safely running applications [13].
+                                            > - Disables **Docker** [14], a platform for developing and running applications in isolated environments [15].
+                                            > - Disables **Windows Subsystem for Linux (WSL)** [14], which lets Linux programs run directly on Windows [16].
 
                                             ### Overview of default service statuses
 
@@ -10274,11 +10281,17 @@ actions:
                                             [4]: https://web.archive.org/web/20231122132150/https://strontic.github.io/xcyclopedia/library/MPSSVC.dll-AA441F7C99AAACBA2538E90D7693637A.html "MPSSVC.dll | Microsoft Protection Service | STRONTIC | strontic.github.io"
                                             [5]: https://web.archive.org/web/20231122132143/https://batcmd.com/windows/10/services/mpssvc/ "Windows Defender Firewall - Windows 10 Service - batcmd.com | batcmd.com"
                                             [6]: https://web.archive.org/web/20121106033255/http://technet.microsoft.com/en-us/library/cc753180.aspx "Basic Firewall Policy Design | technet.microsoft.com"
-                                            [7]: https://web.archive.org/web/20240326143148/https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/configure-with-command-line?tabs=powershell#disable-windows-firewall "Manage Windows Firewall with the command line - Windows Security | Microsoft Learn | learn.microsoft.com"
-                                            [8]: https://web.archive.org/web/20240406224105/https://github.com/undergroundwires/privacy.sexy/issues/104#issuecomment-962651791 "[BUG][help wanted]: Cannot enable Windows Defender · Issue #104 · undergroundwires/privacy.sexy | github.com/undergroundwires/privacy.sexy"
-                                            [9]: https://web.archive.org/web/20200620033533/https://www.walkernews.net/2012/09/23/how-to-fix-windows-store-app-update-error-code-0x80073d0a/ "How To Fix Windows Store App Update Error Code 0x80073D0A? – Walker News | www.walkernews.net"
-                                            [10]: https://web.archive.org/web/20240406223635/https://github.com/undergroundwires/privacy.sexy/issues/142 "[BUG]: \"Standard\" profile limits Winget CLI Functionality · Issue #142 · undergroundwires/privacy.sexy · GitHub | github.com"
-                                            [11]: https://web.archive.org/web/20240314125017/https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/netsh-advfirewall-firewall-control-firewall-behavior "Use netsh advfirewall firewall context - Windows Server | Microsoft Learn | learn.microsoft.com"
+                                            [7]: https://web.archive.org/web/20240526095128/https://github.com/undergroundwires/privacy.sexy/issues/364 "[BUG]: FYI : Disable \"Windows Defender Firewall\" service also break Windows Sandbox. · Issue #364 · undergroundwires/privacy.sexy"
+                                            [8]: https://web.archive.org/web/20240314125017/https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/netsh-advfirewall-firewall-control-firewall-behavior "Use netsh advfirewall firewall context - Windows Server | Microsoft Learn | learn.microsoft.com"
+                                            [9]: https://web.archive.org/web/20240406224105/https://github.com/undergroundwires/privacy.sexy/issues/104#issuecomment-962651791 "[BUG][help wanted]: Cannot enable Windows Defender · Issue #104 · undergroundwires/privacy.sexy | github.com/undergroundwires/privacy.sexy"
+                                            [10]: https://web.archive.org/web/20200620033533/https://www.walkernews.net/2012/09/23/how-to-fix-windows-store-app-update-error-code-0x80073d0a/ "How To Fix Windows Store App Update Error Code 0x80073D0A? – Walker News | www.walkernews.net"
+                                            [11]: https://web.archive.org/web/20240406223635/https://github.com/undergroundwires/privacy.sexy/issues/142 "[BUG]: \"Standard\" profile limits Winget CLI Functionality · Issue #142 · undergroundwires/privacy.sexy · GitHub | github.com"
+                                            [12]: https://web.archive.org/web/20240526095212/https://github.com/undergroundwires/privacy.sexy/issues/115 "[BUG]: I broke my Windows Sandbox and I'd like it back · Issue #115 · undergroundwires/privacy.sexy"
+                                            [13]: https://web.archive.org/web/20240526110752/https://learn.microsoft.com/en-us/windows/security/application-security/application-isolation/windows-sandbox/windows-sandbox-overview "Windows Sandbox - Windows Security | Microsoft Learn | learn.microsoft.com"
+                                            [14]: https://web.archive.org/web/20240526095244/https://github.com/undergroundwires/privacy.sexy/issues/152 "[BUG]: Docker / wsl2 fails to start after using script · Issue #152 · undergroundwires/privacy.sexy"
+                                            [15]: https://web.archive.org/web/20240526110733/https://docs.docker.com/get-started/overview/ "Docker overview | Docker Docs | docs.docker.com"
+                                            [16]: https://web.archive.org/web/20240526110720/https://learn.microsoft.com/en-us/windows/wsl/about "What is Windows Subsystem for Linux | Microsoft Learn | learn.microsoft.com"
+                                            [17]: https://web.archive.org/web/20240326143148/https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/configure-with-command-line?tabs=powershell#disable-windows-firewall "Manage Windows Firewall with the command line - Windows Security | Microsoft Learn | learn.microsoft.com"
                                         call:
                                             -
                                                 function: DisableServiceInRegistry # We must disable it on registry level, "Access is denied" for sc config
@@ -10290,8 +10303,12 @@ actions:
                                                 parameters:
                                                     fileGlob: '%SYSTEMROOT%\System32\drivers\mpsdrv.sys'
                                                     grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
+                                            -
+                                                function: ShowComputerRestartSuggestion
                                     -
-                                        name: Disable "Windows Defender Firewall" service (breaks Microsoft Store, `netsh advfirewall`, `winget`)
+                                        name: >-
+                                            Disable "Windows Defender Firewall" service
+                                            (breaks Microsoft Store, `netsh advfirewall`, winget, Windows Sandbox, Docker, WSL)
                                         docs: |- # refactor-with-variables: Same caution text as `mpsdrv`
                                             This script disables the **Windows Defender Firewall** service (identified as `MpsSvc` [1] [2] [3] [4]).
                                             This component acts as a gatekeeper for your computer, filtering incoming and outgoing network traffic based on
@@ -10310,9 +10327,14 @@ actions:
                                             This risk is partly mitigated by boot-time filters that are triggered to protect the computer during startup or when the
                                             firewall service stops unexpectedly [2].
 
-                                            > **Caution**: Disabling this service causes problems with software that depends on it [11] such as:
-                                            > - Prevents **Microsoft Store** app downloads (error code `0x80073D0A` [7] [12]), impacting **`winget`** CLI functionality [13].
-                                            > - Disables **`netsh advfirewall`** commands, used for Windows Firewall management [14].
+                                            Restart your computer after running this script to ensure all changes take effect [11].
+
+                                            > **Caution**: Disabling this service causes problems with software that depends on it [12] such as:
+                                            > - Prevents **Microsoft Store** app downloads (error code `0x80073D0A` [7] [13]), impacting **winget** CLI functionality [14].
+                                            > - Disables **`netsh advfirewall`** commands, used for Windows Firewall management [15].
+                                            > - Disables **Windows Sandbox** [11] [16], an isolated environment for safely running applications [17].
+                                            > - Disables **Docker** [18], a platform for developing and running applications in isolated environments [19].
+                                            > - Disables **Windows Subsystem for Linux (WSL)** [18], which lets Linux programs run directly on Windows [20].
 
                                             ### Overview of default service statuses
 
@@ -10331,10 +10353,16 @@ actions:
                                             [8]: https://web.archive.org/web/20240406232832/https://techcommunity.microsoft.com/t5/ask-the-performance-team/ws2008-windows-service-hardening/ba-p/372702 "WS2008: Windows Service Hardening - Microsoft Community Hub | techcommunity.microsoft."
                                             [9]: https://web.archive.org/web/20240406232844/https://learn.microsoft.com/en-us/virtualization/windowscontainers/container-networking/network-isolation-security "Network isolation and security | Microsoft Learn | learn.microsoft.com"
                                             [10]: https://web.archive.org/web/20121106033255/http://technet.microsoft.com/en-us/library/cc753180.aspx "Basic Firewall Policy Design | technet.microsoft.com"
-                                            [11]: https://web.archive.org/web/20240326143148/https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/configure-with-command-line?tabs=powershell#disable-windows-firewall "Manage Windows Firewall with the command line - Windows Security | Microsoft Learn | learn.microsoft.com"
-                                            [12]: https://web.archive.org/web/20240406224105/https://github.com/undergroundwires/privacy.sexy/issues/104#issuecomment-962651791 "[BUG][help wanted]: Cannot enable Windows Defender · Issue #104 · undergroundwires/privacy.sexy | github.com/undergroundwires/privacy.sexy"
-                                            [13]: https://web.archive.org/web/20240406223635/https://github.com/undergroundwires/privacy.sexy/issues/142 "[BUG]: \"Standard\" profile limits Winget CLI Functionality · Issue #142 · undergroundwires/privacy.sexy · GitHub | github.com"
-                                            [14]: https://web.archive.org/web/20240314125017/https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/netsh-advfirewall-firewall-control-firewall-behavior "Use netsh advfirewall firewall context - Windows Server | Microsoft Learn | learn.microsoft.com"
+                                            [11]: https://web.archive.org/web/20240526095128/https://github.com/undergroundwires/privacy.sexy/issues/364 "[BUG]: FYI : Disable \"Windows Defender Firewall\" service also break Windows Sandbox. · Issue #364 · undergroundwires/privacy.sexy"
+                                            [12]: https://web.archive.org/web/20240326143148/https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/configure-with-command-line?tabs=powershell#disable-windows-firewall "Manage Windows Firewall with the command line - Windows Security | Microsoft Learn | learn.microsoft.com"
+                                            [13]: https://web.archive.org/web/20240406224105/https://github.com/undergroundwires/privacy.sexy/issues/104#issuecomment-962651791 "[BUG][help wanted]: Cannot enable Windows Defender · Issue #104 · undergroundwires/privacy.sexy | github.com/undergroundwires/privacy.sexy"
+                                            [14]: https://web.archive.org/web/20240406223635/https://github.com/undergroundwires/privacy.sexy/issues/142 "[BUG]: \"Standard\" profile limits Winget CLI Functionality · Issue #142 · undergroundwires/privacy.sexy · GitHub | github.com"
+                                            [15]: https://web.archive.org/web/20240314125017/https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/netsh-advfirewall-firewall-control-firewall-behavior "Use netsh advfirewall firewall context - Windows Server | Microsoft Learn | learn.microsoft.com"
+                                            [16]: https://web.archive.org/web/20240526095212/https://github.com/undergroundwires/privacy.sexy/issues/115 "[BUG]: I broke my Windows Sandbox and I'd like it back · Issue #115 · undergroundwires/privacy.sexy"
+                                            [17]: https://web.archive.org/web/20240526110752/https://learn.microsoft.com/en-us/windows/security/application-security/application-isolation/windows-sandbox/windows-sandbox-overview "Windows Sandbox - Windows Security | Microsoft Learn | learn.microsoft.com"
+                                            [18]: https://web.archive.org/web/20240526095244/https://github.com/undergroundwires/privacy.sexy/issues/152 "[BUG]: Docker / wsl2 fails to start after using script · Issue #152 · undergroundwires/privacy.sexy"
+                                            [19]: https://web.archive.org/web/20240526110733/https://docs.docker.com/get-started/overview/ "Docker overview | Docker Docs | docs.docker.com"
+                                            [20]: https://web.archive.org/web/20240526110720/https://learn.microsoft.com/en-us/windows/wsl/about "What is Windows Subsystem for Linux | Microsoft Learn | learn.microsoft.com"
                                         call:
                                             -
                                                 function: DisableServiceInRegistry # We must disable it on registry level, "Access is denied" for sc config
@@ -10346,6 +10374,8 @@ actions:
                                                 parameters:
                                                     fileGlob: '%WINDIR%\System32\mpssvc.dll'
                                                     grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
+                                            -
+                                                function: ShowComputerRestartSuggestion
                             -
                                 name: Disable firewall via command-line utility
                                 # ❗️ Following must be enabled and in running state:
