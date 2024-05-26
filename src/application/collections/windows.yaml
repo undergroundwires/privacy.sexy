@@ -4152,9 +4152,9 @@ actions:
                 call:
                     function: RunInlineCode
                     parameters:
-                        code: reg add "HKCU\SOFTWARE\Microsoft\Personalization\Settings" /v "EnableActiveProbing" /t "AcceptedPrivacyPolicy" /d "0" /f
+                        code: reg add "HKCU\SOFTWARE\Microsoft\Personalization\Settings" /v "AcceptedPrivacyPolicy" /t "REG_DWORD" /d "0" /f
                         revertCode: >- # Key exists with value "1" since Windows 10 21H2, Windows 11 22H2
-                            reg add "HKCU\SOFTWARE\Microsoft\Personalization\Settings" /v "EnableActiveProbing" /t "AcceptedPrivacyPolicy" /d "1" /f
+                            reg add "HKCU\SOFTWARE\Microsoft\Personalization\Settings" /v "AcceptedPrivacyPolicy" /t "REG_DWORD" /d "1" /f
             -
                 name: Disable Windows feedback collection
                 recommend: standard
