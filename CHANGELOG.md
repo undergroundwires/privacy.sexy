@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.13.4 (2024-05-27)
+
+* Add specific empty function name compiler error | [870120b](https://github.com/undergroundwires/privacy.sexy/commit/870120bc13909a3681e0f0a2351806849476342f)
+* ci/cd: fix recent Docker build failures on macOS | [a1922c5](https://github.com/undergroundwires/privacy.sexy/commit/a1922c50c12b3b7806e9e681ace842194a178bda)
+* win: standardize registry edit + delete on revert | [cec0b4b](https://github.com/undergroundwires/privacy.sexy/commit/cec0b4b4f63c3563a0e7923ce6324a38d71a3955)
+* Fix e2e test failing on Windows | [4a7efa2](https://github.com/undergroundwires/privacy.sexy/commit/4a7efa27c8df73ef9b7960afed29f216b066cba2)
+* Add support for macOS universal binary #348, #362 | [d25c4e8](https://github.com/undergroundwires/privacy.sexy/commit/d25c4e8c812b8d012010ba38070a2931dcd28908)
+* Migrate to GitHub issue forms | [9ab3ff7](https://github.com/undergroundwires/privacy.sexy/commit/9ab3ff75b0a69ac2ba27dd02e82db9b5bd76ea0f)
+* ci/cd: fix quality checks not running on all OSes | [2390530](https://github.com/undergroundwires/privacy.sexy/commit/2390530d929fb92c266558c52376569a0ecb90c1)
+* Bump Vue to latest and fix universal selector CSS | [aae5434](https://github.com/undergroundwires/privacy.sexy/commit/aae54344511ec51d17ad0420a92cb5a064e0e7bb)
+* Centralize and optimize `ResizeObserver` usage | [2923621](https://github.com/undergroundwires/privacy.sexy/commit/292362135db0519ec1050bab80ed373aad115731)
+* win: improve app access disabling and docs #138 | [ff3d5c4](https://github.com/undergroundwires/privacy.sexy/commit/ff3d5c48419f663379f5aba8936636c22f2c5de8)
+* win: document and discourage RSA key script #363 | [f347fde](https://github.com/undergroundwires/privacy.sexy/commit/f347fde0c85f8b51b0060fdea0a2724b042aaeed)
+* win: improve printing removal /w Print Queue #279 | [150e067](https://github.com/undergroundwires/privacy.sexy/commit/150e0670392bb62348c20ec644a4ed8a6bbffe74)
+* win: discourage blocking app access #121 #339 #350 | [7794846](https://github.com/undergroundwires/privacy.sexy/commit/77948461856e6837ddfbcbbef72a1bf9fc706b4e)
+* Improve context for errors thrown by compiler | [4212c7b](https://github.com/undergroundwires/privacy.sexy/commit/4212c7b9e0b1500378a1e4e88efc2d59f39f3d29)
+* win: document disabling firewall #115 #152 #364 | [12b1f18](https://github.com/undergroundwires/privacy.sexy/commit/12b1f183f7ce966d6ce090d98aeea7ec491f8c7c)
+* win: add script to disable Recall feature | [ce4cfdd](https://github.com/undergroundwires/privacy.sexy/commit/ce4cfdd169b7da0edc3da61143c988ed5f3c976e)
+* win, mac, linux: fix typos and dead URLs #367 | [9e34e64](https://github.com/undergroundwires/privacy.sexy/commit/9e34e644493674ca709b64a47206763d5d4bd60c)
+
+[compare](https://github.com/undergroundwires/privacy.sexy/compare/0.13.3...0.13.4)
+
 ## 0.13.3 (2024-05-11)
 
 * win: organize and document network disablement | [2eed6f4](https://github.com/undergroundwires/privacy.sexy/commit/2eed6f4afb6cf85fdc1d6acb808f82405a35cafd)
