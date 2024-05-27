@@ -4224,9 +4224,9 @@ actions:
                 call:
                     function: RunInlineCode
                     parameters:
-                        code: reg add "HKCU\SOFTWARE\Microsoft\Personalization\Settings" /v "EnableActiveProbing" /t "AcceptedPrivacyPolicy" /d "0" /f
+                        code: reg add "HKCU\SOFTWARE\Microsoft\Personalization\Settings" /v "AcceptedPrivacyPolicy" /t "REG_DWORD" /d "0" /f
                         revertCode: >- # Key exists with value "1" since Windows 10 21H2, Windows 11 22H2
-                            reg add "HKCU\SOFTWARE\Microsoft\Personalization\Settings" /v "EnableActiveProbing" /t "AcceptedPrivacyPolicy" /d "1" /f
+                            reg add "HKCU\SOFTWARE\Microsoft\Personalization\Settings" /v "AcceptedPrivacyPolicy" /t "REG_DWORD" /d "1" /f
             -
                 name: Disable Windows feedback collection
                 recommend: standard
@@ -7307,7 +7307,7 @@ actions:
                                     to a minimum of 2048 bits.
                                     This is a secure way to exchange keys over public networks.
 
-                                    This script only afects the *SSL/TLS handshake* process.
+                                    This script only affects the *SSL/TLS handshake* process.
                                     The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
                                     By disabling this weak algorithm, the script improves the security of the connection.
 
@@ -7343,7 +7343,7 @@ actions:
                                     The Public-Key Cryptography Standards (PKCS) define how to use RSA keys for secure communication encryption.
                                     Using keys that are too weak can expose your data to unauthorized access.
 
-                                    This script only afects the *SSL/TLS handshake* process.
+                                    This script only affects the *SSL/TLS handshake* process.
                                     The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
                                     By disabling this weak algorithm, the script improves the security of the connection.
 
@@ -7433,7 +7433,7 @@ actions:
                                         docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite
                                             This script disables RC2 ciphers.
 
-                                            This script only afects the *SSL/TLS handshake* process.
+                                            This script only affects the *SSL/TLS handshake* process.
                                             The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
                                             By disabling this weak algorithm, the script improves the security of the connection.
 
@@ -7488,7 +7488,7 @@ actions:
                                         docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite
                                             This script disables the RC4 ciphers.
 
-                                            This script only afects the *SSL/TLS handshake* process.
+                                            This script only affects the *SSL/TLS handshake* process.
                                             The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
                                             By disabling this weak algorithm, the script improves the security of the connection.
 
@@ -7553,7 +7553,7 @@ actions:
                                         docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite
                                             This script disables the `DES 56/56` [1] [2] [3] [4] cipher, also known as *DES 56* [2] or *56-bit DES* [2].
 
-                                            This script only afects the *SSL/TLS handshake* process.
+                                            This script only affects the *SSL/TLS handshake* process.
                                             The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
                                             By disabling this weak algorithm, the script improves the security of the connection.
 
@@ -7591,7 +7591,7 @@ actions:
                                             This script disables the `Triple DES 168` [1] [2] [3] (`Triple DES 168/168` before Windows Vista [2] [4]) cipher,
                                             also known as *3DES* [1] [3] [5] [6], *The Triple Data Encryption Algorithm (TDEA)* [6] [7] and **TDES** [8].
 
-                                            This script only afects the *SSL/TLS handshake* process.
+                                            This script only affects the *SSL/TLS handshake* process.
                                             The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
                                             By disabling this weak algorithm, the script improves the security of the connection.
 
@@ -7638,7 +7638,7 @@ actions:
                                         docs: |- # refactor-with-variables: Same • Caution • handshake • authorities • cipher suite
                                             This script disables the `NULL` [1] [2] [3] [4] cipher.
 
-                                            This script only afects the *SSL/TLS handshake* process.
+                                            This script only affects the *SSL/TLS handshake* process.
                                             The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
                                             By disabling this weak algorithm, the script improves the security of the connection.
 
@@ -7694,7 +7694,7 @@ actions:
                                         docs: |- # refactor-with-variables: Same • Caution • handshake • vulnerability • authorities • cipher suite
                                             This script disables the use of the `MD5` [1] [2] [3] hash algorithm during the SSL/TLS handshake process.
 
-                                            This script only afects the *SSL/TLS handshake* process.
+                                            This script only affects the *SSL/TLS handshake* process.
                                             The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
                                             By disabling this weak algorithm, the script improves the security of the connection.
 
@@ -7747,7 +7747,7 @@ actions:
                                         docs: |- # refactor-with-variables: Same • Caution • handshake • vulnerability • authorities • cipher suite
                                             This script disables `SHA` [1] [2] [3] hash algorithm, also known as *Secure Hash Algorithm (SHA-1)* [2].
 
-                                            This script only afects the *SSL/TLS handshake* process.
+                                            This script only affects the *SSL/TLS handshake* process.
                                             The *SSL/TLS handshake* is a key part of establishing a secure connection over the internet.
                                             By disabling this weak algorithm, the script improves the security of the connection.
 
@@ -8345,7 +8345,7 @@ actions:
                                                 deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                             -
                                 name: Disable insecure connections from .NET apps
-                                recommend: strict # Default since .NET 4.6 and above, absence considered vulnerabiltiy, but can still break legacy apps
+                                recommend: strict # Default since .NET 4.6 and above, absence considered vulnerability, but can still break legacy apps
                                 docs: |- # refactor-with-variables: Same • authorities • applies to all .NET
                                     This script improves security by enforcing secure network connections across all .NET applications.
 
@@ -10588,7 +10588,7 @@ actions:
                         children:
                             -
                                 category: Disable Defender Antivirus cloud protection service
-                                docs: https://learn.microsoft.com/en-us/microsoft-365/security/defender-endpoint/enable-cloud-protection-microsoft-defender-antivirus?view=o365-worldwide
+                                docs: https://web.archive.org/web/20240523173753/https://learn.microsoft.com/en-us/defender-endpoint/enable-cloud-protection-microsoft-defender-antivirus?view=o365-worldwide
                                 # Formerly known as: Microsoft MAPS (Microsoft Active Protection Service), Microsoft SpyNet
                                 children:
                                     -
@@ -14677,7 +14677,7 @@ actions:
                             [1]: https://www.stigviewer.com/stig/windows_10/2019-09-25/finding/V-63841 "Zone information must be preserved when saving attachments. | stigviewer.com"
                             [2]: https://support.microsoft.com/en-us/topic/information-about-the-attachment-manager-in-microsoft-windows-c48a4dcd-8de5-2af5-ee9b-cd795ae42738 "Information about the Attachment Manager in Microsoft Windows | support.microsoft.com"
                             [3]: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.AttachmentManager::AM_MarkZoneOnSavedAtttachments "Do not preserve zone information in file attachments | admx.help"
-                            [4]: https://www.irs.gov/pub/irs-utl/safeguards-scsem-win-11-v1-1-033122.xlsx "Windows 11 SafeGuards | irs.gov"
+                            [4]: https://web.archive.org/web/20230102223412/https://www.irs.gov/pub/irs-utl/safeguards-scsem-win-11-v1-1-033122.xlsx "Windows 11 SafeGuards | irs.gov"
                         call:
                             function: SetRegistryValue
                             parameters:
@@ -14717,7 +14717,7 @@ actions:
                             [1]: https://support.microsoft.com/en-us/topic/information-about-the-attachment-manager-in-microsoft-windows-c48a4dcd-8de5-2af5-ee9b-cd795ae42738 "Information about the Attachment Manager in Microsoft Windows | support.microsoft.com"
                             [2]: https://www.stigviewer.com/stig/windows_server_2008_r2_member_server/2015-09-02/finding/V-14270 "The system will notify antivirus when file attachments are opened. | stigviewer.com"
                             [3]: https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.AttachmentManager::AM_CallIOfficeAntiVirus "Notify antivirus programs when opening attachments | admx.help"
-                            [4]: https://www.irs.gov/pub/irs-utl/safeguards-scsem-win-11-v1-1-033122.xlsx "Windows 11 SafeGuards | irs.gov"
+                            [4]: https://web.archive.org/web/20230102223412/https://www.irs.gov/pub/irs-utl/safeguards-scsem-win-11-v1-1-033122.xlsx "Windows 11 SafeGuards | irs.gov"
                         code: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments" /v "ScanWithAntiVirus" /t REG_DWORD /d "1" /f
                         revertCode: reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Attachments" /v "ScanWithAntiVirus" /t REG_DWORD /d "3" /f
             -
@@ -20798,7 +20798,7 @@ actions:
                             [2]: https://web.archive.org/web/20221101231811/https://learn.microsoft.com/en-us/windows/application-management/provisioned-apps-windows-client-os "Get the provisioned apps on Windows client operating system - Windows Application Management | Microsoft Learn"
                             [3]: https://archive.ph/2024.04.24-100718/https://apps.microsoft.com/detail/9mz95kl8mr0l?hl=en-US&gl=US "Snipping Tool - Microsoft Apps | apps.microsoft.com"
                             [4]: https://web.archive.org/web/20240320082149/https://blogs.windows.com/windows-insider/2020/11/30/releasing-windows-feature-experience-pack-120-2212-1070-0-to-the-beta-channel/ "Releasing Windows Feature Experience Pack 120.2212.1070.0 to the Beta Channel | Windows Insider Blog | blogs.windows.com"
-                            [5]: https://archive.ph/2024.03.20-082058/https://twitter.com/XenoPanther/status/1504870414702592003 "Xeno on X: \"Parts of https://t.co/w2Ys4Es9T0 have been moved to MicrosoftWindows.Client.Core https://t.co/LQ1k2iDzwz\" / X | twitter.com/XenoPanther"
+                            [5]: https://archive.ph/2024.03.20-082058/https://twitter.com/XenoPanther/status/1504870414702592003 "Xeno on X: \"Parts of MicrosoftWindows.Client.CBS have been moved to MicrosoftWindows.Client.Core \" / X | twitter.com/XenoPanther"
                             [6]: https://web.archive.org/web/20240320082048/https://answers.microsoft.com/en-us/insider/forum/all/snipping-tool-issues-with-build-25295/065a6718-70a0-4e3b-ab1b-21f6315c0296 "Snipping Tool issues with Build 25295 - Microsoft Community | answers.microsoft.com"
                             [7]: https://web.archive.org/web/20240424100904/https://github.com/undergroundwires/privacy.sexy/issues/343 "[BUG]: Snipping Tool still can be executable via its keyboard shortcut · Issue #343 · undergroundwires/privacy.sexy · GitHub | github.com"
                         call:
