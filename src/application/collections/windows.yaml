@@ -1527,6 +1527,78 @@ actions:
         category: Disable OS data collection
         children:
             -
+                name: Disable Recall
+                recommend: strict
+                docs: |-
+                    This script disables the Recall feature to address serious privacy concerns.
+
+                    Recall is an AI feature introduced in Windows 11 on Copilot+ PCs [1] [2] [3] [4] [5].
+                    It is designed to capture and store snapshots of your screen and analyze them [1] [2] [3] [4] [5] [6] [7].
+                    This feature allows users to browse and search their past activities, such as images and text [1] [2] [3] [4] [5] [6] [7].
+
+                    Recall includes a component called 'screenray'.
+                    This component analyzes the snapshot's contents and lets you interact with elements within it [3] [5] [6].
+                    This script will also disable the screenray feature [6].
+
+                    This feature is enabled by default, so Windows will capture and store screen snapshots [2] [5] [6].
+                    They remain on your computer for months by default [4].
+
+                    Recall captures frequent screenshots, as frequent as multiple times during a minute [1] [2] [4].
+                    These screenshots may include all visible content such as app data, websites, images, and documents [2] [5].
+                    It may even include sensitive information like passwords and bank account numbers [2] [3].
+                    The data is indexed, and the indexes are stored locally on your computer [5].
+
+                    This feature raises significant security and privacy concerns.
+                    Experts sometimes describe this feature as a 'privacy nightmare' [4] [7] or 'keylogger' [4] due to these concerns.
+                    The privacy risks associated with this feature include:
+
+                    - **Misuse**:
+                      This data is stored locally on your computer [1] [2] [5] [7].
+                      It poses a risk of unauthorized access to your sensitive and private data [4] [7].
+                      Potential threats include malicious attackers, state actors, colleagues, or family members who could misuse this
+                      information for identity theft, financial crime, phishing, or coercion.
+                    - **Microsoft data collection**:
+                      Microsoft's data collection policies may change.
+                      As Mozilla expressed, this raises concerns about potential data sharing with law enforcement or the use of the data
+                      for targeted advertising or AI training in the future [7].
+                    - **Storing sensitive data**:
+                      Microsoft does not perform content moderation on the snapshots [2] [3] [4] [7].
+                      It means that sensitive information such as passwords or financial account numbers are visible and stored [2] [3],
+                      posing a significant privacy and security risk.
+                    - **Opt-in**:
+                      The feature is opt-in by default [2] [6], and users can only opt-out of certain sites if they are using Microsoft Edge [3].
+                      This limits user control over their privacy.
+                    - **Lack of transparency:**
+                      While Microsoft states that the snapshots are not sent to their servers [2] [7]
+                      and that all analysis is conducted locally [1] [2] [3] [7].
+                      However, Microsoft has not specified whether it collects the results of these analyses or any related diagnostic data.
+                      United Kingdom's data protection agency finds this lack of transparency worrying [4] [7].
+                    - **Language model vulnerbailities:**
+                      Language models susceptibility to attacks like prompt engineering underlines its security risks [8].
+                      More about security vulnerabilities: [Attacks on language models](https://erkinekici.com/articles/attacks-on-language-models/).
+
+                    This script configures the `HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot!DisableAIDataAnalysis` registry key [6].
+
+                    By running this script, you enhance your privacy by preventing the storage and analysis of snapshots on your device [6],
+                    thereby mitigating the associated risks.
+
+                    [1]: https://web.archive.org/web/20240523143034/https://support.microsoft.com/en-us/windows/retrace-your-steps-with-recall-aa03f8a0-a78b-4b3e-b0a1-2eb8ac48701c "Retrace your steps with Recall - Microsoft Support | support.microsoft.com"
+                    [2]: https://web.archive.org/web/20240523143048/https://support.microsoft.com/en-us/windows/privacy-and-control-over-your-recall-experience-d404f672-7647-41e5-886c-a3c59680af15 "Privacy and control over your Recall experience - Microsoft Support | support.microsoft.com"
+                    [3]: https://web.archive.org/web/20240523143210/https://learn.microsoft.com/en-us/windows/client-management/manage-recall "Manage Recall for Windows clients - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                    [4]: https://web.archive.org/web/20240523122636/https://www.bleepingcomputer.com/news/microsoft/microsofts-new-windows-11-recall-is-a-privacy-nightmare/ "Microsoft's new Windows 11 Recall is a privacy nightmare | www.bleepingcomputer.com"
+                    [5]: https://web.archive.org/web/20240523143240/https://blogs.microsoft.com/blog/2024/05/20/introducing-copilot-pcs/ "Introducing Copilot+ PCs - The Official Microsoft Blog | blogs.microsoft.com"
+                    [6]: https://web.archive.org/web/20240522162728/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsai#disableaidataanalysis "WindowsAI Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                    [7]: https://web.archive.org/web/20240523155006/https://www.bbc.com/news/articles/cpwwqp6nx14o "Microsoft Copilot+ Recall feature 'privacy nightmare' | www.bbc.com"
+                    [8]: https://erkinekici.com/articles/attacks-on-language-models/ "Attacks on language models :: Erkin Ekici | erkinekici.com"
+                call:
+                    function: SetRegistryValue
+                    parameters:
+                        keyPath: HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot
+                        valueName: DisableAIDataAnalysis
+                        dataType: REG_DWORD
+                        data: "1"
+                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+            -
                 category: Disable app access to personal information
                 docs: |- # refactor-with-variables: Same • Caution
                     This category enhances your privacy by restricting app access to sensitive personal data.
@@ -20138,7 +20210,7 @@ actions:
                             and improving security by reducing the risk of language model attacks [3].
 
                             [1]: https://web.archive.org/web/20240122064120/https://learn.microsoft.com/en-us/windows/client-management/manage-windows-copilot "Manage Copilot in Windows - Windows Client Management | Microsoft Learn | learn.microsoft.com"
-                            [2]: https://web.archive.org/web/20231004134328/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsai#turnoffwindowscopilot "WindowsAI Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+                            [2]: https://web.archive.org/web/20240522162728/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-windowsai#turnoffwindowscopilot "WindowsAI Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
                             [3]: https://erkinekici.com/articles/attacks-on-language-models/ "Attacks on language models :: Erkin Ekici | erkinekici.com"
                             [4]: https://web.archive.org/web/20240122064046/https://www.elevenforum.com/t/enable-or-disable-windows-copilot-in-windows-11.17045/ "Enable or Disable Windows Copilot in Windows 11 Tutorial | Windows 11 Forum | www.elevenforum.com"
                         call:
