@@ -51,14 +51,14 @@ jobs:
       -
         name: Upload screenshots
         if: failure() # Run only if previous steps fail because screenshots will be generated only if E2E test failed
-        uses: actions/upload-artifact@v3
+        uses: ./.github/actions/upload-artifact
         with:
           name: e2e-screenshots-${{ matrix.os }}
           path: ${{ steps.artifacts.outputs.SCREENSHOTS_DIR }}
       -
         name: Upload videos
         if: always() # Run even if previous steps fail because test run video is always captured
-        uses: actions/upload-artifact@v3
+        uses: ./.github/actions/upload-artifact
         with:
           name: e2e-videos-${{ matrix.os }}
           path: ${{ steps.artifacts.outputs.VIDEOS_DIR }}

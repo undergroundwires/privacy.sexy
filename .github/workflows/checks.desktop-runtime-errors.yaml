@@ -70,7 +70,7 @@ jobs:
       -
         name: Upload screenshot
         if: always() # Run even if previous step fails
-        uses: actions/upload-artifact@v3
+        uses: ./.github/actions/upload-artifact
         with:
           name: screenshot-${{ matrix.os }}
           path: screenshot.png
