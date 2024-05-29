@@ -6657,54 +6657,95 @@ actions:
                                         deleteOnRevert: 'true'
                     -
                         category: Configure Firefox
+                        docs: |-
+                            This category provides scripts for enhancing Firefox privacy by limiting data shared with Mozilla.
                         children:
                             -
-                                category: Disable default browser agent reporting
-                                children:
-                                    -
-                                        name: Disable default browser agent reporting
-                                        recommend: standard
-                                        docs: https://www.bleepingcomputer.com/news/software/firefox-now-tells-mozilla-what-your-default-browser-is-every-day/
-                                        code: reg add HKLM\SOFTWARE\Policies\Mozilla\Firefox /v DisableDefaultBrowserAgent /t REG_DWORD /d 1 /f
-                                        revertCode: reg add HKLM\SOFTWARE\Policies\Mozilla\Firefox /v DisableDefaultBrowserAgent /t REG_DWORD /d 0 /f
-                                    -
-                                        name: Disable services that report the default browser agent
-                                        recommend: standard
-                                        docs: |-
-                                            ### Overview of default task statuses
-
-                                            `\Mozilla\Firefox Default Browser Agent 308046B0AF4A39CB` (tested on version 118):
-
-                                            | OS Version       | Default status |
-                                            | ---------------- | -------------- |
-                                            | Windows 10 22H2  | 🟢 Ready |
-                                            | Windows 11 22H2  | 🟢 Ready |
-
-                                            `\Mozilla\Firefox Default Browser Agent D2CEEC440E2074BD` (tested on version 118):
-
-                                            | OS Version       | Default status |
-                                            | ---------------- | -------------- |
-                                            | Windows 10 22H2  | 🟡 N/A (missing) |
-                                            | Windows 11 22H2  | 🟡 N/A (missing) |
-                                        call:
-                                            -
-                                                function: DisableScheduledTask
-                                                parameters:
-                                                    # Check: Get-ScheduledTask -TaskPath '\Mozilla\' -TaskName 'Firefox Default Browser Agent 308046B0AF4A39CB'
-                                                    taskPathPattern: \Mozilla\
-                                                    taskNamePattern: Firefox Default Browser Agent 308046B0AF4A39CB
-                                            -
-                                                function: DisableScheduledTask
-                                                parameters:
-                                                    # Check: Get-ScheduledTask -TaskPath '\Mozilla\' -TaskName 'Firefox Default Browser Agent D2CEEC440E2074BD'
-                                                    taskPathPattern: \Mozilla\
-                                                    taskNamePattern: Firefox Default Browser Agent D2CEEC440E2074BD
-                            -
-                                name: Disable Firefox metrics reporting
+                                name: Disable Firefox default browser and system data reporting
                                 recommend: standard
-                                docs: https://github.com/privacysexy-forks/policy-templates#disabletelemetry
-                                code: reg add HKLM\SOFTWARE\Policies\Mozilla\Firefox /v DisableTelemetry /t REG_DWORD /d 1 /f
-                                revertCode: reg add HKLM\SOFTWARE\Policies\Mozilla\Firefox /v DisableTelemetry /t REG_DWORD /d 0 /f
+                                docs: |-
+                                    This script disables the Firefox *Default Browser Agent*.
+                                    The agent collects and sends information about the user's default browser to Mozilla [1]
+                                    Disabling it halts the transmission of details such as the currently set default browser, the previous one,
+                                    and the operating system's locale and version number [2] [3].
+
+                                    This enhances privacy by preventing browser preferences and usage data from being shared with Mozilla.
+
+                                    The script configures `HKLM\SOFTWARE\Policies\Mozilla\Firefox!DisableDefaultBrowserAgent` registry key to
+                                    prevent the Default Browser Agent from taking any actions [4].
+
+                                    [1]: https://web.archive.org/web/20231201223153/https://firefox-source-docs.mozilla.org/toolkit/mozapps/defaultagent/default-browser-agent/index.html "Default Browser Agent — Firefox Source Docs documentation | firefox-source-docs.mozilla.org"
+                                    [2]: https://web.archive.org/web/20240313164703/https://blog.mozilla.org/data/2020/03/16/understanding-default-browser-trends/ "Understanding default browser trends – Data@Mozilla | blog.mozilla.org"
+                                    [3]: https://web.archive.org/web/20240313164715/https://github.com/mozilla-services/mozilla-pipeline-schemas/pull/495/files#diff-48f14d6bdea5bf803f8b8cff5f018172 "Bug 1602463 - Add a schema for the new default-browser ping · Pull Request #495 · mozilla-services/mozilla-pipeline-schemas · GitHub | github.com/mozilla-services"
+                                    [4]: https://web.archive.org/web/20240529061535/https://github.com/privacysexy-forks/policy-templates#disabledefaultbrowseragent "GitHub - privacysexy-forks/policy-templates: Policy Templates for Firefox | github.com/privacysexy-forks"
+                                call:
+                                    function: SetRegistryValue
+                                    parameters:
+                                        keyPath: HKLM\SOFTWARE\Policies\Mozilla\Firefox
+                                        valueName: DisableDefaultBrowserAgent
+                                        dataType: REG_DWORD
+                                        data: "1"
+                                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2), last tested on Firefox v126
+                            -
+                                name: Disable Firefox background browser checks
+                                recommend: standard
+                                docs: |-
+                                    This script stops Firefox from automatically checking its default browser status and reporting to Mozilla every 24 hours [1] [2] by
+                                    disabling specific scheduled tasks that initiate initiate Firefox's *Default Browser Agent*.
+                                    It protects your privacy by preventing regular data sharing.
+
+                                    ### Overview of default task statuses
+
+                                    `\Mozilla\Firefox Default Browser Agent 308046B0AF4A39CB` (tested on version 118):
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | -------------- |
+                                    | Windows 10 22H2  | 🟢 Ready |
+                                    | Windows 11 22H2  | 🟢 Ready |
+
+                                    `\Mozilla\Firefox Default Browser Agent D2CEEC440E2074BD` (tested on version 118):
+
+                                    | OS Version       | Default status |
+                                    | ---------------- | -------------- |
+                                    | Windows 10 22H2  | 🟡 N/A (missing) |
+                                    | Windows 11 22H2  | 🟡 N/A (missing) |
+
+                                    [1]: https://web.archive.org/web/20231201223153/https://firefox-source-docs.mozilla.org/toolkit/mozapps/defaultagent/default-browser-agent/index.html "Default Browser Agent — Firefox Source Docs documentation | firefox-source-docs.mozilla.org"
+                                    [2]: https://web.archive.org/web/20240313164703/https://blog.mozilla.org/data/2020/03/16/understanding-default-browser-trends/ "Understanding default browser trends – Data@Mozilla | blog.mozilla.org"
+                                call:
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            # Check: Get-ScheduledTask -TaskPath '\Mozilla\' -TaskName 'Firefox Default Browser Agent 308046B0AF4A39CB'
+                                            taskPathPattern: \Mozilla\
+                                            taskNamePattern: Firefox Default Browser Agent 308046B0AF4A39CB
+                                    -
+                                        function: DisableScheduledTask
+                                        parameters:
+                                            # Check: Get-ScheduledTask -TaskPath '\Mozilla\' -TaskName 'Firefox Default Browser Agent D2CEEC440E2074BD'
+                                            taskPathPattern: \Mozilla\
+                                            taskNamePattern: Firefox Default Browser Agent D2CEEC440E2074BD
+                            -
+                                name: Disable Firefox telemetry data collection
+                                recommend: standard
+                                docs: |-
+                                    This script disables Firefox's telemetry to prevent the collection and transmission of browser
+                                    performance and usage data to Mozilla [1].
+
+                                    Disabling telemetry prevents both the storage and transmission of this data [1], ensuring users'
+                                    browsing habits remain private.
+
+                                    The telemetry is disabled by configuring `HKLM\SOFTWARE\Policies\Mozilla\Firefox!DisableTelemetry` registry key [1].
+
+                                    [1]: https://web.archive.org/web/20240529061535/https://github.com/privacysexy-forks/policy-templates#disabletelemetry "privacysexy-forks/policy-templates: Policy Templates for Firefox | github.com/privacysexy-forks"
+                                call:
+                                    function: SetRegistryValue
+                                    parameters:
+                                        keyPath: HKLM\SOFTWARE\Policies\Mozilla\Firefox
+                                        valueName: DisableTelemetry
+                                        dataType: REG_DWORD
+                                        data: "1"
+                                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2), last tested on Firefox v126
             -
                 category: Disable Google background automatic updates
                 docs: |-
