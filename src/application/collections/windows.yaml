@@ -558,10 +558,10 @@ actions:
                                         parameters:
                                             directoryGlob: '%LOCALAPPDATA%\Microsoft\Windows\Temporary Internet Files'
                                             # This directory consists of 4 additional folders:
-                                            #  - C:\Users\undergroundwires\AppData\Local\Microsoft\Windows\Temporary Internet Files\Content.IE5
-                                            #  - C:\Users\undergroundwires\AppData\Local\Microsoft\Windows\Temporary Internet Files\IE
-                                            #  - C:\Users\undergroundwires\AppData\Local\Microsoft\Windows\Temporary Internet Files\Low
-                                            #  - C:\Users\undergroundwires\AppData\Local\Microsoft\Windows\Temporary Internet Files\Virtualized
+                                            #  - %LOCALAPPDATA%\Microsoft\Windows\Temporary Internet Files\Content.IE5
+                                            #  - %LOCALAPPDATA%\Microsoft\Windows\Temporary Internet Files\IE
+                                            #  - %LOCALAPPDATA%\Microsoft\Windows\Temporary Internet Files\Low
+                                            #  - %LOCALAPPDATA%\Microsoft\Windows\Temporary Internet Files\Virtualized
                                             # Since Windows 10 22H2 and Windows 11 22H2, data files are observed in this subdirectories but not on the parent.
                                             # Especially in `IE` folder includes many files. These folders are protected and hidden by default.
                                             grantPermissions: 'true' # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 22H2
@@ -7473,7 +7473,7 @@ actions:
                         name: Disable "Google Update Service" services
                         recommend: standard # Safe-to-disable as they're stopped by default
                         docs: |-
-                            This script disables the "Google Update Service" services
+                            This script disables the "Google Update Service" services.
                             These services are identified as `gupdate` and `gupdatem` [1] [2] [3].
                             They are responsible for keeping Google software up to date by initiating updates [4].
                             They are linked to the `GoogleUpdate.exe` executable located in the `%PROGRAMFILES%\Google\Update` directory [5] [6] [7].
