@@ -186,3 +186,7 @@ Check [architecture.md](./docs/architecture.md) for an overview of design and ho
 Security is a top priority at privacy.sexy.
 An extensive commitment to security verification ensures this priority.
 For any security concerns or vulnerabilities, please consult the [Security Policy](./SECURITY.md).
+
+## Supporters
+
+[![Supporters appreciation banner showing the supporters](https://undergroundwires.dev/img/supporters.jpg)](https://undergroundwires.dev/supporters)
