@@ -1784,7 +1784,7 @@ actions:
             -
                 category: Disable Gatekeeper (enforces code-signing)
                 # Built on top of File Quarantine, requires code-signing for apps.
-                # Warns user if a file is not signed by it's developer with certificate issued by Apple.
+                # Warns user if a file is not signed by its developer with certificate issued by Apple.
                 # Can protect against unknown threats.
                 children:
                     -
