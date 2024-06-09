@@ -2802,7 +2802,7 @@ actions:
                                     [8]: https://web.archive.org/web/20230929124644/https://geeksadvice.com/fix-microsoft-compatibility-telemetry-high-cpu-usage/ "Fix Microsoft Compatibility Telemetry High CPU Usage (CompatTelRunner.exe) | Geek's Advice"
                                 call:
                                     -
-                                        function: TerminateExecutableOnLaunch
+                                        function: TerminateAndBlockExecution
                                         parameters:
                                             executableNameWithExtension: CompatTelRunner.exe
                                     -
@@ -3596,7 +3596,7 @@ actions:
                                     [2]: https://web.archive.org/web/20231017234628/https://strontic.github.io/xcyclopedia/library/DeviceCensus.exe-594993E23161BB37E365D8784DE020EA.html "DeviceCensus.exe | Device Census | STRONTIC | strontic.github.io"
                                     [3]: https://web.archive.org/web/20231017234127/https://support.microsoft.com/en-us/topic/update-to-windows-10-version-1703-version-1607-version-1511-and-version-1507-for-update-applicability-march-15-2018-3aad1c66-2b88-c012-4623-dee1410891ad "Update to Windows 10 Version 1703, Version 1607, Version 1511, and Version 1507 for update applicability: March 15, 2018 - Microsoft Support"
                                 call:
-                                    function: TerminateExecutableOnLaunch
+                                    function: TerminateAndBlockExecution
                                     parameters:
                                         executableNameWithExtension: DeviceCensus.exe
                     -
@@ -6604,14 +6604,48 @@ actions:
                         category: Configure Chrome
                         children:
                             -
-                                name: Disable Chrome Software Reporter Tool
-                                recommend: standard
-                                code: |-
-                                    icacls "%LOCALAPPDATA%\Google\Chrome\User Data\SwReporter" /inheritance:r /deny "*S-1-1-0:(OI)(CI)(F)" "*S-1-5-7:(OI)(CI)(F)"
-                                    cacls "%LOCALAPPDATA%\Google\Chrome\User Data\SwReporter" /e /c /d %username%
-                                    reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "DisallowRun" /t REG_DWORD /d 1 /f
-                                    reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun" /v "1" /t REG_SZ /d "software_reporter_tool.exe" /f
-                                revertCode: reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun" /v "1" /f
+                                name: Disable outdated Chrome Software Reporter Tool
+                                recommend: standard # Outdated component, removal improves security and privacy
+                                docs: |-
+                                    This script blocks the execution of the Chrome Software Reporter Tool, enhancing your privacy by preventing
+                                    unnecessary data transmissions to Google, and boosting system performance through reduced resource consumption.
+
+                                    This tool is also known as the *Software Reporter Tool* [1] [2] [3], *Software Reporter Tool for Chrome Cleanup* [4],
+                                    *Chrome Cleanup Tool* [2] [3] and *Software Removal Tool* [2].
+                                    It exists in Google Chrome [1] versions prior to v111 [3].
+                                    Newer versions of Google Chrome do not include this tool [3].
+
+                                    This tool scans for harmful software that may disrupt Chrome's operations [1] [3] [5] [6].
+                                    It automatically removes software that degrades your browsing experience [1] [3] [5] [6].
+                                    It can connect to the Internet, monitor applications, record keyboard and mouse inputs, and manipulate other programs [2].
+                                    It reports findings to Google [1] [3] [4], which raises privacy concerns due to potential data collection and online reporting.
+
+                                    The Software Reporter Tool may also significantly consume CPU and memory resources [1] [3] [4] [5], potentially leading to performance issues.
+                                    By disabling it, you reduce CPU and memory usage, potentially speeding up your computer.
+
+                                    It is located in the `%LOCALAPPDATA%\Google\Chrome\User Data\SwReporter` directory [1] [2] [3] [5].
+                                    Its executable name is `software_reporter_tool.exe` [1] [2] [3] [4] [5] [6].
+                                    This file reappears with each update of Chrome [3].
+                                    Instead of deleting or moving the file, the script blocks its execution to ensure it remains disabled after Chrome updates.
+
+                                    Disabling this tool protects your privacy by:
+
+                                    - Preventing sending scan results to Google [1] [3] [4].
+                                    - Some malware disguise themselves as `software_reporter_tool.exe` [2] so running this script will also protect you against these.
+                                    - This outdated component [3] may contain known vulnerabilities; disabling it helps mitigate these security risks by reducing your attack surface.
+
+                                    > **Caution**: Disabling this component may limit Chrome's ability to automatically detect and remove problematic software.
+
+                                    [1]: https://web.archive.org/web/20240528101432/https://www.softwaretestinghelp.com/software-reporter-tool/ "Software Reporter Tool: How To Disable Chrome Cleanup Tool | www.softwaretestinghelp.com"
+                                    [2]: https://web.archive.org/web/20240528101420/https://www.file.net/process/software_reporter_tool.exe.html "software_reporter_tool.exe Windows process - What is it? | www.file.net"
+                                    [3]: https://web.archive.org/web/20240528101406/https://www.thewindowsclub.com/disable-google-chrome-software-reporter-tool "How to disable Google Chrome Software Reporter Tool | www.thewindowsclub.com"
+                                    [4]: https://web.archive.org/web/20240528101617/https://support.google.com/chrome/a/thread/99323901/the-software-reporter-tool-exe-is-malware-admins-need-control-back-over-this-unwanted-software?hl=en "The software_reporter_tool.exe is malware - admins need control back over this unwanted software. - Chrome Enterprise & Education Community | support.google.com"
+                                    [5]: https://web.archive.org/web/20240528101401/https://appuals.com/how-to-fix-software-reporter-tool-high-cpu-usage/ "How to Fix Software Reporter Tool High CPU usage | appuals.com"
+                                    [6]: https://archive.today/2018.05.24-082444/https://productforums.google.com/forum/%23!topic/chrome/bFhfVkR-ENo "Clarification from a Google community specialist | What is software_reporter_tool in this version of Chrome? Software Reporter Tool - Google Product Forums | productforums.google.com"
+                                call:
+                                    function: TerminateAndBlockExecution
+                                    parameters:
+                                        executableNameWithExtension: software_reporter_tool.exe
                             -
                                 category: Configure Chrome cleanup
                                 children:
@@ -6628,7 +6662,7 @@ actions:
                                                 valueName: ChromeCleanupReportingEnabled
                                                 dataType: REG_DWORD
                                                 data: "0"
-                                                deleteOnRevert: 'true'
+                                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2), last tested on Chrome v125
                                     - 
                                         name: Disable Chrome system cleanup scans (shows "Your browser is managed")
                                         recommend: standard
@@ -6642,7 +6676,7 @@ actions:
                                                 valueName: ChromeCleanupEnabled
                                                 dataType: REG_DWORD
                                                 data: "0"
-                                                deleteOnRevert: 'true'
+                                                deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2), last tested on Chrome v125
                             -
                                 name: Disable Chrome metrics reporting (shows "Your browser is managed")
                                 recommend: standard
@@ -6654,7 +6688,7 @@ actions:
                                         valueName: MetricsReportingEnabled
                                         dataType: REG_DWORD
                                         data: "0"
-                                        deleteOnRevert: 'true'
+                                        deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2), last tested on Chrome v125
                     -
                         category: Configure Firefox
                         docs: |-
@@ -13372,7 +13406,7 @@ actions:
                                             fileGlob: '%SYSTEMROOT%\System32\WaaSMedicSvc.dll'
                                             grantPermissions: true # 🔒️ Protected on Windows 10 since 22H2 | 🔒️ Protected on Windows 11 since 23H2
                                     -
-                                        function: TerminateExecutableOnLaunch
+                                        function: TerminateAndBlockExecution
                                         parameters:
                                             executableNameWithExtension: WaaSMedicAgent.exe
                                     -
@@ -13459,7 +13493,7 @@ actions:
                                                     exit 0
                                                 }
                                     -
-                                        function: TerminateExecutableOnLaunch
+                                        function: TerminateAndBlockExecution
                                         parameters:
                                             executableNameWithExtension: upfc.exe
                     -
@@ -21009,7 +21043,7 @@ actions:
                 revertCode: del /f /q %APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\privacy-cleanup.bat
 functions:
     -
-        name: TerminateRunningProcess
+        name: TerminateRunningProcess # 💡 If applicable, consider using `TerminateAndBlockExecution` in script calls.
         parameters:
             - name: executableNameWithExtension # Name of the executable file, including its extension, to be terminated.
             - name: revertExecutablePath        # Path of the executable to be run during the revert process.
@@ -21054,7 +21088,7 @@ functions:
                             )
                         {{ end }}
     -
-        name: TerminateExecutableOnLaunch
+        name: TerminateExecutableOnLaunch # 💡 Usage: This is a low-level function. Favor using `TerminateAndBlockExecution` in script calls.
         parameters:
             - name: executableNameWithExtension # Filename of the executable (including its extension) to be terminated upon launch.
         docs: |-
@@ -21064,10 +21098,6 @@ functions:
 
             Read more: [Image File Execution Options | Microsoft Learn](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/xperf/image-file-execution-options)
         call:
-            -
-                function: TerminateRunningProcess
-                parameters:
-                    executableNameWithExtension: '{{ $executableNameWithExtension }}'
             -
                 function: Comment
                 parameters:
@@ -24032,3 +24062,210 @@ functions:
                     dataType: REG_SZ
                     data: 'Deny'
                     deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
+    -
+        name: BlockExecutablesFromRunningViaShell # 💡 Usage: This is a low-level function. Favor using `TerminateAndBlockExecution` in script calls.
+        parameters:
+            - name: executableNameWithExtension # Filename of the executable (including its extension) to be blocked
+        docs: |-
+            This function prevents specified executable files from running on Windows through the `DisallowRun` policy.
+
+            Users cannot execute these blocked programs via the Run dialog [1], double-clicking [1], the File menu [1], File Explorer [2] [3],
+            or any application using `ShellExecute` or `ShellExecuteEx` functions [1].
+
+            This function does not block executables launched by system processes like Task Manager or through other processes, including those
+            initiated via the command prompt (`cmd.exe`) [2] [3].
+
+            The script targets the `HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun` registry key [1] [2] [3],
+            which does not exist by default.
+
+            [1]: https://web.archive.org/web/20240525130534/https://learn.microsoft.com/en-us/windows/win32/api/shlobj_core/ne-shlobj_core-restrictions "RESTRICTIONS (shlobj_core.h) - Win32 apps | Microsoft Learn | learn.microsoft.com"
+            [2]: https://web.archive.org/web/20240525130542/https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-shellcommandpromptregedittools#disallowapps "ADMX_ShellCommandPromptRegEditTools Policy CSP - Windows Client Management | Microsoft Learn | learn.microsoft.com"
+            [3]: https://web.archive.org/web/20240525130647/https://admx.help/?Category=Windows_10_2016&Policy=Microsoft.Policies.WindowsTools::DisallowApps "Don't run specified Windows applications | admx.help"
+        call:
+            -
+                function: RunPowerShell
+                parameters:
+                    codeComment: Add a rule to prevent the executable "{{ $executableNameWithExtension }}"" from running via File Explorer
+                    code: |-
+                        $executableFilename='{{ $executableNameWithExtension }}'
+                        try {
+                            $registryPathForDisallowRun='HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun'
+                            $existingBlockEntries = Get-ItemProperty `
+                                -Path "$registryPathForDisallowRun" `
+                                -ErrorAction Ignore
+                            $nextFreeRuleIndex = 1
+                            if ($existingBlockEntries) {
+                                $existingBlockingRuleForExecutable = $existingBlockEntries.PSObject.Properties `
+                                    | Where-Object { $_.Value -eq $executableFilename }
+                                if ($existingBlockingRuleForExecutable) {
+                                    $existingBlockingRuleIndexForExecutable = $existingBlockingRuleForExecutable.Name
+                                    Write-Output "Skipping, no action needed: `$executableFilename` is already blocked under rule index `"$existingBlockingRuleIndexForExecutable`"."
+                                    exit 0
+                                }
+                                $occupiedRuleIndexes = $existingBlockEntries.PSObject.Properties `
+                                    | Where-Object { $_.Name -Match '^\d+$' } `
+                                    | Select -ExpandProperty Name
+                                if ($occupiedRuleIndexes) {
+                                    while ($occupiedRuleIndexes -Contains $nextFreeRuleIndex) {
+                                        $nextFreeRuleIndex += 1
+                                    }
+                                }
+                            }
+                            Write-Output "Adding block rule for `"$executableFilename`" under rule index `"$nextFreeRuleIndex`"."
+                            if (!(Test-Path $registryPathForDisallowRun)) {
+                                New-Item `
+                                    -Path "$registryPathForDisallowRun" `
+                                    -Force `
+                                    -ErrorAction Stop `
+                                    | Out-Null
+                            }
+                            New-ItemProperty `
+                                -Path "$registryPathForDisallowRun" `
+                                -Name "$nextFreeRuleIndex" `
+                                -PropertyType String `
+                                -Value "$executableFilename" ` `
+                                -ErrorAction Stop `
+                                | Out-Null
+                            Write-Output "Successfully blocked `"$executableFilename`" with rule index `"$nextFreeRuleIndex`"."
+                        } catch {
+                            Write-Error "Failed to block `"$executableFilename`": $_"
+                            Exit 1
+                        }
+                    revertCodeComment: Remove the rule that prevents the executable "{{ $executableNameWithExtension }}" from running via File Explorer
+                    revertCode: |-
+                        $executableFilename='{{ $executableNameWithExtension }}'
+                        try {
+                            $blockEntries = Get-ItemProperty `
+                                -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun' `
+                                -ErrorAction Ignore
+                            if (-Not $blockEntries) {
+                                Write-Output "Skipping, no action needed: No block rules exist, `"$executableFilename`" is not blocked."
+                                exit 0
+                            }
+                            $blockingRulesForExecutable = @(
+                                $blockEntries.PSObject.Properties `
+                                    | Where-Object { $_.Value -eq $executableFilename }
+                            )
+                            if (-Not $blockingRulesForExecutable) {
+                                Write-Output "Skipping, no action needed: `"$executableFilename`" is not currently blocked."
+                                exit 0
+                            }
+                            foreach ($blockingRuleForExecutable in $blockingRulesForExecutable) {
+                                $blockingRuleIndexForExecutable = $blockingRuleForExecutable.Name
+                                Write-Output "Removing rule `"$blockingRuleIndexForExecutable`" that blocks `"$executableFilename`"."
+                                Remove-ItemProperty `
+                                    -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun' `
+                                    -Name "$blockingRuleIndexForExecutable" `
+                                    -Force `
+                                    -ErrorAction Stop
+                                Write-Output "Successfully revoked blocking of `$executableFilename` under rule `"$blockingRuleIndexForExecutable`"."
+                            }
+                        } catch {
+                            Write-Error "Failed to revoke blocking of `"$executableFilename`": $_"
+                            Exit 1
+                        }
+            -
+                function: RunPowerShell
+                parameters:
+                    codeComment: Activate the DisallowRun policy to block specified programs from running via File Explorer
+                    code: |-
+                        try {
+                            $fileExplorerDisallowRunRegistryPath = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer'
+                            $currentDisallowRunPolicyValue = Get-ItemProperty `
+                                -Path "$fileExplorerDisallowRunRegistryPath" `
+                                -Name 'DisallowRun' `
+                                -ErrorAction Ignore `
+                                | Select -ExpandProperty DisallowRun
+                            if ([string]::IsNullOrEmpty($currentDisallowRunPolicyValue)) {
+                                Write-Output "Creating DisallowRun policy at `"$fileExplorerDisallowRunRegistryPath`"."
+                                if (!(Test-Path $fileExplorerDisallowRunRegistryPath)) {
+                                New-Item `
+                                    -Path "$fileExplorerDisallowRunRegistryPath" `
+                                    -Force `
+                                    -ErrorAction Stop `
+                                    | Out-Null
+                                }
+                                New-ItemProperty `
+                                    -Path "$fileExplorerDisallowRunRegistryPath" `
+                                    -Name 'DisallowRun' `
+                                    -Value 1 `
+                                    -PropertyType DWORD `
+                                    -Force `
+                                    -ErrorAction Stop `
+                                    | Out-Null
+                                Write-Output 'Successfully activated DisallowRun policy.'
+                                Exit 0
+                            }
+                            if ($currentDisallowRunPolicyValue -eq 1) {
+                                Write-Output 'Skipping, no action needed: DisallowRun policy is already in place.'
+                                Exit 0
+                            }
+                            Write-Output 'Updating DisallowRun policy from unexpected value `"$currentDisallowRunPolicyValue`" to `"1`".'
+                            Set-ItemProperty `
+                                -Path "$fileExplorerDisallowRunRegistryPath" `
+                                -Name 'DisallowRun' `
+                                -Value 1 `
+                                -Type DWORD `
+                                -Force `
+                                -ErrorAction Stop `
+                                | Out-Null
+                            Write-Output 'Successfully activated DisallowRun policy.'
+                        } catch {
+                            Write-Error "Failed to activate DisallowRun policy: $_"
+                            Exit 1
+                        }
+                    revertCodeComment: Restore the File Explorer DisallowRun policy if no other blocks are active
+                    revertCode: |-
+                        try {
+                            $currentDisallowRunPolicyValue = Get-ItemProperty `
+                                -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer' `
+                                -Name 'DisallowRun' `
+                                -ErrorAction Ignore `
+                                | Select-Object -ExpandProperty 'DisallowRun'
+                            if ([string]::IsNullOrEmpty($currentDisallowRunPolicyValue)) {
+                                Write-Output 'Skipping, no action needed: DisallowRun policy is not active.'
+                                Exit 0
+                            }
+                            if ($currentDisallowRunPolicyValue -ne 1) {
+                                Write-Output "Skipping, DisallowRun policy is not configured by privacy.sexy, unexpected value: `"$currentDisallowRunPolicyValue`"."
+                                Exit 0
+                            }
+                            $remainingBlockingRules = Get-ItemProperty `
+                                -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\DisallowRun' `
+                                -ErrorAction Ignore
+                            if ($remainingBlockingRules) {
+                                Write-Output 'Skipping deactivating DisallowRun policy, there are still active rules.'
+                                Exit 0
+                            }
+                            Write-Output 'No remaining rules, deleting DisallowRun policy.'
+                            Remove-ItemProperty `
+                                -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer' `
+                                -Name 'DisallowRun' `
+                                -Force `
+                                -ErrorAction Stop
+                            Write-Output 'Successfully restored DisallowRun policy.'
+                        } catch {
+                            Write-Error "Failed to restore DisallowRun policy: $_"
+                            Exit 1
+                        }
+    -
+        name: TerminateAndBlockExecution
+        parameters:
+            - name: executableNameWithExtension # Filename of the executable (including its extension) to be terminated and blocked
+        docs: |-
+            This function combines actions to terminate and block the re-execution of a specified executable on Windows.
+
+            It is designed for scripts that need to prevent an unwanted executable from affecting the system.
+        call:
+            -
+                function: TerminateRunningProcess
+                parameters:
+                    executableNameWithExtension: '{{ $executableNameWithExtension }}'
+            -
+                function: TerminateExecutableOnLaunch
+                parameters:
+                    executableNameWithExtension: '{{ $executableNameWithExtension }}'
+            -
+                function: BlockExecutablesFromRunningViaShell
+                parameters:
+                    executableNameWithExtension: '{{ $executableNameWithExtension }}'
