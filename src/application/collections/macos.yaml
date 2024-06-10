@@ -1175,19 +1175,98 @@ actions:
                                 code: sudo defaults write /Library/Preferences/com.apple.alf allowdownloadsignedenabled -bool false
                                 revertCode: sudo defaults write /Library/Preferences/com.apple.alf allowdownloadsignedenabled -bool true
             -
-                name: Disable Captive portal
-                # An attacker could trigger the utility and direct a Mac to a site with malware without user interaction,
-                # so it's best to disable this feature and log in to captive portals using regular Web browser instead.
-                recommend: standard
-                docs:
-                    # Risks with captive portals:
-                        - https://www.eff.org/deeplinks/2017/08/how-captive-portals-interfere-wireless-security-and-privacy
-                    # More about apple Captive portal:
-                        - https://web.archive.org/web/20171008071031if_/http://blog.erratasec.com/2010/09/apples-secret-wispr-request.html#.WdnPa5OyL6Y
-                        - https://web.archive.org/web/20130407200745/http://www.divertednetworks.net/apple-captiveportal.html
-                        - https://web.archive.org/web/20170622064304/https://grpugh.wordpress.com/2014/10/29/an-undocumented-change-to-captive-network-assistant-settings-in-os-x-10-10-yosemite/
-                code: sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.captive.control.plist Active -bool false
-                revertCode: sudo defaults delete /Library/Preferences/SystemConfiguration/com.apple.captive.control.plist Active
+                name: Disable captive portal detection
+                recommend: strict
+                docs: |-
+                    This script enhances your privacy and security by disabling automatic detection of captive
+                    portals, preventing unintended network connections.
+                    However, this change requires users to manually open a web browser to access such networks [1].
+
+                    ### Overview of captive portals
+
+                    Captive portals are also known as *subscription* or *Wi-Fi Hotspot* networks [2].
+                    These are common in public places like coffee shops, hotels, and airports [2] [3] [4].
+                    These portals redirect users to specific webpages where they must log in [2] [3] [4] [5] [6].
+                    Typically, this page requires users to enter personal details, like email and phone number,
+                    and agree to terms of service [2] [3] [5] [6].
+                    This poses privacy risks because your personal details may be used for marketing or other purposes.
+
+                    ### macOS captive portal flow
+
+                    On macOS, when connecting to a WiFi network:
+
+                    1. The system checks for captive portals by sending requests to specific URLs [5] [6]:
+                       - `http://captive.apple.com/hotspot-detect.html` (for OS X 10.10 Yosemite and newer [4]).
+                       - `http://www.apple.com/library/test/success.html` (for OS X up to 10.9 Mavericks) [4] [6].
+                    2. If the request gets redirected, then Apple knows there is a portal [5].
+                    3. macOS opens a limited browser to allow login [4] [5] [6].
+                       The browser used for this, called the 'Captive Network Assistant' [4] [7],
+                       is found at `/System/Library/CoreServices/Captive Network Assistant.app` [7].
+                       This browser is based on Safari [4].
+                       Its limitation may cause issues with some networks [4].
+
+                    ### Security and privacy concerns with captive portals
+
+                    Using captive portals raises security and privacy issues:
+
+                    - **Data Collection and Monitoring:**
+                      Captive portals often require you to submit personal details such as email and phone numbers [2] [3] [5],
+                      which may be used for marketing or sales [3].
+                      Additionally, they facilitate the tracking of your behaviors and activities, linking these to your identity [3].
+                    - **Data Leakage:**
+                      Devices send data about network connections to Apple without user consent [5] [6], compromising privacy.
+                    - **False Sense of Security:**
+                      The login window may falsely imply that networks with captive portals are more secure, which is not necessarily true [3].
+                    - **Misplaced Trust:**
+                      Captive portals can alter HTTPS connections, causing frequent security warnings [3].
+                      Ignoring these alerts can lower your security awareness [3].
+                    - **WISPr: Credential Theft and XML Attacks:**
+                      Captive portals that use WISPr technology might expose users to risks of credential theft and attacks based on XML [5].
+                    - **False Captive Portals (Evil Twins):**
+                      Fake captive portals, designed to look like legitimate ones, can steal sensitive information such as credit card
+                      data and user credentials [6].
+                    - **Fraud/Fake Website due to MiTM Attacks:**
+                      Attackers may exploit captive portals using HTML injection and cross-site scripting to deploy malicious code [6],
+                      directing users to harmful sites or stealing data.
+                    - **Captive Portal Detection Interference:**
+                      Some captive portals hinder or manipulate devices' built-in mechanisms for detecting and managing them [3].
+                      This manipulation can broaden your device's exposure to attacks, potentially compromising its security.
+                    - **Unintended Application Launch:**
+                      Devices may automatically open applications for captive portal logins without user consent [4] [6] [7],
+                      risking unauthorized access and exposure to threats like malware.
+
+                    ### Solution and impact
+
+                    Disabling captive portal detection stops automatic login page prompts.
+                    It requires users to manually navigate to these pages when needed [1].
+                    This change reduces the risk of automatic data collection and unwanted network interactions
+                    but may inconvenience users frequently connecting to public networks.
+
+                    This script disables the captive portal detection by modifying the system setting
+                    `/Library/Preferences/SystemConfiguration/com.apple.captive.control.plist!Active` [8].
+
+                    This script does not:
+
+                    - Alter the system application (`/System/Library/CoreServices/Captive Network Assistant.app`),
+                      which is protected by "System Integrity Protection (SIP)" [7].
+                    - Block captive portal hosts by manipulating DNS records [4] [6].
+                      Instead, it disables automatic checks but allows manual access when needed [1].
+
+                    > **Caution:**
+                    > After disabling this feature, you must manually access network login pages at places like airports and cafes.
+                    > This may involve some technical steps.
+
+                    [1]: https://archive.ph/2024.06.07-084600/https://discussions.apple.com/thread/250195103?sortBy=best "Force captive portal sign in page to open - Apple Community | discussions.apple.com"
+                    [2]: https://web.archive.org/web/20240604205332/https://support.apple.com/en-us/102554 "Use captive Wi-Fi networks on your iPhone or iPad - Apple Supportsupport.apple.com "
+                    [3]: https://web.archive.org/web/20240530092050/https://www.eff.org/deeplinks/2017/08/how-captive-portals-interfere-wireless-security-and-privacy "How Captive Portals Interfere With Wireless Security and Privacy | Electronic Frontier Foundation | eff.org"
+                    [4]: https://web.archive.org/web/20170622064304/https://grpugh.wordpress.com/2014/10/29/an-undocumented-change-to-captive-network-assistant-settings-in-os-x-10-10-yosemite/ "An undocumented change to Captive Network Assistant settings in OS X 10.10 Yosemite | On the Subject Of Macs | grpugh.wordpress.com"
+                    [5]: https://web.archive.org/web/20240609154113/https://blog.erratasec.com/2010/09/apples-secret-wispr-request.html#.WdnPa5OyL6Y "Errata Security: Apple's secret \"wispr\" request | blog.erratasec.com"
+                    [6]: https://web.archive.org/web/20130407200745/http://www.divertednetworks.net/apple-captiveportal.html "Disabling Mac OS Captive Portal Redirection | www.divertednetworks.net"
+                    [7]: https://web.archive.org/web/20240604205338/https://apple.stackexchange.com/questions/45418/how-to-automatically-login-to-captive-portals-on-os-x/74473#74473 "wifi - How to automatically login to captive portals on OS X? - Ask Different | apple.stackexchange.com"
+                    [8]: https://web.archive.org/web/20240604205756/https://ilostmynotes.blogspot.com/2012/09/disable-captive-network-support-in-os-x.html "Technical notes, my online memory: Disable Captive Network Support in OS X | ilostmynotes.blogspot.com"
+                code: sudo defaults write '/Library/Preferences/SystemConfiguration/com.apple.captive.control.plist' Active -bool false
+                revertCode: >- # Missing by default since macOS (≥ 14.3)
+                    sudo defaults delete '/Library/Preferences/SystemConfiguration/com.apple.captive.control.plist' Active
             -
                 category: Enable protective screen saver
                 children:
