@@ -19051,7 +19051,7 @@ actions:
                             -
                                 function: RemoveShortcutFiles
                                 parameters:
-                                    targetFile: C:\Users\undergroundwires\AppData\Local\Microsoft\OneDrive\OneDrive.exe
+                                    targetFile: '%LOCALAPPDATA%\Microsoft\OneDrive\OneDrive.exe'
                                     shortcutItems: |-
                                         @{ Revert = $True;  Path = "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"; }
                                         @{ Revert = $False; Path = "$env:USERPROFILE\Links\OneDrive.lnk"; }
@@ -19431,7 +19431,7 @@ actions:
                             #   - `DisableEdgeDesktopShortcutCreation` because it's highly documented and it does not really bring value since this script already deletes `Microsoft Edge.lnk` from public folder.
                             function: RemoveShortcutFiles
                             parameters:
-                                targetFile: C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe
+                                targetFile: '%PROGRAMFILES(X86)%\Microsoft\Edge\Application\msedge.exe'
                                 shortcutItems: |-
                                     @{ Revert = $True;  Path = "$env:ProgramData\Microsoft\Windows\Start Menu\Programs\Microsoft Edge.lnk"; }
                                     @{ Revert = $True;  Path = "$env:AppData\Microsoft\Internet Explorer\Quick Launch\Microsoft Edge.lnk"; }
@@ -22656,12 +22656,13 @@ functions:
                         }
                     }
                 revertCode: |-
-                    $targetFile = "{{ $targetFile }}"
+                    $targetFilePath = "{{ $targetFile }}"
+                    $expandedTargetFilePath = [System.Environment]::ExpandEnvironmentVariables($targetFilePath)
                     $shortcuts = @(
                         {{ $shortcutItems }}
                     )
-                    if (-Not (Test-Path $targetFile)) {
-                        Write-Warning "Target file `"$targetFile`" does not exist."
+                    if (-Not (Test-Path $expandedTargetFilePath)) {
+                        Write-Warning "Target file `"$expandedTargetFilePath`" does not exist."
                     }
                     $wscriptShell = $null
                     try {
@@ -22680,7 +22681,7 @@ functions:
                         }
                         try {
                             $shellShortcut = $wscriptShell.CreateShortcut($shortcut.Path)
-                            $shellShortcut.TargetPath = $targetFile
+                            $shellShortcut.TargetPath = $expandedTargetFilePath
                             $shellShortcut.Save()
                             Write-Output "Successfully created shortcut at `"$($shortcut.Path)`"."
                         } catch {
