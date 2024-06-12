@@ -1,4 +1,4 @@
-import type { IScript } from '@/domain/IScript';
+import type { Script } from '@/domain/Executables/Script/Script';
 import type { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import type { ICodeChangedEvent } from './ICodeChangedEvent';
@@ -6,13 +6,13 @@ import type { ICodeChangedEvent } from './ICodeChangedEvent';
 export class CodeChangedEvent implements ICodeChangedEvent {
   public readonly code: string;
 
-  public readonly addedScripts: ReadonlyArray<IScript>;
+  public readonly addedScripts: ReadonlyArray<Script>;
 
-  public readonly removedScripts: ReadonlyArray<IScript>;
+  public readonly removedScripts: ReadonlyArray<Script>;
 
-  public readonly changedScripts: ReadonlyArray<IScript>;
+  public readonly changedScripts: ReadonlyArray<Script>;
 
-  private readonly scripts: Map<IScript, ICodePosition>;
+  private readonly scripts: Map<Script, ICodePosition>;
 
   constructor(
     code: string,
@@ -25,7 +25,7 @@ export class CodeChangedEvent implements ICodeChangedEvent {
     this.addedScripts = selectIfNotExists(newScripts, oldScripts);
     this.removedScripts = selectIfNotExists(oldScripts, newScripts);
     this.changedScripts = getChangedScripts(oldScripts, newScripts);
-    this.scripts = new Map<IScript, ICodePosition>();
+    this.scripts = new Map<Script, ICodePosition>();
     scripts.forEach((position, selection) => {
       this.scripts.set(selection.script, position);
     });
@@ -35,7 +35,7 @@ export class CodeChangedEvent implements ICodeChangedEvent {
     return this.scripts.size === 0;
   }
 
-  public getScriptPositionInCode(script: IScript): ICodePosition {
+  public getScriptPositionInCode(script: Script): ICodePosition {
     return this.getPositionById(script.id);
   }
 
@@ -65,7 +65,7 @@ function ensureAllPositionsExist(script: string, positions: ReadonlyArray<ICodeP
 function getChangedScripts(
   oldScripts: ReadonlyArray<SelectedScript>,
   newScripts: ReadonlyArray<SelectedScript>,
-): ReadonlyArray<IScript> {
+): ReadonlyArray<Script> {
   return newScripts
     .filter((newScript) => oldScripts.find((oldScript) => oldScript.id === newScript.id
       && oldScript.revert !== newScript.revert))

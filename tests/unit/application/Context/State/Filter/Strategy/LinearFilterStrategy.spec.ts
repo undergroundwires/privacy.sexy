@@ -3,8 +3,8 @@ import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import type { ICategoryCollection } from '@/domain/ICategoryCollection';
-import type { ICategory } from '@/domain/ICategory';
-import type { IScript } from '@/domain/IScript';
+import type { Category } from '@/domain/Executables/Category/Category';
+import type { Script } from '@/domain/Executables/Script/Script';
 import type { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
 import { LinearFilterStrategy } from '@/application/Context/State/Filter/Strategy/LinearFilterStrategy';
 
@@ -89,7 +89,7 @@ describe('LinearFilterStrategy', () => {
         interface ScriptMatchTestScenario {
           readonly description: string;
           readonly filter: string;
-          readonly matchingScript: IScript;
+          readonly matchingScript: Script;
         }
         const testScenarios: readonly ScriptMatchTestScenario[] = [
           {
@@ -134,7 +134,7 @@ describe('LinearFilterStrategy', () => {
       it('returns multiple matching scripts', () => {
         // arrange
         const filter = 'matching filter';
-        const matchingScripts: readonly IScript[] = [
+        const matchingScripts: readonly Script[] = [
           createMatchingScript(filter),
           createMatchingScript(filter),
         ];
@@ -165,7 +165,7 @@ describe('LinearFilterStrategy', () => {
         interface CategoryMatchTestScenario {
           readonly description: string;
           readonly filter: string;
-          readonly matchingCategory: ICategory;
+          readonly matchingCategory: Category;
         }
         const testScenarios: readonly CategoryMatchTestScenario[] = [
           {
@@ -200,7 +200,7 @@ describe('LinearFilterStrategy', () => {
       it('returns multiple matching categories', () => {
         // arrange
         const filter = 'matching filter';
-        const matchingCategories: readonly ICategory[] = [
+        const matchingCategories: readonly Category[] = [
           createMatchingCategory(filter),
           createMatchingCategory(filter),
         ];
@@ -237,7 +237,7 @@ function createMatchingCategory(
 
 function expectCategoryMatches(
   actualFilter: FilterResult,
-  expectedMatches: readonly ICategory[],
+  expectedMatches: readonly Category[],
 ): void {
   expect(actualFilter.hasAnyMatches()).be.equal(true);
   expect(actualFilter.categoryMatches).to.have.lengthOf(expectedMatches.length);
@@ -246,7 +246,7 @@ function expectCategoryMatches(
 
 function expectScriptMatches(
   actualFilter: FilterResult,
-  expectedMatches: readonly IScript[],
+  expectedMatches: readonly Script[],
 ): void {
   expect(actualFilter.hasAnyMatches()).be.equal(true);
   expect(actualFilter.scriptMatches).to.have.lengthOf(expectedMatches.length);

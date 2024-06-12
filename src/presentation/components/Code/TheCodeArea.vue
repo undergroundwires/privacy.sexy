@@ -18,7 +18,7 @@ import {
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import type { ICodeChangedEvent } from '@/application/Context/State/Code/Event/ICodeChangedEvent';
-import type { IScript } from '@/domain/IScript';
+import type { Script } from '@/domain/Executables/Script/Script';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import type { IReadOnlyCategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { CodeBuilderFactory } from '@/application/Context/State/Code/Generation/CodeBuilderFactory';
@@ -108,7 +108,7 @@ export default defineComponent({
       highlightedRange.value = 0;
     }
 
-    function reactToChanges(event: ICodeChangedEvent, scripts: ReadonlyArray<IScript>) {
+    function reactToChanges(event: ICodeChangedEvent, scripts: ReadonlyArray<Script>) {
       const positions = scripts
         .map((script) => event.getScriptPositionInCode(script));
       const start = Math.min(

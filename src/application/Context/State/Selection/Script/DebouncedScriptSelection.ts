@@ -1,5 +1,5 @@
 import { InMemoryRepository } from '@/infrastructure/Repository/InMemoryRepository';
-import type { IScript } from '@/domain/IScript';
+import type { Script } from '@/domain/Executables/Script/Script';
 import { EventSource } from '@/infrastructure/Events/EventSource';
 import type { ReadonlyRepository, Repository } from '@/application/Repository/Repository';
 import type { ICategoryCollection } from '@/domain/ICategoryCollection';
@@ -80,7 +80,7 @@ export class DebouncedScriptSelection implements ScriptSelection {
     });
   }
 
-  public selectOnly(scripts: readonly IScript[]): void {
+  public selectOnly(scripts: readonly Script[]): void {
     assertNonEmptyScriptSelection(scripts);
     this.processChanges({
       changes: [
@@ -145,7 +145,7 @@ export class DebouncedScriptSelection implements ScriptSelection {
   }
 }
 
-function assertNonEmptyScriptSelection(selectedItems: readonly IScript[]) {
+function assertNonEmptyScriptSelection(selectedItems: readonly Script[]) {
   if (selectedItems.length === 0) {
     throw new Error('Provided script array is empty. To deselect all scripts, please use the deselectAll() method instead.');
   }
@@ -153,7 +153,7 @@ function assertNonEmptyScriptSelection(selectedItems: readonly IScript[]) {
 
 function getScriptIdsToBeSelected(
   existingItems: ReadonlyRepository<string, SelectedScript>,
-  desiredScripts: readonly IScript[],
+  desiredScripts: readonly Script[],
 ): string[] {
   return desiredScripts
     .filter((script) => !existingItems.exists(script.id))
@@ -162,7 +162,7 @@ function getScriptIdsToBeSelected(
 
 function getScriptIdsToBeDeselected(
   existingItems: ReadonlyRepository<string, SelectedScript>,
-  desiredScripts: readonly IScript[],
+  desiredScripts: readonly Script[],
 ): string[] {
   return existingItems
     .getItems()

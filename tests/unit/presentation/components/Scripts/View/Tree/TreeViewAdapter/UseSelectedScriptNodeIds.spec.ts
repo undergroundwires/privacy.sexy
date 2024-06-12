@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { useSelectedScriptNodeIds } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/UseSelectedScriptNodeIds';
 import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
 import { getScriptNodeId } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/CategoryNodeMetadataConverter';
-import type { IScript } from '@/domain/IScript';
+import type { Script } from '@/domain/Executables/Script/Script';
 import { UseUserSelectionStateStub } from '@tests/unit/shared/Stubs/UseUserSelectionStateStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 
@@ -23,7 +23,7 @@ describe('useSelectedScriptNodeIds', () => {
         new SelectedScriptStub(new ScriptStub('id-1')),
         new SelectedScriptStub(new ScriptStub('id-2')),
       ];
-      const parsedNodeIds = new Map<IScript, string>([
+      const parsedNodeIds = new Map<Script, string>([
         [selectedScripts[0].script, 'expected-id-1'],
         [selectedScripts[1].script, 'expected-id-2'],
       ]);
@@ -47,7 +47,7 @@ describe('useSelectedScriptNodeIds', () => {
         new SelectedScriptStub(new ScriptStub('id-1')),
         new SelectedScriptStub(new ScriptStub('id-2')),
       ];
-      const parsedNodeIds = new Map<IScript, string>([
+      const parsedNodeIds = new Map<Script, string>([
         [changedScripts[0].script, 'expected-id-1'],
         [changedScripts[1].script, 'expected-id-2'],
       ]);
@@ -70,7 +70,7 @@ describe('useSelectedScriptNodeIds', () => {
 
 type ScriptNodeIdParser = typeof getScriptNodeId;
 
-function createNodeIdParserFromMap(scriptToIdMap: Map<IScript, string>): ScriptNodeIdParser {
+function createNodeIdParserFromMap(scriptToIdMap: Map<Script, string>): ScriptNodeIdParser {
   return (script) => {
     const expectedId = scriptToIdMap.get(script);
     if (!expectedId) {

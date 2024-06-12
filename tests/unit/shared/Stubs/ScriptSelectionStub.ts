@@ -1,7 +1,7 @@
 import { expect } from 'vitest';
 import type { ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
-import type { IScript } from '@/domain/IScript';
+import type { Script } from '@/domain/Executables/Script/Script';
 import type { ScriptSelectionChange, ScriptSelectionChangeCommand } from '@/application/Context/State/Selection/Script/ScriptSelectionChange';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
@@ -58,7 +58,7 @@ export class ScriptSelectionStub
     });
   }
 
-  public selectOnly(scripts: ReadonlyArray<IScript>): void {
+  public selectOnly(scripts: ReadonlyArray<Script>): void {
     this.registerMethodCall({
       methodName: 'selectOnly',
       args: [scripts],

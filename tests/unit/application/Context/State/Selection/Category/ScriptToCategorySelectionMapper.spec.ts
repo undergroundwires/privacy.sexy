@@ -8,7 +8,8 @@ import { ScriptSelectionStub } from '@tests/unit/shared/Stubs/ScriptSelectionStu
 import type { CategorySelectionChange } from '@/application/Context/State/Selection/Category/CategorySelectionChange';
 import type { ScriptSelectionChange, ScriptSelectionChangeCommand } from '@/application/Context/State/Selection/Script/ScriptSelectionChange';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
-import type { ICategory, IScript } from '@/domain/ICategory';
+import type { Category } from '@/domain/Executables/Category/Category';
+import type { Script } from '@/domain/Executables/Script/Script';
 
 describe('ScriptToCategorySelectionMapper', () => {
   describe('areAllScriptsSelected', () => {
@@ -64,8 +65,8 @@ describe('ScriptToCategorySelectionMapper', () => {
       readonly description: string;
       readonly changes: readonly CategorySelectionChange[];
       readonly categories: ReadonlyArray<{
-        readonly categoryId: ICategory['id'],
-        readonly scriptIds: readonly IScript['id'][],
+        readonly categoryId: Category['id'],
+        readonly scriptIds: readonly Script['id'][],
       }>;
       readonly expected: readonly ScriptSelectionChange[],
     }> = [

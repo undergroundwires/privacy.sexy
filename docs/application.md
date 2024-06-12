@@ -41,5 +41,5 @@ Application layer compiles templating syntax during parsing to create the end sc
 
 The steps to extend the templating syntax:
 
-1. Add a new parser under [SyntaxParsers](./../src/application/Parser/Script/Compiler/Expressions/SyntaxParsers) where you can look at other parsers to understand more.
-2. Register your in [CompositeExpressionParser](./../src/application/Parser/Script/Compiler/Expressions/Parser/CompositeExpressionParser.ts).
+1. Add a new parser under [SyntaxParsers](./../src/application/Parser/Executable/Script/Compiler/Expressions/SyntaxParsers) where you can look at other parsers to understand more.
+2. Register your in [CompositeExpressionParser](./../src/application/Parser/Executable/Script/Compiler/Expressions/Parser/CompositeExpressionParser.ts).

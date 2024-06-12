@@ -1,4 +1,4 @@
-import type { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
+import type { FunctionCall } from '@/application/Parser/Executable/Script/Compiler/Function/Call/FunctionCall';
 import { FunctionCallArgumentCollectionStub } from './FunctionCallArgumentCollectionStub';
 
 export class FunctionCallStub implements FunctionCall {

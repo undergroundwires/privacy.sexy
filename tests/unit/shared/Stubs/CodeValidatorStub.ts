@@ -1,7 +1,7 @@
 import { expect } from 'vitest';
 import type { Constructible } from '@/TypeHelpers';
-import type { ICodeValidationRule } from '@/application/Parser/Script/Validation/ICodeValidationRule';
-import type { ICodeValidator } from '@/application/Parser/Script/Validation/ICodeValidator';
+import type { ICodeValidationRule } from '@/application/Parser/Executable/Script/Validation/ICodeValidationRule';
+import type { ICodeValidator } from '@/application/Parser/Executable/Script/Validation/ICodeValidator';
 
 export class CodeValidatorStub implements ICodeValidator {
   public callHistory = new Array<{

@@ -1,6 +1,6 @@
-import type { FunctionCallCompilationContext } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/FunctionCallCompilationContext';
-import type { ArgumentCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/SingleCall/Strategies/Argument/ArgumentCompiler';
-import type { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
+import type { FunctionCallCompilationContext } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Compiler/FunctionCallCompilationContext';
+import type { ArgumentCompiler } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Compiler/SingleCall/Strategies/Argument/ArgumentCompiler';
+import type { FunctionCall } from '@/application/Parser/Executable/Script/Compiler/Function/Call/FunctionCall';
 import { FunctionCallStub } from './FunctionCallStub';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 

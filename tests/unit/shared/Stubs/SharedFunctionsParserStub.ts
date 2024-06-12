@@ -1,8 +1,8 @@
 import type { FunctionData } from '@/application/collections/';
 import { sequenceEqual } from '@/application/Common/Array';
-import type { ISharedFunctionCollection } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionCollection';
-import type { ISharedFunctionsParser } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionsParser';
-import type { ILanguageSyntax } from '@/application/Parser/Script/Validation/Syntax/ILanguageSyntax';
+import type { ISharedFunctionCollection } from '@/application/Parser/Executable/Script/Compiler/Function/ISharedFunctionCollection';
+import type { ISharedFunctionsParser } from '@/application/Parser/Executable/Script/Compiler/Function/ISharedFunctionsParser';
+import type { ILanguageSyntax } from '@/application/Parser/Executable/Script/Validation/Syntax/ILanguageSyntax';
 import { SharedFunctionCollectionStub } from './SharedFunctionCollectionStub';
 
 export class SharedFunctionsParserStub implements ISharedFunctionsParser {

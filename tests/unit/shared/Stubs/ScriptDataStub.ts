@@ -1,7 +1,7 @@
 import type {
   FunctionCallData, CallScriptData, CodeScriptData,
 } from '@/application/collections/';
-import { RecommendationLevel } from '@/domain/RecommendationLevel';
+import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import { FunctionCallDataStub } from '@tests/unit/shared/Stubs/FunctionCallDataStub';
 
 export function createScriptDataWithCode(): ScriptDataStub & CodeScriptData {

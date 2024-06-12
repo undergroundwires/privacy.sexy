@@ -1,4 +1,4 @@
-import type { IPipelineCompiler } from '@/application/Parser/Script/Compiler/Expressions/Pipes/IPipelineCompiler';
+import type { IPipelineCompiler } from '@/application/Parser/Executable/Script/Compiler/Expressions/Pipes/IPipelineCompiler';
 
 export class PipelineCompilerStub implements IPipelineCompiler {
   public compileHistory: Array<{ value: string, pipeline: string }> = [];

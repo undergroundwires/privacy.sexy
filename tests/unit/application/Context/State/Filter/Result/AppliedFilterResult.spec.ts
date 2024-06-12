@@ -2,7 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { AppliedFilterResult } from '@/application/Context/State/Filter/Result/AppliedFilterResult';
-import type { ICategory, IScript } from '@/domain/ICategory';
+import type { Category } from '@/domain/Executables/Category/Category';
+import type { Script } from '@/domain/Executables/Script/Script';
 
 describe('AppliedFilterResult', () => {
   describe('constructor', () => {
@@ -68,18 +69,18 @@ describe('AppliedFilterResult', () => {
 });
 
 class ResultBuilder {
-  private scriptMatches: readonly IScript[] = [new ScriptStub('id')];
+  private scriptMatches: readonly Script[] = [new ScriptStub('id')];
 
-  private categoryMatches: readonly ICategory[] = [new CategoryStub(5)];
+  private categoryMatches: readonly Category[] = [new CategoryStub(5)];
 
   private query: string = `[${ResultBuilder.name}]query`;
 
-  public withScriptMatches(scriptMatches: readonly IScript[]): this {
+  public withScriptMatches(scriptMatches: readonly Script[]): this {
     this.scriptMatches = scriptMatches;
     return this;
   }
 
-  public withCategoryMatches(categoryMatches: readonly ICategory[]): this {
+  public withCategoryMatches(categoryMatches: readonly Category[]): this {
     this.categoryMatches = categoryMatches;
     return this;
   }

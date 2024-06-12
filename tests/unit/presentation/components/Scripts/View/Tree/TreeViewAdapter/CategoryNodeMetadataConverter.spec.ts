@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import type { IScript } from '@/domain/IScript';
-import type { ICategory } from '@/domain/ICategory';
+import type { Script } from '@/domain/Executables/Script/Script';
+import type { Category } from '@/domain/Executables/Category/Category';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
@@ -8,7 +8,7 @@ import {
   getCategoryId, getCategoryNodeId, getScriptId,
   getScriptNodeId, parseAllCategories, parseSingleCategory,
 } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/CategoryNodeMetadataConverter';
-import { NodeDataType } from '@/application/Parser/NodeValidation/NodeDataType';
+import { ExecutableType } from '@/application/Parser/Executable/Validation/ExecutableType';
 import type { NodeMetadata } from '@/presentation/components/Scripts/View/Tree/NodeContent/NodeMetadata';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 
@@ -94,7 +94,7 @@ describe('CategoryNodeMetadataConverter', () => {
   });
 });
 
-function isReversible(category: ICategory): boolean {
+function isReversible(category: Category): boolean {
   if (category.scripts) {
     if (category.scripts.some((s) => !s.canRevert())) {
       return false;
@@ -108,8 +108,8 @@ function isReversible(category: ICategory): boolean {
   return true;
 }
 
-function expectSameCategory(node: NodeMetadata, category: ICategory): void {
-  expect(node.type).to.equal(NodeDataType.Category, getErrorMessage('type'));
+function expectSameCategory(node: NodeMetadata, category: Category): void {
+  expect(node.type).to.equal(ExecutableType.Category, getErrorMessage('type'));
   expect(node.id).to.equal(getCategoryNodeId(category), getErrorMessage('id'));
   expect(node.docs).to.equal(category.docs, getErrorMessage('docs'));
   expect(node.text).to.equal(category.name, getErrorMessage('name'));
@@ -135,8 +135,8 @@ function expectSameCategory(node: NodeMetadata, category: ICategory): void {
   }
 }
 
-function expectSameScript(node: NodeMetadata, script: IScript): void {
-  expect(node.type).to.equal(NodeDataType.Script, getErrorMessage('type'));
+function expectSameScript(node: NodeMetadata, script: Script): void {
+  expect(node.type).to.equal(ExecutableType.Script, getErrorMessage('type'));
   expect(node.id).to.equal(getScriptNodeId(script), getErrorMessage('id'));
   expect(node.docs).to.equal(script.docs, getErrorMessage('docs'));
   expect(node.text).to.equal(script.name, getErrorMessage('name'));

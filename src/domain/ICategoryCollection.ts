@@ -1,19 +1,19 @@
 import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { RecommendationLevel } from '@/domain/RecommendationLevel';
-import type { IScript } from '@/domain/IScript';
-import type { ICategory } from '@/domain/ICategory';
+import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
+import type { Script } from '@/domain/Executables/Script/Script';
+import type { Category } from '@/domain/Executables/Category/Category';
 
 export interface ICategoryCollection {
   readonly scripting: IScriptingDefinition;
   readonly os: OperatingSystem;
   readonly totalScripts: number;
   readonly totalCategories: number;
-  readonly actions: ReadonlyArray<ICategory>;
+  readonly actions: ReadonlyArray<Category>;
 
-  getScriptsByLevel(level: RecommendationLevel): ReadonlyArray<IScript>;
-  getCategory(categoryId: number): ICategory;
-  getScript(scriptId: string): IScript;
-  getAllScripts(): ReadonlyArray<IScript>;
-  getAllCategories(): ReadonlyArray<ICategory>;
+  getScriptsByLevel(level: RecommendationLevel): ReadonlyArray<Script>;
+  getCategory(categoryId: number): Category;
+  getScript(scriptId: string): Script;
+  getAllScripts(): ReadonlyArray<Script>;
+  getAllCategories(): ReadonlyArray<Category>;
 }

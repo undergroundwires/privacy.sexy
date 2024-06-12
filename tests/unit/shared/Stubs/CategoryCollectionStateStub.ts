@@ -1,7 +1,7 @@
 import type { IApplicationCode } from '@/application/Context/State/Code/IApplicationCode';
 import type { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import type { IScript } from '@/domain/IScript';
+import type { Script } from '@/domain/Executables/Script/Script';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 import type { UserSelection } from '@/application/Context/State/Selection/UserSelection';
@@ -27,7 +27,7 @@ export class CategoryCollectionStateStub implements ICategoryCollectionState {
 
   public selection: UserSelection = new UserSelectionStub();
 
-  constructor(readonly allScripts: IScript[] = [new ScriptStub('script-id')]) {
+  constructor(readonly allScripts: Script[] = [new ScriptStub('script-id')]) {
     this.selection = new UserSelectionStub()
       .withScripts(new ScriptSelectionStub());
     this.collection = new CategoryCollectionStub()

@@ -1,5 +1,5 @@
-import type { IScript } from '@/domain/IScript';
-import { RecommendationLevel } from '@/domain/RecommendationLevel';
+import type { Script } from '@/domain/Executables/Script/Script';
+import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import { scrambledEqual } from '@/application/Common/Array';
 import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 import type { ReadonlyScriptSelection, ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
@@ -90,7 +90,7 @@ function selectOnly(
 }
 
 function areAllSelected(
-  expectedScripts: ReadonlyArray<IScript>,
+  expectedScripts: ReadonlyArray<Script>,
   selection: ReadonlyArray<SelectedScript>,
 ): boolean {
   const selectedScriptIds = selection

@@ -1,13 +1,13 @@
 import { BaseEntity } from '@/infrastructure/Entity/BaseEntity';
-import type { IScript } from '@/domain/IScript';
-import { RecommendationLevel } from '@/domain/RecommendationLevel';
-import type { IScriptCode } from '@/domain/IScriptCode';
+import type { Script } from '@/domain/Executables/Script/Script';
+import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
+import type { ScriptCode } from '@/domain/Executables/Script/Code/ScriptCode';
 import { SelectedScriptStub } from './SelectedScriptStub';
 
-export class ScriptStub extends BaseEntity<string> implements IScript {
+export class ScriptStub extends BaseEntity<string> implements Script {
   public name = `name${this.id}`;
 
-  public code: IScriptCode = {
+  public code: ScriptCode = {
     execute: `REM execute-code (${this.id})`,
     revert: `REM revert-code (${this.id})`,
   };

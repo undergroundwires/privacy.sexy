@@ -1,7 +1,8 @@
-import type { ICategory, IScript } from '@/domain/ICategory';
-import type { IScriptCode } from '@/domain/IScriptCode';
-import type { IDocumentable } from '@/domain/IDocumentable';
+import type { Category } from '@/domain/Executables/Category/Category';
+import type { ScriptCode } from '@/domain/Executables/Script/Code/ScriptCode';
+import type { Documentable } from '@/domain/Executables/Documentable';
 import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { Script } from '@/domain/Executables/Script/Script';
 import { AppliedFilterResult } from '../Result/AppliedFilterResult';
 import type { FilterStrategy } from './FilterStrategy';
 import type { FilterResult } from '../Result/FilterResult';
@@ -24,7 +25,7 @@ export class LinearFilterStrategy implements FilterStrategy {
 }
 
 function matchesCategory(
-  category: ICategory,
+  category: Category,
   filterLowercase: string,
 ): boolean {
   return matchesAny(
@@ -34,7 +35,7 @@ function matchesCategory(
 }
 
 function matchesScript(
-  script: IScript,
+  script: Script,
   filterLowercase: string,
 ): boolean {
   return matchesAny(
@@ -58,7 +59,7 @@ function matchName(
 }
 
 function matchCode(
-  code: IScriptCode,
+  code: ScriptCode,
   filterLowercase: string,
 ): boolean {
   if (code.execute.toLowerCase().includes(filterLowercase)) {
@@ -71,7 +72,7 @@ function matchCode(
 }
 
 function matchDocumentation(
-  documentable: IDocumentable,
+  documentable: Documentable,
   filterLowercase: string,
 ): boolean {
   return documentable.docs.some(

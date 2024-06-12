@@ -3,14 +3,14 @@ import {
   type SelectionCheckContext, type SelectionMutationContext,
   getCurrentRecommendationStatus, setCurrentRecommendationStatus,
 } from '@/presentation/components/Scripts/Menu/Recommendation/RecommendationStatusHandler';
-import { RecommendationLevel } from '@/domain/RecommendationLevel';
+import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import type { ICategoryCollectionState } from '@/application/Context/State/ICategoryCollectionState';
 import { EnumRangeTestRunner } from '@tests/unit/application/Common/EnumRangeTestRunner';
 import type { ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
 import type { MethodCall } from '@tests/unit/shared/Stubs/StubWithObservableMethodCalls';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { scrambledEqual } from '@/application/Common/Array';
-import type { IScript } from '@/domain/IScript';
+import type { Script } from '@/domain/Executables/Script/Script';
 import { RecommendationStatusType } from '@/presentation/components/Scripts/Menu/Recommendation/RecommendationStatusType';
 import { RecommendationStatusTestScenario } from './RecommendationStatusTestScenario';
 
@@ -85,8 +85,8 @@ describe('RecommendationStatusHandler', () => {
           expectExists(call);
           if (expectedCall.args.length > 0) { /** {@link ScriptSelection.selectOnly}. */
             expect(scrambledEqual(
-              call.args[0] as IScript[],
-              expectedCall.args[0] as IScript[],
+              call.args[0] as Script[],
+              expectedCall.args[0] as Script[],
             )).to.equal(true);
           }
         });

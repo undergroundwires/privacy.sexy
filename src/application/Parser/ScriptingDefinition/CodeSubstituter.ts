@@ -1,11 +1,11 @@
-import type { IExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/IExpressionsCompiler';
-import { ParameterSubstitutionParser } from '@/application/Parser/Script/Compiler/Expressions/SyntaxParsers/ParameterSubstitutionParser';
-import { CompositeExpressionParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/CompositeExpressionParser';
-import { ExpressionsCompiler } from '@/application/Parser/Script/Compiler/Expressions/ExpressionsCompiler';
+import type { IExpressionsCompiler } from '@/application/Parser/Executable/Script/Compiler/Expressions/IExpressionsCompiler';
+import { ParameterSubstitutionParser } from '@/application/Parser/Executable/Script/Compiler/Expressions/SyntaxParsers/ParameterSubstitutionParser';
+import { CompositeExpressionParser } from '@/application/Parser/Executable/Script/Compiler/Expressions/Parser/CompositeExpressionParser';
+import { ExpressionsCompiler } from '@/application/Parser/Executable/Script/Compiler/Expressions/ExpressionsCompiler';
 import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
-import { FunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/Function/Call/Argument/FunctionCallArgumentCollection';
-import { FunctionCallArgument } from '@/application/Parser/Script/Compiler/Function/Call/Argument/FunctionCallArgument';
-import type { IExpressionParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/IExpressionParser';
+import { FunctionCallArgumentCollection } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Argument/FunctionCallArgumentCollection';
+import { FunctionCallArgument } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Argument/FunctionCallArgument';
+import type { IExpressionParser } from '@/application/Parser/Executable/Script/Compiler/Expressions/Parser/IExpressionParser';
 import type { ICodeSubstituter } from './ICodeSubstituter';
 
 export class CodeSubstituter implements ICodeSubstituter {

@@ -4,20 +4,21 @@ import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { CategoryCollection } from '@/domain/CategoryCollection';
 import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
 import { createEnumParser } from '../Common/Enum';
-import { parseCategory } from './CategoryParser';
-import { CategoryCollectionParseContext } from './Script/CategoryCollectionParseContext';
+import { parseCategory } from './Executable/CategoryParser';
 import { ScriptingDefinitionParser } from './ScriptingDefinition/ScriptingDefinitionParser';
+import { createCollectionUtilities, type CategoryCollectionSpecificUtilitiesFactory } from './Executable/CategoryCollectionSpecificUtilities';
 
 export function parseCategoryCollection(
   content: CollectionData,
   projectDetails: ProjectDetails,
   osParser = createEnumParser(OperatingSystem),
+  createUtilities: CategoryCollectionSpecificUtilitiesFactory = createCollectionUtilities,
 ): ICategoryCollection {
   validate(content);
   const scripting = new ScriptingDefinitionParser()
     .parse(content.scripting, projectDetails);
-  const context = new CategoryCollectionParseContext(content.functions, scripting);
-  const categories = content.actions.map((action) => parseCategory(action, context));
+  const utilities = createUtilities(content.functions, scripting);
+  const categories = content.actions.map((action) => parseCategory(action, utilities));
   const os = osParser.parseEnum(content.os, 'os');
   const collection = new CategoryCollection(
     os,

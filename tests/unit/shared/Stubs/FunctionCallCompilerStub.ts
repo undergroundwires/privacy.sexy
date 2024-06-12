@@ -1,7 +1,7 @@
-import type { CompiledCode } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/CompiledCode';
-import type { FunctionCallCompiler } from '@/application/Parser/Script/Compiler/Function/Call/Compiler/FunctionCallCompiler';
-import type { ISharedFunctionCollection } from '@/application/Parser/Script/Compiler/Function/ISharedFunctionCollection';
-import type { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
+import type { CompiledCode } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Compiler/CompiledCode';
+import type { FunctionCallCompiler } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Compiler/FunctionCallCompiler';
+import type { ISharedFunctionCollection } from '@/application/Parser/Executable/Script/Compiler/Function/ISharedFunctionCollection';
+import type { FunctionCall } from '@/application/Parser/Executable/Script/Compiler/Function/Call/FunctionCall';
 import { CompiledCodeStub } from './CompiledCodeStub';
 
 interface FunctionCallCompilationTestScenario {

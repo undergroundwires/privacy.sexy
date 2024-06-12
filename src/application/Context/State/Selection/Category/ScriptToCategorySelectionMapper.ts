@@ -1,4 +1,4 @@
-import type { ICategory } from '@/domain/ICategory';
+import type { Category } from '@/domain/Executables/Category/Category';
 import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 import type { CategorySelectionChange, CategorySelectionChangeCommand } from './CategorySelectionChange';
 import type { CategorySelection } from './CategorySelection';
@@ -13,7 +13,7 @@ export class ScriptToCategorySelectionMapper implements CategorySelection {
 
   }
 
-  public areAllScriptsSelected(category: ICategory): boolean {
+  public areAllScriptsSelected(category: Category): boolean {
     const { selectedScripts } = this.scriptSelection;
     if (selectedScripts.length === 0) {
       return false;
@@ -27,7 +27,7 @@ export class ScriptToCategorySelectionMapper implements CategorySelection {
     );
   }
 
-  public isAnyScriptSelected(category: ICategory): boolean {
+  public isAnyScriptSelected(category: Category): boolean {
     const { selectedScripts } = this.scriptSelection;
     if (selectedScripts.length === 0) {
       return false;

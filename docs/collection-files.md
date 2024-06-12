@@ -28,11 +28,20 @@ Related documentation:
 - `scripting:` ***[`ScriptingDefinition`](#scriptingdefinition)*** **(required)**
   - Sets the scripting language for all inline code used within the collection.
 
-### `Category`
+### Executables
+
+An Executable is a logical entity that can
+
+- execute once compiled,
+- include a `docs` property for documentation.
+
+It's either [Category](#category) or a [Script](#script).
+
+#### `Category`
 
 Represents a logical group of scripts and subcategories.
 
-#### `Category` syntax
+##### `Category` syntax
 
 - `category:` *`string`*  **(required)**
   - Name of the category.
@@ -43,7 +52,7 @@ Represents a logical group of scripts and subcategories.
 - `docs`: *`string`* | `[`*`string`*`, ... ]`
   - Markdown-formatted documentation related to the category.
 
-### `Script`
+#### `Script`
 
 Represents an individual tweak.
 
@@ -58,7 +67,7 @@ Types (like [functions](#function)):
 
 📖 For detailed guidelines, see [Script Guidelines](./script-guidelines.md).
 
-#### `Script` syntax
+##### `Script` syntax
 
 - `name`: *`string`* **(required)**
   - Script name.

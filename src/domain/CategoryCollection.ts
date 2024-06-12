@@ -1,9 +1,9 @@
 import { getEnumValues, assertInRange } from '@/application/Common/Enum';
-import { RecommendationLevel } from './RecommendationLevel';
+import { RecommendationLevel } from './Executables/Script/RecommendationLevel';
 import { OperatingSystem } from './OperatingSystem';
 import type { IEntity } from '../infrastructure/Entity/IEntity';
-import type { ICategory } from './ICategory';
-import type { IScript } from './IScript';
+import type { Category } from './Executables/Category/Category';
+import type { Script } from './Executables/Script/Script';
 import type { IScriptingDefinition } from './IScriptingDefinition';
 import type { ICategoryCollection } from './ICategoryCollection';
 
@@ -16,7 +16,7 @@ export class CategoryCollection implements ICategoryCollection {
 
   constructor(
     public readonly os: OperatingSystem,
-    public readonly actions: ReadonlyArray<ICategory>,
+    public readonly actions: ReadonlyArray<Category>,
     public readonly scripting: IScriptingDefinition,
   ) {
     this.queryable = makeQueryable(actions);
@@ -26,7 +26,7 @@ export class CategoryCollection implements ICategoryCollection {
     ensureNoDuplicates(this.queryable.allScripts);
   }
 
-  public getCategory(categoryId: number): ICategory {
+  public getCategory(categoryId: number): Category {
     const category = this.queryable.allCategories.find((c) => c.id === categoryId);
     if (!category) {
       throw new Error(`Missing category with ID: "${categoryId}"`);
@@ -34,13 +34,13 @@ export class CategoryCollection implements ICategoryCollection {
     return category;
   }
 
-  public getScriptsByLevel(level: RecommendationLevel): readonly IScript[] {
+  public getScriptsByLevel(level: RecommendationLevel): readonly Script[] {
     assertInRange(level, RecommendationLevel);
     const scripts = this.queryable.scriptsByLevel.get(level);
     return scripts ?? [];
   }
 
-  public getScript(scriptId: string): IScript {
+  public getScript(scriptId: string): Script {
     const script = this.queryable.allScripts.find((s) => s.id === scriptId);
     if (!script) {
       throw new Error(`missing script: ${scriptId}`);
@@ -48,11 +48,11 @@ export class CategoryCollection implements ICategoryCollection {
     return script;
   }
 
-  public getAllScripts(): IScript[] {
+  public getAllScripts(): Script[] {
     return this.queryable.allScripts;
   }
 
-  public getAllCategories(): ICategory[] {
+  public getAllCategories(): Category[] {
     return this.queryable.allCategories;
   }
 }
@@ -73,9 +73,9 @@ function ensureNoDuplicates<TKey>(entities: ReadonlyArray<IEntity<TKey>>) {
 }
 
 interface IQueryableCollection {
-  allCategories: ICategory[];
-  allScripts: IScript[];
-  scriptsByLevel: Map<RecommendationLevel, readonly IScript[]>;
+  allCategories: Category[];
+  allScripts: Script[];
+  scriptsByLevel: Map<RecommendationLevel, readonly Script[]>;
 }
 
 function ensureValid(application: IQueryableCollection) {
@@ -83,13 +83,13 @@ function ensureValid(application: IQueryableCollection) {
   ensureValidScripts(application.allScripts);
 }
 
-function ensureValidCategories(allCategories: readonly ICategory[]) {
+function ensureValidCategories(allCategories: readonly Category[]) {
   if (!allCategories.length) {
     throw new Error('must consist of at least one category');
   }
 }
 
-function ensureValidScripts(allScripts: readonly IScript[]) {
+function ensureValidScripts(allScripts: readonly Script[]) {
   if (!allScripts.length) {
     throw new Error('must consist of at least one script');
   }
@@ -102,8 +102,8 @@ function ensureValidScripts(allScripts: readonly IScript[]) {
 }
 
 function flattenApplication(
-  categories: ReadonlyArray<ICategory>,
-): [ICategory[], IScript[]] {
+  categories: ReadonlyArray<Category>,
+): [Category[], Script[]] {
   const [subCategories, subScripts] = (categories || [])
     // Parse children
     .map((category) => flattenApplication(category.subCategories))
@@ -113,7 +113,7 @@ function flattenApplication(
         [...previousCategories, ...currentCategories],
         [...previousScripts, ...currentScripts],
       ];
-    }, [new Array<ICategory>(), new Array<IScript>()]);
+    }, [new Array<Category>(), new Array<Script>()]);
   return [
     [
       ...(categories || []),
@@ -127,7 +127,7 @@ function flattenApplication(
 }
 
 function makeQueryable(
-  actions: ReadonlyArray<ICategory>,
+  actions: ReadonlyArray<Category>,
 ): IQueryableCollection {
   const flattened = flattenApplication(actions);
   return {
@@ -138,8 +138,8 @@ function makeQueryable(
 }
 
 function groupByLevel(
-  allScripts: readonly IScript[],
-): Map<RecommendationLevel, readonly IScript[]> {
+  allScripts: readonly Script[],
+): Map<RecommendationLevel, readonly Script[]> {
   return getEnumValues(RecommendationLevel)
     .map((level) => ({
       level,
@@ -150,5 +150,5 @@ function groupByLevel(
     .reduce((map, group) => {
       map.set(group.level, group.scripts);
       return map;
-    }, new Map<RecommendationLevel, readonly IScript[]>());
+    }, new Map<RecommendationLevel, readonly Script[]>());
 }

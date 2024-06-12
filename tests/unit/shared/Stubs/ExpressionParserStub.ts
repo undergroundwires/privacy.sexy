@@ -1,5 +1,5 @@
-import type { IExpression } from '@/application/Parser/Script/Compiler/Expressions/Expression/IExpression';
-import type { IExpressionParser } from '@/application/Parser/Script/Compiler/Expressions/Parser/IExpressionParser';
+import type { IExpression } from '@/application/Parser/Executable/Script/Compiler/Expressions/Expression/IExpression';
+import type { IExpressionParser } from '@/application/Parser/Executable/Script/Compiler/Expressions/Parser/IExpressionParser';
 
 export class ExpressionParserStub implements IExpressionParser {
   public callHistory = new Array<string>();

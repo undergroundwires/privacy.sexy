@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import type { IEntity } from '@/infrastructure/Entity/IEntity';
 import { parseCategoryCollection } from '@/application/Parser/CategoryCollectionParser';
-import { parseCategory } from '@/application/Parser/CategoryParser';
+import { parseCategory } from '@/application/Parser/Executable/CategoryParser';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import { RecommendationLevel } from '@/domain/RecommendationLevel';
+import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import { ScriptingDefinitionParser } from '@/application/Parser/ScriptingDefinition/ScriptingDefinitionParser';
 import { EnumParserStub } from '@tests/unit/shared/Stubs/EnumParserStub';
 import { ProjectDetailsStub } from '@tests/unit/shared/Stubs/ProjectDetailsStub';
 import { getCategoryStub, CollectionDataStub } from '@tests/unit/shared/Stubs/CollectionDataStub';
-import { CategoryCollectionParseContextStub } from '@tests/unit/shared/Stubs/CategoryCollectionParseContextStub';
+import { CategoryCollectionSpecificUtilitiesStub } from '@tests/unit/shared/Stubs/CategoryCollectionSpecificUtilitiesStub';
 import { CategoryDataStub } from '@tests/unit/shared/Stubs/CategoryDataStub';
 import { createScriptDataWithCall, createScriptDataWithCode } from '@tests/unit/shared/Stubs/ScriptDataStub';
 import { createFunctionDataWithCode } from '@tests/unit/shared/Stubs/FunctionDataStub';
@@ -35,7 +35,7 @@ describe('CategoryCollectionParser', () => {
       it('parses actions', () => {
         // arrange
         const actions = [getCategoryStub('test1'), getCategoryStub('test2')];
-        const context = new CategoryCollectionParseContextStub();
+        const context = new CategoryCollectionSpecificUtilitiesStub();
         const expected = [parseCategory(actions[0], context), parseCategory(actions[1], context)];
         const collection = new CollectionDataStub()
           .withActions(actions);

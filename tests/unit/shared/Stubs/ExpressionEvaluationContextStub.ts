@@ -1,6 +1,6 @@
-import type { IExpressionEvaluationContext } from '@/application/Parser/Script/Compiler/Expressions/Expression/ExpressionEvaluationContext';
-import type { IPipelineCompiler } from '@/application/Parser/Script/Compiler/Expressions/Pipes/IPipelineCompiler';
-import type { IReadOnlyFunctionCallArgumentCollection } from '@/application/Parser/Script/Compiler/Function/Call/Argument/IFunctionCallArgumentCollection';
+import type { IExpressionEvaluationContext } from '@/application/Parser/Executable/Script/Compiler/Expressions/Expression/ExpressionEvaluationContext';
+import type { IPipelineCompiler } from '@/application/Parser/Executable/Script/Compiler/Expressions/Pipes/IPipelineCompiler';
+import type { IReadOnlyFunctionCallArgumentCollection } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Argument/IFunctionCallArgumentCollection';
 import { FunctionCallArgumentCollectionStub } from './FunctionCallArgumentCollectionStub';
 import { PipelineCompilerStub } from './PipelineCompilerStub';
 

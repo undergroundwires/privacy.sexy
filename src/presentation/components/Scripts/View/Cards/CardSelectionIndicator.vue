@@ -15,7 +15,7 @@
 import { defineComponent, computed } from 'vue';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import { injectKey } from '@/presentation/injectionSymbols';
-import type { ICategory } from '@/domain/ICategory';
+import type { Category } from '@/domain/Executables/Category/Category';
 import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 
 export default defineComponent({
@@ -33,7 +33,7 @@ export default defineComponent({
     const { currentSelection } = injectKey((keys) => keys.useUserSelectionState);
     const currentCollection = computed<ICategoryCollection>(() => currentState.value.collection);
 
-    const currentCategory = computed<ICategory>(
+    const currentCategory = computed<Category>(
       () => currentCollection.value.getCategory(props.categoryId),
     );
 

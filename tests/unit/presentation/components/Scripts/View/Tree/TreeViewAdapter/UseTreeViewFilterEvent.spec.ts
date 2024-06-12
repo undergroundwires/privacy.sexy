@@ -11,8 +11,8 @@ import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { TreeNodeStub } from '@tests/unit/shared/Stubs/TreeNodeStub';
 import { HierarchyAccessStub } from '@tests/unit/shared/Stubs/HierarchyAccessStub';
-import type { IScript } from '@/domain/IScript';
-import type { ICategory } from '@/domain/ICategory';
+import type { Script } from '@/domain/Executables/Script/Script';
+import type { Category } from '@/domain/Executables/Category/Category';
 import type { TreeNode } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
 import { FilterChangeDetailsStub } from '@tests/unit/shared/Stubs/FilterChangeDetailsStub';
 import type { FilterChangeDetails } from '@/application/Context/State/Filter/Event/FilterChangeDetails';
@@ -208,8 +208,8 @@ function itExpectedFilterTriggeredEvent(
 ) {
   const testScenarios: ReadonlyArray<{
     readonly description: string;
-    readonly scriptMatches: IScript[],
-    readonly categoryMatches: ICategory[],
+    readonly scriptMatches: Script[],
+    readonly categoryMatches: Category[],
     readonly givenNode: TreeNode,
     readonly expectedPredicateResult: boolean;
   }> = [

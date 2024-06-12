@@ -1,12 +1,12 @@
-import type { ScriptParser } from '@/application/Parser/Script/ScriptParser';
-import type { IScript } from '@/domain/IScript';
+import type { ScriptParser } from '@/application/Parser/Executable/Script/ScriptParser';
+import type { Script } from '@/domain/Executables/Script/Script';
 import type { ScriptData } from '@/application/collections/';
 import { ScriptStub } from './ScriptStub';
 
 export class ScriptParserStub {
-  private readonly parsedScripts = new Map<IScript, Parameters<ScriptParser>>();
+  private readonly parsedScripts = new Map<Script, Parameters<ScriptParser>>();
 
-  private readonly setupScripts = new Map<ScriptData, IScript>();
+  private readonly setupScripts = new Map<ScriptData, Script>();
 
   public get(): ScriptParser {
     return (...parameters) => {
@@ -21,7 +21,7 @@ export class ScriptParserStub {
   }
 
   public getParseParameters(
-    script: IScript,
+    script: Script,
   ): Parameters<ScriptParser> {
     const parameters = this.parsedScripts.get(script);
     if (!parameters) {
@@ -30,7 +30,7 @@ export class ScriptParserStub {
     return parameters;
   }
 
-  public setupParsedResultForData(scriptData: ScriptData, parsedResult: IScript): this {
+  public setupParsedResultForData(scriptData: ScriptData, parsedResult: Script): this {
     this.setupScripts.set(scriptData, parsedResult);
     return this;
   }

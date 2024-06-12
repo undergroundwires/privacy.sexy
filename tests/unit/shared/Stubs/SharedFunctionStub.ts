@@ -1,8 +1,8 @@
 import {
   type ISharedFunction, FunctionBodyType, type CallFunctionBody, type CodeFunctionBody,
-} from '@/application/Parser/Script/Compiler/Function/ISharedFunction';
-import type { IReadOnlyFunctionParameterCollection } from '@/application/Parser/Script/Compiler/Function/Parameter/IFunctionParameterCollection';
-import type { FunctionCall } from '@/application/Parser/Script/Compiler/Function/Call/FunctionCall';
+} from '@/application/Parser/Executable/Script/Compiler/Function/ISharedFunction';
+import type { IReadOnlyFunctionParameterCollection } from '@/application/Parser/Executable/Script/Compiler/Function/Parameter/IFunctionParameterCollection';
+import type { FunctionCall } from '@/application/Parser/Executable/Script/Compiler/Function/Call/FunctionCall';
 import { FunctionParameterCollectionStub } from './FunctionParameterCollectionStub';
 import { FunctionCallStub } from './FunctionCallStub';
 import { FunctionCodeStub } from './FunctionCodeStub';

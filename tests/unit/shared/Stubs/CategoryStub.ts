@@ -1,28 +1,29 @@
 import { BaseEntity } from '@/infrastructure/Entity/BaseEntity';
-import type { ICategory, IScript } from '@/domain/ICategory';
-import { RecommendationLevel } from '@/domain/RecommendationLevel';
+import type { Category } from '@/domain/Executables/Category/Category';
+import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
+import type { Script } from '@/domain/Executables/Script/Script';
 import { ScriptStub } from './ScriptStub';
 
-export class CategoryStub extends BaseEntity<number> implements ICategory {
+export class CategoryStub extends BaseEntity<number> implements Category {
   public name = `category-with-id-${this.id}`;
 
-  public readonly subCategories = new Array<ICategory>();
+  public readonly subCategories = new Array<Category>();
 
-  public readonly scripts = new Array<IScript>();
+  public readonly scripts = new Array<Script>();
 
   public docs: readonly string[] = new Array<string>();
 
-  private allScriptsRecursively: (readonly IScript[]) | undefined;
+  private allScriptsRecursively: (readonly Script[]) | undefined;
 
   public constructor(id: number) {
     super(id);
   }
 
-  public includes(script: IScript): boolean {
+  public includes(script: Script): boolean {
     return this.getAllScriptsRecursively().some((s) => s.id === script.id);
   }
 
-  public getAllScriptsRecursively(): readonly IScript[] {
+  public getAllScriptsRecursively(): readonly Script[] {
     if (this.allScriptsRecursively === undefined) {
       return [
         ...this.scripts,
@@ -38,7 +39,7 @@ export class CategoryStub extends BaseEntity<number> implements ICategory {
     );
   }
 
-  public withScripts(...scripts: IScript[]): this {
+  public withScripts(...scripts: Script[]): this {
     for (const script of scripts) {
       this.withScript(script);
     }
@@ -49,7 +50,7 @@ export class CategoryStub extends BaseEntity<number> implements ICategory {
     return this.withAllScriptsRecursively(...scriptIds.map((id) => new ScriptStub(id)));
   }
 
-  public withAllScriptsRecursively(...scripts: IScript[]): this {
+  public withAllScriptsRecursively(...scripts: Script[]): this {
     this.allScriptsRecursively = [...scripts];
     return this;
   }
@@ -61,19 +62,19 @@ export class CategoryStub extends BaseEntity<number> implements ICategory {
       .withScript(new ScriptStub(`[${CategoryStub.name}] script-3`).withLevel(undefined));
   }
 
-  public withCategories(...categories: ICategory[]): this {
+  public withCategories(...categories: Category[]): this {
     for (const category of categories) {
       this.withCategory(category);
     }
     return this;
   }
 
-  public withCategory(category: ICategory): this {
+  public withCategory(category: Category): this {
     this.subCategories.push(category);
     return this;
   }
 
-  public withScript(script: IScript): this {
+  public withScript(script: Script): this {
     this.scripts.push(script);
     return this;
   }

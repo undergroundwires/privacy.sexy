@@ -1,7 +1,7 @@
 import type {
   CategoryData, ScriptData, CollectionData, ScriptingDefinitionData, FunctionData,
 } from '@/application/collections/';
-import { RecommendationLevel } from '@/domain/RecommendationLevel';
+import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
 import { createScriptDataWithCode } from './ScriptDataStub';
 

@@ -59,8 +59,8 @@ import {
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import TooltipWrapper from '@/presentation/components/Shared/TooltipWrapper.vue';
-import { RecommendationLevel } from '@/domain/RecommendationLevel';
-import type { IScript } from '@/domain/IScript';
+import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
+import type { Script } from '@/domain/Executables/Script/Script';
 import MenuOptionList from '../MenuOptionList.vue';
 import MenuOptionListItem from '../MenuOptionListItem.vue';
 import RevertStatusDocumentation from './RevertStatusDocumentation.vue';
@@ -83,7 +83,7 @@ export default defineComponent({
       () => getCurrentRevertStatus(currentSelection.value.scripts),
     );
 
-    const selectedScripts = computed<readonly IScript[]>(
+    const selectedScripts = computed<readonly Script[]>(
       () => currentSelection.value.scripts.selectedScripts.map((s) => s.script),
     );
 

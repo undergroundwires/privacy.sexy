@@ -1,4 +1,8 @@
 declare module '@/application/collections/*' {
+  export interface ExecutableDefinition extends DocumentableData {
+
+  }
+
   export interface CollectionData {
     readonly os: string;
     readonly scripting: ScriptingDefinitionData;
@@ -6,12 +10,12 @@ declare module '@/application/collections/*' {
     readonly functions?: ReadonlyArray<FunctionData>;
   }
 
-  export interface CategoryData extends DocumentableData {
-    readonly children: ReadonlyArray<CategoryOrScriptData>;
+  export interface CategoryData extends ExecutableDefinition {
+    readonly children: ReadonlyArray<ExecutableData>;
     readonly category: string;
   }
 
-  export type CategoryOrScriptData = CategoryData | ScriptData;
+  export type ExecutableData = CategoryData | ScriptData;
   export type DocumentationData = ReadonlyArray<string> | string | undefined;
 
   export interface DocumentableData {
@@ -56,7 +60,7 @@ declare module '@/application/collections/*' {
 
   export type FunctionCallsData = readonly FunctionCallData[] | FunctionCallData | undefined;
 
-  export type ScriptDefinition = DocumentableData & {
+  export type ScriptDefinition = ExecutableDefinition & {
     readonly name: string;
     readonly recommend?: string;
   };

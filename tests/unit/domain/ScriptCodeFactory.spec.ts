@@ -1,4 +1,4 @@
-import { createScriptCode } from '@/domain/ScriptCodeFactory';
+import { createScriptCode } from '@/domain/Executables/Script/Code/ScriptCodeFactory';
 
 describe('ScriptCodeFactory', () => {
   describe('createScriptCode', () => {

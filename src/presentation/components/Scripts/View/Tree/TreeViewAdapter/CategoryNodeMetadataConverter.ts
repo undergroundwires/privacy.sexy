@@ -1,5 +1,6 @@
-import type { ICategory, IScript } from '@/domain/ICategory';
+import type { Category } from '@/domain/Executables/Category/Category';
 import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { Script } from '@/domain/Executables/Script/Script';
 import { type NodeMetadata, NodeType } from '../NodeContent/NodeMetadata';
 
 export function parseAllCategories(collection: ICategoryCollection): NodeMetadata[] {
@@ -15,7 +16,7 @@ export function parseSingleCategory(
   return tree;
 }
 
-export function getScriptNodeId(script: IScript): string {
+export function getScriptNodeId(script: Script): string {
   return script.id;
 }
 
@@ -27,12 +28,12 @@ export function getCategoryId(nodeId: string): number {
   return +nodeId;
 }
 
-export function getCategoryNodeId(category: ICategory): string {
+export function getCategoryNodeId(category: Category): string {
   return `${category.id}`;
 }
 
 function parseCategoryRecursively(
-  parentCategory: ICategory,
+  parentCategory: Category,
 ): NodeMetadata[] {
   return [
     ...createCategoryNodes(parentCategory.subCategories),
@@ -40,19 +41,19 @@ function parseCategoryRecursively(
   ];
 }
 
-function createScriptNodes(scripts: ReadonlyArray<IScript>): NodeMetadata[] {
+function createScriptNodes(scripts: ReadonlyArray<Script>): NodeMetadata[] {
   return (scripts || [])
     .map((script) => convertScriptToNode(script));
 }
 
-function createCategoryNodes(categories: ReadonlyArray<ICategory>): NodeMetadata[] {
+function createCategoryNodes(categories: ReadonlyArray<Category>): NodeMetadata[] {
   return (categories || [])
     .map((category) => ({ category, children: parseCategoryRecursively(category) }))
     .map((data) => convertCategoryToNode(data.category, data.children));
 }
 
 function convertCategoryToNode(
-  category: ICategory,
+  category: Category,
   children: readonly NodeMetadata[],
 ): NodeMetadata {
   return {
@@ -65,7 +66,7 @@ function convertCategoryToNode(
   };
 }
 
-function convertScriptToNode(script: IScript): NodeMetadata {
+function convertScriptToNode(script: Script): NodeMetadata {
   return {
     id: getScriptNodeId(script),
     type: NodeType.Script,

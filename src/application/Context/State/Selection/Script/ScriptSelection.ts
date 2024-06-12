@@ -1,5 +1,5 @@
 import type { IEventSource } from '@/infrastructure/Events/IEventSource';
-import type { IScript } from '@/domain/IScript';
+import type { Script } from '@/domain/Executables/Script/Script';
 import type { SelectedScript } from './SelectedScript';
 import type { ScriptSelectionChangeCommand } from './ScriptSelectionChange';
 
@@ -10,7 +10,7 @@ export interface ReadonlyScriptSelection {
 }
 
 export interface ScriptSelection extends ReadonlyScriptSelection {
-  selectOnly(scripts: readonly IScript[]): void;
+  selectOnly(scripts: readonly Script[]): void;
   selectAll(): void;
   deselectAll(): void;
   processChanges(action: ScriptSelectionChangeCommand): void;

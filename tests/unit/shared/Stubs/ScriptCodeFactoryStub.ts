@@ -1,5 +1,5 @@
-import type { ScriptCodeFactory } from '@/domain/ScriptCodeFactory';
-import type { IScriptCode } from '@/domain/IScriptCode';
+import type { ScriptCodeFactory } from '@/domain/Executables/Script/Code/ScriptCodeFactory';
+import type { ScriptCode } from '@/domain/Executables/Script/Code/ScriptCode';
 import { ScriptCodeStub } from './ScriptCodeStub';
 
 export function createScriptCodeFactoryStub(
@@ -17,6 +17,6 @@ export function createScriptCodeFactoryStub(
 }
 
 interface StubOptions {
-  readonly scriptCode?: IScriptCode;
+  readonly scriptCode?: ScriptCode;
   readonly defaultCodePrefix?: string;
 }
