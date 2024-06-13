@@ -16,12 +16,12 @@ import { CodeValidatorStub } from '@tests/unit/shared/Stubs/CodeValidatorStub';
 import { NoEmptyLines } from '@/application/Parser/Executable/Script/Validation/Rules/NoEmptyLines';
 import { CompiledCodeStub } from '@tests/unit/shared/Stubs/CompiledCodeStub';
 import { createScriptDataWithCall, createScriptDataWithCode } from '@tests/unit/shared/Stubs/ScriptDataStub';
-import type { ErrorWithContextWrapper } from '@/application/Parser/ContextualError';
+import type { ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 import { errorWithContextWrapperStub } from '@tests/unit/shared/Stubs/ErrorWithContextWrapperStub';
 import { ScriptCodeStub } from '@tests/unit/shared/Stubs/ScriptCodeStub';
 import type { ScriptCodeFactory } from '@/domain/Executables/Script/Code/ScriptCodeFactory';
 import { createScriptCodeFactoryStub } from '@tests/unit/shared/Stubs/ScriptCodeFactoryStub';
-import { itThrowsContextualError } from '@tests/unit/application/Parser/ContextualErrorTester';
+import { itThrowsContextualError } from '@tests/unit/application/Parser/Common/ContextualErrorTester';
 
 describe('ScriptCompiler', () => {
   describe('canCompile', () => {

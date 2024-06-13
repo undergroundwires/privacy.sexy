@@ -1,20 +1,20 @@
 import { describe, it, expect } from 'vitest';
 import type { CollectionData } from '@/application/collections/';
 import { parseProjectDetails } from '@/application/Parser/ProjectDetailsParser';
-import { type CategoryCollectionParserType, parseApplication } from '@/application/Parser/ApplicationParser';
-import type { IAppMetadata } from '@/infrastructure/EnvironmentVariables/IAppMetadata';
+import { parseApplication } from '@/application/Parser/ApplicationParser';
 import WindowsData from '@/application/collections/windows.yaml';
 import MacOsData from '@/application/collections/macos.yaml';
 import LinuxData from '@/application/collections/linux.yaml';
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { CollectionDataStub } from '@tests/unit/shared/Stubs/CollectionDataStub';
-import { getAbsentCollectionTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
-import { AppMetadataStub } from '@tests/unit/shared/Stubs/AppMetadataStub';
-import { EnvironmentVariablesFactory } from '@/infrastructure/EnvironmentVariables/EnvironmentVariablesFactory';
 import { CategoryCollectionParserStub } from '@tests/unit/shared/Stubs/CategoryCollectionParserStub';
 import { ProjectDetailsParserStub } from '@tests/unit/shared/Stubs/ProjectDetailsParserStub';
 import { ProjectDetailsStub } from '@tests/unit/shared/Stubs/ProjectDetailsStub';
+import type { CategoryCollectionParser } from '@/application/Parser/CategoryCollectionParser';
+import type { NonEmptyCollectionAssertion, TypeValidator } from '@/application/Parser/Common/TypeValidator';
+import { TypeValidatorStub } from '@tests/unit/shared/Stubs/TypeValidatorStub';
+import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 
 describe('ApplicationParser', () => {
   describe('parseApplication', () => {
@@ -71,45 +71,21 @@ describe('ApplicationParser', () => {
         )).to.equal(true);
       });
     });
-    describe('metadata', () => {
-      it('used to parse expected metadata', () => {
-        // arrange
-        const expectedMetadata = new AppMetadataStub();
-        const projectDetailsParser = new ProjectDetailsParserStub();
-        // act
-        new ApplicationParserBuilder()
-          .withMetadata(expectedMetadata)
-          .withProjectDetailsParser(projectDetailsParser.getStub())
-          .parseApplication();
-        // assert
-        expect(projectDetailsParser.arguments).to.have.lengthOf(1);
-        expect(projectDetailsParser.arguments[0]).to.equal(expectedMetadata);
-      });
-      it('defaults to metadata from factory', () => {
-        // arrange
-        const expectedMetadata: IAppMetadata = EnvironmentVariablesFactory.Current.instance;
-        const projectDetailsParser = new ProjectDetailsParserStub();
-        // act
-        new ApplicationParserBuilder()
-          .withMetadata(undefined) // force using default
-          .withProjectDetailsParser(projectDetailsParser.getStub())
-          .parseApplication();
-        // assert
-        expect(projectDetailsParser.arguments).to.have.lengthOf(1);
-        expect(projectDetailsParser.arguments[0]).to.equal(expectedMetadata);
-      });
-    });
     describe('collectionsData', () => {
       describe('set as expected', () => {
         // arrange
-        const testCases = [
+        const testScenarios: {
+          readonly description: string;
+          readonly input: readonly CollectionData[];
+          readonly output: readonly ICategoryCollection[];
+        }[] = [
           {
-            name: 'single collection',
+            description: 'single collection',
             input: [new CollectionDataStub()],
             output: [new CategoryCollectionStub().withOs(OperatingSystem.macOS)],
           },
           {
-            name: 'multiple collections',
+            description: 'multiple collections',
             input: [
               new CollectionDataStub().withOs('windows'),
               new CollectionDataStub().withOs('macos'),
@@ -121,22 +97,24 @@ describe('ApplicationParser', () => {
           },
         ];
         // act
-        for (const testCase of testCases) {
-          it(testCase.name, () => {
+        testScenarios.forEach(({
+          description, input, output,
+        }) => {
+          it(description, () => {
             let categoryParserStub = new CategoryCollectionParserStub();
-            for (let i = 0; i < testCase.input.length; i++) {
+            for (let i = 0; i < input.length; i++) {
               categoryParserStub = categoryParserStub
-                .withReturnValue(testCase.input[i], testCase.output[i]);
+                .withReturnValue(input[i], output[i]);
             }
             const sut = new ApplicationParserBuilder()
               .withCategoryCollectionParser(categoryParserStub.getStub())
-              .withCollectionsData(testCase.input);
+              .withCollectionsData(input);
             // act
             const app = sut.parseApplication();
             // assert
-            expect(app.collections).to.deep.equal(testCase.output);
+            expect(app.collections).to.deep.equal(output);
           });
-        }
+        });
       });
       it('defaults to expected data', () => {
         // arrange
@@ -151,30 +129,21 @@ describe('ApplicationParser', () => {
         const actual = categoryParserStub.arguments.map((args) => args.data);
         expect(actual).to.deep.equal(expected);
       });
-      describe('throws when data is invalid', () => {
+      it('validates non empty array', () => {
         // arrange
-        const testCases = [
-          ...getAbsentCollectionTestCases<CollectionData>(
-            {
-              excludeUndefined: true,
-              excludeNull: true,
-            },
-          ).map((testCase) => ({
-            name: `given absent collection "${testCase.valueName}"`,
-            value: testCase.absentValue,
-            expectedError: 'missing collections',
-          })),
-        ];
-        for (const testCase of testCases) {
-          it(testCase.name, () => {
-            const sut = new ApplicationParserBuilder()
-              .withCollectionsData(testCase.value);
-            // act
-            const act = () => sut.parseApplication();
-            // assert
-            expect(act).to.throw(testCase.expectedError);
-          });
-        }
+        const data = [new CollectionDataStub()];
+        const expectedAssertion: NonEmptyCollectionAssertion = {
+          value: data,
+          valueName: 'collections',
+        };
+        const validator = new TypeValidatorStub();
+        const sut = new ApplicationParserBuilder()
+          .withCollectionsData(data)
+          .withTypeValidator(validator);
+        // act
+        sut.parseApplication();
+        // assert
+        validator.expectNonEmptyCollectionAssertion(expectedAssertion);
       });
     });
   });
@@ -182,17 +151,17 @@ describe('ApplicationParser', () => {
 
 class ApplicationParserBuilder {
   private categoryCollectionParser
-  : CategoryCollectionParserType = new CategoryCollectionParserStub().getStub();
+  : CategoryCollectionParser = new CategoryCollectionParserStub().getStub();
 
   private projectDetailsParser
   : typeof parseProjectDetails = new ProjectDetailsParserStub().getStub();
 
-  private metadata: IAppMetadata | undefined = new AppMetadataStub();
+  private validator: TypeValidator = new TypeValidatorStub();
 
-  private collectionsData: CollectionData[] | undefined = [new CollectionDataStub()];
+  private collectionsData: readonly CollectionData[] | undefined = [new CollectionDataStub()];
 
   public withCategoryCollectionParser(
-    categoryCollectionParser: CategoryCollectionParserType,
+    categoryCollectionParser: CategoryCollectionParser,
   ): this {
     this.categoryCollectionParser = categoryCollectionParser;
     return this;
@@ -205,24 +174,24 @@ class ApplicationParserBuilder {
     return this;
   }
 
-  public withMetadata(
-    metadata: IAppMetadata | undefined,
-  ): this {
-    this.metadata = metadata;
+  public withCollectionsData(collectionsData: readonly CollectionData[] | undefined): this {
+    this.collectionsData = collectionsData;
     return this;
   }
 
-  public withCollectionsData(collectionsData: CollectionData[] | undefined): this {
-    this.collectionsData = collectionsData;
+  public withTypeValidator(validator: TypeValidator): this {
+    this.validator = validator;
     return this;
   }
 
   public parseApplication(): ReturnType<typeof parseApplication> {
     return parseApplication(
-      this.categoryCollectionParser,
-      this.projectDetailsParser,
-      this.metadata,
       this.collectionsData,
+      {
+        parseCategoryCollection: this.categoryCollectionParser,
+        parseProjectDetails: this.projectDetailsParser,
+        validator: this.validator,
+      },
     );
   }
 }

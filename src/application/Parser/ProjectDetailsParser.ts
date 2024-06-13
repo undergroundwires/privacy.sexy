@@ -24,6 +24,10 @@ parseProjectDetails(
   );
 }
 
+export interface ProjectDetailsParser {
+  (): ProjectDetails;
+}
+
 export type ProjectDetailsFactory = (
   ...args: ConstructorArguments<typeof GitHubProjectDetails>
 ) => ProjectDetails;

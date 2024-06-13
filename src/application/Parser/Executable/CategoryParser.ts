@@ -1,7 +1,7 @@
 import type {
   CategoryData, ScriptData, ExecutableData,
 } from '@/application/collections/';
-import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/ContextualError';
+import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 import type { Category } from '@/domain/Executables/Category/Category';
 import { CollectionCategory } from '@/domain/Executables/Category/CollectionCategory';
 import type { Script } from '@/domain/Executables/Script/Script';
@@ -13,16 +13,24 @@ import type { CategoryCollectionSpecificUtilities } from './CategoryCollectionSp
 
 let categoryIdCounter = 0;
 
-export function parseCategory(
+export const parseCategory: CategoryParser = (
   category: CategoryData,
   collectionUtilities: CategoryCollectionSpecificUtilities,
   categoryUtilities: CategoryParserUtilities = DefaultCategoryParserUtilities,
-): Category {
+) => {
   return parseCategoryRecursively({
     categoryData: category,
     collectionUtilities,
     categoryUtilities,
   });
+};
+
+export interface CategoryParser {
+  (
+    category: CategoryData,
+    collectionUtilities: CategoryCollectionSpecificUtilities,
+    categoryUtilities?: CategoryParserUtilities,
+  ): Category;
 }
 
 interface CategoryParseContext {
@@ -41,7 +49,7 @@ function parseCategoryRecursively(
     subscripts: new Array<Script>(),
   };
   for (const data of context.categoryData.children) {
-    parseExecutable({
+    parseUnknownExecutable({
       data,
       children,
       parent: context.categoryData,
@@ -74,12 +82,18 @@ function ensureValidCategory(
     self: context.categoryData,
     parentCategory: context.parentCategory,
   });
-  validator.assertDefined(category);
+  validator.assertType((v) => v.assertObject({
+    value: category,
+    valueName: category.category ?? 'category',
+    allowedProperties: [
+      'docs', 'children', 'category',
+    ],
+  }));
   validator.assertValidName(category.category);
-  validator.assert(
-    () => Boolean(category.children) && category.children.length > 0,
-    `"${category.category}" has no children.`,
-  );
+  validator.assertType((v) => v.assertNonEmptyCollection({
+    value: category.children,
+    valueName: category.category,
+  }));
   return validator;
 }
 
@@ -96,12 +110,15 @@ interface ExecutableParseContext {
   readonly categoryUtilities: CategoryParserUtilities;
 }
 
-function parseExecutable(context: ExecutableParseContext) {
+function parseUnknownExecutable(context: ExecutableParseContext) {
   const validator: ExecutableValidator = context.categoryUtilities.createValidator({
     self: context.data,
     parentCategory: context.parent,
   });
-  validator.assertDefined(context.data);
+  validator.assertType((v) => v.assertObject({
+    value: context.data,
+    valueName: 'Executable',
+  }));
   validator.assert(
     () => isCategory(context.data) || isScript(context.data),
     'Executable is neither a category or a script.',

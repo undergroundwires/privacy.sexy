@@ -50,5 +50,5 @@ class DocumentationContainer {
 }
 
 function throwInvalidType(): never {
-  throw new Error('docs field (documentation) must be an array of strings');
+  throw new Error('docs field (documentation) must be a single string or an array of strings.');
 }

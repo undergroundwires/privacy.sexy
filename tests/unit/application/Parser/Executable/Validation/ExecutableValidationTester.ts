@@ -3,10 +3,11 @@ import type { ExecutableValidator, ExecutableValidatorFactory } from '@/applicat
 import type { ExecutableErrorContext } from '@/application/Parser/Executable/Validation/ExecutableErrorContext';
 import { ExecutableValidatorStub } from '@tests/unit/shared/Stubs/ExecutableValidatorStub';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
-import type { ExecutableData } from '@/application/collections/';
 import type { FunctionKeys } from '@/TypeHelpers';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { indentText } from '@tests/shared/Text';
+import { TypeValidatorStub } from '@tests/unit/shared/Stubs/TypeValidatorStub';
+import { expectDeepIncludes } from '@tests/shared/Assertions/ExpectDeepIncludes';
 
 type ValidationTestFunction<TExpectation> = (
   factory: ExecutableValidatorFactory,
@@ -52,39 +53,41 @@ export function itValidatesName(
   });
 }
 
-interface ValidDataExpectation {
-  readonly expectedDataToValidate: ExecutableData;
+interface TypeAssertionExpectation {
   readonly expectedErrorContext: ExecutableErrorContext;
+  readonly assertValidation: (validator: TypeValidatorStub) => void;
 }
 
-export function itValidatesDefinedData(
-  test: ValidationTestFunction<ValidDataExpectation>,
+export function itValidatesType(
+  test: ValidationTestFunction<TypeAssertionExpectation>,
 ) {
-  it('validates data', () => {
+  it('validates type', () => {
     // arrange
     const validator = new ExecutableValidatorStub();
     const factoryStub: ExecutableValidatorFactory = () => validator;
     // act
     test(factoryStub);
     // assert
-    const call = validator.callHistory.find((c) => c.methodName === 'assertDefined');
+    const call = validator.callHistory.find((c) => c.methodName === 'assertType');
     expectExists(call);
   });
-  it('validates data with correct data', () => {
+  it('validates type using specified validator', () => {
     // arrange
+    const typeValidator = new TypeValidatorStub();
     const validator = new ExecutableValidatorStub();
     const factoryStub: ExecutableValidatorFactory = () => validator;
     // act
     const expectation = test(factoryStub);
     // assert
-    const expectedData = expectation.expectedDataToValidate;
-    const calls = validator.callHistory.filter((c) => c.methodName === 'assertDefined');
-    const names = calls.flatMap((c) => c.args[0]);
-    expect(names).to.include(expectedData);
+    const calls = validator.callHistory.filter((c) => c.methodName === 'assertType');
+    const args = calls.map((c) => c.args as Parameters<ExecutableValidator['assertType']>);
+    const validateFunctions = args.flatMap((c) => c[0]);
+    validateFunctions.forEach((validate) => validate(typeValidator));
+    expectation.assertValidation(typeValidator);
   });
-  it('validates data with correct context', () => {
+  it('validates type with correct context', () => {
     expectCorrectContextForFunctionCall({
-      methodName: 'assertDefined',
+      methodName: 'assertType',
       act: test,
       expectContext: (expectation) => expectation.expectedErrorContext,
     });
@@ -185,34 +188,5 @@ function expectCorrectContextForFunctionCall<T>(testScenario: {
   const providedContexts = createdValidators
     .filter((v) => v.validator.callHistory.find((c) => c.methodName === methodName))
     .map((v) => v.context);
-  expectDeepIncludes( // to.deep.include is not working
-    providedContexts,
-    expectedContext,
-    formatAssertionMessage([
-      'Error context mismatch.',
-      'Provided contexts do not include the expected context.',
-      'Expected context:',
-      indentText(JSON.stringify(expectedContext, undefined, 2)),
-      'Provided contexts:',
-      indentText(JSON.stringify(providedContexts, undefined, 2)),
-    ]),
-  );
-}
-
-function expectDeepIncludes<T>(
-  array: readonly T[],
-  item: T,
-  message: string,
-) {
-  const serializeItem = (c) => JSON.stringify(c);
-  const serializedContexts = array.map((c) => serializeItem(c));
-  const serializedExpectedContext = serializeItem(item);
-  expect(serializedContexts).to.include(serializedExpectedContext, formatAssertionMessage([
-    'Error context mismatch.',
-    'Provided contexts do not include the expected context.',
-    'Expected context:',
-    indentText(JSON.stringify(message, undefined, 2)),
-    'Provided contexts:',
-    indentText(JSON.stringify(message, undefined, 2)),
-  ]));
+  expectDeepIncludes(providedContexts, expectedContext);
 }

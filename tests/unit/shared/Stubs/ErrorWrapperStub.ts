@@ -1,4 +1,4 @@
-import type { ErrorWithContextWrapper } from '@/application/Parser/ContextualError';
+import type { ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 
 export class ErrorWrapperStub {
   private errorToReturn: Error | undefined;

@@ -5,13 +5,13 @@ export type EnumType = number | string;
 export type EnumVariable<T extends EnumType, TEnumValue extends EnumType>
   = { [key in T]: TEnumValue };
 
-export interface IEnumParser<TEnum> {
+export interface EnumParser<TEnum> {
   parseEnum(value: string, propertyName: string): TEnum;
 }
 
 export function createEnumParser<T extends EnumType, TEnumValue extends EnumType>(
   enumVariable: EnumVariable<T, TEnumValue>,
-): IEnumParser<TEnumValue> {
+): EnumParser<TEnumValue> {
   return {
     parseEnum: (value, propertyName) => parseEnumValue(value, propertyName, enumVariable),
   };

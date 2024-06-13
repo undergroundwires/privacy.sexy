@@ -8,7 +8,7 @@ import {
 import { ExpressionPosition } from '@/application/Parser/Executable/Script/Compiler/Expressions/Expression/ExpressionPosition';
 import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { collectExceptionMessage } from '@tests/unit/shared/ExceptionCollector';
-import { itThrowsContextualError } from '@tests/unit/application/Parser/ContextualErrorTester';
+import { itThrowsContextualError } from '@tests/unit/application/Parser/Common/ContextualErrorTester';
 import { ExpressionStub } from '@tests/unit/shared/Stubs/ExpressionStub';
 import { FunctionParameterCollectionStub } from '@tests/unit/shared/Stubs/FunctionParameterCollectionStub';
 import type { IExpression } from '@/application/Parser/Executable/Script/Compiler/Expressions/Expression/IExpression';

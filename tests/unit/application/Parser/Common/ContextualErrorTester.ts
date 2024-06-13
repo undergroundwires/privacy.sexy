@@ -1,4 +1,4 @@
-import type { ErrorWithContextWrapper } from '@/application/Parser/ContextualError';
+import type { ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { indentText } from '@tests/shared/Text';

@@ -5,10 +5,9 @@ import { type ScriptParser } from '@/application/Parser/Executable/Script/Script
 import { type DocsParser } from '@/application/Parser/Executable/DocumentationParser';
 import { CategoryCollectionSpecificUtilitiesStub } from '@tests/unit/shared/Stubs/CategoryCollectionSpecificUtilitiesStub';
 import { CategoryDataStub } from '@tests/unit/shared/Stubs/CategoryDataStub';
-import { getAbsentCollectionTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
 import { ExecutableType } from '@/application/Parser/Executable/Validation/ExecutableType';
 import { createScriptDataWithCall, createScriptDataWithCode } from '@tests/unit/shared/Stubs/ScriptDataStub';
-import type { ErrorWithContextWrapper } from '@/application/Parser/ContextualError';
+import type { ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 import { ErrorWrapperStub } from '@tests/unit/shared/Stubs/ErrorWrapperStub';
 import type { ExecutableValidatorFactory } from '@/application/Parser/Executable/Validation/ExecutableValidator';
 import { ExecutableValidatorStub, createExecutableValidatorFactoryStub } from '@tests/unit/shared/Stubs/ExecutableValidatorStub';
@@ -20,8 +19,9 @@ import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { ScriptParserStub } from '@tests/unit/shared/Stubs/ScriptParserStub';
 import { formatAssertionMessage } from '@tests/shared/FormatAssertionMessage';
 import { indentText } from '@tests/shared/Text';
-import { itThrowsContextualError } from '../ContextualErrorTester';
-import { itValidatesName, itValidatesDefinedData, itAsserts } from './Validation/ExecutableValidationTester';
+import type { NonEmptyCollectionAssertion, ObjectAssertion } from '@/application/Parser/Common/TypeValidator';
+import { itThrowsContextualError } from '../Common/ContextualErrorTester';
+import { itValidatesName, itValidatesType, itAsserts } from './Validation/ExecutableValidationTester';
 import { generateDataValidationTestScenarios } from './Validation/DataValidationTestScenarioGenerator';
 
 describe('CategoryParser', () => {
@@ -49,14 +49,18 @@ describe('CategoryParser', () => {
           };
         });
       });
-      describe('validates for defined data', () => {
+      describe('validates for unknown object', () => {
         // arrange
         const category = new CategoryDataStub();
         const expectedContext: CategoryErrorContext = {
           type: ExecutableType.Category,
           self: category,
         };
-        itValidatesDefinedData(
+        const expectedAssertion: ObjectAssertion<unknown> = {
+          value: category,
+          valueName: 'Executable',
+        };
+        itValidatesType(
           (validatorFactory) => {
             // act
             new TestBuilder()
@@ -65,58 +69,65 @@ describe('CategoryParser', () => {
               .parseCategory();
             // assert
             return {
-              expectedDataToValidate: category,
+              assertValidation: (validator) => validator.assertObject(expectedAssertion),
               expectedErrorContext: expectedContext,
             };
           },
         );
       });
-      describe('validates that category has some children', () => {
-        const categoryName = 'test';
-        const testScenarios = generateDataValidationTestScenarios<CategoryData>({
-          expectFail: getAbsentCollectionTestCases<ExecutableData>().map(({
-            valueName, absentValue: absentCollectionValue,
-          }) => ({
-            description: `with \`${valueName}\` value as children`,
-            data: new CategoryDataStub()
-              .withName(categoryName)
-              .withChildren(absentCollectionValue as unknown as ExecutableData[]),
-          })),
-          expectPass: [{
-            description: 'has single children',
-            data: new CategoryDataStub()
-              .withName(categoryName)
-              .withChildren([createScriptDataWithCode()]),
-          }],
-        });
-        testScenarios.forEach(({
-          description, expectedPass, data: categoryData,
-        }) => {
-          describe(description, () => {
-            itAsserts({
-              expectedConditionResult: expectedPass,
-              test: (validatorFactory) => {
-                const expectedMessage = `"${categoryName}" has no children.`;
-                const expectedContext: CategoryErrorContext = {
-                  type: ExecutableType.Category,
-                  self: categoryData,
-                };
-                // act
-                try {
-                  new TestBuilder()
-                    .withData(categoryData)
-                    .withValidatorFactory(validatorFactory)
-                    .parseCategory();
-                } catch { /* It may throw due to assertions not being evaluated */ }
-                // assert
-                return {
-                  expectedErrorMessage: expectedMessage,
-                  expectedErrorContext: expectedContext,
-                };
-              },
-            });
-          });
-        });
+      describe('validates for category', () => {
+        // arrange
+        const category = new CategoryDataStub();
+        const expectedContext: CategoryErrorContext = {
+          type: ExecutableType.Category,
+          self: category,
+        };
+        const expectedAssertion: ObjectAssertion<CategoryData> = {
+          value: category,
+          valueName: category.category,
+          allowedProperties: ['docs', 'children', 'category'],
+        };
+        itValidatesType(
+          (validatorFactory) => {
+            // act
+            new TestBuilder()
+              .withData(category)
+              .withValidatorFactory(validatorFactory)
+              .parseCategory();
+            // assert
+            return {
+              assertValidation: (validator) => validator.assertObject(expectedAssertion),
+              expectedErrorContext: expectedContext,
+            };
+          },
+        );
+      });
+      describe('validates children for non-empty collection', () => {
+        // arrange
+        const category = new CategoryDataStub()
+          .withChildren([createScriptDataWithCode()]);
+        const expectedContext: CategoryErrorContext = {
+          type: ExecutableType.Category,
+          self: category,
+        };
+        const expectedAssertion: NonEmptyCollectionAssertion = {
+          value: category.children,
+          valueName: category.category,
+        };
+        itValidatesType(
+          (validatorFactory) => {
+            // act
+            new TestBuilder()
+              .withData(category)
+              .withValidatorFactory(validatorFactory)
+              .parseCategory();
+            // assert
+            return {
+              assertValidation: (validator) => validator.assertObject(expectedAssertion),
+              expectedErrorContext: expectedContext,
+            };
+          },
+        );
       });
       describe('validates that a child is a category or a script', () => {
         // arrange
@@ -171,7 +182,7 @@ describe('CategoryParser', () => {
         });
       });
       describe('validates children recursively', () => {
-        describe('validates (1th-level) child data', () => {
+        describe('validates (1th-level) child type', () => {
           // arrange
           const expectedName = 'child category';
           const child = new CategoryDataStub()
@@ -183,7 +194,11 @@ describe('CategoryParser', () => {
             self: child,
             parentCategory: parent,
           };
-          itValidatesDefinedData(
+          const expectedAssertion: ObjectAssertion<unknown> = {
+            value: child,
+            valueName: 'Executable',
+          };
+          itValidatesType(
             (validatorFactory) => {
               // act
               new TestBuilder()
@@ -192,7 +207,7 @@ describe('CategoryParser', () => {
                 .parseCategory();
               // assert
               return {
-                expectedDataToValidate: child,
+                assertValidation: (validator) => validator.assertObject(expectedAssertion),
                 expectedErrorContext: expectedContext,
               };
             },

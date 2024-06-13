@@ -8,19 +8,27 @@ import type { IScriptingDefinition } from './IScriptingDefinition';
 import type { ICategoryCollection } from './ICategoryCollection';
 
 export class CategoryCollection implements ICategoryCollection {
+  public readonly os: OperatingSystem;
+
+  public readonly actions: ReadonlyArray<Category>;
+
+  public readonly scripting: IScriptingDefinition;
+
   public get totalScripts(): number { return this.queryable.allScripts.length; }
 
   public get totalCategories(): number { return this.queryable.allCategories.length; }
 
-  private readonly queryable: IQueryableCollection;
+  private readonly queryable: QueryableCollection;
 
   constructor(
-    public readonly os: OperatingSystem,
-    public readonly actions: ReadonlyArray<Category>,
-    public readonly scripting: IScriptingDefinition,
+    parameters: CategoryCollectionInitParameters,
   ) {
-    this.queryable = makeQueryable(actions);
-    assertInRange(os, OperatingSystem);
+    this.os = parameters.os;
+    this.actions = parameters.actions;
+    this.scripting = parameters.scripting;
+
+    this.queryable = makeQueryable(this.actions);
+    assertInRange(this.os, OperatingSystem);
     ensureValid(this.queryable);
     ensureNoDuplicates(this.queryable.allCategories);
     ensureNoDuplicates(this.queryable.allScripts);
@@ -72,13 +80,19 @@ function ensureNoDuplicates<TKey>(entities: ReadonlyArray<IEntity<TKey>>) {
   }
 }
 
-interface IQueryableCollection {
-  allCategories: Category[];
-  allScripts: Script[];
-  scriptsByLevel: Map<RecommendationLevel, readonly Script[]>;
+export interface CategoryCollectionInitParameters {
+  readonly os: OperatingSystem;
+  readonly actions: ReadonlyArray<Category>;
+  readonly scripting: IScriptingDefinition;
 }
 
-function ensureValid(application: IQueryableCollection) {
+interface QueryableCollection {
+  readonly allCategories: Category[];
+  readonly allScripts: Script[];
+  readonly scriptsByLevel: Map<RecommendationLevel, readonly Script[]>;
+}
+
+function ensureValid(application: QueryableCollection) {
   ensureValidCategories(application.allCategories);
   ensureValidScripts(application.allScripts);
 }
@@ -128,7 +142,7 @@ function flattenApplication(
 
 function makeQueryable(
   actions: ReadonlyArray<Category>,
-): IQueryableCollection {
+): QueryableCollection {
   const flattened = flattenApplication(actions);
   return {
     allCategories: flattened[0],

@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest';
-import { CategoryDataStub } from '@tests/unit/shared/Stubs/CategoryDataStub';
-import type { ExecutableData } from '@/application/collections/';
 import { createExecutableErrorContextStub } from '@tests/unit/shared/Stubs/ExecutableErrorContextStub';
 import type { ExecutableErrorContext } from '@/application/Parser/Executable/Validation/ExecutableErrorContext';
 import { collectExceptionMessage } from '@tests/unit/shared/ExceptionCollector';
 import { ContextualExecutableValidator, createExecutableDataValidator, type ExecutableValidator } from '@/application/Parser/Executable/Validation/ExecutableValidator';
 import type { ExecutableContextErrorMessageCreator } from '@/application/Parser/Executable/Validation/ExecutableErrorContextMessage';
-import { getAbsentObjectTestCases, getAbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
+import { getAbsentStringTestCases } from '@tests/unit/shared/TestCases/AbsentTests';
+import { TypeValidatorStub } from '@tests/unit/shared/Stubs/TypeValidatorStub';
+import type { TypeValidator } from '@/application/Parser/Common/TypeValidator';
 
 describe('createExecutableDataValidator', () => {
   it(`returns an instance of ${ContextualExecutableValidator.name}`, () => {
@@ -63,43 +63,41 @@ describe('ContextualExecutableValidator', () => {
       expect(act).to.not.throw();
     });
   });
-  describe('assertDefined', () => {
-    describe('throws when data is missing', () => {
+  describe('assertType', () => {
+    describe('rethrows when action throws', () => {
       // arrange
-      const testScenarios: readonly {
-        readonly description: string;
-        readonly invalidData: unknown;
-      }[] = [
-        ...getAbsentObjectTestCases().map((testCase) => ({
-          description: `absent object (${testCase.valueName})`,
-          invalidData: testCase.absentValue,
-        })),
-        {
-          description: 'empty object',
-          invalidData: {},
-        },
-      ];
-      testScenarios.forEach(({ description, invalidData }) => {
-        describe(`given "${description}"`, () => {
-          const expectedMessage = 'missing executable data';
-          itThrowsCorrectly({
-            // act
-            throwingAction: (sut: ExecutableValidator) => {
-              sut.assertDefined(invalidData as ExecutableData);
-            },
-            // assert
-            expectedMessage,
+      const expectedMessage = 'Error thrown by action';
+      itThrowsCorrectly({
+        // act
+        throwingAction: (sut: ExecutableValidator) => {
+          sut.assertType(() => {
+            throw new Error(expectedMessage);
           });
-        });
+        },
+        // assert
+        expectedMessage,
       });
     });
-    it('does not throw if data is defined', () => {
+    it('provides correct validator', () => {
       // arrange
-      const data = new CategoryDataStub();
+      const expectedValidator = new TypeValidatorStub();
+      const sut = new ValidatorBuilder()
+        .withTypeValidator(expectedValidator)
+        .build();
+      let actualValidator: TypeValidator | undefined;
+      // act
+      sut.assertType((validator) => {
+        actualValidator = validator;
+      });
+      // assert
+      expect(expectedValidator).to.equal(actualValidator);
+    });
+    it('does not throw if action does not throw', () => {
+      // arrange
       const sut = new ValidatorBuilder()
         .build();
       // act
-      const act = () => sut.assertDefined(data);
+      const act = () => sut.assertType(() => { /* Does not throw */ });
       // assert
       expect(act).to.not.throw();
     });
@@ -223,6 +221,8 @@ class ValidatorBuilder {
 
   private errorMessageCreator: ExecutableContextErrorMessageCreator = () => `[${ValidatorBuilder.name}] stub error message`;
 
+  private typeValidator: TypeValidator = new TypeValidatorStub();
+
   public withErrorMessageCreator(errorMessageCreator: ExecutableContextErrorMessageCreator): this {
     this.errorMessageCreator = errorMessageCreator;
     return this;
@@ -233,10 +233,16 @@ class ValidatorBuilder {
     return this;
   }
 
+  public withTypeValidator(typeValidator: TypeValidator): this {
+    this.typeValidator = typeValidator;
+    return this;
+  }
+
   public build(): ContextualExecutableValidator {
     return new ContextualExecutableValidator(
       this.errorContext,
       this.errorMessageCreator,
+      this.typeValidator,
     );
   }
 }

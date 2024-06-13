@@ -4,7 +4,7 @@ import type { ILanguageSyntax } from '@/application/Parser/Executable/Script/Val
 import { CodeValidator } from '@/application/Parser/Executable/Script/Validation/CodeValidator';
 import { NoEmptyLines } from '@/application/Parser/Executable/Script/Validation/Rules/NoEmptyLines';
 import type { ICodeValidator } from '@/application/Parser/Executable/Script/Validation/ICodeValidator';
-import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/ContextualError';
+import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 import { createScriptCode, type ScriptCodeFactory } from '@/domain/Executables/Script/Code/ScriptCodeFactory';
 import { SharedFunctionsParser } from './Function/SharedFunctionsParser';
 import { FunctionCallSequenceCompiler } from './Function/Call/Compiler/FunctionCallSequenceCompiler';

@@ -1,17 +1,17 @@
-import type { IEnumParser } from '@/application/Common/Enum';
+import type { EnumParser } from '@/application/Common/Enum';
 
-export class EnumParserStub<T> implements IEnumParser<T> {
+export class EnumParserStub<T> implements EnumParser<T> {
   private readonly scenarios = new Array<{
     inputName: string, inputValue: string, outputValue: T }>();
 
   private defaultValue: T;
 
-  public setup(inputName: string, inputValue: string, outputValue: T) {
+  public setup(inputName: string, inputValue: string, outputValue: T): this {
     this.scenarios.push({ inputName, inputValue, outputValue });
     return this;
   }
 
-  public setupDefaultValue(outputValue: T) {
+  public setupDefaultValue(outputValue: T): this {
     this.defaultValue = outputValue;
     return this;
   }

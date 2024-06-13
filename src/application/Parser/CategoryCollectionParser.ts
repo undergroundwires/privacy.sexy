@@ -3,33 +3,73 @@ import { OperatingSystem } from '@/domain/OperatingSystem';
 import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 import { CategoryCollection } from '@/domain/CategoryCollection';
 import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
-import { createEnumParser } from '../Common/Enum';
-import { parseCategory } from './Executable/CategoryParser';
-import { ScriptingDefinitionParser } from './ScriptingDefinition/ScriptingDefinitionParser';
+import { createEnumParser, type EnumParser } from '../Common/Enum';
+import { parseCategory, type CategoryParser } from './Executable/CategoryParser';
+import { parseScriptingDefinition, type ScriptingDefinitionParser } from './ScriptingDefinition/ScriptingDefinitionParser';
+import { createTypeValidator, type TypeValidator } from './Common/TypeValidator';
 import { createCollectionUtilities, type CategoryCollectionSpecificUtilitiesFactory } from './Executable/CategoryCollectionSpecificUtilities';
 
-export function parseCategoryCollection(
-  content: CollectionData,
-  projectDetails: ProjectDetails,
-  osParser = createEnumParser(OperatingSystem),
-  createUtilities: CategoryCollectionSpecificUtilitiesFactory = createCollectionUtilities,
-): ICategoryCollection {
-  validate(content);
-  const scripting = new ScriptingDefinitionParser()
-    .parse(content.scripting, projectDetails);
-  const utilities = createUtilities(content.functions, scripting);
-  const categories = content.actions.map((action) => parseCategory(action, utilities));
-  const os = osParser.parseEnum(content.os, 'os');
-  const collection = new CategoryCollection(
-    os,
-    categories,
-    scripting,
+export const parseCategoryCollection: CategoryCollectionParser = (
+  content,
+  projectDetails,
+  utilities: CategoryCollectionParserUtilities = DefaultUtilities,
+) => {
+  validateCollection(content, utilities.validator);
+  const scripting = utilities.parseScriptingDefinition(content.scripting, projectDetails);
+  const collectionUtilities = utilities.createUtilities(content.functions, scripting);
+  const categories = content.actions.map(
+    (action) => utilities.parseCategory(action, collectionUtilities),
   );
+  const os = utilities.osParser.parseEnum(content.os, 'os');
+  const collection = utilities.createCategoryCollection({
+    os, actions: categories, scripting,
+  });
   return collection;
+};
+
+export type CategoryCollectionFactory = (
+  ...parameters: ConstructorParameters<typeof CategoryCollection>
+) => ICategoryCollection;
+
+export interface CategoryCollectionParser {
+  (
+    content: CollectionData,
+    projectDetails: ProjectDetails,
+    utilities?: CategoryCollectionParserUtilities,
+  ): ICategoryCollection;
 }
 
-function validate(content: CollectionData): void {
-  if (!content.actions.length) {
-    throw new Error('content does not define any action');
-  }
+function validateCollection(
+  content: CollectionData,
+  validator: TypeValidator,
+): void {
+  validator.assertObject({
+    value: content,
+    valueName: 'collection',
+    allowedProperties: [
+      'os', 'scripting', 'actions', 'functions',
+    ],
+  });
+  validator.assertNonEmptyCollection({
+    value: content.actions,
+    valueName: '"actions" in collection',
+  });
 }
+
+interface CategoryCollectionParserUtilities {
+  readonly osParser: EnumParser<OperatingSystem>;
+  readonly validator: TypeValidator;
+  readonly parseScriptingDefinition: ScriptingDefinitionParser;
+  readonly createUtilities: CategoryCollectionSpecificUtilitiesFactory;
+  readonly parseCategory: CategoryParser;
+  readonly createCategoryCollection: CategoryCollectionFactory;
+}
+
+const DefaultUtilities: CategoryCollectionParserUtilities = {
+  osParser: createEnumParser(OperatingSystem),
+  validator: createTypeValidator(),
+  parseScriptingDefinition,
+  createUtilities: createCollectionUtilities,
+  parseCategory,
+  createCategoryCollection: (...args) => new CategoryCollection(...args),
+};

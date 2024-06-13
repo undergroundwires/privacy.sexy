@@ -5,7 +5,7 @@ import {
 import type { FunctionCall } from '@/application/Parser/Executable/Script/Compiler/Function/Call/FunctionCall';
 import type { FunctionCallCompilationContext } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Compiler/FunctionCallCompilationContext';
 import type { CompiledCode } from '@/application/Parser/Executable/Script/Compiler/Function/Call/Compiler/CompiledCode';
-import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/ContextualError';
+import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 import { NestedFunctionArgumentCompiler } from './Argument/NestedFunctionArgumentCompiler';
 import type { SingleCallCompilerStrategy } from '../SingleCallCompilerStrategy';
 import type { ArgumentCompiler } from './Argument/ArgumentCompiler';

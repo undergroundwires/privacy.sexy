@@ -11,8 +11,8 @@ import { FunctionCallArgumentCollectionStub } from '@tests/unit/shared/Stubs/Fun
 import { createSharedFunctionStubWithCode } from '@tests/unit/shared/Stubs/SharedFunctionStub';
 import { FunctionParameterCollectionStub } from '@tests/unit/shared/Stubs/FunctionParameterCollectionStub';
 import { SharedFunctionCollectionStub } from '@tests/unit/shared/Stubs/SharedFunctionCollectionStub';
-import { itThrowsContextualError } from '@tests/unit/application/Parser/ContextualErrorTester';
-import type { ErrorWithContextWrapper } from '@/application/Parser/ContextualError';
+import { itThrowsContextualError } from '@tests/unit/application/Parser/Common/ContextualErrorTester';
+import type { ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 import { errorWithContextWrapperStub } from '@tests/unit/shared/Stubs/ErrorWithContextWrapperStub';
 
 describe('NestedFunctionArgumentCompiler', () => {

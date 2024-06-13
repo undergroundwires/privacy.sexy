@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { CustomError } from '@/application/Common/CustomError';
-import { wrapErrorWithAdditionalContext } from '@/application/Parser/ContextualError';
+import { wrapErrorWithAdditionalContext } from '@/application/Parser/Common/ContextualError';
 
 describe('wrapErrorWithAdditionalContext', () => {
   it('preserves the original error when wrapped', () => {

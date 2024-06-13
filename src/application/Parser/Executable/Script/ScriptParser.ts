@@ -5,11 +5,11 @@ import { CollectionScript } from '@/domain/Executables/Script/CollectionScript';
 import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import type { ScriptCode } from '@/domain/Executables/Script/Code/ScriptCode';
 import type { ICodeValidator } from '@/application/Parser/Executable/Script/Validation/ICodeValidator';
-import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/ContextualError';
+import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 import type { ScriptCodeFactory } from '@/domain/Executables/Script/Code/ScriptCodeFactory';
 import { createScriptCode } from '@/domain/Executables/Script/Code/ScriptCodeFactory';
 import type { Script } from '@/domain/Executables/Script/Script';
-import { createEnumParser, type IEnumParser } from '@/application/Common/Enum';
+import { createEnumParser, type EnumParser } from '@/application/Common/Enum';
 import { parseDocs, type DocsParser } from '../DocumentationParser';
 import { ExecutableType } from '../Validation/ExecutableType';
 import { createExecutableDataValidator, type ExecutableValidator, type ExecutableValidatorFactory } from '../Validation/ExecutableValidator';
@@ -28,23 +28,28 @@ export interface ScriptParser {
 export const parseScript: ScriptParser = (
   data,
   collectionUtilities,
-  utilities = DefaultScriptParserUtilities,
+  scriptUtilities = DefaultUtilities,
 ) => {
-  const validator = utilities.createValidator({
+  const validator = scriptUtilities.createValidator({
     type: ExecutableType.Script,
     self: data,
   });
   validateScript(data, validator);
   try {
-    const script = utilities.createScript({
+    const script = scriptUtilities.createScript({
       name: data.name,
-      code: parseCode(data, collectionUtilities, utilities.codeValidator, utilities.createCode),
-      docs: utilities.parseDocs(data),
-      level: parseLevel(data.recommend, utilities.levelParser),
+      code: parseCode(
+        data,
+        collectionUtilities,
+        scriptUtilities.codeValidator,
+        scriptUtilities.createCode,
+      ),
+      docs: scriptUtilities.parseDocs(data),
+      level: parseLevel(data.recommend, scriptUtilities.levelParser),
     });
     return script;
   } catch (error) {
-    throw utilities.wrapError(
+    throw scriptUtilities.wrapError(
       error,
       validator.createContextualErrorMessage('Failed to parse script.'),
     );
@@ -53,7 +58,7 @@ export const parseScript: ScriptParser = (
 
 function parseLevel(
   level: string | undefined,
-  parser: IEnumParser<RecommendationLevel>,
+  parser: EnumParser<RecommendationLevel>,
 ): RecommendationLevel | undefined {
   if (!level) {
     return undefined;
@@ -95,7 +100,13 @@ function validateScript(
   script: ScriptData,
   validator: ExecutableValidator,
 ): asserts script is NonNullable<ScriptData> {
-  validator.assertDefined(script);
+  validator.assertType((v) => v.assertObject<CallScriptData & CodeScriptData>({
+    value: script,
+    valueName: script.name ?? 'script',
+    allowedProperties: [
+      'name', 'recommend', 'code', 'revertCode', 'call', 'docs',
+    ],
+  }));
   validator.assertValidName(script.name);
   validator.assert(
     () => Boolean((script as CodeScriptData).code || (script as CallScriptData).call),
@@ -112,7 +123,7 @@ function validateScript(
 }
 
 interface ScriptParserUtilities {
-  readonly levelParser: IEnumParser<RecommendationLevel>;
+  readonly levelParser: EnumParser<RecommendationLevel>;
   readonly createScript: ScriptFactory;
   readonly codeValidator: ICodeValidator;
   readonly wrapError: ErrorWithContextWrapper;
@@ -129,7 +140,7 @@ const createScript: ScriptFactory = (...parameters) => {
   return new CollectionScript(...parameters);
 };
 
-const DefaultScriptParserUtilities: ScriptParserUtilities = {
+const DefaultUtilities: ScriptParserUtilities = {
   levelParser: createEnumParser(RecommendationLevel),
   createScript,
   codeValidator: CodeValidator.instance,

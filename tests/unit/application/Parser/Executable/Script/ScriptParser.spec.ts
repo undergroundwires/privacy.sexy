@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { ScriptData } from '@/application/collections/';
+import type { ScriptData, CallScriptData, CodeScriptData } from '@/application/collections/';
 import { parseScript, type ScriptFactory } from '@/application/Parser/Executable/Script/ScriptParser';
 import { type DocsParser } from '@/application/Parser/Executable/DocumentationParser';
 import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
@@ -8,14 +8,13 @@ import { ScriptCompilerStub } from '@tests/unit/shared/Stubs/ScriptCompilerStub'
 import { createScriptDataWithCall, createScriptDataWithCode, createScriptDataWithoutCallOrCodes } from '@tests/unit/shared/Stubs/ScriptDataStub';
 import { EnumParserStub } from '@tests/unit/shared/Stubs/EnumParserStub';
 import { ScriptCodeStub } from '@tests/unit/shared/Stubs/ScriptCodeStub';
-import { CategoryCollectionSpecificUtilitiesStub } from '@tests/unit/shared/Stubs/CategoryCollectionSpecificUtilitiesStub';
 import { LanguageSyntaxStub } from '@tests/unit/shared/Stubs/LanguageSyntaxStub';
-import type { IEnumParser } from '@/application/Common/Enum';
+import type { EnumParser } from '@/application/Common/Enum';
 import { NoEmptyLines } from '@/application/Parser/Executable/Script/Validation/Rules/NoEmptyLines';
 import { NoDuplicatedLines } from '@/application/Parser/Executable/Script/Validation/Rules/NoDuplicatedLines';
 import { CodeValidatorStub } from '@tests/unit/shared/Stubs/CodeValidatorStub';
 import type { ICodeValidator } from '@/application/Parser/Executable/Script/Validation/ICodeValidator';
-import type { ErrorWithContextWrapper } from '@/application/Parser/ContextualError';
+import type { ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 import { ErrorWrapperStub } from '@tests/unit/shared/Stubs/ErrorWrapperStub';
 import type { ExecutableValidatorFactory } from '@/application/Parser/Executable/Validation/ExecutableValidator';
 import { ExecutableValidatorStub, createExecutableValidatorFactoryStub } from '@tests/unit/shared/Stubs/ExecutableValidatorStub';
@@ -26,9 +25,11 @@ import { createScriptCodeFactoryStub } from '@tests/unit/shared/Stubs/ScriptCode
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { createScriptFactorySpy } from '@tests/unit/shared/Stubs/ScriptFactoryStub';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
-import { itThrowsContextualError } from '@tests/unit/application/Parser/ContextualErrorTester';
+import { itThrowsContextualError } from '@tests/unit/application/Parser/Common/ContextualErrorTester';
+import { CategoryCollectionSpecificUtilitiesStub } from '@tests/unit/shared/Stubs/CategoryCollectionSpecificUtilitiesStub';
 import type { CategoryCollectionSpecificUtilities } from '@/application/Parser/Executable/CategoryCollectionSpecificUtilities';
-import { itAsserts, itValidatesDefinedData, itValidatesName } from '../Validation/ExecutableValidationTester';
+import type { ObjectAssertion } from '@/application/Parser/Common/TypeValidator';
+import { itAsserts, itValidatesType, itValidatesName } from '../Validation/ExecutableValidationTester';
 import { generateDataValidationTestScenarios } from '../Validation/DataValidationTestScenarioGenerator';
 
 describe('ScriptParser', () => {
@@ -290,7 +291,14 @@ describe('ScriptParser', () => {
           type: ExecutableType.Script,
           self: expectedScript,
         };
-        itValidatesDefinedData(
+        const expectedAssertion: ObjectAssertion<CallScriptData & CodeScriptData> = {
+          value: expectedScript,
+          valueName: expectedScript.name,
+          allowedProperties: [
+            'name', 'recommend', 'code', 'revertCode', 'call', 'docs',
+          ],
+        };
+        itValidatesType(
           (validatorFactory) => {
             // act
             new TestContext()
@@ -301,6 +309,7 @@ describe('ScriptParser', () => {
             return {
               expectedDataToValidate: expectedScript,
               expectedErrorContext: expectedContext,
+              assertValidation: (validator) => validator.assertObject(expectedAssertion),
             };
           },
         );
@@ -430,7 +439,7 @@ class TestContext {
   private collectionUtilities
   : CategoryCollectionSpecificUtilities = new CategoryCollectionSpecificUtilitiesStub();
 
-  private levelParser: IEnumParser<RecommendationLevel> = new EnumParserStub<RecommendationLevel>()
+  private levelParser: EnumParser<RecommendationLevel> = new EnumParserStub<RecommendationLevel>()
     .setupDefaultValue(RecommendationLevel.Standard);
 
   private scriptFactory: ScriptFactory = createScriptFactorySpy().scriptFactorySpy;
@@ -464,7 +473,7 @@ class TestContext {
     return this;
   }
 
-  public withParser(parser: IEnumParser<RecommendationLevel>): this {
+  public withParser(parser: EnumParser<RecommendationLevel>): this {
     this.levelParser = parser;
     return this;
   }

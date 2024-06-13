@@ -1,5 +1,5 @@
 import { isString } from '@/TypeHelpers';
-import type { ExecutableData } from '@/application/collections/';
+import { createTypeValidator, type TypeValidator } from '../../Common/TypeValidator';
 import { type ExecutableErrorContext } from './ExecutableErrorContext';
 import { createExecutableContextErrorMessage, type ExecutableContextErrorMessageCreator } from './ExecutableErrorContextMessage';
 
@@ -7,11 +7,11 @@ export interface ExecutableValidatorFactory {
   (context: ExecutableErrorContext): ExecutableValidator;
 }
 
+type AssertTypeFunction = (validator: TypeValidator) => void;
+
 export interface ExecutableValidator {
   assertValidName(nameValue: string): void;
-  assertDefined(
-    data: ExecutableData | undefined,
-  ): asserts data is NonNullable<ExecutableData> & void;
+  assertType(assert: AssertTypeFunction): void;
   assert(
     validationPredicate: () => boolean,
     errorMessage: string,
@@ -27,6 +27,7 @@ export class ContextualExecutableValidator implements ExecutableValidator {
     private readonly context: ExecutableErrorContext,
     private readonly createErrorMessage
     : ExecutableContextErrorMessageCreator = createExecutableContextErrorMessage,
+    private readonly validator: TypeValidator = createTypeValidator(),
   ) {
 
   }
@@ -39,13 +40,12 @@ export class ContextualExecutableValidator implements ExecutableValidator {
     );
   }
 
-  public assertDefined(
-    data: ExecutableData,
-  ): asserts data is NonNullable<ExecutableData> {
-    this.assert(
-      () => data !== undefined && data !== null && Object.keys(data).length > 0,
-      'missing executable data',
-    );
+  public assertType(assert: AssertTypeFunction): void {
+    try {
+      assert(this.validator);
+    } catch (error) {
+      this.throw(error.message);
+    }
   }
 
   public assert(
