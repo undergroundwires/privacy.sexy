@@ -2487,7 +2487,7 @@ actions:
                                             deleteOnRevert: 'true' # Missing by default since Windows 10 Pro (≥ 22H2) and Windows 11 Pro (≥ 23H2)
                     -
                         name: Disable app access to physical movement
-                        recommended: standard
+                        recommend: standard
                         docs: |- # refactor-with-variable: Same • Caution
                             This script prevents Windows apps from accessing spatial perception data [1] [2].
                             This includes movement of the user's head, hands, motion controllers, and other tracked objects [1],
@@ -2523,7 +2523,7 @@ actions:
                                     appCapability: backgroundSpatialPerception
                     -
                         name: Disable app access to eye tracking
-                        recommended: standard
+                        recommend: standard
                         docs: |- # refactor-with-variable: Same • Caution
                             This script prevents Windows apps from accessing the eye tracker [1] [2].
 
@@ -2554,7 +2554,7 @@ actions:
                                     appCapability: gazeInput
                     -
                         name: Disable app access to human presence
-                        recommended: standard
+                        recommend: standard
                         docs: |- # refactor-with-variable: Same • Caution
                             This script prevents Windows apps from accessing presence sensing [1] [2].
 
@@ -2585,7 +2585,7 @@ actions:
                                     appCapability: humanPresence
                     -
                         name: Disable app access to screen capture
-                        recommended: standard # It does not affect built-in Snipping Tool
+                        recommend: standard # It does not affect built-in Snipping Tool
                         docs: |- # refactor-with-variable: Same • Caution
                             This script restricts Windows apps from taking screenshots of the user's screen [1] [2] [3].
 
