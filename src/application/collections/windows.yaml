@@ -4311,7 +4311,8 @@ actions:
                         parameters:
                             code: reg add "HKCU\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" /v "HarvestContacts" /t REG_DWORD /d 0 /f
                             revertCode: |- # Default value: `1` since Windows 10 21H2, Windows 11 23H2
-                                reg add "HKCU\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" /v "HarvestContacts" /t REG_DWORD /d 1 /f            -
+                                reg add "HKCU\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" /v "HarvestContacts" /t REG_DWORD /d 1 /f
+            -
                 category: Disable location access
                 children:
                     -
