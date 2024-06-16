@@ -7,21 +7,22 @@ import { CategoryCollectionStateStub } from '@tests/unit/shared/Stubs/CategoryCo
 import { UseCollectionStateStub } from '@tests/unit/shared/Stubs/UseCollectionStateStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 import type { NodeMetadata } from '@/presentation/components/Scripts/View/Tree/NodeContent/NodeMetadata';
 import { NodeMetadataStub } from '@tests/unit/shared/Stubs/NodeMetadataStub';
 import { convertToNodeInput } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/TreeNodeMetadataConverter';
 import { TreeInputNodeDataStub as TreeInputNodeData, TreeInputNodeDataStub } from '@tests/unit/shared/Stubs/TreeInputNodeDataStub';
+import type { ExecutableId } from '@/domain/Executables/Identifiable';
 
 describe('useTreeViewNodeInput', () => {
   describe('when given categoryId', () => {
     it('sets input nodes correctly', async () => {
       // arrange
-      const testCategoryIdRef = ref<number | undefined>();
+      const testCategoryIdRef = ref<ExecutableId | undefined>();
       const {
         useStateStub, returnObject, parserMock, converterMock,
       } = mountWrapperComponent(testCategoryIdRef);
-      const expectedCategoryId = 123;
+      const expectedCategoryId: ExecutableId = 'expected-category-id';
       const expectedCategoryCollection = new CategoryCollectionStub().withAction(
         new CategoryStub(expectedCategoryId),
       );
@@ -55,12 +56,12 @@ describe('useTreeViewNodeInput', () => {
   describe('when not given a categoryId', () => {
     it('sets input nodes correctly', () => {
       // arrange
-      const testCategoryId = ref<number | undefined>();
+      const testCategoryId = ref<ExecutableId | undefined>();
       const {
         useStateStub, returnObject, parserMock, converterMock,
       } = mountWrapperComponent(testCategoryId);
       const expectedCategoryCollection = new CategoryCollectionStub().withAction(
-        new CategoryStub(123),
+        new CategoryStub('expected-action-category'),
       );
       const expectedMetadata = [new NodeMetadataStub(), new NodeMetadataStub()];
       parserMock.setupParseAllScenario({
@@ -88,7 +89,7 @@ describe('useTreeViewNodeInput', () => {
   });
 });
 
-function mountWrapperComponent(categoryIdRef: Ref<number | undefined>) {
+function mountWrapperComponent(categoryIdRef: Ref<ExecutableId | undefined>) {
   const useStateStub = new UseCollectionStateStub();
   const parserMock = mockCategoryNodeParser();
   const converterMock = mockConverter();
@@ -146,7 +147,7 @@ function mockConverter() {
 }
 
 interface ParseSingleScenario {
-  readonly givenId: number;
+  readonly givenId: ExecutableId;
   readonly givenCollection: ICategoryCollection;
   readonly parseResult: NodeMetadata[];
 }

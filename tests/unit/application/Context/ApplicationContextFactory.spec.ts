@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 import { buildContext } from '@/application/Context/ApplicationContextFactory';
 import type { IApplicationFactory } from '@/application/IApplicationFactory';
 import type { IApplication } from '@/domain/IApplication';

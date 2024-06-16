@@ -4,7 +4,7 @@ import { CategoryCollectionState } from '@/application/Context/State/CategoryCol
 import { OperatingSystem } from '@/domain/OperatingSystem';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import { ScriptingDefinitionStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionStub';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 import { ApplicationCodeStub } from '@tests/unit/shared/Stubs/ApplicationCodeStub';
 import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';

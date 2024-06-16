@@ -1,4 +1,4 @@
-import type { ICategoryCollection } from './ICategoryCollection';
+import type { ICategoryCollection } from './Collection/ICategoryCollection';
 import type { ProjectDetails } from './Project/ProjectDetails';
 import type { OperatingSystem } from './OperatingSystem';
 

@@ -3,13 +3,14 @@ import { TreeNodeManager } from '@/presentation/components/Scripts/View/Tree/Tre
 import { itEachAbsentObjectValue, itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTests';
 import { TreeNodeHierarchy } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/Hierarchy/TreeNodeHierarchy';
 import { TreeNodeState } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/State/TreeNodeState';
+import type { TreeNodeId } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
 
 describe('TreeNodeManager', () => {
   describe('constructor', () => {
     describe('id', () => {
       it('should initialize with the provided id', () => {
         // arrange
-        const expectedId = 'test-id';
+        const expectedId: TreeNodeId = 'test-id';
         // act
         const node = new TreeNodeManager(expectedId);
         // assert
@@ -18,9 +19,10 @@ describe('TreeNodeManager', () => {
       describe('should throw an error if id is not provided', () => {
         itEachAbsentStringValue((absentId) => {
           // arrange
+          const id = absentId as TreeNodeId;
           const expectedError = 'missing id';
           // act
-          const act = () => new TreeNodeManager(absentId);
+          const act = () => new TreeNodeManager(id);
           // assert
           expect(act).to.throw(expectedError);
         }, { excludeNull: true, excludeUndefined: true });

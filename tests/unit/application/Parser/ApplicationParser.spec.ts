@@ -14,7 +14,7 @@ import { ProjectDetailsStub } from '@tests/unit/shared/Stubs/ProjectDetailsStub'
 import type { CategoryCollectionParser } from '@/application/Parser/CategoryCollectionParser';
 import type { NonEmptyCollectionAssertion, TypeValidator } from '@/application/Parser/Common/TypeValidator';
 import { TypeValidatorStub } from '@tests/unit/shared/Stubs/TypeValidatorStub';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 
 describe('ApplicationParser', () => {
   describe('parseApplication', () => {

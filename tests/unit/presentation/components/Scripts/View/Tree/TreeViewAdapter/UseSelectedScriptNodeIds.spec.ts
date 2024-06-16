@@ -1,10 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import { useSelectedScriptNodeIds } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/UseSelectedScriptNodeIds';
 import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
-import { getScriptNodeId } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/CategoryNodeMetadataConverter';
+import { createNodeIdForExecutable } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/CategoryNodeMetadataConverter';
 import type { Script } from '@/domain/Executables/Script/Script';
 import { UseUserSelectionStateStub } from '@tests/unit/shared/Stubs/UseUserSelectionStateStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
+import type { TreeNodeId } from '@/presentation/components/Scripts/View/Tree/TreeView/Node/TreeNode';
+import type { Executable } from '@/domain/Executables/Executable';
 
 describe('useSelectedScriptNodeIds', () => {
   it('returns an empty array when no scripts are selected', () => {
@@ -23,7 +25,7 @@ describe('useSelectedScriptNodeIds', () => {
         new SelectedScriptStub(new ScriptStub('id-1')),
         new SelectedScriptStub(new ScriptStub('id-2')),
       ];
-      const parsedNodeIds = new Map<Script, string>([
+      const parsedNodeIds = new Map<Script, TreeNodeId>([
         [selectedScripts[0].script, 'expected-id-1'],
         [selectedScripts[1].script, 'expected-id-2'],
       ]);
@@ -47,7 +49,7 @@ describe('useSelectedScriptNodeIds', () => {
         new SelectedScriptStub(new ScriptStub('id-1')),
         new SelectedScriptStub(new ScriptStub('id-2')),
       ];
-      const parsedNodeIds = new Map<Script, string>([
+      const parsedNodeIds = new Map<Script, TreeNodeId>([
         [changedScripts[0].script, 'expected-id-1'],
         [changedScripts[1].script, 'expected-id-2'],
       ]);
@@ -68,9 +70,9 @@ describe('useSelectedScriptNodeIds', () => {
   });
 });
 
-type ScriptNodeIdParser = typeof getScriptNodeId;
+type NodeIdParser = typeof createNodeIdForExecutable;
 
-function createNodeIdParserFromMap(scriptToIdMap: Map<Script, string>): ScriptNodeIdParser {
+function createNodeIdParserFromMap(scriptToIdMap: Map<Executable, TreeNodeId>): NodeIdParser {
   return (script) => {
     const expectedId = scriptToIdMap.get(script);
     if (!expectedId) {
@@ -81,12 +83,12 @@ function createNodeIdParserFromMap(scriptToIdMap: Map<Script, string>): ScriptNo
 }
 
 function runHook(scenario?: {
-  readonly scriptNodeIdParser?: ScriptNodeIdParser,
+  readonly scriptNodeIdParser?: NodeIdParser,
   readonly useSelectionState?: UseUserSelectionStateStub,
 }) {
   const useSelectionStateStub = scenario?.useSelectionState ?? new UseUserSelectionStateStub();
-  const nodeIdParser: ScriptNodeIdParser = scenario?.scriptNodeIdParser
-    ?? ((script) => script.id);
+  const nodeIdParser: NodeIdParser = scenario?.scriptNodeIdParser
+    ?? ((script) => script.executableId);
   const returnObject = useSelectedScriptNodeIds(useSelectionStateStub.get(), nodeIdParser);
   return {
     returnObject,

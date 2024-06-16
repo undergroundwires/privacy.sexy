@@ -1,9 +1,26 @@
-import { BaseEntity } from '@/infrastructure/Entity/BaseEntity';
 import { RecommendationLevel } from './RecommendationLevel';
-import type { Script } from './Script';
 import type { ScriptCode } from './Code/ScriptCode';
+import type { Script } from './Script';
 
-export class CollectionScript extends BaseEntity<string> implements Script {
+export interface ScriptInitParameters {
+  readonly executableId: string;
+  readonly name: string;
+  readonly code: ScriptCode;
+  readonly docs: ReadonlyArray<string>;
+  readonly level?: RecommendationLevel;
+}
+
+export type ScriptFactory = (
+  parameters: ScriptInitParameters,
+) => Script;
+
+export const createScript: ScriptFactory = (parameters) => {
+  return new CollectionScript(parameters);
+};
+
+class CollectionScript implements Script {
+  public readonly executableId: string;
+
   public readonly name: string;
 
   public readonly code: ScriptCode;
@@ -13,7 +30,7 @@ export class CollectionScript extends BaseEntity<string> implements Script {
   public readonly level?: RecommendationLevel;
 
   constructor(parameters: ScriptInitParameters) {
-    super(parameters.name);
+    this.executableId = parameters.executableId;
     this.name = parameters.name;
     this.code = parameters.code;
     this.docs = parameters.docs;
@@ -24,13 +41,6 @@ export class CollectionScript extends BaseEntity<string> implements Script {
   public canRevert(): boolean {
     return Boolean(this.code.revert);
   }
-}
-
-export interface ScriptInitParameters {
-  readonly name: string;
-  readonly code: ScriptCode;
-  readonly docs: ReadonlyArray<string>;
-  readonly level?: RecommendationLevel;
 }
 
 function validateLevel(level?: RecommendationLevel) {

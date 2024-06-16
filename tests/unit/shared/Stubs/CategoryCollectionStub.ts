@@ -2,8 +2,9 @@ import { OperatingSystem } from '@/domain/OperatingSystem';
 import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import type { Script } from '@/domain/Executables/Script/Script';
 import type { Category } from '@/domain/Executables/Category/Category';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
+import type { ExecutableId } from '@/domain/Executables/Identifiable';
 import { ScriptStub } from './ScriptStub';
 import { ScriptingDefinitionStub } from './ScriptingDefinitionStub';
 import { CategoryStub } from './CategoryStub';
@@ -22,9 +23,9 @@ export class CategoryCollectionStub implements ICategoryCollection {
   public readonly actions = new Array<Category>();
 
   public withSomeActions(): this {
-    this.withAction(new CategoryStub(1));
-    this.withAction(new CategoryStub(2));
-    this.withAction(new CategoryStub(3));
+    this.withAction(new CategoryStub(`[${CategoryCollectionStub}]-action-1`));
+    this.withAction(new CategoryStub(`[${CategoryCollectionStub}]-action-2`));
+    this.withAction(new CategoryStub(`[${CategoryCollectionStub}]-action-3`));
     return this;
   }
 
@@ -60,9 +61,9 @@ export class CategoryCollectionStub implements ICategoryCollection {
     return this;
   }
 
-  public getCategory(categoryId: number): Category {
+  public getCategory(categoryId: ExecutableId): Category {
     return this.getAllCategories()
-      .find((category) => category.id === categoryId)
+      .find((category) => category.executableId === categoryId)
       ?? new CategoryStub(categoryId);
   }
 
@@ -73,7 +74,7 @@ export class CategoryCollectionStub implements ICategoryCollection {
 
   public getScript(scriptId: string): Script {
     return this.getAllScripts()
-      .find((script) => scriptId === script.id)
+      .find((script) => scriptId === script.executableId)
       ?? new ScriptStub(scriptId);
   }
 
@@ -89,7 +90,7 @@ export class CategoryCollectionStub implements ICategoryCollection {
 }
 
 function getSubCategoriesRecursively(category: Category): ReadonlyArray<Category> {
-  return (category.subCategories || []).flatMap(
+  return (category.subcategories || []).flatMap(
     (subCategory) => [subCategory, ...getSubCategoriesRecursively(subCategory)],
   );
 }
@@ -97,7 +98,7 @@ function getSubCategoriesRecursively(category: Category): ReadonlyArray<Category
 function getScriptsRecursively(category: Category): ReadonlyArray<Script> {
   return [
     ...(category.scripts || []),
-    ...(category.subCategories || []).flatMap(
+    ...(category.subcategories || []).flatMap(
       (subCategory) => getScriptsRecursively(subCategory),
     ),
   ];

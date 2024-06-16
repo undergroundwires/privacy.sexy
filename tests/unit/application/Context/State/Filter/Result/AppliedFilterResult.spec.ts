@@ -48,7 +48,7 @@ describe('AppliedFilterResult', () => {
       const expected = true;
       const result = new ResultBuilder()
         .withScriptMatches([])
-        .withCategoryMatches([new CategoryStub(5)])
+        .withCategoryMatches([new CategoryStub('matched-category-id')])
         .build();
       // act
       const actual = result.hasAnyMatches();
@@ -58,8 +58,8 @@ describe('AppliedFilterResult', () => {
       // arrange
       const expected = true;
       const result = new ResultBuilder()
-        .withScriptMatches([new ScriptStub('id')])
-        .withCategoryMatches([new CategoryStub(5)])
+        .withScriptMatches([new ScriptStub('matched-script-id')])
+        .withCategoryMatches([new CategoryStub('matched-category-id')])
         .build();
       // act
       const actual = result.hasAnyMatches();
@@ -69,9 +69,13 @@ describe('AppliedFilterResult', () => {
 });
 
 class ResultBuilder {
-  private scriptMatches: readonly Script[] = [new ScriptStub('id')];
+  private scriptMatches: readonly Script[] = [
+    new ScriptStub(`[${ResultBuilder.name}]matched-script-id`),
+  ];
 
-  private categoryMatches: readonly Category[] = [new CategoryStub(5)];
+  private categoryMatches: readonly Category[] = [
+    new CategoryStub(`[${ResultBuilder.name}]matched-category-id`),
+  ];
 
   private query: string = `[${ResultBuilder.name}]query`;
 

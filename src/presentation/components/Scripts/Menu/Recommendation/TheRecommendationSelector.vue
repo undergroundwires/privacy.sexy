@@ -90,7 +90,7 @@ import {
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import TooltipWrapper from '@/presentation/components/Shared/TooltipWrapper.vue';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 import MenuOptionList from '../MenuOptionList.vue';
 import MenuOptionListItem from '../MenuOptionListItem.vue';
 import { setCurrentRecommendationStatus, getCurrentRecommendationStatus } from './RecommendationStatusHandler';
@@ -142,3 +142,4 @@ export default defineComponent({
   },
 });
 </script>
+@/domain/Collection/ICategoryCollection

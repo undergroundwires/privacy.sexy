@@ -3,6 +3,7 @@ import { OperatingSystem } from '@/domain/OperatingSystem';
 import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import type { Script } from '@/domain/Executables/Script/Script';
 import type { Category } from '@/domain/Executables/Category/Category';
+import type { ExecutableId } from '../Executables/Identifiable';
 
 export interface ICategoryCollection {
   readonly scripting: IScriptingDefinition;
@@ -12,8 +13,8 @@ export interface ICategoryCollection {
   readonly actions: ReadonlyArray<Category>;
 
   getScriptsByLevel(level: RecommendationLevel): ReadonlyArray<Script>;
-  getCategory(categoryId: number): Category;
-  getScript(scriptId: string): Script;
+  getCategory(categoryId: ExecutableId): Category;
+  getScript(scriptId: ExecutableId): Script;
   getAllScripts(): ReadonlyArray<Script>;
   getAllCategories(): ReadonlyArray<Category>;
 }

@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { ScriptReverter } from '@/presentation/components/Scripts/View/Tree/NodeContent/Reverter/ScriptReverter';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { SelectedScriptStub } from '@tests/unit/shared/Stubs/SelectedScriptStub';
-import { getScriptNodeId } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/CategoryNodeMetadataConverter';
+import { createNodeIdForExecutable } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/CategoryNodeMetadataConverter';
 import { UserSelectionStub } from '@tests/unit/shared/Stubs/UserSelectionStub';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { ScriptSelectionStub } from '@tests/unit/shared/Stubs/ScriptSelectionStub';
@@ -11,7 +11,7 @@ describe('ScriptReverter', () => {
   describe('getState', () => {
     // arrange
     const script = new ScriptStub('id');
-    const nodeId = getScriptNodeId(script);
+    const nodeId = createNodeIdForExecutable(script);
     const testScenarios: ReadonlyArray<{
       readonly description: string;
       readonly selectedScripts: readonly SelectedScript[];
@@ -98,7 +98,7 @@ describe('ScriptReverter', () => {
         expectedRevert: false,
       },
     ];
-    const nodeId = getScriptNodeId(script);
+    const nodeId = createNodeIdForExecutable(script);
     testScenarios.forEach((
       { description, selection, expectedRevert },
     ) => {
@@ -111,7 +111,9 @@ describe('ScriptReverter', () => {
         // act
         sut.selectWithRevertState(revertState, userSelection);
         // assert
-        expect(scriptSelection.isScriptSelected(script.id, expectedRevert)).to.equal(true);
+        const isActuallySelected = scriptSelection
+          .isScriptSelected(script.executableId, expectedRevert);
+        expect(isActuallySelected).to.equal(true);
       });
     });
   });

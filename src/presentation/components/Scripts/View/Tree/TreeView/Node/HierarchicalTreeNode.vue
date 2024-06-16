@@ -56,7 +56,7 @@ import { useNodeState } from './UseNodeState';
 import LeafTreeNode from './LeafTreeNode.vue';
 import InteractableNode from './InteractableNode.vue';
 import type { TreeRoot } from '../TreeRoot/TreeRoot';
-import type { TreeNode } from './TreeNode';
+import type { TreeNode, TreeNodeId } from './TreeNode';
 import type { NodeRenderingStrategy } from '../Rendering/Scheduling/NodeRenderingStrategy';
 import type { PropType } from 'vue';
 
@@ -69,7 +69,7 @@ export default defineComponent({
   },
   props: {
     nodeId: {
-      type: String,
+      type: String as PropType<TreeNodeId>,
       required: true,
     },
     treeRoot: {

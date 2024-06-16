@@ -5,31 +5,36 @@ import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
 import {
-  getCategoryId, getCategoryNodeId, getScriptId,
-  getScriptNodeId, parseAllCategories, parseSingleCategory,
+  createExecutableIdFromNodeId,
+  createNodeIdForExecutable,
+  parseAllCategories,
+  parseSingleCategory,
 } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/CategoryNodeMetadataConverter';
 import { ExecutableType } from '@/application/Parser/Executable/Validation/ExecutableType';
 import type { NodeMetadata } from '@/presentation/components/Scripts/View/Tree/NodeContent/NodeMetadata';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
+import type { ExecutableId } from '@/domain/Executables/Identifiable';
 
 describe('CategoryNodeMetadataConverter', () => {
   it('can convert script id and back', () => {
     // arrange
-    const script = new ScriptStub('test');
+    const expectedScriptId: ExecutableId = 'expected-script-id';
+    const script = new ScriptStub(expectedScriptId);
     // act
-    const nodeId = getScriptNodeId(script);
-    const scriptId = getScriptId(nodeId);
+    const nodeId = createNodeIdForExecutable(script);
+    const actualScriptId = createExecutableIdFromNodeId(nodeId);
     // assert
-    expect(scriptId).to.equal(script.id);
+    expect(actualScriptId).to.equal(expectedScriptId);
   });
   it('can convert category id and back', () => {
     // arrange
-    const category = new CategoryStub(55);
+    const expectedCategoryId: ExecutableId = 'expected-category-id';
+    const category = new CategoryStub(expectedCategoryId);
     // act
-    const nodeId = getCategoryNodeId(category);
-    const scriptId = getCategoryId(nodeId);
+    const nodeId = createNodeIdForExecutable(category);
+    const actualCategoryId = createExecutableIdFromNodeId(nodeId);
     // assert
-    expect(scriptId).to.equal(category.id);
+    expect(actualCategoryId).to.equal(expectedCategoryId);
   });
   describe('parseSingleCategory', () => {
     it('throws error if parent category cannot be retrieved', () => {
@@ -38,32 +43,45 @@ describe('CategoryNodeMetadataConverter', () => {
       const collection = new CategoryCollectionStub();
       collection.getCategory = () => { throw new Error(expectedError); };
       // act
-      const act = () => parseSingleCategory(31, collection);
+      const act = () => parseSingleCategory('unimportant-id', collection);
       // assert
       expect(act).to.throw(expectedError);
     });
     it('can parse when category has sub categories', () => {
       // arrange
-      const categoryId = 31;
-      const firstSubCategory = new CategoryStub(11).withScriptIds('111', '112');
-      const secondSubCategory = new CategoryStub(categoryId)
-        .withCategory(new CategoryStub(33).withScriptIds('331', '331'))
-        .withCategory(new CategoryStub(44).withScriptIds('44'));
-      const collection = new CategoryCollectionStub().withAction(new CategoryStub(categoryId)
-        .withCategory(firstSubCategory)
-        .withCategory(secondSubCategory));
+      const parentCategoryId: ExecutableId = 'parent-category';
+      const firstSubcategory = new CategoryStub('subcategory-1')
+        .withScriptIds('subcategory-1-script-1', 'subcategory-1-script-2');
+      const secondSubCategory = new CategoryStub('subcategory-2')
+        .withCategory(
+          new CategoryStub('subcategory-2-subcategory-1')
+            .withScriptIds('subcategory-2-subcategory-1-script-1', 'subcategory-2-subcategory-1-script-2'),
+        )
+        .withCategory(
+          new CategoryStub('subcategory-2-subcategory-2')
+            .withScriptIds('subcategory-2-subcategory-2-script-1'),
+        );
+      const collection = new CategoryCollectionStub().withAction(
+        new CategoryStub(parentCategoryId)
+          .withCategory(firstSubcategory)
+          .withCategory(secondSubCategory),
+      );
       // act
-      const nodes = parseSingleCategory(categoryId, collection);
+      const nodes = parseSingleCategory(parentCategoryId, collection);
       // assert
       expectExists(nodes);
       expect(nodes).to.have.lengthOf(2);
-      expectSameCategory(nodes[0], firstSubCategory);
+      expectSameCategory(nodes[0], firstSubcategory);
       expectSameCategory(nodes[1], secondSubCategory);
     });
     it('can parse when category has sub scripts', () => {
       // arrange
-      const categoryId = 31;
-      const scripts = [new ScriptStub('script1'), new ScriptStub('script2'), new ScriptStub('script3')];
+      const categoryId: ExecutableId = 'expected-category-id';
+      const scripts: readonly Script[] = [
+        new ScriptStub('script1'),
+        new ScriptStub('script2'),
+        new ScriptStub('script3'),
+      ];
       const collection = new CategoryCollectionStub()
         .withAction(new CategoryStub(categoryId).withScripts(...scripts));
       // act
@@ -79,10 +97,11 @@ describe('CategoryNodeMetadataConverter', () => {
   it('parseAllCategories parses as expected', () => {
     // arrange
     const collection = new CategoryCollectionStub()
-      .withAction(new CategoryStub(0).withScriptIds('1, 2'))
-      .withAction(new CategoryStub(1).withCategories(
-        new CategoryStub(3).withScriptIds('3', '4'),
-        new CategoryStub(4).withCategory(new CategoryStub(5).withScriptIds('6')),
+      .withAction(new CategoryStub('category-1').withScriptIds('1, 2'))
+      .withAction(new CategoryStub('category-2').withCategories(
+        new CategoryStub('category-2-subcategory-1').withScriptIds('3', '4'),
+        new CategoryStub('category-2-subcategory-1')
+          .withCategory(new CategoryStub('category-2-subcategory-1-subcategory-1').withScriptIds('6')),
       ));
     // act
     const nodes = parseAllCategories(collection);
@@ -100,8 +119,8 @@ function isReversible(category: Category): boolean {
       return false;
     }
   }
-  if (category.subCategories) {
-    if (category.subCategories.some((c) => !isReversible(c))) {
+  if (category.subcategories) {
+    if (category.subcategories.some((c) => !isReversible(c))) {
       return false;
     }
   }
@@ -110,17 +129,17 @@ function isReversible(category: Category): boolean {
 
 function expectSameCategory(node: NodeMetadata, category: Category): void {
   expect(node.type).to.equal(ExecutableType.Category, getErrorMessage('type'));
-  expect(node.id).to.equal(getCategoryNodeId(category), getErrorMessage('id'));
+  expect(node.id).to.equal(createNodeIdForExecutable(category), getErrorMessage('id'));
   expect(node.docs).to.equal(category.docs, getErrorMessage('docs'));
   expect(node.text).to.equal(category.name, getErrorMessage('name'));
   expect(node.isReversible).to.equal(isReversible(category), getErrorMessage('isReversible'));
   expect(node.children).to.have.lengthOf(
-    category.scripts.length + category.subCategories.length,
+    category.scripts.length + category.subcategories.length,
     getErrorMessage('total children'),
   );
-  if (category.subCategories) {
-    for (let i = 0; i < category.subCategories.length; i++) {
-      expectSameCategory(node.children[i], category.subCategories[i]);
+  if (category.subcategories) {
+    for (let i = 0; i < category.subcategories.length; i++) {
+      expectSameCategory(node.children[i], category.subcategories[i]);
     }
   }
   if (category.scripts) {
@@ -137,7 +156,7 @@ function expectSameCategory(node: NodeMetadata, category: Category): void {
 
 function expectSameScript(node: NodeMetadata, script: Script): void {
   expect(node.type).to.equal(ExecutableType.Script, getErrorMessage('type'));
-  expect(node.id).to.equal(getScriptNodeId(script), getErrorMessage('id'));
+  expect(node.id).to.equal(createNodeIdForExecutable(script), getErrorMessage('id'));
   expect(node.docs).to.equal(script.docs, getErrorMessage('docs'));
   expect(node.text).to.equal(script.name, getErrorMessage('name'));
   expect(node.isReversible).to.equal(script.canRevert(), getErrorMessage('canRevert'));

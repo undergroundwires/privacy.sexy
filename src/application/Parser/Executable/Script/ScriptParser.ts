@@ -1,7 +1,6 @@
 import type { ScriptData, CodeScriptData, CallScriptData } from '@/application/collections/';
 import { NoEmptyLines } from '@/application/Parser/Executable/Script/Validation/Rules/NoEmptyLines';
 import type { ILanguageSyntax } from '@/application/Parser/Executable/Script/Validation/Syntax/ILanguageSyntax';
-import { CollectionScript } from '@/domain/Executables/Script/CollectionScript';
 import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import type { ScriptCode } from '@/domain/Executables/Script/Code/ScriptCode';
 import type { ICodeValidator } from '@/application/Parser/Executable/Script/Validation/ICodeValidator';
@@ -11,6 +10,7 @@ import { createScriptCode } from '@/domain/Executables/Script/Code/ScriptCodeFac
 import type { Script } from '@/domain/Executables/Script/Script';
 import { createEnumParser, type EnumParser } from '@/application/Common/Enum';
 import { filterEmptyStrings } from '@/application/Common/Text/FilterEmptyStrings';
+import { createScript, type ScriptFactory } from '@/domain/Executables/Script/ScriptFactory';
 import { parseDocs, type DocsParser } from '../DocumentationParser';
 import { ExecutableType } from '../Validation/ExecutableType';
 import { createExecutableDataValidator, type ExecutableValidator, type ExecutableValidatorFactory } from '../Validation/ExecutableValidator';
@@ -38,6 +38,7 @@ export const parseScript: ScriptParser = (
   validateScript(data, validator);
   try {
     const script = scriptUtilities.createScript({
+      executableId: data.name, // arbitrary ID
       name: data.name,
       code: parseCode(
         data,
@@ -131,14 +132,6 @@ interface ScriptParserUtilities {
   readonly createCode: ScriptCodeFactory;
   readonly parseDocs: DocsParser;
 }
-
-export type ScriptFactory = (
-  ...parameters: ConstructorParameters<typeof CollectionScript>
-) => Script;
-
-const createScript: ScriptFactory = (...parameters) => {
-  return new CollectionScript(...parameters);
-};
 
 const DefaultUtilities: ScriptParserUtilities = {
   levelParser: createEnumParser(RecommendationLevel),

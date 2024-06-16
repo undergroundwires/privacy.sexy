@@ -1,13 +1,13 @@
-import { BaseEntity } from '@/infrastructure/Entity/BaseEntity';
 import type { Category } from '@/domain/Executables/Category/Category';
 import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import type { Script } from '@/domain/Executables/Script/Script';
+import type { ExecutableId } from '@/domain/Executables/Identifiable';
 import { ScriptStub } from './ScriptStub';
 
-export class CategoryStub extends BaseEntity<number> implements Category {
-  public name = `category-with-id-${this.id}`;
+export class CategoryStub implements Category {
+  public name = `[${CategoryStub.name}] name (ID: ${this.executableId})`;
 
-  public readonly subCategories = new Array<Category>();
+  public readonly subcategories = new Array<Category>();
 
   public readonly scripts = new Array<Script>();
 
@@ -15,25 +15,25 @@ export class CategoryStub extends BaseEntity<number> implements Category {
 
   private allScriptsRecursively: (readonly Script[]) | undefined;
 
-  public constructor(id: number) {
-    super(id);
-  }
+  public constructor(
+    readonly executableId: ExecutableId,
+  ) { }
 
   public includes(script: Script): boolean {
-    return this.getAllScriptsRecursively().some((s) => s.id === script.id);
+    return this.getAllScriptsRecursively().some((s) => s.executableId === script.executableId);
   }
 
   public getAllScriptsRecursively(): readonly Script[] {
     if (this.allScriptsRecursively === undefined) {
       return [
         ...this.scripts,
-        ...this.subCategories.flatMap((c) => c.getAllScriptsRecursively()),
+        ...this.subcategories.flatMap((c) => c.getAllScriptsRecursively()),
       ];
     }
     return this.allScriptsRecursively;
   }
 
-  public withScriptIds(...scriptIds: readonly string[]): this {
+  public withScriptIds(...scriptIds: readonly ExecutableId[]): this {
     return this.withScripts(
       ...scriptIds.map((id) => new ScriptStub(id)),
     );
@@ -70,7 +70,7 @@ export class CategoryStub extends BaseEntity<number> implements Category {
   }
 
   public withCategory(category: Category): this {
-    this.subCategories.push(category);
+    this.subcategories.push(category);
     return this;
   }
 

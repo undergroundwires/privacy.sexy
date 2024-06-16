@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
 import { CategoryCollectionStub } from '@tests/unit/shared/Stubs/CategoryCollectionStub';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 import type { Category } from '@/domain/Executables/Category/Category';
 import type { Script } from '@/domain/Executables/Script/Script';
 import type { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
@@ -37,7 +37,10 @@ describe('LinearFilterStrategy', () => {
         // arrange
         const matchingFilter = 'matching filter';
         const collection = new CategoryCollectionStub()
-          .withAction(new CategoryStub(2).withScript(createMatchingScript(matchingFilter)));
+          .withAction(
+            new CategoryStub('parent-category-of-matching-script')
+              .withScript(createMatchingScript(matchingFilter)),
+          );
         const strategy = new FilterStrategyTestBuilder()
           .withFilter(matchingFilter)
           .withCollection(collection);
@@ -64,7 +67,7 @@ describe('LinearFilterStrategy', () => {
         const matchingFilter = 'matching filter';
         const collection = new CategoryCollectionStub()
           .withAction(createMatchingCategory(matchingFilter))
-          .withAction(new CategoryStub(2).withScript(createMatchingScript(matchingFilter)));
+          .withAction(new CategoryStub('matching-script-parent').withScript(createMatchingScript(matchingFilter)));
         const strategy = new FilterStrategyTestBuilder()
           .withFilter(matchingFilter)
           .withCollection(collection);
@@ -120,7 +123,7 @@ describe('LinearFilterStrategy', () => {
             // arrange
             const expectedMatches = [matchingScript];
             const collection = new CategoryCollectionStub()
-              .withAction(new CategoryStub(33).withScript(matchingScript));
+              .withAction(new CategoryStub('matching-script-parent').withScript(matchingScript));
             const strategy = new FilterStrategyTestBuilder()
               .withFilter(filter)
               .withCollection(collection);
@@ -140,7 +143,7 @@ describe('LinearFilterStrategy', () => {
         ];
         const expectedMatches = [...matchingScripts];
         const collection = new CategoryCollectionStub()
-          .withAction(new CategoryStub(0).withScripts(...matchingScripts));
+          .withAction(new CategoryStub('matching-scripts-parent').withScripts(...matchingScripts));
         const strategy = new FilterStrategyTestBuilder()
           .withFilter(filter)
           .withCollection(collection);
@@ -171,12 +174,12 @@ describe('LinearFilterStrategy', () => {
           {
             description: 'match with case-insensitive name',
             filter: 'Hello WoRLD',
-            matchingCategory: new CategoryStub(55).withName('HELLO world'),
+            matchingCategory: new CategoryStub('matching-script-parent').withName('HELLO world'),
           },
           {
             description: 'case-sensitive documentation',
             filter: 'Hello WoRLD',
-            matchingCategory: new CategoryStub(55).withDocs(['unrelated-docs', 'HELLO world']),
+            matchingCategory: new CategoryStub('matching-script-parent').withDocs(['unrelated-docs', 'HELLO world']),
           },
         ];
         testScenarios.forEach(({
@@ -230,7 +233,7 @@ function createMatchingScript(
 function createMatchingCategory(
   matchingFilter: string,
 ): CategoryStub {
-  return new CategoryStub(1)
+  return new CategoryStub('matching-category')
     .withName(matchingFilter)
     .withDocs([matchingFilter]);
 }

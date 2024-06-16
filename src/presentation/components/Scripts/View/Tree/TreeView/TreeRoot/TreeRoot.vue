@@ -22,6 +22,7 @@ import {
 } from 'vue';
 import HierarchicalTreeNode from '../Node/HierarchicalTreeNode.vue';
 import { useCurrentTreeNodes } from '../UseCurrentTreeNodes';
+import { type TreeNodeId } from '../Node/TreeNode';
 import type { NodeRenderingStrategy } from '../Rendering/Scheduling/NodeRenderingStrategy';
 import type { TreeRoot } from './TreeRoot';
 import type { PropType } from 'vue';
@@ -43,7 +44,7 @@ export default defineComponent({
   setup(props) {
     const { nodes } = useCurrentTreeNodes(toRef(props, 'treeRoot'));
 
-    const renderedNodeIds = computed<string[]>(() => {
+    const renderedNodeIds = computed<TreeNodeId[]>(() => {
       return nodes
         .value
         .rootNodes

@@ -24,8 +24,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRef } from 'vue';
+import { defineComponent, toRef, type PropType } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
+import type { ExecutableId } from '@/domain/Executables/Identifiable';
 import TreeView from './TreeView/TreeView.vue';
 import NodeContent from './NodeContent/NodeContent.vue';
 import { useTreeViewFilterEvent } from './TreeViewAdapter/UseTreeViewFilterEvent';
@@ -41,7 +42,7 @@ export default defineComponent({
   },
   props: {
     categoryId: {
-      type: [Number],
+      type: String as PropType<ExecutableId>,
       default: undefined,
     },
     hasTopPadding: {

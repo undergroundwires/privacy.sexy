@@ -216,29 +216,29 @@ function itExpectedFilterTriggeredEvent(
     {
       description: 'returns true when category exists',
       scriptMatches: [],
-      categoryMatches: [new CategoryStub(1)],
-      givenNode: createNode({ id: '1', hasParent: false }),
+      categoryMatches: [new CategoryStub('category-match-1')],
+      givenNode: createNode({ id: 'category-match-1', hasParent: false }),
       expectedPredicateResult: true,
     },
     {
       description: 'returns true when script exists',
-      scriptMatches: [new ScriptStub('a')],
+      scriptMatches: [new ScriptStub('script-match-1')],
       categoryMatches: [],
-      givenNode: createNode({ id: 'a', hasParent: true }),
+      givenNode: createNode({ id: 'script-match-1', hasParent: true }),
       expectedPredicateResult: true,
     },
     {
       description: 'returns false when category is missing',
-      scriptMatches: [new ScriptStub('b')],
-      categoryMatches: [new CategoryStub(2)],
-      givenNode: createNode({ id: '1', hasParent: false }),
+      scriptMatches: [new ScriptStub('script-match-1')],
+      categoryMatches: [new CategoryStub('category-match-1')],
+      givenNode: createNode({ id: 'unrelated-node', hasParent: false }),
       expectedPredicateResult: false,
     },
     {
       description: 'finds false when script is missing',
-      scriptMatches: [new ScriptStub('b')],
-      categoryMatches: [new CategoryStub(1)],
-      givenNode: createNode({ id: 'a', hasParent: true }),
+      scriptMatches: [new ScriptStub('script-match-1')],
+      categoryMatches: [new CategoryStub('category-match-1')],
+      givenNode: createNode({ id: 'unrelated-node', hasParent: true }),
       expectedPredicateResult: false,
     },
   ];
@@ -261,8 +261,8 @@ function itExpectedFilterTriggeredEvent(
       expect(event.value.predicate).toBeDefined();
       const actualPredicateResult = event.value.predicate(givenNode);
       expect(actualPredicateResult).to.equal(expectedPredicateResult, formatAssertionMessage([
-        `Script matches (${scriptMatches.length}): [${scriptMatches.map((s) => s.id).join(', ')}]`,
-        `Category matches (${categoryMatches.length}): [${categoryMatches.map((s) => s.id).join(', ')}]`,
+        `Script matches (${scriptMatches.length}): [${scriptMatches.map((s) => s.executableId).join(', ')}]`,
+        `Category matches (${categoryMatches.length}): [${categoryMatches.map((s) => s.executableId).join(', ')}]`,
         `Expected node: "${givenNode.id}"`,
       ]));
     });

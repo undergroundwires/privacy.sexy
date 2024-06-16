@@ -1,6 +1,5 @@
-import type { ScriptFactory } from '@/application/Parser/Executable/Script/ScriptParser';
 import type { Script } from '@/domain/Executables/Script/Script';
-import type { ScriptInitParameters } from '@/domain/Executables/Script/CollectionScript';
+import type { ScriptFactory, ScriptInitParameters } from '@/domain/Executables/Script/ScriptFactory';
 import { ScriptStub } from './ScriptStub';
 
 export function createScriptFactorySpy(): {

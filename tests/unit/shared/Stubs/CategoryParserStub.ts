@@ -16,7 +16,7 @@ export class CategoryParserStub {
       if (result) {
         return result;
       }
-      return new CategoryStub(5489);
+      return new CategoryStub(`[${CategoryParserStub.name}]-parsed-category`);
     };
   }
 

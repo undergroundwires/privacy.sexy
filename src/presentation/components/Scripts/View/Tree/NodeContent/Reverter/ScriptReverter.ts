@@ -1,13 +1,13 @@
 import type { UserSelection } from '@/application/Context/State/Selection/UserSelection';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
-import { getScriptId } from '../../TreeViewAdapter/CategoryNodeMetadataConverter';
+import { createExecutableIdFromNodeId } from '../../TreeViewAdapter/CategoryNodeMetadataConverter';
 import type { Reverter } from './Reverter';
 
 export class ScriptReverter implements Reverter {
   private readonly scriptId: string;
 
   constructor(nodeId: string) {
-    this.scriptId = getScriptId(nodeId);
+    this.scriptId = createExecutableIdFromNodeId(nodeId);
   }
 
   public getState(selectedScripts: ReadonlyArray<SelectedScript>): boolean {

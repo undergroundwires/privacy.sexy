@@ -37,12 +37,12 @@ export class CodeChangedEvent implements ICodeChangedEvent {
   }
 
   public getScriptPositionInCode(script: Script): ICodePosition {
-    return this.getPositionById(script.id);
+    return this.getPositionById(script.executableId);
   }
 
   private getPositionById(scriptId: string): ICodePosition {
     const position = [...this.scripts.entries()]
-      .filter(([s]) => s.id === scriptId)
+      .filter(([s]) => s.executableId === scriptId)
       .map(([, pos]) => pos)
       .at(0);
     if (!position) {
