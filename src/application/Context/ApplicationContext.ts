@@ -1,6 +1,6 @@
 import type { IApplication } from '@/domain/IApplication';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import { EventSource } from '@/infrastructure/Events/EventSource';
 import { assertInRange } from '@/application/Common/Enum';
 import { CategoryCollectionState } from './State/CategoryCollectionState';
@@ -12,7 +12,7 @@ type StateMachine = Map<OperatingSystem, ICategoryCollectionState>;
 export class ApplicationContext implements IApplicationContext {
   public readonly contextChanged = new EventSource<IApplicationContextChangedEvent>();
 
-  public collection: ICategoryCollection;
+  public collection: CategoryCollection;
 
   public currentOs: OperatingSystem;
 

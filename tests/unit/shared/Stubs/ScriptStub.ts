@@ -1,7 +1,7 @@
 import type { Script } from '@/domain/Executables/Script/Script';
 import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import type { ScriptCode } from '@/domain/Executables/Script/Code/ScriptCode';
-import type { ExecutableId } from '@/domain/Executables/Identifiable';
+import type { ExecutableId } from '@/domain/Executables/Identifiable/Identifiable';
 import { SelectedScriptStub } from './SelectedScriptStub';
 
 export class ScriptStub implements Script {

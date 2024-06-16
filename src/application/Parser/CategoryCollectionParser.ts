@@ -1,8 +1,9 @@
 import type { CollectionData } from '@/application/collections/';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
-import { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
+import { OsCategoryCollectionKey } from '@/domain/Collection/Key/OsCategoryCollectionKey';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
+import { CachedCategoryCollection } from '@/domain/Collection/CachedCategoryCollection';
 import { createEnumParser, type EnumParser } from '../Common/Enum';
 import { parseCategory, type CategoryParser } from './Executable/CategoryParser';
 import { parseScriptingDefinition, type ScriptingDefinitionParser } from './ScriptingDefinition/ScriptingDefinitionParser';
@@ -15,28 +16,29 @@ export const parseCategoryCollection: CategoryCollectionParser = (
   utilities: CategoryCollectionParserUtilities = DefaultUtilities,
 ) => {
   validateCollection(content, utilities.validator);
+  const os = utilities.osParser.parseEnum(content.os, 'os');
+  const collectionKey = new OsCategoryCollectionKey(os); // TODO: To utilities
   const scripting = utilities.parseScriptingDefinition(content.scripting, projectDetails);
-  const collectionUtilities = utilities.createUtilities(content.functions, scripting);
+  const collectionUtilities = utilities.createUtilities(collectionKey, content.functions, scripting);
   const categories = content.actions.map(
     (action) => utilities.parseCategory(action, collectionUtilities),
   );
-  const os = utilities.osParser.parseEnum(content.os, 'os');
   const collection = utilities.createCategoryCollection({
-    os, actions: categories, scripting,
+    key: collectionKey, actions: categories, scripting,
   });
   return collection;
 };
 
 export type CategoryCollectionFactory = (
-  ...parameters: ConstructorParameters<typeof CategoryCollection>
-) => ICategoryCollection;
+  ...parameters: ConstructorParameters<typeof CachedCategoryCollection>
+) => CategoryCollection;
 
 export interface CategoryCollectionParser {
   (
     content: CollectionData,
     projectDetails: ProjectDetails,
     utilities?: CategoryCollectionParserUtilities,
-  ): ICategoryCollection;
+  ): CategoryCollection;
 }
 
 function validateCollection(
@@ -71,5 +73,5 @@ const DefaultUtilities: CategoryCollectionParserUtilities = {
   parseScriptingDefinition,
   createUtilities: createCollectionUtilities,
   parseCategory,
-  createCategoryCollection: (...args) => new CategoryCollection(...args),
+  createCategoryCollection: (...args) => new CachedCategoryCollection(...args),
 };

@@ -2,8 +2,9 @@ import { InMemoryRepository } from '@/infrastructure/Repository/InMemoryReposito
 import type { Script } from '@/domain/Executables/Script/Script';
 import { EventSource } from '@/infrastructure/Events/EventSource';
 import type { ReadonlyRepository, Repository } from '@/application/Repository/Repository';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import { batchedDebounce } from '@/application/Common/Timing/BatchedDebounce';
+import type { ExecutableId, ExecutableKey } from '@/domain/Executables/Identifiable/ExecutableKey/ExecutableKey';
 import { UserSelectedScript } from './UserSelectedScript';
 import type { ScriptSelection } from './ScriptSelection';
 import type { ScriptSelectionChange, ScriptSelectionChangeCommand } from './ScriptSelectionChange';
@@ -13,6 +14,8 @@ const DEBOUNCE_DELAY_IN_MS = 100;
 
 export type DebounceFunction = typeof batchedDebounce<ScriptSelectionChangeCommand>;
 
+// TODO: Unit tests, naming
+
 export class DebouncedScriptSelection implements ScriptSelection {
   public readonly changed = new EventSource<ReadonlyArray<SelectedScript>>();
 
@@ -21,7 +24,7 @@ export class DebouncedScriptSelection implements ScriptSelection {
   public readonly processChanges: ScriptSelection['processChanges'];
 
   constructor(
-    private readonly collection: ICategoryCollection,
+    private readonly collection: CategoryCollection,
     selectedScripts: ReadonlyArray<SelectedScript>,
     debounce: DebounceFunction = batchedDebounce,
   ) {
@@ -38,8 +41,8 @@ export class DebouncedScriptSelection implements ScriptSelection {
     );
   }
 
-  public isSelected(scriptId: string): boolean {
-    return this.scripts.exists(scriptId);
+  public isSelected(scriptId: ExecutableId): boolean {
+    return this.scripts.exists(this.getExecutableKey(scriptId));
   }
 
   public get selectedScripts(): readonly SelectedScript[] {
@@ -49,14 +52,14 @@ export class DebouncedScriptSelection implements ScriptSelection {
   public selectAll(): void {
     const scriptsToSelect = this.collection
       .getAllScripts()
-      .filter((script) => !this.scripts.exists(script.executableId))
+      .filter((script) => !this.scripts.exists(script.key))
       .map((script) => new UserSelectedScript(script, false));
     if (scriptsToSelect.length === 0) {
       return;
     }
     this.processChanges({
       changes: scriptsToSelect.map((script): ScriptSelectionChange => ({
-        scriptId: script.id,
+        scriptKey: script.key,
         newStatus: {
           isSelected: true,
           isReverted: false,
@@ -69,10 +72,10 @@ export class DebouncedScriptSelection implements ScriptSelection {
     if (this.scripts.length === 0) {
       return;
     }
-    const selectedScriptIds = this.scripts.getItems().map((script) => script.id);
+    const selectedScriptKeys = this.scripts.getItems().map((script) => script.key);
     this.processChanges({
-      changes: selectedScriptIds.map((scriptId): ScriptSelectionChange => ({
-        scriptId,
+      changes: selectedScriptKeys.map((key): ScriptSelectionChange => ({
+        scriptKey: key,
         newStatus: {
           isSelected: false,
         },
@@ -84,16 +87,16 @@ export class DebouncedScriptSelection implements ScriptSelection {
     assertNonEmptyScriptSelection(scripts);
     this.processChanges({
       changes: [
-        ...getScriptIdsToBeDeselected(this.scripts, scripts)
-          .map((scriptId): ScriptSelectionChange => ({
-            scriptId,
+        ...getScriptKeysToBeDeselected(this.scripts, scripts)
+          .map((key): ScriptSelectionChange => ({
+            scriptKey: key,
             newStatus: {
               isSelected: false,
             },
           })),
-        ...getScriptIdsToBeSelected(this.scripts, scripts)
-          .map((scriptId): ScriptSelectionChange => ({
-            scriptId,
+        ...getScriptKeysToBeSelected(this.scripts, scripts)
+          .map((key): ScriptSelectionChange => ({
+            scriptKey: key,
             newStatus: {
               isSelected: true,
               isReverted: false,
@@ -114,21 +117,20 @@ export class DebouncedScriptSelection implements ScriptSelection {
   }
 
   private applyChange(change: ScriptSelectionChange): number {
-    const script = this.collection.getScript(change.scriptId);
     if (change.newStatus.isSelected) {
-      return this.addOrUpdateScript(script.executableId, change.newStatus.isReverted);
+      return this.addOrUpdateScript(change.scriptKey, change.newStatus.isReverted);
     }
-    return this.removeScript(script.executableId);
+    return this.removeScript(change.scriptKey);
   }
 
-  private addOrUpdateScript(scriptId: string, revert: boolean): number {
-    const script = this.collection.getScript(scriptId);
+  private addOrUpdateScript(scriptKey: ExecutableKey, revert: boolean): number {
+    const script = this.collection.getScript(scriptKey.executableId);
     const selectedScript = new UserSelectedScript(script, revert);
-    if (!this.scripts.exists(selectedScript.id)) {
+    if (!this.scripts.exists(selectedScript.key)) {
       this.scripts.addItem(selectedScript);
       return 1;
     }
-    const existingSelectedScript = this.scripts.getById(selectedScript.id);
+    const existingSelectedScript = this.scripts.getById(selectedScript.key);
     if (equals(selectedScript, existingSelectedScript)) {
       return 0;
     }
@@ -136,12 +138,17 @@ export class DebouncedScriptSelection implements ScriptSelection {
     return 1;
   }
 
-  private removeScript(scriptId: string): number {
-    if (!this.scripts.exists(scriptId)) {
+  private removeScript(key: ExecutableKey): number {
+    if (!this.scripts.exists(key)) {
       return 0;
     }
-    this.scripts.removeItem(scriptId);
+    this.scripts.removeItem(key);
     return 1;
+  }
+
+  private getExecutableKey(scriptId: ExecutableId): ExecutableKey {
+    const script = this.collection.getScript(scriptId);
+    return script.key;
   }
 }
 
@@ -151,25 +158,25 @@ function assertNonEmptyScriptSelection(selectedItems: readonly Script[]) {
   }
 }
 
-function getScriptIdsToBeSelected(
+function getScriptKeysToBeSelected(
   existingItems: ReadonlyRepository<SelectedScript>,
   desiredScripts: readonly Script[],
-): string[] {
+): ExecutableKey[] {
   return desiredScripts
-    .filter((script) => !existingItems.exists(script.executableId))
-    .map((script) => script.executableId);
+    .filter((script) => !existingItems.exists(script.key))
+    .map((script) => script.key);
 }
 
-function getScriptIdsToBeDeselected(
+function getScriptKeysToBeDeselected(
   existingItems: ReadonlyRepository<SelectedScript>,
   desiredScripts: readonly Script[],
-): string[] {
+): ExecutableKey[] {
   return existingItems
     .getItems()
-    .filter((existing) => !desiredScripts.some((script) => existing.id === script.executableId))
-    .map((script) => script.id);
+    .filter((existing) => !desiredScripts.some((script) => existing.key === script.key))
+    .map((script) => script.key);
 }
 
 function equals(a: SelectedScript, b: SelectedScript): boolean {
-  return a.script.executableId === b.script.executableId && a.revert === b.revert;
+  return a.script.key.equals(b.script.key) && a.revert === b.revert;
 }

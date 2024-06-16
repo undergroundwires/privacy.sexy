@@ -4,7 +4,7 @@ import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationL
 import type { ScriptCode } from '@/domain/Executables/Script/Code/ScriptCode';
 import { ScriptCodeStub } from '@tests/unit/shared/Stubs/ScriptCodeStub';
 import { createScript } from '@/domain/Executables/Script/ScriptFactory';
-import type { ExecutableId } from '@/domain/Executables/Identifiable';
+import type { ExecutableId } from '@/domain/Executables/Identifiable/Identifiable';
 
 describe('ScriptFactory', () => {
   describe('createScript', () => {

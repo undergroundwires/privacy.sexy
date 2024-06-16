@@ -12,7 +12,7 @@ import type { NodeMetadata } from '@/presentation/components/Scripts/View/Tree/N
 import { NodeMetadataStub } from '@tests/unit/shared/Stubs/NodeMetadataStub';
 import { convertToNodeInput } from '@/presentation/components/Scripts/View/Tree/TreeViewAdapter/TreeNodeMetadataConverter';
 import { TreeInputNodeDataStub as TreeInputNodeData, TreeInputNodeDataStub } from '@tests/unit/shared/Stubs/TreeInputNodeDataStub';
-import type { ExecutableId } from '@/domain/Executables/Identifiable';
+import type { ExecutableId } from '@/domain/Executables/Identifiable/Identifiable';
 
 describe('useTreeViewNodeInput', () => {
   describe('when given categoryId', () => {

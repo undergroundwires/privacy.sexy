@@ -1,6 +1,7 @@
+<<<<<<< HEAD:src/domain/Executables/Category/CategoryFactory.ts
 import type { Category } from '@/domain/Executables/Category/Category';
 import type { Script } from '@/domain/Executables/Script/Script';
-import type { ExecutableId } from '../Identifiable';
+import type { ExecutableId } from '../Identifiable/Identifiable';
 
 export type CategoryFactory = (
   parameters: CategoryInitParameters,
@@ -22,6 +23,14 @@ export const createCategory: CategoryFactory = (
 
 class CollectionCategory implements Category {
   public readonly executableId: ExecutableId;
+=======
+import type { Script } from '@/domain/Executables/Script/Script';
+import type { ExecutableKey } from '../ExecutableKey/ExecutableKey';
+import type { Category } from './Category';
+
+export class CollectionCategory implements Category {
+  public readonly key: ExecutableKey;
+>>>>>>> cbea6fa3 (Add unique script/category IDs $49, $59, $262, $126):src/domain/Executables/Category/CollectionCategory.ts
 
   public readonly name: string;
 
@@ -35,7 +44,11 @@ class CollectionCategory implements Category {
 
   constructor(parameters: CategoryInitParameters) {
     validateParameters(parameters);
+<<<<<<< HEAD:src/domain/Executables/Category/CategoryFactory.ts
     this.executableId = parameters.executableId;
+=======
+    this.key = parameters.key;
+>>>>>>> cbea6fa3 (Add unique script/category IDs $49, $59, $262, $126):src/domain/Executables/Category/CollectionCategory.ts
     this.name = parameters.name;
     this.docs = parameters.docs;
     this.subcategories = parameters.subcategories;
@@ -43,9 +56,13 @@ class CollectionCategory implements Category {
   }
 
   public includes(script: Script): boolean {
+<<<<<<< HEAD:src/domain/Executables/Category/CategoryFactory.ts
     return this
       .getAllScriptsRecursively()
       .some((childScript) => childScript.executableId === script.executableId);
+=======
+    return this.getAllScriptsRecursively().some((childScript) => childScript.key === script.key);
+>>>>>>> cbea6fa3 (Add unique script/category IDs $49, $59, $262, $126):src/domain/Executables/Category/CollectionCategory.ts
   }
 
   public getAllScriptsRecursively(): readonly Script[] {
@@ -56,6 +73,17 @@ class CollectionCategory implements Category {
   }
 }
 
+<<<<<<< HEAD:src/domain/Executables/Category/CategoryFactory.ts
+=======
+export interface CategoryInitParameters {
+  readonly key: ExecutableKey;
+  readonly name: string;
+  readonly docs: ReadonlyArray<string>;
+  readonly subcategories: ReadonlyArray<Category>;
+  readonly scripts: ReadonlyArray<Script>;
+}
+
+>>>>>>> cbea6fa3 (Add unique script/category IDs $49, $59, $262, $126):src/domain/Executables/Category/CollectionCategory.ts
 function parseScriptsRecursively(category: Category): ReadonlyArray<Script> {
   return [
     ...category.scripts,

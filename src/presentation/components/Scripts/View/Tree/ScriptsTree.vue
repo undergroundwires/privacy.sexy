@@ -26,7 +26,11 @@
 <script lang="ts">
 import { defineComponent, toRef, type PropType } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
+<<<<<<< HEAD
 import type { ExecutableId } from '@/domain/Executables/Identifiable';
+=======
+import type { ExecutableId } from '@/domain/Executables/ExecutableKey/ExecutableKey';
+>>>>>>> cbea6fa3 (Add unique script/category IDs $49, $59, $262, $126)
 import TreeView from './TreeView/TreeView.vue';
 import NodeContent from './NodeContent/NodeContent.vue';
 import { useTreeViewFilterEvent } from './TreeViewAdapter/UseTreeViewFilterEvent';
@@ -94,3 +98,4 @@ $padding-vertical   : $spacing-absolute-x-large;
   }
 }
 </style>
+@/domain/Executables/Identifiable/Identifiable

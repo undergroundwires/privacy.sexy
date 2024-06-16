@@ -1,9 +1,15 @@
 import {
   type Ref, computed, shallowReadonly,
 } from 'vue';
+<<<<<<< HEAD
 import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 import { injectKey } from '@/presentation/injectionSymbols';
-import type { ExecutableId } from '@/domain/Executables/Identifiable';
+import type { ExecutableId } from '@/domain/Executables/Identifiable/Identifiable';
+=======
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
+import { injectKey } from '@/presentation/injectionSymbols';
+import type { ExecutableId } from '@/domain/Executables/ExecutableKey/ExecutableKey';
+>>>>>>> cbea6fa3 (Add unique script/category IDs $49, $59, $262, $126)
 import { parseSingleCategory, parseAllCategories } from './CategoryNodeMetadataConverter';
 import { convertToNodeInput } from './TreeNodeMetadataConverter';
 import type { TreeInputNodeData } from '../TreeView/Bindings/TreeInputNodeData';
@@ -32,7 +38,11 @@ export function useTreeViewNodeInput(
 
 function parseNodes(
   categoryId: ExecutableId | undefined,
+<<<<<<< HEAD
   categoryCollection: ICategoryCollection,
+=======
+  categoryCollection: CategoryCollection,
+>>>>>>> cbea6fa3 (Add unique script/category IDs $49, $59, $262, $126)
   parser: CategoryNodeParser,
 ): NodeMetadata[] {
   if (categoryId !== undefined) {

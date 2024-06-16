@@ -8,7 +8,7 @@ import { ScriptSelectionStub } from '@tests/unit/shared/Stubs/ScriptSelectionStu
 import type { CategorySelectionChange } from '@/application/Context/State/Selection/Category/CategorySelectionChange';
 import type { ScriptSelectionChange, ScriptSelectionChangeCommand } from '@/application/Context/State/Selection/Script/ScriptSelectionChange';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
-import type { ExecutableId } from '@/domain/Executables/Identifiable';
+import type { ExecutableId } from '@/domain/Executables/Identifiable/Identifiable';
 
 describe('ScriptToCategorySelectionMapper', () => {
   describe('areAllScriptsSelected', () => {

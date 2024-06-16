@@ -15,13 +15,17 @@ import { CodeValidatorStub } from '@tests/unit/shared/Stubs/CodeValidatorStub';
 import { NoEmptyLines } from '@/application/Parser/Executable/Script/Validation/Rules/NoEmptyLines';
 import { CompiledCodeStub } from '@tests/unit/shared/Stubs/CompiledCodeStub';
 import { createScriptDataWithCall, createScriptDataWithCode } from '@tests/unit/shared/Stubs/ScriptDataStub';
-import type { ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
+import type { ErrorWithContextWrapper } from '@/application/Parser/ContextualError';
 import { errorWithContextWrapperStub } from '@tests/unit/shared/Stubs/ErrorWithContextWrapperStub';
 import { ScriptCodeStub } from '@tests/unit/shared/Stubs/ScriptCodeStub';
 import type { ScriptCodeFactory } from '@/domain/Executables/Script/Code/ScriptCodeFactory';
 import { createScriptCodeFactoryStub } from '@tests/unit/shared/Stubs/ScriptCodeFactoryStub';
+<<<<<<< HEAD
 import { itThrowsContextualError } from '@tests/unit/application/Parser/Common/ContextualErrorTester';
 import type { SharedFunctionsParser } from '@/application/Parser/Executable/Script/Compiler/Function/SharedFunctionsParser';
+=======
+import { itThrowsContextualError } from '@tests/unit/application/Parser/ContextualErrorTester';
+>>>>>>> cbea6fa3 (Add unique script/category IDs $49, $59, $262, $126)
 
 describe('ScriptCompiler', () => {
   describe('canCompile', () => {

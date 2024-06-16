@@ -2,8 +2,8 @@ import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
 import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 import { getEnumValues } from '@/application/Common/Enum';
 import type { CollectionData } from '@/application/collections/';
+import type { CategoryCollectionParserType } from '@/application/Parser/ApplicationParser';
 import { OperatingSystem } from '@/domain/OperatingSystem';
-import type { CategoryCollectionParser } from '@/application/Parser/CategoryCollectionParser';
 import { CategoryCollectionStub } from './CategoryCollectionStub';
 
 export class CategoryCollectionParserStub {
@@ -22,7 +22,7 @@ export class CategoryCollectionParserStub {
     return this;
   }
 
-  public getStub(): CategoryCollectionParser {
+  public getStub(): CategoryCollectionParserType {
     return (data: CollectionData, projectDetails: ProjectDetails): ICategoryCollection => {
       this.arguments.push({ data, projectDetails });
       const foundReturnValue = this.returnValues.get(data);

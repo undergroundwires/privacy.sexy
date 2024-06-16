@@ -4,7 +4,7 @@ import type { Script } from '@/domain/Executables/Script/Script';
 import type { Category } from '@/domain/Executables/Category/Category';
 import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
-import type { ExecutableId } from '@/domain/Executables/Identifiable';
+import type { ExecutableId } from '@/domain/Executables/Identifiable/Identifiable';
 import { ScriptStub } from './ScriptStub';
 import { ScriptingDefinitionStub } from './ScriptingDefinitionStub';
 import { CategoryStub } from './CategoryStub';

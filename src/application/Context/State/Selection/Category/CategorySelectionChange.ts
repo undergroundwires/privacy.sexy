@@ -1,6 +1,6 @@
-import type { ExecutableId } from '@/domain/Executables/Identifiable';
+import type { ExecutableKey } from '@/domain/Executables/Identifiable/ExecutableKey/ExecutableKey';
 
-type CategorySelectionStatus = {
+export type CategorySelectionStatus = {
   readonly isSelected: true;
   readonly isReverted: boolean;
 } | {
@@ -8,7 +8,7 @@ type CategorySelectionStatus = {
 };
 
 export interface CategorySelectionChange {
-  readonly categoryId: ExecutableId;
+  readonly categoryKey: ExecutableKey;
   readonly newStatus: CategorySelectionStatus;
 }
 

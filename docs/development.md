@@ -84,6 +84,8 @@ See [ci-cd.md](./ci-cd.md) for more information.
   - Optimizes Visual Studio Code settings and installs essential extensions, enhancing the development environment.
 - [**`python3 ./scripts/validate-collections-yaml`**](../scripts/validate-collections-yaml/README.md):
   - Validates the syntax and structure of collection YAML files.
+- [**`python3 ./scripts/add_missing_ids.py`**](../scripts/add_missing_ids.py):
+  - Adds unique `id` fields to scripts and categories lacking them in collection files.
 
 #### Automation scripts
 

@@ -55,15 +55,23 @@
 
 <script lang="ts">
 import {
+<<<<<<< HEAD
   defineComponent, computed, shallowRef,
   type PropType,
+=======
+  defineComponent, computed, shallowRef, type PropType,
+>>>>>>> cbea6fa3 (Add unique script/category IDs $49, $59, $262, $126)
 } from 'vue';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import FlatButton from '@/presentation/components/Shared/FlatButton.vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import ScriptsTree from '@/presentation/components/Scripts/View/Tree/ScriptsTree.vue';
 import { sleep } from '@/infrastructure/Threading/AsyncSleep';
+<<<<<<< HEAD
 import type { ExecutableId } from '@/domain/Executables/Identifiable';
+=======
+import type { ExecutableId } from '@/domain/Executables/ExecutableKey/ExecutableKey';
+>>>>>>> cbea6fa3 (Add unique script/category IDs $49, $59, $262, $126)
 import CardSelectionIndicator from './CardSelectionIndicator.vue';
 import CardExpandTransition from './CardExpandTransition.vue';
 import CardExpansionArrow from './CardExpansionArrow.vue';
@@ -288,3 +296,4 @@ $card-horizontal-gap    : $card-gap;
 .medium-screen  {   @include adaptive-card(2);  }
 .small-screen   {   @include adaptive-card(1);  }
 </style>
+@/domain/Executables/Identifiable/Identifiable

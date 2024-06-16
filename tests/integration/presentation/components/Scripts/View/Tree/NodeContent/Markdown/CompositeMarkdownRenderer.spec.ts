@@ -225,7 +225,11 @@ function collectAllDocumentedExecutables(): DocumentedExecutable[] {
   ]);
   const allDocumentedExecutables = allExecutables.filter((e) => e.docs.length > 0);
   return allDocumentedExecutables.map((executable): DocumentedExecutable => ({
+<<<<<<< HEAD
     executableLabel: `${executable.name} (${executable.executableId})`,
+=======
+    executableLabel: `${executable.name} (${executable.key.createSerializedKey()})`,
+>>>>>>> cbea6fa3 (Add unique script/category IDs $49, $59, $262, $126)
     docs: executable.docs.join('\n'),
   }));
 }

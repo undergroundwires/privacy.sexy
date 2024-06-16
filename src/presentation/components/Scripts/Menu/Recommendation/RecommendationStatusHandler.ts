@@ -1,7 +1,11 @@
 import type { Script } from '@/domain/Executables/Script/Script';
 import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import { scrambledEqual } from '@/application/Common/Array';
+<<<<<<< HEAD
 import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+=======
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
+>>>>>>> cbea6fa3 (Add unique script/category IDs $49, $59, $262, $126)
 import type { ReadonlyScriptSelection, ScriptSelection } from '@/application/Context/State/Selection/Script/ScriptSelection';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
 import { RecommendationStatusType } from './RecommendationStatusType';
@@ -33,12 +37,12 @@ export function getCurrentRecommendationStatus(
 
 export interface SelectionCheckContext {
   readonly selection: ReadonlyScriptSelection;
-  readonly collection: ICategoryCollection;
+  readonly collection: CategoryCollection;
 }
 
 export interface SelectionMutationContext {
   readonly selection: ScriptSelection,
-  readonly collection: ICategoryCollection,
+  readonly collection: CategoryCollection,
 }
 
 interface RecommendationStatusTypeHandler {
@@ -95,10 +99,14 @@ function areAllSelected(
 ): boolean {
   const selectedScriptIds = selection
     .filter((selected) => !selected.revert)
-    .map((script) => script.id);
+    .map((script) => script.key);
   if (expectedScripts.length < selectedScriptIds.length) {
     return false;
   }
+<<<<<<< HEAD
   const expectedScriptIds = expectedScripts.map((script) => script.executableId);
+=======
+  const expectedScriptIds = expectedScripts.map((script) => script.key);
+>>>>>>> cbea6fa3 (Add unique script/category IDs $49, $59, $262, $126)
   return scrambledEqual(selectedScriptIds, expectedScriptIds);
 }

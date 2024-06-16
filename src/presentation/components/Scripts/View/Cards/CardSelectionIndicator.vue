@@ -16,8 +16,13 @@ import { defineComponent, computed, type PropType } from 'vue';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import type { Category } from '@/domain/Executables/Category/Category';
+<<<<<<< HEAD
 import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
 import type { ExecutableId } from '@/domain/Executables/Identifiable';
+=======
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
+import type { ExecutableId } from '@/domain/Executables/ExecutableKey/ExecutableKey';
+>>>>>>> cbea6fa3 (Add unique script/category IDs $49, $59, $262, $126)
 
 export default defineComponent({
   components: {
@@ -32,7 +37,7 @@ export default defineComponent({
   setup(props) {
     const { currentState } = injectKey((keys) => keys.useCollectionState);
     const { currentSelection } = injectKey((keys) => keys.useUserSelectionState);
-    const currentCollection = computed<ICategoryCollection>(() => currentState.value.collection);
+    const currentCollection = computed<CategoryCollection>(() => currentState.value.collection);
 
     const currentCategory = computed<Category>(
       () => currentCollection.value.getCategory(props.categoryId),
@@ -62,3 +67,4 @@ export default defineComponent({
 }
 </style>
 @/domain/Collection/ICategoryCollection
+@/domain/Executables/Identifiable/Identifiable

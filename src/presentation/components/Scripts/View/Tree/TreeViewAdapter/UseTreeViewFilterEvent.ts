@@ -5,7 +5,7 @@ import type { Category } from '@/domain/Executables/Category/Category';
 import { injectKey } from '@/presentation/injectionSymbols';
 import type { ReadonlyFilterContext } from '@/application/Context/State/Filter/FilterContext';
 import type { FilterResult } from '@/application/Context/State/Filter/Result/FilterResult';
-import type { ExecutableId } from '@/domain/Executables/Identifiable';
+import type { ExecutableId } from '@/domain/Executables/Identifiable/Identifiable';
 import type { Executable } from '@/domain/Executables/Executable';
 import { type TreeViewFilterEvent, createFilterRemovedEvent, createFilterTriggeredEvent } from '../TreeView/Bindings/TreeInputFilterEvent';
 import { createExecutableIdFromNodeId } from './CategoryNodeMetadataConverter';

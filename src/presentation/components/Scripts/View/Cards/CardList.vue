@@ -44,7 +44,11 @@ import {
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import SizeObserver from '@/presentation/components/Shared/SizeObserver.vue';
+<<<<<<< HEAD
 import type { ExecutableId } from '@/domain/Executables/Identifiable';
+=======
+import type { ExecutableId } from '@/domain/Executables/ExecutableKey/ExecutableKey';
+>>>>>>> cbea6fa3 (Add unique script/category IDs $49, $59, $262, $126)
 import { hasDirective } from './NonCollapsingDirective';
 import CardListItem from './CardListItem.vue';
 
@@ -60,7 +64,11 @@ export default defineComponent({
     const width = ref<number | undefined>();
 
     const categoryIds = computed<readonly ExecutableId[]>(
+<<<<<<< HEAD
       () => currentState.value.collection.actions.map((category) => category.executableId),
+=======
+      () => currentState.value.collection.actions.map((category) => category.key.executableId),
+>>>>>>> cbea6fa3 (Add unique script/category IDs $49, $59, $262, $126)
     );
     const activeCategoryId = ref<ExecutableId | undefined>(undefined);
 
@@ -141,3 +149,4 @@ function isClickable(element: Element) {
 
 @include fade-transition('fade-transition');
 </style>
+@/domain/Executables/Identifiable/Identifiable

@@ -13,7 +13,7 @@ import {
 import { ExecutableType } from '@/application/Parser/Executable/Validation/ExecutableType';
 import type { NodeMetadata } from '@/presentation/components/Scripts/View/Tree/NodeContent/NodeMetadata';
 import { expectExists } from '@tests/shared/Assertions/ExpectExists';
-import type { ExecutableId } from '@/domain/Executables/Identifiable';
+import type { ExecutableId } from '@/domain/Executables/Identifiable/Identifiable';
 
 describe('CategoryNodeMetadataConverter', () => {
   it('can convert script id and back', () => {

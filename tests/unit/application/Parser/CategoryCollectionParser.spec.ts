@@ -1,28 +1,24 @@
 import { describe, it, expect } from 'vitest';
-import { TypeValidatorStub } from '@tests/unit/shared/Stubs/TypeValidatorStub';
-import { parseCategoryCollection, type CategoryCollectionFactory } from '@/application/Parser/CategoryCollectionParser';
-import { type CategoryParser } from '@/application/Parser/Executable/CategoryParser';
+import type { IEntity } from '@/infrastructure/Entity/IEntity';
+import { parseCategoryCollection } from '@/application/Parser/CategoryCollectionParser';
+import { parseCategory } from '@/application/Parser/Executable/CategoryParser';
 import { OperatingSystem } from '@/domain/OperatingSystem';
+import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
+import { ScriptingDefinitionParser } from '@/application/Parser/ScriptingDefinition/ScriptingDefinitionParser';
 import { EnumParserStub } from '@tests/unit/shared/Stubs/EnumParserStub';
 import { ProjectDetailsStub } from '@tests/unit/shared/Stubs/ProjectDetailsStub';
 import { getCategoryStub, CollectionDataStub } from '@tests/unit/shared/Stubs/CollectionDataStub';
 import { CategoryCollectionSpecificUtilitiesStub } from '@tests/unit/shared/Stubs/CategoryCollectionSpecificUtilitiesStub';
+import { CategoryDataStub } from '@tests/unit/shared/Stubs/CategoryDataStub';
+import { createScriptDataWithCall, createScriptDataWithCode } from '@tests/unit/shared/Stubs/ScriptDataStub';
 import { createFunctionDataWithCode } from '@tests/unit/shared/Stubs/FunctionDataStub';
-import type { CollectionData, ScriptingDefinitionData, FunctionData } from '@/application/collections/';
-import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
-import type { NonEmptyCollectionAssertion, ObjectAssertion, TypeValidator } from '@/application/Parser/Common/TypeValidator';
-import type { EnumParser } from '@/application/Common/Enum';
-import type { ScriptingDefinitionParser } from '@/application/Parser/ScriptingDefinition/ScriptingDefinitionParser';
-import { ScriptingDefinitionStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionStub';
-import type { CategoryCollectionSpecificUtilitiesFactory } from '@/application/Parser/Executable/CategoryCollectionSpecificUtilities';
-import { ScriptingDefinitionDataStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionDataStub';
-import { CategoryParserStub } from '@tests/unit/shared/Stubs/CategoryParserStub';
-import { createCategoryCollectionFactorySpy } from '@tests/unit/shared/Stubs/CategoryCollectionFactoryStub';
-import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
-import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
+import { FunctionCallDataStub } from '@tests/unit/shared/Stubs/FunctionCallDataStub';
+import { itEachAbsentCollectionValue } from '@tests/unit/shared/TestCases/AbsentTests';
+import type { CategoryData } from '@/application/collections/';
 
 describe('CategoryCollectionParser', () => {
   describe('parseCategoryCollection', () => {
+<<<<<<< HEAD
     it('validates object', () => {
       // arrange
       const data = new CollectionDataStub();
@@ -42,10 +38,26 @@ describe('CategoryCollectionParser', () => {
       // assert
       validator.expectObjectAssertion(expectedAssertion);
     });
+=======
+>>>>>>> cbea6fa3 (Add unique script/category IDs $49, $59, $262, $126)
     describe('actions', () => {
-      it('validates non-empty collection', () => {
+      describe('throws with absent actions', () => {
+        itEachAbsentCollectionValue<CategoryData>((absentValue) => {
+          // arrange
+          const expectedError = 'content does not define any action';
+          const collection = new CollectionDataStub()
+            .withActions(absentValue);
+          const projectDetails = new ProjectDetailsStub();
+          // act
+          const act = () => parseCategoryCollection(collection, projectDetails);
+          // assert
+          expect(act).to.throw(expectedError);
+        }, { excludeUndefined: true, excludeNull: true });
+      });
+      it('parses actions', () => {
         // arrange
         const actions = [getCategoryStub('test1'), getCategoryStub('test2')];
+<<<<<<< HEAD
         const expectedAssertion: NonEmptyCollectionAssertion = {
           value: actions,
           valueName: '\'actions\' in collection',
@@ -54,9 +66,17 @@ describe('CategoryCollectionParser', () => {
         const context = new TestContext()
           .withData(new CollectionDataStub().withActions(actions))
           .withTypeValidator(validator);
+=======
+        const context = new CategoryCollectionSpecificUtilitiesStub();
+        const expected = [parseCategory(actions[0], context), parseCategory(actions[1], context)];
+        const collection = new CollectionDataStub()
+          .withActions(actions);
+        const projectDetails = new ProjectDetailsStub();
+>>>>>>> cbea6fa3 (Add unique script/category IDs $49, $59, $262, $126)
         // act
-        context.parseCategoryCollection();
+        const actual = parseCategoryCollection(collection, projectDetails).actions;
         // assert
+<<<<<<< HEAD
         validator.expectNonEmptyCollectionAssertion(expectedAssertion);
       });
       it('parses actions correctly', () => {
@@ -127,190 +147,79 @@ describe('CategoryCollectionParser', () => {
             context.parseCategoryCollection();
             // assert
             expect(actualFunctionsData).to.equal(expectedFunctionsData);
+=======
+        expect(excludingId(actual)).to.be.deep.equal(excludingId(expected));
+        function excludingId<TId>(array: ReadonlyArray<IEntity<TId>>) {
+          return array.map((obj) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { id: omitted, ...rest } = obj;
+            return rest;
+>>>>>>> cbea6fa3 (Add unique script/category IDs $49, $59, $262, $126)
           });
-          it('creates utilities with correct scripting definition', () => {
-            // arrange
-            const expectedScripting = new ScriptingDefinitionStub();
-            const scriptingDefinitionParser: ScriptingDefinitionParser = () => {
-              return expectedScripting;
-            };
-            let actualScripting: IScriptingDefinition | undefined;
-            const utilitiesFactory: CategoryCollectionSpecificUtilitiesFactory = (_, scripting) => {
-              actualScripting = scripting;
-              return new CategoryCollectionSpecificUtilitiesStub();
-            };
-            const context = new TestContext()
-              .withCollectionUtilitiesFactory(utilitiesFactory)
-              .withScriptDefinitionParser(scriptingDefinitionParser);
-            // act
-            context.parseCategoryCollection();
-            // assert
-            expect(actualScripting).to.equal(expectedScripting);
-          });
-        });
+        }
       });
     });
     describe('scripting definition', () => {
-      it('parses correctly', () => {
+      it('parses scripting definition as expected', () => {
         // arrange
-        const {
-          categoryCollectionFactorySpy,
-          getInitParameters,
-        } = createCategoryCollectionFactorySpy();
-        const expected = new ScriptingDefinitionStub();
-        const scriptingDefinitionParser: ScriptingDefinitionParser = () => {
-          return expected;
-        };
-        const context = new TestContext()
-          .withCategoryCollectionFactory(categoryCollectionFactorySpy)
-          .withScriptDefinitionParser(scriptingDefinitionParser);
+        const collection = new CollectionDataStub();
+        const projectDetails = new ProjectDetailsStub();
+        const expected = new ScriptingDefinitionParser()
+          .parse(collection.scripting, projectDetails);
         // act
-        const actualCategoryCollection = context.parseCategoryCollection();
+        const actual = parseCategoryCollection(collection, projectDetails).scripting;
         // assert
-        const actualScripting = getInitParameters(actualCategoryCollection)?.scripting;
-        expect(expected).to.equal(actualScripting);
-      });
-      it('parses expected data', () => {
-        // arrange
-        const expectedData = new ScriptingDefinitionDataStub();
-        const collection = new CollectionDataStub()
-          .withScripting(expectedData);
-        let actualData: ScriptingDefinitionData | undefined;
-        const scriptingDefinitionParser
-        : ScriptingDefinitionParser = (data: ScriptingDefinitionData) => {
-          actualData = data;
-          return new ScriptingDefinitionStub();
-        };
-        const context = new TestContext()
-          .withScriptDefinitionParser(scriptingDefinitionParser)
-          .withData(collection);
-        // act
-        context.parseCategoryCollection();
-        // assert
-        expect(actualData).to.equal(expectedData);
-      });
-      it('parses with correct project details', () => {
-        // arrange
-        const expectedProjectDetails = new ProjectDetailsStub();
-        let actualDetails: ProjectDetails | undefined;
-        const scriptingDefinitionParser
-        : ScriptingDefinitionParser = (_, details: ProjectDetails) => {
-          actualDetails = details;
-          return new ScriptingDefinitionStub();
-        };
-        const context = new TestContext()
-          .withProjectDetails(expectedProjectDetails)
-          .withScriptDefinitionParser(scriptingDefinitionParser);
-        // act
-        context.parseCategoryCollection();
-        // assert
-        expect(actualDetails).to.equal(expectedProjectDetails);
+        expect(expected).to.deep.equal(actual);
       });
     });
     describe('os', () => {
-      it('parses correctly', () => {
+      it('parses as expected', () => {
         // arrange
-        const {
-          categoryCollectionFactorySpy,
-          getInitParameters,
-        } = createCategoryCollectionFactorySpy();
         const expectedOs = OperatingSystem.macOS;
         const osText = 'macos';
         const expectedName = 'os';
-        const collectionData = new CollectionDataStub()
+        const collection = new CollectionDataStub()
           .withOs(osText);
         const parserMock = new EnumParserStub<OperatingSystem>()
           .setup(expectedName, osText, expectedOs);
-        const context = new TestContext()
-          .withOsParser(parserMock)
-          .withCategoryCollectionFactory(categoryCollectionFactorySpy)
-          .withData(collectionData);
+        const projectDetails = new ProjectDetailsStub();
         // act
-        const actualCollection = context.parseCategoryCollection();
+        const actual = parseCategoryCollection(collection, projectDetails, parserMock);
         // assert
-        const actualOs = getInitParameters(actualCollection)?.os;
-        expect(actualOs).to.equal(expectedOs);
+        expect(actual.os).to.equal(expectedOs);
+      });
+    });
+    describe('functions', () => {
+      it('compiles script call with given function', () => {
+        // arrange
+        const expectedCode = 'code-from-the-function';
+        const functionName = 'function-name';
+        const scriptName = 'script-name';
+        const script = createScriptDataWithCall()
+          .withCall(new FunctionCallDataStub().withName(functionName).withParameters({}))
+          .withName(scriptName);
+        const func = createFunctionDataWithCode()
+          .withParametersObject([])
+          .withName(functionName)
+          .withCode(expectedCode);
+        const category = new CategoryDataStub()
+          .withChildren([script,
+            createScriptDataWithCode().withName('2')
+              .withRecommendationLevel(RecommendationLevel.Standard),
+            createScriptDataWithCode()
+              .withName('3').withRecommendationLevel(RecommendationLevel.Strict),
+          ]);
+        const collection = new CollectionDataStub()
+          .withActions([category])
+          .withFunctions([func]);
+        const projectDetails = new ProjectDetailsStub();
+        // act
+        const actual = parseCategoryCollection(collection, projectDetails);
+        // assert
+        const actualScript = actual.getScript(scriptName);
+        const actualCode = actualScript.code.execute;
+        expect(actualCode).to.equal(expectedCode);
       });
     });
   });
 });
-
-class TestContext {
-  private data: CollectionData = new CollectionDataStub();
-
-  private projectDetails: ProjectDetails = new ProjectDetailsStub();
-
-  private validator: TypeValidator = new TypeValidatorStub();
-
-  private osParser: EnumParser<OperatingSystem> = new EnumParserStub<OperatingSystem>()
-    .setupDefaultValue(OperatingSystem.Android);
-
-  private collectionUtilitiesFactory
-  : CategoryCollectionSpecificUtilitiesFactory = () => {
-      return new CategoryCollectionSpecificUtilitiesStub();
-    };
-
-  private scriptDefinitionParser: ScriptingDefinitionParser = () => new ScriptingDefinitionStub();
-
-  private categoryParser: CategoryParser = new CategoryParserStub().get();
-
-  private categoryCollectionFactory
-  : CategoryCollectionFactory = createCategoryCollectionFactorySpy().categoryCollectionFactorySpy;
-
-  public withData(data: CollectionData): this {
-    this.data = data;
-    return this;
-  }
-
-  public withCategoryParser(categoryParser: CategoryParser): this {
-    this.categoryParser = categoryParser;
-    return this;
-  }
-
-  public withCategoryCollectionFactory(categoryCollectionFactory: CategoryCollectionFactory): this {
-    this.categoryCollectionFactory = categoryCollectionFactory;
-    return this;
-  }
-
-  public withProjectDetails(projectDetails: ProjectDetails): this {
-    this.projectDetails = projectDetails;
-    return this;
-  }
-
-  public withOsParser(osParser: EnumParser<OperatingSystem>): this {
-    this.osParser = osParser;
-    return this;
-  }
-
-  public withScriptDefinitionParser(scriptDefinitionParser: ScriptingDefinitionParser): this {
-    this.scriptDefinitionParser = scriptDefinitionParser;
-    return this;
-  }
-
-  public withTypeValidator(typeValidator: TypeValidator): this {
-    this.validator = typeValidator;
-    return this;
-  }
-
-  public withCollectionUtilitiesFactory(
-    collectionUtilitiesFactory: CategoryCollectionSpecificUtilitiesFactory,
-  ): this {
-    this.collectionUtilitiesFactory = collectionUtilitiesFactory;
-    return this;
-  }
-
-  public parseCategoryCollection(): ReturnType<typeof parseCategoryCollection> {
-    return parseCategoryCollection(
-      this.data,
-      this.projectDetails,
-      {
-        osParser: this.osParser,
-        validator: this.validator,
-        parseScriptingDefinition: this.scriptDefinitionParser,
-        createUtilities: this.collectionUtilitiesFactory,
-        parseCategory: this.categoryParser,
-        createCategoryCollection: this.categoryCollectionFactory,
-      },
-    );
-  }
-}

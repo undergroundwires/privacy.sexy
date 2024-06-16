@@ -1,11 +1,20 @@
 import { useUserSelectionState } from '@/presentation/components/Shared/Hooks/UseUserSelectionState';
+import { injectKey } from '@/presentation/injectionSymbols';
+import type { ExecutableId, ExecutableKey } from '@/domain/Executables/Identifiable/ExecutableKey/ExecutableKey';
 import { TreeNodeCheckState } from '../TreeView/Node/State/CheckState';
+import { getScriptKey } from './CategoryNodeMetadataConverter';
 import type { TreeNodeStateChangedEmittedEvent } from '../TreeView/Bindings/TreeNodeStateChangedEmittedEvent';
 
 export function useCollectionSelectionStateUpdater(
   useSelectionStateHook: ReturnType<typeof useUserSelectionState>,
+  useCurrentStateHook = injectKey((keys) => keys.useCollectionState), // TODO: Not tested
 ) {
   const { modifyCurrentSelection, currentSelection } = useSelectionStateHook;
+  const { currentState } = useCurrentStateHook;
+
+  function convertToScriptKey(nodeId: ExecutableId): ExecutableKey {
+    return getScriptKey(nodeId, currentState.value.collection);
+  }
 
   function updateNodeSelection(change: TreeNodeStateChangedEmittedEvent) {
     const { node } = change;
@@ -23,7 +32,7 @@ export function useCollectionSelectionStateUpdater(
         selection.scripts.processChanges({
           changes: [
             {
-              scriptId: node.id,
+              scriptKey: convertToScriptKey(node.id),
               newStatus: {
                 isSelected: true,
                 isReverted: false,
@@ -41,7 +50,7 @@ export function useCollectionSelectionStateUpdater(
         selection.scripts.processChanges({
           changes: [
             {
-              scriptId: node.id,
+              scriptKey: convertToScriptKey(node.id),
               newStatus: {
                 isSelected: false,
               },

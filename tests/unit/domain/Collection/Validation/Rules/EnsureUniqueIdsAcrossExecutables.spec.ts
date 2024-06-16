@@ -5,7 +5,7 @@ import type { Script } from '@/domain/Executables/Script/Script';
 import { CategoryCollectionValidationContextStub } from '@tests/unit/shared/Stubs/CategoryCollectionValidationContextStub';
 import { CategoryStub } from '@tests/unit/shared/Stubs/CategoryStub';
 import { ScriptStub } from '@tests/unit/shared/Stubs/ScriptStub';
-import type { ExecutableId } from '@/domain/Executables/Identifiable';
+import type { ExecutableId } from '@/domain/Executables/Identifiable/Identifiable';
 
 describe('ensureUniqueIdsAcrossExecutables', () => {
   it('does not throw an error when all IDs are unique', () => {

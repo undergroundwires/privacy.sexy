@@ -1,5 +1,5 @@
 import { EventSource } from '@/infrastructure/Events/EventSource';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import { FilterChange } from './Event/FilterChange';
 import { LinearFilterStrategy } from './Strategy/LinearFilterStrategy';
 import type { FilterResult } from './Result/FilterResult';
@@ -13,7 +13,7 @@ export class AdaptiveFilterContext implements FilterContext {
   public currentFilter: FilterResult | undefined;
 
   constructor(
-    private readonly collection: ICategoryCollection,
+    private readonly collection: CategoryCollection,
     private readonly filterStrategy: FilterStrategy = new LinearFilterStrategy(),
   ) {
 

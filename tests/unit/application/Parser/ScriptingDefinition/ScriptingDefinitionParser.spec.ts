@@ -1,20 +1,22 @@
 import { describe, it, expect } from 'vitest';
 import { ScriptingLanguage } from '@/domain/ScriptingLanguage';
+<<<<<<< HEAD
 import type { EnumParser } from '@/application/Common/Enum';
 import type { CodeSubstituter } from '@/application/Parser/ScriptingDefinition/CodeSubstituter';
+=======
+import { ScriptingDefinitionParser } from '@/application/Parser/ScriptingDefinition/ScriptingDefinitionParser';
+import type { IEnumParser } from '@/application/Common/Enum';
+import type { ICodeSubstituter } from '@/application/Parser/ScriptingDefinition/ICodeSubstituter';
+>>>>>>> cbea6fa3 (Add unique script/category IDs $49, $59, $262, $126)
 import type { IScriptingDefinition } from '@/domain/IScriptingDefinition';
 import { ProjectDetailsStub } from '@tests/unit/shared/Stubs/ProjectDetailsStub';
 import { EnumParserStub } from '@tests/unit/shared/Stubs/EnumParserStub';
 import { ScriptingDefinitionDataStub } from '@tests/unit/shared/Stubs/ScriptingDefinitionDataStub';
 import { CodeSubstituterStub } from '@tests/unit/shared/Stubs/CodeSubstituterStub';
-import { parseScriptingDefinition } from '@/application/Parser/ScriptingDefinition/ScriptingDefinitionParser';
-import type { ObjectAssertion, TypeValidator } from '@/application/Parser/Common/TypeValidator';
-import { TypeValidatorStub } from '@tests/unit/shared/Stubs/TypeValidatorStub';
-import type { ScriptingDefinitionData } from '@/application/collections/';
-import type { ProjectDetails } from '@/domain/Project/ProjectDetails';
 
 describe('ScriptingDefinitionParser', () => {
   describe('parseScriptingDefinition', () => {
+<<<<<<< HEAD
     it('validates data', () => {
       // arrange
       const data = new ScriptingDefinitionDataStub();
@@ -32,21 +34,24 @@ describe('ScriptingDefinitionParser', () => {
       // assert
       validatorStub.assertObject(expectedAssertion);
     });
+=======
+>>>>>>> cbea6fa3 (Add unique script/category IDs $49, $59, $262, $126)
     describe('language', () => {
       it('parses as expected', () => {
         // arrange
         const expectedLanguage = ScriptingLanguage.batchfile;
         const languageText = 'batchfile';
         const expectedName = 'language';
+        const projectDetails = new ProjectDetailsStub();
         const definition = new ScriptingDefinitionDataStub()
           .withLanguage(languageText);
         const parserMock = new EnumParserStub<ScriptingLanguage>()
           .setup(expectedName, languageText, expectedLanguage);
-        const context = new TestContext()
+        const sut = new ScriptingDefinitionParserBuilder()
           .withParser(parserMock)
-          .withData(definition);
+          .build();
         // act
-        const actual = context.parseScriptingDefinition();
+        const actual = sut.parse(definition, projectDetails);
         // assert
         expect(actual.language).to.equal(expectedLanguage);
       });
@@ -55,92 +60,67 @@ describe('ScriptingDefinitionParser', () => {
       // arrange
       const code = 'hello';
       const expected = 'substituted';
-      const testScenarios: readonly {
-        readonly description: string;
-        getActualValue(result: IScriptingDefinition): string;
-        readonly data: ScriptingDefinitionData;
-      }[] = [
+      const testCases = [
         {
-          description: 'startCode',
+          name: 'startCode',
           getActualValue: (result: IScriptingDefinition) => result.startCode,
           data: new ScriptingDefinitionDataStub()
             .withStartCode(code),
         },
         {
-          description: 'endCode',
+          name: 'endCode',
           getActualValue: (result: IScriptingDefinition) => result.endCode,
           data: new ScriptingDefinitionDataStub()
             .withEndCode(code),
         },
       ];
-      testScenarios.forEach(({
-        description, data, getActualValue,
-      }) => {
-        it(description, () => {
+      for (const testCase of testCases) {
+        it(testCase.name, () => {
           const projectDetails = new ProjectDetailsStub();
           const substituterMock = new CodeSubstituterStub()
             .setup(code, projectDetails, expected);
+<<<<<<< HEAD
           const context = new TestContext()
             .withData(data)
             .withProjectDetails(projectDetails)
             .withSubstituter(substituterMock.substitute);
+=======
+          const sut = new ScriptingDefinitionParserBuilder()
+            .withSubstituter(substituterMock)
+            .build();
+>>>>>>> cbea6fa3 (Add unique script/category IDs $49, $59, $262, $126)
           // act
-          const definition = context.parseScriptingDefinition();
+          const definition = sut.parse(testCase.data, projectDetails);
           // assert
-          const actual = getActualValue(definition);
+          const actual = testCase.getActualValue(definition);
           expect(actual).to.equal(expected);
         });
-      });
+      }
     });
   });
 });
 
-class TestContext {
-  private languageParser: EnumParser<ScriptingLanguage> = new EnumParserStub<ScriptingLanguage>()
+class ScriptingDefinitionParserBuilder {
+  private languageParser: IEnumParser<ScriptingLanguage> = new EnumParserStub<ScriptingLanguage>()
     .setupDefaultValue(ScriptingLanguage.shellscript);
 
   private codeSubstituter: CodeSubstituter = new CodeSubstituterStub().substitute;
 
-  private validator: TypeValidator = new TypeValidatorStub();
-
-  private data: ScriptingDefinitionData = new ScriptingDefinitionDataStub();
-
-  private projectDetails: ProjectDetails = new ProjectDetailsStub();
-
-  public withData(data: ScriptingDefinitionData): this {
-    this.data = data;
-    return this;
-  }
-
-  public withProjectDetails(projectDetails: ProjectDetails): this {
-    this.projectDetails = projectDetails;
-    return this;
-  }
-
-  public withParser(parser: EnumParser<ScriptingLanguage>): this {
+  public withParser(parser: IEnumParser<ScriptingLanguage>) {
     this.languageParser = parser;
     return this;
   }
 
+<<<<<<< HEAD
   public withSubstituter(substituter: CodeSubstituter): this {
+=======
+  public withSubstituter(substituter: ICodeSubstituter) {
+>>>>>>> cbea6fa3 (Add unique script/category IDs $49, $59, $262, $126)
     this.codeSubstituter = substituter;
     return this;
   }
 
-  public withTypeValidator(validator: TypeValidator): this {
-    this.validator = validator;
-    return this;
-  }
-
-  public parseScriptingDefinition() {
-    return parseScriptingDefinition(
-      this.data,
-      this.projectDetails,
-      {
-        languageParser: this.languageParser,
-        codeSubstituter: this.codeSubstituter,
-        validator: this.validator,
-      },
-    );
+  public build() {
+    return new ScriptingDefinitionParser(this.languageParser, this.codeSubstituter);
   }
 }

@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 import type { ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 import { splitTextIntoLines } from '@/application/Common/Text/SplitTextIntoLines';
+=======
+import type { ErrorWithContextWrapper } from '@/application/Parser/ContextualError';
+>>>>>>> cbea6fa3 (Add unique script/category IDs $49, $59, $262, $126)
 
 export class ErrorWrapperStub {
   private errorToReturn: Error | undefined;

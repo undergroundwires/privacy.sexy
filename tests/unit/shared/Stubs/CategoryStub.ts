@@ -1,7 +1,7 @@
 import type { Category } from '@/domain/Executables/Category/Category';
 import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import type { Script } from '@/domain/Executables/Script/Script';
-import type { ExecutableId } from '@/domain/Executables/Identifiable';
+import type { ExecutableId } from '@/domain/Executables/Identifiable/Identifiable';
 import { ScriptStub } from './ScriptStub';
 
 export class CategoryStub implements Category {

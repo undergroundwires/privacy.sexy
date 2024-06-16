@@ -1,4 +1,4 @@
-import type { ExecutableId } from '@/domain/Executables/Identifiable';
+import type { ExecutableId } from '@/domain/Executables/Identifiable/Identifiable';
 
 export enum NodeType {
   Script,

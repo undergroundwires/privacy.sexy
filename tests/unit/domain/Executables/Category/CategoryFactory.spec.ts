@@ -5,7 +5,7 @@ import { itEachAbsentStringValue } from '@tests/unit/shared/TestCases/AbsentTest
 import type { Category } from '@/domain/Executables/Category/Category';
 import type { Script } from '@/domain/Executables/Script/Script';
 import { createCategory } from '@/domain/Executables/Category/CategoryFactory';
-import type { ExecutableId } from '@/domain/Executables/Identifiable';
+import type { ExecutableId } from '@/domain/Executables/Identifiable/Identifiable';
 
 describe('CategoryFactory', () => {
   describe('createCategory', () => {

@@ -1,6 +1,6 @@
 import type { CategorySelection } from '@/application/Context/State/Selection/Category/CategorySelection';
 import type { CategorySelectionChangeCommand } from '@/application/Context/State/Selection/Category/CategorySelectionChange';
-import type { ExecutableId } from '@/domain/Executables/Identifiable';
+import type { ExecutableId } from '@/domain/Executables/Identifiable/Identifiable';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export class CategorySelectionStub

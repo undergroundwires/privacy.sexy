@@ -5,6 +5,7 @@ import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/
 import type { Category } from '@/domain/Executables/Category/Category';
 import type { Script } from '@/domain/Executables/Script/Script';
 import { createCategory, type CategoryFactory } from '@/domain/Executables/Category/CategoryFactory';
+import { CollectionCategory } from '@/domain/Executables/Category/CollectionCategory';
 import { parseDocs, type DocsParser } from './DocumentationParser';
 import { parseScript, type ScriptParser } from './Script/ScriptParser';
 import { createExecutableDataValidator, type ExecutableValidator, type ExecutableValidatorFactory } from './Validation/ExecutableValidator';
@@ -40,7 +41,7 @@ interface CategoryParseContext {
 
 function parseCategoryRecursively(
   context: CategoryParseContext,
-): Category | never {
+): CollectionCategory | never {
   const validator = ensureValidCategory(context);
   const children: CategoryChildren = {
     subcategories: new Array<Category>(),
@@ -57,7 +58,7 @@ function parseCategoryRecursively(
   }
   try {
     return context.categoryUtilities.createCategory({
-      executableId: context.categoryData.category, // arbitrary ID
+      key: context.collectionUtilities.keyFactory.createExecutableKey(context.categoryData.id),
       name: context.categoryData.category,
       docs: context.categoryUtilities.parseDocs(context.categoryData),
       subcategories: children.subcategories,
@@ -84,9 +85,10 @@ function ensureValidCategory(
     value: category,
     valueName: `Category '${category.category}'` ?? 'Category',
     allowedProperties: [
-      'docs', 'children', 'category',
+      'id', 'docs', 'children', 'category',
     ],
   }));
+  validator.assertExecutableId(category.id);
   validator.assertValidName(category.category);
   validator.assertType((v) => v.assertNonEmptyCollection({
     value: category.children,

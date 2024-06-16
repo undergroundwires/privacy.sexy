@@ -15,9 +15,14 @@ import { CodeValidatorStub } from '@tests/unit/shared/Stubs/CodeValidatorStub';
 import type { ICodeValidator } from '@/application/Parser/Executable/Script/Validation/ICodeValidator';
 import { NoEmptyLines } from '@/application/Parser/Executable/Script/Validation/Rules/NoEmptyLines';
 import { NoDuplicatedLines } from '@/application/Parser/Executable/Script/Validation/Rules/NoDuplicatedLines';
+<<<<<<< HEAD
 import type { ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
+=======
+import type { ErrorWithContextWrapper } from '@/application/Parser/ContextualError';
+import { FunctionParameterStub } from '@tests/unit/shared/Stubs/FunctionParameterStub';
+>>>>>>> cbea6fa3 (Add unique script/category IDs $49, $59, $262, $126)
 import { errorWithContextWrapperStub } from '@tests/unit/shared/Stubs/ErrorWithContextWrapperStub';
-import { itThrowsContextualError } from '@tests/unit/application/Parser/Common/ContextualErrorTester';
+import { itThrowsContextualError } from '@tests/unit/application/Parser/ContextualErrorTester';
 import type { FunctionParameterCollectionFactory } from '@/application/Parser/Executable/Script/Compiler/Function/Parameter/FunctionParameterCollectionFactory';
 import { FunctionParameterCollectionStub } from '@tests/unit/shared/Stubs/FunctionParameterCollectionStub';
 import type { FunctionCallsParser } from '@/application/Parser/Executable/Script/Compiler/Function/Call/FunctionCallsParser';

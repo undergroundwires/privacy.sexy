@@ -1,5 +1,5 @@
+import type { ExecutableData } from '@/application/collections/';
 import type { ExecutableValidator, ExecutableValidatorFactory } from '@/application/Parser/Executable/Validation/ExecutableValidator';
-import type { TypeValidator } from '@/application/Parser/Common/TypeValidator';
 import { StubWithObservableMethodCalls } from './StubWithObservableMethodCalls';
 
 export const createExecutableValidatorFactoryStub
@@ -23,10 +23,10 @@ export class ExecutableValidatorStub
     return this;
   }
 
-  public assertType(assert: (validator: TypeValidator) => void): this {
+  public assertDefined(data: ExecutableData): this {
     this.registerMethodCall({
-      methodName: 'assertType',
-      args: [assert],
+      methodName: 'assertDefined',
+      args: [data],
     });
     return this;
   }

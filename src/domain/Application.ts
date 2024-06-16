@@ -1,12 +1,12 @@
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import { OperatingSystem } from './OperatingSystem';
 import type { IApplication } from './IApplication';
-import type { ICategoryCollection } from './Collection/ICategoryCollection';
 import type { ProjectDetails } from './Project/ProjectDetails';
 
 export class Application implements IApplication {
   constructor(
     public projectDetails: ProjectDetails,
-    public collections: readonly ICategoryCollection[],
+    public collections: readonly CategoryCollection[],
   ) {
     validateCollections(collections);
   }
@@ -15,7 +15,7 @@ export class Application implements IApplication {
     return this.collections.map((collection) => collection.os);
   }
 
-  public getCollection(operatingSystem: OperatingSystem): ICategoryCollection {
+  public getCollection(operatingSystem: OperatingSystem): CategoryCollection {
     const collection = this.collections.find((c) => c.os === operatingSystem);
     if (!collection) {
       throw new Error(`Operating system "${OperatingSystem[operatingSystem]}" is not defined in application`);
@@ -24,7 +24,7 @@ export class Application implements IApplication {
   }
 }
 
-function validateCollections(collections: readonly ICategoryCollection[]) {
+function validateCollections(collections: readonly CategoryCollection[]) {
   if (!collections.length) {
     throw new Error('missing collections');
   }

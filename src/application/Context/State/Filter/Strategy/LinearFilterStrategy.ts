@@ -1,14 +1,14 @@
-import type { Category } from '@/domain/Executables/Category/Category';
-import type { ScriptCode } from '@/domain/Executables/Script/Code/ScriptCode';
 import type { Documentable } from '@/domain/Executables/Documentable';
-import type { ICategoryCollection } from '@/domain/Collection/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
+import type { Category } from '@/domain/Executables/Category/Category';
 import type { Script } from '@/domain/Executables/Script/Script';
+import type { ScriptCode } from '@/domain/Executables/Script/Code/ScriptCode';
 import { AppliedFilterResult } from '../Result/AppliedFilterResult';
 import type { FilterStrategy } from './FilterStrategy';
 import type { FilterResult } from '../Result/FilterResult';
 
 export class LinearFilterStrategy implements FilterStrategy {
-  applyFilter(filter: string, collection: ICategoryCollection): FilterResult {
+  public applyFilter(filter: string, collection: CategoryCollection): FilterResult {
     const filterLowercase = filter.toLocaleLowerCase();
     const filteredScripts = collection.getAllScripts().filter(
       (script) => matchesScript(script, filterLowercase),

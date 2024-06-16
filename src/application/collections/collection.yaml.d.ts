@@ -1,5 +1,5 @@
 declare module '@/application/collections/*' {
-  export interface ExecutableDefinition extends DocumentableData {
+  export interface ExecutableDefinition extends DocumentableData, Identifiable {
 
   }
 
@@ -10,8 +10,12 @@ declare module '@/application/collections/*' {
     readonly functions?: ReadonlyArray<FunctionData>;
   }
 
+  export interface Identifiable {
+    readonly id: string;
+  }
+
   export interface CategoryData extends ExecutableDefinition {
-    readonly children: ReadonlyArray<ExecutableData>;
+    readonly children: ReadonlyArray<CategoryOrScriptData>;
     readonly category: string;
   }
 
