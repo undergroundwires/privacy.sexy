@@ -55,81 +55,388 @@ actions:
                     sudo rm -rfv /System/Library/Caches/* &>/dev/null
                     sudo rm -rfv ~/Library/Caches/* &>/dev/null
             -
-                category: Clear operating system logs
-                recommend: strict
+                category: Clear system and app logs
+                docs: |-
+                    This category includes scripts that delete various operating system logs.
+                    These logs document system operations, user activities, application behavior, and errors.
+                    While essential for debugging and monitoring, these logs contain sensitive information and pose privacy risks.
+
+                    Deleting these logs:
+
+                    - Reduces unauthorized access risks to personal data and system configurations.
+                    - Optimizes system performance by freeing up disk space.
+
+                    > **Caution**: Deleting these logs may hinder system troubleshooting and monitoring.
                 children:
                     -
-                        category: Clear unified diagnostic logs
-                        docs: https://developer.apple.com/documentation/os/logging
+                        category: Clear unified system and app logs
+                        docs: |- # refactor-with-variables: • Caution
+                            This category contains scripts for clearing unified logs on macOS.
+
+                            This system is referred to as the *unified logging system* [1], *macOS Unified Logs* [2], or *Apple Unified Logging and Activity Tracing* [3].
+                            It was introduced with macOS Sierra [2] [3], version 10.12 [2].
+                            This system centralizes all logs, providing a comprehensive and detailed record of both system and application activities [1] [2].
+                            These logs are stored on both disk and in memory [1].
+                            They are used for debugging [1] and offer insights into app behavior and system events [1] [2] [3].
+
+                            However, these logs also present significant privacy and security concerns:
+
+                            - The logs collect extensive telemetry data [1] [2].
+                            - They are often used for forensic analysis to study user behavior [2].
+                            - Unauthorized access may lead to privacy breaches, system exploits, and user tracking.
+
+                            Clearing these logs enhances user privacy by mitigating the risk of exposing sensitive information.
+
+                            > **Caution**: Deleting these logs may hinder system troubleshooting and monitoring.
+
+                            [1]: https://web.archive.org/web/20240615080744/https://developer.apple.com/documentation/os/logging "Logging | Apple Developer Documentation | apple.com"
+                            [2]: https://web.archive.org/web/20240615082213/https://cloud.google.com/blog/topics/threat-intelligence/reviewing-macos-unified-logs "macOS Unified Logs | Challenges Related to the Unified Logs | Google Cloud Blog | cloud.google.com"
+                            [3]: https://github.com/privacysexy-forks/dtformats/blob/main/documentation/Apple%20Unified%20Logging%20and%20Activity%20Tracing%20formats.asciidoc "dtformats/documentation/Apple Unified Logging and Activity Tracing formats.asciidoc at main · privacysexy-forks/dtformats | github.com"
                         children:
                             -
-                                name: Clear diagnostics logs
-                                docs: https://eclecticlight.co/2017/10/10/inside-the-macos-log-logd-and-the-files-that-it-manages/
-                                code: |-
-                                    sudo rm -rfv /private/var/db/diagnostics/*
-                                    sudo rm -rfv /var/db/diagnostics/*
+                                name: Clear diagnostic logs
+                                recommend: strict # Deleting recent logs may reduce auditability
+                                docs: |- # refactor-with-variables: • Caution • Log privacy/security/cleanup paragraph • Symbolic link
+                                    This script removes diagnostic logs.
+
+                                    These logs document system and application activities [1] [2].
+                                    The data is stored in a compressed format called `tracev3` [1] [2] [3].
+                                    They include detailed data about processes, libraries, and events [2].
+
+                                    The logs are stored in the `/private/var/db/diagnostics` directory [2] [3].
+                                    You can also access them via `/var/db/diagnostics/` [1] [2], since `/var` links to `/private/var` [2].
+
+                                    These logs are used in forensic analysis to study your behavior, posing a privacy risk [1] [2].
+                                    Unauthorized access to these logs poses security risks.
+                                    By clearing these logs, the script reduces the risk of sensitive data exposure, improving user privacy while
+                                    maintaining system functionality.
+
+                                    > **Caution**: Deleting these logs may hinder system troubleshooting and monitoring.
+
+                                    [1]: https://web.archive.org/web/20240615082155/https://eclecticlight.co/2017/10/10/inside-the-macos-log-logd-and-the-files-that-it-manages/ "Inside the macOS log: logd and the files that it manages – The Eclectic Light Company | eclecticlight.co"
+                                    [2]: https://web.archive.org/web/20240615082213/https://cloud.google.com/blog/topics/threat-intelligence/reviewing-macos-unified-logs "macOS Unified Logs | Challenges Related to the Unified Logs | Google Cloud Blog | cloud.google.com"
+                                    [3]: https://github.com/privacysexy-forks/dtformats/blob/main/documentation/Apple%20Unified%20Logging%20and%20Activity%20Tracing%20formats.asciidoc "dtformats/documentation/Apple Unified Logging and Activity Tracing formats.asciidoc at main · privacysexy-forks/dtformats | github.com"
+                                call:
+                                    function: ClearDirectoryContents
+                                    parameters:
+                                        directoryGlob: /private/var/db/diagnostics # /var is a symbolic link to `/private/var`
+                                        grantPermissions: 'true' # 🔒️ Requires `sudo` since macOS Sonoma 14.1.3
                             -
-                                name: Clear shared cache strings data
-                                docs:
-                                    - https://eclecticlight.co/2017/09/23/sierras-unified-log-evolves-more-persistent-and-a-valuable-log-log/
-                                    - https://github.com/privacysexy-forks/dtformats/blob/main/documentation/Apple%20Unified%20Logging%20and%20Activity%20Tracing%20formats.asciidoc
-                                code: |-
-                                    sudo rm -rfv /private/var/db/uuidtext/
-                                    sudo rm -rfv /var/db/uuidtext/
+                                name: Clear diagnostic log details
+                                recommend: strict # Deleting recent logs may reduce auditability
+                                docs: |- # refactor-with-variables: • Caution • Log privacy/security/cleanup paragraph • Symbolic link
+                                    This script removes extra logging details for diagnostic logs.
+
+                                    This data provides additional details to existing system logs [1].
+                                    This information includes detailed data on events such as crashes and system errors [2].
+                                    The data is then mapped to their respective logs [1] [2] [3].
+
+                                    The logs are stored in the `/private/var/db/uuidtext` directory [1] [3].
+                                    You can also access them via `/var/db/uuidtext/` [1] [2], since `/var` links to `/private/var` [1].
+
+                                    These logs are used in forensic analysis to study your behavior, posing a privacy risk [1] [2].
+                                    Unauthorized access to these logs poses significant security risks.
+                                    By clearing these logs, the script reduces the risk of sensitive data exposure, improving user privacy while
+                                    maintaining system functionality.
+
+                                    > **Caution**: Deleting these logs may hinder system troubleshooting and monitoring.
+
+                                    [1]: https://web.archive.org/web/20240615082213/https://cloud.google.com/blog/topics/threat-intelligence/reviewing-macos-unified-logs "macOS Unified Logs | Challenges Related to the Unified Logs | Google Cloud Blog | cloud.google.com"
+                                    [2]: https://web.archive.org/web/20240615082732/https://eclecticlight.co/2017/09/23/sierras-unified-log-evolves-more-persistent-and-a-valuable-log-log/ "Sierra’s unified log evolves: more persistent, and a valuable log log – The Eclectic Light Company | eclecticlight.co"
+                                    [3]: https://github.com/privacysexy-forks/dtformats/blob/main/documentation/Apple%20Unified%20Logging%20and%20Activity%20Tracing%20formats.asciidoc "dtformats/documentation/Apple Unified Logging and Activity Tracing formats.asciidoc at main · privacysexy-forks/dtformats | github.com"
+                                call:
+                                    function: ClearDirectoryContents
+                                    parameters:
+                                        directoryGlob: /private/var/db/uuidtext # /var is a symbolic link to `/private/var`
+                                        grantPermissions: 'true' # 🔒️ Requires `sudo` since macOS Sonoma 14.1.3
                     -
-                        category: Clear system logs
-                        children:
+                        name: Clear Apple System Logs (ASL)
+                        recommend: strict # Deleting recent logs may reduce auditability
+                        docs: |- # refactor-with-variables: • Caution • Log privacy/security/cleanup paragrap • Symbolic link
+                            This script deletes Apple System Log (ASL) files, enhancing your privacy and security.
+
+                            ASL files contain system information such as firewall activity, login details, application errors, and network data [1].
+
+                            The logs are located in the `/private/var/log/asl/` directory  [1] [2] [3].
+                            You can also access them via `/var/log/asl/, since `/var` links to `/private/var`.
+                            These files are in a binary format [2] and have an `.asl` extension [1] [2] [3].
+                            They can be viewed using the `syslog` command [1] [2] [3].
+
+                            Originally, the ASL framework was intended to replace the `syslog` API [2] [4].
+                            It was deprecated in macOS 10.12 and succeeded by the `os_log` framework [4].
+
+                            For macOS versions up to 10.4, logs were stored as plaintext files named [1] [2].
+                            From macOS 10.5 to 10.5.6, they were stored in a binary database file `asl.db` [1] [2].
+
+                            While deleting these logs is safe since the system regenerates them as needed [3],
+                            this action removes the ability to trace or debug system issues tied to these logs [3].
+
+                            Deleting these logs improves your privacy and security:
+
+                            - They include sensitive information about system and user activities [1] [5].
+                            - These logs are used in forensic analysis to study your behavior, posing a privacy risk [1] [2].
+                            - Unauthorized access to these logs can pose significant security risks [5].
+
+                            > **Caution**: Deleting these logs may hinder system troubleshooting and monitoring.
+
+                            [1]: https://web.archive.org/web/20240615101804/https://crucialsecurity.wordpress.com/2011/06/22/the-apple-system-log-%E2%80%93-part-1/ "The Apple System Log – Part 1 | Crucial Security Forensics Blog | crucialsecurity.wordpress.com"
+                            [2]: https://web.archive.org/web/20221206012352/https://papers.put.as/papers/macosx/2012/Mac_Log_Analysis_Sarah_Edwards_DFIRSummit2012.pdf "Analysis & Correlation of Mac Logs | Sarah Edwards | papers.put.as"
+                            [3]: https://web.archive.org/web/20240615101811/https://apple.stackexchange.com/questions/98197/is-it-safe-to-delete-system-logs "maintenance - Is it safe to delete system logs? - Ask Different | apple.stackexchange.com"
+                            [4]: https://web.archive.org/web/20240615101803/https://asl.readthedocs.io/en/latest/ "ASL – Apple System Log facility — ASL 1.1 documentation | asl.readthedocs.io"
+                            [5]: https://web.archive.org/web/20240615101809/https://www.stigviewer.com/stig/apple_macos_14_sonoma/2024-01-10/finding/V-259553 "The macOS system must configure Apple System Log files to be owned by root and group to wheel. | www.stigviewer.com"
+                        call:
                             -
-                                name: Clear Apple System Logs (ASL)
-                                docs:
-                                    - https://papers.put.as/papers/macosx/2012/Mac_Log_Analysis_Sarah_Edwards_DFIRSummit2012.pdf
-                                    - https://apple.stackexchange.com/questions/98197/is-it-safe-to-delete-system-logs
-                                code: |-
-                                    sudo rm -rfv /private/var/log/asl/*
-                                    sudo rm -rfv /var/log/asl/*
-                                    sudo rm -fv /var/log/asl.log # Legacy ASL (10.4)
-                                    sudo rm -fv /var/log/asl.db
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: /private/var/log/asl # `/var` is a symbolic link to `/private/var`
+                                    grantPermissions: 'true' # 🔒️ Requires `sudo` since macOS Sonoma 14.1.3
                             -
-                                name: Clear install logs
-                                docs: https://discussions.apple.com/thread/1829842
-                                code: sudo rm -fv /var/log/install.log
+                                function: DeleteFiles
+                                parameters:
+                                    fileGlob: /private/var/log/asl.log # Legacy ASL (10.4)
+                                    grantPermissions: 'true'
                             -
-                                name: Clear all system logs in `/var/log/` directory
-                                docs: https://www.howtogeek.com/356942/how-to-view-the-system-log-on-a-mac/
-                                code: sudo rm -rfv /var/log/* # Clears including /var/log/system.log
+                                function: DeleteFiles
+                                parameters:
+                                    fileGlob: /private/var/log/asl.db # Legacy ASL (10.5 - 10.5.6)
+                                    grantPermissions: 'true'
+                    -
+                        name: Clear installation logs
+                        recommend: strict # Deleting recent logs may reduce auditability
+                        docs: |- # refactor-with-variables: • Caution • Symbolic link
+                            This script deletes installation logs.
+
+                            These logs document software installations and updates [1] [2], including dates and details [2].
+                            This data is valuable for troubleshooting and auditing.
+
+                            The logs are stored at `/private/var/log/install.log` [1] [3] on Mac OS X 10.3 and later [1].
+                            You can also access them via `/var/log/install.log`, since `/var` links to `/private/var`.
+
+                            Deleting these logs removes detailed records of installed software, enhancing your privacy and security.
+                            These logs are used in forensic analysis to study your behavior, posing a privacy risk [2].
+                            Unauthorized access to these logs could expose security vulnerabilities.
+
+                            Keep these logs for 365 days before deletion to aid in auditing, as recommended for security reasons [3].
+
+                            > **Caution**: Deleting these logs may hinder system troubleshooting and monitoring.
+
+                            [1]: https://archive.ph/2024.06.16-085343/https://discussions.apple.com/thread/1829842?sortBy=best "Software Install Log - Apple Community | discussions.apple.com"
+                            [2]: https://web.archive.org/web/20240615112511/https://forensics.wiki/mac_os_x_10.9_artifacts_location/ "Mac os x 10.9 artifacts location | forensics.wiki"
+                            [3]: https://web.archive.org/web/20240615112500/https://www.stigviewer.com/stig/apple_macos_14_sonoma/2024-01-10/finding/V-259558 "The macOS system must configure install.log retention to 365. | www.stigviewer.com"
+                        call:
+                            function: DeleteFiles
+                            parameters:
+                                fileGlob: /private/var/log/install.log # `/var` is a symbolic link to `/private/var`
+                                grantPermissions: 'true' # 🔒️ Requires `sudo` since macOS Sonoma 14.1.3
+                    -
+                        name: Clear all system logs
+                        recommend: strict # Deleting recent logs may reduce auditability
+                        docs: |- # refactor-with-variables: • Caution • Symbolic link
+                            This script deletes the main system logs from your computer.
+
+                            Deleting these logs enhances your privacy by eliminating records of your system usage.
+                            These logs are used in forensic analysis to study your behavior, posing a privacy risk [1].
+                            This action also frees up disk space by removing files that can grow significantly over time [2].
+
+                            These logs are essential for monitoring system events and identifying unauthorized access incidents [3].
+
+                            The system periodically recycles these logs; therefore, their deletion does not impair system functionality [2].
+
+                            The logs are stored at `/private/var/log` [2].
+                            You can also access them via `/var/log` [1] [2] [3] [4], since `/var` links to `/private/var`.
+                            This directory mainly contains logs for low-level system services [4].
+
+                            > **Caution**: Deleting these logs may hinder system troubleshooting and monitoring.
+
+                            [1]: https://web.archive.org/web/20240615112511/https://forensics.wiki/mac_os_x_10.9_artifacts_location/ "Mac os x 10.9 artifacts location | forensics.wiki"
+                            [2]: https://archive.ph/2024.06.16-085449/https://discussions.apple.com/thread/1894416?sortBy=best "Deleting /private/var/log files ? - Apple Community | discussions.apple.com"
+                            [3]: https://web.archive.org/web/20240615114549/https://www.stigviewer.com/stig/mac_osx_10.6_workstation_draft/2013-01-10/finding/V-25270 "Local logging must be enabled. | www.stigviewer.com"
+                            [4]: https://web.archive.org/web/20240615114514/https://www.howtogeek.com/356942/how-to-view-the-system-log-on-a-mac/ "How to View the System Log on a Mac | howtogeek.com"
+                        call:
+                            function: ClearDirectoryContents
+                            parameters:
+                                directoryGlob: /private/var/log # `/var` is a symbolic link to `/private/var`
+                                grantPermissions: 'true' # 🔒️ Requires `sudo` since macOS Sonoma 14.1.3
                     -
                         name: Clear system application logs
-                        docs: https://papers.put.as/papers/macosx/2012/Mac_Log_Analysis_Sarah_Edwards_DFIRSummit2012.pdf
-                        code: sudo rm -rfv /Library/Logs/*
+                        recommend: strict # Deleting recent logs may reduce auditability
+                        docs: |- # refactor-with-variables: • Caution
+                            This script clears the system application logs.
+
+                            The logs are stored at `/Library/Logs/` [1] [2] [3].
+                            They include various logs and diagnostic reports [1].
+
+                            These logs are used for system-wide event logging [3].
+                            Third-party applications usually can't access these logs due to restricted permissions [1].
+                            However, some system-wide apps (like Microsoft Defender for Endpoint [4]) store logs in this directory.
+
+                            These logs contain troubleshooting details and may include personal data.
+                            These logs are used in forensic analysis to study your behavior, posing a privacy risk [1].
+
+                            By deleting these logs, the script helps protect user privacy by removing potential traces of
+                            user activity and system usage.
+
+                            > **Caution**: Deleting these logs may hinder system troubleshooting and monitoring.
+
+                            [1]: https://web.archive.org/web/20240615112511/https://forensics.wiki/mac_os_x_10.9_artifacts_location/ "Mac os x 10.9 artifacts location | forensics.wiki"
+                            [2]: https://web.archive.org/web/20221206012352/https://papers.put.as/papers/macosx/2012/Mac_Log_Analysis_Sarah_Edwards_DFIRSummit2012.pdf "Analysis & Correlation of Mac Logs | Sarah Edwards | papers.put.as"
+                            [3]: https://web.archive.org/web/20240615132749/https://stackoverflow.com/questions/70638430/which-directory-is-the-best-for-saving-logs "macos - Which directory is the best for saving logs? - Stack Overflow | stackoverflow.com"
+                            [4]: https://web.archive.org/web/20240615132755/https://learn.microsoft.com/en-us/defender-endpoint/mac-resources "Resources for Microsoft Defender for Endpoint on Mac - Microsoft Defender for Endpoint | Microsoft Learn | learn.microsoft.com"
+                        call:
+                            function: ClearDirectoryContents
+                            parameters:
+                                directoryGlob: /Library/Logs
+                                grantPermissions: 'true' # 🔒️ Requires `sudo` since macOS Sonoma 14.1.3
                     -
-                        name: Clear Mail logs
-                        code: rm -rfv ~/Library/Containers/com.apple.mail/Data/Library/Logs/Mail/*
+                        name: Clear user application logs
+                        recommend: strict # Deleting recent logs may reduce troubleshooting capabilities but should not impact the security.
+                        docs: |- # refactor-with-variables: • Caution
+                            This script deletes user application logs from your system.
+
+                            The logs are stored at `$HOME/Library/Logs` [1] [2] [3] [4].
+                            This directory contains logs specific to different applications [1] [3].
+                            These logs are referred as *application logs* [1], *user logs* [2] or *user application logs* [3].
+                            They detail software behavior and interactions.
+                            The deletion of these logs is considered safe [4].
+
+                            These logs are used in forensic analysis to study your behavior, posing a privacy risk [1] [2].
+                            Removing them enhances privacy by eradicating records that could be scrutinized.
+
+                            > **Caution**: Deleting these logs may hinder system troubleshooting and monitoring.
+
+                            [1]: https://web.archive.org/web/20240615112511/https://forensics.wiki/mac_os_x_10.9_artifacts_location/ "Mac os x 10.9 artifacts location | forensics.wiki"
+                            [2]: https://web.archive.org/web/20221206012352/https://papers.put.as/papers/macosx/2012/Mac_Log_Analysis_Sarah_Edwards_DFIRSummit2012.pdf "Analysis & Correlation of Mac Logs | Sarah Edwards | papers.put.as"
+                            [3]: https://web.archive.org/web/20240615114514/https://www.howtogeek.com/356942/how-to-view-the-system-log-on-a-mac/ "How to View the System Log on a Mac | howtogeek.com"
+                            [4]: https://web.archive.org/web/20240615165932/https://apple.stackexchange.com/questions/272929/is-it-safe-to-delete-the-content-of-library-logs "macos - Is it safe to delete the content of ~/Library/Logs? - Ask Different | apple.stackexchange.com"
+                        call:
+                            function: ClearDirectoryContents
+                            parameters:
+                                directoryGlob: $HOME/Library/Logs
+                                # grantPermissions: 'false' # Home directory does not require `sudo` access.
+                    -
+                        name: Clear Mail app logs
+                        recommend: standard # Deleting recent logs may reduce auditability but improves operational stability of the Mail app and the OS.
+                        docs: |- # refactor-with-variables: • Caution
+                            This script deletes the log files of the Mail app.
+
+                            The logs are stored at `$HOME/Library/Containers/com.apple.mail/Data/Library/Logs/Mail` [1] [2] [3].
+                            These logs may contain details of every connection made by the Mail app [1] [3].
+                            These logs can grow significantly in size, particularly when connection activity logging is enabled [1] [3].
+                            This growth can reduce system performance and Mail app responsiveness [2].
+
+                            Deleting these logs protects the privacy of your email interactions by removing records of connection details.
+                            Additionally, deleting these logs frees up space, resolves various performance issues, and prevents the Mail app from freezing [2].
+                            This also enhances the overall stability of the operating system.
+
+                            [1]: https://archive.ph/2024.06.16-085501/https://discussions.apple.com/thread/251768307?sortBy=best "new location for mail logs? - Apple Community | discussions.apple.com"
+                            [2]: https://archive.ph/2024.06.16-085512/https://discussions.apple.com/thread/7263929?sortBy=best "El Capitan Bug: When Mail is open my comp… - Apple Community | discussions.apple.com"
+                            [3]: https://web.archive.org/web/20240615152651/https://apple.stackexchange.com/questions/223390/huge-apple-mail-logs-connection-logging-enabled "macos - Huge Apple Mail Logs (Connection Logging Enabled) - Ask Different | apple.stackexchange.com"
+                        call:
+                            function: ClearDirectoryContents
+                            parameters:
+                                directoryGlob: $HOME/Library/Containers/com.apple.mail/Data/Library/Logs/Mail
+                                # grantPermissions: 'false' # Home directory does not require `sudo` access.
                     -
                         name: Clear user activity audit logs (login, logout, authentication, etc.)
-                        docs:
-                            - https://papers.put.as/papers/macosx/2012/Mac_Log_Analysis_Sarah_Edwards_DFIRSummit2012.pdf
-                            - https://web.archive.org/web/20240314054514/https://bpb-us-e1.wpmucdn.com/sites.psu.edu/dist/4/24696/files/2016/06/psumac2016-19-osxlogs_macadmins_2016.pdf
-                        code: |-
-                            sudo rm -rfv /var/audit/*
-                            sudo rm -rfv /private/var/audit/*
+                        recommend: strict # Deleting recent logs may reduce auditability
+                        docs: |- # refactor-with-variables: • Caution • Symbolic link
+                            This script deletes audit logs from your system, enhancing your privacy by erasing records of your activities.
+
+                            Audit logs document activities like file access, creation, and user authentication [1].
+                            These logs are used in forensic analysis to study your behavior, posing a privacy risk [1] [2].
+
+                            The logs use the OpenBSM audit framework [1] [3].
+                            The framework was initially developed by SUN Microsystems and now maintained under the BSD license by the Trusted BSD Project [3].
+
+                            The logs are stored at `/private/var/audit`.
+                            You can also access them via `/var/audit` [1] [2] [3] [4], since `/var` links to `/private/var`.
+                            Access to these logs is restricted to the root user [1].
+
+                            Logs are named using the start and stop times of the logging period, formatted as `startime.stoptime` [1] [4].
+                            Logs that are not properly terminated are suffixed with `.not_terminated` [1] [4].
+                            Log configurations are located in `/etc/security/audit_control` [4].
+
+                            > **Caution**: Deleting these logs may hinder system troubleshooting and monitoring.
+
+                            [1]: https://web.archive.org/web/20240615140036/https://derflounder.wordpress.com/2012/01/30/openbsm-auditing-on-mac-os-x/ "OpenBSM auditing on Mac OS X | Der Flounder | derflounder.wordpress.com"
+                            [2]: https://web.archive.org/web/20240615112511/https://forensics.wiki/mac_os_x_10.9_artifacts_location/ "Mac os x 10.9 artifacts location | forensics.wiki"
+                            [3]: https://web.archive.org/web/20221206012352/https://papers.put.as/papers/macosx/2012/Mac_Log_Analysis_Sarah_Edwards_DFIRSummit2012.pdf "Analysis & Correlation of Mac Logs | Sarah Edwards | papers.put.as"
+                            [4]: https://web.archive.org/web/20240314054514/https://bpb-us-e1.wpmucdn.com/sites.psu.edu/dist/4/24696/files/2016/06/psumac2016-19-osxlogs_macadmins_2016.pdf "OS X LOGS DO WE STILL HAVE TO CARE | Nic Scott"
+                        call:
+                            function: ClearDirectoryContents
+                            parameters:
+                                directoryGlob: /private/var/audit # `/var` is a symbolic link to `/private/var`
+                                grantPermissions: 'true' # 🔒️ Requires `sudo` since macOS Sonoma 14.1.3
                     -
-                        name: Clear user report logs
-                        docs:
-                            - https://www.howtogeek.com/356942/how-to-view-the-system-log-on-a-mac/
-                            - https://apple.stackexchange.com/questions/272929/is-it-safe-to-delete-the-content-of-library-logs
-                        code: sudo rm -rfv ~/Library/Logs/*
+                        name: Clear system maintenance logs
+                        recommend: standard # Routine operational data that is not critical
+                        docs: |- # refactor-with-variables: • Caution • Symbolic link
+                            This script deletes system maintenance logs, enhancing user privacy by removing traces of system activity.
+
+                            Derived from Mac OS X's UNIX heritage, these logs are produced by scheduled scripts that clean system logs, manage
+                            temporary files, and handle tasks such as log file rotation and system statistics reporting [1].
+
+                            The logs are stored at `/private/var/log/daily.out`, `/private/var/log/weekly.out`, and `/private/var/log/monthly.out`.
+                            You can also access them via `/var/log/{daily|weekly|monthly}.out` [1] [2] [3], since `/var` links to `/private/var`.
+                            The configuration for these log actions are located at `/System/Library/LaunchDaemons/com.apple.periodic-*.plist` files.
+
+                            These logs include detailed records of disk usage, system uptime, and network activities [2] [3].
+                            They record outputs from daily, weekly, and monthly maintenance scripts, detailing activities such as removing old logs and
+                            rotating various other log files [1].
+                            These logs are used in forensic analysis to study your behavior, posing a privacy risk [1].
+
+                            > **Caution**: Deleting these logs may hinder system troubleshooting and monitoring.
+
+                            [1]: https://web.archive.org/web/20240615175047/http://thexlab.com/faqs/maintscripts.html "Running Mac OS X Maintenance Scripts | thexlab.com"
+                            [2]: https://web.archive.org/web/20240615175642/https://salt4n6.com/2018/12/11/mac-os-daily-logs/ "Mac OS Daily Logs | Salt Forensics | salt4n6.com"
+                            [3]: https://web.archive.org/web/20190926023908/https://www.sans.org/cyber-security-summit/archives/file/summit-archive-1493741667.pdf "Analysis & Correlation of Mac Logs | Sarah Edwards"
+                        call:
+                            -
+                                function: DeleteFiles
+                                parameters:
+                                    fileGlob: /private/var/log/daily.out # `/var` is a symbolic link to `/private/var`
+                                    grantPermissions: 'true' # 🔒️ Requires `sudo` since macOS Sonoma 14.1.3
+                            -
+                                function: DeleteFiles
+                                parameters:
+                                    fileGlob: /private/var/log/weekly.out # `/var` is a symbolic link to `/private/var`
+                                    grantPermissions: 'true' # 🔒️ Requires `sudo` since macOS Sonoma 14.1.3
+                            -
+                                function: DeleteFiles
+                                parameters:
+                                    fileGlob: /private/var/log/monthly.out # `/var` is a symbolic link to `/private/var`
+                                    grantPermissions: 'true' # 🔒️ Requires `sudo` since macOS Sonoma 14.1.3
                     -
-                        name: Clear daily logs
-                        docs: https://salt4n6.com/2018/12/11/mac-os-daily-logs/
-                        code: sudo rm -fv /System/Library/LaunchDaemons/com.apple.periodic-*.plist
-                    -
-                        name: Clear receipt logs for installed packages/apps
-                        docs:
-                            - https://apple.stackexchange.com/questions/327174/whats-the-purpose-of-directory-private-var-db-receipts
-                            - https://papers.put.as/papers/macosx/2012/Mac_Log_Analysis_Sarah_Edwards_DFIRSummit2012.pdf
-                        code: |-
-                            sudo rm -rfv /var/db/receipts/*
-                            sudo rm -vf /Library/Receipts/InstallHistory.plist
+                        name: Clear app installation logs
+                        recommend: strict # Has security and privacy implications but their removal reduce auditability
+                        docs: |- # refactor-with-variables: • Caution • Symbolic link
+                            This script deletes logs that record the history of installed applications and updates.
+
+                            The logs are stored at `/private/var/db/receipts` [1] and `/Library/Receipts/InstallHistory.plist` [2].
+                            You can also access them via `/var/db/receipts` [3], since `/var` links to `/private/var`.
+
+                            The logs contain details such as the name of the installed package, its version, and the installation date [1] [3].
+
+                            These logs are used in forensic analysis to study your behavior, posing a privacy risk [2] [3].
+                            Attackers can exploit this data to target vulnerabilities in applications, compromising your system.
+                            Deleting these logs enhances privacy and security by reducing data exposure.
+
+                            > **Caution**: Deleting these logs may hinder system troubleshooting and monitoring.
+
+                            [1]: https://web.archive.org/web/20240615181428/https://apple.stackexchange.com/questions/327174/whats-the-purpose-of-directory-private-var-db-receipts "macos - What's the purpose of directory /private/var/db/receipts? - Ask Different | apple.stackexchange.com"
+                            [2]: https://web.archive.org/web/20240615112511/https://forensics.wiki/mac_os_x_10.9_artifacts_location/ "Mac os x 10.9 artifacts location | forensics.wiki"
+                            [3]: https://web.archive.org/web/20221206012352/https://papers.put.as/papers/macosx/2012/Mac_Log_Analysis_Sarah_Edwards_DFIRSummit2012.pdf "Analysis & Correlation of Mac Logs | Sarah Edwards | papers.put.as"
+                        call:
+                            -
+                                function: ClearDirectoryContents
+                                parameters:
+                                    directoryGlob: /private/var/db/receipts # `/var` is a symbolic link to `/private/var`
+                                    grantPermissions: 'true' # 🔒️ Requires `sudo` since macOS Sonoma 14.1.3
+                            -
+                                function: DeleteFiles
+                                parameters:
+                                    fileGlob: /Library/Receipts/InstallHistory.plist
+                                    # grantPermissions: 'false' # It does not require `sudo` since macOS Sonoma 14.1.3
             -
                 category: Clear browser history
                 children:
@@ -1844,6 +2151,12 @@ functions:
                 revertCode: '{{ with $revertCodeComment }}# {{ . }}{{ end }}'
     -
         name: ClearDirectoryContents
+        # 💡 Purpose:
+        #   Empties the contents of a directory recursively (including all of its files and subfolders) while preserving
+        #   the directory itself.
+        #   This is beneficial when other applications depend on the existence of the directory.
+        #   Marked: refactor-with-partials
+        #     Same function as Linux
         parameters:
             - name: directoryGlob
             - name: grantPermissions
@@ -1854,8 +2167,43 @@ functions:
                 parameters:
                     codeComment: 'Clear directory contents: "{{ $directoryGlob }}"'
             -
-                function: RunInlineCode
+                function: DeleteGlob
                 parameters:
-                    code: |-
-                        glob_pattern="{{ $directoryGlob }}/*"
-                        {{ with $grantPermissions }}sudo {{ end }}rm -rfv $glob_pattern
+                    pathGlob: "{{ $directoryGlob }}/*"
+                    grantPermissions: '{{ with $grantPermissions }}true{{ end }}'
+                    recurse: 'true'
+    -
+        name: DeleteGlob
+        # 💡 Usage:
+        #   This is a low-level function. Favor higher-level functions like `ClearDirectoryContents` and `DeleteFiles`.
+        parameters:
+            - name: pathGlob            # Glob pattern for search.
+            - name: grantPermissions    # Grants permission on items of the parent directory recursively (including all files and directories) to be able to delete them.
+              optional: true
+            - name: recurse             # If set, deletes all files and directories recursively.
+              optional: true
+        call:
+            function: RunInlineCode
+            parameters:
+                code: |-
+                    glob_pattern="{{ $pathGlob }}"
+                    {{ with $grantPermissions }}sudo{{ end }} rm -{{ with $recurse }}r{{end}}fv $glob_pattern
+    -
+        name: DeleteFiles
+        # 💡 Purpose:
+        #   Use `ClearDirectoryContents` to delete directories.
+        parameters:
+            - name: fileGlob            # File glob pattern to delete.
+            - name: grantPermissions    # Specifies whether to run the operation with higher privileges.
+              optional: true
+        call:
+            -
+                function: Comment
+                parameters:
+                    codeComment: >-
+                        Delete files matching pattern: "{{ $fileGlob }}"
+            -
+                function: DeleteGlob
+                parameters:
+                    pathGlob: '{{ $fileGlob }}'
+                    grantPermissions: '{{ with $grantPermissions }}true{{ end }}'

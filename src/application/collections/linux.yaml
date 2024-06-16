@@ -3572,8 +3572,11 @@ functions:
             revertCode: '{{ with $revertCodeComment }}# {{ . }}{{ end }}'
   -
     name: DeleteFiles
+    # 💡 Purpose:
+    #   Deletes files but does not touch any directories.
+    #   Use `DeleteDirectory` or `ClearDirectoryContents` to delete directories.
     parameters:
-      - name: fileGlob
+      - name: fileGlob  # File glob pattern to delete.
     call:
       -
         function: Comment
@@ -3976,6 +3979,7 @@ functions:
     # 💡 Purpose:
     #   Empties the contents of a directory recursively (including all of its files and subfolders) while preserving
     #   the directory itself.
+    #   This is beneficial when other applications depend on the existence of the directory.
     #   Marked: refactor-with-partials
     #     Same function as macOS
     parameters:
