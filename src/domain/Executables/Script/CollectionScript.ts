@@ -1,9 +1,11 @@
-import { BaseEntity } from '@/infrastructure/Entity/BaseEntity';
 import { RecommendationLevel } from './RecommendationLevel';
+import type { ExecutableKey } from '../ExecutableKey/ExecutableKey';
 import type { Script } from './Script';
 import type { ScriptCode } from './Code/ScriptCode';
 
-export class CollectionScript extends BaseEntity<string> implements Script {
+export class CollectionScript implements Script {
+  public readonly key: ExecutableKey;
+
   public readonly name: string;
 
   public readonly code: ScriptCode;
@@ -13,11 +15,11 @@ export class CollectionScript extends BaseEntity<string> implements Script {
   public readonly level?: RecommendationLevel;
 
   constructor(parameters: ScriptInitParameters) {
-    super(parameters.name);
     this.name = parameters.name;
     this.code = parameters.code;
     this.docs = parameters.docs;
     this.level = parameters.level;
+    this.key = parameters.key;
     validateLevel(parameters.level);
   }
 
@@ -27,6 +29,7 @@ export class CollectionScript extends BaseEntity<string> implements Script {
 }
 
 export interface ScriptInitParameters {
+  readonly key: ExecutableKey;
   readonly name: string;
   readonly code: ScriptCode;
   readonly docs: ReadonlyArray<string>;

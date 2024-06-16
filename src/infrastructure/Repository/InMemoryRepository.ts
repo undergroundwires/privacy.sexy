@@ -1,8 +1,9 @@
-import type { Repository } from '../../application/Repository/Repository';
-import type { IEntity } from '../Entity/IEntity';
+import type { Repository } from '@/application/Repository/Repository';
+import type { Identifiable } from '@/domain/Identifiable/Identifiable';
+import type { Key } from '@/domain/Identifiable/Key';
 
-export class InMemoryRepository<TKey, TEntity extends IEntity<TKey>>
-implements Repository<TKey, TEntity> {
+export class InMemoryRepository<TId extends Key, TEntity extends Identifiable<TId>>
+implements Repository<TId, TEntity> {
   private readonly items: TEntity[];
 
   constructor(items?: TEntity[]) {
@@ -17,8 +18,8 @@ implements Repository<TKey, TEntity> {
     return predicate ? this.items.filter(predicate) : this.items;
   }
 
-  public getById(id: TKey): TEntity {
-    const items = this.getItems((entity) => entity.id === id);
+  public getById(id: TId): TEntity {
+    const items = this.getItems((entity) => entity.key.equals(id));
     if (!items.length) {
       throw new Error(`missing item: ${id}`);
     }
@@ -26,29 +27,29 @@ implements Repository<TKey, TEntity> {
   }
 
   public addItem(item: TEntity): void {
-    if (this.exists(item.id)) {
-      throw new Error(`Cannot add (id: ${item.id}) as it is already exists`);
+    if (this.exists(item.key)) {
+      throw new Error(`Cannot add (id: ${item.key.createSerializedKey()}) as it is already exists`);
     }
     this.items.push(item);
   }
 
   public addOrUpdateItem(item: TEntity): void {
-    if (this.exists(item.id)) {
-      this.removeItem(item.id);
+    if (this.exists(item.key)) {
+      this.removeItem(item.key);
     }
     this.items.push(item);
   }
 
-  public removeItem(id: TKey): void {
-    const index = this.items.findIndex((item) => item.id === id);
+  public removeItem(key: TId): void {
+    const index = this.items.findIndex((item) => item.key.equals(key));
     if (index === -1) {
-      throw new Error(`Cannot remove (id: ${id}) as it does not exist`);
+      throw new Error(`Cannot remove (id: ${key}) as it does not exist`);
     }
     this.items.splice(index, 1);
   }
 
-  public exists(id: TKey): boolean {
-    const index = this.items.findIndex((item) => item.id === id);
+  public exists(key: TId): boolean {
+    const index = this.items.findIndex((item) => item.key.equals(key));
     return index !== -1;
   }
 }

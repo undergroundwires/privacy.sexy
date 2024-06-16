@@ -10,6 +10,7 @@ export interface ExecutableValidatorFactory {
 type AssertTypeFunction = (validator: TypeValidator) => void;
 
 export interface ExecutableValidator {
+  assertExecutableId(idValue: string): void;
   assertValidName(nameValue: string): void;
   assertType(assert: AssertTypeFunction): void;
   assert(
@@ -30,6 +31,11 @@ export class ContextualExecutableValidator implements ExecutableValidator {
     private readonly validator: TypeValidator = createTypeValidator(),
   ) {
 
+  }
+
+  public assertExecutableId(idValue: string) {
+    this.assert(() => Boolean(idValue), getMessageWithIdSuggestion('missing ID'));
+    this.assert(() => isString(idValue), getMessageWithIdSuggestion(`ID "${idValue}" is not a string but ${typeof idValue}.`));
   }
 
   public assertValidName(nameValue: string): void {
@@ -66,4 +72,25 @@ export class ContextualExecutableValidator implements ExecutableValidator {
       this.createContextualErrorMessage(errorMessage),
     );
   }
+}
+
+function getMessageWithIdSuggestion(message: string): string {
+  return [
+    `${message}.`,
+    'Suggested resolutions:',
+    `\t- Use "${suggestId()}" as ID.`,
+    '\t- Run `python3 ./scripts/add_missing_ids.py` to automatically generate missing IDs.'
+  ].join('\n');
+}
+
+function suggestId(): string {
+  const partialGuid = crypto.randomUUID().split('-')[0];
+  if (isAllDigits(partialGuid)) {
+    return suggestId(); // Numeric-only IDs in YAML without quotes are interpreted as numbers
+  }
+  return partialGuid;
+}
+
+function isAllDigits(text: string): boolean {
+  return /^\d+$/.test(text);
 }

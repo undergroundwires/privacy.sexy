@@ -59,8 +59,8 @@ import {
 } from 'vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import TooltipWrapper from '@/presentation/components/Shared/TooltipWrapper.vue';
-import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import type { Script } from '@/domain/Executables/Script/Script';
+import { RecommendationLevel } from '@/domain/Executables/Script/RecommendationLevel';
 import MenuOptionList from '../MenuOptionList.vue';
 import MenuOptionListItem from '../MenuOptionListItem.vue';
 import RevertStatusDocumentation from './RevertStatusDocumentation.vue';

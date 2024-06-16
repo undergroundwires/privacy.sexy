@@ -1,6 +1,6 @@
-import type { IEntity } from '@/infrastructure/Entity/IEntity';
-import type { Documentable } from './Documentable';
+import type { Identifiable } from '../Identifiable/Identifiable';
+import type { ExecutableKey } from './ExecutableKey/ExecutableKey';
 
-export interface Executable<TExecutableKey>
-  extends Documentable, IEntity<TExecutableKey> {
+export interface Executable extends Identifiable<ExecutableKey> {
+
 }

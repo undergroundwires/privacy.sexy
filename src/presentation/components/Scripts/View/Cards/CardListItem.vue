@@ -55,13 +55,14 @@
 
 <script lang="ts">
 import {
-  defineComponent, computed, shallowRef,
+  defineComponent, computed, shallowRef, type PropType,
 } from 'vue';
 import AppIcon from '@/presentation/components/Shared/Icon/AppIcon.vue';
 import FlatButton from '@/presentation/components/Shared/FlatButton.vue';
 import { injectKey } from '@/presentation/injectionSymbols';
 import ScriptsTree from '@/presentation/components/Scripts/View/Tree/ScriptsTree.vue';
 import { sleep } from '@/infrastructure/Threading/AsyncSleep';
+import type { ExecutableId } from '@/domain/Executables/ExecutableKey/ExecutableKey';
 import CardSelectionIndicator from './CardSelectionIndicator.vue';
 import CardExpandTransition from './CardExpandTransition.vue';
 import CardExpansionArrow from './CardExpansionArrow.vue';
@@ -77,11 +78,11 @@ export default defineComponent({
   },
   props: {
     categoryId: {
-      type: Number,
+      type: String as PropType<ExecutableId>,
       required: true,
     },
     activeCategoryId: {
-      type: Number,
+      type: String as PropType<ExecutableId>,
       default: undefined,
     },
   },

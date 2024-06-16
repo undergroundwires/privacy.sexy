@@ -318,10 +318,6 @@ class CategoryCollectionBuilder {
   }
 
   public construct(): CategoryCollection {
-    return new CategoryCollection({
-      os: this.os,
-      actions: this.actions,
-      scripting: this.scriptingDefinition,
-    });
+    return new CategoryCollection(this.os, this.actions, this.scriptingDefinition);
   }
 }

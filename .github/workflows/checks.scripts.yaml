@@ -85,3 +85,18 @@ jobs:
       -
         name: Configure VSCode
         run: python3 ./scripts/configure_vscode.py
+
+  add_missing_ids:
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      matrix:
+        os: [ macos, ubuntu, windows ]
+    steps:
+      -
+        name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      -
+        name: Run the script
+        run: python3 ./scripts/add_missing_ids.py

@@ -1,18 +1,18 @@
 import type { UserSelection } from '@/application/Context/State/Selection/UserSelection';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
-import { getCategoryId } from '../../TreeViewAdapter/CategoryNodeMetadataConverter';
+import type { ExecutableKey } from '@/domain/Executables/ExecutableKey/ExecutableKey';
 import { ScriptReverter } from './ScriptReverter';
 import type { Reverter } from './Reverter';
 
 export class CategoryReverter implements Reverter {
-  private readonly categoryId: number;
-
   private readonly scriptReverters: ReadonlyArray<ScriptReverter>;
 
-  constructor(nodeId: string, collection: ICategoryCollection) {
-    this.categoryId = getCategoryId(nodeId);
-    this.scriptReverters = createScriptReverters(this.categoryId, collection);
+  constructor(
+    private readonly categoryKey: ExecutableKey,
+    collection: CategoryCollection,
+  ) {
+    this.scriptReverters = createScriptReverters(this.categoryKey, collection);
   }
 
   public getState(selectedScripts: ReadonlyArray<SelectedScript>): boolean {
@@ -26,7 +26,7 @@ export class CategoryReverter implements Reverter {
   public selectWithRevertState(newState: boolean, selection: UserSelection): void {
     selection.categories.processChanges({
       changes: [{
-        categoryId: this.categoryId,
+        categoryKey: this.categoryKey,
         newStatus: {
           isSelected: true,
           isReverted: newState,
@@ -37,12 +37,12 @@ export class CategoryReverter implements Reverter {
 }
 
 function createScriptReverters(
-  categoryId: number,
-  collection: ICategoryCollection,
+  categoryKey: ExecutableKey,
+  collection: CategoryCollection,
 ): ScriptReverter[] {
-  const category = collection.getCategory(categoryId);
+  const category = collection.getCategory(categoryKey.executableId);
   const scripts = category
     .getAllScriptsRecursively()
     .filter((script) => script.canRevert());
-  return scripts.map((script) => new ScriptReverter(script.id));
+  return scripts.map((script) => new ScriptReverter(script.key));
 }

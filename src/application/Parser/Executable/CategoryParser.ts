@@ -1,17 +1,15 @@
 import type {
   CategoryData, ScriptData, ExecutableData,
 } from '@/application/collections/';
+import { CollectionCategory } from '@/domain/Executables/Category/CollectionCategory';
 import { wrapErrorWithAdditionalContext, type ErrorWithContextWrapper } from '@/application/Parser/Common/ContextualError';
 import type { Category } from '@/domain/Executables/Category/Category';
-import { CollectionCategory } from '@/domain/Executables/Category/CollectionCategory';
 import type { Script } from '@/domain/Executables/Script/Script';
-import { parseDocs, type DocsParser } from './DocumentationParser';
 import { parseScript, type ScriptParser } from './Script/ScriptParser';
 import { createExecutableDataValidator, type ExecutableValidator, type ExecutableValidatorFactory } from './Validation/ExecutableValidator';
 import { ExecutableType } from './Validation/ExecutableType';
+import { parseDocs, type DocsParser } from './DocumentationParser';
 import type { CategoryCollectionSpecificUtilities } from './CategoryCollectionSpecificUtilities';
-
-let categoryIdCounter = 0;
 
 export const parseCategory: CategoryParser = (
   category: CategoryData,
@@ -42,7 +40,7 @@ interface CategoryParseContext {
 
 function parseCategoryRecursively(
   context: CategoryParseContext,
-): Category | never {
+): CollectionCategory | never {
   const validator = ensureValidCategory(context);
   const children: CategoryChildren = {
     subcategories: new Array<Category>(),
@@ -59,7 +57,7 @@ function parseCategoryRecursively(
   }
   try {
     return context.categoryUtilities.createCategory({
-      id: categoryIdCounter++,
+      key: context.collectionUtilities.keyFactory.createExecutableKey(context.categoryData.id),
       name: context.categoryData.category,
       docs: context.categoryUtilities.parseDocs(context.categoryData),
       subcategories: children.subcategories,
@@ -86,9 +84,10 @@ function ensureValidCategory(
     value: category,
     valueName: category.category ?? 'category',
     allowedProperties: [
-      'docs', 'children', 'category',
+      'id', 'docs', 'children', 'category',
     ],
   }));
+  validator.assertExecutableId(category.id);
   validator.assertValidName(category.category);
   validator.assertType((v) => v.assertNonEmptyCollection({
     value: category.children,

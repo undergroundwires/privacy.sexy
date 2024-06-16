@@ -1,11 +1,11 @@
-import type { ICategoryCollection } from './ICategoryCollection';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
+import { OperatingSystem } from './OperatingSystem';
 import type { ProjectDetails } from './Project/ProjectDetails';
-import type { OperatingSystem } from './OperatingSystem';
 
 export interface IApplication {
   readonly projectDetails: ProjectDetails;
-  readonly collections: readonly ICategoryCollection[];
+  readonly collections: readonly CategoryCollection[];
 
   getSupportedOsList(): OperatingSystem[];
-  getCollection(operatingSystem: OperatingSystem): ICategoryCollection;
+  getCollection(operatingSystem: OperatingSystem): CategoryCollection;
 }

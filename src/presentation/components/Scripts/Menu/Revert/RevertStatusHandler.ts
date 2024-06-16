@@ -70,7 +70,7 @@ function mapToScriptSelectionChanges(
   newRevertStatus: boolean,
 ): ScriptSelectionChange[] {
   return scriptsNeedingChange.map((script): ScriptSelectionChange => ({
-    scriptId: script.id,
+    scriptKey: script.key,
     newStatus: {
       isSelected: true,
       isReverted: newRevertStatus,

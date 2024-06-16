@@ -9,11 +9,11 @@ import { createScriptCode, type ScriptCodeFactory } from '@/domain/Executables/S
 import { SharedFunctionsParser } from './Function/SharedFunctionsParser';
 import { FunctionCallSequenceCompiler } from './Function/Call/Compiler/FunctionCallSequenceCompiler';
 import { parseFunctionCalls } from './Function/Call/FunctionCallParser';
-import type { CompiledCode } from './Function/Call/Compiler/CompiledCode';
 import type { IScriptCompiler } from './IScriptCompiler';
 import type { ISharedFunctionCollection } from './Function/ISharedFunctionCollection';
 import type { FunctionCallCompiler } from './Function/Call/Compiler/FunctionCallCompiler';
 import type { ISharedFunctionsParser } from './Function/ISharedFunctionsParser';
+import type { CompiledCode } from './Function/Call/Compiler/CompiledCode';
 
 export class ScriptCompiler implements IScriptCompiler {
   private readonly functions: ISharedFunctionCollection;

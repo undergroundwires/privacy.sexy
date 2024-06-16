@@ -37,6 +37,7 @@ export const parseScript: ScriptParser = (
   validateScript(data, validator);
   try {
     const script = scriptUtilities.createScript({
+      key: collectionUtilities.keyFactory.createExecutableKey(data.id),
       name: data.name,
       code: parseCode(
         data,
@@ -104,7 +105,7 @@ function validateScript(
     value: script,
     valueName: script.name ?? 'script',
     allowedProperties: [
-      'name', 'recommend', 'code', 'revertCode', 'call', 'docs',
+      'id', 'docs', 'name', 'recommend', 'code', 'revertCode', 'call',
     ],
   }));
   validator.assertValidName(script.name);

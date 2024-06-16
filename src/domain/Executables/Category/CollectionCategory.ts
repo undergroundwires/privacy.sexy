@@ -1,29 +1,31 @@
-import { BaseEntity } from '@/infrastructure/Entity/BaseEntity';
+import type { Script } from '@/domain/Executables/Script/Script';
+import type { ExecutableKey } from '../ExecutableKey/ExecutableKey';
 import type { Category } from './Category';
-import type { Script } from '../Script/Script';
 
-export class CollectionCategory extends BaseEntity<number> implements Category {
-  private allSubScripts?: ReadonlyArray<Script> = undefined;
+export class CollectionCategory implements Category {
+  public readonly key: ExecutableKey;
 
   public readonly name: string;
 
   public readonly docs: ReadonlyArray<string>;
 
-  public readonly subCategories: ReadonlyArray<Category>;
+  public readonly subcategories: ReadonlyArray<Category>;
 
   public readonly scripts: ReadonlyArray<Script>;
 
+  private allSubScripts?: ReadonlyArray<Script> = undefined;
+
   constructor(parameters: CategoryInitParameters) {
-    super(parameters.id);
     validateParameters(parameters);
+    this.key = parameters.key;
     this.name = parameters.name;
     this.docs = parameters.docs;
-    this.subCategories = parameters.subcategories;
+    this.subcategories = parameters.subcategories;
     this.scripts = parameters.scripts;
   }
 
   public includes(script: Script): boolean {
-    return this.getAllScriptsRecursively().some((childScript) => childScript.id === script.id);
+    return this.getAllScriptsRecursively().some((childScript) => childScript.key === script.key);
   }
 
   public getAllScriptsRecursively(): readonly Script[] {
@@ -35,7 +37,7 @@ export class CollectionCategory extends BaseEntity<number> implements Category {
 }
 
 export interface CategoryInitParameters {
-  readonly id: number;
+  readonly key: ExecutableKey;
   readonly name: string;
   readonly docs: ReadonlyArray<string>;
   readonly subcategories: ReadonlyArray<Category>;
@@ -45,7 +47,7 @@ export interface CategoryInitParameters {
 function parseScriptsRecursively(category: Category): ReadonlyArray<Script> {
   return [
     ...category.scripts,
-    ...category.subCategories.flatMap((c) => c.getAllScriptsRecursively()),
+    ...category.subcategories.flatMap((c) => c.getAllScriptsRecursively()),
   ];
 }
 

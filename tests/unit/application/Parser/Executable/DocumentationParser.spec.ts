@@ -18,7 +18,7 @@ describe('DocumentationParser', () => {
     });
     describe('throws when type is unexpected', () => {
       // arrange
-      const expectedTypeError = 'docs field (documentation) must be a single string or an array of strings.';
+      const expectedTypeError = 'docs field (documentation) must be an array of strings';
       const wrongTypedValue = 22 as never;
       const testCases: ReadonlyArray<{
         readonly name: string;

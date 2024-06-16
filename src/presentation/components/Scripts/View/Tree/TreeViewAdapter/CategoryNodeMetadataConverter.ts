@@ -1,15 +1,16 @@
+import type { ExecutableId, ExecutableKey } from '@/domain/Executables/ExecutableKey/ExecutableKey';
+import type { CategoryCollection } from '@/domain/Collection/CategoryCollection';
 import type { Category } from '@/domain/Executables/Category/Category';
-import type { ICategoryCollection } from '@/domain/ICategoryCollection';
 import type { Script } from '@/domain/Executables/Script/Script';
 import { type NodeMetadata, NodeType } from '../NodeContent/NodeMetadata';
 
-export function parseAllCategories(collection: ICategoryCollection): NodeMetadata[] {
+export function parseAllCategories(collection: CategoryCollection): NodeMetadata[] {
   return createCategoryNodes(collection.actions);
 }
 
 export function parseSingleCategory(
-  categoryId: number,
-  collection: ICategoryCollection,
+  categoryId: ExecutableId,
+  collection: CategoryCollection,
 ): NodeMetadata[] {
   const category = collection.getCategory(categoryId);
   const tree = parseCategoryRecursively(category);
@@ -17,26 +18,44 @@ export function parseSingleCategory(
 }
 
 export function getScriptNodeId(script: Script): string {
-  return script.id;
+  return convertExecutableIdToNodeId(script.key.executableId);
 }
 
-export function getScriptId(nodeId: string): string {
-  return nodeId;
+export function getScriptKey(
+  nodeId: string,
+  collection: CategoryCollection,
+): ExecutableKey {
+  const executableId = convertNodeIdToExecutableId(nodeId);
+  const script = collection.getScript(executableId);
+  return script.key;
 }
 
-export function getCategoryId(nodeId: string): number {
-  return +nodeId;
+export function getCategoryKey(
+  nodeId: string,
+  collection: CategoryCollection,
+): ExecutableKey {
+  const executableId = convertNodeIdToExecutableId(nodeId);
+  const category = collection.getCategory(executableId);
+  return category.key;
 }
 
 export function getCategoryNodeId(category: Category): string {
-  return `${category.id}`;
+  return convertExecutableIdToNodeId(category.key.executableId);
+}
+
+function convertNodeIdToExecutableId(nodeId: string): ExecutableId {
+  return nodeId;
+}
+
+function convertExecutableIdToNodeId(executableId: ExecutableId): string {
+  return executableId;
 }
 
 function parseCategoryRecursively(
   parentCategory: Category,
 ): NodeMetadata[] {
   return [
-    ...createCategoryNodes(parentCategory.subCategories),
+    ...createCategoryNodes(parentCategory.subcategories),
     ...createScriptNodes(parentCategory.scripts),
   ];
 }

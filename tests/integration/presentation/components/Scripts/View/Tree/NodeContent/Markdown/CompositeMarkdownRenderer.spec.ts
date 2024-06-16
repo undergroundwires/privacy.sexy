@@ -225,7 +225,7 @@ function collectAllDocumentedExecutables(): DocumentedExecutable[] {
   ]);
   const allDocumentedExecutables = allExecutables.filter((e) => e.docs.length > 0);
   return allDocumentedExecutables.map((executable): DocumentedExecutable => ({
-    executableLabel: `${executable.name} (${executable.id})`,
+    executableLabel: `${executable.name} (${executable.key.createSerializedKey()})`,
     docs: executable.docs.join('\n'),
   }));
 }

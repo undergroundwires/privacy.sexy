@@ -80,8 +80,10 @@ See [ci-cd.md](./ci-cd.md) for more information.
 - [**`npm run install-deps [-- <options>]`**](../scripts/npm-install.js):
   - Manages NPM dependency installation, it offers capabilities like doing a fresh install, retries on network errors, and other features.
   - For example, you can run `npm run install-deps -- --fresh` to do clean installation of dependencies.
-- [**`python ./scripts/configure_vscode.py`**](../scripts/configure_vscode.py):
+- [**`python3 ./scripts/configure_vscode.py`**](../scripts/configure_vscode.py):
   - Optimizes Visual Studio Code settings and installs essential extensions, enhancing the development environment.
+- [**`python3 ./scripts/add_missing_ids.py`**](../scripts/add_missing_ids.py):
+  - Adds unique `id` fields to scripts and categories lacking them in collection files.
 
 #### Automation scripts
 

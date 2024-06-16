@@ -1,6 +1,7 @@
 import type { Script } from '@/domain/Executables/Script/Script';
 import type { ICodePosition } from '@/application/Context/State/Code/Position/ICodePosition';
 import type { SelectedScript } from '@/application/Context/State/Selection/Script/SelectedScript';
+import type { ExecutableKey } from '@/domain/Executables/ExecutableKey/ExecutableKey';
 import type { ICodeChangedEvent } from './ICodeChangedEvent';
 
 export class CodeChangedEvent implements ICodeChangedEvent {
@@ -36,12 +37,12 @@ export class CodeChangedEvent implements ICodeChangedEvent {
   }
 
   public getScriptPositionInCode(script: Script): ICodePosition {
-    return this.getPositionById(script.id);
+    return this.getPositionById(script.key);
   }
 
-  private getPositionById(scriptId: string): ICodePosition {
+  private getPositionById(scriptKey: ExecutableKey): ICodePosition {
     const position = [...this.scripts.entries()]
-      .filter(([s]) => s.id === scriptId)
+      .filter(([s]) => s.key.equals(scriptKey))
       .map(([, pos]) => pos)
       .at(0);
     if (!position) {
@@ -67,7 +68,7 @@ function getChangedScripts(
   newScripts: ReadonlyArray<SelectedScript>,
 ): ReadonlyArray<Script> {
   return newScripts
-    .filter((newScript) => oldScripts.find((oldScript) => oldScript.id === newScript.id
+    .filter((newScript) => oldScripts.find((oldScript) => oldScript.key === newScript.key
       && oldScript.revert !== newScript.revert))
     .map((selection) => selection.script);
 }
@@ -77,6 +78,6 @@ function selectIfNotExists(
   test: ReadonlyArray<SelectedScript>,
 ) {
   return selectableContainer
-    .filter((script) => !test.find((oldScript) => oldScript.id === script.id))
+    .filter((script) => !test.find((oldScript) => oldScript.key === script.key))
     .map((selection) => selection.script);
 }
