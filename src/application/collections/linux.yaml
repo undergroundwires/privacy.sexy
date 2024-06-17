@@ -1031,13 +1031,13 @@ actions:
             recommend: strict
             docs: |-
               `recently-used.xbel` is part of the GTK+ toolkit [1] that's developed and used by GNOME [2].
-              <gtk-recent-manager> provides a facility for adding, removing, and looking up recently used files
+              `GtkRecentManager` provides a facility for adding, removing, and looking up recently used files
               and acts like a database of all the recently used files [3].
-
+              
               GTK is used by many GUI software. GNOME uses the GTK+ library [2], while KDE uses the QT library [4].
               `recently-used.xbel` is used by other third-party GTK 3 based applications such as Firefox,
               Visual Studio Code (and all other Electron applications [5]), Thunderbird…
-              See also: ["List of GTK applications | Wikipedia"](https://web.archive.org/web/20221029221112/https://en.wikipedia.org/wiki/List_of_GTK_applications).
+              See also: [List of GTK applications | Wikipedia](https://web.archive.org/web/20221029221112/https://en.wikipedia.org/wiki/List_of_GTK_applications).
 
               [1]: https://web.archive.org/web/20221030164434/https://gitlab.gnome.org/GNOME/gtk/-/raw/1c3f179a20bf7537691216c28332f00c651a577f/gtk/gtkrecentmanager.c#L103 "Line 103 defines GTK_RECENTLY_USED_FILE as recently-used.xbel | GTK source code | gitlab.gnome.org"
               [2]: https://web.archive.org/web/20221029151059/https://gtk.org/ "GTK homepage | gtk.org"
