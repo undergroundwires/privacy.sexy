@@ -1,11 +1,11 @@
 # Collection files
 
 privacy.sexy is a data-driven application that reads YAML files.
-This document details the structure and syntax of the YAML files located in [`application/collections`](./../src/application/collections/), which form the backbone of the application's data model.
+This document details the structure and syntax of the YAML files located in [`application/collections`](./../src/application/collections/), which form the backbone of the application's data model. The YAML schema [`.schema.yaml`](./../src/application/collections/.schema.yaml) is provided to provide better IDE support and be used in automated validations.
 
 Related documentation:
 
-- 📖 [`collection.yaml.d.ts`](./../src/application/collections/collection.yaml.d.ts) outlines code types.
+- 📖 [`Collections README`](./../src/application/collections/README.md) includes references to code as documentation.
 - 📖 [Script Guidelines](./script-guidelines.md) provide guidance on script creation including best-practices.
 
 ## Objects

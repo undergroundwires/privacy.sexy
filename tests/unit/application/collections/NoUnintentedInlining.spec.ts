@@ -72,6 +72,7 @@ function createTestCases(collectionsDirFromRoot: string): ITestCase[] {
     throw new Error(`Could not find any collection in ${collectionsDir}`);
   }
   const collectionFilePaths = fileNames
+    .filter((name) => !name.startsWith('.'))
     .filter((name) => name.endsWith('.yaml'))
     .map((name) => join(collectionsDir, name));
   return collectionFilePaths.map((path) => ({

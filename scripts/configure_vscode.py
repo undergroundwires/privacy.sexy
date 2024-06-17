@@ -58,6 +58,10 @@ def add_or_update_settings() -> None:
     # Details: # pylint: disable-next=line-too-long
     #   - https://archive.ph/2024.01.06-003914/https://github.com/microsoft/vscode/issues/179274, https://web.archive.org/web/20240106003915/https://github.com/microsoft/vscode/issues/179274
 
+    # Disable telemetry
+    configure_setting_key('redhat.telemetry.enabled', False)
+    configure_setting_key('gitlens.telemetry.enabled', False)
+
 def configure_setting_key(configuration_key: str, desired_value: Any) -> None:
     try:
         with open(VSCODE_SETTINGS_JSON_FILE, 'r+', encoding='utf-8') as file:

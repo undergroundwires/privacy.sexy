@@ -1,0 +1,192 @@
+# Schema Definition for Collection Files
+# Purpose:
+# - Defines the structure and data types for collection YAML files.
+# - Enhances IDE support with features like auto-completion and error checking.
+# - Used for automated validation of YAML files to ensure data integrity.
+
+$schema: 'https://json-schema.org/draft/2020-12/schema'
+
+$ref: '#/definitions/Collection'
+
+definitions:
+  Collection:
+    type: object
+    additionalProperties: false
+    properties:
+      os:
+        type: string
+        enum: [windows, macos, linux]
+      scripting:
+        $ref: '#/definitions/ScriptingDefinition'
+      actions:
+        type: array
+        items:
+          $ref: '#/definitions/Category'
+      functions:
+        type: array
+        items:
+          $ref: '#/definitions/Function'
+
+  ScriptingDefinition:
+    type: object
+    additionalProperties: false
+    required: [language, startCode, endCode]
+    properties:
+      language:
+        type: string
+      startCode:
+        type: string
+      endCode:
+        type: string
+
+  Category:
+    type: object
+    allOf:
+      - $ref: '#/definitions/ExecutableDefinition'
+    unevaluatedProperties: false
+    required: [children, category]
+    properties:
+      children:
+        type: array
+        items:
+          $ref: '#/definitions/Executable'
+      category:
+        type: string
+
+  Executable:
+    oneOf:
+      - $ref: '#/definitions/Category'
+      - $ref: '#/definitions/Script'
+
+  ExecutableDefinition:
+    allOf:
+      - $ref: '#/definitions/Documentable'
+
+  Script:
+    type: object
+    unevaluatedProperties: false
+    anyOf:
+      - $ref: '#/definitions/CodeScript'
+      - $ref: '#/definitions/CallScript'
+
+  ScriptDefinition:
+    type: object
+    allOf:
+      - $ref: '#/definitions/ExecutableDefinition'
+    required: [name]
+    properties:
+      name:
+        type: string
+      recommend:
+        type: string
+        enum: [standard, strict]
+
+  CodeScript:
+    type: object
+    unevaluatedProperties: false
+    anyOf:
+      - $ref: '#/definitions/ScriptDefinition'
+      - $ref: '#/definitions/CodeInstruction'
+
+  CallScript:
+    type: object
+    unevaluatedProperties: false
+    anyOf:
+      - $ref: '#/definitions/ScriptDefinition'
+      - $ref: '#/definitions/CallInstruction'
+
+  Documentable:
+    type: object
+    properties:
+      docs:
+        $ref: '#/definitions/Documentation'
+
+  Documentation:
+    unevaluatedProperties: false
+    oneOf:
+      - type: string
+      - type: array
+        items:
+          type: string
+
+  Function:
+    unevaluatedProperties: false
+    oneOf:
+      - $ref: '#/definitions/CodeFunction'
+      - $ref: '#/definitions/CallFunction'
+  
+  FunctionDefinition:
+    type: object
+    required: [name]
+    properties:
+      name:
+        type: string
+      parameters:
+        type: array
+        items:
+          $ref: '#/definitions/ParameterDefinition'
+      docs:
+        type: string
+  
+  ParameterDefinition:
+    required: [name]
+    unevaluatedProperties: false
+    properties:
+      name:
+        type: string
+      optional:
+        type: boolean
+
+  CodeFunction:
+    type: object
+    unevaluatedProperties: false
+    allOf:
+      - $ref: '#/definitions/FunctionDefinition'
+      - $ref: '#/definitions/CodeInstruction'
+
+  CallFunction:
+    type: object
+    unevaluatedProperties: false
+    allOf:
+      - $ref: '#/definitions/FunctionDefinition'
+      - $ref: '#/definitions/CallInstruction'
+
+  CodeInstruction:
+    type: object
+    required: [code]
+    properties:
+      code:
+        type: string
+      revertCode:
+        type: string
+
+  CallInstruction:
+    type: object
+    required: [call]
+    properties:
+      call:
+        $ref: '#/definitions/FunctionCalls'
+
+  FunctionCalls:
+    unevaluatedProperties: false
+    oneOf:
+      - $ref: '#/definitions/FunctionCall'
+      - type: array
+        items:
+          $ref: '#/definitions/FunctionCall'
+
+  FunctionCall:
+    type: object
+    required: [function]
+    unevaluatedProperties: false
+    properties:
+      function:
+        type: string
+      parameters:
+        $ref: '#/definitions/FunctionCallParameters'
+
+  FunctionCallParameters:
+    type: object
+    unevaluatedProperties: true
+    additionalProperties:
+      type: string

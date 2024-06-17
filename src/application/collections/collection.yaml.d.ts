@@ -16,7 +16,7 @@ declare module '@/application/collections/*' {
   }
 
   export type ExecutableData = CategoryData | ScriptData;
-  export type DocumentationData = ReadonlyArray<string> | string | undefined;
+  export type DocumentationData = ReadonlyArray<string> | string;
 
   export interface DocumentableData {
     readonly docs?: DocumentationData;
@@ -73,7 +73,6 @@ declare module '@/application/collections/*' {
 
   export interface ScriptingDefinitionData {
     readonly language: string;
-    readonly fileExtension: string;
     readonly startCode: string;
     readonly endCode: string;
   }

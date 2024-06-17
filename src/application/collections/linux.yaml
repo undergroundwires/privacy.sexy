@@ -1,4 +1,8 @@
+# yaml-language-server: $schema=./.schema.yaml
+# ↑ Adds a schema support in VS Code for auto-completion and validation.
+
 # Structure is documented in "docs/collection-files.md"
+
 os: linux
 scripting:
     language: shellscript

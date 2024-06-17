@@ -5,8 +5,10 @@
     "wengerk.highlight-bad-chars",      // Highlights bad chars.
     "wayou.vscode-todo-highlight",      // Highlights TODO.
     "wix.vscode-import-cost",           // Shows in KB how much a require include in code.
-    // Documentation
+    // Markdown
     "davidanson.vscode-markdownlint",   // Lints markdown.
+    // YAML
+    "redhat.vscode-yaml",               // Lints YAML files, validates against schema.
     // TypeScript / JavaScript
     "dbaeumer.vscode-eslint",           // Lints JavaScript/TypeScript.
     "pmneo.tsimporter",                 // Provides better auto-complete for TypeScripts imports.

@@ -21,7 +21,7 @@ describe('ScriptingDefinitionParser', () => {
       const expectedAssertion: ObjectAssertion<ScriptingDefinitionData> = {
         value: data,
         valueName: 'scripting definition',
-        allowedProperties: ['language', 'fileExtension', 'startCode', 'endCode'],
+        allowedProperties: ['language', 'startCode', 'endCode'],
       };
       const validatorStub = new TypeValidatorStub();
       const context = new TestContext()

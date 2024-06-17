@@ -47,7 +47,6 @@ export function getCategoryStub(scriptPrefix = 'testScript'): CategoryData {
 
 function getTestDefinitionStub(): ScriptingDefinitionData {
   return {
-    fileExtension: '.bat',
     language: ScriptingLanguage[ScriptingLanguage.batchfile],
     startCode: 'start',
     endCode: 'end',
